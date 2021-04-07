@@ -1,0 +1,67 @@
+# Ingress is not working for Fargate pods using Traefik. ALB can be used to build ingress on Fargate pods
+# Step1: $ kubectl apply -f fargate_deployment.yaml
+# Step2: $ kubectl port-forward svc/fargate-k8s-service -n default 9000:9000
+# Step3: Open browser http://localhost:9000/ -> this will open up a web page
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fargate-k8s-service
+  namespace: default
+spec:
+  selector:
+    app: fargate-k8s-pod
+  ports:
+    - name: traefik
+      port: 9000
+      targetPort: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fargate-k8s
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: fargate-k8s-pod
+      WorkerType: fargate
+  template:
+    metadata:
+      labels:
+        app: fargate-k8s-pod
+        WorkerType: fargate
+    spec:
+      containers:
+        - name: fargate-k8s-pod
+          # NOTE: If you are deploying this to private cluster without Internet access then pull the docker image locally and push it to ECR. refer ECR image location below
+#          image: 439595162109.dkr.ecr.eu-west-1.amazonaws.com/fargate-k8s:latest
+          image: paulbouwer/hello-kubernetes:1.9
+          ports:
+            - containerPort: 8080
+
+
+
+#---
+#apiVersion: networking.k8s.io/v1
+#kind: Ingress
+#metadata:
+#  name: fargate-k8s-ingress
+#  namespace: default
+#  annotations:
+#    traefik.ingress.kubernetes.io/router.entrypoints: traefik
+#    traefik.ingress.kubernetes.io/router.pathmatcher: PathPrefix
+#spec:
+#  rules:
+#    - http:
+#        paths:
+#          - path: "/"
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: fargate-k8s-service
+#                port:
+#                  number: 9000

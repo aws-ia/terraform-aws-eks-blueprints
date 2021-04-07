@@ -1,0 +1,10 @@
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+.build
+.idea/
+.DS_Store
+source/kubeconfig/
+kubeconfig/
+.terraform.lock.hcl
+local_tf_state/

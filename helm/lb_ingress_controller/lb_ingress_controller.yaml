@@ -1,0 +1,16 @@
+image:
+  repository: ${image}
+  tag: ${tag}
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+clusterName: ${clusterName}
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  name: eks-lb-controller-sa
+
+rbac:
+  # Specifies whether rbac resources should be created
+  create: true

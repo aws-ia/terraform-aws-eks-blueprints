@@ -1,0 +1,20 @@
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: traefik-ingressroute
+  namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`localhost`) && PathPrefix(`/greeting`)
+      services:
+        - name: greeting-service
+          port: 80
+    - match: Host(`localhost`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: nginx-service
+          port: 80

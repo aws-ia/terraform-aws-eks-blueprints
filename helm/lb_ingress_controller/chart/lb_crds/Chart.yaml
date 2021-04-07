@@ -1,0 +1,6 @@
+apiVersion: v2
+name: crd-target-group-bindings
+description: A Helm chart for lb ingress controller crd target group binding setup
+type: application
+version: 0.4.0
+appVersion: v2.1.3
