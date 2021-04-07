@@ -18,20 +18,22 @@ Terraform backend configuration can be updated in `backend.conf` and cluster com
 # EKS Cluster Deployment Options
 This module helps you to provision the following EKS resources
 
-    1. VPC, Subnets(Public and Private) and VPC endpoints for fully private EKS Clusters (Optional)
-    2. EKS Cluster with multiple networking options 
+1. VPC, Subnets(Public and Private) and VPC endpoints for fully private EKS Clusters (Optional)
+2. EKS Cluster with multiple networking options 
         2.1 Fully private EKS Cluster
         2.2 Public + Private EKS Cluster
         2.3 Public Cluster
-    3. AWS Managed Node Groups with on-demand and Spot instances, self-managed node groups and Fargate profiles
-    4. RBAC for Developers and Administrators with IAM roles
-    5. Kubernetes Addons using Helm Charts
-    6. Metrics Server
-    7. Cluster Autoscaler
-    8. AWS LB Ingress Controller
-    10. Traefik Ingress Controller 
-    11. FluentBit to Cloudwatch for Managed Node groups
-    12. FluentBit to Cloudwatch for Fargate Containers
+3. AWS Managed Node Groups with on-demand and Spot instances, self-managed node groups and Fargate profiles
+4. AWS Managed node groups with launch templates 
+5. AWS SSM agent deployed through launch templates
+6. RBAC for Developers and Administrators with IAM roles
+7. Kubernetes Addons using Helm Charts
+8. Metrics Server
+9. Cluster Autoscaler
+10. AWS LB Ingress Controller
+11. Traefik Ingress Controller 
+12. FluentBit to Cloudwatch for Managed Node groups
+13. FluentBit to Cloudwatch for Fargate Containers
 
 # Helm Charts Modules
 Helm Chart Module within this framework allows you to deploy kubernetes apps using Terraform helm chart provider with **enabled** conditional parameter in `base.tfvars`. 
@@ -102,7 +104,7 @@ It also deploys few kubernetes apps i.e., LB Ingress Controller, Metrics Server,
    
 #### Step1: Clone the repo using the command below
 
-    $ git clone https://gitlab.aws.dev/vabonthu/aws-terraform-eks.git`
+    $ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 
 #### Step2: Update base.tfvars file
 
@@ -211,7 +213,7 @@ For fully Private EKS clusters requires the following VPC endpoints to be create
 
 
 # Author
-Created by [Vara Bonthu](https://github.com/vara-bonthu). Maintained by Ulaganathan N and Jomcy Pappachen
+Created by [Vara Bonthu](https://github.com/vara-bonthu). Maintained by [Ulaganathan N](https://github.com/UlaganathanNamachivayam), [Jomcy Pappachen](https://github.com/jomcy-amzn)
 
 ## Security
 
