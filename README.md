@@ -18,22 +18,22 @@ Terraform backend configuration can be updated in `backend.conf` and cluster com
 # EKS Cluster Deployment Options
 This module helps you to provision the following EKS resources
 
-1. VPC, Subnets(Public and Private) and VPC endpoints for fully private EKS Clusters (Optional)
-2. EKS Cluster with multiple networking options 
-        2.1 Fully private EKS Cluster
-        2.2 Public + Private EKS Cluster
-        2.3 Public Cluster
-3. AWS Managed Node Groups with on-demand and Spot instances, self-managed node groups and Fargate profiles
-4. AWS Managed node groups with launch templates 
-5. AWS SSM agent deployed through launch templates
-6. RBAC for Developers and Administrators with IAM roles
-7. Kubernetes Addons using Helm Charts
-8. Metrics Server
-9. Cluster Autoscaler
-10. AWS LB Ingress Controller
-11. Traefik Ingress Controller 
-12. FluentBit to Cloudwatch for Managed Node groups
-13. FluentBit to Cloudwatch for Fargate Containers
+        1. VPC, Subnets(Public and Private) and VPC endpoints for fully private EKS Clusters (Optional)
+        2. EKS Cluster with multiple networking options 
+           2.1 Fully private EKS Cluster
+           2.2 Public + Private EKS Cluster
+           2.3 Public Cluster
+        3. AWS Managed Node Groups with on-demand and Spot instances, self-managed node groups and Fargate profiles
+        4. AWS Managed node groups with launch templates 
+        5. AWS SSM agent deployed through launch templates
+        6. RBAC for Developers and Administrators with IAM roles
+        7. Kubernetes Addons using Helm Charts
+        8. Metrics Server
+        9. Cluster Autoscaler
+        10. AWS LB Ingress Controller
+        11. Traefik Ingress Controller 
+        12. FluentBit to Cloudwatch for Managed Node groups
+        13. FluentBit to Cloudwatch for Fargate Containers
 
 # Helm Charts Modules
 Helm Chart Module within this framework allows you to deploy kubernetes apps using Terraform helm chart provider with **enabled** conditional parameter in `base.tfvars`. 
@@ -110,7 +110,7 @@ It also deploys few kubernetes apps i.e., LB Ingress Controller, Metrics Server,
 
 Update `~/aws-terraform-eks/live/preprod/eu-west-1/application/dev/base.tfvars` file with the instructions specified in the file (OR use the default values). You can choose to use an existing VPC ID and Subnet IDs or create a new VPC and subnets by providing CIDR ranges in `base.tfvars` file
 
-####  Step3: Update Terraform backedn config file
+####  Step3: Update Terraform backend config file
 
 Update `~/aws-terraform-eks/live/preprod/eu-west-1/application/dev/backend.conf` with your local directory path. [state.tf](source/state.tf) file contains backend config. 
 Local terraform state backend config variables
