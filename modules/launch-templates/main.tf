@@ -20,6 +20,15 @@ data "template_file" "launch_template_userdata" {
   template = file("${path.module}/templates/userdata.sh.tpl")
 }
 
+data "template_file" "launch_template_bottle_rocket_userdata" {
+  template = file("${path.module}/templates/bottlerocket-userdata.sh.tpl")
+  vars = {
+    cluster_endpoint = var.cluster_endpoint
+    cluster_auth_base64 = var.cluster_auth_base64
+    cluster_name = var.cluster_name
+  }
+}
+
 resource "aws_launch_template" "default" {
   name_prefix            = "${var.cluster_name}-${var.node_group_name}"
   description            = "Launch Template for EKS Managed clusters"
@@ -37,7 +46,7 @@ resource "aws_launch_template" "default" {
 
   ebs_optimized = true
 
-  //  image_id      = var.eks_optimized_ami
+  image_id      = var.self_managed ? var.bottlerocket_ami : ""
   //  instance_type = var.instance_type
 
   monitoring {
@@ -55,8 +64,10 @@ resource "aws_launch_template" "default" {
     security_groups             = [var.worker_security_group_id]
   }
 
-  user_data = base64encode(
-    data.template_file.launch_template_userdata.rendered,
+  user_data = var.self_managed ? base64encode(
+    data.template_file.launch_template_bottle_rocket_userdata.rendered,
+  ) : base64encode(
+  data.template_file.launch_template_userdata.rendered,
   )
 
   lifecycle {

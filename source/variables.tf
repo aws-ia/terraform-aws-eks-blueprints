@@ -154,6 +154,42 @@ variable "map_additional_iam_users" {
 #----------------------------------------------------------
 // EKS WORKER NODES
 #----------------------------------------------------------
+
+variable "bottlerocket_ami" {
+  type        = string
+  default     = "ami-0326716ad575410ab"
+  description = "/aws/service/bottlerocket/aws-k8s-1.19/x86_64/latest/image_id"
+}
+variable "bottlerocket_node_group_name" {
+  type        = string
+  default     = "mg-m5-bottlerocket"
+  description = "AWS eks managed node group name"
+}
+variable "bottlerocket_disk_size" {
+  type        = number
+  default     = 50
+  description = "Disk size in GiB for worker nodes. Defaults to 20. Terraform will only perform drift detection if a configuration value is provided"
+}
+variable "bottlerocket_instance_type" {
+  type        = list(string)
+  default     = ["m5.large"]
+  description = "Set of instance types associated with the EKS Node Group"
+}
+variable "bottlerocket_desired_size" {
+  type        = number
+  default     = 3
+  description = "Desired number of worker nodes"
+}
+variable "bottlerocket_max_size" {
+  type        = number
+  default     = 3
+  description = "The maximum size of the AutoScaling Group"
+}
+variable "bottlerocket_min_size" {
+  type        = number
+  default     = 3
+  description = "The minimum size of the AutoScaling Group"
+}
 variable "on_demand_node_group_name" {
   type        = string
   default     = "mg-m5-on-demand"
