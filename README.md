@@ -10,30 +10,33 @@ EKS Terraform accelerator module helps you to provision **EKS clusters**, **Mana
 This folder contains `backend.conf` and `base.tfvars` which are used to create a unique Terraform state for each cluster environment.
 Terraform backend configuration can be updated in `backend.conf` and cluster common configuration variables in `base.tfvars`
 
-* **source** folder contains main driver file `main.tf`
-* **modules** folder contains all the AWS resource modules
-* **helm** folder contains all the Helm chart modules
-* **examples** folder contains sample template files with `base.tfvars` which can be used to deploy clusters with multiple add-on options
+* `source` folder contains main driver file `main.tf`
+* `modules` folder contains all the AWS resource modules
+* `helm` folder contains all the Helm chart modules
+* `examples` folder contains sample template files with `base.tfvars` which can be used to deploy clusters with multiple add-on options
 
 # EKS Cluster Deployment Options
 This module helps you to provision the following EKS resources
 
-        1. VPC, Subnets(Public and Private) and VPC endpoints for fully private EKS Clusters (Optional)
-        2. EKS Cluster with multiple networking options 
-           2.1 Fully private EKS Cluster
-           2.2 Public + Private EKS Cluster
-           2.3 Public Cluster
-        3. AWS Managed Node Groups with on-demand and Spot instances, self-managed node groups and Fargate profiles
-        4. AWS Managed node groups with launch templates 
-        5. AWS SSM agent deployed through launch templates
-        6. RBAC for Developers and Administrators with IAM roles
-        7. Kubernetes Addons using Helm Charts
-        8. Metrics Server
-        9. Cluster Autoscaler
-        10. AWS LB Ingress Controller
-        11. Traefik Ingress Controller 
-        12. FluentBit to Cloudwatch for Managed Node groups
-        13. FluentBit to Cloudwatch for Fargate Containers
+1. [VPC and Subnets(Public and Private)](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
+2. [VPC endpoints for fully private EKS Clusters](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html)
+3. [EKS Cluster with multiple networking options](https://aws.amazon.com/blogs/containers/de-mystifying-cluster-networking-for-amazon-eks-worker-nodes/)
+   1. Fully Private EKS Cluster
+   2. Public + Private EKS Cluster
+   3. Public Cluster
+4. [Managed Node Groups with On-Demand](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) - AWS Managed Node Groups with On-Demand Instances
+5. [Managed Node Groups with Spot](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) - AWS Managed Node Groups with Spot Instances
+6. [Fargate Profiles](https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html)
+7. [SSM agent](https://aws.amazon.com/blogs/containers/introducing-launch-template-and-custom-ami-support-in-amazon-eks-managed-node-groups/) deployed through launch templates to Managed Node Groups
+8. [Bottlerocket OS](https://github.com/bottlerocket-os/bottlerocket) - Managed Node Groups with Bottlerocket OS and Launch Templates
+9.  [RBAC](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html) for Developers and Administrators with IAM roles
+10. Kubernetes Addons using [Helm Charts](https://helm.sh/docs/topics/charts/)
+11. [Metrics Server](https://github.com/kubernetes-sigs/metrics-server)
+12. [Cluster Autoscaler](https://github.com/kubernetes/autoscaler)
+13. [AWS LB Ingress Controller](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
+14. [Traefik Ingress Controller](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)
+15. [FluentBit to Cloudwatch for Managed Node groups](https://github.com/aws/aws-for-fluent-bit)
+16. [FluentBit to Cloudwatch for Fargate Containers](https://aws.amazon.com/blogs/containers/fluent-bit-for-amazon-eks-on-aws-fargate-is-here/)
 
 # Helm Charts Modules
 Helm Chart Module within this framework allows you to deploy kubernetes apps using Terraform helm chart provider with **enabled** conditional parameter in `base.tfvars`. 
@@ -84,6 +87,27 @@ For more details, see [aws-for-fluent-bit](https://gallery.ecr.aws/aws-observabi
 This modules ships the Fargate Continaer logs to CloudWatch
 
     `fargate_fluent_bit_enable = true`
+
+# Bottlerocket OS
+
+Bottlerocket is an open source operating system specifically designed for running containers. Bottlerocket build system is based on Rust. It's a container host OS and doesn't have additional softwares or package managers other than what is needed for running contianers hence its very light weight and secure. Container optimized operating systems are ideal when you need to run applications in Kubernetes with minimal setup and do not want to worry about security or updates, or want OS support from  cloud provider. Container operating systems does updates transactionally. 
+
+Bottlerocket has two contianer runtimes running. Control container **on** by default used for AWS Systems manager and remote API access. Admin container **off** by default for deep debugging and exploration. 
+
+Bottlerocket [Launch templates userdata](modules/launch-templates/templates/bottlerocket-userdata.sh.tpl) uses the TOML format with Key-value pairs. Remote API access API via SSM agent. You can launch trouble shooting continaer via user data `[settings.host-containers.admin] enabled = true`. 
+
+### Features
+* [Secure](https://github.com/bottlerocket-os/bottlerocket/blob/develop/SECURITY_FEATURES.md) - Opninionated, specialized and highly secured
+* **Flexible** - Multi cloud and multi orchestrator
+* **Transactional** -  Image basesd upgraded and roll backs
+* **Isolated** - Seprate Contianer Runtimes
+
+### Updates
+Bottlerocket can be updated automatically via Kubernetes Operator
+
+    $ kubectl apply -f Bottlerocket_k8s.csv.yaml
+    $ kubectl get ClusterServiceVersion Bottlerocket_k8s | jq.'status'
+
 
 # How to Deploy
 

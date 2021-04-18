@@ -240,6 +240,28 @@ module "eks" {
         ExtraTag = var.on_demand_node_group_name
         Name     = "${module.eks-label.id}-${var.on_demand_node_group_name}"
       }
+    },
+    mg-m5-bottlerocket = {
+      desired_capacity        = var.bottlerocket_desired_size
+      max_capacity            = var.bottlerocket_max_size
+      min_capacity            = var.bottlerocket_min_size
+      subnets                 = var.create_vpc == false ? var.private_subnet_ids : module.vpc.private_subnets
+      launch_template_id      = module.launch-templates-bottlerocket.launch_template_id
+      launch_template_version = module.launch-templates-bottlerocket.launch_template_latest_version
+      instance_types          = var.bottlerocket_instance_type
+      capacity_type           = "ON_DEMAND"
+      //      ami_type                = var.on_demand_ami_type
+
+      k8s_labels = {
+        Environment = var.environment
+        Zone        = var.zone
+        OS          = "bottlerocket"
+        WorkerType  = "ON_DEMAND_BOTTLEROCKET"
+      }
+      additional_tags = {
+        ExtraTag = var.bottlerocket_node_group_name
+        Name     = "${module.eks-label.id}-${var.bottlerocket_node_group_name}"
+      }
     }
   }
   #----------------------------------------------------------------------------------
@@ -291,6 +313,8 @@ module "launch-templates-on-demand" {
   worker_security_group_id = module.eks.worker_security_group_id
   node_group_name          = var.on_demand_node_group_name
   tags                     = module.eks-label.tags
+  cluster_auth_base64      = module.eks.cluster_certificate_authority_data
+  cluster_endpoint         = module.eks.cluster_endpoint
   //  instance_type            = var.instance_type
 }
 
@@ -301,9 +325,24 @@ module "launch-templates-spot" {
   worker_security_group_id = module.eks.worker_security_group_id
   node_group_name          = var.spot_node_group_name
   tags                     = module.eks-label.tags
+  cluster_auth_base64      = module.eks.cluster_certificate_authority_data
+  cluster_endpoint         = module.eks.cluster_endpoint
   //  instance_type            = var.instance_type
 }
 
+module "launch-templates-bottlerocket" {
+  source                   = "../modules/launch-templates"
+  cluster_name             = module.eks.cluster_id
+  volume_size              = "50"
+  worker_security_group_id = module.eks.worker_security_group_id
+  node_group_name          = var.bottlerocket_node_group_name
+  tags                     = module.eks-label.tags
+  bottlerocket_ami         = var.bottlerocket_ami
+  self_managed             = true
+  cluster_auth_base64      = module.eks.cluster_certificate_authority_data
+  cluster_endpoint         = module.eks.cluster_endpoint
+  //  instance_type            = var.instance_type
+}
 # ---------------------------------------------------------------------------------------------------------------------
 # IAM Module
 # ---------------------------------------------------------------------------------------------------------------------
