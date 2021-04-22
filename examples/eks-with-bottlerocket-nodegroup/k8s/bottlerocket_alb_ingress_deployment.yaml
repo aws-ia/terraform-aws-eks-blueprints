@@ -1,0 +1,81 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bottlerocket-app1-nginx-deployment
+  labels:
+    app: bottlerocket-app1-nginx
+    WorkerType: ON_DEMAND_BOTTLEROCKET
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bottlerocket-app1-nginx
+  template:
+    metadata:
+      labels:
+        app: bottlerocket-app1-nginx
+        WorkerType: ON_DEMAND_BOTTLEROCKET
+    spec:
+      containers:
+        - name: app1-nginx
+          image: stacksimplify/kube-nginxapp1:1.0.0
+          #          image: 958351136353.dkr.ecr.eu-west-1.amazonaws.com/stacksimplify/kube-nginxapp:1.0.0
+          ports:
+            - containerPort: 80
+      nodeSelector:
+        WorkerType: ON_DEMAND_BOTTLEROCKET
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bottlerocket-app1-nginx-nodeport-service
+  labels:
+    app: bottlerocket-app1-nginx
+    WorkerType: ON_DEMAND_BOTTLEROCKET
+  annotations:
+    #Important Note:  Need to add health check path annotations in service level if we are planning to use multiple targets in a load balancer
+    alb.ingress.kubernetes.io/healthcheck-path: /app1/index.html
+spec:
+  type: NodePort
+  selector:
+    app: bottlerocket-app1-nginx
+    WorkerType: ON_DEMAND_BOTTLEROCKET
+  ports:
+    - port: 80
+      targetPort: 80
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-nginx-path-based
+  labels:
+    app: ingress-nginx-path-based
+  annotations:
+    # Ingress Core Settings
+    kubernetes.io/ingress.class: "alb"
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    # Health Check Settings
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    #Important Note:  Need to add health check path annotations in service level if we are planning to use multiple targets in a load balancer
+    #alb.ingress.kubernetes.io/healthcheck-path: /usermgmt/health-status
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: '15'
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '5'
+    alb.ingress.kubernetes.io/success-codes: '200'
+    alb.ingress.kubernetes.io/healthy-threshold-count: '2'
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: '2'
+    # This is required for bottlerocket
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /app1/*
+            pathType: Prefix
+            backend:
+              service:
+                name: bottlerocket-app1-nginx-nodeport-service
+                port:
+                  number: 80

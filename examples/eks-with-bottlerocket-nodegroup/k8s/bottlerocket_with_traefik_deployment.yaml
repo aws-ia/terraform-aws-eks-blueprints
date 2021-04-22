@@ -1,0 +1,63 @@
+
+# This service can be accessed using NLB DNS e.g., http://<NLB DNS name>>:8000/bottlerocket-greeting
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bottlerocket-greeting-service
+  namespace: default
+spec:
+  selector:
+    app: bottlerocket-greeting-pod
+  ports:
+    - name: web
+      port: 8000
+      targetPort: 8080
+  #type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bottlerocket-greeting
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: bottlerocket-greeting-pod
+  template:
+    metadata:
+      labels:
+        app: bottlerocket-greeting-pod
+    spec:
+      containers:
+        - name: bottlerocket-greeting-pod
+          # NOTE: If you are deploying this to private cluster without Internet access then pull the docker image locally and push it to ECR. refer ECR image location below
+#          image: 439595162109.dkr.ecr.eu-west-1.amazonaws.com/bottlerocket-greeting:latest
+          image: pahud/greeting
+          ports:
+            - containerPort: 8080
+      nodeSelector:
+        WorkerType: ON_DEMAND_BOTTLEROCKET
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bottlerocket-greeting-ingress
+  namespace: default
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.pathmatcher: PathPrefix
+spec:
+  rules:
+    - http:
+        paths:
+          - path: "/bottlerocket-greeting"
+            pathType: Prefix
+            backend:
+              service:
+                name: bottlerocket-greeting-service
+                port:
+                  number: 8000
+

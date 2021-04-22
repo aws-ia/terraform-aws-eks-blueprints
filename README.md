@@ -12,52 +12,52 @@ This framework helps you to design and create EKS clusters for different environ
 This folder contains `backend.conf` and `base.tfvars`, used to create a unique Terraform state for each cluster environment.
 Terraform backend configuration can be updated in `backend.conf` and cluster common configuration variables in `base.tfvars`
 
-* **source** folder contains main driver file `main.tf`
-* **modules** folder contains all the AWS resource modules
-* **helm** folder contains all the Helm chart modules
-* **examples** folder contains sample template files with `base.tfvars` which can be used to deploy clusters with multiple add-on options
+* `source` folder contains main driver file `main.tf`
+* `modules` folder contains all the AWS resource modules
+* `helm` folder contains all the Helm chart modules
+* `examples` folder contains sample template files with `base.tfvars` which can be used to deploy clusters with multiple add-on options
 
 # EKS Cluster Deployment Options
 This module provisions the following EKS resources
 
-
-        1. VPC, Subnets(Public and Private) and VPC endpoints for fully private EKS Clusters (Optional)
-        2. EKS Cluster with multiple networking options 
-           2.1 Fully private EKS Cluster
-           2.2 Public + Private EKS Cluster
-           2.3 Public Cluster
-        3. AWS Managed Node Groups with on-demand and Spot instances, self-managed node groups, and Fargate profiles
-        4. AWS Managed node groups with launch templates 
-        5. AWS SSM agent deployed through launch templates
-        6. RBAC for Developers and Administrators with IAM roles
-        7. Kubernetes Addons using Helm Charts
-        8. Metrics Server
-        9. Cluster Autoscaler
-        10. AWS LB Ingress Controller
-        11. Traefik Ingress Controller 
-        12. FluentBit to Cloudwatch for Managed Node groups
-        13. FluentBit to Cloudwatch for Fargate Containers
+1. [VPC and Subnets(Public and Private)](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
+2. [VPC endpoints for fully private EKS Clusters](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html)
+3. [EKS Cluster with multiple networking options](https://aws.amazon.com/blogs/containers/de-mystifying-cluster-networking-for-amazon-eks-worker-nodes/)
+   1. Fully Private EKS Cluster
+   2. Public + Private EKS Cluster
+   3. Public Cluster
+4. [Managed Node Groups with On-Demand](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) - AWS Managed Node Groups with On-Demand Instances
+5. [Managed Node Groups with Spot](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) - AWS Managed Node Groups with Spot Instances
+6. [Fargate Profiles](https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html)
+7. [SSM agent](https://aws.amazon.com/blogs/containers/introducing-launch-template-and-custom-ami-support-in-amazon-eks-managed-node-groups/) deployed through launch templates to Managed Node Groups
+8. [Bottlerocket OS](https://github.com/bottlerocket-os/bottlerocket) - Managed Node Groups with Bottlerocket OS and Launch Templates
+9.  [RBAC](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html) for Developers and Administrators with IAM roles
+10. Kubernetes  Addons using [Helm Charts](https://helm.sh/docs/topics/charts/)
+11. [Metrics Server](https://github.com/Kubernetes -sigs/metrics-server)
+12. [Cluster Autoscaler](https://github.com/Kubernetes /autoscaler)
+13. [AWS LB Ingress Controller](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
+14. [Traefik Ingress Controller](https://doc.traefik.io/traefik/providers/Kubernetes -ingress/)
+15. [FluentBit to CloudWatch for Managed Node groups](https://github.com/aws/aws-for-fluent-bit)
+16. [FluentBit to CloudWatch for Fargate Containers](https://aws.amazon.com/blogs/containers/fluent-bit-for-amazon-eks-on-aws-fargate-is-here/)
 
 # Helm Charts Modules
-The Helm Chart module within this framework allows you to deploy Kubernetes apps via the Terraform Helm Chart provider with **enabled** conditional parameter in `base.tfvars`. 
-
-**NOTE**: For **fully private EKS clusters**, the docker images used within the Helm Charts must be downloaded and pushed to an ECR repository. This project provides both options of public docker hub repo and private ECR repo for all Helm chart modules. 
+Helm Chart Module within this framework allows you to deploy Kubernetes  apps using Terraform helm chart provider with **enabled** conditional parameter in `base.tfvars`. 
 
 You can find the README for each Helm module with instructions on how to download the images from Docker Hub or third-party repos and upload it to your private ECR repo. 
 
 For example, [ALB Ingress Controller](helm/lb_ingress_controller/README.md) for AWS LB Ingress Controller module. 
 
 ## Ingress Controller Modules
-Ingress is an API object that defines the traffic routing rules (e.g. load balancing, SSL termination, path-based routing, protocol), whereas the Ingress Controller is the component responsible for fulfilling those requests.
+Ingress is an API object that defines the traffic routing rules (e.g., load balancing, SSL termination, path-based routing, protocol), whereas the Ingress Controller is the component responsible for fulfilling those requests.
 
 * [ALB Ingress Controller](helm/lb_ingress_controller/README.md) can be deployed by specifying the following line in `base.tfvars` file.
-**AWS ALB Ingress controller** triggers the creation of an ALB and the necessary supporting AWS resources whenever a Kubernetes user declares an Ingress resource in the cluster.
-[ALB Docs](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/)
+**AWS ALB Ingress controller** triggers the creation of an ALB and the necessary supporting AWS resources whenever a Kubernetes  user declares an Ingress resource in the cluster.
+[ALB Docs](https://Kubernetes -sigs.github.io/aws-load-balancer-controller/latest/)
     
     `alb_ingress_controller_enable = true`
 
 * [Traefik Ingress Controller](helm/traefik_ingress/README.md) can be deployed by specifying the following line in `base.tfvars` file.
-**Treafik is an open source Kubernetes Ingress Controller**. The Traefik Kubernetes Ingress provider is a Kubernetes Ingress controller; that is to say, it manages access to cluster services by supporting the Ingress specification. For more detials about [Traefik can be found here](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)
+**Traefik is an open source Kubernetes  Ingress Controller**. The Traefik Kubernetes  Ingress provider is a Kubernetes  Ingress controller; that is to say, it manages access to cluster services by supporting the Ingress specification. For more details about [Traefik can be found here](https://doc.traefik.io/traefik/providers/Kubernetes -ingress/)
 
     `traefik_ingress_controller_enable = true`
     
@@ -65,14 +65,14 @@ Ingress is an API object that defines the traffic routing rules (e.g. load balan
 **Cluster Autoscaler** and **Metric Server** Helm Modules gets deployed by default with the EKS Cluster. 
 
 * [Cluster Autoscaler](helm/cluster_autoscaler/README.md) can be deployed by specifying the following line in `base.tfvars` file.
-The Kubernetes Cluster Autoscaler automatically adjusts the number of nodes in your cluster when pods fail or are rescheduled onto other nodes. It's not deployed by default in EKS clusters. 
-That is, the AWS Cloud Provider implementation within the Kubernetes Cluster Autoscaler controls the **DesiredReplicas** field of Amazon EC2 Auto Scaling groups. 
+The Kubernetes  Cluster Autoscaler automatically adjusts the number of nodes in your cluster when pods fail or are rescheduled onto other nodes. It's not deployed by default in EKS clusters. 
+That is, the AWS Cloud Provider implementation within the Kubernetes  Cluster Autoscaler controls the **DesiredReplicas** field of Amazon EC2 Auto Scaling groups. 
 The Cluster Autoscaler is typically installed as a **Deployment** in your cluster. It uses leader election to ensure high availability, but scaling is one done by a single replica at a time.     
 
     `cluster_autoscaler_enable = true`
   
 * [Metrics Server](helm/metrics_server/README.md) can be deployed by specifying the following line in `base.tfvars` file.
-The Kubernetes Metrics Server, used to gather metrics such as cluster CPU and memory usage over time, is not deployed by default in EKS clusters.
+The Kubernetes  Metrics Server, used to gather metrics such as cluster CPU and memory usage over time, is not deployed by default in EKS clusters.
     
     `metrics_server_enable = true`
     
@@ -86,9 +86,30 @@ For more details, see [aws-for-fluent-bit](https://gallery.ecr.aws/aws-observabi
     `aws-for-fluent-bit_enable = true`
 
 * [fargate-fluentbit](helm/fargate_fluentbit) can be deployed by specifying the following line in `base.tfvars` file.
-This modules ships the Fargate Continaer logs to CloudWatch
+This module ships the Fargate Container logs to CloudWatch
 
     `fargate_fluent_bit_enable = true`
+
+# Bottlerocket OS
+
+Bottlerocket is an open source operating system specifically designed for running containers. Bottlerocket build system is based on Rust. It's a container host OS and doesn't have additional software's or package managers other than what is needed for running containers hence its very light weight and secure. Container optimized operating systems are ideal when you need to run applications in Kubernetes  with minimal setup and do not want to worry about security or updates, or want OS support from  cloud provider. Container operating systems does updates transactionally. 
+
+Bottlerocket has two container runtimes running. Control container **on** by default used for AWS Systems manager and remote API access. Admin container **off** by default for deep debugging and exploration. 
+
+Bottlerocket [Launch templates userdata](modules/launch-templates/templates/bottlerocket-userdata.sh.tpl) uses the TOML format with Key-value pairs. Remote API access API via SSM agent. You can launch trouble shooting container via user data `[settings.host-containers.admin] enabled = true`. 
+
+### Features
+* [Secure](https://github.com/bottlerocket-os/bottlerocket/blob/develop/SECURITY_FEATURES.md) - Opninionated, specialized and highly secured
+* **Flexible** - Multi cloud and multi orchestrator
+* **Transactional** -  Image based upgraded and roll backs
+* **Isolated** - Separate container Runtimes
+
+### Updates
+Bottlerocket can be updated automatically via Kubernetes  Operator
+
+    $ kubectl apply -f Bottlerocket_k8s.csv.yaml
+    $ kubectl get ClusterServiceVersion Bottlerocket_k8s | jq.'status'
+
 
 # How to Deploy
 
@@ -97,7 +118,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
     1. [aws cli] (https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
     2. [aws-iam-authenticator] (https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html)
-    3. [kubectl] (https://kubernetes.io/docs/tasks/tools/)
+    3. [kubectl] (https://Kubernetes .io/docs/tasks/tools/)
     4. wget 
     
 ## Deployment Steps
@@ -131,7 +152,7 @@ It's highly recommended to use remote state in S3 instead of using local backend
     key    = "ekscluster/preprod/application/dev/terraform-main.tfstate"
         
 #### Step4: Assume IAM role before creating a EKS cluster. 
-This role will become the Kubernetes Admin by default.
+This role will become the Kubernetes  Admin by default.
         
     $ aws-mfa --assume-role  arn:aws:iam::<ACCOUNTID>:role/<IAMROLE>
 
@@ -171,7 +192,7 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
 `example` folder contains multiple cluster templates with pre-populated `.tfvars` which can be used as a quick start. Reuse the templates from `examples` and follow the above Deployment steps as mentioned above.
 
 # EKS Addons update
-Amazon EKS doesn't modify any of your Kubernetes add-ons when you update a cluster to newer versions. 
+Amazon EKS doesn't modify any of your Kubernetes  add-ons when you update a cluster to newer versions. 
 It's important to upgrade EKS Addons Amazon VPC CNI plug-in, DNS (CoreDNS) and KubeProxy for each EKS release.
 
 This [README](eks_cluster_addons_upgrade/README.md) guides you to update the EKS addons for newer versions that matches with your EKS cluster version
@@ -179,11 +200,11 @@ This [README](eks_cluster_addons_upgrade/README.md) guides you to update the EKS
 Updating a EKS cluster instructions can be found in [AWS documentation](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html).
 
 # Important note
-This module tested only with **Kubernetes v1.19 version**. Helm Charts addon modules aligned with k8s v1.19. If you are looking to use this code to deploy different versions of Kubernetes then ensure Helm charts and docker images aligned with k8s version.
+This module tested only with **Kubernetes  v1.19 version**. Helm Charts addon modules aligned with k8s v1.19. If you are looking to use this code to deploy different versions of Kubernetes  then ensure Helm charts and docker images aligned with k8s version.
 
-The `kubernetes_version="1.19"` is the required variable in `base.tfvars`. Kubernetes is evolving a lot, and each major version includes new features, fixes, or changes. 
+The `Kubernetes _version="1.19"` is the required variable in `base.tfvars`. Kubernetes  is evolving a lot, and each major version includes new features, fixes, or changes. 
 
-Always check [Kubernetes Release Notes](https://kubernetes.io/docs/setup/release/notes/) before updating the major version. You also need to ensure your applications and Helm addons updated, 
+Always check [Kubernetes  Release Notes](https://Kubernetes .io/docs/setup/release/notes/) before updating the major version. You also need to ensure your applications and Helm addons updated, 
 or workloads could fail after the upgrade is complete. For action, you may need to take before upgrading, see the steps in the EKS documentation.
 
 # Notes:
@@ -191,20 +212,20 @@ If you are using an existing VPC then you may need to ensure that the following 
 
 Add Tags to VPC
 
-    Key = kubernetes.io/cluster/${local.cluster_name} Value = Shared
+    Key = Kubernetes .io/cluster/${local.cluster_name} Value = Shared
 
 Add Tags to Public Subnets tagging requirement
     
       public_subnet_tags = {
-        "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-        "kubernetes.io/role/elb"                      = "1"
+        "Kubernetes .io/cluster/${local.cluster_name}" = "shared"
+        "Kubernetes .io/role/elb"                      = "1"
       }
 
 Add Tags to Private Subnets tagging requirement
 
       private_subnet_tags = {
-        "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-        "kubernetes.io/role/internal-elb"             = "1"
+        "Kubernetes .io/cluster/${local.cluster_name}" = "shared"
+        "Kubernetes .io/role/internal-elb"             = "1"
       }
         
 For fully Private EKS clusters requires the following VPC endpoints to be created to communicate with AWS services. This module will create these endpoints if you choose to create VPC. If you are using an existing VPC then you may need to ensure these endpoints are created.
