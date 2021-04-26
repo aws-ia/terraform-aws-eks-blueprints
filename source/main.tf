@@ -54,6 +54,7 @@ module "vpc-label" {
 module "vpc" {
   create_vpc          = var.create_vpc
   source              = "terraform-aws-modules/vpc/aws"
+  version             = "v2.78.0"
   name                = module.vpc-label.id
   cidr                = var.vpc_cidr_block
   azs                 = data.aws_availability_zones.available.names
