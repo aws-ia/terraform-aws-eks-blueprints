@@ -114,7 +114,7 @@ Bottlerocket can be updated automatically via Kubernetes  Operator
 # How to Deploy
 
 ## Prerequisites:
-Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Appl
+Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
 
     1. [aws cli] (https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
     2. [aws-iam-authenticator] (https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html)
