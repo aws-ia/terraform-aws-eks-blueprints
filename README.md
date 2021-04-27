@@ -1,13 +1,15 @@
 # aws-eks-accelerator-for-terraform
 
 # Main Purpose
-The main purpose of this project is to provide a Terraform framework to help you get started on deploying **EKS Clusters** in multi-tenant environments using Hashicorp Terraform with AWS and Helm Providers. 
+This project provides a framework for deploying best-practice multi-tenant [EKS Clusters](https://aws.amazon.com/eks), provisioned via [Hashicorp Terraform](https://www.terraform.io/) and [Helm charts](https://helm.sh/) on [AWS](https://aws.amazon.com/). 
 
 # Overview
-EKS Terraform accelerator module helps you to provision **EKS clusters**, **Managed node groups** with **on-demand** and **spot instances**, **Fargate profiles** and all the necessary plugins/addons for EKS cluster. Terraform **Helm provider** is used to deploy the common Kubernetes  add-ons with publicly available [Helm Charts](https://artifacthub.io/). This project leverages the official [terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks) module to create EKS Clusters. This framework helps you to design and create EKS clusters for different environments in various AWS accounts across multiple regions with a **unique Terraform configuration and state file** for each EKS cluster. 
+The AWS EKS Accelerator for Terraform module helps you to provision [EKS Clusters](https://aws.amazon.com/eks), [managed node groups](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) with [on-demand](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-on-demand-instances.html) and [spot instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html), [Fargate profiles](https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html), and all the necessary plugins/add-ons for a production-ready EKS cluster. The [Terraform Helm provider](https://github.com/hashicorp/terraform-provider-helm) is used to deploy common Kubernetes add-ons with publicly available [Helm Charts](https://artifacthub.io/). This project leverages the official [terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks) module to create EKS Clusters
 
-* Top level **live** folder contains the configuration setup for each cluster. Each folder under `live/<region>/application` represents an EKS cluster environment(e.g., dev, test, load etc.). 
-This folder contains `backend.conf` and `base.tfvars` which are used to create a unique Terraform state for each cluster environment.
+This framework helps you to design and create EKS clusters for different environments in various AWS accounts across multiple regions with a **unique Terraform configuration and state file** per EKS cluster. 
+
+* The top-level **live** folder contains the configuration for each cluster. Each folder under `live/<region>/application` represents an EKS cluster environment(e.g., dev, test, load etc.). 
+This folder contains `backend.conf` and `base.tfvars`, used to create a unique Terraform state for each cluster environment.
 Terraform backend configuration can be updated in `backend.conf` and cluster common configuration variables in `base.tfvars`
 
 * `source` folder contains main driver file `main.tf`
@@ -16,7 +18,7 @@ Terraform backend configuration can be updated in `backend.conf` and cluster com
 * `examples` folder contains sample template files with `base.tfvars` which can be used to deploy clusters with multiple add-on options
 
 # EKS Cluster Deployment Options
-This module helps you to provision the following EKS resources
+This module provisions the following EKS resources
 
 1. [VPC and Subnets(Public and Private)](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
 2. [VPC endpoints for fully private EKS Clusters](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html)
@@ -41,8 +43,8 @@ This module helps you to provision the following EKS resources
 # Helm Charts Modules
 Helm Chart Module within this framework allows you to deploy Kubernetes  apps using Terraform helm chart provider with **enabled** conditional parameter in `base.tfvars`. 
 
-**NOTE**: Docker images used in Helm Charts requires downloading locally and push it to ECR repo for **fully private EKS Clusters**. This project provides both options of public docker hub repo and private ECR repo for all Helm chart modules. 
 You can find the README for each Helm module with instructions on how to download the images from Docker Hub or third-party repos and upload it to your private ECR repo. 
+
 For example, [ALB Ingress Controller](helm/lb_ingress_controller/README.md) for AWS LB Ingress Controller module. 
 
 ## Ingress Controller Modules
@@ -111,8 +113,8 @@ Bottlerocket can be updated automatically via Kubernetes  Operator
 
 # How to Deploy
 
-## Pre-requisites:
-Ensure that you installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
+## Prerequisites:
+Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
 
     1. [aws cli] (https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
     2. [aws-iam-authenticator] (https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html)
@@ -121,8 +123,10 @@ Ensure that you installed the following tools in your Mac or Windows Laptop befo
     
 ## Deployment Steps
 The following steps walks you through the deployment of example [DEV cluster](live/preprod/eu-west-1/application/dev/base.tfvars) configuration. This config deploys a private EKS cluster with public and private subnets. 
+
 Two managed worker nodes with On-demand and Spot instances along with one fargate profile for default namespace placed in private subnets. ALB placed in Public subnets created by LB Ingress controller. 
-It also deploys few Kubernetes  apps i.e., LB Ingress Controller, Metrics Server, Cluster Autoscaler, aws-for-fluent-bit CloudWatch logging for Managed node groups, FluentBit CloudWatch logging for Fargate etc. 
+
+It also deploys few kubernetes apps i.e., LB Ingress Controller, Metrics Server, Cluster Autoscaler, aws-for-fluent-bit CloudWatch logging for Managed node groups, FluentBit CloudWatch logging for Fargate etc. 
 
 ### Provision VPC (optional) and EKS cluster with selected Helm modules
    
