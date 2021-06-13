@@ -2,8 +2,8 @@
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.12 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 3.34.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 3.37.0 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | 2.0.3 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | 2.0.3 |
 
@@ -11,13 +11,13 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.34.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.37.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | 14.0.0 |
+| <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | 15.2.0 |
 | <a name="module_eks-label"></a> [eks-label](#module\_eks-label) | ../modules/aws-resource-label |  |
 | <a name="module_helm"></a> [helm](#module\_helm) | ../helm |  |
 | <a name="module_iam"></a> [iam](#module\_iam) | ../modules/iam |  |
@@ -32,12 +32,12 @@
 
 | Name | Type |
 |------|------|
-| [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/3.34.0/docs/data-sources/availability_zones) | data source |
-| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/3.34.0/docs/data-sources/caller_identity) | data source |
-| [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/3.34.0/docs/data-sources/eks_cluster) | data source |
-| [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/3.34.0/docs/data-sources/eks_cluster_auth) | data source |
-| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/3.34.0/docs/data-sources/region) | data source |
-| [aws_security_group.default](https://registry.terraform.io/providers/hashicorp/aws/3.34.0/docs/data-sources/security_group) | data source |
+| [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/3.37.0/docs/data-sources/availability_zones) | data source |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/3.37.0/docs/data-sources/caller_identity) | data source |
+| [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/3.37.0/docs/data-sources/eks_cluster) | data source |
+| [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/3.37.0/docs/data-sources/eks_cluster_auth) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/3.37.0/docs/data-sources/region) | data source |
+| [aws_security_group.default](https://registry.terraform.io/providers/hashicorp/aws/3.37.0/docs/data-sources/security_group) | data source |
 
 ## Inputs
 

@@ -55,7 +55,7 @@ resource "aws_launch_template" "default" {
 
   tag_specifications {
     resource_type = "instance"
-    tags          = merge(var.tags, map("Name", "${var.cluster_name}-${var.node_group_name}"))
+    tags          = merge(var.tags, tomap({"Name" = "${var.cluster_name}-${var.node_group_name}"}))
   }
 
   network_interfaces {
