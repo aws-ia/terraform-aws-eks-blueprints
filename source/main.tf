@@ -16,9 +16,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 locals {
-  tags                = merge(map("kubernetes.io/cluster/${module.eks-label.id}", "shared"), map("created-by", var.terraform_version))
-  private_subnet_tags = merge(map("kubernetes.io/cluster/${module.eks-label.id}", "shared"), map("kubernetes.io/role/internal-elb", "1"), map("created-by", var.terraform_version))
-  public_subnet_tags  = merge(map("kubernetes.io/cluster/${module.eks-label.id}", "shared"), map("kubernetes.io/role/elb", "1"), map("created-by", var.terraform_version))
+  tags                = merge(tomap({"kubernetes.io/cluster/${module.eks-label.id}" = "shared"}), tomap({"created-by" = var.terraform_version}))
+  private_subnet_tags = merge(tomap({"kubernetes.io/cluster/${module.eks-label.id}" = "shared"}), tomap({"kubernetes.io/role/internal-elb" = "1"}), tomap({"created-by" = var.terraform_version}))
+  public_subnet_tags  = merge(tomap({"kubernetes.io/cluster/${module.eks-label.id}" = "shared"}), tomap({"kubernetes.io/role/elb" = "1"}), tomap({"created-by" = var.terraform_version}))
 }
 
 locals {
@@ -173,7 +173,7 @@ module "rbac" {
 # ---------------------------------------------------------------------------------------------------------------------
 module "eks" {
   source                          = "terraform-aws-modules/eks/aws"
-  version                         = "14.0.0"
+  version                         = "15.2.0"
   vpc_id                          = var.create_vpc == false ? var.vpc_id : module.vpc.vpc_id
   cluster_name                    = module.eks-label.id
   cluster_version                 = var.kubernetes_version

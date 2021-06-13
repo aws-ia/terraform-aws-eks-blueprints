@@ -116,10 +116,11 @@ Bottlerocket can be updated automatically via Kubernetes  Operator
 ## Prerequisites:
 Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
 
-    1. [aws cli] (https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-    2. [aws-iam-authenticator] (https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html)
-    3. [kubectl] (https://Kubernetes .io/docs/tasks/tools/)
-    4. wget 
+1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+2. [aws-iam-authenticator](https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html)
+3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+4. [kubectl](https://kubernetes.io/docs/tasks/tools/)
+5. wget 
     
 ## Deployment Steps
 The following steps walks you through the deployment of example [DEV cluster](live/preprod/eu-west-1/application/dev/base.tfvars) configuration. This config deploys a private EKS cluster with public and private subnets. 
@@ -133,14 +134,15 @@ It also deploys few kubernetes apps i.e., LB Ingress Controller, Metrics Server,
 #### Step1: Clone the repo using the command below
 
     $ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+    $ cd aws-eks-accelerator-for-terraform/source
 
 #### Step2: Update base.tfvars file
 
-Update `~/aws-terraform-eks/live/preprod/eu-west-1/application/dev/base.tfvars` file with the instructions specified in the file (OR use the default values). You can choose to use an existing VPC ID and Subnet IDs or create a new VPC and subnets by providing CIDR ranges in `base.tfvars` file
+Update `~/aws-eks-accelerator-for-terraform/live/preprod/eu-west-1/application/dev/base.tfvars` file with the instructions specified in the file (OR use the default values). You can choose to use an existing VPC ID and Subnet IDs or create a new VPC and subnets by providing CIDR ranges in `base.tfvars` file
 
 ####  Step3: Update Terraform backend config file
 
-Update `~/aws-terraform-eks/live/preprod/eu-west-1/application/dev/backend.conf` with your local directory path. [state.tf](source/state.tf) file contains backend config. 
+Update `~/aws-eks-accelerator-for-terraform/live/preprod/eu-west-1/application/dev/backend.conf` with your local directory path. [state.tf](source/state.tf) file contains backend config.
 Local terraform state backend config variables
     
     path = "local_tf_state/ekscluster/preprod/application/dev/terraform-main.tfstate"
@@ -159,17 +161,17 @@ This role will become the Kubernetes  Admin by default.
 #### Step5: Run Terraform init 
 to initialize a working directory with configuration files
 
-    $ terraform init -backend-config ./live/preprod/eu-west-1/application/dev/backend.conf source
+    $ terraform init -backend-config ../live/preprod/eu-west-1/application/dev/backend.conf
     
 #### Step6: Run Terraform plan 
 to verify the resources created by this execution
 
-    $ terraform plan -var-file ./live/preprod/eu-west-1/application/dev/base.tfvars source
+    $ terraform plan -var-file ../live/preprod/eu-west-1/application/dev/base.tfvars
 
 #### Step7: Finally, Terraform apply 
 to create resources
 
-    $ terraform apply -var-file ./live/preprod/eu-west-1/application/dev/base.tfvars source
+    $ terraform apply -var-file ../live/preprod/eu-west-1/application/dev/base.tfvars
 
 ### Configure kubectl and test cluster
 EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster. This following command used to update the `kubeconfig` in your local machine where you run kubectl commands to interact with your EKS Cluster.
