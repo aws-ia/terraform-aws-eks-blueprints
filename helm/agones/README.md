@@ -1,14 +1,14 @@
-# Metrics Server Helm Chart
+# agones Helm Chart
 
-###### Instructions to upload Metrics Server Docker image to AWS ECR
+###### Instructions to upload Agones Docker image to AWS ECR
 
 Step1: Get the latest docker image from this link
         
-        https://github.com/kubernetes-sigs/metrics-server
+        https://github.com/googleforgames/agones
         
 Step2: Download the docker image to your local Mac/Laptop
         
-        $ docker pull k8s.gcr.io/metrics-server/metrics-server:v0.4.2
+        $ docker pull gcr.io/agones-images/agones-controller:1.15.0
         
 Step3: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
         
@@ -16,28 +16,26 @@ Step3: Retrieve an authentication token and authenticate your Docker client to y
         
 Step4: Create an ECR repo for Metrics Server if you don't have one 
     
-        $ aws ecr create-repository \
-              --repository-name k8s.gcr.io/metrics-server/metrics-server \
-              --image-scanning-configuration scanOnPush=true 
+        $ aws ecr create-repository --repository-name gcr.io/agones-images/agones-controller --image-scanning-configuration scanOnPush=true 
               
 Step5: After the build completes, tag your image so, you can push the image to this repository:
         
-        $ docker tag k8s.gcr.io/metrics-server/metrics-server:v0.4.2 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/k8s.gcr.io/metrics-server/metrics-server:v0.4.2
-        
+        $ docker tag gcr.io/agones-images/agones-controller:1.15.0 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/gcr.io/agones-images/agones-controller:1.15.0
+
 Step6: Run the following command to push this image to your newly created AWS repository:
         
-        $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/k8s.gcr.io/metrics-server/metrics-server:v0.4.2
+        $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/gcr.io/agones-images/agones-controller:1.15.0
 
 ### Instructions to download Helm Charts
 
 Helm Chart
     
-    https://artifacthub.io/packages/helm/appuio/metrics-server
+    https://artifacthub.io/packages/helm/agones/agones
 
 Helm Repo Maintainers
 
-    https://charts.appuio.ch
-    
+    https://github.com/googleforgames/agones/tree/main/install/helm/agones
+
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -65,6 +63,7 @@ No requirements.
 | Name | Version |
 |------|---------|
 | <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
 
 ## Modules
 
@@ -74,16 +73,24 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [helm_release.metric_server](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [helm_release.agones](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [kubernetes_namespace.agones](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
+| [kubernetes_namespace.pc](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
+| [kubernetes_namespace.xbox](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_image_repo_name"></a> [image\_repo\_name](#input\_image\_repo\_name) | n/a | `string` | `"k8s.gcr.io/metrics-server/metrics-server"` | no |
+| <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | n/a | `any` | n/a | yes |
+| <a name="input_expose_udp"></a> [expose\_udp](#input\_expose\_udp) | n/a | `bool` | `false` | no |
+| <a name="input_gameserver_maxport"></a> [gameserver\_maxport](#input\_gameserver\_maxport) | n/a | `number` | `8000` | no |
+| <a name="input_gameserver_minport"></a> [gameserver\_minport](#input\_gameserver\_minport) | n/a | `number` | `7000` | no |
+| <a name="input_image_repo_name"></a> [image\_repo\_name](#input\_image\_repo\_name) | n/a | `string` | `"gcr.io/agones-images"` | no |
 | <a name="input_image_repo_url"></a> [image\_repo\_url](#input\_image\_repo\_url) | n/a | `any` | n/a | yes |
-| <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | n/a | `string` | `"v0.4.2"` | no |
+| <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | n/a | `string` | `"1.15.0"` | no |
 | <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `any` | n/a | yes |
+| <a name="input_s3_nlb_logs"></a> [s3\_nlb\_logs](#input\_s3\_nlb\_logs) | n/a | `any` | n/a | yes |
 
 ## Outputs
 

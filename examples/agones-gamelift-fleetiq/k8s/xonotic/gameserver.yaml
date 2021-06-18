@@ -1,0 +1,14 @@
+apiVersion: "agones.dev/v1"
+kind: GameServer
+metadata:
+  name: "xonotic"
+spec:
+  ports:
+    - name: default
+      containerPort: 26000
+  template:
+    spec:
+      containers:
+        - name: xonotic
+          image: gcr.io/agones-images/xonotic-example:0.8
+          # imagePullPolicy: Always # add for development

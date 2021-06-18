@@ -38,9 +38,11 @@ terraform_version = "Terraform v0.14.9"
 # OPTION 1
 #---------------------------------------------------------#
 create_vpc            = true
+enable_private_subnets = true
+enable_public_subnets = true
+
 vpc_cidr_block        = "10.1.0.0/18"
 private_subnets_cidr  = ["10.1.0.0/22", "10.1.4.0/22", "10.1.8.0/22"]
-enable_public_subnets = true
 public_subnets_cidr   = ["10.1.12.0/22", "10.1.16.0/22", "10.1.20.0/22"]
 
 #---------------------------------------------------------#
@@ -77,7 +79,7 @@ on_demand_min_size        = 3
 #---------------------------------------------------------#
 # Amazon EKS optimized Bottlerocket AMI ID for a region and Kubernetes version.
 bottlerocket_node_group_name = "mg-m5-bottlerocket"
-bottlerocket_ami        = "ami-0326716ad575410ab"
+bottlerocket_ami             = "ami-0326716ad575410ab"
 bottlerocket_disk_size       = 50
 bottlerocket_instance_type   = ["m5.large"]
 bottlerocket_desired_size    = 3
@@ -122,12 +124,12 @@ cluster_autoscaler_enable = true
 //---------------------------------------------------------//
 // ENABLE ALB INGRESS CONTROLLER
 //---------------------------------------------------------//
-lb_ingress_controller_enable = true
+//lb_ingress_controller_enable = true
 
 #---------------------------------------------------------#
 # ENABLE AWS_FLUENT-BIT
-#---------------------------------------------------------#
-aws_for_fluent_bit_enable = true
-fargate_fluent_bit_enable = true
+//#---------------------------------------------------------#
+//aws_for_fluent_bit_enable = true
+//fargate_fluent_bit_enable = true
 
 ekslog_retention_in_days = 1

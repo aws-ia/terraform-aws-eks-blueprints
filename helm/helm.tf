@@ -61,7 +61,19 @@ module "aws-for-fluent-bit" {
 }
 
 module "fargate_fluentbit" {
+  count            = var.fargate_fluent_bit_enable == true ? 1 : 0
   source           = "./fargate_fluentbit"
   eks_cluster_id   = var.eks_cluster_id
   fargate_iam_role = var.fargate_iam_role
+}
+
+module "agones" {
+  count              = var.agones_enable == true ? 1 : 0
+  source             = "./agones"
+  public_docker_repo = var.public_docker_repo
+  image_repo_url     = var.image_repo_url
+  cluster_id         = var.eks_cluster_id
+  s3_nlb_logs        = var.s3_nlb_logs
+  expose_udp         = var.expose_udp
+  eks_sg_id          = var.eks_security_group_id
 }
