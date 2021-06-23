@@ -58,8 +58,8 @@ module "vpc" {
   name                = module.vpc-label.id
   cidr                = var.vpc_cidr_block
   azs                 = data.aws_availability_zones.available.names
-  private_subnets     = var.private_subnets_cidr
-  private_subnet_tags = local.private_subnet_tags
+  private_subnets     = var.enable_private_subnets ? var.private_subnets_cidr : []
+  private_subnet_tags = var.enable_private_subnets ? local.private_subnet_tags : {}
 
   # START------ PUBLIC SUBNETS OPTIONS
   public_subnets     = var.enable_public_subnets ? var.public_subnets_cidr : []
@@ -187,7 +187,8 @@ module "eks" {
   workers_additional_policies = [
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
     "arn:aws:iam::aws:policy/AutoScalingFullAccess",
-  "arn:aws:iam::aws:policy/CloudWatchFullAccess"]
+    "arn:aws:iam::aws:policy/CloudWatchFullAccess",
+  "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"]
 
   map_roles = local.common_roles
 
@@ -200,6 +201,10 @@ module "eks" {
   // Managed node groups with on-demand and spot using launch templates
   #----------------------------------------------------------------------------------
   node_groups = {
+
+    #----------------------------------------------------------------------------------
+    // SPOT WORKERS WITH PRIVATE SUBNETS
+    #----------------------------------------------------------------------------------
     mg-m5-spot = {
       desired_capacity        = var.spot_desired_size
       min_capacity            = var.spot_min_size
@@ -221,7 +226,10 @@ module "eks" {
         Name     = "${module.eks-label.id}-${var.spot_node_group_name}"
       }
     },
-    mg-m5-on-demand = {
+    #----------------------------------------------------------------------------------
+    // ON DEMAND WORKERS WITH PRIVATE SUBNETS
+    #----------------------------------------------------------------------------------
+    mg-m5-on-demand-private = {
       desired_capacity        = var.on_demand_desired_size
       max_capacity            = var.on_demand_max_size
       min_capacity            = var.on_demand_min_size
@@ -242,6 +250,35 @@ module "eks" {
         Name     = "${module.eks-label.id}-${var.on_demand_node_group_name}"
       }
     },
+
+    #----------------------------------------------------------------------------------
+    // ON DEMAND WORKERS WITH PUBLIC SUBNETS
+    #----------------------------------------------------------------------------------
+    mg-m5-on-demand-public = {
+      desired_capacity        = var.on_demand_desired_size
+      max_capacity            = var.on_demand_max_size
+      min_capacity            = var.on_demand_min_size
+      subnets                 = var.create_vpc == false ? var.public_subnet_ids : module.vpc.public_subnets
+      launch_template_id      = module.public-launch-templates-on-demand.launch_template_id
+      launch_template_version = module.public-launch-templates-on-demand.launch_template_latest_version
+      instance_types          = var.on_demand_instance_type
+      capacity_type           = "ON_DEMAND"
+      ami_type                = var.on_demand_ami_type
+
+      k8s_labels = {
+        Environment = var.environment
+        Zone        = var.zone
+        WorkerType  = "ON_DEMAND"
+      }
+      additional_tags = {
+        ExtraTag = var.on_demand_node_group_name
+        Name     = "${module.eks-label.id}-${var.on_demand_node_group_name}"
+      }
+    },
+
+    #----------------------------------------------------------------------------------
+    // BOTTLEROCKET
+    #----------------------------------------------------------------------------------
     mg-m5-bottlerocket = {
       desired_capacity        = var.bottlerocket_desired_size
       max_capacity            = var.bottlerocket_max_size
@@ -307,6 +344,19 @@ module "eks" {
 # ---------------------------------------------------------------------------------------------------------------------
 # EKS WORKER NODE LAUNCH TEMPLATES
 # ---------------------------------------------------------------------------------------------------------------------
+module "public-launch-templates-on-demand" {
+  source                   = "../modules/launch-templates"
+  cluster_name             = module.eks.cluster_id
+  volume_size              = "50"
+  worker_security_group_id = module.eks.worker_security_group_id
+  node_group_name          = var.on_demand_node_group_name
+  tags                     = module.eks-label.tags
+  cluster_auth_base64      = module.eks.cluster_certificate_authority_data
+  cluster_endpoint         = module.eks.cluster_endpoint
+  public_launch_template   = true
+  //  instance_type            = var.instance_type
+}
+
 module "launch-templates-on-demand" {
   source                   = "../modules/launch-templates"
   cluster_name             = module.eks.cluster_id
@@ -385,4 +435,7 @@ module "helm" {
   eks_oidc_issuer_url               = module.eks.cluster_oidc_issuer_url
   eks_oidc_provider_arn             = module.eks.oidc_provider_arn
   fargate_iam_role                  = module.eks.fargate_iam_role_name
+  agones_enable                     = var.agones_enable
+  expose_udp                        = var.expose_udp
+  eks_security_group_id             = module.eks.worker_security_group_id
 }

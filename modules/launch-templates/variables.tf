@@ -37,3 +37,6 @@ variable "bottlerocket_ami" {
 variable "self_managed" {
   default = false
 }
+variable "public_launch_template" {
+  default = false
+}

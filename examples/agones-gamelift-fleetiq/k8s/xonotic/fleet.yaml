@@ -1,0 +1,24 @@
+# Usually you would define a Fleet rather than a GameServerSet
+# directly. This is here mostly for testing purposes
+
+apiVersion: "agones.dev/v1"
+kind: Fleet
+metadata:
+  name: xonotic
+spec:
+  replicas: 2
+  strategy:
+    type: Recreate
+  template:
+    spec:
+      ports:
+        - name: default
+          containerPort: 26000
+      health:
+        initialDelaySeconds: 30
+        periodSeconds: 60
+      template:
+        spec:
+          containers:
+            - name: xonotic
+              image: gcr.io/agones-images/xonotic-example:0.8

@@ -8,7 +8,7 @@ The AWS EKS Accelerator for Terraform module helps you to provision [EKS Cluster
 
 This framework helps you to design and create EKS clusters for different environments in various AWS accounts across multiple regions with a **unique Terraform configuration and state file** per EKS cluster. 
 
-* The top-level **live** folder contains the configuration for each cluster. Each folder under `live/<region>/application` represents an EKS cluster environment(e.g., dev, test, load etc.). 
+* The top-level `live` folder contains the configuration for each cluster. Each folder under `live/<region>/application` represents an EKS cluster environment(e.g., dev, test, load etc.). 
 This folder contains `backend.conf` and `base.tfvars`, used to create a unique Terraform state for each cluster environment.
 Terraform backend configuration can be updated in `backend.conf` and cluster common configuration variables in `base.tfvars`
 
@@ -23,22 +23,25 @@ This module provisions the following EKS resources
 1. [VPC and Subnets(Public and Private)](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
 2. [VPC endpoints for fully private EKS Clusters](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html)
 3. [EKS Cluster with multiple networking options](https://aws.amazon.com/blogs/containers/de-mystifying-cluster-networking-for-amazon-eks-worker-nodes/)
-   1. Fully Private EKS Cluster
+   1. [Fully Private EKS Cluster](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html)
    2. Public + Private EKS Cluster
    3. Public Cluster
 4. [Managed Node Groups with On-Demand](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) - AWS Managed Node Groups with On-Demand Instances
 5. [Managed Node Groups with Spot](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) - AWS Managed Node Groups with Spot Instances
-6. [Fargate Profiles](https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html)
-7. [SSM agent](https://aws.amazon.com/blogs/containers/introducing-launch-template-and-custom-ami-support-in-amazon-eks-managed-node-groups/) deployed through launch templates to Managed Node Groups
+6. [Fargate Profiles](https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html) - AWS Fargate Profiles
+7. [SSM agent](https://aws.amazon.com/blogs/containers/introducing-launch-template-and-custom-ami-support-in-amazon-eks-managed-node-groups/) - Deployed through launch templates to Managed Node Groups
 8. [Bottlerocket OS](https://github.com/bottlerocket-os/bottlerocket) - Managed Node Groups with Bottlerocket OS and Launch Templates
-9.  [RBAC](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html) for Developers and Administrators with IAM roles
-10. Kubernetes  Addons using [Helm Charts](https://helm.sh/docs/topics/charts/)
-11. [Metrics Server](https://github.com/Kubernetes -sigs/metrics-server)
-12. [Cluster Autoscaler](https://github.com/Kubernetes /autoscaler)
-13. [AWS LB Ingress Controller](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
-14. [Traefik Ingress Controller](https://doc.traefik.io/traefik/providers/Kubernetes -ingress/)
-15. [FluentBit to CloudWatch for Managed Node groups](https://github.com/aws/aws-for-fluent-bit)
-16. [FluentBit to CloudWatch for Fargate Containers](https://aws.amazon.com/blogs/containers/fluent-bit-for-amazon-eks-on-aws-fargate-is-here/)
+9. [RBAC](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html) for Developers and Administrators with IAM roles
+
+Kubernetes Addons using [Helm Charts](https://helm.sh/docs/topics/charts/)
+
+1. [Metrics Server](https://github.com/Kubernetes-sigs/metrics-server)
+2. [Cluster Autoscaler](https://github.com/Kubernetes/autoscaler)
+3. [AWS LB Ingress Controller](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
+4. [Traefik Ingress Controller](https://doc.traefik.io/traefik/providers/Kubernetes-ingress/)
+5. [FluentBit to CloudWatch for Managed Node groups](https://github.com/aws/aws-for-fluent-bit)
+6. [FluentBit to CloudWatch for Fargate Containers](https://aws.amazon.com/blogs/containers/fluent-bit-for-amazon-eks-on-aws-fargate-is-here/)
+7. [Agones](https://agones.dev/site/) - Host, Run and Scale dedicated game servers on Kubernetes
 
 # Helm Charts Modules
 Helm Chart Module within this framework allows you to deploy Kubernetes  apps using Terraform helm chart provider with **enabled** conditional parameter in `base.tfvars`. 
@@ -52,12 +55,12 @@ Ingress is an API object that defines the traffic routing rules (e.g., load bala
 
 * [ALB Ingress Controller](helm/lb_ingress_controller/README.md) can be deployed by specifying the following line in `base.tfvars` file.
 **AWS ALB Ingress controller** triggers the creation of an ALB and the necessary supporting AWS resources whenever a Kubernetes  user declares an Ingress resource in the cluster.
-[ALB Docs](https://Kubernetes -sigs.github.io/aws-load-balancer-controller/latest/)
+[ALB Docs](https://Kubernetes-sigs.github.io/aws-load-balancer-controller/latest/)
     
     `alb_ingress_controller_enable = true`
 
 * [Traefik Ingress Controller](helm/traefik_ingress/README.md) can be deployed by specifying the following line in `base.tfvars` file.
-**Traefik is an open source Kubernetes  Ingress Controller**. The Traefik Kubernetes  Ingress provider is a Kubernetes  Ingress controller; that is to say, it manages access to cluster services by supporting the Ingress specification. For more details about [Traefik can be found here](https://doc.traefik.io/traefik/providers/Kubernetes -ingress/)
+**Traefik is an open source Kubernetes  Ingress Controller**. The Traefik Kubernetes  Ingress provider is a Kubernetes  Ingress controller; that is to say, it manages access to cluster services by supporting the Ingress specification. For more details about [Traefik can be found here](https://doc.traefik.io/traefik/providers/Kubernetes-ingress/)
 
     `traefik_ingress_controller_enable = true`
     
@@ -92,7 +95,7 @@ This module ships the Fargate Container logs to CloudWatch
 
 # Bottlerocket OS
 
-Bottlerocket is an open source operating system specifically designed for running containers. Bottlerocket build system is based on Rust. It's a container host OS and doesn't have additional software's or package managers other than what is needed for running containers hence its very light weight and secure. Container optimized operating systems are ideal when you need to run applications in Kubernetes  with minimal setup and do not want to worry about security or updates, or want OS support from  cloud provider. Container operating systems does updates transactionally. 
+[Bottlerocket](https://aws.amazon.com/bottlerocket/) is an open source operating system specifically designed for running containers. Bottlerocket build system is based on Rust. It's a container host OS and doesn't have additional software's or package managers other than what is needed for running containers hence its very light weight and secure. Container optimized operating systems are ideal when you need to run applications in Kubernetes  with minimal setup and do not want to worry about security or updates, or want OS support from  cloud provider. Container operating systems does updates transactionally. 
 
 Bottlerocket has two container runtimes running. Control container **on** by default used for AWS Systems manager and remote API access. Admin container **off** by default for deep debugging and exploration. 
 
@@ -110,16 +113,15 @@ Bottlerocket can be updated automatically via Kubernetes  Operator
     $ kubectl apply -f Bottlerocket_k8s.csv.yaml
     $ kubectl get ClusterServiceVersion Bottlerocket_k8s | jq.'status'
 
-
 # How to Deploy
 
 ## Prerequisites:
 Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
 
-    1. [aws cli] (https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-    2. [aws-iam-authenticator] (https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html)
-    3. [kubectl] (https://Kubernetes .io/docs/tasks/tools/)
-    4. wget 
+1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+2. [aws-iam-authenticator](https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html)
+3. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
+4. wget 
     
 ## Deployment Steps
 The following steps walks you through the deployment of example [DEV cluster](live/preprod/eu-west-1/application/dev/base.tfvars) configuration. This config deploys a private EKS cluster with public and private subnets. 
@@ -136,11 +138,12 @@ It also deploys few kubernetes apps i.e., LB Ingress Controller, Metrics Server,
 
 #### Step2: Update base.tfvars file
 
-Update `~/aws-terraform-eks/live/preprod/eu-west-1/application/dev/base.tfvars` file with the instructions specified in the file (OR use the default values). You can choose to use an existing VPC ID and Subnet IDs or create a new VPC and subnets by providing CIDR ranges in `base.tfvars` file
+Update `~/aws-eks-accelerator-for-terraform/live/preprod/eu-west-1/application/dev/base.tfvars` file with the instructions specified in the file (OR use the default values). You can choose to use an existing VPC ID and Subnet IDs or create a new VPC and subnets by providing CIDR ranges in `base.tfvars` file
 
 ####  Step3: Update Terraform backend config file
 
-Update `~/aws-terraform-eks/live/preprod/eu-west-1/application/dev/backend.conf` with your local directory path. [state.tf](source/state.tf) file contains backend config. 
+Update `~/aws-eks-accelerator-for-terraform/live/preprod/eu-west-1/application/dev/backend.conf` with your local directory path. [state.tf](source/state.tf) file contains backend config. 
+
 Local terraform state backend config variables
     
     path = "local_tf_state/ekscluster/preprod/application/dev/terraform-main.tfstate"
@@ -171,6 +174,25 @@ to create resources
 
     $ terraform apply -var-file ./live/preprod/eu-west-1/application/dev/base.tfvars source
 
+**Alternatively you can use Makefile to deploy by skipping Step5, Step6 and Step7**
+
+### Deploy EKS Cluster using [Makefile](Makefile)
+
+#### Executing Terraform PLAN
+    $ make tf-plan-eks env=<env> region=<region> account=<account> subenv=<subenv>
+    e.g., 
+    $ make tf-plan-eks env=preprod region=eu-west-1 account=application subenv=dev
+
+#### Executing Terraform APPLY
+    $ make tf-apply-eks env=<env> region=<region> account=<account> subenv=<subenv>
+    e.g.,
+    $ make tf-apply-eks env=preprod region=eu-west-1 account=application subenv=dev
+
+#### Executing Terraform DESTROY
+    $ make tf-destroy-eks env=<env> region=<region> account=<account> subenv=<subenv>
+    e.g., 
+    make tf-destroy-eks env=preprod region=eu-west-1 account=application subenv=dev
+
 ### Configure kubectl and test cluster
 EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster. This following command used to update the `kubeconfig` in your local machine where you run kubectl commands to interact with your EKS Cluster.
 
@@ -193,18 +215,18 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
 
 # EKS Addons update
 Amazon EKS doesn't modify any of your Kubernetes  add-ons when you update a cluster to newer versions. 
-It's important to upgrade EKS Addons Amazon VPC CNI plug-in, DNS (CoreDNS) and KubeProxy for each EKS release.
+It's important to upgrade EKS Addons [Amazon VPC CNI](https://github.com/aws/amazon-vpc-cni-k8s), [DNS (CoreDNS)](https://docs.aws.amazon.com/eks/latest/userguide/managing-coredns.html) and [KubeProxy](https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html) for each EKS release.
 
 This [README](eks_cluster_addons_upgrade/README.md) guides you to update the EKS addons for newer versions that matches with your EKS cluster version
 
 Updating a EKS cluster instructions can be found in [AWS documentation](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html).
 
 # Important note
-This module tested only with **Kubernetes  v1.19 version**. Helm Charts addon modules aligned with k8s v1.19. If you are looking to use this code to deploy different versions of Kubernetes  then ensure Helm charts and docker images aligned with k8s version.
+This module tested only with **Kubernetes v1.19 version**. Helm Charts addon modules aligned with k8s v1.19. If you are looking to use this code to deploy different versions of Kubernetes  then ensure Helm charts and docker images aligned with k8s version.
 
 The `Kubernetes _version="1.19"` is the required variable in `base.tfvars`. Kubernetes  is evolving a lot, and each major version includes new features, fixes, or changes. 
 
-Always check [Kubernetes  Release Notes](https://Kubernetes .io/docs/setup/release/notes/) before updating the major version. You also need to ensure your applications and Helm addons updated, 
+Always check [Kubernetes Release Notes](https://Kubernetes.io/docs/setup/release/notes/) before updating the major version. You also need to ensure your applications and Helm addons updated, 
 or workloads could fail after the upgrade is complete. For action, you may need to take before upgrading, see the steps in the EKS documentation.
 
 # Notes:
