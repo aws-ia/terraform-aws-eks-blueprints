@@ -62,6 +62,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 | <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
 
@@ -73,16 +74,19 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [aws_security_group_rule.agones_sg_ingress_rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [helm_release.agones](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [kubernetes_namespace.agones](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
 | [kubernetes_namespace.pc](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
 | [kubernetes_namespace.xbox](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
+| [aws_security_group.eks_security_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/security_group) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | n/a | `any` | n/a | yes |
+| <a name="input_eks_sg_id"></a> [eks\_sg\_id](#input\_eks\_sg\_id) | n/a | `any` | n/a | yes |
 | <a name="input_expose_udp"></a> [expose\_udp](#input\_expose\_udp) | n/a | `bool` | `false` | no |
 | <a name="input_gameserver_maxport"></a> [gameserver\_maxport](#input\_gameserver\_maxport) | n/a | `number` | `8000` | no |
 | <a name="input_gameserver_minport"></a> [gameserver\_minport](#input\_gameserver\_minport) | n/a | `number` | `7000` | no |

@@ -37,13 +37,13 @@ terraform_version = "Terraform v0.14.9"
 #---------------------------------------------------------#
 # OPTION 1
 #---------------------------------------------------------#
-create_vpc            = true
+create_vpc             = true
 enable_private_subnets = true
-enable_public_subnets = true
+enable_public_subnets  = true
 
-vpc_cidr_block        = "10.1.0.0/18"
-private_subnets_cidr  = ["10.1.0.0/22", "10.1.4.0/22", "10.1.8.0/22"]
-public_subnets_cidr   = ["10.1.12.0/22", "10.1.16.0/22", "10.1.20.0/22"]
+vpc_cidr_block       = "10.1.0.0/18"
+private_subnets_cidr = ["10.1.0.0/22", "10.1.4.0/22", "10.1.8.0/22"]
+public_subnets_cidr  = ["10.1.12.0/22", "10.1.16.0/22", "10.1.20.0/22"]
 
 #---------------------------------------------------------#
 # OPTION 2

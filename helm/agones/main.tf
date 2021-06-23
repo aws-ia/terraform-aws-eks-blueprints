@@ -59,13 +59,13 @@ resource "helm_release" "agones" {
   namespace  = kubernetes_namespace.agones.id
   timeout    = "1200"
   values = [templatefile("${path.module}/templates/agones-values.yaml", {
-//    image                 = local.image_url
-//    tag                   = var.image_tag
-//    s3_bucket             = var.s3_nlb_logs
+    //    image                 = local.image_url
+    //    tag                   = var.image_tag
+    //    s3_bucket             = var.s3_nlb_logs
     expose_udp            = var.expose_udp
     gameserver_namespaces = "{${join(",", ["default", kubernetes_namespace.pc.id, kubernetes_namespace.xbox.id])}}"
-//    gameserver_minport    = var.gameserver_minport
-//    gameserver_maxport    = var.gameserver_maxport
+    //    gameserver_minport    = var.gameserver_minport
+    //    gameserver_maxport    = var.gameserver_maxport
   })]
 }
 
