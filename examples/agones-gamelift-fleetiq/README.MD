@@ -75,8 +75,6 @@ Use the following link to install Cloud9 IDE and all the pre-requisites Kubernet
     
     cd aws-eks-accelerator-for-terraform/
     
-    git checkout feature/gaming-agones
-    
 ## Step6: Run Terraform init on the Gaming EKS Cluster Configuration
 `live/preprod/eu-west-1/gaming/test/base.tfvars` file contains the configuration data to create VPC, Subnets, EKS CLuster and the Agones Helm Chart for this workshop
 `live/preprod/eu-west-1/gaming/test/backend.conf` file contains the config for setting up Terraform backend state. For this workshop we will be using local backend state to avoid creating a new S3 bucket to copy the state files.

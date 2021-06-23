@@ -63,13 +63,21 @@ enable_irsa             = true
 enabled_cluster_log_types    = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 cluster_log_retention_period = 7
 
+
+#---------------------------------------------------------#
+# WORKER NODE GROUPS SECTION
+# Define the following parameters to create EKS Node groups. If you need to two Node groups then you may need to duplicate the with different instance type
+# NOTE: Also ensure Node groups config that you defined below needs to exist in this file <aws-eks-accelerator-for-terraform/source/main.tf>.
+#         Comment out the node groups in <aws-eks-accelerator-for-terraform/source/main.tf> file if you are not defining below.
+#         This is a limitation at this moment that the change needs ot be done in two places. This will be improved later
+#---------------------------------------------------------#
 #---------------------------------------------------------#
 # MANAGED WORKER NODE INPUT VARIABLES FOR ON DEMAND INSTANCES - Worker Group1
 #---------------------------------------------------------#
 on_demand_node_group_name = "mg-m5-on-demand"
 on_demand_ami_type        = "AL2_x86_64"
 on_demand_disk_size       = 50
-on_demand_instance_type   = ["m5.xlarge"]
+on_demand_instance_type   = ["c5.large"]
 on_demand_desired_size    = 3
 on_demand_max_size        = 3
 on_demand_min_size        = 3
@@ -121,15 +129,26 @@ metrics_server_enable = true
 cluster_autoscaler_enable = true
 
 
-//---------------------------------------------------------//
-// ENABLE ALB INGRESS CONTROLLER
-//---------------------------------------------------------//
-//lb_ingress_controller_enable = true
+#---------------------------------------------------------//
+# ENABLE ALB INGRESS CONTROLLER
+#---------------------------------------------------------//
+#lb_ingress_controller_enable = true
 
 #---------------------------------------------------------#
 # ENABLE AWS_FLUENT-BIT
-//#---------------------------------------------------------#
-//aws_for_fluent_bit_enable = true
-//fargate_fluent_bit_enable = true
+#---------------------------------------------------------#
+#aws_for_fluent_bit_enable = true
+#fargate_fluent_bit_enable = true
 
-ekslog_retention_in_days = 1
+#ekslog_retention_in_days = 1
+
+#---------------------------------------------------------//
+# ENABLE AGONES GAMING CONTROLLER
+#   A library for hosting, running and scaling dedicated game servers on Kubernetes
+#   This chart installs the Agones application and defines deployment on a  cluster
+#   NOTE: Edit Rules to add a new Custom UDP Rule with a 7000-8000 port range and an appropriate Source CIDR range (0.0.0.0/0 allows all traffic) (sec group e.g., gaming-preprod-test-eks-eks_worker_sg)
+#         By default Agones prefers to be scheduled on nodes labeled with agones.dev/agones-system=true and tolerates the node taint agones.dev/agones-system=true:NoExecute.
+#         If no dedicated nodes are available, Agones will run on regular nodes.
+#---------------------------------------------------------//
+//agones_enable = true
+//expose_udp    = true

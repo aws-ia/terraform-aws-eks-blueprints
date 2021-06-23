@@ -63,13 +63,21 @@ enable_irsa             = true
 enabled_cluster_log_types    = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 cluster_log_retention_period = 7
 
+
+#---------------------------------------------------------#
+# WORKER NODE GROUPS SECTION
+# Define the following parameters to create EKS Node groups. If you need to two Node groups then you may need to duplicate the with different instance type
+# NOTE: Also ensure Node groups config that you defined below needs to exist in this file <aws-eks-accelerator-for-terraform/source/main.tf>.
+#         Comment out the node groups in <aws-eks-accelerator-for-terraform/source/main.tf> file if you are not defining below.
+#         This is a limitation at this moment that the change needs ot be done in two places. This will be improved later
+#---------------------------------------------------------#
 #---------------------------------------------------------#
 # MANAGED WORKER NODE INPUT VARIABLES FOR ON DEMAND INSTANCES - Worker Group1
 #---------------------------------------------------------#
 on_demand_node_group_name = "mg-m5-on-demand"
 on_demand_ami_type        = "AL2_x86_64"
 on_demand_disk_size       = 50
-on_demand_instance_type   = ["m5.xlarge"]
+on_demand_instance_type   = ["c5.large"]
 on_demand_desired_size    = 3
 on_demand_max_size        = 3
 on_demand_min_size        = 3
@@ -78,27 +86,27 @@ on_demand_min_size        = 3
 # BOTTLEROCKET - Worker Group3
 #---------------------------------------------------------#
 # Amazon EKS optimized Bottlerocket AMI ID for a region and Kubernetes version.
-#bottlerocket_node_group_name = "mg-m5-bottlerocket"
-#bottlerocket_ami        = "ami-0326716ad575410ab"
-#bottlerocket_disk_size       = 50
-#bottlerocket_instance_type   = ["m5.large"]
-#bottlerocket_desired_size    = 3
-#bottlerocket_max_size        = 3
-#bottlerocket_min_size        = 3
+bottlerocket_node_group_name = "mg-m5-bottlerocket"
+bottlerocket_ami             = "ami-0326716ad575410ab"
+bottlerocket_disk_size       = 50
+bottlerocket_instance_type   = ["m5.large"]
+bottlerocket_desired_size    = 3
+bottlerocket_max_size        = 3
+bottlerocket_min_size        = 3
 #---------------------------------------------------------#
 # MANAGED WORKER NODE INPUT VARIABLES FOR SPOT INSTANCES - Worker Group2
 #---------------------------------------------------------#
-#spot_node_group_name = "mg-m5-spot"
-#spot_instance_type   = ["m5.large", "m5a.large"]
-#spot_ami_type        = "AL2_x86_64"
-#spot_desired_size    = 3
-#spot_max_size        = 6
-#spot_min_size        = 3
+spot_node_group_name = "mg-m5-spot"
+spot_instance_type   = ["m5.large", "m5a.large"]
+spot_ami_type        = "AL2_x86_64"
+spot_desired_size    = 3
+spot_max_size        = 6
+spot_min_size        = 3
 
 #---------------------------------------------------------#
 # Creates a Fargate profile for default namespace
 #---------------------------------------------------------#
-#fargate_profile_namespace = "default"
+fargate_profile_namespace = "default"
 
 #---------------------------------------------------------#
 # ENABLE HELM MODULES
