@@ -74,15 +74,16 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [helm_release.metric_server](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [helm_release.metrics_server](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_image_repo_name"></a> [image\_repo\_name](#input\_image\_repo\_name) | n/a | `string` | `"k8s.gcr.io/metrics-server/metrics-server"` | no |
-| <a name="input_image_repo_url"></a> [image\_repo\_url](#input\_image\_repo\_url) | n/a | `any` | n/a | yes |
-| <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | n/a | `string` | `"v0.4.2"` | no |
+| <a name="input_metric_server_helm_chart_version"></a> [metric\_server\_helm\_chart\_version](#input\_metric\_server\_helm\_chart\_version) | n/a | `any` | n/a | yes |
+| <a name="input_metric_server_image_tag"></a> [metric\_server\_image\_tag](#input\_metric\_server\_image\_tag) | n/a | `any` | n/a | yes |
+| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `any` | n/a | yes |
 | <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `any` | n/a | yes |
 
 ## Outputs

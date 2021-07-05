@@ -26,7 +26,7 @@ org               = "aws"     # Organization Name. Used to tag resources
 tenant            = "gaming"  # AWS account name or unique id for tenant
 environment       = "preprod" # Environment area eg., preprod or prod
 zone              = "test"    # Environment with in one sub_tenant or business unit
-terraform_version = "Terraform v0.14.9"
+terraform_version = "Terraform v1.0.1"
 #---------------------------------------------------------#
 # VPC and PRIVATE SUBNET DETAILS for EKS Cluster
 #---------------------------------------------------------#
@@ -41,10 +41,17 @@ create_vpc             = true
 enable_private_subnets = true
 enable_public_subnets  = true
 
+# Enable or Disable NAT Gateqay and Internet Gateway for Public Subnets
+enable_nat_gateway = true
+single_nat_gateway = true
+create_igw         = true
+
 vpc_cidr_block       = "10.1.0.0/18"
 private_subnets_cidr = ["10.1.0.0/22", "10.1.4.0/22", "10.1.8.0/22"]
 public_subnets_cidr  = ["10.1.12.0/22", "10.1.16.0/22", "10.1.20.0/22"]
 
+# Change this to true when you want to create VPC endpoints for Private subnets
+create_vpc_endpoints = true
 #---------------------------------------------------------#
 # OPTION 2
 #---------------------------------------------------------#
@@ -54,22 +61,44 @@ public_subnets_cidr  = ["10.1.12.0/22", "10.1.16.0/22", "10.1.20.0/22"]
 
 #---------------------------------------------------------#
 # EKS CONTROL PLANE VARIABLES
+# API server endpoint access options
+#   Endpoint public access: true    - Your cluster API server is accessible from the internet. You can, optionally, limit the CIDR blocks that can access the public endpoint.
+#   Endpoint private access: true   - Kubernetes API requests within your cluster's VPC (such as node to control plane communication) use the private VPC endpoint.
 #---------------------------------------------------------#
-kubernetes_version      = "1.19"
+kubernetes_version      = "1.20"
 endpoint_private_access = false
 endpoint_public_access  = true
-enable_irsa             = true
+
+# Enable IAM Roles for Service Accounts (IRSA) on the EKS cluster
+enable_irsa = true
 
 enabled_cluster_log_types    = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 cluster_log_retention_period = 7
 
+enable_vpc_cni_addon  = true
+vpc_cni_addon_version = "v1.8.0-eksbuild.1"
+
+enable_coredns_addon  = true
+coredns_addon_version = "v1.8.3-eksbuild.1"
+
+enable_kube_proxy_addon  = true
+kube_proxy_addon_version = "v1.20.4-eksbuild.2"
+
+
+#---------------------------------------------------------#
+# WORKER NODE GROUPS SECTION
+# Define the following parameters to create EKS Node groups. If you need to two Node groups then you may need to duplicate the with different instance type
+# NOTE: Also ensure Node groups config that you defined below needs to exist in this file <aws-eks-accelerator-for-terraform/source/main.tf>.
+#         Comment out the node groups in <aws-eks-accelerator-for-terraform/source/main.tf> file if you are not defining below.
+#         This is a limitation at this moment that the change needs ot be done in two places. This will be improved later
+#---------------------------------------------------------#
 #---------------------------------------------------------#
 # MANAGED WORKER NODE INPUT VARIABLES FOR ON DEMAND INSTANCES - Worker Group1
 #---------------------------------------------------------#
 on_demand_node_group_name = "mg-m5-on-demand"
 on_demand_ami_type        = "AL2_x86_64"
 on_demand_disk_size       = 50
-on_demand_instance_type   = ["m5.xlarge"]
+on_demand_instance_type   = ["m5.large"]
 on_demand_desired_size    = 3
 on_demand_max_size        = 3
 on_demand_min_size        = 3
@@ -113,18 +142,37 @@ public_docker_repo = true
 #---------------------------------------------------------#
 # ENABLE METRICS SERVER
 #---------------------------------------------------------#
-metrics_server_enable = true
-
+metrics_server_enable            = true
+metric_server_image_tag          = "v0.4.2"
+metric_server_helm_chart_version = "2.12.1"
 #---------------------------------------------------------#
 # ENABLE CLUSTER AUTOSCALER
 #---------------------------------------------------------#
-cluster_autoscaler_enable = true
-
+cluster_autoscaler_enable       = true
+cluster_autoscaler_image_tag    = "v1.20.0"
+cluster_autoscaler_helm_version = "9.9.2"
 
 #---------------------------------------------------------//
 # ENABLE ALB INGRESS CONTROLLER
 #---------------------------------------------------------//
-#lb_ingress_controller_enable = true
+//lb_ingress_controller_enable = false
+//aws_lb_image_tag             = "v2.2.1"
+//aws_lb_helm_chart_version    = "1.2.3"
+
+#---------------------------------------------------------//
+# ENABLE PROMETHEUS
+#---------------------------------------------------------//
+# Creates the AMP workspace and all the relevent IAM Roles
+//aws_managed_prometheus_enable = true
+
+# Deploys Pometheus server with remote write to AWS AMP Workspace
+//prometheus_enable             = true
+//prometheus_helm_chart_version = "14.3.1"
+//prometheus_image_tag          = "v2.26.0"
+//alert_manager_image_tag       = "v0.21.0"
+//configmap_reload_image_tag    = "v0.5.0"
+//node_exporter_image_tag       = "v1.1.2"
+//pushgateway_image_tag         = "v1.3.1"
 
 #---------------------------------------------------------#
 # ENABLE AWS_FLUENT-BIT

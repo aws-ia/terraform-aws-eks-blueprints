@@ -18,7 +18,7 @@
 
 //gcr.io/agones-images/agones-controller:1.15.0-rc
 
-variable "image_repo_url" {}
+variable "private_container_repo_url" {}
 variable "image_repo_name" {
   default = "gcr.io/agones-images"
 }

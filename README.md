@@ -20,20 +20,34 @@ Terraform backend configuration can be updated in `backend.conf` and cluster com
 # EKS Cluster Deployment Options
 This module provisions the following EKS resources
 
-1. [VPC and Subnets(Public and Private)](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
+## EKS Cluster Networking Resources
+
+1. [VPC and Subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
+    - [Public Subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html)
+    - [Private Subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html)
 2. [VPC endpoints for fully private EKS Clusters](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html)
+3. [NAT Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) 
+4. [Internet Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html)
+
+## EKS Cluster resources
+
 3. [EKS Cluster with multiple networking options](https://aws.amazon.com/blogs/containers/de-mystifying-cluster-networking-for-amazon-eks-worker-nodes/)
    1. [Fully Private EKS Cluster](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html)
-   2. Public + Private EKS Cluster
-   3. Public Cluster
+   2. [Public + Private EKS Cluster](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html)
+   3. [Public Cluster](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html))
+4. [EKS Addons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html) - 
+   - [CoreDNS](https://docs.aws.amazon.com/eks/latest/userguide/managing-coredns.html) 
+   - [Kube-Proxy](https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html)
+   - [VPC-CNI](https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html) 
 4. [Managed Node Groups with On-Demand](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) - AWS Managed Node Groups with On-Demand Instances
 5. [Managed Node Groups with Spot](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) - AWS Managed Node Groups with Spot Instances
 6. [Fargate Profiles](https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html) - AWS Fargate Profiles
-7. [SSM agent](https://aws.amazon.com/blogs/containers/introducing-launch-template-and-custom-ami-support-in-amazon-eks-managed-node-groups/) - Deployed through launch templates to Managed Node Groups
+7. [Launch Templates with SSM agent](https://aws.amazon.com/blogs/containers/introducing-launch-template-and-custom-ami-support-in-amazon-eks-managed-node-groups/) - Deployed through launch templates to Managed Node Groups
 8. [Bottlerocket OS](https://github.com/bottlerocket-os/bottlerocket) - Managed Node Groups with Bottlerocket OS and Launch Templates
 9. [RBAC](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html) for Developers and Administrators with IAM roles
+10. [Amazon Managed Service for Prometheus (AMP)](https://aws.amazon.com/prometheus/) - AMP makes it easy to monitor containerized applications at scale
 
-Kubernetes Addons using [Helm Charts](https://helm.sh/docs/topics/charts/)
+## Kubernetes Addons using [Helm Charts](https://helm.sh/docs/topics/charts/)
 
 1. [Metrics Server](https://github.com/Kubernetes-sigs/metrics-server)
 2. [Cluster Autoscaler](https://github.com/Kubernetes/autoscaler)
@@ -42,6 +56,11 @@ Kubernetes Addons using [Helm Charts](https://helm.sh/docs/topics/charts/)
 5. [FluentBit to CloudWatch for Managed Node groups](https://github.com/aws/aws-for-fluent-bit)
 6. [FluentBit to CloudWatch for Fargate Containers](https://aws.amazon.com/blogs/containers/fluent-bit-for-amazon-eks-on-aws-fargate-is-here/)
 7. [Agones](https://agones.dev/site/) - Host, Run and Scale dedicated game servers on Kubernetes
+8. [Prometheus](https://github.com/prometheus-community/helm-charts)
+9. [Kube-state-metrics](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics)
+10. [Alert-manager](https://github.com/prometheus-community/helm-charts/tree/main/charts/alertmanager)
+11. [Prometheus-node-exporter](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-node-exporter)
+12. [Prometheus-pushgateway](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-pushgateway)
 
 # Helm Charts Modules
 Helm Chart Module within this framework allows you to deploy Kubernetes  apps using Terraform helm chart provider with **enabled** conditional parameter in `base.tfvars`. 
@@ -97,21 +116,23 @@ This module ships the Fargate Container logs to CloudWatch
 
 [Bottlerocket](https://aws.amazon.com/bottlerocket/) is an open source operating system specifically designed for running containers. Bottlerocket build system is based on Rust. It's a container host OS and doesn't have additional software's or package managers other than what is needed for running containers hence its very light weight and secure. Container optimized operating systems are ideal when you need to run applications in Kubernetes  with minimal setup and do not want to worry about security or updates, or want OS support from  cloud provider. Container operating systems does updates transactionally. 
 
-Bottlerocket has two container runtimes running. Control container **on** by default used for AWS Systems manager and remote API access. Admin container **off** by default for deep debugging and exploration. 
+Bottlerocket has two containers runtimes running. Control container **on** by default used for AWS Systems manager and remote API access. Admin container **off** by default for deep debugging and exploration. 
 
 Bottlerocket [Launch templates userdata](modules/launch-templates/templates/bottlerocket-userdata.sh.tpl) uses the TOML format with Key-value pairs. Remote API access API via SSM agent. You can launch trouble shooting container via user data `[settings.host-containers.admin] enabled = true`. 
 
 ### Features
-* [Secure](https://github.com/bottlerocket-os/bottlerocket/blob/develop/SECURITY_FEATURES.md) - Opninionated, specialized and highly secured
+* [Secure](https://github.com/bottlerocket-os/bottlerocket/blob/develop/SECURITY_FEATURES.md) - Opinionated, specialized and highly secured
 * **Flexible** - Multi cloud and multi orchestrator
-* **Transactional** -  Image based upgraded and roll backs
+* **Transactional** -  Image based upgraded and rollbacks
 * **Isolated** - Separate container Runtimes
 
 ### Updates
 Bottlerocket can be updated automatically via Kubernetes  Operator
 
-    $ kubectl apply -f Bottlerocket_k8s.csv.yaml
-    $ kubectl get ClusterServiceVersion Bottlerocket_k8s | jq.'status'
+```shell script
+    kubectl apply -f Bottlerocket_k8s.csv.yaml
+    kubectl get ClusterServiceVersion Bottlerocket_k8s | jq.'status'
+```
 
 # How to Deploy
 
@@ -121,7 +142,8 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 2. [aws-iam-authenticator](https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html)
 3. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
-4. wget 
+4. [wget](https://www.gnu.org/software/wget/) 
+5. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
     
 ## Deployment Steps
 The following steps walks you through the deployment of example [DEV cluster](live/preprod/eu-west-1/application/dev/base.tfvars) configuration. This config deploys a private EKS cluster with public and private subnets. 
@@ -134,7 +156,9 @@ It also deploys few kubernetes apps i.e., LB Ingress Controller, Metrics Server,
    
 #### Step1: Clone the repo using the command below
 
-    $ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+```shell script
+git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+```
 
 #### Step2: Update base.tfvars file
 
@@ -145,34 +169,47 @@ Update `~/aws-eks-accelerator-for-terraform/live/preprod/eu-west-1/application/d
 Update `~/aws-eks-accelerator-for-terraform/live/preprod/eu-west-1/application/dev/backend.conf` with your local directory path. [state.tf](source/state.tf) file contains backend config. 
 
 Local terraform state backend config variables
-    
+
+```hcl-terraform
     path = "local_tf_state/ekscluster/preprod/application/dev/terraform-main.tfstate"
+```
 
 It's highly recommended to use remote state in S3 instead of using local backend. The following variables needs filling for S3 backend.  
 
+```hcl-terraform
     bucket = "<s3 bucket name>"
     region = "<aws region>"
     key    = "ekscluster/preprod/application/dev/terraform-main.tfstate"
+```
         
 #### Step4: Assume IAM role before creating a EKS cluster. 
 This role will become the Kubernetes  Admin by default.
         
-    $ aws-mfa --assume-role  arn:aws:iam::<ACCOUNTID>:role/<IAMROLE>
+```shell script
+aws-mfa --assume-role  arn:aws:iam::<ACCOUNTID>:role/<IAMROLE>
+```
 
-#### Step5: Run Terraform init 
+#### Step5: Run Terraform INIT 
 to initialize a working directory with configuration files
 
-    $ terraform init -backend-config ./live/preprod/eu-west-1/application/dev/backend.conf source
+```shell script
+terraform -chdir=source init -backend-config ../live/preprod/eu-west-1/application/dev/backend.conf
+```
+
     
-#### Step6: Run Terraform plan 
+#### Step6: Run Terraform PLAN 
 to verify the resources created by this execution
 
-    $ terraform plan -var-file ./live/preprod/eu-west-1/application/dev/base.tfvars source
+```shell script
+terraform -chdir=source plan -var-file ../live/preprod/eu-west-1/application/dev/base.tfvars
+```
 
-#### Step7: Finally, Terraform apply 
+#### Step7: Finally, Terraform APPLY 
 to create resources
 
-    $ terraform apply -var-file ./live/preprod/eu-west-1/application/dev/base.tfvars source
+```shell script
+terraform -chdir=source apply -var-file ../live/preprod/eu-west-1/application/dev/base.tfvars
+```
 
 **Alternatively you can use Makefile to deploy by skipping Step5, Step6 and Step7**
 
@@ -217,14 +254,14 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
 Amazon EKS doesn't modify any of your Kubernetes  add-ons when you update a cluster to newer versions. 
 It's important to upgrade EKS Addons [Amazon VPC CNI](https://github.com/aws/amazon-vpc-cni-k8s), [DNS (CoreDNS)](https://docs.aws.amazon.com/eks/latest/userguide/managing-coredns.html) and [KubeProxy](https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html) for each EKS release.
 
-This [README](eks_cluster_addons_upgrade/README.md) guides you to update the EKS addons for newer versions that matches with your EKS cluster version
+This [README](eks_cluster_addons_upgrade/README.md) guides you to update the EKS Cluster abd the addons for newer versions that matches with your EKS cluster version
 
 Updating a EKS cluster instructions can be found in [AWS documentation](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html).
 
 # Important note
-This module tested only with **Kubernetes v1.19 version**. Helm Charts addon modules aligned with k8s v1.19. If you are looking to use this code to deploy different versions of Kubernetes  then ensure Helm charts and docker images aligned with k8s version.
+This module tested only with **Kubernetes v1.20 version**. Helm Charts addon modules aligned with k8s v1.20. If you are looking to use this code to deploy different versions of Kubernetes  then ensure Helm charts and docker images aligned with k8s version.
 
-The `Kubernetes _version="1.19"` is the required variable in `base.tfvars`. Kubernetes  is evolving a lot, and each major version includes new features, fixes, or changes. 
+The `Kubernetes _version="1.20"` is the required variable in `base.tfvars`. Kubernetes  is evolving a lot, and each major version includes new features, fixes, or changes. 
 
 Always check [Kubernetes Release Notes](https://Kubernetes.io/docs/setup/release/notes/) before updating the major version. You also need to ensure your applications and Helm addons updated, 
 or workloads could fail after the upgrade is complete. For action, you may need to take before upgrading, see the steps in the EKS documentation.
@@ -232,34 +269,42 @@ or workloads could fail after the upgrade is complete. For action, you may need 
 # Notes:
 If you are using an existing VPC then you may need to ensure that the following tags added to the VPC and subnet resources
 
-Add Tags to VPC
+Add Tags to **VPC**
 
+```hcl-terraform
     Key = Kubernetes .io/cluster/${local.cluster_name} Value = Shared
+```
 
-Add Tags to Public Subnets tagging requirement
-    
+Add Tags to **Public Subnets tagging** requirement
+
+```hcl-terraform
       public_subnet_tags = {
         "Kubernetes .io/cluster/${local.cluster_name}" = "shared"
         "Kubernetes .io/role/elb"                      = "1"
       }
+```    
 
-Add Tags to Private Subnets tagging requirement
+Add Tags to **Private Subnets tagging** requirement
 
+```hcl-terraform
       private_subnet_tags = {
         "Kubernetes .io/cluster/${local.cluster_name}" = "shared"
         "Kubernetes .io/role/internal-elb"             = "1"
       }
+```
         
 For fully Private EKS clusters requires the following VPC endpoints to be created to communicate with AWS services. This module will create these endpoints if you choose to create VPC. If you are using an existing VPC then you may need to ensure these endpoints are created.
 
+    com.amazonaws.region.aps-workspaces            - For AWS Managed Prometheus Workspace 
+    com.amazonaws.region.ssm                       - Secrets Management
     com.amazonaws.region.ec2
     com.amazonaws.region.ecr.api
     com.amazonaws.region.ecr.dkr
-    com.amazonaws.region.s3                         – For pulling container images
     com.amazonaws.region.logs                       – For CloudWatch Logs
     com.amazonaws.region.sts                        – If using AWS Fargate or IAM roles for service accounts
     com.amazonaws.region.elasticloadbalancing       – If using Application Load Balancers
     com.amazonaws.region.autoscaling                – If using Cluster Autoscaler
+    com.amazonaws.region.s3                         – Creates S3 gateway 
 
 
 # Author

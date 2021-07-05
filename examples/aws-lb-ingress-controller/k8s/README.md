@@ -3,6 +3,7 @@
 ## Step1: Apply Manifest
 
     kubectl apply -f fargate_sample_nginx_stack.yaml
+    kubectl apply -f fargate_sample_nginx_deployment_nlb.yaml
     
 ## Step2: Get DNS Name
 

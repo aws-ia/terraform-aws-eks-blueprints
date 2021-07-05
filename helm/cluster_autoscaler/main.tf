@@ -17,14 +17,14 @@
  */
 
 locals {
-  image_url = var.public_docker_repo ? var.image_repo_name : "${var.image_repo_url}${var.image_repo_name}"
+  image_url = var.public_docker_repo ? var.image_repo_name : "${var.private_container_repo_url}${var.image_repo_name}"
 }
 
 resource "helm_release" "autoscaler" {
   name       = "cluster-autoscaler"
   repository = "https://kubernetes.github.io/autoscaler"
   chart      = "cluster-autoscaler"
-  version    = "9.9.2"
+  version    = var.cluster_autoscaler_helm_version
   namespace  = "kube-system"
   timeout    = "1200"
 
@@ -53,6 +53,6 @@ resource "helm_release" "autoscaler" {
 
   set {
     name  = "image.tag"
-    value = var.image_tag
+    value = var.cluster_autoscaler_image_tag
   }
 }

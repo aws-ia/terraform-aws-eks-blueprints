@@ -26,7 +26,7 @@
 */
 
 locals {
-  image_url = var.public_docker_repo ? var.image_repo_name : "${var.image_repo_url}${var.image_repo_name}"
+  image_url = var.public_docker_repo ? var.image_repo_name : "${var.private_container_repo_url}${var.image_repo_name}"
 }
 
 data "aws_security_group" "eks_security_group" {

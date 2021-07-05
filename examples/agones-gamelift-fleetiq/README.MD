@@ -65,7 +65,7 @@ Use the following link to install Cloud9 IDE and all the pre-requisites Kubernet
     
     sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
     
-    sudo yum -y install terraform-0.14.9
+    sudo yum -y install terraform-1.0.1
     
     sudo terraform version
     
