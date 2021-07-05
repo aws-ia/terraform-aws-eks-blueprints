@@ -16,11 +16,29 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#  Terraform state for S3 backend config variables
+//gcr.io/agones-images/agones-controller:1.15.0-rc
 
-#bucket = "<bucket-name>"
-#region = "eu-west-1"
-#key    = "ekscluster/preprod/application/dev/terraform-main.tfstate"
+variable "image_repo_url" {}
+variable "image_repo_name" {
+  default = "gcr.io/agones-images"
+}
+variable "image_tag" {
+  default = "1.15.0"
+}
+variable "cluster_id" {}
 
-# Terraform state for local backend
-path = "local_tf_state/ekscluster/preprod/application/dev/terraform-main.tfstate"
+variable "eks_sg_id" {}
+
+variable "public_docker_repo" {}
+
+variable "s3_nlb_logs" {}
+
+variable "expose_udp" {
+  default = false
+}
+variable "gameserver_maxport" {
+  default = 8000
+}
+variable "gameserver_minport" {
+  default = 7000
+}

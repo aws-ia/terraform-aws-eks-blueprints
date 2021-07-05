@@ -71,3 +71,13 @@ variable "public_docker_repo" {}
 variable "eks_oidc_issuer_url" {}
 
 variable "eks_oidc_provider_arn" {}
+
+variable "expose_udp" {}
+
+variable "agones_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling agones on eks cluster"
+}
+
+variable "eks_security_group_id" {}
