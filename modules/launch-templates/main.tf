@@ -23,9 +23,9 @@ data "template_file" "launch_template_userdata" {
 data "template_file" "launch_template_bottle_rocket_userdata" {
   template = file("${path.module}/templates/bottlerocket-userdata.sh.tpl")
   vars = {
-    cluster_endpoint = var.cluster_endpoint
+    cluster_endpoint    = var.cluster_endpoint
     cluster_auth_base64 = var.cluster_auth_base64
-    cluster_name = var.cluster_name
+    cluster_name        = var.cluster_name
   }
 }
 
@@ -46,7 +46,7 @@ resource "aws_launch_template" "default" {
 
   ebs_optimized = true
 
-  image_id      = var.self_managed ? var.bottlerocket_ami : ""
+  image_id = var.self_managed ? var.bottlerocket_ami : ""
   //  instance_type = var.instance_type
 
   monitoring {
@@ -59,15 +59,15 @@ resource "aws_launch_template" "default" {
   }
 
   network_interfaces {
-    associate_public_ip_address = false
+    associate_public_ip_address = var.public_launch_template ? true : false
     delete_on_termination       = true
     security_groups             = [var.worker_security_group_id]
   }
 
   user_data = var.self_managed ? base64encode(
     data.template_file.launch_template_bottle_rocket_userdata.rendered,
-  ) : base64encode(
-  data.template_file.launch_template_userdata.rendered,
+    ) : base64encode(
+    data.template_file.launch_template_userdata.rendered,
   )
 
   lifecycle {

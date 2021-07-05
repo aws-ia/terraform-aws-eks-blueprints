@@ -1,0 +1,17 @@
+#
+# A FleetAutoscaler is used to scale the fleet automatically
+# up and down depending on usage
+#
+
+apiVersion: "autoscaling.agones.dev/v1"
+kind: FleetAutoscaler
+metadata:
+  name: xonotic-autoscaler
+spec:
+  fleetName: xonotic
+  policy:
+    type: Buffer
+    buffer:
+      bufferSize: 2
+      minReplicas: 0
+      maxReplicas: 10

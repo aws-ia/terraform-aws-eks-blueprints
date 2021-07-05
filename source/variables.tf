@@ -64,11 +64,19 @@ variable "enable_public_subnets" {
   type        = bool
   default     = false
 }
+
+variable "enable_private_subnets" {
+  description = "Enable private subnets for EKS Cluster"
+  type        = bool
+  default     = true
+}
+
 variable "vpc_id" {
   type        = string
   description = "VPC id"
   default     = ""
 }
+
 variable "private_subnet_ids" {
   description = "list of private subnets Id's for the Worker nodes"
   default     = []
@@ -310,4 +318,14 @@ variable "public_docker_repo" {
   default     = true
   description = "public docker repo access"
 }
+variable "agones_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling Agones Gaming Helm Chart"
+}
 
+variable "expose_udp" {
+  type        = bool
+  default     = false
+  description = "Enabling Agones Gaming Helm Chart"
+}

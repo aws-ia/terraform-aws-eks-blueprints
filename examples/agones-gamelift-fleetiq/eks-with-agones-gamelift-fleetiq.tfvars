@@ -23,10 +23,10 @@
 #e.g., eks cluster name will be {tenant}-{environment}-{zone}-{resource}
 #---------------------------------------------------------#
 org               = "aws"     # Organization Name. Used to tag resources
-tenant            = "aws001"  # AWS account name or unique id for tenant
+tenant            = "gaming"  # AWS account name or unique id for tenant
 environment       = "preprod" # Environment area eg., preprod or prod
-zone              = "dev"     # Environment with in one sub_tenant or business unit
-terraform_version = "Terraform v1.0.0"
+zone              = "test"    # Environment with in one sub_tenant or business unit
+terraform_version = "Terraform v0.14.9"
 #---------------------------------------------------------#
 # VPC and PRIVATE SUBNET DETAILS for EKS Cluster
 #---------------------------------------------------------#
@@ -37,11 +37,13 @@ terraform_version = "Terraform v1.0.0"
 #---------------------------------------------------------#
 # OPTION 1
 #---------------------------------------------------------#
-create_vpc            = true
-vpc_cidr_block        = "10.1.0.0/18"
-private_subnets_cidr  = ["10.1.0.0/22", "10.1.4.0/22", "10.1.8.0/22"]
-enable_public_subnets = true
-public_subnets_cidr   = ["10.1.12.0/22", "10.1.16.0/22", "10.1.20.0/22"]
+create_vpc             = true
+enable_private_subnets = true
+enable_public_subnets  = true
+
+vpc_cidr_block       = "10.1.0.0/18"
+private_subnets_cidr = ["10.1.0.0/22", "10.1.4.0/22", "10.1.8.0/22"]
+public_subnets_cidr  = ["10.1.12.0/22", "10.1.16.0/22", "10.1.20.0/22"]
 
 #---------------------------------------------------------#
 # OPTION 2
@@ -54,7 +56,7 @@ public_subnets_cidr   = ["10.1.12.0/22", "10.1.16.0/22", "10.1.20.0/22"]
 # EKS CONTROL PLANE VARIABLES
 #---------------------------------------------------------#
 kubernetes_version      = "1.19"
-endpoint_private_access = true
+endpoint_private_access = false
 endpoint_public_access  = true
 enable_irsa             = true
 
@@ -76,27 +78,27 @@ on_demand_min_size        = 3
 # BOTTLEROCKET - Worker Group3
 #---------------------------------------------------------#
 # Amazon EKS optimized Bottlerocket AMI ID for a region and Kubernetes version.
-bottlerocket_node_group_name = "mg-m5-bottlerocket"
-bottlerocket_ami             = "ami-0326716ad575410ab"
-bottlerocket_disk_size       = 50
-bottlerocket_instance_type   = ["m5.large"]
-bottlerocket_desired_size    = 3
-bottlerocket_max_size        = 3
-bottlerocket_min_size        = 3
+#bottlerocket_node_group_name = "mg-m5-bottlerocket"
+#bottlerocket_ami        = "ami-0326716ad575410ab"
+#bottlerocket_disk_size       = 50
+#bottlerocket_instance_type   = ["m5.large"]
+#bottlerocket_desired_size    = 3
+#bottlerocket_max_size        = 3
+#bottlerocket_min_size        = 3
 #---------------------------------------------------------#
 # MANAGED WORKER NODE INPUT VARIABLES FOR SPOT INSTANCES - Worker Group2
 #---------------------------------------------------------#
-spot_node_group_name = "mg-m5-spot"
-spot_instance_type   = ["m5.large", "m5a.large"]
-spot_ami_type        = "AL2_x86_64"
-spot_desired_size    = 3
-spot_max_size        = 6
-spot_min_size        = 3
+#spot_node_group_name = "mg-m5-spot"
+#spot_instance_type   = ["m5.large", "m5a.large"]
+#spot_ami_type        = "AL2_x86_64"
+#spot_desired_size    = 3
+#spot_max_size        = 6
+#spot_min_size        = 3
 
 #---------------------------------------------------------#
 # Creates a Fargate profile for default namespace
 #---------------------------------------------------------#
-fargate_profile_namespace = "default"
+#fargate_profile_namespace = "default"
 
 #---------------------------------------------------------#
 # ENABLE HELM MODULES
@@ -119,15 +121,26 @@ metrics_server_enable = true
 cluster_autoscaler_enable = true
 
 
-//---------------------------------------------------------//
-// ENABLE ALB INGRESS CONTROLLER
-//---------------------------------------------------------//
-lb_ingress_controller_enable = true
+#---------------------------------------------------------//
+# ENABLE ALB INGRESS CONTROLLER
+#---------------------------------------------------------//
+#lb_ingress_controller_enable = true
 
 #---------------------------------------------------------#
 # ENABLE AWS_FLUENT-BIT
 #---------------------------------------------------------#
-aws_for_fluent_bit_enable = true
-fargate_fluent_bit_enable = true
+#aws_for_fluent_bit_enable = true
+#fargate_fluent_bit_enable = true
 
-ekslog_retention_in_days = 1
+#ekslog_retention_in_days = 1
+
+#---------------------------------------------------------//
+# ENABLE AGONES GAMING CONTROLLER
+#   A library for hosting, running and scaling dedicated game servers on Kubernetes
+#   This chart installs the Agones application and defines deployment on a  cluster
+#   NOTE: Edit Rules to add a new Custom UDP Rule with a 7000-8000 port range and an appropriate Source CIDR range (0.0.0.0/0 allows all traffic) (sec group e.g., gaming-preprod-test-eks-eks_worker_sg)
+#         By default Agones prefers to be scheduled on nodes labeled with agones.dev/agones-system=true and tolerates the node taint agones.dev/agones-system=true:NoExecute.
+#         If no dedicated nodes are available, Agones will run on regular nodes.
+#---------------------------------------------------------//
+agones_enable = true
+expose_udp    = true
