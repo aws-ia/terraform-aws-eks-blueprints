@@ -158,9 +158,50 @@ cluster_autoscaler_enable       = true
 cluster_autoscaler_image_tag    = "v1.20.0"
 cluster_autoscaler_helm_version = "9.9.2"
 
+#---------------------------------------------------------//
+# ENABLE AWS LB INGRESS CONTROLLER
+#---------------------------------------------------------//
+lb_ingress_controller_enable = false
+aws_lb_image_tag             = "v2.2.1"
+aws_lb_helm_chart_version    = "1.2.3"
+
+#---------------------------------------------------------//
+# ENABLE PROMETHEUS
+#---------------------------------------------------------//
+# Creates the AMP workspace and all the relevent IAM Roles
+aws_managed_prometheus_enable = false
+
+# Deploys Pometheus server with remote write to AWS AMP Workspace
+prometheus_enable             = false
+prometheus_helm_chart_version = "14.3.1"
+prometheus_image_tag          = "v2.26.0"
+alert_manager_image_tag       = "v0.21.0"
+configmap_reload_image_tag    = "v0.5.0"
+node_exporter_image_tag       = "v1.1.2"
+pushgateway_image_tag         = "v1.3.1"
+
 #---------------------------------------------------------#
 # ENABLE AWS_FLUENT-BIT FOR NODE GROUPS
 #---------------------------------------------------------#
-aws_for_fluent_bit_enable = true
-fargate_fluent_bit_enable = true
-ekslog_retention_in_days  = 1
+aws_for_fluent_bit_enable             = true
+ekslog_retention_in_days              = 7
+aws_for_fluent_bit_image_tag          = "2.17.0"
+aws_for_fluent_bit_helm_chart_version = "0.1.11"
+
+#---------------------------------------------------------#
+# ENABLE TRAEFIK INGRESS CONTROLLER
+#---------------------------------------------------------#
+traefik_ingress_controller_enable = false
+traefik_helm_chart_version        = "10.0.0"
+traefik_image_tag                 = "v2.4.9"
+
+#---------------------------------------------------------//
+# ENABLE AGONES GAMING CONTROLLER
+#   A library for hosting, running and scaling dedicated game servers on Kubernetes
+#   This chart installs the Agones application and defines deployment on a  cluster
+#   NOTE: Edit Rules to add a new Custom UDP Rule with a 7000-8000 port range and an appropriate Source CIDR range (0.0.0.0/0 allows all traffic) (sec group e.g., gaming-preprod-test-eks-eks_worker_sg)
+#         By default Agones prefers to be scheduled on nodes labeled with agones.dev/agones-system=true and tolerates the node taint agones.dev/agones-system=true:NoExecute.
+#         If no dedicated nodes are available, Agones will run on regular nodes.
+#---------------------------------------------------------//
+//agones_enable = true
+//expose_udp    = true
