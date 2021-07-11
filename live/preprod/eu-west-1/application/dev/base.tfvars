@@ -183,17 +183,17 @@ pushgateway_image_tag         = "v1.3.1"
 #---------------------------------------------------------#
 # ENABLE AWS_FLUENT-BIT
 #---------------------------------------------------------#
-//aws_for_fluent_bit_enable = true
-//ekslog_retention_in_days = 1
-//aws_for_fluent_bit_enable_image_tag = ""
-//aws_for_fluent_bit_enable_helm_chart_version = ""
+aws_for_fluent_bit_enable = true
+ekslog_retention_in_days = 7
+aws_for_fluent_bit_image_tag = "2.17.0"
+aws_for_fluent_bit_helm_chart_version = "0.1.11"
 
 #---------------------------------------------------------#
 # ENABLE TRAEFIK INGRESS CONTROLLER
 #---------------------------------------------------------#
-//traefik_ingress_controller_enable = true
-//traefik_helm_chart_version        = "10.0.0"
-//traefik_image_tag                 = "v2.4.9"
+traefik_ingress_controller_enable = false
+traefik_helm_chart_version        = "10.0.0"
+traefik_image_tag                 = "v2.4.9"
 
 #---------------------------------------------------------//
 # ENABLE AGONES GAMING CONTROLLER

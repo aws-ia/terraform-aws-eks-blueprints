@@ -606,8 +606,10 @@ module "helm" {
   eks_oidc_provider_arn        = module.eks.oidc_provider_arn
 
   # ------- AWS Fluent bit for Node Groups
-  aws_for_fluent_bit_enable = var.aws_for_fluent_bit_enable
-  ekslog_retention_in_days  = var.ekslog_retention_in_days
+  aws_for_fluent_bit_enable             = var.aws_for_fluent_bit_enable
+  ekslog_retention_in_days              = var.ekslog_retention_in_days
+  aws_for_fluent_bit_image_tag          = var.aws_for_fluent_bit_image_tag
+  aws_for_fluent_bit_helm_chart_version = var.aws_for_fluent_bit_helm_chart_version
 
   # ------- AWS Fluentbit for Fargate
   fargate_fluent_bit_enable = var.fargate_fluent_bit_enable

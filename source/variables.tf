@@ -431,3 +431,8 @@ variable "traefik_helm_chart_version" {
 
 variable "traefik_image_tag" {
 }
+variable "aws_for_fluent_bit_image_tag" {
+}
+
+variable "aws_for_fluent_bit_helm_chart_version" {
+}

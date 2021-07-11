@@ -8,7 +8,7 @@ Step1: Get the latest docker image from this link
         
 Step2: Download the docker image to your local Mac/Laptop
         
-        $ docker pull amazon/aws-for-fluent-bit:2.12.0
+        $ docker pull amazon/aws-for-fluent-bit:2.13.0
         
 Step3: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
         
@@ -20,15 +20,15 @@ Step4: Create an ECR repo for Metrics Server if you don't have one
               
 Step5: After the build completes, tag your image so, you can push the image to this repository:
         
-        $ docker tag amazon/aws-for-fluent-bit:2.12.0 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-for-fluent-bit:2.12.0
+        $ docker tag amazon/aws-for-fluent-bit:2.13.0 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-for-fluent-bit:2.13.0
 
 Step6: Run the following command to push this image to your newly created AWS repository:
         
-        $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-for-fluent-bit:2.12.0
+        $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-for-fluent-bit:2.13.0
 
 ### Instructions to download Helm Charts
 
-Helm Chart
+#### Helm Chart
     
     https://artifacthub.io/packages/helm/aws/aws-for-fluent-bit
 
