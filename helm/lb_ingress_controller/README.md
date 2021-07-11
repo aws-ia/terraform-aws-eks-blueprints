@@ -32,7 +32,7 @@ Step2: Download the docker image to your local Mac/Laptop
 
         $ aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 602401143452.dkr.ecr.us-west-2.amazonaws.com
         
-        $ docker pull 602401143452.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-load-balancer-controller:v2.1.3
+        $ docker pull 602401143452.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-load-balancer-controller:v2.2.1
         
 Step3: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
         
@@ -46,11 +46,11 @@ Step4: Create an ECR repo for LB ingress controller if you don't have one
               
 Step5: After the build completes, tag your image so, you can push the image to this repository:
         
-        $ docker tag amazon/aws-load-balancer-controller:v2.1.3 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-load-balancer-controller:v2.1.3
+        $ docker tag 602401143452.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-load-balancer-controller:v2.2.1 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-load-balancer-controller:v2.2.1
         
 Step6: Run the following command to push this image to your newly created AWS repository:
         
-        $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-load-balancer-controller:v2.1.3
+        $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-load-balancer-controller:v2.2.1
 
 
 #### AWS Service annotations for LB Ingress Controller
@@ -106,13 +106,15 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_aws_lb_helm_chart_version"></a> [aws\_lb\_helm\_chart\_version](#input\_aws\_lb\_helm\_chart\_version) | n/a | `string` | `"1.2.3"` | no |
+| <a name="input_aws_lb_image_tag"></a> [aws\_lb\_image\_tag](#input\_aws\_lb\_image\_tag) | n/a | `string` | `"v2.2.1"` | no |
 | <a name="input_clusterName"></a> [clusterName](#input\_clusterName) | n/a | `any` | n/a | yes |
 | <a name="input_eks_oidc_issuer_url"></a> [eks\_oidc\_issuer\_url](#input\_eks\_oidc\_issuer\_url) | n/a | `any` | n/a | yes |
 | <a name="input_eks_oidc_provider_arn"></a> [eks\_oidc\_provider\_arn](#input\_eks\_oidc\_provider\_arn) | n/a | `any` | n/a | yes |
 | <a name="input_image_repo_name"></a> [image\_repo\_name](#input\_image\_repo\_name) | n/a | `string` | `"amazon/aws-load-balancer-controller"` | no |
-| <a name="input_image_repo_url"></a> [image\_repo\_url](#input\_image\_repo\_url) | n/a | `any` | n/a | yes |
-| <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | n/a | `string` | `"v2.1.3"` | no |
+| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `any` | n/a | yes |
 | <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `any` | n/a | yes |
+| <a name="input_public_image_repo"></a> [public\_image\_repo](#input\_public\_image\_repo) | n/a | `string` | `"602401143452.dkr.ecr.us-west-2.amazonaws.com"` | no |
 | <a name="input_replicas"></a> [replicas](#input\_replicas) | n/a | `string` | `"2"` | no |
 
 ## Outputs

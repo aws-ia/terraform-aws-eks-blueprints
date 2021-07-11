@@ -26,7 +26,7 @@ org               = "aws"     # Organization Name. Used to tag resources
 tenant            = "gaming"  # AWS account name or unique id for tenant
 environment       = "preprod" # Environment area eg., preprod or prod
 zone              = "test"    # Environment with in one sub_tenant or business unit
-terraform_version = "Terraform v0.14.9"
+terraform_version = "Terraform v1.0.1"
 #---------------------------------------------------------#
 # VPC and PRIVATE SUBNET DETAILS for EKS Cluster
 #---------------------------------------------------------#
@@ -40,10 +40,16 @@ terraform_version = "Terraform v0.14.9"
 create_vpc             = true
 enable_private_subnets = true
 enable_public_subnets  = true
+# Use this only when you create Public subnets
+enable_nat_gateway = true
+#If single_nat_gateway = true, then all private subnets will route their Internet traffic through this single NAT gateway. The NAT gateway will be placed in the first public subnet in your public_subnets block
+single_nat_gateway = true
+create_igw         = true
 
 vpc_cidr_block       = "10.1.0.0/18"
 private_subnets_cidr = ["10.1.0.0/22", "10.1.4.0/22", "10.1.8.0/22"]
 public_subnets_cidr  = ["10.1.12.0/22", "10.1.16.0/22", "10.1.20.0/22"]
+
 
 #---------------------------------------------------------#
 # OPTION 2

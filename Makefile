@@ -4,6 +4,8 @@ SHELL := /usr/bin/env bash
 
 # Executing Terraform PLAN
 #	$ make tf-plan-eks env=<env> region=<region> account=<account> subenv=<subenv>
+#    e.g.,
+#       make tf-plan-eks env=preprod region=eu-west-1 account=application subenv=dev
 
 # Executing Terraform APPLY
 #   $ make tf-apply-eks env=<env> region=<region> account=<account> subenv=<subenv>
@@ -26,12 +28,12 @@ clean:
 
 .PHONY: tf-plan-eks
 tf-plan-eks:
-	export AWS_REGION=${region} && terraform init -backend-config ./live/${env}/${region}/${account}/${subenv}/backend.conf -reconfigure source && terraform validate && terraform plan -var-file ./live/${env}/${region}/${account}/${subenv}/base.tfvars source
+	export AWS_REGION=${region} && terraform -chdir=source init -backend-config ../live/${env}/${region}/${account}/${subenv}/backend.conf -reconfigure && terraform -chdir=source validate && terraform -chdir=source plan -var-file ../live/${env}/${region}/${account}/${subenv}/base.tfvars
 
 .PHONY: tf-apply-eks
 tf-apply-eks:
-	export AWS_REGION=${region} && terraform init -backend-config ./live/${env}/${region}/${account}/${subenv}/backend.conf -reconfigure source && terraform validate && terraform apply -var-file ./live/${env}/${region}/${account}/${subenv}/base.tfvars -auto-approve source
+	export AWS_REGION=${region} && terraform -chdir=source init -backend-config ../live/${env}/${region}/${account}/${subenv}/backend.conf -reconfigure && terraform -chdir=source validate && terraform -chdir=source apply -var-file ../live/${env}/${region}/${account}/${subenv}/base.tfvars -auto-approve
 
 .PHONY: tf-destroy-eks
 tf-destroy-eks:
-	export AWS_REGION=${region} && terraform init -backend-config ./live/${env}/${region}/${account}/${subenv}/backend.conf -reconfigure source && terraform validate && terraform destroy -var-file ./live/${env}/${region}/${account}/${subenv}/base.tfvars -auto-approve source
+	export AWS_REGION=${region} && terraform -chdir=source init -backend-config ../live/${env}/${region}/${account}/${subenv}/backend.conf -reconfigure && terraform -chdir=source validate && terraform -chdir=source destroy -var-file ../live/${env}/${region}/${account}/${subenv}/base.tfvars -auto-approve

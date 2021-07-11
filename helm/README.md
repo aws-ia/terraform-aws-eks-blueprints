@@ -31,7 +31,7 @@ No requirements.
 | <a name="input_cluster_autoscaler_enable"></a> [cluster\_autoscaler\_enable](#input\_cluster\_autoscaler\_enable) | Enabling cluster autoscaler server on eks cluster | `bool` | `true` | no |
 | <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS cluster Id | `any` | n/a | yes |
 | <a name="input_ekslog_retention_in_days"></a> [ekslog\_retention\_in\_days](#input\_ekslog\_retention\_in\_days) | Number of days to retain log events. Default retention - 90 days. | `any` | n/a | yes |
-| <a name="input_image_repo_url"></a> [image\_repo\_url](#input\_image\_repo\_url) | n/a | `any` | n/a | yes |
+| <a name="input_private_container_repo_url"></a> [image\_repo\_url](#input\_image\_repo\_url) | n/a | `any` | n/a | yes |
 | <a name="input_metrics_server_enable"></a> [metrics\_server\_enable](#input\_metrics\_server\_enable) | Enabling metrics server on eks cluster | `bool` | `true` | no |
 | <a name="input_s3_nlb_logs"></a> [s3\_nlb\_logs](#input\_s3\_nlb\_logs) | S3 bucket for NLB Logs | `any` | n/a | yes |
 | <a name="input_traefik_ingress_controller_enable"></a> [traefik\_enable](#input\_traefik\_enable) | Enabling Traefik Ingress on eks cluster | `bool` | `false` | no |

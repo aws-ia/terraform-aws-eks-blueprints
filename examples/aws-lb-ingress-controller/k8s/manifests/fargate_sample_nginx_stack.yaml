@@ -19,7 +19,6 @@ spec:
       containers:
         - name: app2-nginx
           image: stacksimplify/kube-nginxapp2:1.0.0
-#          image: 958351136353.dkr.ecr.eu-west-1.amazonaws.com/stacksimplify/kube-nginxapp:2.0.0
           ports:
             - containerPort: 80
 ---
@@ -64,7 +63,6 @@ spec:
       containers:
         - name: app1-nginx
           image: stacksimplify/kube-nginxapp1:1.0.0
-#          image: 958351136353.dkr.ecr.eu-west-1.amazonaws.com/stacksimplify/kube-nginxapp:1.0.0
           ports:
             - containerPort: 80
 ---
@@ -114,14 +112,14 @@ spec:
   rules:
     - http:
         paths:
-          - path: /app1/*
+          - path: /app1/index.html
             pathType: Prefix
             backend:
               service:
                 name: fargate-app1-nginx-nodeport-service
                 port:
                   number: 80
-          - path: /app2/*
+          - path: /app2/index.html
             pathType: Prefix
             backend:
               service:

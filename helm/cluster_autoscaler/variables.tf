@@ -16,12 +16,16 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "image_repo_url" {}
+variable "private_container_repo_url" {}
 variable "image_repo_name" {
   default = "k8s.gcr.io/autoscaling/cluster-autoscaler"
 }
-variable "image_tag" {
-  default = "v1.19.1"
+variable "cluster_autoscaler_image_tag" {
+  default = "v1.20.0"
+}
+
+variable "cluster_autoscaler_helm_version" {
+  default = "9.9.2"
 }
 variable "eks_cluster_id" {
   description = "EKS_Cluster_ID"

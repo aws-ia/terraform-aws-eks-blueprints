@@ -16,11 +16,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "image_repo_url" {}
+variable "private_container_repo_url" {}
 variable "image_repo_name" {
   default = "k8s.gcr.io/metrics-server/metrics-server"
 }
-variable "image_tag" {
-  default = "v0.4.2"
+variable "metric_server_image_tag" {
 }
+variable "metric_server_helm_chart_version" {
+}
+
 variable "public_docker_repo" {}

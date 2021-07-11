@@ -17,21 +17,21 @@
  */
 
 locals {
-  public_image_repo = "602401143452.dkr.ecr.us-west-2.amazonaws.com"
-  image_url         = var.public_docker_repo ? "${local.public_image_repo}/${var.image_repo_name}" : "${var.image_repo_url}${var.image_repo_name}"
+  public_image_repo = var.public_image_repo
+  image_url         = var.public_docker_repo ? "${local.public_image_repo}/${var.image_repo_name}" : "${var.private_container_repo_url}${var.image_repo_name}"
 }
 
 resource "helm_release" "lb-ingress" {
   name       = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
-  version    = "1.1.6"
+  version    = var.aws_lb_helm_chart_version
   namespace  = "kube-system"
   timeout    = "1200"
 
   values = [templatefile("${path.module}/lb_ingress_controller.yaml", {
     image        = local.image_url
-    tag          = var.image_tag
+    tag          = var.aws_lb_image_tag
     clusterName  = var.clusterName
     replicaCount = var.replicas
   })]
@@ -61,6 +61,7 @@ resource "aws_iam_policy" "eks-lb-controller-policy" {
                 "ec2:DescribeAccountAttributes",
                 "ec2:DescribeAddresses",
                 "ec2:DescribeInternetGateways",
+                "ec2:DescribeAvailabilityZones",
                 "ec2:DescribeVpcs",
                 "ec2:DescribeSubnets",
                 "ec2:DescribeSecurityGroups",
@@ -132,6 +133,37 @@ resource "aws_iam_policy" "eks-lb-controller-policy" {
                 },
                 "Null": {
                     "aws:RequestTag/elbv2.k8s.aws/cluster": "false"
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateTags",
+                "ec2:DeleteTags"
+            ],
+            "Resource": "arn:aws:ec2:*:*:security-group/*",
+            "Condition": {
+                "Null": {
+                    "aws:ResourceTag/ingress.k8s.aws/cluster": "false"
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "elasticloadbalancing:AddTags",
+                "elasticloadbalancing:RemoveTags",
+                "elasticloadbalancing:DeleteTargetGroup"
+            ],
+            "Resource": [
+                "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
+                "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
+                "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*"
+            ],
+            "Condition": {
+                "Null": {
+                    "aws:ResourceTag/ingress.k8s.aws/cluster": "false"
                 }
             }
         },
