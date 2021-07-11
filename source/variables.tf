@@ -431,3 +431,12 @@ variable "traefik_helm_chart_version" {
 
 variable "traefik_image_tag" {
 }
+variable "aws_for_fluent_bit_image_tag" {
+  default     = "2.13.0"
+  description = "Docker image tag for aws_for_fluent_bit"
+}
+
+variable "aws_for_fluent_bit_helm_chart_version" {
+  default     = "0.1.11"
+  description = "Helm chart version for aws_for_fluent_bit"
+}

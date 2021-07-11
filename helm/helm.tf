@@ -60,12 +60,14 @@ module "traefik_ingress" {
 }
 
 module "aws-for-fluent-bit" {
-  count                      = var.aws_for_fluent_bit_enable == true ? 1 : 0
-  source                     = "./aws-for-fluent-bit"
-  private_container_repo_url = var.private_container_repo_url
-  cluster_id                 = var.eks_cluster_id
-  ekslog_retention_in_days   = var.ekslog_retention_in_days
-  public_docker_repo         = var.public_docker_repo
+  count                                 = var.aws_for_fluent_bit_enable == true ? 1 : 0
+  source                                = "./aws-for-fluent-bit"
+  private_container_repo_url            = var.private_container_repo_url
+  cluster_id                            = var.eks_cluster_id
+  ekslog_retention_in_days              = var.ekslog_retention_in_days
+  public_docker_repo                    = var.public_docker_repo
+  aws_for_fluent_bit_image_tag          = var.aws_for_fluent_bit_image_tag
+  aws_for_fluent_bit_helm_chart_version = var.aws_for_fluent_bit_helm_chart_version
 }
 
 module "fargate_fluentbit" {
