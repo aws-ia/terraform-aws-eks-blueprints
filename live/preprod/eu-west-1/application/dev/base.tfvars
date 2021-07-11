@@ -183,9 +183,9 @@ pushgateway_image_tag         = "v1.3.1"
 #---------------------------------------------------------#
 # ENABLE AWS_FLUENT-BIT
 #---------------------------------------------------------#
-aws_for_fluent_bit_enable = true
-ekslog_retention_in_days = 7
-aws_for_fluent_bit_image_tag = "2.17.0"
+aws_for_fluent_bit_enable             = true
+ekslog_retention_in_days              = 7
+aws_for_fluent_bit_image_tag          = "2.17.0"
 aws_for_fluent_bit_helm_chart_version = "0.1.11"
 
 #---------------------------------------------------------#
