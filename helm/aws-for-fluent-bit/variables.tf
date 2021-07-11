@@ -26,7 +26,9 @@ variable "ekslog_retention_in_days" {}
 
 variable "public_docker_repo" {}
 variable "aws_for_fluent_bit_image_tag" {
+  default = "2.13.0"
 }
 
 variable "aws_for_fluent_bit_helm_chart_version" {
+  default = "0.1.11"
 }
