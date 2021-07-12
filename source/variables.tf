@@ -64,7 +64,21 @@ variable "enable_public_subnets" {
   type        = bool
   default     = false
 }
-
+variable "enable_nat_gateway" {
+  description = "Enable NAT Gateway for public subnets"
+  type        = bool
+  default     = false
+}
+variable "single_nat_gateway" {
+  description = "Create single NAT gateway for all private subnets"
+  type        = bool
+  default     = true
+}
+variable "create_igw" {
+  description = "Create internet gateway in public subnets"
+  type        = bool
+  default     = false
+}
 variable "enable_private_subnets" {
   description = "Enable private subnets for EKS Cluster"
   type        = bool
@@ -98,6 +112,13 @@ variable "private_subnets_cidr" {
   description = "list of Private subnets for the Worker nodes"
   default     = []
 }
+
+variable "create_vpc_endpoints" {
+  type        = bool
+  default     = false
+  description = "Create VPC endpoints for Private subnets"
+}
+
 variable "endpoint_private_access" {
   type        = bool
   default     = true
@@ -159,6 +180,35 @@ variable "map_additional_iam_users" {
 
   default = []
 }
+
+variable "vpc_cni_addon_version" {
+  type        = string
+  default     = "v1.8.0-eksbuild.1"
+  description = "VPC CNI Addon verison"
+}
+variable "coredns_addon_version" {
+  type        = string
+  default     = "v1.8.3-eksbuild.1"
+  description = "CoreDNS Addon verison"
+}
+variable "kube_proxy_addon_version" {
+  type        = string
+  default     = "v1.20.4-eksbuild.2"
+  description = "KubeProxy Addon verison"
+}
+variable "enable_vpc_cni_addon" {
+  type    = bool
+  default = false
+}
+variable "enable_coredns_addon" {
+  type    = bool
+  default = false
+}
+variable "enable_kube_proxy_addon" {
+  type    = bool
+  default = false
+}
+
 #----------------------------------------------------------
 // EKS WORKER NODES
 #----------------------------------------------------------
@@ -276,12 +326,12 @@ variable "fargate_profile_namespace" {
 
 variable "metrics_server_enable" {
   type        = bool
-  default     = true
+  default     = false
   description = "Enabling metrics server on eks cluster"
 }
 variable "cluster_autoscaler_enable" {
   type        = bool
-  default     = true
+  default     = false
   description = "Enabling Cluster autoscaler on eks cluster"
 }
 variable "traefik_ingress_controller_enable" {
@@ -328,4 +378,65 @@ variable "expose_udp" {
   type        = bool
   default     = false
   description = "Enabling Agones Gaming Helm Chart"
+}
+
+variable "aws_lb_image_tag" {
+  default = "v2.2.1"
+}
+
+variable "aws_lb_helm_chart_version" {
+  default = "1.2.3"
+}
+
+variable "metric_server_image_tag" {
+
+}
+variable "metric_server_helm_chart_version" {
+
+}
+
+variable "cluster_autoscaler_image_tag" {
+}
+
+variable "cluster_autoscaler_helm_version" {
+}
+
+variable "prometheus_helm_chart_version" {
+}
+variable "prometheus_image_tag" {
+}
+
+variable "alert_manager_image_tag" {
+}
+
+variable "configmap_reload_image_tag" {
+}
+
+variable "node_exporter_image_tag" {
+}
+
+variable "pushgateway_image_tag" {
+}
+
+variable "prometheus_enable" {
+  default = false
+}
+
+variable "aws_managed_prometheus_enable" {
+  default = false
+}
+
+variable "traefik_helm_chart_version" {
+}
+
+variable "traefik_image_tag" {
+}
+variable "aws_for_fluent_bit_image_tag" {
+  default     = "2.13.0"
+  description = "Docker image tag for aws_for_fluent_bit"
+}
+
+variable "aws_for_fluent_bit_helm_chart_version" {
+  default     = "0.1.11"
+  description = "Helm chart version for aws_for_fluent_bit"
 }

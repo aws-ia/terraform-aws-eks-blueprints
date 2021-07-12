@@ -16,13 +16,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "image_repo_url" {}
+variable "private_container_repo_url" {}
 variable "image_repo_name" {
   default = "traefik"
 }
 
-variable "image_tag" {
-  default = "v2.4.8"
+variable "traefik_helm_chart_version" {
+  default = "10.0.0"
+}
+
+variable "traefik_image_tag" {
+  default = "v2.4.9"
 }
 
 variable "s3_nlb_logs" {}

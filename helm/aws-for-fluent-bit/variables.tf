@@ -16,14 +16,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "image_repo_url" {}
+variable "private_container_repo_url" {}
 variable "image_repo_name" {
   default = "amazon/aws-for-fluent-bit"
 }
-variable "image_tag" {
-  default = "2.12.0"
-}
+
 variable "cluster_id" {}
 variable "ekslog_retention_in_days" {}
 
 variable "public_docker_repo" {}
+variable "aws_for_fluent_bit_image_tag" {
+  default = "2.13.0"
+}
+
+variable "aws_for_fluent_bit_helm_chart_version" {
+  default = "0.1.11"
+}

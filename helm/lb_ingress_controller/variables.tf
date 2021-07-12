@@ -17,13 +17,19 @@
  */
 
 variable "public_docker_repo" {}
-variable "image_repo_url" {}
+variable "private_container_repo_url" {}
 variable "image_repo_name" {
   default = "amazon/aws-load-balancer-controller"
 }
 
-variable "image_tag" {
-  default = "v2.1.3"
+variable "public_image_repo" {
+  default = "602401143452.dkr.ecr.us-west-2.amazonaws.com"
+}
+variable "aws_lb_image_tag" {
+  default = "v2.2.1"
+}
+variable "aws_lb_helm_chart_version" {
+  default = "1.2.3"
 }
 
 variable "replicas" {

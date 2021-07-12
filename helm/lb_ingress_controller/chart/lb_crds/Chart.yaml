@@ -1,6 +1,6 @@
 apiVersion: v2
-name: crd-target-group-bindings
-description: A Helm chart for lb ingress controller crd target group binding setup
+name: aws-lb-crd-helm-chart
+description: A Helm chart for AWS lb ingress controller crd
 type: application
-version: 0.4.0
-appVersion: v2.1.3
+version: 1.2.3
+appVersion: v2.2.1

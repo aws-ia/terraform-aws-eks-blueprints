@@ -16,22 +16,25 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+//traefik_ingress_controller_enable = true
+//traefik_ingress_image_tag         = "v2.4.9"
+//traefik_ingress_helm_chart_version= "10.0.0"
 
 locals {
-  image_url = var.public_docker_repo ? var.image_repo_name : "${var.image_repo_url}${var.image_repo_name}"
+  image_url = var.public_docker_repo ? var.image_repo_name : "${var.private_container_repo_url}${var.image_repo_name}"
 }
 
 resource "helm_release" "traefik" {
   name       = "traefik"
   repository = "https://helm.traefik.io/traefik"
   chart      = "traefik"
-  version    = "9.18.1"
+  version    = var.traefik_helm_chart_version
   namespace  = "kube-system"
   timeout    = "1200"
 
   values = [templatefile("${path.module}/traefik_values.yaml", {
     image     = local.image_url
-    tag       = var.image_tag
+    tag       = var.traefik_image_tag
     s3_bucket = var.s3_nlb_logs
     replicas  = 3
   })]
