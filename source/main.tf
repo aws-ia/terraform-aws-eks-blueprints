@@ -16,9 +16,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 locals {
-  tags                = merge(tomap({ "kubernetes.io/cluster/${module.eks-label.id}" = "shared" }), tomap({ "created-by" = var.terraform_version }))
-  private_subnet_tags = merge(tomap({ "kubernetes.io/cluster/${module.eks-label.id}" = "shared" }), tomap({ "kubernetes.io/role/internal-elb" = "1" }), tomap({ "created-by" = var.terraform_version }))
-  public_subnet_tags  = merge(tomap({ "kubernetes.io/cluster/${module.eks-label.id}" = "shared" }), tomap({ "kubernetes.io/role/elb" = "1" }), tomap({ "created-by" = var.terraform_version }))
+  tags                = tomap({ "created-by" = var.terraform_version })
+  private_subnet_tags = merge(tomap({ "kubernetes.io/role/internal-elb" = "1" }), tomap({ "created-by" = var.terraform_version }))
+  public_subnet_tags  = merge(tomap({ "kubernetes.io/role/elb" = "1" }), tomap({ "created-by" = var.terraform_version }))
 
   service_account_amp_ingest_name = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, "amp-ingest-account")
   service_account_amp_query_name  = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, "amp-query-account")
@@ -269,13 +269,13 @@ module "eks" {
   cluster_endpoint_private_access = var.endpoint_private_access
   cluster_endpoint_public_access  = var.endpoint_public_access
   enable_irsa                     = var.enable_irsa
-  
+
   # Windows support doesn't work if IAM resources are managed by the module,
   # due to this issue: https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1456
-  manage_worker_iam_resources     = !var.enable_windows_support
+  manage_worker_iam_resources = !var.enable_windows_support
 
   cluster_enabled_log_types = var.enabled_cluster_log_types
-  
+
   # These additional policies are effective only if 
   # manage_worker_iam_resources = true
   workers_additional_policies = [
@@ -321,8 +321,10 @@ module "eks" {
       instance_types          = var.spot_instance_type
       capacity_type           = "SPOT"
       ami_type                = var.spot_ami_type
+      
       # Conditionally set iam_role_arn if Windows support is enabled
-      iam_role_arn            = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : module.eks.worker_iam_role_arn
+      iam_role_arn = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : module.eks.worker_iam_role_arn
+      
       # kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
       k8s_labels = {
         Environment = var.environment
@@ -337,94 +339,97 @@ module "eks" {
     #----------------------------------------------------------------------------------
     // ON DEMAND WORKERS WITH PRIVATE SUBNETS
     #----------------------------------------------------------------------------------
-    # mg_m5 = {
-    #   desired_capacity = var.on_demand_desired_size
-    #   max_capacity     = var.on_demand_max_size
-    #   min_capacity     = var.on_demand_min_size
+    mg_m5 = {
+      desired_capacity = var.on_demand_desired_size
+      max_capacity     = var.on_demand_max_size
+      min_capacity     = var.on_demand_min_size
 
-    #   subnets = var.create_vpc == false ? var.private_subnet_ids : module.vpc.private_subnets
+      subnets = var.create_vpc == false ? var.private_subnet_ids : module.vpc.private_subnets
 
-    #   launch_template_id      = module.launch-templates-on-demand.launch_template_id
-    #   launch_template_version = module.launch-templates-on-demand.launch_template_latest_version
-    #   # Conditionally set iam_role_arn if Windows support is enabled
-    #   iam_role_arn            = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : module.eks.worker_iam_role_arn
- 
-    #   instance_types = var.on_demand_instance_type
-    #   capacity_type  = "ON_DEMAND"
-    #   ami_type       = var.on_demand_ami_type
+      launch_template_id      = module.launch-templates-on-demand.launch_template_id
+      launch_template_version = module.launch-templates-on-demand.launch_template_latest_version
+      
+      # Conditionally set iam_role_arn if Windows support is enabled
+      iam_role_arn = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : module.eks.worker_iam_role_arn
 
-    #   k8s_labels = {
-    #     Environment = var.environment
-    #     Zone        = var.zone
-    #     WorkerType  = "ON_DEMAND"
-    #   }
-    #   additional_tags = {
-    #     ExtraTag = var.on_demand_node_group_name
-    #     Name     = var.on_demand_node_group_name
-    #   }
-    #   //      taints = [
-    #   //        {
-    #   //          key = "dedicated"
-    #   //          value = "gpuGroup"
-    #   //          effect = "NO_SCHEDULE"
-    #   //        }
-    #   //      ]
-    # },
+      instance_types = var.on_demand_instance_type
+      capacity_type  = "ON_DEMAND"
+      ami_type       = var.on_demand_ami_type
+
+      k8s_labels = {
+        Environment = var.environment
+        Zone        = var.zone
+        WorkerType  = "ON_DEMAND"
+      }
+      additional_tags = {
+        ExtraTag = var.on_demand_node_group_name
+        Name     = var.on_demand_node_group_name
+      }
+      //      taints = [
+      //        {
+      //          key = "dedicated"
+      //          value = "gpuGroup"
+      //          effect = "NO_SCHEDULE"
+      //        }
+      //      ]
+    },
 
     #----------------------------------------------------------------------------------
     # ON DEMAND WORKERS WITH PUBLIC SUBNETS
     #----------------------------------------------------------------------------------
-    # mg-m5public = {
-    #   desired_capacity        = var.on_demand_desired_size
-    #   max_capacity            = var.on_demand_max_size
-    #   min_capacity            = var.on_demand_min_size
-    #   subnets                 = var.create_vpc == false ? var.public_subnet_ids : module.vpc.public_subnets
-    #   launch_template_id      = module.public-launch-templates-on-demand.launch_template_id
-    #   launch_template_version = module.public-launch-templates-on-demand.launch_template_latest_version
-    #   instance_types          = var.on_demand_instance_type
-    #   capacity_type           = "ON_DEMAND"
-    #   ami_type                = var.on_demand_ami_type
-    #   # Conditionally set iam_role_arn if Windows support is enabled
-    #   iam_role_arn            = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : module.eks.worker_iam_role_arn
+    mg-m5public = {
+      desired_capacity        = var.on_demand_desired_size
+      max_capacity            = var.on_demand_max_size
+      min_capacity            = var.on_demand_min_size
+      subnets                 = var.create_vpc == false ? var.public_subnet_ids : module.vpc.public_subnets
+      launch_template_id      = module.public-launch-templates-on-demand.launch_template_id
+      launch_template_version = module.public-launch-templates-on-demand.launch_template_latest_version
+      instance_types          = var.on_demand_instance_type
+      capacity_type           = "ON_DEMAND"
+      ami_type                = var.on_demand_ami_type
       
-    #   k8s_labels = {
-    #     Environment = var.environment
-    #     Zone        = var.zone
-    #     WorkerType  = "ON_DEMAND"
-    #   }
-    #   additional_tags = {
-    #     ExtraTag = var.on_demand_node_group_name
-    #     Name     = "${module.eks-label.id}-${var.on_demand_node_group_name}"
-    #   }
-    # },
+      # Conditionally set iam_role_arn if Windows support is enabled
+      iam_role_arn = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : module.eks.worker_iam_role_arn
+
+      k8s_labels = {
+        Environment = var.environment
+        Zone        = var.zone
+        WorkerType  = "ON_DEMAND"
+      }
+      additional_tags = {
+        ExtraTag = var.on_demand_node_group_name
+        Name     = "${module.eks-label.id}-${var.on_demand_node_group_name}"
+      }
+    },
 
     #----------------------------------------------------------------------------------
     # BOTTLEROCKET
     #----------------------------------------------------------------------------------
-    # brkt = {
-    #   desired_capacity        = var.bottlerocket_desired_size
-    #   max_capacity            = var.bottlerocket_max_size
-    #   min_capacity            = var.bottlerocket_min_size
-    #   subnets                 = var.create_vpc == false ? var.private_subnet_ids : module.vpc.private_subnets
-    #   launch_template_id      = module.launch-templates-bottlerocket.launch_template_id
-    #   launch_template_version = module.launch-templates-bottlerocket.launch_template_latest_version
-    #   instance_types          = var.bottlerocket_instance_type
-    #   capacity_type           = "ON_DEMAND"
-    #   # Conditionally set iam_role_arn if Windows support is enabled
-    #   iam_role_arn            = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : module.eks.worker_iam_role_arn
-    #   //      ami_type                = var.on_demand_ami_type
+    brkt = {
+      desired_capacity        = var.bottlerocket_desired_size
+      max_capacity            = var.bottlerocket_max_size
+      min_capacity            = var.bottlerocket_min_size
+      subnets                 = var.create_vpc == false ? var.private_subnet_ids : module.vpc.private_subnets
+      launch_template_id      = module.launch-templates-bottlerocket.launch_template_id
+      launch_template_version = module.launch-templates-bottlerocket.launch_template_latest_version
+      instance_types          = var.bottlerocket_instance_type
+      capacity_type           = "ON_DEMAND"
+      //      ami_type                = var.on_demand_ami_type
 
-    #   k8s_labels = {
-    #     Environment = var.environment
-    #     Zone        = var.zone
-    #     OS          = "bottlerocket"
-    #     WorkerType  = "ON_DEMAND_BOTTLEROCKET"
-    #   }
-    #   additional_tags = {
-    #     ExtraTag = var.bottlerocket_node_group_name
-    #     Name     = "${module.eks-label.id}-${var.bottlerocket_node_group_name}"
-    #   }
-    # },
+      # Conditionally set iam_role_arn if Windows support is enabled
+      iam_role_arn = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : module.eks.worker_iam_role_arn
+      
+      k8s_labels = {
+        Environment = var.environment
+        Zone        = var.zone
+        OS          = "bottlerocket"
+        WorkerType  = "ON_DEMAND_BOTTLEROCKET"
+      }
+      additional_tags = {
+        ExtraTag = var.bottlerocket_node_group_name
+        Name     = "${module.eks-label.id}-${var.bottlerocket_node_group_name}"
+      }
+    },
   }
 
   #-------------------------------------------------------------------------------------------
@@ -455,7 +460,7 @@ module "eks" {
   # Conditionally allow Worker nodes <-> primary cluster SG traffic
   # See https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/docs/faq.md#im-using-both-aws-managed-node-groups-and-self-managed-worker-groups-and-pods-scheduled-on-a-aws-managed-node-groups-are-unable-resolve-dns-even-communication-between-pods
   worker_create_cluster_primary_security_group_rules = var.enable_self_managed_nodegroups
-  
+
   # Conditionally create a self-managed node group (worker group) - either Windows or Linux
   worker_groups_launch_template = var.enable_self_managed_nodegroups ? [{
     name     = var.self_managed_nodegroup_name
@@ -473,7 +478,7 @@ module "eks" {
     asg_max_size              = var.self_managed_node_max_size
 
     kubelet_extra_args = "--node-labels=Environment=${var.environment},Zone=${var.zone},WorkerType=SELF_MANAGED_${upper(local.self_managed_node_platform)}"
-    
+
     # Extra tags, needed for cluster autoscaler autodiscovery
     tags = var.cluster_autoscaler_enable ? [{
       key                 = "k8s.io/cluster-autoscaler/enabled",
@@ -577,10 +582,10 @@ module "launch-templates-bottlerocket" {
 # Create IAM resources for Linux and Windows node roles, instance profiles
 # This is needed due to this issue: https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1456
 module "windows_support_iam" {
-  count                         = var.enable_windows_support ? 1 : 0
-  source                        = "../modules/windows-support/iam"
-  cluster_name                  = module.eks-label.id
-  tags                          = module.eks-label.tags
+  count        = var.enable_windows_support ? 1 : 0
+  source       = "../modules/windows-support/iam"
+  cluster_name = module.eks-label.id
+  tags         = module.eks-label.tags
   # Conditionally attach specific policies to the node IAM roles
   aws_managed_prometheus_enable = var.aws_managed_prometheus_enable
   cluster_autoscaler_enable     = var.cluster_autoscaler_enable
@@ -615,7 +620,7 @@ module "aws-eks-addon" {
 # IAM Module
 # ---------------------------------------------------------------------------------------------------------------------
 module "iam" {
-  source      = "../modules/iam"
+  source                    = "../modules/iam"
   environment               = var.environment
   tenant                    = var.tenant
   zone                      = var.zone

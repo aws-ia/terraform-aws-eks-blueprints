@@ -2,8 +2,6 @@
 
 Install [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html).
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-
 ## Requirements
 
 No requirements.
@@ -28,9 +26,8 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | n/a | `string` | n/a | yes |
+| <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Cluster name | `string` | n/a | yes |
 
 ## Outputs
 
 No outputs.
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

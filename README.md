@@ -144,6 +144,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 3. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 4. [wget](https://www.gnu.org/software/wget/) 
 5. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+6. [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) - currently needed to enable Windows support
     
 ## Deployment Steps
 The following steps walks you through the deployment of example [DEV cluster](live/preprod/eu-west-1/application/dev/base.tfvars) configuration. This config deploys a private EKS cluster with public and private subnets. 
