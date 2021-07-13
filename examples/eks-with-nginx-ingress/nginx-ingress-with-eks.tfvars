@@ -136,6 +136,7 @@ spot_min_size        = 3
 fargate_profile_namespace = "default"
 # Enable logging only when you create a Fargate profile
 fargate_fluent_bit_enable = false
+
 #---------------------------------------------------------#
 # ENABLE HELM MODULES
 # Please note that you may need to download the docker images for each
@@ -143,7 +144,7 @@ fargate_fluent_bit_enable = false
 #          README with instructions available in each HELM module under helm/
 #---------------------------------------------------------#
 # Enable this if worker Node groups has access to internet to download the docker images
-# Or Make it false and set the private contianer image repo url in source/main.tf; currently this defaults to ECR
+
 public_docker_repo = true
 
 #---------------------------------------------------------#
@@ -152,6 +153,7 @@ public_docker_repo = true
 metrics_server_enable            = true
 metric_server_image_tag          = "v0.4.2"
 metric_server_helm_chart_version = "2.12.1"
+
 #---------------------------------------------------------#
 # ENABLE CLUSTER AUTOSCALER
 #---------------------------------------------------------#
@@ -159,12 +161,18 @@ cluster_autoscaler_enable       = true
 cluster_autoscaler_image_tag    = "v1.20.0"
 cluster_autoscaler_helm_version = "9.9.2"
 
-//---------------------------------------------------------//
-// ENABLE ALB INGRESS CONTROLLER
-//---------------------------------------------------------//
-lb_ingress_controller_enable = true
-aws_lb_image_tag             = "v2.2.1"
-aws_lb_helm_chart_version    = "1.2.3"
+#---------------------------------------------------------#
+# ENABLE AWS_FLUENT-BIT
+#---------------------------------------------------------#
+aws_for_fluent_bit_enable = true
+ekslog_retention_in_days  = 1
+
+#---------------------------------------------------------#
+# ENABLE NGINX INGRESS CONTROLLER
+#---------------------------------------------------------#
+nginx_ingress_controller_enable = true
+nginx_helm_chart_version        = "3.33.0"
+nginx_image_tag                 = "v0.47.0"
 
 
 
@@ -172,10 +180,10 @@ aws_lb_helm_chart_version    = "1.2.3"
 # ENABLE PROMETHEUS
 #---------------------------------------------------------//
 # Creates the AMP workspace and all the relevent IAM Roles
-aws_managed_prometheus_enable = true
+aws_managed_prometheus_enable = false
 
 # Deploys Pometheus server with remote write to AWS AMP Workspace
-prometheus_enable             = true
+prometheus_enable             = false
 prometheus_helm_chart_version = "14.3.1"
 prometheus_image_tag          = "v2.26.0"
 alert_manager_image_tag       = "v0.21.0"

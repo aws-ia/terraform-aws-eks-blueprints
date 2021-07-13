@@ -346,6 +346,12 @@ variable "lb_ingress_controller_enable" {
   description = "enabling LB Ingress Controller on eks cluster"
 }
 
+variable "nginx_ingress_controller_enable" {
+  type        = bool
+  default     = false
+  description = "enabling Nginx Ingress Controller on eks cluster"
+}
+
 variable "aws_for_fluent_bit_enable" {
   type        = bool
   default     = false
@@ -389,33 +395,43 @@ variable "aws_lb_helm_chart_version" {
 }
 
 variable "metric_server_image_tag" {
-
+  default = "v0.4.2"
 }
-variable "metric_server_helm_chart_version" {
 
+variable "metric_server_helm_chart_version" {
+  default = "2.12.1"
 }
 
 variable "cluster_autoscaler_image_tag" {
+  default = "v1.20.0"
 }
 
 variable "cluster_autoscaler_helm_version" {
+  default = "9.9.2"
 }
 
 variable "prometheus_helm_chart_version" {
+  default = "14.3.1"
 }
+
 variable "prometheus_image_tag" {
+  default = "v2.26.0"
 }
 
 variable "alert_manager_image_tag" {
+  default = "v0.21.0"
 }
 
 variable "configmap_reload_image_tag" {
+  default = "v0.5.0"
 }
 
 variable "node_exporter_image_tag" {
+  default = "v1.1.2"
 }
 
 variable "pushgateway_image_tag" {
+  default = "v1.3.1"
 }
 
 variable "prometheus_enable" {
@@ -427,10 +443,21 @@ variable "aws_managed_prometheus_enable" {
 }
 
 variable "traefik_helm_chart_version" {
+  default = "10.0.0"
 }
 
 variable "traefik_image_tag" {
+  default = "v2.4.9"
 }
+
+variable "nginx_helm_chart_version" {
+  default = "3.33.0"
+}
+
+variable "nginx_image_tag" {
+  default = "v0.47.0"
+}
+
 variable "aws_for_fluent_bit_image_tag" {
   default     = "2.13.0"
   description = "Docker image tag for aws_for_fluent_bit"
