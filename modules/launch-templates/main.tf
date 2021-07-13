@@ -49,10 +49,6 @@ resource "aws_launch_template" "default" {
   image_id = var.use_custom_ami ? var.custom_ami_id : ""
   //  instance_type = var.instance_type
 
-  iam_instance_profile {
-    arn = var.iam_instance_profile_arn  
-  }
-
   monitoring {
     enabled = true
   }

@@ -37,11 +37,6 @@ variable "custom_ami_id" {
   default     = null
   description = "Custom AMI ID, e.g. /aws/service/bottlerocket/aws-k8s-1.19/x86_64/latest/image_id"
 }
-variable "iam_instance_profile_arn" {
-  type        = string
-  default     = null
-  description = "IAM instance profile ARN"
-}
 variable "public_launch_template" {
   default = false
 }

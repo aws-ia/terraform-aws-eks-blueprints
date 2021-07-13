@@ -325,7 +325,7 @@ variable "fargate_profile_namespace" {
 }
 
 # Self-managed NodeGroup (Worker Group)
-variable "enable_worker_groups" {
+variable "enable_self_managed_nodegroups" {
   description = "Enable self-managed worker groups"
   type        = bool
   default     = false
@@ -335,37 +335,32 @@ variable "enable_windows_support" {
   type        = bool
   default     = false
 }
-variable "worker_group_name" {
+variable "self_managed_nodegroup_name" {
   type        = string
-  default     = "ng-windows"
+  default     = "ng-linux"
   description = "Self-managed worker node group name"
 }
-variable "worker_group_platform" {
-  type        = string
-  default     = "windows"
-  description = "Self-managed worker node group platform"
-}
-variable "worker_disk_size" {
+variable "self_managed_node_volume_size" {
   type        = number
-  default     = 30
-  description = "Disk size in GiB for worker nodes. Defaults to 30. Terraform will only perform drift detection if a configuration value is provided"
+  default     = 50
+  description = "Volume size in GiB for worker nodes. Defaults to 50. Terraform will only perform drift detection if a configuration value is provided"
 }
-variable "worker_instance_types" {
+variable "self_managed_node_instance_types" {
   type        = list(string)
   default     = ["m5.large", "m5a.large", "m5n.large"]
   description = "Set of instance types associated with the EKS Node Group"
 }
-variable "worker_desired_size" {
+variable "self_managed_node_desired_size" {
   type        = number
   default     = 3
   description = "Desired number of worker nodes"
 }
-variable "worker_max_size" {
+variable "self_managed_node_max_size" {
   type        = number
   default     = 3
   description = "The maximum size of the AutoScaling Group"
 }
-variable "worker_min_size" {
+variable "self_managed_node_min_size" {
   type        = number
   default     = 3
   description = "The minimum size of the AutoScaling Group"
