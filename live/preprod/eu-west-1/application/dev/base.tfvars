@@ -130,6 +130,18 @@ spot_max_size        = 6
 spot_min_size        = 3
 
 #---------------------------------------------------------#
+# SELF-MANAGED WINDOWS NODE GROUP (WORKER GROUP)
+#---------------------------------------------------------#
+enable_worker_groups   = false
+enable_windows_support = false
+
+worker_disk_size    = 50
+worker_desired_size = 2
+worker_max_size     = 3
+worker_min_size     = 1
+
+
+#---------------------------------------------------------#
 # Creates a Fargate profile for default namespace
 #---------------------------------------------------------#
 fargate_profile_namespace = "default"

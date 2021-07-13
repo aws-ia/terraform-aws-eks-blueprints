@@ -16,17 +16,49 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-output "eks_autoscaler_policy_arn" {
-  description = "EKS autoscaler policy ARN"
-  value       = var.cluster_autoscaler_enable ? aws_iam_policy.eks_autoscaler_policy[0].arn : null
+data "aws_partition" "current" {}
+
+data "aws_iam_policy_document" "windows_assume_role_policy" {
+  statement {
+    sid = "EKSWorkerAssumeRole"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = [local.ec2_principal]
+    }
+  }
 }
 
-output "eks_rbac_admin_arn" {
-  description = "EKS Admin ARN"
-  value       = aws_iam_role.cluster_admin_access.arn
+data "aws_iam_policy_document" "linux_assume_role_policy" {
+  statement {
+    sid = "EKSWorkerAssumeRole"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = [local.ec2_principal]
+    }
+  }
 }
 
-output "eks_rbac_devs_arn" {
-  description = "EKS Developer ARN"
-  value       = aws_iam_role.cluster_devs_access.arn
+data "aws_iam_policy_document" "eks_assume_role_policy" {
+  statement {
+    sid = "EKSWorkerAssumeRole"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = [local.eks_principal]
+    }
+  }
 }

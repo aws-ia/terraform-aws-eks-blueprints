@@ -16,17 +16,23 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-output "eks_autoscaler_policy_arn" {
-  description = "EKS autoscaler policy ARN"
-  value       = var.cluster_autoscaler_enable ? aws_iam_policy.eks_autoscaler_policy[0].arn : null
+output "windows_instance_profile" {
+  description = "Windows node IAM instance profile"
+  value       = aws_iam_instance_profile.windows
 }
 
-output "eks_rbac_admin_arn" {
-  description = "EKS Admin ARN"
-  value       = aws_iam_role.cluster_admin_access.arn
+output "windows_role" {
+  description = "Windows node IAM role"
+  value       = aws_iam_role.windows
 }
 
-output "eks_rbac_devs_arn" {
-  description = "EKS Developer ARN"
-  value       = aws_iam_role.cluster_devs_access.arn
+output "linux_instance_profile" {
+  description = "Linux node IAM instance profile"
+  value       = aws_iam_instance_profile.linux
 }
+
+output "linux_role" {
+  description = "Linux node IAM role"
+  value       = aws_iam_role.linux
+}
+

@@ -196,34 +196,38 @@ resource "aws_iam_group_policy_attachment" "eks_admins_group_policy" {
   group      = aws_iam_group.eks_admins_group.name
   policy_arn = aws_iam_policy.eks_admins_policy.arn
 }
-//#-------------------------------------------------------------------------------------------------
-//#--------- IAM Policy for Cluster autoscalar Deployment; Policy added to eks module
-//#--------------------------------------------------------------------------------------------------
-//resource "aws_iam_policy" "eks-autoscaler-policy" {
-//  name        = "eks-autoscaler-policy"
-//  path        = "/"
-//  description = "eks autoscaler policy"
-//
-//  policy = <<EOF
-//{
-//  "Version": "2012-10-17",
-//  "Statement": [
-//    {
-//      "Effect": "Allow",
-//      "Action": [
-//        "autoscaling:DescribeAutoScalingGroups",
-//        "autoscaling:DescribeAutoScalingInstances",
-//        "autoscaling:DescribeLaunchConfigurations",
-//        "autoscaling:DescribeTags",
-//        "autoscaling:SetDesiredCapacity",
-//        "autoscaling:TerminateInstanceInAutoScalingGroup"
-//      ],
-//      "Resource": "*"
-//    }
-//  ]
-//}
-//EOF
-//}
+
+#-------------------------------------------------------------------------------------------------
+#--------- IAM Policy for Cluster autoscalar Deployment; Policy added to eks module
+#--------------------------------------------------------------------------------------------------
+resource "aws_iam_policy" "eks_autoscaler_policy" {
+  count = var.cluster_autoscaler_enable ? 1 : 0
+
+  name        = "eks-autoscaler-policy"
+  path        = "/"
+  description = "eks autoscaler policy"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "autoscaling:DescribeAutoScalingGroups",
+        "autoscaling:DescribeAutoScalingInstances",
+        "autoscaling:DescribeLaunchConfigurations",
+        "autoscaling:DescribeTags",
+        "autoscaling:SetDesiredCapacity",
+        "autoscaling:TerminateInstanceInAutoScalingGroup"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
 #------------------------------------------------------------------------------------------
 # Create IAM User and attach user to EKS Admins IAM Group
 # Please note that this can be done outside the module so that you can provision more users in future

@@ -271,8 +271,15 @@ module "eks" {
   cluster_endpoint_private_access = var.endpoint_private_access
   cluster_endpoint_public_access  = var.endpoint_public_access
   enable_irsa                     = var.enable_irsa
+  
+  # Windows support doesn't work if IAM resources are managed by the module,
+  # due to this issue: https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1456
+  manage_worker_iam_resources     = !var.enable_windows_support
 
   cluster_enabled_log_types = var.enabled_cluster_log_types
+  
+  # These additional policies are effective only if 
+  # manage_worker_iam_resources = true
   workers_additional_policies = [
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
     "arn:aws:iam::aws:policy/AutoScalingFullAccess",
@@ -316,7 +323,9 @@ module "eks" {
       instance_types          = var.spot_instance_type
       capacity_type           = "SPOT"
       ami_type                = var.spot_ami_type
-      #kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
+      # Conditionally set iam_role_arn if Windows support is enabled
+      iam_role_arn            = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : ""
+      # kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
       k8s_labels = {
         Environment = var.environment
         Zone        = var.zone
@@ -339,7 +348,9 @@ module "eks" {
 
       launch_template_id      = module.launch-templates-on-demand.launch_template_id
       launch_template_version = module.launch-templates-on-demand.launch_template_latest_version
-
+      # Conditionally set iam_role_arn if Windows support is enabled
+      iam_role_arn            = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : ""
+ 
       instance_types = var.on_demand_instance_type
       capacity_type  = "ON_DEMAND"
       ami_type       = var.on_demand_ami_type
@@ -365,7 +376,7 @@ module "eks" {
     #----------------------------------------------------------------------------------
     # ON DEMAND WORKERS WITH PUBLIC SUBNETS
     #----------------------------------------------------------------------------------
-    mg-m5-on-demand-public = {
+    mg-m5-od-pub = {
       desired_capacity        = var.on_demand_desired_size
       max_capacity            = var.on_demand_max_size
       min_capacity            = var.on_demand_min_size
@@ -375,7 +386,9 @@ module "eks" {
       instance_types          = var.on_demand_instance_type
       capacity_type           = "ON_DEMAND"
       ami_type                = var.on_demand_ami_type
-
+      # Conditionally set iam_role_arn if Windows support is enabled
+      iam_role_arn            = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : ""
+      
       k8s_labels = {
         Environment = var.environment
         Zone        = var.zone
@@ -399,6 +412,8 @@ module "eks" {
       launch_template_version = module.launch-templates-bottlerocket.launch_template_latest_version
       instance_types          = var.bottlerocket_instance_type
       capacity_type           = "ON_DEMAND"
+      # Conditionally set iam_role_arn if Windows support is enabled
+      iam_role_arn            = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : ""
       //      ami_type                = var.on_demand_ami_type
 
       k8s_labels = {
@@ -412,27 +427,61 @@ module "eks" {
         Name     = "${module.eks-label.id}-${var.bottlerocket_node_group_name}"
       }
     },
-    #----------------------------------------------------------------------------------
-    #   Using Launch Templates With Both Spot and On Demand   - self managed spot and on-demand
-    #----------------------------------------------------------------------------------
-    /*
-        worker_groups_launch_template = [{
-          name                    = "mixed-demand-spot"
-          override_instance_types = ["m5.large", "m5a.large", "m4.large"]
-          root_encrypted          = true
-          root_volume_size        = 50
-
-          asg_min_size                             = 2
-          asg_desired_capacity                     = 2
-          on_demand_base_capacity                  = 3
-          on_demand_percentage_above_base_capacity = 25
-          asg_max_size                             = 20
-          spot_instance_pools                      = 3
-
-          kubelet_extra_args = "--node-labels=node.kubernetes.io/lifecycle=`curl -s http://169.254.169.254/latest/meta-data/instance-life-cycle`"
-        }]
-        */
   }
+
+  #-------------------------------------------------------------------------------------------
+  #   Using Launch Templates for self-managed nodegroup with Both Spot and On Demand instances
+  #-------------------------------------------------------------------------------------------
+  /*
+  worker_groups_launch_template = var.enable_worker_groups ? [{
+    name                    = "mixed-demand-spot"
+    override_instance_types = ["m5.large", "m5a.large", "m4.large"]
+    root_encrypted          = true
+    root_volume_size        = 50
+
+    asg_min_size                             = 2
+    asg_desired_capacity                     = 2
+    on_demand_base_capacity                  = 3
+    on_demand_percentage_above_base_capacity = 25
+    asg_max_size                             = 20
+    spot_instance_pools                      = 3
+
+    kubelet_extra_args = "--node-labels=node.kubernetes.io/lifecycle=`curl -s http://169.254.169.254/latest/meta-data/instance-life-cycle`"
+  }] : []
+  */
+
+  #----------------------------------------------------------------------------------
+  #   Self-managed node group (worker group)
+  #----------------------------------------------------------------------------------
+
+  # Create a self-managed node group (worker group) - either Windows or Linux
+  worker_create_cluster_primary_security_group_rules = var.enable_worker_groups
+  worker_groups_launch_template = var.enable_worker_groups ? [{
+    name     = var.worker_group_name
+    platform = var.worker_group_platform
+
+    # Override default Windows image if needed. Uncomment / update the data source in data.tf accordingly.
+    # image_id                 = var.enable_windows_support ? data.aws_ami.windows2019core.id : data.aws_ami.bottlerocket.id
+    override_instance_types = var.worker_instance_types
+    root_encrypted          = true
+    root_volume_size        = var.worker_disk_size
+
+    iam_instance_profile_name = var.enable_windows_support ? module.windows_support_iam[0].windows_instance_profile.name : ""
+    asg_desired_capacity      = var.worker_desired_size
+    asg_min_size              = var.worker_min_size
+    asg_max_size              = var.worker_max_size
+
+    # Extra tags, needed for cluster autoscaler autodiscovery
+    tags = var.cluster_autoscaler_enable ? [{
+      key                 = "k8s.io/cluster-autoscaler/enabled",
+      value               = true,
+      propagate_at_launch = true
+      }, {
+      key                 = "k8s.io/cluster-autoscaler/${module.eks-label.id}",
+      value               = "owned",
+      propagate_at_launch = true
+    }] : []
+  }] : []
 
   #----------------------------------------------------------------------------------
   # Fargate profile for default namespace
@@ -476,6 +525,8 @@ module "public-launch-templates-on-demand" {
   cluster_name             = module.eks.cluster_id
   volume_size              = "50"
   worker_security_group_id = module.eks.worker_security_group_id
+  # Conditionally set iam_role_arn if Windows support is enabled
+  iam_instance_profile_arn = var.enable_windows_support ? module.windows_support_iam[0].linux_instance_profile.arn : ""
   node_group_name          = var.on_demand_node_group_name
   tags                     = module.eks-label.tags
   cluster_auth_base64      = module.eks.cluster_certificate_authority_data
@@ -487,6 +538,8 @@ module "launch-templates-on-demand" {
   source                   = "../modules/launch-templates"
   cluster_name             = module.eks.cluster_id
   volume_size              = "50"
+  # Conditionally set iam_role_arn if Windows support is enabled
+  iam_instance_profile_arn = var.enable_windows_support ? module.windows_support_iam[0].linux_instance_profile.arn : ""
   worker_security_group_id = module.eks.worker_security_group_id
   node_group_name          = var.on_demand_node_group_name
   tags                     = module.eks-label.tags
@@ -498,6 +551,8 @@ module "launch-templates-spot" {
   source                   = "../modules/launch-templates"
   cluster_name             = module.eks.cluster_id
   volume_size              = "50"
+  # Conditionally set iam_role_arn if Windows support is enabled
+  iam_instance_profile_arn = var.enable_windows_support ? module.windows_support_iam[0].linux_instance_profile.arn : ""
   worker_security_group_id = module.eks.worker_security_group_id
   node_group_name          = var.spot_node_group_name
   tags                     = module.eks-label.tags
@@ -509,13 +564,40 @@ module "launch-templates-bottlerocket" {
   source                   = "../modules/launch-templates"
   cluster_name             = module.eks.cluster_id
   volume_size              = "50"
+  # Conditionally set iam_role_arn if Windows support is enabled
+  iam_instance_profile_arn = var.enable_windows_support ? module.windows_support_iam[0].linux_instance_profile.arn : ""
   worker_security_group_id = module.eks.worker_security_group_id
   node_group_name          = var.bottlerocket_node_group_name
   tags                     = module.eks-label.tags
-  bottlerocket_ami         = var.bottlerocket_ami
-  self_managed             = true
+  use_custom_ami           = true
+  custom_ami_id            = data.aws_ami.bottlerocket.id
   cluster_auth_base64      = module.eks.cluster_certificate_authority_data
   cluster_endpoint         = module.eks.cluster_endpoint
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Windows Support
+# ---------------------------------------------------------------------------------------------------------------------
+
+# Create IAM resources for Linux and Windows node roles, instance profiles
+# This is needed due to this issue: https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1456
+module "windows_support_iam" {
+  count                         = var.enable_windows_support ? 1 : 0
+  source                        = "../modules/windows-support/iam"
+  cluster_name                  = module.eks-label.id
+  tags                          = module.eks-label.tags
+  # Conditionally attach specific policies to the node IAM roles
+  aws_managed_prometheus_enable = var.aws_managed_prometheus_enable
+  cluster_autoscaler_enable     = var.cluster_autoscaler_enable
+  autoscaler_policy_arn         = var.cluster_autoscaler_enable ? module.iam.eks_autoscaler_policy_arn : ""
+}
+
+# Create Windows-specific VPC resource controller, admission webhook
+module "windows_support_vpc_resources" {
+  count        = var.enable_windows_support ? 1 : 0
+  source       = "../modules/windows-support/vpc-resources"
+  cluster_name = module.eks.cluster_id
+  depends_on   = [module.eks]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -539,10 +621,11 @@ module "aws-eks-addon" {
 # ---------------------------------------------------------------------------------------------------------------------
 module "iam" {
   source      = "../modules/iam"
-  environment = var.environment
-  tenant      = var.tenant
-  zone        = var.zone
-  account_id  = data.aws_caller_identity.current.account_id
+  environment               = var.environment
+  tenant                    = var.tenant
+  zone                      = var.zone
+  account_id                = data.aws_caller_identity.current.account_id
+  cluster_autoscaler_enable = var.cluster_autoscaler_enable
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

@@ -24,7 +24,7 @@ all-test: clean tf-plan-eks
 
 .PHONY: clean
 clean:
-	rm -rf .terraform
+	cd source && rm -rf .terraform .terraform.lock.hcl
 
 .PHONY: tf-plan-eks
 tf-plan-eks:

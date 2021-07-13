@@ -46,8 +46,12 @@ resource "aws_launch_template" "default" {
 
   ebs_optimized = true
 
-  image_id = var.self_managed ? var.bottlerocket_ami : ""
+  image_id = var.use_custom_ami ? var.custom_ami_id : ""
   //  instance_type = var.instance_type
+
+  iam_instance_profile {
+    arn = var.iam_instance_profile_arn  
+  }
 
   monitoring {
     enabled = true
@@ -64,7 +68,7 @@ resource "aws_launch_template" "default" {
     security_groups             = [var.worker_security_group_id]
   }
 
-  user_data = var.self_managed ? base64encode(
+  user_data = var.use_custom_ami ? base64encode(
     data.template_file.launch_template_bottle_rocket_userdata.rendered,
     ) : base64encode(
     data.template_file.launch_template_userdata.rendered,

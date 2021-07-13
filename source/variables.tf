@@ -324,6 +324,53 @@ variable "fargate_profile_namespace" {
   description = "AWS fargate profile Namespace"
 }
 
+# Self-managed NodeGroup (Worker Group)
+variable "enable_worker_groups" {
+  description = "Enable self-managed worker groups"
+  type        = bool
+  default     = false
+}
+variable "enable_windows_support" {
+  description = "Enable Windows support in the cluster"
+  type        = bool
+  default     = false
+}
+variable "worker_group_name" {
+  type        = string
+  default     = "ng-windows"
+  description = "Self-managed worker node group name"
+}
+variable "worker_group_platform" {
+  type        = string
+  default     = "windows"
+  description = "Self-managed worker node group platform"
+}
+variable "worker_disk_size" {
+  type        = number
+  default     = 30
+  description = "Disk size in GiB for worker nodes. Defaults to 30. Terraform will only perform drift detection if a configuration value is provided"
+}
+variable "worker_instance_types" {
+  type        = list(string)
+  default     = ["m5.large", "m5a.large", "m5n.large"]
+  description = "Set of instance types associated with the EKS Node Group"
+}
+variable "worker_desired_size" {
+  type        = number
+  default     = 3
+  description = "Desired number of worker nodes"
+}
+variable "worker_max_size" {
+  type        = number
+  default     = 3
+  description = "The maximum size of the AutoScaling Group"
+}
+variable "worker_min_size" {
+  type        = number
+  default     = 3
+  description = "The minimum size of the AutoScaling Group"
+}
+
 variable "metrics_server_enable" {
   type        = bool
   default     = false

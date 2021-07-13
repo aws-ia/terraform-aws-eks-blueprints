@@ -16,17 +16,31 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-output "eks_autoscaler_policy_arn" {
-  description = "EKS autoscaler policy ARN"
-  value       = var.cluster_autoscaler_enable ? aws_iam_policy.eks_autoscaler_policy[0].arn : null
+variable "cluster_name" {
+  type        = string
+  description = "Cluster name"
 }
-
-output "eks_rbac_admin_arn" {
-  description = "EKS Admin ARN"
-  value       = aws_iam_role.cluster_admin_access.arn
+variable "path" {
+  type        = string
+  default     = "/"
+  description = "IAM resource path, e.g. /dev/"
 }
-
-output "eks_rbac_devs_arn" {
-  description = "EKS Developer ARN"
-  value       = aws_iam_role.cluster_devs_access.arn
+variable "tags" {
+  type        = map(any)
+  description = "Tags for the IAM resources"
+}
+variable "autoscaler_policy_arn" {
+  type        = string
+  description = "Cluster Autoscaler IAM policy ARN"
+  default     = null
+}
+variable "aws_managed_prometheus_enable" {
+  type        = bool
+  description = "Enable AWS-managed Prometheus"
+  default     = false
+}
+variable "cluster_autoscaler_enable" {
+  type        = bool
+  description = "Enable AWS-managed Prometheus"
+  default     = false
 }

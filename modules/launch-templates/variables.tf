@@ -29,13 +29,18 @@ variable "volume_size" {
 }
 variable "tags" {}
 variable "worker_security_group_id" {}
-variable "bottlerocket_ami" {
-  type        = string
-  default     = "ami-0326716ad575410ab"
-  description = "/aws/service/bottlerocket/aws-k8s-1.19/x86_64/latest/image_id"
-}
-variable "self_managed" {
+variable "use_custom_ami" {
   default = false
+}
+variable "custom_ami_id" {
+  type        = string
+  default     = null
+  description = "Custom AMI ID, e.g. /aws/service/bottlerocket/aws-k8s-1.19/x86_64/latest/image_id"
+}
+variable "iam_instance_profile_arn" {
+  type        = string
+  default     = null
+  description = "IAM instance profile ARN"
 }
 variable "public_launch_template" {
   default = false
