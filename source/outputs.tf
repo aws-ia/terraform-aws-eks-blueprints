@@ -38,9 +38,9 @@ output "configure_kubectl" {
 }
 
 output "amp_work_id" {
-  value = module.aws_managed_prometheus[0].amp_workspace_id
+  value = var.prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : "AMP not enabled"
 }
 
 output "amp_work_arn" {
-  value = module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn
+  value = var.prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : "AMP not enabled"
 }

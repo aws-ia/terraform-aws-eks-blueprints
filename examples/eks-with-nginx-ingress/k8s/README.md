@@ -8,7 +8,7 @@
     
 ## Step2: Get DNS Name
 
-    Get the DNS name for AWS ELB created by the Nginx Ingress Controller deployment from EC2 Console.
+    Get the DNS name for AWS LB created by the Nginx Ingress Controller deployment from EC2 Console.
     
 
 ## Step3: Test the Service

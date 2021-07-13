@@ -632,9 +632,9 @@ module "helm" {
   prometheus_helm_chart_version   = var.prometheus_helm_chart_version
   prometheus_image_tag            = var.prometheus_image_tag
   pushgateway_image_tag           = var.pushgateway_image_tag
-  amp_ingest_role_arn             = module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn
+  amp_ingest_role_arn             = var.prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : ""
   service_account_amp_ingest_name = local.service_account_amp_ingest_name
-  amp_workspace_id                = module.aws_managed_prometheus[0].amp_workspace_id
+  amp_workspace_id                = var.prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : ""
   region                          = data.aws_region.current.id
 
   depends_on = [module.eks]

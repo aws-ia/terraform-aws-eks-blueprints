@@ -180,10 +180,10 @@ nginx_image_tag                 = "v0.47.0"
 # ENABLE PROMETHEUS
 #---------------------------------------------------------//
 # Creates the AMP workspace and all the relevent IAM Roles
-aws_managed_prometheus_enable = true
+aws_managed_prometheus_enable = false
 
 # Deploys Pometheus server with remote write to AWS AMP Workspace
-prometheus_enable             = true
+prometheus_enable             = false
 prometheus_helm_chart_version = "14.3.1"
 prometheus_image_tag          = "v2.26.0"
 alert_manager_image_tag       = "v0.21.0"

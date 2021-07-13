@@ -13,7 +13,7 @@ controller:
       service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '60'
       service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: 'true'
       service.beta.kubernetes.io/aws-load-balancer-internal: "false"
-     # service.beta.kubernetes.io/aws-load-balancer-type: "nlb"                       #NLB support is deprecated from kube currently so ingress-nginx provisions classic LB.
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 
   # Configures the ports the nginx-controller listens on
   containerPort:
