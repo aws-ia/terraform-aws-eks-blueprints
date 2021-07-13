@@ -365,7 +365,7 @@ module "eks" {
     #----------------------------------------------------------------------------------
     # ON DEMAND WORKERS WITH PUBLIC SUBNETS
     #----------------------------------------------------------------------------------
-    mg-m5-on-demand-public = {
+    mg-m5public = {
       desired_capacity        = var.on_demand_desired_size
       max_capacity            = var.on_demand_max_size
       min_capacity            = var.on_demand_min_size
@@ -437,7 +437,6 @@ module "eks" {
   #----------------------------------------------------------------------------------
   # Fargate profile for default namespace
   #----------------------------------------------------------------------------------
-
   fargate_profiles = {
     fg-ns-default = {
       name = var.fargate_profile_namespace
@@ -605,6 +604,11 @@ module "helm" {
   eks_oidc_issuer_url          = module.eks.cluster_oidc_issuer_url
   eks_oidc_provider_arn        = module.eks.oidc_provider_arn
 
+  # ------- Nginx Ingress Controller
+  nginx_ingress_controller_enable = var.nginx_ingress_controller_enable
+  nginx_helm_chart_version        = var.nginx_helm_chart_version
+  nginx_image_tag                 = var.nginx_image_tag
+
   # ------- AWS Fluent bit for Node Groups
   aws_for_fluent_bit_enable             = var.aws_for_fluent_bit_enable
   ekslog_retention_in_days              = var.ekslog_retention_in_days
@@ -632,4 +636,6 @@ module "helm" {
   service_account_amp_ingest_name = local.service_account_amp_ingest_name
   amp_workspace_id                = module.aws_managed_prometheus[0].amp_workspace_id
   region                          = data.aws_region.current.id
+
+  depends_on = [module.eks]
 }

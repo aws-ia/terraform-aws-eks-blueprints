@@ -59,6 +59,16 @@ module "traefik_ingress" {
   //  tls_cert_arn = ""
 }
 
+module "nginx_ingress" {
+  count                      = var.nginx_ingress_controller_enable == true ? 1 : 0
+  source                     = "./nginx_ingress"
+  private_container_repo_url = var.private_container_repo_url
+  account_id                 = data.aws_caller_identity.current.account_id
+  public_docker_repo         = var.public_docker_repo
+  nginx_helm_chart_version   = var.nginx_helm_chart_version
+  nginx_image_tag            = var.nginx_image_tag
+}
+
 module "aws-for-fluent-bit" {
   count                                 = var.aws_for_fluent_bit_enable == true ? 1 : 0
   source                                = "./aws-for-fluent-bit"
