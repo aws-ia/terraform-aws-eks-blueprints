@@ -132,9 +132,9 @@ spot_min_size        = 3
 #---------------------------------------------------------#
 # SELF-MANAGED WINDOWS NODE GROUP (WORKER GROUP)
 #---------------------------------------------------------#
-enable_self_managed_nodegroups = true
-enable_windows_support         = true
-self_managed_nodegroup_name    = "ng-windows"
+# enable_self_managed_nodegroups = true
+# enable_windows_support         = true
+# self_managed_nodegroup_name    = "ng-windows"
 
 #---------------------------------------------------------#
 # Creates a Fargate profile for default namespace
