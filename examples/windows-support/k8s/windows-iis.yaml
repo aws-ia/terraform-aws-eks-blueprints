@@ -14,15 +14,11 @@ spec:
   selector:
     matchLabels:
       app: iis
-      tier: backend
-      track: stable
   replicas: 1
   template:
     metadata:
       labels:
         app: iis
-        tier: backend
-        track: stable
     spec:
       containers:
       - name: iis
@@ -54,7 +50,5 @@ spec:
     targetPort: 80
   selector:
     app: iis
-    tier: backend
-    track: stable
   sessionAffinity: None
   type: LoadBalancer

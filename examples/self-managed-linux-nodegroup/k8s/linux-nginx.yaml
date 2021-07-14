@@ -13,12 +13,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      run: nginx
+      app: nginx
   replicas: 1
   template:
     metadata:
       labels:
-        run: nginx
+        app: nginx
     spec:
       containers:
       - name: nginx
@@ -31,6 +31,7 @@ spec:
             memory: 128Mi
       nodeSelector:
         kubernetes.io/os: linux
+        WorkerType: SELF_MANAGED_LINUX
 ---
 apiVersion: v1
 kind: Service
@@ -43,6 +44,6 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    run: nginx
+    app: nginx
   sessionAffinity: None
-  type: ClusterIP
+  type: LoadBalancer

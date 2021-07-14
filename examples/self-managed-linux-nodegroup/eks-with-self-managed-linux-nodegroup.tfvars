@@ -133,10 +133,9 @@ spot_min_size        = 3
 # SELF-MANAGED WINDOWS NODE GROUP (WORKER GROUP)
 #---------------------------------------------------------#
 enable_self_managed_nodegroups = true
-enable_windows_support         = true
-self_managed_nodegroup_name    = "ng-windows"
 
 # Below are the default values, uncomment and update if needed
+# self_managed_nodegroup_name    = "ng-linux"
 # self_managed_node_volume_size  = 50
 # self_managed_node_desired_size = 3
 # self_managed_node_max_size     = 3

@@ -31,21 +31,22 @@ This module provisions the following EKS resources
 
 ## EKS Cluster resources
 
-3. [EKS Cluster with multiple networking options](https://aws.amazon.com/blogs/containers/de-mystifying-cluster-networking-for-amazon-eks-worker-nodes/)
+1. [EKS Cluster with multiple networking options](https://aws.amazon.com/blogs/containers/de-mystifying-cluster-networking-for-amazon-eks-worker-nodes/)
    1. [Fully Private EKS Cluster](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html)
    2. [Public + Private EKS Cluster](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html)
    3. [Public Cluster](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html))
-4. [EKS Addons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html) - 
+2. [EKS Addons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html) - 
    - [CoreDNS](https://docs.aws.amazon.com/eks/latest/userguide/managing-coredns.html) 
    - [Kube-Proxy](https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html)
    - [VPC-CNI](https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html) 
-4. [Managed Node Groups with On-Demand](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) - AWS Managed Node Groups with On-Demand Instances
-5. [Managed Node Groups with Spot](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) - AWS Managed Node Groups with Spot Instances
-6. [Fargate Profiles](https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html) - AWS Fargate Profiles
-7. [Launch Templates with SSM agent](https://aws.amazon.com/blogs/containers/introducing-launch-template-and-custom-ami-support-in-amazon-eks-managed-node-groups/) - Deployed through launch templates to Managed Node Groups
-8. [Bottlerocket OS](https://github.com/bottlerocket-os/bottlerocket) - Managed Node Groups with Bottlerocket OS and Launch Templates
-9. [RBAC](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html) for Developers and Administrators with IAM roles
-10. [Amazon Managed Service for Prometheus (AMP)](https://aws.amazon.com/prometheus/) - AMP makes it easy to monitor containerized applications at scale
+3. [Managed Node Groups with On-Demand](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) - AWS Managed Node Groups with On-Demand Instances
+4. [Managed Node Groups with Spot](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) - AWS Managed Node Groups with Spot Instances
+5. [Fargate Profiles](https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html) - AWS Fargate Profiles
+6. [Launch Templates with SSM agent](https://aws.amazon.com/blogs/containers/introducing-launch-template-and-custom-ami-support-in-amazon-eks-managed-node-groups/) - Deployed through launch templates to Managed Node Groups
+7. [Bottlerocket OS](https://github.com/bottlerocket-os/bottlerocket) - Managed Node Groups with Bottlerocket OS and Launch Templates
+8. [RBAC](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html) for Developers and Administrators with IAM roles
+9. [Amazon Managed Service for Prometheus (AMP)](https://aws.amazon.com/prometheus/) - AMP makes it easy to monitor containerized applications at scale
+10. [Self-managed Node Group with Windows support](https://docs.aws.amazon.com/eks/latest/userguide/windows-support.html) - Ability to create a self-managed node group for Linux or Windows workloads. See [Windows](./examples/windows-support) and [Linux](./examples/self-managed-linux-nodegroup) examples.
 
 ## Kubernetes Addons using [Helm Charts](https://helm.sh/docs/topics/charts/)
 
@@ -112,7 +113,7 @@ This module ships the Fargate Container logs to CloudWatch
 
     `fargate_fluent_bit_enable = true`
 
-# Bottlerocket OS
+## Bottlerocket OS
 
 [Bottlerocket](https://aws.amazon.com/bottlerocket/) is an open source operating system specifically designed for running containers. Bottlerocket build system is based on Rust. It's a container host OS and doesn't have additional software's or package managers other than what is needed for running containers hence its very light weight and secure. Container optimized operating systems are ideal when you need to run applications in Kubernetes  with minimal setup and do not want to worry about security or updates, or want OS support from  cloud provider. Container operating systems does updates transactionally. 
 
@@ -249,7 +250,7 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
     $ kubectl get pods -n kube-system
 
 ## Deploying example templates
-`example` folder contains multiple cluster templates with pre-populated `.tfvars` which can be used as a quick start. Reuse the templates from `examples` and follow the above Deployment steps as mentioned above.
+The `examples` folder contains multiple cluster templates with pre-populated `.tfvars` which can be used as a quick start. Reuse the templates from `examples` and follow the above Deployment steps as mentioned above.
 
 # EKS Addons update
 Amazon EKS doesn't modify any of your Kubernetes  add-ons when you update a cluster to newer versions. 
@@ -309,7 +310,7 @@ For fully Private EKS clusters requires the following VPC endpoints to be create
 
 
 # Author
-Created by [Vara Bonthu](https://github.com/vara-bonthu). Maintained by [Ulaganathan N](https://github.com/UlaganathanNamachivayam), [Jomcy Pappachen](https://github.com/jomcy-amzn)
+Created by [Vara Bonthu](https://github.com/vara-bonthu). Maintained by [Ulaganathan N](https://github.com/UlaganathanNamachivayam), [Jomcy Pappachen](https://github.com/jomcy-amzn), [Vandan Juvekar](https://github.com/awsitcloudpro)
 
 ## Security
 

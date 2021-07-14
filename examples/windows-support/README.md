@@ -30,6 +30,22 @@ self_managed_node_max_size       = 3
 self_managed_node_min_size       = 3
 ```
 
+## Node selection for pods
+
+Use [nodeSelector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector) or [Node affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#node-affinity) to deploy pods to either Windows or Linux nodes. The node label `kubernetes.io/os` can be used to select the nodes.
+
+## Deployment & Testing
+
+* Deploy the EKS cluster using the input variables as in `eks-with-windows-support.tfvars`, by following the [deployment steps](../../README.md#deployment-steps). 
+* Verify Windows support in the cluster using a sample Windows pod deployment:
+```bash
+kubectl apply -f examples/windows-support/k8s/windows-iis.yaml
+```
+* Verify a Linux sample pod deployment:
+```bash
+kubectl apply -f examples/windows-support/k8s/linux-nginx.yaml
+```
+
 ## See also
 
 * [Windows support considerations](https://docs.aws.amazon.com/eks/latest/userguide/windows-support.html)
