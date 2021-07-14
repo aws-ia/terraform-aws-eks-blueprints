@@ -46,3 +46,5 @@ pushgateway:
     repository: ${pushgateway_repo_url}
     tag: ${pushgateway_image_tag}
 
+nodeSelector:
+  kubernetes.io/os: linux

@@ -269,6 +269,7 @@ module "eks" {
   cluster_endpoint_private_access = var.endpoint_private_access
   cluster_endpoint_public_access  = var.endpoint_public_access
   enable_irsa                     = var.enable_irsa
+  kubeconfig_output_path          = "./kubeconfig/"
 
   # Windows support doesn't work if IAM resources are managed by the module,
   # due to this issue: https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1456

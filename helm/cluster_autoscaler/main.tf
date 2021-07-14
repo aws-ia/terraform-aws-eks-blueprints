@@ -55,4 +55,9 @@ resource "helm_release" "autoscaler" {
     name  = "image.tag"
     value = var.cluster_autoscaler_image_tag
   }
+
+  set {
+    name  = "nodeSelector.kubernetes\\.io/os"
+    value = "linux"
+  }
 }
