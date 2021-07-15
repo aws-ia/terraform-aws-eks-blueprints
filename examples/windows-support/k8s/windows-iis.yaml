@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: iis
-        image: mcr.microsoft.com/windows/servercore:1809
+        image: mcr.microsoft.com/windows/servercore:ltsc2019
         ports:
         - name: http
           containerPort: 80
@@ -33,7 +33,7 @@ spec:
         - "Add-WindowsFeature Web-Server; Invoke-WebRequest -UseBasicParsing -Uri 'https://dotnetbinaries.blob.core.windows.net/servicemonitor/2.0.1.6/ServiceMonitor.exe' -OutFile 'C:\\ServiceMonitor.exe'; echo '<html><body><H1>It works!</H1></body><html>' > C:\\inetpub\\wwwroot\\index.html; C:\\ServiceMonitor.exe 'w3svc'; "
         resources:
           limits:
-            cpu: 1
+            cpu: 1024m
             memory: 1Gi
       nodeSelector:
         kubernetes.io/os: windows

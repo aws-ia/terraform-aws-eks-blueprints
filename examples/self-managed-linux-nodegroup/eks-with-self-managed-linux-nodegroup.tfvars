@@ -186,7 +186,7 @@ aws_managed_prometheus_enable = true
 
 # Deploys Pometheus server with remote write to AWS AMP Workspace
 prometheus_enable             = true
-prometheus_helm_chart_version = "14.3.1"
+prometheus_helm_chart_version = "14.4.0"
 prometheus_image_tag          = "v2.26.0"
 alert_manager_image_tag       = "v0.21.0"
 configmap_reload_image_tag    = "v0.5.0"
