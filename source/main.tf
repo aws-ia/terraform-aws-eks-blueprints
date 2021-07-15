@@ -467,8 +467,7 @@ module "eks" {
     name     = var.self_managed_nodegroup_name
     platform = local.self_managed_node_platform
 
-    # Override default Windows image if needed. Uncomment / update the data source in data.tf accordingly.
-    # image_id                 = var.enable_windows_support ? data.aws_ami.windows2019core.id : data.aws_ami.bottlerocket.id
+    ami_id                  = var.self_managed_node_image_id != "" ? var.self_managed_node_image_id : var.enable_windows_support ? data.aws_ami.windows2019core.id : data.aws_ami.amazonlinux2eks.id
     override_instance_types = var.self_managed_node_instance_types
     root_encrypted          = true
     root_volume_size        = var.self_managed_node_volume_size

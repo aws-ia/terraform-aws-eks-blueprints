@@ -29,7 +29,7 @@ No modules.
 | <a name="input_cluster_auth_base64"></a> [cluster\_auth\_base64](#input\_cluster\_auth\_base64) | n/a | `any` | n/a | yes |
 | <a name="input_cluster_endpoint"></a> [cluster\_endpoint](#input\_cluster\_endpoint) | n/a | `any` | n/a | yes |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | n/a | `any` | n/a | yes |
-| <a name="input_custom_ami_id"></a> [custom\_ami\_id](#input\_custom\_ami\_id) | Custom AMI ID, e.g. /aws/service/bottlerocket/aws-k8s-1.19/x86\_64/latest/image\_id | `string` | `null` | no |
+| <a name="input_custom_ami_id"></a> [custom\_ami\_id](#input\_custom\_ami\_id) | Custom AMI ID, e.g. /aws/service/bottlerocket/aws-k8s-1.20/x86\_64/latest/image\_id | `string` | `null` | no |
 | <a name="input_node_group_name"></a> [node\_group\_name](#input\_node\_group\_name) | n/a | `any` | n/a | yes |
 | <a name="input_public_launch_template"></a> [public\_launch\_template](#input\_public\_launch\_template) | n/a | `bool` | `false` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `any` | n/a | yes |

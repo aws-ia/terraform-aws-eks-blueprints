@@ -139,7 +139,7 @@ variable "enable_irsa" {
 #----------------------------------------------------------
 variable "kubernetes_version" {
   type        = string
-  default     = "1.19"
+  default     = "1.20"
   description = "Desired Kubernetes master version. If you do not specify a value, the latest available version is used"
 }
 variable "enabled_cluster_log_types" {
@@ -216,7 +216,7 @@ variable "enable_kube_proxy_addon" {
 variable "bottlerocket_ami" {
   type        = string
   default     = "ami-0326716ad575410ab"
-  description = "/aws/service/bottlerocket/aws-k8s-1.19/x86_64/latest/image_id"
+  description = "/aws/service/bottlerocket/aws-k8s-1.20/x86_64/latest/image_id"
 }
 variable "bottlerocket_node_group_name" {
   type        = string
@@ -339,6 +339,11 @@ variable "self_managed_nodegroup_name" {
   type        = string
   default     = "ng-linux"
   description = "Self-managed worker node group name"
+}
+variable "self_managed_node_image_id" {
+  type        = string
+  default     = ""
+  description = "Self-managed worker node custom AMI ID"
 }
 variable "self_managed_node_volume_size" {
   type        = number

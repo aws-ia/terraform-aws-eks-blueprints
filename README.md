@@ -310,7 +310,7 @@ For fully Private EKS clusters requires the following VPC endpoints to be create
 
 
 # Author
-Created by [Vara Bonthu](https://github.com/vara-bonthu). Maintained by [Ulaganathan N](https://github.com/UlaganathanNamachivayam), [Jomcy Pappachen](https://github.com/jomcy-amzn), [Vandan Juvekar](https://github.com/awsitcloudpro)
+Created by [Vara Bonthu](https://github.com/vara-bonthu). Maintained by [Ulaganathan N](https://github.com/UlaganathanNamachivayam), [Jomcy Pappachen](https://github.com/jomcy-amzn)
 
 ## Security
 

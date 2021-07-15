@@ -14,3 +14,6 @@ serviceAccount:
 rbac:
   # Specifies whether rbac resources should be created
   create: true
+
+nodeSelector:
+  kubernetes.io/os: linux

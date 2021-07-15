@@ -83,7 +83,7 @@ alertmanager:
     #   mountPath: /etc/secrets
     #   subPath: ""
     #   secretName: alertmanager-secret-files
-  #   readOnly: true
+    #   readOnly: true
 
   ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}
   ## Defining configMapOverrideName will cause templates/alertmanager-configmap.yaml
@@ -159,7 +159,7 @@ alertmanager:
     # - key: "key"
     #   operator: "Equal|Exists"
     #   value: "value"
-  #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for alertmanager pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -245,7 +245,7 @@ alertmanager:
     ## instead of all alertmanager pods found in the same namespace
     ## Useful if you deploy multiple releases within the same namespace
     ##
-  ## prometheus.io/probe: alertmanager-teamA
+    ## prometheus.io/probe: alertmanager-teamA
 
   ## Labels to be added to Prometheus AlertManager pods
   ##
@@ -263,7 +263,7 @@ alertmanager:
       ##
       # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
       # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
-    # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
   ## Use a StatefulSet if replicaCount needs to be greater than 1 (see below)
   ##
@@ -304,7 +304,7 @@ alertmanager:
     #   memory: 32Mi
     # requests:
     #   cpu: 10m
-  #   memory: 32Mi
+    #   memory: 32Mi
 
   # Custom DNS configuration to be added to alertmanager pods
   dnsConfig: {}
@@ -315,7 +315,7 @@ alertmanager:
     #   - my.dns.search.suffix
     # options:
     #   - name: ndots
-  #     value: "2"
+    #     value: "2"
   #   - name: edns0
 
   ## Security context to be added to alertmanager pods
@@ -382,7 +382,7 @@ configmapReload:
       #   mountPath: /etc/alerts.d
       #   subPath: ""
       #   configMap: prometheus-alerts
-    #   readOnly: true
+      #   readOnly: true
 
 
     ## configmap-reload resource requests and limits
@@ -420,7 +420,7 @@ configmapReload:
       #   mountPath: /etc/alerts.d
       #   subPath: ""
       #   configMap: prometheus-alerts
-    #   readOnly: true
+      #   readOnly: true
 
 
     ## configmap-reload resource requests and limits
@@ -478,7 +478,7 @@ nodeExporter:
       ##
       # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
       # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
-    # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
   ## node-exporter priorityClassName
   ##
@@ -504,13 +504,13 @@ nodeExporter:
     #   mountPath: /srv/txt_collector
     #   hostPath: /var/lib/node-exporter
     #   readOnly: true
-  #   mountPropagation: HostToContainer
+    #   mountPropagation: HostToContainer
 
   extraConfigmapMounts: []
     # - name: certs-configmap
     #   mountPath: /prometheus
     #   configMap: certs-configmap
-  #   readOnly: true
+    #   readOnly: true
 
   ## Node tolerations for node-exporter scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -519,7 +519,7 @@ nodeExporter:
     # - key: "key"
     #   operator: "Equal|Exists"
     #   value: "value"
-  #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for node-exporter pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -551,7 +551,7 @@ nodeExporter:
     #   memory: 50Mi
     # requests:
     #   cpu: 100m
-  #   memory: 30Mi
+    #   memory: 30Mi
 
   # Custom DNS configuration to be added to node-exporter pods
   dnsConfig: {}
@@ -562,7 +562,7 @@ nodeExporter:
     #   - my.dns.search.suffix
     # options:
     #   - name: ndots
-  #     value: "2"
+    #     value: "2"
   #   - name: edns0
 
   ## Security context to be added to node-exporter pods
@@ -736,14 +736,14 @@ server:
     #   mountPath: /etc/kubernetes/certs
     #   subPath: ""
     #   hostPath: /etc/kubernetes/certs
-  #   readOnly: true
+    #   readOnly: true
 
   extraConfigmapMounts: []
     # - name: certs-configmap
     #   mountPath: /prometheus
     #   subPath: ""
     #   configMap: certs-configmap
-  #   readOnly: true
+    #   readOnly: true
 
   ## Additional Prometheus server Secret mounts
   # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
@@ -752,7 +752,7 @@ server:
     #   mountPath: /etc/secrets
     #   subPath: ""
     #   secretName: prom-secret-files
-  #   readOnly: true
+    #   readOnly: true
 
   ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.server.configMapOverrideName}}
   ## Defining configMapOverrideName will cause templates/server-configmap.yaml
@@ -823,7 +823,7 @@ server:
     # - key: "key"
     #   operator: "Equal|Exists"
     #   value: "value"
-  #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for Prometheus server pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -905,7 +905,7 @@ server:
   ## Annotations to be added to Prometheus server pods
   ##
   podAnnotations: {}
-  # iam.amazonaws.com/role: prometheus
+    # iam.amazonaws.com/role: prometheus
 
   ## Labels to be added to Prometheus server pods
   ##
@@ -927,7 +927,7 @@ server:
       ##
       # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
       # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
-    # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
   ## Use a StatefulSet if replicaCount needs to be greater than 1 (see below)
   ##
@@ -982,7 +982,7 @@ server:
     #   memory: 512Mi
     # requests:
     #   cpu: 500m
-  #   memory: 512Mi
+    #   memory: 512Mi
 
   # Required for use in managed kubernetes clusters (such as AWS EKS) with custom CNI (such as calico),
   # because control-plane managed by AWS cannot communicate with pods' IP CIDR and admission webhooks are not working
@@ -1010,7 +1010,7 @@ server:
     #   - my.dns.search.suffix
     # options:
     #   - name: ndots
-  #     value: "2"
+    #     value: "2"
   #   - name: edns0
   ## Security context to be added to server pods
   ##
@@ -1140,7 +1140,7 @@ pushgateway:
     # - key: "key"
     #   operator: "Equal|Exists"
     #   value: "value"
-  #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for pushgateway pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -1167,7 +1167,7 @@ pushgateway:
       ##
       # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
       # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
-    # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
   replicaCount: 1
 
@@ -1191,7 +1191,7 @@ pushgateway:
     #   memory: 32Mi
     # requests:
     #   cpu: 10m
-  #   memory: 32Mi
+    #   memory: 32Mi
 
   # Custom DNS configuration to be added to push-gateway pods
   dnsConfig: {}
@@ -1202,7 +1202,7 @@ pushgateway:
     #   - my.dns.search.suffix
     # options:
     #   - name: ndots
-  #     value: "2"
+    #     value: "2"
   #   - name: edns0
 
   ## Security context to be added to push-gateway pods
@@ -1287,7 +1287,7 @@ pushgateway:
 alertmanagerFiles:
   alertmanager.yml:
     global: {}
-    # slack_api_url: ''
+      # slack_api_url: ''
 
     receivers:
       - name: default-receiver
@@ -1332,7 +1332,7 @@ serverFiles:
     rule_files:
       - /etc/config/recording_rules.yml
       - /etc/config/alerting_rules.yml
-      ## Below two files are DEPRECATED will be removed from this default values file
+    ## Below two files are DEPRECATED will be removed from this default values file
       - /etc/config/rules
       - /etc/config/alerts
 
@@ -1340,7 +1340,7 @@ serverFiles:
       - job_name: prometheus
         static_configs:
           - targets:
-              - localhost:9090
+            - localhost:9090
 
       # A scrape configuration for running Prometheus on a Kubernetes cluster.
       # This uses separate scrape configs for cluster components (i.e. API server, node)
@@ -1701,28 +1701,28 @@ serverFiles:
 # must be a string so you have to add a | after extraScrapeConfigs:
 # example adds prometheus-blackbox-exporter scrape config
 extraScrapeConfigs:
-# - job_name: 'prometheus-blackbox-exporter'
-#   metrics_path: /probe
-#   params:
-#     module: [http_2xx]
-#   static_configs:
-#     - targets:
-#       - https://example.com
-#   relabel_configs:
-#     - source_labels: [__address__]
-#       target_label: __param_target
-#     - source_labels: [__param_target]
-#       target_label: instance
-#     - target_label: __address__
-#       replacement: prometheus-blackbox-exporter:9115
+  # - job_name: 'prometheus-blackbox-exporter'
+  #   metrics_path: /probe
+  #   params:
+  #     module: [http_2xx]
+  #   static_configs:
+  #     - targets:
+  #       - https://example.com
+  #   relabel_configs:
+  #     - source_labels: [__address__]
+  #       target_label: __param_target
+  #     - source_labels: [__param_target]
+  #       target_label: instance
+  #     - target_label: __address__
+  #       replacement: prometheus-blackbox-exporter:9115
 
 # Adds option to add alert_relabel_configs to avoid duplicate alerts in alertmanager
 # useful in H/A prometheus with different external labels but the same alerts
 alertRelabelConfigs:
-# alert_relabel_configs:
-# - source_labels: [dc]
-#   regex: (.+)\d+
-#   target_label: dc
+  # alert_relabel_configs:
+  # - source_labels: [dc]
+  #   regex: (.+)\d+
+  #   target_label: dc
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.

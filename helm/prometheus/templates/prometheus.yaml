@@ -9,6 +9,8 @@ alertmanager:
   image:
     repository: ${alert_manager_repo_url}
     tag: ${alert_manager_image_tag}
+  nodeSelector:
+    kubernetes.io/os: linux
 
 configmapReload:
   image:
@@ -18,10 +20,17 @@ configmapReload:
 kubeStateMetrics:
   enabled: true
 
+kube-state-metrics:
+  nodeSelector:
+    kubernetes.io/os: linux
+
 nodeExporter:
   image:
     repository: ${node_exporter_repo_url}
     tag: ${node_exporter_image_tag}
+  nodeSelector:
+    kubernetes.io/os: linux
+
 
 server:
   remoteWrite:
@@ -41,10 +50,15 @@ server:
   global:
     scrape_interval: 15s
 
+  nodeSelector:
+    kubernetes.io/os: linux
+
 pushgateway:
   image:
     repository: ${pushgateway_repo_url}
     tag: ${pushgateway_image_tag}
+  nodeSelector:
+    kubernetes.io/os: linux
 
 nodeSelector:
   kubernetes.io/os: linux

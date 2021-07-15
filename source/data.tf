@@ -109,7 +109,6 @@ data "aws_iam_policy_document" "s3_endpoint_policy" {
 */
 
 # Windows custom AMI sample - AWS-provided EKS optimized Windows 2019 core AMI
-# Change this as needed when setting use_custom_ami = true in launch templates
 data "aws_ami" "windows2019core" {
   most_recent = true
   owners      = ["amazon"]
@@ -119,13 +118,22 @@ data "aws_ami" "windows2019core" {
   }
 }
 
-# Linux custom AMI sample - AWS-provided EKS optimized Bottlerocket AMI
-# Change this as needed when setting use_custom_ami = true in launch templates
+# Linux custom AMI sample - AWS-provided Bottlerocket AMI
 data "aws_ami" "bottlerocket" {
   most_recent = true
   owners      = ["amazon"]
   filter {
     name   = "name"
     values = ["bottlerocket-aws-k8s-${var.kubernetes_version}-x86_64-*"]
+  }
+}
+
+# Linux custom AMI sample - AWS-provided EKS optimized Linx AMI
+data "aws_ami" "amazonlinux2eks" {
+  most_recent = true
+  owners      = ["amazon"]
+  filter {
+    name   = "name"
+    values = ["amazon-eks-node-${var.kubernetes_version}-*"]
   }
 }

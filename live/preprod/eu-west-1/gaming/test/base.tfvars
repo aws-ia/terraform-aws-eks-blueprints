@@ -61,7 +61,7 @@ public_subnets_cidr  = ["10.1.12.0/22", "10.1.16.0/22", "10.1.20.0/22"]
 #---------------------------------------------------------#
 # EKS CONTROL PLANE VARIABLES
 #---------------------------------------------------------#
-kubernetes_version      = "1.19"
+kubernetes_version      = "1.20"
 endpoint_private_access = false
 endpoint_public_access  = true
 enable_irsa             = true

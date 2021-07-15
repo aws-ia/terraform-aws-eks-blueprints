@@ -35,7 +35,7 @@ variable "use_custom_ami" {
 variable "custom_ami_id" {
   type        = string
   default     = null
-  description = "Custom AMI ID, e.g. /aws/service/bottlerocket/aws-k8s-1.19/x86_64/latest/image_id"
+  description = "Custom AMI ID, e.g. /aws/service/bottlerocket/aws-k8s-1.20/x86_64/latest/image_id"
 }
 variable "public_launch_template" {
   default = false
