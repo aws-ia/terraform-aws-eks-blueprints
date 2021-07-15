@@ -322,10 +322,10 @@ module "eks" {
       instance_types          = var.spot_instance_type
       capacity_type           = "SPOT"
       ami_type                = var.spot_ami_type
-      
+
       # Conditionally set iam_role_arn if Windows support is enabled
       iam_role_arn = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : module.eks.worker_iam_role_arn
-      
+
       # kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
       k8s_labels = {
         Environment = var.environment
@@ -349,7 +349,7 @@ module "eks" {
 
       launch_template_id      = module.launch-templates-on-demand.launch_template_id
       launch_template_version = module.launch-templates-on-demand.launch_template_latest_version
-      
+
       # Conditionally set iam_role_arn if Windows support is enabled
       iam_role_arn = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : module.eks.worker_iam_role_arn
 
@@ -388,7 +388,7 @@ module "eks" {
       instance_types          = var.on_demand_instance_type
       capacity_type           = "ON_DEMAND"
       ami_type                = var.on_demand_ami_type
-      
+
       # Conditionally set iam_role_arn if Windows support is enabled
       iam_role_arn = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : module.eks.worker_iam_role_arn
 
@@ -419,7 +419,7 @@ module "eks" {
 
       # Conditionally set iam_role_arn if Windows support is enabled
       iam_role_arn = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : module.eks.worker_iam_role_arn
-      
+
       k8s_labels = {
         Environment = var.environment
         Zone        = var.zone
