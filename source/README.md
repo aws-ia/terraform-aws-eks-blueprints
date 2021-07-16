@@ -73,7 +73,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_agones_enable"></a> [agones\_enable](#input\_agones\_enable) | Enabling Agones Gaming Helm Chart | `bool` | `false` | no |
-| <a name="input_alert_manager_image_tag"></a> [alert\_manager\_image\_tag](#input\_alert\_manager\_image\_tag) | n/a | `any` | n/a | yes |
+| <a name="input_alert_manager_image_tag"></a> [alert\_manager\_image\_tag](#input\_alert\_manager\_image\_tag) | n/a | `string` | `"v0.21.0"` | no |
 | <a name="input_attributes"></a> [attributes](#input\_attributes) | Additional attributes (e.g. `1`) | `string` | `""` | no |
 | <a name="input_aws_for_fluent_bit_enable"></a> [aws\_for\_fluent\_bit\_enable](#input\_aws\_for\_fluent\_bit\_enable) | Enabling aws\_fluent\_bit module on eks cluster | `bool` | `false` | no |
 | <a name="input_aws_for_fluent_bit_helm_chart_version"></a> [aws\_for\_fluent\_bit\_helm\_chart\_version](#input\_aws\_for\_fluent\_bit\_helm\_chart\_version) | Helm chart version for aws\_for\_fluent\_bit | `string` | `"0.1.11"` | no |
@@ -89,10 +89,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_bottlerocket_min_size"></a> [bottlerocket\_min\_size](#input\_bottlerocket\_min\_size) | The minimum size of the AutoScaling Group | `number` | `3` | no |
 | <a name="input_bottlerocket_node_group_name"></a> [bottlerocket\_node\_group\_name](#input\_bottlerocket\_node\_group\_name) | AWS eks managed node group name | `string` | `"mg-m5-bottlerocket"` | no |
 | <a name="input_cluster_autoscaler_enable"></a> [cluster\_autoscaler\_enable](#input\_cluster\_autoscaler\_enable) | Enabling Cluster autoscaler on eks cluster | `bool` | `false` | no |
-| <a name="input_cluster_autoscaler_helm_version"></a> [cluster\_autoscaler\_helm\_version](#input\_cluster\_autoscaler\_helm\_version) | n/a | `any` | n/a | yes |
-| <a name="input_cluster_autoscaler_image_tag"></a> [cluster\_autoscaler\_image\_tag](#input\_cluster\_autoscaler\_image\_tag) | n/a | `any` | n/a | yes |
+| <a name="input_cluster_autoscaler_helm_version"></a> [cluster\_autoscaler\_helm\_version](#input\_cluster\_autoscaler\_helm\_version) | n/a | `string` | `"9.9.2"` | no |
+| <a name="input_cluster_autoscaler_image_tag"></a> [cluster\_autoscaler\_image\_tag](#input\_cluster\_autoscaler\_image\_tag) | n/a | `string` | `"v1.20.0"` | no |
 | <a name="input_cluster_log_retention_period"></a> [cluster\_log\_retention\_period](#input\_cluster\_log\_retention\_period) | Number of days to retain cluster logs. Requires `enabled_cluster_log_types` to be set. See https://docs.aws.amazon.com/en_us/eks/latest/userguide/control-plane-logs.html. | `number` | `7` | no |
-| <a name="input_configmap_reload_image_tag"></a> [configmap\_reload\_image\_tag](#input\_configmap\_reload\_image\_tag) | n/a | `any` | n/a | yes |
+| <a name="input_configmap_reload_image_tag"></a> [configmap\_reload\_image\_tag](#input\_configmap\_reload\_image\_tag) | n/a | `string` | `"v0.5.0"` | no |
 | <a name="input_coredns_addon_version"></a> [coredns\_addon\_version](#input\_coredns\_addon\_version) | CoreDNS Addon verison | `string` | `"v1.8.3-eksbuild.1"` | no |
 | <a name="input_create_igw"></a> [create\_igw](#input\_create\_igw) | Create internet gateway in public subnets | `bool` | `false` | no |
 | <a name="input_create_vpc"></a> [create\_vpc](#input\_create\_vpc) | Controls if VPC should be created (it affects almost all resources) | `bool` | `false` | no |
@@ -121,10 +121,13 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_map_additional_aws_accounts"></a> [map\_additional\_aws\_accounts](#input\_map\_additional\_aws\_accounts) | Additional AWS account numbers to add to `config-map-aws-auth` ConfigMap | `list(string)` | `[]` | no |
 | <a name="input_map_additional_iam_roles"></a> [map\_additional\_iam\_roles](#input\_map\_additional\_iam\_roles) | Additional IAM roles to add to `config-map-aws-auth` ConfigMap | <pre>list(object({<br>    rolearn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_map_additional_iam_users"></a> [map\_additional\_iam\_users](#input\_map\_additional\_iam\_users) | Additional IAM users to add to `config-map-aws-auth` ConfigMap | <pre>list(object({<br>    userarn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
-| <a name="input_metric_server_helm_chart_version"></a> [metric\_server\_helm\_chart\_version](#input\_metric\_server\_helm\_chart\_version) | n/a | `any` | n/a | yes |
-| <a name="input_metric_server_image_tag"></a> [metric\_server\_image\_tag](#input\_metric\_server\_image\_tag) | n/a | `any` | n/a | yes |
+| <a name="input_metric_server_helm_chart_version"></a> [metric\_server\_helm\_chart\_version](#input\_metric\_server\_helm\_chart\_version) | n/a | `string` | `"2.12.1"` | no |
+| <a name="input_metric_server_image_tag"></a> [metric\_server\_image\_tag](#input\_metric\_server\_image\_tag) | n/a | `string` | `"v0.4.2"` | no |
 | <a name="input_metrics_server_enable"></a> [metrics\_server\_enable](#input\_metrics\_server\_enable) | Enabling metrics server on eks cluster | `bool` | `false` | no |
-| <a name="input_node_exporter_image_tag"></a> [node\_exporter\_image\_tag](#input\_node\_exporter\_image\_tag) | n/a | `any` | n/a | yes |
+| <a name="input_nginx_helm_chart_version"></a> [nginx\_helm\_chart\_version](#input\_nginx\_helm\_chart\_version) | n/a | `string` | `"3.33.0"` | no |
+| <a name="input_nginx_image_tag"></a> [nginx\_image\_tag](#input\_nginx\_image\_tag) | n/a | `string` | `"v0.47.0"` | no |
+| <a name="input_nginx_ingress_controller_enable"></a> [nginx\_ingress\_controller\_enable](#input\_nginx\_ingress\_controller\_enable) | enabling Nginx Ingress Controller on eks cluster | `bool` | `false` | no |
+| <a name="input_node_exporter_image_tag"></a> [node\_exporter\_image\_tag](#input\_node\_exporter\_image\_tag) | n/a | `string` | `"v1.1.2"` | no |
 | <a name="input_on_demand_ami_type"></a> [on\_demand\_ami\_type](#input\_on\_demand\_ami\_type) | AWS eks managed worker nodes AMI type | `string` | `"AL2_x86_64"` | no |
 | <a name="input_on_demand_desired_size"></a> [on\_demand\_desired\_size](#input\_on\_demand\_desired\_size) | Desired number of worker nodes | `number` | `3` | no |
 | <a name="input_on_demand_disk_size"></a> [on\_demand\_disk\_size](#input\_on\_demand\_disk\_size) | Disk size in GiB for worker nodes. Defaults to 20. Terraform will only perform drift detection if a configuration value is provided | `number` | `50` | no |
@@ -136,12 +139,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_private_subnet_ids"></a> [private\_subnet\_ids](#input\_private\_subnet\_ids) | list of private subnets Id's for the Worker nodes | `list` | `[]` | no |
 | <a name="input_private_subnets_cidr"></a> [private\_subnets\_cidr](#input\_private\_subnets\_cidr) | list of Private subnets for the Worker nodes | `list` | `[]` | no |
 | <a name="input_prometheus_enable"></a> [prometheus\_enable](#input\_prometheus\_enable) | n/a | `bool` | `false` | no |
-| <a name="input_prometheus_helm_chart_version"></a> [prometheus\_helm\_chart\_version](#input\_prometheus\_helm\_chart\_version) | n/a | `any` | n/a | yes |
-| <a name="input_prometheus_image_tag"></a> [prometheus\_image\_tag](#input\_prometheus\_image\_tag) | n/a | `any` | n/a | yes |
+| <a name="input_prometheus_helm_chart_version"></a> [prometheus\_helm\_chart\_version](#input\_prometheus\_helm\_chart\_version) | n/a | `string` | `"14.4.0"` | no |
+| <a name="input_prometheus_image_tag"></a> [prometheus\_image\_tag](#input\_prometheus\_image\_tag) | n/a | `string` | `"v2.26.0"` | no |
 | <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | public docker repo access | `bool` | `true` | no |
 | <a name="input_public_subnet_ids"></a> [public\_subnet\_ids](#input\_public\_subnet\_ids) | list of private subnets Id's for the Worker nodes | `list` | `[]` | no |
 | <a name="input_public_subnets_cidr"></a> [public\_subnets\_cidr](#input\_public\_subnets\_cidr) | list of Public subnets for the Worker nodes | `list` | `[]` | no |
-| <a name="input_pushgateway_image_tag"></a> [pushgateway\_image\_tag](#input\_pushgateway\_image\_tag) | n/a | `any` | n/a | yes |
+| <a name="input_pushgateway_image_tag"></a> [pushgateway\_image\_tag](#input\_pushgateway\_image\_tag) | n/a | `string` | `"v1.3.1"` | no |
 | <a name="input_self_managed_node_ami_id"></a> [self\_managed\_node\_ami\_id](#input\_self\_managed\_node\_ami\_id) | Self-managed worker node custom AMI ID | `string` | `""` | no |
 | <a name="input_self_managed_node_desired_size"></a> [self\_managed\_node\_desired\_size](#input\_self\_managed\_node\_desired\_size) | Desired number of worker nodes | `number` | `3` | no |
 | <a name="input_self_managed_node_instance_types"></a> [self\_managed\_node\_instance\_types](#input\_self\_managed\_node\_instance\_types) | Set of instance types associated with the EKS Node Group | `list(string)` | <pre>[<br>  "m5.large",<br>  "m5a.large",<br>  "m5n.large"<br>]</pre> | no |
@@ -161,8 +164,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `map('BusinessUnit`,`XYZ`) | `map(string)` | `{}` | no |
 | <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | `""` | no |
 | <a name="input_terraform_version"></a> [terraform\_version](#input\_terraform\_version) | Terraform Version | `string` | `"Terraform"` | no |
-| <a name="input_traefik_helm_chart_version"></a> [traefik\_helm\_chart\_version](#input\_traefik\_helm\_chart\_version) | n/a | `any` | n/a | yes |
-| <a name="input_traefik_image_tag"></a> [traefik\_image\_tag](#input\_traefik\_image\_tag) | n/a | `any` | n/a | yes |
+| <a name="input_traefik_helm_chart_version"></a> [traefik\_helm\_chart\_version](#input\_traefik\_helm\_chart\_version) | n/a | `string` | `"10.0.0"` | no |
+| <a name="input_traefik_image_tag"></a> [traefik\_image\_tag](#input\_traefik\_image\_tag) | n/a | `string` | `"v2.4.9"` | no |
 | <a name="input_traefik_ingress_controller_enable"></a> [traefik\_ingress\_controller\_enable](#input\_traefik\_ingress\_controller\_enable) | Enabling Traefik Ingress Controller on eks cluster | `bool` | `false` | no |
 | <a name="input_vpc_cidr_block"></a> [vpc\_cidr\_block](#input\_vpc\_cidr\_block) | VPC CIDR | `string` | `""` | no |
 | <a name="input_vpc_cni_addon_version"></a> [vpc\_cni\_addon\_version](#input\_vpc\_cni\_addon\_version) | VPC CNI Addon verison | `string` | `"v1.8.0-eksbuild.1"` | no |
