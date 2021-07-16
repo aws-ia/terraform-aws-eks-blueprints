@@ -15,18 +15,31 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-data "template_file" "launch_template_userdata" {
-  template = file("${path.module}/templates/userdata.sh.tpl")
-}
-
-data "template_file" "launch_template_bottle_rocket_userdata" {
-  template = file("${path.module}/templates/bottlerocket-userdata.sh.tpl")
-  vars = {
-    cluster_endpoint    = var.cluster_endpoint
-    cluster_auth_base64 = var.cluster_auth_base64
-    cluster_name        = var.cluster_name
+locals {
+  userdata_params = {
+    cluster_name         = var.cluster_name
+    cluster_ca_base64    = var.cluster_ca_base64
+    cluster_endpoint     = var.cluster_endpoint
+    bootstrap_extra_args = var.bootstrap_extra_args
+    pre_userdata         = var.pre_userdata
+    post_userdata        = var.post_userdata
+    kubelet_extra_args   = var.kubelet_extra_args
   }
+
+  predefined_custom_ami_types = tolist(["amazonlinux2eks", "bottlerocket", "windows"])
+
+  userdata_base64 = {
+    for custom_ami_type in local.predefined_custom_ami_types : custom_ami_type => base64encode(
+      templatefile(
+        "${path.module}/templates/userdata-${custom_ami_type}.tpl",
+        local.userdata_params
+      )
+    )
+  }
+
+  custom_userdata_base64 = var.use_custom_ami ? contains(local.predefined_custom_ami_types, var.custom_ami_type) ? local.userdata_base64[var.custom_ami_type] : base64encode(
+    templatefile(var.custom_userdata_template_filepath, merge(local.userdata_params, var.custom_userdata_template_params))
+  ) : null
 }
 
 resource "aws_launch_template" "default" {
@@ -64,11 +77,7 @@ resource "aws_launch_template" "default" {
     security_groups             = [var.worker_security_group_id]
   }
 
-  user_data = var.use_custom_ami ? base64encode(
-    data.template_file.launch_template_bottle_rocket_userdata.rendered,
-    ) : base64encode(
-    data.template_file.launch_template_userdata.rendered,
-  )
+  user_data = var.use_custom_ami ? local.custom_userdata_base64 : null
 
   lifecycle {
     create_before_destroy = true

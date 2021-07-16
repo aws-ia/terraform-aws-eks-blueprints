@@ -415,7 +415,6 @@ module "eks" {
       launch_template_version = module.launch-templates-bottlerocket.launch_template_latest_version
       instance_types          = var.bottlerocket_instance_type
       capacity_type           = "ON_DEMAND"
-      //      ami_type                = var.on_demand_ami_type
 
       # Conditionally set iam_role_arn if Windows support is enabled
       iam_role_arn = var.enable_windows_support ? module.windows_support_iam[0].linux_role.arn : module.eks.worker_iam_role_arn
@@ -467,7 +466,12 @@ module "eks" {
     name     = var.self_managed_nodegroup_name
     platform = local.self_managed_node_platform
 
-    ami_id                  = var.self_managed_node_image_id != "" ? var.self_managed_node_image_id : var.enable_windows_support ? data.aws_ami.windows2019core.id : data.aws_ami.amazonlinux2eks.id
+    # Use custom AMI, user data script template, and its parameters, if provided in input. 
+    # Otherwise, use default EKS-optimized AMI, user data script for Windows / Linux.
+    ami_id                       = var.self_managed_node_image_id != "" ? var.self_managed_node_image_id : var.enable_windows_support ? data.aws_ami.windows2019core.id : data.aws_ami.amazonlinux2eks.id
+    userdata_template_file       = var.self_managed_node_userdata_template_file != "" ? var.self_managed_node_userdata_template_file : var.enable_windows_support ? "./templates/userdata-windows.tpl" : "./templates/userdata-amazonlinux2eks.tpl"
+    userdata_template_extra_args = var.self_managed_node_userdata_template_extra_params
+
     override_instance_types = var.self_managed_node_instance_types
     root_encrypted          = true
     root_volume_size        = var.self_managed_node_volume_size
@@ -535,8 +539,6 @@ module "public-launch-templates-on-demand" {
   worker_security_group_id = module.eks.worker_security_group_id
   node_group_name          = var.on_demand_node_group_name
   tags                     = module.eks-label.tags
-  cluster_auth_base64      = module.eks.cluster_certificate_authority_data
-  cluster_endpoint         = module.eks.cluster_endpoint
   public_launch_template   = true
 }
 
@@ -547,8 +549,6 @@ module "launch-templates-on-demand" {
   worker_security_group_id = module.eks.worker_security_group_id
   node_group_name          = var.on_demand_node_group_name
   tags                     = module.eks-label.tags
-  cluster_auth_base64      = module.eks.cluster_certificate_authority_data
-  cluster_endpoint         = module.eks.cluster_endpoint
 }
 
 module "launch-templates-spot" {
@@ -558,8 +558,6 @@ module "launch-templates-spot" {
   worker_security_group_id = module.eks.worker_security_group_id
   node_group_name          = var.spot_node_group_name
   tags                     = module.eks-label.tags
-  cluster_auth_base64      = module.eks.cluster_certificate_authority_data
-  cluster_endpoint         = module.eks.cluster_endpoint
 }
 
 module "launch-templates-bottlerocket" {
@@ -570,8 +568,9 @@ module "launch-templates-bottlerocket" {
   node_group_name          = var.bottlerocket_node_group_name
   tags                     = module.eks-label.tags
   use_custom_ami           = true
+  custom_ami_type          = "bottlerocket"
   custom_ami_id            = var.bottlerocket_ami
-  cluster_auth_base64      = module.eks.cluster_certificate_authority_data
+  cluster_ca_base64        = module.eks.cluster_certificate_authority_data
   cluster_endpoint         = module.eks.cluster_endpoint
 }
 

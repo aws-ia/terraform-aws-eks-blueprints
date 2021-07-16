@@ -345,6 +345,16 @@ variable "self_managed_node_image_id" {
   default     = ""
   description = "Self-managed worker node custom AMI ID"
 }
+variable "self_managed_node_userdata_template_file" {
+  type        = string
+  default     = ""
+  description = "Self-managed worker node custom userdata template file path"
+}
+variable "self_managed_node_userdata_template_extra_params" {
+  type        = map(any)
+  default     = {}
+  description = "Self-managed worker node custom userdata template extra parameters"
+}
 variable "self_managed_node_volume_size" {
   type        = number
   default     = 50
