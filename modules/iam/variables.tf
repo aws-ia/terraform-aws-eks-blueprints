@@ -23,3 +23,9 @@ variable "tenant" {}
 variable "environment" {}
 
 variable "zone" {}
+
+variable "cluster_autoscaler_enable" {
+  type        = bool
+  default     = false
+  description = "Enable Cluster autoscaler on the EKS cluster"
+}

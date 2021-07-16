@@ -16,12 +16,41 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "cluster_auth_base64" {
+variable "cluster_ca_base64" {
+  type        = string
+  default     = ""
+  description = "Base64-encoded cluster certificate-authority-data"
 }
 variable "cluster_endpoint" {
+  type        = string
+  default     = ""
+  description = "Cluster K8s API server endpoint"
 }
 variable "cluster_name" {
+  type        = string
+  description = "Cluster name"
 }
+variable "bootstrap_extra_args" {
+  type        = string
+  default     = ""
+  description = "Extra bootstrap script arguments in userdata script"
+}
+variable "kubelet_extra_args" {
+  type        = string
+  default     = ""
+  description = "Extra kubelet arguments in userdata script"
+}
+variable "pre_userdata" {
+  type        = string
+  default     = ""
+  description = "Extra snippet to be executed prior to the main userdata script"
+}
+variable "post_userdata" {
+  type        = string
+  default     = ""
+  description = "Extra snippet to be executed after the main userdata script"
+}
+
 variable "node_group_name" {}
 //variable "instance_type" {}
 variable "volume_size" {
@@ -29,14 +58,31 @@ variable "volume_size" {
 }
 variable "tags" {}
 variable "worker_security_group_id" {}
-variable "bottlerocket_ami" {
-  type        = string
-  default     = "ami-0326716ad575410ab"
-  description = "/aws/service/bottlerocket/aws-k8s-1.19/x86_64/latest/image_id"
-}
-variable "self_managed" {
-  default = false
-}
 variable "public_launch_template" {
   default = false
+}
+variable "use_custom_ami" {
+  type        = bool
+  default     = false
+  description = "Use custom AMI"
+}
+variable "custom_ami_type" {
+  type        = string
+  default     = ""
+  description = "Custom AMI type. Must be one of: amazonlinux2eks, bottlerocket, windows, other. If the value is 'other', custom_userdata_template_filepath must be provided."
+}
+variable "custom_ami_id" {
+  type        = string
+  default     = ""
+  description = "Custom AMI ID, e.g. /aws/service/bottlerocket/aws-k8s-1.20/x86_64/latest/image_id"
+}
+variable "custom_userdata_template_filepath" {
+  type        = string
+  default     = ""
+  description = "Custom userdata template file path"
+}
+variable "custom_userdata_template_params" {
+  type        = map(any)
+  default     = {}
+  description = "Custom userdata template additional params"
 }

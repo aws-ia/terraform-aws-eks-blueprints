@@ -48,4 +48,8 @@ resource "helm_release" "metrics_server" {
     value = "true"
   }
 
+  set {
+    name  = "nodeSelector.kubernetes\\.io/os"
+    value = "linux"
+  }
 }

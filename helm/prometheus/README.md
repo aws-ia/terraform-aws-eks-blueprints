@@ -71,7 +71,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.2.0 |
 
 ## Modules
 
@@ -97,7 +97,7 @@ No modules.
 | <a name="input_node_exporter_repo"></a> [node\_exporter\_repo](#input\_node\_exporter\_repo) | n/a | `string` | `"quay.io/prometheus/node-exporter"` | no |
 | <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `any` | n/a | yes |
 | <a name="input_prometheus_enable"></a> [prometheus\_enable](#input\_prometheus\_enable) | Enabling prometheus on eks cluster | `bool` | `false` | no |
-| <a name="input_prometheus_helm_chart_version"></a> [prometheus\_helm\_chart\_version](#input\_prometheus\_helm\_chart\_version) | n/a | `string` | `"14.3.1"` | no |
+| <a name="input_prometheus_helm_chart_version"></a> [prometheus\_helm\_chart\_version](#input\_prometheus\_helm\_chart\_version) | n/a | `string` | `"14.4.0"` | no |
 | <a name="input_prometheus_image_tag"></a> [prometheus\_image\_tag](#input\_prometheus\_image\_tag) | n/a | `string` | `"v2.26.0"` | no |
 | <a name="input_prometheus_repo"></a> [prometheus\_repo](#input\_prometheus\_repo) | n/a | `string` | `"quay.io/prometheus/prometheus"` | no |
 | <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `any` | n/a | yes |

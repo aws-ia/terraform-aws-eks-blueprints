@@ -110,3 +110,6 @@ resources:
 
 updateStrategy:
   type: RollingUpdate
+
+nodeSelector:
+  kubernetes.io/os: linux

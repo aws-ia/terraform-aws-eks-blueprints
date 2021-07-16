@@ -23,3 +23,8 @@ output "launch_template_id" {
 output "launch_template_latest_version" {
   value = aws_launch_template.default.latest_version
 }
+
+output "userdata_base64" {
+  description = "Map of base64-encoded pre-defined userdata scripts"
+  value       = local.userdata_base64
+}

@@ -16,6 +16,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-data "aws_eks_cluster" "eks" {
-  name = var.cluster_name
-}
+# data "aws_eks_cluster" "eks" {
+#   name = var.cluster_name
+# }

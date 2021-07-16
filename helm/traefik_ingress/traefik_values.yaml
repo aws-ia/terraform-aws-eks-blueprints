@@ -64,4 +64,5 @@ resources:
     cpu: 200m
     memory: 256Mi
 
-nodeSelector: {}
+nodeSelector:
+  kubernetes.io/os: linux

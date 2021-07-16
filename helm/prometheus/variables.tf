@@ -32,7 +32,7 @@ variable "prometheus_enable" {
 }
 
 variable "prometheus_helm_chart_version" {
-  default = "14.3.1"
+  default = "14.4.0"
 }
 variable "prometheus_repo" {
   default = "quay.io/prometheus/prometheus"

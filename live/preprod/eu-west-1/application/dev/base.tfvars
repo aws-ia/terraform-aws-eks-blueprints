@@ -130,11 +130,19 @@ spot_max_size        = 6
 spot_min_size        = 3
 
 #---------------------------------------------------------#
+# SELF-MANAGED WINDOWS NODE GROUP (WORKER GROUP)
+#---------------------------------------------------------#
+# enable_self_managed_nodegroups = true
+# enable_windows_support         = true
+# self_managed_nodegroup_name    = "ng-windows"
+
+#---------------------------------------------------------#
 # Creates a Fargate profile for default namespace
 #---------------------------------------------------------#
 fargate_profile_namespace = "default"
 # Enable logging only when you create a Fargate profile
 fargate_fluent_bit_enable = true
+
 #---------------------------------------------------------#
 # ENABLE HELM MODULES
 # Please note that you may need to download the docker images for each
@@ -161,7 +169,7 @@ cluster_autoscaler_helm_version = "9.9.2"
 #---------------------------------------------------------//
 # ENABLE AWS LB INGRESS CONTROLLER
 #---------------------------------------------------------//
-lb_ingress_controller_enable = false
+lb_ingress_controller_enable = true
 aws_lb_image_tag             = "v2.2.1"
 aws_lb_helm_chart_version    = "1.2.3"
 
@@ -173,7 +181,7 @@ aws_managed_prometheus_enable = true
 
 # Deploys Pometheus server with remote write to AWS AMP Workspace
 prometheus_enable             = true
-prometheus_helm_chart_version = "14.3.1"
+prometheus_helm_chart_version = "14.4.0"
 prometheus_image_tag          = "v2.26.0"
 alert_manager_image_tag       = "v0.21.0"
 configmap_reload_image_tag    = "v0.5.0"
