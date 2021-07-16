@@ -30,6 +30,30 @@ self_managed_node_max_size       = 3
 self_managed_node_min_size       = 3
 ```
 
+By default, the latest EKS-optimized Windows 2019 Server Core AMI will be used. You can provide a custom AMI as follows:
+```
+self_managed_node_ami_id = "ami-12345678901234567"
+```
+
+By default, the user data script template in `source/templates/userdata-windows.tpl` will be used. You can use a custom user data script as follows:
+```
+self_managed_node_userdata_template_file = "./path/to/my-template.tpl"
+```
+
+Default list of user data template parameters includes the following:
+* cluster_name - The cluster's name
+* cluster_ca_base64 - The cluster's base64-encoded certifying authority data
+* cluster_endpoint - The cluster's K8s API server endpoint
+* pre_userdata - Script snippet to be executed before running the main user data script
+* additional_userdata - Script snippet to be executed after running the main user data script 
+* bootstrap_extra_args - Extra arguments for the bootstrap script (where applicable)
+* kubelet_extra_args - Extra arguments for kubelet
+
+You can optionally provide additional parameters as follows:
+```
+self_managed_node_userdata_template_extra_params = { my_param = "my_value" }
+```
+
 ## Node selection for pods
 
 Use [nodeSelector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector) or [Node affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#node-affinity) to deploy pods to either Windows or Linux nodes. The node label `kubernetes.io/os` can be used to select the nodes.

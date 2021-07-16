@@ -142,6 +142,16 @@ self_managed_nodegroup_name    = "ng-windows"
 # self_managed_node_max_size     = 3
 # self_managed_node_min_size     = 3
 
+# Optionally provide custom AMI, and a user data template file
+# self_managed_node_ami_id = "ami-12345678901234567"
+# self_managed_node_userdata_template_file = "./my-template.tpl"
+
+# Default list of user data template parameters includes the following:
+#   platform, cluster_name, cluster_ca_base64, cluster_endpoint, 
+#   pre_userdata, additional_userdata, bootstrap_extra_args, kubelet_extra_args
+# Optionally provide additional parameters
+# self_managed_node_userdata_template_extra_params = { my_param = "my_value" }
+
 #---------------------------------------------------------#
 # Creates a Fargate profile for default namespace
 #---------------------------------------------------------#

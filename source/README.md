@@ -142,8 +142,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_public_subnet_ids"></a> [public\_subnet\_ids](#input\_public\_subnet\_ids) | list of private subnets Id's for the Worker nodes | `list` | `[]` | no |
 | <a name="input_public_subnets_cidr"></a> [public\_subnets\_cidr](#input\_public\_subnets\_cidr) | list of Public subnets for the Worker nodes | `list` | `[]` | no |
 | <a name="input_pushgateway_image_tag"></a> [pushgateway\_image\_tag](#input\_pushgateway\_image\_tag) | n/a | `any` | n/a | yes |
+| <a name="input_self_managed_node_ami_id"></a> [self\_managed\_node\_ami\_id](#input\_self\_managed\_node\_ami\_id) | Self-managed worker node custom AMI ID | `string` | `""` | no |
 | <a name="input_self_managed_node_desired_size"></a> [self\_managed\_node\_desired\_size](#input\_self\_managed\_node\_desired\_size) | Desired number of worker nodes | `number` | `3` | no |
-| <a name="input_self_managed_node_image_id"></a> [self\_managed\_node\_image\_id](#input\_self\_managed\_node\_image\_id) | Self-managed worker node custom AMI ID | `string` | `""` | no |
 | <a name="input_self_managed_node_instance_types"></a> [self\_managed\_node\_instance\_types](#input\_self\_managed\_node\_instance\_types) | Set of instance types associated with the EKS Node Group | `list(string)` | <pre>[<br>  "m5.large",<br>  "m5a.large",<br>  "m5n.large"<br>]</pre> | no |
 | <a name="input_self_managed_node_max_size"></a> [self\_managed\_node\_max\_size](#input\_self\_managed\_node\_max\_size) | The maximum size of the AutoScaling Group | `number` | `3` | no |
 | <a name="input_self_managed_node_min_size"></a> [self\_managed\_node\_min\_size](#input\_self\_managed\_node\_min\_size) | The minimum size of the AutoScaling Group | `number` | `3` | no |

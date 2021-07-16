@@ -340,7 +340,7 @@ variable "self_managed_nodegroup_name" {
   default     = "ng-linux"
   description = "Self-managed worker node group name"
 }
-variable "self_managed_node_image_id" {
+variable "self_managed_node_ami_id" {
   type        = string
   default     = ""
   description = "Self-managed worker node custom AMI ID"

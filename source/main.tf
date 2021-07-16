@@ -468,7 +468,7 @@ module "eks" {
 
     # Use custom AMI, user data script template, and its parameters, if provided in input. 
     # Otherwise, use default EKS-optimized AMI, user data script for Windows / Linux.
-    ami_id                       = var.self_managed_node_image_id != "" ? var.self_managed_node_image_id : var.enable_windows_support ? data.aws_ami.windows2019core.id : data.aws_ami.amazonlinux2eks.id
+    ami_id                       = var.self_managed_node_ami_id != "" ? var.self_managed_node_ami_id : var.enable_windows_support ? data.aws_ami.windows2019core.id : data.aws_ami.amazonlinux2eks.id
     userdata_template_file       = var.self_managed_node_userdata_template_file != "" ? var.self_managed_node_userdata_template_file : var.enable_windows_support ? "./templates/userdata-windows.tpl" : "./templates/userdata-amazonlinux2eks.tpl"
     userdata_template_extra_args = var.self_managed_node_userdata_template_extra_params
 
