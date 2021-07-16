@@ -38,6 +38,12 @@ variable "lb_ingress_controller_enable" {
   description = "Enabling LB Ingress controller on eks cluster"
 }
 
+variable "nginx_ingress_controller_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling Nginx Ingress on eks cluster"
+}
+
 variable "aws_for_fluent_bit_enable" {
   type        = bool
   default     = false
@@ -80,21 +86,17 @@ variable "agones_enable" {
 
 variable "eks_security_group_id" {}
 
-variable "aws_lb_image_tag" {
-}
-variable "aws_lb_helm_chart_version" {
-}
+variable "aws_lb_image_tag" {}
 
-variable "metric_server_image_tag" {
-}
-variable "metric_server_helm_chart_version" {
-}
+variable "aws_lb_helm_chart_version" {}
 
-variable "cluster_autoscaler_image_tag" {
-}
+variable "metric_server_image_tag" {}
 
-variable "cluster_autoscaler_helm_version" {
-}
+variable "metric_server_helm_chart_version" {}
+
+variable "cluster_autoscaler_image_tag" {}
+
+variable "cluster_autoscaler_helm_version" {}
 
 
 variable "prometheus_enable" {
@@ -105,38 +107,34 @@ variable "prometheus_enable" {
 
 variable "private_container_repo_url" {}
 
-variable "prometheus_helm_chart_version" {
-}
+variable "prometheus_helm_chart_version" {}
 
-variable "prometheus_image_tag" {
-}
+variable "prometheus_image_tag" {}
 
-variable "alert_manager_image_tag" {
-}
+variable "alert_manager_image_tag" {}
 
-variable "configmap_reload_image_tag" {
-}
+variable "configmap_reload_image_tag" {}
 
-variable "node_exporter_image_tag" {
-}
+variable "node_exporter_image_tag" {}
 
-variable "pushgateway_image_tag" {
-}
+variable "pushgateway_image_tag" {}
 
-variable "service_account_amp_ingest_name" {
-}
+variable "service_account_amp_ingest_name" {}
 
 variable "amp_workspace_id" {}
+
 variable "region" {}
+
 variable "amp_ingest_role_arn" {}
 
-variable "traefik_helm_chart_version" {
-}
+variable "traefik_helm_chart_version" {}
 
-variable "traefik_image_tag" {
-}
-variable "aws_for_fluent_bit_image_tag" {
-}
+variable "traefik_image_tag" {}
 
-variable "aws_for_fluent_bit_helm_chart_version" {
-}
+variable "nginx_helm_chart_version" {}
+
+variable "nginx_image_tag" {}
+
+variable "aws_for_fluent_bit_image_tag" {}
+
+variable "aws_for_fluent_bit_helm_chart_version" {}

@@ -17,30 +17,22 @@
  */
 
 
-output "cluster_oidc_url" {
-  description = "The URL on the EKS cluster OIDC Issuer"
-  value       = split("//", module.eks.cluster_oidc_issuer_url)[1]
+locals {
+  image_url = var.public_docker_repo ? var.image_repo_name : "${var.private_container_repo_url}${var.image_repo_name}"
 }
 
-output "oidc_provider_arn" {
-  description = "The ARN of the OIDC Provider if `enable_irsa = true`."
-  value       = module.eks.oidc_provider_arn
-}
+resource "helm_release" "nginx" {
+  name       = "ingress-nginx"
+  repository = "https://kubernetes.github.io/ingress-nginx"
+  chart      = "ingress-nginx"
+  version    = var.nginx_helm_chart_version
+  namespace  = "kube-system"
+  timeout    = "1200"
 
-output "cluster_name" {
-  description = "Kubernetes Cluster Name"
-  value       = module.eks-label.id
-}
+  values = [templatefile("${path.module}/nginx_values.yaml", {
+    image = local.image_url
+    tag   = var.nginx_image_tag
+    #    s3_bucket = var.s3_nlb_logs
+  })]
 
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = "aws eks --region ${data.aws_region.current.id} update-kubeconfig --name ${module.eks.cluster_id}"
-}
-
-output "amp_work_id" {
-  value = var.prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : "AMP not enabled"
-}
-
-output "amp_work_arn" {
-  value = var.prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : "AMP not enabled"
 }
