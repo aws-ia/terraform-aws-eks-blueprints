@@ -420,6 +420,11 @@ variable "fargate_fluent_bit_enable" {
   default     = false
   description = "Enabling fargate_fluent_bit module on eks cluster"
 }
+variable "kube_state_metrics_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling kube_state_metrics module on eks cluster"
+}
 
 variable "ekslog_retention_in_days" {
   default     = 90
@@ -525,4 +530,14 @@ variable "aws_for_fluent_bit_image_tag" {
 variable "aws_for_fluent_bit_helm_chart_version" {
   default     = "0.1.11"
   description = "Helm chart version for aws_for_fluent_bit"
+}
+
+variable "kube_state_metrics_image_tag" {
+  default     = "2.1.0"
+  description = "Docker image tag for kube_state_metrics from bitnami"
+}
+
+variable "kube_state_metrics_helm_chart_version" {
+  default     = "2.1.2"
+  description = "Helm chart version for kube_state_metrics"
 }

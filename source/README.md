@@ -34,24 +34,24 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws-eks-addon"></a> [aws-eks-addon](#module\_aws-eks-addon) | ../modules/aws-eks-addon | n/a |
-| <a name="module_aws_managed_prometheus"></a> [aws\_managed\_prometheus](#module\_aws\_managed\_prometheus) | ../modules/aws_managed_prometheus | n/a |
+| <a name="module_aws-eks-addon"></a> [aws-eks-addon](#module\_aws-eks-addon) | ../modules/aws-eks-addon |  |
+| <a name="module_aws_managed_prometheus"></a> [aws\_managed\_prometheus](#module\_aws\_managed\_prometheus) | ../modules/aws_managed_prometheus |  |
 | <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | 17.1.0 |
-| <a name="module_eks-label"></a> [eks-label](#module\_eks-label) | ../modules/aws-resource-label | n/a |
+| <a name="module_eks-label"></a> [eks-label](#module\_eks-label) | ../modules/aws-resource-label |  |
 | <a name="module_endpoints_interface"></a> [endpoints\_interface](#module\_endpoints\_interface) | terraform-aws-modules/vpc/aws//modules/vpc-endpoints | v3.2.0 |
-| <a name="module_helm"></a> [helm](#module\_helm) | ../helm | n/a |
-| <a name="module_iam"></a> [iam](#module\_iam) | ../modules/iam | n/a |
-| <a name="module_launch-templates-bottlerocket"></a> [launch-templates-bottlerocket](#module\_launch-templates-bottlerocket) | ../modules/launch-templates | n/a |
-| <a name="module_launch-templates-on-demand"></a> [launch-templates-on-demand](#module\_launch-templates-on-demand) | ../modules/launch-templates | n/a |
-| <a name="module_launch-templates-spot"></a> [launch-templates-spot](#module\_launch-templates-spot) | ../modules/launch-templates | n/a |
-| <a name="module_public-launch-templates-on-demand"></a> [public-launch-templates-on-demand](#module\_public-launch-templates-on-demand) | ../modules/launch-templates | n/a |
-| <a name="module_rbac"></a> [rbac](#module\_rbac) | ../modules/rbac | n/a |
-| <a name="module_s3"></a> [s3](#module\_s3) | ../modules/s3 | n/a |
+| <a name="module_helm"></a> [helm](#module\_helm) | ../helm |  |
+| <a name="module_iam"></a> [iam](#module\_iam) | ../modules/iam |  |
+| <a name="module_launch-templates-bottlerocket"></a> [launch-templates-bottlerocket](#module\_launch-templates-bottlerocket) | ../modules/launch-templates |  |
+| <a name="module_launch-templates-on-demand"></a> [launch-templates-on-demand](#module\_launch-templates-on-demand) | ../modules/launch-templates |  |
+| <a name="module_launch-templates-spot"></a> [launch-templates-spot](#module\_launch-templates-spot) | ../modules/launch-templates |  |
+| <a name="module_public-launch-templates-on-demand"></a> [public-launch-templates-on-demand](#module\_public-launch-templates-on-demand) | ../modules/launch-templates |  |
+| <a name="module_rbac"></a> [rbac](#module\_rbac) | ../modules/rbac |  |
+| <a name="module_s3"></a> [s3](#module\_s3) | ../modules/s3 |  |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
-| <a name="module_vpc-label"></a> [vpc-label](#module\_vpc-label) | ../modules/aws-resource-label | n/a |
+| <a name="module_vpc-label"></a> [vpc-label](#module\_vpc-label) | ../modules/aws-resource-label |  |
 | <a name="module_vpc_endpoints_gateway"></a> [vpc\_endpoints\_gateway](#module\_vpc\_endpoints\_gateway) | terraform-aws-modules/vpc/aws//modules/vpc-endpoints | v3.2.0 |
-| <a name="module_windows_support_iam"></a> [windows\_support\_iam](#module\_windows\_support\_iam) | ../modules/windows-support/iam | n/a |
-| <a name="module_windows_support_vpc_resources"></a> [windows\_support\_vpc\_resources](#module\_windows\_support\_vpc\_resources) | ../modules/windows-support/vpc-resources | n/a |
+| <a name="module_windows_support_iam"></a> [windows\_support\_iam](#module\_windows\_support\_iam) | ../modules/windows-support/iam |  |
+| <a name="module_windows_support_vpc_resources"></a> [windows\_support\_vpc\_resources](#module\_windows\_support\_vpc\_resources) | ../modules/windows-support/vpc-resources |  |
 
 ## Resources
 
@@ -115,6 +115,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_fargate_fluent_bit_enable"></a> [fargate\_fluent\_bit\_enable](#input\_fargate\_fluent\_bit\_enable) | Enabling fargate\_fluent\_bit module on eks cluster | `bool` | `false` | no |
 | <a name="input_fargate_profile_namespace"></a> [fargate\_profile\_namespace](#input\_fargate\_profile\_namespace) | AWS fargate profile Namespace | `string` | `"default"` | no |
 | <a name="input_kube_proxy_addon_version"></a> [kube\_proxy\_addon\_version](#input\_kube\_proxy\_addon\_version) | KubeProxy Addon verison | `string` | `"v1.20.4-eksbuild.2"` | no |
+| <a name="input_kube_state_metrics_enable"></a> [kube\_state\_metrics\_enable](#input\_kube\_state\_metrics\_enable) | Enabling kube\_state\_metrics module on eks cluster | `bool` | `false` | no |
+| <a name="input_kube_state_metrics_helm_chart_version"></a> [kube\_state\_metrics\_helm\_chart\_version](#input\_kube\_state\_metrics\_helm\_chart\_version) | Helm chart version for kube\_state\_metrics | `string` | `"2.1.2"` | no |
+| <a name="input_kube_state_metrics_image_tag"></a> [kube\_state\_metrics\_image\_tag](#input\_kube\_state\_metrics\_image\_tag) | Docker image tag for kube\_state\_metrics from bitnami | `string` | `"2.1.0"` | no |
 | <a name="input_kubernetes_labels"></a> [kubernetes\_labels](#input\_kubernetes\_labels) | Key-value mapping of Kubernetes labels. Only labels that are applied with the EKS API are managed by this argument. Other Kubernetes labels applied to the EKS Node Group will not be managed | `map(string)` | `{}` | no |
 | <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | Desired Kubernetes master version. If you do not specify a value, the latest available version is used | `string` | `"1.20"` | no |
 | <a name="input_lb_ingress_controller_enable"></a> [lb\_ingress\_controller\_enable](#input\_lb\_ingress\_controller\_enable) | enabling LB Ingress Controller on eks cluster | `bool` | `false` | no |

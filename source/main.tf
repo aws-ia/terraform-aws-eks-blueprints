@@ -719,5 +719,11 @@ module "helm" {
   amp_workspace_id                = var.prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : ""
   region                          = data.aws_region.current.id
 
+  # ------- Kube_state_metrics ---------
+  kube_state_metrics_enable             = var.kube_state_metrics_enable
+  kube_state_metrics_image_tag          = var.kube_state_metrics_image_tag
+  kube_state_metrics_helm_chart_version = var.kube_state_metrics_helm_chart_version
+
+
   depends_on = [module.eks]
 }

@@ -114,3 +114,13 @@ module "prometheus" {
   amp_workspace_id                = var.amp_workspace_id
   region                          = var.region
 }
+
+module "kube_state_metrics" {
+  count                                 = var.kube_state_metrics_enable == true ? 1 : 0
+  source                                = "./kube_state_metrics"
+  private_container_repo_url            = var.private_container_repo_url
+  public_docker_repo                    = var.public_docker_repo
+  kube_state_metrics_image_tag          = var.kube_state_metrics_image_tag
+  kube_state_metrics_helm_chart_version = var.kube_state_metrics_helm_chart_version
+}
+

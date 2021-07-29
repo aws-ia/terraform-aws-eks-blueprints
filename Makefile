@@ -32,7 +32,7 @@ tf-plan-eks:
 
 .PHONY: tf-apply-eks
 tf-apply-eks:
-	export AWS_REGION=${region} && terraform -chdir=source init -backend-config ../live/${env}/${region}/${account}/${subenv}/backend.conf -reconfigure && terraform -chdir=source validate && terraform -chdir=source apply -var-file ../live/${env}/${region}/${account}/${subenv}/base.tfvars -auto-approve
+	export AWS_REGION=${region} && terraform -chdir=source init -backend-config ../live/${env}/${region}/${account}/${subenv}/backend.conf -reconfigure && terraform -chdir=source validate && terraform -chdir=source apply -var-file ../live/${env}/${region}/${account}/${subenv}/base.tfvars
 
 .PHONY: tf-destroy-eks
 tf-destroy-eks:

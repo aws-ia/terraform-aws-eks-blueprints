@@ -56,6 +56,12 @@ variable "fargate_fluent_bit_enable" {
   description = "Enabling fargate_fluent_bit on eks cluster"
 }
 
+variable "kube_state_metrics_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling kube_state_metrics on eks cluster"
+}
+
 variable "fargate_iam_role" {}
 
 variable "s3_nlb_logs" {
@@ -138,3 +144,7 @@ variable "nginx_image_tag" {}
 variable "aws_for_fluent_bit_image_tag" {}
 
 variable "aws_for_fluent_bit_helm_chart_version" {}
+
+variable "kube_state_metrics_image_tag" {}
+
+variable "kube_state_metrics_helm_chart_version" {}

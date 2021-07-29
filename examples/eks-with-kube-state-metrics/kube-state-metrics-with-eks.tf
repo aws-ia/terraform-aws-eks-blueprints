@@ -14,7 +14,8 @@
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+ */ /*
+
 
 #---------------------------------------------------------#
 # EKS CLUSTER CORE VARIABLES
@@ -98,11 +99,10 @@ kube_proxy_addon_version = "v1.20.4-eksbuild.2"
 on_demand_node_group_name = "mg-m5-on-demand"
 on_demand_ami_type        = "AL2_x86_64"
 on_demand_disk_size       = 50
-on_demand_instance_type   = ["m5.large"]
-on_demand_desired_size    = 3
+on_demand_instance_type   = ["t3.medium"] //["m5.large"]
+on_demand_desired_size    = 2
 on_demand_max_size        = 3
-on_demand_min_size        = 3
-
+on_demand_min_size        = 1
 #---------------------------------------------------------#
 # BOTTLEROCKET - Worker Group3
 #---------------------------------------------------------#
@@ -132,7 +132,7 @@ spot_min_size        = 3
 #---------------------------------------------------------#
 # SELF-MANAGED WINDOWS NODE GROUP (WORKER GROUP)
 #---------------------------------------------------------#
-# enable_self_managed_nodegroups = true
+# enable_self_managed_nodegroups = false
 # enable_windows_support         = true
 # self_managed_nodegroup_name    = "ng-windows"
 
@@ -141,7 +141,7 @@ spot_min_size        = 3
 #---------------------------------------------------------#
 fargate_profile_namespace = "default"
 # Enable logging only when you create a Fargate profile
-fargate_fluent_bit_enable = true
+fargate_fluent_bit_enable = false
 
 #---------------------------------------------------------#
 # ENABLE HELM MODULES
@@ -180,7 +180,7 @@ aws_lb_helm_chart_version    = "1.2.3"
 aws_managed_prometheus_enable = true
 
 # Deploys Pometheus server with remote write to AWS AMP Workspace
-prometheus_enable             = true
+prometheus_enable             = false
 prometheus_helm_chart_version = "14.4.0"
 prometheus_image_tag          = "v2.26.0"
 alert_manager_image_tag       = "v0.21.0"
@@ -203,6 +203,8 @@ traefik_ingress_controller_enable = false
 traefik_helm_chart_version        = "10.0.0"
 traefik_image_tag                 = "v2.4.9"
 
+
+
 #---------------------------------------------------------//
 # ENABLE AGONES GAMING CONTROLLER
 #   A library for hosting, running and scaling dedicated game servers on Kubernetes
@@ -219,4 +221,4 @@ traefik_image_tag                 = "v2.4.9"
 #---------------------------------------------------------#
 kube_state_metrics_enable             = true
 kube_state_metrics_helm_chart_version = "2.1.2"
-kube_state_metrics_image_tag          = "2.1.0"
+kube_state_metrics_image_tag          = "2.1.0"*/
