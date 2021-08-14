@@ -277,7 +277,7 @@ module "eks" {
 
   cluster_enabled_log_types = var.enabled_cluster_log_types
 
-  # These additional policies are effective only if 
+  # These additional policies are effective only if
   # manage_worker_iam_resources = true
   workers_additional_policies = [
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
@@ -466,7 +466,7 @@ module "eks" {
     name     = var.self_managed_nodegroup_name
     platform = local.self_managed_node_platform
 
-    # Use custom AMI, user data script template, and its parameters, if provided in input. 
+    # Use custom AMI, user data script template, and its parameters, if provided in input.
     # Otherwise, use default EKS-optimized AMI, user data script for Windows / Linux.
     ami_id                       = var.self_managed_node_ami_id != "" ? var.self_managed_node_ami_id : var.enable_windows_support ? data.aws_ami.windows2019core.id : data.aws_ami.amazonlinux2eks.id
     userdata_template_file       = var.self_managed_node_userdata_template_file != "" ? var.self_managed_node_userdata_template_file : var.enable_windows_support ? "./templates/userdata-windows.tpl" : "./templates/userdata-amazonlinux2eks.tpl"
@@ -718,6 +718,20 @@ module "helm" {
   service_account_amp_ingest_name = local.service_account_amp_ingest_name
   amp_workspace_id                = var.prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : ""
   region                          = data.aws_region.current.id
+
+  # ------- OpenTelemetry Module ---------
+  opentelemetry_enable                                  = var.opentelemetry_enable
+  opentelemetry_command_name                            = var.opentelemetry_command_name
+  opentelemetry_helm_chart                              = var.opentelemetry_helm_chart
+  opentelemetry_image                                   = var.opentelemetry_image
+  opentelemetry_image_tag                               = var.opentelemetry_image_tag
+  opentelemetry_helm_chart_version                      = var.opentelemetry_helm_chart_version
+  opentelemetry_enable_agent_collector                  = var.opentelemetry_enable_agent_collector
+  opentelemetry_enable_standalone_collector             = var.opentelemetry_enable_standalone_collector
+  opentelemetry_enable_autoscaling_standalone_collector = var.opentelemetry_enable_autoscaling_standalone_collector
+  opentelemetry_enable_container_logs                   = var.opentelemetry_enable_container_logs
+  opentelemetry_min_standalone_collectors               = var.opentelemetry_min_standalone_collectors
+  opentelemetry_max_standalone_collectors               = var.opentelemetry_max_standalone_collectors
 
   depends_on = [module.eks]
 }

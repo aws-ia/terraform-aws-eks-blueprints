@@ -114,3 +114,21 @@ module "prometheus" {
   amp_workspace_id                = var.amp_workspace_id
   region                          = var.region
 }
+
+module "opentelemetry_collector" {
+  count                                                 = var.opentelemetry_enable == true ? 1 : 0
+  source                                                = "./opentelemetry_collector"
+  private_container_repo_url                            = var.private_container_repo_url
+  public_docker_repo                                    = var.public_docker_repo
+  opentelemetry_command_name                            = var.opentelemetry_command_name
+  opentelemetry_helm_chart                              = var.opentelemetry_helm_chart
+  opentelemetry_image                                   = var.opentelemetry_image
+  opentelemetry_image_tag                               = var.opentelemetry_image_tag
+  opentelemetry_helm_chart_version                      = var.opentelemetry_helm_chart_version
+  opentelemetry_enable_agent_collector                  = var.opentelemetry_enable_agent_collector
+  opentelemetry_enable_standalone_collector             = var.opentelemetry_enable_standalone_collector
+  opentelemetry_enable_autoscaling_standalone_collector = var.opentelemetry_enable_autoscaling_standalone_collector
+  opentelemetry_enable_container_logs                   = var.opentelemetry_enable_container_logs
+  opentelemetry_min_standalone_collectors               = var.opentelemetry_min_standalone_collectors
+  opentelemetry_max_standalone_collectors               = var.opentelemetry_max_standalone_collectors
+}

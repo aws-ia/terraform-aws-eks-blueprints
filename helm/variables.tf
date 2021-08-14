@@ -56,6 +56,12 @@ variable "fargate_fluent_bit_enable" {
   description = "Enabling fargate_fluent_bit on eks cluster"
 }
 
+variable "opentelemetry_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling opentelemetry on eks cluster"
+}
+
 variable "fargate_iam_role" {}
 
 variable "s3_nlb_logs" {
@@ -138,3 +144,25 @@ variable "nginx_image_tag" {}
 variable "aws_for_fluent_bit_image_tag" {}
 
 variable "aws_for_fluent_bit_helm_chart_version" {}
+
+variable "opentelemetry_image_tag" {}
+
+variable "opentelemetry_image" {}
+
+variable "opentelemetry_helm_chart_version" {}
+
+variable "opentelemetry_helm_chart" {}
+
+variable "opentelemetry_command_name" {}
+
+variable "opentelemetry_min_standalone_collectors" {}
+
+variable "opentelemetry_max_standalone_collectors" {}
+
+variable "opentelemetry_enable_standalone_collector" {}
+
+variable "opentelemetry_enable_agent_collector" {}
+
+variable "opentelemetry_enable_autoscaling_standalone_collector" {}
+
+variable "opentelemetry_enable_container_logs" {}

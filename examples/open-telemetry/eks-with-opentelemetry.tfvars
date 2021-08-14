@@ -130,19 +130,11 @@ spot_max_size        = 6
 spot_min_size        = 3
 
 #---------------------------------------------------------#
-# SELF-MANAGED WINDOWS NODE GROUP (WORKER GROUP)
-#---------------------------------------------------------#
-# enable_self_managed_nodegroups = true
-# enable_windows_support         = true
-# self_managed_nodegroup_name    = "ng-windows"
-
-#---------------------------------------------------------#
 # Creates a Fargate profile for default namespace
 #---------------------------------------------------------#
-fargate_profile_namespace = "default"
+//fargate_profile_namespace = "default"
 # Enable logging only when you create a Fargate profile
-fargate_fluent_bit_enable = true
-
+//fargate_fluent_bit_enable = false
 #---------------------------------------------------------#
 # ENABLE HELM MODULES
 # Please note that you may need to download the docker images for each
@@ -169,7 +161,7 @@ cluster_autoscaler_helm_version = "9.9.2"
 #---------------------------------------------------------//
 # ENABLE AWS LB INGRESS CONTROLLER
 #---------------------------------------------------------//
-lb_ingress_controller_enable = true
+lb_ingress_controller_enable = false
 aws_lb_image_tag             = "v2.2.1"
 aws_lb_helm_chart_version    = "1.2.3"
 
@@ -177,10 +169,10 @@ aws_lb_helm_chart_version    = "1.2.3"
 # ENABLE PROMETHEUS
 #---------------------------------------------------------//
 # Creates the AMP workspace and all the relevent IAM Roles
-aws_managed_prometheus_enable = true
+aws_managed_prometheus_enable = false
 
 # Deploys Pometheus server with remote write to AWS AMP Workspace
-prometheus_enable             = true
+prometheus_enable             = false
 prometheus_helm_chart_version = "14.4.0"
 prometheus_image_tag          = "v2.26.0"
 alert_manager_image_tag       = "v0.21.0"
@@ -189,7 +181,7 @@ node_exporter_image_tag       = "v1.1.2"
 pushgateway_image_tag         = "v1.3.1"
 
 #---------------------------------------------------------#
-# ENABLE AWS_FLUENT-BIT
+# ENABLE AWS_FLUENT-BIT FOR NODE GROUPS
 #---------------------------------------------------------#
 aws_for_fluent_bit_enable             = true
 ekslog_retention_in_days              = 7
@@ -217,15 +209,15 @@ traefik_image_tag                 = "v2.4.9"
 #---------------------------------------------------------#
 # ENABLE OPENTELEMETRY COLLECTOR FOR NODE GROUPS
 #---------------------------------------------------------#
-opentelemetry_enable                                  = true
-opentelemetry_image                                   = "otel/opentelemetry-collector"
-opentelemetry_image_tag                               = "0.31.0"
-opentelemetry_command_name                            = "otelcol"
-opentelemetry_helm_chart                              = "open-telemetry/opentelemetry-collector"
-opentelemetry_helm_chart_version                      = "0.5.9"
-opentelemetry_enable_standalone_collector             = true
-opentelemetry_enable_agent_collector                  = true
+opentelemetry_enable                      = true
+opentelemetry_image                       = "otel/opentelemetry-collector"
+opentelemetry_image_tag                   = "0.31.0"
+opentelemetry_command_name                = "otelcol"
+opentelemetry_helm_chart                  = "open-telemetry/opentelemetry-collector"
+opentelemetry_helm_chart_version          = "0.5.9"
+opentelemetry_enable_standalone_collector = true
+// opentelemetry_enable_agent_collector = true
 opentelemetry_enable_autoscaling_standalone_collector = true
-opentelemetry_enable_container_logs                   = true
-opentelemetry_min_standalone_collectors               = 1
-opentelemetry_max_standalone_collectors               = 10
+// opentelemetry_enable_container_logs = false
+opentelemetry_min_standalone_collectors = 1
+opentelemetry_max_standalone_collectors = 10
