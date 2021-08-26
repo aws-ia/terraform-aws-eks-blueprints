@@ -16,6 +16,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+data "aws_region" "current" {}
+
 locals {
   image_url = var.public_docker_repo ? var.image_repo_name : "${var.private_container_repo_url}${var.image_repo_name}"
 }
@@ -42,6 +44,7 @@ resource "helm_release" "aws-for-fluent-bit" {
     image              = local.image_url
     tag                = var.aws_for_fluent_bit_image_tag
     cw_worker_loggroup = aws_cloudwatch_log_group.eks-worker-logs.name
+    region             = data.aws_region.current.name
   })]
 }
 

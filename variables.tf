@@ -212,6 +212,10 @@ variable "enable_kube_proxy_addon" {
 #----------------------------------------------------------
 // EKS WORKER NODES
 #----------------------------------------------------------
+variable "enable_bottlerocket" {
+  type    = string
+  default = "false"
+}
 
 variable "bottlerocket_ami" {
   type        = string
@@ -525,4 +529,73 @@ variable "aws_for_fluent_bit_image_tag" {
 variable "aws_for_fluent_bit_helm_chart_version" {
   default     = "0.1.11"
   description = "Helm chart version for aws_for_fluent_bit"
+}
+
+variable "enable_spot_nodegroup" {
+  default = false
+}
+
+variable "enable_on_demand_nodegroup" {
+  default = false
+}
+
+variable "managed_node_groups" {
+  type    = any
+  default = {}
+}
+
+variable "create_eks" {
+  type    = bool
+  default = false
+
+}
+
+variable "map_accounts" {
+  description = "Additional AWS account numbers to add to the aws-auth configmap. "
+  type        = list(string)
+  default     = []
+}
+
+variable "map_roles" {
+  description = "Additional IAM roles to add to the aws-auth configmap."
+  type = list(object({
+    rolearn  = string
+    username = string
+    groups   = list(string)
+  }))
+  default = []
+}
+
+variable "map_users" {
+  description = "Additional IAM users to add to the aws-auth configmap. "
+  type = list(object({
+    userarn  = string
+    username = string
+    groups   = list(string)
+  }))
+  default = []
+}
+variable "iam_path" {
+  description = "If provided, all IAM roles will be created on this path."
+  type        = string
+  default     = "/"
+}
+
+variable "manage_aws_auth" {
+  description = "Whether to apply the aws-auth configmap file."
+  default     = true
+}
+variable "aws_auth_additional_labels" {
+  description = "Additional kubernetes labels applied on aws-auth ConfigMap"
+  default     = {}
+  type        = map(string)
+}
+
+variable "enable_fargate" {
+  default = false
+}
+
+variable "fargate_profiles" {
+  type    = any
+  default = {}
 }

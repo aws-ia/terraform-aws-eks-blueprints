@@ -88,8 +88,8 @@ kube_proxy_addon_version = "v1.20.4-eksbuild.2"
 #---------------------------------------------------------#
 # WORKER NODE GROUPS SECTION
 # Define the following parameters to create EKS Node groups. If you need to two Node groups then you may need to duplicate the with different instance type
-# NOTE: Also ensure Node groups config that you defined below needs to exist in this file <aws-eks-accelerator-for-terraform/source/main.tf>.
-#         Comment out the node groups in <aws-eks-accelerator-for-terraform/source/main.tf> file if you are not defining below.
+# NOTE: Also ensure Node groups config that you defined below needs to exist in this file <aws-eks-accelerator-for-terraform/source/eks.tf>.
+#         Comment out the node groups in <aws-eks-accelerator-for-terraform/source/eks.tf> file if you are not defining below.
 #         This is a limitation at this moment that the change needs ot be done in two places. This will be improved later
 #---------------------------------------------------------#
 #---------------------------------------------------------#
@@ -142,7 +142,7 @@ fargate_fluent_bit_enable = false
 #          README with instructions available in each HELM module under helm/
 #---------------------------------------------------------#
 # Enable this if worker Node groups has access to internet to download the docker images
-# Or Make it false and set the private contianer image repo url in source/main.tf; currently this defaults to ECR
+# Or Make it false and set the private contianer image repo url in source/eks.tf; currently this defaults to ECR
 public_docker_repo = true
 
 #---------------------------------------------------------#

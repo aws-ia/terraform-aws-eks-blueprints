@@ -22,34 +22,15 @@ locals {
 
 resource "helm_release" "metrics_server" {
   name       = "metrics-server"
-  repository = "https://charts.appuio.ch"
+  repository = "https://charts.bitnami.com/bitnami"
   chart      = "metrics-server"
   version    = var.metric_server_helm_chart_version
   namespace  = "kube-system"
   timeout    = "1200"
-
-  set {
-    name  = "replicas"
-    value = 3
-  }
-
-  set {
-    name  = "image.repository"
-    value = local.image_url
-  }
-
-  set {
-    name  = "image.tag"
-    value = var.metric_server_image_tag
-  }
-
-  set {
-    name  = "rbac.create"
-    value = "true"
-  }
-
-  set {
-    name  = "nodeSelector.kubernetes\\.io/os"
-    value = "linux"
-  }
+  values = [templatefile("${path.module}/templates/values.yaml", {
+    image     = local.image_url
+    tag       = var.metric_server_image_tag
+    replicas  = 3
+    node_type = "linux"
+  })]
 }

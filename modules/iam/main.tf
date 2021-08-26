@@ -19,6 +19,38 @@
 data "aws_caller_identity" "current" {}
 
 #-------------------------------------------------------------------------------------------------
+#--------- IAM Policy for Cluster autoscalar Deployment; Policy added to eks module
+#--------------------------------------------------------------------------------------------------
+resource "aws_iam_policy" "eks_autoscaler_policy" {
+  count = var.cluster_autoscaler_enable ? 1 : 0
+
+  name        = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, "eks-autoscaler-policy")
+  path        = "/"
+  description = "eks autoscaler policy"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "autoscaling:DescribeAutoScalingGroups",
+        "autoscaling:DescribeAutoScalingInstances",
+        "autoscaling:DescribeLaunchConfigurations",
+        "autoscaling:DescribeTags",
+        "autoscaling:SetDesiredCapacity",
+        "autoscaling:TerminateInstanceInAutoScalingGroup"
+      ],
+      "Resource": "arn:aws:autoscaling:*:${data.aws_caller_identity.current.account_id}:autoScalingGroup:*:autoScalingGroupName/*"
+    }
+  ]
+}
+EOF
+}
+
+
+#-------------------------------------------------------------------------------------------------
 #IAM Policy to describe EKS Clusters for Developers only
 #--------------------------------------------------------------------------------------------------
 resource "aws_iam_policy" "dev_generate_kube_config" {
@@ -105,7 +137,7 @@ data "aws_iam_policy_document" "eks_developers_policy" {
     ]
 
     resources = [
-      "arn:aws:iam::${var.account_id}:role/${aws_iam_role.cluster_devs_access.name}"
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.cluster_devs_access.name}"
     ]
   }
 }
@@ -178,7 +210,7 @@ data "aws_iam_policy_document" "eks_admins_group_policy" {
     ]
 
     resources = [
-      "arn:aws:iam::${var.account_id}:role/${aws_iam_role.cluster_admin_access.name}"
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.cluster_admin_access.name}"
     ]
   }
 }
@@ -195,37 +227,6 @@ resource "aws_iam_policy" "eks_admins_policy" {
 resource "aws_iam_group_policy_attachment" "eks_admins_group_policy" {
   group      = aws_iam_group.eks_admins_group.name
   policy_arn = aws_iam_policy.eks_admins_policy.arn
-}
-
-#-------------------------------------------------------------------------------------------------
-#--------- IAM Policy for Cluster autoscalar Deployment; Policy added to eks module
-#--------------------------------------------------------------------------------------------------
-resource "aws_iam_policy" "eks_autoscaler_policy" {
-  count = var.cluster_autoscaler_enable ? 1 : 0
-
-  name        = "eks-autoscaler-policy"
-  path        = "/"
-  description = "eks autoscaler policy"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "autoscaling:DescribeAutoScalingGroups",
-        "autoscaling:DescribeAutoScalingInstances",
-        "autoscaling:DescribeLaunchConfigurations",
-        "autoscaling:DescribeTags",
-        "autoscaling:SetDesiredCapacity",
-        "autoscaling:TerminateInstanceInAutoScalingGroup"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
 }
 
 #------------------------------------------------------------------------------------------

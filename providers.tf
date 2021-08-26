@@ -16,31 +16,38 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
-output "cluster_oidc_url" {
-  description = "The URL on the EKS cluster OIDC Issuer"
-  value       = split("//", module.eks.cluster_oidc_issuer_url)[1]
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+      //      version = "3.34.0"
+      version = "3.48.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "2.3.2"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "2.2.0"
+    }
+  }
+}
+provider "aws" {
+  region = data.aws_region.current.id
+  alias  = "default"
 }
 
-output "oidc_provider_arn" {
-  description = "The ARN of the OIDC Provider if `enable_irsa = true`."
-  value       = module.eks.oidc_provider_arn
+provider "kubernetes" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
-output "cluster_name" {
-  description = "Kubernetes Cluster Name"
-  value       = module.eks-label.id
-}
-
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = "aws eks --region ${data.aws_region.current.id} update-kubeconfig --name ${module.eks.cluster_id}"
-}
-
-output "amp_work_id" {
-  value = var.prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : "AMP not enabled"
-}
-
-output "amp_work_arn" {
-  value = var.prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : "AMP not enabled"
+provider "helm" {
+  kubernetes {
+    host                   = module.eks.cluster_endpoint
+    token                  = data.aws_eks_cluster_auth.cluster.token
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  }
 }

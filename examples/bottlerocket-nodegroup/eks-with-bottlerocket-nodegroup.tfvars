@@ -88,8 +88,8 @@ kube_proxy_addon_version = "v1.20.4-eksbuild.2"
 #---------------------------------------------------------#
 # WORKER NODE GROUPS SECTION
 # Define the following parameters to create EKS Node groups. If you need to two Node groups then you may need to duplicate the with different instance type
-# NOTE: Also ensure Node groups config that you defined below needs to exist in this file <aws-eks-accelerator-for-terraform/source/main.tf>.
-#         Comment out the node groups in <aws-eks-accelerator-for-terraform/source/main.tf> file if you are not defining below.
+# NOTE: Also ensure Node groups config that you defined below needs to exist in this file <aws-eks-accelerator-for-terraform/source/eks.tf>.
+#         Comment out the node groups in <aws-eks-accelerator-for-terraform/source/eks.tf> file if you are not defining below.
 #         This is a limitation at this moment that the change needs ot be done in two places. This will be improved later
 #---------------------------------------------------------#
 #---------------------------------------------------------#
@@ -108,7 +108,6 @@ on_demand_min_size        = 3
 #---------------------------------------------------------#
 # Amazon EKS optimized Bottlerocket AMI ID for a region and Kubernetes version.
 # https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami-bottlerocket.html
-# /aws/service/bottlerocket/aws-k8s-1.20/x86_64/latest/image_id
 
 bottlerocket_node_group_name = "mg-m5-bottlerocket"
 bottlerocket_ami             = "ami-0574bb6d7d985b8f7"

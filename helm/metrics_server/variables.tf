@@ -17,12 +17,15 @@
  */
 
 variable "private_container_repo_url" {}
+
 variable "image_repo_name" {
-  default = "k8s.gcr.io/metrics-server/metrics-server"
+  default = "bitnami/metrics-server"
 }
 variable "metric_server_image_tag" {
+  default = "0.5.0-debian-10-r83"
 }
 variable "metric_server_helm_chart_version" {
+  default = "5.9.2"
 }
 
 variable "public_docker_repo" {}

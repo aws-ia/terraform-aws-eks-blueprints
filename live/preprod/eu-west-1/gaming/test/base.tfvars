@@ -73,8 +73,8 @@ cluster_log_retention_period = 7
 #---------------------------------------------------------#
 # WORKER NODE GROUPS SECTION
 # Define the following parameters to create EKS Node groups. If you need to two Node groups then you may need to duplicate the with different instance type
-# NOTE: Also ensure Node groups config that you defined below needs to exist in this file <aws-eks-accelerator-for-terraform/source/main.tf>.
-#         Comment out the node groups in <aws-eks-accelerator-for-terraform/source/main.tf> file if you are not defining below.
+# NOTE: Also ensure Node groups config that you defined below needs to exist in this file <aws-eks-accelerator-for-terraform/source/eks.tf>.
+#         Comment out the node groups in <aws-eks-accelerator-for-terraform/source/eks.tf> file if you are not defining below.
 #         This is a limitation at this moment that the change needs ot be done in two places. This will be improved later
 #---------------------------------------------------------#
 #---------------------------------------------------------#

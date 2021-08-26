@@ -16,6 +16,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+data "aws_region" "current" {}
+
 locals {
   image_url = var.public_docker_repo ? var.image_repo_name : "${var.private_container_repo_url}${var.image_repo_name}"
 }
@@ -44,7 +46,7 @@ resource "helm_release" "autoscaler" {
   }
   set {
     name  = "awsRegion"
-    value = "eu-west-1"
+    value = data.aws_region.current.id
   }
   set {
     name  = "image.repository"
