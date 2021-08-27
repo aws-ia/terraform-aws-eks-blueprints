@@ -133,7 +133,7 @@ module "vpc_endpoints_gateway" {
   create = var.create_vpc_endpoints
 
   vpc_id             = module.vpc.vpc_id
-  security_group_ids = [data.aws_security_group.default.id]
+  security_group_ids = [data.aws_security_group.default[0].id]
   subnet_ids         = module.vpc.private_subnets
 
   endpoints = {

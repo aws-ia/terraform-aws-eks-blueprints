@@ -17,6 +17,19 @@
  */
 
 locals {
+
+  tags                = tomap({ "created-by" = var.terraform_version })
+  private_subnet_tags = merge(tomap({ "kubernetes.io/role/internal-elb" = "1" }), tomap({ "created-by" = var.terraform_version }))
+  public_subnet_tags  = merge(tomap({ "kubernetes.io/role/elb" = "1" }), tomap({ "created-by" = var.terraform_version }))
+
+  service_account_amp_ingest_name = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, "amp-ingest-account")
+  service_account_amp_query_name  = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, "amp-query-account")
+  amp_workspace_name              = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, "EKS-Metrics-Workspace")
+
+  image_repo = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.id}.amazonaws.com/"
+
+  self_managed_node_platform = var.enable_windows_support ? "windows" : "linux"
+
   rbac_roles = [{
     rolearn  = module.iam.eks_rbac_admin_arn
     username = "admin"
@@ -30,5 +43,4 @@ locals {
       "default:developers"]
     }
   ]
-
 }

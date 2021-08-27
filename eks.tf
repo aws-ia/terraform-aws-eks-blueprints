@@ -16,19 +16,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-locals {
-  tags                = tomap({ "created-by" = var.terraform_version })
-  private_subnet_tags = merge(tomap({ "kubernetes.io/role/internal-elb" = "1" }), tomap({ "created-by" = var.terraform_version }))
-  public_subnet_tags  = merge(tomap({ "kubernetes.io/role/elb" = "1" }), tomap({ "created-by" = var.terraform_version }))
-
-  service_account_amp_ingest_name = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, "amp-ingest-account")
-  service_account_amp_query_name  = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, "amp-query-account")
-  amp_workspace_name              = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, "EKS-Metrics-Workspace")
-
-  image_repo = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.id}.amazonaws.com/"
-
-  self_managed_node_platform = var.enable_windows_support ? "windows" : "linux"
-}
 # ---------------------------------------------------------------------------------------------------------------------
 # LABELING EKS RESOURCES
 # ---------------------------------------------------------------------------------------------------------------------
@@ -128,50 +115,11 @@ module "eks" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# MANAGED NODE GROUPS
-# ---------------------------------------------------------------------------------------------------------------------
-module "managed-node-groups" {
-  for_each = var.managed_node_groups
-
-  source     = "./modules/aws-eks-managed-node-groups"
-  managed_ng = each.value
-
-  eks_cluster_name          = module.eks.cluster_id
-  private_subnet_ids        = var.create_vpc == false ? var.private_subnet_ids : module.vpc.private_subnets
-  public_subnet_ids         = var.create_vpc == false ? var.public_subnet_ids : module.vpc.public_subnets
-  cluster_ca_base64         = module.eks.cluster_certificate_authority_data
-  cluster_endpoint          = module.eks.cluster_endpoint
-  cluster_autoscaler_enable = var.cluster_autoscaler_enable
-  worker_security_group_id  = module.eks.worker_security_group_id # TODO Create New SecGroup for each node group
-  tags                      = module.eks-label.tags
-
-  depends_on = [module.eks]
-
-}
-# ---------------------------------------------------------------------------------------------------------------------
-# FARGATE PROFILES
-# ---------------------------------------------------------------------------------------------------------------------
-module "fargate-profiles" {
-  for_each = length(var.fargate_profiles) > 0 && var.enable_fargate ? var.fargate_profiles : {}
-
-  source          = "./modules/aws-eks-fargate"
-  fargate_profile = each.value
-
-  eks_cluster_name   = module.eks.cluster_id
-  private_subnet_ids = var.create_vpc == false ? var.private_subnet_ids : module.vpc.private_subnets
-  public_subnet_ids  = var.create_vpc == false ? var.public_subnet_ids : module.vpc.public_subnets
-
-  tags = module.eks-label.tags
-
-  depends_on = [module.eks]
-
-}
-
-
-# ---------------------------------------------------------------------------------------------------------------------
 # RBAC DEPLOYMENT
 # ---------------------------------------------------------------------------------------------------------------------
 module "rbac" {
+
+  count       = var.create_eks ? 1 : 0
   source      = "./modules/rbac"
   tenant      = var.tenant
   environment = var.environment
@@ -208,6 +156,9 @@ module "windows_support_vpc_resources" {
 # AWS EKS Add-ons (VPC CNI, CoreDNS, KubeProxy )
 # ---------------------------------------------------------------------------------------------------------------------
 module "aws-eks-addon" {
+
+  count = var.create_eks ? 1 : 0
+
   source                = "./modules/aws-eks-addon"
   cluster_name          = module.eks.cluster_id
   enable_vpc_cni_addon  = var.enable_vpc_cni_addon
@@ -234,6 +185,8 @@ module "iam" {
   account_id                = data.aws_caller_identity.current.account_id
   cluster_autoscaler_enable = var.cluster_autoscaler_enable
 
+  depends_on = [module.eks]
+
 }
 # ---------------------------------------------------------------------------------------------------------------------
 # AWS Managed Prometheus Module
@@ -251,6 +204,7 @@ module "aws_managed_prometheus" {
   service_account_amp_ingest_name = local.service_account_amp_ingest_name
   service_account_amp_query_name  = local.service_account_amp_query_name
   amp_workspace_name              = local.amp_workspace_name
+
 }
 # ---------------------------------------------------------------------------------------------------------------------
 # S3 BUCKET MODULE
