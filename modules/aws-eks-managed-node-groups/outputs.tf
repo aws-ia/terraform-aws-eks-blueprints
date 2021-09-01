@@ -16,24 +16,23 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+
 output "node_groups" {
-  description = "Outputs from EKS node groups "
-  value       = coalescelist(aws_eks_node_group.managed_ng.*.id, [""])[0]
-  //  value       = [for f in aws_eks_node_group.managed_ng : f.id]
-  //join("", aws_iam_role.default.*.arn)
+  description = "EKS Managed node group id"
+  value       = aws_eks_node_group.managed_ng.id
 }
 
 output "mg_linux_roles" {
-  description = "Linux node IAM role"
-  value       = coalescelist(aws_iam_role.mg_linux[*].arn, [""])[0]
+  description = "IAM role ARN for EKS Managed Node Group"
+  value       = aws_iam_role.mg_linux.arn
 }
 
 output "launch_template_ids" {
-  value = aws_launch_template.managed_node_groups.*.id
-  //  value = [for f in aws_launch_template.managed_node_groups : f.id]
+  description = "launch templated id for EKS Managed Node Group"
+  value       = aws_launch_template.managed_node_groups.id
 }
 
 output "launch_template_latest_versions" {
-  value = aws_launch_template.managed_node_groups.*.default_version
-  //  value = [for f in aws_launch_template.managed_node_groups : f.id]
+  description = "launch templated version for EKS Managed Node Group"
+  value       = aws_launch_template.managed_node_groups.default_version
 }

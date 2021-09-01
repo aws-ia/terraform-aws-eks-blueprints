@@ -42,12 +42,11 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_aws_managed_prometheus_enable"></a> [aws\_managed\_prometheus\_enable](#input\_aws\_managed\_prometheus\_enable) | Enable AWS-managed Prometheus | `bool` | `false` | no |
-| <a name="input_cluster_autoscaler_enable"></a> [cluster\_autoscaler\_enable](#input\_cluster\_autoscaler\_enable) | Enable AWS-managed Prometheus | `bool` | `false` | no |
-| <a name="input_cluster_ca_base64"></a> [cluster\_ca\_base64](#input\_cluster\_ca\_base64) | Base64-encoded cluster certificate-authority-data | `string` | `""` | no |
-| <a name="input_cluster_endpoint"></a> [cluster\_endpoint](#input\_cluster\_endpoint) | Cluster K8s API server endpoint | `string` | `""` | no |
-| <a name="input_create_eks"></a> [create\_eks](#input\_create\_eks) | Controls if EKS resources should be created (it affects almost all resources) | `bool` | `true` | no |
-| <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | n/a | `string` | n/a | yes |
+| <a name="input_cluster_autoscaler_enable"></a> [cluster\_autoscaler\_enable](#input\_cluster\_autoscaler\_enable) | Enable Cluster Autoscaler | `bool` | `false` | no |
+| <a name="input_cluster_ca_base64"></a> [cluster\_ca\_base64](#input\_cluster\_ca\_base64) | Base64-encoded EKS cluster certificate-authority-data | `string` | `""` | no |
+| <a name="input_cluster_endpoint"></a> [cluster\_endpoint](#input\_cluster\_endpoint) | EKS Cluster K8s API server endpoint | `string` | `""` | no |
+| <a name="input_create_eks"></a> [create\_eks](#input\_create\_eks) | Controls if EKS resources should be created | `bool` | `true` | no |
+| <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | EKS Cluster name | `string` | n/a | yes |
 | <a name="input_managed_ng"></a> [managed\_ng](#input\_managed\_ng) | Map of maps of `eks_node_groups` to create | `any` | `{}` | no |
 | <a name="input_path"></a> [path](#input\_path) | IAM resource path, e.g. /dev/ | `string` | `"/"` | no |
 | <a name="input_private_subnet_ids"></a> [private\_subnet\_ids](#input\_private\_subnet\_ids) | list of private subnets Id's for the Worker nodes | `list` | `[]` | no |
@@ -61,9 +60,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_launch_template_ids"></a> [launch\_template\_ids](#output\_launch\_template\_ids) | n/a |
-| <a name="output_launch_template_latest_versions"></a> [launch\_template\_latest\_versions](#output\_launch\_template\_latest\_versions) | n/a |
-| <a name="output_mg_linux_roles"></a> [mg\_linux\_roles](#output\_mg\_linux\_roles) | Linux node IAM role |
-| <a name="output_node_groups"></a> [node\_groups](#output\_node\_groups) | Outputs from EKS node groups |
+| <a name="output_launch_template_ids"></a> [launch\_template\_ids](#output\_launch\_template\_ids) | launch templated id for EKS Managed Node Group |
+| <a name="output_launch_template_latest_versions"></a> [launch\_template\_latest\_versions](#output\_launch\_template\_latest\_versions) | launch templated version for EKS Managed Node Group |
+| <a name="output_mg_linux_roles"></a> [mg\_linux\_roles](#output\_mg\_linux\_roles) | IAM role ARN for EKS Managed Node Group |
+| <a name="output_node_groups"></a> [node\_groups](#output\_node\_groups) | EKS Managed node group id |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

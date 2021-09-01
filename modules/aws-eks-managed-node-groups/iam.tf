@@ -67,7 +67,6 @@ resource "aws_iam_role_policy_attachment" "mg_linux_ElasticLoadBalancingFullAcce
 }
 
 resource "aws_iam_role_policy_attachment" "mg_linux_AmazonPrometheusRemoteWriteAccess" {
-  count      = var.aws_managed_prometheus_enable ? 1 : 0
   policy_arn = "${local.policy_arn_prefix}/AmazonPrometheusRemoteWriteAccess"
   role       = aws_iam_role.mg_linux.name
 }

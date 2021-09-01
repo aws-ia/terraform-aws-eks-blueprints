@@ -19,22 +19,22 @@
 
 output "cluster_oidc_url" {
   description = "The URL on the EKS cluster OIDC Issuer"
-  value       = var.create_eks ? split("//", module.eks.cluster_oidc_issuer_url)[1] : ""
+  value       = var.create_eks ? split("//", module.eks.cluster_oidc_issuer_url)[1] : "EKS Cluster not enabled"
 }
 
 output "oidc_provider_arn" {
   description = "The ARN of the OIDC Provider if `enable_irsa = true`."
-  value       = var.create_eks ? module.eks.oidc_provider_arn : ""
+  value       = var.create_eks ? module.eks.oidc_provider_arn : "EKS Cluster not enabled"
 }
 
 output "cluster_name" {
   description = "Kubernetes Cluster Name"
-  value       = var.create_eks ? module.eks-label.id : ""
+  value       = var.create_eks ? module.eks-label.id : "EKS Cluster not enabled"
 }
 
 output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = var.create_eks ? "aws eks --region ${data.aws_region.current.id} update-kubeconfig --name ${module.eks.cluster_id}" : ""
+  value       = var.create_eks ? "aws eks --region ${data.aws_region.current.id} update-kubeconfig --name ${module.eks.cluster_id}" : "EKS Cluster not enabled"
 }
 
 output "amp_work_id" {
@@ -44,3 +44,13 @@ output "amp_work_id" {
 output "amp_work_arn" {
   value = var.prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : "AMP not enabled"
 }
+
+//output "node_groups" {
+//  description = "Outputs from EKS node groups "
+//  value       = var.create_eks ? module.managed-node-groups.* : {}
+//}
+//
+//output "fargate_profiles" {
+//  description = "Outputs from EKS node groups "
+//  value       = var.create_eks && var.enable_fargate ? module.fargate-profiles.* : {}
+//}

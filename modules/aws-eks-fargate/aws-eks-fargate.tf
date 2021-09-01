@@ -34,20 +34,5 @@ resource "aws_eks_fargate_profile" "eks-fargate" {
 
   depends_on = [
     aws_iam_role_policy_attachment.fargate-AmazonEKSFargatePodExecutionRolePolicy,
-    //    null_resource.check-namespace
   ]
 }
-
-//resource "null_resource" "check-namespace" {
-//  for_each = [for s in local.fargate_profiles["fargate_profile_namespaces"] : s]
-//
-//  provisioner "local-exec" {
-//    command = <<SCRIPT
-//      var=$(kubectl get namespaces|grep ${each.value.namespace}| wc -l)
-//      if [ "$var" -eq "0" ]
-//      then kubectl create namespace ${each.value.namespace}
-//      else echo '${each.value.namespace} already exists' >&3
-//      fi
-//    SCRIPT
-//  }
-//}

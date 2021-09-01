@@ -212,121 +212,6 @@ variable "enable_kube_proxy_addon" {
 #----------------------------------------------------------
 // EKS WORKER NODES
 #----------------------------------------------------------
-variable "enable_bottlerocket" {
-  type    = string
-  default = "false"
-}
-
-variable "bottlerocket_ami" {
-  type        = string
-  default     = "ami-0326716ad575410ab"
-  description = "/aws/service/bottlerocket/aws-k8s-1.20/x86_64/latest/image_id"
-}
-variable "bottlerocket_node_group_name" {
-  type        = string
-  default     = "mg-m5-bottlerocket"
-  description = "AWS eks managed node group name"
-}
-variable "bottlerocket_disk_size" {
-  type        = number
-  default     = 50
-  description = "Disk size in GiB for worker nodes. Defaults to 20. Terraform will only perform drift detection if a configuration value is provided"
-}
-variable "bottlerocket_instance_type" {
-  type        = list(string)
-  default     = ["m5.large"]
-  description = "Set of instance types associated with the EKS Node Group"
-}
-variable "bottlerocket_desired_size" {
-  type        = number
-  default     = 3
-  description = "Desired number of worker nodes"
-}
-variable "bottlerocket_max_size" {
-  type        = number
-  default     = 3
-  description = "The maximum size of the AutoScaling Group"
-}
-variable "bottlerocket_min_size" {
-  type        = number
-  default     = 3
-  description = "The minimum size of the AutoScaling Group"
-}
-variable "on_demand_node_group_name" {
-  type        = string
-  default     = "mg-m5-on-demand"
-  description = "AWS eks managed node group name"
-}
-variable "on_demand_ami_type" {
-  type        = string
-  default     = "AL2_x86_64"
-  description = "AWS eks managed worker nodes AMI type"
-}
-variable "on_demand_disk_size" {
-  type        = number
-  default     = 50
-  description = "Disk size in GiB for worker nodes. Defaults to 20. Terraform will only perform drift detection if a configuration value is provided"
-}
-variable "on_demand_instance_type" {
-  type        = list(string)
-  default     = ["m5.large"]
-  description = "Set of instance types associated with the EKS Node Group"
-}
-variable "on_demand_desired_size" {
-  type        = number
-  default     = 3
-  description = "Desired number of worker nodes"
-}
-variable "on_demand_max_size" {
-  type        = number
-  default     = 3
-  description = "The maximum size of the AutoScaling Group"
-}
-variable "on_demand_min_size" {
-  type        = number
-  default     = 3
-  description = "The minimum size of the AutoScaling Group"
-}
-variable "spot_node_group_name" {
-  type        = string
-  default     = "mg-m5-spot"
-  description = "AWS eks managed node group for spot"
-}
-variable "spot_ami_type" {
-  type        = string
-  default     = "AL2_x86_64"
-  description = "AWS eks managed worker nodes AMI type"
-}
-variable "spot_instance_type" {
-  type        = list(string)
-  default     = ["m5.large"]
-  description = "Set of instance types associated with the EKS Node Group. Defaults to [\"t3.medium\"]. Terraform will only perform drift detection if a configuration value is provided"
-}
-variable "spot_desired_size" {
-  type        = number
-  default     = 3
-  description = "Desired number of worker nodes"
-}
-variable "spot_max_size" {
-  type        = number
-  default     = 3
-  description = "The maximum size of the AutoScaling Group"
-}
-variable "spot_min_size" {
-  type        = number
-  default     = 1
-  description = "The minimum size of the AutoScaling Group"
-}
-variable "kubernetes_labels" {
-  type        = map(string)
-  description = "Key-value mapping of Kubernetes labels. Only labels that are applied with the EKS API are managed by this argument. Other Kubernetes labels applied to the EKS Node Group will not be managed"
-  default     = {}
-}
-variable "fargate_profile_namespace" {
-  type        = string
-  default     = "default"
-  description = "AWS fargate profile Namespace"
-}
 
 # Self-managed NodeGroup (Worker Group)
 variable "enable_self_managed_nodegroups" {
@@ -440,14 +325,11 @@ variable "agones_enable" {
   default     = false
   description = "Enabling Agones Gaming Helm Chart"
 }
-
 variable "expose_udp" {
   type        = bool
   default     = false
   description = "Enabling Agones Gaming Helm Chart"
 }
-
-
 
 variable "aws_lb_image_tag" {
   default = "v2.2.1"
@@ -529,14 +411,6 @@ variable "aws_for_fluent_bit_image_tag" {
 variable "aws_for_fluent_bit_helm_chart_version" {
   default     = "0.1.11"
   description = "Helm chart version for aws_for_fluent_bit"
-}
-
-variable "enable_spot_nodegroup" {
-  default = false
-}
-
-variable "enable_on_demand_nodegroup" {
-  default = false
 }
 
 variable "managed_node_groups" {

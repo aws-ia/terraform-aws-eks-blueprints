@@ -16,24 +16,26 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+
 variable "eks_cluster_name" {
-  type = string
+  description = "EKS Cluster name"
+  type        = string
 }
 
 variable "cluster_ca_base64" {
   type        = string
   default     = ""
-  description = "Base64-encoded cluster certificate-authority-data"
+  description = "Base64-encoded EKS cluster certificate-authority-data"
 }
 
 variable "cluster_endpoint" {
   type        = string
   default     = ""
-  description = "Cluster K8s API server endpoint"
+  description = "EKS Cluster K8s API server endpoint"
 }
 
 variable "create_eks" {
-  description = "Controls if EKS resources should be created (it affects almost all resources)"
+  description = "Controls if EKS resources should be created"
   type        = bool
   default     = true
 }
@@ -83,13 +85,8 @@ variable "path" {
   description = "IAM resource path, e.g. /dev/"
 }
 
-variable "aws_managed_prometheus_enable" {
-  type        = bool
-  description = "Enable AWS-managed Prometheus"
-  default     = false
-}
 variable "cluster_autoscaler_enable" {
   type        = bool
-  description = "Enable AWS-managed Prometheus"
+  description = "Enable Cluster Autoscaler"
   default     = false
 }
