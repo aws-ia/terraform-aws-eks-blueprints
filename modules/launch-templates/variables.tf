@@ -51,6 +51,22 @@ variable "post_userdata" {
   description = "Extra snippet to be executed after the main userdata script"
 }
 
+variable "http_endpoint" {
+  type        = string
+  default     = "enabled"
+  description = "Whether the Instance Metadata Service (IMDS) is available. Supported values: enabled, disabled"
+}
+variable "http_tokens" {
+  type        = string
+  default     = "optional"
+  description = "If enabled, will use Instance Metadata Service Version 2 (IMDSv2). Supported values: optional, required."
+}
+variable "http_put_response_hop_limit" {
+  type        = number
+  default     = 1
+  description = "HTTP PUT response hop limit for instance metadata requests. Supported values: 1-64."
+}
+
 variable "node_group_name" {}
 //variable "instance_type" {}
 variable "volume_size" {

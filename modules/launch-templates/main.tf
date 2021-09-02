@@ -66,6 +66,12 @@ resource "aws_launch_template" "default" {
     enabled = true
   }
 
+  metadata_options {
+    http_endpoint               = var.http_endpoint
+    http_tokens                 = var.http_tokens
+    http_put_response_hop_limit = var.http_put_response_hop_limit
+  }
+
   tag_specifications {
     resource_type = "instance"
     tags          = merge(var.tags, tomap({ "Name" = "${var.cluster_name}-${var.node_group_name}" }))

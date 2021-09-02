@@ -532,22 +532,28 @@ module "eks" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "public-launch-templates-on-demand" {
-  source                   = "../modules/launch-templates"
-  cluster_name             = module.eks.cluster_id
-  volume_size              = "50"
-  worker_security_group_id = module.eks.worker_security_group_id
-  node_group_name          = var.on_demand_node_group_name
-  tags                     = module.eks-label.tags
-  public_launch_template   = true
+  source                      = "../modules/launch-templates"
+  cluster_name                = module.eks.cluster_id
+  volume_size                 = "50"
+  worker_security_group_id    = module.eks.worker_security_group_id
+  node_group_name             = var.on_demand_node_group_name
+  tags                        = module.eks-label.tags
+  public_launch_template      = true
+  http_tokens                 = "optional"
+  http_endpoint               = "enabled"
+  http_put_response_hop_limit = 1
 }
 
 module "launch-templates-on-demand" {
-  source                   = "../modules/launch-templates"
-  cluster_name             = module.eks.cluster_id
-  volume_size              = "50"
-  worker_security_group_id = module.eks.worker_security_group_id
-  node_group_name          = var.on_demand_node_group_name
-  tags                     = module.eks-label.tags
+  source                      = "../modules/launch-templates"
+  cluster_name                = module.eks.cluster_id
+  volume_size                 = "50"
+  worker_security_group_id    = module.eks.worker_security_group_id
+  node_group_name             = var.on_demand_node_group_name
+  tags                        = module.eks-label.tags
+  http_tokens                 = "optional"
+  http_endpoint               = "enabled"
+  http_put_response_hop_limit = 1
 }
 
 module "launch-templates-spot" {
