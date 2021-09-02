@@ -33,63 +33,64 @@ module "vpc-label" {
 # VPC, SUBNETS AND ENDPOINTS DEPLOYED FOR FULLY PRIVATE EKS CLUSTERS
 # ---------------------------------------------------------------------------------------------------------------------
 module "vpc" {
-  create_vpc = var.create_vpc
-  source     = "terraform-aws-modules/vpc/aws"
-  version    = "v3.2.0"
-  name       = module.vpc-label.id
-  cidr       = var.vpc_cidr_block
-  azs        = data.aws_availability_zones.available.names
+  region               = data.aws_region.current.name
+  create_vpc           = var.create_vpc
+  source               = "aws-ia/vpc/aws"
+  version              = "0.1.1"
+  name                 = module.vpc-label.id
+  cidr                 = var.vpc_cidr_block
+  availability_zones   = data.aws_availability_zones.available.names
   # Private Subnets
-  private_subnets     = var.enable_private_subnets ? var.private_subnets_cidr : []
+  private_subnets_a   = var.enable_private_subnets ? var.private_subnets_cidr : []
   private_subnet_tags = var.enable_private_subnets ? local.private_subnet_tags : {}
 
   # Public Subnets
-  public_subnets     = var.enable_public_subnets ? var.public_subnets_cidr : []
-  public_subnet_tags = var.enable_public_subnets ? local.public_subnet_tags : {}
-
-  enable_nat_gateway = var.enable_nat_gateway ? var.enable_nat_gateway : false
-  single_nat_gateway = var.single_nat_gateway ? var.single_nat_gateway : false
-  create_igw         = var.enable_public_subnets && var.create_igw ? var.create_igw : false
-
-  enable_vpn_gateway              = false
-  create_egress_only_igw          = false
-  create_database_subnet_group    = false
-  create_elasticache_subnet_group = false
-  create_redshift_subnet_group    = false
+  public_subnets       = var.enable_public_subnets ? var.public_subnets_cidr : []
+  public_subnet_tags   = var.enable_public_subnets ? local.public_subnet_tags : {}
 
   enable_dns_hostnames = true
   enable_dns_support   = true
 
-  # Enabling Custom Domain name servers
+  // TODO: add support for these fields to the aws-ia/vpc module
+  //  enable_nat_gateway = var.enable_nat_gateway ? var.enable_nat_gateway : false
+  //  single_nat_gateway = var.single_nat_gateway ? var.single_nat_gateway : false
+  //  create_igw         = var.enable_public_subnets && var.create_igw ? var.create_igw : false
+  //
+  //  enable_vpn_gateway              = false
+  //  create_egress_only_igw          = false
+  //  create_database_subnet_group    = false
+  //  create_elasticache_subnet_group = false
+  //
+  //  # Enabling Custom Domain name servers
   //  enable_dhcp_options              = true
   //  dhcp_options_domain_name         = "service.consul"
   //  dhcp_options_domain_name_servers = ["127.0.0.1", "10.10.0.2"]
-
-  # VPC Flow Logs (Cloudwatch log group and IAM role will be created)
-  enable_flow_log                      = false
-  create_flow_log_cloudwatch_log_group = false
-  create_flow_log_cloudwatch_iam_role  = false
-  flow_log_max_aggregation_interval    = 60
+  //
+  //  # VPC Flow Logs (Cloudwatch log group and IAM role will be created)
+  //  enable_flow_log                      = false
+  //  create_flow_log_cloudwatch_log_group = false
+  //  create_flow_log_cloudwatch_iam_role  = false
+  //  flow_log_max_aggregation_interval    = 60
 
   tags = local.tags
 
-  manage_default_security_group = true
-
-  default_security_group_name = "${module.vpc-label.id}-endpoint-secgrp"
-  default_security_group_ingress = [
-    {
-      protocol    = -1
-      from_port   = 0
-      to_port     = 0
-      cidr_blocks = var.vpc_cidr_block
-  }]
-  default_security_group_egress = [
-    {
-      from_port   = 0
-      to_port     = 0
-      protocol    = -1
-      cidr_blocks = "0.0.0.0/0"
-  }]
+// TODO: add an initial security group
+// manage_default_security_group = true
+//  default_security_group_name = "${module.vpc-label.id}-endpoint-secgrp"
+//  default_security_group_ingress = [
+//    {
+//      protocol    = -1
+//      from_port   = 0
+//      to_port     = 0
+//      cidr_blocks = var.vpc_cidr_block
+//  }]
+//  default_security_group_egress = [
+//    {
+//      from_port   = 0
+//      to_port     = 0
+//      protocol    = -1
+//      cidr_blocks = "0.0.0.0/0"
+//  }]
 
 }
 ################################################################################
@@ -106,9 +107,7 @@ module "endpoints_interface" {
     s3 = {
       service      = "s3"
       service_type = "Gateway"
-      route_table_ids = flatten([
-        module.vpc.intra_route_table_ids,
-      module.vpc.private_route_table_ids])
+      route_table_ids = module.vpc.private_subnet_route_tables
       tags = { Name = "s3-vpc-Gateway" }
     },
     /*
