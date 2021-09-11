@@ -475,6 +475,12 @@ variable "cluster_autoscaler_helm_version" {
   default = "9.9.2"
 }
 
+variable "cluster_autoscaler_region" {
+  type        = string
+  description = "The AWS region to target for cluster autoscaling. Defaults to the current provider region."
+  default     = ""
+}
+
 variable "prometheus_helm_chart_version" {
   default = "14.4.0"
 }

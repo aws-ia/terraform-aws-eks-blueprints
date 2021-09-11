@@ -91,6 +91,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_cluster_autoscaler_enable"></a> [cluster\_autoscaler\_enable](#input\_cluster\_autoscaler\_enable) | Enabling Cluster autoscaler on eks cluster | `bool` | `false` | no |
 | <a name="input_cluster_autoscaler_helm_version"></a> [cluster\_autoscaler\_helm\_version](#input\_cluster\_autoscaler\_helm\_version) | n/a | `string` | `"9.9.2"` | no |
 | <a name="input_cluster_autoscaler_image_tag"></a> [cluster\_autoscaler\_image\_tag](#input\_cluster\_autoscaler\_image\_tag) | n/a | `string` | `"v1.20.0"` | no |
+| <a name="input_cluster_autoscaler_region"></a> [cluster\_autoscaler\_region](#input\_cluster\_autoscaler\_region) | The AWS region to target for cluster autoscaling. Defaults to the current provider region. | `string` | `""` | no |
 | <a name="input_cluster_log_retention_period"></a> [cluster\_log\_retention\_period](#input\_cluster\_log\_retention\_period) | Number of days to retain cluster logs. Requires `enabled_cluster_log_types` to be set. See https://docs.aws.amazon.com/en_us/eks/latest/userguide/control-plane-logs.html. | `number` | `7` | no |
 | <a name="input_configmap_reload_image_tag"></a> [configmap\_reload\_image\_tag](#input\_configmap\_reload\_image\_tag) | n/a | `string` | `"v0.5.0"` | no |
 | <a name="input_coredns_addon_version"></a> [coredns\_addon\_version](#input\_coredns\_addon\_version) | CoreDNS Addon verison | `string` | `"v1.8.3-eksbuild.1"` | no |

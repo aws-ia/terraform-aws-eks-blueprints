@@ -44,7 +44,7 @@ resource "helm_release" "autoscaler" {
   }
   set {
     name  = "awsRegion"
-    value = "eu-west-1"
+    value = var.cluster_autoscaler_region
   }
   set {
     name  = "image.repository"

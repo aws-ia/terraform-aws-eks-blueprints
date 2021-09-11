@@ -104,6 +104,7 @@ variable "cluster_autoscaler_image_tag" {}
 
 variable "cluster_autoscaler_helm_version" {}
 
+variable "cluster_autoscaler_region" {}
 
 variable "prometheus_enable" {
   type        = bool

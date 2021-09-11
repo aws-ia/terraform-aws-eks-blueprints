@@ -667,6 +667,7 @@ module "helm" {
   cluster_autoscaler_enable       = var.cluster_autoscaler_enable
   cluster_autoscaler_image_tag    = var.cluster_autoscaler_image_tag
   cluster_autoscaler_helm_version = var.cluster_autoscaler_helm_version
+  cluster_autoscaler_region       = var.cluster_autoscaler_region != "" ? var.cluster_autoscaler_region : data.aws_region.current.id
 
   # ------- Metric Server
   metrics_server_enable            = var.metrics_server_enable

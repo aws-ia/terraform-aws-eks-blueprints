@@ -68,7 +68,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.2.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.3.0 |
 
 ## Modules
 
@@ -86,6 +86,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_cluster_autoscaler_helm_version"></a> [cluster\_autoscaler\_helm\_version](#input\_cluster\_autoscaler\_helm\_version) | n/a | `string` | `"9.9.2"` | no |
 | <a name="input_cluster_autoscaler_image_tag"></a> [cluster\_autoscaler\_image\_tag](#input\_cluster\_autoscaler\_image\_tag) | n/a | `string` | `"v1.20.0"` | no |
+| <a name="input_cluster_autoscaler_region"></a> [cluster\_autoscaler\_region](#input\_cluster\_autoscaler\_region) | The AWS region to target for cluster autoscaling. | `string` | n/a | yes |
 | <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS\_Cluster\_ID | `any` | n/a | yes |
 | <a name="input_image_repo_name"></a> [image\_repo\_name](#input\_image\_repo\_name) | n/a | `string` | `"k8s.gcr.io/autoscaling/cluster-autoscaler"` | no |
 | <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `any` | n/a | yes |

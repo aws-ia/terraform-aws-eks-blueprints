@@ -16,6 +16,10 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+variable "cluster_autoscaler_region" {
+  type        = string
+  description = "The AWS region to target for cluster autoscaling."
+}
 variable "private_container_repo_url" {}
 variable "image_repo_name" {
   default = "k8s.gcr.io/autoscaling/cluster-autoscaler"

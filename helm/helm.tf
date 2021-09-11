@@ -33,6 +33,7 @@ module "cluster_autoscaler" {
   public_docker_repo              = var.public_docker_repo
   cluster_autoscaler_image_tag    = var.cluster_autoscaler_image_tag
   cluster_autoscaler_helm_version = var.cluster_autoscaler_helm_version
+  cluster_autoscaler_region       = var.cluster_autoscaler_region
 }
 
 module "lb_ingress_controller" {
