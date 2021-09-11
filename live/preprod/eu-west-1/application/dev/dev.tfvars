@@ -118,7 +118,7 @@ managed_node_groups = {
 
     # 4> Node Group network configuration
     subnet_type = "private" # private or public
-    subnet_ids  = ["subnet-xxx", "subnet-xxx", "subnet-xxx"]
+    subnet_ids  = []
 
     k8s_labels = {
       Environment = "preprod"
@@ -273,6 +273,8 @@ fargate_profiles = {
     }
   },
 }
+
+
 
 # Enable logging only when you create a Fargate profile e.g., enable_fargate = true
 fargate_fluent_bit_enable = false

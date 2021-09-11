@@ -30,17 +30,46 @@ locals {
 
   self_managed_node_platform = var.enable_windows_support ? "windows" : "linux"
 
-  rbac_roles = [{
-    rolearn  = module.iam.eks_rbac_admin_arn
-    username = "admin"
-    groups = [
-    "system:masters"]
-    },
-    {
-      rolearn  = module.iam.eks_rbac_devs_arn
-      username = "devs"
-      groups = [
-      "default:developers"]
-    }
-  ]
+  //  rbac_roles = [
+  //    {
+  //      rolearn = module.iam.eks_rbac_admin_arn
+  //      username = "admin"
+  //      groups = [
+  //        "system:masters"]
+  //    },
+  //    {
+  //      rolearn = module.iam.eks_rbac_devs_arn
+  //      username = "devs"
+  //      groups = [
+  //        "default:developers"]
+  //    }
+  //  ]
+  //
+  //
+  //  yaml_quote = var.aws_auth_yaml_strip_quotes ? "" : "\""
+  //
+  //  # Self managed node IAM Roles for aws-auth
+  //  managed_map_worker_roles = [
+  //  for role_arn in module.managed-node-groups.mg_linux_roles : {
+  //    rolearn : role_arn
+  //    username : "system:node:{{EC2PrivateDNSName}}"
+  //    groups : [
+  //      "system:bootstrappers",
+  //      "system:nodes"
+  //    ]
+  //  }
+  //  ]
+  //
+  //  # Self managed node IAM Roles for aws-auth
+  //  self_managed_map_worker_roles = [
+  //  for role_arn in module.managed-node-groups.mg_linux_roles : {
+  //    rolearn : role_arn
+  //    username : "system:node:{{EC2PrivateDNSName}}"
+  //    groups : [
+  //      "system:bootstrappers",
+  //      "system:nodes"
+  //    ]
+  //  }
+  //  ]
+
 }

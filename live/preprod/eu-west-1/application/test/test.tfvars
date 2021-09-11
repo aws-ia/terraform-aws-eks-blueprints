@@ -86,6 +86,7 @@ coredns_addon_version = "v1.8.3-eksbuild.1"
 enable_kube_proxy_addon  = true
 kube_proxy_addon_version = "v1.20.4-eksbuild.2"
 
+
 #---------------------------------------------------------#
 # EKS WORKER NODE GROUPS
 #---------------------------------------------------------#
@@ -129,44 +130,6 @@ managed_node_groups = {
       subnet_type = "private"
     }
   },
-
-  #---------------------------------------------------------#
-  # BOTTLEROCKET - Worker Group - 3
-  #---------------------------------------------------------#
-  brkt_t3 = {
-    node_group_name        = "brkt_t3"
-    create_launch_template = true           # false will use the default launch template
-    custom_ami_type        = "bottlerocket" # amazonlinux2eks or windows or bottlerocket
-    public_ip              = false          # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
-    pre_userdata           = ""
-    desired_size           = 3
-    max_size               = 3
-    min_size               = 3
-    max_unavailable        = 1
-
-    ami_type       = "CUSTOM"
-    capacity_type  = "ON_DEMAND" # ON_DEMAND or SPOT
-    instance_types = ["t3a.large"]
-    disk_size      = 50
-    custom_ami_id  = "ami-044b114caf98ce8c5" # https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami-bottlerocket.html
-
-    subnet_type = "private" # private or public
-    subnet_ids  = []        # Optional - It will pickup the default private/public subnets
-    # enable_ssh = true                           # Optional - Feature not implemented - Recommends to leverage Systems Manager
-
-    k8s_taints = {} # Optional
-    k8s_labels = {
-      Environment = "preprod"
-      Zone        = "test"
-      OS          = "bottlerocket"
-      WorkerType  = "ON_DEMAND_BOTTLEROCKET"
-    }
-    additional_tags = {
-      ExtraTag    = "bottlerocket"
-      Name        = "bottlerocket"
-      subnet_type = "private" # This is mandatory tage for placing the nodes into PUBLIC or PRIVATE subnets
-    }
-  }
 }
 
 #---------------------------------------------------------#

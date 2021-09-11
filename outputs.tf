@@ -45,12 +45,12 @@ output "amp_work_arn" {
   value = var.prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : "AMP not enabled"
 }
 
-//output "node_groups" {
-//  description = "Outputs from EKS node groups "
-//  value       = var.create_eks ? module.managed-node-groups.* : {}
-//}
-//
-//output "fargate_profiles" {
-//  description = "Outputs from EKS node groups "
-//  value       = var.create_eks && var.enable_fargate ? module.fargate-profiles.* : {}
-//}
+output "node_groups" {
+  description = "Outputs from EKS node groups "
+  value       = var.create_eks ? module.managed-node-groups.* : []
+}
+
+output "fargate_profiles" {
+  description = "Outputs from EKS node groups "
+  value       = var.create_eks && var.enable_fargate ? module.fargate-profiles.* : []
+}

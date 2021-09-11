@@ -26,3 +26,10 @@
 //    mapAccounts = yamlencode(var.map_accounts)
 //  }
 //}
+
+//
+//module "aws-auth" {
+//
+//
+//  depends_on = [eks, mana, farga, self, rbac]
+//}
