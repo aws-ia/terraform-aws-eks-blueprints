@@ -224,51 +224,18 @@ variable "enable_windows_support" {
   type        = bool
   default     = false
 }
-variable "self_managed_nodegroup_name" {
-  type        = string
-  default     = "ng-linux"
-  description = "Self-managed worker node group name"
-}
-variable "self_managed_node_ami_id" {
-  type        = string
-  default     = ""
-  description = "Self-managed worker node custom AMI ID"
-}
-variable "self_managed_node_userdata_template_file" {
-  type        = string
-  default     = ""
-  description = "Self-managed worker node custom userdata template file path"
-}
-variable "self_managed_node_userdata_template_extra_params" {
-  type        = map(any)
-  default     = {}
-  description = "Self-managed worker node custom userdata template extra parameters"
-}
-variable "self_managed_node_volume_size" {
-  type        = number
-  default     = 50
-  description = "Volume size in GiB for worker nodes. Defaults to 50. Terraform will only perform drift detection if a configuration value is provided"
-}
-variable "self_managed_node_instance_types" {
+
+variable "self_managed_public_subnet_ids" {
   type        = list(string)
-  default     = ["m5.large", "m5a.large", "m5n.large"]
-  description = "Set of instance types associated with the EKS Node Group"
+  default     = []
+  description = "Self managed node groups public subnet ID's"
 }
-variable "self_managed_node_desired_size" {
-  type        = number
-  default     = 3
-  description = "Desired number of worker nodes"
+variable "self_managed_private_subnet_ids" {
+  type        = list(string)
+  default     = []
+  description = "Self managed node groups private subnet ID's"
 }
-variable "self_managed_node_max_size" {
-  type        = number
-  default     = 3
-  description = "The maximum size of the AutoScaling Group"
-}
-variable "self_managed_node_min_size" {
-  type        = number
-  default     = 3
-  description = "The minimum size of the AutoScaling Group"
-}
+
 
 variable "metrics_server_enable" {
   type        = bool
@@ -414,6 +381,11 @@ variable "aws_for_fluent_bit_helm_chart_version" {
 }
 
 variable "managed_node_groups" {
+  type    = any
+  default = {}
+}
+
+variable "self_managed_node_groups" {
   type    = any
   default = {}
 }

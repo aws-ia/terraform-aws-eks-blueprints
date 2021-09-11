@@ -45,6 +45,12 @@ output "amp_work_arn" {
   value = var.prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : "AMP not enabled"
 }
 
+output "self_mgd_node_groups_arns" {
+  description = "IAM role arn's of self managed node groups"
+  value       = var.enable_self_managed_nodegroups ? { for nodes in sort(keys(var.self_managed_node_groups)) : nodes => module.aws-eks-self-managed-node-groups[nodes].self_managed_node_group_iam_arns } : null
+}
+
+
 //output "node_groups" {
 //  description = "Outputs from EKS node groups "
 //  value       = var.create_eks ? module.managed-node-groups.* : {}

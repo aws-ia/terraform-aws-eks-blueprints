@@ -41,7 +41,6 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-
 /*
 # Data source used to avoid race condition
 data "aws_vpc_endpoint_service" "dynamodb" {

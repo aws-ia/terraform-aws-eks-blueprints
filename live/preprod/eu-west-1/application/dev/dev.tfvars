@@ -86,14 +86,107 @@ coredns_addon_version = "v1.8.3-eksbuild.1"
 enable_kube_proxy_addon  = true
 kube_proxy_addon_version = "v1.20.4-eksbuild.2"
 
+
+#---------------------------------------------------------#
+# EKS SELF MANAGED WORKER NODE GROUPS
+#---------------------------------------------------------#
+enable_self_managed_nodegroups = true
+self_managed_node_groups = {
+  #---------------------------------------------------------#
+  # ON-DEMAND Self Managed Worker Group - Worker Group - 1
+  #---------------------------------------------------------#
+  self_mg_4 = {
+    self_managed_nodegroup_name = "self-mg-4"
+    os_ami_type                 = "amazonlinux2eks"        # amazonlinux2eks  or bottlerocket or windows
+    self_managed_node_ami_id    = "ami-0dfaa019a300f219c"  # Modify this to fetch to use custom AMI ID.
+    self_managed_node_userdata  = <<-EOT
+            yum install -y amazon-ssm-agent \
+            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
+        EOT
+    self_managed_node_volume_size = "20"
+    self_managed_node_instance_type = "m5.large"
+    self_managed_node_desired_size = "2"
+    self_managed_node_max_size = "20"
+    self_managed_node_min_size = "2"
+    capacity_type              = ""   # Leave this empty if not for SPOT capacity.
+    kubelet_extra_args         = ""
+    bootstrap_extra_args       = ""
+
+    #self managed node group network configuration
+    subnet_type = "public" # private or public
+    subnet_ids = []
+
+    #security_group ID
+    self_managed_custom_security_group_id = ""  # Add custom sec group id if required from intended vpc or module creates new one.
+
+  },
+
+  #---------------------------------------------------------#
+  # Self Managed SPOT Worker Group - Worker Group - 2
+  #---------------------------------------------------------#
+  self_spot_mg_4 = {
+    self_managed_nodegroup_name = "self-spot-mg-4"
+    os_ami_type                 = "amazonlinux2eks"         # amazonlinux2eks  or bottlerocket or windows
+    self_managed_node_ami_id    = "ami-0dfaa019a300f219c"    # Modify this to fetch to use custom AMI ID.
+    self_managed_node_userdata  = <<-EOT
+            yum install -y amazon-ssm-agent \
+            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
+        EOT
+    self_managed_node_volume_size = "20"
+    self_managed_node_instance_type = "m5.xlarge"
+    self_managed_node_desired_size = "2"
+    self_managed_node_max_size = "20"
+    self_managed_node_min_size = "2"
+    capacity_type              = "spot"
+    kubelet_extra_args         = ""
+    bootstrap_extra_args       = ""
+
+    #self managed node group network configuration
+    subnet_type = "public" # private or public
+    subnet_ids  = []
+
+    #security_group ID
+    self_managed_custom_security_group_id = ""  # Add custom sec group id if required from intended vpc or module creates new one.
+
+  },
+
+  #---------------------------------------------------------#
+  # Bottlerocket Self Managed Worker Group - Worker Group - 3
+  #---------------------------------------------------------#
+  bottlerocket_mg_4 = {
+    self_managed_nodegroup_name = "bottlerocket-mg-4"
+    os_ami_type                 = "bottlerocket"            # amazonlinux2eks  or bottlerocket or windows
+    self_managed_node_ami_id    = "ami-044b114caf98ce8c5"   # Modify this to fetch to use custom AMI ID.
+    self_managed_node_userdata  = ""
+    self_managed_node_volume_size = "20"
+    self_managed_node_instance_type = "m5.large"
+    self_managed_node_desired_size = "2"
+    self_managed_node_max_size = "5"
+    self_managed_node_min_size = "2"
+    capacity_type              = ""                         # Leave this empty if not for SPOT capacity.
+    kubelet_extra_args         = ""
+    bootstrap_extra_args       = ""
+
+    #self managed node group network configuration
+    subnet_type = "public" # private or public
+    subnet_ids = []
+
+    #security_group ID
+    self_managed_custom_security_group_id = ""  # Add custom sec group id if required from intended vpc or module creates new one.
+
+  },
+
+}
+
+
 #---------------------------------------------------------#
 # EKS WORKER NODE GROUPS
 #---------------------------------------------------------#
 
 managed_node_groups = {
-  #---------------------------------------------------------#
-  # ON-DEMAND Worker Group - Worker Group - 1
-  #---------------------------------------------------------#
+//  #---------------------------------------------------------#
+//  # ON-DEMAND Worker Group - Worker Group - 1
+//  #---------------------------------------------------------#
   mg_4 = {
     # 1> Node Group configuration - Part1
     node_group_name        = "mg_4"
@@ -118,7 +211,7 @@ managed_node_groups = {
 
     # 4> Node Group network configuration
     subnet_type = "private" # private or public
-    subnet_ids  = ["subnet-xxx", "subnet-xxx", "subnet-xxx"]
+    subnet_ids  = []
 
     k8s_labels = {
       Environment = "preprod"
@@ -160,7 +253,8 @@ managed_node_groups = {
     disk_size      = 50
 
     # Node Group network configuration
-    subnet_ids = ["subnet-xxx", "subnet-xxx", "subnet-xxx"]
+    subnet_type = "private" # private or public
+    subnet_ids  = []
 
     //         k8s_taints = [{
     //           key = "dedicated"
@@ -182,7 +276,7 @@ managed_node_groups = {
   #---------------------------------------------------------#
   # BOTTLEROCKET - Worker Group - 3
   #---------------------------------------------------------#
-  brkt_m5 = {
+  brkt_m5 =  {
     node_group_name        = "brkt_m5"
     create_launch_template = true           # false will use the default launch template
     custom_ami_type        = "bottlerocket" # amazonlinux2eks  or bottlerocket
@@ -234,7 +328,7 @@ fargate_profiles = {
       }
     }]
 
-    subnet_ids = ["subnet-xxx", "subnet-xxx", "subnet-xxx"]
+    subnet_ids = []
 
     additional_tags = {
       ExtraTag    = "Fargate"
@@ -265,7 +359,7 @@ fargate_profiles = {
         }
     }]
 
-    subnet_ids = ["subnet-xxx", "subnet-xxx", "subnet-xxx"]
+    subnet_ids = []
 
     additional_tags = {
       ExtraTag = "Fargate"
@@ -280,9 +374,9 @@ fargate_fluent_bit_enable = false
 #---------------------------------------------------------#
 # SELF-MANAGED WINDOWS NODE GROUP (WORKER GROUP)
 #---------------------------------------------------------#
-enable_self_managed_nodegroups = false
-enable_windows_support         = false
-self_managed_nodegroup_name    = "ng-windows"
+#enable_self_managed_nodegroups = false
+#enable_windows_support         = false
+#self_managed_nodegroup_name    = "ng-windows"
 
 #---------------------------------------------------------#
 # ENABLE HELM MODULES
@@ -303,7 +397,7 @@ metric_server_helm_chart_version = "5.9.2"
 #---------------------------------------------------------#
 # ENABLE CLUSTER AUTOSCALER
 #---------------------------------------------------------#
-cluster_autoscaler_enable       = false
+cluster_autoscaler_enable       = true
 cluster_autoscaler_image_tag    = "v1.20.0"
 cluster_autoscaler_helm_version = "9.9.2"
 
