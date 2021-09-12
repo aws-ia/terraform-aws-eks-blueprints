@@ -52,15 +52,24 @@ resource "aws_launch_template" "managed_node_groups" {
 
   tag_specifications {
     resource_type = "instance"
-    tags          = merge(var.tags, tomap({ "Name" = "${var.eks_cluster_name}-${local.managed_node_group["node_group_name"]}" }))
+    tags          = local.common_tags
   }
 
   network_interfaces {
     associate_public_ip_address = local.managed_node_group["public_ip"]
-    security_groups             = [var.default_worker_security_group_id]
+    security_groups             = local.managed_node_group["create_worker_security_group"] == true ? [aws_security_group.managed_ng[0].id] : [var.default_worker_security_group_id]
   }
 
   lifecycle {
     create_before_destroy = true
   }
+
+  depends_on = [
+    aws_iam_role.managed_ng,
+    aws_iam_instance_profile.managed_ng,
+    aws_iam_role_policy_attachment.managed_ng_AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.managed_ng_AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.managed_ng_AmazonEC2ContainerRegistryReadOnly,
+  ]
+
 }

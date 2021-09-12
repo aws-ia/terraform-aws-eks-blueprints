@@ -250,11 +250,6 @@ variable "map_users" {
   }))
   default = []
 }
-variable "iam_path" {
-  description = "If provided, all IAM roles will be created on this path."
-  type        = string
-  default     = "/"
-}
 
 variable "manage_aws_auth" {
   description = "Whether to apply the aws-auth configmap file."
@@ -264,30 +259,6 @@ variable "aws_auth_additional_labels" {
   description = "Additional kubernetes labels applied on aws-auth ConfigMap"
   default     = {}
   type        = map(string)
-}
-
-variable "aws_auth_yaml_strip_quotes" {
-  type        = bool
-  default     = true
-  description = "If true, remove double quotes from the generated aws-auth ConfigMap YAML to reduce spurious diffs in plans"
-}
-
-variable "apply_config_map_aws_auth" {
-  type        = bool
-  default     = true
-  description = "Whether to apply the ConfigMap to allow worker nodes to join the EKS cluster and allow additional users, accounts and roles to acces the cluster"
-}
-
-variable "local_exec_interpreter" {
-  type        = list(string)
-  default     = ["/bin/sh", "-c"]
-  description = "shell to use for local_exec"
-}
-
-variable "wait_for_cluster_command" {
-  type        = string
-  default     = "curl --silent --fail --retry 60 --retry-delay 5 --retry-connrefused --insecure --output /dev/null $ENDPOINT/healthz"
-  description = "`local-exec` command to execute to determine if the EKS cluster is healthy. Cluster endpoint are available as environment variable `ENDPOINT`"
 }
 
 #----------------------------------------------------------

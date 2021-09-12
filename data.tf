@@ -16,6 +16,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+data "aws_partition" "current" {}
+
 data "aws_eks_cluster" "cluster" {
   count = var.create_eks ? 1 : 0
   name  = module.eks.cluster_id

@@ -71,7 +71,7 @@ resource "aws_eks_node_group" "managed_ng" {
 
   labels = local.managed_node_group["k8s_labels"]
 
-  tags = merge(var.tags, local.managed_node_group["additional_tags"])
+  tags = merge(local.common_tags, local.managed_node_group["additional_tags"])
 
   timeouts {
     create = "2h"
@@ -80,6 +80,8 @@ resource "aws_eks_node_group" "managed_ng" {
   }
 
   depends_on = [
+    aws_iam_role.managed_ng,
+    aws_iam_instance_profile.managed_ng,
     aws_iam_role_policy_attachment.managed_ng_AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.managed_ng_AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.managed_ng_AmazonEC2ContainerRegistryReadOnly,

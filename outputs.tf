@@ -64,3 +64,43 @@ output "fargate_profiles" {
   description = "Outputs from EKS node groups "
   value       = var.create_eks && var.enable_fargate ? module.fargate-profiles.* : []
 }
+
+output "self_managed_node_group_aws_auth_config_map" {
+  value = local.self_managed_node_group_aws_auth_config_map.*
+}
+
+output "managed_node_group_aws_auth_config_map" {
+  value = local.managed_node_group_aws_auth_config_map.*
+}
+
+output "fargate_profiles_aws_auth_config_map" {
+  value = local.fargate_profiles_aws_auth_config_map.*
+}
+
+output "cluster_security_group_id" {
+  value = module.eks.cluster_security_group_id
+}
+
+output "cluster_primary_security_group_id" {
+  value = module.eks.cluster_primary_security_group_id
+}
+
+output "security_group_rule_cluster_https_worker_ingress" {
+  value = module.eks.security_group_rule_cluster_https_worker_ingress
+}
+
+output "worker_security_group_id" {
+  value = module.eks.worker_security_group_id
+}
+
+//output "self_managed_node_group_iam_roles" {
+//  description = "IAM role arn's of self managed node groups"
+////  value       = var.create_eks && var.enable_managed_nodegroups ? {for node in sort(keys(var.managed_node_groups)) : node => lookup(var.self_managed_node_groups[node],"node_group_name")} : null
+//  value       = var.create_eks && var.enable_self_managed_nodegroups ? {
+//    for_each = {
+//      for key, node_values in var.self_managed_node_groups: key => lookup(node_values, "node_group_name") }
+//    } : null
+//
+//}
+
+//${lookup(var.var["firstchoice"],"firstAChoice")}

@@ -85,49 +85,85 @@ enable_kube_proxy_addon  = true
 kube_proxy_addon_version = "v1.20.4-eksbuild.2"
 
 
-#---------------------------------------------------------#
-# WORKER NODE GROUPS SECTION
-# Define the following parameters to create EKS Node groups. If you need to two Node groups then you may need to duplicate the with different instance type
-# NOTE: Also ensure Node groups config that you defined below needs to exist in this file <aws-eks-accelerator-for-terraform/source/eks.tf>.
-#         Comment out the node groups in <aws-eks-accelerator-for-terraform/source/eks.tf> file if you are not defining below.
-#         This is a limitation at this moment that the change needs ot be done in two places. This will be improved later
-#---------------------------------------------------------#
-#---------------------------------------------------------#
-# MANAGED WORKER NODE INPUT VARIABLES FOR ON DEMAND INSTANCES - Worker Group1
-#---------------------------------------------------------#
-on_demand_node_group_name = "mg-m5-on-demand"
-on_demand_ami_type        = "AL2_x86_64"
-on_demand_disk_size       = 50
-on_demand_instance_type   = ["m5.large"]
-on_demand_desired_size    = 3
-on_demand_max_size        = 3
-on_demand_min_size        = 3
 
 #---------------------------------------------------------#
-# BOTTLEROCKET - Worker Group3
+# EKS WORKER NODE GROUPS
 #---------------------------------------------------------#
-# Amazon EKS optimized Bottlerocket AMI ID for a region and Kubernetes version.
-# https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami-bottlerocket.html
+enable_managed_nodegroups = true
+managed_node_groups = {
+  #---------------------------------------------------------#
+  # BOTTLEROCKET - Worker Group - 3
+  #---------------------------------------------------------#
+  brkt_t3 = {
+    node_group_name        = "brkt_t3"
+    create_launch_template = true           # false will use the default launch template
+    custom_ami_type        = "bottlerocket" # amazonlinux2eks or windows or bottlerocket
+    public_ip              = false          # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+    pre_userdata           = ""
+    desired_size           = 3
+    max_size               = 3
+    min_size               = 3
+    max_unavailable        = 1
 
-bottlerocket_node_group_name = "mg-m5-bottlerocket"
-bottlerocket_ami             = "ami-0574bb6d7d985b8f7"
-bottlerocket_disk_size       = 50
-bottlerocket_instance_type   = ["m5.large"]
-bottlerocket_desired_size    = 3
-bottlerocket_max_size        = 3
-bottlerocket_min_size        = 3
+    ami_type       = "CUSTOM"
+    capacity_type  = "ON_DEMAND" # ON_DEMAND or SPOT
+    instance_types = ["t3a.large"]
+    disk_size      = 50
+    custom_ami_id  = "ami-044b114caf98ce8c5" # https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami-bottlerocket.html
+
+    subnet_type = "private" # private or public
+    subnet_ids  = []        # Optional - It will pickup the default private/public subnets
+    # enable_ssh = true                           # Optional - Feature not implemented - Recommends to leverage Systems Manager
+
+    k8s_taints = {} # Optional
+    k8s_labels = {
+      Environment = "preprod"
+      Zone        = "test"
+      OS          = "bottlerocket"
+      WorkerType  = "ON_DEMAND_BOTTLEROCKET"
+    }
+    additional_tags = {
+      ExtraTag    = "bottlerocket"
+      Name        = "bottlerocket"
+      subnet_type = "private" # This is mandatory tage for placing the nodes into PUBLIC or PRIVATE subnets
+    }
+
+    #security_group ID
+    create_worker_security_group = true
+  }
+}
 
 #---------------------------------------------------------#
-# MANAGED WORKER NODE INPUT VARIABLES FOR SPOT INSTANCES - Worker Group2
+# SELF-MANAGED WINDOWS NODE GROUP (WORKER GROUP)
 #---------------------------------------------------------#
+enable_self_managed_nodegroups = true
+self_managed_node_groups = {
+  #---------------------------------------------------------#
+  # Bottlerocket Self Managed Worker Group - Worker Group - 3
+  #---------------------------------------------------------#
+  bottlerocket_mg_4 = {
+    self_managed_nodegroup_name     = "bottlerocket-mg-4"
+    os_ami_type                     = "bottlerocket"          # amazonlinux2eks  or bottlerocket or windows
+    self_managed_node_ami_id        = "ami-044b114caf98ce8c5" # Modify this to fetch to use custom AMI ID.
+    self_managed_node_userdata      = ""
+    self_managed_node_volume_size   = "20"
+    self_managed_node_instance_type = "m5.large"
+    self_managed_node_desired_size  = "2"
+    self_managed_node_max_size      = "5"
+    self_managed_node_min_size      = "2"
+    capacity_type                   = "" # Leave this empty if not for SPOT capacity.
+    kubelet_extra_args              = ""
+    bootstrap_extra_args            = ""
 
-spot_node_group_name = "mg-m5-spot"
-spot_instance_type   = ["c5.large", "m5a.large"]
-spot_ami_type        = "AL2_x86_64"
-spot_desired_size    = 3
-spot_max_size        = 6
-spot_min_size        = 3
+    #self managed node group network configuration
+    subnet_type = "private" # private or public
+    subnet_ids  = []
 
+    #security_group ID
+    create_worker_security_group = true
+
+  },
+}
 
 #---------------------------------------------------------#
 # ENABLE HELM MODULES

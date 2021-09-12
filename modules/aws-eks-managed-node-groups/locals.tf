@@ -49,7 +49,7 @@ locals {
     additional_tags               = {}
     custom_ami_type               = "amazonlinux2eks"
     custom_ami_id                 = ""
-
+    create_worker_security_group  = false
   }
   managed_node_group = merge(
     local.default_managed_ng,
@@ -73,5 +73,11 @@ locals {
   userdata_base64 = base64encode(
     templatefile("${path.module}/templates/userdata-${local.managed_node_group["custom_ami_type"]}.tpl", local.userdata_params)
   )
+
+  common_tags = merge(
+    var.tags,
+    {
+      Name = "${var.eks_cluster_name}-${local.managed_node_group["node_group_name"]}"
+  })
 
 }

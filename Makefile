@@ -28,7 +28,7 @@ clean:
 
 .PHONY: tf-plan-eks
 tf-plan-eks:
-	export AWS_REGION=${region} && terraform init -backend-config ./live/${env}/${region}/${account}/${subenv}/backend.conf -reconfigure && terraform validate && terraform plan -var-file ./live/${env}/${region}/${account}/${subenv}/${subenv}.tfvars
+	export AWS_REGION=${region} && terraform init -backend-config ./live/${env}/${region}/${account}/${subenv}/backend.conf -reconfigure && terraform validate && terraform plan -var-file ./live/${env}/${region}/${account}/${subenv}/${subenv}.tfvars -refresh=false
 
 .PHONY: tf-apply-eks
 tf-apply-eks:

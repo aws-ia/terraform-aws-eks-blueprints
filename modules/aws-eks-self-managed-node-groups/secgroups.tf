@@ -1,3 +1,21 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: MIT-0
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ * software and associated documentation files (the "Software"), to deal in the Software
+ * without restriction, including without limitation the rights to use, copy, modify,
+ * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 resource "aws_security_group" "self_managed_ng" {
   count = local.self_managed_node_group["create_worker_security_group"] == true ? 1 : 0
 
@@ -16,6 +34,8 @@ resource "aws_security_group" "self_managed_ng" {
 }
 
 resource "aws_security_group_rule" "worker_to_worker_tcp" {
+  count = local.self_managed_node_group["create_worker_security_group"] == true ? 1 : 0
+
   description              = "Allow workers tcp communication with each other"
   from_port                = 0
   protocol                 = "tcp"
@@ -26,7 +46,8 @@ resource "aws_security_group_rule" "worker_to_worker_tcp" {
 }
 
 resource "aws_security_group_rule" "worker_to_worker_udp" {
-  count                    = var.default_worker_security_group_id == "" ? 1 : 0
+  count = local.self_managed_node_group["create_worker_security_group"] == true ? 1 : 0
+
   description              = "Allow workers udp communication with each other"
   from_port                = 0
   protocol                 = "udp"
@@ -37,7 +58,8 @@ resource "aws_security_group_rule" "worker_to_worker_udp" {
 }
 
 resource "aws_security_group_rule" "workers_masters_ingress" {
-  count                    = var.default_worker_security_group_id == "" ? 1 : 0
+  count = local.self_managed_node_group["create_worker_security_group"] == true ? 1 : 0
+
   description              = "Allow workes kubelets and pods to receive communication from the cluster control plane"
   from_port                = 1025
   to_port                  = 65535
@@ -48,6 +70,8 @@ resource "aws_security_group_rule" "workers_masters_ingress" {
 }
 
 resource "aws_security_group_rule" "workers_masters_https_ingress" {
+  count = local.self_managed_node_group["create_worker_security_group"] == true ? 1 : 0
+
   description              = "Allow workers kubelets and pods to receive https from the cluster control plane"
   from_port                = 443
   protocol                 = "tcp"
@@ -58,6 +82,8 @@ resource "aws_security_group_rule" "workers_masters_https_ingress" {
 }
 
 resource "aws_security_group_rule" "masters_api_ingress" {
+  count = local.self_managed_node_group["create_worker_security_group"] == true ? 1 : 0
+
   description              = "Allow cluster control plane to receive communication from workers kubelets and pods"
   from_port                = 443
   protocol                 = "tcp"
@@ -68,6 +94,8 @@ resource "aws_security_group_rule" "masters_api_ingress" {
 }
 
 resource "aws_security_group_rule" "masters_kubelet_egress" {
+  count = local.self_managed_node_group["create_worker_security_group"] == true ? 1 : 0
+
   description              = "Allow the cluster control plane to reach out workers kubelets and pods"
   from_port                = 10250
   protocol                 = "tcp"
@@ -78,6 +106,8 @@ resource "aws_security_group_rule" "masters_kubelet_egress" {
 }
 
 resource "aws_security_group_rule" "masters_kubelet_https_egress" {
+  count = local.self_managed_node_group["create_worker_security_group"] == true ? 1 : 0
+
   description              = "Allow the cluster control plane to reach out workers kubelets and pods https"
   from_port                = 443
   protocol                 = "tcp"
@@ -88,6 +118,8 @@ resource "aws_security_group_rule" "masters_kubelet_https_egress" {
 }
 
 resource "aws_security_group_rule" "masters_workers_egress" {
+  count = local.self_managed_node_group["create_worker_security_group"] == true ? 1 : 0
+
   description              = "Allow the cluster control plane to reach out all worker node security group"
   from_port                = 1025
   to_port                  = 65535

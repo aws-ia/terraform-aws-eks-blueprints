@@ -85,49 +85,55 @@ enable_kube_proxy_addon  = true
 kube_proxy_addon_version = "v1.20.4-eksbuild.2"
 
 
-#---------------------------------------------------------#
-# WORKER NODE GROUPS SECTION
-# Define the following parameters to create EKS Node groups. If you need to two Node groups then you may need to duplicate the with different instance type
-# NOTE: Also ensure Node groups config that you defined below needs to exist in this file <aws-eks-accelerator-for-terraform/source/eks.tf>.
-#         Comment out the node groups in <aws-eks-accelerator-for-terraform/source/eks.tf> file if you are not defining below.
-#         This is a limitation at this moment that the change needs ot be done in two places. This will be improved later
-#---------------------------------------------------------#
-#---------------------------------------------------------#
-# MANAGED WORKER NODE INPUT VARIABLES FOR ON DEMAND INSTANCES - Worker Group1
-#---------------------------------------------------------#
-on_demand_node_group_name = "mg-m5-on-demand"
-on_demand_ami_type        = "AL2_x86_64"
-on_demand_disk_size       = 50
-on_demand_instance_type   = ["m5.large"]
-on_demand_desired_size    = 3
-on_demand_max_size        = 3
-on_demand_min_size        = 3
 
 #---------------------------------------------------------#
-# BOTTLEROCKET - Worker Group3
+# EKS WORKER NODE GROUPS
 #---------------------------------------------------------#
-# Amazon EKS optimized Bottlerocket AMI ID for a region and Kubernetes version.
-#bottlerocket_node_group_name = "mg-m5-bottlerocket"
-#bottlerocket_ami        = "ami-0326716ad575410ab"
-#bottlerocket_disk_size       = 50
-#bottlerocket_instance_type   = ["m5.large"]
-#bottlerocket_desired_size    = 3
-#bottlerocket_max_size        = 3
-#bottlerocket_min_size        = 3
-#---------------------------------------------------------#
-# MANAGED WORKER NODE INPUT VARIABLES FOR SPOT INSTANCES - Worker Group2
-#---------------------------------------------------------#
-#spot_node_group_name = "mg-m5-spot"
-#spot_instance_type   = ["m5.large", "m5a.large"]
-#spot_ami_type        = "AL2_x86_64"
-#spot_desired_size    = 3
-#spot_max_size        = 6
-#spot_min_size        = 3
+enable_managed_nodegroups = true
+managed_node_groups = {
+  mg_m5x = {
+    # 1> Node Group configuration - Part1
+    node_group_name        = "mg_m5x"
+    create_launch_template = true              # false will use the default launch template
+    custom_ami_type        = "amazonlinux2eks" # amazonlinux2eks or windows or bottlerocket
+    public_ip              = true              # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+    pre_userdata           = <<-EOT
+            yum install -y amazon-ssm-agent
+            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
+        EOT
+    # 2> Node Group scaling configuration
+    desired_size    = 3
+    max_size        = 3
+    min_size        = 3
+    max_unavailable = 1 # or percentage = 20
 
-#---------------------------------------------------------#
-# Creates a Fargate profile for default namespace
-#---------------------------------------------------------#
-#fargate_profile_namespace = "default"
+    # 3> Node Group compute configuration
+    ami_type       = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
+    capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
+    instance_types = ["m5.xlarge"]
+    disk_size      = 50
+
+    # 4> Node Group network configuration
+    subnet_type = "public" # private or public
+    subnet_ids  = []       # Optional - It will use the default private/public subnets
+    # enable_ssh = true     # Optional - Feature not implemented - Recommends to leverage Systems Manager
+
+    k8s_labels = {
+      Environment = "preprod"
+      Zone        = "test"
+      WorkerType  = "ON_DEMAND"
+    }
+    additional_tags = {
+      ExtraTag    = "m5x-on-demand"
+      Name        = "m5x-on-demand"
+      subnet_type = "private"
+    }
+
+    #security_group ID
+    create_worker_security_group = true
+
+  },
+}
 
 #---------------------------------------------------------#
 # ENABLE HELM MODULES
@@ -136,51 +142,8 @@ on_demand_min_size        = 3
 #          README with instructions available in each HELM module under helm/
 #---------------------------------------------------------#
 # Enable this if worker Node groups has access to internet to download the docker images
-
+# Or Make it false and set the private contianer image repo url in source/eks.tf; currently this defaults to ECR
 public_docker_repo = true
-
-#---------------------------------------------------------#
-# ENABLE METRICS SERVER
-#---------------------------------------------------------#
-metrics_server_enable            = true
-metric_server_image_tag          = "v0.4.2"
-metric_server_helm_chart_version = "2.12.1"
-#---------------------------------------------------------#
-# ENABLE CLUSTER AUTOSCALER
-#---------------------------------------------------------#
-cluster_autoscaler_enable       = true
-cluster_autoscaler_image_tag    = "v1.20.0"
-cluster_autoscaler_helm_version = "9.9.2"
-
-#---------------------------------------------------------//
-# ENABLE ALB INGRESS CONTROLLER
-#---------------------------------------------------------//
-//lb_ingress_controller_enable = false
-//aws_lb_image_tag             = "v2.2.1"
-//aws_lb_helm_chart_version    = "1.2.3"
-
-#---------------------------------------------------------//
-# ENABLE PROMETHEUS
-#---------------------------------------------------------//
-# Creates the AMP workspace and all the relevent IAM Roles
-//aws_managed_prometheus_enable = true
-
-# Deploys Pometheus server with remote write to AWS AMP Workspace
-//prometheus_enable             = true
-//prometheus_helm_chart_version = "14.4.0"
-//prometheus_image_tag          = "v2.26.0"
-//alert_manager_image_tag       = "v0.21.0"
-//configmap_reload_image_tag    = "v0.5.0"
-//node_exporter_image_tag       = "v1.1.2"
-//pushgateway_image_tag         = "v1.3.1"
-
-#---------------------------------------------------------#
-# ENABLE AWS_FLUENT-BIT
-#---------------------------------------------------------#
-#aws_for_fluent_bit_enable = true
-#fargate_fluent_bit_enable = true
-
-#ekslog_retention_in_days = 1
 
 #---------------------------------------------------------//
 # ENABLE AGONES GAMING CONTROLLER

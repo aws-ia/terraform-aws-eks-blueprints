@@ -85,56 +85,143 @@ enable_kube_proxy_addon  = true
 kube_proxy_addon_version = "v1.20.4-eksbuild.2"
 
 
-#---------------------------------------------------------#
-# WORKER NODE GROUPS SECTION
-# Define the following parameters to create EKS Node groups. If you need to two Node groups then you may need to duplicate the with different instance type
-# NOTE: Also ensure Node groups config that you defined below needs to exist in this file <aws-eks-accelerator-for-terraform/source/eks.tf>.
-#         Comment out the node groups in <aws-eks-accelerator-for-terraform/source/eks.tf> file if you are not defining below.
-#         This is a limitation at this moment that the change needs ot be done in two places. This will be improved later
-#---------------------------------------------------------#
-#---------------------------------------------------------#
-# MANAGED WORKER NODE INPUT VARIABLES FOR ON DEMAND INSTANCES - Worker Group1
-#---------------------------------------------------------#
-on_demand_node_group_name = "mg-m5-on-demand"
-on_demand_ami_type        = "AL2_x86_64"
-on_demand_disk_size       = 50
-on_demand_instance_type   = ["m5.large"]
-on_demand_desired_size    = 3
-on_demand_max_size        = 3
-on_demand_min_size        = 3
 
 #---------------------------------------------------------#
-# BOTTLEROCKET - Worker Group3
+# EKS WORKER NODE GROUPS
 #---------------------------------------------------------#
-# Amazon EKS optimized Bottlerocket AMI ID for a region and Kubernetes version.
-# https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami-bottlerocket.html
-# /aws/service/bottlerocket/aws-k8s-1.20/x86_64/latest/image_id
+enable_managed_nodegroups = true
+managed_node_groups = {
+  mg_m5x = {
+    # 1> Node Group configuration - Part1
+    node_group_name        = "mg_m5x"
+    create_launch_template = true              # false will use the default launch template
+    custom_ami_type        = "amazonlinux2eks" # amazonlinux2eks or windows or bottlerocket
+    public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+    pre_userdata           = <<-EOT
+            yum install -y amazon-ssm-agent
+            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
+        EOT
+    # 2> Node Group scaling configuration
+    desired_size    = 3
+    max_size        = 3
+    min_size        = 3
+    max_unavailable = 1 # or percentage = 20
 
-bottlerocket_node_group_name = "mg-m5-bottlerocket"
-bottlerocket_ami             = "ami-0574bb6d7d985b8f7"
-bottlerocket_disk_size       = 50
-bottlerocket_instance_type   = ["m5.large"]
-bottlerocket_desired_size    = 3
-bottlerocket_max_size        = 3
-bottlerocket_min_size        = 3
+    # 3> Node Group compute configuration
+    ami_type       = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
+    capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
+    instance_types = ["m5.xlarge"]
+    disk_size      = 50
+
+    # 4> Node Group network configuration
+    subnet_type = "private" # private or public
+    subnet_ids  = []        # Optional - It will use the default private/public subnets
+    # enable_ssh = true     # Optional - Feature not implemented - Recommends to leverage Systems Manager
+
+    k8s_labels = {
+      Environment = "preprod"
+      Zone        = "test"
+      WorkerType  = "ON_DEMAND"
+    }
+    additional_tags = {
+      ExtraTag    = "m5x-on-demand"
+      Name        = "m5x-on-demand"
+      subnet_type = "private"
+    }
+
+    #security_group ID
+    create_worker_security_group = true
+
+  },
+}
 
 #---------------------------------------------------------#
-# MANAGED WORKER NODE INPUT VARIABLES FOR SPOT INSTANCES - Worker Group2
+# Creates a Fargate profiles
 #---------------------------------------------------------#
+enable_fargate = false
 
-spot_node_group_name = "mg-m5-spot"
-spot_instance_type   = ["c5.large", "m5a.large"]
-spot_ami_type        = "AL2_x86_64"
-spot_desired_size    = 3
-spot_max_size        = 6
-spot_min_size        = 3
+fargate_profiles = {
+  multi = {
+    fargate_profile_name = "multi-namespaces"
+    fargate_profile_namespaces = [{
+      namespace = "default"
+      k8s_labels = {
+        Environment = "preprod"
+        Zone        = "test"
+        OS          = "Fargate"
+        WorkerType  = "FARGATE"
+        Namespace   = "default"
+      }
+      },
+      {
+        namespace = "sales"
+        k8s_labels = {
+          Environment = "preprod"
+          Zone        = "test"
+          OS          = "Fargate"
+          WorkerType  = "fargate"
+          Namespace   = "default"
+        }
+    }]
 
+    subnet_type = "private" # private or public
+    subnet_ids  = []        # Optional - It will pickup the default private/public subnets
+
+    additional_tags = {
+      ExtraTag    = "Fargate"
+      Name        = "Fargate"
+      subnet_type = "private" # This is mandatory tage for placing the nodes into PUBLIC or PRIVATE subnets
+    }
+
+  },
+}
 #---------------------------------------------------------#
-# Creates a Fargate profile for default namespace
+# SELF-MANAGED WINDOWS NODE GROUP (WORKER GROUP)
 #---------------------------------------------------------#
-//fargate_profile_namespace = "default"
-# Enable logging only when you create a Fargate profile
-//fargate_fluent_bit_enable = false
+enable_self_managed_nodegroups = false
+self_managed_node_groups = {
+  #---------------------------------------------------------#
+  # ON-DEMAND Self Managed Worker Group - Worker Group - 1
+  #---------------------------------------------------------#
+  self_mg_4 = {
+    node_group_name = "self-mg-5"
+    os_ami_type     = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or windows
+    custom_ami_id   = "ami-0dfaa019a300f219c" # Modify this to fetch to use custom AMI ID.
+    public_ip       = false
+    pre_userdata    = <<-EOT
+            yum install -y amazon-ssm-agent \
+            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
+        EOT
+
+    disk_size     = "20"
+    instance_type = "m5.large"
+
+    desired_size = "2"
+    max_size     = "20"
+    min_size     = "2"
+
+    capacity_type = "" # Leave this empty if not for SPOT capacity.
+
+    k8s_labels = {
+      Environment = "preprod"
+      Zone        = "test"
+      WorkerType  = "SELF_MANAGED_ON_DEMAND"
+    }
+
+    additional_tags = {
+      ExtraTag    = "m5x-on-demand"
+      Name        = "m5x-on-demand"
+      subnet_type = "private"
+    }
+    #self managed node group network configuration
+    subnet_type = "private" # private or public
+    subnet_ids  = []
+
+    #security_group ID
+    create_worker_security_group = true
+
+  },
+}
 #---------------------------------------------------------#
 # ENABLE HELM MODULES
 # Please note that you may need to download the docker images for each

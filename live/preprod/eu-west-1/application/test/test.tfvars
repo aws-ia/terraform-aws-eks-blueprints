@@ -118,7 +118,7 @@ managed_node_groups = {
     # 4> Node Group network configuration
     subnet_type = "private" # private or public
     subnet_ids  = []        # Optional - It will use the default private/public subnets
-    # enable_ssh = true                           # Optional - Feature not implemented - Recommends to leverage Systems Manager
+    # enable_ssh = true     # Optional - Feature not implemented - Recommends to leverage Systems Manager
 
     k8s_labels = {
       Environment = "preprod"
@@ -130,13 +130,17 @@ managed_node_groups = {
       Name        = "m5x-on-demand"
       subnet_type = "private"
     }
+
+    #security_group ID
+    create_worker_security_group = true
+
   },
 }
 
 #---------------------------------------------------------#
 # Creates a Fargate profiles
 #---------------------------------------------------------#
-enable_fargate = true
+enable_fargate = false
 
 fargate_profiles = {
   multi = {
@@ -173,11 +177,10 @@ fargate_profiles = {
 
   },
 }
-
 #---------------------------------------------------------#
 # SELF-MANAGED WINDOWS NODE GROUP (WORKER GROUP)
 #---------------------------------------------------------#
-enable_self_managed_nodegroups = true
+enable_self_managed_nodegroups = false
 self_managed_node_groups = {
   #---------------------------------------------------------#
   # ON-DEMAND Self Managed Worker Group - Worker Group - 1
@@ -217,11 +220,10 @@ self_managed_node_groups = {
     subnet_ids  = []
 
     #security_group ID
-    create_worker_security_group = true # It will use default sec group created by EKS Core module
+    create_worker_security_group = true
 
   },
 }
-
 #---------------------------------------------------------#
 # ENABLE HELM MODULES
 # Please note that you may need to download the docker images for each
@@ -244,14 +246,14 @@ metric_server_helm_chart_version = "5.9.2"
 #---------------------------------------------------------#
 # ENABLE CLUSTER AUTOSCALER
 #---------------------------------------------------------#
-cluster_autoscaler_enable       = true
+cluster_autoscaler_enable       = false
 cluster_autoscaler_image_tag    = "v1.20.0"
 cluster_autoscaler_helm_version = "9.9.2"
 
 #---------------------------------------------------------//
 # ENABLE AWS LB INGRESS CONTROLLER
 #---------------------------------------------------------//
-lb_ingress_controller_enable = true
+lb_ingress_controller_enable = false
 aws_lb_image_tag             = "v2.2.1"
 aws_lb_helm_chart_version    = "1.2.3"
 

@@ -96,97 +96,139 @@ self_managed_node_groups = {
   # ON-DEMAND Self Managed Worker Group - Worker Group - 1
   #---------------------------------------------------------#
   self_mg_4 = {
-    self_managed_nodegroup_name     = "self-mg-4"
-    os_ami_type                     = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or windows
-    self_managed_node_ami_id        = "ami-0dfaa019a300f219c" # Modify this to fetch to use custom AMI ID.
-    self_managed_node_userdata      = <<-EOT
+    node_group_name = "self-mg-5"
+    os_ami_type     = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or windows
+    custom_ami_id   = "ami-0dfaa019a300f219c" # Modify this to fetch to use custom AMI ID.
+    public_ip       = false
+    pre_userdata    = <<-EOT
             yum install -y amazon-ssm-agent \
             systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
         EOT
-    self_managed_node_volume_size   = "20"
-    self_managed_node_instance_type = "m5.large"
-    self_managed_node_desired_size  = "2"
-    self_managed_node_max_size      = "20"
-    self_managed_node_min_size      = "2"
-    capacity_type                   = "" # Leave this empty if not for SPOT capacity.
-    kubelet_extra_args              = ""
-    bootstrap_extra_args            = ""
 
+    disk_size     = "20"
+    instance_type = "m5.large"
+
+    desired_size = "2"
+    max_size     = "20"
+    min_size     = "2"
+
+    capacity_type = "" # Leave this empty if not for SPOT capacity.
+
+    k8s_labels = {
+      Environment = "preprod"
+      Zone        = "test"
+      WorkerType  = "SELF_MANAGED_ON_DEMAND"
+    }
+
+    additional_tags = {
+      ExtraTag    = "m5x-on-demand"
+      Name        = "m5x-on-demand"
+      subnet_type = "private"
+    }
     #self managed node group network configuration
-    subnet_type = "public" # private or public
+    subnet_type = "private" # private or public
     subnet_ids  = []
 
     #security_group ID
-    self_managed_custom_security_group_id = "" # Add custom sec group id if required from intended vpc or module creates new one.
+    create_worker_security_group = true
 
   },
 
-  #---------------------------------------------------------#
-  # Self Managed SPOT Worker Group - Worker Group - 2
-  #---------------------------------------------------------#
-  self_spot_mg_4 = {
-    self_managed_nodegroup_name     = "self-spot-mg-4"
-    os_ami_type                     = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or windows
-    self_managed_node_ami_id        = "ami-0dfaa019a300f219c" # Modify this to fetch to use custom AMI ID.
-    self_managed_node_userdata      = <<-EOT
-            yum install -y amazon-ssm-agent \
-            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
-        EOT
-    self_managed_node_volume_size   = "20"
-    self_managed_node_instance_type = "m5.xlarge"
-    self_managed_node_desired_size  = "2"
-    self_managed_node_max_size      = "20"
-    self_managed_node_min_size      = "2"
-    capacity_type                   = "spot"
-    kubelet_extra_args              = ""
-    bootstrap_extra_args            = ""
+  spot_m5 = {
+    # 1> Node Group configuration - Part1
+    node_group_name        = "spot_m5"
+    create_launch_template = true                    # false will use the default launch template
+    os_ami_type            = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or windows
+    custom_ami_id          = "ami-0dfaa019a300f219c" # Modify this to fetch to use custom AMI ID.
+    public_ip              = false                   # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+    pre_userdata           = <<-EOT
+               yum install -y amazon-ssm-agent
+               systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
+           EOT
 
-    #self managed node group network configuration
-    subnet_type = "public" # private or public
+    # Node Group scaling configuration
+    desired_size = 3
+    max_size     = 3
+    min_size     = 3
+
+    disk_size     = 50
+    instance_type = "m5.large"
+
+    # Node Group update configuration. Set the maximum number or percentage of unavailable nodes to be tolerated during the node group version update.
+    max_unavailable = 1 # or percentage = 20
+
+    # Node Group compute configuration
+    ami_type      = "AL2_x86_64"
+    capacity_type = "SPOT"
+
+
+    # Node Group network configuration
+    subnet_type = "private" # private or public
     subnet_ids  = []
 
+    //         k8s_taints = [{
+    //           key = "dedicated"
+    //           value = "gpuGroup"
+    //           effect = "NO_SCHEDULE"
+    //         }]
+    k8s_labels = {
+      Environment = "preprod"
+      Zone        = "dev"
+      WorkerType  = "SPOT"
+    }
+    additional_tags = {
+      ExtraTag    = "spot_nodes"
+      Name        = "spot"
+      subnet_type = "private"
+    }
     #security_group ID
-    self_managed_custom_security_group_id = "" # Add custom sec group id if required from intended vpc or module creates new one.
-
+    create_worker_security_group = false
   },
 
-  #---------------------------------------------------------#
-  # Bottlerocket Self Managed Worker Group - Worker Group - 3
-  #---------------------------------------------------------#
-  bottlerocket_mg_4 = {
-    self_managed_nodegroup_name     = "bottlerocket-mg-4"
-    os_ami_type                     = "bottlerocket"          # amazonlinux2eks  or bottlerocket or windows
-    self_managed_node_ami_id        = "ami-044b114caf98ce8c5" # Modify this to fetch to use custom AMI ID.
-    self_managed_node_userdata      = ""
-    self_managed_node_volume_size   = "20"
-    self_managed_node_instance_type = "m5.large"
-    self_managed_node_desired_size  = "2"
-    self_managed_node_max_size      = "5"
-    self_managed_node_min_size      = "2"
-    capacity_type                   = "" # Leave this empty if not for SPOT capacity.
-    kubelet_extra_args              = ""
-    bootstrap_extra_args            = ""
+  brkt_m5 = {
+    node_group_name        = "brkt_m5"
+    create_launch_template = true           # false will use the default launch template
+    custom_ami_type        = "bottlerocket" # amazonlinux2eks  or bottlerocket
+    public_ip              = false          # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+    pre_userdata           = ""
+    desired_size           = 3
+    max_size               = 3
+    min_size               = 3
+    max_unavailable        = 1
 
-    #self managed node group network configuration
-    subnet_type = "public" # private or public
-    subnet_ids  = []
+    ami_type       = "CUSTOM"
+    capacity_type  = "ON_DEMAND" # ON_DEMAND or SPOT
+    instance_types = ["m5.large"]
+    disk_size      = 50
+    custom_ami_id  = "ami-044b114caf98ce8c5" # https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami-bottlerocket.html
 
+    subnet_ids = ["subnet-xxx", "subnet-xxx", "subnet-xxx"]
+
+    k8s_taints = {}
+    k8s_labels = {
+      Environment = "preprod"
+      Zone        = "dev"
+      OS          = "bottlerocket"
+      WorkerType  = "ON_DEMAND_BOTTLEROCKET"
+    }
+    additional_tags = {
+      ExtraTag = "bottlerocket"
+      Name     = "bottlerocket"
+    }
     #security_group ID
-    self_managed_custom_security_group_id = "" # Add custom sec group id if required from intended vpc or module creates new one.
-
-  },
+    create_worker_security_group = true
+  }
 
 }
-
 
 #---------------------------------------------------------#
 # EKS WORKER NODE GROUPS
 #---------------------------------------------------------#
-
+enable_managed_nodegroups = true
 managed_node_groups = {
-  //  #---------------------------------------------------------#
-  //  # ON-DEMAND Worker Group - Worker Group - 1
-  //  #---------------------------------------------------------#
+  #---------------------------------------------------------#
+  # ON-DEMAND Worker Group - Worker Group - 1
+  #---------------------------------------------------------#
   mg_4 = {
     # 1> Node Group configuration - Part1
     node_group_name        = "mg_4"
@@ -223,6 +265,9 @@ managed_node_groups = {
       Name        = "m5x-on-demand"
       subnet_type = "private"
     }
+    #security_group ID
+    create_worker_security_group = true
+
   },
   #---------------------------------------------------------#
   # SPOT Worker Group - Worker Group - 2
@@ -271,6 +316,8 @@ managed_node_groups = {
       Name        = "spot"
       subnet_type = "private"
     }
+    #security_group ID
+    create_worker_security_group = false
   },
 
   #---------------------------------------------------------#
@@ -306,6 +353,8 @@ managed_node_groups = {
       ExtraTag = "bottlerocket"
       Name     = "bottlerocket"
     }
+    #security_group ID
+    create_worker_security_group = true
   }
 }
 
@@ -367,8 +416,6 @@ fargate_profiles = {
     }
   },
 }
-
-
 
 # Enable logging only when you create a Fargate profile e.g., enable_fargate = true
 fargate_fluent_bit_enable = false

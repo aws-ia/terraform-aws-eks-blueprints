@@ -102,3 +102,13 @@ variable "http_put_response_hop_limit" {
   default     = 1
   description = "HTTP PUT response hop limit for instance metadata requests. Supported values: 1-64."
 }
+
+variable "cluster_primary_security_group_id" {
+  type        = string
+  default     = ""
+  description = "Cluster Primary security group ID for self managed node group"
+}
+
+variable "vpc_id" {
+  type = string
+}

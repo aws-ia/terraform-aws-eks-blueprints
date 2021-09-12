@@ -84,80 +84,53 @@ coredns_addon_version = "v1.8.3-eksbuild.1"
 enable_kube_proxy_addon  = true
 kube_proxy_addon_version = "v1.20.4-eksbuild.2"
 
-
-#---------------------------------------------------------#
-# WORKER NODE GROUPS SECTION
-# Define the following parameters to create EKS Node groups. If you need to two Node groups then you may need to duplicate the with different instance type
-# NOTE: Also ensure Node groups config that you defined below needs to exist in this file <aws-eks-accelerator-for-terraform/source/eks.tf>.
-#         Comment out the node groups in <aws-eks-accelerator-for-terraform/source/eks.tf> file if you are not defining below.
-#         This is a limitation at this moment that the change needs ot be done in two places. This will be improved later
-#---------------------------------------------------------#
-#---------------------------------------------------------#
-# MANAGED WORKER NODE INPUT VARIABLES FOR ON DEMAND INSTANCES - Worker Group1
-#---------------------------------------------------------#
-on_demand_node_group_name = "mg-m5-on-demand"
-on_demand_ami_type        = "AL2_x86_64"
-on_demand_disk_size       = 50
-on_demand_instance_type   = ["m5.large"]
-on_demand_desired_size    = 3
-on_demand_max_size        = 3
-on_demand_min_size        = 3
-
-#---------------------------------------------------------#
-# BOTTLEROCKET - Worker Group3
-#---------------------------------------------------------#
-# Amazon EKS optimized Bottlerocket AMI ID for a region and Kubernetes version.
-# https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami-bottlerocket.html
-# /aws/service/bottlerocket/aws-k8s-1.20/x86_64/latest/image_id
-
-bottlerocket_node_group_name = "mg-m5-bottlerocket"
-bottlerocket_ami             = "ami-0574bb6d7d985b8f7"
-bottlerocket_disk_size       = 50
-bottlerocket_instance_type   = ["m5.large"]
-bottlerocket_desired_size    = 3
-bottlerocket_max_size        = 3
-bottlerocket_min_size        = 3
-
-#---------------------------------------------------------#
-# MANAGED WORKER NODE INPUT VARIABLES FOR SPOT INSTANCES - Worker Group2
-#---------------------------------------------------------#
-
-spot_node_group_name = "mg-m5-spot"
-spot_instance_type   = ["c5.large", "m5a.large"]
-spot_ami_type        = "AL2_x86_64"
-spot_desired_size    = 3
-spot_max_size        = 6
-spot_min_size        = 3
-
 #---------------------------------------------------------#
 # SELF-MANAGED WINDOWS NODE GROUP (WORKER GROUP)
 #---------------------------------------------------------#
-enable_self_managed_nodegroups = true
+enable_self_managed_nodegroups = false
+self_managed_node_groups = {
+  #---------------------------------------------------------#
+  # ON-DEMAND Self Managed Worker Group - Worker Group - 1
+  #---------------------------------------------------------#
+  self_mg_4 = {
+    node_group_name = "self-mg-5"
+    os_ami_type     = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or windows
+    custom_ami_id   = "ami-0dfaa019a300f219c" # Modify this to fetch to use custom AMI ID.
+    public_ip       = false
+    pre_userdata    = <<-EOT
+            yum install -y amazon-ssm-agent \
+            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
+        EOT
 
-# Below are the default values, uncomment and update if needed
-# self_managed_nodegroup_name    = "ng-linux"
-# self_managed_node_volume_size  = 50
-# self_managed_node_desired_size = 3
-# self_managed_node_max_size     = 3
-# self_managed_node_min_size     = 3
+    disk_size     = "20"
+    instance_type = "m5.large"
 
-# Optionally provide custom AMI, and a user data template file
-# self_managed_node_ami_id = "ami-12345678901234567"
-# self_managed_node_userdata_template_file = "./my-template.tpl"
+    desired_size = "2"
+    max_size     = "20"
+    min_size     = "2"
 
-# Default list of user data template parameters includes the following:
-#   platform, cluster_name, cluster_ca_base64, cluster_endpoint, 
-#   pre_userdata, additional_userdata, bootstrap_extra_args, kubelet_extra_args
-# Optionally provide additional parameters
-# self_managed_node_userdata_template_extra_params = { my_param = "my_value" }
+    capacity_type = "" # Leave this empty if not for SPOT capacity.
 
-#---------------------------------------------------------#
-# Creates a Fargate profile for default namespace
-#---------------------------------------------------------#
-fargate_profile_namespace = "default"
-# Enable logging only when you create a Fargate profile
-fargate_fluent_bit_enable = true
+    k8s_labels = {
+      Environment = "preprod"
+      Zone        = "test"
+      WorkerType  = "SELF_MANAGED_ON_DEMAND"
+    }
 
+    additional_tags = {
+      ExtraTag    = "m5x-on-demand"
+      Name        = "m5x-on-demand"
+      subnet_type = "private"
+    }
+    #self managed node group network configuration
+    subnet_type = "private" # private or public
+    subnet_ids  = []
+
+    #security_group ID
+    create_worker_security_group = true
+
+  },
+}
 #---------------------------------------------------------#
 # ENABLE HELM MODULES
 # Please note that you may need to download the docker images for each
@@ -181,50 +154,5 @@ cluster_autoscaler_enable       = true
 cluster_autoscaler_image_tag    = "v1.20.0"
 cluster_autoscaler_helm_version = "9.9.2"
 
-#---------------------------------------------------------//
-# ENABLE AWS LB INGRESS CONTROLLER
-#---------------------------------------------------------//
-lb_ingress_controller_enable = false
-aws_lb_image_tag             = "v2.2.1"
-aws_lb_helm_chart_version    = "1.2.3"
 
-#---------------------------------------------------------//
-# ENABLE PROMETHEUS
-#---------------------------------------------------------//
-# Creates the AMP workspace and all the relevent IAM Roles
-aws_managed_prometheus_enable = true
 
-# Deploys Pometheus server with remote write to AWS AMP Workspace
-prometheus_enable             = true
-prometheus_helm_chart_version = "14.4.0"
-prometheus_image_tag          = "v2.26.0"
-alert_manager_image_tag       = "v0.21.0"
-configmap_reload_image_tag    = "v0.5.0"
-node_exporter_image_tag       = "v1.1.2"
-pushgateway_image_tag         = "v1.3.1"
-
-#---------------------------------------------------------#
-# ENABLE AWS_FLUENT-BIT
-#---------------------------------------------------------#
-aws_for_fluent_bit_enable             = true
-ekslog_retention_in_days              = 7
-aws_for_fluent_bit_image_tag          = "2.17.0"
-aws_for_fluent_bit_helm_chart_version = "0.1.11"
-
-#---------------------------------------------------------#
-# ENABLE TRAEFIK INGRESS CONTROLLER
-#---------------------------------------------------------#
-traefik_ingress_controller_enable = false
-traefik_helm_chart_version        = "10.0.0"
-traefik_image_tag                 = "v2.4.9"
-
-#---------------------------------------------------------//
-# ENABLE AGONES GAMING CONTROLLER
-#   A library for hosting, running and scaling dedicated game servers on Kubernetes
-#   This chart installs the Agones application and defines deployment on a  cluster
-#   NOTE: Edit Rules to add a new Custom UDP Rule with a 7000-8000 port range and an appropriate Source CIDR range (0.0.0.0/0 allows all traffic) (sec group e.g., gaming-preprod-test-eks-eks_worker_sg)
-#         By default Agones prefers to be scheduled on nodes labeled with agones.dev/agones-system=true and tolerates the node taint agones.dev/agones-system=true:NoExecute.
-#         If no dedicated nodes are available, Agones will run on regular nodes.
-#---------------------------------------------------------//
-//agones_enable = true
-//expose_udp    = true
