@@ -137,6 +137,11 @@ variable "enable_irsa" {
 #----------------------------------------------------------
 // EKS CONTROL PLANE
 #----------------------------------------------------------
+variable "create_eks" {
+  type    = bool
+  default = false
+
+}
 variable "kubernetes_version" {
   type        = string
   default     = "1.20"
@@ -184,62 +189,114 @@ variable "enable_kube_proxy_addon" {
 #----------------------------------------------------------
 // EKS WORKER NODES
 #----------------------------------------------------------
+variable "enable_managed_nodegroups" {
+  description = "Enable self-managed worker groups"
+  type        = bool
+  default     = false
+}
 
-# Self-managed NodeGroup (Worker Group)
+variable "managed_node_groups" {
+  type    = any
+  default = {}
+}
 variable "enable_self_managed_nodegroups" {
   description = "Enable self-managed worker groups"
   type        = bool
   default     = false
 }
+variable "self_managed_node_groups" {
+  type    = any
+  default = {}
+}
+variable "enable_fargate" {
+  default = false
+}
+variable "fargate_profiles" {
+  type    = any
+  default = {}
+}
+
 variable "enable_windows_support" {
-  description = "Enable Windows support in the cluster"
-  type        = bool
-  default     = false
+  type    = string
+  default = false
 }
-variable "self_managed_nodegroup_name" {
-  type        = string
-  default     = "ng-linux"
-  description = "Self-managed worker node group name"
-}
-variable "self_managed_node_ami_id" {
-  type        = string
-  default     = ""
-  description = "Self-managed worker node custom AMI ID"
-}
-variable "self_managed_node_userdata_template_file" {
-  type        = string
-  default     = ""
-  description = "Self-managed worker node custom userdata template file path"
-}
-variable "self_managed_node_userdata_template_extra_params" {
-  type        = map(any)
-  default     = {}
-  description = "Self-managed worker node custom userdata template extra parameters"
-}
-variable "self_managed_node_volume_size" {
-  type        = number
-  default     = 50
-  description = "Volume size in GiB for worker nodes. Defaults to 50. Terraform will only perform drift detection if a configuration value is provided"
-}
-variable "self_managed_node_instance_types" {
+
+#----------------------------------------------------------
+# CONFIG MAP AWS-AUTH
+#----------------------------------------------------------
+
+variable "map_accounts" {
+  description = "Additional AWS account numbers to add to the aws-auth configmap. "
   type        = list(string)
-  default     = ["m5.large", "m5a.large", "m5n.large"]
-  description = "Set of instance types associated with the EKS Node Group"
+  default     = []
 }
-variable "self_managed_node_desired_size" {
-  type        = number
-  default     = 3
-  description = "Desired number of worker nodes"
+
+variable "map_roles" {
+  description = "Additional IAM roles to add to the aws-auth configmap."
+  type = list(object({
+    rolearn  = string
+    username = string
+    groups   = list(string)
+  }))
+  default = []
 }
-variable "self_managed_node_max_size" {
-  type        = number
-  default     = 3
-  description = "The maximum size of the AutoScaling Group"
+
+variable "map_users" {
+  description = "Additional IAM users to add to the aws-auth configmap. "
+  type = list(object({
+    userarn  = string
+    username = string
+    groups   = list(string)
+  }))
+  default = []
 }
-variable "self_managed_node_min_size" {
-  type        = number
-  default     = 3
-  description = "The minimum size of the AutoScaling Group"
+variable "iam_path" {
+  description = "If provided, all IAM roles will be created on this path."
+  type        = string
+  default     = "/"
+}
+
+variable "manage_aws_auth" {
+  description = "Whether to apply the aws-auth configmap file."
+  default     = true
+}
+variable "aws_auth_additional_labels" {
+  description = "Additional kubernetes labels applied on aws-auth ConfigMap"
+  default     = {}
+  type        = map(string)
+}
+
+variable "aws_auth_yaml_strip_quotes" {
+  type        = bool
+  default     = true
+  description = "If true, remove double quotes from the generated aws-auth ConfigMap YAML to reduce spurious diffs in plans"
+}
+
+variable "apply_config_map_aws_auth" {
+  type        = bool
+  default     = true
+  description = "Whether to apply the ConfigMap to allow worker nodes to join the EKS cluster and allow additional users, accounts and roles to acces the cluster"
+}
+
+variable "local_exec_interpreter" {
+  type        = list(string)
+  default     = ["/bin/sh", "-c"]
+  description = "shell to use for local_exec"
+}
+
+variable "wait_for_cluster_command" {
+  type        = string
+  default     = "curl --silent --fail --retry 60 --retry-delay 5 --retry-connrefused --insecure --output /dev/null $ENDPOINT/healthz"
+  description = "`local-exec` command to execute to determine if the EKS cluster is healthy. Cluster endpoint are available as environment variable `ENDPOINT`"
+}
+
+#----------------------------------------------------------
+# HELM CHART VARIABLES
+#----------------------------------------------------------
+variable "public_docker_repo" {
+  type        = bool
+  default     = true
+  description = "public docker repo access"
 }
 
 variable "metrics_server_enable" {
@@ -287,11 +344,7 @@ variable "ekslog_retention_in_days" {
   description = "Number of days to retain log events. Default retention - 90 days."
   type        = number
 }
-variable "public_docker_repo" {
-  type        = bool
-  default     = true
-  description = "public docker repo access"
-}
+
 variable "agones_enable" {
   type        = bool
   default     = false
@@ -385,118 +438,4 @@ variable "aws_for_fluent_bit_helm_chart_version" {
   description = "Helm chart version for aws_for_fluent_bit"
 }
 
-variable "managed_node_groups" {
-  type    = any
-  default = {}
-}
 
-variable "create_eks" {
-  type    = bool
-  default = false
-
-}
-
-variable "map_accounts" {
-  description = "Additional AWS account numbers to add to the aws-auth configmap. "
-  type        = list(string)
-  default     = []
-}
-
-variable "map_roles" {
-  description = "Additional IAM roles to add to the aws-auth configmap."
-  type = list(object({
-    rolearn  = string
-    username = string
-    groups   = list(string)
-  }))
-  default = []
-}
-
-variable "map_users" {
-  description = "Additional IAM users to add to the aws-auth configmap. "
-  type = list(object({
-    userarn  = string
-    username = string
-    groups   = list(string)
-  }))
-  default = []
-}
-variable "iam_path" {
-  description = "If provided, all IAM roles will be created on this path."
-  type        = string
-  default     = "/"
-}
-
-variable "manage_aws_auth" {
-  description = "Whether to apply the aws-auth configmap file."
-  default     = true
-}
-variable "aws_auth_additional_labels" {
-  description = "Additional kubernetes labels applied on aws-auth ConfigMap"
-  default     = {}
-  type        = map(string)
-}
-
-variable "enable_fargate" {
-  default = false
-}
-
-variable "fargate_profiles" {
-  type    = any
-  default = {}
-}
-
-# CONFIG MAP AWS-AUTH
-variable "aws_auth_yaml_strip_quotes" {
-  type        = bool
-  default     = true
-  description = "If true, remove double quotes from the generated aws-auth ConfigMap YAML to reduce spurious diffs in plans"
-}
-
-variable "apply_config_map_aws_auth" {
-  type        = bool
-  default     = true
-  description = "Whether to apply the ConfigMap to allow worker nodes to join the EKS cluster and allow additional users, accounts and roles to acces the cluster"
-}
-
-variable "local_exec_interpreter" {
-  type        = list(string)
-  default     = ["/bin/sh", "-c"]
-  description = "shell to use for local_exec"
-}
-
-variable "wait_for_cluster_command" {
-  type        = string
-  default     = "curl --silent --fail --retry 60 --retry-delay 5 --retry-connrefused --insecure --output /dev/null $ENDPOINT/healthz"
-  description = "`local-exec` command to execute to determine if the EKS cluster is healthy. Cluster endpoint are available as environment variable `ENDPOINT`"
-}
-
-variable "map_additional_iam_roles" {
-  description = "Additional IAM roles to add to `config-map-aws-auth` ConfigMap"
-
-  type = list(object({
-    rolearn  = string
-    username = string
-    groups   = list(string)
-  }))
-
-  default = []
-}
-
-variable "map_additional_iam_users" {
-  description = "Additional IAM users to add to `config-map-aws-auth` ConfigMap"
-
-  type = list(object({
-    userarn  = string
-    username = string
-    groups   = list(string)
-  }))
-
-  default = []
-}
-
-variable "map_additional_aws_accounts" {
-  description = "Additional AWS account numbers to add to `config-map-aws-auth` ConfigMap"
-  type        = list(string)
-  default     = []
-}

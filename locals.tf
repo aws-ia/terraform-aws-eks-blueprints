@@ -48,16 +48,16 @@ locals {
   //
   //  yaml_quote = var.aws_auth_yaml_strip_quotes ? "" : "\""
   //
-  //  # Self managed node IAM Roles for aws-auth
+  # Managed node IAM Roles for aws-auth
   //  managed_map_worker_roles = [
-  //  for role_arn in module.managed-node-groups.mg_linux_roles : {
-  //    rolearn : role_arn
-  //    username : "system:node:{{EC2PrivateDNSName}}"
-  //    groups : [
-  //      "system:bootstrappers",
-  //      "system:nodes"
-  //    ]
-  //  }
+  //    for role_arn in var.managed_node_groups["node_group_name"] : {
+  //      rolearn : role_arn
+  //      username : "system:node:{{EC2PrivateDNSName}}"
+  //      groups : [
+  //        "system:bootstrappers",
+  //        "system:nodes"
+  //      ]
+  //    }
   //  ]
   //
   //  # Self managed node IAM Roles for aws-auth

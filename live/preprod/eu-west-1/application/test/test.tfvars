@@ -59,6 +59,7 @@ create_vpc_endpoints = true
 //create_vpc = false
 //vpc_id = "xxxxxx"
 //private_subnet_ids = ['xxxxxx','xxxxxx','xxxxxx']
+//public_subnet_ids = ['xxxxxx','xxxxxx','xxxxxx']
 
 #---------------------------------------------------------#
 # EKS CONTROL PLANE VARIABLES
@@ -90,7 +91,7 @@ kube_proxy_addon_version = "v1.20.4-eksbuild.2"
 #---------------------------------------------------------#
 # EKS WORKER NODE GROUPS
 #---------------------------------------------------------#
-
+enable_managed_nodegroups = true
 managed_node_groups = {
   mg_m5x = {
     # 1> Node Group configuration - Part1
@@ -173,15 +174,53 @@ fargate_profiles = {
   },
 }
 
-# Enable logging only when you create a Fargate profile e.g., enable_fargate = true
-fargate_fluent_bit_enable = false
-
 #---------------------------------------------------------#
 # SELF-MANAGED WINDOWS NODE GROUP (WORKER GROUP)
 #---------------------------------------------------------#
-enable_self_managed_nodegroups = false
-enable_windows_support         = false
-self_managed_nodegroup_name    = "ng-windows"
+enable_self_managed_nodegroups = true
+self_managed_node_groups = {
+  #---------------------------------------------------------#
+  # ON-DEMAND Self Managed Worker Group - Worker Group - 1
+  #---------------------------------------------------------#
+  self_mg_4 = {
+    node_group_name = "self-mg-5"
+    os_ami_type     = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or windows
+    custom_ami_id   = "ami-0dfaa019a300f219c" # Modify this to fetch to use custom AMI ID.
+    public_ip       = false
+    pre_userdata    = <<-EOT
+            yum install -y amazon-ssm-agent \
+            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
+        EOT
+
+    disk_size     = "20"
+    instance_type = "m5.large"
+
+    desired_size = "2"
+    max_size     = "20"
+    min_size     = "2"
+
+    capacity_type = "" # Leave this empty if not for SPOT capacity.
+
+    k8s_labels = {
+      Environment = "preprod"
+      Zone        = "test"
+      WorkerType  = "SELF_MANAGED_ON_DEMAND"
+    }
+
+    additional_tags = {
+      ExtraTag    = "m5x-on-demand"
+      Name        = "m5x-on-demand"
+      subnet_type = "private"
+    }
+    #self managed node group network configuration
+    subnet_type = "private" # private or public
+    subnet_ids  = []
+
+    #security_group ID
+    create_worker_security_group = true # It will use default sec group created by EKS Core module
+
+  },
+}
 
 #---------------------------------------------------------#
 # ENABLE HELM MODULES
@@ -192,6 +231,9 @@ self_managed_nodegroup_name    = "ng-windows"
 # Enable this if worker Node groups has access to internet to download the docker images
 # Or Make it false and set the private contianer image repo url in source/eks.tf; currently this defaults to ECR
 public_docker_repo = true
+
+# Enable logging only when you create a Fargate profile e.g., enable_fargate = true
+fargate_fluent_bit_enable = false
 
 #---------------------------------------------------------#
 # ENABLE METRICS SERVER

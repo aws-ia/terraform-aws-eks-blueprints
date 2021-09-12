@@ -15,27 +15,13 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-locals {
-  userdata_params = {
-    cluster_name         = var.eks_cluster_name
-    cluster_ca_base64    = var.cluster_ca_base64
-    cluster_endpoint     = var.cluster_endpoint
-    bootstrap_extra_args = local.managed_node_group["bootstrap_extra_args"]
-    pre_userdata         = local.managed_node_group["pre_userdata"]
-    post_userdata        = local.managed_node_group["post_userdata"]
-    kubelet_extra_args   = local.managed_node_group["kubelet_extra_args"]
-  }
-
-  userdata_base64 = base64encode(
-    templatefile("${path.module}/templates/userdata-${local.managed_node_group["custom_ami_type"]}.tpl", local.userdata_params)
-  )
-
-}
 
 resource "aws_launch_template" "managed_node_groups" {
-  name_prefix            = "${var.eks_cluster_name}-${local.managed_node_group["node_group_name"]}"
-  description            = "Launch Template for EKS Managed clusters"
+  name                   = "${var.eks_cluster_name}-${local.managed_node_group["node_group_name"]}"
+  description            = "Launch Template for EKS Managed Node Groups"
   update_default_version = true
+
+  user_data = local.userdata_base64
 
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -44,6 +30,8 @@ resource "aws_launch_template" "managed_node_groups" {
       volume_size           = local.managed_node_group["disk_size"]
       volume_type           = local.managed_node_group["disk_type"]
       delete_on_termination = true
+      encrypted             = true
+      // kms_key_id            = ""
     }
   }
 
@@ -56,6 +44,12 @@ resource "aws_launch_template" "managed_node_groups" {
     enabled = true
   }
 
+  metadata_options {
+    http_endpoint               = var.http_endpoint
+    http_tokens                 = var.http_tokens
+    http_put_response_hop_limit = var.http_put_response_hop_limit
+  }
+
   tag_specifications {
     resource_type = "instance"
     tags          = merge(var.tags, tomap({ "Name" = "${var.eks_cluster_name}-${local.managed_node_group["node_group_name"]}" }))
@@ -63,10 +57,8 @@ resource "aws_launch_template" "managed_node_groups" {
 
   network_interfaces {
     associate_public_ip_address = local.managed_node_group["public_ip"]
-    security_groups             = [var.worker_security_group_id]
+    security_groups             = [var.default_worker_security_group_id]
   }
-
-  user_data = local.userdata_base64
 
   lifecycle {
     create_before_destroy = true

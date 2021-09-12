@@ -18,11 +18,11 @@
 
 resource "aws_eks_node_group" "managed_ng" {
 
-  cluster_name           = var.eks_cluster_name
-  node_group_name_prefix = local.managed_node_group["node_group_name"]
-  //   node_group_name = ""     # Optional when node_group_name_prefix is defined
-  node_role_arn = aws_iam_role.mg_linux.arn
-  subnet_ids    = local.managed_node_group["subnet_ids"]
+  cluster_name = var.eks_cluster_name
+  //  node_group_name_prefix = local.managed_node_group["node_group_name"]
+  node_group_name = local.managed_node_group["node_group_name"]
+  node_role_arn   = aws_iam_role.managed_ng.arn
+  subnet_ids      = local.managed_node_group["subnet_ids"]
 
   scaling_config {
     desired_size = local.managed_node_group["desired_size"]
@@ -56,7 +56,7 @@ resource "aws_eks_node_group" "managed_ng" {
     for_each = local.managed_node_group["remote_access"] == true ? [1] : []
     content {
       ec2_ssh_key               = local.managed_node_group["ec2_ssh_key"]
-      source_security_group_ids = local.managed_node_group["source_security_group_ids"]
+      source_security_group_ids = local.managed_node_group["ssh_security_group_id"]
     }
   }
 
@@ -80,9 +80,9 @@ resource "aws_eks_node_group" "managed_ng" {
   }
 
   depends_on = [
-    aws_iam_role_policy_attachment.mg_linux_AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.mg_linux_AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.mg_linux_AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.managed_ng_AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.managed_ng_AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.managed_ng_AmazonEC2ContainerRegistryReadOnly,
   ]
 
 }

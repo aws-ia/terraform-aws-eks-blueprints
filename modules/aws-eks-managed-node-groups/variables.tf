@@ -50,7 +50,7 @@ variable "public_subnet_ids" {
   default     = []
 }
 
-variable "worker_security_group_id" {
+variable "default_worker_security_group_id" {
   description = "Worker group security ID"
   type        = string
   default     = ""
@@ -85,8 +85,20 @@ variable "path" {
   description = "IAM resource path, e.g. /dev/"
 }
 
-variable "cluster_autoscaler_enable" {
-  type        = bool
-  description = "Enable Cluster Autoscaler"
-  default     = false
+variable "http_endpoint" {
+  type        = string
+  default     = "enabled"
+  description = "Whether the Instance Metadata Service (IMDS) is available. Supported values: enabled, disabled"
+}
+
+variable "http_tokens" {
+  type        = string
+  default     = "optional"
+  description = "If enabled, will use Instance Metadata Service Version 2 (IMDSv2). Supported values: optional, required."
+}
+
+variable "http_put_response_hop_limit" {
+  type        = number
+  default     = 1
+  description = "HTTP PUT response hop limit for instance metadata requests. Supported values: 1-64."
 }

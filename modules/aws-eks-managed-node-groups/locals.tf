@@ -45,7 +45,7 @@ locals {
     k8s_taints                    = []
     remote_access                 = false
     ec2_ssh_key                   = ""
-    source_security_group_ids     = ""
+    ssh_security_group_id         = ""
     additional_tags               = {}
     custom_ami_type               = "amazonlinux2eks"
     custom_ami_id                 = ""
@@ -57,10 +57,21 @@ locals {
     { subnet_ids = var.managed_ng["subnet_ids"] == [] ? var.managed_ng["subnet_type"] == "public" ? var.public_subnet_ids : var.private_subnet_ids : var.managed_ng["subnet_ids"] }
   )
 
-}
-
-locals {
   policy_arn_prefix = "arn:aws:iam::aws:policy"
-  name_prefix_linux = "${var.eks_cluster_name}-"
   ec2_principal     = "ec2.${data.aws_partition.current.dns_suffix}"
+
+  userdata_params = {
+    cluster_name         = var.eks_cluster_name
+    cluster_ca_base64    = var.cluster_ca_base64
+    cluster_endpoint     = var.cluster_endpoint
+    bootstrap_extra_args = local.managed_node_group["bootstrap_extra_args"]
+    pre_userdata         = local.managed_node_group["pre_userdata"]
+    post_userdata        = local.managed_node_group["post_userdata"]
+    kubelet_extra_args   = local.managed_node_group["kubelet_extra_args"]
+  }
+
+  userdata_base64 = base64encode(
+    templatefile("${path.module}/templates/userdata-${local.managed_node_group["custom_ami_type"]}.tpl", local.userdata_params)
+  )
+
 }

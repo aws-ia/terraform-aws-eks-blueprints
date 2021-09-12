@@ -76,41 +76,41 @@ module "eks" {
   #----------------------------------------------------------------------------------
   # Conditionally allow Worker nodes <-> primary cluster SG traffic
   # See https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/docs/faq.md#im-using-both-aws-managed-node-groups-and-self-managed-worker-groups-and-pods-scheduled-on-a-aws-managed-node-groups-are-unable-resolve-dns-even-communication-between-pods
-  worker_create_cluster_primary_security_group_rules = var.enable_self_managed_nodegroups
-
-  # Conditionally create a self-managed node group (worker group) - either Windows or Linux
-  worker_groups_launch_template = var.enable_self_managed_nodegroups ? [{
-    name     = var.self_managed_nodegroup_name
-    platform = local.self_managed_node_platform
-
-    # Use custom AMI, user data script template, and its parameters, if provided in input. 
-    # Otherwise, use default EKS-optimized AMI, user data script for Windows / Linux.
-    ami_id                       = var.self_managed_node_ami_id != "" ? var.self_managed_node_ami_id : var.enable_windows_support ? data.aws_ami.windows2019core.id : data.aws_ami.amazonlinux2eks.id
-    userdata_template_file       = var.self_managed_node_userdata_template_file != "" ? var.self_managed_node_userdata_template_file : var.enable_windows_support ? "./templates/userdata-windows.tpl" : "./templates/userdata-amazonlinux2eks.tpl"
-    userdata_template_extra_args = var.self_managed_node_userdata_template_extra_params
-
-    override_instance_types = var.self_managed_node_instance_types
-    root_encrypted          = true
-    root_volume_size        = var.self_managed_node_volume_size
-
-    iam_instance_profile_name = var.enable_windows_support ? module.windows_support_iam[0].windows_instance_profile.name : null
-    asg_desired_capacity      = var.self_managed_node_desired_size
-    asg_min_size              = var.self_managed_node_min_size
-    asg_max_size              = var.self_managed_node_max_size
-
-    kubelet_extra_args = "--node-labels=Environment=${var.environment},Zone=${var.zone},WorkerType=SELF_MANAGED_${upper(local.self_managed_node_platform)}"
-
-    # Extra tags, needed for cluster autoscaler autodiscovery
-    tags = var.cluster_autoscaler_enable ? [{
-      key                 = "k8s.io/cluster-autoscaler/enabled",
-      value               = true,
-      propagate_at_launch = true
-      }, {
-      key                 = "k8s.io/cluster-autoscaler/${module.eks-label.id}",
-      value               = "owned",
-      propagate_at_launch = true
-    }] : []
-  }] : []
+  //  worker_create_cluster_primary_security_group_rules = var.enable_self_managed_nodegroups
+  //
+  //  # Conditionally create a self-managed node group (worker group) - either Windows or Linux
+  //  worker_groups_launch_template = var.enable_self_managed_nodegroups ? [{
+  //    name     = var.self_managed_nodegroup_name
+  //    platform = local.self_managed_node_platform
+  //
+  //    # Use custom AMI, user data script template, and its parameters, if provided in input.
+  //    # Otherwise, use default EKS-optimized AMI, user data script for Windows / Linux.
+  //    ami_id                       = var.self_managed_node_ami_id != "" ? var.self_managed_node_ami_id : var.enable_windows_support ? data.aws_ami.windows2019core.id : data.aws_ami.amazonlinux2eks.id
+  //    userdata_template_file       = var.self_managed_node_userdata_template_file != "" ? var.self_managed_node_userdata_template_file : var.enable_windows_support ? "./templates/userdata-windows.tpl" : "./templates/userdata-amazonlinux2eks.tpl"
+  //    userdata_template_extra_args = var.self_managed_node_userdata_template_extra_params
+  //
+  //    override_instance_types = var.self_managed_node_instance_type
+  //    root_encrypted          = true
+  //    root_volume_size        = var.self_managed_node_volume_size
+  //
+  //    iam_instance_profile_name = var.enable_windows_support ? module.windows_support_iam[0].windows_instance_profile.name : null
+  //    asg_desired_capacity      = var.self_managed_node_desired_size
+  //    asg_min_size              = var.self_managed_node_min_size
+  //    asg_max_size              = var.self_managed_node_max_size
+  //
+  //    kubelet_extra_args = "--node-labels=Environment=${var.environment},Zone=${var.zone},WorkerType=SELF_MANAGED_${upper(local.self_managed_node_platform)}"
+  //
+  //    # Extra tags, needed for cluster autoscaler autodiscovery
+  //    tags = var.cluster_autoscaler_enable ? [{
+  //      key                 = "k8s.io/cluster-autoscaler/enabled",
+  //      value               = true,
+  //      propagate_at_launch = true
+  //      }, {
+  //      key                 = "k8s.io/cluster-autoscaler/${module.eks-label.id}",
+  //      value               = "owned",
+  //      propagate_at_launch = true
+  //    }] : []
+  //  }] : []
 
 }
 
