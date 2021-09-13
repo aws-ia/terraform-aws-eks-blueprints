@@ -20,7 +20,7 @@ locals {
   default_managed_ng = {
     node_group_name               = "m4_on_demand"
     desired_size                  = "1"
-    instance_types                = "m4.large"
+    instance_types                = ["m4.large"]
     key_name                      = ""
     launch_template_id            = null
     launch_template_version       = "$Latest"

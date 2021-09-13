@@ -120,6 +120,8 @@ managed_node_groups = {
     subnet_ids  = []        # Optional - It will use the default private/public subnets
     # enable_ssh = true     # Optional - Feature not implemented - Recommends to leverage Systems Manager
 
+    k8s_taints = []
+
     k8s_labels = {
       Environment = "preprod"
       Zone        = "test"
@@ -187,7 +189,7 @@ self_managed_node_groups = {
   #---------------------------------------------------------#
   self_mg_4 = {
     node_group_name = "self-mg-5"
-    os_ami_type     = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or windows
+    os_ami_type     = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or Windows;  Used to find the correct launch template
     custom_ami_id   = "ami-0dfaa019a300f219c" # Modify this to fetch to use custom AMI ID.
     public_ip       = false
     pre_userdata    = <<-EOT
@@ -196,7 +198,7 @@ self_managed_node_groups = {
         EOT
 
     disk_size     = "20"
-    instance_type = "m5.large"
+    instance_type = "m5.large" #String
 
     desired_size = "2"
     max_size     = "20"

@@ -45,7 +45,6 @@ resource "helm_release" "lb-ingress-crd" {
   namespace = "kube-system"
 }
 
-
 resource "aws_iam_policy" "eks-lb-controller-policy" {
   name        = "${var.clusterName}-lb-controller-policy"
   description = "Allows lb controller to manage ALB and NLB"
