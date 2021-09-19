@@ -143,7 +143,7 @@ self_managed_node_groups = {
   #---------------------------------------------------------#
   bottlerocket_mg_4 = {
     self_managed_nodegroup_name     = "bottlerocket-mg-4"
-    os_ami_type                     = "bottlerocket"          # amazonlinux2eks  or bottlerocket or windows
+    custom_ami_type                 = "bottlerocket"          # amazonlinux2eks  or bottlerocket or windows
     self_managed_node_ami_id        = "ami-044b114caf98ce8c5" # Modify this to fetch to use custom AMI ID.
     self_managed_node_userdata      = ""
     self_managed_node_volume_size   = "20"

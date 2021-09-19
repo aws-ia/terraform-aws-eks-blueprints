@@ -51,3 +51,4 @@ output "launch_template_arn" {
   description = "launch templated id for EKS Self Managed Node Group"
   value       = aws_launch_template.self_managed_ng[*].arn
 }
+

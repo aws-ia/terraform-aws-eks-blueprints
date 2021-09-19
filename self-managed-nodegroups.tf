@@ -17,16 +17,16 @@
  */
 
 module "aws-eks-self-managed-node-groups" {
-  for_each = length(var.self_managed_node_groups) > 0 && var.enable_self_managed_nodegroups ? var.self_managed_node_groups : {}
+  for_each = length(var.self_managed_node_groups) > 0 && var.enable_self_managed_nodegroups ? var.self_managed_node_groups : null
 
   source          = "./modules/aws-eks-self-managed-node-groups"
   self_managed_ng = each.value
 
-  eks_cluster_name  = module.eks.cluster_id
-  cluster_endpoint  = module.eks.cluster_endpoint
-  cluster_ca_base64 = module.eks.cluster_certificate_authority_data
-  cluster_version   = var.kubernetes_version
-  tags              = module.eks-label.tags
+  eks_cluster_name   = module.eks.cluster_id
+  cluster_endpoint   = module.eks.cluster_endpoint
+  cluster_ca_base64  = module.eks.cluster_certificate_authority_data
+  kubernetes_version = var.kubernetes_version
+  tags               = module.eks-label.tags
 
 
   vpc_id             = var.create_vpc == false ? var.vpc_id : module.vpc.vpc_id

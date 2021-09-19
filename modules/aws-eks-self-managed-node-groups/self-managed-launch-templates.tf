@@ -21,7 +21,7 @@ resource "aws_launch_template" "self_managed_ng" {
   description = "Launch Template for EKS Self Managed Node Groups"
 
   instance_type = local.self_managed_node_group["instance_type"]
-  image_id      = local.self_managed_node_group["custom_ami_id"]
+  image_id      = local.custom_ami_id
 
   update_default_version = true
   user_data              = local.custom_userdata_base64

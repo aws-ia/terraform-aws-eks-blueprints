@@ -16,49 +16,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-data "aws_partition" "current" {}
+module "windows_support" {
+  count  = var.enable_windows_support ? 1 : 0
+  source = "./modules/windows_support"
 
-data "aws_iam_policy_document" "windows_assume_role_policy" {
-  statement {
-    sid = "EKSWorkerAssumeRole"
-
-    actions = [
-      "sts:AssumeRole",
-    ]
-
-    principals {
-      type        = "Service"
-      identifiers = [local.ec2_principal]
-    }
-  }
-}
-
-data "aws_iam_policy_document" "linux_assume_role_policy" {
-  statement {
-    sid = "EKSWorkerAssumeRole"
-
-    actions = [
-      "sts:AssumeRole",
-    ]
-
-    principals {
-      type        = "Service"
-      identifiers = [local.ec2_principal]
-    }
-  }
-}
-
-data "aws_iam_policy_document" "eks_assume_role_policy" {
-  statement {
-    sid = "EKSWorkerAssumeRole"
-
-    actions = [
-      "sts:AssumeRole",
-    ]
-
-    principals {
-      type        = "Service"
-      identifiers = [local.eks_principal]
-    }
-  }
+  cluster_name = module.eks.cluster_id
 }

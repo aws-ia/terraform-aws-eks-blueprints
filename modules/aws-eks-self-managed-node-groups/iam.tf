@@ -51,6 +51,10 @@ resource "aws_iam_role_policy_attachment" "self_managed_AmazonEC2ContainerRegist
   role       = aws_iam_role.self_managed_ng.name
 }
 
+resource "aws_iam_role_policy_attachment" "self_managed_AmazonSSMManagedInstanceCore" {
+  policy_arn = "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"
+  role       = aws_iam_role.self_managed_ng.name
+}
 
 resource "aws_iam_role_policy_attachment" "self_managed_cloudWatchFullAccess" {
   policy_arn = "${local.policy_arn_prefix}/CloudWatchFullAccess"

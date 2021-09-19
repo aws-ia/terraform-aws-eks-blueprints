@@ -29,8 +29,6 @@ locals {
 
   image_repo = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.id}.amazonaws.com/"
 
-  self_managed_node_platform = var.enable_windows_support ? "windows" : "linux"
-
   # Managed node IAM Roles for aws-auth
   managed_node_group_aws_auth_config_map = var.enable_managed_nodegroups == true ? [
     for key, node in var.managed_node_groups : {
@@ -44,7 +42,7 @@ locals {
   ] : []
 
   # Self Managed node IAM Roles for aws-auth
-  self_managed_node_group_aws_auth_config_map = var.enable_self_managed_nodegroups == true ? [
+  self_managed_node_group_aws_auth_config_map = var.enable_self_managed_nodegroups ? [
     for key, node in var.self_managed_node_groups : {
       rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.eks.cluster_id}-${node.node_group_name}"
       username : "system:node:{{EC2PrivateDNSName}}"
@@ -52,7 +50,20 @@ locals {
         "system:bootstrappers",
         "system:nodes"
       ]
-    }
+    } if node.custom_ami_type != "windows"
+  ] : []
+
+  # Self Managed Windows node IAM Roles for aws-auth
+  windows_node_group_aws_auth_config_map = var.enable_self_managed_nodegroups && var.enable_windows_support ? [
+    for key, node in var.self_managed_node_groups : {
+      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.eks.cluster_id}-${node.node_group_name}"
+      username : "system:node:{{EC2PrivateDNSName}}"
+      groups : [
+        "system:bootstrappers",
+        "system:nodes",
+        "eks:kube-proxy-windows"
+      ]
+    } if node.custom_ami_type == "windows"
   ] : []
 
   # Fargate node IAM Roles for aws-auth

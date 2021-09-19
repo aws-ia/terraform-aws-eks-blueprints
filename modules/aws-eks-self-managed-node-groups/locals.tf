@@ -17,7 +17,6 @@
  */
 
 locals {
-
   default_self_managed_ng = {
     node_group_name               = "m4_on_demand"
     desired_size                  = "1"
@@ -48,7 +47,7 @@ locals {
     ec2_ssh_key                   = ""
     security_group_id             = ""
     additional_tags               = {}
-    os_ami_type                   = "amazonlinux2eks"
+    custom_ami_type               = "amazonlinux2eks"
     custom_ami_id                 = ""
     create_worker_security_group  = false
   }
@@ -59,18 +58,26 @@ locals {
     { subnet_ids = var.self_managed_ng["subnet_ids"] == [] ? var.self_managed_ng["subnet_type"] == "public" ? var.public_subnet_ids : var.private_subnet_ids : var.self_managed_ng["subnet_ids"] }
   )
 
-  predefined_custom_ami_types = tolist(["amazonlinux2eks", "bottlerocket", "windows"])
+  predfined_ami_names = {
+    amazonlinux2eks = "amazon-eks-node-${var.kubernetes_version}-*"
+    bottlerocket    = "bottlerocket-aws-k8s-${var.kubernetes_version}-x86_64-*"
+    windows         = "Windows_Server-2019-English-Core-EKS_Optimized-${var.kubernetes_version}-*"
+  }
 
+  predefined_ami_types = keys(local.predfined_ami_names)
+  # Default AMI ID for predefined custom AMI types
+  default_custom_ami_id = contains(local.predefined_ami_types, local.self_managed_node_group["custom_ami_type"]) ? data.aws_ami.predefined[local.self_managed_node_group["custom_ami_type"]].id : ""
+  custom_ami_id         = local.self_managed_node_group["custom_ami_id"] == "" ? local.default_custom_ami_id : local.self_managed_node_group["custom_ami_id"]
   userdata_base64 = {
-    for os_ami_type in local.predefined_custom_ami_types : os_ami_type => base64encode(
+    for custom_ami_type in local.predefined_ami_types : custom_ami_type => base64encode(
       templatefile(
-        "${path.module}/templates/userdata-${os_ami_type}.tpl",
+        "${path.module}/templates/userdata-${custom_ami_type}.tpl",
         local.userdata_params
       )
     )
   }
 
-  custom_userdata_base64 = contains(local.predefined_custom_ami_types, local.self_managed_node_group["os_ami_type"]) ? local.userdata_base64[local.self_managed_node_group["os_ami_type"]] : null
+  custom_userdata_base64 = contains(keys(local.predfined_ami_names), local.self_managed_node_group["custom_ami_type"]) ? local.userdata_base64[local.self_managed_node_group["custom_ami_type"]] : null
 
   userdata_params = {
     cluster_name         = var.eks_cluster_name

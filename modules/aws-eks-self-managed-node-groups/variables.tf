@@ -47,9 +47,9 @@ variable "cluster_ca_base64" {
   type = string
 }
 
-variable "cluster_version" {
+variable "kubernetes_version" {
   type        = string
-  description = "Kubernetes cluster version"
+  description = "Kubernetes version of the cluster"
 }
 
 variable "default_worker_security_group_id" {
