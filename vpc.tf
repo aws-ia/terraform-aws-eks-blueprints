@@ -94,7 +94,7 @@ module "vpc" {
 ################################################################################
 # VPC Endpoints Module
 ################################################################################
-module "endpoints_interface" {
+module "vpc_endpoints_gateway" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "v3.2.0"
 
@@ -125,7 +125,7 @@ module "endpoints_interface" {
   }
 }
 
-module "vpc_endpoints_gateway" {
+module "vpc_endpoints_interface" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "v3.2.0"
 
@@ -142,6 +142,10 @@ module "vpc_endpoints_gateway" {
     },
     ssm = {
       service             = "ssm"
+      private_dns_enabled = true
+    },
+    ssmmessages = {
+      service             = "ssmmessages"
       private_dns_enabled = true
     },
     logs = {
@@ -182,10 +186,6 @@ module "vpc_endpoints_gateway" {
     },
     /*    elasticfilesystem = {
           service             = "elasticfilesystem"
-          private_dns_enabled = true
-        },
-        ssmmessages = {
-          service             = "ssmmessages"
           private_dns_enabled = true
         },
         lambda = {

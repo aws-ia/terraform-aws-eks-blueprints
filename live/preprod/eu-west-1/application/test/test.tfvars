@@ -189,7 +189,7 @@ self_managed_node_groups = {
   #---------------------------------------------------------#
   self_mg_4 = {
     node_group_name = "self-mg-5"
-    os_ami_type     = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or Windows;  Used to find the correct launch template
+    custom_ami_type = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or Windows;  Used to find the correct launch template
     custom_ami_id   = "ami-0dfaa019a300f219c" # Modify this to fetch to use custom AMI ID.
     public_ip       = false
     pre_userdata    = <<-EOT

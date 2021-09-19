@@ -68,8 +68,8 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.59.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.3.0 |
 
 ## Modules
 

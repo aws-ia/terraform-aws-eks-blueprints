@@ -36,6 +36,7 @@ resource "kubernetes_config_map" "aws_auth" {
       distinct(concat(
         local.managed_node_group_aws_auth_config_map,
         local.self_managed_node_group_aws_auth_config_map,
+        local.windows_node_group_aws_auth_config_map,
         local.fargate_profiles_aws_auth_config_map,
         var.map_roles,
       ))

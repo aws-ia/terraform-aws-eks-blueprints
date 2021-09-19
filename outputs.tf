@@ -69,6 +69,10 @@ output "self_managed_node_group_aws_auth_config_map" {
   value = local.self_managed_node_group_aws_auth_config_map.*
 }
 
+output "windows_node_group_aws_auth_config_map" {
+  value = local.windows_node_group_aws_auth_config_map.*
+}
+
 output "managed_node_group_aws_auth_config_map" {
   value = local.managed_node_group_aws_auth_config_map.*
 }
