@@ -1,0 +1,19 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Values.resourceController.name }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  - nodes/status
+  - pods
+  - configmaps
+  verbs:
+  - update
+  - get
+  - list
+  - watch
+  - patch
+  - create

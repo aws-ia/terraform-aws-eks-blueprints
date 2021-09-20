@@ -229,7 +229,7 @@ self_managed_node_groups = {
 
     k8s_labels = {
       Environment = "preprod"
-      Zone        = "sbx"
+      Zone        = "dev"
       WorkerType  = "WINDOWS_ON_DEMAND"
     }
 

@@ -82,5 +82,17 @@ module "helm" {
   amp_workspace_id                = var.prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : ""
   region                          = data.aws_region.current.id
 
+  # ------- Cert Manager ---------
+  # Cert Manager is a pre-requisite for Windows support
+  cert_manager_enable             = var.cert_manager_enable || var.enable_windows_support
+  cert_manager_image_tag          = var.cert_manager_image_tag
+  cert_manager_helm_chart_version = var.cert_manager_helm_chart_version
+  cert_manager_install_crds       = var.cert_manager_install_crds
+
+  # ------- Windows VPC Controllers ---------
+  windows_vpc_controllers_enable            = var.enable_windows_support
+  windows_vpc_resource_controller_image_tag = var.windows_vpc_resource_controller_image_tag
+  windows_vpc_admission_webhook_image_tag   = var.windows_vpc_admission_webhook_image_tag
+
   depends_on = [module.eks]
 }
