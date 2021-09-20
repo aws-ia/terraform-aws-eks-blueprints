@@ -17,7 +17,9 @@
  */
 
 module "aws-eks-self-managed-node-groups" {
-  for_each = length(var.self_managed_node_groups) > 0 && var.enable_self_managed_nodegroups ? var.self_managed_node_groups : null
+  for_each = { for key, value in var.self_managed_node_groups : key => value
+    if var.enable_self_managed_nodegroups && length(var.self_managed_node_groups) > 0
+  }
 
   source          = "./modules/aws-eks-self-managed-node-groups"
   self_managed_ng = each.value

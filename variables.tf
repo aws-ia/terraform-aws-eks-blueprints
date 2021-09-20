@@ -328,31 +328,31 @@ variable "expose_udp" {
 }
 
 variable "aws_lb_image_tag" {
-  default = "v2.2.1"
+  default = "v2.2.4"
 }
 
 variable "aws_lb_helm_chart_version" {
-  default = "1.2.3"
+  default = "1.2.7"
 }
 
 variable "metric_server_image_tag" {
-  default = "v0.4.2"
+  default = "0.5.0-debian-10-r83"
 }
 
 variable "metric_server_helm_chart_version" {
-  default = "2.12.1"
+  default = "5.10.1"
 }
 
 variable "cluster_autoscaler_image_tag" {
-  default = "v1.20.0"
+  default = "v1.21.0"
 }
 
 variable "cluster_autoscaler_helm_version" {
-  default = "9.9.2"
+  default = "9.10.7"
 }
 
 variable "prometheus_helm_chart_version" {
-  default = "14.4.0"
+  default = "14.7.0"
 }
 
 variable "prometheus_image_tag" {
