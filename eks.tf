@@ -41,7 +41,7 @@ module "eks" {
   # version = ???
 
   create_eks      = var.create_eks
-  manage_aws_auth = false     # Replaced by the auth.tf file
+  manage_aws_auth = false # Replaced by the auth.tf file
 
   eks_cluster_name    = module.eks-label.id
   eks_cluster_version = var.kubernetes_version
@@ -54,8 +54,8 @@ module "eks" {
   eks_cluster_endpoint_public_access  = var.endpoint_public_access
 
   # IRSA
-  enable_irsa            = var.enable_irsa
-//  kubeconfig_output_path = "./kubeconfig/"
+  enable_irsa = var.enable_irsa
+  //  kubeconfig_output_path = "./kubeconfig/"
 
   # TAGS
   tags = module.eks-label.tags

@@ -18,7 +18,7 @@
 
 locals {
   default_fargate_profiles = {
-    fargate_profile_name          = "default"
+    fargate_profile_name          = ""
     fargate_profile_namespaces    = []
     create_iam_role               = "false"
     subnet_type                   = "private"
@@ -31,7 +31,7 @@ locals {
   fargate_profiles = merge(
     local.default_fargate_profiles,
     var.fargate_profile,
-    { subnet_ids = var.fargate_profile["subnet_ids"] == [] ? var.fargate_profile["subnet_type"] == "public" ? var.public_subnet_ids : var.private_subnet_ids : var.fargate_profile["subnet_ids"] }
+    { subnet_ids = var.fargate_profile["subnet_ids"] == [] ? var.private_subnet_ids : var.fargate_profile["subnet_ids"] }
   )
 
 

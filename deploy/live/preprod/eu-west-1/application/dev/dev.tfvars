@@ -409,7 +409,7 @@ fargate_profiles = {
       }
     }]
 
-    subnet_ids = []
+    subnet_ids = [] # Provide list of private subnets
 
     additional_tags = {
       ExtraTag    = "Fargate"
@@ -440,7 +440,7 @@ fargate_profiles = {
         }
     }]
 
-    subnet_ids = []
+    subnet_ids = [] # Provide list of private subnets
 
     additional_tags = {
       ExtraTag = "Fargate"

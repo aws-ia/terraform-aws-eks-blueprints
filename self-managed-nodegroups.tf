@@ -36,6 +36,7 @@ module "aws-eks-self-managed-node-groups" {
 
   worker_security_group_id  = module.eks.eks_worker_security_group_id
   cluster_security_group_id = module.eks.eks_cluster_security_group_id
+  kubernetes_version        = var.kubernetes_version
 
   depends_on = [module.eks, kubernetes_config_map.aws_auth]
 

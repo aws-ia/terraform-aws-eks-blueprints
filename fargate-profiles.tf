@@ -20,7 +20,7 @@
 # FARGATE PROFILES
 # ---------------------------------------------------------------------------------------------------------------------
 module "fargate-profiles" {
-  source          = "git@github.com:aws-ia/terraform-aws-eks-fargate.git"
+  source = "git@github.com:aws-ia/terraform-aws-eks-fargate.git"
 
   for_each = { for k, v in var.fargate_profiles : k => v if var.enable_fargate && length(var.fargate_profiles) > 0 }
 
@@ -28,7 +28,6 @@ module "fargate-profiles" {
 
   eks_cluster_name   = module.eks.eks_cluster_id
   private_subnet_ids = var.create_vpc == false ? var.private_subnet_ids : module.vpc.private_subnets
-  public_subnet_ids  = var.create_vpc == false ? var.public_subnet_ids : module.vpc.public_subnets
 
   tags = module.eks-label.tags
 

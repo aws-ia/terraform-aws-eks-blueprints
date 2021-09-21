@@ -61,7 +61,7 @@ module "helm" {
   aws_for_fluent_bit_helm_chart_version = var.aws_for_fluent_bit_helm_chart_version
 
   # ------- AWS Fluentbit for Fargate
-  fargate_fluent_bit_enable   = var.enable_fargate ? var.fargate_fluent_bit_enable : false
+  fargate_fluent_bit_enable = var.enable_fargate ? var.fargate_fluent_bit_enable : false
 
   # ------- Agones Gaming Module ---------
   agones_enable         = var.agones_enable
