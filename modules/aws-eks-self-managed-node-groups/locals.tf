@@ -64,7 +64,8 @@ locals {
     windows         = "Windows_Server-2019-English-Core-EKS_Optimized-${var.kubernetes_version}-*"
   }
 
-  predefined_ami_types = keys(local.predfined_ami_names)
+  enable_windows_support = local.self_managed_node_group["custom_ami_type"] == "windows"
+  predefined_ami_types   = keys(local.predfined_ami_names)
   # Default AMI ID for predefined custom AMI types
   default_custom_ami_id = contains(local.predefined_ami_types, local.self_managed_node_group["custom_ami_type"]) ? data.aws_ami.predefined[local.self_managed_node_group["custom_ami_type"]].id : ""
   custom_ami_id         = local.self_managed_node_group["custom_ami_id"] == "" ? local.default_custom_ami_id : local.self_managed_node_group["custom_ami_id"]

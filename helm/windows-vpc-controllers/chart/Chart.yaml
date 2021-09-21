@@ -1,0 +1,6 @@
+apiVersion: v2
+name: windows-vpc-resources
+description: A Helm chart for K8s VPC resources needed for Windows workloads
+type: application
+version: 0.1.0
+appVersion: 0.2.6

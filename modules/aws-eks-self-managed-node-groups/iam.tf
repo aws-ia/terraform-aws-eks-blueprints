@@ -42,7 +42,14 @@ resource "aws_iam_role_policy_attachment" "self_managed_AmazonEKSWorkerNodePolic
 }
 
 resource "aws_iam_role_policy_attachment" "self_managed_AmazonEKS_CNI_Policy" {
+  count      = local.enable_windows_support ? 0 : 1
   policy_arn = "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy"
+  role       = aws_iam_role.self_managed_ng.name
+}
+
+resource "aws_iam_role_policy_attachment" "self_managed_windows_nodes_cni_policy" {
+  count      = local.enable_windows_support ? 1 : 0
+  policy_arn = aws_iam_policy.eks_windows_cni.0.arn
   role       = aws_iam_role.self_managed_ng.name
 }
 
@@ -97,6 +104,32 @@ resource "aws_iam_policy" "eks_autoscaler_policy" {
         "autoscaling:TerminateInstanceInAutoScalingGroup"
       ],
       "Resource": "arn:aws:autoscaling:*:${data.aws_caller_identity.current.account_id}:autoScalingGroup:*:autoScalingGroupName/*"
+    }
+  ]
+}
+EOF
+}
+
+# Windows nodes only need read-only access to EC2
+resource "aws_iam_policy" "eks_windows_cni" {
+  count       = local.enable_windows_support ? 1 : 0
+  name        = "${var.eks_cluster_name}-${local.self_managed_node_group["node_group_name"]}-cni-policy"
+  path        = "/"
+  description = "EKS Windows CNI policy"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeInstances",
+        "ec2:DescribeTags",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DescribeInstanceTypes"
+      ],
+      "Resource": "*"
     }
   ]
 }

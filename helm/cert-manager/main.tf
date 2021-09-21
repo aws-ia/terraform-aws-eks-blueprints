@@ -16,8 +16,32 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-resource "null_resource" "install_vpc_controller" {
-  provisioner "local-exec" {
-    command = "eksctl utils install-vpc-controllers --cluster ${var.cluster_name} --approve"
-  }
+locals {
+  public_image_repo = var.public_image_repo
+  image_url         = var.public_docker_repo ? "${local.public_image_repo}/${var.image_repo_name}" : "${var.private_container_repo_url}${var.image_repo_name}"
+}
+
+resource "helm_release" "cert-manager" {
+  name       = "cert-manager"
+  repository = "https://charts.jetstack.io"
+  chart      = "cert-manager"
+  version    = var.cert_manager_helm_chart_version
+  namespace  = "kube-system"
+  timeout    = "600"
+
+  values = [templatefile("${path.module}/cert-manager-values.tpl", {
+    image       = local.image_url
+    tag         = var.cert_manager_image_tag
+    installCRDs = var.cert_manager_install_crds
+  })]
+
+}
+
+resource "helm_release" "cert_manager_ca" {
+  chart     = "${path.module}/chart/cert-manager-ca"
+  name      = "cert-manager-ca"
+  namespace = "kube-system"
+  depends_on = [
+    helm_release.cert-manager
+  ]
 }

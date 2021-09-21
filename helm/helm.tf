@@ -114,3 +114,25 @@ module "prometheus" {
   amp_workspace_id                = var.amp_workspace_id
   region                          = var.region
 }
+
+module "cert_manager" {
+  count                           = var.cert_manager_enable == true ? 1 : 0
+  source                          = "./cert-manager"
+  private_container_repo_url      = var.private_container_repo_url
+  public_docker_repo              = var.public_docker_repo
+  cert_manager_helm_chart_version = var.cert_manager_helm_chart_version
+  cert_manager_image_tag          = var.cert_manager_image_tag
+  cert_manager_install_crds       = var.cert_manager_install_crds
+}
+
+module "windows_vpc_controllers" {
+  count                         = var.windows_vpc_controllers_enable == true ? 1 : 0
+  source                        = "./windows-vpc-controllers"
+  private_container_repo_url    = var.private_container_repo_url
+  public_docker_repo            = var.public_docker_repo
+  resource_controller_image_tag = var.windows_vpc_resource_controller_image_tag
+  admission_webhook_image_tag   = var.windows_vpc_admission_webhook_image_tag
+  depends_on = [
+    module.cert_manager
+  ]
+}

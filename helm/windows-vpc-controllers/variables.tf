@@ -16,9 +16,25 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "cluster_name" {
-  type        = string
-  description = "Cluster name"
+variable "public_docker_repo" {}
+variable "private_container_repo_url" {}
+
+variable "public_image_repo" {
+  default = "602401143452.dkr.ecr.us-west-2.amazonaws.com"
 }
-
-
+variable "resource_controller_image_repo_name" {
+  default = "eks/windows-vpc-resource-controller"
+}
+variable "resource_controller_image_tag" {
+  type        = string
+  default     = "v0.2.7"
+  description = "Docker image tag for Windows VPC resource controller"
+}
+variable "admission_webhook_image_repo_name" {
+  default = "eks/vpc-admission-webhook"
+}
+variable "admission_webhook_image_tag" {
+  type        = string
+  default     = "v0.2.7"
+  description = "Docker image tag for Windows VPC admission webhook controller"
+}

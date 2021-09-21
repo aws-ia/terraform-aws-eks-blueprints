@@ -16,9 +16,27 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-module "windows_support" {
-  count  = var.enable_windows_support ? 1 : 0
-  source = "./modules/windows_support"
+variable "public_docker_repo" {}
+variable "private_container_repo_url" {}
+variable "image_repo_name" {
+  default = "jetstack/cert-manager-controller"
+}
 
-  cluster_name = module.eks.cluster_id
+variable "public_image_repo" {
+  default = "quay.io"
+}
+variable "cert_manager_image_tag" {
+  type        = string
+  default     = "v1.5.3"
+  description = "Docker image tag for cert-manager controller"
+}
+variable "cert_manager_helm_chart_version" {
+  type        = string
+  default     = "0.1.0"
+  description = "Helm chart version for cert-manager"
+}
+variable "cert_manager_install_crds" {
+  type        = bool
+  description = "Whether Cert Manager CRDs should be installed as part of the cert-manager Helm chart installation"
+  default     = true
 }

@@ -1,0 +1,30 @@
+{{- $admissionWebhookName := .Values.admissionWebhook.name -}}
+# API version can be upgraded only after the admission webhook image supports that.
+# As of v0.2.7 it's not supported.
+# apiVersion: admissionregistration.k8s.io/v1
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: {{ $admissionWebhookName }}
+  annotations:
+    cert-manager.io/inject-ca-from: {{ printf "%s/%s" .Release.Namespace $admissionWebhookName }}
+  labels:
+    app: {{ $admissionWebhookName }}
+webhooks:
+  - name: {{ $admissionWebhookName }}.amazonaws.com
+    admissionReviewVersions:
+      # - v1
+      - v1beta1
+    clientConfig:
+      service:
+        name: {{ $admissionWebhookName }}
+        namespace: {{ .Release.Namespace }}
+        path: "/mutate"
+    rules:
+      - operations: [ "CREATE" ]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+    failurePolicy: Ignore
+    sideEffects: None
+

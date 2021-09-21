@@ -229,7 +229,7 @@ self_managed_node_groups = {
 
     k8s_labels = {
       Environment = "preprod"
-      Zone        = "sbx"
+      Zone        = "dev"
       WorkerType  = "WINDOWS_ON_DEMAND"
     }
 
@@ -242,7 +242,7 @@ self_managed_node_groups = {
     subnet_type = "private" # private or public
     subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
 
-    create_worker_security_group = true # Creates a dedicated sec group for this Node Group
+    create_worker_security_group = false # Creates a dedicated sec group for this Node Group
   }
 
 }
@@ -467,20 +467,20 @@ public_docker_repo = true
 #---------------------------------------------------------#
 metrics_server_enable            = false
 metric_server_image_tag          = "0.5.0-debian-10-r83"
-metric_server_helm_chart_version = "5.9.2"
+metric_server_helm_chart_version = "5.10.1"
 #---------------------------------------------------------#
 # ENABLE CLUSTER AUTOSCALER
 #---------------------------------------------------------#
 cluster_autoscaler_enable       = true
-cluster_autoscaler_image_tag    = "v1.20.0"
-cluster_autoscaler_helm_version = "9.9.2"
+cluster_autoscaler_image_tag    = "v1.21.0"
+cluster_autoscaler_helm_version = "9.10.7"
 
 #---------------------------------------------------------//
 # ENABLE AWS LB INGRESS CONTROLLER
 #---------------------------------------------------------//
 lb_ingress_controller_enable = false
-aws_lb_image_tag             = "v2.2.1"
-aws_lb_helm_chart_version    = "1.2.3"
+aws_lb_image_tag             = "v2.2.4"
+aws_lb_helm_chart_version    = "1.2.7"
 
 #---------------------------------------------------------//
 # ENABLE PROMETHEUS

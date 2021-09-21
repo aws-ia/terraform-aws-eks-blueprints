@@ -22,7 +22,9 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "managed-node-groups" {
-  for_each = length(var.managed_node_groups) > 0 && var.enable_managed_nodegroups ? var.managed_node_groups : null
+  for_each = { for key, value in var.managed_node_groups : key => value
+    if var.enable_managed_nodegroups && length(var.managed_node_groups) > 0
+  }
 
   source     = "./modules/aws-eks-managed-node-groups"
   managed_ng = each.value

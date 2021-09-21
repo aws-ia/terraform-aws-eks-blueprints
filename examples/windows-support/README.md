@@ -4,7 +4,7 @@ This example shows how to enable Windows support in the EKS cluster.
 
 ## Pre-requisites
 
-[eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) is currently needed to enable Windows support.
+[cert-manager](https://cert-manager.io/) is currently needed to enable Windows support. The `cert-manager` [Helm chart](../../helm/cert-manager) will be automatically enabeld, if Windows support is enabled.
 
 ## Required input
 
@@ -38,7 +38,7 @@ self_managed_node_groups = {
 
     k8s_labels = {
       Environment = "preprod"
-      Zone        = "sbx"
+      Zone        = "dev"
       WorkerType  = "WINDOWS_ON_DEMAND"
     }
 

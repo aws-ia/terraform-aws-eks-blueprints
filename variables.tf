@@ -328,31 +328,31 @@ variable "expose_udp" {
 }
 
 variable "aws_lb_image_tag" {
-  default = "v2.2.1"
+  default = "v2.2.4"
 }
 
 variable "aws_lb_helm_chart_version" {
-  default = "1.2.3"
+  default = "1.2.7"
 }
 
 variable "metric_server_image_tag" {
-  default = "v0.4.2"
+  default = "0.5.0-debian-10-r83"
 }
 
 variable "metric_server_helm_chart_version" {
-  default = "2.12.1"
+  default = "5.10.1"
 }
 
 variable "cluster_autoscaler_image_tag" {
-  default = "v1.20.0"
+  default = "v1.21.0"
 }
 
 variable "cluster_autoscaler_helm_version" {
-  default = "9.9.2"
+  default = "9.10.7"
 }
 
 variable "prometheus_helm_chart_version" {
-  default = "14.4.0"
+  default = "14.7.0"
 }
 
 variable "prometheus_image_tag" {
@@ -409,4 +409,33 @@ variable "aws_for_fluent_bit_helm_chart_version" {
   description = "Helm chart version for aws_for_fluent_bit"
 }
 
-
+variable "cert_manager_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling Cert Manager Helm Chart installation. It is automatically enabled if Windows support is enabled."
+}
+variable "cert_manager_image_tag" {
+  type        = string
+  default     = "v1.5.3"
+  description = "Docker image tag for cert-manager controller"
+}
+variable "cert_manager_helm_chart_version" {
+  type        = string
+  default     = "v1.5.3"
+  description = "Helm chart version for cert-manager"
+}
+variable "cert_manager_install_crds" {
+  type        = bool
+  description = "Whether Cert Manager CRDs should be installed as part of the cert-manager Helm chart installation"
+  default     = true
+}
+variable "windows_vpc_resource_controller_image_tag" {
+  type        = string
+  default     = "v0.2.7"
+  description = "Docker image tag for Windows VPC resource controller"
+}
+variable "windows_vpc_admission_webhook_image_tag" {
+  type        = string
+  default     = "v0.2.7"
+  description = "Docker image tag for Windows VPC admission webhook controller"
+}

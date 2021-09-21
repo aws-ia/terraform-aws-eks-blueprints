@@ -97,7 +97,7 @@ apiService:
   ## @param apiService.create Specifies whether the v1beta1.metrics.k8s.io API service should be created. You can check if it is needed with `kubectl get --raw "/apis/metrics.k8s.io/v1beta1/nodes"`.
   ## This is still necessary up to at least k8s version >= 1.21, but depends on vendors and cloud providers.
   ##
-  create: false
+  create: true
 ## @param securePort Port where metrics-server will be running
 ##
 securePort: 8443

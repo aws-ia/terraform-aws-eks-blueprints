@@ -25,7 +25,7 @@ variable "metric_server_image_tag" {
   default = "0.5.0-debian-10-r83"
 }
 variable "metric_server_helm_chart_version" {
-  default = "5.9.2"
+  default = "5.10.1"
 }
 
 variable "public_docker_repo" {}
