@@ -19,7 +19,7 @@
 
 output "cluster_oidc_url" {
   description = "The URL on the EKS cluster OIDC Issuer"
-  value       = var.create_eks ? split("//", module.eks.cluster_oidc_issuer_url)[1] : "EKS Cluster not enabled"
+  value       = var.create_eks ? split("//", module.eks.eks_cluster_oidc_issuer_url)[1] : "EKS Cluster not enabled"
 }
 
 output "oidc_provider_arn" {
@@ -29,12 +29,12 @@ output "oidc_provider_arn" {
 
 output "cluster_name" {
   description = "Kubernetes Cluster Name"
-  value       = var.create_eks ? module.eks-label.id : "EKS Cluster not enabled"
+  value       = var.create_eks ? module.eks.eks_cluster_id : "EKS Cluster not enabled"
 }
 
 output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = var.create_eks ? "aws eks --region ${data.aws_region.current.id} update-kubeconfig --name ${module.eks.cluster_id}" : "EKS Cluster not enabled"
+  value       = var.create_eks ? "aws eks --region ${data.aws_region.current.id} update-kubeconfig --name ${module.eks.eks_cluster_id}" : "EKS Cluster not enabled"
 }
 
 output "amp_work_id" {
@@ -65,6 +65,11 @@ output "fargate_profiles" {
   value       = var.create_eks && var.enable_fargate ? module.fargate-profiles.* : []
 }
 
+output "fargate_profiles_iam_role_arns" {
+  description = "IAM role arn's of Fargate Profiles"
+  value       = var.create_eks && var.enable_fargate ? { for nodes in sort(keys(var.fargate_profiles)) : nodes => module.fargate-profiles[nodes].eks_fargate_profile_role_name } : null
+}
+
 output "self_managed_node_group_aws_auth_config_map" {
   value = local.self_managed_node_group_aws_auth_config_map.*
 }
@@ -82,29 +87,14 @@ output "fargate_profiles_aws_auth_config_map" {
 }
 
 output "cluster_security_group_id" {
-  value = module.eks.cluster_security_group_id
+  value = module.eks.eks_cluster_security_group_id
 }
 
 output "cluster_primary_security_group_id" {
-  value = module.eks.cluster_primary_security_group_id
-}
-
-output "security_group_rule_cluster_https_worker_ingress" {
-  value = module.eks.security_group_rule_cluster_https_worker_ingress
+  value = module.eks.eks_cluster_primary_security_group_id
 }
 
 output "worker_security_group_id" {
-  value = module.eks.worker_security_group_id
+  value = module.eks.eks_worker_security_group_id
 }
 
-//output "self_managed_node_group_iam_roles" {
-//  description = "IAM role arn's of self managed node groups"
-////  value       = var.create_eks && var.enable_managed_nodegroups ? {for node in sort(keys(var.managed_node_groups)) : node => lookup(var.self_managed_node_groups[node],"node_group_name")} : null
-//  value       = var.create_eks && var.enable_self_managed_nodegroups ? {
-//    for_each = {
-//      for key, node_values in var.self_managed_node_groups: key => lookup(node_values, "node_group_name") }
-//    } : null
-//
-//}
-
-//${lookup(var.var["firstchoice"],"firstAChoice")}

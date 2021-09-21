@@ -150,7 +150,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 5. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
 ## Deployment Steps
-The following steps walks you through the deployment of example [DEV cluster](live/preprod/eu-west-1/application/dev/dev.tfvars) configuration. This config deploys a private EKS cluster with public and private subnets.
+The following steps walks you through the deployment of example [DEV cluster](deploy/live/preprod/eu-west-1/application/dev/dev.tfvars) configuration. This config deploys a private EKS cluster with public and private subnets.
 
 Two managed worker nodes with On-demand and Spot instances along with one fargate profile for default namespace placed in private subnets. ALB placed in Public subnets created by LB Ingress controller.
 

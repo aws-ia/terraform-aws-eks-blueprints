@@ -19,7 +19,7 @@
 locals {
   default_fargate_profiles = {
     fargate_profile_name          = "default"
-    fargate_profile_namespaces    = {}
+    fargate_profile_namespaces    = []
     create_iam_role               = "false"
     subnet_type                   = "private"
     k8s_labels                    = {}

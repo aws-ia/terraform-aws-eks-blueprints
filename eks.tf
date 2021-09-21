@@ -37,32 +37,31 @@ resource "aws_kms_key" "eks" {
 }
 
 module "eks" {
+  source = "git@github.com:maheshr-amzn/terraform-aws-eks_cluster?ref=feature/aws-eks_cluster-development"
+  # version = ???
+
   create_eks      = var.create_eks
-  manage_aws_auth = false # Replaced by the auth.tf file
+  manage_aws_auth = false     # Replaced by the auth.tf file
 
-  #TODO Refer to internal AWS-IA module
-  source  = "terraform-aws-modules/eks/aws"
-  version = "17.1.0"
-
-  cluster_name    = module.eks-label.id
-  cluster_version = var.kubernetes_version
+  eks_cluster_name    = module.eks-label.id
+  eks_cluster_version = var.kubernetes_version
 
   # NETWORK CONFIG
   vpc_id  = var.create_vpc == false ? var.vpc_id : module.vpc.vpc_id
   subnets = var.create_vpc == false ? var.private_subnet_ids : module.vpc.private_subnets
 
-  cluster_endpoint_private_access = var.endpoint_private_access
-  cluster_endpoint_public_access  = var.endpoint_public_access
+  eks_cluster_endpoint_private_access = var.endpoint_private_access
+  eks_cluster_endpoint_public_access  = var.endpoint_public_access
 
   # IRSA
   enable_irsa            = var.enable_irsa
-  kubeconfig_output_path = "./kubeconfig/"
+//  kubeconfig_output_path = "./kubeconfig/"
 
   # TAGS
   tags = module.eks-label.tags
 
   # CLUSTER LOGGING
-  cluster_enabled_log_types = var.enabled_cluster_log_types
+  enabled_cluster_log_types = var.enabled_cluster_log_types
 
   # CLUSTER ENCRYPTION
   cluster_encryption_config = [
@@ -81,7 +80,7 @@ module "aws-eks-addon" {
   count = var.create_eks ? 1 : 0
 
   source                = "./modules/aws-eks-addon"
-  cluster_name          = module.eks.cluster_id
+  cluster_name          = module.eks.eks_cluster_id
   enable_vpc_cni_addon  = var.enable_vpc_cni_addon
   vpc_cni_addon_version = var.vpc_cni_addon_version
 

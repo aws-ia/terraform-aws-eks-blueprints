@@ -16,37 +16,11 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+# Help on Fargate Logging with FFlunet bit and CloudWatch
+# https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html
+
+
 data "aws_region" "current" {}
-
-#-------------------------------------------------------------------------------------------------
-#IAM Policy for Fargate Fluentbit
-#--------------------------------------------------------------------------------------------------
-resource "aws_iam_policy" "eks-fargate-logging-policy" {
-  name        = "${var.eks_cluster_id}-fargate-log-policy"
-  description = "Allow fargate profiles to writ logs to CW"
-
-  policy = <<EOF
-{
-	"Version": "2012-10-17",
-	"Statement": [{
-		"Effect": "Allow",
-		"Action": [
-			"logs:CreateLogStream",
-			"logs:CreateLogGroup",
-			"logs:DescribeLogStreams",
-			"logs:PutLogEvents"
-		],
-		"Resource": "*"
-	}]
-}
-EOF
-}
-
-resource "aws_iam_role_policy_attachment" "fargate_profile_role" {
-  role       = var.fargate_iam_role
-  policy_arn = aws_iam_policy.eks-fargate-logging-policy.arn
-}
-
 
 resource "kubernetes_namespace" "aws_observability" {
   metadata {
@@ -54,6 +28,7 @@ resource "kubernetes_namespace" "aws_observability" {
 
     labels = {
       aws-observability = "enabled"
+      "app.kubernetes.io/managed-by" = "Terraform"
     }
   }
 }
@@ -65,7 +40,50 @@ resource "kubernetes_config_map" "aws_logging" {
   }
 
   data = {
-    "output.conf" = "[OUTPUT]\n    Name cloudwatch_logs\n    Match   *\n    region ${data.aws_region.current.id}\n    log_group_name /aws/eks/${var.eks_cluster_id}/fluent-bit-cloudwatch\n    log_stream_prefix from-fluent-bit-\n    auto_create_group On\n"
+    "output.conf" = <<EOF
+     [OUTPUT]
+        Name cloudwatch_logs
+        Match *
+        region ${data.aws_region.current.id}
+        log_group_name /aws/eks/${var.eks_cluster_id}/fargate-fluentbit-cloudwatch
+        log_stream_prefix fargate-from-fluent-bit-
+        auto_create_group On
+    EOF
   }
 }
 
+/*
+# EXAMPLE CONFIG MAP FOR Fargate FluentBit logging to CloudWatch
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: aws-logging
+  namespace: aws-observability
+data:
+  output.conf: |
+    [OUTPUT]
+        Name cloudwatch_logs
+        Match   *
+        region us-east-1
+        log_group_name fluent-bit-cloudwatch
+        log_stream_prefix from-fluent-bit-
+        auto_create_group true
+
+  parsers.conf: |
+    [PARSER]
+        Name crio
+        Format Regex
+        Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>P|F) (?<log>.*)$
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+
+  filters.conf: |
+     [FILTER]
+        Name parser
+        Match *
+        Key_name log
+        Parser crio
+        Reserve_Data On
+        Preserve_Key On
+*/

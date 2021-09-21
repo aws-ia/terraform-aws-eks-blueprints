@@ -20,12 +20,12 @@ data "aws_partition" "current" {}
 
 data "aws_eks_cluster" "cluster" {
   count = var.create_eks ? 1 : 0
-  name  = module.eks.cluster_id
+  name  = module.eks.eks_cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
   count = var.create_eks ? 1 : 0
-  name  = module.eks.cluster_id
+  name  = module.eks.eks_cluster_id
 }
 
 data "aws_region" "current" {}

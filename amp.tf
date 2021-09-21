@@ -28,8 +28,8 @@ module "aws_managed_prometheus" {
   zone                            = var.zone
   account_id                      = data.aws_caller_identity.current.account_id
   region                          = data.aws_region.current.id
-  eks_cluster_id                  = module.eks.cluster_id
-  eks_oidc_provider               = split("//", module.eks.cluster_oidc_issuer_url)[1]
+  eks_cluster_id                  = module.eks.eks_cluster_id
+  eks_oidc_provider               = split("//", module.eks.eks_cluster_oidc_issuer_url)[1]
   service_account_amp_ingest_name = local.service_account_amp_ingest_name
   service_account_amp_query_name  = local.service_account_amp_query_name
   amp_workspace_name              = local.amp_workspace_name

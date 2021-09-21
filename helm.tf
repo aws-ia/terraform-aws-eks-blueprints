@@ -22,7 +22,7 @@
 module "helm" {
   # count        = var.create_eks ? 1 : 0
   source                     = "./helm"
-  eks_cluster_id             = module.eks.cluster_id
+  eks_cluster_id             = module.eks.eks_cluster_id
   public_docker_repo         = var.public_docker_repo
   private_container_repo_url = local.image_repo
 
@@ -46,7 +46,7 @@ module "helm" {
   lb_ingress_controller_enable = var.lb_ingress_controller_enable
   aws_lb_image_tag             = var.aws_lb_image_tag
   aws_lb_helm_chart_version    = var.aws_lb_helm_chart_version
-  eks_oidc_issuer_url          = module.eks.cluster_oidc_issuer_url
+  eks_oidc_issuer_url          = module.eks.eks_cluster_oidc_issuer_url
   eks_oidc_provider_arn        = module.eks.oidc_provider_arn
 
   # ------- Nginx Ingress Controller
@@ -61,13 +61,12 @@ module "helm" {
   aws_for_fluent_bit_helm_chart_version = var.aws_for_fluent_bit_helm_chart_version
 
   # ------- AWS Fluentbit for Fargate
-  fargate_fluent_bit_enable = var.fargate_fluent_bit_enable
-  fargate_iam_role          = module.eks.fargate_iam_role_name
+  fargate_fluent_bit_enable   = var.enable_fargate ? var.fargate_fluent_bit_enable : false
 
   # ------- Agones Gaming Module ---------
   agones_enable         = var.agones_enable
   expose_udp            = var.expose_udp
-  eks_security_group_id = module.eks.worker_security_group_id
+  eks_security_group_id = module.eks.eks_worker_security_group_id
 
   # ------- Prometheus Module ---------
   prometheus_enable               = var.prometheus_enable
