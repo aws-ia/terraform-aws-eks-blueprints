@@ -22,23 +22,24 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "managed-node-groups" {
+  source = "git@github.com:aws-ia/terraform-aws-eks-managed_nodegroups.git"
+
   for_each = { for key, value in var.managed_node_groups : key => value
     if var.enable_managed_nodegroups && length(var.managed_node_groups) > 0
   }
 
-  source     = "./modules/aws-eks-managed-node-groups"
   managed_ng = each.value
 
-  eks_cluster_name  = module.eks.cluster_id
+  eks_cluster_name  = module.eks.eks_cluster_id
   cluster_ca_base64 = module.eks.cluster_certificate_authority_data
-  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_endpoint  = module.eks.eks_cluster_endpoint
 
   vpc_id             = var.create_vpc == false ? var.vpc_id : module.vpc.vpc_id
   private_subnet_ids = var.create_vpc == false ? var.private_subnet_ids : module.vpc.private_subnets
   public_subnet_ids  = var.create_vpc == false ? var.public_subnet_ids : module.vpc.public_subnets
 
-  default_worker_security_group_id  = module.eks.worker_security_group_id
-  cluster_primary_security_group_id = module.eks.cluster_security_group_id
+  worker_security_group_id  = module.eks.eks_worker_security_group_id
+  cluster_security_group_id = module.eks.eks_cluster_security_group_id
 
   tags = module.eks-label.tags
 

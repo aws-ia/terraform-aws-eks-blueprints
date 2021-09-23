@@ -17,26 +17,26 @@
  */
 
 module "aws-eks-self-managed-node-groups" {
+  source = "git@github.com:aws-ia/terraform-aws-eks-selfmanaged_nodegroups.git"
+
   for_each = { for key, value in var.self_managed_node_groups : key => value
     if var.enable_self_managed_nodegroups && length(var.self_managed_node_groups) > 0
   }
 
-  source          = "./modules/aws-eks-self-managed-node-groups"
   self_managed_ng = each.value
 
-  eks_cluster_name   = module.eks.cluster_id
-  cluster_endpoint   = module.eks.cluster_endpoint
-  cluster_ca_base64  = module.eks.cluster_certificate_authority_data
-  kubernetes_version = var.kubernetes_version
-  tags               = module.eks-label.tags
-
+  eks_cluster_name  = module.eks.eks_cluster_id
+  cluster_endpoint  = module.eks.eks_cluster_endpoint
+  cluster_ca_base64 = module.eks.cluster_certificate_authority_data
+  tags              = module.eks-label.tags
 
   vpc_id             = var.create_vpc == false ? var.vpc_id : module.vpc.vpc_id
   private_subnet_ids = var.create_vpc == false ? var.private_subnet_ids : module.vpc.private_subnets
   public_subnet_ids  = var.create_vpc == false ? var.public_subnet_ids : module.vpc.public_subnets
 
-  default_worker_security_group_id  = module.eks.worker_security_group_id
-  cluster_primary_security_group_id = module.eks.cluster_security_group_id
+  worker_security_group_id  = module.eks.eks_worker_security_group_id
+  cluster_security_group_id = module.eks.eks_cluster_security_group_id
+  kubernetes_version        = var.kubernetes_version
 
   depends_on = [module.eks, kubernetes_config_map.aws_auth]
 

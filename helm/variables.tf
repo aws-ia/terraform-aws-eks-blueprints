@@ -56,8 +56,6 @@ variable "fargate_fluent_bit_enable" {
   description = "Enabling fargate_fluent_bit on eks cluster"
 }
 
-variable "fargate_iam_role" {}
-
 variable "s3_nlb_logs" {
   description = "S3 bucket for NLB Logs"
 }

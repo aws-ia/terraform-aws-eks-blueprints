@@ -52,13 +52,13 @@ variable "kubernetes_version" {
   description = "Kubernetes version of the cluster"
 }
 
-variable "default_worker_security_group_id" {
+variable "worker_security_group_id" {
   type        = string
   default     = ""
   description = "Default worker security group id"
 }
 
-variable "cluster_primary_security_group_id" {
+variable "cluster_security_group_id" {
   type        = string
   default     = ""
   description = "Cluster Primary security group ID for self managed node group"

@@ -84,7 +84,6 @@ module "fargate_fluentbit" {
   count            = var.fargate_fluent_bit_enable == true ? 1 : 0
   source           = "./fargate_fluentbit"
   eks_cluster_id   = var.eks_cluster_id
-  fargate_iam_role = var.fargate_iam_role
 }
 
 module "agones" {

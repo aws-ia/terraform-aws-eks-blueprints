@@ -67,7 +67,7 @@ resource "aws_launch_template" "self_managed_ng" {
 
   network_interfaces {
     associate_public_ip_address = local.self_managed_node_group["public_ip"]
-    security_groups             = local.self_managed_node_group["create_worker_security_group"] == true ? [aws_security_group.self_managed_ng[0].id] : [var.default_worker_security_group_id]
+    security_groups             = local.self_managed_node_group["create_worker_security_group"] == true ? [aws_security_group.self_managed_ng[0].id] : [var.worker_security_group_id]
   }
 
   tag_specifications {
