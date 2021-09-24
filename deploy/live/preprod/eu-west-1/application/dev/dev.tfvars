@@ -67,7 +67,7 @@ create_vpc_endpoints = true
 #   Endpoint private access: true   - Kubernetes API requests within your cluster's VPC (such as node to control plane communication) use the private VPC endpoint.
 #---------------------------------------------------------#
 create_eks              = true
-kubernetes_version      = "1.20"
+kubernetes_version      = "1.21"
 endpoint_private_access = true
 endpoint_public_access  = true
 
@@ -95,8 +95,8 @@ kube_proxy_addon_version = "v1.20.4-eksbuild.2"
 #    4. Launch Templates for Node group
 #    5. Autoscaling Group
 #---------------------------------------------------------#
-enable_self_managed_nodegroups = true
-enable_windows_support         = true
+enable_self_managed_nodegroups = false
+enable_windows_support         = false
 self_managed_node_groups = {
   #---------------------------------------------------------#
   # ON-DEMAND Self Managed Worker Group - Worker Group - 1
@@ -137,7 +137,7 @@ self_managed_node_groups = {
 
     create_worker_security_group = true # Creates a dedicated sec group for this Node Group
   },
-
+  /*
   spot_m5 = {
     # 1> Node Group configuration - Part1
     node_group_name = "self-managed-spot"
@@ -244,8 +244,8 @@ self_managed_node_groups = {
 
     create_worker_security_group = false # Creates a dedicated sec group for this Node Group
   }
-
-}
+*/
+} # END OF SELF MANAGED NODE GROUPS
 #---------------------------------------------------------#
 # EKS WORKER NODE GROUPS
 # Define Node groups as map of maps object as shown below. Each node group creates the following
@@ -298,12 +298,13 @@ managed_node_groups = {
       subnet_type = "private"
     }
 
-    create_worker_security_group = true
+    create_worker_security_group = false
 
   },
   #---------------------------------------------------------#
   # SPOT Worker Group - Worker Group - 2
   #---------------------------------------------------------#
+  /*
   spot_m5 = {
     # 1> Node Group configuration - Part1
     node_group_name        = "managed-spot-m5"
@@ -346,7 +347,7 @@ managed_node_groups = {
       subnet_type = "private"
     }
 
-    create_worker_security_group = false
+    create_worker_security_group = true
   },
 
   #---------------------------------------------------------#
@@ -388,13 +389,14 @@ managed_node_groups = {
     #security_group ID
     create_worker_security_group = true
   }
-}
+
+    */
+} # END OF MANAGED NODE GROUPS
 
 #---------------------------------------------------------#
 # Creates a Fargate profiles
 #---------------------------------------------------------#
-enable_fargate = false
-
+enable_fargate = true
 fargate_profiles = {
   default = {
     fargate_profile_name = "default"
@@ -403,20 +405,17 @@ fargate_profiles = {
       k8s_labels = {
         Environment = "preprod"
         Zone        = "dev"
-        OS          = "Fargate"
-        WorkerType  = "fargate"
-        Namespace   = "default"
+        env         = "fargate"
       }
     }]
 
     subnet_ids = [] # Provide list of private subnets
 
     additional_tags = {
-      ExtraTag    = "Fargate"
-      Name        = "Fargate"
-      subnet_type = "private"
+      ExtraTag = "Fargate"
     }
   },
+  /*
   multi = {
     fargate_profile_name = "multi-namespaces"
     fargate_profile_namespaces = [{
@@ -444,13 +443,12 @@ fargate_profiles = {
 
     additional_tags = {
       ExtraTag = "Fargate"
-      Name     = "Fargate"
     }
-  },
-}
+  }, */
+} # END OF FARGATE PROFILES
 
 # Enable logging only when you create a Fargate profile e.g., enable_fargate = true
-fargate_fluent_bit_enable = false
+fargate_fluent_bit_enable = true
 
 #---------------------------------------------------------#
 # ENABLE HELM MODULES
@@ -465,7 +463,7 @@ public_docker_repo = true
 #---------------------------------------------------------#
 # ENABLE METRICS SERVER
 #---------------------------------------------------------#
-metrics_server_enable            = false
+metrics_server_enable            = true
 metric_server_image_tag          = "0.5.0-debian-10-r83"
 metric_server_helm_chart_version = "5.10.1"
 #---------------------------------------------------------#
@@ -478,7 +476,7 @@ cluster_autoscaler_helm_version = "9.10.7"
 #---------------------------------------------------------//
 # ENABLE AWS LB INGRESS CONTROLLER
 #---------------------------------------------------------//
-lb_ingress_controller_enable = false
+lb_ingress_controller_enable = true
 aws_lb_image_tag             = "v2.2.4"
 aws_lb_helm_chart_version    = "1.2.7"
 

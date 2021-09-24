@@ -38,7 +38,7 @@ spec:
           ports:
             - containerPort: 8080
       nodeSelector:
-        WorkerType: ON_DEMAND_BOTTLEROCKET
+        WorkerType: fargate
 
 ---
 apiVersion: networking.k8s.io/v1

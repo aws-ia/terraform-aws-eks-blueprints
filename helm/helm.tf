@@ -81,9 +81,9 @@ module "aws-for-fluent-bit" {
 }
 
 module "fargate_fluentbit" {
-  count            = var.fargate_fluent_bit_enable == true ? 1 : 0
-  source           = "./fargate_fluentbit"
-  eks_cluster_id   = var.eks_cluster_id
+  count          = var.fargate_fluent_bit_enable == true ? 1 : 0
+  source         = "./fargate_fluentbit"
+  eks_cluster_id = var.eks_cluster_id
 }
 
 module "agones" {

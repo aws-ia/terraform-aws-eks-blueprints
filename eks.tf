@@ -54,8 +54,8 @@ module "eks" {
   eks_cluster_endpoint_public_access  = var.endpoint_public_access
 
   # IRSA
-  enable_irsa = var.enable_irsa
-  //  kubeconfig_output_path = "./kubeconfig/"
+  enable_irsa        = var.enable_irsa
+  config_output_path = "./kubeconfig/"
 
   # TAGS
   tags = module.eks-label.tags
@@ -77,7 +77,7 @@ module "eks" {
 # ---------------------------------------------------------------------------------------------------------------------
 module "aws-eks-addon" {
 
-  count = var.create_eks ? 1 : 0
+  count = var.create_eks && var.enable_managed_nodegroups || var.create_eks && var.enable_self_managed_nodegroups ? 1 : 0
 
   source                = "./modules/aws-eks-addon"
   cluster_name          = module.eks.eks_cluster_id
@@ -91,7 +91,9 @@ module "aws-eks-addon" {
   kube_proxy_addon_version = var.kube_proxy_addon_version
   tags                     = module.eks-label.tags
 
-  depends_on = [module.eks]
+  depends_on = [
+    module.eks
+  ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

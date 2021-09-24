@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "self_managed_ng_assume_role_policy" {
 
 # Default AWS-provided EKS optimized AMIs
 data "aws_ami" "predefined" {
-  for_each    = local.predfined_ami_names
+  for_each    = local.predefined_ami_names
   most_recent = true
   owners      = ["amazon"]
   filter {

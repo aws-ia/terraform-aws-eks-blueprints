@@ -16,6 +16,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+variable "enable_managed_nodegroups" {
+  description = "Enable Managed worker groups"
+  type        = bool
+  default     = false
+}
+
+variable "managed_ng" {
+  description = "Map of maps of `eks_node_groups` to create"
+  type        = any
+  default     = {}
+}
 
 variable "eks_cluster_name" {
   description = "EKS Cluster name"
@@ -23,21 +34,37 @@ variable "eks_cluster_name" {
 }
 
 variable "cluster_ca_base64" {
-  type        = string
-  default     = ""
   description = "Base64-encoded EKS cluster certificate-authority-data"
+  type        = string
 }
 
 variable "cluster_endpoint" {
-  type        = string
-  default     = ""
   description = "EKS Cluster K8s API server endpoint"
+  type        = string
 }
 
-variable "create_eks" {
-  description = "Controls if EKS resources should be created"
-  type        = bool
-  default     = true
+variable "cluster_security_group_id" {
+  type        = string
+  description = "EKS Cluster Security group ID"
+  default     = ""
+}
+
+variable "cluster_primary_security_group_id" {
+  description = "EKS Cluster primary security group ID"
+  type        = string
+  default     = ""
+}
+
+variable "worker_security_group_id" {
+  description = "Worker group security ID"
+  type        = string
+  default     = ""
+}
+
+variable "vpc_id" {
+  description = "VPC Id used in security group creation"
+  type        = string
+  default     = ""
 }
 
 variable "private_subnet_ids" {
@@ -50,33 +77,10 @@ variable "public_subnet_ids" {
   default     = []
 }
 
-variable "default_worker_security_group_id" {
-  description = "Worker group security ID"
-  type        = string
-  default     = ""
-}
-
-variable "worker_additional_security_group_ids" {
-  description = "A list of additional security group ids to attach to worker instances"
-  type        = list(string)
-  default     = []
-}
-
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
   default     = {}
-}
-variable "managed_ng" {
-  description = "Map of maps of `eks_node_groups` to create"
-  type        = any
-  default     = {}
-}
-
-variable "use_custom_ami" {
-  type        = bool
-  default     = false
-  description = "Use custom AMI"
 }
 
 variable "path" {
@@ -103,12 +107,3 @@ variable "http_put_response_hop_limit" {
   description = "HTTP PUT response hop limit for instance metadata requests. Supported values: 1-64."
 }
 
-variable "cluster_primary_security_group_id" {
-  type        = string
-  default     = ""
-  description = "Cluster Primary security group ID for self managed node group"
-}
-
-variable "vpc_id" {
-  type = string
-}

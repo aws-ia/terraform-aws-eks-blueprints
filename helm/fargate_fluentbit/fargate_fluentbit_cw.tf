@@ -27,7 +27,7 @@ resource "kubernetes_namespace" "aws_observability" {
     name = "aws-observability"
 
     labels = {
-      aws-observability = "enabled"
+      aws-observability              = "enabled"
       "app.kubernetes.io/managed-by" = "Terraform"
     }
   }
@@ -47,7 +47,7 @@ resource "kubernetes_config_map" "aws_logging" {
         region ${data.aws_region.current.id}
         log_group_name /aws/eks/${var.eks_cluster_id}/fargate-fluentbit-cloudwatch
         log_stream_prefix fargate-from-fluent-bit-
-        auto_create_group On
+        auto_create_group true
     EOF
   }
 }

@@ -18,6 +18,7 @@
 
 module "aws-eks-self-managed-node-groups" {
   source = "git@github.com:aws-ia/terraform-aws-eks-selfmanaged_nodegroups.git"
+  //  source          = "./modules/aws-eks-self-managed-node-groups"
 
   for_each = { for key, value in var.self_managed_node_groups : key => value
     if var.enable_self_managed_nodegroups && length(var.self_managed_node_groups) > 0
@@ -34,9 +35,11 @@ module "aws-eks-self-managed-node-groups" {
   private_subnet_ids = var.create_vpc == false ? var.private_subnet_ids : module.vpc.private_subnets
   public_subnet_ids  = var.create_vpc == false ? var.public_subnet_ids : module.vpc.public_subnets
 
-  worker_security_group_id  = module.eks.eks_worker_security_group_id
-  cluster_security_group_id = module.eks.eks_cluster_security_group_id
-  kubernetes_version        = var.kubernetes_version
+  worker_security_group_id          = module.eks.eks_worker_security_group_id
+  cluster_security_group_id         = module.eks.eks_cluster_security_group_id
+  cluster_primary_security_group_id = module.eks.eks_cluster_primary_security_group_id
+
+  kubernetes_version = var.kubernetes_version
 
   depends_on = [module.eks, kubernetes_config_map.aws_auth]
 

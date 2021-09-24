@@ -57,7 +57,7 @@ resource "aws_launch_template" "managed_node_groups" {
 
   network_interfaces {
     associate_public_ip_address = local.managed_node_group["public_ip"]
-    security_groups             = local.managed_node_group["create_worker_security_group"] == true ? [aws_security_group.managed_ng[0].id] : [var.default_worker_security_group_id]
+    security_groups             = local.managed_node_group["create_worker_security_group"] == true ? [aws_security_group.managed_ng[0].id] : [var.worker_security_group_id]
   }
 
   lifecycle {

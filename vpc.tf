@@ -94,7 +94,7 @@ module "vpc" {
 ################################################################################
 # VPC Endpoints Module
 ################################################################################
-module "vpc_endpoints_gateway" {
+module "endpoints_interface" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "v3.2.0"
 
@@ -125,7 +125,7 @@ module "vpc_endpoints_gateway" {
   }
 }
 
-module "vpc_endpoints_interface" {
+module "vpc_endpoints_gateway" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "v3.2.0"
 
