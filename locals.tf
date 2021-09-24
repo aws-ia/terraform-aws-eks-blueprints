@@ -56,7 +56,7 @@ locals {
   # Self Managed Windows node IAM Roles for aws-auth
   windows_node_group_aws_auth_config_map = var.enable_self_managed_nodegroups && var.enable_windows_support ? [
     for key, node in var.self_managed_node_groups : {
-      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.eks.cluster_id}-${node.node_group_name}"
+      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.eks.eks_cluster_id}-${node.node_group_name}"
       username : "system:node:{{EC2PrivateDNSName}}"
       groups : [
         "system:bootstrappers",
