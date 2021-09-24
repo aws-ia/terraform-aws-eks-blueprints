@@ -17,18 +17,31 @@
  */
 
 variable "private_container_repo_url" {}
-variable "image_repo_name" {
-  default = "amazon/aws-for-fluent-bit"
-}
 
 variable "cluster_id" {}
+
 variable "ekslog_retention_in_days" {}
 
 variable "public_docker_repo" {}
-variable "aws_for_fluent_bit_image_tag" {
-  default = "2.13.0"
+
+variable "aws_for_fluent_bit_helm_chart_url" {
+  default = "https://aws.github.io/eks-charts"
+}
+
+variable "aws_for_fluent_bit_helm_chart_name" {
+  default = "aws-for-fluent-bit"
 }
 
 variable "aws_for_fluent_bit_helm_chart_version" {
   default = "0.1.11"
 }
+
+variable "aws_for_fluent_bit_image_repo_name" {
+  default = "amazon/aws-for-fluent-bit"
+}
+
+variable "aws_for_fluent_bit_image_tag" {
+  default = "2.13.0"
+}
+
+

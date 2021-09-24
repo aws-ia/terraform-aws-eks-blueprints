@@ -23,28 +23,34 @@ module "metrics_server" {
   public_docker_repo               = var.public_docker_repo
   metric_server_helm_chart_version = var.metric_server_helm_chart_version
   metric_server_image_tag          = var.metric_server_image_tag
+  metric_server_image_repo_name    = var.metric_server_image_repo_name
+
 }
 
 module "cluster_autoscaler" {
-  count                           = var.cluster_autoscaler_enable == true ? 1 : 0
-  source                          = "./cluster_autoscaler"
-  private_container_repo_url      = var.private_container_repo_url
-  eks_cluster_id                  = var.eks_cluster_id
-  public_docker_repo              = var.public_docker_repo
-  cluster_autoscaler_image_tag    = var.cluster_autoscaler_image_tag
-  cluster_autoscaler_helm_version = var.cluster_autoscaler_helm_version
+  count                              = var.cluster_autoscaler_enable == true ? 1 : 0
+  source                             = "./cluster_autoscaler"
+  private_container_repo_url         = var.private_container_repo_url
+  eks_cluster_id                     = var.eks_cluster_id
+  public_docker_repo                 = var.public_docker_repo
+  cluster_autoscaler_image_tag       = var.cluster_autoscaler_image_tag
+  cluster_autoscaler_helm_version    = var.cluster_autoscaler_helm_version
+  cluster_autoscaler_image_repo_name = var.cluster_autoscaler_image_repo_name
 }
 
 module "lb_ingress_controller" {
-  count                      = var.lb_ingress_controller_enable == true ? 1 : 0
-  source                     = "./lb_ingress_controller"
-  private_container_repo_url = var.private_container_repo_url
-  clusterName                = var.eks_cluster_id
-  eks_oidc_issuer_url        = var.eks_oidc_issuer_url
-  eks_oidc_provider_arn      = var.eks_oidc_provider_arn
-  public_docker_repo         = var.public_docker_repo
-  aws_lb_image_tag           = var.aws_lb_image_tag
-  aws_lb_helm_chart_version  = var.aws_lb_helm_chart_version
+  count                       = var.lb_ingress_controller_enable == true ? 1 : 0
+  source                      = "./lb_ingress_controller"
+  private_container_repo_url  = var.private_container_repo_url
+  clusterName                 = var.eks_cluster_id
+  eks_oidc_issuer_url         = var.eks_oidc_issuer_url
+  eks_oidc_provider_arn       = var.eks_oidc_provider_arn
+  public_docker_repo          = var.public_docker_repo
+  aws_lb_image_tag            = var.aws_lb_image_tag
+  aws_lb_helm_chart_version   = var.aws_lb_helm_chart_version
+  aws_lb_image_repo_name      = var.aws_lb_image_repo_name
+  aws_lb_helm_repo_url        = var.aws_lb_helm_repo_url
+  aws_lb_helm_helm_chart_name = var.aws_lb_helm_helm_chart_name
 }
 
 module "traefik_ingress" {
@@ -56,6 +62,7 @@ module "traefik_ingress" {
   public_docker_repo         = var.public_docker_repo
   traefik_helm_chart_version = var.traefik_helm_chart_version
   traefik_image_tag          = var.traefik_image_tag
+  traefik_image_repo_name    = var.traefik_image_repo_name
   //  tls_cert_arn = ""
 }
 
@@ -67,6 +74,7 @@ module "nginx_ingress" {
   public_docker_repo         = var.public_docker_repo
   nginx_helm_chart_version   = var.nginx_helm_chart_version
   nginx_image_tag            = var.nginx_image_tag
+  nginx_image_repo_name      = var.nginx_image_repo_name
 }
 
 module "aws-for-fluent-bit" {
@@ -78,6 +86,8 @@ module "aws-for-fluent-bit" {
   public_docker_repo                    = var.public_docker_repo
   aws_for_fluent_bit_image_tag          = var.aws_for_fluent_bit_image_tag
   aws_for_fluent_bit_helm_chart_version = var.aws_for_fluent_bit_helm_chart_version
+  aws_for_fluent_bit_image_repo_name    = var.aws_for_fluent_bit_image_repo_name
+
 }
 
 module "fargate_fluentbit" {
@@ -122,6 +132,10 @@ module "cert_manager" {
   cert_manager_helm_chart_version = var.cert_manager_helm_chart_version
   cert_manager_image_tag          = var.cert_manager_image_tag
   cert_manager_install_crds       = var.cert_manager_install_crds
+  cert_manager_helm_chart_name    = var.cert_manager_helm_chart_name
+  cert_manager_helm_chart_url     = var.cert_manager_helm_chart_url
+  cert_manager_image_repo_name    = var.cert_manager_image_repo_name
+
 }
 
 module "windows_vpc_controllers" {

@@ -16,16 +16,24 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+variable "cluster_autoscaler_helm_repo_url" {
+  default = "https://kubernetes.github.io/autoscaler"
+}
+
+variable "cluster_autoscaler_helm_chart_name" {
+  default = "cluster-autoscaler"
+}
 variable "private_container_repo_url" {}
-variable "image_repo_name" {
+
+variable "cluster_autoscaler_image_repo_name" {
   default = "k8s.gcr.io/autoscaling/cluster-autoscaler"
 }
 variable "cluster_autoscaler_image_tag" {
-  default = "v1.20.0"
+  default = "v1.21.0"
 }
 
 variable "cluster_autoscaler_helm_version" {
-  default = "9.9.2"
+  default = "9.10.7"
 }
 variable "eks_cluster_id" {
   description = "EKS_Cluster_ID"

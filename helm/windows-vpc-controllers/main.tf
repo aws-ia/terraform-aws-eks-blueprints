@@ -18,8 +18,8 @@
 
 locals {
   public_image_repo              = var.public_image_repo
-  resource_controller_image_repo = var.public_docker_repo ? "${local.public_image_repo}/${var.resource_controller_image_repo_name}" : "${var.private_container_repo_url}${var.resource_controller_image_repo_name}"
-  admission_webhook_image_repo   = var.public_docker_repo ? "${local.public_image_repo}/${var.admission_webhook_image_repo_name}" : "${var.private_container_repo_url}${var.admission_webhook_image_repo_name}"
+  resource_controller_image_repo = var.public_docker_repo ? "${local.public_image_repo}/${var.resource_controller_image_repo_name}" : "${var.private_container_repo_url}/${var.resource_controller_image_repo_name}"
+  admission_webhook_image_repo   = var.public_docker_repo ? "${local.public_image_repo}/${var.admission_webhook_image_repo_name}" : "${var.private_container_repo_url}/${var.admission_webhook_image_repo_name}"
 }
 
 resource "helm_release" "windows_vpc_controllers" {

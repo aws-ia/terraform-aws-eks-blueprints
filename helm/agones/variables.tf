@@ -16,15 +16,31 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-//gcr.io/agones-images/agones-controller:1.15.0-rc
-
 variable "private_container_repo_url" {}
-variable "image_repo_name" {
+
+variable "agones_image_repo" {
   default = "gcr.io/agones-images"
 }
-variable "image_tag" {
+
+variable "agones_image_tag" {
   default = "1.15.0"
 }
+
+variable "agones_helm_chart_name" {
+  default = "agones"
+}
+
+variable "agones_helm_chart_url" {
+  default = "https://agones.dev/chart/stable"
+}
+
+variable "agones_game_server_maxport" {
+  default = 8000
+}
+variable "agones_game_server_minport" {
+  default = 7000
+}
+
 variable "cluster_id" {}
 
 variable "eks_sg_id" {}
@@ -35,10 +51,4 @@ variable "s3_nlb_logs" {}
 
 variable "expose_udp" {
   default = false
-}
-variable "gameserver_maxport" {
-  default = 8000
-}
-variable "gameserver_minport" {
-  default = 7000
 }

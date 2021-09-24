@@ -18,13 +18,19 @@
 
 variable "public_docker_repo" {}
 variable "private_container_repo_url" {}
-variable "image_repo_name" {
-  default = "jetstack/cert-manager-controller"
+
+variable "cert_manager_helm_chart_name" {
+  default = "cert-manager"
 }
 
-variable "public_image_repo" {
-  default = "quay.io"
+variable "cert_manager_helm_chart_url" {
+  default = "https://charts.jetstack.io"
 }
+
+variable "cert_manager_image_repo_name" {
+  default = "quay.io/jetstack/cert-manager-controller"
+}
+
 variable "cert_manager_image_tag" {
   type        = string
   default     = "v1.5.3"

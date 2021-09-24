@@ -179,12 +179,12 @@ public_docker_repo = true
 # ENABLE METRICS SERVER
 #---------------------------------------------------------#
 metrics_server_enable            = true
-metric_server_image_tag          = "v0.4.2"
-metric_server_helm_chart_version = "2.12.1"
+metric_server_image_tag          = "0.5.0-debian-10-r83"
+metric_server_helm_chart_version = "5.10.1"
 #---------------------------------------------------------#
 # ENABLE CLUSTER AUTOSCALER
 #---------------------------------------------------------#
 cluster_autoscaler_enable       = true
-cluster_autoscaler_image_tag    = "v1.20.0"
-cluster_autoscaler_helm_version = "9.9.2"
+cluster_autoscaler_image_tag    = "v1.21.0"
+cluster_autoscaler_helm_version = "9.10.7"
 

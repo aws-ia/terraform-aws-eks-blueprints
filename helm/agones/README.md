@@ -85,13 +85,15 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_agones_game_server_maxport"></a> [agones\_game\_server\_maxport](#input\_agones\_game\_server\_maxport) | n/a | `number` | `8000` | no |
+| <a name="input_agones_game_server_minport"></a> [agones\_game\_server\_minport](#input\_agones\_game\_server\_minport) | n/a | `number` | `7000` | no |
+| <a name="input_agones_helm_chart_name"></a> [agones\_helm\_chart\_name](#input\_agones\_helm\_chart\_name) | n/a | `string` | `"agones"` | no |
+| <a name="input_agones_helm_chart_url"></a> [agones\_helm\_chart\_url](#input\_agones\_helm\_chart\_url) | n/a | `string` | `"https://agones.dev/chart/stable"` | no |
+| <a name="input_agones_image_repo"></a> [agones\_image\_repo](#input\_agones\_image\_repo) | n/a | `string` | `"gcr.io/agones-images"` | no |
+| <a name="input_agones_image_tag"></a> [agones\_image\_tag](#input\_agones\_image\_tag) | n/a | `string` | `"1.15.0"` | no |
 | <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | n/a | `any` | n/a | yes |
 | <a name="input_eks_sg_id"></a> [eks\_sg\_id](#input\_eks\_sg\_id) | n/a | `any` | n/a | yes |
 | <a name="input_expose_udp"></a> [expose\_udp](#input\_expose\_udp) | n/a | `bool` | `false` | no |
-| <a name="input_gameserver_maxport"></a> [gameserver\_maxport](#input\_gameserver\_maxport) | n/a | `number` | `8000` | no |
-| <a name="input_gameserver_minport"></a> [gameserver\_minport](#input\_gameserver\_minport) | n/a | `number` | `7000` | no |
-| <a name="input_image_repo_name"></a> [image\_repo\_name](#input\_image\_repo\_name) | n/a | `string` | `"gcr.io/agones-images"` | no |
-| <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | n/a | `string` | `"1.15.0"` | no |
 | <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `any` | n/a | yes |
 | <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `any` | n/a | yes |
 | <a name="input_s3_nlb_logs"></a> [s3\_nlb\_logs](#input\_s3\_nlb\_logs) | n/a | `any` | n/a | yes |

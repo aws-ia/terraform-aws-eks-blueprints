@@ -97,6 +97,8 @@ No modules.
 | <a name="input_node_exporter_repo"></a> [node\_exporter\_repo](#input\_node\_exporter\_repo) | n/a | `string` | `"quay.io/prometheus/node-exporter"` | no |
 | <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `any` | n/a | yes |
 | <a name="input_prometheus_enable"></a> [prometheus\_enable](#input\_prometheus\_enable) | Enabling prometheus on eks cluster | `bool` | `false` | no |
+| <a name="input_prometheus_helm_chart_name"></a> [prometheus\_helm\_chart\_name](#input\_prometheus\_helm\_chart\_name) | n/a | `string` | `"prometheus"` | no |
+| <a name="input_prometheus_helm_chart_url"></a> [prometheus\_helm\_chart\_url](#input\_prometheus\_helm\_chart\_url) | n/a | `string` | `"https://prometheus-community.github.io/helm-charts"` | no |
 | <a name="input_prometheus_helm_chart_version"></a> [prometheus\_helm\_chart\_version](#input\_prometheus\_helm\_chart\_version) | n/a | `string` | `"14.4.0"` | no |
 | <a name="input_prometheus_image_tag"></a> [prometheus\_image\_tag](#input\_prometheus\_image\_tag) | n/a | `string` | `"v2.26.0"` | no |
 | <a name="input_prometheus_repo"></a> [prometheus\_repo](#input\_prometheus\_repo) | n/a | `string` | `"quay.io/prometheus/prometheus"` | no |

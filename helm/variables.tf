@@ -32,6 +32,7 @@ variable "traefik_ingress_controller_enable" {
   description = "Enabling Traefik Ingress on eks cluster"
 }
 
+
 variable "lb_ingress_controller_enable" {
   type        = bool
   default     = false
@@ -74,7 +75,32 @@ variable "eks_oidc_issuer_url" {}
 
 variable "eks_oidc_provider_arn" {}
 
-variable "expose_udp" {}
+variable "agones_image_repo" {
+  default = "gcr.io/agones-images"
+}
+
+variable "agones_image_tag" {
+  default = "1.15.0"
+}
+
+variable "agones_helm_chart_name" {
+  default = "agones"
+}
+
+variable "agones_helm_chart_url" {
+  default = "https://agones.dev/chart/stable"
+}
+
+variable "agones_game_server_maxport" {
+  default = 8000
+}
+variable "agones_game_server_minport" {
+  default = 7000
+}
+
+variable "expose_udp" {
+  default = false
+}
 
 variable "agones_enable" {
   type        = bool
@@ -84,6 +110,19 @@ variable "agones_enable" {
 
 variable "eks_security_group_id" {}
 
+variable "aws_lb_image_repo_name" {
+  default = "amazon/aws-load-balancer-controller"
+}
+
+
+variable "aws_lb_helm_repo_url" {
+  default = "https://aws.github.io/eks-charts"
+}
+
+variable "aws_lb_helm_helm_chart_name" {
+  default = "aws-load-balancer-controller"
+}
+
 variable "aws_lb_image_tag" {}
 
 variable "aws_lb_helm_chart_version" {}
@@ -92,10 +131,33 @@ variable "metric_server_image_tag" {}
 
 variable "metric_server_helm_chart_version" {}
 
+variable "metric_server_helm_repo_url" {
+  default = "https://charts.bitnami.com/bitnami"
+}
+
+variable "metric_server_image_repo_name" {
+  default = "bitnami/metrics-server"
+}
+
+variable "metric_server_helm_chart_name" {
+  default = "metrics-server"
+}
+
+variable "cluster_autoscaler_helm_repo_url" {
+  default = "https://kubernetes.github.io/autoscaler"
+}
+
+variable "cluster_autoscaler_helm_chart_name" {
+  default = "cluster-autoscaler"
+}
+
+variable "cluster_autoscaler_image_repo_name" {
+  default = "k8s.gcr.io/autoscaling/cluster-autoscaler"
+}
+
 variable "cluster_autoscaler_image_tag" {}
 
 variable "cluster_autoscaler_helm_version" {}
-
 
 variable "prometheus_enable" {
   type        = bool
@@ -104,6 +166,14 @@ variable "prometheus_enable" {
 }
 
 variable "private_container_repo_url" {}
+
+variable "prometheus_helm_chart_url" {
+  default = "https://prometheus-community.github.io/helm-charts"
+}
+
+variable "prometheus_helm_chart_name" {
+  default = "prometheus"
+}
 
 variable "prometheus_helm_chart_version" {}
 
@@ -125,13 +195,47 @@ variable "region" {}
 
 variable "amp_ingest_role_arn" {}
 
+variable "traefik_image_repo_name" {
+  default = "traefik"
+}
+
+variable "traefik_helm_chart_name" {
+  default = "traefik"
+}
+
+variable "traefik_helm_chart_url" {
+  default = "https://helm.traefik.io/traefik"
+}
+
 variable "traefik_helm_chart_version" {}
 
 variable "traefik_image_tag" {}
 
+variable "nginx_image_repo_name" {
+  default = "ingress-nginx/controller"
+}
+
+variable "nginx_helm_chart_url" {
+  default = "https://kubernetes.github.io/ingress-nginx"
+}
+variable "nginx_helm_chart_name" {
+  default = "ingress-nginx"
+}
+
 variable "nginx_helm_chart_version" {}
 
 variable "nginx_image_tag" {}
+
+variable "aws_for_fluent_bit_image_repo_name" {
+  default = "amazon/aws-for-fluent-bit"
+}
+
+variable "aws_for_fluent_bit_helm_chart_url" {
+  default = "https://aws.github.io/eks-charts"
+}
+variable "aws_for_fluent_bit_helm_chart_name" {
+  default = "aws-for-fluent-bit"
+}
 
 variable "aws_for_fluent_bit_image_tag" {}
 
@@ -157,6 +261,19 @@ variable "cert_manager_install_crds" {
   description = "Whether Cert Manager CRDs should be installed as part of the cert-manager Helm chart installation"
   default     = true
 }
+
+variable "cert_manager_helm_chart_url" {
+  default = "https://charts.jetstack.io"
+}
+
+variable "cert_manager_helm_chart_name" {
+  default = "cert-manager"
+}
+
+variable "cert_manager_image_repo_name" {
+  default = "jetstack/cert-manager-controller"
+}
+
 variable "windows_vpc_controllers_enable" {
   type        = bool
   default     = false

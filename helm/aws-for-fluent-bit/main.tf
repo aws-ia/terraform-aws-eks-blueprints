@@ -19,7 +19,7 @@
 data "aws_region" "current" {}
 
 locals {
-  image_url = var.public_docker_repo ? var.image_repo_name : "${var.private_container_repo_url}${var.image_repo_name}"
+  image_url = var.public_docker_repo ? var.aws_for_fluent_bit_image_repo_name : "${var.private_container_repo_url}/${var.aws_for_fluent_bit_image_repo_name}"
 }
 
 resource "aws_cloudwatch_log_group" "eks-worker-logs" {
@@ -34,9 +34,9 @@ resource "kubernetes_namespace" "logging" {
 }
 
 resource "helm_release" "aws-for-fluent-bit" {
-  name       = "aws-for-fluent-bit"
-  repository = "https://aws.github.io/eks-charts"
-  chart      = "aws-for-fluent-bit"
+  name       = var.aws_for_fluent_bit_helm_chart_name
+  repository = var.aws_for_fluent_bit_helm_chart_url
+  chart      = var.aws_for_fluent_bit_helm_chart_name
   version    = var.aws_for_fluent_bit_helm_chart_version
   namespace  = kubernetes_namespace.logging.id
   timeout    = "1200"

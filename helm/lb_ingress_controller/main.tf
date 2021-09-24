@@ -18,13 +18,13 @@
 
 locals {
   public_image_repo = var.public_image_repo
-  image_url         = var.public_docker_repo ? "${local.public_image_repo}/${var.image_repo_name}" : "${var.private_container_repo_url}${var.image_repo_name}"
+  image_url         = var.public_docker_repo ? "${local.public_image_repo}/${var.aws_lb_image_repo_name}" : "${var.private_container_repo_url}/${var.aws_lb_image_repo_name}"
 }
 
 resource "helm_release" "lb-ingress" {
-  name       = "aws-load-balancer-controller"
-  repository = "https://aws.github.io/eks-charts"
-  chart      = "aws-load-balancer-controller"
+  name       = var.aws_lb_helm_helm_chart_name
+  repository = var.aws_lb_helm_repo_url
+  chart      = var.aws_lb_helm_helm_chart_name
   version    = var.aws_lb_helm_chart_version
   namespace  = "kube-system"
   timeout    = "1200"

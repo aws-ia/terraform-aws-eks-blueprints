@@ -21,13 +21,13 @@
 //traefik_ingress_helm_chart_version= "10.0.0"
 
 locals {
-  image_url = var.public_docker_repo ? var.image_repo_name : "${var.private_container_repo_url}${var.image_repo_name}"
+  image_url = var.public_docker_repo ? var.traefik_image_repo_name : "${var.private_container_repo_url}/${var.traefik_image_repo_name}"
 }
 
 resource "helm_release" "traefik" {
-  name       = "traefik"
-  repository = "https://helm.traefik.io/traefik"
-  chart      = "traefik"
+  name       = var.traefik_helm_chart_name
+  repository = var.traefik_helm_chart_url
+  chart      = var.traefik_helm_chart_name
   version    = var.traefik_helm_chart_version
   namespace  = "kube-system"
   timeout    = "1200"

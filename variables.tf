@@ -52,7 +52,7 @@ variable "tags" {
   description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }
 #----------------------------------------------------------
-// VPC
+#  VPC
 #----------------------------------------------------------
 variable "create_vpc" {
   description = "Controls if VPC should be created (it affects almost all resources)"
@@ -84,13 +84,11 @@ variable "enable_private_subnets" {
   type        = bool
   default     = true
 }
-
 variable "vpc_id" {
   type        = string
   description = "VPC id"
   default     = ""
 }
-
 variable "private_subnet_ids" {
   description = "list of private subnets Id's for the Worker nodes"
   default     = []
@@ -112,16 +110,14 @@ variable "private_subnets_cidr" {
   description = "list of Private subnets for the Worker nodes"
   default     = []
 }
-
 variable "create_vpc_endpoints" {
   type        = bool
   default     = false
   description = "Create VPC endpoints for Private subnets"
 }
-
 variable "endpoint_private_access" {
   type        = bool
-  default     = true
+  default     = false
   description = "Indicates whether or not the Amazon EKS private API server endpoint is enabled. Default to AWS EKS resource and it is false"
 }
 variable "endpoint_public_access" {
@@ -135,7 +131,7 @@ variable "enable_irsa" {
   description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled. Default to AWS EKS resource and it is true"
 }
 #----------------------------------------------------------
-// EKS CONTROL PLANE
+# EKS CONTROL PLANE
 #----------------------------------------------------------
 variable "create_eks" {
   type    = bool
@@ -157,7 +153,6 @@ variable "cluster_log_retention_period" {
   default     = 7
   description = "Number of days to retain cluster logs. Requires `enabled_cluster_log_types` to be set. See https://docs.aws.amazon.com/en_us/eks/latest/userguide/control-plane-logs.html."
 }
-
 variable "vpc_cni_addon_version" {
   type        = string
   default     = "v1.8.0-eksbuild.1"
@@ -185,7 +180,6 @@ variable "enable_kube_proxy_addon" {
   type    = bool
   default = false
 }
-
 #----------------------------------------------------------
 // EKS WORKER NODES
 #----------------------------------------------------------
@@ -194,7 +188,6 @@ variable "enable_managed_nodegroups" {
   type        = bool
   default     = false
 }
-
 variable "managed_node_groups" {
   type    = any
   default = {}
@@ -220,17 +213,14 @@ variable "enable_windows_support" {
   type    = string
   default = false
 }
-
 #----------------------------------------------------------
 # CONFIG MAP AWS-AUTH
 #----------------------------------------------------------
-
 variable "map_accounts" {
   description = "Additional AWS account numbers to add to the aws-auth configmap. "
   type        = list(string)
   default     = []
 }
-
 variable "map_roles" {
   description = "Additional IAM roles to add to the aws-auth configmap."
   type = list(object({
@@ -240,7 +230,6 @@ variable "map_roles" {
   }))
   default = []
 }
-
 variable "map_users" {
   description = "Additional IAM users to add to the aws-auth configmap. "
   type = list(object({
@@ -250,7 +239,6 @@ variable "map_users" {
   }))
   default = []
 }
-
 variable "manage_aws_auth" {
   description = "Whether to apply the aws-auth configmap file."
   default     = true
@@ -260,16 +248,21 @@ variable "aws_auth_additional_labels" {
   default     = {}
   type        = map(string)
 }
-
 #----------------------------------------------------------
 # HELM CHART VARIABLES
 #----------------------------------------------------------
+
+
+variable "private_container_repo_url" {
+  type        = string
+  default     = ""
+  description = "Privtae container image repo url (e.g, artifactory url or ECR url)"
+}
 variable "public_docker_repo" {
   type        = bool
   default     = true
   description = "public docker repo access"
 }
-
 variable "metrics_server_enable" {
   type        = bool
   default     = false
@@ -285,19 +278,16 @@ variable "traefik_ingress_controller_enable" {
   default     = false
   description = "Enabling Traefik Ingress Controller on eks cluster"
 }
-
 variable "lb_ingress_controller_enable" {
   type        = bool
   default     = false
   description = "enabling LB Ingress Controller on eks cluster"
 }
-
 variable "nginx_ingress_controller_enable" {
   type        = bool
   default     = false
   description = "enabling Nginx Ingress Controller on eks cluster"
 }
-
 variable "aws_for_fluent_bit_enable" {
   type        = bool
   default     = false
@@ -327,12 +317,51 @@ variable "expose_udp" {
   description = "Enabling Agones Gaming Helm Chart"
 }
 
+variable "agones_image_repo" {
+  default = "gcr.io/agones-images"
+}
+
+variable "agones_image_tag" {
+  default = "1.15.0"
+}
+
+variable "agones_helm_chart_name" {
+  default = "agones"
+}
+
+variable "agones_helm_chart_url" {
+  default = "https://agones.dev/chart/stable"
+}
+
+variable "agones_game_server_maxport" {
+  default = 8000
+}
+variable "agones_game_server_minport" {
+  default = 7000
+}
+
+variable "aws_lb_image_repo_name" {
+  default = "amazon/aws-load-balancer-controller"
+}
+
+variable "aws_lb_helm_repo_url" {
+  default = "https://aws.github.io/eks-charts"
+}
+
+variable "aws_lb_helm_helm_chart_name" {
+  default = "aws-load-balancer-controller"
+}
+
 variable "aws_lb_image_tag" {
   default = "v2.2.4"
 }
 
 variable "aws_lb_helm_chart_version" {
   default = "1.2.7"
+}
+
+variable "metric_server_image_repo_name" {
+  default = "bitnami/metrics-server"
 }
 
 variable "metric_server_image_tag" {
@@ -343,12 +372,44 @@ variable "metric_server_helm_chart_version" {
   default = "5.10.1"
 }
 
+variable "metric_server_helm_repo_url" {
+  default = "https://charts.bitnami.com/bitnami"
+}
+
+variable "metric_server_helm_chart_name" {
+  default = "metrics-server"
+}
+
+variable "cluster_autoscaler_helm_repo_url" {
+  default = "https://kubernetes.github.io/autoscaler"
+}
+
+variable "cluster_autoscaler_helm_chart_name" {
+  default = "cluster-autoscaler"
+}
+
+variable "cluster_autoscaler_image_repo_name" {
+  default = "k8s.gcr.io/autoscaling/cluster-autoscaler"
+}
+
 variable "cluster_autoscaler_image_tag" {
   default = "v1.21.0"
 }
 
 variable "cluster_autoscaler_helm_version" {
   default = "9.10.7"
+}
+
+variable "aws_managed_prometheus_workspace_name" {
+  default = "aws-managed-prometheus-workspace"
+}
+
+variable "prometheus_helm_chart_url" {
+  default = "https://prometheus-community.github.io/helm-charts"
+}
+
+variable "prometheus_helm_chart_name" {
+  default = "prometheus"
 }
 
 variable "prometheus_helm_chart_version" {
@@ -383,6 +444,18 @@ variable "aws_managed_prometheus_enable" {
   default = false
 }
 
+variable "traefik_image_repo_name" {
+  default = "traefik"
+}
+
+variable "traefik_helm_chart_name" {
+  default = "traefik"
+}
+
+variable "traefik_helm_chart_url" {
+  default = "https://helm.traefik.io/traefik"
+}
+
 variable "traefik_helm_chart_version" {
   default = "10.0.0"
 }
@@ -391,12 +464,35 @@ variable "traefik_image_tag" {
   default = "v2.4.9"
 }
 
+variable "nginx_image_repo_name" {
+  default = "ingress-nginx/controller"
+}
+
+variable "nginx_helm_chart_url" {
+  default = "https://kubernetes.github.io/ingress-nginx"
+}
+variable "nginx_helm_chart_name" {
+  default = "ingress-nginx"
+}
+
 variable "nginx_helm_chart_version" {
   default = "3.33.0"
 }
 
 variable "nginx_image_tag" {
   default = "v0.47.0"
+}
+
+variable "aws_for_fluent_bit_image_repo_name" {
+  default = "amazon/aws-for-fluent-bit"
+}
+
+variable "aws_for_fluent_bit_helm_chart_url" {
+  default = "https://aws.github.io/eks-charts"
+}
+
+variable "aws_for_fluent_bit_helm_chart_name" {
+  default = "aws-for-fluent-bit"
 }
 
 variable "aws_for_fluent_bit_image_tag" {
@@ -424,11 +520,25 @@ variable "cert_manager_helm_chart_version" {
   default     = "v1.5.3"
   description = "Helm chart version for cert-manager"
 }
+
 variable "cert_manager_install_crds" {
   type        = bool
   description = "Whether Cert Manager CRDs should be installed as part of the cert-manager Helm chart installation"
   default     = true
 }
+
+variable "cert_manager_helm_chart_url" {
+  default = "https://charts.jetstack.io"
+}
+
+variable "cert_manager_helm_chart_name" {
+  default = "cert-manager"
+}
+
+variable "cert_manager_image_repo_name" {
+  default = "jetstack/cert-manager-controller"
+}
+
 variable "windows_vpc_resource_controller_image_tag" {
   type        = string
   default     = "v0.2.7"

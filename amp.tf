@@ -16,10 +16,10 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 # ---------------------------------------------------------------------------------------------------------------------
 # AWS Managed Prometheus Module
 # ---------------------------------------------------------------------------------------------------------------------
+
 module "aws_managed_prometheus" {
   count                           = var.create_eks && var.aws_managed_prometheus_enable == true ? 1 : 0
   source                          = "./modules/aws_managed_prometheus"
@@ -30,8 +30,8 @@ module "aws_managed_prometheus" {
   region                          = data.aws_region.current.id
   eks_cluster_id                  = module.eks.eks_cluster_id
   eks_oidc_provider               = split("//", module.eks.eks_cluster_oidc_issuer_url)[1]
-  service_account_amp_ingest_name = local.service_account_amp_ingest_name
-  service_account_amp_query_name  = local.service_account_amp_query_name
-  amp_workspace_name              = local.amp_workspace_name
+  service_account_amp_ingest_name = format("%s-%s", module.eks.eks_cluster_id, "amp-ingest-account")
+  service_account_amp_query_name  = format("%s-%s", module.eks.eks_cluster_id, "amp-query-account")
+  amp_workspace_name              = var.aws_managed_prometheus_workspace_name
 
 }

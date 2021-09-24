@@ -21,22 +21,21 @@
 //--set server.remoteWrite[0].url="https://aps-workspaces.${AWS_REGION}.amazonaws.com/workspaces/${WORKSPACE_ID}/api/v1/remote_write" \
 //--set server.remoteWrite[0].sigv4.region=${AWS_REGION}
 
-
 locals {
-  prometheus_repo_url       = var.public_docker_repo ? var.prometheus_repo : "${var.private_container_repo_url}${var.prometheus_repo}"
-  alert_manager_repo_url    = var.public_docker_repo ? var.alert_manager_repo : "${var.private_container_repo_url}${var.alert_manager_repo}"
-  configmap_reload_repo_url = var.public_docker_repo ? var.configmap_reload_repo : "${var.private_container_repo_url}${var.configmap_reload_repo}"
-  node_exporter_repo_url    = var.public_docker_repo ? var.node_exporter_repo : "${var.private_container_repo_url}${var.node_exporter_repo}"
-  pushgateway_repo_url      = var.public_docker_repo ? var.pushgateway_repo : "${var.private_container_repo_url}${var.pushgateway_repo}"
+  prometheus_repo_url       = var.public_docker_repo ? var.prometheus_repo : "${var.private_container_repo_url}/${var.prometheus_repo}"
+  alert_manager_repo_url    = var.public_docker_repo ? var.alert_manager_repo : "${var.private_container_repo_url}/${var.alert_manager_repo}"
+  configmap_reload_repo_url = var.public_docker_repo ? var.configmap_reload_repo : "${var.private_container_repo_url}/${var.configmap_reload_repo}"
+  node_exporter_repo_url    = var.public_docker_repo ? var.node_exporter_repo : "${var.private_container_repo_url}/${var.node_exporter_repo}"
+  pushgateway_repo_url      = var.public_docker_repo ? var.pushgateway_repo : "${var.private_container_repo_url}/${var.pushgateway_repo}"
 }
 
 resource "helm_release" "prometheus" {
 
-  name       = "prometheus"
-  repository = "https://prometheus-community.github.io/helm-charts"
-  chart      = "prometheus"
+  name       = var.prometheus_helm_chart_name
+  repository = var.prometheus_helm_chart_url
+  chart      = var.prometheus_helm_chart_name
   version    = var.prometheus_helm_chart_version
-  namespace  = "prometheus"
+  namespace  = var.prometheus_helm_chart_name
   timeout    = "1200"
   //  app_version = "2.26.0"
 

@@ -16,11 +16,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+variable "metric_server_helm_repo_url" {
+  default = "https://charts.bitnami.com/bitnami"
+}
+
+variable "metric_server_helm_chart_name" {
+  default = "metrics-server"
+}
+
 variable "private_container_repo_url" {}
 
-variable "image_repo_name" {
+variable "metric_server_image_repo_name" {
   default = "bitnami/metrics-server"
 }
+
 variable "metric_server_image_tag" {
   default = "0.5.0-debian-10-r83"
 }

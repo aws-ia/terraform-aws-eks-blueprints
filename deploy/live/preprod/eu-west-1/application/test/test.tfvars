@@ -249,15 +249,15 @@ metric_server_helm_chart_version = "5.9.2"
 # ENABLE CLUSTER AUTOSCALER
 #---------------------------------------------------------#
 cluster_autoscaler_enable       = false
-cluster_autoscaler_image_tag    = "v1.20.0"
-cluster_autoscaler_helm_version = "9.9.2"
+cluster_autoscaler_image_tag    = "v1.21.0"
+cluster_autoscaler_helm_version = "9.10.7"
 
 #---------------------------------------------------------//
 # ENABLE AWS LB INGRESS CONTROLLER
 #---------------------------------------------------------//
 lb_ingress_controller_enable = false
-aws_lb_image_tag             = "v2.2.1"
-aws_lb_helm_chart_version    = "1.2.3"
+aws_lb_image_tag             = "v2.2.4"
+aws_lb_helm_chart_version    = "1.2.7"
 
 #---------------------------------------------------------//
 # ENABLE PROMETHEUS

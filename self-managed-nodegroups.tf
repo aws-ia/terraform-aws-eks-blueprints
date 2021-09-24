@@ -18,7 +18,6 @@
 
 module "aws-eks-self-managed-node-groups" {
   source = "git@github.com:aws-ia/terraform-aws-eks-selfmanaged_nodegroups.git"
-  //  source          = "./modules/aws-eks-self-managed-node-groups"
 
   for_each = { for key, value in var.self_managed_node_groups : key => value
     if var.enable_self_managed_nodegroups && length(var.self_managed_node_groups) > 0

@@ -17,10 +17,17 @@
  */
 
 variable "private_container_repo_url" {}
-variable "image_repo_name" {
+
+variable "nginx_image_repo_name" {
   default = "ingress-nginx/controller"
 }
 
+variable "nginx_helm_chart_url" {
+  default = "https://kubernetes.github.io/ingress-nginx"
+}
+variable "nginx_helm_chart_name" {
+  default = "ingress-nginx"
+}
 variable "account_id" {}
 
 variable "public_docker_repo" {}

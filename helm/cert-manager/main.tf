@@ -17,14 +17,13 @@
  */
 
 locals {
-  public_image_repo = var.public_image_repo
-  image_url         = var.public_docker_repo ? "${local.public_image_repo}/${var.image_repo_name}" : "${var.private_container_repo_url}${var.image_repo_name}"
+  image_url = var.public_docker_repo ? var.cert_manager_image_repo_name : "${var.private_container_repo_url}/${var.cert_manager_image_repo_name}"
 }
 
 resource "helm_release" "cert-manager" {
-  name       = "cert-manager"
-  repository = "https://charts.jetstack.io"
-  chart      = "cert-manager"
+  name       = var.cert_manager_helm_chart_name
+  repository = var.cert_manager_helm_chart_url
+  chart      = var.cert_manager_helm_chart_name
   version    = var.cert_manager_helm_chart_version
   namespace  = "kube-system"
   timeout    = "600"

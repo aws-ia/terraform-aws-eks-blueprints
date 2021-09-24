@@ -16,6 +16,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+variable "prometheus_helm_chart_url" {
+  default = "https://prometheus-community.github.io/helm-charts"
+}
+
+variable "prometheus_helm_chart_name" {
+  default = "prometheus"
+}
 
 variable "amp_workspace_id" {}
 variable "region" {}

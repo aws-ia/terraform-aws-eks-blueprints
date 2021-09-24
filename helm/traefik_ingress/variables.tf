@@ -17,8 +17,16 @@
  */
 
 variable "private_container_repo_url" {}
-variable "image_repo_name" {
+variable "traefik_image_repo_name" {
   default = "traefik"
+}
+
+variable "traefik_helm_chart_name" {
+  default = "traefik"
+}
+
+variable "traefik_helm_chart_url" {
+  default = "https://helm.traefik.io/traefik"
 }
 
 variable "traefik_helm_chart_version" {

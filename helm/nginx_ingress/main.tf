@@ -18,13 +18,13 @@
 
 
 locals {
-  image_url = var.public_docker_repo ? var.image_repo_name : "${var.private_container_repo_url}${var.image_repo_name}"
+  image_url = var.public_docker_repo ? var.nginx_image_repo_name : "${var.private_container_repo_url}/${var.nginx_image_repo_name}"
 }
 
 resource "helm_release" "nginx" {
-  name       = "ingress-nginx"
-  repository = "https://kubernetes.github.io/ingress-nginx"
-  chart      = "ingress-nginx"
+  name       = var.nginx_helm_chart_name
+  repository = var.nginx_helm_chart_url
+  chart      = var.nginx_helm_chart_name
   version    = var.nginx_helm_chart_version
   namespace  = "kube-system"
   timeout    = "1200"

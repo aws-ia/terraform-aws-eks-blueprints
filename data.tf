@@ -18,6 +18,10 @@
 
 data "aws_partition" "current" {}
 
+data "aws_caller_identity" "current" {}
+
+data "aws_region" "current" {}
+
 data "aws_eks_cluster" "cluster" {
   count = var.create_eks ? 1 : 0
   name  = module.eks.eks_cluster_id
@@ -28,8 +32,6 @@ data "aws_eks_cluster_auth" "cluster" {
   name  = module.eks.eks_cluster_id
 }
 
-data "aws_region" "current" {}
-
 data "aws_security_group" "default" {
   count = var.create_vpc ? 1 : 0
 
@@ -37,79 +39,6 @@ data "aws_security_group" "default" {
   vpc_id = module.vpc.vpc_id
 }
 
-data "aws_caller_identity" "current" {}
-
 data "aws_availability_zones" "available" {
   state = "available"
 }
-
-/*
-# Data source used to avoid race condition
-data "aws_vpc_endpoint_service" "dynamodb" {
-  service = "dynamodb"
-
-  filter {
-    name   = "service-type"
-    values = ["Gateway"]
-  }
-}
-
-data "aws_iam_policy_document" "dynamodb_endpoint_policy" {
-  statement {
-    effect    = "Deny"
-    actions   = ["dynamodb:*"]
-    resources = ["*"]
-
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-
-    condition {
-      test     = "StringNotEquals"
-      variable = "aws:sourceVpce"
-
-      values = [data.aws_vpc_endpoint_service.dynamodb.id]
-    }
-  }
-}
-
-data "aws_iam_policy_document" "generic_endpoint_policy" {
-  statement {
-    effect    = "Deny"
-    actions   = ["*"]
-    resources = ["*"]
-
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-
-    condition {
-      test     = "StringNotEquals"
-      variable = "aws:sourceVpce"
-
-      values = [data.aws_vpc_endpoint_service.dynamodb.id]
-    }
-  }
-}
-
-data "aws_iam_policy_document" "s3_endpoint_policy" {
-  statement {
-    effect    = "Allow"
-    actions   = ["*"]
-    resources = ["*"]
-
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-
-    condition {
-      test     = "StringEquals"
-      variable = "aws:PrincipalAccount"
-      values = [data.aws_caller_identity.current.account_id]
-    }
-  }
-}
-*/

@@ -17,13 +17,13 @@
  */
 
 locals {
-  image_url = var.public_docker_repo ? var.image_repo_name : "${var.private_container_repo_url}${var.image_repo_name}"
+  image_url = var.public_docker_repo ? var.metric_server_image_repo_name : "${var.private_container_repo_url}/${var.metric_server_image_repo_name}"
 }
 
 resource "helm_release" "metrics_server" {
-  name       = "metrics-server"
-  repository = "https://charts.bitnami.com/bitnami"
-  chart      = "metrics-server"
+  name       = var.metric_server_helm_chart_name
+  repository = var.metric_server_helm_repo_url
+  chart      = var.metric_server_helm_chart_name
   version    = var.metric_server_helm_chart_version
   namespace  = "kube-system"
   timeout    = "1200"

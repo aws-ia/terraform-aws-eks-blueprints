@@ -19,13 +19,13 @@
 data "aws_region" "current" {}
 
 locals {
-  image_url = var.public_docker_repo ? var.image_repo_name : "${var.private_container_repo_url}${var.image_repo_name}"
+  image_url = var.public_docker_repo ? var.cluster_autoscaler_image_repo_name : "${var.private_container_repo_url}/${var.cluster_autoscaler_image_repo_name}"
 }
 
 resource "helm_release" "autoscaler" {
-  name       = "cluster-autoscaler"
-  repository = "https://kubernetes.github.io/autoscaler"
-  chart      = "cluster-autoscaler"
+  name       = var.cluster_autoscaler_helm_chart_name
+  repository = var.cluster_autoscaler_helm_repo_url
+  chart      = var.cluster_autoscaler_helm_chart_name
   version    = var.cluster_autoscaler_helm_version
   namespace  = "kube-system"
   timeout    = "1200"

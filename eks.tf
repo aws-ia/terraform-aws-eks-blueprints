@@ -100,11 +100,9 @@ module "aws-eks-addon" {
 # S3 BUCKET MODULE - NLB/ALB Access logs
 # ---------------------------------------------------------------------------------------------------------------------
 module "s3" {
-  //  count        = var.create_eks ? 1 : 0
   source         = "./modules/s3"
   s3_bucket_name = "${var.tenant}-${var.environment}-${var.zone}-elb-accesslogs-${data.aws_caller_identity.current.account_id}"
   account_id     = data.aws_caller_identity.current.account_id
-
 }
 
 

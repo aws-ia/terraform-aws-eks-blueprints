@@ -149,8 +149,8 @@ agones:
     remoteAllocationTimeout: 10s
     totalRemoteAllocationTimeout: 30s
   image:
-    registry: gcr.io/agones-images
-    tag: 1.15.0
+    registry: ${image}
+    tag: ${image_tag}
     controller:
       name: agones-controller
       pullPolicy: IfNotPresent
@@ -171,8 +171,8 @@ agones:
 gameservers:
   namespaces:
     - default
-  minPort: 7000
-  maxPort: 8000
+  minPort: ${gameserver_minport}
+  maxPort: ${gameserver_maxport}
   podPreserveUnknownFields: false
 
 helm:

@@ -26,7 +26,7 @@
 */
 
 locals {
-  image_url = var.public_docker_repo ? var.image_repo_name : "${var.private_container_repo_url}${var.image_repo_name}"
+  image_url = var.public_docker_repo ? var.agones_image_repo : "${var.private_container_repo_url}/${var.agones_image_repo}"
 }
 
 data "aws_security_group" "eks_security_group" {
@@ -52,28 +52,28 @@ resource "kubernetes_namespace" "pc" {
 }
 
 resource "helm_release" "agones" {
-  name       = "agones"
-  repository = "https://agones.dev/chart/stable"
-  chart      = "agones"
-  version    = var.image_tag
+  name       = var.agones_helm_chart_name
+  repository = var.agones_helm_chart_url
+  chart      = var.agones_helm_chart_name
+  version    = var.agones_image_tag
   namespace  = kubernetes_namespace.agones.id
   timeout    = "1200"
   values = [templatefile("${path.module}/templates/agones-values.yaml", {
-    //    image                 = local.image_url
-    //    tag                   = var.image_tag
-    //    s3_bucket             = var.s3_nlb_logs
+    image                 = local.image_url
+    image_tag             = var.agones_image_tag
     expose_udp            = var.expose_udp
     gameserver_namespaces = "{${join(",", ["default", kubernetes_namespace.pc.id, kubernetes_namespace.xbox.id])}}"
-    //    gameserver_minport    = var.gameserver_minport
-    //    gameserver_maxport    = var.gameserver_maxport
+    gameserver_minport    = var.agones_game_server_minport
+    gameserver_maxport    = var.agones_game_server_maxport
+    # s3_bucket             = var.s3_nlb_logs
   })]
 }
 
 
 resource "aws_security_group_rule" "agones_sg_ingress_rule" {
   type              = "ingress"
-  from_port         = 7000
-  to_port           = 8000
+  from_port         = var.agones_game_server_minport
+  to_port           = var.agones_game_server_maxport
   protocol          = "udp"
   cidr_blocks       = ["0.0.0.0/0"]
   ipv6_cidr_blocks  = ["::/0"]

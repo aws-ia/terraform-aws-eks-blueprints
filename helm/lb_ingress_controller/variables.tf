@@ -16,9 +16,18 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+variable "aws_lb_helm_repo_url" {
+  default = "https://aws.github.io/eks-charts"
+}
+
+variable "aws_lb_helm_helm_chart_name" {
+  default = "aws-load-balancer-controller"
+}
 variable "public_docker_repo" {}
+
 variable "private_container_repo_url" {}
-variable "image_repo_name" {
+
+variable "aws_lb_image_repo_name" {
   default = "amazon/aws-load-balancer-controller"
 }
 
@@ -26,10 +35,10 @@ variable "public_image_repo" {
   default = "602401143452.dkr.ecr.us-west-2.amazonaws.com"
 }
 variable "aws_lb_image_tag" {
-  default = "v2.2.1"
+  default = "v2.2.4"
 }
 variable "aws_lb_helm_chart_version" {
-  default = "1.2.3"
+  default = "1.2.7"
 }
 
 variable "replicas" {

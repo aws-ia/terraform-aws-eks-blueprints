@@ -42,12 +42,12 @@ resource "kubernetes_config_map" "aws_logging" {
   data = {
     "output.conf" = <<EOF
      [OUTPUT]
-        Name cloudwatch_logs
-        Match *
-        region ${data.aws_region.current.id}
-        log_group_name /aws/eks/${var.eks_cluster_id}/fargate-fluentbit-cloudwatch
-        log_stream_prefix fargate-from-fluent-bit-
-        auto_create_group true
+       Name cloudwatch_logs
+       Match *
+       region ${data.aws_region.current.id}
+       log_group_name fargate-fluentbit-cloudwatch
+       log_stream_prefix fargate-from-fluent-bit-
+       auto_create_group true
     EOF
   }
 }
