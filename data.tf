@@ -113,33 +113,3 @@ data "aws_iam_policy_document" "s3_endpoint_policy" {
   }
 }
 */
-
-# Windows custom AMI sample - AWS-provided EKS optimized Windows 2019 core AMI
-data "aws_ami" "windows2019core" {
-  most_recent = true
-  owners      = ["amazon"]
-  filter {
-    name   = "name"
-    values = ["Windows_Server-2019-English-Core-EKS_Optimized-${var.kubernetes_version}-*"]
-  }
-}
-
-# Linux custom AMI sample - AWS-provided Bottlerocket AMI
-data "aws_ami" "bottlerocket" {
-  most_recent = true
-  owners      = ["amazon"]
-  filter {
-    name   = "name"
-    values = ["bottlerocket-aws-k8s-${var.kubernetes_version}-x86_64-*"]
-  }
-}
-
-# Linux custom AMI sample - AWS-provided EKS optimized Linx AMI
-data "aws_ami" "amazonlinux2eks" {
-  most_recent = true
-  owners      = ["amazon"]
-  filter {
-    name   = "name"
-    values = ["amazon-eks-node-${var.kubernetes_version}-*"]
-  }
-}

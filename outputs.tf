@@ -97,4 +97,3 @@ output "cluster_primary_security_group_id" {
 output "worker_security_group_id" {
   value = module.eks.eks_worker_security_group_id
 }
-
