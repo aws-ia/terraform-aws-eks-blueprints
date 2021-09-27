@@ -16,30 +16,43 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "private_container_repo_url" {}
+variable "private_container_repo_url" {
+  type = string
+}
 variable "traefik_image_repo_name" {
+  type    = string
   default = "traefik"
 }
 
 variable "traefik_helm_chart_name" {
+  type    = string
   default = "traefik"
 }
 
 variable "traefik_helm_chart_url" {
+  type    = string
   default = "https://helm.traefik.io/traefik"
 }
 
 variable "traefik_helm_chart_version" {
+  type    = string
   default = "10.0.0"
 }
 
 variable "traefik_image_tag" {
+  type    = string
   default = "v2.4.9"
 }
 
-variable "s3_nlb_logs" {}
+variable "s3_nlb_logs" {
+  type = string
+}
 
-variable "account_id" {}
+variable "account_id" {
+  type = string
+}
 
 //variable "tls_cert_arn" {}
-variable "public_docker_repo" {}
+variable "public_docker_repo" {
+  type = bool
+}

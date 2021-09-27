@@ -16,18 +16,25 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "public_docker_repo" {}
-variable "private_container_repo_url" {}
+variable "public_docker_repo" {
+  type = string
+}
+variable "private_container_repo_url" {
+  type = string
+}
 
 variable "cert_manager_helm_chart_name" {
+  type    = string
   default = "cert-manager"
 }
 
 variable "cert_manager_helm_chart_url" {
+  type    = string
   default = "https://charts.jetstack.io"
 }
 
 variable "cert_manager_image_repo_name" {
+  type    = string
   default = "quay.io/jetstack/cert-manager-controller"
 }
 

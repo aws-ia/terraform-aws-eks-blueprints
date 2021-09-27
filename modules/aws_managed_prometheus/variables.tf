@@ -1,21 +1,39 @@
-variable "environment" {}
+variable "environment" {
+  type = string
+}
 
-variable "tenant" {}
+variable "tenant" {
+  type = string
+}
 
-variable "zone" {}
+variable "zone" {
+  type = string
+}
 
-variable "account_id" {}
+variable "account_id" {
+  type = string
+}
 
-variable "region" {}
+variable "region" {
+  type = string
+}
 
-variable "eks_cluster_id" {}
+variable "eks_cluster_id" {
+  type = string
+}
 
-variable "eks_oidc_provider" {}
+variable "eks_oidc_provider" {
+  type = string
+}
 
 variable "service_account_amp_ingest_name" {
+  type = string
 }
 
 variable "service_account_amp_query_name" {
+  type = string
 }
 
-variable "amp_workspace_name" {}
+variable "amp_workspace_name" {
+  type = string
+}

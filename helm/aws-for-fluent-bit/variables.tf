@@ -16,31 +16,44 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "private_container_repo_url" {}
+variable "private_container_repo_url" {
+  type = string
+}
 
-variable "cluster_id" {}
+variable "cluster_id" {
+  type = string
+}
 
-variable "ekslog_retention_in_days" {}
+variable "ekslog_retention_in_days" {
+  type = number
+}
 
-variable "public_docker_repo" {}
+variable "public_docker_repo" {
+  type = string
+}
 
 variable "aws_for_fluent_bit_helm_chart_url" {
+  type    = string
   default = "https://aws.github.io/eks-charts"
 }
 
 variable "aws_for_fluent_bit_helm_chart_name" {
+  type    = string
   default = "aws-for-fluent-bit"
 }
 
 variable "aws_for_fluent_bit_helm_chart_version" {
+  type    = string
   default = "0.1.11"
 }
 
 variable "aws_for_fluent_bit_image_repo_name" {
+  type    = string
   default = "amazon/aws-for-fluent-bit"
 }
 
 variable "aws_for_fluent_bit_image_tag" {
+  type    = string
   default = "2.13.0"
 }
 

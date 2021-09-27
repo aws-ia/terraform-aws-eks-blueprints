@@ -17,24 +17,33 @@
  */
 
 variable "metric_server_helm_repo_url" {
+  type    = string
   default = "https://charts.bitnami.com/bitnami"
 }
 
 variable "metric_server_helm_chart_name" {
+  type    = string
   default = "metrics-server"
 }
 
-variable "private_container_repo_url" {}
+variable "private_container_repo_url" {
+  type = string
+}
 
 variable "metric_server_image_repo_name" {
+  type    = string
   default = "bitnami/metrics-server"
 }
 
 variable "metric_server_image_tag" {
+  type    = string
   default = "0.5.0-debian-10-r83"
 }
 variable "metric_server_helm_chart_version" {
+  type    = string
   default = "5.10.1"
 }
 
-variable "public_docker_repo" {}
+variable "public_docker_repo" {
+  type = bool
+}

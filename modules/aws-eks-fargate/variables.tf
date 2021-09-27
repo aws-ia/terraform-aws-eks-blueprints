@@ -25,6 +25,7 @@ variable "eks_cluster_name" {
 }
 
 variable "private_subnet_ids" {
+  type        = list(string)
   description = "list of private subnets Id's for the Worker nodes"
   default     = []
 }
