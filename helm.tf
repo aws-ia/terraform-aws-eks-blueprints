@@ -122,5 +122,31 @@ module "helm" {
   windows_vpc_resource_controller_image_tag = var.windows_vpc_resource_controller_image_tag
   windows_vpc_admission_webhook_image_tag   = var.windows_vpc_admission_webhook_image_tag
 
+  # ------- AWS Distro for OpenTelemetry Collector in EKS Module ---------
+  aws_open_telemetry_enable                     = var.aws_open_telemetry_enable
+  aws_open_telemetry_namespace                  = var.aws_open_telemetry_namespace
+  aws_open_telemetry_aws_region                 = var.aws_open_telemetry_aws_region
+  aws_open_telemetry_collector_image            = var.aws_open_telemetry_collector_image
+  aws_open_telemetry_emitter_image              = var.aws_open_telemetry_emitter_image
+  aws_open_telemetry_oltp_endpoint              = var.aws_open_telemetry_oltp_endpoint
+  aws_open_telemetry_mg_node_iam_role_arns      = var.create_eks && var.enable_managed_nodegroups ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.managed-node-groups[nodes].manage_ng_iam_role_name) }) : []
+  aws_open_telemetry_self_mg_node_iam_role_arns = var.create_eks && var.enable_self_managed_nodegroups ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws-eks-self-managed-node-groups[nodes].self_managed_iam_role_name) }) : []
+
+  # ------- OpenTelemetry Module ---------
+  opentelemetry_enable                                  = var.opentelemetry_enable
+  opentelemetry_command_name                            = var.opentelemetry_command_name
+  opentelemetry_helm_chart                              = var.opentelemetry_helm_chart
+  opentelemetry_image                                   = var.opentelemetry_image
+  opentelemetry_image_tag                               = var.opentelemetry_image_tag
+  opentelemetry_helm_chart_version                      = var.opentelemetry_helm_chart_version
+  opentelemetry_enable_agent_collector                  = var.opentelemetry_enable_agent_collector
+  opentelemetry_enable_standalone_collector             = var.opentelemetry_enable_standalone_collector
+  opentelemetry_enable_autoscaling_standalone_collector = var.opentelemetry_enable_autoscaling_standalone_collector
+  opentelemetry_enable_container_logs                   = var.opentelemetry_enable_container_logs
+  opentelemetry_min_standalone_collectors               = var.opentelemetry_min_standalone_collectors
+  opentelemetry_max_standalone_collectors               = var.opentelemetry_max_standalone_collectors
+  opentelemetry_helm_chart_url                          = var.opentelemetry_helm_chart_url
+
+
   depends_on = [module.eks]
 }

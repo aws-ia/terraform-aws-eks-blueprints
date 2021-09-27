@@ -20,7 +20,8 @@
 # FARGATE PROFILES
 # ---------------------------------------------------------------------------------------------------------------------
 module "fargate-profiles" {
-  source = "git@github.com:aws-ia/terraform-aws-eks-fargate.git"
+  //  source = "git@github.com:aws-ia/terraform-aws-eks-fargate.git"
+  source = "git@github.com:vara-bonthu/terraform-aws-eks-fargate.git"
 
   for_each = { for k, v in var.fargate_profiles : k => v if var.enable_fargate && length(var.fargate_profiles) > 0 }
 

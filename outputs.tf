@@ -45,14 +45,14 @@ output "amp_work_arn" {
   value = var.prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : "AMP not enabled"
 }
 
-//output "self_managed_node_group_iam_role_arns" {
-//  description = "IAM role arn's of self managed node groups"
-//  value       = var.create_eks && var.enable_self_managed_nodegroups ? { for nodes in sort(keys(var.self_managed_node_groups)) : nodes => module.aws-eks-self-managed-node-groups[nodes].self_managed_node_group_iam_role_arns } : null
-//}
+output "self_managed_node_group_iam_role_arns" {
+  description = "IAM role arn's of self managed node groups"
+  value       = var.create_eks && var.enable_self_managed_nodegroups ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws-eks-self-managed-node-groups[nodes].self_managed_node_group_iam_role_arns) }) : []
+}
 
 output "managed_node_group_iam_role_arns" {
   description = "IAM role arn's of self managed node groups"
-  value       = var.create_eks && var.enable_managed_nodegroups ? { for nodes in sort(keys(var.managed_node_groups)) : nodes => module.managed-node-groups[nodes].manage_ng_iam_role_arn } : null
+  value       = var.create_eks && var.enable_managed_nodegroups ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.managed-node-groups[nodes].manage_ng_iam_role_arn) }) : []
 }
 
 output "managed_node_groups" {

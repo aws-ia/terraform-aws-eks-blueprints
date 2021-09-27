@@ -243,7 +243,7 @@ enable_windows_support                    = false
 windows_vpc_resource_controller_image_tag = "v0.2.7" # enable_windows_support= true
 windows_vpc_admission_webhook_image_tag   = "v0.2.7" # enable_windows_support= true
 
-enable_self_managed_nodegroups = true
+enable_self_managed_nodegroups = false
 self_managed_node_groups = {
   #---------------------------------------------------------#
   # ON-DEMAND Self Managed Worker Group - Worker Group - 1
@@ -525,7 +525,7 @@ aws_for_fluent_bit_helm_chart_name    = "aws-for-fluent-bit"
 #---------------------------------------------------------#
 # ENABLE TRAEFIK INGRESS CONTROLLER
 #---------------------------------------------------------#
-traefik_ingress_controller_enable = true
+traefik_ingress_controller_enable = false
 traefik_helm_chart_url            = "https://helm.traefik.io/traefik"
 traefik_helm_chart_name           = "traefik"
 traefik_helm_chart_version        = "10.0.0"
@@ -534,7 +534,7 @@ traefik_image_repo_name           = "traefik"
 #---------------------------------------------------------#
 # ENABLE NGINX INGRESS CONTROLLER
 #---------------------------------------------------------#
-nginx_ingress_controller_enable = true
+nginx_ingress_controller_enable = false
 nginx_helm_chart_version        = "3.33.0"
 nginx_helm_chart_url            = "https://kubernetes.github.io/ingress-nginx"
 nginx_helm_chart_name           = "ingress-nginx"
@@ -549,7 +549,7 @@ nginx_image_repo_name           = "ingress-nginx/controller"
 #         By default Agones prefers to be scheduled on nodes labeled with agones.dev/agones-system=true and tolerates the node taint agones.dev/agones-system=true:NoExecute.
 #         If no dedicated nodes are available, Agones will run on regular nodes.
 #---------------------------------------------------------//
-agones_enable              = true
+agones_enable              = false
 expose_udp                 = true
 agones_helm_chart_name     = "agones"
 agones_helm_chart_url      = "https://agones.dev/chart/stable"
@@ -563,11 +563,38 @@ agones_game_server_maxport = 8000
 # CERT MANAGER
 #   enable_windows_support= true
 #---------------------------------------------------------#
-cert_manager_enable             = true
+cert_manager_enable             = false
 cert_manager_image_tag          = "v1.5.3"
 cert_manager_helm_chart_version = "0.1.0"
 cert_manager_install_crds       = true
 cert_manager_helm_chart_name    = "cert-manager"
 cert_manager_helm_chart_url     = "https://charts.jetstack.io"
 cert_manager_image_repo_name    = "quay.io/jetstack/cert-manager-controller"
+
+#---------------------------------------------------------#
+# ENABLE AWS Distro for OpenTelemetry Collector in EKS
+# Help : https://aws-otel.github.io/docs/setup/eks
+#---------------------------------------------------------#
+aws_open_telemetry_enable          = false
+aws_open_telemetry_emitter_image   = "aottestbed/aws-otel-collector-sample-app:java-0.1.0"
+aws_open_telemetry_collector_image = "amazon/aws-otel-collector:latest"
+aws_open_telemetry_aws_region      = "eu-west-1"
+aws_open_telemetry_oltp_endpoint   = "localhost:4317"
+
+#---------------------------------------------------------#
+# ENABLE OPENTELEMETRY COLLECTOR FOR NODE GROUPS
+#---------------------------------------------------------#
+opentelemetry_enable                      = false
+opentelemetry_image                       = "otel/opentelemetry-collector"
+opentelemetry_image_tag                   = "0.31.0"
+opentelemetry_command_name                = "otelcol"
+opentelemetry_helm_chart_url              = "https://open-telemetry.github.io/opentelemetry-helm-charts"
+opentelemetry_helm_chart                  = "open-telemetry/opentelemetry-collector"
+opentelemetry_helm_chart_version          = "0.5.9"
+opentelemetry_enable_standalone_collector = true
+//opentelemetry_enable_agent_collector                  = true
+opentelemetry_enable_autoscaling_standalone_collector = true
+//opentelemetry_enable_container_logs                   = true
+opentelemetry_min_standalone_collectors = 1
+opentelemetry_max_standalone_collectors = 10
 

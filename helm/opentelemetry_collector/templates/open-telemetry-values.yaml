@@ -1,0 +1,267 @@
+# Default values for opentelemetry-collector.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+config:
+  exporters:
+    logging: {}
+  extensions:
+    health_check: {}
+  processors:
+    batch: {}
+    # If set to null, will be overridden with values based on k8s resource limits
+    memory_limiter: null
+  receivers:
+    jaeger:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:14250
+        thrift_http:
+          endpoint: 0.0.0.0:14268
+    otlp:
+      protocols:
+        grpc: null
+        http: null
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: opentelemetry-collector
+            scrape_interval: 10s
+            static_configs:
+              - targets:
+                  - $${MY_POD_IP}:8888
+    zipkin:
+      endpoint: 0.0.0.0:9411
+  service:
+    extensions:
+      - health_check
+    pipelines:
+      logs:
+        exporters:
+          - logging
+        processors:
+          - memory_limiter
+          - batch
+        receivers:
+          - otlp
+      metrics:
+        exporters:
+          - logging
+        processors:
+          - memory_limiter
+          - batch
+        receivers:
+          - otlp
+          - prometheus
+      traces:
+        exporters:
+          - logging
+        processors:
+          - memory_limiter
+          - batch
+        receivers:
+          - otlp
+          - jaeger
+          - zipkin
+
+# Shared params for agentCollector daemonset and standaloneCollector deployment pods.
+# Can be overridden here or for any component independently using the same keys.
+
+image:
+  # If you want to use the contrib image `otel/opentelemetry-collector-contrib`, you also need to change `command.name` value to `otelcontribcol`.
+  repository: ${image}
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ${tag}
+imagePullSecrets: []
+
+# OpenTelemetry Collector executable
+command:
+  name: ${command_name}
+  extraArgs: []
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podSecurityContext: {}
+securityContext: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Allows for pod scheduler prioritisation
+# Can be overridden here or for agentCollector and standaloneCollector independently.
+priorityClassName: ""
+
+extraEnvs: []
+extraConfigMapMounts: []
+extraHostPathMounts: []
+secretMounts: []
+
+# Configuration for ports, shared between agentCollector, standaloneCollector and service.
+# Can be overridden here or for agentCollector and standaloneCollector independently.
+ports:
+  otlp:
+    enabled: true
+    containerPort: 4317
+    servicePort: 4317
+    hostPort: 4317
+    protocol: TCP
+  jaeger-thrift:
+    enabled: true
+    containerPort: 14268
+    servicePort: 14268
+    hostPort: 14268
+    protocol: TCP
+  jaeger-grpc:
+    enabled: true
+    containerPort: 14250
+    servicePort: 14250
+    hostPort: 14250
+    protocol: TCP
+  zipkin:
+    enabled: true
+    containerPort: 9411
+    servicePort: 9411
+    hostPort: 9411
+    protocol: TCP
+
+# Configuration for agent OpenTelemetry Collector daemonset, enabled by default
+agentCollector:
+  enabled: ${enable_agent_collector}
+
+  containerLogs:
+    enabled: ${enable_container_logs}
+
+  resources:
+    limits:
+      cpu: 256m
+      memory: 512Mi
+
+  podAnnotations: {}
+
+  # Configuration override that will be merged into the agent's default config
+  configOverride: {}
+  # The following config override can be used to enable host receiver
+  #   receivers:
+  #     hostmetrics:
+  #       scrapers:
+  #         cpu:
+  #         disk:
+  #         filesystem:
+  #   service:
+  #     pipelines:
+  #       metrics:
+  #         receivers: [prometheus, hostmetrics]
+
+  # Any of the top level options can be overridden specifically for agent
+  # image: {}
+  # imagePullSecrets: []
+  # command: {}
+  # serviceAccount: {}
+  # podSecurityContext: {}
+  # securityContext: {}
+  # nodeSelector: {}
+  # tolerations: []
+  # affinity: {}
+  # priorityClassName: ""
+
+  # The following option overrides can be used with host receiver
+  # extraEnvs:
+  # - name: HOST_PROC
+  #   value: /hostfs/proc
+  # - name: HOST_SYS
+  #   value: /hostfs/sys
+  # - name: HOST_ETC
+  #   value: /hostfs/etc
+  # - name: HOST_VAR
+  #   value: /hostfs/var
+  # - name: HOST_RUN
+  #   value: /hostfs/run
+  # - name: HOST_DEV
+  #   value: /hostfs/dev
+  # extraHostPathMounts:
+  # - name: hostfs
+  #   hostPath: /
+  #   mountPath: /hostfs
+  #   readOnly: true
+  #   mountPropagation: HostToContainer
+
+  # The following example disables all jaeger ports and zipkin hostPort on the agent
+  # ports:
+  #   jaeger-thrift:
+  #     enabled: false
+  #   jaeger-grpc:
+  #     enabled: false
+  #   zipkin:
+  #     hostPort: ""
+
+# Configuration for standalone OpenTelemetry Collector deployment, disabled by default
+standaloneCollector:
+  enabled: ${enable_standalone_collector}
+
+  replicaCount: ${min_standalone_collectors}
+
+  resources:
+    limits:
+      cpu: 1
+      memory: 2Gi
+
+  podAnnotations: {}
+
+  # Configuration override that will be merged into the standalone collector default config
+  configOverride: {}
+
+  # Any of the top level options can be overridden specifically for standalone collector
+  # image: {}
+  # imagePullSecrets: []
+  # command: {}
+  # serviceAccount: {}
+  # podSecurityContext: {}
+  # securityContext: {}
+  # nodeSelector: {}
+  # tolerations: []
+  # affinity: {}
+  # priorityClassName: ""
+  # ports: {}
+
+service:
+  type: ClusterIP
+  annotations: {}
+
+podMonitor:
+  enabled: false
+  metricsEndpoints: {}
+  # - port: prometheus
+
+  # additional labels for the PodMonitor
+  extraLabels: {}
+  #   release: kube-prometheus-stack
+
+serviceMonitor:
+  enabled: false
+  metricsEndpoints: {}
+  # - port: metrics
+  #   interval: 15s
+
+  # additional labels for the ServiceMonitor
+  extraLabels: {}
+  #  release: kube-prometheus-stack
+
+# autoscaling is used only if standaloneCollector enabled
+autoscaling:
+  enabled: ${enable_autoscaling_standalone_collector}
+  minReplicas: ${min_standalone_collectors}
+  maxReplicas: ${max_standalone_collectors}
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80

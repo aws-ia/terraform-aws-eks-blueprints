@@ -35,6 +35,16 @@ resource "aws_iam_instance_profile" "managed_ng" {
     create_before_destroy = true
   }
 }
+//
+//resource "aws_iam_role_policy_attachment" "role-policy-attachment" {
+//  for_each = toset([
+//    "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
+//    "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+//  ])
+//
+//  role       = var.iam_role_name
+//  policy_arn = each.value
+//}
 
 resource "aws_iam_role_policy_attachment" "managed_ng_AmazonEKSWorkerNodePolicy" {
   policy_arn = "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy"

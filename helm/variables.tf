@@ -289,3 +289,55 @@ variable "windows_vpc_admission_webhook_image_tag" {
   default     = "v0.2.7"
   description = "Docker image tag for Windows VPC admission webhook controller"
 }
+
+variable "aws_open_telemetry_enable" {
+}
+
+variable "aws_open_telemetry_namespace" {
+}
+
+variable "aws_open_telemetry_emitter_image" {
+}
+
+variable "aws_open_telemetry_collector_image" {
+}
+
+variable "aws_open_telemetry_aws_region" {
+}
+
+variable "aws_open_telemetry_oltp_endpoint" {
+}
+
+variable "aws_open_telemetry_mg_node_iam_role_arns" {
+}
+
+variable "aws_open_telemetry_self_mg_node_iam_role_arns" {
+}
+
+variable "opentelemetry_enable" {
+}
+
+variable "opentelemetry_helm_chart_url" {}
+
+variable "opentelemetry_image_tag" {}
+
+variable "opentelemetry_image" {}
+
+variable "opentelemetry_helm_chart_version" {}
+
+variable "opentelemetry_helm_chart" {}
+
+variable "opentelemetry_command_name" {}
+
+variable "opentelemetry_min_standalone_collectors" {}
+
+variable "opentelemetry_max_standalone_collectors" {}
+
+variable "opentelemetry_enable_standalone_collector" {}
+
+variable "opentelemetry_enable_agent_collector" {}
+
+variable "opentelemetry_enable_autoscaling_standalone_collector" {}
+
+variable "opentelemetry_enable_container_logs" {}
+
