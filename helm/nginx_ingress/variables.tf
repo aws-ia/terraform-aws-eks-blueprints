@@ -16,22 +16,35 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "private_container_repo_url" {}
+variable "private_container_repo_url" {
+  type = string
+}
 
 variable "nginx_image_repo_name" {
+  type    = string
   default = "ingress-nginx/controller"
 }
 
 variable "nginx_helm_chart_url" {
+  type    = string
   default = "https://kubernetes.github.io/ingress-nginx"
 }
 variable "nginx_helm_chart_name" {
+  type    = string
   default = "ingress-nginx"
 }
-variable "account_id" {}
+variable "account_id" {
+  type = string
+}
 
-variable "public_docker_repo" {}
+variable "public_docker_repo" {
+  type = bool
+}
 
-variable "nginx_helm_chart_version" {}
+variable "nginx_helm_chart_version" {
+  type = string
+}
 
-variable "nginx_image_tag" {}
+variable "nginx_image_tag" {
+  type = string
+}

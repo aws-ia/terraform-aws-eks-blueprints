@@ -17,26 +17,36 @@
  */
 
 variable "cluster_autoscaler_helm_repo_url" {
+  type    = string
   default = "https://kubernetes.github.io/autoscaler"
 }
 
 variable "cluster_autoscaler_helm_chart_name" {
+  type    = string
   default = "cluster-autoscaler"
 }
-variable "private_container_repo_url" {}
+variable "private_container_repo_url" {
+  type = string
+}
 
 variable "cluster_autoscaler_image_repo_name" {
+  type    = string
   default = "k8s.gcr.io/autoscaling/cluster-autoscaler"
 }
 variable "cluster_autoscaler_image_tag" {
+  type    = string
   default = "v1.21.0"
 }
 
 variable "cluster_autoscaler_helm_version" {
+  type    = string
   default = "9.10.7"
 }
 variable "eks_cluster_id" {
+  type        = string
   description = "EKS_Cluster_ID"
 }
 
-variable "public_docker_repo" {}
+variable "public_docker_repo" {
+  type = bool
+}

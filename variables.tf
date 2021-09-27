@@ -206,6 +206,7 @@ variable "self_managed_node_groups" {
   default = {}
 }
 variable "enable_fargate" {
+  type    = bool
   default = false
 }
 variable "fargate_profiles" {
@@ -245,6 +246,7 @@ variable "map_users" {
 }
 variable "manage_aws_auth" {
   description = "Whether to apply the aws-auth configmap file."
+  type        = bool
   default     = true
 }
 variable "aws_auth_additional_labels" {
@@ -322,189 +324,236 @@ variable "expose_udp" {
 }
 
 variable "agones_image_repo" {
+  type    = string
   default = "gcr.io/agones-images"
 }
 
 variable "agones_image_tag" {
+  type    = string
   default = "1.15.0"
 }
 
 variable "agones_helm_chart_name" {
+  type    = string
   default = "agones"
 }
 
 variable "agones_helm_chart_url" {
+  type    = string
   default = "https://agones.dev/chart/stable"
 }
 
 variable "agones_game_server_maxport" {
+  type    = number
   default = 8000
 }
 variable "agones_game_server_minport" {
+  type    = number
   default = 7000
 }
 
 variable "aws_lb_image_repo_name" {
+  type    = string
   default = "amazon/aws-load-balancer-controller"
 }
 
 variable "aws_lb_helm_repo_url" {
+  type    = string
   default = "https://aws.github.io/eks-charts"
 }
 
 variable "aws_lb_helm_helm_chart_name" {
+  type    = string
   default = "aws-load-balancer-controller"
 }
 
 variable "aws_lb_image_tag" {
+  type    = string
   default = "v2.2.4"
 }
 
 variable "aws_lb_helm_chart_version" {
+  type    = string
   default = "1.2.7"
 }
 
 variable "metric_server_image_repo_name" {
+  type    = string
   default = "bitnami/metrics-server"
 }
 
 variable "metric_server_image_tag" {
+  type    = string
   default = "0.5.0-debian-10-r83"
 }
 
 variable "metric_server_helm_chart_version" {
+  type    = string
   default = "5.10.1"
 }
 
 variable "metric_server_helm_repo_url" {
+  type    = string
   default = "https://charts.bitnami.com/bitnami"
 }
 
 variable "metric_server_helm_chart_name" {
+  type    = string
   default = "metrics-server"
 }
 
 variable "cluster_autoscaler_helm_repo_url" {
+  type    = string
   default = "https://kubernetes.github.io/autoscaler"
 }
 
 variable "cluster_autoscaler_helm_chart_name" {
+  type    = string
   default = "cluster-autoscaler"
 }
 
 variable "cluster_autoscaler_image_repo_name" {
+  type    = string
   default = "k8s.gcr.io/autoscaling/cluster-autoscaler"
 }
 
 variable "cluster_autoscaler_image_tag" {
+  type    = string
   default = "v1.21.0"
 }
 
 variable "cluster_autoscaler_helm_version" {
+  type    = string
   default = "9.10.7"
 }
 
 variable "aws_managed_prometheus_workspace_name" {
+  type    = string
   default = "aws-managed-prometheus-workspace"
 }
 
 variable "prometheus_helm_chart_url" {
+  type    = string
   default = "https://prometheus-community.github.io/helm-charts"
 }
 
 variable "prometheus_helm_chart_name" {
+  type    = string
   default = "prometheus"
 }
 
 variable "prometheus_helm_chart_version" {
+  type    = string
   default = "14.7.0"
 }
 
 variable "prometheus_image_tag" {
+  type    = string
   default = "v2.26.0"
 }
 
 variable "alert_manager_image_tag" {
+  type    = string
   default = "v0.21.0"
 }
 
 variable "configmap_reload_image_tag" {
+  type    = string
   default = "v0.5.0"
 }
 
 variable "node_exporter_image_tag" {
+  type    = string
   default = "v1.1.2"
 }
 
 variable "pushgateway_image_tag" {
+  type    = string
   default = "v1.3.1"
 }
 
 variable "prometheus_enable" {
+  type    = bool
   default = false
 }
 
 variable "aws_managed_prometheus_enable" {
+  type    = bool
   default = false
 }
 
 variable "traefik_image_repo_name" {
+  type    = string
   default = "traefik"
 }
 
 variable "traefik_helm_chart_name" {
+  type    = string
   default = "traefik"
 }
 
 variable "traefik_helm_chart_url" {
+  type    = string
   default = "https://helm.traefik.io/traefik"
 }
 
 variable "traefik_helm_chart_version" {
+  type    = string
   default = "10.0.0"
 }
 
 variable "traefik_image_tag" {
+  type    = string
   default = "v2.4.9"
 }
 
 variable "nginx_image_repo_name" {
+  type    = string
   default = "ingress-nginx/controller"
 }
 
 variable "nginx_helm_chart_url" {
+  type    = string
   default = "https://kubernetes.github.io/ingress-nginx"
 }
 variable "nginx_helm_chart_name" {
+  type    = string
   default = "ingress-nginx"
 }
 
 variable "nginx_helm_chart_version" {
+  type    = string
   default = "3.33.0"
 }
 
 variable "nginx_image_tag" {
+  type    = string
   default = "v0.47.0"
 }
 
 variable "aws_for_fluent_bit_image_repo_name" {
+  type    = string
   default = "amazon/aws-for-fluent-bit"
 }
 
 variable "aws_for_fluent_bit_helm_chart_url" {
+  type    = string
   default = "https://aws.github.io/eks-charts"
 }
 
 variable "aws_for_fluent_bit_helm_chart_name" {
+  type    = string
   default = "aws-for-fluent-bit"
 }
 
 variable "aws_for_fluent_bit_image_tag" {
+  type        = string
   default     = "2.13.0"
   description = "Docker image tag for aws_for_fluent_bit"
 }
 
 variable "aws_for_fluent_bit_helm_chart_version" {
+  type        = string
   default     = "0.1.11"
   description = "Helm chart version for aws_for_fluent_bit"
 }
@@ -532,14 +581,17 @@ variable "cert_manager_install_crds" {
 }
 
 variable "cert_manager_helm_chart_url" {
+  type    = string
   default = "https://charts.jetstack.io"
 }
 
 variable "cert_manager_helm_chart_name" {
+  type    = string
   default = "cert-manager"
 }
 
 variable "cert_manager_image_repo_name" {
+  type    = string
   default = "jetstack/cert-manager-controller"
 }
 
