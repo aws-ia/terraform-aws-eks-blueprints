@@ -151,15 +151,16 @@ module "windows_vpc_controllers" {
 }
 
 module "aws_opentelemetry_collector" {
-  count                                         = var.aws_open_telemetry_enable == true ? 1 : 0
-  source                                        = "./aws-otel-eks"
-  aws_open_telemetry_aws_region                 = var.aws_open_telemetry_aws_region == "" ? data.aws_region.current.id : var.aws_open_telemetry_aws_region
-  aws_open_telemetry_emitter_image              = var.aws_open_telemetry_emitter_image
-  aws_open_telemetry_collector_image            = var.aws_open_telemetry_collector_image
-  aws_open_telemetry_oltp_endpoint              = var.aws_open_telemetry_oltp_endpoint
-  aws_open_telemetry_mg_node_iam_role_arns      = var.aws_open_telemetry_mg_node_iam_role_arns
-  aws_open_telemetry_self_mg_node_iam_role_arns = var.aws_open_telemetry_self_mg_node_iam_role_arns
-
+  count                                               = var.aws_open_telemetry_enable == true ? 1 : 0
+  source                                              = "./aws-otel-eks"
+  aws_open_telemetry_aws_region                       = var.aws_open_telemetry_aws_region == "" ? data.aws_region.current.id : var.aws_open_telemetry_aws_region
+  aws_open_telemetry_emitter_image                    = var.aws_open_telemetry_emitter_image
+  aws_open_telemetry_collector_image                  = var.aws_open_telemetry_collector_image
+  aws_open_telemetry_emitter_oltp_endpoint            = var.aws_open_telemetry_emitter_oltp_endpoint
+  aws_open_telemetry_mg_node_iam_role_arns            = var.aws_open_telemetry_mg_node_iam_role_arns
+  aws_open_telemetry_self_mg_node_iam_role_arns       = var.aws_open_telemetry_self_mg_node_iam_role_arns
+  aws_open_telemetry_emitter_name                     = var.aws_open_telemetry_emitter_name
+  aws_open_telemetry_emitter_otel_resource_attributes = var.aws_open_telemetry_emitter_otel_resource_attributes
 }
 
 module "opentelemetry_collector" {

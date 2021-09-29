@@ -85,8 +85,8 @@ No modules.
 | <a name="input_metric_server_helm_repo_url"></a> [metric\_server\_helm\_repo\_url](#input\_metric\_server\_helm\_repo\_url) | n/a | `string` | `"https://charts.bitnami.com/bitnami"` | no |
 | <a name="input_metric_server_image_repo_name"></a> [metric\_server\_image\_repo\_name](#input\_metric\_server\_image\_repo\_name) | n/a | `string` | `"bitnami/metrics-server"` | no |
 | <a name="input_metric_server_image_tag"></a> [metric\_server\_image\_tag](#input\_metric\_server\_image\_tag) | n/a | `string` | `"0.5.0-debian-10-r83"` | no |
-| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `any` | n/a | yes |
-| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `any` | n/a | yes |
+| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `string` | n/a | yes |
+| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `bool` | n/a | yes |
 
 ## Outputs
 

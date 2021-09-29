@@ -66,8 +66,8 @@ No modules.
 | <a name="input_cert_manager_image_repo_name"></a> [cert\_manager\_image\_repo\_name](#input\_cert\_manager\_image\_repo\_name) | n/a | `string` | `"quay.io/jetstack/cert-manager-controller"` | no |
 | <a name="input_cert_manager_image_tag"></a> [cert\_manager\_image\_tag](#input\_cert\_manager\_image\_tag) | Docker image tag for cert-manager controller | `string` | `"v1.5.3"` | no |
 | <a name="input_cert_manager_install_crds"></a> [cert\_manager\_install\_crds](#input\_cert\_manager\_install\_crds) | Whether Cert Manager CRDs should be installed as part of the cert-manager Helm chart installation | `bool` | `true` | no |
-| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `any` | n/a | yes |
-| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `any` | n/a | yes |
+| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `string` | n/a | yes |
+| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `string` | n/a | yes |
 
 ## Outputs
 

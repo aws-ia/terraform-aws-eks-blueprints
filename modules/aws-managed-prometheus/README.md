@@ -50,16 +50,16 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_account_id"></a> [account\_id](#input\_account\_id) | n/a | `any` | n/a | yes |
-| <a name="input_amp_workspace_name"></a> [amp\_workspace\_name](#input\_amp\_workspace\_name) | n/a | `any` | n/a | yes |
-| <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | n/a | `any` | n/a | yes |
-| <a name="input_eks_oidc_provider"></a> [eks\_oidc\_provider](#input\_eks\_oidc\_provider) | n/a | `any` | n/a | yes |
-| <a name="input_environment"></a> [environment](#input\_environment) | n/a | `any` | n/a | yes |
-| <a name="input_region"></a> [region](#input\_region) | n/a | `any` | n/a | yes |
-| <a name="input_service_account_amp_ingest_name"></a> [service\_account\_amp\_ingest\_name](#input\_service\_account\_amp\_ingest\_name) | n/a | `any` | n/a | yes |
-| <a name="input_service_account_amp_query_name"></a> [service\_account\_amp\_query\_name](#input\_service\_account\_amp\_query\_name) | n/a | `any` | n/a | yes |
-| <a name="input_tenant"></a> [tenant](#input\_tenant) | n/a | `any` | n/a | yes |
-| <a name="input_zone"></a> [zone](#input\_zone) | n/a | `any` | n/a | yes |
+| <a name="input_account_id"></a> [account\_id](#input\_account\_id) | n/a | `string` | n/a | yes |
+| <a name="input_amp_workspace_name"></a> [amp\_workspace\_name](#input\_amp\_workspace\_name) | n/a | `string` | n/a | yes |
+| <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | n/a | `string` | n/a | yes |
+| <a name="input_eks_oidc_provider"></a> [eks\_oidc\_provider](#input\_eks\_oidc\_provider) | n/a | `string` | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | n/a | `string` | n/a | yes |
+| <a name="input_region"></a> [region](#input\_region) | n/a | `string` | n/a | yes |
+| <a name="input_service_account_amp_ingest_name"></a> [service\_account\_amp\_ingest\_name](#input\_service\_account\_amp\_ingest\_name) | n/a | `string` | n/a | yes |
+| <a name="input_service_account_amp_query_name"></a> [service\_account\_amp\_query\_name](#input\_service\_account\_amp\_query\_name) | n/a | `string` | n/a | yes |
+| <a name="input_tenant"></a> [tenant](#input\_tenant) | n/a | `string` | n/a | yes |
+| <a name="input_zone"></a> [zone](#input\_zone) | n/a | `string` | n/a | yes |
 
 ## Outputs
 

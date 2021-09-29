@@ -486,7 +486,7 @@ cluster_autoscaler_helm_version    = "9.10.7"
 #---------------------------------------------------------//
 # ENABLE AWS LB INGRESS CONTROLLER
 #---------------------------------------------------------//
-lb_ingress_controller_enable = true
+lb_ingress_controller_enable = false
 aws_lb_image_repo_name       = "amazon/aws-load-balancer-controller"
 aws_lb_image_tag             = "v2.2.4"
 aws_lb_helm_chart_version    = "1.2.7"
@@ -497,11 +497,11 @@ aws_lb_helm_helm_chart_name  = "aws-load-balancer-controller"
 # ENABLE PROMETHEUS
 #---------------------------------------------------------//
 # Creates the AMP workspace and all the relevent IAM Roles
-aws_managed_prometheus_enable         = true
+aws_managed_prometheus_enable         = false
 aws_managed_prometheus_workspace_name = "EKS-Metrics-Workspace"
 
 # Deploys Pometheus server with remote write to AWS AMP Workspace
-prometheus_enable             = true
+prometheus_enable             = false
 prometheus_helm_chart_url     = "https://prometheus-community.github.io/helm-charts"
 prometheus_helm_chart_name    = "prometheus"
 prometheus_helm_chart_version = "14.4.0"
@@ -514,7 +514,7 @@ pushgateway_image_tag         = "v1.3.1"
 #---------------------------------------------------------#
 # ENABLE AWS_FLUENT-BIT
 #---------------------------------------------------------#
-aws_for_fluent_bit_enable             = true
+aws_for_fluent_bit_enable             = false
 ekslog_retention_in_days              = 7
 aws_for_fluent_bit_image_repo_name    = "amazon/aws-for-fluent-bit"
 aws_for_fluent_bit_image_tag          = "2.17.0"
@@ -575,26 +575,35 @@ cert_manager_image_repo_name    = "quay.io/jetstack/cert-manager-controller"
 # ENABLE AWS Distro for OpenTelemetry Collector in EKS
 # Help : https://aws-otel.github.io/docs/setup/eks
 #---------------------------------------------------------#
-aws_open_telemetry_enable          = false
-aws_open_telemetry_emitter_image   = "aottestbed/aws-otel-collector-sample-app:java-0.1.0"
-aws_open_telemetry_collector_image = "amazon/aws-otel-collector:latest"
+aws_open_telemetry_enable    = false
+aws_open_telemetry_namespace = "aws-otel-eks"
+#EMITTER
+aws_open_telemetry_emitter_name                     = "trace-emitter"
+aws_open_telemetry_emitter_image                    = "public.ecr.aws/g9c4k4i4/trace-emitter:1"
+aws_open_telemetry_emitter_oltp_endpoint            = "localhost:55680"
+aws_open_telemetry_emitter_otel_resource_attributes = "service.namespace=AWSObservability,service.name=ADOTEmitService"
+#COLLECTOR
+aws_open_telemetry_collector_image = "public.ecr.aws/aws-observability/aws-otel-collector:latest"
 aws_open_telemetry_aws_region      = "eu-west-1"
-aws_open_telemetry_oltp_endpoint   = "localhost:4317"
 
 #---------------------------------------------------------#
 # ENABLE OPENTELEMETRY COLLECTOR FOR NODE GROUPS
 #---------------------------------------------------------#
-opentelemetry_enable                      = false
-opentelemetry_image                       = "otel/opentelemetry-collector"
-opentelemetry_image_tag                   = "0.31.0"
-opentelemetry_command_name                = "otelcol"
-opentelemetry_helm_chart_url              = "https://open-telemetry.github.io/opentelemetry-helm-charts"
-opentelemetry_helm_chart                  = "open-telemetry/opentelemetry-collector"
-opentelemetry_helm_chart_version          = "0.5.9"
-opentelemetry_enable_standalone_collector = true
-//opentelemetry_enable_agent_collector                  = true
+opentelemetry_enable       = false
+opentelemetry_image        = "otel/opentelemetry-collector"
+opentelemetry_image_tag    = "0.35.0"
+opentelemetry_command_name = "otelcol"
+
+opentelemetry_helm_chart_url     = "https://open-telemetry.github.io/opentelemetry-helm-charts"
+opentelemetry_helm_chart         = "opentelemetry-collector"
+opentelemetry_helm_chart_version = "0.5.11"
+
+#agent_collector
+opentelemetry_enable_agent_collector = true
+opentelemetry_enable_container_logs  = true
+# standalone_collector
+opentelemetry_enable_standalone_collector             = false
 opentelemetry_enable_autoscaling_standalone_collector = true
-//opentelemetry_enable_container_logs                   = true
-opentelemetry_min_standalone_collectors = 1
-opentelemetry_max_standalone_collectors = 10
+opentelemetry_min_standalone_collectors               = 1
+opentelemetry_max_standalone_collectors               = 10
 

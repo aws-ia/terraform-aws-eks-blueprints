@@ -90,14 +90,14 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_account_id"></a> [account\_id](#input\_account\_id) | n/a | `any` | n/a | yes |
+| <a name="input_account_id"></a> [account\_id](#input\_account\_id) | n/a | `string` | n/a | yes |
 | <a name="input_nginx_helm_chart_name"></a> [nginx\_helm\_chart\_name](#input\_nginx\_helm\_chart\_name) | n/a | `string` | `"ingress-nginx"` | no |
 | <a name="input_nginx_helm_chart_url"></a> [nginx\_helm\_chart\_url](#input\_nginx\_helm\_chart\_url) | n/a | `string` | `"https://kubernetes.github.io/ingress-nginx"` | no |
-| <a name="input_nginx_helm_chart_version"></a> [nginx\_helm\_chart\_version](#input\_nginx\_helm\_chart\_version) | n/a | `any` | n/a | yes |
+| <a name="input_nginx_helm_chart_version"></a> [nginx\_helm\_chart\_version](#input\_nginx\_helm\_chart\_version) | n/a | `string` | n/a | yes |
 | <a name="input_nginx_image_repo_name"></a> [nginx\_image\_repo\_name](#input\_nginx\_image\_repo\_name) | n/a | `string` | `"ingress-nginx/controller"` | no |
-| <a name="input_nginx_image_tag"></a> [nginx\_image\_tag](#input\_nginx\_image\_tag) | n/a | `any` | n/a | yes |
-| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `any` | n/a | yes |
-| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `any` | n/a | yes |
+| <a name="input_nginx_image_tag"></a> [nginx\_image\_tag](#input\_nginx\_image\_tag) | n/a | `string` | n/a | yes |
+| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `string` | n/a | yes |
+| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `bool` | n/a | yes |
 
 ## Outputs
 

@@ -607,23 +607,25 @@ variable "windows_vpc_admission_webhook_image_tag" {
 }
 
 #-----------AWS OPEN TELEMETRY HELM CHART-------------
-variable "aws_open_telemetry_enable" {
-  default     = false
-  description = "Enable AWS Open telemetry collector"
-}
+variable "aws_open_telemetry_enable" {}
 
 variable "aws_open_telemetry_namespace" {
-  default     = "aws-otel-eks"
   description = "WS Open telemetry namespace"
 }
 
+variable "aws_open_telemetry_emitter_otel_resource_attributes" {
+  description = "AWS Open telemetry emitter otel resource attributes"
+}
+
+variable "aws_open_telemetry_emitter_name" {
+  description = "AWS Open telemetry emitter image name"
+}
+
 variable "aws_open_telemetry_emitter_image" {
-  default     = "aottestbed/aws-otel-collector-sample-app:java-0.1.0"
   description = "AWS Open telemetry emitter image id and tag"
 }
 
 variable "aws_open_telemetry_collector_image" {
-  default     = "amazon/aws-otel-collector:latest"
   description = "AWS Open telemetry collector image id and tag"
 }
 
@@ -631,11 +633,19 @@ variable "aws_open_telemetry_aws_region" {
   description = "AWS Open telemetry region"
 }
 
-variable "aws_open_telemetry_oltp_endpoint" {
-  default     = "localhost:4317"
+variable "aws_open_telemetry_emitter_oltp_endpoint" {
   description = "AWS Open telemetry OLTP endpoint"
 }
 
+variable "aws_open_telemetry_mg_node_iam_role_arns" {
+  type    = list(string)
+  default = []
+}
+
+variable "aws_open_telemetry_self_mg_node_iam_role_arns" {
+  type    = list(string)
+  default = []
+}
 #-----------OPEN TELEMETRY HELM CHART-------------
 variable "opentelemetry_enable" {
   type        = bool
@@ -661,45 +671,54 @@ variable "opentelemetry_enable_autoscaling_standalone_collector" {
   description = "Enabling the autoscaling of the standalone gateway collector on eks cluster"
 }
 variable "opentelemetry_image_tag" {
+  type        = string
   default     = "0.31.0"
   description = "Docker image tag for opentelemetry from open-telemetry"
 }
 
 variable "opentelemetry_image" {
+  type        = string
   default     = "otel/opentelemetry-collector"
   description = "Docker image for opentelemetry from open-telemetry"
 }
 
 variable "opentelemetry_helm_chart_version" {
+  type        = string
   default     = "0.5.9"
   description = "Helm chart version for opentelemetry"
 }
 
 variable "opentelemetry_helm_chart" {
+  type        = string
   default     = "open-telemetry/opentelemetry-collector"
   description = "Helm chart for opentelemetry"
 }
 
 variable "opentelemetry_command_name" {
+  type        = string
   default     = "otel"
   description = "The OpenTelemetry command.name value"
 }
 
 variable "opentelemetry_enable_container_logs" {
+  type        = bool
   default     = false
   description = "Whether or not to enable container log collection on the otel agents"
 }
 
 variable "opentelemetry_min_standalone_collectors" {
+  type        = number
   default     = 1
   description = "The minimum number of opentelemetry standalone gateway collectors to run"
 }
 
 variable "opentelemetry_max_standalone_collectors" {
+  type        = number
   default     = 3
   description = "The maximum number of opentelemetry standalone gateway collectors to run"
 }
 variable "opentelemetry_helm_chart_url" {
+  type        = string
   default     = "https://open-telemetry.github.io/opentelemetry-helm-charts"
   description = "opentelemetry helm chart endpoint"
 }

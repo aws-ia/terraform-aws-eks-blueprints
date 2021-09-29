@@ -111,11 +111,11 @@ No modules.
 | <a name="input_aws_lb_helm_repo_url"></a> [aws\_lb\_helm\_repo\_url](#input\_aws\_lb\_helm\_repo\_url) | n/a | `string` | `"https://aws.github.io/eks-charts"` | no |
 | <a name="input_aws_lb_image_repo_name"></a> [aws\_lb\_image\_repo\_name](#input\_aws\_lb\_image\_repo\_name) | n/a | `string` | `"amazon/aws-load-balancer-controller"` | no |
 | <a name="input_aws_lb_image_tag"></a> [aws\_lb\_image\_tag](#input\_aws\_lb\_image\_tag) | n/a | `string` | `"v2.2.4"` | no |
-| <a name="input_clusterName"></a> [clusterName](#input\_clusterName) | n/a | `any` | n/a | yes |
-| <a name="input_eks_oidc_issuer_url"></a> [eks\_oidc\_issuer\_url](#input\_eks\_oidc\_issuer\_url) | n/a | `any` | n/a | yes |
-| <a name="input_eks_oidc_provider_arn"></a> [eks\_oidc\_provider\_arn](#input\_eks\_oidc\_provider\_arn) | n/a | `any` | n/a | yes |
-| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `any` | n/a | yes |
-| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `any` | n/a | yes |
+| <a name="input_clusterName"></a> [clusterName](#input\_clusterName) | n/a | `string` | n/a | yes |
+| <a name="input_eks_oidc_issuer_url"></a> [eks\_oidc\_issuer\_url](#input\_eks\_oidc\_issuer\_url) | n/a | `string` | n/a | yes |
+| <a name="input_eks_oidc_provider_arn"></a> [eks\_oidc\_provider\_arn](#input\_eks\_oidc\_provider\_arn) | n/a | `string` | n/a | yes |
+| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `string` | n/a | yes |
+| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `bool` | n/a | yes |
 | <a name="input_public_image_repo"></a> [public\_image\_repo](#input\_public\_image\_repo) | n/a | `string` | `"602401143452.dkr.ecr.us-west-2.amazonaws.com"` | no |
 | <a name="input_replicas"></a> [replicas](#input\_replicas) | n/a | `string` | `"2"` | no |
 

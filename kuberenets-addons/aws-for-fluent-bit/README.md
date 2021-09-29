@@ -88,10 +88,10 @@ No modules.
 | <a name="input_aws_for_fluent_bit_helm_chart_version"></a> [aws\_for\_fluent\_bit\_helm\_chart\_version](#input\_aws\_for\_fluent\_bit\_helm\_chart\_version) | n/a | `string` | `"0.1.11"` | no |
 | <a name="input_aws_for_fluent_bit_image_repo_name"></a> [aws\_for\_fluent\_bit\_image\_repo\_name](#input\_aws\_for\_fluent\_bit\_image\_repo\_name) | n/a | `string` | `"amazon/aws-for-fluent-bit"` | no |
 | <a name="input_aws_for_fluent_bit_image_tag"></a> [aws\_for\_fluent\_bit\_image\_tag](#input\_aws\_for\_fluent\_bit\_image\_tag) | n/a | `string` | `"2.13.0"` | no |
-| <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | n/a | `any` | n/a | yes |
-| <a name="input_ekslog_retention_in_days"></a> [ekslog\_retention\_in\_days](#input\_ekslog\_retention\_in\_days) | n/a | `any` | n/a | yes |
-| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `any` | n/a | yes |
-| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `any` | n/a | yes |
+| <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | n/a | `string` | n/a | yes |
+| <a name="input_ekslog_retention_in_days"></a> [ekslog\_retention\_in\_days](#input\_ekslog\_retention\_in\_days) | n/a | `number` | n/a | yes |
+| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `string` | n/a | yes |
+| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `string` | n/a | yes |
 
 ## Outputs
 

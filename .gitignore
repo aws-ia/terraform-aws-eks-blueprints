@@ -9,3 +9,4 @@ kubeconfig*
 .terraform.lock.hcl
 local_tf_state/
 .vscode
+.gitallowed

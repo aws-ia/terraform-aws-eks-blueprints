@@ -4,7 +4,7 @@ This example shows how to enable Windows support in the EKS cluster.
 
 ## Pre-requisites
 
-[cert-manager](https://cert-manager.io/) is currently needed to enable Windows support. The `cert-manager` [Helm chart](../../kuberenets_addons/cert-manager) will be automatically enabeld, if Windows support is enabled.
+[cert-manager](https://cert-manager.io/) is currently needed to enable Windows support. The `cert-manager` [Helm chart](../../kuberenets-addons/cert-manager) will be automatically enabeld, if Windows support is enabled.
 
 ## Required input
 

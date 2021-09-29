@@ -37,17 +37,17 @@ resource "kubernetes_deployment" "aws_otel_eks_sidecar" {
 
       spec {
         container {
-          name  = "aws-otel-emitter"
+          name  = var.aws_open_telemetry_emitter_name
           image = var.aws_open_telemetry_emitter_image
 
           env {
             name  = "OTEL_OTLP_ENDPOINT"
-            value = var.aws_open_telemetry_oltp_endpoint
+            value = var.aws_open_telemetry_emitter_oltp_endpoint
           }
 
           env {
             name  = "OTEL_RESOURCE_ATTRIBUTES"
-            value = "service.namespace=AWSObservability,service.name=CloudWatchEKSService"
+            value = var.aws_open_telemetry_emitter_otel_resource_attributes
           }
 
           env {

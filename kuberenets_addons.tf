@@ -20,7 +20,7 @@
 # Invoking Helm Module
 # ---------------------------------------------------------------------------------------------------------------------
 module "helm" {
-  source                     = "./kuberenets_addons"
+  source                     = "./kuberenets-addons"
   eks_cluster_id             = module.eks.eks_cluster_id
   public_docker_repo         = var.public_docker_repo
   private_container_repo_url = var.private_container_repo_url != "" ? var.private_container_repo_url : local.ecr_image_repo_url
@@ -123,14 +123,16 @@ module "helm" {
   windows_vpc_admission_webhook_image_tag   = var.windows_vpc_admission_webhook_image_tag
 
   # ------- AWS Distro for OpenTelemetry Collector in EKS Module ---------
-  aws_open_telemetry_enable                     = var.aws_open_telemetry_enable
-  aws_open_telemetry_namespace                  = var.aws_open_telemetry_namespace
-  aws_open_telemetry_aws_region                 = var.aws_open_telemetry_aws_region
-  aws_open_telemetry_collector_image            = var.aws_open_telemetry_collector_image
-  aws_open_telemetry_emitter_image              = var.aws_open_telemetry_emitter_image
-  aws_open_telemetry_oltp_endpoint              = var.aws_open_telemetry_oltp_endpoint
-  aws_open_telemetry_mg_node_iam_role_arns      = var.create_eks && var.enable_managed_nodegroups ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.managed-node-groups[nodes].manage_ng_iam_role_name) }) : []
-  aws_open_telemetry_self_mg_node_iam_role_arns = var.create_eks && var.enable_self_managed_nodegroups ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws-eks-self-managed-node-groups[nodes].self_managed_iam_role_name) }) : []
+  aws_open_telemetry_enable                           = var.aws_open_telemetry_enable
+  aws_open_telemetry_namespace                        = var.aws_open_telemetry_namespace
+  aws_open_telemetry_aws_region                       = var.aws_open_telemetry_aws_region
+  aws_open_telemetry_collector_image                  = var.aws_open_telemetry_collector_image
+  aws_open_telemetry_emitter_image                    = var.aws_open_telemetry_emitter_image
+  aws_open_telemetry_emitter_oltp_endpoint            = var.aws_open_telemetry_emitter_oltp_endpoint
+  aws_open_telemetry_mg_node_iam_role_arns            = var.create_eks && var.enable_managed_nodegroups ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.managed-node-groups[nodes].manage_ng_iam_role_name) }) : []
+  aws_open_telemetry_self_mg_node_iam_role_arns       = var.create_eks && var.enable_self_managed_nodegroups ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws-eks-self-managed-node-groups[nodes].self_managed_iam_role_name) }) : []
+  aws_open_telemetry_emitter_name                     = var.aws_open_telemetry_emitter_name
+  aws_open_telemetry_emitter_otel_resource_attributes = var.aws_open_telemetry_emitter_otel_resource_attributes
 
   # ------- OpenTelemetry Module ---------
   opentelemetry_enable                                  = var.opentelemetry_enable
@@ -149,4 +151,5 @@ module "helm" {
 
 
   depends_on = [module.eks]
+
 }

@@ -91,12 +91,12 @@ No modules.
 | <a name="input_agones_helm_chart_url"></a> [agones\_helm\_chart\_url](#input\_agones\_helm\_chart\_url) | n/a | `string` | `"https://agones.dev/chart/stable"` | no |
 | <a name="input_agones_image_repo"></a> [agones\_image\_repo](#input\_agones\_image\_repo) | n/a | `string` | `"gcr.io/agones-images"` | no |
 | <a name="input_agones_image_tag"></a> [agones\_image\_tag](#input\_agones\_image\_tag) | n/a | `string` | `"1.15.0"` | no |
-| <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | n/a | `any` | n/a | yes |
-| <a name="input_eks_sg_id"></a> [eks\_sg\_id](#input\_eks\_sg\_id) | n/a | `any` | n/a | yes |
+| <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | n/a | `string` | n/a | yes |
+| <a name="input_eks_sg_id"></a> [eks\_sg\_id](#input\_eks\_sg\_id) | n/a | `string` | n/a | yes |
 | <a name="input_expose_udp"></a> [expose\_udp](#input\_expose\_udp) | n/a | `bool` | `false` | no |
-| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `any` | n/a | yes |
-| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `any` | n/a | yes |
-| <a name="input_s3_nlb_logs"></a> [s3\_nlb\_logs](#input\_s3\_nlb\_logs) | n/a | `any` | n/a | yes |
+| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `string` | n/a | yes |
+| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `string` | n/a | yes |
+| <a name="input_s3_nlb_logs"></a> [s3\_nlb\_logs](#input\_s3\_nlb\_logs) | n/a | `string` | n/a | yes |
 
 ## Outputs
 

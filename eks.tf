@@ -37,11 +37,11 @@ resource "aws_kms_key" "eks" {
 }
 
 module "eks" {
-  source = "git@github.com:maheshr-amzn/terraform-aws-eks_cluster?ref=feature/aws-eks_cluster-development"
+  source = "git@github.com:aws-ia/terraform-aws-eks_cluster.git?ref=develop"
   # version = ???
 
   create_eks      = var.create_eks
-  manage_aws_auth = false # Replaced by the auth.tf file
+  manage_aws_auth = false
 
   eks_cluster_name    = module.eks-label.id
   eks_cluster_version = var.kubernetes_version

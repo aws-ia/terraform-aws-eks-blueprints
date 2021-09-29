@@ -45,8 +45,8 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_admission_webhook_image_repo_name"></a> [admission\_webhook\_image\_repo\_name](#input\_admission\_webhook\_image\_repo\_name) | n/a | `string` | `"eks/vpc-admission-webhook"` | no |
 | <a name="input_admission_webhook_image_tag"></a> [admission\_webhook\_image\_tag](#input\_admission\_webhook\_image\_tag) | Docker image tag for Windows VPC admission webhook controller | `string` | `"v0.2.7"` | no |
-| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `any` | n/a | yes |
-| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `any` | n/a | yes |
+| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `string` | n/a | yes |
+| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `bool` | n/a | yes |
 | <a name="input_public_image_repo"></a> [public\_image\_repo](#input\_public\_image\_repo) | n/a | `string` | `"602401143452.dkr.ecr.us-west-2.amazonaws.com"` | no |
 | <a name="input_resource_controller_image_repo_name"></a> [resource\_controller\_image\_repo\_name](#input\_resource\_controller\_image\_repo\_name) | n/a | `string` | `"eks/windows-vpc-resource-controller"` | no |
 | <a name="input_resource_controller_image_tag"></a> [resource\_controller\_image\_tag](#input\_resource\_controller\_image\_tag) | Docker image tag for Windows VPC resource controller | `string` | `"v0.2.7"` | no |
