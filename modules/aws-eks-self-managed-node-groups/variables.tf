@@ -54,6 +54,7 @@ variable "cluster_primary_security_group_id" {
 variable "cluster_security_group_id" {
   type        = string
   description = "EKS Cluster Security group ID for self managed node group"
+  default     = ""
 }
 
 variable "worker_security_group_id" {

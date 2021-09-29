@@ -22,7 +22,7 @@
 
 module "aws_managed_prometheus" {
   count                           = var.create_eks && var.aws_managed_prometheus_enable == true ? 1 : 0
-  source                          = "./modules/aws_managed_prometheus"
+  source                          = "modules\/aws-managed-prometheus"
   environment                     = var.environment
   tenant                          = var.tenant
   zone                            = var.zone

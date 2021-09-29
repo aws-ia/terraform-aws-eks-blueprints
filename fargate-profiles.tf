@@ -20,7 +20,7 @@
 # FARGATE PROFILES
 # ---------------------------------------------------------------------------------------------------------------------
 module "fargate-profiles" {
-  source = "./modules/fargate-profiles"
+  source = "./modules/aws-eks-fargate-profiles"
 
   for_each = { for k, v in var.fargate_profiles : k => v if var.enable_fargate && length(var.fargate_profiles) > 0 }
 

@@ -3,17 +3,16 @@ data "aws_caller_identity" "current" {}
 
 data "aws_partition" "current" {}
 
-data "aws_iam_policy_document" "managed_ng_assume_role_policy" {
+data "aws_iam_policy_document" "fargate_assume_role_policy" {
   statement {
-    sid = "EKSWorkerAssumeRole"
+    sid = "EKSFargateAssumeRole"
 
     actions = [
       "sts:AssumeRole",
     ]
-
     principals {
       type        = "Service"
-      identifiers = [local.ec2_principal]
+      identifiers = ["eks-fargate-pods.amazonaws.com"]
     }
   }
 }

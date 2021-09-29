@@ -20,7 +20,7 @@
 # Invoking Helm Module
 # ---------------------------------------------------------------------------------------------------------------------
 module "helm" {
-  source                     = "./helm"
+  source                     = "./kuberenets_addons"
   eks_cluster_id             = module.eks.eks_cluster_id
   public_docker_repo         = var.public_docker_repo
   private_container_repo_url = var.private_container_repo_url != "" ? var.private_container_repo_url : local.ecr_image_repo_url
