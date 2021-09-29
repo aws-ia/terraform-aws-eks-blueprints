@@ -18,7 +18,7 @@
 
 module "metrics_server" {
   count                            = var.metrics_server_enable == true ? 1 : 0
-  source                           = "./metrics_server"
+  source                           = "./metrics-server"
   private_container_repo_url       = var.private_container_repo_url
   public_docker_repo               = var.public_docker_repo
   metric_server_helm_chart_version = var.metric_server_helm_chart_version
@@ -29,7 +29,7 @@ module "metrics_server" {
 
 module "cluster_autoscaler" {
   count                              = var.cluster_autoscaler_enable == true ? 1 : 0
-  source                             = "./cluster_autoscaler"
+  source                             = "./cluster-autoscaler"
   private_container_repo_url         = var.private_container_repo_url
   eks_cluster_id                     = var.eks_cluster_id
   public_docker_repo                 = var.public_docker_repo
@@ -40,7 +40,7 @@ module "cluster_autoscaler" {
 
 module "lb_ingress_controller" {
   count                       = var.lb_ingress_controller_enable == true ? 1 : 0
-  source                      = "./lb_ingress_controller"
+  source                      = "./lb-ingress-controller"
   private_container_repo_url  = var.private_container_repo_url
   clusterName                 = var.eks_cluster_id
   eks_oidc_issuer_url         = var.eks_oidc_issuer_url
@@ -55,7 +55,7 @@ module "lb_ingress_controller" {
 
 module "traefik_ingress" {
   count                      = var.traefik_ingress_controller_enable == true ? 1 : 0
-  source                     = "./traefik_ingress"
+  source                     = "./traefik-ingress"
   private_container_repo_url = var.private_container_repo_url
   account_id                 = data.aws_caller_identity.current.account_id
   s3_nlb_logs                = var.s3_nlb_logs
@@ -68,7 +68,7 @@ module "traefik_ingress" {
 
 module "nginx_ingress" {
   count                      = var.nginx_ingress_controller_enable == true ? 1 : 0
-  source                     = "./nginx_ingress"
+  source                     = "./nginx-ingress"
   private_container_repo_url = var.private_container_repo_url
   account_id                 = data.aws_caller_identity.current.account_id
   public_docker_repo         = var.public_docker_repo
@@ -92,7 +92,7 @@ module "aws-for-fluent-bit" {
 
 module "fargate_fluentbit" {
   count          = var.fargate_fluent_bit_enable == true ? 1 : 0
-  source         = "./fargate_fluentbit"
+  source         = "./fargate-fluentbit"
   eks_cluster_id = var.eks_cluster_id
 }
 
@@ -165,7 +165,7 @@ module "aws_opentelemetry_collector" {
 
 module "opentelemetry_collector" {
   count                                                 = var.opentelemetry_enable == true ? 1 : 0
-  source                                                = "./opentelemetry_collector"
+  source                                                = "./opentelemetry-collector"
   private_container_repo_url                            = var.private_container_repo_url
   public_docker_repo                                    = var.public_docker_repo
   opentelemetry_command_name                            = var.opentelemetry_command_name

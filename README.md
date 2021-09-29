@@ -71,18 +71,18 @@ Helm Chart Module within this framework allows you to deploy Kubernetes  apps us
 
 You can find the README for each Helm module with instructions on how to download the images from Docker Hub or third-party repos and upload it to your private ECR repo.
 
-For example, [ALB Ingress Controller](kuberenets-addons/lb_ingress_controller/README.md) for AWS LB Ingress Controller module.
+For example, [ALB Ingress Controller](kuberenets-addons/lb-ingress-controller/README.md) for AWS LB Ingress Controller module.
 
 ## Ingress Controller Modules
 Ingress is an API object that defines the traffic routing rules (e.g., load balancing, SSL termination, path-based routing, protocol), whereas the Ingress Controller is the component responsible for fulfilling those requests.
 
-* [ALB Ingress Controller](kuberenets-addons/lb_ingress_controller/README.md) can be deployed by specifying the following line in `base.tfvars` file.
+* [ALB Ingress Controller](kuberenets-addons/lb-ingress-controller/README.md) can be deployed by specifying the following line in `base.tfvars` file.
 **AWS ALB Ingress controller** triggers the creation of an ALB and the necessary supporting AWS resources whenever a Kubernetes  user declares an Ingress resource in the cluster.
 [ALB Docs](https://Kubernetes-sigs.github.io/aws-load-balancer-controller/latest/)
 
     `alb_ingress_controller_enable = true`
 
-* [Traefik Ingress Controller](kuberenets-addons/traefik_ingress/README.md) can be deployed by specifying the following line in `base.tfvars` file.
+* [Traefik Ingress Controller](kuberenets-addons/traefik-ingress/README.md) can be deployed by specifying the following line in `base.tfvars` file.
 **Traefik is an open source Kubernetes  Ingress Controller**. The Traefik Kubernetes  Ingress provider is a Kubernetes  Ingress controller; that is to say, it manages access to cluster services by supporting the Ingress specification. For more details about [Traefik can be found here](https://doc.traefik.io/traefik/providers/Kubernetes-ingress/)
 
     `traefik_ingress_controller_enable = true`
@@ -90,14 +90,14 @@ Ingress is an API object that defines the traffic routing rules (e.g., load bala
 ## Autoscaling Modules
 **Cluster Autoscaler** and **Metric Server** Helm Modules gets deployed by default with the EKS Cluster.
 
-* [Cluster Autoscaler](kuberenets-addons/cluster_autoscaler/README.md) can be deployed by specifying the following line in `base.tfvars` file.
+* [Cluster Autoscaler](kuberenets-addons/cluster-autoscaler/README.md) can be deployed by specifying the following line in `base.tfvars` file.
 The Kubernetes  Cluster Autoscaler automatically adjusts the number of nodes in your cluster when pods fail or are rescheduled onto other nodes. It's not deployed by default in EKS clusters.
 That is, the AWS Cloud Provider implementation within the Kubernetes  Cluster Autoscaler controls the **DesiredReplicas** field of Amazon EC2 Auto Scaling groups.
 The Cluster Autoscaler is typically installed as a **Deployment** in your cluster. It uses leader election to ensure high availability, but scaling is one done by a single replica at a time.
 
     `cluster_autoscaler_enable = true`
 
-* [Metrics Server](kuberenets-addons/metrics_server/README.md) can be deployed by specifying the following line in `base.tfvars` file.
+* [Metrics Server](kuberenets-addons/metrics-server/README.md) can be deployed by specifying the following line in `base.tfvars` file.
 The Kubernetes  Metrics Server, used to gather metrics such as cluster CPU and memory usage over time, is not deployed by default in EKS clusters.
 
     `metrics_server_enable = true`
@@ -111,7 +111,7 @@ For more details, see [aws-for-fluent-bit](https://gallery.ecr.aws/aws-observabi
 
     `aws-for-fluent-bit_enable = true`
 
-* [fargate-fluentbit](kuberenets-addons/fargate_fluentbit) can be deployed by specifying the following line in `base.tfvars` file.
+* [fargate-fluentbit](kuberenets-addons/fargate-fluentbit) can be deployed by specifying the following line in `base.tfvars` file.
 This module ships the Fargate Container logs to CloudWatch
 
     `fargate_fluent_bit_enable = true`
