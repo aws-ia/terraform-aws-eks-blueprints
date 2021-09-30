@@ -6,7 +6,7 @@ This project provides a framework for deploying best-practice multi-tenant [EKS 
 # Overview
 The AWS EKS Accelerator for Terraform module helps you to provision [EKS Clusters](https://aws.amazon.com/eks), [Managed node groups](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) with [On-Demand](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-on-demand-instances.html) and [Spot Instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html), [AWS Fargate profiles](https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html), and all the necessary Kubernetes add-ons for a production-ready EKS cluster. The [Terraform Helm provider](https://github.com/hashicorp/terraform-provider-helm) is used to deploy common Kubernetes Addons with publicly available [Helm Charts](https://artifacthub.io/). This project leverages the official [terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks) module to create EKS Clusters.
 
-The intention of the framework is to help you to design and create EKS clusters for different environments in various AWS accounts across multiple regions with a **unique Terraform configuration and state file** per EKS cluster.  
+The intention of this framework is to help you design config driven solution. This will help you to create EKS clusters for various environments and AWS accounts across multiple regions with a **unique Terraform configuration and state file** per EKS cluster.  
 
 The top-level `deploy` folder provides an example of how you can structure your folders and files to define multiple EKS Cluster environments and consume this accelerator module. This approach is suitable for large projects, with clearly defined sub directory and file structure.
 This can be modified the way that suits your requirement. You can define a unique configuration for each EKS Cluster and making this module as central source of truth. Please note that `deploy` folder can be moved to a dedicated repo and consume this module using `main.tf` file([see example file here](deploy/live/preprod/eu-west-1/application/dev/dev.tfvars) ).
@@ -24,7 +24,10 @@ e.g. folder/file structure for defining multiple clusters
         │                       └── dev.tfvars       
         │                       └── main.tf       
         │                       └── variables.tf    
-        │                       └── outputs.tf          
+        │                       └── outputs.tf         
+        │                   └── test    
+        │                       └── backend.conf              
+        │                       └── test.tfvars    
         │       └── prod                      
         │           └── eu-west-1                    
         │               └── application               
