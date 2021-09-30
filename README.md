@@ -308,11 +308,7 @@ It's highly recommended to use remote state in S3 instead of using local backend
 ```
 
 #### Step4: Assume IAM role before creating a EKS cluster.
-This role will become the Kubernetes  Admin by default.
-
-```shell script
-aws-mfa --assume-role  arn:aws:iam::<ACCOUNTID>:role/<IAMROLE>
-```
+This role will become the Kubernetes  Admin by default. Please see this document for [assuming a role](https://aws.amazon.com/premiumsupport/knowledge-center/iam-assume-role-cli/)
 
 #### Step5: Run Terraform INIT
 to initialize a working directory with configuration files
