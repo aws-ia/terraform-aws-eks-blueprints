@@ -17,7 +17,7 @@
  */
 
 
-resource "aws_eks_addon" "vpc-cni" {
+resource "aws_eks_addon" "vpc_cni" {
   count             = var.enable_vpc_cni_addon ? 1 : 0
   cluster_name      = var.cluster_name
   addon_name        = "vpc-cni"
@@ -41,7 +41,7 @@ resource "aws_eks_addon" "coredns" {
   )
 }
 
-resource "aws_eks_addon" "kube-proxy" {
+resource "aws_eks_addon" "kube_proxy" {
   count             = var.enable_kube_proxy_addon ? 1 : 0
   cluster_name      = var.cluster_name
   addon_name        = "kube-proxy"

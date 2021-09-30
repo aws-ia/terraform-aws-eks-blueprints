@@ -26,7 +26,7 @@ resource "kubernetes_namespace" "opentelemetry_system" {
   }
 }
 
-resource "helm_release" "opentelemetry-collector" {
+resource "helm_release" "opentelemetry_collector" {
   name       = "opentelemetry-collector"
   repository = var.opentelemetry_helm_chart_url
   chart      = var.opentelemetry_helm_chart
