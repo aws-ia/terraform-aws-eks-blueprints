@@ -1,5 +1,5 @@
 
-resource "aws_eks_fargate_profile" "eks-fargate" {
+resource "aws_eks_fargate_profile" "eks_fargate" {
   cluster_name           = var.eks_cluster_name
   fargate_profile_name   = "${var.eks_cluster_name}-${local.fargate_profiles["fargate_profile_name"]}"
   pod_execution_role_arn = aws_iam_role.fargate.arn

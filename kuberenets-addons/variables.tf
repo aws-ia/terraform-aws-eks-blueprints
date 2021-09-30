@@ -33,7 +33,7 @@ variable "traefik_ingress_controller_enable" {
 }
 
 
-variable "lb_ingress_controller_enable" {
+variable "aws_lb_ingress_controller_enable" {
   type        = bool
   default     = false
   description = "Enabling LB Ingress controller on eks cluster"

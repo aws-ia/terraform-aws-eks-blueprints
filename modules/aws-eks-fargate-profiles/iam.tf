@@ -2,7 +2,7 @@
 #----------------------------------------------------------
 #IAM Policy for Fargate Fluentbit
 #----------------------------------------------------------
-resource "aws_iam_policy" "eks-fargate-logging-policy" {
+resource "aws_iam_policy" "eks_fargate_logging" {
   name        = "${var.eks_cluster_name}-${local.fargate_profiles["fargate_profile_name"]}"
   description = "Allow fargate profiles to writ logs to CW"
 
@@ -37,7 +37,7 @@ resource "aws_iam_role_policy_attachment" "fargate-AmazonEKSFargatePodExecutionR
 }
 
 resource "aws_iam_role_policy_attachment" "eks-fargate-logging-policy-attach" {
-  policy_arn = aws_iam_policy.eks-fargate-logging-policy.arn
+  policy_arn = aws_iam_policy.eks_fargate_logging.arn
   role       = aws_iam_role.fargate.name
 }
 

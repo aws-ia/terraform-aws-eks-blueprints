@@ -37,12 +37,29 @@ output "configure_kubectl" {
   value       = var.create_eks ? "aws eks --region ${data.aws_region.current.id} update-kubeconfig --name ${module.eks.eks_cluster_id}" : "EKS Cluster not enabled"
 }
 
+output "cluster_security_group_id" {
+  description = "EKS Control Plane Security Group ID"
+  value       = module.eks.eks_cluster_security_group_id
+}
+
+output "cluster_primary_security_group_id" {
+  description = "EKS Cluster Security group ID"
+  value       = module.eks.eks_cluster_primary_security_group_id
+}
+
+output "worker_security_group_id" {
+  description = "EKS Worker Security group ID created by EKS module"
+  value       = module.eks.eks_worker_security_group_id
+}
+
 output "amp_work_id" {
-  value = var.prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : "AMP not enabled"
+  description = "AWS Managed Prometheus workspace id"
+  value       = var.prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : "AMP not enabled"
 }
 
 output "amp_work_arn" {
-  value = var.prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : "AMP not enabled"
+  description = "AWS Managed Prometheus workspace ARN"
+  value       = var.prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : "AMP not enabled"
 }
 
 output "self_managed_node_group_iam_role_arns" {
@@ -51,49 +68,46 @@ output "self_managed_node_group_iam_role_arns" {
 }
 
 output "managed_node_group_iam_role_arns" {
-  description = "IAM role arn's of self managed node groups"
+  description = "IAM role arn's of managed node groups"
   value       = var.create_eks && var.enable_managed_nodegroups ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.managed-node-groups[nodes].manage_ng_iam_role_arn) }) : []
 }
 
-output "managed_node_groups" {
-  description = "Outputs from EKS node groups "
-  value       = var.create_eks && var.enable_managed_nodegroups ? module.managed-node-groups.* : []
-}
-
-output "fargate_profiles" {
-  description = "Outputs from EKS node groups "
-  value       = var.create_eks && var.enable_fargate ? module.fargate-profiles.* : []
-}
-
 output "fargate_profiles_iam_role_arns" {
-  description = "IAM role arn's of Fargate Profiles"
+  description = "IAM role arn's for Fargate Profiles"
   value       = var.create_eks && var.enable_fargate ? { for nodes in sort(keys(var.fargate_profiles)) : nodes => module.fargate-profiles[nodes].eks_fargate_profile_role_name } : null
 }
 
+output "managed_node_groups" {
+  description = "Outputs from EKS Managed node groups "
+  value       = var.create_eks && var.enable_managed_nodegroups ? module.managed-node-groups.* : []
+}
+
+output "self_managed_node_groups" {
+  description = "Outputs from EKS Self-managed node groups "
+  value       = var.create_eks && var.enable_self_managed_nodegroups ? module.aws-eks-self-managed-node-groups.* : []
+}
+
+output "fargate_profiles" {
+  description = "Outputs from EKS Fargate profiles groups "
+  value       = var.create_eks && var.enable_fargate ? module.fargate-profiles.* : []
+}
+
 output "self_managed_node_group_aws_auth_config_map" {
-  value = local.self_managed_node_group_aws_auth_config_map.*
+  description = "Self managed node groups AWS auth map"
+  value       = local.self_managed_node_group_aws_auth_config_map.*
 }
 
 output "windows_node_group_aws_auth_config_map" {
-  value = local.windows_node_group_aws_auth_config_map.*
+  description = "Windows node groups AWS auth map"
+  value       = local.windows_node_group_aws_auth_config_map.*
 }
 
 output "managed_node_group_aws_auth_config_map" {
-  value = local.managed_node_group_aws_auth_config_map.*
+  description = "Managed node groups AWS auth map"
+  value       = local.managed_node_group_aws_auth_config_map.*
 }
 
 output "fargate_profiles_aws_auth_config_map" {
-  value = local.fargate_profiles_aws_auth_config_map.*
-}
-
-output "cluster_security_group_id" {
-  value = module.eks.eks_cluster_security_group_id
-}
-
-output "cluster_primary_security_group_id" {
-  value = module.eks.eks_cluster_primary_security_group_id
-}
-
-output "worker_security_group_id" {
-  value = module.eks.eks_worker_security_group_id
+  description = "Fargate profiles AWS auth map"
+  value       = local.fargate_profiles_aws_auth_config_map.*
 }

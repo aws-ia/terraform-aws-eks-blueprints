@@ -17,8 +17,9 @@
  */
 
 module "metrics_server" {
-  count                            = var.metrics_server_enable == true ? 1 : 0
-  source                           = "./metrics-server"
+  count  = var.metrics_server_enable == true ? 1 : 0
+  source = "./metrics-server"
+
   private_container_repo_url       = var.private_container_repo_url
   public_docker_repo               = var.public_docker_repo
   metric_server_helm_chart_version = var.metric_server_helm_chart_version
@@ -28,8 +29,9 @@ module "metrics_server" {
 }
 
 module "cluster_autoscaler" {
-  count                              = var.cluster_autoscaler_enable == true ? 1 : 0
-  source                             = "./cluster-autoscaler"
+  count  = var.cluster_autoscaler_enable == true ? 1 : 0
+  source = "./cluster-autoscaler"
+
   private_container_repo_url         = var.private_container_repo_url
   eks_cluster_id                     = var.eks_cluster_id
   public_docker_repo                 = var.public_docker_repo
@@ -39,8 +41,9 @@ module "cluster_autoscaler" {
 }
 
 module "lb_ingress_controller" {
-  count                       = var.lb_ingress_controller_enable == true ? 1 : 0
-  source                      = "./lb-ingress-controller"
+  count  = var.aws_lb_ingress_controller_enable == true ? 1 : 0
+  source = "./lb-ingress-controller"
+
   private_container_repo_url  = var.private_container_repo_url
   clusterName                 = var.eks_cluster_id
   eks_oidc_issuer_url         = var.eks_oidc_issuer_url
@@ -54,8 +57,9 @@ module "lb_ingress_controller" {
 }
 
 module "traefik_ingress" {
-  count                      = var.traefik_ingress_controller_enable == true ? 1 : 0
-  source                     = "./traefik-ingress"
+  count  = var.traefik_ingress_controller_enable == true ? 1 : 0
+  source = "./traefik-ingress"
+
   private_container_repo_url = var.private_container_repo_url
   account_id                 = data.aws_caller_identity.current.account_id
   s3_nlb_logs                = var.s3_nlb_logs
@@ -67,8 +71,9 @@ module "traefik_ingress" {
 }
 
 module "nginx_ingress" {
-  count                      = var.nginx_ingress_controller_enable == true ? 1 : 0
-  source                     = "./nginx-ingress"
+  count  = var.nginx_ingress_controller_enable == true ? 1 : 0
+  source = "./nginx-ingress"
+
   private_container_repo_url = var.private_container_repo_url
   account_id                 = data.aws_caller_identity.current.account_id
   public_docker_repo         = var.public_docker_repo
@@ -78,8 +83,9 @@ module "nginx_ingress" {
 }
 
 module "aws-for-fluent-bit" {
-  count                                 = var.aws_for_fluent_bit_enable == true ? 1 : 0
-  source                                = "./aws-for-fluent-bit"
+  count  = var.aws_for_fluent_bit_enable == true ? 1 : 0
+  source = "./aws-for-fluent-bit"
+
   private_container_repo_url            = var.private_container_repo_url
   cluster_id                            = var.eks_cluster_id
   ekslog_retention_in_days              = var.ekslog_retention_in_days
@@ -97,8 +103,9 @@ module "fargate_fluentbit" {
 }
 
 module "agones" {
-  count                      = var.agones_enable == true ? 1 : 0
-  source                     = "./agones"
+  count  = var.agones_enable == true ? 1 : 0
+  source = "./agones"
+
   public_docker_repo         = var.public_docker_repo
   private_container_repo_url = var.private_container_repo_url
   cluster_id                 = var.eks_cluster_id
@@ -108,8 +115,9 @@ module "agones" {
 }
 
 module "prometheus" {
-  count                           = var.prometheus_enable == true ? 1 : 0
-  source                          = "./prometheus"
+  count  = var.prometheus_enable == true ? 1 : 0
+  source = "./prometheus"
+
   private_container_repo_url      = var.private_container_repo_url
   public_docker_repo              = var.public_docker_repo
   pushgateway_image_tag           = var.pushgateway_image_tag
@@ -125,8 +133,9 @@ module "prometheus" {
 }
 
 module "cert_manager" {
-  count                           = var.cert_manager_enable == true ? 1 : 0
-  source                          = "./cert-manager"
+  count  = var.cert_manager_enable == true ? 1 : 0
+  source = "./cert-manager"
+
   private_container_repo_url      = var.private_container_repo_url
   public_docker_repo              = var.public_docker_repo
   cert_manager_helm_chart_version = var.cert_manager_helm_chart_version
@@ -139,8 +148,9 @@ module "cert_manager" {
 }
 
 module "windows_vpc_controllers" {
-  count                         = var.windows_vpc_controllers_enable == true ? 1 : 0
-  source                        = "./windows-vpc-controllers"
+  count  = var.windows_vpc_controllers_enable == true ? 1 : 0
+  source = "./windows-vpc-controllers"
+
   private_container_repo_url    = var.private_container_repo_url
   public_docker_repo            = var.public_docker_repo
   resource_controller_image_tag = var.windows_vpc_resource_controller_image_tag
@@ -151,8 +161,9 @@ module "windows_vpc_controllers" {
 }
 
 module "aws_opentelemetry_collector" {
-  count                                               = var.aws_open_telemetry_enable == true ? 1 : 0
-  source                                              = "./aws-otel-eks"
+  count  = var.aws_open_telemetry_enable == true ? 1 : 0
+  source = "./aws-otel-eks"
+
   aws_open_telemetry_aws_region                       = var.aws_open_telemetry_aws_region == "" ? data.aws_region.current.id : var.aws_open_telemetry_aws_region
   aws_open_telemetry_emitter_image                    = var.aws_open_telemetry_emitter_image
   aws_open_telemetry_collector_image                  = var.aws_open_telemetry_collector_image
@@ -164,8 +175,9 @@ module "aws_opentelemetry_collector" {
 }
 
 module "opentelemetry_collector" {
-  count                                                 = var.opentelemetry_enable == true ? 1 : 0
-  source                                                = "./opentelemetry-collector"
+  count  = var.opentelemetry_enable == true ? 1 : 0
+  source = "./opentelemetry-collector"
+
   private_container_repo_url                            = var.private_container_repo_url
   public_docker_repo                                    = var.public_docker_repo
   opentelemetry_command_name                            = var.opentelemetry_command_name

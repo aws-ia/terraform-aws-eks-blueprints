@@ -140,7 +140,6 @@ variable "enable_irsa" {
 variable "create_eks" {
   type    = bool
   default = false
-
 }
 variable "kubernetes_version" {
   type        = string
@@ -213,7 +212,6 @@ variable "fargate_profiles" {
   type    = any
   default = {}
 }
-
 variable "enable_windows_support" {
   type    = string
   default = false
@@ -257,8 +255,6 @@ variable "aws_auth_additional_labels" {
 #----------------------------------------------------------
 # HELM CHART VARIABLES
 #----------------------------------------------------------
-
-
 variable "private_container_repo_url" {
   type        = string
   default     = ""
@@ -284,7 +280,7 @@ variable "traefik_ingress_controller_enable" {
   default     = false
   description = "Enabling Traefik Ingress Controller on eks cluster"
 }
-variable "lb_ingress_controller_enable" {
+variable "aws_lb_ingress_controller_enable" {
   type        = bool
   default     = false
   description = "enabling LB Ingress Controller on eks cluster"
@@ -299,19 +295,16 @@ variable "aws_for_fluent_bit_enable" {
   default     = false
   description = "Enabling aws_fluent_bit module on eks cluster"
 }
-
 variable "fargate_fluent_bit_enable" {
   type        = bool
   default     = false
   description = "Enabling fargate_fluent_bit module on eks cluster"
 }
-
 variable "ekslog_retention_in_days" {
   default     = 90
   description = "Number of days to retain log events. Default retention - 90 days."
   type        = number
 }
-
 variable "agones_enable" {
   type        = bool
   default     = false
@@ -322,27 +315,22 @@ variable "expose_udp" {
   default     = false
   description = "Enabling Agones Gaming Helm Chart"
 }
-
 variable "agones_image_repo" {
   type    = string
   default = "gcr.io/agones-images"
 }
-
 variable "agones_image_tag" {
   type    = string
   default = "1.15.0"
 }
-
 variable "agones_helm_chart_name" {
   type    = string
   default = "agones"
 }
-
 variable "agones_helm_chart_url" {
   type    = string
   default = "https://agones.dev/chart/stable"
 }
-
 variable "agones_game_server_maxport" {
   type    = number
   default = 8000
@@ -351,102 +339,82 @@ variable "agones_game_server_minport" {
   type    = number
   default = 7000
 }
-
 variable "aws_lb_image_repo_name" {
   type    = string
   default = "amazon/aws-load-balancer-controller"
 }
-
 variable "aws_lb_helm_repo_url" {
   type    = string
   default = "https://aws.github.io/eks-charts"
 }
-
 variable "aws_lb_helm_helm_chart_name" {
   type    = string
   default = "aws-load-balancer-controller"
 }
-
 variable "aws_lb_image_tag" {
   type    = string
   default = "v2.2.4"
 }
-
 variable "aws_lb_helm_chart_version" {
   type    = string
   default = "1.2.7"
 }
-
 variable "metric_server_image_repo_name" {
   type    = string
   default = "bitnami/metrics-server"
 }
-
 variable "metric_server_image_tag" {
   type    = string
   default = "0.5.0-debian-10-r83"
 }
-
 variable "metric_server_helm_chart_version" {
   type    = string
   default = "5.10.1"
 }
-
 variable "metric_server_helm_repo_url" {
   type    = string
   default = "https://charts.bitnami.com/bitnami"
 }
-
 variable "metric_server_helm_chart_name" {
   type    = string
   default = "metrics-server"
 }
-
 variable "cluster_autoscaler_helm_repo_url" {
   type    = string
   default = "https://kubernetes.github.io/autoscaler"
 }
-
 variable "cluster_autoscaler_helm_chart_name" {
   type    = string
   default = "cluster-autoscaler"
 }
-
 variable "cluster_autoscaler_image_repo_name" {
   type    = string
   default = "k8s.gcr.io/autoscaling/cluster-autoscaler"
 }
-
 variable "cluster_autoscaler_image_tag" {
   type    = string
   default = "v1.21.0"
 }
-
 variable "cluster_autoscaler_helm_version" {
   type    = string
   default = "9.10.7"
 }
-
 variable "aws_managed_prometheus_workspace_name" {
   type    = string
   default = "aws-managed-prometheus-workspace"
 }
-
 variable "prometheus_helm_chart_url" {
   type    = string
   default = "https://prometheus-community.github.io/helm-charts"
 }
-
 variable "prometheus_helm_chart_name" {
   type    = string
   default = "prometheus"
 }
-
 variable "prometheus_helm_chart_version" {
   type    = string
   default = "14.7.0"
 }
-
 variable "prometheus_image_tag" {
   type    = string
   default = "v2.26.0"
@@ -456,62 +424,50 @@ variable "alert_manager_image_tag" {
   type    = string
   default = "v0.21.0"
 }
-
 variable "configmap_reload_image_tag" {
   type    = string
   default = "v0.5.0"
 }
-
 variable "node_exporter_image_tag" {
   type    = string
   default = "v1.1.2"
 }
-
 variable "pushgateway_image_tag" {
   type    = string
   default = "v1.3.1"
 }
-
 variable "prometheus_enable" {
   type    = bool
   default = false
 }
-
 variable "aws_managed_prometheus_enable" {
   type    = bool
   default = false
 }
-
 variable "traefik_image_repo_name" {
   type    = string
   default = "traefik"
 }
-
 variable "traefik_helm_chart_name" {
   type    = string
   default = "traefik"
 }
-
 variable "traefik_helm_chart_url" {
   type    = string
   default = "https://helm.traefik.io/traefik"
 }
-
 variable "traefik_helm_chart_version" {
   type    = string
   default = "10.0.0"
 }
-
 variable "traefik_image_tag" {
   type    = string
   default = "v2.4.9"
 }
-
 variable "nginx_image_repo_name" {
   type    = string
   default = "ingress-nginx/controller"
 }
-
 variable "nginx_helm_chart_url" {
   type    = string
   default = "https://kubernetes.github.io/ingress-nginx"
@@ -520,44 +476,36 @@ variable "nginx_helm_chart_name" {
   type    = string
   default = "ingress-nginx"
 }
-
 variable "nginx_helm_chart_version" {
   type    = string
   default = "3.33.0"
 }
-
 variable "nginx_image_tag" {
   type    = string
   default = "v0.47.0"
 }
-
 variable "aws_for_fluent_bit_image_repo_name" {
   type    = string
   default = "amazon/aws-for-fluent-bit"
 }
-
 variable "aws_for_fluent_bit_helm_chart_url" {
   type    = string
   default = "https://aws.github.io/eks-charts"
 }
-
 variable "aws_for_fluent_bit_helm_chart_name" {
   type    = string
   default = "aws-for-fluent-bit"
 }
-
 variable "aws_for_fluent_bit_image_tag" {
   type        = string
   default     = "2.13.0"
   description = "Docker image tag for aws_for_fluent_bit"
 }
-
 variable "aws_for_fluent_bit_helm_chart_version" {
   type        = string
   default     = "0.1.11"
   description = "Helm chart version for aws_for_fluent_bit"
 }
-
 variable "cert_manager_enable" {
   type        = bool
   default     = false
@@ -573,28 +521,23 @@ variable "cert_manager_helm_chart_version" {
   default     = "v1.5.3"
   description = "Helm chart version for cert-manager"
 }
-
 variable "cert_manager_install_crds" {
   type        = bool
   description = "Whether Cert Manager CRDs should be installed as part of the cert-manager Helm chart installation"
   default     = true
 }
-
 variable "cert_manager_helm_chart_url" {
   type    = string
   default = "https://charts.jetstack.io"
 }
-
 variable "cert_manager_helm_chart_name" {
   type    = string
   default = "cert-manager"
 }
-
 variable "cert_manager_image_repo_name" {
   type    = string
   default = "jetstack/cert-manager-controller"
 }
-
 variable "windows_vpc_resource_controller_image_tag" {
   type        = string
   default     = "v0.2.7"
@@ -608,40 +551,31 @@ variable "windows_vpc_admission_webhook_image_tag" {
 
 #-----------AWS OPEN TELEMETRY HELM CHART-------------
 variable "aws_open_telemetry_enable" {}
-
 variable "aws_open_telemetry_namespace" {
   description = "WS Open telemetry namespace"
 }
-
 variable "aws_open_telemetry_emitter_otel_resource_attributes" {
   description = "AWS Open telemetry emitter otel resource attributes"
 }
-
 variable "aws_open_telemetry_emitter_name" {
   description = "AWS Open telemetry emitter image name"
 }
-
 variable "aws_open_telemetry_emitter_image" {
   description = "AWS Open telemetry emitter image id and tag"
 }
-
 variable "aws_open_telemetry_collector_image" {
   description = "AWS Open telemetry collector image id and tag"
 }
-
 variable "aws_open_telemetry_aws_region" {
   description = "AWS Open telemetry region"
 }
-
 variable "aws_open_telemetry_emitter_oltp_endpoint" {
   description = "AWS Open telemetry OLTP endpoint"
 }
-
 variable "aws_open_telemetry_mg_node_iam_role_arns" {
   type    = list(string)
   default = []
 }
-
 variable "aws_open_telemetry_self_mg_node_iam_role_arns" {
   type    = list(string)
   default = []
@@ -652,19 +586,16 @@ variable "opentelemetry_enable" {
   default     = false
   description = "Enabling opentelemetry module on eks cluster"
 }
-
 variable "opentelemetry_enable_standalone_collector" {
   type        = bool
   default     = false
   description = "Enabling the opentelemetry standalone gateway collector on eks cluster"
 }
-
 variable "opentelemetry_enable_agent_collector" {
   type        = bool
   default     = true
   description = "Enabling the opentelemetry agent collector on eks cluster"
 }
-
 variable "opentelemetry_enable_autoscaling_standalone_collector" {
   type        = bool
   default     = false
@@ -675,13 +606,11 @@ variable "opentelemetry_image_tag" {
   default     = "0.31.0"
   description = "Docker image tag for opentelemetry from open-telemetry"
 }
-
 variable "opentelemetry_image" {
   type        = string
   default     = "otel/opentelemetry-collector"
   description = "Docker image for opentelemetry from open-telemetry"
 }
-
 variable "opentelemetry_helm_chart_version" {
   type        = string
   default     = "0.5.9"

@@ -18,6 +18,7 @@ resource "aws_iam_instance_profile" "managed_ng" {
   }
 }
 
+#TODO Allow IAM policies can be passed from tfvars file
 resource "aws_iam_role_policy_attachment" "managed_ng_AmazonEKSWorkerNodePolicy" {
   policy_arn = "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.managed_ng.name

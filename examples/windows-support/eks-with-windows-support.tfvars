@@ -214,4 +214,4 @@ cluster_autoscaler_enable = true
 #---------------------------------------------------------//
 # ENABLE AWS LB INGRESS CONTROLLER
 #---------------------------------------------------------//
-lb_ingress_controller_enable = true
+aws_lb_ingress_controller_enable = true
