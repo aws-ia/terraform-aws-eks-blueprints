@@ -51,14 +51,14 @@ module "helm" {
   traefik_image_repo_name           = var.traefik_image_repo_name
 
   # ------- AWS LB Controller
-  lb_ingress_controller_enable = var.lb_ingress_controller_enable
-  aws_lb_image_tag             = var.aws_lb_image_tag
-  aws_lb_helm_chart_version    = var.aws_lb_helm_chart_version
-  eks_oidc_issuer_url          = module.eks.eks_cluster_oidc_issuer_url
-  eks_oidc_provider_arn        = module.eks.oidc_provider_arn
-  aws_lb_helm_repo_url         = var.aws_lb_helm_repo_url
-  aws_lb_helm_helm_chart_name  = var.aws_lb_helm_helm_chart_name
-  aws_lb_image_repo_name       = var.aws_lb_image_repo_name
+  aws_lb_ingress_controller_enable = var.aws_lb_ingress_controller_enable
+  aws_lb_image_tag                 = var.aws_lb_image_tag
+  aws_lb_helm_chart_version        = var.aws_lb_helm_chart_version
+  eks_oidc_issuer_url              = module.eks.eks_cluster_oidc_issuer_url
+  eks_oidc_provider_arn            = module.eks.oidc_provider_arn
+  aws_lb_helm_repo_url             = var.aws_lb_helm_repo_url
+  aws_lb_helm_helm_chart_name      = var.aws_lb_helm_helm_chart_name
+  aws_lb_image_repo_name           = var.aws_lb_image_repo_name
 
   # ------- Nginx Ingress Controller
   nginx_ingress_controller_enable = var.nginx_ingress_controller_enable

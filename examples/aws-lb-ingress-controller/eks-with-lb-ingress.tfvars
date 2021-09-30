@@ -203,6 +203,6 @@ cluster_autoscaler_helm_version = "9.10.7"
 //---------------------------------------------------------//
 // ENABLE ALB INGRESS CONTROLLER
 //---------------------------------------------------------//
-lb_ingress_controller_enable = true
-aws_lb_image_tag             = "v2.2.4"
-aws_lb_helm_chart_version    = "1.2.7"
+aws_lb_ingress_controller_enable = true
+aws_lb_image_tag                 = "v2.2.4"
+aws_lb_helm_chart_version        = "1.2.7"
