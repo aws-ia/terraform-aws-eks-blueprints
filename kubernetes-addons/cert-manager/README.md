@@ -62,7 +62,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_cert_manager_helm_chart_name"></a> [cert\_manager\_helm\_chart\_name](#input\_cert\_manager\_helm\_chart\_name) | n/a | `string` | `"cert-manager"` | no |
 | <a name="input_cert_manager_helm_chart_url"></a> [cert\_manager\_helm\_chart\_url](#input\_cert\_manager\_helm\_chart\_url) | n/a | `string` | `"https://charts.jetstack.io"` | no |
-| <a name="input_cert_manager_helm_chart_version"></a> [cert\_manager\_helm\_chart\_version](#input\_cert\_manager\_helm\_chart\_version) | Helm chart version for cert-manager | `string` | `"0.1.0"` | no |
+| <a name="input_cert_manager_helm_chart_version"></a> [cert\_manager\_helm\_chart\_version](#input\_cert\_manager\_helm\_chart\_version) | Helm chart version for cert-manager | `string` | `"v1.5.3"` | no |
 | <a name="input_cert_manager_image_repo_name"></a> [cert\_manager\_image\_repo\_name](#input\_cert\_manager\_image\_repo\_name) | n/a | `string` | `"quay.io/jetstack/cert-manager-controller"` | no |
 | <a name="input_cert_manager_image_tag"></a> [cert\_manager\_image\_tag](#input\_cert\_manager\_image\_tag) | Docker image tag for cert-manager controller | `string` | `"v1.5.3"` | no |
 | <a name="input_cert_manager_install_crds"></a> [cert\_manager\_install\_crds](#input\_cert\_manager\_install\_crds) | Whether Cert Manager CRDs should be installed as part of the cert-manager Helm chart installation | `bool` | `true` | no |

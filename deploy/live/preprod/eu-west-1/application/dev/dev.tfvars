@@ -565,7 +565,7 @@ agones_game_server_maxport = 8000
 #---------------------------------------------------------#
 cert_manager_enable             = false
 cert_manager_image_tag          = "v1.5.3"
-cert_manager_helm_chart_version = "0.1.0"
+cert_manager_helm_chart_version = "v1.5.3"
 cert_manager_install_crds       = true
 cert_manager_helm_chart_name    = "cert-manager"
 cert_manager_helm_chart_url     = "https://charts.jetstack.io"

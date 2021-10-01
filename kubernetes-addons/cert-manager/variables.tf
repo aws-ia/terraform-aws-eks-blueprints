@@ -45,7 +45,7 @@ variable "cert_manager_image_tag" {
 }
 variable "cert_manager_helm_chart_version" {
   type        = string
-  default     = "0.1.0"
+  default     = "v1.5.3"
   description = "Helm chart version for cert-manager"
 }
 variable "cert_manager_install_crds" {
