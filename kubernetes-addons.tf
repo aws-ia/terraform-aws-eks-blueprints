@@ -20,7 +20,7 @@
 # Invoking Helm Module
 # ---------------------------------------------------------------------------------------------------------------------
 module "helm" {
-  source                     = "./kuberenets-addons"
+  source                     = "./kubernetes-addons"
   eks_cluster_id             = module.eks.eks_cluster_id
   public_docker_repo         = var.public_docker_repo
   private_container_repo_url = var.private_container_repo_url != "" ? var.private_container_repo_url : local.ecr_image_repo_url
@@ -35,7 +35,7 @@ module "helm" {
 
   # ------- Metric Server
   metrics_server_enable            = var.metrics_server_enable
-  metric_server_image_repo_name    = ""
+  metric_server_image_repo_name    = var.metric_server_image_repo_name
   metric_server_image_tag          = var.metric_server_image_tag
   metric_server_helm_chart_version = var.metric_server_helm_chart_version
   metric_server_helm_repo_url      = var.metric_server_helm_repo_url

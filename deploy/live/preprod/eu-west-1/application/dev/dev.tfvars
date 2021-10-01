@@ -80,13 +80,13 @@ enabled_cluster_log_types    = ["api", "audit", "authenticator", "controllerMana
 cluster_log_retention_period = 7
 
 enable_vpc_cni_addon  = true
-vpc_cni_addon_version = "v1.8.0-eksbuild.1"
+vpc_cni_addon_version = "v1.9.1-eksbuild.1"
 
 enable_coredns_addon  = true
-coredns_addon_version = "v1.8.3-eksbuild.1"
+coredns_addon_version = "v1.8.4-eksbuild.1"
 
 enable_kube_proxy_addon  = true
-kube_proxy_addon_version = "v1.20.4-eksbuild.2"
+kube_proxy_addon_version = "v1.21.2-eksbuild.2"
 
 #---------------------------------------------------------#
 # EKS WORKER NODE GROUPS
@@ -606,4 +606,3 @@ opentelemetry_enable_standalone_collector             = false
 opentelemetry_enable_autoscaling_standalone_collector = true
 opentelemetry_min_standalone_collectors               = 1
 opentelemetry_max_standalone_collectors               = 10
-

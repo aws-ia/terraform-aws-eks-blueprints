@@ -199,40 +199,40 @@ e.g., `<env>.tfvars` config for enabling AWS LB INGRESS CONTROLLER. Refer to exa
 This module currently configured to fetch the Helm Charts from Open Source repos and Docker images from Docker Hub/Public ECR repos which requires outbound Internet connection from your EKS Cluster.  Alternatively you can download the Docker images for each Addon and push it to AWS ECR repo and this can be accessed within VPC using ECR endpoint. 
 You can find the README for each Helm module with instructions on how to download the images from Docker Hub or third-party repos and upload it to your private ECR repo. This module provides the option to use internal Helm and Docker image repos from `<env>.tfvars`. 
 
-For example, [ALB Ingress Controller](kuberenets-addons/lb-ingress-controller/README.md) for AWS LB Ingress Controller module.
+For example, [ALB Ingress Controller](kubernetes-addons/lb-ingress-controller/README.md) for AWS LB Ingress Controller module.
 
 ## Ingress Controller Modules
 Ingress is an API object that defines the traffic routing rules (e.g., load balancing, SSL termination, path-based routing, protocol), whereas the Ingress Controller is the component responsible for fulfilling those requests.
 
-* [ALB Ingress Controller](kuberenets-addons/lb-ingress-controller/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
+* [ALB Ingress Controller](kubernetes-addons/lb-ingress-controller/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
 **AWS LB Ingress controller** triggers the creation of an LB Ingress Controller, and the necessary supporting AWS resources whenever a Kubernetes user declares an Ingress resource in the cluster.
 [ALB Docs](https://Kubernetes-sigs.github.io/aws-load-balancer-controller/latest/)
 
-* [Traefik Ingress Controller](kuberenets-addons/traefik-ingress/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
+* [Traefik Ingress Controller](kubernetes-addons/traefik-ingress/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
 **Traefik is an open source Kubernetes Ingress Controller**. The Traefik Kubernetes Ingress provider is a Kubernetes Ingress controller; that is to say, it manages access to cluster services by supporting the Ingress specification. For more details about [Traefik can be found here](https://doc.traefik.io/traefik/providers/Kubernetes-ingress/)
 
-* [Nginx Ingress Controller](kuberenets-addons/nginx-ingress/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
+* [Nginx Ingress Controller](kubernetes-addons/nginx-ingress/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
 **Nginx is an open source Kubernetes Ingress Controller**. The Nginx Kubernetes Ingress provider is a Kubernetes Ingress controller; that is to say, it manages access to cluster services by supporting the Ingress specification. For more details about [Nginx can be found here](https://kubernetes.github.io/ingress-nginx/)
 
 ## Autoscaling Modules 
 **Cluster Autoscaler** and **Metric Server** Helm Modules gets deployed by default with the EKS Cluster.
 
-* [Cluster Autoscaler](kuberenets-addons/cluster-autoscaler/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
+* [Cluster Autoscaler](kubernetes-addons/cluster-autoscaler/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
 The Kubernetes  Cluster Autoscaler automatically adjusts the number of nodes in your cluster when pods fail or are rescheduled onto other nodes. It's not deployed by default in EKS clusters.
 That is, the AWS Cloud Provider implementation within the Kubernetes  Cluster Autoscaler controls the **DesiredReplicas** field of Amazon EC2 Auto Scaling groups.
 The Cluster Autoscaler is typically installed as a **Deployment** in your cluster. It uses leader election to ensure high availability, but scaling is one done by a single replica at a time.
 
-* [Metrics Server](kuberenets-addons/metrics-server/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
+* [Metrics Server](kubernetes-addons/metrics-server/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
 The Kubernetes  Metrics Server, used to gather metrics such as cluster CPU and memory usage over time, is not deployed by default in EKS clusters.
 
 ## Logging and Monitoring
 **FluentBit** is an open source Log Processor and Forwarder which allows you to collect any data like metrics and logs from different sources, enrich them with filters and send them to multiple destinations.
 
-* [aws-for-fluent-bit](kuberenets-addons/aws-for-fluent-bit/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
+* [aws-for-fluent-bit](kubernetes-addons/aws-for-fluent-bit/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
 AWS provides a Fluent Bit image with plugins for both CloudWatch Logs and Kinesis Data Firehose. The AWS for Fluent Bit image is available on the Amazon ECR Public Gallery.
 For more details, see [aws-for-fluent-bit](https://gallery.ecr.aws/aws-observability/aws-for-fluent-bit) on the Amazon ECR Public Gallery.
 
-* [fargate-fluentbit](kuberenets-addons/fargate-fluentbit) can be deployed by enabling the add-on in `<env>.tfvars` file.
+* [fargate-fluentbit](kubernetes-addons/fargate-fluentbit) can be deployed by enabling the add-on in `<env>.tfvars` file.
 This module ships the Fargate Container logs to CloudWatch
 
 ## Bottlerocket OS
