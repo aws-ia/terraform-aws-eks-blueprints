@@ -358,7 +358,7 @@ variable "cert_manager_helm_chart_name" {
 
 variable "cert_manager_image_repo_name" {
   type    = string
-  default = "jetstack/cert-manager-controller"
+  default = "quay.io/jetstack/cert-manager-controller"
 }
 
 variable "windows_vpc_controllers_enable" {

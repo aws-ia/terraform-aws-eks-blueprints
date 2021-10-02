@@ -67,7 +67,7 @@ create_vpc_endpoints = true
 #   Endpoint private access: true   - Kubernetes API requests within your cluster's VPC (such as node to control plane communication) use the private VPC endpoint.
 #---------------------------------------------------------#
 create_eks              = true
-kubernetes_version      = "1.20"
+kubernetes_version      = "1.21"
 endpoint_private_access = true
 endpoint_public_access  = true
 
@@ -78,13 +78,13 @@ enabled_cluster_log_types    = ["api", "audit", "authenticator", "controllerMana
 cluster_log_retention_period = 7
 
 enable_vpc_cni_addon  = true
-vpc_cni_addon_version = "v1.8.0-eksbuild.1"
+vpc_cni_addon_version = "v1.9.1-eksbuild.1"
 
 enable_coredns_addon  = true
-coredns_addon_version = "v1.8.3-eksbuild.1"
+coredns_addon_version = "v1.8.4-eksbuild.1"
 
 enable_kube_proxy_addon  = true
-kube_proxy_addon_version = "v1.20.4-eksbuild.2"
+kube_proxy_addon_version = "v1.21.2-eksbuild.2"
 
 #---------------------------------------------------------#
 # EKS SELF MANAGED WORKER NODE GROUPS
