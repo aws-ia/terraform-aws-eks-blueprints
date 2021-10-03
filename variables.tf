@@ -15,7 +15,9 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
+#----------------------------------------------------------
+#  CLUSTER LABELS
+#----------------------------------------------------------
 variable "terraform_version" {
   type        = string
   default     = "Terraform"
@@ -184,7 +186,7 @@ variable "enable_kube_proxy_addon" {
   default = false
 }
 #----------------------------------------------------------
-// EKS WORKER NODES
+# EKS WORKER NODES
 #----------------------------------------------------------
 variable "enable_managed_nodegroups" {
   description = "Enable self-managed worker groups"
@@ -253,7 +255,7 @@ variable "aws_auth_additional_labels" {
   type        = map(string)
 }
 #----------------------------------------------------------
-# HELM CHART VARIABLES
+# KUBERNETES ADDONS VARIABLES
 #----------------------------------------------------------
 variable "private_container_repo_url" {
   type        = string
@@ -265,46 +267,13 @@ variable "public_docker_repo" {
   default     = true
   description = "public docker repo access"
 }
-variable "metrics_server_enable" {
-  type        = bool
-  default     = false
-  description = "Enabling metrics server on eks cluster"
-}
-variable "cluster_autoscaler_enable" {
-  type        = bool
-  default     = false
-  description = "Enabling Cluster autoscaler on eks cluster"
-}
-variable "traefik_ingress_controller_enable" {
-  type        = bool
-  default     = false
-  description = "Enabling Traefik Ingress Controller on eks cluster"
-}
-variable "aws_lb_ingress_controller_enable" {
-  type        = bool
-  default     = false
-  description = "enabling LB Ingress Controller on eks cluster"
-}
-variable "nginx_ingress_controller_enable" {
-  type        = bool
-  default     = false
-  description = "enabling Nginx Ingress Controller on eks cluster"
-}
+#-----------FARGATE FLUENT BIT-------------
 variable "aws_for_fluent_bit_enable" {
   type        = bool
   default     = false
   description = "Enabling aws_fluent_bit module on eks cluster"
 }
-variable "fargate_fluent_bit_enable" {
-  type        = bool
-  default     = false
-  description = "Enabling fargate_fluent_bit module on eks cluster"
-}
-variable "ekslog_retention_in_days" {
-  default     = 90
-  description = "Number of days to retain log events. Default retention - 90 days."
-  type        = number
-}
+#-----------AGONES-------------
 variable "agones_enable" {
   type        = bool
   default     = false
@@ -339,6 +308,12 @@ variable "agones_game_server_minport" {
   type    = number
   default = 7000
 }
+#-----------AWS LB Ingress Controller-------------
+variable "aws_lb_ingress_controller_enable" {
+  type        = bool
+  default     = false
+  description = "enabling LB Ingress Controller on eks cluster"
+}
 variable "aws_lb_image_repo_name" {
   type    = string
   default = "amazon/aws-load-balancer-controller"
@@ -358,6 +333,12 @@ variable "aws_lb_image_tag" {
 variable "aws_lb_helm_chart_version" {
   type    = string
   default = "1.2.7"
+}
+#-----------METRIC SERVER-------------
+variable "metrics_server_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling metrics server on eks cluster"
 }
 variable "metric_server_image_repo_name" {
   type    = string
@@ -379,6 +360,12 @@ variable "metric_server_helm_chart_name" {
   type    = string
   default = "metrics-server"
 }
+#-----------CLUSTER AUTOSCALER-------------
+variable "cluster_autoscaler_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling Cluster autoscaler on eks cluster"
+}
 variable "cluster_autoscaler_helm_repo_url" {
   type    = string
   default = "https://kubernetes.github.io/autoscaler"
@@ -399,6 +386,7 @@ variable "cluster_autoscaler_helm_version" {
   type    = string
   default = "9.10.7"
 }
+#-----------PROMETHEUS-------------
 variable "aws_managed_prometheus_workspace_name" {
   type    = string
   default = "aws-managed-prometheus-workspace"
@@ -419,7 +407,6 @@ variable "prometheus_image_tag" {
   type    = string
   default = "v2.26.0"
 }
-
 variable "alert_manager_image_tag" {
   type    = string
   default = "v0.21.0"
@@ -444,6 +431,12 @@ variable "aws_managed_prometheus_enable" {
   type    = bool
   default = false
 }
+#-----------TRAEFIK-------------
+variable "traefik_ingress_controller_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling Traefik Ingress Controller on eks cluster"
+}
 variable "traefik_image_repo_name" {
   type    = string
   default = "traefik"
@@ -464,6 +457,13 @@ variable "traefik_image_tag" {
   type    = string
   default = "v2.4.9"
 }
+
+#-----------NGINX-------------
+variable "nginx_ingress_controller_enable" {
+  type        = bool
+  default     = false
+  description = "enabling Nginx Ingress Controller on eks cluster"
+}
 variable "nginx_image_repo_name" {
   type    = string
   default = "ingress-nginx/controller"
@@ -483,6 +483,17 @@ variable "nginx_helm_chart_version" {
 variable "nginx_image_tag" {
   type    = string
   default = "v0.47.0"
+}
+#-----------AWS FOR FLUENT BIT-------------
+variable "fargate_fluent_bit_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling fargate_fluent_bit module on eks cluster"
+}
+variable "ekslog_retention_in_days" {
+  default     = 90
+  description = "Number of days to retain log events. Default retention - 90 days."
+  type        = number
 }
 variable "aws_for_fluent_bit_image_repo_name" {
   type    = string
@@ -506,6 +517,8 @@ variable "aws_for_fluent_bit_helm_chart_version" {
   default     = "0.1.11"
   description = "Helm chart version for aws_for_fluent_bit"
 }
+
+#-----------CERT MANAGER-------------
 variable "cert_manager_enable" {
   type        = bool
   default     = false
@@ -550,26 +563,36 @@ variable "windows_vpc_admission_webhook_image_tag" {
 }
 
 #-----------AWS OPEN TELEMETRY HELM CHART-------------
-variable "aws_open_telemetry_enable" {}
+variable "aws_open_telemetry_enable" {
+  type    = bool
+  default = false
+}
 variable "aws_open_telemetry_namespace" {
+  default     = "aws-otel-eks"
   description = "WS Open telemetry namespace"
 }
 variable "aws_open_telemetry_emitter_otel_resource_attributes" {
+  default     = "service.namespace=AWSObservability,service.name=ADOTEmitService"
   description = "AWS Open telemetry emitter otel resource attributes"
 }
 variable "aws_open_telemetry_emitter_name" {
+  default     = "trace-emitter"
   description = "AWS Open telemetry emitter image name"
 }
 variable "aws_open_telemetry_emitter_image" {
   description = "AWS Open telemetry emitter image id and tag"
+  default     = "public.ecr.aws/g9c4k4i4/trace-emitter:1"
 }
 variable "aws_open_telemetry_collector_image" {
+  default     = "public.ecr.aws/aws-observability/aws-otel-collector:latest"
   description = "AWS Open telemetry collector image id and tag"
 }
 variable "aws_open_telemetry_aws_region" {
+  default     = "eu-west-1"
   description = "AWS Open telemetry region"
 }
 variable "aws_open_telemetry_emitter_oltp_endpoint" {
+  default     = "localhost:55680"
   description = "AWS Open telemetry OLTP endpoint"
 }
 variable "aws_open_telemetry_mg_node_iam_role_arns" {
@@ -616,31 +639,26 @@ variable "opentelemetry_helm_chart_version" {
   default     = "0.5.9"
   description = "Helm chart version for opentelemetry"
 }
-
 variable "opentelemetry_helm_chart" {
   type        = string
   default     = "open-telemetry/opentelemetry-collector"
   description = "Helm chart for opentelemetry"
 }
-
 variable "opentelemetry_command_name" {
   type        = string
   default     = "otel"
   description = "The OpenTelemetry command.name value"
 }
-
 variable "opentelemetry_enable_container_logs" {
   type        = bool
   default     = false
   description = "Whether or not to enable container log collection on the otel agents"
 }
-
 variable "opentelemetry_min_standalone_collectors" {
   type        = number
   default     = 1
   description = "The minimum number of opentelemetry standalone gateway collectors to run"
 }
-
 variable "opentelemetry_max_standalone_collectors" {
   type        = number
   default     = 3

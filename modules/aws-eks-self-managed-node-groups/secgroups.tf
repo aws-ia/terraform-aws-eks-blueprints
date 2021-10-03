@@ -8,6 +8,7 @@
   Control Plane Security Group (Additional Security Group):
     1. Inbound - 443 - from each worker/node security groups
     2. Outbound 1025-65535 - to each worker/node security groups
+    3. Outbound traffic -> all -> 0.0.0.0./0
 
   Node Security Groups:
     1. Inbound - all - to all WORKER security groups
@@ -96,7 +97,9 @@ resource "aws_security_group_rule" "control_plane_egress_to_worker_sgr" {
   source_security_group_id = aws_security_group.self_managed_ng[0].id
 
 }
+//------------------IMPORTANT
 
+#TODO This may not be required since cluster_security_group_id outbound is open to 0.0.0.0/0
 resource "aws_security_group_rule" "control_plane_egress_to_worker_https" {
   count = local.self_managed_node_group["create_worker_security_group"] == true ? 1 : 0
 

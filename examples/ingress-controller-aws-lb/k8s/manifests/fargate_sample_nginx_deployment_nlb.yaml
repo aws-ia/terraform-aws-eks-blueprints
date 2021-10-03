@@ -11,6 +11,7 @@ spec:
     metadata:
       labels:
         app: nginx
+        env: fargate
     spec:
       containers:
         - name: nginx

@@ -13,7 +13,7 @@ spec:
       labels:
         app: nginx
         env: fargate
-        eks.amazonaws.com/fargate-profile: aws001-preprod-dev-eks-default
+        eks.amazonaws.com/fargate-profile: aws001-preprod-test-eks-default
     spec:
       containers:
         - name: nginx

@@ -18,16 +18,26 @@
 
 locals {
 
-  tags                = tomap({ "created-by" = var.terraform_version })
-  private_subnet_tags = merge(tomap({ "kubernetes.io/role/internal-elb" = "1" }), tomap({ "created-by" = var.terraform_version }))
-  public_subnet_tags  = merge(tomap({ "kubernetes.io/role/elb" = "1" }), tomap({ "created-by" = var.terraform_version }))
+  tags = tomap({ "created-by" = var.terraform_version })
+
+  private_subnet_tags = merge(
+    tomap({ "kubernetes.io/role/internal-elb" = "1" }),
+    tomap({ "created-by" = var.terraform_version }),
+    tomap({ "kubernetes.io/cluster/${module.eks_label.id}" = "shared" })
+  )
+
+  public_subnet_tags = merge(
+    tomap({ "kubernetes.io/role/elb" = "1" }),
+    tomap({ "created-by" = var.terraform_version }),
+    tomap({ "kubernetes.io/cluster/${module.eks_label.id}" = "shared" })
+  )
 
   ecr_image_repo_url = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.id}.amazonaws.com"
 
   # Managed node IAM Roles for aws-auth
   managed_node_group_aws_auth_config_map = var.enable_managed_nodegroups == true ? [
     for key, node in var.managed_node_groups : {
-      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.eks.eks_cluster_id}-${node.node_group_name}"
+      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.aws_eks.cluster_id}-${node.node_group_name}"
       username : "system:node:{{EC2PrivateDNSName}}"
       groups : [
         "system:bootstrappers",
@@ -39,7 +49,7 @@ locals {
   # Self Managed node IAM Roles for aws-auth
   self_managed_node_group_aws_auth_config_map = var.enable_self_managed_nodegroups ? [
     for key, node in var.self_managed_node_groups : {
-      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.eks.eks_cluster_id}-${node.node_group_name}"
+      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.aws_eks.cluster_id}-${node.node_group_name}"
       username : "system:node:{{EC2PrivateDNSName}}"
       groups : [
         "system:bootstrappers",
@@ -51,7 +61,7 @@ locals {
   # Self Managed Windows node IAM Roles for aws-auth
   windows_node_group_aws_auth_config_map = var.enable_self_managed_nodegroups && var.enable_windows_support ? [
     for key, node in var.self_managed_node_groups : {
-      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.eks.eks_cluster_id}-${node.node_group_name}"
+      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.aws_eks.cluster_id}-${node.node_group_name}"
       username : "system:node:{{EC2PrivateDNSName}}"
       groups : [
         "system:bootstrappers",
@@ -64,7 +74,7 @@ locals {
   # Fargate node IAM Roles for aws-auth
   fargate_profiles_aws_auth_config_map = var.enable_fargate == true ? [
     for key, node in var.fargate_profiles : {
-      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.eks.eks_cluster_id}-${node.fargate_profile_name}"
+      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.aws_eks.cluster_id}-${node.fargate_profile_name}"
       username : "system:node:{{SessionName}}"
       groups : [
         "system:bootstrappers",

@@ -38,18 +38,17 @@ terraform_version = "Terraform v1.0.1"
 # OPTION 1
 #---------------------------------------------------------#
 create_vpc             = true
-vpc_cidr_block         = "10.1.0.0/18"
-private_subnets_cidr   = ["10.1.0.0/22", "10.1.4.0/22", "10.1.8.0/22"]
 enable_private_subnets = true
 enable_public_subnets  = true
-public_subnets_cidr    = ["10.1.12.0/22", "10.1.16.0/22", "10.1.20.0/22"]
-
 
 # Enable or Disable NAT Gateqay and Internet Gateway for Public Subnets
 enable_nat_gateway = true
 single_nat_gateway = true
 create_igw         = true
 
+vpc_cidr_block       = "10.1.0.0/18"
+private_subnets_cidr = ["10.1.0.0/22", "10.1.4.0/22", "10.1.8.0/22"]
+public_subnets_cidr  = ["10.1.12.0/22", "10.1.16.0/22", "10.1.20.0/22"]
 
 # Change this to true when you want to create VPC endpoints for Private subnets
 create_vpc_endpoints = true
@@ -77,13 +76,14 @@ enabled_cluster_log_types    = ["api", "audit", "authenticator", "controllerMana
 cluster_log_retention_period = 7
 
 enable_vpc_cni_addon  = true
-vpc_cni_addon_version = "v1.8.0-eksbuild.1"
+vpc_cni_addon_version = "v1.9.1-eksbuild.1"
 
 enable_coredns_addon  = true
-coredns_addon_version = "v1.8.3-eksbuild.1"
+coredns_addon_version = "v1.8.4-eksbuild.1"
 
 enable_kube_proxy_addon  = true
-kube_proxy_addon_version = "v1.20.4-eksbuild.2"
+kube_proxy_addon_version = "v1.21.2-eksbuild.2"
+
 
 
 ##---------------------------------------------------------#
@@ -139,7 +139,6 @@ managed_node_groups = {
 # Creates a Fargate profiles
 #---------------------------------------------------------#
 enable_fargate = false
-
 fargate_profiles = {
   multi = {
     fargate_profile_name = "multi-namespaces"
@@ -175,103 +174,6 @@ fargate_profiles = {
 
   },
 }
-#---------------------------------------------------------#
-# SELF-MANAGED WINDOWS NODE GROUP (WORKER GROUP)
-#---------------------------------------------------------#
-enable_self_managed_nodegroups = false
-self_managed_node_groups = {
-  #---------------------------------------------------------#
-  # ON-DEMAND Self Managed Worker Group - Worker Group - 1
-  #---------------------------------------------------------#
-  self_mg_4 = {
-    node_group_name = "self-mg-5"
-    custom_ami_type = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or windows
-    custom_ami_id   = "ami-0dfaa019a300f219c" # Modify this to fetch to use custom AMI ID.
-    public_ip       = false
-    pre_userdata    = <<-EOT
-            yum install -y amazon-ssm-agent \
-            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
-        EOT
-
-    disk_size     = "20"
-    instance_type = "m5.large"
-
-    desired_size = "2"
-    max_size     = "20"
-    min_size     = "2"
-
-    capacity_type = "" # Leave this empty if not for SPOT capacity.
-
-    k8s_labels = {
-      Environment = "preprod"
-      Zone        = "test"
-      WorkerType  = "SELF_MANAGED_ON_DEMAND"
-    }
-
-    additional_tags = {
-      ExtraTag    = "m5x-on-demand"
-      Name        = "m5x-on-demand"
-      subnet_type = "private"
-    }
-    #self managed node group network configuration
-    subnet_type = "private" # private or public
-    subnet_ids  = []
-
-    #security_group ID
-    create_worker_security_group = true
-
-  },
-}
-#---------------------------------------------------------#
-# ENABLE HELM MODULES
-# Please note that you may need to download the docker images for each
-#          helm module and push it to ECR if you create fully private EKS Clusters with no access to internet to fetch docker images.
-#          README with instructions available in each HELM module under helm/
-#---------------------------------------------------------#
-# Enable this if worker Node groups has access to internet to download the docker images
-
-public_docker_repo = true
-
-#---------------------------------------------------------#
-# ENABLE METRICS SERVER
-#---------------------------------------------------------#
-metrics_server_enable            = true
-metric_server_image_tag          = "0.5.0-debian-10-r83"
-metric_server_helm_chart_version = "5.10.1"
-
-#---------------------------------------------------------#
-# ENABLE CLUSTER AUTOSCALER
-#---------------------------------------------------------#
-cluster_autoscaler_enable       = true
-cluster_autoscaler_image_tag    = "v1.21.0"
-cluster_autoscaler_helm_version = "9.10.7"
-
-#---------------------------------------------------------#
-# ENABLE AWS_FLUENT-BIT
-#---------------------------------------------------------#
-aws_for_fluent_bit_enable = true
-ekslog_retention_in_days  = 1
-
-#---------------------------------------------------------#
-# ENABLE NGINX INGRESS CONTROLLER
-#---------------------------------------------------------#
-nginx_ingress_controller_enable = true
-nginx_helm_chart_version        = "3.33.0"
-nginx_image_tag                 = "v0.47.0"
 
 
 
-#---------------------------------------------------------//
-# ENABLE PROMETHEUS
-#---------------------------------------------------------//
-# Creates the AMP workspace and all the relevent IAM Roles
-aws_managed_prometheus_enable = false
-
-# Deploys Pometheus server with remote write to AWS AMP Workspace
-prometheus_enable             = false
-prometheus_helm_chart_version = "14.3.1"
-prometheus_image_tag          = "v2.26.0"
-alert_manager_image_tag       = "v0.21.0"
-configmap_reload_image_tag    = "v0.5.0"
-node_exporter_image_tag       = "v1.1.2"
-pushgateway_image_tag         = "v1.3.1"

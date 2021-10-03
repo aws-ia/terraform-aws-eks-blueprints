@@ -21,7 +21,7 @@ locals {
   image_url         = var.public_docker_repo ? "${local.public_image_repo}/${var.aws_lb_image_repo_name}" : "${var.private_container_repo_url}/${var.aws_lb_image_repo_name}"
 }
 
-resource "helm_release" "lb-ingress" {
+resource "helm_release" "lb_ingress" {
   name       = var.aws_lb_helm_helm_chart_name
   repository = var.aws_lb_helm_repo_url
   chart      = var.aws_lb_helm_helm_chart_name
@@ -35,17 +35,17 @@ resource "helm_release" "lb-ingress" {
     clusterName  = var.clusterName
     replicaCount = var.replicas
   })]
-  depends_on = [helm_release.lb-ingress-crd, kubernetes_service_account.eks-lb-controller-sa]
+  depends_on = [helm_release.lb_ingress_crd, kubernetes_service_account.eks_lb_controller_sa]
 
 }
 
-resource "helm_release" "lb-ingress-crd" {
+resource "helm_release" "lb_ingress_crd" {
   chart     = "${path.module}/chart/lb_crds"
   name      = "lb-crd-target-group"
   namespace = "kube-system"
 }
 
-resource "aws_iam_policy" "eks-lb-controller-policy" {
+resource "aws_iam_policy" "eks_lb_controller" {
   name        = "${var.clusterName}-lb-controller-policy"
   description = "Allows lb controller to manage ALB and NLB"
 
@@ -278,7 +278,7 @@ resource "aws_iam_policy" "eks-lb-controller-policy" {
 EOF
 }
 
-data "aws_iam_policy_document" "eks-lb-controller-assume-policy" {
+data "aws_iam_policy_document" "eks_lb_controller_assume_policy" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
     effect  = "Allow"
@@ -297,24 +297,24 @@ data "aws_iam_policy_document" "eks-lb-controller-assume-policy" {
 }
 
 # IAM role for eks alb controller
-resource "aws_iam_role" "eks-lb-controller-role" {
+resource "aws_iam_role" "eks_lb_controller_role" {
   name               = "${var.clusterName}-lb-controller-role"
-  assume_role_policy = data.aws_iam_policy_document.eks-lb-controller-assume-policy.json
+  assume_role_policy = data.aws_iam_policy_document.eks_lb_controller_assume_policy.json
 }
 
 
 # Allows eks alb controller to manage LB's
-resource "aws_iam_role_policy_attachment" "eks-role-policy-attachement" {
-  role       = aws_iam_role.eks-lb-controller-role.name
-  policy_arn = aws_iam_policy.eks-lb-controller-policy.arn
+resource "aws_iam_role_policy_attachment" "eks_role_policy" {
+  role       = aws_iam_role.eks_lb_controller_role.name
+  policy_arn = aws_iam_policy.eks_lb_controller.arn
 }
 
 # Kubernetes service account for lb controller
-resource "kubernetes_service_account" "eks-lb-controller-sa" {
+resource "kubernetes_service_account" "eks_lb_controller_sa" {
   metadata {
     name        = "eks-lb-controller-sa"
     namespace   = "kube-system"
-    annotations = { "eks.amazonaws.com/role-arn" : aws_iam_role.eks-lb-controller-role.arn }
+    annotations = { "eks.amazonaws.com/role-arn" : aws_iam_role.eks_lb_controller_role.arn }
   }
   automount_service_account_token = true
 }

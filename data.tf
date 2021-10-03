@@ -24,19 +24,19 @@ data "aws_region" "current" {}
 
 data "aws_eks_cluster" "cluster" {
   count = var.create_eks ? 1 : 0
-  name  = module.eks.eks_cluster_id
+  name  = module.aws_eks.cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
   count = var.create_eks ? 1 : 0
-  name  = module.eks.eks_cluster_id
+  name  = module.aws_eks.cluster_id
 }
 
 data "aws_security_group" "default" {
   count = var.create_vpc ? 1 : 0
 
   name   = "default"
-  vpc_id = module.vpc.vpc_id
+  vpc_id = module.aws_vpc.vpc_id
 }
 
 data "aws_availability_zones" "available" {

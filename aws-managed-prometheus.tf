@@ -29,10 +29,10 @@ module "aws_managed_prometheus" {
   zone                            = var.zone
   account_id                      = data.aws_caller_identity.current.account_id
   region                          = data.aws_region.current.id
-  eks_cluster_id                  = module.eks.eks_cluster_id
-  eks_oidc_provider               = split("//", module.eks.eks_cluster_oidc_issuer_url)[1]
-  service_account_amp_ingest_name = format("%s-%s", module.eks.eks_cluster_id, "amp-ingest-account")
-  service_account_amp_query_name  = format("%s-%s", module.eks.eks_cluster_id, "amp-query-account")
+  eks_cluster_id                  = module.aws_eks.cluster_id
+  eks_oidc_provider               = split("//", module.aws_eks.cluster_oidc_issuer_url)[1]
+  service_account_amp_ingest_name = format("%s-%s", module.aws_eks.cluster_id, "amp-ingest-account")
+  service_account_amp_query_name  = format("%s-%s", module.aws_eks.cluster_id, "amp-query-account")
   amp_workspace_name              = var.aws_managed_prometheus_workspace_name
 
 }

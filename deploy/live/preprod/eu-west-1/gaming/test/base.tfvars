@@ -50,25 +50,31 @@ vpc_cidr_block       = "10.1.0.0/18"
 private_subnets_cidr = ["10.1.0.0/22", "10.1.4.0/22", "10.1.8.0/22"]
 public_subnets_cidr  = ["10.1.12.0/22", "10.1.16.0/22", "10.1.20.0/22"]
 
-
-#---------------------------------------------------------#
-# OPTION 2
-#---------------------------------------------------------#
-//create_vpc = false
-//vpc_id = "xxxxxx"
-//private_subnet_ids = ['xxxxxx','xxxxxx','xxxxxx']
-
 #---------------------------------------------------------#
 # EKS CONTROL PLANE VARIABLES
+# API server endpoint access options
+#   Endpoint public access: true    - Your cluster API server is accessible from the internet. You can, optionally, limit the CIDR blocks that can access the public endpoint.
+#   Endpoint private access: true   - Kubernetes API requests within your cluster's VPC (such as node to control plane communication) use the private VPC endpoint.
 #---------------------------------------------------------#
-kubernetes_version      = "1.20"
-endpoint_private_access = false
+create_eks              = false
+kubernetes_version      = "1.21"
+endpoint_private_access = true
 endpoint_public_access  = true
-enable_irsa             = true
+
+# Enable IAM Roles for Service Accounts (IRSA) on the EKS cluster
+enable_irsa = true
 
 enabled_cluster_log_types    = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 cluster_log_retention_period = 7
 
+enable_vpc_cni_addon  = true
+vpc_cni_addon_version = "v1.9.1-eksbuild.1"
+
+enable_coredns_addon  = true
+coredns_addon_version = "v1.8.4-eksbuild.1"
+
+enable_kube_proxy_addon  = true
+kube_proxy_addon_version = "v1.21.2-eksbuild.2"
 
 #---------------------------------------------------------#
 # EKS WORKER NODE GROUPS
@@ -121,37 +127,34 @@ managed_node_groups = {
 
 #---------------------------------------------------------#
 # ENABLE HELM MODULES
-# Please note that you may need to download the docker images for each
-#          helm module and push it to ECR if you create fully private EKS Clusters with no access to internet to fetch docker images.
-#          README with instructions available in each HELM module under helm/
 #---------------------------------------------------------#
-# Enable this if worker Node groups has access to internet to download the docker images
-
+# Please note that you may need to download the docker images for each
+#    helm module and push it to ECR if you create fully private EKS Clusters with no access to internet to fetch docker images.
+#    README with instructions available in each HELM module under helm/
+#---------------------------------------------------------#
+# Enable `public_docker_repo = true` if worker Node groups has access to internet to download the docker images
 public_docker_repo = true
 
+# If public_docker_repo = false then provide the private_container_repo_url or it will use ECR repo url
+# private_container_repo_url = ""
 #---------------------------------------------------------#
 # ENABLE METRICS SERVER
 #---------------------------------------------------------#
-metrics_server_enable = true
-
+metrics_server_enable            = false
+metric_server_image_repo_name    = "bitnami/metrics-server"
+metric_server_image_tag          = "0.5.0-debian-10-r83"
+metric_server_helm_repo_url      = "https://charts.bitnami.com/bitnami"
+metric_server_helm_chart_name    = "metrics-server"
+metric_server_helm_chart_version = "5.10.1"
 #---------------------------------------------------------#
 # ENABLE CLUSTER AUTOSCALER
 #---------------------------------------------------------#
-cluster_autoscaler_enable = true
-
-
-#---------------------------------------------------------//
-# ENABLE ALB INGRESS CONTROLLER
-#---------------------------------------------------------//
-#aws_lb_ingress_controller_enable = true
-
-#---------------------------------------------------------#
-# ENABLE AWS_FLUENT-BIT
-#---------------------------------------------------------#
-#aws_for_fluent_bit_enable = true
-#fargate_fluent_bit_enable = true
-
-#ekslog_retention_in_days = 1
+cluster_autoscaler_enable          = false
+cluster_autoscaler_image_tag       = "v1.21.0"
+cluster_autoscaler_helm_repo_url   = "https://kubernetes.github.io/autoscaler"
+cluster_autoscaler_image_repo_name = "k8s.gcr.io/autoscaling/cluster-autoscaler"
+cluster_autoscaler_helm_chart_name = "cluster-autoscaler"
+cluster_autoscaler_helm_version    = "9.10.7"
 
 #---------------------------------------------------------//
 # ENABLE AGONES GAMING CONTROLLER
@@ -161,5 +164,12 @@ cluster_autoscaler_enable = true
 #         By default Agones prefers to be scheduled on nodes labeled with agones.dev/agones-system=true and tolerates the node taint agones.dev/agones-system=true:NoExecute.
 #         If no dedicated nodes are available, Agones will run on regular nodes.
 #---------------------------------------------------------//
-agones_enable = true
-expose_udp    = true
+agones_enable              = false
+expose_udp                 = true
+agones_helm_chart_name     = "agones"
+agones_helm_chart_url      = "https://agones.dev/chart/stable"
+agones_image_tag           = "1.15.0"
+agones_image_repo          = "gcr.io/agones-images"
+agones_game_server_minport = 7000
+agones_game_server_maxport = 8000
+#agones_helm_chart_version = ""

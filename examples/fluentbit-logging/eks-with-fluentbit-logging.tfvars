@@ -137,6 +137,8 @@ managed_node_groups = {
 # Creates a Fargate profiles
 #---------------------------------------------------------#
 enable_fargate = false
+# Enable logging only when you create a Fargate profile e.g., enable_fargate = true
+fargate_fluent_bit_enable = false
 
 fargate_profiles = {
   multi = {
@@ -173,93 +175,45 @@ fargate_profiles = {
 
   },
 }
-#---------------------------------------------------------#
-# SELF-MANAGED WINDOWS NODE GROUP (WORKER GROUP)
-#---------------------------------------------------------#
-enable_self_managed_nodegroups = false
-self_managed_node_groups = {
-  #---------------------------------------------------------#
-  # ON-DEMAND Self Managed Worker Group - Worker Group - 1
-  #---------------------------------------------------------#
-  self_mg_4 = {
-    node_group_name = "self-mg-5"
-    custom_ami_type = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or windows
-    custom_ami_id   = "ami-0dfaa019a300f219c" # Modify this to fetch to use custom AMI ID.
-    public_ip       = false
-    pre_userdata    = <<-EOT
-            yum install -y amazon-ssm-agent \
-            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
-        EOT
-
-    disk_size     = "20"
-    instance_type = "m5.large"
-
-    desired_size = "2"
-    max_size     = "20"
-    min_size     = "2"
-
-    capacity_type = "" # Leave this empty if not for SPOT capacity.
-
-    k8s_labels = {
-      Environment = "preprod"
-      Zone        = "test"
-      WorkerType  = "SELF_MANAGED_ON_DEMAND"
-    }
-
-    additional_tags = {
-      ExtraTag    = "m5x-on-demand"
-      Name        = "m5x-on-demand"
-      subnet_type = "private"
-    }
-    #self managed node group network configuration
-    subnet_type = "private" # private or public
-    subnet_ids  = []
-
-    #security_group ID
-    create_worker_security_group = true
-
-  },
-}
 
 #---------------------------------------------------------#
-# ENABLE HELM MODULES
+# ENABLE KUBERNETES ADDONS
+#---------------------------------------------------------#
 # Please note that you may need to download the docker images for each
-#          helm module and push it to ECR if you create fully private EKS Clusters with no access to internet to fetch docker images.
-#          README with instructions available in each HELM module under helm/
+#    helm module and push it to ECR if you create fully private EKS Clusters with no access to internet to fetch docker images.
+#    README with instructions available in each HELM module under helm/
 #---------------------------------------------------------#
-# Enable this if worker Node groups has access to internet to download the docker images
-# Or Make it false and set the private contianer image repo url in source/eks.tf; currently this defaults to ECR
+# Enable `public_docker_repo = true` if worker Node groups has access to internet to download the docker images
 public_docker_repo = true
 
+# If public_docker_repo = false then provide the private_container_repo_url or it will use ECR repo url
+# private_container_repo_url = ""
 #---------------------------------------------------------#
 # ENABLE METRICS SERVER
 #---------------------------------------------------------#
-metrics_server_enable            = true
+metrics_server_enable            = false
+metric_server_image_repo_name    = "bitnami/metrics-server"
 metric_server_image_tag          = "0.5.0-debian-10-r83"
+metric_server_helm_repo_url      = "https://charts.bitnami.com/bitnami"
+metric_server_helm_chart_name    = "metrics-server"
 metric_server_helm_chart_version = "5.10.1"
 #---------------------------------------------------------#
 # ENABLE CLUSTER AUTOSCALER
 #---------------------------------------------------------#
-cluster_autoscaler_enable       = true
-cluster_autoscaler_image_tag    = "v1.21.0"
-cluster_autoscaler_helm_version = "9.10.7"
+cluster_autoscaler_enable          = false
+cluster_autoscaler_image_tag       = "v1.21.0"
+cluster_autoscaler_helm_repo_url   = "https://kubernetes.github.io/autoscaler"
+cluster_autoscaler_image_repo_name = "k8s.gcr.io/autoscaling/cluster-autoscaler"
+cluster_autoscaler_helm_chart_name = "cluster-autoscaler"
+cluster_autoscaler_helm_version    = "9.10.7"
 
 #---------------------------------------------------------#
-# ENABLE AWS_FLUENT-BIT FOR NODE GROUPS
+# ENABLE NODE GROUP AWS_FLUENT-BIT
 #---------------------------------------------------------#
-aws_for_fluent_bit_enable             = true
+aws_for_fluent_bit_enable             = false
 ekslog_retention_in_days              = 7
+aws_for_fluent_bit_image_repo_name    = "amazon/aws-for-fluent-bit"
 aws_for_fluent_bit_image_tag          = "2.17.0"
 aws_for_fluent_bit_helm_chart_version = "0.1.11"
-
-
-#---------------------------------------------------------//
-# ENABLE AGONES GAMING CONTROLLER
-#   A library for hosting, running and scaling dedicated game servers on Kubernetes
-#   This chart installs the Agones application and defines deployment on a  cluster
-#   NOTE: Edit Rules to add a new Custom UDP Rule with a 7000-8000 port range and an appropriate Source CIDR range (0.0.0.0/0 allows all traffic) (sec group e.g., gaming-preprod-test-eks-eks_worker_sg)
-#         By default Agones prefers to be scheduled on nodes labeled with agones.dev/agones-system=true and tolerates the node taint agones.dev/agones-system=true:NoExecute.
-#         If no dedicated nodes are available, Agones will run on regular nodes.
-#---------------------------------------------------------//
-//agones_enable = true
-//expose_udp    = true
+aws_for_fluent_bit_helm_chart_url     = "https://aws.github.io/eks-charts"
+aws_for_fluent_bit_helm_chart_name    = "aws-for-fluent-bit"

@@ -1,4 +1,3 @@
-
 /*
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: MIT-0
@@ -18,32 +17,21 @@
  */
 
 # ---------------------------------------------------------------------------------------------------------------------
-# MANAGED NODE GROUPS
+# FARGATE PROFILES
 # ---------------------------------------------------------------------------------------------------------------------
+module "aws_eks_fargate_profiles" {
+  source = "./modules/aws-eks-fargate-profiles"
 
-module "managed-node-groups" {
-  source = "./modules/aws-eks-managed-node-groups"
+  for_each = { for k, v in var.fargate_profiles : k => v if var.enable_fargate && length(var.fargate_profiles) > 0 }
 
-  for_each = { for key, value in var.managed_node_groups : key => value
-    if var.enable_managed_nodegroups && length(var.managed_node_groups) > 0
-  }
+  fargate_profile = each.value
 
-  managed_ng = each.value
+  eks_cluster_name   = module.aws_eks.cluster_id
+  private_subnet_ids = var.create_vpc == false ? var.private_subnet_ids : module.aws_vpc.private_subnets
 
-  eks_cluster_name  = module.eks.eks_cluster_id
-  cluster_ca_base64 = module.eks.cluster_certificate_authority_data
-  cluster_endpoint  = module.eks.eks_cluster_endpoint
+  tags = module.eks_label.tags
 
-  vpc_id             = var.create_vpc == false ? var.vpc_id : module.vpc.vpc_id
-  private_subnet_ids = var.create_vpc == false ? var.private_subnet_ids : module.vpc.private_subnets
-  public_subnet_ids  = var.create_vpc == false ? var.public_subnet_ids : module.vpc.public_subnets
-
-  worker_security_group_id          = module.eks.eks_worker_security_group_id
-  cluster_security_group_id         = module.eks.eks_cluster_security_group_id
-  cluster_primary_security_group_id = module.eks.eks_cluster_primary_security_group_id
-
-  tags = module.eks-label.tags
-
-  depends_on = [module.eks, kubernetes_config_map.aws_auth]
+  depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
 
 }
+

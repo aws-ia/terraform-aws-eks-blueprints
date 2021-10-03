@@ -65,7 +65,8 @@ create_vpc_endpoints = true
 #   Endpoint public access: true    - Your cluster API server is accessible from the internet. You can, optionally, limit the CIDR blocks that can access the public endpoint.
 #   Endpoint private access: true   - Kubernetes API requests within your cluster's VPC (such as node to control plane communication) use the private VPC endpoint.
 #---------------------------------------------------------#
-kubernetes_version      = "1.20"
+create_eks              = false
+kubernetes_version      = "1.21"
 endpoint_private_access = true
 endpoint_public_access  = true
 
@@ -76,14 +77,13 @@ enabled_cluster_log_types    = ["api", "audit", "authenticator", "controllerMana
 cluster_log_retention_period = 7
 
 enable_vpc_cni_addon  = true
-vpc_cni_addon_version = "v1.8.0-eksbuild.1"
+vpc_cni_addon_version = "v1.9.1-eksbuild.1"
 
 enable_coredns_addon  = true
-coredns_addon_version = "v1.8.3-eksbuild.1"
+coredns_addon_version = "v1.8.4-eksbuild.1"
 
 enable_kube_proxy_addon  = true
-kube_proxy_addon_version = "v1.20.4-eksbuild.2"
-
+kube_proxy_addon_version = "v1.21.2-eksbuild.2"
 
 
 #---------------------------------------------------------#
@@ -222,41 +222,53 @@ self_managed_node_groups = {
 
   },
 }
+
 #---------------------------------------------------------#
-# ENABLE HELM MODULES
+# ENABLE KUBERNETES ADDONS
+#---------------------------------------------------------#
 # Please note that you may need to download the docker images for each
-#          helm module and push it to ECR if you create fully private EKS Clusters with no access to internet to fetch docker images.
-#          README with instructions available in each HELM module under helm/
+#    helm module and push it to ECR if you create fully private EKS Clusters with no access to internet to fetch docker images.
+#    README with instructions available in each HELM module under helm/
 #---------------------------------------------------------#
-# Enable this if worker Node groups has access to internet to download the docker images
-# Or Make it false and set the private contianer image repo url in source/eks.tf; currently this defaults to ECR
+# Enable `public_docker_repo = true` if worker Node groups has access to internet to download the docker images
 public_docker_repo = true
 
+# If public_docker_repo = false then provide the private_container_repo_url or it will use ECR repo url
+# private_container_repo_url = ""
 #---------------------------------------------------------#
 # ENABLE METRICS SERVER
 #---------------------------------------------------------#
-metrics_server_enable            = true
+metrics_server_enable            = false
+metric_server_image_repo_name    = "bitnami/metrics-server"
 metric_server_image_tag          = "0.5.0-debian-10-r83"
+metric_server_helm_repo_url      = "https://charts.bitnami.com/bitnami"
+metric_server_helm_chart_name    = "metrics-server"
 metric_server_helm_chart_version = "5.10.1"
 #---------------------------------------------------------#
 # ENABLE CLUSTER AUTOSCALER
 #---------------------------------------------------------#
-cluster_autoscaler_enable       = true
-cluster_autoscaler_image_tag    = "v1.21.0"
-cluster_autoscaler_helm_version = "9.10.7"
+cluster_autoscaler_enable          = false
+cluster_autoscaler_image_tag       = "v1.21.0"
+cluster_autoscaler_helm_repo_url   = "https://kubernetes.github.io/autoscaler"
+cluster_autoscaler_image_repo_name = "k8s.gcr.io/autoscaling/cluster-autoscaler"
+cluster_autoscaler_helm_chart_name = "cluster-autoscaler"
+cluster_autoscaler_helm_version    = "9.10.7"
+
 
 #---------------------------------------------------------//
 # ENABLE PROMETHEUS
 #---------------------------------------------------------//
 # Creates the AMP workspace and all the relevent IAM Roles
-aws_managed_prometheus_enable = true
+aws_managed_prometheus_enable         = false
+aws_managed_prometheus_workspace_name = "EKS-Metrics-Workspace"
 
 # Deploys Pometheus server with remote write to AWS AMP Workspace
-prometheus_enable             = true
+prometheus_enable             = false
+prometheus_helm_chart_url     = "https://prometheus-community.github.io/helm-charts"
+prometheus_helm_chart_name    = "prometheus"
 prometheus_helm_chart_version = "14.4.0"
 prometheus_image_tag          = "v2.26.0"
 alert_manager_image_tag       = "v0.21.0"
 configmap_reload_image_tag    = "v0.5.0"
 node_exporter_image_tag       = "v1.1.2"
 pushgateway_image_tag         = "v1.3.1"
-

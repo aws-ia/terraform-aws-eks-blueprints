@@ -19,9 +19,11 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # Invoking Helm Module
 # ---------------------------------------------------------------------------------------------------------------------
-module "helm" {
+module "kubernetes_addons" {
+  count = var.create_eks ? 1 : 0
+
   source                     = "./kubernetes-addons"
-  eks_cluster_id             = module.eks.eks_cluster_id
+  eks_cluster_id             = module.aws_eks.cluster_id
   public_docker_repo         = var.public_docker_repo
   private_container_repo_url = var.private_container_repo_url != "" ? var.private_container_repo_url : local.ecr_image_repo_url
 
@@ -43,7 +45,7 @@ module "helm" {
 
   # ------- Traefik Ingress Controller
   traefik_ingress_controller_enable = var.traefik_ingress_controller_enable
-  s3_nlb_logs                       = module.s3.s3_bucket_name
+  s3_nlb_logs                       = module.s3[0].s3_bucket_name
   traefik_helm_chart_version        = var.traefik_helm_chart_version
   traefik_image_tag                 = var.traefik_image_tag
   traefik_helm_chart_url            = var.traefik_helm_chart_url
@@ -54,8 +56,8 @@ module "helm" {
   aws_lb_ingress_controller_enable = var.aws_lb_ingress_controller_enable
   aws_lb_image_tag                 = var.aws_lb_image_tag
   aws_lb_helm_chart_version        = var.aws_lb_helm_chart_version
-  eks_oidc_issuer_url              = module.eks.eks_cluster_oidc_issuer_url
-  eks_oidc_provider_arn            = module.eks.oidc_provider_arn
+  eks_oidc_issuer_url              = module.aws_eks.cluster_oidc_issuer_url
+  eks_oidc_provider_arn            = module.aws_eks.oidc_provider_arn
   aws_lb_helm_repo_url             = var.aws_lb_helm_repo_url
   aws_lb_helm_helm_chart_name      = var.aws_lb_helm_helm_chart_name
   aws_lb_image_repo_name           = var.aws_lb_image_repo_name
@@ -84,7 +86,7 @@ module "helm" {
   # ------- Agones Gaming Module ---------
   agones_enable              = var.agones_enable
   expose_udp                 = var.expose_udp
-  eks_security_group_id      = module.eks.eks_worker_security_group_id
+  eks_security_group_id      = module.aws_eks.worker_security_group_id
   agones_helm_chart_name     = var.agones_helm_chart_name
   agones_helm_chart_url      = var.agones_helm_chart_url
   agones_image_tag           = var.agones_image_tag
@@ -101,7 +103,7 @@ module "helm" {
   prometheus_image_tag            = var.prometheus_image_tag
   pushgateway_image_tag           = var.pushgateway_image_tag
   amp_ingest_role_arn             = var.prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : ""
-  service_account_amp_ingest_name = format("%s-%s", module.eks.eks_cluster_id, "amp-ingest-account")
+  service_account_amp_ingest_name = format("%s-%s", module.aws_eks.cluster_id, "amp-ingest-account")
   amp_workspace_id                = var.prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : ""
   region                          = data.aws_region.current.id
   prometheus_helm_chart_url       = var.prometheus_helm_chart_url
@@ -129,8 +131,8 @@ module "helm" {
   aws_open_telemetry_collector_image                  = var.aws_open_telemetry_collector_image
   aws_open_telemetry_emitter_image                    = var.aws_open_telemetry_emitter_image
   aws_open_telemetry_emitter_oltp_endpoint            = var.aws_open_telemetry_emitter_oltp_endpoint
-  aws_open_telemetry_mg_node_iam_role_arns            = var.create_eks && var.enable_managed_nodegroups ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.managed-node-groups[nodes].manage_ng_iam_role_name) }) : []
-  aws_open_telemetry_self_mg_node_iam_role_arns       = var.create_eks && var.enable_self_managed_nodegroups ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws-eks-self-managed-node-groups[nodes].self_managed_iam_role_name) }) : []
+  aws_open_telemetry_mg_node_iam_role_arns            = var.create_eks && var.enable_managed_nodegroups ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_role_name) }) : []
+  aws_open_telemetry_self_mg_node_iam_role_arns       = var.create_eks && var.enable_self_managed_nodegroups ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_iam_role_name) }) : []
   aws_open_telemetry_emitter_name                     = var.aws_open_telemetry_emitter_name
   aws_open_telemetry_emitter_otel_resource_attributes = var.aws_open_telemetry_emitter_otel_resource_attributes
 
@@ -150,6 +152,6 @@ module "helm" {
   opentelemetry_helm_chart_url                          = var.opentelemetry_helm_chart_url
 
 
-  depends_on = [module.eks]
+  depends_on = [module.aws_eks]
 
 }

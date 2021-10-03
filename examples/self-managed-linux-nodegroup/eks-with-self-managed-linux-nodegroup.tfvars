@@ -76,18 +76,18 @@ enabled_cluster_log_types    = ["api", "audit", "authenticator", "controllerMana
 cluster_log_retention_period = 7
 
 enable_vpc_cni_addon  = true
-vpc_cni_addon_version = "v1.8.0-eksbuild.1"
+vpc_cni_addon_version = "v1.9.1-eksbuild.1"
 
 enable_coredns_addon  = true
-coredns_addon_version = "v1.8.3-eksbuild.1"
+coredns_addon_version = "v1.8.4-eksbuild.1"
 
 enable_kube_proxy_addon  = true
-kube_proxy_addon_version = "v1.20.4-eksbuild.2"
+kube_proxy_addon_version = "v1.21.2-eksbuild.2"
 
 #---------------------------------------------------------#
 # SELF-MANAGED WINDOWS NODE GROUP (WORKER GROUP)
 #---------------------------------------------------------#
-enable_self_managed_nodegroups = false
+enable_self_managed_nodegroups = true
 self_managed_node_groups = {
   #---------------------------------------------------------#
   # ON-DEMAND Self Managed Worker Group - Worker Group - 1
@@ -131,28 +131,6 @@ self_managed_node_groups = {
 
   },
 }
-#---------------------------------------------------------#
-# ENABLE HELM MODULES
-# Please note that you may need to download the docker images for each
-#          helm module and push it to ECR if you create fully private EKS Clusters with no access to internet to fetch docker images.
-#          README with instructions available in each HELM module under helm/
-#---------------------------------------------------------#
-# Enable this if worker Node groups has access to internet to download the docker images
-# Or Make it false and set the private contianer image repo url in source/eks.tf; currently this defaults to ECR
-public_docker_repo = true
-
-#---------------------------------------------------------#
-# ENABLE METRICS SERVER
-#---------------------------------------------------------#
-metrics_server_enable            = true
-metric_server_image_tag          = "0.5.0-debian-10-r83"
-metric_server_helm_chart_version = "5.10.1"
-#---------------------------------------------------------#
-# ENABLE CLUSTER AUTOSCALER
-#---------------------------------------------------------#
-cluster_autoscaler_enable       = true
-cluster_autoscaler_image_tag    = "v1.21.0"
-cluster_autoscaler_helm_version = "9.10.7"
 
 
 

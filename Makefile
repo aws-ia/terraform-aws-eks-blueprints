@@ -13,10 +13,10 @@ SHELL := /usr/bin/env bash
 # Executing Terraform DESTROY
 #	$ make tf-destroy-eks env=<env> region=<region> account=<account> subenv=<subenv>
 
-# Example for running the dev config in preprod ->  live/preprod/eu-west-1/application/dev/test.tfvars
+# Example for running the dev config in preprod ->  live/preprod/eu-west-1/application/dev/test-eks.tfvars
 #  $ make tf-plan-eks env=preprod region=eu-west-1 account=application subenv=dev
 
-# Example for running the dev config in preprod ->  live/preprod/eu-west-1/gaming/test/test.tfvars
+# Example for running the dev config in preprod ->  live/preprod/eu-west-1/gaming/test/test-eks.tfvars
 #  $make tf-plan-eks env=preprod region=eu-west-1 account=gaming subenv=test
 
 

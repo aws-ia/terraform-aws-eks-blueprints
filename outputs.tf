@@ -19,37 +19,37 @@
 
 output "cluster_oidc_url" {
   description = "The URL on the EKS cluster OIDC Issuer"
-  value       = var.create_eks ? split("//", module.eks.eks_cluster_oidc_issuer_url)[1] : "EKS Cluster not enabled"
+  value       = var.create_eks ? split("//", module.aws_eks.cluster_oidc_issuer_url)[1] : "EKS Cluster not enabled"
 }
 
 output "oidc_provider_arn" {
   description = "The ARN of the OIDC Provider if `enable_irsa = true`."
-  value       = var.create_eks ? module.eks.oidc_provider_arn : "EKS Cluster not enabled"
+  value       = var.create_eks ? module.aws_eks.oidc_provider_arn : "EKS Cluster not enabled"
 }
 
 output "cluster_name" {
   description = "Kubernetes Cluster Name"
-  value       = var.create_eks ? module.eks.eks_cluster_id : "EKS Cluster not enabled"
+  value       = var.create_eks ? module.aws_eks.cluster_id : "EKS Cluster not enabled"
 }
 
 output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = var.create_eks ? "aws eks --region ${data.aws_region.current.id} update-kubeconfig --name ${module.eks.eks_cluster_id}" : "EKS Cluster not enabled"
+  value       = var.create_eks ? "aws eks --region ${data.aws_region.current.id} update-kubeconfig --name ${module.aws_eks.cluster_id}" : "EKS Cluster not enabled"
 }
 
 output "cluster_security_group_id" {
   description = "EKS Control Plane Security Group ID"
-  value       = module.eks.eks_cluster_security_group_id
+  value       = module.aws_eks.cluster_security_group_id
 }
 
 output "cluster_primary_security_group_id" {
   description = "EKS Cluster Security group ID"
-  value       = module.eks.eks_cluster_primary_security_group_id
+  value       = module.aws_eks.cluster_primary_security_group_id
 }
 
 output "worker_security_group_id" {
   description = "EKS Worker Security group ID created by EKS module"
-  value       = module.eks.eks_worker_security_group_id
+  value       = module.aws_eks.worker_security_group_id
 }
 
 output "amp_work_id" {
@@ -64,32 +64,32 @@ output "amp_work_arn" {
 
 output "self_managed_node_group_iam_role_arns" {
   description = "IAM role arn's of self managed node groups"
-  value       = var.create_eks && var.enable_self_managed_nodegroups ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws-eks-self-managed-node-groups[nodes].self_managed_node_group_iam_role_arns) }) : []
+  value       = var.create_eks && var.enable_self_managed_nodegroups ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_node_group_iam_role_arns) }) : []
 }
 
 output "managed_node_group_iam_role_arns" {
   description = "IAM role arn's of managed node groups"
-  value       = var.create_eks && var.enable_managed_nodegroups ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.managed-node-groups[nodes].manage_ng_iam_role_arn) }) : []
+  value       = var.create_eks && var.enable_managed_nodegroups ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_role_name) }) : []
 }
 
 output "fargate_profiles_iam_role_arns" {
   description = "IAM role arn's for Fargate Profiles"
-  value       = var.create_eks && var.enable_fargate ? { for nodes in sort(keys(var.fargate_profiles)) : nodes => module.fargate-profiles[nodes].eks_fargate_profile_role_name } : null
+  value       = var.create_eks && var.enable_fargate ? { for nodes in sort(keys(var.fargate_profiles)) : nodes => module.aws_eks_fargate_profiles[nodes].eks_fargate_profile_role_name } : null
 }
 
 output "managed_node_groups" {
   description = "Outputs from EKS Managed node groups "
-  value       = var.create_eks && var.enable_managed_nodegroups ? module.managed-node-groups.* : []
+  value       = var.create_eks && var.enable_managed_nodegroups ? module.aws_eks_managed_node_groups.* : []
 }
 
 output "self_managed_node_groups" {
   description = "Outputs from EKS Self-managed node groups "
-  value       = var.create_eks && var.enable_self_managed_nodegroups ? module.aws-eks-self-managed-node-groups.* : []
+  value       = var.create_eks && var.enable_self_managed_nodegroups ? module.aws_eks_self_managed_node_groups.* : []
 }
 
 output "fargate_profiles" {
   description = "Outputs from EKS Fargate profiles groups "
-  value       = var.create_eks && var.enable_fargate ? module.fargate-profiles.* : []
+  value       = var.create_eks && var.enable_fargate ? module.aws_eks_fargate_profiles.* : []
 }
 
 output "self_managed_node_group_aws_auth_config_map" {

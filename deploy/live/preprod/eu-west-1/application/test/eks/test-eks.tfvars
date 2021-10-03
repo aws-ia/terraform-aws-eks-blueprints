@@ -25,50 +25,31 @@
 org               = "aws"     # Organization Name. Used to tag resources
 tenant            = "aws001"  # AWS account name or unique id for tenant
 environment       = "preprod" # Environment area eg., preprod or prod
-zone              = "dev"     # Environment with in one sub_tenant or business unit
+zone              = "test"    # Environment with in one sub_tenant or business unit
 terraform_version = "Terraform v1.0.1"
-
 #---------------------------------------------------------#
 # VPC and PRIVATE SUBNET DETAILS for EKS Cluster
-# This provides two options Option1 and Option2. You should choose either of one to provide VPC details to the EKS cluster
 #---------------------------------------------------------#
-
-#---------------------------------------------------------#
-# OPTION 1
-# Provide an existing vpc_id and private_subnet_ids
-#---------------------------------------------------------#
-# create_vpc = false
-# vpc_id = "xxxxxx"
-# private_subnet_ids = ['xxxxxx','xxxxxx','xxxxxx']
-# public_subnet_ids = ['xxxxxx','xxxxxx','xxxxxx']
+#This provides two options Option1 and Option2. You should choose either of one to provide VPC details to the EKS cluster
+#Option1: Creates a new VPC, private Subnets and VPC Endpoints by taking the inputs of vpc_cidr_block and private_subnets_cidr. VPC Endpoints are S3, SSM , EC2, ECR API, ECR DKR, KMS, CloudWatch Logs, STS, Elastic Load Balancing, Autoscaling
+#Option2: Provide an existing vpc_id and private_subnet_ids
 
 #---------------------------------------------------------#
 # OPTION 2
-# Creates a new VPC, private Subnets and VPC Endpoints by taking the inputs of vpc_cidr_block and private_subnets_cidr. VPC Endpoints are S3, SSM , EC2, ECR API, ECR DKR, KMS, CloudWatch Logs, STS, Elastic Load Balancing, Autoscaling
 #---------------------------------------------------------#
-create_vpc             = true
-enable_private_subnets = true
-enable_public_subnets  = true
+create_vpc           = false
+create_vpc_endpoints = false
+vpc_id               = "vpc-0a172d7ab14ae0dbd"
+private_subnet_ids   = ["subnet-0145a0dba9edb8d67", "subnet-044af15285bba8e1f", "subnet-03ee35df9c9a5a742"]
+public_subnet_ids    = ["subnet-0a9337324c52d5dc0", "subnet-06def9e7375d363e7", "subnet-0e93905699dfe543c"]
 
-# Enable or Disable NAT Gateway and Internet Gateway for Public Subnets
-enable_nat_gateway = true
-single_nat_gateway = true
-create_igw         = true
-
-vpc_cidr_block       = "10.1.0.0/18"
-private_subnets_cidr = ["10.1.0.0/22", "10.1.4.0/22", "10.1.8.0/22"]
-public_subnets_cidr  = ["10.1.12.0/22", "10.1.16.0/22", "10.1.20.0/22"]
-
-# Change this to true when you want to create VPC endpoints for Private subnets
-create_vpc_endpoints = true
-
-#---------------------------------------------------------#
+//#---------------------------------------------------------#
 # EKS CONTROL PLANE VARIABLES
 # API server endpoint access options
 #   Endpoint public access: true    - Your cluster API server is accessible from the internet. You can, optionally, limit the CIDR blocks that can access the public endpoint.
 #   Endpoint private access: true   - Kubernetes API requests within your cluster's VPC (such as node to control plane communication) use the private VPC endpoint.
 #---------------------------------------------------------#
-create_eks              = false
+create_eks              = true
 kubernetes_version      = "1.21"
 endpoint_private_access = true
 endpoint_public_access  = true
@@ -96,7 +77,7 @@ kube_proxy_addon_version = "v1.21.2-eksbuild.2"
 #    3. Security Group for Node group (Optional)
 #    4. Launch Templates for Node group   (Optional)
 #---------------------------------------------------------#
-enable_managed_nodegroups = false
+enable_managed_nodegroups = true
 managed_node_groups = {
   #---------------------------------------------------------#
   # ON-DEMAND Worker Group - Worker Group - 1
@@ -114,7 +95,7 @@ managed_node_groups = {
     # 2> Node Group scaling configuration
     desired_size    = 3
     max_size        = 3
-    min_size        = 3
+    min_size        = 1
     max_unavailable = 1 # or percentage = 20
 
     # 3> Node Group compute configuration
@@ -282,7 +263,7 @@ self_managed_node_groups = {
     subnet_type = "private" # private or public
     subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
 
-    create_worker_security_group = false # Creates a dedicated sec group for this Node Group
+    create_worker_security_group = true # Creates a dedicated sec group for this Node Group
   },
   /*
   spot_m5 = {
@@ -397,7 +378,7 @@ self_managed_node_groups = {
 #---------------------------------------------------------#
 # FARGATE PROFILES
 #---------------------------------------------------------#
-enable_fargate = false
+enable_fargate = true
 
 # Enable logging only when you create a Fargate profile e.g., enable_fargate = true
 fargate_fluent_bit_enable = false
@@ -453,7 +434,7 @@ fargate_profiles = {
 } # END OF FARGATE PROFILES
 
 #---------------------------------------------------------#
-# ENABLE KUBERNETES ADDONS
+# ENABLE HELM MODULES
 #---------------------------------------------------------#
 # Please note that you may need to download the docker images for each
 #    helm module and push it to ECR if you create fully private EKS Clusters with no access to internet to fetch docker images.
@@ -467,7 +448,7 @@ public_docker_repo = true
 #---------------------------------------------------------#
 # ENABLE METRICS SERVER
 #---------------------------------------------------------#
-metrics_server_enable            = false
+metrics_server_enable            = true
 metric_server_image_repo_name    = "bitnami/metrics-server"
 metric_server_image_tag          = "0.5.0-debian-10-r83"
 metric_server_helm_repo_url      = "https://charts.bitnami.com/bitnami"
@@ -476,7 +457,7 @@ metric_server_helm_chart_version = "5.10.1"
 #---------------------------------------------------------#
 # ENABLE CLUSTER AUTOSCALER
 #---------------------------------------------------------#
-cluster_autoscaler_enable          = false
+cluster_autoscaler_enable          = true
 cluster_autoscaler_image_tag       = "v1.21.0"
 cluster_autoscaler_helm_repo_url   = "https://kubernetes.github.io/autoscaler"
 cluster_autoscaler_image_repo_name = "k8s.gcr.io/autoscaling/cluster-autoscaler"
@@ -486,7 +467,7 @@ cluster_autoscaler_helm_version    = "9.10.7"
 #---------------------------------------------------------//
 # ENABLE AWS LB INGRESS CONTROLLER
 #---------------------------------------------------------//
-aws_lb_ingress_controller_enable = false
+aws_lb_ingress_controller_enable = true
 aws_lb_image_repo_name           = "amazon/aws-load-balancer-controller"
 aws_lb_image_tag                 = "v2.2.4"
 aws_lb_helm_chart_version        = "1.2.7"

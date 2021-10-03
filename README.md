@@ -1,10 +1,11 @@
 # aws-eks-accelerator-for-terraform
 
 # Main Purpose
-This project provides a framework for deploying best-practice multi-tenant [EKS Clusters](https://aws.amazon.com/eks) with Kubernetes Addons, provisioned via [Hashicorp Terraform](https://www.terraform.io/) and [Helm charts](https://helm.sh/) on [AWS](https://aws.amazon.com/).
+This project provides a framework for deploying best-practice multi-tenant [EKS Clusters](https://aws.amazon.com/eks) with [Kubernetes Addons](https://kubernetes.io/docs/concepts/cluster-administration/addons/), provisioned via [Hashicorp Terraform](https://www.terraform.io/) and [Helm charts](https://helm.sh/) on [AWS](https://aws.amazon.com/).
 
 # Overview
-The AWS EKS Accelerator for Terraform module helps you to provision [EKS Clusters](https://aws.amazon.com/eks), [Managed node groups](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) with [On-Demand](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-on-demand-instances.html) and [Spot Instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html), [AWS Fargate profiles](https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html), and all the necessary Kubernetes add-ons for a production-ready EKS cluster. The [Terraform Helm provider](https://github.com/hashicorp/terraform-provider-helm) is used to deploy common Kubernetes Addons with publicly available [Helm Charts](https://artifacthub.io/). This project leverages the official [terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks) module to create EKS Clusters.
+The AWS EKS Accelerator for Terraform module helps you to provision [EKS Clusters](https://aws.amazon.com/eks), [Managed node groups](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) with [On-Demand](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-on-demand-instances.html) and [Spot Instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html), [AWS Fargate profiles](https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html), and all the necessary Kubernetes add-ons for a production-ready EKS cluster. The [Terraform Helm provider](https://github.com/hashicorp/terraform-provider-helm) is used to deploy common Kubernetes Addons with publicly available [Helm Charts](https://artifacthub.io/). 
+This project leverages the official [terrafor-aws-vpc](https://github.com/terraform-aws-modules/terraform-aws-vpc) and [terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks) community modules to create VPC and EKS Cluster.
 
 The intention of this framework is to help you design config driven solution. This will help you to create EKS clusters for various environments and AWS accounts across multiple regions with a **unique Terraform configuration and state file** per EKS cluster.  
 
@@ -104,9 +105,11 @@ NOTE: VPC/Subnets creation can be disabled using `create_vpc = false` in TFVARS 
 15. [AWS Distro for OpenTelemetry Collector(AWS OTel Collector) ](https://github.com/aws-observability/aws-otel-collector)
 
 # Node Group Modules
-This module contains dedicated sub modules for creating [AWS Managed Node Groups](modules/aws-eks-managed-node-groups), [Self-managed Node groups](modules/aws-eks-self-managed-node-groups) and [Fargate profiles](modules/aws-eks-fargate-profiles)
-Mixed Node groups with Fargate profiles can be defined simply as a map variable in `<env.tfvars>`. 
-This approach allows you to add/remove node groups or fargate profiles by just adding/removing map of values to the existing `<env>.tfvars`. AWS AUTH config map handled by this module to ensure new node groups successfully joined with the Cluster. 
+This module contains dedicated sub modules for creating [AWS Managed Node Groups](modules/aws-eks-managed-node-groups), [Self-managed Node groups](modules/aws-eks-self-managed-node-groups) and [Fargate profiles](modules/aws-eks-fargate-profiles).
+Mixed Node groups with Fargate profiles can be defined simply as a map variable in `<env>.tfvars`. 
+This approach provides flexibility to add or remove managed/self-managed node groups/fargate profiles by just adding/removing map of values to the existing `<env>.tfvars`. This allows you to define unique node configuraton for each EKS Cluster in the same account. AWS auth config map handled by this module to ensure new node groups successfully joined with the Cluster. 
+Each Node Group can have dedicated IAM role, Security Group and Launch template to improve the security.
+
 Please refer to the `dev.tfvars` for full example.
 
 **Managed Node Groups Example**

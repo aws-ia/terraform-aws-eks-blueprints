@@ -19,7 +19,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # LABELING VPC RESOURCES
 # ---------------------------------------------------------------------------------------------------------------------
-module "vpc-label" {
+module "vpc_label" {
   enabled     = var.create_vpc ? true : false
   source      = "./modules/aws-resource-label"
   tenant      = var.tenant
@@ -31,13 +31,14 @@ module "vpc-label" {
 # ---------------------------------------------------------------------------------------------------------------------
 # VPC, SUBNETS AND ENDPOINTS DEPLOYED FOR FULLY PRIVATE EKS CLUSTERS
 # ---------------------------------------------------------------------------------------------------------------------
-module "vpc" {
+module "aws_vpc" {
   create_vpc = var.create_vpc
   source     = "terraform-aws-modules/vpc/aws"
   version    = "v3.2.0"
-  name       = module.vpc-label.id
-  cidr       = var.vpc_cidr_block
-  azs        = data.aws_availability_zones.available.names
+
+  name = module.vpc_label.id
+  cidr = var.vpc_cidr_block
+  azs  = data.aws_availability_zones.available.names
   # Private Subnets
   private_subnets     = var.enable_private_subnets ? var.private_subnets_cidr : []
   private_subnet_tags = var.enable_private_subnets ? local.private_subnet_tags : {}
@@ -74,7 +75,7 @@ module "vpc" {
 
   manage_default_security_group = true
 
-  default_security_group_name = "${module.vpc-label.id}-endpoint-secgrp"
+  default_security_group_name = "${module.vpc_label.id}-endpoint-secgrp"
   default_security_group_ingress = [
     {
       protocol    = -1
@@ -94,20 +95,20 @@ module "vpc" {
 ################################################################################
 # VPC Endpoints Module
 ################################################################################
-module "endpoints_interface" {
+module "gateway_vpc_endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "v3.2.0"
 
   create = var.create_vpc_endpoints
-  vpc_id = module.vpc.vpc_id
+  vpc_id = module.aws_vpc.vpc_id
 
   endpoints = {
     s3 = {
       service      = "s3"
       service_type = "Gateway"
       route_table_ids = flatten([
-        module.vpc.intra_route_table_ids,
-      module.vpc.private_route_table_ids])
+        module.aws_vpc.intra_route_table_ids,
+      module.aws_vpc.private_route_table_ids])
       tags = { Name = "s3-vpc-Gateway" }
     },
     /*
@@ -115,9 +116,9 @@ module "endpoints_interface" {
       service = "dynamodb"
       service_type = "Gateway"
       route_table_ids = flatten([
-        module.vpc.intra_route_table_ids,
-        module.vpc.private_route_table_ids,
-        module.vpc.public_route_table_ids])
+        module.aws_vpc.intra_route_table_ids,
+        module.aws_vpc.private_route_table_ids,
+        module.aws_vpc.public_route_table_ids])
       policy = data.aws_iam_policy_document.dynamodb_endpoint_policy.json
       tags = { Name = "dynamodb-vpc-endpoint" }
     },
@@ -125,15 +126,15 @@ module "endpoints_interface" {
   }
 }
 
-module "vpc_endpoints_gateway" {
+module "vpc_endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "v3.2.0"
 
   create = var.create_vpc_endpoints
 
-  vpc_id             = module.vpc.vpc_id
-  security_group_ids = [data.aws_security_group.default[0].id]
-  subnet_ids         = module.vpc.private_subnets
+  vpc_id             = module.aws_vpc.vpc_id
+  security_group_ids = var.create_vpc_endpoints ? [data.aws_security_group.default[0].id] : []
+  subnet_ids         = module.aws_vpc.private_subnets
 
   endpoints = {
     aps-workspaces = {

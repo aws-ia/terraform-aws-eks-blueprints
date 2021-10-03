@@ -65,8 +65,9 @@ create_vpc_endpoints = true
 #   Endpoint public access: true    - Your cluster API server is accessible from the internet. You can, optionally, limit the CIDR blocks that can access the public endpoint.
 #   Endpoint private access: true   - Kubernetes API requests within your cluster's VPC (such as node to control plane communication) use the private VPC endpoint.
 #---------------------------------------------------------#
-kubernetes_version      = "1.20"
-endpoint_private_access = false
+create_eks              = false
+kubernetes_version      = "1.21"
+endpoint_private_access = true
 endpoint_public_access  = true
 
 # Enable IAM Roles for Service Accounts (IRSA) on the EKS cluster
@@ -76,13 +77,13 @@ enabled_cluster_log_types    = ["api", "audit", "authenticator", "controllerMana
 cluster_log_retention_period = 7
 
 enable_vpc_cni_addon  = true
-vpc_cni_addon_version = "v1.8.0-eksbuild.1"
+vpc_cni_addon_version = "v1.9.1-eksbuild.1"
 
 enable_coredns_addon  = true
-coredns_addon_version = "v1.8.3-eksbuild.1"
+coredns_addon_version = "v1.8.4-eksbuild.1"
 
 enable_kube_proxy_addon  = true
-kube_proxy_addon_version = "v1.20.4-eksbuild.2"
+kube_proxy_addon_version = "v1.21.2-eksbuild.2"
 
 
 
@@ -142,7 +143,7 @@ managed_node_groups = {
 #          README with instructions available in each HELM module under helm/
 #---------------------------------------------------------#
 # Enable this if worker Node groups has access to internet to download the docker images
-# Or Make it false and set the private contianer image repo url in source/eks.tf; currently this defaults to ECR
+# Or Make it false and set the private contianer image repo url in source/aws-eks.tf; currently this defaults to ECR
 public_docker_repo = true
 
 #---------------------------------------------------------//
@@ -153,5 +154,12 @@ public_docker_repo = true
 #         By default Agones prefers to be scheduled on nodes labeled with agones.dev/agones-system=true and tolerates the node taint agones.dev/agones-system=true:NoExecute.
 #         If no dedicated nodes are available, Agones will run on regular nodes.
 #---------------------------------------------------------//
-agones_enable = true
-expose_udp    = true
+agones_enable              = false
+expose_udp                 = true
+agones_helm_chart_name     = "agones"
+agones_helm_chart_url      = "https://agones.dev/chart/stable"
+agones_image_tag           = "1.15.0"
+agones_image_repo          = "gcr.io/agones-images"
+agones_game_server_minport = 7000
+agones_game_server_maxport = 8000
+#agones_helm_chart_version = ""
