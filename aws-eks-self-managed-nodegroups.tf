@@ -28,7 +28,7 @@ module "aws_eks_self_managed_node_groups" {
   eks_cluster_name  = module.aws_eks.cluster_id
   cluster_endpoint  = module.aws_eks.cluster_endpoint
   cluster_ca_base64 = module.aws_eks.cluster_certificate_authority_data
-  tags              = module.eks_label.tags
+  tags              = module.eks_tags.tags
 
   vpc_id             = var.create_vpc == false ? var.vpc_id : module.aws_vpc.vpc_id
   private_subnet_ids = var.create_vpc == false ? var.private_subnet_ids : module.aws_vpc.private_subnets

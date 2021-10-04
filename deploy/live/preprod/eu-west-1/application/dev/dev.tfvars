@@ -517,7 +517,7 @@ pushgateway_image_tag         = "v1.3.1"
 aws_for_fluent_bit_enable             = false
 ekslog_retention_in_days              = 7
 aws_for_fluent_bit_image_repo_name    = "amazon/aws-for-fluent-bit"
-aws_for_fluent_bit_image_tag          = "2.17.0"
+aws_for_fluent_bit_image_tag          = "2.20.0"
 aws_for_fluent_bit_helm_chart_version = "0.1.11"
 aws_for_fluent_bit_helm_chart_url     = "https://aws.github.io/eks-charts"
 aws_for_fluent_bit_helm_chart_name    = "aws-for-fluent-bit"
@@ -602,7 +602,7 @@ opentelemetry_helm_chart_version = "0.5.11"
 opentelemetry_enable_agent_collector = true
 opentelemetry_enable_container_logs  = true
 # standalone_collector
-opentelemetry_enable_standalone_collector             = false
+opentelemetry_enable_standalone_collector             = true
 opentelemetry_enable_autoscaling_standalone_collector = true
 opentelemetry_min_standalone_collectors               = 1
 opentelemetry_max_standalone_collectors               = 10

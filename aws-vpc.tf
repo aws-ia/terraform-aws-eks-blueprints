@@ -19,9 +19,9 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # LABELING VPC RESOURCES
 # ---------------------------------------------------------------------------------------------------------------------
-module "vpc_label" {
+module "vpc_tags" {
   enabled     = var.create_vpc ? true : false
-  source      = "./modules/aws-resource-label"
+  source      = "./modules/aws-resource-tags"
   tenant      = var.tenant
   environment = var.environment
   zone        = var.zone
@@ -36,7 +36,7 @@ module "aws_vpc" {
   source     = "terraform-aws-modules/vpc/aws"
   version    = "v3.2.0"
 
-  name = module.vpc_label.id
+  name = module.vpc_tags.id
   cidr = var.vpc_cidr_block
   azs  = data.aws_availability_zones.available.names
   # Private Subnets
@@ -75,7 +75,7 @@ module "aws_vpc" {
 
   manage_default_security_group = true
 
-  default_security_group_name = "${module.vpc_label.id}-endpoint-secgrp"
+  default_security_group_name = "${module.vpc_tags.id}-endpoint-secgrp"
   default_security_group_ingress = [
     {
       protocol    = -1

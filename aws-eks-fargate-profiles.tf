@@ -29,7 +29,7 @@ module "aws_eks_fargate_profiles" {
   eks_cluster_name   = module.aws_eks.cluster_id
   private_subnet_ids = var.create_vpc == false ? var.private_subnet_ids : module.aws_vpc.private_subnets
 
-  tags = module.eks_label.tags
+  tags = module.eks_tags.tags
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
 

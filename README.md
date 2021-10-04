@@ -66,7 +66,8 @@ This module provisions the following EKS resources
 3. [NAT Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html)
 4. [Internet Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html)
 
-NOTE: VPC/Subnets creation can be disabled using `create_vpc = false` in TFVARS file and import the existing VPC resources 
+NOTE: VPC/Subnets creation can be disabled using `create_vpc = false` in TFVARS file and import the existing VPC resources. 
+`test-vpc.tfvars` and `test-eks.tfvars` [example](deploy/live/preprod/eu-west-1/application/test/) shows how to create VPC with a unique state file and import that state file with resources into EKS Cluster creation. 
 
 ## EKS Cluster resources
 
@@ -105,12 +106,13 @@ NOTE: VPC/Subnets creation can be disabled using `create_vpc = false` in TFVARS 
 15. [AWS Distro for OpenTelemetry Collector(AWS OTel Collector) ](https://github.com/aws-observability/aws-otel-collector)
 
 # Node Group Modules
-This module contains dedicated sub modules for creating [AWS Managed Node Groups](modules/aws-eks-managed-node-groups), [Self-managed Node groups](modules/aws-eks-self-managed-node-groups) and [Fargate profiles](modules/aws-eks-fargate-profiles).
+This module uses dedicated sub modules for creating [AWS Managed Node Groups](modules/aws-eks-managed-node-groups), [Self-managed Node groups](modules/aws-eks-self-managed-node-groups) and [Fargate profiles](modules/aws-eks-fargate-profiles).
 Mixed Node groups with Fargate profiles can be defined simply as a map variable in `<env>.tfvars`. 
-This approach provides flexibility to add or remove managed/self-managed node groups/fargate profiles by just adding/removing map of values to the existing `<env>.tfvars`. This allows you to define unique node configuraton for each EKS Cluster in the same account. AWS auth config map handled by this module to ensure new node groups successfully joined with the Cluster. 
+This approach provides flexibility to add or remove managed/self-managed node groups/fargate profiles by just adding/removing map of values to the existing `<env>.tfvars`. This allows you to define unique node configuration for each EKS Cluster in the same account. 
+AWS auth config map handled by this module ensures new node groups successfully join with the EKS Cluster. 
 Each Node Group can have dedicated IAM role, Security Group and Launch template to improve the security.
 
-Please refer to the `dev.tfvars` for full example.
+Please refer to the `dev.tfvars` for [full example](deploy/live/preprod/eu-west-1/application/dev/dev.tfvars).
 
 **Managed Node Groups Example**
 
@@ -396,15 +398,16 @@ If you are using an existing VPC then you may need to ensure that the following 
 Add Tags to **VPC**
 
 ```hcl-terraform
-    Key = Kubernetes .io/cluster/${local.cluster_name} Value = Shared
+    Key = "Kubernetes.io/cluster/${local.cluster_name}"
+    Value = "Shared"
 ```
 
 Add Tags to **Public Subnets tagging** requirement
 
 ```hcl-terraform
       public_subnet_tags = {
-        "Kubernetes .io/cluster/${local.cluster_name}" = "shared"
-        "Kubernetes .io/role/elb"                      = "1"
+        "Kubernetes.io/cluster/${local.cluster_name}" = "shared"
+        "Kubernetes.io/role/elb"                      = "1"
       }
 ```
 
@@ -412,8 +415,8 @@ Add Tags to **Private Subnets tagging** requirement
 
 ```hcl-terraform
       private_subnet_tags = {
-        "Kubernetes .io/cluster/${local.cluster_name}" = "shared"
-        "Kubernetes .io/role/internal-elb"             = "1"
+        "Kubernetes.io/cluster/${local.cluster_name}" = "shared"
+        "Kubernetes.io/role/internal-elb"             = "1"
       }
 ```
 

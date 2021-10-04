@@ -42,7 +42,7 @@ module "aws_eks_managed_node_groups" {
   cluster_security_group_id         = module.aws_eks.cluster_security_group_id
   cluster_primary_security_group_id = module.aws_eks.cluster_primary_security_group_id
 
-  tags = module.eks_label.tags
+  tags = module.eks_tags.tags
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
 

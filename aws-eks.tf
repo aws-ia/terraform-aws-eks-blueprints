@@ -19,8 +19,8 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # LABELING EKS RESOURCES
 # ---------------------------------------------------------------------------------------------------------------------
-module "eks_label" {
-  source      = "./modules/aws-resource-label"
+module "eks_tags" {
+  source      = "./modules/aws-resource-tags"
   tenant      = var.tenant
   environment = var.environment
   zone        = var.zone
@@ -43,7 +43,7 @@ module "aws_eks" {
   create_eks      = var.create_eks
   manage_aws_auth = false
 
-  cluster_name    = module.eks_label.id
+  cluster_name    = module.eks_tags.id
   cluster_version = var.kubernetes_version
 
   # NETWORK CONFIG
@@ -58,7 +58,7 @@ module "aws_eks" {
   kubeconfig_output_path = "./kubeconfig/"
 
   # TAGS
-  tags = module.eks_label.tags
+  tags = module.eks_tags.tags
 
   # CLUSTER LOGGING
   cluster_enabled_log_types = var.enabled_cluster_log_types
@@ -89,7 +89,7 @@ module "aws_eks_addon" {
 
   enable_kube_proxy_addon  = var.enable_kube_proxy_addon
   kube_proxy_addon_version = var.kube_proxy_addon_version
-  tags                     = module.eks_label.tags
+  tags                     = module.eks_tags.tags
 
   depends_on = [
     module.aws_eks

@@ -478,11 +478,11 @@ aws_lb_helm_helm_chart_name      = "aws-load-balancer-controller"
 # ENABLE PROMETHEUS
 #---------------------------------------------------------//
 # Creates the AMP workspace and all the relevent IAM Roles
-aws_managed_prometheus_enable         = false
+aws_managed_prometheus_enable         = true
 aws_managed_prometheus_workspace_name = "EKS-Metrics-Workspace"
 
 # Deploys Pometheus server with remote write to AWS AMP Workspace
-prometheus_enable             = false
+prometheus_enable             = true
 prometheus_helm_chart_url     = "https://prometheus-community.github.io/helm-charts"
 prometheus_helm_chart_name    = "prometheus"
 prometheus_helm_chart_version = "14.4.0"
@@ -495,10 +495,10 @@ pushgateway_image_tag         = "v1.3.1"
 #---------------------------------------------------------#
 # ENABLE AWS_FLUENT-BIT
 #---------------------------------------------------------#
-aws_for_fluent_bit_enable             = false
+aws_for_fluent_bit_enable             = true
 ekslog_retention_in_days              = 7
 aws_for_fluent_bit_image_repo_name    = "amazon/aws-for-fluent-bit"
-aws_for_fluent_bit_image_tag          = "2.17.0"
+aws_for_fluent_bit_image_tag          = "2.20.0"
 aws_for_fluent_bit_helm_chart_version = "0.1.11"
 aws_for_fluent_bit_helm_chart_url     = "https://aws.github.io/eks-charts"
 aws_for_fluent_bit_helm_chart_name    = "aws-for-fluent-bit"
@@ -506,7 +506,7 @@ aws_for_fluent_bit_helm_chart_name    = "aws-for-fluent-bit"
 #---------------------------------------------------------#
 # ENABLE TRAEFIK INGRESS CONTROLLER
 #---------------------------------------------------------#
-traefik_ingress_controller_enable = false
+traefik_ingress_controller_enable = true
 traefik_helm_chart_url            = "https://helm.traefik.io/traefik"
 traefik_helm_chart_name           = "traefik"
 traefik_helm_chart_version        = "10.0.0"
@@ -515,7 +515,7 @@ traefik_image_repo_name           = "traefik"
 #---------------------------------------------------------#
 # ENABLE NGINX INGRESS CONTROLLER
 #---------------------------------------------------------#
-nginx_ingress_controller_enable = false
+nginx_ingress_controller_enable = true
 nginx_helm_chart_version        = "3.33.0"
 nginx_helm_chart_url            = "https://kubernetes.github.io/ingress-nginx"
 nginx_helm_chart_name           = "ingress-nginx"
@@ -556,7 +556,7 @@ cert_manager_image_repo_name    = "quay.io/jetstack/cert-manager-controller"
 # ENABLE AWS Distro for OpenTelemetry Collector in EKS
 # Help : https://aws-otel.github.io/docs/setup/eks
 #---------------------------------------------------------#
-aws_open_telemetry_enable    = false
+aws_open_telemetry_enable    = true
 aws_open_telemetry_namespace = "aws-otel-eks"
 #EMITTER
 aws_open_telemetry_emitter_name                     = "trace-emitter"
@@ -570,7 +570,7 @@ aws_open_telemetry_aws_region      = "eu-west-1"
 #---------------------------------------------------------#
 # ENABLE OPENTELEMETRY COLLECTOR FOR NODE GROUPS
 #---------------------------------------------------------#
-opentelemetry_enable       = false
+opentelemetry_enable       = true
 opentelemetry_image        = "otel/opentelemetry-collector"
 opentelemetry_image_tag    = "0.35.0"
 opentelemetry_command_name = "otelcol"
