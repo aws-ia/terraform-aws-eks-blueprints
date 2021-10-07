@@ -32,6 +32,7 @@ resource "aws_security_group" "self_managed_ng" {
   }
 
   tags = local.common_tags
+  depends_on = [aws_iam_role.self_managed_ng]
 }
 
 resource "aws_security_group_rule" "worker_to_worker_sgr" {

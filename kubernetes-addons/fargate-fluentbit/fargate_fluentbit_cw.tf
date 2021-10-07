@@ -40,6 +40,25 @@ resource "kubernetes_config_map" "aws_logging" {
   }
 
   data = {
+    "parsers.conf" = <<EOF
+     [PARSER]
+       Name regex
+       Format regex
+       Regex ^(?<time>[^ ]+) (?<stream>[^ ]+) (?<logtag>[^ ]+) (?<message>.+)$
+       Time_Key time
+       Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+       Time_Keep On
+       Decode_Field_As json message
+    EOF
+    "filters.conf" = <<EOF
+     [FILTER]
+        Name parser
+        Match *
+        Key_Name log
+        Parser regex
+        Preserve_Key On
+        Reserve_Data On
+    EOF
     "output.conf" = <<EOF
      [OUTPUT]
        Name cloudwatch_logs
@@ -51,39 +70,3 @@ resource "kubernetes_config_map" "aws_logging" {
     EOF
   }
 }
-
-/*
-# EXAMPLE CONFIG MAP FOR Fargate FluentBit logging to CloudWatch
-
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: aws-logging
-  namespace: aws-observability
-data:
-  output.conf: |
-    [OUTPUT]
-        Name cloudwatch_logs
-        Match   *
-        region us-east-1
-        log_group_name fluent-bit-cloudwatch
-        log_stream_prefix from-fluent-bit-
-        auto_create_group true
-
-  parsers.conf: |
-    [PARSER]
-        Name crio
-        Format Regex
-        Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>P|F) (?<log>.*)$
-        Time_Key    time
-        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
-
-  filters.conf: |
-     [FILTER]
-        Name parser
-        Match *
-        Key_name log
-        Parser crio
-        Reserve_Data On
-        Preserve_Key On
-*/

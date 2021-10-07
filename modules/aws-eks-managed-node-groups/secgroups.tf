@@ -14,6 +14,8 @@ resource "aws_security_group" "managed_ng" {
   }
 
   tags = local.common_tags
+
+  depends_on = [aws_iam_role.managed_ng]
 }
 
 resource "aws_security_group_rule" "worker_to_worker_sgr" {

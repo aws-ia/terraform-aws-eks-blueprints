@@ -74,7 +74,7 @@ variable "enable_nat_gateway" {
 variable "single_nat_gateway" {
   description = "Create single NAT gateway for all private subnets"
   type        = bool
-  default     = true
+  default     = false
 }
 variable "create_igw" {
   description = "Create internet gateway in public subnets"
@@ -84,7 +84,7 @@ variable "create_igw" {
 variable "enable_private_subnets" {
   description = "Enable private subnets for EKS Cluster"
   type        = bool
-  default     = true
+  default     = false
 }
 variable "vpc_id" {
   type        = string
