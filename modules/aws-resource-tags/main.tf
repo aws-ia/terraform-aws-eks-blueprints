@@ -36,5 +36,4 @@ locals {
     resource    = local.resource
   }
   tags = merge(local.tags_context, local.input_tags)
-
 }

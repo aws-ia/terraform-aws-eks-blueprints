@@ -1,1 +1,2 @@
-# EKS Accelerator for Terraform
+# AWS EKS SSP Quick Start
+
