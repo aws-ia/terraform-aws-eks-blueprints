@@ -14,7 +14,7 @@ $ aws ecr get-login-password --region <aws region> | docker login --username AWS
 
 Create an ECR repo for your image.
 
-```    s
+```
 $ aws ecr create-repository --repository-name <image name> --image-scanning-configuration scanOnPush=true
 ```
 

@@ -18,7 +18,7 @@
 
 
 provider "aws" {
-  region = var.region
+  region = data.aws_region.current.id
   alias  = "default"
 }
 

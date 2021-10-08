@@ -2,7 +2,7 @@
 
 [Fluent Bit](https://fluentbit.io/) is an open source Log Processor and Forwarder which allows you to collect any data like metrics and logs from different sources, enrich them with filters and send them to multiple destinations.
 
-This framework supports multiple FluentBit configuration which integrate with the various types of compute the framework deploys. 
+This framework supports multiple FluentBit configuration which integrate with the various types of compute the framework deploys.
 
 ## AWS for Fluent Bit
 

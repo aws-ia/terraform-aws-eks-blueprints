@@ -20,8 +20,36 @@ The framework currently provides support for the following add-ons.
 | [Traefik](./traefik) | Deploys Traefik Proxy into an EKS cluster.
 | [Windows VPC Controller](./windows-vpc-controllers) |
 
-## Installation
+## Usage
+
+In order to deploy add-ons with the default configuration, simply enable the add-ons via Terraform properties.
+
+```hcl
+metrics_server_enable = true            # Deploys Metrics Server Addon
+
+cluster_autoscaler_enable = true        # Deploys Cluster Autoscaler Addon
+
+prometheus_enable = true                # Deploys Prometheus Addon
+```
+
+The following demonstrates how you can supply optional Helm configuration, including a dedicated values.yaml file.
+
+```hcl
+metrics_server_helm_chart = {
+    name           = "metrics-server"
+    repository     = "https://kubernetes-sigs.github.io/metrics-server/"
+    chart          = "metrics-server"
+    version        = "3.5.0"
+    namespace      = "kube-system"
+    timeout        = "1200"
+
+    # (Optional) Example to pass metrics-server-values.yaml from your local repo
+    values = [templatefile("${path.module}/k8s_addons/metrics-server-values.yaml", {
+        operating_system                = "linux"
+    })]
+}
+```
 
 By default, the module is configured to fetch Helm Charts from Open Source repositories and Docker images from Docker Hub/Public ECR repositories. This requires outbound Internet connection from your EKS Cluster.
 
-Alternatively you can download the Docker images for each add-on and push them to an AWS ECR repo and this can be accessed within an existing VPC using an ECR endpoint. For instructions on how to do so download existing images, and push them to ECR, see [ECR instructions](../docs/ecr-instructions.md). Each individual add-on directory contains a README.md file with info on the Helm repositories each add-on uses.
+Alternatively you can download the Docker images for each add-on and push them to an AWS ECR repo and this can be accessed within an existing VPC using an ECR endpoint. For instructions on how to do so download existing images, and push them to ECR, see [ECR instructions](../advanced/ecr-instructions.md). Each individual add-on directory contains a README.md file with info on the Helm repositories each add-on uses.

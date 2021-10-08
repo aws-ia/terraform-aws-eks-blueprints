@@ -8,8 +8,9 @@ theme:
     - tabs
 nav:
   - Overview: 'index.md'
-  - Cluster Upgrades: 'cluster-upgrades.md'
-  - ECR Instructions: 'ecr-instructions.md'
+  - Getting Started: 'getting-started.md'
+  - Core Concepts: 'core-concepts.md'
+  - Node Groups: 'node-groups.md'
   - Modules:
     - EMR on EKS: 'modules/emr-on-eks.md'
   - Add-ons:
@@ -28,6 +29,12 @@ nav:
     - Spark K8S Operator: 'add-ons/spark-k8s-operator.md'
     - Traefik: 'add-ons/traefik.md'
     - Windows VPC Controllers: 'add-ons/windows-vpc-controllers.md'
+  - Advanced:
+    - Bottlerocket: 'advanced/bottlerocket.md'
+    - Cluster Upgrades: 'advanced/cluster-upgrades.md'
+    - ECR Instructions: 'advanced/ecr-instructions.md'
+    - Multi-cluster: 'advanced/multi-cluster.md'
+    - Private Clusters: 'advanced/private-clusters.md'
 markdown_extensions:
   - def_list
   - pymdownx.highlight

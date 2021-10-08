@@ -47,6 +47,8 @@ jobs:
           terraform_version: ${{ steps.minMax.outputs.minVersion }}
       - name: Install pre-commit dependencies
         run: pip install pre-commit
+      - name: List version
+        run: pre-commit --version
       - name: Execute pre-commit
         # Run only validate pre-commit check on min version supported
         if: ${{ matrix.directory !=  '.' }}
