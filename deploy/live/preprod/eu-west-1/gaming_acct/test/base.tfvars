@@ -85,7 +85,7 @@ managed_node_groups = {
     # 1> Node Group configuration - Part1
     node_group_name        = "mg_m5x"
     create_launch_template = true              # false will use the default launch template
-    custom_ami_type        = "amazonlinux2eks" # amazonlinux2eks or windows or bottlerocket
+    launch_template_os     = "amazonlinux2eks" # amazonlinux2eks or windows or bottlerocket
     public_ip              = true              # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
     pre_userdata           = <<-EOT
             yum install -y amazon-ssm-agent

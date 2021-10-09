@@ -31,9 +31,9 @@ module "eks_tags" {
 # ---------------------------------------------------------------------------------------------------------------------
 # EKS CONTROL PLANE
 # ---------------------------------------------------------------------------------------------------------------------
-
+#TODO Create KMS alias and assign it
 resource "aws_kms_key" "eks" {
-  description = "EKS Secret Encryption Key"
+  description = "EKS Cluster Secret Encryption Key"
 }
 
 module "aws_eks" {

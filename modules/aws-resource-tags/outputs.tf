@@ -17,11 +17,11 @@
  */
 
 output "id" {
-  value       = local.enabled ? local.id : ""
+  value       = local.id
   description = "aws resource id"
 }
 
 output "tags" {
-  value       = local.enabled ? local.tags : {}
+  value       = local.tags
   description = "aws resource tags"
 }

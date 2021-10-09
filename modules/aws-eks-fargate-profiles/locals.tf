@@ -9,11 +9,11 @@ locals {
     additional_tags               = {}
     additional_security_group_ids = []
     source_security_group_ids     = ""
+    subnet_ids                    = []
   }
   fargate_profiles = merge(
     local.default_fargate_profiles,
-    var.fargate_profile,
-    { subnet_ids = var.fargate_profile["subnet_ids"] == [] ? var.private_subnet_ids : var.fargate_profile["subnet_ids"] }
+    var.fargate_profile
   )
 
   fargate_tags = merge(

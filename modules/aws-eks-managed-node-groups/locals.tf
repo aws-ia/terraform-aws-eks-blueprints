@@ -6,9 +6,9 @@ locals {
     capacity_type   = "ON_DEMAND"  # ON_DEMAND, SPOT
     ami_type        = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
     custom_ami_id   = ""           # Used only with Bottlerocket with custom AMI id
-    subnet_type     = "private"
+    subnet_ids      = []
 
-    desired_size    = "1"
+    desired_size    = "3"
     max_size        = "3"
     min_size        = "1"
     max_unavailable = "1"
@@ -28,7 +28,7 @@ locals {
 
     # LAUNCH TEMPLATES
     create_launch_template  = false
-    custom_ami_type         = "amazonlinux2eks" # amazonlinux2eks/bottlerocket # Used to identify the launch template
+    launch_template_os      = "amazonlinux2eks" # amazonlinux2eks/bottlerocket # Used to identify the launch template
     pre_userdata            = ""
     post_userdata           = ""
     launch_template_id      = null
@@ -43,8 +43,7 @@ locals {
   }
   managed_node_group = merge(
     local.default_managed_ng,
-    var.managed_ng,
-    { subnet_ids = var.managed_ng["subnet_ids"] == [] ? var.managed_ng["subnet_type"] == "public" ? var.public_subnet_ids : var.private_subnet_ids : var.managed_ng["subnet_ids"] }
+    var.managed_ng
   )
 
   policy_arn_prefix = "arn:aws:iam::aws:policy"
@@ -61,7 +60,7 @@ locals {
   }
 
   userdata_base64 = base64encode(
-    templatefile("${path.module}/templates/userdata-${local.managed_node_group["custom_ami_type"]}.tpl", local.userdata_params)
+    templatefile("${path.module}/templates/userdata-${local.managed_node_group["launch_template_os"]}.tpl", local.userdata_params)
   )
 
   common_tags = merge(

@@ -18,20 +18,15 @@
 #----------------------------------------------------------
 #  CLUSTER LABELS
 #----------------------------------------------------------
-variable "terraform_version" {
-  type        = string
-  default     = "Terraform"
-  description = "Terraform Version"
-}
 variable "org" {
   type        = string
   description = "tenant, which could be your organization name, e.g. aws'"
-  default     = "aws"
+  default     = ""
 }
 variable "tenant" {
   type        = string
   description = "Account Name or unique account unique id e.g., apps or management or aws007"
-  default     = ""
+  default     = "aws"
 }
 variable "environment" {
   type        = string
@@ -41,85 +36,46 @@ variable "environment" {
 variable "zone" {
   type        = string
   description = "zone, e.g. dev or qa or load or ops etc..."
-  default     = ""
-}
-variable "attributes" {
-  type        = string
-  default     = ""
-  description = "Additional attributes (e.g. `1`)"
+  default     = "dev"
 }
 variable "tags" {
   type        = map(string)
   default     = {}
   description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }
+variable "terraform_version" {
+  type        = string
+  default     = "Terraform"
+  description = "Terraform Version"
+}
 #----------------------------------------------------------
-#  VPC
+# VPC Config for EKS Cluster
 #----------------------------------------------------------
-variable "create_vpc" {
-  description = "Controls if VPC should be created (it affects almost all resources)"
-  type        = bool
-  default     = false
-}
-variable "enable_public_subnets" {
-  description = "Enable public subnets for EKS Cluster"
-  type        = bool
-  default     = true
-}
-variable "enable_nat_gateway" {
-  description = "Enable NAT Gateway for public subnets"
-  type        = bool
-  default     = true
-}
-variable "single_nat_gateway" {
-  description = "Create single NAT gateway for all private subnets"
-  type        = bool
-  default     = true
-}
-variable "create_igw" {
-  description = "Create internet gateway in public subnets"
-  type        = bool
-  default     = true
-}
-variable "enable_private_subnets" {
-  description = "Enable private subnets for EKS Cluster"
-  type        = bool
-  default     = true
-}
 variable "vpc_id" {
   type        = string
   description = "VPC id"
-  default     = ""
 }
 variable "private_subnet_ids" {
   description = "list of private subnets Id's for the Worker nodes"
   type        = list(string)
-  default     = []
 }
 variable "public_subnet_ids" {
   description = "list of private subnets Id's for the Worker nodes"
   type        = list(string)
   default     = []
 }
-variable "vpc_cidr_block" {
+
+#----------------------------------------------------------
+# EKS CONTROL PLANE
+#----------------------------------------------------------
+variable "create_eks" {
+  type    = bool
+  default = false
+}
+variable "kubernetes_version" {
   type        = string
-  default     = ""
-  description = "VPC CIDR"
-}
-variable "public_subnets_cidr" {
-  description = "list of Public subnets for the Worker nodes"
-  type        = list(string)
-  default     = []
-}
-variable "private_subnets_cidr" {
-  description = "list of Private subnets for the Worker nodes"
-  type        = list(string)
-  default     = []
-}
-variable "create_vpc_endpoints" {
-  type        = bool
-  default     = true
-  description = "Create VPC endpoints for Private subnets"
+  default     = "1.21"
+  description = "Desired Kubernetes master version. If you do not specify a value, the latest available version is used"
 }
 variable "cluster_endpoint_private_access" {
   type        = bool
@@ -136,18 +92,6 @@ variable "enable_irsa" {
   default     = true
   description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled. Default to AWS EKS resource and it is true"
 }
-#----------------------------------------------------------
-# EKS CONTROL PLANE
-#----------------------------------------------------------
-variable "create_eks" {
-  type    = bool
-  default = false
-}
-variable "kubernetes_version" {
-  type        = string
-  default     = "1.21"
-  description = "Desired Kubernetes master version. If you do not specify a value, the latest available version is used"
-}
 variable "cluster_enabled_log_types" {
   type        = list(string)
   default     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
@@ -157,6 +101,21 @@ variable "cluster_log_retention_period" {
   type        = number
   default     = 7
   description = "Number of days to retain cluster logs. Requires `enabled_cluster_log_types` to be set. See https://docs.aws.amazon.com/en_us/eks/latest/userguide/control-plane-logs.html."
+}
+#----------------------------------------------------------
+# EKS MANAGED ADDONS
+#----------------------------------------------------------
+variable "enable_vpc_cni_addon" {
+  type    = bool
+  default = false
+}
+variable "enable_coredns_addon" {
+  type    = bool
+  default = false
+}
+variable "enable_kube_proxy_addon" {
+  type    = bool
+  default = false
 }
 variable "vpc_cni_addon_version" {
   type        = string
@@ -173,18 +132,7 @@ variable "kube_proxy_addon_version" {
   default     = "v1.20.4-eksbuild.2"
   description = "KubeProxy Addon verison"
 }
-variable "enable_vpc_cni_addon" {
-  type    = bool
-  default = false
-}
-variable "enable_coredns_addon" {
-  type    = bool
-  default = false
-}
-variable "enable_kube_proxy_addon" {
-  type    = bool
-  default = false
-}
+
 #----------------------------------------------------------
 # EKS WORKER NODES
 #----------------------------------------------------------
@@ -219,7 +167,7 @@ variable "enable_windows_support" {
   default = false
 }
 #----------------------------------------------------------
-# CONFIG MAP AWS-AUTH
+# CONFIGMAP AWS-AUTH
 #----------------------------------------------------------
 variable "map_accounts" {
   description = "Additional AWS account numbers to add to the aws-auth configmap. "
@@ -243,11 +191,6 @@ variable "map_users" {
     groups   = list(string)
   }))
   default = []
-}
-variable "manage_aws_auth" {
-  description = "Whether to apply the aws-auth configmap file."
-  type        = bool
-  default     = true
 }
 variable "aws_auth_additional_labels" {
   description = "Additional kubernetes labels applied on aws-auth ConfigMap"

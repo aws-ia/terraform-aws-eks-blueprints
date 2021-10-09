@@ -20,18 +20,6 @@ locals {
 
   tags = tomap({ "created-by" = var.terraform_version })
 
-  private_subnet_tags = merge(
-    tomap({ "kubernetes.io/role/internal-elb" = "1" }),
-    tomap({ "created-by" = var.terraform_version }),
-    tomap({ "kubernetes.io/cluster/${module.eks_tags.id}" = "shared" })
-  )
-
-  public_subnet_tags = merge(
-    tomap({ "kubernetes.io/role/elb" = "1" }),
-    tomap({ "created-by" = var.terraform_version }),
-    tomap({ "kubernetes.io/cluster/${module.eks_tags.id}" = "shared" })
-  )
-
   ecr_image_repo_url = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.id}.amazonaws.com"
 
   # Managed node IAM Roles for aws-auth
@@ -55,7 +43,7 @@ locals {
         "system:bootstrappers",
         "system:nodes"
       ]
-    } if node.custom_ami_type != "windows"
+    } if node.launch_template_os != "windows"
   ] : []
 
   # Self Managed Windows node IAM Roles for aws-auth
@@ -68,7 +56,7 @@ locals {
         "system:nodes",
         "eks:kube-proxy-windows"
       ]
-    } if node.custom_ami_type == "windows"
+    } if node.launch_template_os == "windows"
   ] : []
 
   # Fargate node IAM Roles for aws-auth
