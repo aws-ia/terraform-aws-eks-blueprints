@@ -72,29 +72,6 @@ module "aws_eks" {
     }
   ]
 }
-# ---------------------------------------------------------------------------------------------------------------------
-# AWS EKS Add-ons (VPC CNI, CoreDNS, KubeProxy )
-# ---------------------------------------------------------------------------------------------------------------------
-module "aws_eks_addon" {
-
-  count = var.create_eks && var.enable_managed_nodegroups || var.create_eks && var.enable_self_managed_nodegroups ? 1 : 0
-
-  source                = "./modules/aws-eks-addon"
-  cluster_name          = module.aws_eks.cluster_id
-  enable_vpc_cni_addon  = var.enable_vpc_cni_addon
-  vpc_cni_addon_version = var.vpc_cni_addon_version
-
-  enable_coredns_addon  = var.enable_coredns_addon
-  coredns_addon_version = var.coredns_addon_version
-
-  enable_kube_proxy_addon  = var.enable_kube_proxy_addon
-  kube_proxy_addon_version = var.kube_proxy_addon_version
-  tags                     = module.eks_tags.tags
-
-  depends_on = [
-    module.aws_eks
-  ]
-}
 
 # ---------------------------------------------------------------------------------------------------------------------
 # S3 BUCKET MODULE - NLB/ALB Access logs
@@ -107,4 +84,25 @@ module "s3" {
   account_id     = data.aws_caller_identity.current.account_id
 }
 
+
+# ---------------------------------------------------------------------------------------------------------------------
+# AWS Managed Prometheus Module
+# ---------------------------------------------------------------------------------------------------------------------
+
+module "aws_managed_prometheus" {
+  count  = var.create_eks && var.aws_managed_prometheus_enable == true ? 1 : 0
+  source = "./modules/aws-managed-prometheus"
+
+  environment                     = var.environment
+  tenant                          = var.tenant
+  zone                            = var.zone
+  account_id                      = data.aws_caller_identity.current.account_id
+  region                          = data.aws_region.current.id
+  eks_cluster_id                  = module.aws_eks.cluster_id
+  eks_oidc_provider               = split("//", module.aws_eks.cluster_oidc_issuer_url)[1]
+  service_account_amp_ingest_name = format("%s-%s", module.aws_eks.cluster_id, "amp-ingest-account")
+  service_account_amp_query_name  = format("%s-%s", module.aws_eks.cluster_id, "amp-query-account")
+  amp_workspace_name              = var.aws_managed_prometheus_workspace_name
+
+}
 

@@ -143,7 +143,7 @@ managed_node_groups = {
 #          README with instructions available in each HELM module under helm/
 #---------------------------------------------------------#
 # Enable this if worker Node groups has access to internet to download the docker images
-# Or Make it false and set the private contianer image repo url in source/aws-eks.tf; currently this defaults to ECR
+# Or Make it false and set the private contianer image repo url in source/main.tf; currently this defaults to ECR
 public_docker_repo = true
 
 #---------------------------------------------------------//
