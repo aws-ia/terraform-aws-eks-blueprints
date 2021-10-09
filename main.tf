@@ -50,8 +50,8 @@ module "aws_eks" {
   vpc_id  = var.create_vpc == false ? var.vpc_id : module.aws_vpc.vpc_id
   subnets = var.create_vpc == false ? var.private_subnet_ids : module.aws_vpc.private_subnets
 
-  cluster_endpoint_private_access = var.endpoint_private_access
-  cluster_endpoint_public_access  = var.endpoint_public_access
+  cluster_endpoint_private_access = var.cluster_endpoint_private_access
+  cluster_endpoint_public_access  = var.cluster_endpoint_public_access
 
   # IRSA
   enable_irsa            = var.enable_irsa
@@ -61,7 +61,7 @@ module "aws_eks" {
   tags = module.eks_tags.tags
 
   # CLUSTER LOGGING
-  cluster_enabled_log_types = var.enabled_cluster_log_types
+  cluster_enabled_log_types = var.cluster_enabled_log_types
 
   # CLUSTER ENCRYPTION
   cluster_encryption_config = [
@@ -83,7 +83,6 @@ module "s3" {
   s3_bucket_name = "${var.tenant}-${var.environment}-${var.zone}-elb-accesslogs-${data.aws_caller_identity.current.account_id}"
   account_id     = data.aws_caller_identity.current.account_id
 }
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # AWS Managed Prometheus Module

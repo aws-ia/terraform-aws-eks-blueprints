@@ -64,27 +64,27 @@ variable "create_vpc" {
 variable "enable_public_subnets" {
   description = "Enable public subnets for EKS Cluster"
   type        = bool
-  default     = false
+  default     = true
 }
 variable "enable_nat_gateway" {
   description = "Enable NAT Gateway for public subnets"
   type        = bool
-  default     = false
+  default     = true
 }
 variable "single_nat_gateway" {
   description = "Create single NAT gateway for all private subnets"
   type        = bool
-  default     = false
+  default     = true
 }
 variable "create_igw" {
   description = "Create internet gateway in public subnets"
   type        = bool
-  default     = false
+  default     = true
 }
 variable "enable_private_subnets" {
   description = "Enable private subnets for EKS Cluster"
   type        = bool
-  default     = false
+  default     = true
 }
 variable "vpc_id" {
   type        = string
@@ -118,15 +118,15 @@ variable "private_subnets_cidr" {
 }
 variable "create_vpc_endpoints" {
   type        = bool
-  default     = false
+  default     = true
   description = "Create VPC endpoints for Private subnets"
 }
-variable "endpoint_private_access" {
+variable "cluster_endpoint_private_access" {
   type        = bool
   default     = false
   description = "Indicates whether or not the Amazon EKS private API server endpoint is enabled. Default to AWS EKS resource and it is false"
 }
-variable "endpoint_public_access" {
+variable "cluster_endpoint_public_access" {
   type        = bool
   default     = true
   description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled. Default to AWS EKS resource and it is true"
@@ -145,10 +145,10 @@ variable "create_eks" {
 }
 variable "kubernetes_version" {
   type        = string
-  default     = "1.20"
+  default     = "1.21"
   description = "Desired Kubernetes master version. If you do not specify a value, the latest available version is used"
 }
-variable "enabled_cluster_log_types" {
+variable "cluster_enabled_log_types" {
   type        = list(string)
   default     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
   description = "A list of the desired control plane logging to enable. Possible values [`api`, `audit`, `authenticator`, `controllerManager`, `scheduler`]"

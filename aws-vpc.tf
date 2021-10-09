@@ -39,6 +39,7 @@ module "aws_vpc" {
   name = module.vpc_tags.id
   cidr = var.vpc_cidr_block
   azs  = data.aws_availability_zones.available.names
+
   # Private Subnets
   private_subnets     = var.enable_private_subnets ? var.private_subnets_cidr : []
   private_subnet_tags = var.enable_private_subnets ? local.private_subnet_tags : {}
@@ -51,25 +52,8 @@ module "aws_vpc" {
   single_nat_gateway = var.single_nat_gateway ? var.single_nat_gateway : false
   create_igw         = var.enable_public_subnets && var.create_igw ? var.create_igw : false
 
-  enable_vpn_gateway              = false
-  create_egress_only_igw          = false
-  create_database_subnet_group    = false
-  create_elasticache_subnet_group = false
-  create_redshift_subnet_group    = false
-
   enable_dns_hostnames = true
   enable_dns_support   = true
-
-  # Enabling Custom Domain name servers
-  //  enable_dhcp_options              = true
-  //  dhcp_options_domain_name         = "service.consul"
-  //  dhcp_options_domain_name_servers = ["127.0.0.1", "10.10.0.2"]
-
-  # VPC Flow Logs (Cloudwatch log group and IAM role will be created)
-  enable_flow_log                      = false
-  create_flow_log_cloudwatch_log_group = false
-  create_flow_log_cloudwatch_iam_role  = false
-  flow_log_max_aggregation_interval    = 60
 
   tags = local.tags
 
@@ -110,19 +94,7 @@ module "gateway_vpc_endpoints" {
         module.aws_vpc.intra_route_table_ids,
       module.aws_vpc.private_route_table_ids])
       tags = { Name = "s3-vpc-Gateway" }
-    },
-    /*
-    dynamodb = {
-      service = "dynamodb"
-      service_type = "Gateway"
-      route_table_ids = flatten([
-        module.aws_vpc.intra_route_table_ids,
-        module.aws_vpc.private_route_table_ids,
-        module.aws_vpc.public_route_table_ids])
-      policy = data.aws_iam_policy_document.dynamodb_endpoint_policy.json
-      tags = { Name = "dynamodb-vpc-endpoint" }
-    },
-    */
+    }
   }
 }
 
@@ -185,30 +157,6 @@ module "vpc_endpoints" {
       service             = "kms"
       private_dns_enabled = true
     },
-    /*    elasticfilesystem = {
-          service             = "elasticfilesystem"
-          private_dns_enabled = true
-        },
-        lambda = {
-          service             = "lambda"
-          private_dns_enabled = true
-        },
-        ecs = {
-          service             = "ecs"
-          private_dns_enabled = true
-        },
-        ecs_telemetry = {
-          service             = "ecs-telemetry"
-          private_dns_enabled = true
-        },
-        codedeploy = {
-          service             = "codedeploy"
-          private_dns_enabled = true
-        },
-        codedeploy_commands_secure = {
-          service             = "codedeploy-commands-secure"
-          private_dns_enabled = true
-        },*/
   }
 
   tags = merge(local.tags, {

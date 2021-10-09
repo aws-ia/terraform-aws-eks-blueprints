@@ -31,7 +31,7 @@ resource "aws_security_group" "self_managed_ng" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = local.common_tags
+  tags       = local.common_tags
   depends_on = [aws_iam_role.self_managed_ng]
 }
 

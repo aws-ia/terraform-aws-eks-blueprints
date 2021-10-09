@@ -25,7 +25,7 @@ module "aws_eks_managed_node_groups" {
   source = "./modules/aws-eks-managed-node-groups"
 
   for_each = { for key, value in var.managed_node_groups : key => value
-  if var.enable_managed_nodegroups && length(var.managed_node_groups) > 0
+    if var.enable_managed_nodegroups && length(var.managed_node_groups) > 0
   }
 
   managed_ng = each.value
@@ -56,7 +56,7 @@ module "aws_eks_self_managed_node_groups" {
   source = "./modules/aws-eks-self-managed-node-groups"
 
   for_each = { for key, value in var.self_managed_node_groups : key => value
-  if var.enable_self_managed_nodegroups && length(var.self_managed_node_groups) > 0
+    if var.enable_self_managed_nodegroups && length(var.self_managed_node_groups) > 0
   }
 
   self_managed_ng = each.value

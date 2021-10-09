@@ -59,7 +59,7 @@ resource "kubernetes_config_map" "aws_logging" {
         Preserve_Key On
         Reserve_Data On
     EOF
-    "output.conf" = <<EOF
+    "output.conf"  = <<EOF
      [OUTPUT]
        Name cloudwatch_logs
        Match *
