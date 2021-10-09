@@ -16,21 +16,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-output "vpc_id" {
-  description = "VPC ID for EKS Cluster"
-  value       = var.create_vpc ? module.aws_vpc.vpc_id : "EKS VPC create not enabled"
-}
-
-output "private_subnets" {
-  description = "List of IDs of private subnets"
-  value       = var.create_vpc && var.enable_private_subnets ? module.aws_vpc.private_subnets : []
-}
-
-output "public_subnets" {
-  description = "List of IDs of public subnets"
-  value       = var.create_vpc && var.enable_public_subnets ? module.aws_vpc.public_subnets : []
-}
-
 output "cluster_oidc_url" {
   description = "The URL on the EKS cluster OIDC Issuer"
   value       = var.create_eks ? split("//", module.aws_eks.cluster_oidc_issuer_url)[1] : "EKS Cluster not enabled"

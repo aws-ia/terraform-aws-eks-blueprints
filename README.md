@@ -10,7 +10,7 @@ This project leverages the official [terrafor-aws-vpc](https://github.com/terraf
 The intention of this framework is to help you design config driven solution. This will help you to create EKS clusters for various environments and AWS accounts across multiple regions with a **unique Terraform configuration and state file** per EKS cluster.  
 
 The top-level `deploy` folder provides an example of how you can structure your folders and files to define multiple EKS Cluster environments and consume this accelerator module. This approach is suitable for large projects, with clearly defined sub directory and file structure.
-This can be modified the way that suits your requirement. You can define a unique configuration for each EKS Cluster and making this module as central source of truth. Please note that `deploy` folder can be moved to a dedicated repo and consume this module using `main.tf` file([see example file here](deploy/live/preprod/eu-west-1/application/dev/dev.tfvars) ).
+This can be modified the way that suits your requirement. You can define a unique configuration for each EKS Cluster and making this module as central source of truth. Please note that `deploy` folder can be moved to a dedicated repo and consume this module using `main.tf` file([see example file here](deploy/live/preprod/eu-west-1/application_acct/dev/dev.tfvars) ).
 
         
 e.g. folder/file structure for defining multiple clusters
@@ -67,7 +67,7 @@ This module provisions the following EKS resources
 4. [Internet Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html)
 
 NOTE: VPC/Subnets creation can be disabled using `create_vpc = false` in TFVARS file and import the existing VPC resources. 
-`test-vpc.tfvars` and `test-eks.tfvars` [example](deploy/live/preprod/eu-west-1/application/test/) shows how to create VPC with a unique state file and import that state file with resources into EKS Cluster creation. 
+`test-vpc.tfvars` and `test-eks.tfvars` [example](deploy/live/preprod/eu-west-1/application_acct/test/) shows how to create VPC with a unique state file and import that state file with resources into EKS Cluster creation. 
 
 ## EKS Cluster resources
 
@@ -112,7 +112,7 @@ This approach provides flexibility to add or remove managed/self-managed node gr
 AWS auth config map handled by this module ensures new node groups successfully join with the EKS Cluster. 
 Each Node Group can have dedicated IAM role, Security Group and Launch template to improve the security.
 
-Please refer to the `dev.tfvars` for [full example](deploy/live/preprod/eu-west-1/application/dev/dev.tfvars).
+Please refer to the `dev.tfvars` for [full example](deploy/live/preprod/eu-west-1/application_acct/dev/dev.tfvars).
 
 **Managed Node Groups Example**
 
@@ -189,7 +189,7 @@ Please refer to the `dev.tfvars` for [full example](deploy/live/preprod/eu-west-
 # Kubernetes Addons Module
 Kubernetes Addons Module within this framework allows you to deploy Kubernetes Addons using Terraform Helm provider and Kubernetes provider with simple **true/false** feature in `<env>.tfvars`.
 
-e.g., `<env>.tfvars` config for enabling AWS LB INGRESS CONTROLLER. Refer to example [dev.tfvars](deploy/live/preprod/eu-west-1/application/dev/dev.tfvars) to enable other Kubernetes Addons
+e.g., `<env>.tfvars` config for enabling AWS LB INGRESS CONTROLLER. Refer to example [dev.tfvars](deploy/live/preprod/eu-west-1/application_acct/dev/dev.tfvars) to enable other Kubernetes Addons
 
     #---------------------------------------------------------//
     # ENABLE AWS LB INGRESS CONTROLLER
@@ -274,7 +274,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 4. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
 ## Deployment Steps
-The following steps walks you through the deployment of example [DEV cluster](deploy/live/preprod/eu-west-1/application/dev/dev.tfvars) configuration. This config deploys a private EKS cluster with public and private subnets.
+The following steps walks you through the deployment of example [DEV cluster](deploy/live/preprod/eu-west-1/application_acct/dev/dev.tfvars) configuration. This config deploys a private EKS cluster with public and private subnets.
 
 Two managed worker nodes with On-Demand and Spot instances along with one fargate profile for default namespace placed in private subnets. ALB placed in Public subnets created by AWS LB Ingress controller.
 

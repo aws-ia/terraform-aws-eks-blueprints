@@ -47,8 +47,8 @@ module "aws_eks" {
   cluster_version = var.kubernetes_version
 
   # NETWORK CONFIG
-  vpc_id  = var.create_vpc == false ? var.vpc_id : module.aws_vpc.vpc_id
-  subnets = var.create_vpc == false ? var.private_subnet_ids : module.aws_vpc.private_subnets
+  vpc_id  = var.vpc_id
+  subnets = var.private_subnet_ids
 
   cluster_endpoint_private_access = var.cluster_endpoint_private_access
   cluster_endpoint_public_access  = var.cluster_endpoint_public_access

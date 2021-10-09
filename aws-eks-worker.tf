@@ -34,9 +34,9 @@ module "aws_eks_managed_node_groups" {
   cluster_ca_base64 = module.aws_eks.cluster_certificate_authority_data
   cluster_endpoint  = module.aws_eks.cluster_endpoint
 
-  vpc_id             = var.create_vpc == false ? var.vpc_id : module.aws_vpc.vpc_id
-  private_subnet_ids = var.create_vpc == false ? var.private_subnet_ids : module.aws_vpc.private_subnets
-  public_subnet_ids  = var.create_vpc == false ? var.public_subnet_ids : module.aws_vpc.public_subnets
+  vpc_id             = var.vpc_id
+  private_subnet_ids = var.private_subnet_ids
+  public_subnet_ids  = var.public_subnet_ids
 
   worker_security_group_id          = module.aws_eks.worker_security_group_id
   cluster_security_group_id         = module.aws_eks.cluster_security_group_id
@@ -66,9 +66,9 @@ module "aws_eks_self_managed_node_groups" {
   cluster_ca_base64 = module.aws_eks.cluster_certificate_authority_data
   tags              = module.eks_tags.tags
 
-  vpc_id             = var.create_vpc == false ? var.vpc_id : module.aws_vpc.vpc_id
-  private_subnet_ids = var.create_vpc == false ? var.private_subnet_ids : module.aws_vpc.private_subnets
-  public_subnet_ids  = var.create_vpc == false ? var.public_subnet_ids : module.aws_vpc.public_subnets
+  vpc_id             = var.vpc_id
+  private_subnet_ids = var.private_subnet_ids
+  public_subnet_ids  = var.public_subnet_ids
 
   worker_security_group_id          = module.aws_eks.worker_security_group_id
   cluster_security_group_id         = module.aws_eks.cluster_security_group_id
@@ -91,7 +91,7 @@ module "aws_eks_fargate_profiles" {
   fargate_profile = each.value
 
   eks_cluster_name   = module.aws_eks.cluster_id
-  private_subnet_ids = var.create_vpc == false ? var.private_subnet_ids : module.aws_vpc.private_subnets
+  private_subnet_ids = var.private_subnet_ids
 
   tags = module.eks_tags.tags
 

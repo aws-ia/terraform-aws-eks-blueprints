@@ -32,13 +32,6 @@ data "aws_eks_cluster_auth" "cluster" {
   name  = module.aws_eks.cluster_id
 }
 
-data "aws_security_group" "default" {
-  count = var.create_vpc ? 1 : 0
-
-  name   = "default"
-  vpc_id = module.aws_vpc.vpc_id
-}
-
 data "aws_availability_zones" "available" {
   state = "available"
 }
