@@ -23,7 +23,7 @@ variable "traefik_ingress_controller_enable" {
 }
 
 variable "traefik_helm_chart" {
-  type    = map(any)
+  type    = any
   default = {}
 }
 

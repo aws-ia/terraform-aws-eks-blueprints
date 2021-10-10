@@ -17,6 +17,6 @@
  */
 
 variable "traefik_helm_chart" {
-  type    = map(any)
+  type    = any
   default = {}
 }
