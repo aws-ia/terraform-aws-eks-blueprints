@@ -61,10 +61,6 @@ variable "public_docker_repo" {
   type = string
 }
 
-variable "s3_nlb_logs" {
-  type = string
-}
-
 variable "expose_udp" {
   type    = bool
   default = false

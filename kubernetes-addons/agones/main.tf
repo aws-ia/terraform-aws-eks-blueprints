@@ -65,7 +65,6 @@ resource "helm_release" "agones" {
     gameserver_namespaces = "{${join(",", ["default", kubernetes_namespace.pc.id, kubernetes_namespace.xbox.id])}}"
     gameserver_minport    = var.agones_game_server_minport
     gameserver_maxport    = var.agones_game_server_maxport
-    # s3_bucket             = var.s3_nlb_logs
   })]
 }
 

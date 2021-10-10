@@ -16,6 +16,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+variable "traefik_ingress_controller_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling Traefik Ingress on eks cluster"
+}
+
+variable "traefik_helm_chart" {
+  type    = map(any)
+  default = {}
+}
+
 variable "metrics_server_enable" {
   type        = bool
   default     = true
@@ -26,11 +37,7 @@ variable "cluster_autoscaler_enable" {
   default     = true
   description = "Enabling cluster autoscaler server on eks cluster"
 }
-variable "traefik_ingress_controller_enable" {
-  type        = bool
-  default     = false
-  description = "Enabling Traefik Ingress on eks cluster"
-}
+
 variable "aws_lb_ingress_controller_enable" {
   type        = bool
   default     = false
@@ -53,11 +60,6 @@ variable "fargate_fluent_bit_enable" {
   type        = bool
   default     = false
   description = "Enabling fargate_fluent_bit on eks cluster"
-}
-
-variable "s3_nlb_logs" {
-  type        = string
-  description = "S3 bucket for NLB Logs"
 }
 
 variable "eks_cluster_id" {
@@ -256,28 +258,6 @@ variable "amp_ingest_role_arn" {
   type = string
 }
 
-variable "traefik_image_repo_name" {
-  type    = string
-  default = "traefik"
-}
-
-variable "traefik_helm_chart_name" {
-  type    = string
-  default = "traefik"
-}
-
-variable "traefik_helm_chart_url" {
-  type    = string
-  default = "https://helm.traefik.io/traefik"
-}
-
-variable "traefik_helm_chart_version" {
-  type = string
-}
-
-variable "traefik_image_tag" {
-  type = string
-}
 
 variable "nginx_image_repo_name" {
   type    = string
