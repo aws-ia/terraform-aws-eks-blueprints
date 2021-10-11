@@ -4,6 +4,13 @@
 
  Traefik is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease. Fore more detials about [Traefik can be found here](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)
  
+# NOTE
+ - Deployment Server should have access to Internet to fetch the Helm Charts from Public Repo. 
+ Alternatively you can sync public repo charts to your internal artifactory
+ - By default, docker images for Helm chart pulled from Docker Hub which requires Internet access to your EKS Cluster.
+ Alternatively, you can leverage internal aritifactory or Amazon ECR with private endpoints
+  
+ 
 # Helm Chart
 
 ### Instructions to use Helm Charts
@@ -16,7 +23,7 @@ Add Helm repo for Traefik Ingress Controller
 
     https://artifacthub.io/packages/helm/traefik/traefik
 
-# Docker Image for Traefik
+# Steps to use ECR repo for Docker image
 
 ###### Instructions to upload Traefik Docker image to AWS ECR
 
@@ -104,7 +111,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_traefik_helm_chart"></a> [traefik\_helm\_chart](#input\_traefik\_helm\_chart) | n/a | `map(any)` | `{}` | no |
+| <a name="input_traefik_helm_chart"></a> [traefik\_helm\_chart](#input\_traefik\_helm\_chart) | n/a | `any` | `{}` | no |
 
 ## Outputs
 
