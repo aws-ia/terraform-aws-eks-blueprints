@@ -32,7 +32,6 @@ resource "helm_release" "traefik" {
   repository_ca_file         = local.traefik_helm_app["repository_ca_file"]
   repository_username        = local.traefik_helm_app["repository_username"]
   repository_password        = local.traefik_helm_app["repository_password"]
-  devel                      = local.traefik_helm_app["devel"]
   verify                     = local.traefik_helm_app["verify"]
   keyring                    = local.traefik_helm_app["keyring"]
   disable_webhooks           = local.traefik_helm_app["disable_webhooks"]

@@ -19,7 +19,6 @@ locals {
     repository_ca_file         = ""
     repository_username        = ""
     repository_password        = ""
-    devel                      = ""
     disable_webhooks           = false
     reuse_values               = false
     reset_values               = false
