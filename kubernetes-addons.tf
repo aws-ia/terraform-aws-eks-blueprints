@@ -32,12 +32,8 @@ module "kubernetes_addons" {
   traefik_helm_chart                = var.traefik_helm_chart
 
   # ------- Cluster Autoscaler
-  cluster_autoscaler_enable          = var.cluster_autoscaler_enable
-  cluster_autoscaler_image_tag       = var.cluster_autoscaler_image_tag
-  cluster_autoscaler_helm_version    = var.cluster_autoscaler_helm_version
-  cluster_autoscaler_helm_repo_url   = var.cluster_autoscaler_helm_repo_url
-  cluster_autoscaler_helm_chart_name = var.cluster_autoscaler_helm_chart_name
-  cluster_autoscaler_image_repo_name = var.cluster_autoscaler_image_repo_name
+  cluster_autoscaler_enable     = var.cluster_autoscaler_enable
+  cluster_autoscaler_helm_chart = var.cluster_autoscaler_helm_chart
 
   # ------- Metric Server
   metrics_server_enable     = var.metrics_server_enable

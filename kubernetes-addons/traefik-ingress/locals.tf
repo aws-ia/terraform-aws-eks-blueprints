@@ -1,15 +1,18 @@
 
 locals {
   default_traefik_helm_app = {
-    name                       = "traefik"
-    chart                      = "traefik"
-    repository                 = "https://helm.traefik.io/traefik"
-    version                    = "10.0.0"
-    namespace                  = "kube-system"
-    timeout                    = "1200"
-    create_namespace           = false
-    values                     = null
-    set                        = null
+    name             = "traefik"
+    chart            = "traefik"
+    repository       = "https://helm.traefik.io/traefik"
+    version          = "10.0.0"
+    namespace        = "kube-system"
+    timeout          = "1200"
+    create_namespace = false
+    values           = null
+    set = [{
+      name  = "nodeSelector.kubernetes\\.io/os"
+      value = "linux"
+    }]
     set_sensitive              = null
     lint                       = false
     verify                     = false

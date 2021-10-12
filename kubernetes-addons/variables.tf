@@ -44,6 +44,16 @@ variable "cluster_autoscaler_enable" {
   description = "Enabling cluster autoscaler server on eks cluster"
 }
 
+variable "cluster_autoscaler_helm_chart" {
+  type    = any
+  default = {}
+}
+
+variable "eks_cluster_id" {
+  type        = string
+  description = "EKS cluster Id"
+}
+
 variable "aws_lb_ingress_controller_enable" {
   type        = bool
   default     = false
@@ -66,11 +76,6 @@ variable "fargate_fluent_bit_enable" {
   type        = bool
   default     = false
   description = "Enabling fargate_fluent_bit on eks cluster"
-}
-
-variable "eks_cluster_id" {
-  type        = string
-  description = "EKS cluster Id"
 }
 
 variable "ekslog_retention_in_days" {
@@ -155,29 +160,6 @@ variable "aws_lb_image_tag" {
 }
 
 variable "aws_lb_helm_chart_version" {
-  type = string
-}
-
-variable "cluster_autoscaler_helm_repo_url" {
-  type    = string
-  default = "https://kubernetes.github.io/autoscaler"
-}
-
-variable "cluster_autoscaler_helm_chart_name" {
-  type    = string
-  default = "cluster-autoscaler"
-}
-
-variable "cluster_autoscaler_image_repo_name" {
-  type    = string
-  default = "k8s.gcr.io/autoscaling/cluster-autoscaler"
-}
-
-variable "cluster_autoscaler_image_tag" {
-  type = string
-}
-
-variable "cluster_autoscaler_helm_version" {
   type = string
 }
 
