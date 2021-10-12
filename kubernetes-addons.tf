@@ -27,6 +27,10 @@ module "kubernetes_addons" {
   public_docker_repo         = var.public_docker_repo
   private_container_repo_url = var.private_container_repo_url != "" ? var.private_container_repo_url : local.ecr_image_repo_url
 
+  # ------- Traefik Ingress Controller
+  traefik_ingress_controller_enable = var.traefik_ingress_controller_enable
+  traefik_helm_chart                = var.traefik_helm_chart
+
   # ------- Cluster Autoscaler
   cluster_autoscaler_enable          = var.cluster_autoscaler_enable
   cluster_autoscaler_image_tag       = var.cluster_autoscaler_image_tag
@@ -42,15 +46,6 @@ module "kubernetes_addons" {
   metric_server_helm_chart_version = var.metric_server_helm_chart_version
   metric_server_helm_repo_url      = var.metric_server_helm_repo_url
   metric_server_helm_chart_name    = var.metric_server_helm_chart_name
-
-  # ------- Traefik Ingress Controller
-  traefik_ingress_controller_enable = var.traefik_ingress_controller_enable
-  s3_nlb_logs                       = module.s3[0].s3_bucket_name
-  traefik_helm_chart_version        = var.traefik_helm_chart_version
-  traefik_image_tag                 = var.traefik_image_tag
-  traefik_helm_chart_url            = var.traefik_helm_chart_url
-  traefik_helm_chart_name           = var.traefik_helm_chart_name
-  traefik_image_repo_name           = var.traefik_image_repo_name
 
   # ------- AWS LB Controller
   aws_lb_ingress_controller_enable = var.aws_lb_ingress_controller_enable
