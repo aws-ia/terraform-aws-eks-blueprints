@@ -23,15 +23,10 @@ module "metrics_server" {
 }
 
 module "cluster_autoscaler" {
-  count  = var.cluster_autoscaler_enable == true ? 1 : 0
-  source = "./cluster-autoscaler"
-
-  private_container_repo_url         = var.private_container_repo_url
-  eks_cluster_id                     = var.eks_cluster_id
-  public_docker_repo                 = var.public_docker_repo
-  cluster_autoscaler_image_tag       = var.cluster_autoscaler_image_tag
-  cluster_autoscaler_helm_version    = var.cluster_autoscaler_helm_version
-  cluster_autoscaler_image_repo_name = var.cluster_autoscaler_image_repo_name
+  count                         = var.cluster_autoscaler_enable == true ? 1 : 0
+  source                        = "./cluster-autoscaler"
+  eks_cluster_id                = var.eks_cluster_id
+  cluster_autoscaler_helm_chart = var.cluster_autoscaler_helm_chart
 }
 
 module "lb_ingress_controller" {
