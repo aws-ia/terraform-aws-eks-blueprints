@@ -104,7 +104,7 @@ module "aws_eks_fargate_profiles" {
 # ---------------------------------------------------------------------------------------------------------------------
 module "aws_eks_addon" {
 
-  count = var.create_eks && var.enable_managed_nodegroups || var.create_eks && var.enable_self_managed_nodegroups ? 1 : 0
+  count = var.create_eks && var.enable_managed_nodegroups || var.create_eks && var.enable_self_managed_nodegroups || var.create_eks && var.enable_fargate ? 1 : 0
 
   source                = "./modules/aws-eks-addon"
   cluster_name          = module.aws_eks.cluster_id

@@ -6,7 +6,7 @@ AWS Load Balancer Controller is a controller to help manage Elastic Load Balance
 
 * It satisfies Kubernetes Ingress resources by provisioning Application Load Balancers.
 * It satisfies Kubernetes Service resources by provisioning Network Load Balancers.
- 
+
 # Helm Chart
 
 ### Instructions to use Helm Charts
@@ -18,38 +18,38 @@ Add Helm repo for LB Ingress Controller
     https://github.com/aws/eks-charts/blob/master/stable/aws-load-balancer-controller/values.yaml
 
     https://artifacthub.io/packages/helm/aws/aws-load-balancer-controller
-    
+
 
 # Docker Image for LB ingress controller
 
 ###### Instructions to upload LB ingress controller Docker image to AWS ECR
 
 Step1: Get the latest docker image from this link
-        
+
         https://github.com/aws/eks-charts/blob/master/stable/aws-load-balancer-controller/values.yaml
-        
+
 Step2: Download the docker image to your local Mac/Laptop
 
         $ aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 602401143452.dkr.ecr.us-west-2.amazonaws.com
-        
+
         $ docker pull 602401143452.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-load-balancer-controller:v2.2.1
-        
+
 Step3: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
-        
+
         $ aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin <account id>.dkr.ecr.eu-west-1.amazonaws.com
-        
-Step4: Create an ECR repo for LB ingress controller if you don't have one 
-    
+
+Step4: Create an ECR repo for LB ingress controller if you don't have one
+
         $ aws ecr create-repository \
               --repository-name amazon/aws-load-balancer-controller \
-              --image-scanning-configuration scanOnPush=true 
-              
+              --image-scanning-configuration scanOnPush=true
+
 Step5: After the build completes, tag your image so, you can push the image to this repository:
-        
+
         $ docker tag 602401143452.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-load-balancer-controller:v2.2.1 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-load-balancer-controller:v2.2.1
-        
+
 Step6: Run the following command to push this image to your newly created AWS repository:
-        
+
         $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-load-balancer-controller:v2.2.1
 
 
@@ -126,7 +126,3 @@ No modules.
 | <a name="output_ingress_name"></a> [ingress\_name](#output\_ingress\_name) | n/a |
 | <a name="output_ingress_namespace"></a> [ingress\_namespace](#output\_ingress\_namespace) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-
-
-
-

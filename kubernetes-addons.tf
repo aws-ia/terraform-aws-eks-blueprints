@@ -40,12 +40,8 @@ module "kubernetes_addons" {
   cluster_autoscaler_image_repo_name = var.cluster_autoscaler_image_repo_name
 
   # ------- Metric Server
-  metrics_server_enable            = var.metrics_server_enable
-  metric_server_image_repo_name    = var.metric_server_image_repo_name
-  metric_server_image_tag          = var.metric_server_image_tag
-  metric_server_helm_chart_version = var.metric_server_helm_chart_version
-  metric_server_helm_repo_url      = var.metric_server_helm_repo_url
-  metric_server_helm_chart_name    = var.metric_server_helm_chart_name
+  metrics_server_enable     = var.metrics_server_enable
+  metrics_server_helm_chart = var.metrics_server_helm_chart
 
   # ------- AWS LB Controller
   aws_lb_ingress_controller_enable = var.aws_lb_ingress_controller_enable

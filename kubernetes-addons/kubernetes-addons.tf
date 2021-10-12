@@ -17,15 +17,9 @@
  */
 
 module "metrics_server" {
-  count  = var.metrics_server_enable == true ? 1 : 0
-  source = "./metrics-server"
-
-  private_container_repo_url       = var.private_container_repo_url
-  public_docker_repo               = var.public_docker_repo
-  metric_server_helm_chart_version = var.metric_server_helm_chart_version
-  metric_server_image_tag          = var.metric_server_image_tag
-  metric_server_image_repo_name    = var.metric_server_image_repo_name
-
+  count                     = var.metrics_server_enable == true ? 1 : 0
+  source                    = "./metrics-server"
+  metrics_server_helm_chart = var.metrics_server_helm_chart
 }
 
 module "cluster_autoscaler" {
@@ -185,4 +179,3 @@ module "opentelemetry_collector" {
   opentelemetry_max_standalone_collectors               = var.opentelemetry_max_standalone_collectors
 
 }
-

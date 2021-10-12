@@ -4,40 +4,40 @@
 This project provides a framework for deploying best-practice multi-tenant [EKS Clusters](https://aws.amazon.com/eks) with [Kubernetes Addons](https://kubernetes.io/docs/concepts/cluster-administration/addons/), provisioned via [Hashicorp Terraform](https://www.terraform.io/) and [Helm charts](https://helm.sh/) on [AWS](https://aws.amazon.com/).
 
 # Overview
-The AWS EKS Accelerator for Terraform module helps you to provision [EKS Clusters](https://aws.amazon.com/eks), [Managed node groups](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) with [On-Demand](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-on-demand-instances.html) and [Spot Instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html), [AWS Fargate profiles](https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html), and all the necessary Kubernetes add-ons for a production-ready EKS cluster. The [Terraform Helm provider](https://github.com/hashicorp/terraform-provider-helm) is used to deploy common Kubernetes Addons with publicly available [Helm Charts](https://artifacthub.io/). 
+The AWS EKS Accelerator for Terraform module helps you to provision [EKS Clusters](https://aws.amazon.com/eks), [Managed node groups](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) with [On-Demand](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-on-demand-instances.html) and [Spot Instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html), [AWS Fargate profiles](https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html), and all the necessary Kubernetes add-ons for a production-ready EKS cluster. The [Terraform Helm provider](https://github.com/hashicorp/terraform-provider-helm) is used to deploy common Kubernetes Addons with publicly available [Helm Charts](https://artifacthub.io/).
 This project leverages the official [terrafor-aws-vpc](https://github.com/terraform-aws-modules/terraform-aws-vpc) and [terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks) community modules to create VPC and EKS Cluster.
 
-The intention of this framework is to help you design config driven solution. This will help you to create EKS clusters for various environments and AWS accounts across multiple regions with a **unique Terraform configuration and state file** per EKS cluster.  
+The intention of this framework is to help you design config driven solution. This will help you to create EKS clusters for various environments and AWS accounts across multiple regions with a **unique Terraform configuration and state file** per EKS cluster.
 
 The top-level `deploy` folder provides an example of how you can structure your folders and files to define multiple EKS Cluster environments and consume this accelerator module. This approach is suitable for large projects, with clearly defined sub directory and file structure.
 This can be modified the way that suits your requirement. You can define a unique configuration for each EKS Cluster and making this module as central source of truth. Please note that `deploy` folder can be moved to a dedicated repo and consume this module using `main.tf` file([see example file here](deploy/live/preprod/eu-west-1/application_acct/dev/dev.tfvars) ).
 
-        
+
 e.g. folder/file structure for defining multiple clusters
 
         ├── deploy
         │   └── live
-        │       └── preprod                      
-        │           └── eu-west-1                    
-        │               └── application               
-        │                   └── dev       
-        │                       └── backend.conf              
-        │                       └── dev.tfvars       
-        │                       └── main.tf       
-        │                       └── variables.tf    
-        │                       └── outputs.tf         
-        │                   └── test    
-        │                       └── backend.conf              
-        │                       └── test.tfvars    
-        │       └── prod                      
-        │           └── eu-west-1                    
-        │               └── application               
-        │                   └── prod       
-        │                       └── backend.conf              
-        │                       └── prod.tfvars       
-        │                       └── main.tf       
-        │                       └── variables.tf    
-        │                       └── outputs.tf        
+        │       └── preprod
+        │           └── eu-west-1
+        │               └── application
+        │                   └── dev
+        │                       └── backend.conf
+        │                       └── dev.tfvars
+        │                       └── main.tf
+        │                       └── variables.tf
+        │                       └── outputs.tf
+        │                   └── test
+        │                       └── backend.conf
+        │                       └── test.tfvars
+        │       └── prod
+        │           └── eu-west-1
+        │               └── application
+        │                   └── prod
+        │                       └── backend.conf
+        │                       └── prod.tfvars
+        │                       └── main.tf
+        │                       └── variables.tf
+        │                       └── outputs.tf
 
 Each folder under `live/<region>/application` represents an EKS cluster environment(e.g., dev, test, load etc.).
 This folder contains `backend.conf` and `<env>.tfvars`, used to create a unique Terraform state for each cluster environment.
@@ -66,8 +66,8 @@ This module provisions the following EKS resources
 3. [NAT Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html)
 4. [Internet Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html)
 
-NOTE: VPC/Subnets creation can be disabled using `create_vpc = false` in TFVARS file and import the existing VPC resources. 
-`test-vpc.tfvars` and `test-eks.tfvars` [example](deploy/live/preprod/eu-west-1/application_acct/test/) shows how to create VPC with a unique state file and import that state file with resources into EKS Cluster creation. 
+NOTE: VPC/Subnets creation can be disabled using `create_vpc = false` in TFVARS file and import the existing VPC resources.
+`test-vpc.tfvars` and `test-eks.tfvars` [example](deploy/live/preprod/eu-west-1/application_acct/test/) shows how to create VPC with a unique state file and import that state file with resources into EKS Cluster creation.
 
 ## EKS Cluster resources
 
@@ -107,9 +107,9 @@ NOTE: VPC/Subnets creation can be disabled using `create_vpc = false` in TFVARS 
 
 # Node Group Modules
 This module uses dedicated sub modules for creating [AWS Managed Node Groups](modules/aws-eks-managed-node-groups), [Self-managed Node groups](modules/aws-eks-self-managed-node-groups) and [Fargate profiles](modules/aws-eks-fargate-profiles).
-Mixed Node groups with Fargate profiles can be defined simply as a map variable in `<env>.tfvars`. 
-This approach provides flexibility to add or remove managed/self-managed node groups/fargate profiles by just adding/removing map of values to the existing `<env>.tfvars`. This allows you to define unique node configuration for each EKS Cluster in the same account. 
-AWS auth config map handled by this module ensures new node groups successfully join with the EKS Cluster. 
+Mixed Node groups with Fargate profiles can be defined simply as a map variable in `<env>.tfvars`.
+This approach provides flexibility to add or remove managed/self-managed node groups/fargate profiles by just adding/removing map of values to the existing `<env>.tfvars`. This allows you to define unique node configuration for each EKS Cluster in the same account.
+AWS auth config map handled by this module ensures new node groups successfully join with the EKS Cluster.
 Each Node Group can have dedicated IAM role, Security Group and Launch template to improve the security.
 
 Please refer to the `dev.tfvars` for [full example](deploy/live/preprod/eu-west-1/application_acct/dev/dev.tfvars).
@@ -133,19 +133,19 @@ Please refer to the `dev.tfvars` for [full example](deploy/live/preprod/eu-west-
         max_size        = 3
         min_size        = 3
         max_unavailable = 1 # or percentage = 20
-    
+
         # 3> Node Group compute configuration
         ami_type       = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
         capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
         instance_types = ["m4.large"] # List of instances used only for SPOT type
         disk_size      = 50
-    
+
         # 4> Node Group network configuration
         subnet_type = "private" # private or public
         subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-    
+
         k8s_taints = []
-    
+
         k8s_labels = {
           Environment = "preprod"
           Zone        = "dev"
@@ -164,7 +164,7 @@ Please refer to the `dev.tfvars` for [full example](deploy/live/preprod/eu-west-
 **Fargate Profiles Example**
 
     enable_fargate = true
-    
+
     fargate_profiles = {
       default = {
         fargate_profile_name = "default"
@@ -176,16 +176,16 @@ Please refer to the `dev.tfvars` for [full example](deploy/live/preprod/eu-west-
             env         = "fargate"
           }
         }]
-    
+
         subnet_ids = [] # Provide list of private subnets
-    
+
         additional_tags = {
           ExtraTag = "Fargate"
         }
       },
         finance = {...}
       }
-      
+
 # Kubernetes Addons Module
 Kubernetes Addons Module within this framework allows you to deploy Kubernetes Addons using Terraform Helm provider and Kubernetes provider with simple **true/false** feature in `<env>.tfvars`.
 
@@ -200,9 +200,9 @@ e.g., `<env>.tfvars` config for enabling AWS LB INGRESS CONTROLLER. Refer to exa
     aws_lb_helm_chart_version    = "1.2.7"
     aws_lb_helm_repo_url         = "https://aws.github.io/eks-charts"
     aws_lb_helm_helm_chart_name  = "aws-load-balancer-controller"
-    
-This module currently configured to fetch the Helm Charts from Open Source repos and Docker images from Docker Hub/Public ECR repos which requires outbound Internet connection from your EKS Cluster.  Alternatively you can download the Docker images for each Addon and push it to AWS ECR repo and this can be accessed within VPC using ECR endpoint. 
-You can find the README for each Helm module with instructions on how to download the images from Docker Hub or third-party repos and upload it to your private ECR repo. This module provides the option to use internal Helm and Docker image repos from `<env>.tfvars`. 
+
+This module currently configured to fetch the Helm Charts from Open Source repos and Docker images from Docker Hub/Public ECR repos which requires outbound Internet connection from your EKS Cluster.  Alternatively you can download the Docker images for each Addon and push it to AWS ECR repo and this can be accessed within VPC using ECR endpoint.
+You can find the README for each Helm module with instructions on how to download the images from Docker Hub or third-party repos and upload it to your private ECR repo. This module provides the option to use internal Helm and Docker image repos from `<env>.tfvars`.
 
 For example, [ALB Ingress Controller](kubernetes-addons/lb-ingress-controller/README.md) for AWS LB Ingress Controller module.
 
@@ -219,7 +219,7 @@ Ingress is an API object that defines the traffic routing rules (e.g., load bala
 * [Nginx Ingress Controller](kubernetes-addons/nginx-ingress/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
 **Nginx is an open source Kubernetes Ingress Controller**. The Nginx Kubernetes Ingress provider is a Kubernetes Ingress controller; that is to say, it manages access to cluster services by supporting the Ingress specification. For more details about [Nginx can be found here](https://kubernetes.github.io/ingress-nginx/)
 
-## Autoscaling Modules 
+## Autoscaling Modules
 **Cluster Autoscaler** and **Metric Server** Helm Modules gets deployed by default with the EKS Cluster.
 
 * [Cluster Autoscaler](kubernetes-addons/cluster-autoscaler/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
@@ -246,7 +246,7 @@ This module ships the Fargate Container logs to CloudWatch
 
 Bottlerocket has two containers runtimes running. Control container **on** by default used for AWS Systems manager and remote API access. Admin container **off** by default for deep debugging and exploration.
 
-Bottlerocket [Launch templates userdata](modules/aws-eks-managed-node-groups/templates/userdata-bottlerocket.tpl) uses the TOML format with Key-value pairs. 
+Bottlerocket [Launch templates userdata](modules/aws-eks-managed-node-groups/templates/userdata-bottlerocket.tpl) uses the TOML format with Key-value pairs.
 Remote API access API via SSM agent. You can launch trouble shooting container via user data `[settings.host-containers.admin] enabled = true`.
 
 ### Features
@@ -290,12 +290,12 @@ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 
 #### Step2: Update <env>.tfvars file
 
-Update `~/aws-eks-accelerator-for-terraform/live/preprod/eu-west-1/application/dev/dev.tfvars` file with the instructions specified in the file (OR use the default values). 
+Update `~/aws-eks-accelerator-for-terraform/live/preprod/eu-west-1/application/dev/dev.tfvars` file with the instructions specified in the file (OR use the default values).
 You can choose to use an existing VPC ID and Subnet IDs or create a new VPC and subnets by providing CIDR ranges in `dev.tfvars` file
 
 ####  Step3: Update Terraform backend config file
 
-Update `~/aws-eks-accelerator-for-terraform/live/preprod/eu-west-1/application/dev/backend.conf` with your local directory path or s3 path. 
+Update `~/aws-eks-accelerator-for-terraform/live/preprod/eu-west-1/application/dev/backend.conf` with your local directory path or s3 path.
 [state.tf](state.tf) file contains backend config.
 
 Local terraform state backend config variables

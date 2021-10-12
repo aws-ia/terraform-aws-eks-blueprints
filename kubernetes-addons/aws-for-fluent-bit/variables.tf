@@ -56,5 +56,3 @@ variable "aws_for_fluent_bit_image_tag" {
   type    = string
   default = "2.13.0"
 }
-
-

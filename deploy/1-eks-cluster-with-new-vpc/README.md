@@ -1,13 +1,13 @@
 # terraform-aws-eks-accelerator-patterns
 
-The following steps walks you through the deployment of this example 
+The following steps walks you through the deployment of this example
 
 This example deploys the following Basic EKS Cluster with VPC
 
  - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
  - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
  - Creates EKS Cluster Control plane with one managed node group
- 
+
 # How to Deploy
 
 ## Prerequisites:

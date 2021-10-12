@@ -3,33 +3,33 @@
 ###### Instructions to upload Agones Docker image to AWS ECR
 
 Step1: Get the latest docker image from this link
-        
+
         https://github.com/googleforgames/agones
-        
+
 Step2: Download the docker image to your local Mac/Laptop
-        
+
         $ docker pull gcr.io/agones-images/agones-controller:1.15.0
-        
+
 Step3: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
-        
+
         $ aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin <account id>.dkr.ecr.eu-west-1.amazonaws.com
-        
-Step4: Create an ECR repo for Metrics Server if you don't have one 
-    
-        $ aws ecr create-repository --repository-name gcr.io/agones-images/agones-controller --image-scanning-configuration scanOnPush=true 
-              
+
+Step4: Create an ECR repo for Metrics Server if you don't have one
+
+        $ aws ecr create-repository --repository-name gcr.io/agones-images/agones-controller --image-scanning-configuration scanOnPush=true
+
 Step5: After the build completes, tag your image so, you can push the image to this repository:
-        
+
         $ docker tag gcr.io/agones-images/agones-controller:1.15.0 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/gcr.io/agones-images/agones-controller:1.15.0
 
 Step6: Run the following command to push this image to your newly created AWS repository:
-        
+
         $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/gcr.io/agones-images/agones-controller:1.15.0
 
 ### Instructions to download Helm Charts
 
 Helm Chart
-    
+
     https://artifacthub.io/packages/helm/agones/agones
 
 Helm Repo Maintainers
@@ -101,4 +101,3 @@ No modules.
 
 No outputs.
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-

@@ -3,14 +3,14 @@
 # Introduction
 
  Traefik is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease. Fore more detials about [Traefik can be found here](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)
- 
+
 # NOTE
- - Deployment Server should have access to Internet to fetch the Helm Charts from Public Repo. 
+ - Deployment Server should have access to Internet to fetch the Helm Charts from Public Repo.
  Alternatively you can sync public repo charts to your internal artifactory
  - By default, docker images for Helm chart pulled from Docker Hub which requires Internet access to your EKS Cluster.
  Alternatively, you can leverage internal aritifactory or Amazon ECR with private endpoints
-  
- 
+
+
 # Helm Chart
 
 ### Instructions to use Helm Charts
@@ -28,29 +28,29 @@ Add Helm repo for Traefik Ingress Controller
 ###### Instructions to upload Traefik Docker image to AWS ECR
 
 Step1: Get the latest docker image from this link
-        
+
         https://github.com/traefik/traefik
-        
+
 Step2: Download the docker image to your local Mac/Laptop
-        
+
         $ docker pull traefik:v2.4.8
-        
+
 Step3: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
-        
+
         $ aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin <account id>.dkr.ecr.eu-west-1.amazonaws.com
-        
-Step4: Create an ECR repo for traefik controller if you don't have one 
-    
+
+Step4: Create an ECR repo for traefik controller if you don't have one
+
         $ aws ecr create-repository \
               --repository-name traefik \
-              --image-scanning-configuration scanOnPush=true 
-              
+              --image-scanning-configuration scanOnPush=true
+
 Step5: After the build completes, tag your image so, you can push the image to this repository:
-        
+
         $ docker tag traefik:v2.4.8 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/traefik:v2.4.8
-        
+
 Step6: Run the following command to push this image to your newly created AWS repository:
-        
+
         $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/traefik:v2.4.8
 
 
@@ -59,11 +59,11 @@ Step6: Run the following command to push this image to your newly created AWS re
 Once the Traefik deployment is successful then run the below command from your mac where you have acces to EKS cluster using kubectl
 
     $ kubectl port-forward svc/traefik -n kube-system 9000:9000
-    
+
 Now open the browser from your mac and enter the below URL to access Traefik Web UI
-    
+
     http://127.0.0.1:9000/dashboard/
-    
+
 ![alt text](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/blob/a8ceac6c977a3ccbcb95ef7fb21fff0daf0b7081/images/traefik_web_ui.png "Traefik Dashboard")
 
 #### AWS Service annotations for Traefik Ingress Controller
@@ -117,7 +117,3 @@ No modules.
 
 No outputs.
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-
-
-
-
