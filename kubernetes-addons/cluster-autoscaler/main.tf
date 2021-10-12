@@ -17,7 +17,7 @@
  */
 
 
-resource "helm_release" "metrics_server" {
+resource "helm_release" "cluster_autoscaler" {
   name                       = local.cluster_autoscaler_helm_app["name"]
   repository                 = local.cluster_autoscaler_helm_app["repository"]
   chart                      = local.cluster_autoscaler_helm_app["chart"]
