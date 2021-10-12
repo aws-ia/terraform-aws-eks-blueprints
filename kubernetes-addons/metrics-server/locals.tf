@@ -1,14 +1,17 @@
 
 locals {
   default_metric_server_helm_app = {
-    name                       = "metrics-server"
-    chart                      = "metrics-server"
-    repository                 = "https://kubernetes-sigs.github.io/metrics-server/"
-    version                    = "3.5.0"
-    namespace                  = "kube-system"
-    timeout                    = "1200"
-    create_namespace           = false
-    set                        = null
+    name             = "metrics-server"
+    chart            = "metrics-server"
+    repository       = "https://kubernetes-sigs.github.io/metrics-server/"
+    version          = "3.5.0"
+    namespace        = "kube-system"
+    timeout          = "1200"
+    create_namespace = false
+    set = [{
+      name  = "nodeSelector.kubernetes\\.io/os"
+      value = "linux"
+    }]
     set_sensitive              = null
     lint                       = false
     values                     = null

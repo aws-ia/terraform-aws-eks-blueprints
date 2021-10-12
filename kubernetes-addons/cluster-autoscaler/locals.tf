@@ -1,3 +1,4 @@
+data "aws_region" "current" {}
 
 locals {
   default_cluster_autoscaler_helm_app = {
@@ -34,9 +35,26 @@ locals {
     replace                    = false
     description                = "Cluster AutoScaler helm Chart deployment configuration"
     postrender                 = ""
-    set = [{
-      name  = "autoDiscovery.clusterName"
-      value = var.eks_cluster_id
+    set = [
+      {
+        name  = "autoDiscovery.clusterName"
+        value = var.eks_cluster_id
+      },
+      {
+        name  = "extraArgs.aws-use-static-instance-list"
+        value = "true"
+      },
+      {
+        name  = "replicaCount"
+        value = "2"
+      },
+      {
+        name  = "awsRegion"
+        value = data.aws_region.current.id
+      },
+      {
+        name  = "nodeSelector.kubernetes\\.io/os"
+        value = "linux"
     }]
     set_sensitive = null
   }
