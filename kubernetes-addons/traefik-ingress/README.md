@@ -4,6 +4,13 @@
 
  Traefik is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease. Fore more detials about [Traefik can be found here](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)
  
+# NOTE
+ - Deployment Server should have access to Internet to fetch the Helm Charts from Public Repo. 
+ Alternatively you can sync public repo charts to your internal artifactory
+ - By default, docker images for Helm chart pulled from Docker Hub which requires Internet access to your EKS Cluster.
+ Alternatively, you can leverage internal aritifactory or Amazon ECR with private endpoints
+  
+ 
 # Helm Chart
 
 ### Instructions to use Helm Charts
@@ -16,7 +23,7 @@ Add Helm repo for Traefik Ingress Controller
 
     https://artifacthub.io/packages/helm/traefik/traefik
 
-# Docker Image for Traefik
+# Steps to use ECR repo for Docker image
 
 ###### Instructions to upload Traefik Docker image to AWS ECR
 
@@ -104,15 +111,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_account_id"></a> [account\_id](#input\_account\_id) | n/a | `string` | n/a | yes |
-| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `string` | n/a | yes |
-| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | variable "tls\_cert\_arn" {} | `bool` | n/a | yes |
-| <a name="input_s3_nlb_logs"></a> [s3\_nlb\_logs](#input\_s3\_nlb\_logs) | n/a | `string` | n/a | yes |
-| <a name="input_traefik_helm_chart_name"></a> [traefik\_helm\_chart\_name](#input\_traefik\_helm\_chart\_name) | n/a | `string` | `"traefik"` | no |
-| <a name="input_traefik_helm_chart_url"></a> [traefik\_helm\_chart\_url](#input\_traefik\_helm\_chart\_url) | n/a | `string` | `"https://helm.traefik.io/traefik"` | no |
-| <a name="input_traefik_helm_chart_version"></a> [traefik\_helm\_chart\_version](#input\_traefik\_helm\_chart\_version) | n/a | `string` | `"10.0.0"` | no |
-| <a name="input_traefik_image_repo_name"></a> [traefik\_image\_repo\_name](#input\_traefik\_image\_repo\_name) | n/a | `string` | `"traefik"` | no |
-| <a name="input_traefik_image_tag"></a> [traefik\_image\_tag](#input\_traefik\_image\_tag) | n/a | `string` | `"v2.4.9"` | no |
+| <a name="input_traefik_helm_chart"></a> [traefik\_helm\_chart](#input\_traefik\_helm\_chart) | n/a | `any` | `{}` | no |
 
 ## Outputs
 

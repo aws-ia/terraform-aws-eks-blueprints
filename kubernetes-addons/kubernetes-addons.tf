@@ -57,17 +57,9 @@ module "lb_ingress_controller" {
 }
 
 module "traefik_ingress" {
-  count  = var.traefik_ingress_controller_enable == true ? 1 : 0
-  source = "./traefik-ingress"
-
-  private_container_repo_url = var.private_container_repo_url
-  account_id                 = data.aws_caller_identity.current.account_id
-  s3_nlb_logs                = var.s3_nlb_logs
-  public_docker_repo         = var.public_docker_repo
-  traefik_helm_chart_version = var.traefik_helm_chart_version
-  traefik_image_tag          = var.traefik_image_tag
-  traefik_image_repo_name    = var.traefik_image_repo_name
-  //  tls_cert_arn = ""
+  count              = var.traefik_ingress_controller_enable == true ? 1 : 0
+  source             = "./traefik-ingress"
+  traefik_helm_chart = var.traefik_helm_chart
 }
 
 module "nginx_ingress" {
@@ -109,7 +101,6 @@ module "agones" {
   public_docker_repo         = var.public_docker_repo
   private_container_repo_url = var.private_container_repo_url
   cluster_id                 = var.eks_cluster_id
-  s3_nlb_logs                = var.s3_nlb_logs
   expose_udp                 = var.expose_udp
   eks_sg_id                  = var.eks_security_group_id
 }

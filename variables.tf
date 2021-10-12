@@ -380,27 +380,11 @@ variable "traefik_ingress_controller_enable" {
   default     = false
   description = "Enabling Traefik Ingress Controller on eks cluster"
 }
-variable "traefik_image_repo_name" {
-  type    = string
-  default = "traefik"
-}
-variable "traefik_helm_chart_name" {
-  type    = string
-  default = "traefik"
-}
-variable "traefik_helm_chart_url" {
-  type    = string
-  default = "https://helm.traefik.io/traefik"
-}
-variable "traefik_helm_chart_version" {
-  type    = string
-  default = "10.0.0"
-}
-variable "traefik_image_tag" {
-  type    = string
-  default = "v2.4.9"
-}
 
+variable "traefik_helm_chart" {
+  type    = any
+  default = {}
+}
 #-----------NGINX-------------
 variable "nginx_ingress_controller_enable" {
   type        = bool
