@@ -27,4 +27,3 @@ data "aws_ami" "predefined" {
     values = [each.value]
   }
 }
-

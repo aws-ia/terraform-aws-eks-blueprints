@@ -9,14 +9,14 @@ Cert Manager adds certificates and certificate issuers as resource types in Kube
 ### Instructions to use the Helm Chart
 
 See the [cert-manager documentation](https://cert-manager.io/docs/installation/helm/).
-    
+
 
 # Docker Image for Cert Manager
 
 cert-manager docker image is available at this repo:
-        
+
 https://quay.io/repository/jetstack/cert-manager-controller?tag=latest&tab=tags
-        
+
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -73,7 +73,3 @@ No modules.
 
 No outputs.
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-
-
-
-

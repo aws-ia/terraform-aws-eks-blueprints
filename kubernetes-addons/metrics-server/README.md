@@ -3,41 +3,41 @@
 ###### Instructions to upload Metrics Server Docker image to AWS ECR
 
 Step1: Get the latest docker image from this link
-        
+
         https://github.com/kubernetes-sigs/metrics-server
-        
+
 Step2: Download the docker image to your local Mac/Laptop
-        
+
         $ docker pull k8s.gcr.io/metrics-server/metrics-server:v0.4.2
-        
+
 Step3: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
-        
+
         $ aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin <account id>.dkr.ecr.eu-west-1.amazonaws.com
-        
-Step4: Create an ECR repo for Metrics Server if you don't have one 
-    
+
+Step4: Create an ECR repo for Metrics Server if you don't have one
+
         $ aws ecr create-repository \
               --repository-name k8s.gcr.io/metrics-server/metrics-server \
-              --image-scanning-configuration scanOnPush=true 
-              
+              --image-scanning-configuration scanOnPush=true
+
 Step5: After the build completes, tag your image so, you can push the image to this repository:
-        
+
         $ docker tag k8s.gcr.io/metrics-server/metrics-server:v0.4.2 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/k8s.gcr.io/metrics-server/metrics-server:v0.4.2
-        
+
 Step6: Run the following command to push this image to your newly created AWS repository:
-        
+
         $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/k8s.gcr.io/metrics-server/metrics-server:v0.4.2
 
 ### Instructions to download Helm Charts
 
 Helm Chart
-    
+
     https://artifacthub.io/packages/helm/appuio/metrics-server
 
 Helm Repo Maintainers
 
     https://charts.appuio.ch
-    
+
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -80,16 +80,9 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_metric_server_helm_chart_name"></a> [metric\_server\_helm\_chart\_name](#input\_metric\_server\_helm\_chart\_name) | n/a | `string` | `"metrics-server"` | no |
-| <a name="input_metric_server_helm_chart_version"></a> [metric\_server\_helm\_chart\_version](#input\_metric\_server\_helm\_chart\_version) | n/a | `string` | `"5.10.1"` | no |
-| <a name="input_metric_server_helm_repo_url"></a> [metric\_server\_helm\_repo\_url](#input\_metric\_server\_helm\_repo\_url) | n/a | `string` | `"https://charts.bitnami.com/bitnami"` | no |
-| <a name="input_metric_server_image_repo_name"></a> [metric\_server\_image\_repo\_name](#input\_metric\_server\_image\_repo\_name) | n/a | `string` | `"bitnami/metrics-server"` | no |
-| <a name="input_metric_server_image_tag"></a> [metric\_server\_image\_tag](#input\_metric\_server\_image\_tag) | n/a | `string` | `"0.5.0-debian-10-r83"` | no |
-| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `string` | n/a | yes |
-| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `bool` | n/a | yes |
+| <a name="input_metrics_server_helm_chart"></a> [metrics\_server\_helm\_chart](#input\_metrics\_server\_helm\_chart) | n/a | `any` | `{}` | no |
 
 ## Outputs
 
 No outputs.
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-

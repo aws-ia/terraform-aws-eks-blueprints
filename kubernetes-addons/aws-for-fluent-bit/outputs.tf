@@ -24,5 +24,3 @@ output "cw_loggroup_arn" {
   description = "EKS Cloudwatch group arn"
   value       = aws_cloudwatch_log_group.eks_worker_logs.arn
 }
-
-

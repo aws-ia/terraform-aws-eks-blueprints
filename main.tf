@@ -104,4 +104,3 @@ module "aws_managed_prometheus" {
   amp_workspace_name              = var.aws_managed_prometheus_workspace_name
 
 }
-

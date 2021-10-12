@@ -277,32 +277,7 @@ variable "aws_lb_helm_chart_version" {
   type    = string
   default = "1.2.7"
 }
-#-----------METRIC SERVER-------------
-variable "metrics_server_enable" {
-  type        = bool
-  default     = false
-  description = "Enabling metrics server on eks cluster"
-}
-variable "metric_server_image_repo_name" {
-  type    = string
-  default = "bitnami/metrics-server"
-}
-variable "metric_server_image_tag" {
-  type    = string
-  default = "0.5.0-debian-10-r83"
-}
-variable "metric_server_helm_chart_version" {
-  type    = string
-  default = "5.10.1"
-}
-variable "metric_server_helm_repo_url" {
-  type    = string
-  default = "https://charts.bitnami.com/bitnami"
-}
-variable "metric_server_helm_chart_name" {
-  type    = string
-  default = "metrics-server"
-}
+
 #-----------CLUSTER AUTOSCALER-------------
 variable "cluster_autoscaler_enable" {
   type        = bool
@@ -373,6 +348,16 @@ variable "prometheus_enable" {
 variable "aws_managed_prometheus_enable" {
   type    = bool
   default = false
+}
+#-----------METRIC SERVER-------------
+variable "metrics_server_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling metrics server on eks cluster"
+}
+variable "metrics_server_helm_chart" {
+  type    = any
+  default = {}
 }
 #-----------TRAEFIK-------------
 variable "traefik_ingress_controller_enable" {

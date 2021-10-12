@@ -19,4 +19,3 @@ resource "aws_eks_fargate_profile" "eks_fargate" {
     aws_iam_role_policy_attachment.fargate-AmazonEKSFargatePodExecutionRolePolicy,
   ]
 }
-

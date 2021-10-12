@@ -46,4 +46,3 @@ resource "helm_release" "opentelemetry_collector" {
     max_standalone_collectors               = var.opentelemetry_max_standalone_collectors
   })]
 }
-

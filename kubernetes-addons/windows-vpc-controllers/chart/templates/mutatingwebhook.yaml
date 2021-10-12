@@ -27,4 +27,3 @@ webhooks:
         resources: ["pods"]
     failurePolicy: Ignore
     sideEffects: None
-

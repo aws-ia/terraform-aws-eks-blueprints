@@ -32,6 +32,12 @@ variable "metrics_server_enable" {
   default     = true
   description = "Enabling metrics server on eks cluster"
 }
+
+variable "metrics_server_helm_chart" {
+  type    = any
+  default = {}
+}
+
 variable "cluster_autoscaler_enable" {
   type        = bool
   default     = true
@@ -150,29 +156,6 @@ variable "aws_lb_image_tag" {
 
 variable "aws_lb_helm_chart_version" {
   type = string
-}
-
-variable "metric_server_image_tag" {
-  type = string
-}
-
-variable "metric_server_helm_chart_version" {
-  type = string
-}
-
-variable "metric_server_helm_repo_url" {
-  type    = string
-  default = "https://charts.bitnami.com/bitnami"
-}
-
-variable "metric_server_image_repo_name" {
-  type    = string
-  default = "bitnami/metrics-server"
-}
-
-variable "metric_server_helm_chart_name" {
-  type    = string
-  default = "metrics-server"
 }
 
 variable "cluster_autoscaler_helm_repo_url" {
@@ -421,4 +404,3 @@ variable "opentelemetry_enable_agent_collector" {}
 variable "opentelemetry_enable_autoscaling_standalone_collector" {}
 
 variable "opentelemetry_enable_container_logs" {}
-

@@ -47,4 +47,3 @@ resource "helm_release" "aws-for-fluent-bit" {
     region             = data.aws_region.current.name
   })]
 }
-

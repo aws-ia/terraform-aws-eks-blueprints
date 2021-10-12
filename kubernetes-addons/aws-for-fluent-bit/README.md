@@ -3,33 +3,33 @@
 ###### Instructions to upload aws-for-fluent-bit Docker image to AWS ECR
 
 Step1: Get the latest docker image from this link
-        
+
         https://github.com/aws/aws-for-fluent-bit
-        
+
 Step2: Download the docker image to your local Mac/Laptop
-        
+
         $ docker pull amazon/aws-for-fluent-bit:2.13.0
-        
+
 Step3: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
-        
+
         $ aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin <account id>.dkr.ecr.eu-west-1.amazonaws.com
-        
-Step4: Create an ECR repo for Metrics Server if you don't have one 
-    
-        $ aws ecr create-repository --repository-name amazon/aws-for-fluent-bit --image-scanning-configuration scanOnPush=true 
-              
+
+Step4: Create an ECR repo for Metrics Server if you don't have one
+
+        $ aws ecr create-repository --repository-name amazon/aws-for-fluent-bit --image-scanning-configuration scanOnPush=true
+
 Step5: After the build completes, tag your image so, you can push the image to this repository:
-        
+
         $ docker tag amazon/aws-for-fluent-bit:2.13.0 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-for-fluent-bit:2.13.0
 
 Step6: Run the following command to push this image to your newly created AWS repository:
-        
+
         $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-for-fluent-bit:2.13.0
 
 ### Instructions to download Helm Charts
 
 #### Helm Chart
-    
+
     https://artifacthub.io/packages/helm/aws/aws-for-fluent-bit
 
 Helm Repo Maintainers
@@ -100,4 +100,3 @@ No modules.
 | <a name="output_cw_loggroup_arn"></a> [cw\_loggroup\_arn](#output\_cw\_loggroup\_arn) | EKS Cloudwatch group arn |
 | <a name="output_cw_loggroup_name"></a> [cw\_loggroup\_name](#output\_cw\_loggroup\_name) | EKS Cloudwatch group Name |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-

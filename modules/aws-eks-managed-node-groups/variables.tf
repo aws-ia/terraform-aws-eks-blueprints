@@ -89,4 +89,3 @@ variable "http_put_response_hop_limit" {
   default     = 1
   description = "HTTP PUT response hop limit for instance metadata requests. Supported values: 1-64."
 }
-

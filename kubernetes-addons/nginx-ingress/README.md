@@ -3,7 +3,7 @@
 # Introduction
 
  Nginx ingress is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease. Fore more detials about [Ingress-Nginx can be found here](https://kubernetes.github.io/ingress-nginx/)
- 
+
 # Helm Chart
 
 ### Instructions to use Helm Charts
@@ -20,27 +20,27 @@ Add Helm repo for Nginx Ingress Controller
 
 ###### Instructions to upload Ingress Nginx Docker image to AWS ECR
 
-        
+
 Step1: Download the docker image to your local Mac/Laptop
-        
+
         $ docker pull ingress-nginx/controller:v0.47.0
-        
+
 Step2: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
-        
+
         $ aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin <account id>.dkr.ecr.eu-west-1.amazonaws.com
-        
-Step3: Create an ECR repo for Ingress Nginx Controller if you don't have one 
-    
+
+Step3: Create an ECR repo for Ingress Nginx Controller if you don't have one
+
         $ aws ecr create-repository \
               --repository-name nginx-ingress \
-              --image-scanning-configuration scanOnPush=true 
-              
+              --image-scanning-configuration scanOnPush=true
+
 Step4: After the build completes, tag your image so, you can push the image to this repository:
-        
+
         $ docker tag nginx-ingress:v <accountid>.dkr.ecr.eu-west-1.amazonaws.com/nginx-ingress:v0.47.0
-        
+
 Step5: Run the following command to push this image to your newly created AWS repository:
-        
+
         $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/nginx-ingress:v0.47.0
 
 
@@ -103,7 +103,3 @@ No modules.
 
 No outputs.
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-
-
-
-

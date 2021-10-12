@@ -69,4 +69,3 @@ No modules.
 | <a name="output_service_account_amp_ingest_role_arn"></a> [service\_account\_amp\_ingest\_role\_arn](#output\_service\_account\_amp\_ingest\_role\_arn) | n/a |
 | <a name="output_service_account_amp_query_role_arn"></a> [service\_account\_amp\_query\_role\_arn](#output\_service\_account\_amp\_query\_role\_arn) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-

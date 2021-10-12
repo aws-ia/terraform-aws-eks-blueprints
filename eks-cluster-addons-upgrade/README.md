@@ -2,9 +2,9 @@
 
 #### Objective:
 
-The purpose of this document is to provide an overview of the steps for upgrading the EKS Cluster from one version to another. Please note that EKS upgrade documentation gets published by AWS every year. 
+The purpose of this document is to provide an overview of the steps for upgrading the EKS Cluster from one version to another. Please note that EKS upgrade documentation gets published by AWS every year.
 
-The current version of the upgrade documentation while writing this [README](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html) 
+The current version of the upgrade documentation while writing this [README](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html)
 
 #### Pre-Requisites:
 
@@ -22,13 +22,13 @@ This table shows the supported plugin versions for each EKS Kubernetes version
 #### Steps to upgrade EKS cluster:
 
  1. Change the version in Terraform to desired version under `base.tfvars`. See the example below
-    
+
     ```hcl-terraform
     kubernetes_version      = "1.20"
     ```
-    
+
 2. Apply the changes to the cluster with Terraform. This step will upgrade the Control Plane and Data Plane to the newer version, and it will roughly take 35 mins to 1 hour
-    
+
 3. Once the Cluster is upgraded to desired version then please updated the following plugins as per the instructions
 
 #### Steps to upgrade Add-ons:
@@ -41,14 +41,14 @@ Just update the latest versions in `base.tfvars` file as shown below. EKS Addon 
 enable_kube_proxy_addon  = true
 kube_proxy_addon_version = "v1.20.4-eksbuild.2"
 ```
-        
-##### CoreDNS 
+
+##### CoreDNS
 
 ```hcl-terraform
 enable_coredns_addon  = true
 coredns_addon_version = "v1.8.3-eksbuild.1"
 ```
-        
+
 ##### VPC CNI
 
 ```hcl-terraform
@@ -57,6 +57,6 @@ vpc_cni_addon_version = "v1.8.0-eksbuild.1"
 ```
 
 Apply the changes to the cluster with Terraform.
-     
-## Important Note      
+
+## Important Note
 Please note that you may need to update other Kubernetes Addons deployed through Helm Charts to match with new Kubernetes upgrade version

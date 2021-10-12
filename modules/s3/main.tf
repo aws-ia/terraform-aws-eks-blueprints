@@ -76,4 +76,3 @@ resource "aws_s3_bucket" "s3_logs_bucket" {
     Name = var.s3_bucket_name
   }
 }
-
