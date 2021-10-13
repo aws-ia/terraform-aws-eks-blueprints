@@ -71,6 +71,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 | <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
 
 ## Modules
@@ -82,31 +83,17 @@ No modules.
 | Name | Type |
 |------|------|
 | [helm_release.prometheus](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_alert_manager_image_tag"></a> [alert\_manager\_image\_tag](#input\_alert\_manager\_image\_tag) | n/a | `string` | `"v0.21.0"` | no |
-| <a name="input_alert_manager_repo"></a> [alert\_manager\_repo](#input\_alert\_manager\_repo) | n/a | `string` | `"quay.io/prometheus/alertmanager"` | no |
-| <a name="input_amp_ingest_role_arn"></a> [amp\_ingest\_role\_arn](#input\_amp\_ingest\_role\_arn) | n/a | `string` | n/a | yes |
-| <a name="input_amp_workspace_id"></a> [amp\_workspace\_id](#input\_amp\_workspace\_id) | n/a | `string` | n/a | yes |
-| <a name="input_configmap_reload_image_tag"></a> [configmap\_reload\_image\_tag](#input\_configmap\_reload\_image\_tag) | n/a | `string` | `"v0.5.0"` | no |
-| <a name="input_configmap_reload_repo"></a> [configmap\_reload\_repo](#input\_configmap\_reload\_repo) | n/a | `string` | `"jimmidyson/configmap-reload"` | no |
-| <a name="input_node_exporter_image_tag"></a> [node\_exporter\_image\_tag](#input\_node\_exporter\_image\_tag) | n/a | `string` | `"v1.1.2"` | no |
-| <a name="input_node_exporter_repo"></a> [node\_exporter\_repo](#input\_node\_exporter\_repo) | n/a | `string` | `"quay.io/prometheus/node-exporter"` | no |
-| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `string` | n/a | yes |
-| <a name="input_prometheus_enable"></a> [prometheus\_enable](#input\_prometheus\_enable) | Enabling prometheus on eks cluster | `bool` | `false` | no |
-| <a name="input_prometheus_helm_chart_name"></a> [prometheus\_helm\_chart\_name](#input\_prometheus\_helm\_chart\_name) | n/a | `string` | `"prometheus"` | no |
-| <a name="input_prometheus_helm_chart_url"></a> [prometheus\_helm\_chart\_url](#input\_prometheus\_helm\_chart\_url) | n/a | `string` | `"https://prometheus-community.github.io/helm-charts"` | no |
-| <a name="input_prometheus_helm_chart_version"></a> [prometheus\_helm\_chart\_version](#input\_prometheus\_helm\_chart\_version) | n/a | `string` | `"14.4.0"` | no |
-| <a name="input_prometheus_image_tag"></a> [prometheus\_image\_tag](#input\_prometheus\_image\_tag) | n/a | `string` | `"v2.26.0"` | no |
-| <a name="input_prometheus_repo"></a> [prometheus\_repo](#input\_prometheus\_repo) | n/a | `string` | `"quay.io/prometheus/prometheus"` | no |
-| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `bool` | n/a | yes |
-| <a name="input_pushgateway_image_tag"></a> [pushgateway\_image\_tag](#input\_pushgateway\_image\_tag) | n/a | `string` | `"v1.3.1"` | no |
-| <a name="input_pushgateway_repo"></a> [pushgateway\_repo](#input\_pushgateway\_repo) | n/a | `string` | `"prom/pushgateway"` | no |
-| <a name="input_region"></a> [region](#input\_region) | n/a | `string` | n/a | yes |
-| <a name="input_service_account_amp_ingest_name"></a> [service\_account\_amp\_ingest\_name](#input\_service\_account\_amp\_ingest\_name) | n/a | `string` | n/a | yes |
+| <a name="input_amp_ingest_role_arn"></a> [amp\_ingest\_role\_arn](#input\_amp\_ingest\_role\_arn) | n/a | `string` | `""` | no |
+| <a name="input_amp_workspace_id"></a> [amp\_workspace\_id](#input\_amp\_workspace\_id) | n/a | `string` | `""` | no |
+| <a name="input_aws_managed_prometheus_enable"></a> [aws\_managed\_prometheus\_enable](#input\_aws\_managed\_prometheus\_enable) | n/a | `bool` | `false` | no |
+| <a name="input_prometheus_helm_chart"></a> [prometheus\_helm\_chart](#input\_prometheus\_helm\_chart) | n/a | `any` | `{}` | no |
+| <a name="input_service_account_amp_ingest_name"></a> [service\_account\_amp\_ingest\_name](#input\_service\_account\_amp\_ingest\_name) | n/a | `string` | `""` | no |
 
 ## Outputs
 
