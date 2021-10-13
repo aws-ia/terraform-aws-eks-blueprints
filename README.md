@@ -186,60 +186,6 @@ Please refer to the `dev.tfvars` for [full example](deploy/live/preprod/eu-west-
         finance = {...}
       }
 
-# Kubernetes Addons Module
-Kubernetes Addons Module within this framework allows you to deploy Kubernetes Addons using Terraform Helm provider and Kubernetes provider with simple **true/false** feature in `<env>.tfvars`.
-
-e.g., `<env>.tfvars` config for enabling AWS LB INGRESS CONTROLLER. Refer to example [dev.tfvars](deploy/live/preprod/eu-west-1/application_acct/dev/dev.tfvars) to enable other Kubernetes Addons
-
-    #---------------------------------------------------------//
-    # ENABLE AWS LB INGRESS CONTROLLER
-    #---------------------------------------------------------//
-    aws_lb_ingress_controller_enable = true
-    aws_lb_image_repo_name       = "amazon/aws-load-balancer-controller"
-    aws_lb_image_tag             = "v2.2.4"
-    aws_lb_helm_chart_version    = "1.2.7"
-    aws_lb_helm_repo_url         = "https://aws.github.io/eks-charts"
-    aws_lb_helm_helm_chart_name  = "aws-load-balancer-controller"
-
-This module currently configured to fetch the Helm Charts from Open Source repos and Docker images from Docker Hub/Public ECR repos which requires outbound Internet connection from your EKS Cluster.  Alternatively you can download the Docker images for each Addon and push it to AWS ECR repo and this can be accessed within VPC using ECR endpoint.
-You can find the README for each Helm module with instructions on how to download the images from Docker Hub or third-party repos and upload it to your private ECR repo. This module provides the option to use internal Helm and Docker image repos from `<env>.tfvars`.
-
-For example, [ALB Ingress Controller](kubernetes-addons/lb-ingress-controller/README.md) for AWS LB Ingress Controller module.
-
-## Ingress Controller Modules
-Ingress is an API object that defines the traffic routing rules (e.g., load balancing, SSL termination, path-based routing, protocol), whereas the Ingress Controller is the component responsible for fulfilling those requests.
-
-* [ALB Ingress Controller](kubernetes-addons/lb-ingress-controller/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
-**AWS LB Ingress controller** triggers the creation of an LB Ingress Controller, and the necessary supporting AWS resources whenever a Kubernetes user declares an Ingress resource in the cluster.
-[ALB Docs](https://Kubernetes-sigs.github.io/aws-load-balancer-controller/latest/)
-
-* [Traefik Ingress Controller](kubernetes-addons/traefik-ingress/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
-**Traefik is an open source Kubernetes Ingress Controller**. The Traefik Kubernetes Ingress provider is a Kubernetes Ingress controller; that is to say, it manages access to cluster services by supporting the Ingress specification. For more details about [Traefik can be found here](https://doc.traefik.io/traefik/providers/Kubernetes-ingress/)
-
-* [Nginx Ingress Controller](kubernetes-addons/nginx-ingress/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
-**Nginx is an open source Kubernetes Ingress Controller**. The Nginx Kubernetes Ingress provider is a Kubernetes Ingress controller; that is to say, it manages access to cluster services by supporting the Ingress specification. For more details about [Nginx can be found here](https://kubernetes.github.io/ingress-nginx/)
-
-## Autoscaling Modules
-**Cluster Autoscaler** and **Metric Server** Helm Modules gets deployed by default with the EKS Cluster.
-
-* [Cluster Autoscaler](kubernetes-addons/cluster-autoscaler/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
-The Kubernetes  Cluster Autoscaler automatically adjusts the number of nodes in your cluster when pods fail or are rescheduled onto other nodes. It's not deployed by default in EKS clusters.
-That is, the AWS Cloud Provider implementation within the Kubernetes  Cluster Autoscaler controls the **DesiredReplicas** field of Amazon EC2 Auto Scaling groups.
-The Cluster Autoscaler is typically installed as a **Deployment** in your cluster. It uses leader election to ensure high availability, but scaling is one done by a single replica at a time.
-
-* [Metrics Server](kubernetes-addons/metrics-server/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
-The Kubernetes  Metrics Server, used to gather metrics such as cluster CPU and memory usage over time, is not deployed by default in EKS clusters.
-
-## Logging and Monitoring
-**FluentBit** is an open source Log Processor and Forwarder which allows you to collect any data like metrics and logs from different sources, enrich them with filters and send them to multiple destinations.
-
-* [aws-for-fluent-bit](kubernetes-addons/aws-for-fluent-bit/README.md) can be deployed by enabling the add-on in `<env>.tfvars` file.
-AWS provides a Fluent Bit image with plugins for both CloudWatch Logs and Kinesis Data Firehose. The AWS for Fluent Bit image is available on the Amazon ECR Public Gallery.
-For more details, see [aws-for-fluent-bit](https://gallery.ecr.aws/aws-observability/aws-for-fluent-bit) on the Amazon ECR Public Gallery.
-
-* [fargate-fluentbit](kubernetes-addons/fargate-fluentbit) can be deployed by enabling the add-on in `<env>.tfvars` file.
-This module ships the Fargate Container logs to CloudWatch
-
 ## Bottlerocket OS
 
 [Bottlerocket](https://aws.amazon.com/bottlerocket/) is an open source operating system specifically designed for running containers. Bottlerocket build system is based on Rust. It's a container host OS and doesn't have additional software's or package managers other than what is needed for running containers hence its very light weight and secure. Container optimized operating systems are ideal when you need to run applications in Kubernetes  with minimal setup and do not want to worry about security or updates, or want OS support from  cloud provider. Container operating systems does updates transactionally.
@@ -322,7 +268,6 @@ to initialize a working directory with configuration files
 terraform init -backend-config deploy/live/preprod/eu-west-1/application/dev/backend.conf
 ```
 
-
 #### Step6: Run Terraform PLAN
 to verify the resources created by this execution
 
@@ -375,22 +320,6 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
 
 ## Deploying example templates
 The `examples` folder contains multiple cluster templates with pre-populated `.tfvars` which can be used as a quick start. Reuse the templates from `examples` and follow the above Deployment steps as mentioned above.
-
-# EKS Addons update
-Amazon EKS doesn't modify any of your Kubernetes add-ons when you update a cluster to newer versions.
-It's important to upgrade EKS Addons [Amazon VPC CNI](https://github.com/aws/amazon-vpc-cni-k8s), [DNS (CoreDNS)](https://docs.aws.amazon.com/eks/latest/userguide/managing-coredns.html) and [KubeProxy](https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html) for each EKS release.
-
-This [README](eks_cluster_addons_upgrade/README.md) guides you to update the EKS Cluster and the addons for newer versions that matches with your EKS cluster version
-
-Updating a EKS cluster instructions can be found in [AWS documentation](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html).
-
-# Important note
-This module tested only with **Kubernetes v1.20 version**. Kubernetes addons modules aligned with k8s v1.20. If you are looking to use this code to deploy different versions of Kubernetes then ensure Helm charts and docker images aligned with k8s version.
-
-The `Kubernetes_version="1.20"` is the required variable in `<env>.tfvars`. Kubernetes  is evolving a lot, and each major version includes new features, fixes, or changes.
-
-Always check [Kubernetes Release Notes](https://Kubernetes.io/docs/setup/release/notes/) before updating the major version. You also need to ensure your applications and Helm addons updated,
-or workloads could fail after the upgrade is complete. For action, you may need to take before upgrading, see the steps in the EKS documentation.
 
 # Notes:
 If you are using an existing VPC then you may need to ensure that the following tags added to the VPC and subnet resources
