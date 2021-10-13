@@ -99,8 +99,8 @@ module "aws_managed_prometheus" {
   region                          = data.aws_region.current.id
   eks_cluster_id                  = module.aws_eks.cluster_id
   eks_oidc_provider               = split("//", module.aws_eks.cluster_oidc_issuer_url)[1]
-  service_account_amp_ingest_name = format("%s-%s", module.aws_eks.cluster_id, "amp-ingest")
-  service_account_amp_query_name  = format("%s-%s", module.aws_eks.cluster_id, "amp-query")
+  service_account_amp_ingest_name = local.service_account_amp_ingest_name
+  service_account_amp_query_name  = local.service_account_amp_query_name
   amp_workspace_name              = var.aws_managed_prometheus_workspace_name
 
 }

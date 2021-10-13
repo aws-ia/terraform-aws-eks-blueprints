@@ -16,51 +16,62 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-//helm install prometheus-for-amp prometheus-community/prometheus -n prometheus -f ./amp_ingest_override_values.yaml \
-//--set serviceAccounts.server.annotations."eks\.amazonaws\.com/role-arn"="${IAM_PROXY_PROMETHEUS_ROLE_ARN}" \
-//--set server.remoteWrite[0].url="https://aps-workspaces.${AWS_REGION}.amazonaws.com/workspaces/${WORKSPACE_ID}/api/v1/remote_write" \
-//--set server.remoteWrite[0].sigv4.region=${AWS_REGION}
-
-locals {
-  prometheus_repo_url       = var.public_docker_repo ? var.prometheus_repo : "${var.private_container_repo_url}/${var.prometheus_repo}"
-  alert_manager_repo_url    = var.public_docker_repo ? var.alert_manager_repo : "${var.private_container_repo_url}/${var.alert_manager_repo}"
-  configmap_reload_repo_url = var.public_docker_repo ? var.configmap_reload_repo : "${var.private_container_repo_url}/${var.configmap_reload_repo}"
-  node_exporter_repo_url    = var.public_docker_repo ? var.node_exporter_repo : "${var.private_container_repo_url}/${var.node_exporter_repo}"
-  pushgateway_repo_url      = var.public_docker_repo ? var.pushgateway_repo : "${var.private_container_repo_url}/${var.pushgateway_repo}"
-}
-
 resource "helm_release" "prometheus" {
+  name                       = local.prometheus_helm_app["name"]
+  repository                 = local.prometheus_helm_app["repository"]
+  chart                      = local.prometheus_helm_app["chart"]
+  version                    = local.prometheus_helm_app["version"]
+  namespace                  = local.prometheus_helm_app["namespace"]
+  timeout                    = local.prometheus_helm_app["timeout"]
+  values                     = local.prometheus_helm_app["values"]
+  create_namespace           = local.prometheus_helm_app["create_namespace"]
+  lint                       = local.prometheus_helm_app["lint"]
+  description                = local.prometheus_helm_app["description"]
+  repository_key_file        = local.prometheus_helm_app["repository_key_file"]
+  repository_cert_file       = local.prometheus_helm_app["repository_cert_file"]
+  repository_ca_file         = local.prometheus_helm_app["repository_ca_file"]
+  repository_username        = local.prometheus_helm_app["repository_username"]
+  repository_password        = local.prometheus_helm_app["repository_password"]
+  verify                     = local.prometheus_helm_app["verify"]
+  keyring                    = local.prometheus_helm_app["keyring"]
+  disable_webhooks           = local.prometheus_helm_app["disable_webhooks"]
+  reuse_values               = local.prometheus_helm_app["reuse_values"]
+  reset_values               = local.prometheus_helm_app["reset_values"]
+  force_update               = local.prometheus_helm_app["force_update"]
+  recreate_pods              = local.prometheus_helm_app["recreate_pods"]
+  cleanup_on_fail            = local.prometheus_helm_app["cleanup_on_fail"]
+  max_history                = local.prometheus_helm_app["max_history"]
+  atomic                     = local.prometheus_helm_app["atomic"]
+  skip_crds                  = local.prometheus_helm_app["skip_crds"]
+  render_subchart_notes      = local.prometheus_helm_app["render_subchart_notes"]
+  disable_openapi_validation = local.prometheus_helm_app["disable_openapi_validation"]
+  wait                       = local.prometheus_helm_app["wait"]
+  wait_for_jobs              = local.prometheus_helm_app["wait_for_jobs"]
+  dependency_update          = local.prometheus_helm_app["dependency_update"]
+  replace                    = local.prometheus_helm_app["replace"]
 
-  name       = var.prometheus_helm_chart_name
-  repository = var.prometheus_helm_chart_url
-  chart      = var.prometheus_helm_chart_name
-  version    = var.prometheus_helm_chart_version
-  namespace  = var.prometheus_helm_chart_name
-  timeout    = "1200"
-  //  app_version = "2.26.0"
+  postrender {
+    binary_path = local.prometheus_helm_app["postrender"]
+  }
 
-  values = [templatefile("${path.module}/templates/prometheus.yaml", {
-    amp_workspace_url = "https://aps-workspaces.${var.region}.amazonaws.com/workspaces/${var.amp_workspace_id}/api/v1/remote_write"
-    //    amp_workspace_url = "http://localhost:8005/workspaces/${var.amp_workspace_id}/api/v1/remote_write"
-    region            = var.region
-    server_annotation = var.amp_ingest_role_arn
-    //    server_annotation = "arn:aws:iam::327949925549:role/amp-iamproxy-ingest-role"
-    prometheus_repo_url  = local.prometheus_repo_url
-    prometheus_image_tag = var.prometheus_image_tag
+  dynamic "set" {
+    iterator = each_item
+    for_each = local.prometheus_helm_app["set"] == null ? [] : local.prometheus_helm_app["set"]
 
-    alert_manager_repo_url  = local.alert_manager_repo_url
-    alert_manager_image_tag = var.alert_manager_image_tag
+    content {
+      name  = each_item.value.name
+      value = each_item.value.value
+    }
+  }
 
-    configmap_reload_repo_url  = local.configmap_reload_repo_url
-    configmap_reload_image_tag = var.configmap_reload_image_tag
+  dynamic "set_sensitive" {
+    iterator = each_item
+    for_each = local.prometheus_helm_app["set_sensitive"] == null ? [] : local.prometheus_helm_app["set_sensitive"]
 
-    node_exporter_repo_url  = local.node_exporter_repo_url
-    node_exporter_image_tag = var.node_exporter_image_tag
-
-    pushgateway_repo_url            = local.pushgateway_repo_url
-    pushgateway_image_tag           = var.pushgateway_image_tag
-    service_account_amp_ingest_name = var.service_account_amp_ingest_name
-
-  })]
+    content {
+      name  = each_item.value.name
+      value = each_item.value.value
+    }
+  }
 
 }

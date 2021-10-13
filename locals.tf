@@ -72,4 +72,7 @@ locals {
     }
   ] : []
 
+  service_account_amp_ingest_name = format("%s-%s", module.aws_eks.cluster_id, "amp-ingest")
+  service_account_amp_query_name  = format("%s-%s", module.aws_eks.cluster_id, "amp-query")
+
 }

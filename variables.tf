@@ -200,6 +200,57 @@ variable "aws_auth_additional_labels" {
 #----------------------------------------------------------
 # KUBERNETES ADDONS VARIABLES
 #----------------------------------------------------------
+#-----------CLUSTER AUTOSCALER-------------
+variable "cluster_autoscaler_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling Cluster autoscaler on eks cluster"
+}
+variable "cluster_autoscaler_helm_chart" {
+  type    = any
+  default = {}
+}
+#-----------PROMETHEUS-------------
+variable "aws_managed_prometheus_enable" {
+  type    = bool
+  default = false
+}
+
+variable "aws_managed_prometheus_workspace_name" {
+  type    = string
+  default = "aws-managed-prometheus-workspace"
+}
+
+variable "prometheus_enable" {
+  type    = bool
+  default = false
+}
+
+variable "prometheus_helm_chart" {
+  type    = any
+  default = {}
+}
+#-----------METRIC SERVER-------------
+variable "metrics_server_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling metrics server on eks cluster"
+}
+variable "metrics_server_helm_chart" {
+  type    = any
+  default = {}
+}
+#-----------TRAEFIK-------------
+variable "traefik_ingress_controller_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling Traefik Ingress Controller on eks cluster"
+}
+
+variable "traefik_helm_chart" {
+  type    = any
+  default = {}
+}
 variable "private_container_repo_url" {
   type        = string
   default     = ""
@@ -278,82 +329,7 @@ variable "aws_lb_helm_chart_version" {
   default = "1.2.7"
 }
 
-#-----------CLUSTER AUTOSCALER-------------
-variable "cluster_autoscaler_enable" {
-  type        = bool
-  default     = false
-  description = "Enabling Cluster autoscaler on eks cluster"
-}
-variable "cluster_autoscaler_helm_chart" {
-  type    = any
-  default = {}
-}
-#-----------PROMETHEUS-------------
-variable "aws_managed_prometheus_workspace_name" {
-  type    = string
-  default = "aws-managed-prometheus-workspace"
-}
-variable "prometheus_helm_chart_url" {
-  type    = string
-  default = "https://prometheus-community.github.io/helm-charts"
-}
-variable "prometheus_helm_chart_name" {
-  type    = string
-  default = "prometheus"
-}
-variable "prometheus_helm_chart_version" {
-  type    = string
-  default = "14.7.0"
-}
-variable "prometheus_image_tag" {
-  type    = string
-  default = "v2.26.0"
-}
-variable "alert_manager_image_tag" {
-  type    = string
-  default = "v0.21.0"
-}
-variable "configmap_reload_image_tag" {
-  type    = string
-  default = "v0.5.0"
-}
-variable "node_exporter_image_tag" {
-  type    = string
-  default = "v1.1.2"
-}
-variable "pushgateway_image_tag" {
-  type    = string
-  default = "v1.3.1"
-}
-variable "prometheus_enable" {
-  type    = bool
-  default = false
-}
-variable "aws_managed_prometheus_enable" {
-  type    = bool
-  default = false
-}
-#-----------METRIC SERVER-------------
-variable "metrics_server_enable" {
-  type        = bool
-  default     = false
-  description = "Enabling metrics server on eks cluster"
-}
-variable "metrics_server_helm_chart" {
-  type    = any
-  default = {}
-}
-#-----------TRAEFIK-------------
-variable "traefik_ingress_controller_enable" {
-  type        = bool
-  default     = false
-  description = "Enabling Traefik Ingress Controller on eks cluster"
-}
 
-variable "traefik_helm_chart" {
-  type    = any
-  default = {}
-}
 #-----------NGINX-------------
 variable "nginx_ingress_controller_enable" {
   type        = bool
