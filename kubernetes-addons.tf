@@ -49,6 +49,7 @@ module "prometheus" {
   source                = "./kubernetes-addons/prometheus"
   prometheus_helm_chart = var.prometheus_helm_chart
   #AWS Managed Workspace
+  aws_managed_prometheus_enable   = var.aws_managed_prometheus_enable
   amp_workspace_id                = var.aws_managed_prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : ""
   amp_ingest_role_arn             = var.aws_managed_prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : ""
   service_account_amp_ingest_name = local.service_account_amp_ingest_name

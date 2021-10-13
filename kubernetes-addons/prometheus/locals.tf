@@ -11,7 +11,7 @@ locals {
     },
     {
       name  = "server.remoteWrite[0].url"
-      value = "http://localhost:8005/workspaces/${var.amp_workspace_id}/api/v1/remote_write"
+      value = "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${var.amp_workspace_id}/api/v1/remote_write"
     },
     {
       name  = "server.remoteWrite[0].sigv4.region"
@@ -43,7 +43,7 @@ locals {
       value = "linux"
     },
   ]
-  set_values = var.aws_managed_prometheus_enable == true ? merge(local.aws_managed_prometheus, local.default_set_values) : local.default_set_values
+  set_values = var.aws_managed_prometheus_enable == true ? concat(local.aws_managed_prometheus, local.default_set_values) : local.default_set_values
 
   default_prometheus_helm_app = {
     name                       = "prometheus"
