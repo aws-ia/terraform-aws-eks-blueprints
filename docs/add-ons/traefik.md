@@ -12,15 +12,15 @@ For complete project documentation, please visit the [Traefik documentation site
 traefik_ingress_controller_enable = true
 ```
 
-##### How to test Traefik WebUI
+## How to test Traefik Web UI
 
-Once the Traefik deployment is successful then run the below command from your mac where you have acces to EKS cluster using kubectl
+Once the Traefik deployment is successful, run the following command from your a local machine which have access to an EKS cluster using kubectl.
 
 ```
 $ kubectl port-forward svc/traefik -n kube-system 9000:9000
 ```
 
-Now open the browser from your mac and enter the below URL to access Traefik Web UI
+Now open the browser from your machine and enter the below URL to access Traefik Web UI.
 
 ```    
 http://127.0.0.1:9000/dashboard/
@@ -29,4 +29,5 @@ http://127.0.0.1:9000/dashboard/
 ![alt text](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/blob/a8ceac6c977a3ccbcb95ef7fb21fff0daf0b7081/images/traefik_web_ui.png "Traefik Dashboard")
 
 #### AWS Service annotations for Traefik Ingress Controller
+
 Here is the link to get the AWS ELB [service annotations](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/service/annotations/) for Traefik Ingress controller
