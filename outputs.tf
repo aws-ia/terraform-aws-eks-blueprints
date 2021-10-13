@@ -53,12 +53,12 @@ output "worker_security_group_id" {
 
 output "amp_work_id" {
   description = "AWS Managed Prometheus workspace id"
-  value       = var.prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : "AMP not enabled"
+  value       = var.aws_managed_prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : "AMP not enabled"
 }
 
 output "amp_work_arn" {
   description = "AWS Managed Prometheus workspace ARN"
-  value       = var.prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : "AMP not enabled"
+  value       = var.aws_managed_prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : "AMP not enabled"
 }
 
 output "self_managed_node_group_iam_role_arns" {
