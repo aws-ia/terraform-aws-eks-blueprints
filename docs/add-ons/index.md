@@ -2,19 +2,21 @@
 
 The `kubernetes-addons` module within this framework allows you to deploy Kubernetes add-ons using both the Terraform Helm and Kubernetes providers with simple **true/false** flags.
 
+The framework currently provides support for the following add-ons.
+
 | Add-on    | Description   |
 |-----------|-----------------
-| Agones |
-| FluentBit |
-| OpenTelemetry |
-| cert-manager |
-| Cluster Autoscaler |
-| AWS Load Balancer Controller
-| Metrics Server |
-| Nginx |
-| Prometheus |
-| Traefik |
-| Windows VPC Controller |
+| [Agones](./agones) | Deploys Agones into an EKS cluster. |
+| [FluentBit](./aws-for-fluent-bit) | Deploys Fluent Bit into an EKS cluster. |
+| [AWS Load Balancer Controller](./fargate-fluent-bit) | Deploys the AWS Load Balancer Controller into an EKS cluster. |
+| [cert-manager](./cert-manager) | Deploys cert-manager into an EKS cluster.
+| [Cluster Autoscaler](./cluster-autoscaler) | Deploys the standard cluster autoscaler. |
+| [Metrics Server](./managed-add-ons) | Deploys the Kubernetes Metrics Server into an EKS cluster. |
+| [Nginx](./nginx) | Deploys the NGINX Ingress Controller into an EKS cluster. |
+| [OpenTelemetry](./aws-load-balancer-controller) | Deploys the OpenTelemetry Collector into an EKS cluster.
+| [Prometheus](./prometheus) | Deploys Prometheus into an EKS cluster. |
+| [Traefik](./traefik) | Deploys Traefik Proxy into an EKS cluster.
+| [Windows VPC Controller](./windows-vpc-controllers) | 
 
 ## Installation 
 
