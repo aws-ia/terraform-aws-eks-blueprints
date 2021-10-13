@@ -48,7 +48,7 @@ module "prometheus" {
   count                 = var.create_eks && var.prometheus_enable ? 1 : 0
   source                = "./kubernetes-addons/prometheus"
   prometheus_helm_chart = var.prometheus_helm_chart
-  #AWS Managed Workspace
+  #AWS Managed Prometheus Workspace
   aws_managed_prometheus_enable   = var.aws_managed_prometheus_enable
   amp_workspace_id                = var.aws_managed_prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : ""
   amp_ingest_role_arn             = var.aws_managed_prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : ""
