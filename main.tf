@@ -104,3 +104,14 @@ module "aws_managed_prometheus" {
   amp_workspace_name              = var.aws_managed_prometheus_workspace_name
 
 }
+
+module "emr_on_eks" {
+  count                = var.create_eks && var.enable_emr_on_eks == true ? 1 : 0
+  source               = "./modules/emr-on-eks"
+  eks_cluster_id       = module.aws_eks.cluster_id
+  environment          = var.environment
+  tenant               = var.tenant
+  zone                 = var.zone
+  emr_on_eks_namespace = var.emr_on_eks_namespace
+  emr_on_eks_username  = var.emr_on_eks_username
+}
