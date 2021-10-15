@@ -1,3 +1,4 @@
+data "aws_region" "current" {}
 
 resource "kubernetes_namespace" "spark" {
   metadata {
@@ -80,8 +81,6 @@ resource "kubernetes_role_binding" "emr_containers" {
   }
 }
 
-data "aws_caller_identity" "current" {}
-
 
 # EMR jobs will assume this IAM role when they run on EKS
 resource "aws_iam_role" "emr_on_eks_execution" {
@@ -141,11 +140,10 @@ resource "aws_iam_role_policy_attachment" "emr_on_eks_execution" {
   policy_arn = aws_iam_policy.emr_on_eks_execution.arn
 }
 
-data "aws_region" "current" {}
-
 # Update trust relationship for job execution role
-#$(aws sts assume-role --role-arn ${local.role} --role-session-name terraform_run_instance_refresh --query 'Credentials.[`export#AWS_ACCESS_KEY_ID=`,AccessKeyId,`#AWS_SECRET_ACCESS_KEY=`,SecretAccessKey,`#AWS_SESSION_TOKEN=`,SessionToken]' --output text | sed $'s/\t//g' | sed 's/#/ /g')
-
+# Use the below command in shell script to assume a different role
+#   $(aws sts assume-role --role-arn ${local.pass_local_deployment_role} --role-session-name terraform_run_instance_refresh --query 'Credentials.[`export#AWS_ACCESS_KEY_ID=`,AccessKeyId,`#AWS_SECRET_ACCESS_KEY=`,SecretAccessKey,`#AWS_SESSION_TOKEN=`,SessionToken]' --output text | sed $'s/\t//g' | sed 's/#/ /g')
+# TODO Replace this resource once the provider is available for aws emr-containers
 resource "null_resource" "update_trust_policy" {
   provisioner "local-exec" {
     interpreter = ["/bin/sh", "-c"]
@@ -157,21 +155,13 @@ set -e
 
 aws emr-containers update-role-trust-policy \
 --cluster-name ${var.eks_cluster_id} \
---namespace ${var.emr_on_eks_namespace}
+--namespace ${kubernetes_namespace.spark.id} \
 --role-name ${aws_iam_role.emr_on_eks_execution.id}
-
-aws emr-containers create-virtual-cluster \
---name ${var.eks_cluster_id} \
---container-provider '{
-    "id": ${var.eks_cluster_id},
-    "type": "EKS",
-    "info": {
-        "eksInfo": {
-            "namespace": ${var.emr_on_eks_namespace}
-        }
-    }
-}'
 
 EOF
   }
+  //  triggers = {
+  //    always_run = timestamp()
+  //  }
+  depends_on = [kubernetes_namespace.spark, aws_iam_role.emr_on_eks_execution]
 }
