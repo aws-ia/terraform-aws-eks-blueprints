@@ -4,8 +4,6 @@ This add-on installs [Nginx Ingress Controller](https://kubernetes.github.io/ing
 
 Other than handling Kubernetes ingress objects, this ingress controller can facilitate multi-tenancy and segregation of workload ingresses based on host name (host-based routing) and/or URL Path (path based routing). 
 
-This add-on depends on [AWS Load Balancer Controller](aws-load-balancer-controller.md) in order to enable NLB support. 
-
 ## Usage
 
 [Nginx Ingress Controller](kubernetes-addons/nginx-ingress/README.md) can be deployed by enabling the add-on via the following.

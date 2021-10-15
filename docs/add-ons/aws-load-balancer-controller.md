@@ -11,11 +11,6 @@ For more information about AWS Load Balancer Controller please see the [official
 
 ```hcl
 aws_lb_ingress_controller_enable = true
-aws_lb_image_repo_name       = "amazon/aws-load-balancer-controller"
-aws_lb_image_tag             = "v2.2.4"
-aws_lb_helm_chart_version    = "1.2.7"
-aws_lb_helm_repo_url         = "https://aws.github.io/eks-charts"
-aws_lb_helm_helm_chart_name  = "aws-load-balancer-controller"
 ```
 
 To validate that controller is running, ensure that controller deployment is in RUNNING state:

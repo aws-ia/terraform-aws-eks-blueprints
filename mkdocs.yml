@@ -10,14 +10,16 @@ nav:
   - Overview: 'index.md'
   - Cluster Upgrades: 'cluster-upgrades.md'
   - ECR Instructions: 'ecr-instructions.md'
-  - AddOns:
+  - Add-ons:
     - Overview: 'add-ons/index.md'
     - Agones: 'add-ons/agones.md'
     - AWS for Fluent Bit: 'add-ons/aws-for-fluent-bit.md'
     - AWS Load Balancer Controller: 'add-ons/aws-load-balancer-controller.md'
+    - AWS Distro for OpenTelemetry: 'add-ons/aws-open-telemetry.md'
     - cert-manager: 'add-ons/cert-manager.md'
     - Cluster Autoscaler: 'add-ons/cluster-autoscaler.md'
     - Fargate Fluent Bit: 'add-ons/fargate-fluent-bit.md'
+    - Managed Add-ons: 'add-ons/managed-add-ons.md'
     - Metrics Server: 'add-ons/metrics-server.md'
     - Nginx: 'add-ons/nginx.md'
     - OpenTelemetry: 'add-ons/open-telemetry.md'

@@ -7,11 +7,14 @@ The framework currently provides support for the following add-ons.
 | Add-on    | Description   |
 |-----------|-----------------
 | [Agones](./agones) | Deploys Agones into an EKS cluster. |
-| [FluentBit](./aws-for-fluent-bit) | Deploys Fluent Bit into an EKS cluster. |
+| [AWS for Fluent Bit](./aws-for-fluent-bit) | Deploys Fluent Bit into an EKS cluster. |
 | [AWS Load Balancer Controller](./fargate-fluent-bit) | Deploys the AWS Load Balancer Controller into an EKS cluster. |
-| [cert-manager](./cert-manager) | Deploys cert-manager into an EKS cluster.
-| [Cluster Autoscaler](./cluster-autoscaler) | Deploys the standard cluster autoscaler. |
-| [Metrics Server](./managed-add-ons) | Deploys the Kubernetes Metrics Server into an EKS cluster. |
+| [AWS Distro for Open Telemetry](./aws-open-telemetry) | Deploys the AWS Open Telemetry Collector into an EKS cluster. |
+| [cert-manager](./cert-manager) | Deploys cert-manager into an EKS cluster. |
+| [Cluster Autoscaler](./cluster-autoscaler) | Deploys the standard cluster autoscaler into an EKS cluster. |
+| [Fluent Bit for Fargate](./fargate-fluent-but) | Adds Fluent Bit support for EKS Fargate |
+| [EKS Managed Add-ons](./managed-add-ons) | Enables EKS managed add-ons. |
+| [Metrics Server](./metrics-server) | Deploys the Kubernetes Metrics Server into an EKS cluster. |
 | [Nginx](./nginx) | Deploys the NGINX Ingress Controller into an EKS cluster. |
 | [OpenTelemetry](./aws-load-balancer-controller) | Deploys the OpenTelemetry Collector into an EKS cluster.
 | [Prometheus](./prometheus) | Deploys Prometheus into an EKS cluster. |
