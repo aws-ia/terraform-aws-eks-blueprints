@@ -3,8 +3,8 @@ global:
   namespaceOverride: logging
 
 image:
-  repository: ${image}
-  tag: ${tag}
+  repository: amazon/aws-for-fluent-bit
+  tag: 2.1.0
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -56,7 +56,7 @@ cloudWatch:
   enabled: true
   match: "*"
   region: ${region}
-  logGroupName: ${cw_worker_loggroup}
+  logGroupName: ${cw_worker_loggroup_name}
   logStreamName:
   logStreamPrefix: "fluentbit-"
   logKey:

@@ -1,42 +1,4 @@
 # aws-for-fluent-bit Helm Chart
-
-###### Instructions to upload aws-for-fluent-bit Docker image to AWS ECR
-
-Step1: Get the latest docker image from this link
-
-        https://github.com/aws/aws-for-fluent-bit
-
-Step2: Download the docker image to your local Mac/Laptop
-
-        $ docker pull amazon/aws-for-fluent-bit:2.13.0
-
-Step3: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
-
-        $ aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin <account id>.dkr.ecr.eu-west-1.amazonaws.com
-
-Step4: Create an ECR repo for Metrics Server if you don't have one
-
-        $ aws ecr create-repository --repository-name amazon/aws-for-fluent-bit --image-scanning-configuration scanOnPush=true
-
-Step5: After the build completes, tag your image so, you can push the image to this repository:
-
-        $ docker tag amazon/aws-for-fluent-bit:2.13.0 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-for-fluent-bit:2.13.0
-
-Step6: Run the following command to push this image to your newly created AWS repository:
-
-        $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-for-fluent-bit:2.13.0
-
-### Instructions to download Helm Charts
-
-#### Helm Chart
-
-    https://artifacthub.io/packages/helm/aws/aws-for-fluent-bit
-
-Helm Repo Maintainers
-
-    https://github.com/aws/eks-charts
-
-
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: MIT-0
@@ -64,7 +26,6 @@ No requirements.
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 | <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
 
 ## Modules
 
@@ -75,23 +36,16 @@ No modules.
 | Name | Type |
 |------|------|
 | [aws_cloudwatch_log_group.eks_worker_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
-| [helm_release.aws-for-fluent-bit](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
-| [kubernetes_namespace.logging](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
+| [helm_release.aws_for_fluent_bit](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_aws_for_fluent_bit_helm_chart_name"></a> [aws\_for\_fluent\_bit\_helm\_chart\_name](#input\_aws\_for\_fluent\_bit\_helm\_chart\_name) | n/a | `string` | `"aws-for-fluent-bit"` | no |
-| <a name="input_aws_for_fluent_bit_helm_chart_url"></a> [aws\_for\_fluent\_bit\_helm\_chart\_url](#input\_aws\_for\_fluent\_bit\_helm\_chart\_url) | n/a | `string` | `"https://aws.github.io/eks-charts"` | no |
-| <a name="input_aws_for_fluent_bit_helm_chart_version"></a> [aws\_for\_fluent\_bit\_helm\_chart\_version](#input\_aws\_for\_fluent\_bit\_helm\_chart\_version) | n/a | `string` | `"0.1.11"` | no |
-| <a name="input_aws_for_fluent_bit_image_repo_name"></a> [aws\_for\_fluent\_bit\_image\_repo\_name](#input\_aws\_for\_fluent\_bit\_image\_repo\_name) | n/a | `string` | `"amazon/aws-for-fluent-bit"` | no |
-| <a name="input_aws_for_fluent_bit_image_tag"></a> [aws\_for\_fluent\_bit\_image\_tag](#input\_aws\_for\_fluent\_bit\_image\_tag) | n/a | `string` | `"2.13.0"` | no |
-| <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | n/a | `string` | n/a | yes |
+| <a name="input_aws_for_fluent_bit_helm_chart"></a> [aws\_for\_fluent\_bit\_helm\_chart](#input\_aws\_for\_fluent\_bit\_helm\_chart) | n/a | `any` | `{}` | no |
+| <a name="input_cw_worker_loggroup_name"></a> [cw\_worker\_loggroup\_name](#input\_cw\_worker\_loggroup\_name) | n/a | `string` | n/a | yes |
 | <a name="input_ekslog_retention_in_days"></a> [ekslog\_retention\_in\_days](#input\_ekslog\_retention\_in\_days) | n/a | `number` | n/a | yes |
-| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `string` | n/a | yes |
-| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `string` | n/a | yes |
 
 ## Outputs
 
