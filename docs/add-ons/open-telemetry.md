@@ -4,7 +4,7 @@ OpenTelemetry offers a vendor-agnostic implementation on how to receive, process
 
 For complete documentation, please visit the [OpenTelemetry Collector documentation site](https://opentelemetry.io/docs/).
 
-## Usage 
+## Usage
 
 The OpenTelemetry Collector can be deployed by enabling the add-on via the following.
 

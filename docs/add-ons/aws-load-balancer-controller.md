@@ -1,9 +1,9 @@
-# AWS Load Balancer Controller 
+# AWS Load Balancer Controller
 
 The [AWS Load Balancer Controller](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html) manages AWS Elastic Load Balancers for a Kubernetes cluster. The controller provisions the following resources:
 
 * An AWS Application Load Balancer (ALB) when you create a Kubernetes Ingress.
-* An AWS Network Load Balancer (NLB) when you create a Kubernetes Service of type LoadBalancer. 
+* An AWS Network Load Balancer (NLB) when you create a Kubernetes Service of type LoadBalancer.
 
 For more information about AWS Load Balancer Controller please see the [official documentation](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html).
 

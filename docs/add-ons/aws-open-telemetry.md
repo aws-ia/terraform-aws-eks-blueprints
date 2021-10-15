@@ -4,7 +4,7 @@
 
 For complete documentation, please visit the [AWS Distro for OpenTelemetry documentation site](https://aws-otel.github.io/).
 
-## Usage 
+## Usage
 
 The AWS Distro for OpenTelemetry Collector can be deployed into an EKS cluster by enabling the add-on via the following.
 

@@ -160,8 +160,5 @@ aws emr-containers update-role-trust-policy \
 
 EOF
   }
-  //  triggers = {
-  //    always_run = timestamp()
-  //  }
   depends_on = [kubernetes_namespace.spark, aws_iam_role.emr_on_eks_execution]
 }
