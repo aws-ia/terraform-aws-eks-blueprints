@@ -17,6 +17,7 @@
  */
 
 variable "metrics_server_helm_chart" {
-  type    = any
-  default = {}
+  type        = any
+  description = "Metrics server helm chart configuration"
+  default     = {}
 }

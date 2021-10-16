@@ -106,31 +106,34 @@ variable "cluster_log_retention_period" {
 # EKS MANAGED ADDONS
 #----------------------------------------------------------
 variable "enable_vpc_cni_addon" {
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
+  description = "Enable VPC CNI Addon"
 }
 variable "enable_coredns_addon" {
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
+  description = "Enable CoreDNS Addon"
 }
 variable "enable_kube_proxy_addon" {
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
+  description = "Enable Kube Proxy Addon"
 }
 variable "vpc_cni_addon_version" {
   type        = string
   default     = "v1.8.0-eksbuild.1"
-  description = "VPC CNI Addon verison"
+  description = "VPC CNI Addon version"
 }
 variable "coredns_addon_version" {
   type        = string
   default     = "v1.8.3-eksbuild.1"
-  description = "CoreDNS Addon verison"
+  description = "CoreDNS Addon version"
 }
 variable "kube_proxy_addon_version" {
   type        = string
   default     = "v1.20.4-eksbuild.2"
-  description = "KubeProxy Addon verison"
+  description = "KubeProxy Addon version"
 }
 
 #----------------------------------------------------------
@@ -142,8 +145,9 @@ variable "enable_managed_nodegroups" {
   default     = false
 }
 variable "managed_node_groups" {
-  type    = any
-  default = {}
+  description = "Managed Node groups configuration"
+  type        = any
+  default     = {}
 }
 variable "enable_self_managed_nodegroups" {
   description = "Enable self-managed worker groups"
@@ -155,16 +159,19 @@ variable "self_managed_node_groups" {
   default = {}
 }
 variable "enable_fargate" {
-  type    = bool
-  default = false
+  description = "Enable Fargate profiles"
+  type        = bool
+  default     = false
 }
 variable "fargate_profiles" {
-  type    = any
-  default = {}
+  description = "Fargate Profile configuration"
+  type        = any
+  default     = {}
 }
 variable "enable_windows_support" {
-  type    = string
-  default = false
+  description = "Enable Windows support for Windows"
+  type        = string
+  default     = false
 }
 #----------------------------------------------------------
 # CONFIGMAP AWS-AUTH
@@ -202,18 +209,21 @@ variable "aws_auth_additional_labels" {
 #----------------------------------------------------------
 
 variable "enable_emr_on_eks" {
+  type        = bool
   default     = false
   description = "Enabling EMR on EKS Config"
 }
 
 variable "emr_on_eks_username" {
-  type    = string
-  default = "emr-containers"
+  type        = string
+  default     = "emr-containers"
+  description = "EMR on EKS username"
 }
 
 variable "emr_on_eks_namespace" {
-  type    = string
-  default = "spark"
+  type        = string
+  default     = "spark"
+  description = "EMR on EKS NameSpace"
 }
 #-----------CLUSTER AUTOSCALER-------------
 variable "cluster_autoscaler_enable" {
@@ -222,28 +232,33 @@ variable "cluster_autoscaler_enable" {
   description = "Enabling Cluster autoscaler on eks cluster"
 }
 variable "cluster_autoscaler_helm_chart" {
-  type    = any
-  default = {}
+  type        = any
+  default     = {}
+  description = "Cluster Autoscaler Helm Chart Config"
 }
 #-----------PROMETHEUS-------------
 variable "aws_managed_prometheus_enable" {
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
+  description = "Enable AWS Managed Prometheus service"
 }
 
 variable "aws_managed_prometheus_workspace_name" {
-  type    = string
-  default = "aws-managed-prometheus-workspace"
+  type        = string
+  default     = "aws-managed-prometheus-workspace"
+  description = "AWS Managed Prometheus WorkSpace Name"
 }
 
 variable "prometheus_enable" {
-  type    = bool
-  default = false
+  description = "Enable Community Prometheus Helm Addon"
+  type        = bool
+  default     = false
 }
 
 variable "prometheus_helm_chart" {
-  type    = any
-  default = {}
+  description = "Community Prometheus Helm Addon Config"
+  type        = any
+  default     = {}
 }
 #-----------METRIC SERVER-------------
 variable "metrics_server_enable" {
@@ -252,8 +267,9 @@ variable "metrics_server_enable" {
   description = "Enabling metrics server on eks cluster"
 }
 variable "metrics_server_helm_chart" {
-  type    = any
-  default = {}
+  type        = any
+  default     = {}
+  description = "Metrics Server Helm Addon Config"
 }
 #-----------TRAEFIK-------------
 variable "traefik_ingress_controller_enable" {
@@ -263,8 +279,9 @@ variable "traefik_ingress_controller_enable" {
 }
 
 variable "traefik_helm_chart" {
-  type    = any
-  default = {}
+  type        = any
+  default     = {}
+  description = "Traefik Helm Addon Config"
 }
 variable "private_container_repo_url" {
   type        = string
@@ -372,11 +389,18 @@ variable "nginx_image_tag" {
   default = "v0.47.0"
 }
 #-----------AWS FOR FLUENT BIT-------------
-variable "fargate_fluent_bit_enable" {
+variable "fargate_fluentbit_enable" {
   type        = bool
   default     = false
   description = "Enabling fargate_fluent_bit module on eks cluster"
 }
+
+variable "fargate_fluentbit_config" {
+  type        = any
+  description = "Fargate fluentbit configuration "
+  default     = {}
+}
+
 variable "ekslog_retention_in_days" {
   default     = 90
   description = "Number of days to retain log events. Default retention - 90 days."

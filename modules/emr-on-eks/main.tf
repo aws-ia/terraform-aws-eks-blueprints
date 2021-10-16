@@ -141,8 +141,6 @@ resource "aws_iam_role_policy_attachment" "emr_on_eks_execution" {
 }
 
 # Update trust relationship for job execution role
-# Use the below command in shell script to assume a different role
-#   $(aws sts assume-role --role-arn ${local.pass_local_deployment_role} --role-session-name terraform_run_instance_refresh --query 'Credentials.[`export#AWS_ACCESS_KEY_ID=`,AccessKeyId,`#AWS_SECRET_ACCESS_KEY=`,SecretAccessKey,`#AWS_SESSION_TOKEN=`,SessionToken]' --output text | sed $'s/\t//g' | sed 's/#/ /g')
 # TODO Replace this resource once the provider is available for aws emr-containers
 resource "null_resource" "update_trust_policy" {
   provisioner "local-exec" {

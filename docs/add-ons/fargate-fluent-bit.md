@@ -7,5 +7,5 @@
 Fluent Bit for Fargate can be deployed by enabling the add-on via the following.
 
 ```hcl
-fargate_fluent_bit_enable = true
+fargate_fluentbit_enable = true
 ```

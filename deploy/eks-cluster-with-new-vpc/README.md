@@ -6,7 +6,7 @@ This example deploys the following Basic EKS Cluster with VPC
 
  - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
  - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
- - Creates EKS Cluster Control plane with one managed node group
+ - Creates EKS Cluster Control plane with one managed node group and fargate profile
 
 # How to Deploy
 
@@ -30,7 +30,7 @@ git clone https://gitlab.aws.dev/vabonthu/terraform-aws-eks-accelerator-patterns
 to initialize a working directory with configuration files
 
 ```shell script
-cd examples/1-basic/1-eks-cluster-with-new-vpc
+cd deploy/eks-cluster-with-new-vpc
 terraform init
 ```
 
@@ -70,6 +70,6 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
 
 # How to Destroy
 ```shell script
-cd examples/1-basic/1-eks-cluster-with-new-vpc
+cd deploy/eks-cluster-with-new-vpc
 terraform destroy
 ```

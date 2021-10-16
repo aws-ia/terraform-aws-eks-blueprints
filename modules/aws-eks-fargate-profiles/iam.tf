@@ -1,10 +1,9 @@
-
 #----------------------------------------------------------
 #IAM Policy for Fargate Fluentbit
 #----------------------------------------------------------
-resource "aws_iam_policy" "eks_fargate_logging" {
+resource "aws_iam_policy" "fargate" {
   name        = "${var.eks_cluster_name}-${local.fargate_profiles["fargate_profile_name"]}"
-  description = "Allow fargate profiles to writ logs to CW"
+  description = "Allow fargate profiles to write logs to CloudWatch"
 
   policy = <<EOF
 {
@@ -31,12 +30,12 @@ resource "aws_iam_role" "fargate" {
 
 }
 
-resource "aws_iam_role_policy_attachment" "fargate-AmazonEKSFargatePodExecutionRolePolicy" {
+resource "aws_iam_role_policy_attachment" "fargate_pod_execution_role_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
   role       = aws_iam_role.fargate.name
 }
 
-resource "aws_iam_role_policy_attachment" "eks-fargate-logging-policy-attach" {
-  policy_arn = aws_iam_policy.eks_fargate_logging.arn
+resource "aws_iam_role_policy_attachment" "fargate_policy" {
+  policy_arn = aws_iam_policy.fargate.arn
   role       = aws_iam_role.fargate.name
 }

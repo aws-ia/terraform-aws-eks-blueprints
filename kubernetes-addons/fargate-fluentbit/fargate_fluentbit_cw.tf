@@ -16,9 +16,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-# Help on Fargate Logging with FFlunet bit and CloudWatch
+# Help on Fargate Logging with Fluentbit and CloudWatch
 # https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html
-
 
 data "aws_region" "current" {}
 
@@ -28,11 +27,12 @@ resource "kubernetes_namespace" "aws_observability" {
 
     labels = {
       aws-observability              = "enabled"
-      "app.kubernetes.io/managed-by" = "Terraform"
+      "app.kubernetes.io/managed-by" = "terraform-aws-eks-accelerator"
     }
   }
 }
 
+# fluent-bit-cloudwatch value as the name of the CloudWatch log group that is automatically created as soon as your apps start logging
 resource "kubernetes_config_map" "aws_logging" {
   metadata {
     name      = "aws-logging"
@@ -40,33 +40,8 @@ resource "kubernetes_config_map" "aws_logging" {
   }
 
   data = {
-    "parsers.conf" = <<EOF
-     [PARSER]
-       Name regex
-       Format regex
-       Regex ^(?<time>[^ ]+) (?<stream>[^ ]+) (?<logtag>[^ ]+) (?<message>.+)$
-       Time_Key time
-       Time_Format %Y-%m-%dT%H:%M:%S.%L%z
-       Time_Keep On
-       Decode_Field_As json message
-    EOF
-    "filters.conf" = <<EOF
-     [FILTER]
-        Name parser
-        Match *
-        Key_Name log
-        Parser regex
-        Preserve_Key On
-        Reserve_Data On
-    EOF
-    "output.conf"  = <<EOF
-     [OUTPUT]
-       Name cloudwatch_logs
-       Match *
-       region ${data.aws_region.current.id}
-       log_group_name fargate-fluentbit-cloudwatch
-       log_stream_prefix fargate-from-fluent-bit-
-       auto_create_group true
-    EOF
+    "parsers.conf" = local.fargate_fluentbit_app["parsers_conf"]
+    "filters.conf" = local.fargate_fluentbit_app["filters_conf"]
+    "output.conf"  = local.fargate_fluentbit_app["output_conf"]
   }
 }
