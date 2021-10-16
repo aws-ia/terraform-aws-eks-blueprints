@@ -25,7 +25,7 @@ provider "aws" {
 
 terraform {
   backend "local" {
-    path = "local_tf_state/eks-cluster-with-new-vpc/terraform-main.tfstate"
+    path = "local_tf_state/terraform-main.tfstate"
   }
 }
 
