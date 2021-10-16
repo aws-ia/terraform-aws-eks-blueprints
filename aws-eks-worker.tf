@@ -88,10 +88,8 @@ module "aws_eks_fargate_profiles" {
 
   for_each = { for k, v in var.fargate_profiles : k => v if var.enable_fargate && length(var.fargate_profiles) > 0 }
 
-  fargate_profile = each.value
-
-  eks_cluster_name   = module.aws_eks.cluster_id
-  private_subnet_ids = var.private_subnet_ids
+  fargate_profile  = each.value
+  eks_cluster_name = module.aws_eks.cluster_id
 
   tags = module.eks_tags.tags
 

@@ -1,15 +1,13 @@
 
 locals {
   default_fargate_profiles = {
-    fargate_profile_name          = ""
-    fargate_profile_namespaces    = []
-    create_iam_role               = "false"
-    k8s_labels                    = {}
-    k8s_taints                    = []
-    additional_tags               = {}
-    additional_security_group_ids = []
-    source_security_group_ids     = ""
-    subnet_ids                    = []
+    fargate_profile_name       = ""
+    fargate_profile_namespaces = []
+    create_iam_role            = true
+    k8s_labels                 = {}
+    k8s_taints                 = []
+    additional_tags            = {}
+    subnet_ids                 = []
   }
   fargate_profiles = merge(
     local.default_fargate_profiles,
