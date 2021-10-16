@@ -200,6 +200,21 @@ variable "aws_auth_additional_labels" {
 #----------------------------------------------------------
 # KUBERNETES ADDONS VARIABLES
 #----------------------------------------------------------
+
+variable "enable_emr_on_eks" {
+  default     = false
+  description = "Enabling EMR on EKS Config"
+}
+
+variable "emr_on_eks_username" {
+  type    = string
+  default = "emr-containers"
+}
+
+variable "emr_on_eks_namespace" {
+  type    = string
+  default = "spark"
+}
 #-----------CLUSTER AUTOSCALER-------------
 variable "cluster_autoscaler_enable" {
   type        = bool
