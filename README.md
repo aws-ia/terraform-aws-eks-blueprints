@@ -69,7 +69,7 @@ Each Node Group can have dedicated IAM role, Launch template and Security Group 
 
 Please refer this [full example](deploy/eks-cluster-with-new-vpc/main.tf)
 
-###Managed Node Groups Example
+### Managed Node Groups Example
 
 ```hcl
     enable_managed_nodegroups = true
@@ -117,7 +117,7 @@ Please refer this [full example](deploy/eks-cluster-with-new-vpc/main.tf)
     }
 ```
 
-###Self-managed Node Groups Example
+### Self-managed Node Groups Example
 
 ```hcl
   enable_self_managed_nodegroups = true
@@ -161,7 +161,7 @@ Please refer this [full example](deploy/eks-cluster-with-new-vpc/main.tf)
   }
 ```
 
-###Fargate Profile Example
+### Fargate Profile Example
 
 ```hcl
     enable_fargate = true
