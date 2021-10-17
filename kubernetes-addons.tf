@@ -90,18 +90,13 @@ module "nginx_ingress" {
   depends_on                 = [module.aws_eks]
 }
 
-# TODO Upgrade
-module "aws-for-fluent-bit" {
-  count  = var.create_eks && var.aws_for_fluent_bit_enable ? 1 : 0
-  source = "./kubernetes-addons/aws-for-fluent-bit"
 
-  private_container_repo_url            = var.private_container_repo_url
-  cluster_id                            = module.aws_eks.cluster_id
-  ekslog_retention_in_days              = var.ekslog_retention_in_days
-  public_docker_repo                    = var.public_docker_repo
-  aws_for_fluent_bit_image_tag          = var.aws_for_fluent_bit_image_tag
-  aws_for_fluent_bit_helm_chart_version = var.aws_for_fluent_bit_helm_chart_version
-  aws_for_fluent_bit_image_repo_name    = var.aws_for_fluent_bit_image_repo_name
+module "aws-for-fluent-bit" {
+  count                                       = var.create_eks && var.aws_for_fluent_bit_enable ? 1 : 0
+  source                                      = "./kubernetes-addons/aws-for-fluent-bit"
+  aws_for_fluent_bit_cw_log_retention_in_days = var.aws_for_fluent_bit_cw_log_retention_in_days
+  aws_for_fluent_bit_cw_log_group             = var.aws_for_fluent_bit_cw_log_group
+  aws_for_fluent_bit_helm_chart               = var.aws_for_fluent_bit_helm_chart
 
   depends_on = [module.aws_eks]
 }
