@@ -1,40 +1,21 @@
-# agones Helm Chart
+# Agones Helm Chart
 
-###### Instructions to upload Agones Docker image to AWS ECR
+##What is Agones
+Agones is an Open source Kubernetes Controller with custom resource definitions and is used to create, run, manage and scale dedicated game server processes within Kubernetes clusters using standard Kubernetes tooling and APIs. This model also allows any matchmaker to interact directly with Agones via the Kubernetes API to provision a dedicated game server
 
-Step1: Get the latest docker image from this link
+##What is GameLift
+Amazon GameLift enables developers to deploy, operate, and scale dedicated, low-cost servers in the cloud for session-based, multiplayer games. Built on AWS global computing infrastructure, GameLift helps deliver high-performance, high-reliability, low-cost game servers while dynamically scaling your resource usage to meet worldwide player demand.
 
-        https://github.com/googleforgames/agones
 
-Step2: Download the docker image to your local Mac/Laptop
+     https://github.com/googleforgames/agones/tree/main/install/helm/agones
+     https://artifacthub.io/packages/helm/agones/agones
 
-        $ docker pull gcr.io/agones-images/agones-controller:1.15.0
+DOCKER IMAGES
 
-Step3: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
+      gcr.io/agones-images/agones-controller:1.15.0-rc
+      gcr.io/agones-images/agones-ping:1.15.0-rc
+      gcr.io/agones-images/agones-allocator:1.15.0-rc
 
-        $ aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin <account id>.dkr.ecr.eu-west-1.amazonaws.com
-
-Step4: Create an ECR repo for Metrics Server if you don't have one
-
-        $ aws ecr create-repository --repository-name gcr.io/agones-images/agones-controller --image-scanning-configuration scanOnPush=true
-
-Step5: After the build completes, tag your image so, you can push the image to this repository:
-
-        $ docker tag gcr.io/agones-images/agones-controller:1.15.0 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/gcr.io/agones-images/agones-controller:1.15.0
-
-Step6: Run the following command to push this image to your newly created AWS repository:
-
-        $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/gcr.io/agones-images/agones-controller:1.15.0
-
-### Instructions to download Helm Charts
-
-Helm Chart
-
-    https://artifacthub.io/packages/helm/agones/agones
-
-Helm Repo Maintainers
-
-    https://github.com/googleforgames/agones/tree/main/install/helm/agones
 
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -64,7 +45,6 @@ No requirements.
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 | <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
 
 ## Modules
 
@@ -75,27 +55,16 @@ No modules.
 | Name | Type |
 |------|------|
 | [aws_security_group_rule.agones_sg_ingress_rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
-| [helm_release.agones](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
-| [kubernetes_namespace.agones](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
-| [kubernetes_namespace.pc](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
-| [kubernetes_namespace.xbox](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
-| [aws_security_group.eks_security_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/security_group) | data source |
+| [helm_release.prometheus](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
+| [aws_security_group.eks_worker_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/security_group) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_agones_game_server_maxport"></a> [agones\_game\_server\_maxport](#input\_agones\_game\_server\_maxport) | n/a | `number` | `8000` | no |
-| <a name="input_agones_game_server_minport"></a> [agones\_game\_server\_minport](#input\_agones\_game\_server\_minport) | n/a | `number` | `7000` | no |
-| <a name="input_agones_helm_chart_name"></a> [agones\_helm\_chart\_name](#input\_agones\_helm\_chart\_name) | n/a | `string` | `"agones"` | no |
-| <a name="input_agones_helm_chart_url"></a> [agones\_helm\_chart\_url](#input\_agones\_helm\_chart\_url) | n/a | `string` | `"https://agones.dev/chart/stable"` | no |
-| <a name="input_agones_image_repo"></a> [agones\_image\_repo](#input\_agones\_image\_repo) | n/a | `string` | `"gcr.io/agones-images"` | no |
-| <a name="input_agones_image_tag"></a> [agones\_image\_tag](#input\_agones\_image\_tag) | n/a | `string` | `"1.15.0"` | no |
-| <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | n/a | `string` | n/a | yes |
-| <a name="input_eks_sg_id"></a> [eks\_sg\_id](#input\_eks\_sg\_id) | n/a | `string` | n/a | yes |
-| <a name="input_expose_udp"></a> [expose\_udp](#input\_expose\_udp) | n/a | `bool` | `false` | no |
-| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `string` | n/a | yes |
-| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `string` | n/a | yes |
+| <a name="input_agones_helm_chart"></a> [agones\_helm\_chart](#input\_agones\_helm\_chart) | Agones GameServer Helm chart config | `any` | `{}` | no |
+| <a name="input_eks_worker_security_group_id"></a> [eks\_worker\_security\_group\_id](#input\_eks\_worker\_security\_group\_id) | n/a | `string` | n/a | yes |
 
 ## Outputs
 

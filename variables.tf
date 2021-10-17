@@ -305,35 +305,13 @@ variable "agones_enable" {
   default     = false
   description = "Enabling Agones Gaming Helm Chart"
 }
-variable "expose_udp" {
-  type        = bool
-  default     = false
-  description = "Enabling Agones Gaming Helm Chart"
+
+variable "agones_helm_chart" {
+  type        = any
+  default     = {}
+  description = "Agones GameServer Helm chart config"
 }
-variable "agones_image_repo" {
-  type    = string
-  default = "gcr.io/agones-images"
-}
-variable "agones_image_tag" {
-  type    = string
-  default = "1.15.0"
-}
-variable "agones_helm_chart_name" {
-  type    = string
-  default = "agones"
-}
-variable "agones_helm_chart_url" {
-  type    = string
-  default = "https://agones.dev/chart/stable"
-}
-variable "agones_game_server_maxport" {
-  type    = number
-  default = 8000
-}
-variable "agones_game_server_minport" {
-  type    = number
-  default = 7000
-}
+
 #-----------AWS LB Ingress Controller-------------
 variable "aws_lb_ingress_controller_enable" {
   type        = bool
@@ -360,33 +338,17 @@ variable "aws_lb_helm_chart_version" {
   type    = string
   default = "1.2.7"
 }
-
-
 #-----------NGINX-------------
 variable "nginx_ingress_controller_enable" {
   type        = bool
   default     = false
-  description = "enabling Nginx Ingress Controller on eks cluster"
+  description = "Enabling NGINX Ingress Controller on EKS Cluster"
 }
-variable "nginx_image_repo_name" {
-  type    = string
-  default = "ingress-nginx/controller"
-}
-variable "nginx_helm_chart_url" {
-  type    = string
-  default = "https://kubernetes.github.io/ingress-nginx"
-}
-variable "nginx_helm_chart_name" {
-  type    = string
-  default = "ingress-nginx"
-}
-variable "nginx_helm_chart_version" {
-  type    = string
-  default = "3.33.0"
-}
-variable "nginx_image_tag" {
-  type    = string
-  default = "v0.47.0"
+
+variable "nginx_helm_chart" {
+  description = "NGINX Ingress Controller Helm Chart Configuration"
+  type        = any
+  default     = {}
 }
 #-----------AWS FOR FLUENT BIT-------------
 variable "fargate_fluentbit_enable" {
@@ -428,7 +390,6 @@ variable "aws_for_fluent_bit_helm_chart_version" {
   default     = "0.1.11"
   description = "Helm chart version for aws_for_fluent_bit"
 }
-
 #-----------CERT MANAGER-------------
 variable "cert_manager_enable" {
   type        = bool
@@ -473,47 +434,18 @@ variable "windows_vpc_admission_webhook_image_tag" {
   description = "Docker image tag for Windows VPC admission webhook controller"
 }
 
-#-----------AWS OPEN TELEMETRY HELM CHART-------------
+#-----------AWS OPEN TELEMETRY ADDON-------------
 variable "aws_open_telemetry_enable" {
   type    = bool
   default = false
 }
-variable "aws_open_telemetry_namespace" {
-  default     = "aws-otel-eks"
-  description = "WS Open telemetry namespace"
+
+variable "aws_open_telemetry_addon" {
+  type        = any
+  default     = {}
+  description = "AWS Open Telemetry Distro Addon Configuration"
 }
-variable "aws_open_telemetry_emitter_otel_resource_attributes" {
-  default     = "service.namespace=AWSObservability,service.name=ADOTEmitService"
-  description = "AWS Open telemetry emitter otel resource attributes"
-}
-variable "aws_open_telemetry_emitter_name" {
-  default     = "trace-emitter"
-  description = "AWS Open telemetry emitter image name"
-}
-variable "aws_open_telemetry_emitter_image" {
-  description = "AWS Open telemetry emitter image id and tag"
-  default     = "public.ecr.aws/g9c4k4i4/trace-emitter:1"
-}
-variable "aws_open_telemetry_collector_image" {
-  default     = "public.ecr.aws/aws-observability/aws-otel-collector:latest"
-  description = "AWS Open telemetry collector image id and tag"
-}
-variable "aws_open_telemetry_aws_region" {
-  default     = "eu-west-1"
-  description = "AWS Open telemetry region"
-}
-variable "aws_open_telemetry_emitter_oltp_endpoint" {
-  default     = "localhost:55680"
-  description = "AWS Open telemetry OLTP endpoint"
-}
-variable "aws_open_telemetry_mg_node_iam_role_arns" {
-  type    = list(string)
-  default = []
-}
-variable "aws_open_telemetry_self_mg_node_iam_role_arns" {
-  type    = list(string)
-  default = []
-}
+
 #-----------OPEN TELEMETRY HELM CHART-------------
 variable "opentelemetry_enable" {
   type        = bool

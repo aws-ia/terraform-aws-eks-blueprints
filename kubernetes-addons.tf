@@ -16,9 +16,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-# ---------------------------------------------------------------------------------------------------------------------
-# Invoking Helm Module
-# ---------------------------------------------------------------------------------------------------------------------
 module "metrics_server" {
   count                     = var.create_eks && var.metrics_server_enable ? 1 : 0
   source                    = "./kubernetes-addons/metrics-server"
@@ -76,18 +73,12 @@ module "lb_ingress_controller" {
   depends_on = [module.aws_eks]
 }
 
-# TODO Upgrade
 module "nginx_ingress" {
-  count  = var.create_eks && var.nginx_ingress_controller_enable ? 1 : 0
-  source = "./kubernetes-addons/nginx-ingress"
+  count            = var.create_eks && var.nginx_ingress_controller_enable ? 1 : 0
+  source           = "./kubernetes-addons/nginx-ingress"
+  nginx_helm_chart = var.nginx_helm_chart
 
-  private_container_repo_url = var.private_container_repo_url
-  account_id                 = data.aws_caller_identity.current.account_id
-  public_docker_repo         = var.public_docker_repo
-  nginx_helm_chart_version   = var.nginx_helm_chart_version
-  nginx_image_tag            = var.nginx_image_tag
-  nginx_image_repo_name      = var.nginx_image_repo_name
-  depends_on                 = [module.aws_eks]
+  depends_on = [module.aws_eks]
 }
 
 # TODO Upgrade
@@ -115,16 +106,11 @@ module "fargate_fluentbit" {
   depends_on = [module.aws_eks]
 }
 
-# TODO Upgrade
 module "agones" {
   count  = var.create_eks && var.agones_enable ? 1 : 0
   source = "./kubernetes-addons/agones"
 
-  public_docker_repo         = var.public_docker_repo
-  private_container_repo_url = var.private_container_repo_url
-  cluster_id                 = module.aws_eks.cluster_id
-  expose_udp                 = var.expose_udp
-  eks_sg_id                  = module.aws_eks.worker_security_group_id
+  eks_worker_security_group_id = module.aws_eks.worker_security_group_id
 
   depends_on = [module.aws_eks]
 }
@@ -160,19 +146,13 @@ module "windows_vpc_controllers" {
   ]
 }
 
-# TODO Upgrade
 module "aws_opentelemetry_collector" {
   count  = var.create_eks && var.aws_open_telemetry_enable ? 1 : 0
-  source = "./kubernetes-addons/aws-otel-eks"
+  source = "./kubernetes-addons/aws-opentelemetry-eks"
 
-  aws_open_telemetry_aws_region                       = var.aws_open_telemetry_aws_region == "" ? data.aws_region.current.id : var.aws_open_telemetry_aws_region
-  aws_open_telemetry_emitter_image                    = var.aws_open_telemetry_emitter_image
-  aws_open_telemetry_collector_image                  = var.aws_open_telemetry_collector_image
-  aws_open_telemetry_emitter_oltp_endpoint            = var.aws_open_telemetry_emitter_oltp_endpoint
-  aws_open_telemetry_mg_node_iam_role_arns            = var.aws_open_telemetry_mg_node_iam_role_arns
-  aws_open_telemetry_self_mg_node_iam_role_arns       = var.aws_open_telemetry_self_mg_node_iam_role_arns
-  aws_open_telemetry_emitter_name                     = var.aws_open_telemetry_emitter_name
-  aws_open_telemetry_emitter_otel_resource_attributes = var.aws_open_telemetry_emitter_otel_resource_attributes
+  aws_open_telemetry_addon                      = var.aws_open_telemetry_addon
+  aws_open_telemetry_mg_node_iam_role_arns      = var.create_eks && var.enable_managed_nodegroups ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_role_name) }) : []
+  aws_open_telemetry_self_mg_node_iam_role_arns = var.create_eks && var.enable_self_managed_nodegroups ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_node_group_iam_role_arns) }) : []
 
   depends_on = [module.aws_eks]
 }

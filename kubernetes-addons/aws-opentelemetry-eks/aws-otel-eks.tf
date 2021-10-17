@@ -1,10 +1,10 @@
 
 resource "kubernetes_namespace" "aws_otel_eks" {
   metadata {
-    name = var.aws_open_telemetry_namespace
+    name = local.aws_open_telemetry_app["aws_open_telemetry_namespace"]
 
     labels = {
-      name = var.aws_open_telemetry_namespace
+      name = local.aws_open_telemetry_app["aws_open_telemetry_namespace"]
     }
   }
 }
@@ -12,7 +12,7 @@ resource "kubernetes_namespace" "aws_otel_eks" {
 resource "kubernetes_deployment" "aws_otel_eks_sidecar" {
   metadata {
     name      = "aws-otel-eks-sidecar"
-    namespace = var.aws_open_telemetry_namespace
+    namespace = local.aws_open_telemetry_app["aws_open_telemetry_namespace"]
 
     labels = {
       name = "aws-otel-eks-sidecar"
@@ -37,22 +37,22 @@ resource "kubernetes_deployment" "aws_otel_eks_sidecar" {
 
       spec {
         container {
-          name  = var.aws_open_telemetry_emitter_name
-          image = var.aws_open_telemetry_emitter_image
+          name  = local.aws_open_telemetry_app["aws_open_telemetry_emitter_name"]
+          image = local.aws_open_telemetry_app["aws_open_telemetry_emitter_image"]
 
           env {
             name  = "OTEL_OTLP_ENDPOINT"
-            value = var.aws_open_telemetry_emitter_oltp_endpoint
+            value = local.aws_open_telemetry_app["aws_open_telemetry_emitter_oltp_endpoint"]
           }
 
           env {
             name  = "OTEL_RESOURCE_ATTRIBUTES"
-            value = var.aws_open_telemetry_emitter_otel_resource_attributes
+            value = local.aws_open_telemetry_app["aws_open_telemetry_emitter_otel_resource_attributes"]
           }
 
           env {
             name  = "S3_REGION"
-            value = var.aws_open_telemetry_aws_region
+            value = local.aws_open_telemetry_app["aws_open_telemetry_aws_region"]
           }
 
           image_pull_policy = "Always"
@@ -60,11 +60,11 @@ resource "kubernetes_deployment" "aws_otel_eks_sidecar" {
 
         container {
           name  = "aws-otel-collector"
-          image = var.aws_open_telemetry_collector_image
+          image = local.aws_open_telemetry_app["aws_open_telemetry_collector_image"]
 
           env {
             name  = "AWS_REGION"
-            value = var.aws_open_telemetry_aws_region
+            value = local.aws_open_telemetry_app["aws_open_telemetry_aws_region"]
           }
 
           resources {

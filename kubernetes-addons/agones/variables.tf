@@ -16,52 +16,12 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "private_container_repo_url" {
+variable "agones_helm_chart" {
+  type        = any
+  default     = {}
+  description = "Agones GameServer Helm chart config"
+}
+
+variable "eks_worker_security_group_id" {
   type = string
-}
-
-variable "agones_image_repo" {
-  type    = string
-  default = "gcr.io/agones-images"
-}
-
-variable "agones_image_tag" {
-  type    = string
-  default = "1.15.0"
-}
-
-variable "agones_helm_chart_name" {
-  type    = string
-  default = "agones"
-}
-
-variable "agones_helm_chart_url" {
-  type    = string
-  default = "https://agones.dev/chart/stable"
-}
-
-variable "agones_game_server_maxport" {
-  type    = number
-  default = 8000
-}
-variable "agones_game_server_minport" {
-  type    = number
-  default = 7000
-}
-
-variable "cluster_id" {
-  type = string
-}
-
-variable "eks_sg_id" {
-  type = string
-}
-
-variable "public_docker_repo" {
-  type = string
-}
-
-variable "expose_udp" {
-  type    = bool
-  default = false
 }
