@@ -550,23 +550,23 @@ module "aws-eks-accelerator-for-terraform" {
   # AWS-FOR-FLUENTBIT HELM ADDON
   #---------------------------------------
 
-  aws_for_fluent_bit_enable = true
-  aws_for_fluent_bit_cw_log_group   = "/aws/eks/${module.aws-eks-accelerator-for-terraform.cluster_name}/fluentbit-cloudwatch-logs"
-    # Optional Map value
-    aws_for_fluent_bit_helm_chart = {
-      name       = "aws-for-fluent-bit"               # (Required) Release name.
-      repository = "https://aws.github.io/eks-charts" # (Optional) Repository URL where to locate the requested chart.
-      chart      = "aws-for-fluent-bit"               # (Required) Chart name to be installed.
-      version    = "0.1.0"                            # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-      namespace  = "logging"                          # (Optional) The namespace to install the release into. Defaults to default
-      timeout    = "1200"                             # (Optional)
-      lint       = "true"                             # (Optional)
+  aws_for_fluent_bit_enable       = true
+  aws_for_fluent_bit_cw_log_group = "/aws/eks/${module.aws-eks-accelerator-for-terraform.cluster_name}/fluentbit-cloudwatch-logs"
+  # Optional Map value
+  aws_for_fluent_bit_helm_chart = {
+    name       = "aws-for-fluent-bit"               # (Required) Release name.
+    repository = "https://aws.github.io/eks-charts" # (Optional) Repository URL where to locate the requested chart.
+    chart      = "aws-for-fluent-bit"               # (Required) Chart name to be installed.
+    version    = "0.1.0"                            # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
+    namespace  = "logging"                          # (Optional) The namespace to install the release into. Defaults to default
+    timeout    = "1200"                             # (Optional)
+    lint       = "true"                             # (Optional)
 
-      # (Optional) Example to show how to pass metrics-server-values.yaml
-      values = [templatefile("${path.module}/k8s_addons/aws-for-fluent-bit-values.yaml", {
-        operating_system        = "linux",
-        region                  = data.aws_region.current.name,
-        aws_for_fluent_bit_cw_log_group = "/aws/eks/${module.aws-eks-accelerator-for-terraform.cluster_name}/fluentbit-cloudwatch-logs"
-      })]
-    }
+    # (Optional) Example to show how to pass metrics-server-values.yaml
+    values = [templatefile("${path.module}/k8s_addons/aws-for-fluent-bit-values.yaml", {
+      operating_system                = "linux",
+      region                          = data.aws_region.current.name,
+      aws_for_fluent_bit_cw_log_group = "/aws/eks/${module.aws-eks-accelerator-for-terraform.cluster_name}/fluentbit-cloudwatch-logs"
+    })]
+  }
 }
