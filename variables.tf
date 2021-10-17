@@ -286,18 +286,12 @@ variable "traefik_helm_chart" {
 variable "private_container_repo_url" {
   type        = string
   default     = ""
-  description = "Privtae container image repo url (e.g, artifactory url or ECR url)"
+  description = "Private container image repo url (e.g, artifactory url or ECR url)"
 }
 variable "public_docker_repo" {
   type        = bool
   default     = true
   description = "public docker repo access"
-}
-#-----------FARGATE FLUENT BIT-------------
-variable "aws_for_fluent_bit_enable" {
-  type        = bool
-  default     = false
-  description = "Enabling aws_fluent_bit module on eks cluster"
 }
 #-----------AGONES-------------
 variable "agones_enable" {
@@ -351,44 +345,40 @@ variable "nginx_helm_chart" {
   default     = {}
 }
 #-----------AWS FOR FLUENT BIT-------------
+
+variable "aws_for_fluent_bit_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling aws_for_fluent_bit on eks cluster"
+}
+
+variable "aws_for_fluent_bit_cw_log_group" {
+  type        = string
+  description = "Log group name in Cloudwatch for streaming logs from worker nodes"
+  default     = "/aws/eks/eks-cluster/fluentbit-cloudwatch-log"
+}
+
+variable "aws_for_fluent_bit_helm_chart" {
+  type        = any
+  description = "Helm chart definition for aws_for_fluent_bit"
+  default     = {}
+}
+
+variable "aws_for_fluent_bit_cw_log_retention_in_days" {
+  default     = 90
+  description = "Number of days to retain log events. Default retention - 90 days."
+  type        = number
+}
+#-----------FARGATE FLUENT BIT-------------
 variable "fargate_fluentbit_enable" {
   type        = bool
   default     = false
   description = "Enabling fargate_fluent_bit module on eks cluster"
 }
-
 variable "fargate_fluentbit_config" {
   type        = any
   description = "Fargate fluentbit configuration "
   default     = {}
-}
-
-variable "ekslog_retention_in_days" {
-  default     = 90
-  description = "Number of days to retain log events. Default retention - 90 days."
-  type        = number
-}
-variable "aws_for_fluent_bit_image_repo_name" {
-  type    = string
-  default = "amazon/aws-for-fluent-bit"
-}
-variable "aws_for_fluent_bit_helm_chart_url" {
-  type    = string
-  default = "https://aws.github.io/eks-charts"
-}
-variable "aws_for_fluent_bit_helm_chart_name" {
-  type    = string
-  default = "aws-for-fluent-bit"
-}
-variable "aws_for_fluent_bit_image_tag" {
-  type        = string
-  default     = "2.13.0"
-  description = "Docker image tag for aws_for_fluent_bit"
-}
-variable "aws_for_fluent_bit_helm_chart_version" {
-  type        = string
-  default     = "0.1.11"
-  description = "Helm chart version for aws_for_fluent_bit"
 }
 #-----------CERT MANAGER-------------
 variable "cert_manager_enable" {
