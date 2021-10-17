@@ -2,52 +2,11 @@
 
 # Introduction
 
- Nginx ingress is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease. Fore more detials about [Ingress-Nginx can be found here](https://kubernetes.github.io/ingress-nginx/)
-
-# Helm Chart
-
-### Instructions to use Helm Charts
-
-Add Helm repo for Nginx Ingress Controller
-
-    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-
-    https://github.com/kubernetes/ingress-nginx/blob/master/charts/ingress-nginx/values.yaml
-
-    https://artifacthub.io/packages/helm/ingress-nginx/ingress-nginx
-
-# Docker Image for nginx ingress controller.
-
-###### Instructions to upload Ingress Nginx Docker image to AWS ECR
-
-
-Step1: Download the docker image to your local Mac/Laptop
-
-        $ docker pull ingress-nginx/controller:v0.47.0
-
-Step2: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
-
-        $ aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin <account id>.dkr.ecr.eu-west-1.amazonaws.com
-
-Step3: Create an ECR repo for Ingress Nginx Controller if you don't have one
-
-        $ aws ecr create-repository \
-              --repository-name nginx-ingress \
-              --image-scanning-configuration scanOnPush=true
-
-Step4: After the build completes, tag your image so, you can push the image to this repository:
-
-        $ docker tag nginx-ingress:v <accountid>.dkr.ecr.eu-west-1.amazonaws.com/nginx-ingress:v0.47.0
-
-Step5: Run the following command to push this image to your newly created AWS repository:
-
-        $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/nginx-ingress:v0.47.0
-
+ Nginx Ingress Controller is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease.
+ For more details [Ingress-Nginx can be found here](https://kubernetes.github.io/ingress-nginx/)
 
 
 #### AWS Service annotations for Nginx Ingress Controller
-Here is the link to get the AWS ELB [service annotations](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/service/annotations/) for Nginx Ingress controller
-
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -90,14 +49,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_account_id"></a> [account\_id](#input\_account\_id) | n/a | `string` | n/a | yes |
-| <a name="input_nginx_helm_chart_name"></a> [nginx\_helm\_chart\_name](#input\_nginx\_helm\_chart\_name) | n/a | `string` | `"ingress-nginx"` | no |
-| <a name="input_nginx_helm_chart_url"></a> [nginx\_helm\_chart\_url](#input\_nginx\_helm\_chart\_url) | n/a | `string` | `"https://kubernetes.github.io/ingress-nginx"` | no |
-| <a name="input_nginx_helm_chart_version"></a> [nginx\_helm\_chart\_version](#input\_nginx\_helm\_chart\_version) | n/a | `string` | n/a | yes |
-| <a name="input_nginx_image_repo_name"></a> [nginx\_image\_repo\_name](#input\_nginx\_image\_repo\_name) | n/a | `string` | `"ingress-nginx/controller"` | no |
-| <a name="input_nginx_image_tag"></a> [nginx\_image\_tag](#input\_nginx\_image\_tag) | n/a | `string` | n/a | yes |
-| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `string` | n/a | yes |
-| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `bool` | n/a | yes |
+| <a name="input_nginx_helm_chart"></a> [nginx\_helm\_chart](#input\_nginx\_helm\_chart) | n/a | `any` | `{}` | no |
 
 ## Outputs
 

@@ -89,7 +89,7 @@ agones:
         service.beta.kubernetes.io/aws-load-balancer-internal: "false"
         service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
     udp:
-      expose: ${expose_udp}
+      expose: true
       rateLimit: 20
       port: 50000
       serviceType: LoadBalancer
@@ -149,8 +149,8 @@ agones:
     remoteAllocationTimeout: 10s
     totalRemoteAllocationTimeout: 30s
   image:
-    registry: ${image}
-    tag: ${image_tag}
+    registry: gcr.io/agones-images
+    tag: 1.15.0
     controller:
       name: agones-controller
       pullPolicy: IfNotPresent
@@ -171,8 +171,8 @@ agones:
 gameservers:
   namespaces:
     - default
-  minPort: ${gameserver_minport}
-  maxPort: ${gameserver_maxport}
+  minPort: 7000
+  maxPort: 8000
   podPreserveUnknownFields: false
 
 helm:

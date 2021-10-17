@@ -1,8 +1,8 @@
 controller:
   image:
     registry: k8s.gcr.io
-    image: ${image}
-    tag: ${tag}
+    image: ingress-nginx/controller
+    tag: v0.47.0
 
   containerName: nginx-controller
 

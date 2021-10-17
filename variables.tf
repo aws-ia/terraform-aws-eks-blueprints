@@ -305,35 +305,13 @@ variable "agones_enable" {
   default     = false
   description = "Enabling Agones Gaming Helm Chart"
 }
-variable "expose_udp" {
-  type        = bool
-  default     = false
-  description = "Enabling Agones Gaming Helm Chart"
+
+variable "agones_helm_chart" {
+  type        = any
+  default     = {}
+  description = "Agones GameServer Helm chart config"
 }
-variable "agones_image_repo" {
-  type    = string
-  default = "gcr.io/agones-images"
-}
-variable "agones_image_tag" {
-  type    = string
-  default = "1.15.0"
-}
-variable "agones_helm_chart_name" {
-  type    = string
-  default = "agones"
-}
-variable "agones_helm_chart_url" {
-  type    = string
-  default = "https://agones.dev/chart/stable"
-}
-variable "agones_game_server_maxport" {
-  type    = number
-  default = 8000
-}
-variable "agones_game_server_minport" {
-  type    = number
-  default = 7000
-}
+
 #-----------AWS LB Ingress Controller-------------
 variable "aws_lb_ingress_controller_enable" {
   type        = bool
@@ -360,33 +338,17 @@ variable "aws_lb_helm_chart_version" {
   type    = string
   default = "1.2.7"
 }
-
-
 #-----------NGINX-------------
 variable "nginx_ingress_controller_enable" {
   type        = bool
   default     = false
-  description = "enabling Nginx Ingress Controller on eks cluster"
+  description = "Enabling NGINX Ingress Controller on EKS Cluster"
 }
-variable "nginx_image_repo_name" {
-  type    = string
-  default = "ingress-nginx/controller"
-}
-variable "nginx_helm_chart_url" {
-  type    = string
-  default = "https://kubernetes.github.io/ingress-nginx"
-}
-variable "nginx_helm_chart_name" {
-  type    = string
-  default = "ingress-nginx"
-}
-variable "nginx_helm_chart_version" {
-  type    = string
-  default = "3.33.0"
-}
-variable "nginx_image_tag" {
-  type    = string
-  default = "v0.47.0"
+
+variable "nginx_helm_chart" {
+  description = "NGINX Ingress Controller Helm Chart Configuration"
+  type        = any
+  default     = {}
 }
 #-----------AWS FOR FLUENT BIT-------------
 variable "fargate_fluentbit_enable" {

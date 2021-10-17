@@ -16,9 +16,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-# ---------------------------------------------------------------------------------------------------------------------
-# Invoking Helm Module
-# ---------------------------------------------------------------------------------------------------------------------
 module "metrics_server" {
   count                     = var.create_eks && var.metrics_server_enable ? 1 : 0
   source                    = "./kubernetes-addons/metrics-server"
@@ -76,18 +73,12 @@ module "lb_ingress_controller" {
   depends_on = [module.aws_eks]
 }
 
-# TODO Upgrade
 module "nginx_ingress" {
-  count  = var.create_eks && var.nginx_ingress_controller_enable ? 1 : 0
-  source = "./kubernetes-addons/nginx-ingress"
+  count            = var.create_eks && var.nginx_ingress_controller_enable ? 1 : 0
+  source           = "./kubernetes-addons/nginx-ingress"
+  nginx_helm_chart = var.nginx_helm_chart
 
-  private_container_repo_url = var.private_container_repo_url
-  account_id                 = data.aws_caller_identity.current.account_id
-  public_docker_repo         = var.public_docker_repo
-  nginx_helm_chart_version   = var.nginx_helm_chart_version
-  nginx_image_tag            = var.nginx_image_tag
-  nginx_image_repo_name      = var.nginx_image_repo_name
-  depends_on                 = [module.aws_eks]
+  depends_on = [module.aws_eks]
 }
 
 # TODO Upgrade
@@ -115,16 +106,11 @@ module "fargate_fluentbit" {
   depends_on = [module.aws_eks]
 }
 
-# TODO Upgrade
 module "agones" {
   count  = var.create_eks && var.agones_enable ? 1 : 0
   source = "./kubernetes-addons/agones"
 
-  public_docker_repo         = var.public_docker_repo
-  private_container_repo_url = var.private_container_repo_url
-  cluster_id                 = module.aws_eks.cluster_id
-  expose_udp                 = var.expose_udp
-  eks_sg_id                  = module.aws_eks.worker_security_group_id
+  eks_worker_security_group_id = module.aws_eks.worker_security_group_id
 
   depends_on = [module.aws_eks]
 }
