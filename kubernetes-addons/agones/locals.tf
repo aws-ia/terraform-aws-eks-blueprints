@@ -6,7 +6,7 @@ locals {
     name                       = "agones"
     chart                      = "agones"
     repository                 = "https://agones.dev/chart/stable"
-    version                    = "3.33.0"
+    version                    = "1.15.0"
     namespace                  = "agones-system"
     timeout                    = "1200"
     create_namespace           = true

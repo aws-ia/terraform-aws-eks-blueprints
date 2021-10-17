@@ -146,19 +146,13 @@ module "windows_vpc_controllers" {
   ]
 }
 
-# TODO Upgrade
 module "aws_opentelemetry_collector" {
   count  = var.create_eks && var.aws_open_telemetry_enable ? 1 : 0
-  source = "./kubernetes-addons/aws-otel-eks"
+  source = "./kubernetes-addons/aws-opentelemetry-eks"
 
-  aws_open_telemetry_aws_region                       = var.aws_open_telemetry_aws_region == "" ? data.aws_region.current.id : var.aws_open_telemetry_aws_region
-  aws_open_telemetry_emitter_image                    = var.aws_open_telemetry_emitter_image
-  aws_open_telemetry_collector_image                  = var.aws_open_telemetry_collector_image
-  aws_open_telemetry_emitter_oltp_endpoint            = var.aws_open_telemetry_emitter_oltp_endpoint
-  aws_open_telemetry_mg_node_iam_role_arns            = var.aws_open_telemetry_mg_node_iam_role_arns
-  aws_open_telemetry_self_mg_node_iam_role_arns       = var.aws_open_telemetry_self_mg_node_iam_role_arns
-  aws_open_telemetry_emitter_name                     = var.aws_open_telemetry_emitter_name
-  aws_open_telemetry_emitter_otel_resource_attributes = var.aws_open_telemetry_emitter_otel_resource_attributes
+  aws_open_telemetry_addon                      = var.aws_open_telemetry_addon
+  aws_open_telemetry_mg_node_iam_role_arns      = var.create_eks && var.enable_managed_nodegroups ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_role_name) }) : []
+  aws_open_telemetry_self_mg_node_iam_role_arns = var.create_eks && var.enable_self_managed_nodegroups ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_node_group_iam_role_arns) }) : []
 
   depends_on = [module.aws_eks]
 }
