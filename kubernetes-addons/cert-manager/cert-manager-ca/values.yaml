@@ -2,7 +2,7 @@ clusterIssuers:
   - name: cert-manager-selfsigned
     type: selfSigned
   - name: cert-manager-ca
-    type: ca
+    type: CA
     secretName: cert-manager-ca-root
     privateKey:
       algorithm: ECDSA

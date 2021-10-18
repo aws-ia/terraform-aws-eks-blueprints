@@ -1,4 +1,5 @@
 {{- range .Values.clusterIssuers }}
+---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -6,7 +7,7 @@ metadata:
 spec:
   {{- if eq .type "selfSigned" }}
   selfSigned: {}
-  {{- else if eq .type "ca" }}
+  {{- else if eq .type "CA" }}
   ca:
     secretName: {{ .secretName }}
   {{- end }}
