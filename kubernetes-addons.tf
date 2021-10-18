@@ -110,32 +110,21 @@ module "agones" {
   depends_on = [module.aws_eks]
 }
 
-# TODO Upgrade
 module "cert_manager" {
-  count  = var.create_eks && var.cert_manager_enable ? 1 : 0
+  count  = var.create_eks && (var.cert_manager_enable || var.enable_windows_support) ? 1 : 0
   source = "./kubernetes-addons/cert-manager"
 
-  private_container_repo_url      = var.private_container_repo_url
-  public_docker_repo              = var.public_docker_repo
-  cert_manager_helm_chart_version = var.cert_manager_helm_chart_version
-  cert_manager_image_tag          = var.cert_manager_image_tag
-  cert_manager_install_crds       = var.cert_manager_install_crds
-  cert_manager_helm_chart_name    = var.cert_manager_helm_chart_name
-  cert_manager_helm_chart_url     = var.cert_manager_helm_chart_url
-  cert_manager_image_repo_name    = var.cert_manager_image_repo_name
+  cert_manager_helm_chart = var.cert_manager_helm_chart
 
   depends_on = [module.aws_eks]
 }
 
-# TODO Upgrade
 module "windows_vpc_controllers" {
   count  = var.create_eks && var.enable_windows_support ? 1 : 0
   source = "./kubernetes-addons/windows-vpc-controllers"
 
-  private_container_repo_url    = var.private_container_repo_url
-  public_docker_repo            = var.public_docker_repo
-  resource_controller_image_tag = var.windows_vpc_resource_controller_image_tag
-  admission_webhook_image_tag   = var.windows_vpc_admission_webhook_image_tag
+  windows_vpc_controllers_helm_chart = var.windows_vpc_controllers_helm_chart
+
   depends_on = [
     module.cert_manager, module.aws_eks
   ]

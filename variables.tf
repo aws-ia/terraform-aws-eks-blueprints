@@ -168,9 +168,12 @@ variable "fargate_profiles" {
   type        = any
   default     = {}
 }
+#----------------------------------------------------------
+# EKS WINDOWS SUPPORT
+#----------------------------------------------------------
 variable "enable_windows_support" {
-  description = "Enable Windows support for Windows"
-  type        = string
+  description = "Enable Windows support"
+  type        = bool
   default     = false
 }
 #----------------------------------------------------------
@@ -380,48 +383,24 @@ variable "fargate_fluentbit_config" {
   description = "Fargate fluentbit configuration "
   default     = {}
 }
+
 #-----------CERT MANAGER-------------
 variable "cert_manager_enable" {
   type        = bool
   default     = false
   description = "Enabling Cert Manager Helm Chart installation. It is automatically enabled if Windows support is enabled."
 }
-variable "cert_manager_image_tag" {
-  type        = string
-  default     = "v1.5.3"
-  description = "Docker image tag for cert-manager controller"
+variable "cert_manager_helm_chart" {
+  type        = any
+  description = "Cert Manager Helm chart configuration"
+  default     = {}
 }
-variable "cert_manager_helm_chart_version" {
-  type        = string
-  default     = "v1.5.3"
-  description = "Helm chart version for cert-manager"
-}
-variable "cert_manager_install_crds" {
-  type        = bool
-  description = "Whether Cert Manager CRDs should be installed as part of the cert-manager Helm chart installation"
-  default     = true
-}
-variable "cert_manager_helm_chart_url" {
-  type    = string
-  default = "https://charts.jetstack.io"
-}
-variable "cert_manager_helm_chart_name" {
-  type    = string
-  default = "cert-manager"
-}
-variable "cert_manager_image_repo_name" {
-  type    = string
-  default = "quay.io/jetstack/cert-manager-controller"
-}
-variable "windows_vpc_resource_controller_image_tag" {
-  type        = string
-  default     = "v0.2.7"
-  description = "Docker image tag for Windows VPC resource controller"
-}
-variable "windows_vpc_admission_webhook_image_tag" {
-  type        = string
-  default     = "v0.2.7"
-  description = "Docker image tag for Windows VPC admission webhook controller"
+
+#-----------WINDOWS VPC CONTROLLERS-------------
+variable "windows_vpc_controllers_helm_chart" {
+  type        = any
+  description = "Windows VPC Controllers Helm chart configuration"
+  default     = {}
 }
 
 #-----------AWS OPEN TELEMETRY ADDON-------------

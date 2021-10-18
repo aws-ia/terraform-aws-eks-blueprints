@@ -16,22 +16,61 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-locals {
-  public_image_repo              = var.public_image_repo
-  resource_controller_image_repo = var.public_docker_repo ? "${local.public_image_repo}/${var.resource_controller_image_repo_name}" : "${var.private_container_repo_url}/${var.resource_controller_image_repo_name}"
-  admission_webhook_image_repo   = var.public_docker_repo ? "${local.public_image_repo}/${var.admission_webhook_image_repo_name}" : "${var.private_container_repo_url}/${var.admission_webhook_image_repo_name}"
-}
-
 resource "helm_release" "windows_vpc_controllers" {
-  chart     = "${path.module}/chart"
-  name      = "windows-vpc-controllers"
-  namespace = "kube-system"
-  timeout   = "600"
+  name                       = local.windows_vpc_controllers_helm_app["name"]
+  repository                 = local.windows_vpc_controllers_helm_app["repository"]
+  chart                      = "${path.module}/chart"
+  version                    = local.windows_vpc_controllers_helm_app["version"]
+  namespace                  = local.windows_vpc_controllers_helm_app["namespace"]
+  timeout                    = local.windows_vpc_controllers_helm_app["timeout"]
+  values                     = local.windows_vpc_controllers_helm_app["values"]
+  create_namespace           = local.windows_vpc_controllers_helm_app["create_namespace"]
+  lint                       = local.windows_vpc_controllers_helm_app["lint"]
+  description                = local.windows_vpc_controllers_helm_app["description"]
+  repository_key_file        = local.windows_vpc_controllers_helm_app["repository_key_file"]
+  repository_cert_file       = local.windows_vpc_controllers_helm_app["repository_cert_file"]
+  repository_ca_file         = local.windows_vpc_controllers_helm_app["repository_ca_file"]
+  repository_username        = local.windows_vpc_controllers_helm_app["repository_username"]
+  repository_password        = local.windows_vpc_controllers_helm_app["repository_password"]
+  verify                     = local.windows_vpc_controllers_helm_app["verify"]
+  keyring                    = local.windows_vpc_controllers_helm_app["keyring"]
+  disable_webhooks           = local.windows_vpc_controllers_helm_app["disable_webhooks"]
+  reuse_values               = local.windows_vpc_controllers_helm_app["reuse_values"]
+  reset_values               = local.windows_vpc_controllers_helm_app["reset_values"]
+  force_update               = local.windows_vpc_controllers_helm_app["force_update"]
+  recreate_pods              = local.windows_vpc_controllers_helm_app["recreate_pods"]
+  cleanup_on_fail            = local.windows_vpc_controllers_helm_app["cleanup_on_fail"]
+  max_history                = local.windows_vpc_controllers_helm_app["max_history"]
+  atomic                     = local.windows_vpc_controllers_helm_app["atomic"]
+  skip_crds                  = local.windows_vpc_controllers_helm_app["skip_crds"]
+  render_subchart_notes      = local.windows_vpc_controllers_helm_app["render_subchart_notes"]
+  disable_openapi_validation = local.windows_vpc_controllers_helm_app["disable_openapi_validation"]
+  wait                       = local.windows_vpc_controllers_helm_app["wait"]
+  wait_for_jobs              = local.windows_vpc_controllers_helm_app["wait_for_jobs"]
+  dependency_update          = local.windows_vpc_controllers_helm_app["dependency_update"]
+  replace                    = local.windows_vpc_controllers_helm_app["replace"]
 
-  values = [templatefile("${path.module}/chart/windows-vpc-controllers-values.tpl", {
-    resource_controller_image_repo = local.resource_controller_image_repo
-    admission_webhook_image_repo   = local.admission_webhook_image_repo
-    resource_controller_image_tag  = var.resource_controller_image_tag
-    admission_webhook_image_tag    = var.admission_webhook_image_tag
-  })]
+  postrender {
+    binary_path = local.windows_vpc_controllers_helm_app["postrender"]
+  }
+
+  dynamic "set" {
+    iterator = each_item
+    for_each = local.windows_vpc_controllers_helm_app["set"] == null ? [] : local.windows_vpc_controllers_helm_app["set"]
+
+    content {
+      name  = each_item.value.name
+      value = each_item.value.value
+    }
+  }
+
+  dynamic "set_sensitive" {
+    iterator = each_item
+    for_each = local.windows_vpc_controllers_helm_app["set_sensitive"] == null ? [] : local.windows_vpc_controllers_helm_app["set_sensitive"]
+
+    content {
+      name  = each_item.value.name
+      value = each_item.value.value
+    }
+  }
 }

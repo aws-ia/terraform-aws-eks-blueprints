@@ -16,30 +16,72 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-locals {
-  image_url = var.public_docker_repo ? var.cert_manager_image_repo_name : "${var.private_container_repo_url}/${var.cert_manager_image_repo_name}"
-}
-
 resource "helm_release" "cert_manager" {
-  name       = var.cert_manager_helm_chart_name
-  repository = var.cert_manager_helm_chart_url
-  chart      = var.cert_manager_helm_chart_name
-  version    = var.cert_manager_helm_chart_version
-  namespace  = "kube-system"
-  timeout    = "600"
+  name                       = local.cert_manager_helm_app["name"]
+  repository                 = local.cert_manager_helm_app["repository"]
+  chart                      = local.cert_manager_helm_app["chart"]
+  version                    = local.cert_manager_helm_app["version"]
+  namespace                  = local.cert_manager_helm_app["namespace"]
+  timeout                    = local.cert_manager_helm_app["timeout"]
+  values                     = local.cert_manager_helm_app["values"]
+  create_namespace           = local.cert_manager_helm_app["create_namespace"]
+  lint                       = local.cert_manager_helm_app["lint"]
+  description                = local.cert_manager_helm_app["description"]
+  repository_key_file        = local.cert_manager_helm_app["repository_key_file"]
+  repository_cert_file       = local.cert_manager_helm_app["repository_cert_file"]
+  repository_ca_file         = local.cert_manager_helm_app["repository_ca_file"]
+  repository_username        = local.cert_manager_helm_app["repository_username"]
+  repository_password        = local.cert_manager_helm_app["repository_password"]
+  verify                     = local.cert_manager_helm_app["verify"]
+  keyring                    = local.cert_manager_helm_app["keyring"]
+  disable_webhooks           = local.cert_manager_helm_app["disable_webhooks"]
+  reuse_values               = local.cert_manager_helm_app["reuse_values"]
+  reset_values               = local.cert_manager_helm_app["reset_values"]
+  force_update               = local.cert_manager_helm_app["force_update"]
+  recreate_pods              = local.cert_manager_helm_app["recreate_pods"]
+  cleanup_on_fail            = local.cert_manager_helm_app["cleanup_on_fail"]
+  max_history                = local.cert_manager_helm_app["max_history"]
+  atomic                     = local.cert_manager_helm_app["atomic"]
+  skip_crds                  = local.cert_manager_helm_app["skip_crds"]
+  render_subchart_notes      = local.cert_manager_helm_app["render_subchart_notes"]
+  disable_openapi_validation = local.cert_manager_helm_app["disable_openapi_validation"]
+  wait                       = local.cert_manager_helm_app["wait"]
+  wait_for_jobs              = local.cert_manager_helm_app["wait_for_jobs"]
+  dependency_update          = local.cert_manager_helm_app["dependency_update"]
+  replace                    = local.cert_manager_helm_app["replace"]
 
-  values = [templatefile("${path.module}/cert-manager-values.tpl", {
-    image       = local.image_url
-    tag         = var.cert_manager_image_tag
-    installCRDs = var.cert_manager_install_crds
-  })]
+  postrender {
+    binary_path = local.cert_manager_helm_app["postrender"]
+  }
 
+  dynamic "set" {
+    iterator = each_item
+    for_each = local.cert_manager_helm_app["set"] == null ? [] : local.cert_manager_helm_app["set"]
+
+    content {
+      name  = each_item.value.name
+      value = each_item.value.value
+    }
+  }
+
+  dynamic "set_sensitive" {
+    iterator = each_item
+    for_each = local.cert_manager_helm_app["set_sensitive"] == null ? [] : local.cert_manager_helm_app["set_sensitive"]
+
+    content {
+      name  = each_item.value.name
+      value = each_item.value.value
+    }
+  }
 }
 
 resource "helm_release" "cert_manager_ca" {
-  chart     = "${path.module}/chart/cert-manager-ca"
+  count     = local.cert_manager_helm_app["install_default_ca"] ? 1 : 0
   name      = "cert-manager-ca"
+  chart     = "${path.module}/cert-manager-ca"
+  version   = "0.2.0"
   namespace = "kube-system"
+
   depends_on = [
     helm_release.cert_manager
   ]
