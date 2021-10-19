@@ -1,7 +1,7 @@
 
 locals {
 
-  fargate_fluentbit_cwlog_group         = "/aws/${var.eks_cluster_id}/fargate-fluentbit-cloudwatch"
+  fargate_fluentbit_cwlog_group         = "/${var.eks_cluster_id}/fargate-fluentbit-logs"
   fargate_fluentbit_cwlog_stream_prefix = "fargate-logs-"
 
   default_fargate_fluentbit_helm_app = {

@@ -43,14 +43,13 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_aws_for_fluent_bit_cw_log_group"></a> [aws\_for\_fluent\_bit\_cw\_log\_group](#input\_aws\_for\_fluent\_bit\_cw\_log\_group) | Log group name in Cloudwatch for streaming logs from worker nodes. | `string` | n/a | yes |
-| <a name="input_aws_for_fluent_bit_cw_log_retention_in_days"></a> [aws\_for\_fluent\_bit\_cw\_log\_retention\_in\_days](#input\_aws\_for\_fluent\_bit\_cw\_log\_retention\_in\_days) | Number of days to retain log events. Default retention - 90 days. | `number` | n/a | yes |
-| <a name="input_aws_for_fluent_bit_helm_chart"></a> [aws\_for\_fluent\_bit\_helm\_chart](#input\_aws\_for\_fluent\_bit\_helm\_chart) | Helm chart definition for aws\_for\_fluent\_bit. | `any` | n/a | yes |
+| <a name="input_aws_for_fluentbit_helm_chart"></a> [aws\_for\_fluentbit\_helm\_chart](#input\_aws\_for\_fluentbit\_helm\_chart) | Helm chart definition for aws\_for\_fluent\_bit. | `any` | `{}` | no |
+| <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS cluster Id | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_cw_loggroup_arn"></a> [cw\_loggroup\_arn](#output\_cw\_loggroup\_arn) | EKS Cloudwatch group arn |
-| <a name="output_cw_loggroup_name"></a> [cw\_loggroup\_name](#output\_cw\_loggroup\_name) | EKS Cloudwatch group Name |
+| <a name="output_aws_fluent_bit_cw_log_group_arn"></a> [aws\_fluent\_bit\_cw\_log\_group\_arn](#output\_aws\_fluent\_bit\_cw\_log\_group\_arn) | AWS Fluent Bit CloudWatch Log Group ARN |
+| <a name="output_aws_fluent_bit_cw_log_group_name"></a> [aws\_fluent\_bit\_cw\_log\_group\_name](#output\_aws\_fluent\_bit\_cw\_log\_group\_name) | AWS Fluent Bit CloudWatch Log Group Name |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -16,18 +16,14 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "aws_for_fluent_bit_cw_log_retention_in_days" {
-  type        = number
-  description = "Number of days to retain log events. Default retention - 90 days."
-}
-variable "aws_for_fluent_bit_cw_log_group" {
-  type        = string
-  description = "Log group name in Cloudwatch for streaming logs from worker nodes."
-
-}
-
-variable "aws_for_fluent_bit_helm_chart" {
+variable "aws_for_fluentbit_helm_chart" {
   type        = any
   description = "Helm chart definition for aws_for_fluent_bit."
+  default     = {}
+}
 
+
+variable "eks_cluster_id" {
+  type        = string
+  description = "EKS cluster Id"
 }
