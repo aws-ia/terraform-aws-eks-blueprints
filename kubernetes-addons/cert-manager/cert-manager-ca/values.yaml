@@ -1,0 +1,13 @@
+clusterIssuers:
+  - name: cert-manager-selfsigned
+    type: selfSigned
+  - name: cert-manager-ca
+    type: CA
+    secretName: cert-manager-ca-root
+    privateKey:
+      algorithm: ECDSA
+      size: 256
+    issuer:
+      name: cert-manager-selfsigned
+      kind: ClusterIssuer
+      group: cert-manager.io
