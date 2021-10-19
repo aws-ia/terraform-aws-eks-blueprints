@@ -64,7 +64,6 @@ variable "public_subnet_ids" {
   type        = list(string)
   default     = []
 }
-
 #----------------------------------------------------------
 # EKS CONTROL PLANE
 #----------------------------------------------------------
@@ -135,7 +134,6 @@ variable "kube_proxy_addon_version" {
   default     = "v1.20.4-eksbuild.2"
   description = "KubeProxy Addon version"
 }
-
 #----------------------------------------------------------
 # EKS WORKER NODES
 #----------------------------------------------------------
@@ -210,19 +208,16 @@ variable "aws_auth_additional_labels" {
 #----------------------------------------------------------
 # KUBERNETES ADDONS VARIABLES
 #----------------------------------------------------------
-
 variable "enable_emr_on_eks" {
   type        = bool
   default     = false
   description = "Enabling EMR on EKS Config"
 }
-
 variable "emr_on_eks_username" {
   type        = string
   default     = "emr-containers"
   description = "EMR on EKS username"
 }
-
 variable "emr_on_eks_namespace" {
   type        = string
   default     = "spark"
@@ -245,19 +240,16 @@ variable "aws_managed_prometheus_enable" {
   default     = false
   description = "Enable AWS Managed Prometheus service"
 }
-
 variable "aws_managed_prometheus_workspace_name" {
   type        = string
   default     = "aws-managed-prometheus-workspace"
   description = "AWS Managed Prometheus WorkSpace Name"
 }
-
 variable "prometheus_enable" {
   description = "Enable Community Prometheus Helm Addon"
   type        = bool
   default     = false
 }
-
 variable "prometheus_helm_chart" {
   description = "Community Prometheus Helm Addon Config"
   type        = any
@@ -280,7 +272,6 @@ variable "traefik_ingress_controller_enable" {
   default     = false
   description = "Enabling Traefik Ingress Controller on eks cluster"
 }
-
 variable "traefik_helm_chart" {
   type        = any
   default     = {}
@@ -308,7 +299,6 @@ variable "agones_helm_chart" {
   default     = {}
   description = "Agones GameServer Helm chart config"
 }
-
 #-----------AWS LB Ingress Controller-------------
 variable "aws_lb_ingress_controller_enable" {
   type        = bool
@@ -341,36 +331,21 @@ variable "nginx_ingress_controller_enable" {
   default     = false
   description = "Enabling NGINX Ingress Controller on EKS Cluster"
 }
-
 variable "nginx_helm_chart" {
   description = "NGINX Ingress Controller Helm Chart Configuration"
   type        = any
   default     = {}
 }
 #-----------AWS FOR FLUENT BIT-------------
-
-variable "aws_for_fluent_bit_enable" {
+variable "aws_for_fluentbit_enable" {
   type        = bool
   default     = false
-  description = "Enabling aws_for_fluent_bit on eks cluster"
+  description = "Enabling FluentBit Addon on EKS Worker Nodes"
 }
-
-variable "aws_for_fluent_bit_cw_log_group" {
-  type        = string
-  description = "Log group name in Cloudwatch for streaming logs from worker nodes"
-  default     = "/aws/eks/eks-cluster/fluentbit-cloudwatch-log"
-}
-
-variable "aws_for_fluent_bit_helm_chart" {
+variable "aws_for_fluentbit_helm_chart" {
   type        = any
   description = "Helm chart definition for aws_for_fluent_bit"
   default     = {}
-}
-
-variable "aws_for_fluent_bit_cw_log_retention_in_days" {
-  default     = 90
-  description = "Number of days to retain log events. Default retention - 90 days."
-  type        = number
 }
 #-----------FARGATE FLUENT BIT-------------
 variable "fargate_fluentbit_enable" {
@@ -383,7 +358,6 @@ variable "fargate_fluentbit_config" {
   description = "Fargate fluentbit configuration "
   default     = {}
 }
-
 #-----------CERT MANAGER-------------
 variable "cert_manager_enable" {
   type        = bool
@@ -395,14 +369,12 @@ variable "cert_manager_helm_chart" {
   description = "Cert Manager Helm chart configuration"
   default     = {}
 }
-
-#-----------WINDOWS VPC CONTROLLERS-------------
+#------WINDOWS VPC CONTROLLERS-------------
 variable "windows_vpc_controllers_helm_chart" {
   type        = any
   description = "Windows VPC Controllers Helm chart configuration"
   default     = {}
 }
-
 #-----------AWS OPEN TELEMETRY ADDON-------------
 variable "aws_open_telemetry_enable" {
   type    = bool
@@ -414,7 +386,6 @@ variable "aws_open_telemetry_addon" {
   default     = {}
   description = "AWS Open Telemetry Distro Addon Configuration"
 }
-
 #-----------OPEN TELEMETRY HELM CHART-------------
 variable "opentelemetry_enable" {
   type        = bool

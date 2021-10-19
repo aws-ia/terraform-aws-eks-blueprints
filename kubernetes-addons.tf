@@ -81,13 +81,11 @@ module "nginx_ingress" {
   depends_on = [module.aws_eks]
 }
 
-
 module "aws-for-fluent-bit" {
-  count                                       = var.create_eks && var.aws_for_fluent_bit_enable ? 1 : 0
-  source                                      = "./kubernetes-addons/aws-for-fluent-bit"
-  aws_for_fluent_bit_cw_log_retention_in_days = var.aws_for_fluent_bit_cw_log_retention_in_days
-  aws_for_fluent_bit_cw_log_group             = var.aws_for_fluent_bit_cw_log_group
-  aws_for_fluent_bit_helm_chart               = var.aws_for_fluent_bit_helm_chart
+  count                        = var.create_eks && var.aws_for_fluentbit_enable ? 1 : 0
+  source                       = "./kubernetes-addons/aws-for-fluentbit"
+  aws_for_fluentbit_helm_chart = var.aws_for_fluentbit_helm_chart
+  eks_cluster_id               = module.aws_eks.cluster_id
 
   depends_on = [module.aws_eks]
 }

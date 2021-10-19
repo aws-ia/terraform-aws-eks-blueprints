@@ -1,16 +1,21 @@
 
 locals {
-  default_aws_for_fluent_bit_helm_app = {
-    name             = "aws-for-fluent-bit"
-    chart            = "aws-for-fluent-bit"
-    repository       = "https://aws.github.io/eks-charts"
-    version          = "0.1.0"
-    namespace        = "logging"
-    timeout          = "1200"
-    create_namespace = true
-    values = [templatefile("${path.module}/templates/aws-for-fluent-bit-values.yaml", {
+
+  aws_for_fluentbit_cwlog_group_name = "/${var.eks_cluster_id}/worker-fluentbit-logs"
+
+  default_aws_for_fluentbit_helm_app = {
+    name                                      = "aws-for-fluent-bit"
+    chart                                     = "aws-for-fluent-bit"
+    repository                                = "https://aws.github.io/eks-charts"
+    version                                   = "0.1.0"
+    namespace                                 = "logging"
+    timeout                                   = "1200"
+    create_namespace                          = true
+    aws_for_fluent_bit_cw_log_group           = local.aws_for_fluentbit_cwlog_group_name
+    aws_for_fluentbit_cwlog_retention_in_days = 90
+    values = [templatefile("${path.module}/aws-for-fluent-bit-values.yaml", {
       region                          = data.aws_region.current.name,
-      aws_for_fluent_bit_cw_log_group = var.aws_for_fluent_bit_cw_log_group
+      aws_for_fluent_bit_cw_log_group = local.aws_for_fluentbit_cwlog_group_name
     })]
     set = [
       {
@@ -22,7 +27,7 @@ locals {
     lint                       = true
     wait                       = true
     wait_for_jobs              = false
-    description                = "aws-for-fluent-bit helm Chart deployment configuration"
+    description                = "aws-for-fluentbit Helm Chart deployment configuration"
     verify                     = false
     keyring                    = ""
     repository_key_file        = ""
@@ -47,7 +52,7 @@ locals {
 
 
   }
-  aws_for_fluent_bit_helm_app = merge(
-    local.default_aws_for_fluent_bit_helm_app,
-  var.aws_for_fluent_bit_helm_chart)
+  aws_for_fluentbit_helm_app = merge(
+    local.default_aws_for_fluentbit_helm_app,
+  var.aws_for_fluentbit_helm_chart)
 }
