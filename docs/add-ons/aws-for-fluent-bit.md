@@ -11,5 +11,5 @@ AWS provides a Fluent Bit image with plugins for both CloudWatch Logs and Kinesi
 [aws-for-fluent-bit](kubernetes-addons/aws-for-fluent-bit/README.md) can be deployed by enabling the add-on via the following.
 
 ```hcl
-aws_for_fluent_bit_enable = true
+aws_for_fluentbit_enable = true
 ```

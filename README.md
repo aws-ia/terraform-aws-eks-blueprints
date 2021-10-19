@@ -23,10 +23,10 @@ This module provisions the following EKS resources
 ## EKS Cluster resources
 
 1. [EKS Cluster with multiple networking options](https://aws.amazon.com/blogs/containers/de-mystifying-cluster-networking-for-amazon-eks-worker-nodes/)
-   1. [Fully Private EKS Cluster](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html)
-   2. [Public + Private EKS Cluster](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html)
-   3. [Public Cluster](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html))
-2. [Amazon EKS Addons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html) -
+   - [Fully Private EKS Cluster](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html)
+   - [Public + Private EKS Cluster](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html)
+   - [Public Cluster](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html)
+2. [Amazon EKS Addons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html)
    - [CoreDNS](https://docs.aws.amazon.com/eks/latest/userguide/managing-coredns.html)
    - [Kube-Proxy](https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html)
    - [VPC-CNI](https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html)
@@ -37,7 +37,7 @@ This module provisions the following EKS resources
 7. [Launch Templates](https://aws.amazon.com/blogs/containers/introducing-launch-template-and-custom-ami-support-in-amazon-eks-managed-node-groups/) - Launch templates available to Managed Node Groups and Self-managed Node Groups
 8. [Bottlerocket OS](https://github.com/bottlerocket-os/bottlerocket) - Managed and Self-managed Node Groups with Bottlerocket OS and Launch Templates
 9. [Amazon Managed Service for Prometheus (AMP)](https://aws.amazon.com/prometheus/) - AMP makes it easy to monitor containerized applications at scale
-10. [Amazon EMR on Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/blogs/aws/new-amazon-emr-on-amazon-elastic-kubernetes-service-eks/) -
+10. [Amazon EMR on Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/blogs/aws/new-amazon-emr-on-amazon-elastic-kubernetes-service-eks/)
 
 ## Kubernetes Addons
 
@@ -56,9 +56,8 @@ Kubernetes Addons deployed using [Helm Charts](https://helm.sh/docs/topics/chart
 11. [Alert-manager](https://github.com/prometheus-community/helm-charts/tree/main/charts/alertmanager)
 12. [Prometheus-node-exporter](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-node-exporter)
 13. [Prometheus-pushgateway](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-pushgateway)
-14. [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-helm-charts/tree/main/charts/opentelemetry-collector)
-15. [AWS Distro for OpenTelemetry Collector(AWS OTel Collector) ](https://github.com/aws-observability/aws-otel-collector)
-16. [Cert Manager](https://github.com/jetstack/cert-manager)
+14. [AWS Distro for OpenTelemetry Collector(AWS OTel Collector) ](https://github.com/aws-observability/aws-otel-collector)
+15. [Cert Manager](https://github.com/jetstack/cert-manager)
 
 # Node Group Modules
 This module uses dedicated sub modules for creating [AWS Managed Node Groups](modules/aws-eks-managed-node-groups), [Self-managed Node groups](modules/aws-eks-self-managed-node-groups) and [Fargate profiles](modules/aws-eks-fargate-profiles).
@@ -68,6 +67,33 @@ The `aws-auth` ConfigMap handled by this module allow your nodes to join your cl
 Each Node Group can have dedicated IAM role, Launch template and Security Group to improve the security.
 
 Please refer this [full example](deploy/eks-cluster-with-new-vpc/main.tf)
+### EKS Cluster Deployment Example
+
+```hcl
+module "aws-eks-accelerator-for-terraform" {
+  source = "git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git"
+
+  tenant            = "management"        # aws account alias
+  environment       = "preprod"
+  zone              = "dev"
+
+  vpc_id             = "" # Enter VPC ID
+  private_subnet_ids = [] # Enter Private Subnet IDs
+
+  create_eks         = true
+  kubernetes_version = "1.21"
+
+  enable_managed_nodegroups = true
+  managed_node_groups = {
+    mg_4 = {
+      node_group_name = "managed-ondemand"
+      instance_types  = ["m4.large"]
+      subnet_ids      = [] # Enter Private Subnet IDs
+    }
+  }
+
+}
+```
 
 ### Managed Node Groups Example
 
@@ -99,9 +125,7 @@ Please refer this [full example](deploy/eks-cluster-with-new-vpc/main.tf)
 
         # 4> Node Group network configuration
         subnet_ids  = []                          # Mandatory - # Define private/public subnets list with comma separated ["subnet1","subnet2","subnet3"]
-
         k8s_taints = []
-
         k8s_labels = {
           Environment = "preprod"
           Zone        = "dev"
@@ -136,11 +160,9 @@ Please refer this [full example](deploy/eks-cluster-with-new-vpc/main.tf)
 
       disk_size     = 20
       instance_type = "m5.large"
-
       desired_size = 2
       max_size     = 10
       min_size     = 2
-
       capacity_type = "" # Optional Use this only for SPOT capacity as  capacity_type = "spot"
 
       k8s_labels = {
