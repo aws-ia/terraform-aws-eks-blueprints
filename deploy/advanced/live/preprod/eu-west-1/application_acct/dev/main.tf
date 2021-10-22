@@ -404,9 +404,6 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------------------------#
   enable_fargate = false
 
-  # Enable logging only when you create a Fargate profile e.g., enable_fargate = true
-  fargate_fluentbit_enable = false
-
   fargate_profiles = {
     default = {
       fargate_profile_name = "default"
@@ -458,9 +455,45 @@ module "aws-eks-accelerator-for-terraform" {
   } # END OF FARGATE PROFILES
 
   #---------------------------------------
+  # FARGATE FLUENTBIT
+  #---------------------------------------
+  fargate_fluentbit_enable = false
+
+  fargate_fluentbit_config = {
+    output_conf  = <<EOF
+[OUTPUT]
+  Name cloudwatch_logs
+  Match *
+  region eu-west-1
+  log_group_name /${local.cluster_name}/fargate-fluentbit-logs
+  log_stream_prefix "fargate-logs-"
+  auto_create_group true
+    EOF
+    filters_conf = <<EOF
+[FILTER]
+  Name parser
+  Match *
+  Key_Name log
+  Parser regex
+  Preserve_Key On
+  Reserve_Data On
+    EOF
+    parsers_conf = <<EOF
+[PARSER]
+  Name regex
+  Format regex
+  Regex ^(?<time>[^ ]+) (?<stream>[^ ]+) (?<logtag>[^ ]+) (?<message>.+)$
+  Time_Key time
+  Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+  Time_Keep On
+  Decode_Field_As json message
+    EOF
+  }
+
+  #---------------------------------------
   # TRAEFIK INGRESS CONTROLLER HELM ADDON
   #---------------------------------------
-  traefik_ingress_controller_enable = true
+  traefik_ingress_controller_enable = false
 
   # Optional Map value
   traefik_helm_chart = {
@@ -527,13 +560,13 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # AWS MANAGED PROMETHEUS ENABLE
   #---------------------------------------
-  aws_managed_prometheus_enable         = true
+  aws_managed_prometheus_enable         = false
   aws_managed_prometheus_workspace_name = "aws-managed-prometheus-workspace" # Optional
 
   #---------------------------------------
   # COMMUNITY PROMETHEUS ENABLE
   #---------------------------------------
-  prometheus_enable = true
+  prometheus_enable = false
 
   # Optional Map value
   prometheus_helm_chart = {
@@ -551,14 +584,14 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # ENABLE EMR ON EKS
   #---------------------------------------
-  enable_emr_on_eks    = true             # Default is false
-  emr_on_eks_username  = "emr-containers" # Optinal default value is emr-containers
-  emr_on_eks_namespace = "spark"          # Optinal default value is spark
+  enable_emr_on_eks        = false
+  emr_on_eks_username      = "emr-containers"
+  emr_on_eks_namespace     = "spark"
+  emr_on_eks_iam_role_name = "EMRonEKSExecution"
 
-  //  enable_emr_on_eks_config = {
-  //    emr_on_eks_username = "emr-containers" # Optinal default value is emr-containers
-  //    emr_on_eks_namespace = "spark"         # Optinal default value is spark
-  //  }
+  #---------------------------------------
+  # ENABLE NGINX
+  #---------------------------------------
 
   nginx_ingress_controller_enable = false
   # Optional nginx_helm_chart
@@ -571,6 +604,9 @@ module "aws-eks-accelerator-for-terraform" {
     values     = [templatefile("${path.module}/k8s_addons/nginx-values.yaml", {})]
   }
 
+  #---------------------------------------
+  # ENABLE AGONES
+  #---------------------------------------
   # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
   agones_enable = false
   # Optional  agones_helm_chart
@@ -590,6 +626,9 @@ module "aws-eks-accelerator-for-terraform" {
     })]
   }
 
+  #---------------------------------------
+  # ENABLE AWS OPEN TELEMETRY
+  #---------------------------------------
   aws_open_telemetry_enable = false
   aws_open_telemetry_addon = {
     aws_open_telemetry_namespace                        = "aws-otel-eks"
@@ -604,7 +643,7 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # AWS-FOR-FLUENTBIT HELM ADDON
   #---------------------------------------
-  aws_for_fluentbit_enable = true
+  aws_for_fluentbit_enable = false
 
   aws_for_fluentbit_helm_chart = {
     name                                      = "aws-for-fluent-bit"

@@ -36,6 +36,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | n/a | `string` | n/a | yes |
+| <a name="input_emr_on_eks_iam_role_name"></a> [emr\_on\_eks\_iam\_role\_name](#input\_emr\_on\_eks\_iam\_role\_name) | n/a | `string` | `"emr_on_eks"` | no |
 | <a name="input_emr_on_eks_namespace"></a> [emr\_on\_eks\_namespace](#input\_emr\_on\_eks\_namespace) | n/a | `string` | `"spark"` | no |
 | <a name="input_emr_on_eks_username"></a> [emr\_on\_eks\_username](#input\_emr\_on\_eks\_username) | n/a | `string` | `"emr-containers"` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | n/a | `string` | n/a | yes |

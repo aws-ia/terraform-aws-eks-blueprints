@@ -20,36 +20,40 @@ You can also stream logs to destinations such as `Amazon S3`, `Amazon Kinesis Da
 # Fluent Bit CloudWatch Config
 Please find the updated configuration from [AWS Docs](https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html)
 
-```yaml
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: aws-logging
-  namespace: aws-observability
-data:
-  output.conf: |
-    [OUTPUT]
-        Name cloudwatch_logs
-        Match   *
-        region us-east-1
-        log_group_name fluent-bit-cloudwatch
-        log_stream_prefix from-fluent-bit-
-        auto_create_group true
+```hcl
+ #---------------------------------------
+  # FARGATE FLUENTBIT
+  #---------------------------------------
+  fargate_fluentbit_enable = true
 
-  parsers.conf: |
-    [PARSER]
-        Name crio
-        Format Regex
-        Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>P|F) (?<log>.*)$
-        Time_Key    time
-        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
-
-  filters.conf: |
-     [FILTER]
-        Name parser
-        Match *
-        Key_name log
-        Parser crio
-        Reserve_Data On
-        Preserve_Key On
+  fargate_fluentbit_config = {
+      output_conf  = <<EOF
+[OUTPUT]
+  Name cloudwatch_logs
+  Match *
+  region eu-west-1
+  log_group_name /${local.cluster_name}/fargate-fluentbit-logs
+  log_stream_prefix "fargate-logs-"
+  auto_create_group true
+    EOF
+      filters_conf = <<EOF
+[FILTER]
+  Name parser
+  Match *
+  Key_Name log
+  Parser regex
+  Preserve_Key On
+  Reserve_Data On
+    EOF
+      parsers_conf = <<EOF
+[PARSER]
+  Name regex
+  Format regex
+  Regex ^(?<time>[^ ]+) (?<stream>[^ ]+) (?<logtag>[^ ]+) (?<message>.+)$
+  Time_Key time
+  Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+  Time_Keep On
+  Decode_Field_As json message
+    EOF
+  }
 ```

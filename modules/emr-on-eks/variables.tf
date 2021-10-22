@@ -8,6 +8,11 @@ variable "emr_on_eks_namespace" {
   default = "spark"
 }
 
+variable "emr_on_eks_iam_role_name" {
+  type    = string
+  default = "emr_on_eks"
+}
+
 variable "environment" {
   type = string
 }

@@ -223,6 +223,11 @@ variable "emr_on_eks_namespace" {
   default     = "spark"
   description = "EMR on EKS NameSpace"
 }
+variable "emr_on_eks_iam_role_name" {
+  type        = string
+  default     = "emr_on_eks"
+  description = "EMR on EKS IAM role name"
+}
 #-----------CLUSTER AUTOSCALER-------------
 variable "cluster_autoscaler_enable" {
   type        = bool
@@ -277,16 +282,7 @@ variable "traefik_helm_chart" {
   default     = {}
   description = "Traefik Helm Addon Config"
 }
-variable "private_container_repo_url" {
-  type        = string
-  default     = ""
-  description = "Private container image repo url (e.g, artifactory url or ECR url)"
-}
-variable "public_docker_repo" {
-  type        = bool
-  default     = true
-  description = "public docker repo access"
-}
+
 #-----------AGONES-------------
 variable "agones_enable" {
   type        = bool

@@ -84,7 +84,7 @@ resource "kubernetes_role_binding" "emr_containers" {
 
 # EMR jobs will assume this IAM role when they run on EKS
 resource "aws_iam_role" "emr_on_eks_execution" {
-  name               = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, "EMRonEKSExecution")
+  name               = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, var.emr_on_eks_iam_role_name)
   assume_role_policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -140,7 +140,6 @@ resource "aws_iam_role_policy_attachment" "emr_on_eks_execution" {
   policy_arn = aws_iam_policy.emr_on_eks_execution.arn
 }
 
-# Update trust relationship for job execution role
 # TODO Replace this resource once the provider is available for aws emr-containers
 resource "null_resource" "update_trust_policy" {
   provisioner "local-exec" {
