@@ -1,3 +1,20 @@
+Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+SPDX-License-Identifier: MIT-0
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in the Software
+without restriction, including without limitation the rights to use, copy, modify,
+merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
 # LB Ingress Controller Deployment Guide
 
 # Introduction
@@ -98,26 +115,18 @@ No modules.
 | [aws_iam_role.eks_lb_controller_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.eks_role_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [helm_release.lb_ingress](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
-| [helm_release.lb_ingress_crd](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [kubernetes_service_account.eks_lb_controller_sa](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account) | resource |
 | [aws_iam_policy_document.eks_lb_controller_assume_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_aws_lb_helm_chart_version"></a> [aws\_lb\_helm\_chart\_version](#input\_aws\_lb\_helm\_chart\_version) | n/a | `string` | `"1.2.7"` | no |
-| <a name="input_aws_lb_helm_helm_chart_name"></a> [aws\_lb\_helm\_helm\_chart\_name](#input\_aws\_lb\_helm\_helm\_chart\_name) | n/a | `string` | `"aws-load-balancer-controller"` | no |
-| <a name="input_aws_lb_helm_repo_url"></a> [aws\_lb\_helm\_repo\_url](#input\_aws\_lb\_helm\_repo\_url) | n/a | `string` | `"https://aws.github.io/eks-charts"` | no |
-| <a name="input_aws_lb_image_repo_name"></a> [aws\_lb\_image\_repo\_name](#input\_aws\_lb\_image\_repo\_name) | n/a | `string` | `"amazon/aws-load-balancer-controller"` | no |
-| <a name="input_aws_lb_image_tag"></a> [aws\_lb\_image\_tag](#input\_aws\_lb\_image\_tag) | n/a | `string` | `"v2.2.4"` | no |
-| <a name="input_clusterName"></a> [clusterName](#input\_clusterName) | n/a | `string` | n/a | yes |
-| <a name="input_eks_oidc_issuer_url"></a> [eks\_oidc\_issuer\_url](#input\_eks\_oidc\_issuer\_url) | n/a | `string` | n/a | yes |
-| <a name="input_eks_oidc_provider_arn"></a> [eks\_oidc\_provider\_arn](#input\_eks\_oidc\_provider\_arn) | n/a | `string` | n/a | yes |
-| <a name="input_private_container_repo_url"></a> [private\_container\_repo\_url](#input\_private\_container\_repo\_url) | n/a | `string` | n/a | yes |
-| <a name="input_public_docker_repo"></a> [public\_docker\_repo](#input\_public\_docker\_repo) | n/a | `bool` | n/a | yes |
-| <a name="input_public_image_repo"></a> [public\_image\_repo](#input\_public\_image\_repo) | n/a | `string` | `"602401143452.dkr.ecr.us-west-2.amazonaws.com"` | no |
-| <a name="input_replicas"></a> [replicas](#input\_replicas) | n/a | `string` | `"2"` | no |
+| <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS cluster Id | `string` | n/a | yes |
+| <a name="input_eks_oidc_issuer_url"></a> [eks\_oidc\_issuer\_url](#input\_eks\_oidc\_issuer\_url) | The URL on the EKS cluster OIDC Issuer | `string` | n/a | yes |
+| <a name="input_eks_oidc_provider_arn"></a> [eks\_oidc\_provider\_arn](#input\_eks\_oidc\_provider\_arn) | The ARN of the OIDC Provider if `enable_irsa = true`. | `string` | n/a | yes |
+| <a name="input_lb_ingress_controller_helm_app"></a> [lb\_ingress\_controller\_helm\_app](#input\_lb\_ingress\_controller\_helm\_app) | Helm chart definition for lb\_ingress\_controller. | `any` | `{}` | no |
 
 ## Outputs
 

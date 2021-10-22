@@ -54,21 +54,13 @@ module "prometheus" {
   depends_on = [module.aws_eks]
 }
 
-# TODO Upgrade
 module "lb_ingress_controller" {
-  count  = var.create_eks && var.aws_lb_ingress_controller_enable ? 1 : 0
-  source = "./kubernetes-addons/lb-ingress-controller"
-
-  private_container_repo_url  = var.private_container_repo_url
-  clusterName                 = module.aws_eks.cluster_id
-  eks_oidc_issuer_url         = module.aws_eks.cluster_oidc_issuer_url
-  eks_oidc_provider_arn       = module.aws_eks.oidc_provider_arn
-  public_docker_repo          = var.public_docker_repo
-  aws_lb_image_tag            = var.aws_lb_image_tag
-  aws_lb_helm_chart_version   = var.aws_lb_helm_chart_version
-  aws_lb_image_repo_name      = var.aws_lb_image_repo_name
-  aws_lb_helm_repo_url        = var.aws_lb_helm_repo_url
-  aws_lb_helm_helm_chart_name = var.aws_lb_helm_helm_chart_name
+  count                          = var.create_eks && var.aws_lb_ingress_controller_enable ? 1 : 0
+  source                         = "./kubernetes-addons/lb-ingress-controller"
+  eks_cluster_id                 = module.aws_eks.cluster_id
+  lb_ingress_controller_helm_app = var.aws_lb_ingress_controller_helm_app
+  eks_oidc_issuer_url            = module.aws_eks.cluster_oidc_issuer_url
+  eks_oidc_provider_arn          = module.aws_eks.oidc_provider_arn
 
   depends_on = [module.aws_eks]
 }
