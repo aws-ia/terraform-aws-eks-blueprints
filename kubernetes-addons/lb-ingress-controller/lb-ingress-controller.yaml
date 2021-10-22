@@ -9,7 +9,7 @@ clusterName: ${clusterName}
 serviceAccount:
   # Specifies whether a service account should be created
   create: false
-  name: eks-lb-controller-sa
+  name: ${aws_lb_controller_sa}
 
 rbac:
   # Specifies whether rbac resources should be created

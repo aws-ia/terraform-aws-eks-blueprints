@@ -16,37 +16,75 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-locals {
-  public_image_repo = var.public_image_repo
-  image_url         = var.public_docker_repo ? "${local.public_image_repo}/${var.aws_lb_image_repo_name}" : "${var.private_container_repo_url}/${var.aws_lb_image_repo_name}"
-}
-
 resource "helm_release" "lb_ingress" {
-  name       = var.aws_lb_helm_helm_chart_name
-  repository = var.aws_lb_helm_repo_url
-  chart      = var.aws_lb_helm_helm_chart_name
-  version    = var.aws_lb_helm_chart_version
-  namespace  = "kube-system"
-  timeout    = "1200"
+  name                       = local.lb_ingress_controller_helm_app["name"]
+  repository                 = local.lb_ingress_controller_helm_app["repository"]
+  chart                      = local.lb_ingress_controller_helm_app["chart"]
+  version                    = local.lb_ingress_controller_helm_app["version"]
+  namespace                  = local.lb_ingress_controller_helm_app["namespace"]
+  timeout                    = local.lb_ingress_controller_helm_app["timeout"]
+  values                     = local.lb_ingress_controller_helm_app["values"]
+  create_namespace           = local.lb_ingress_controller_helm_app["create_namespace"]
+  lint                       = local.lb_ingress_controller_helm_app["lint"]
+  description                = local.lb_ingress_controller_helm_app["description"]
+  repository_key_file        = local.lb_ingress_controller_helm_app["repository_key_file"]
+  repository_cert_file       = local.lb_ingress_controller_helm_app["repository_cert_file"]
+  repository_ca_file         = local.lb_ingress_controller_helm_app["repository_ca_file"]
+  repository_username        = local.lb_ingress_controller_helm_app["repository_username"]
+  repository_password        = local.lb_ingress_controller_helm_app["repository_password"]
+  verify                     = local.lb_ingress_controller_helm_app["verify"]
+  keyring                    = local.lb_ingress_controller_helm_app["keyring"]
+  disable_webhooks           = local.lb_ingress_controller_helm_app["disable_webhooks"]
+  reuse_values               = local.lb_ingress_controller_helm_app["reuse_values"]
+  reset_values               = local.lb_ingress_controller_helm_app["reset_values"]
+  force_update               = local.lb_ingress_controller_helm_app["force_update"]
+  recreate_pods              = local.lb_ingress_controller_helm_app["recreate_pods"]
+  cleanup_on_fail            = local.lb_ingress_controller_helm_app["cleanup_on_fail"]
+  max_history                = local.lb_ingress_controller_helm_app["max_history"]
+  atomic                     = local.lb_ingress_controller_helm_app["atomic"]
+  skip_crds                  = local.lb_ingress_controller_helm_app["skip_crds"]
+  render_subchart_notes      = local.lb_ingress_controller_helm_app["render_subchart_notes"]
+  disable_openapi_validation = local.lb_ingress_controller_helm_app["disable_openapi_validation"]
+  wait                       = local.lb_ingress_controller_helm_app["wait"]
+  wait_for_jobs              = local.lb_ingress_controller_helm_app["wait_for_jobs"]
+  dependency_update          = local.lb_ingress_controller_helm_app["dependency_update"]
+  replace                    = local.lb_ingress_controller_helm_app["replace"]
 
-  values = [templatefile("${path.module}/lb_ingress_controller.yaml", {
-    image        = local.image_url
-    tag          = var.aws_lb_image_tag
-    clusterName  = var.clusterName
-    replicaCount = var.replicas
-  })]
-  depends_on = [helm_release.lb_ingress_crd, kubernetes_service_account.eks_lb_controller_sa]
+  postrender {
+    binary_path = local.lb_ingress_controller_helm_app["postrender"]
+  }
 
+  dynamic "set" {
+    iterator = each_item
+    for_each = local.lb_ingress_controller_helm_app["set"] == null ? [] : local.lb_ingress_controller_helm_app["set"]
+
+    content {
+      name  = each_item.value.name
+      value = each_item.value.value
+    }
+  }
+
+  dynamic "set_sensitive" {
+    iterator = each_item
+    for_each = local.lb_ingress_controller_helm_app["set_sensitive"] == null ? [] : local.lb_ingress_controller_helm_app["set_sensitive"]
+
+    content {
+      name  = each_item.value.name
+      value = each_item.value.value
+    }
+  }
+
+  depends_on = [aws_iam_role.eks_lb_controller_role, kubernetes_service_account.eks_lb_controller_sa]
 }
 
-resource "helm_release" "lb_ingress_crd" {
-  chart     = "${path.module}/chart/lb_crds"
-  name      = "lb-crd-target-group"
-  namespace = "kube-system"
-}
+//resource "helm_release" "lb_ingress_crd" {
+//  chart     = "${path.module}/chart/lb_crds"
+//  name      = "lb-crd-target-group"
+//  namespace = "kube-system"
+//}
 
 resource "aws_iam_policy" "eks_lb_controller" {
-  name        = "${var.clusterName}-lb-controller-policy"
+  name        = "${var.eks_cluster_id}-lb-controller-policy"
   description = "Allows lb controller to manage ALB and NLB"
 
   policy = <<EOF
@@ -286,7 +324,7 @@ data "aws_iam_policy_document" "eks_lb_controller_assume_policy" {
     condition {
       test     = "StringEquals"
       variable = "${replace(var.eks_oidc_issuer_url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:eks-lb-controller-sa"]
+      values   = ["system:serviceaccount:kube-system:${local.aws_lb_controller_sa}"]
     }
 
     principals {
@@ -298,7 +336,7 @@ data "aws_iam_policy_document" "eks_lb_controller_assume_policy" {
 
 # IAM role for eks alb controller
 resource "aws_iam_role" "eks_lb_controller_role" {
-  name               = "${var.clusterName}-lb-controller-role"
+  name               = "${var.eks_cluster_id}-lb-controller-role"
   assume_role_policy = data.aws_iam_policy_document.eks_lb_controller_assume_policy.json
 }
 
@@ -312,7 +350,7 @@ resource "aws_iam_role_policy_attachment" "eks_role_policy" {
 # Kubernetes service account for lb controller
 resource "kubernetes_service_account" "eks_lb_controller_sa" {
   metadata {
-    name        = "eks-lb-controller-sa"
+    name        = local.aws_lb_controller_sa
     namespace   = "kube-system"
     annotations = { "eks.amazonaws.com/role-arn" : aws_iam_role.eks_lb_controller_role.arn }
   }
