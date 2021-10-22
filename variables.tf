@@ -336,6 +336,17 @@ variable "nginx_helm_chart" {
   type        = any
   default     = {}
 }
+#-----------SPARK K8S OPERATOR-------------
+variable "spark_on_k8s_operator_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling Spark on K8s Operator on EKS Cluster"
+}
+variable "spark_on_k8s_operator_helm_chart" {
+  description = "Spark on K8s Operator Helm Chart Configuration"
+  type        = any
+  default     = {}
+}
 #-----------AWS FOR FLUENT BIT-------------
 variable "aws_for_fluentbit_enable" {
   type        = bool

@@ -100,10 +100,18 @@ module "fargate_fluentbit" {
 }
 
 module "agones" {
-  count  = var.create_eks && var.agones_enable ? 1 : 0
-  source = "./kubernetes-addons/agones"
-
+  count                        = var.create_eks && var.agones_enable ? 1 : 0
+  source                       = "./kubernetes-addons/agones"
+  agones_helm_chart            = var.agones_helm_chart
   eks_worker_security_group_id = module.aws_eks.worker_security_group_id
+
+  depends_on = [module.aws_eks]
+}
+
+module "spark-k8s-operator" {
+  count                            = var.create_eks && var.spark_on_k8s_operator_enable ? 1 : 0
+  source                           = "./kubernetes-addons/spark-k8s-operator"
+  spark_on_k8s_operator_helm_chart = var.spark_on_k8s_operator_helm_chart
 
   depends_on = [module.aws_eks]
 }
