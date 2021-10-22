@@ -35,3 +35,12 @@ data "aws_eks_cluster_auth" "cluster" {
 data "aws_availability_zones" "available" {
   state = "available"
 }
+
+data "http" "eks_cluster_readiness" {
+  count = var.create_eks ? 1 : 0
+
+  url            = join("/", [data.aws_eks_cluster.cluster.0.endpoint, "healthz"])
+  ca_certificate = base64decode(data.aws_eks_cluster.cluster.0.certificate_authority.0.data)
+  timeout        = 300
+
+}

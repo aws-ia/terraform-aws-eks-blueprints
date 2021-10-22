@@ -223,6 +223,11 @@ variable "emr_on_eks_namespace" {
   default     = "spark"
   description = "EMR on EKS NameSpace"
 }
+variable "emr_on_eks_iam_role_name" {
+  type        = string
+  default     = "emr_on_eks"
+  description = "EMR on EKS IAM role name"
+}
 #-----------CLUSTER AUTOSCALER-------------
 variable "cluster_autoscaler_enable" {
   type        = bool
@@ -277,16 +282,7 @@ variable "traefik_helm_chart" {
   default     = {}
   description = "Traefik Helm Addon Config"
 }
-variable "private_container_repo_url" {
-  type        = string
-  default     = ""
-  description = "Private container image repo url (e.g, artifactory url or ECR url)"
-}
-variable "public_docker_repo" {
-  type        = bool
-  default     = true
-  description = "public docker repo access"
-}
+
 #-----------AGONES-------------
 variable "agones_enable" {
   type        = bool
@@ -318,6 +314,17 @@ variable "nginx_ingress_controller_enable" {
 }
 variable "nginx_helm_chart" {
   description = "NGINX Ingress Controller Helm Chart Configuration"
+  type        = any
+  default     = {}
+}
+#-----------SPARK K8S OPERATOR-------------
+variable "spark_on_k8s_operator_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling Spark on K8s Operator on EKS Cluster"
+}
+variable "spark_on_k8s_operator_helm_chart" {
+  description = "Spark on K8s Operator Helm Chart Configuration"
   type        = any
   default     = {}
 }
@@ -370,70 +377,4 @@ variable "aws_open_telemetry_addon" {
   type        = any
   default     = {}
   description = "AWS Open Telemetry Distro Addon Configuration"
-}
-#-----------OPEN TELEMETRY HELM CHART-------------
-variable "opentelemetry_enable" {
-  type        = bool
-  default     = false
-  description = "Enabling opentelemetry module on eks cluster"
-}
-variable "opentelemetry_enable_standalone_collector" {
-  type        = bool
-  default     = false
-  description = "Enabling the opentelemetry standalone gateway collector on eks cluster"
-}
-variable "opentelemetry_enable_agent_collector" {
-  type        = bool
-  default     = true
-  description = "Enabling the opentelemetry agent collector on eks cluster"
-}
-variable "opentelemetry_enable_autoscaling_standalone_collector" {
-  type        = bool
-  default     = false
-  description = "Enabling the autoscaling of the standalone gateway collector on eks cluster"
-}
-variable "opentelemetry_image_tag" {
-  type        = string
-  default     = "0.31.0"
-  description = "Docker image tag for opentelemetry from open-telemetry"
-}
-variable "opentelemetry_image" {
-  type        = string
-  default     = "otel/opentelemetry-collector"
-  description = "Docker image for opentelemetry from open-telemetry"
-}
-variable "opentelemetry_helm_chart_version" {
-  type        = string
-  default     = "0.5.9"
-  description = "Helm chart version for opentelemetry"
-}
-variable "opentelemetry_helm_chart" {
-  type        = string
-  default     = "open-telemetry/opentelemetry-collector"
-  description = "Helm chart for opentelemetry"
-}
-variable "opentelemetry_command_name" {
-  type        = string
-  default     = "otel"
-  description = "The OpenTelemetry command.name value"
-}
-variable "opentelemetry_enable_container_logs" {
-  type        = bool
-  default     = false
-  description = "Whether or not to enable container log collection on the otel agents"
-}
-variable "opentelemetry_min_standalone_collectors" {
-  type        = number
-  default     = 1
-  description = "The minimum number of opentelemetry standalone gateway collectors to run"
-}
-variable "opentelemetry_max_standalone_collectors" {
-  type        = number
-  default     = 3
-  description = "The maximum number of opentelemetry standalone gateway collectors to run"
-}
-variable "opentelemetry_helm_chart_url" {
-  type        = string
-  default     = "https://open-telemetry.github.io/opentelemetry-helm-charts"
-  description = "opentelemetry helm chart endpoint"
 }

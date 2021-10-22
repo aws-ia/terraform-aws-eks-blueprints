@@ -16,32 +16,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 3.60.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.5.0"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 2.3.0"
-    }
-    local = {
-      source  = "hashicorp/local"
-      version = "2.1.0"
-    }
-    null = {
-      source  = "hashicorp/null"
-      version = "3.1.0"
-    }
-    http = {
-      source  = "terraform-aws-modules/http"
-      version = "2.4.1"
-    }
-  }
-  required_version = ">= 1.0.0"
+variable "spark_on_k8s_operator_helm_chart" {
+  description = "Spark on K8s Operator Helm Chart Configuration"
+  type        = any
+  default     = {}
 }

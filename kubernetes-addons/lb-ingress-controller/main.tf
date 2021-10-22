@@ -77,12 +77,6 @@ resource "helm_release" "lb_ingress" {
   depends_on = [aws_iam_role.eks_lb_controller_role, kubernetes_service_account.eks_lb_controller_sa]
 }
 
-//resource "helm_release" "lb_ingress_crd" {
-//  chart     = "${path.module}/chart/lb_crds"
-//  name      = "lb-crd-target-group"
-//  namespace = "kube-system"
-//}
-
 resource "aws_iam_policy" "eks_lb_controller" {
   name        = "${var.eks_cluster_id}-lb-controller-policy"
   description = "Allows lb controller to manage ALB and NLB"

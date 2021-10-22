@@ -1,14 +1,14 @@
 
 locals {
-  default_nginx_helm_app = {
-    name             = "ingress-nginx"
-    chart            = "ingress-nginx"
-    repository       = "https://kubernetes.github.io/ingress-nginx"
-    version          = "3.33.0"
-    namespace        = "kube-system"
+  default_spark_k8s_operator_helm_app = {
+    name             = "spark-operator"
+    chart            = "spark-operator"
+    repository       = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
+    version          = "1.1.6"
+    namespace        = "spark-k8s-operator"
     timeout          = "1200"
-    create_namespace = false
-    values           = local.default_nginx_helm_values
+    create_namespace = true
+    values           = local.default_spark_k8s_operator_helm_values
     set = [{
       name  = "nodeSelector.kubernetes\\.io/os"
       value = "linux"
@@ -37,12 +37,12 @@ locals {
     wait_for_jobs              = false
     dependency_update          = false
     replace                    = false
-    description                = "The NGINX HelmChart Ingress Controller deployment configuration"
+    description                = "The spark_k8s_operator HelmChart Ingress Controller deployment configuration"
     postrender                 = ""
   }
-  nginx_helm_app = merge(
-    local.default_nginx_helm_app,
-    var.nginx_helm_chart
+  spark_k8s_operator_helm_app = merge(
+    local.default_spark_k8s_operator_helm_app,
+    var.spark_on_k8s_operator_helm_chart
   )
-  default_nginx_helm_values = [templatefile("${path.module}/nginx-default-values.yaml", {})]
+  default_spark_k8s_operator_helm_values = [templatefile("${path.module}/spark-k8s-operator-values.yaml", {})]
 }

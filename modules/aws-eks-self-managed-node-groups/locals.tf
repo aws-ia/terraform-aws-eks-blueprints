@@ -7,7 +7,7 @@ locals {
     capacity_type   = "" # Optional Use this only for SPOT capacity e.g., capacity_type = "spot"
     subnet_ids      = []
 
-    desired_size    = "1"
+    desired_size    = "2"
     max_size        = "3"
     min_size        = "1"
     max_unavailable = "1"

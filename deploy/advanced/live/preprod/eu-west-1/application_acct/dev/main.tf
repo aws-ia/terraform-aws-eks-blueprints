@@ -77,8 +77,8 @@ module "aws_vpc" {
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  source = "git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git?ref=terraform-aws-eks-accelerator-v3.0.0"
-
+  //  source = "git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git"
+  source            = "../../../../../../.."
   tenant            = local.tenant
   environment       = local.environment
   zone              = local.zone
@@ -95,7 +95,7 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------------------------#
   # EKS WORKER NODE GROUPS
   # Define Node groups as map of maps object as shown below. Each node group creates the following
-  #    1. New node group (Linux/Bottlerocket)
+  #    1. New node group
   #    2. IAM role and policies for Node group
   #    3. Security Group for Node group (Optional)
   #    4. Launch Templates for Node group   (Optional)
@@ -107,10 +107,10 @@ module "aws-eks-accelerator-for-terraform" {
     #---------------------------------------------------------#
     mg_4 = {
       # 1> Node Group configuration - Part1
-      node_group_name        = "managed-ondemand"
-      create_launch_template = true              # false will use the default launch template
-      launch_template_os     = "amazonlinux2eks" # amazonlinux2eks or windows or bottlerocket
-      public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+      node_group_name        = "managed-ondemand" # Max 40 characters for node group name
+      create_launch_template = true               # false will use the default launch template
+      launch_template_os     = "amazonlinux2eks"  # amazonlinux2eks or windows or bottlerocket
+      public_ip              = false              # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
       pre_userdata           = <<-EOT
             yum install -y amazon-ssm-agent
             systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
@@ -404,9 +404,6 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------------------------#
   enable_fargate = false
 
-  # Enable logging only when you create a Fargate profile e.g., enable_fargate = true
-  fargate_fluentbit_enable = false
-
   fargate_profiles = {
     default = {
       fargate_profile_name = "default"
@@ -458,9 +455,45 @@ module "aws-eks-accelerator-for-terraform" {
   } # END OF FARGATE PROFILES
 
   #---------------------------------------
+  # FARGATE FLUENTBIT
+  #---------------------------------------
+  fargate_fluentbit_enable = false
+
+  fargate_fluentbit_config = {
+    output_conf  = <<EOF
+[OUTPUT]
+  Name cloudwatch_logs
+  Match *
+  region eu-west-1
+  log_group_name /${local.cluster_name}/fargate-fluentbit-logs
+  log_stream_prefix "fargate-logs-"
+  auto_create_group true
+    EOF
+    filters_conf = <<EOF
+[FILTER]
+  Name parser
+  Match *
+  Key_Name log
+  Parser regex
+  Preserve_Key On
+  Reserve_Data On
+    EOF
+    parsers_conf = <<EOF
+[PARSER]
+  Name regex
+  Format regex
+  Regex ^(?<time>[^ ]+) (?<stream>[^ ]+) (?<logtag>[^ ]+) (?<message>.+)$
+  Time_Key time
+  Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+  Time_Keep On
+  Decode_Field_As json message
+    EOF
+  }
+
+  #---------------------------------------
   # TRAEFIK INGRESS CONTROLLER HELM ADDON
   #---------------------------------------
-  traefik_ingress_controller_enable = true
+  traefik_ingress_controller_enable = false
 
   # Optional Map value
   traefik_helm_chart = {
@@ -527,13 +560,13 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # AWS MANAGED PROMETHEUS ENABLE
   #---------------------------------------
-  aws_managed_prometheus_enable         = true
+  aws_managed_prometheus_enable         = false
   aws_managed_prometheus_workspace_name = "aws-managed-prometheus-workspace" # Optional
 
   #---------------------------------------
   # COMMUNITY PROMETHEUS ENABLE
   #---------------------------------------
-  prometheus_enable = true
+  prometheus_enable = false
 
   # Optional Map value
   prometheus_helm_chart = {
@@ -542,7 +575,7 @@ module "aws-eks-accelerator-for-terraform" {
     chart      = "prometheus"                                         # (Required) Chart name to be installed.
     version    = "14.4."                                              # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
     namespace  = "prometheus"                                         # (Optional) The namespace to install the release into. Defaults to default
-    values = [templatefile("${path.module}/k8s_addons/prometheus-vaues.yaml", {
+    values = [templatefile("${path.module}/k8s_addons/prometheus-values.yaml", {
       operating_system = "linux"
     })]
 
@@ -551,14 +584,14 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # ENABLE EMR ON EKS
   #---------------------------------------
-  enable_emr_on_eks    = true             # Default is false
-  emr_on_eks_username  = "emr-containers" # Optinal default value is emr-containers
-  emr_on_eks_namespace = "spark"          # Optinal default value is spark
+  enable_emr_on_eks        = false
+  emr_on_eks_username      = "emr-containers"
+  emr_on_eks_namespace     = "spark"
+  emr_on_eks_iam_role_name = "EMRonEKSExecution"
 
-  //  enable_emr_on_eks_config = {
-  //    emr_on_eks_username = "emr-containers" # Optinal default value is emr-containers
-  //    emr_on_eks_namespace = "spark"         # Optinal default value is spark
-  //  }
+  #---------------------------------------
+  # ENABLE NGINX
+  #---------------------------------------
 
   nginx_ingress_controller_enable = false
   # Optional nginx_helm_chart
@@ -571,6 +604,9 @@ module "aws-eks-accelerator-for-terraform" {
     values     = [templatefile("${path.module}/k8s_addons/nginx-values.yaml", {})]
   }
 
+  #---------------------------------------
+  # ENABLE AGONES
+  #---------------------------------------
   # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
   agones_enable = false
   # Optional  agones_helm_chart
@@ -590,6 +626,9 @@ module "aws-eks-accelerator-for-terraform" {
     })]
   }
 
+  #---------------------------------------
+  # ENABLE AWS OPEN TELEMETRY
+  #---------------------------------------
   aws_open_telemetry_enable = false
   aws_open_telemetry_addon = {
     aws_open_telemetry_namespace                        = "aws-otel-eks"
@@ -604,7 +643,7 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # AWS-FOR-FLUENTBIT HELM ADDON
   #---------------------------------------
-  aws_for_fluentbit_enable = true
+  aws_for_fluentbit_enable = false
 
   aws_for_fluentbit_helm_chart = {
     name                                      = "aws-for-fluent-bit"
@@ -625,6 +664,23 @@ module "aws-eks-accelerator-for-terraform" {
         value = "linux"
       }
     ]
+  }
+  #---------------------------------------
+  # SPARK K8S OPERATOR HELM ADDON
+  #---------------------------------------
+  spark_on_k8s_operator_enable = false
+
+  # Optional Map value
+  spark_on_k8s_operator_helm_chart = {
+    name             = "spark-operator"
+    chart            = "spark-operator"
+    repository       = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
+    version          = "1.1.6"
+    namespace        = "spark-k8s-operator"
+    timeout          = "1200"
+    create_namespace = true
+    values           = [templatefile("${path.module}/k8s_addons/spark-k8s-operator-values.yaml", {})]
+
   }
 
 }
