@@ -56,8 +56,8 @@ Kubernetes Addons deployed using [Helm Charts](https://helm.sh/docs/topics/chart
 11. [Alert-manager](https://github.com/prometheus-community/helm-charts/tree/main/charts/alertmanager)
 12. [Prometheus-node-exporter](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-node-exporter)
 13. [Prometheus-pushgateway](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-pushgateway)
-14. [AWS Distro for OpenTelemetry Collector(AWS OTel Collector) ](https://github.com/aws-observability/aws-otel-collector)
-15. [Cert Manager](https://github.com/jetstack/cert-manager)
+14. [Cert Manager](https://github.com/jetstack/cert-manager)
+15. [spark-k8s-operator](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator)
 
 # Node Group Modules
 This module uses dedicated sub modules for creating [AWS Managed Node Groups](modules/aws-eks-managed-node-groups), [Self-managed Node groups](modules/aws-eks-self-managed-node-groups) and [Fargate profiles](modules/aws-eks-fargate-profiles).
