@@ -1,0 +1,47 @@
+resourceController:
+  # name of most K8s resources - container, service account etc.
+  name: windows-vpc-resource-controller
+  image:
+    repository: 602401143452.dkr.ecr.us-east-1.amazonaws.com/eks/windows-vpc-resource-controller
+    tag: v0.2.7
+  livenessProbe:
+    failureThreshold: 5
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    timeoutSeconds: 5
+  # containerCommand:
+  #   args:
+  #     - -stderrthreshold=info
+
+admissionWebhook:
+  # name of most K8s resources - container, service, mutating webhook etc.
+  name: windows-vpc-admission-webhook
+  image:
+    repository: 602401143452.dkr.ecr.us-east-1.amazonaws.com/eks/vpc-admission-webhook
+    tag: v0.2.7
+  containerCommand:
+    args:
+      - -tlsCertFile=/etc/webhook/tls/tls.crt
+      - -tlsKeyFile=/etc/webhook/tls/tls.key
+      - -OSLabelSelectorOverride=windows
+      - -alsologtostderr
+      - -v=5
+      - 2>&1
+  secret:
+    name: windows-vpc-admission-webhook-tls
+  # cert-manager certificate parameters
+  certificate:
+    duration: 8760h # 1 yr
+    renewBefore: 360h # 15d
+    subject:
+      orgName: sampleorg
+    key:
+      algorithm: ECDSA
+      size: 256
+    usages:
+      - server auth
+      - key encipherment
+      - digital signature
+    issuer:
+      name: cert-manager-ca-issuer
+      kind: ClusterIssuer

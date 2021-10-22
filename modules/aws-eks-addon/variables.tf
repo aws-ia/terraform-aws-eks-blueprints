@@ -16,13 +16,29 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "cluster_name" {}
-variable "vpc_cni_addon_version" {}
-variable "enable_vpc_cni_addon" {}
+variable "cluster_name" {
+  type = string
+}
+variable "vpc_cni_addon_version" {
+  type = string
+}
+variable "enable_vpc_cni_addon" {
+  type = string
+}
 
-variable "enable_coredns_addon" {}
-variable "coredns_addon_version" {}
+variable "enable_coredns_addon" {
+  type = string
+}
+variable "coredns_addon_version" {
+  type = string
+}
 
-variable "enable_kube_proxy_addon" {}
-variable "kube_proxy_addon_version" {}
-variable "tags" {}
+variable "enable_kube_proxy_addon" {
+  type = bool
+}
+variable "kube_proxy_addon_version" {
+  type = string
+}
+variable "tags" {
+  type = map(string)
+}

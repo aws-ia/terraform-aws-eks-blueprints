@@ -5,6 +5,8 @@ terraform.tfstate.backup
 .idea/
 .DS_Store
 source/kubeconfig/
-kubeconfig/
+kubeconfig*
 .terraform.lock.hcl
 local_tf_state/
+.vscode
+.gitallowed

@@ -1,0 +1,37 @@
+{{- $admissionWebhookName := .Values.admissionWebhook.name -}}
+{{- $namespace := .Release.Namespace -}}
+{{- $admissionWebhookServiceQualifiedName := printf "%s.%s" $admissionWebhookName $namespace -}}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ $admissionWebhookName }}
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $admissionWebhookName }}
+spec:
+  # Secret names are always required.
+  secretName: {{ .Values.admissionWebhook.secret.name }}
+  duration: {{ .Values.admissionWebhook.certificate.duration }}
+  renewBefore: {{ .Values.admissionWebhook.certificate.renewBefore }}
+  subject:
+    organizations:
+      - {{ .Values.admissionWebhook.certificate.subject.orgName }}
+  # The use of the common name field has been deprecated since 2000 and is
+  # discouraged from being used.
+  commonName: {{ $admissionWebhookServiceQualifiedName }}
+  isCA: false
+  privateKey:
+    {{- toYaml .Values.admissionWebhook.certificate.key | nindent 4 }}
+  usages:
+    {{- toYaml .Values.admissionWebhook.certificate.usages | nindent 4 }}
+  # At least one of a DNS Name, URI, or IP address is required.
+  dnsNames:
+    - {{ $admissionWebhookName }}
+    - {{ $admissionWebhookServiceQualifiedName }}
+    - {{ $admissionWebhookServiceQualifiedName }}.svc
+    - {{ $admissionWebhookServiceQualifiedName }}.svc.cluster.local
+    - {{ $admissionWebhookServiceQualifiedName }}.pod
+    - {{ $admissionWebhookServiceQualifiedName }}.pod.cluster.local
+  # Issuer references are always required.
+  issuerRef:
+    {{- toYaml .Values.admissionWebhook.certificate.issuer | nindent 4 }}

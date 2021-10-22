@@ -1,0 +1,65 @@
+image:
+  name: traefik
+  tag: v2.4.9
+deployment:
+  enabled: true
+  kind: Deployment
+  replicas: 3
+
+service:
+  enabled: true
+  type: LoadBalancer
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    service.beta.kubernetes.io/aws-load-balancer-internal: "false"
+
+ports:
+  traefik:
+    port: 9000
+    expose: true
+    exposedPort: 9000
+    protocol: TCP
+  web:
+    port: 8000
+    expose: true
+    exposedPort: 8000
+    protocol: TCP
+  websecure:
+    port: 8443
+    expose: true
+    exposedPort: 443
+    protocol: TCP
+
+logs:
+  general:
+    level: ERROR
+  access:
+    enabled: true
+
+#additionalArguments:
+#  - "--tracing=true"
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 60
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+nodeSelector:
+  kubernetes.io/os: ${operating_system}

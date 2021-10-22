@@ -1,0 +1,22 @@
+# Metrics Server
+
+Metrics Server is a scalable, efficient source of container resource metrics for Kubernetes built-in autoscaling pipelines. It is not deployed by default in Amazon EKS clusters. The Metrics Server is commonly used by other Kubernetes add-ons, such as the Horizontal Pod Autoscaler, Vertical Autoscaling or the Kubernetes Dashboard.
+
+> **Important**: Don't use Metrics Server when you need an accurate source of resource usage metrics or as a monitoring solution.
+
+## Usage
+
+[Metrics Server](kubernetes-addons/metrics-server/README.md) can be deployed by enabling the add-on via the following.
+
+```hcl
+metrics_server_enable = true
+```
+
+Once deployed, you can see metrics-server pod in the `kube-system` namespace.
+
+```sh
+$ kubectl get deployments -n kube-system
+
+NAME                                                          READY   UP-TO-DATE   AVAILABLE   AGE
+metrics-server                                                1/1     1            1           20m
+```

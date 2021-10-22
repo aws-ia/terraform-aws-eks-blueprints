@@ -1,0 +1,19 @@
+awsRegion: "eu-west-1"
+
+cloudProvider: aws
+
+replicaCount: 2
+
+image:
+  repository: k8s.gcr.io/cluster-autoscaler
+  tag: v1.17.1
+  pullPolicy: IfNotPresent
+
+extraArgs:
+  v: 4
+  stderrthreshold: info
+  logtostderr: true
+  aws-use-static-instance-list: true
+
+nodeSelector:
+  kubernetes.io/os: ${operating_system}
