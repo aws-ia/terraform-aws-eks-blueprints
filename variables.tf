@@ -305,25 +305,10 @@ variable "aws_lb_ingress_controller_enable" {
   default     = false
   description = "enabling LB Ingress Controller on eks cluster"
 }
-variable "aws_lb_image_repo_name" {
-  type    = string
-  default = "amazon/aws-load-balancer-controller"
-}
-variable "aws_lb_helm_repo_url" {
-  type    = string
-  default = "https://aws.github.io/eks-charts"
-}
-variable "aws_lb_helm_helm_chart_name" {
-  type    = string
-  default = "aws-load-balancer-controller"
-}
-variable "aws_lb_image_tag" {
-  type    = string
-  default = "v2.2.4"
-}
-variable "aws_lb_helm_chart_version" {
-  type    = string
-  default = "1.2.7"
+variable "aws_lb_ingress_controller_helm_app" {
+  type        = any
+  description = "Helm chart definition for aws_lb_ingress_controller"
+  default     = {}
 }
 #-----------NGINX-------------
 variable "nginx_ingress_controller_enable" {

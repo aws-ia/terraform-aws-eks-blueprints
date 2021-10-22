@@ -16,54 +16,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "aws_lb_helm_repo_url" {
-  type    = string
-  default = "https://aws.github.io/eks-charts"
+variable "lb_ingress_controller_helm_app" {
+  type        = any
+  description = "Helm chart definition for lb_ingress_controller."
+  default     = {}
 }
-
-variable "aws_lb_helm_helm_chart_name" {
-  type    = string
-  default = "aws-load-balancer-controller"
+variable "eks_cluster_id" {
+  type        = string
+  description = "EKS cluster Id"
 }
-variable "public_docker_repo" {
-  type = bool
-}
-
-variable "private_container_repo_url" {
-  type = string
-}
-
-variable "aws_lb_image_repo_name" {
-  type    = string
-  default = "amazon/aws-load-balancer-controller"
-}
-
-variable "public_image_repo" {
-  type    = string
-  default = "602401143452.dkr.ecr.us-west-2.amazonaws.com"
-}
-variable "aws_lb_image_tag" {
-  type    = string
-  default = "v2.2.4"
-}
-variable "aws_lb_helm_chart_version" {
-  type    = string
-  default = "1.2.7"
-}
-
-variable "replicas" {
-  type    = string
-  default = "2"
-}
-
-variable "clusterName" {
-  type = string
+variable "eks_oidc_issuer_url" {
+  type        = string
+  description = "The URL on the EKS cluster OIDC Issuer"
 }
 
 variable "eks_oidc_provider_arn" {
-  type = string
-}
+  type        = string
+  description = "The ARN of the OIDC Provider if `enable_irsa = true`."
 
-variable "eks_oidc_issuer_url" {
-  type = string
 }

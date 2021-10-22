@@ -1,6 +1,0 @@
-apiVersion: v2
-name: aws-lb-crd-helm-chart
-description: A Helm chart for AWS lb ingress controller crd
-type: application
-version: 1.2.3
-appVersion: v2.2.1
