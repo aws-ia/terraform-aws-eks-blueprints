@@ -1,0 +1,19 @@
+---
+
+name: "gh-superlinter"
+on:
+  - pull_request_target
+
+jobs:
+  gh-superlinter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: exec
+        uses: github/super-linter@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+...
