@@ -3,20 +3,20 @@ data "aws_region" "current" {}
 resource "kubernetes_namespace" "spark" {
   metadata {
     annotations = {
-      name = "spark"
+      name = local.emr_on_eks_team["emr_on_eks_namespace"]
     }
 
     labels = {
       job-type = "spark"
     }
 
-    name = var.emr_on_eks_namespace
+    name = local.emr_on_eks_team["emr_on_eks_namespace"]
   }
 }
 
 resource "kubernetes_role" "emr_containers" {
   metadata {
-    name      = var.emr_on_eks_username
+    name      = local.emr_on_eks_team["emr_on_eks_username"]
     namespace = kubernetes_namespace.spark.id
   }
 
@@ -65,26 +65,26 @@ resource "kubernetes_role" "emr_containers" {
 
 resource "kubernetes_role_binding" "emr_containers" {
   metadata {
-    name      = var.emr_on_eks_username
+    name      = local.emr_on_eks_team["emr_on_eks_username"]
     namespace = kubernetes_namespace.spark.id
   }
 
   subject {
     kind = "User"
-    name = var.emr_on_eks_username
+    name = local.emr_on_eks_team["emr_on_eks_username"]
   }
 
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "Role"
-    name      = var.emr_on_eks_username
+    name      = local.emr_on_eks_team["emr_on_eks_username"]
   }
 }
 
 
 # EMR jobs will assume this IAM role when they run on EKS
 resource "aws_iam_role" "emr_on_eks_execution" {
-  name               = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, var.emr_on_eks_iam_role_name)
+  name               = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, local.emr_on_eks_team["emr_on_eks_iam_role_name"])
   assume_role_policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -102,7 +102,7 @@ EOF
 }
 
 resource "aws_iam_policy" "emr_on_eks_execution" {
-  name        = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, "EMRonEKSExecution")
+  name        = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, local.emr_on_eks_team["emr_on_eks_iam_role_name"])
   description = "Allows role to generate kubeconfig for Kubectl access"
 
   policy = <<EOF

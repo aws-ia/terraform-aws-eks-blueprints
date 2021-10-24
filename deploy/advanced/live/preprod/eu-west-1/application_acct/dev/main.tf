@@ -77,7 +77,6 @@ module "aws_vpc" {
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  //  source = "git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git"
   source            = "../../../../../../.."
   tenant            = local.tenant
   environment       = local.environment
@@ -109,7 +108,7 @@ module "aws-eks-accelerator-for-terraform" {
       # 1> Node Group configuration - Part1
       node_group_name        = "managed-ondemand" # Max 40 characters for node group name
       create_launch_template = true               # false will use the default launch template
-      launch_template_os     = "amazonlinux2eks"  # amazonlinux2eks or windows or bottlerocket
+      launch_template_os     = "amazonlinux2eks"  # amazonlinux2eks or bottlerocket
       public_ip              = false              # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
       pre_userdata           = <<-EOT
             yum install -y amazon-ssm-agent
@@ -584,11 +583,21 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # ENABLE EMR ON EKS
   #---------------------------------------
-  enable_emr_on_eks        = false
-  emr_on_eks_username      = "emr-containers"
-  emr_on_eks_namespace     = "spark"
-  emr_on_eks_iam_role_name = "EMRonEKSExecution"
+  enable_emr_on_eks = true
 
+  emr_on_eks_teams = {
+    data_team_a = {
+      emr_on_eks_username      = "emr-containers"
+      emr_on_eks_namespace     = "spark"
+      emr_on_eks_iam_role_name = "EMRonEKSExecution"
+    }
+
+    data_team_b = {
+      emr_on_eks_username      = "data-team-b-user"
+      emr_on_eks_namespace     = "data-team-b"
+      emr_on_eks_iam_role_name = "data_team_b"
+    }
+  }
   #---------------------------------------
   # ENABLE NGINX
   #---------------------------------------
