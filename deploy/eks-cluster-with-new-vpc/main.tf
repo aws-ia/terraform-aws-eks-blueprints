@@ -77,7 +77,6 @@ module "aws_vpc" {
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  //  source = "git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git"
   source = "../.."
 
   tenant            = local.tenant
@@ -102,5 +101,29 @@ module "aws-eks-accelerator-for-terraform" {
       subnet_ids      = module.aws_vpc.private_subnets
     }
   }
+
+  # FARGATE
+  enable_fargate = false
+  fargate_profiles = {
+    default = {
+      fargate_profile_name = "default"
+      fargate_profile_namespaces = [
+        {
+          namespace = "default"
+          k8s_labels = {
+            Environment = "preprod"
+            Zone        = "dev"
+            env         = "fargate"
+          }
+      }]
+      subnet_ids = module.aws_vpc.private_subnets
+      additional_tags = {
+        ExtraTag = "Fargate"
+      }
+    },
+  }
+  #ADDON
+  metrics_server_enable     = true
+  cluster_autoscaler_enable = true
 
 }

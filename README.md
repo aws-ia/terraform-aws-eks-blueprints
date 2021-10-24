@@ -106,12 +106,14 @@ module "aws-eks-accelerator-for-terraform" {
         # 1> Node Group configuration
         node_group_name             = "managed-ondemand"
         create_launch_template      = true              # false will use the default launch template
-        launch_template_os          = "amazonlinux2eks" # amazonlinux2eks or windows or bottlerocket
+        launch_template_os          = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
         public_ip                   = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+        # pre_userdata is just an example however ssm agent is now included with managed node groups
         pre_userdata           = <<-EOT
                 yum install -y amazon-ssm-agent
                 systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
             EOT
+
         # 2> Node Group scaling configuration
         desired_size    = 3
         max_size        = 3
@@ -137,7 +139,7 @@ module "aws-eks-accelerator-for-terraform" {
           Name        = "m4-on-demand"
           subnet_type = "private"
         }
-        create_worker_security_group = true
+        create_worker_security_group = false
       }
     }
 ```
@@ -165,13 +167,11 @@ module "aws-eks-accelerator-for-terraform" {
       max_size     = 10
       min_size     = 2
       capacity_type = "" # Optional Use this only for SPOT capacity as  capacity_type = "spot"
-
       k8s_labels = {
         Environment = "preprod"
         Zone        = "test"
         WorkerType  = "SELF_MANAGED_ON_DEMAND"
       }
-
       additional_tags = {
         ExtraTag    = "m5x-on-demand"
         Name        = "m5x-on-demand"
@@ -200,9 +200,7 @@ module "aws-eks-accelerator-for-terraform" {
             env         = "fargate"
           }
         }]
-
         subnet_ids = [] # Mandatory - # Define private subnets list with comma separated ["subnet1","subnet2","subnet3"]
-
         additional_tags = {
           ExtraTag = "Fargate"
         }

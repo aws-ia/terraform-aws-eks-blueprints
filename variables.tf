@@ -213,20 +213,10 @@ variable "enable_emr_on_eks" {
   default     = false
   description = "Enabling EMR on EKS Config"
 }
-variable "emr_on_eks_username" {
-  type        = string
-  default     = "emr-containers"
-  description = "EMR on EKS username"
-}
-variable "emr_on_eks_namespace" {
-  type        = string
-  default     = "spark"
-  description = "EMR on EKS NameSpace"
-}
-variable "emr_on_eks_iam_role_name" {
-  type        = string
-  default     = "emr_on_eks"
-  description = "EMR on EKS IAM role name"
+variable "emr_on_eks_teams" {
+  description = "EMR on EKS Teams configuration"
+  type        = any
+  default     = {}
 }
 #-----------CLUSTER AUTOSCALER-------------
 variable "cluster_autoscaler_enable" {

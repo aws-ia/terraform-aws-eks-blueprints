@@ -95,13 +95,19 @@ module "aws_managed_prometheus" {
 }
 
 module "emr_on_eks" {
-  count                    = var.create_eks && var.enable_emr_on_eks == true ? 1 : 0
-  source                   = "./modules/emr-on-eks"
-  eks_cluster_id           = module.aws_eks.cluster_id
-  environment              = var.environment
-  tenant                   = var.tenant
-  zone                     = var.zone
-  emr_on_eks_namespace     = var.emr_on_eks_namespace
-  emr_on_eks_username      = var.emr_on_eks_username
-  emr_on_eks_iam_role_name = var.emr_on_eks_iam_role_name
+  source = "./modules/emr-on-eks"
+
+  for_each = { for key, value in var.emr_on_eks_teams : key => value
+    if var.enable_emr_on_eks && length(var.emr_on_eks_teams) > 0
+  }
+
+  emr_on_eks_teams = each.value
+
+  eks_cluster_id = module.aws_eks.cluster_id
+  environment    = var.environment
+  tenant         = var.tenant
+  zone           = var.zone
+
+  depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
+
 }

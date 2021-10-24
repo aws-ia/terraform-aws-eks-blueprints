@@ -4,7 +4,7 @@ EMR on EKS is a deployment option in EMR that allows you to automate the provisi
 This module deploys the necessary resources to run EMR Spark Jobs on EKS Cluster.
 
 - Create a new Namespace to run Spark workloads
-- Create K8s Role and Role Binding to allow `emr-containers` user on a given namespace(`spark`)
+- Create K8s Role and Role Binding to allow the username `emr-containers` on a given namespace(`spark`)
 - Create RBAC permissions and adding EMR on EKS service-linked role into aws-auth configmap
 - Enables IAM Roles for Service Account (IRSA)
 - Update trust relationship for job execution role
@@ -15,8 +15,21 @@ This module deploys the necessary resources to run EMR Spark Jobs on EKS Cluster
 
 
 ```hcl
-  enable_emr_on_eks = true               # Default is false
-  emr_on_eks_namespace = "spark"         # Optional default value is spark
+  enable_emr_on_eks = true
+
+  emr_on_eks_teams = {
+    data_team_a = {
+      emr_on_eks_username = "emr-containers"
+      emr_on_eks_namespace = "spark"
+      emr_on_eks_iam_role_name = "EMRonEKSExecution"
+    }
+
+    data_team_b = {
+      emr_on_eks_username = "data-team-b-user"
+      emr_on_eks_namespace = "data-team-b"
+      emr_on_eks_iam_role_name = "data_team_b"
+    }
+  }
 ```
 
 Once deployed, you can create Virtual EMR Cluster and execute Spark jobs. See the document below for more details.

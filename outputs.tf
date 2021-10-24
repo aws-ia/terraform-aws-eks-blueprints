@@ -113,10 +113,10 @@ output "fargate_profiles_aws_auth_config_map" {
 
 output "emr_on_eks_role_arn" {
   description = "IAM execution role ARN for EMR on EKS"
-  value       = var.create_eks && var.enable_emr_on_eks ? module.emr_on_eks[0].emr_on_eks_role_arn : "EMR on EKS not enabled"
+  value       = var.create_eks && var.enable_emr_on_eks ? values({ for nodes in sort(keys(var.emr_on_eks_teams)) : nodes => join(",", module.emr_on_eks[nodes].emr_on_eks_role_arn) }) : []
 }
 
 output "emr_on_eks_role_id" {
   description = "IAM execution role ID for EMR on EKS"
-  value       = var.create_eks && var.enable_emr_on_eks ? module.emr_on_eks[0].emr_on_eks_role_id : "EMR on EKS not enabled"
+  value       = var.create_eks && var.enable_emr_on_eks ? values({ for nodes in sort(keys(var.emr_on_eks_teams)) : nodes => join(",", module.emr_on_eks[nodes].emr_on_eks_role_id) }) : []
 }
