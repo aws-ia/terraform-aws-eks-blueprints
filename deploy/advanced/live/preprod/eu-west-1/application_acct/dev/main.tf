@@ -689,7 +689,22 @@ module "aws-eks-accelerator-for-terraform" {
     timeout          = "1200"
     create_namespace = true
     values           = [templatefile("${path.module}/k8s_addons/spark-k8s-operator-values.yaml", {})]
+  }
 
+  #---------------------------------------
+  # ENABLE ARGOCD
+  #---------------------------------------
+  argocd_enable = true
+  # Optional Map value
+  argocd_helm_chart = {
+    name             = "argo-cd"
+    chart            = "argo-cd"
+    repository       = "https://argoproj.github.io/argo-helm"
+    version          = "3.26.3"
+    namespace        = "argocd"
+    timeout          = "1200"
+    create_namespace = true
+    values           = [templatefile("${path.module}/k8s_addons/argocd-values.yaml", {})]
   }
 
 }

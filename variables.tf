@@ -94,12 +94,12 @@ variable "enable_irsa" {
 variable "cluster_enabled_log_types" {
   type        = list(string)
   default     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
-  description = "A list of the desired control plane logging to enable. Possible values [`api`, `audit`, `authenticator`, `controllerManager`, `scheduler`]"
+  description = "A list of the desired control plane logging to enable"
 }
 variable "cluster_log_retention_period" {
   type        = number
   default     = 7
-  description = "Number of days to retain cluster logs. Requires `enabled_cluster_log_types` to be set. See https://docs.aws.amazon.com/en_us/eks/latest/userguide/control-plane-logs.html."
+  description = "Number of days to retain cluster logs"
 }
 #----------------------------------------------------------
 # EKS MANAGED ADDONS
@@ -359,12 +359,24 @@ variable "windows_vpc_controllers_helm_chart" {
 }
 #-----------AWS OPEN TELEMETRY ADDON-------------
 variable "aws_open_telemetry_enable" {
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
+  description = "Enable AWS Open Telemetry Distro Addon "
 }
-
 variable "aws_open_telemetry_addon" {
   type        = any
   default     = {}
   description = "AWS Open Telemetry Distro Addon Configuration"
+}
+#-----------ARGOCD ADDON-------------
+variable "argocd_enable" {
+  type        = bool
+  default     = false
+  description = "Enable ARGO CD Kubernetes Addon"
+}
+
+variable "argocd_helm_chart" {
+  type        = any
+  default     = {}
+  description = "ARGO CD Kubernetes Addon Configuration"
 }
