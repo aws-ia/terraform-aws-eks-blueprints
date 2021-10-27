@@ -1,0 +1,8 @@
+version: 3
+projects:
+  - name: root
+    dir: .
+  - name: sub-modules
+    dir: modules/*
+  - name: kubernetes-addons
+    dir: kubernetes-addons/*
