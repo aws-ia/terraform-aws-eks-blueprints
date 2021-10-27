@@ -17,6 +17,10 @@ repos:
     hooks:
       - id: terraform_fmt
       - id: terraform_docs
+      - id: terraform_docs
+        args:
+          - --hook-config=--path-to-file=README.md
+          - --hook-config=--add-to-exiting-file=true
       - id: terraform_validate
       - id: terraform_tflint
 default_stages: [commit, push]

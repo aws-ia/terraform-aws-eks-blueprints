@@ -1,3 +1,20 @@
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+SPDX-License-Identifier: MIT-0
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in the Software
+without restriction, including without limitation the rights to use, copy, modify,
+merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 ## Requirements
 
 No requirements.
@@ -18,16 +35,12 @@ No resources.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_attributes"></a> [attributes](#input\_attributes) | Additional attributes (e.g. `1`) | `string` | `""` | no |
-| <a name="input_delimiter"></a> [delimiter](#input\_delimiter) | Delimiter to be used between `name`, `tenant`, `zone`, etc. | `string` | `"-"` | no |
-| <a name="input_enabled"></a> [enabled](#input\_enabled) | Whether to create the resources. Set to `false` to prevent the module from creating any resources | `bool` | `true` | no |
-| <a name="input_environment"></a> [environment](#input\_environment) | zone, e.g. 'prod', 'preprod' | `string` | `""` | no |
+| <a name="input_environment"></a> [environment](#input\_environment) | zone, e.g. 'prod', 'preprod' | `string` | n/a | yes |
 | <a name="input_org"></a> [org](#input\_org) | tenant, which could be your organization name, e.g. aws' | `string` | `""` | no |
-| <a name="input_region"></a> [region](#input\_region) | AWS Region | `string` | `"eu-west-1"` | no |
 | <a name="input_resource"></a> [resource](#input\_resource) | Solution name, e.g. 'app' or 'cluster' | `string` | `""` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `map('BusinessUnit`,`XYZ`) | `map(string)` | `{}` | no |
-| <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | `""` | no |
-| <a name="input_zone"></a> [zone](#input\_zone) | Environment, e.g. 'load', 'zone', 'dev', 'uat' | `string` | `""` | no |
+| <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | n/a | yes |
+| <a name="input_zone"></a> [zone](#input\_zone) | Environment, e.g. 'load', 'zone', 'dev', 'uat' | `string` | n/a | yes |
 
 ## Outputs
 
@@ -35,3 +48,4 @@ No resources.
 |------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | aws resource id |
 | <a name="output_tags"></a> [tags](#output\_tags) | aws resource tags |
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
