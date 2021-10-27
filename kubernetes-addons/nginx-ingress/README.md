@@ -33,7 +33,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.3.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
 
 ## Modules
 
@@ -54,4 +54,5 @@ No modules.
 ## Outputs
 
 No outputs.
+
 <!--- END_TF_DOCS --->

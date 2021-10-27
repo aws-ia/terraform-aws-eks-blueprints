@@ -82,9 +82,9 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.62.0 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.3.0 |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.5.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
 
 ## Modules
 
@@ -117,4 +117,5 @@ No modules.
 |------|-------------|
 | <a name="output_ingress_name"></a> [ingress\_name](#output\_ingress\_name) | n/a |
 | <a name="output_ingress_namespace"></a> [ingress\_namespace](#output\_ingress\_namespace) | n/a |
+
 <!--- END_TF_DOCS --->

@@ -48,4 +48,5 @@ No resources.
 |------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | aws resource id |
 | <a name="output_tags"></a> [tags](#output\_tags) | aws resource tags |
+
 <!--- END_TF_DOCS --->
