@@ -12,7 +12,7 @@ jobs:
       - name: Render terraform docs inside the README.md and push changes back to PR branch
         uses: terraform-docs/gh-actions@v0.11.0
         with:
-          atlantis-file: atlantis.yaml
+          find-dir: .
           output-file: README.md
           output-method: inject
           git-push: "true"
