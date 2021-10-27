@@ -3,6 +3,6 @@ projects:
   - name: root
     dir: .
   - name: sub-modules
-    dir: modules/*
+    dir: modules/s3
   - name: kubernetes-addons
-    dir: kubernetes-addons/*
+    dir: kubernetes-addons/*/*
