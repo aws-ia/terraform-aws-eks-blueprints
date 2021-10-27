@@ -73,7 +73,7 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
 cd deploy/eks-cluster-with-new-vpc
 terraform destroy
 ```
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!--- BEGIN_TF_DOCS --->
 ## Requirements
 
 | Name | Version |
@@ -112,4 +112,4 @@ No inputs.
 | Name | Description |
 |------|-------------|
 | <a name="output_configure_kubectl"></a> [configure\_kubectl](#output\_configure\_kubectl) | Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!--- END_TF_DOCS --->

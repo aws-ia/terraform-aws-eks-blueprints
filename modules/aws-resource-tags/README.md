@@ -1,4 +1,4 @@
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!--- BEGIN_TF_DOCS --->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: MIT-0
 
@@ -48,4 +48,4 @@ No resources.
 |------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | aws resource id |
 | <a name="output_tags"></a> [tags](#output\_tags) | aws resource tags |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!--- END_TF_DOCS --->

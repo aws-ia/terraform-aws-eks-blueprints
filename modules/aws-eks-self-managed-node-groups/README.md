@@ -170,7 +170,7 @@ This module allows you to create on-demand or spot self managed Linux or Windows
   } # END OF SELF MANAGED NODE GROUPS
 ```
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!--- BEGIN_TF_DOCS --->
 ## Requirements
 
 No requirements.
@@ -252,4 +252,4 @@ No modules.
 | <a name="output_self_managed_node_group_iam_role_arns"></a> [self\_managed\_node\_group\_iam\_role\_arns](#output\_self\_managed\_node\_group\_iam\_role\_arns) | Self managed groups IAM role arns |
 | <a name="output_self_managed_node_group_name"></a> [self\_managed\_node\_group\_name](#output\_self\_managed\_node\_group\_name) | EKS Self Managed node group id |
 | <a name="output_self_managed_sec_group_id"></a> [self\_managed\_sec\_group\_id](#output\_self\_managed\_sec\_group\_id) | Self managed group security group id/ids |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!--- END_TF_DOCS --->

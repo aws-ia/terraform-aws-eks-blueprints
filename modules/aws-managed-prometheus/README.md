@@ -2,7 +2,7 @@
 
 
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!--- BEGIN_TF_DOCS --->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: MIT-0
 
@@ -69,4 +69,4 @@ No modules.
 | <a name="output_amp_workspace_id"></a> [amp\_workspace\_id](#output\_amp\_workspace\_id) | Prometheus workspace ID |
 | <a name="output_service_account_amp_ingest_role_arn"></a> [service\_account\_amp\_ingest\_role\_arn](#output\_service\_account\_amp\_ingest\_role\_arn) | n/a |
 | <a name="output_service_account_amp_query_role_arn"></a> [service\_account\_amp\_query\_role\_arn](#output\_service\_account\_amp\_query\_role\_arn) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!--- END_TF_DOCS --->
