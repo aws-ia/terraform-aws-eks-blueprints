@@ -1,5 +1,6 @@
 # aws-for-fluent-bit Helm Chart
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+<!--- BEGIN_TF_DOCS --->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: MIT-0
 
@@ -24,8 +25,8 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.62.0 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.3.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
 
 ## Modules
 
@@ -52,4 +53,5 @@ No modules.
 |------|-------------|
 | <a name="output_aws_fluent_bit_cw_log_group_arn"></a> [aws\_fluent\_bit\_cw\_log\_group\_arn](#output\_aws\_fluent\_bit\_cw\_log\_group\_arn) | AWS Fluent Bit CloudWatch Log Group ARN |
 | <a name="output_aws_fluent_bit_cw_log_group_name"></a> [aws\_fluent\_bit\_cw\_log\_group\_name](#output\_aws\_fluent\_bit\_cw\_log\_group\_name) | AWS Fluent Bit CloudWatch Log Group Name |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+<!--- END_TF_DOCS --->

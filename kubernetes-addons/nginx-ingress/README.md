@@ -8,7 +8,7 @@
 
 #### AWS Service annotations for Nginx Ingress Controller
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!--- BEGIN_TF_DOCS --->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: MIT-0
 
@@ -33,7 +33,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.3.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
 
 ## Modules
 
@@ -54,4 +54,5 @@ No modules.
 ## Outputs
 
 No outputs.
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+<!--- END_TF_DOCS --->

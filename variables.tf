@@ -15,9 +15,8 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#----------------------------------------------------------
+
 #  CLUSTER LABELS
-#----------------------------------------------------------
 variable "org" {
   type        = string
   description = "tenant, which could be your organization name, e.g. aws'"
@@ -48,9 +47,8 @@ variable "terraform_version" {
   default     = "Terraform"
   description = "Terraform Version"
 }
-#----------------------------------------------------------
+
 # VPC Config for EKS Cluster
-#----------------------------------------------------------
 variable "vpc_id" {
   type        = string
   description = "VPC id"
@@ -64,12 +62,11 @@ variable "public_subnet_ids" {
   type        = list(string)
   default     = []
 }
-#----------------------------------------------------------
 # EKS CONTROL PLANE
-#----------------------------------------------------------
 variable "create_eks" {
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
+  description = "Enable Create EKS"
 }
 variable "kubernetes_version" {
   type        = string
@@ -101,9 +98,8 @@ variable "cluster_log_retention_period" {
   default     = 7
   description = "Number of days to retain cluster logs"
 }
-#----------------------------------------------------------
+
 # EKS MANAGED ADDONS
-#----------------------------------------------------------
 variable "enable_vpc_cni_addon" {
   type        = bool
   default     = false
@@ -134,9 +130,8 @@ variable "kube_proxy_addon_version" {
   default     = "v1.20.4-eksbuild.2"
   description = "KubeProxy Addon version"
 }
-#----------------------------------------------------------
+
 # EKS WORKER NODES
-#----------------------------------------------------------
 variable "enable_managed_nodegroups" {
   description = "Enable self-managed worker groups"
   type        = bool
@@ -153,8 +148,9 @@ variable "enable_self_managed_nodegroups" {
   default     = false
 }
 variable "self_managed_node_groups" {
-  type    = any
-  default = {}
+  description = "Self-Managed Node groups configuration"
+  type        = any
+  default     = {}
 }
 variable "enable_fargate" {
   description = "Enable Fargate profiles"
@@ -166,17 +162,15 @@ variable "fargate_profiles" {
   type        = any
   default     = {}
 }
-#----------------------------------------------------------
+
 # EKS WINDOWS SUPPORT
-#----------------------------------------------------------
 variable "enable_windows_support" {
   description = "Enable Windows support"
   type        = bool
   default     = false
 }
-#----------------------------------------------------------
+
 # CONFIGMAP AWS-AUTH
-#----------------------------------------------------------
 variable "map_accounts" {
   description = "Additional AWS account numbers to add to the aws-auth configmap. "
   type        = list(string)
@@ -205,9 +199,7 @@ variable "aws_auth_additional_labels" {
   default     = {}
   type        = map(string)
 }
-#----------------------------------------------------------
 # KUBERNETES ADDONS VARIABLES
-#----------------------------------------------------------
 variable "enable_emr_on_eks" {
   type        = bool
   default     = false
@@ -374,7 +366,6 @@ variable "argocd_enable" {
   default     = false
   description = "Enable ARGO CD Kubernetes Addon"
 }
-
 variable "argocd_helm_chart" {
   type        = any
   default     = {}
