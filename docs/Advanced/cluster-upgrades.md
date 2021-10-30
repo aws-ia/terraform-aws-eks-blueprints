@@ -33,7 +33,8 @@ This table shows the supported plugin versions for each EKS Kubernetes version
 
 #### Steps to upgrade Add-ons:
 
-Just update the latest versions in `base.tfvars` file as shown below. EKS Addon latest versions can be found in AWS EKS Console under Addon section or from AWS documentation.
+Just update the latest versions from consumer module as shown below.
+EKS Addon latest versions can be found in AWS EKS Console under Addon section or from AWS documentation.
 
 ##### KubeProxy
 

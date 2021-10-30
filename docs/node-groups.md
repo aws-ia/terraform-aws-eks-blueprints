@@ -18,7 +18,7 @@ The below example demonstrates the minimum configuration required to deploy a ma
         mg_4 = {
             node_group_name = "managed-ondemand"
             instance_types  = ["m4.large"]
-            subnet_ids      = module.aws_vpc.private_subnets
+            subnet_ids      = [] # Mandatory Public or Private Subnet IDs
         }
     }
 ```
@@ -64,7 +64,7 @@ The below example demonstrates advanced configuration options for a manged node 
           Name        = "m4-on-demand"
           subnet_type = "private"
         }
-        create_worker_security_group = true
+        create_worker_security_group = false
       }
     }
 ```
@@ -106,7 +106,7 @@ The example below demonstrates how you can customize and deploy a self-managed n
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-      subnet_ids  = module.aws_vpc.private_subnets
+      subnet_ids  = [] # Mandatory Public or Private Subnet IDs
       create_worker_security_group = false
     },
 

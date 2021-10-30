@@ -123,7 +123,8 @@ module "aws-eks-accelerator-for-terraform" {
     },
   }
   #ADDON
-  metrics_server_enable     = true
-  cluster_autoscaler_enable = true
+  aws_lb_ingress_controller_enable = true
+  metrics_server_enable            = true
+  cluster_autoscaler_enable        = true
 
 }

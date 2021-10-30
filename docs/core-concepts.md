@@ -26,7 +26,7 @@ See our [`Add-ons`](./add-ons) documentation page for detailed information.
 
 ## Team
 
-** Team Support is currently under development **
+**Team Support is currently under development**
 
 `Teams` allow you to configure the logical grouping of users that have access to your EKS clusters, in addition to the access permissions they are granted. This framework currently supports two types of `teams`: `application-team` and `platform-team`. `application-team` members are granted access to specific namespaces. `platform-team` members are granted administrative access to your clusters.
 
@@ -34,7 +34,7 @@ See our [`Teams`](../teams) documentation page for detailed information.
 
 ## Pipeline
 
-** Pipeline support is currently under development **
+**Pipeline support is currently under development**
 
 `Pipelines` allow you to configure `Continuous Delivery` (CD) pipelines for your EKS environments that are directly integrated with your Git provider.
 

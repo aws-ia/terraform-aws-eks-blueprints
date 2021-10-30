@@ -12,7 +12,9 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 ## Deployment Steps
 
-The following steps will walk you through the deployment of an example [DEV cluster](deploy/eks-cluster-with-new-vpc/main.tf) configuration. This configuration will deploy a private EKS cluster with public and private subnets. One managed node group and a Fargate profile for the default namespace will be placed in private subnets. The ALB created by the AWS LB Ingress controller will be placed in Public subnets. The example will also deploy the following Kubernetes add-ons
+The following steps will walk you through the deployment of an example [DEV cluster](../deploy/eks-cluster-with-new-vpc/main.tf) configuration.
+This configuration will deploy a private EKS cluster with public and private subnets.
+One managed node group and a Fargate profile for the default namespace will be placed in private subnets. The ALB created by the AWS LB Ingress controller will be placed in Public subnets. The example will also deploy the following Kubernetes add-ons
 
 ✅  AWS LB Ingress Controller\
 ✅  Metrics Server\
