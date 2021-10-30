@@ -14,11 +14,11 @@ The easiest way to get started with this framework is to follow our [Getting Sta
 
 ## Documentation
 
-For complete project documentation, please see our [official project documentation site](https://aws-quickstart.github.io/terraform-ssp-amazon-eks).
+For complete project documentation, please see our [official project documentation site](https://aws-ia.github.io/terraform-ssp-amazon-eks).
 
 ## Patterns
 
-To view a library of examples for how you can leverage this framework, please see our [SSP Patterns](https://github.com/aws-ia/terraform-ssp-eks-patterns) repository.
+To view a library of examples for how you can leverage this framework, please see our [SSP Patterns](https://github.com/aws-samples/terraform-ssp-eks-patterns) repository.
 
 You can also find an expanded sample implementation that resides in this repository in the `examples` directory.
 
@@ -96,6 +96,9 @@ To post feedback, submit feature ideas, or report bugs, use the Issues section o
 
 To submit code for this Quick Start, see the AWS Quick Start Contributor's Kit.
 
+<!--- BEGIN_TF_DOCS --->
+<!--- END_TF_DOCS --->
+
 ## Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
@@ -103,3 +106,4 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 ## License
 
 This library is licensed under the MIT-0 License. See the LICENSE file.
+
