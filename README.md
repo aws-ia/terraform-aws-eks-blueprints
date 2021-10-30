@@ -20,7 +20,7 @@ For complete project documentation, please see our [official project documentati
 
 To view a library of examples for how you can leverage this framework, please see our [SSP Patterns](https://github.com/aws-samples/terraform-ssp-eks-patterns) repository.
 
-You can also find an expanded sample implementation that resides in this repository in the `examples` directory.
+You can also find an expanded sample implementation that resides in this repository in the [deploy](./deploy/eks-cluster-with-new-vpc/main.tf) directory.
 
 ## Usage Example
 
@@ -31,29 +31,30 @@ module "eks-ssp" {
     source = "git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git"
 
     # EKS CLUSTER
-    cluster_name             = "test-eks-cluster"
     kubernetes_version       = "1.21"
+    vpc_id             = "<vpcid>"     # Enter VPC ID
+    private_subnet_ids = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]     # Enter Private Subnet IDs
 
     # EKS MANAGED ADD-ON VARIABLES
     enable_vpc_cni_addon     = true
     enable_coredns_addon     = true
     enable_kube_proxy_addon  = true
 
-    # EKS ADD-ON VARIABLES
-    aws_for_fluent_bit_enable           = true
-    aws_lb_ingress_controller_enable    = true
-    cert_manager_enable                 = true
+    # KUBERNETES ADD-ON VARIABLES
     cluster_autoscaler_enable           = true
     metrics_server_enable               = true
+    aws_lb_ingress_controller_enable    = true
+    aws_for_fluent_bit_enable           = true
+    cert_manager_enable                 = true
     nginx_ingress_controller_enable     = true
 
     # EKS MANAGED NODE GROUPS
-    enable_managed_nodegroups = true # default false
+    enable_managed_nodegroups = true    # default false
     managed_node_groups = {
-        mg_4 = {
+        mg_m4l = {
             node_group_name = "managed-ondemand"
             instance_types  = ["m4.large"]
-            subnet_ids      = module.aws_vpc.private_subnets
+            subnet_ids      = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]
         }
     }
 }
@@ -61,18 +62,18 @@ module "eks-ssp" {
 
 The code above will provision the following:
 
-✅  A new VPC with public and private subnets.\
 ✅  A new EKS Cluster with a managed node group.\
 ✅  EKS managed add-ons `vpc-cni`, `CoreDNS`, and `kube-proxy`.\
+✅  `Cluster Autoscaler` and `Metrics Server` for scaling your workloads.\
 ✅  `Fluent Bit` for routing metrics.\
 ✅  `AWS Load Balancer Controller` for distributing traffic.\
-✅  `Cluster Autoscaler` and `Metrics Server` for scaling your workloads.\
 ✅  `cert-manager` for managing SSL/TLS certificates.\
 ✅  `Nginx` for managing ingress.
 
 ## Add-ons
 
-This framework provides out of the box support for a wide range of popular Kubernetes add-ons. By default, the [Terraform Helm provider](https://github.com/hashicorp/terraform-provider-helm) is used to deploy add-ons with publicly available [Helm Charts](https://artifacthub.io/). The framework provides support however for leveraging self-hosted Helm Chart as well.
+This framework provides out of the box support for a wide range of popular Kubernetes add-ons. By default, the [Terraform Helm provider](https://github.com/hashicorp/terraform-provider-helm) is used to deploy add-ons with publicly available [Helm Charts](https://artifacthub.io/).
+The framework provides support however for leveraging self-hosted Helm Chart as well.
 
 For complete documentation on deploying add-ons, please visit our [add-on documentation](./docs/add-ons/index.md)
 
@@ -278,4 +279,3 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 ## License
 
 This library is licensed under the MIT-0 License. See the LICENSE file.
-
