@@ -23,7 +23,7 @@ enable_kube_proxy_addon     = true
 
 EKS won't modify any of your Kubernetes add-ons when you update a cluster to a newer Kubernetes version. As a result, it is important to upgrade EKS add-ons each time you upgrade an EKS cluster.
 
-Our [Cluster Upgrade](../cluster-upgrades.md) guide demonstrates how you can leverage this framework to upgrade your EKS cluster in addition to the EKS managed add-ons running in each cluster.
+Our [Cluster Upgrade](../advanced/cluster-upgrades.md) guide demonstrates how you can leverage this framework to upgrade your EKS cluster in addition to the EKS managed add-ons running in each cluster.
 
 Additional information on updating a EKS cluster can be found in the [EKS documentation](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html).
 

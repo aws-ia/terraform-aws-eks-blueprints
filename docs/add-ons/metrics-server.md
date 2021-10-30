@@ -6,7 +6,7 @@ Metrics Server is a scalable, efficient source of container resource metrics for
 
 ## Usage
 
-[Metrics Server](kubernetes-addons/metrics-server/README.md) can be deployed by enabling the add-on via the following.
+[Metrics Server](../../kubernetes-addons/metrics-server/README.md) can be deployed by enabling the add-on via the following.
 
 ```hcl
 metrics_server_enable = true

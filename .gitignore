@@ -10,3 +10,4 @@ kubeconfig*
 local_tf_state/
 .vscode
 .gitallowed
+site

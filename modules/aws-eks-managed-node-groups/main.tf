@@ -67,5 +67,4 @@ resource "aws_eks_node_group" "managed_ng" {
     aws_iam_role_policy_attachment.managed_ng_AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.managed_ng_AmazonEC2ContainerRegistryReadOnly,
   ]
-
 }
