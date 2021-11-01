@@ -15,19 +15,20 @@ This module deploys the necessary resources to run EMR Spark Jobs on EKS Cluster
 
 
 ```hcl
+  #---------------------------------------
+  # ENABLE EMR ON EKS
+  #---------------------------------------
   enable_emr_on_eks = true
 
   emr_on_eks_teams = {
     data_team_a = {
-      emr_on_eks_username = "emr-containers"
-      emr_on_eks_namespace = "spark"
-      emr_on_eks_iam_role_name = "EMRonEKSExecution"
+      emr_on_eks_namespace     = "emr-data-team-a"
+      emr_on_eks_iam_role_name = "emr-eks-data-team-a"
     }
 
     data_team_b = {
-      emr_on_eks_username = "data-team-b-user"
-      emr_on_eks_namespace = "data-team-b"
-      emr_on_eks_iam_role_name = "data_team_b"
+      emr_on_eks_namespace     = "emr-data-team-b"
+      emr_on_eks_iam_role_name = "emr-eks-data-team-b"
     }
   }
 ```

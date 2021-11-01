@@ -74,9 +74,9 @@ locals {
 
   # EMR on EKS IAM Roles for aws-auth
   emr_on_eks_config_map = var.enable_emr_on_eks == true ? [
-    for key, node in var.emr_on_eks_teams : {
+    {
       rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/AWSServiceRoleForAmazonEMRContainers"
-      username : "${node.emr_on_eks_username}"
+      username : "emr-containers"
       groups : []
     }
   ] : []
