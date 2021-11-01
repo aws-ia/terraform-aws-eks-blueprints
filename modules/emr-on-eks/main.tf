@@ -16,7 +16,7 @@ resource "kubernetes_namespace" "spark" {
 
 resource "kubernetes_role" "emr_containers" {
   metadata {
-    name      = local.emr_on_eks_team["emr_on_eks_username"]
+    name      = local.emr_service_name
     namespace = kubernetes_namespace.spark.id
   }
 
@@ -65,19 +65,19 @@ resource "kubernetes_role" "emr_containers" {
 
 resource "kubernetes_role_binding" "emr_containers" {
   metadata {
-    name      = local.emr_on_eks_team["emr_on_eks_username"]
+    name      = local.emr_service_name
     namespace = kubernetes_namespace.spark.id
   }
 
   subject {
     kind = "User"
-    name = local.emr_on_eks_team["emr_on_eks_username"]
+    name = local.emr_service_name
   }
 
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "Role"
-    name      = local.emr_on_eks_team["emr_on_eks_username"]
+    name      = local.emr_service_name
   }
 }
 
