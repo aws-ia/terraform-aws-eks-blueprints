@@ -14,13 +14,11 @@ The easiest way to get started with this framework is to follow our [Getting Sta
 
 ## Documentation
 
-For complete project documentation, please see our [official project documentation site](https://aws-ia.github.io/terraform-ssp-amazon-eks).
+For complete project documentation, please visit our [documentation directory](./docs).
 
 ## Patterns
 
-To view a library of examples for how you can leverage this framework, please see our [SSP Patterns](https://github.com/aws-samples/terraform-ssp-eks-patterns) repository.
-
-You can also find an expanded sample implementation that resides in this repository in the [deploy](./deploy/eks-cluster-with-new-vpc/main.tf) directory.
+To view examples for how you can leverage this framework, see the [deploy](./deploy) directory.
 
 ## Usage Example
 
