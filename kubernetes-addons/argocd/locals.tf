@@ -1,11 +1,11 @@
 
 locals {
-  default_argocd_helm_app = {
+  default_argocd_helm_chart = {
     name             = "argo-cd"
     chart            = "argo-cd"
     repository       = "https://argoproj.github.io/argo-helm"
     version          = "3.26.3"
-    namespace        = "argocd"
+    namespace        = "argocd-infra"
     timeout          = "1200"
     create_namespace = true
     values           = local.default_argocd_helm_values
@@ -40,8 +40,9 @@ locals {
     description                = "The argocd HelmChart Ingress Controller deployment configuration"
     postrender                 = ""
   }
+
   argocd_helm_app = merge(
-    local.default_argocd_helm_app,
+    local.default_argocd_helm_chart,
     var.argocd_helm_chart
   )
   default_argocd_helm_values = [templatefile("${path.module}/argocd-values.yaml", {})]

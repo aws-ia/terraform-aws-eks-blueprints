@@ -20,3 +20,8 @@ variable "argocd_helm_chart" {
   type    = any
   default = {}
 }
+
+variable "argocd_applications" {
+  type    = any
+  default = {}
+}
