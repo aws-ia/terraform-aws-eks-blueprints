@@ -1,11 +1,11 @@
 
 locals {
-  default_argocd_helm_chart = {
+  default_argocd_helm_app = {
     name             = "argo-cd"
     chart            = "argo-cd"
     repository       = "https://argoproj.github.io/argo-helm"
     version          = "3.26.3"
-    namespace        = "argocd-infra"
+    namespace        = "argocd"
     timeout          = "1200"
     create_namespace = true
     values           = local.default_argocd_helm_values
@@ -42,7 +42,7 @@ locals {
   }
 
   argocd_helm_app = merge(
-    local.default_argocd_helm_chart,
+    local.default_argocd_helm_app,
     var.argocd_helm_chart
   )
   default_argocd_helm_values = [templatefile("${path.module}/argocd-values.yaml", {})]
