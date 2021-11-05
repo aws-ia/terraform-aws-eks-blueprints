@@ -25,3 +25,8 @@ variable "argocd_applications" {
   type    = any
   default = {}
 }
+
+variable "eks_cluster_name" {
+  type        = string
+  description = "Name for the EKS Cluster"
+}

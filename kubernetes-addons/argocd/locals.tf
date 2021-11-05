@@ -40,10 +40,50 @@ locals {
     description                = "The argocd HelmChart Ingress Controller deployment configuration"
     postrender                 = ""
   }
-
   argocd_helm_app = merge(
     local.default_argocd_helm_app,
     var.argocd_helm_chart
   )
   default_argocd_helm_values = [templatefile("${path.module}/argocd-values.yaml", {})]
+
+  # Global Values for ArgoCD App of Apps.
+  global_values = {
+        region: data.aws_region.current.id
+        account: data.aws_caller_identity.current.account_id
+        clusterName: var.eks_cluster_name
+        
+        agones: {
+            enable: true
+        }
+        awsForFluentBit: {
+            enable: true
+        }
+        awsLoadBalancerController: {
+            enable: true
+        }
+        calico: {
+            enable: true
+        }
+        certManager: {
+            enable: true
+        }
+        clusterAutoscaler: {
+            enable: true
+        }
+        externalDns: {
+            enable: true
+        }
+        metricsServer: {
+            enable: true
+        }
+        nginx: {
+            enable: true
+        }
+        prometheus: {
+            enable: true
+        }
+        traefik: {
+            enable: true
+        }
+    } 
 }

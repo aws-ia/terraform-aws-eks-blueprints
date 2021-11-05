@@ -22,7 +22,6 @@ variable "aws_for_fluentbit_helm_chart" {
   default     = {}
 }
 
-
 variable "eks_cluster_id" {
   type        = string
   description = "EKS cluster Id"

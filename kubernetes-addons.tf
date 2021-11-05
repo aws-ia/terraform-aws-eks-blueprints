@@ -144,6 +144,7 @@ module "argocd" {
   source                = "./kubernetes-addons/argocd"
   argocd_helm_chart     = var.argocd_helm_chart
   argocd_applications   = var.argocd_applications
+  eks_cluster_name      = module.aws_eks.cluster_id
 
   depends_on = [module.aws_eks]
 }

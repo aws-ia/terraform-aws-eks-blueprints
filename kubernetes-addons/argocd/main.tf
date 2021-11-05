@@ -79,6 +79,26 @@ resource "helm_release" "argocd" {
 # ArgoCD App of Apps Bootstrapping
 # ---------------------------------------------------------------------------------------------------------------------
 
+//  resource "kubernetes_manifest" "argocd_repository_secret" {
+//     for_each = var.argocd_applications
+//     manifest = {
+//         apiVersion: "v1"
+//         kind: "Secret"
+//         metadata: {
+//             name: each.key
+//             namespace: each.value.namespace
+//             labels: {
+//                 "argocd.argoproj.io/secret-type": "repository"
+//             }
+//         }
+//         stringData: {
+//             url: each.value.repo_url
+//             sshPrivateKey: yamlencode(each.value.private_key)
+//         }
+//     }
+//     depends_on = [helm_release.argocd]
+// }
+
 resource "kubernetes_manifest" "argocd_application" {
     for_each = var.argocd_applications
     manifest = {
@@ -96,7 +116,10 @@ resource "kubernetes_manifest" "argocd_application" {
             project: each.value.project
             source: {
                 helm: {
-                    values: yamlencode(each.value.values)
+                    values: yamlencode(merge(
+                        each.value.values, 
+                        local.global_values
+                    ))
                 }
                 path: each.value.repo_path
                 repoURL: each.value.repo_url
@@ -112,3 +135,34 @@ resource "kubernetes_manifest" "argocd_application" {
     depends_on = [helm_release.argocd]
 }
 
+// resource "kubectl_manifest" "namespace" {
+//     yaml_body = yamlencode({
+//         apiVersion: "argoproj.io/v1alpha1"
+//         kind: "Application"
+//         metadata: {
+//             name: each.key
+//             namespace: each.value.namespace
+//         }
+//         spec: {
+//             destination: {
+//                 namespace: each.value.namespace
+//                 server: each.value.destination
+//             }
+//             project: each.value.project
+//             source: {
+//                 helm: {
+//                     values: yamlencode(each.value.values)
+//                 }
+//                 path: each.value.repo_path
+//                 repoURL: each.value.repo_url
+//                 targetRevision: each.value.target_revision
+//             }
+//             syncPolicy: {
+//                 automated: {
+//                     prune: true
+//                 }
+//             }
+//         }
+//     })
+//     depends_on = [helm_release.argocd]
+// }

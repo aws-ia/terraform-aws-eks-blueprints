@@ -43,7 +43,8 @@ locals {
   }
   agones_helm_app = merge(
     local.default_agones_helm_app,
-  var.agones_helm_chart)
+    var.agones_helm_chart
+  )
 
   default_agones_helm_values = [templatefile("${path.module}/agones-values.yaml", {})]
 
