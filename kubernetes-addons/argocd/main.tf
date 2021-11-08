@@ -79,26 +79,6 @@ resource "helm_release" "argocd" {
 # ArgoCD App of Apps Bootstrapping
 # ---------------------------------------------------------------------------------------------------------------------
 
-//  resource "kubernetes_manifest" "argocd_repository_secret" {
-//     for_each = var.argocd_applications
-//     manifest = {
-//         apiVersion: "v1"
-//         kind: "Secret"
-//         metadata: {
-//             name: each.key
-//             namespace: each.value.namespace
-//             labels: {
-//                 "argocd.argoproj.io/secret-type": "repository"
-//             }
-//         }
-//         stringData: {
-//             url: each.value.repo_url
-//             sshPrivateKey: yamlencode(each.value.private_key)
-//         }
-//     }
-//     depends_on = [helm_release.argocd]
-// }
-
 resource "kubernetes_manifest" "argocd_application" {
     for_each = var.argocd_applications
     manifest = {
