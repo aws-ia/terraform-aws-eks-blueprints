@@ -140,9 +140,11 @@ module "aws_opentelemetry_collector" {
 }
 
 module "argocd" {
-  count             = var.create_eks && var.argocd_enable ? 1 : 0
-  source            = "./kubernetes-addons/argocd"
-  argocd_helm_chart = var.argocd_helm_chart
+  count               = var.create_eks && var.argocd_enable ? 1 : 0
+  source              = "./kubernetes-addons/argocd"
+  argocd_helm_chart   = var.argocd_helm_chart
+  argocd_applications = var.argocd_applications
+  eks_cluster_name    = module.aws_eks.cluster_id
 
   depends_on = [module.aws_eks]
 }

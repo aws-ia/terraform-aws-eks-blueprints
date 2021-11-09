@@ -78,7 +78,6 @@ resource "helm_release" "prometheus" {
       value = each_item.value.value
     }
   }
-
 }
 
 resource "aws_security_group_rule" "agones_sg_ingress_rule" {

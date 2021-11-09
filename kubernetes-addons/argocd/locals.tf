@@ -45,4 +45,11 @@ locals {
     var.argocd_helm_chart
   )
   default_argocd_helm_values = [templatefile("${path.module}/argocd-values.yaml", {})]
+
+  # Global Values for ArgoCD App of Apps.
+  global_values = {
+    region : data.aws_region.current.id
+    account : data.aws_caller_identity.current.account_id
+    clusterName : var.eks_cluster_name
+  }
 }
