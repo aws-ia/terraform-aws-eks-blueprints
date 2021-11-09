@@ -17,13 +17,15 @@
  */
 
 variable "argocd_helm_chart" {
-  type    = any
-  default = {}
+  type        = any
+  default     = {}
+  description = "ArgoCD Helm Chart Config values"
 }
 
 variable "argocd_applications" {
-  type    = any
-  default = {}
+  type        = any
+  default     = {}
+  description = "ARGO CD Applications config to bootstrap the cluster"
 }
 
 variable "eks_cluster_name" {

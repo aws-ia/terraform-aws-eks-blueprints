@@ -80,37 +80,55 @@ resource "helm_release" "argocd" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "kubernetes_manifest" "argocd_application" {
-    for_each = var.argocd_applications
-    manifest = {
-        apiVersion: "argoproj.io/v1alpha1"
-        kind: "Application"
-        metadata: {
-            name: each.key
-            namespace: each.value.namespace
-        }
-        spec: {
-            destination: {
-                namespace: each.value.namespace
-                server: each.value.destination
-            }
-            project: each.value.project
-            source: {
-                helm: {
-                    values: yamlencode(merge(
-                        each.value.values, 
-                        local.global_values
-                    ))
-                }
-                path: each.value.repo_path
-                repoURL: each.value.repo_url
-                targetRevision: each.value.target_revision
-            }
-            syncPolicy: {
-                automated: {
-                    prune: true
-                }
-            }
-        }
+  for_each = var.argocd_applications
+
+  manifest = {
+    apiVersion : "argoproj.io/v1alpha1"
+    kind : "Application"
+    metadata : {
+      name : each.key
+      namespace : each.value.namespace
     }
-    depends_on = [helm_release.argocd]
+    spec : {
+      destination : {
+        namespace : each.value.namespace
+        server : each.value.destination
+      }
+      project : each.value.project
+      source : {
+        helm : {
+          releaseName = each.key
+          values : yamlencode(merge(
+            each.value.values,
+            local.global_values
+          ))
+        }
+        path : each.value.repo_path
+        repoURL : each.value.repo_url
+        targetRevision : each.value.target_revision
+      }
+      syncPolicy = {
+        automated = {
+          allowEmpty = false
+          prune      = true
+          selfHeal   = true
+        }
+        retry = {
+          backoff = {
+            duration    = "10s"
+            factor      = 2
+            maxDuration = "3m"
+          }
+          limit = 5
+        }
+        syncOptions = [
+          "Validate=false",                    # disables resource validation (equivalent to 'kubectl apply --validate=false') ( true by default )
+          "CreateNamespace=true",              # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
+          "PrunePropagationPolicy=foreground", # Supported policies are background, foreground and orphan.
+          "PruneLast=true",                    # Allow the ability for resource pruning to happen as a final, implicit wave of a sync operation
+        ]
+      }
+    }
+  }
+  depends_on = [helm_release.argocd]
 }

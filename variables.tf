@@ -372,7 +372,7 @@ variable "argocd_helm_chart" {
   description = "ARGO CD Kubernetes Addon Configuration"
 }
 variable "argocd_applications" {
-  type    = any
-  default = {}
-  description = "ARGO CD Applications used to bootstrap the cluster."
+  type        = any
+  default     = {}
+  description = "ARGO CD Applications config to bootstrap the cluster"
 }

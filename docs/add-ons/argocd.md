@@ -15,7 +15,7 @@ ArgoCD can be deployed by enabling the add-on via the following.
 argocd_enable = true
 ```
 
-You can optionally customize the Helm chart that deploys ArgoCD via the following configuration. 
+You can optionally customize the Helm chart that deploys ArgoCD via the following configuration.
 
 ```hcl
 argocd_helm_chart = {
@@ -30,9 +30,9 @@ argocd_helm_chart = {
 }
 ```
 
-### Boostrapping 
+### Boostrapping
 
-The framework provides an approach to bootstraping workloads and/or additional add-ons by leveraging the ArgoCD [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern. 
+The framework provides an approach to bootstraping workloads and/or additional add-ons by leveraging the ArgoCD [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern.
 
  The following code example demonstrates how you can supply information for a repository in order to bootstrap multiple workloads in a new EKS cluster. The example leverages a [sample App of Apps repository](https://github.com/aws-samples/ssp-eks-workloads.git) that ships with the EKS SSP solution.
 
