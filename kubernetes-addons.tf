@@ -150,7 +150,7 @@ module "argocd" {
 }
 
 locals {
-  asg_names = concat(data.aws_eks_node_group.cluster[*].resources[*].autoscaling_groups[*].name)
+  asg_names = concat(data.aws_eks_node_group.cluster.resources[*].autoscaling_groups[*].name)
 }
 module "aws_node_termination_handler" {
   count                                   = var.create_eks && var.aws_node_termination_handler_enable ? 1 : 0
