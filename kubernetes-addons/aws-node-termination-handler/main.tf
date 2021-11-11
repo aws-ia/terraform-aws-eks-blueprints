@@ -84,8 +84,8 @@ EOF
 resource "aws_cloudwatch_event_rule" "aws_node_termination_handler_rule" {
   count = length(local.rules)
 
-  name          = rules[count.index].name
-  event_pattern = rules[count.index].event_pattern
+  name          = local.rules[count.index].name
+  event_pattern = local.rules[count.index].event_pattern
 }
 
 resource "aws_cloudwatch_event_target" "aws_node_termination_handler_rule_target" {
