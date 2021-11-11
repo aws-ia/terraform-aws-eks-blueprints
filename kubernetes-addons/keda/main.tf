@@ -17,46 +17,46 @@
  */
 
 resource "helm_release" "keda" {
-  name                       = local.agones_helm_app["name"]
-  repository                 = local.agones_helm_app["repository"]
-  chart                      = local.agones_helm_app["chart"]
-  version                    = local.agones_helm_app["version"]
-  namespace                  = local.agones_helm_app["namespace"]
-  timeout                    = local.agones_helm_app["timeout"]
-  values                     = local.agones_helm_app["values"]
-  create_namespace           = local.agones_helm_app["create_namespace"]
-  lint                       = local.agones_helm_app["lint"]
-  description                = local.agones_helm_app["description"]
-  repository_key_file        = local.agones_helm_app["repository_key_file"]
-  repository_cert_file       = local.agones_helm_app["repository_cert_file"]
-  repository_ca_file         = local.agones_helm_app["repository_ca_file"]
-  repository_username        = local.agones_helm_app["repository_username"]
-  repository_password        = local.agones_helm_app["repository_password"]
-  verify                     = local.agones_helm_app["verify"]
-  keyring                    = local.agones_helm_app["keyring"]
-  disable_webhooks           = local.agones_helm_app["disable_webhooks"]
-  reuse_values               = local.agones_helm_app["reuse_values"]
-  reset_values               = local.agones_helm_app["reset_values"]
-  force_update               = local.agones_helm_app["force_update"]
-  recreate_pods              = local.agones_helm_app["recreate_pods"]
-  cleanup_on_fail            = local.agones_helm_app["cleanup_on_fail"]
-  max_history                = local.agones_helm_app["max_history"]
-  atomic                     = local.agones_helm_app["atomic"]
-  skip_crds                  = local.agones_helm_app["skip_crds"]
-  render_subchart_notes      = local.agones_helm_app["render_subchart_notes"]
-  disable_openapi_validation = local.agones_helm_app["disable_openapi_validation"]
-  wait                       = local.agones_helm_app["wait"]
-  wait_for_jobs              = local.agones_helm_app["wait_for_jobs"]
-  dependency_update          = local.agones_helm_app["dependency_update"]
-  replace                    = local.agones_helm_app["replace"]
+  name                       = local.keda_helm_app["name"]
+  repository                 = local.keda_helm_app["repository"]
+  chart                      = local.keda_helm_app["chart"]
+  version                    = local.keda_helm_app["version"]
+  namespace                  = local.keda_helm_app["namespace"]
+  timeout                    = local.keda_helm_app["timeout"]
+  values                     = local.keda_helm_app["values"]
+  create_namespace           = local.keda_helm_app["create_namespace"]
+  lint                       = local.keda_helm_app["lint"]
+  description                = local.keda_helm_app["description"]
+  repository_key_file        = local.keda_helm_app["repository_key_file"]
+  repository_cert_file       = local.keda_helm_app["repository_cert_file"]
+  repository_ca_file         = local.keda_helm_app["repository_ca_file"]
+  repository_username        = local.keda_helm_app["repository_username"]
+  repository_password        = local.keda_helm_app["repository_password"]
+  verify                     = local.keda_helm_app["verify"]
+  keyring                    = local.keda_helm_app["keyring"]
+  disable_webhooks           = local.keda_helm_app["disable_webhooks"]
+  reuse_values               = local.keda_helm_app["reuse_values"]
+  reset_values               = local.keda_helm_app["reset_values"]
+  force_update               = local.keda_helm_app["force_update"]
+  recreate_pods              = local.keda_helm_app["recreate_pods"]
+  cleanup_on_fail            = local.keda_helm_app["cleanup_on_fail"]
+  max_history                = local.keda_helm_app["max_history"]
+  atomic                     = local.keda_helm_app["atomic"]
+  skip_crds                  = local.keda_helm_app["skip_crds"]
+  render_subchart_notes      = local.keda_helm_app["render_subchart_notes"]
+  disable_openapi_validation = local.keda_helm_app["disable_openapi_validation"]
+  wait                       = local.keda_helm_app["wait"]
+  wait_for_jobs              = local.keda_helm_app["wait_for_jobs"]
+  dependency_update          = local.keda_helm_app["dependency_update"]
+  replace                    = local.keda_helm_app["replace"]
 
   postrender {
-    binary_path = local.agones_helm_app["postrender"]
+    binary_path = local.keda_helm_app["postrender"]
   }
 
   dynamic "set" {
     iterator = each_item
-    for_each = local.agones_helm_app["set"] == null ? [] : local.agones_helm_app["set"]
+    for_each = local.keda_helm_app["set"] == null ? [] : local.keda_helm_app["set"]
 
     content {
       name  = each_item.value.name
@@ -66,7 +66,7 @@ resource "helm_release" "keda" {
 
   dynamic "set_sensitive" {
     iterator = each_item
-    for_each = local.agones_helm_app["set_sensitive"] == null ? [] : local.agones_helm_app["set_sensitive"]
+    for_each = local.keda_helm_app["set_sensitive"] == null ? [] : local.keda_helm_app["set_sensitive"]
 
     content {
       name  = each_item.value.name

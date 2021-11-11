@@ -2,7 +2,7 @@ data "aws_region" "current" {}
 
 locals {
 
-  default_agones_helm_app = {
+  default_keda_helm_app = {
     name                       = "keda"
     chart                      = "keda"
     repository                 = "https://kedacore.github.io/charts"
@@ -12,7 +12,7 @@ locals {
     create_namespace           = true
     description                = "Keda Event-based autoscaler for workloads on Kubernetes"
     lint                       = false
-    values                     = local.default_agones_helm_values
+    values                     = local.default_keda_helm_values
     wait                       = true
     wait_for_jobs              = false
     verify                     = false
@@ -41,11 +41,11 @@ locals {
     gameserver_minport         = 7000
     gameserver_maxport         = 8000
   }
-  agones_helm_app = merge(
-    local.default_agones_helm_app,
+  keda_helm_app = merge(
+    local.default_keda_helm_app,
     var.keda_helm_chart
   )
 
-  default_agones_helm_values = [templatefile("${path.module}/keda-values.yaml", {})]
+  default_keda_helm_values = [templatefile("${path.module}/keda-values.yaml", {})]
 
 }
