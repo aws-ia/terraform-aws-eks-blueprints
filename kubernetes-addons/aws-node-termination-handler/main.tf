@@ -17,13 +17,13 @@
  */
 
 resource "helm_release" "aws_node_termination_handler" {
-  name                       = local.aws_node_termination_handler_helm_app["name"]
-  repository                 = local.aws_node_termination_handler_helm_app["repository"]
-  chart                      = local.aws_node_termination_handler_helm_app["chart"]
-  version                    = local.aws_node_termination_handler_helm_app["version"]
-  namespace                  = local.aws_node_termination_handler_helm_app["namespace"]
-  timeout                    = local.aws_node_termination_handler_helm_app["timeout"]
-  values                     = local.aws_node_termination_handler_helm_app["values"]
-  description                = local.aws_node_termination_handler_helm_app["description"]
-  verify                     = local.aws_node_termination_handler_helm_app["verify"]
+  name        = local.aws_node_termination_handler_helm_app["name"]
+  repository  = local.aws_node_termination_handler_helm_app["repository"]
+  chart       = local.aws_node_termination_handler_helm_app["chart"]
+  version     = local.aws_node_termination_handler_helm_app["version"]
+  namespace   = local.aws_node_termination_handler_helm_app["namespace"]
+  timeout     = local.aws_node_termination_handler_helm_app["timeout"]
+  values      = local.aws_node_termination_handler_helm_app["values"]
+  description = local.aws_node_termination_handler_helm_app["description"]
+  verify      = local.aws_node_termination_handler_helm_app["verify"]
 }

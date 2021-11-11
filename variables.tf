@@ -376,3 +376,14 @@ variable "argocd_applications" {
   default     = {}
   description = "ARGO CD Applications config to bootstrap the cluster"
 }
+#-----------AWS NODE TERMINATION HANDLER-------------
+variable "aws_node_termination_handler_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling AWS Node Termination Handler"
+}
+variable "aws_node_termination_handler_helm_chart" {
+  type        = any
+  description = "Helm chart definition for aws_node_termination_handler"
+  default     = {}
+}

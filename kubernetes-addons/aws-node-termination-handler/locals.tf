@@ -18,15 +18,15 @@
 
 locals {
   default_aws_node_termination_handler_helm_app = {
-    name             = "aws-node-termination-handler"
-    chart            = "aws-node-termination-handle"
-    repository       = "https://aws.github.io/eks-charts"
-    version          = "1.14.0"
-    namespace        = "kube-system"
-    timeout          = "1200"
-    values           = [templatefile("${path.module}/aws-node-termination-handler-values.yaml", {})]
-    verify           = false
-    description      = "The AWS Node Termination Handler Helm Chart deployment configuration"
+    name        = "aws-node-termination-handler"
+    chart       = "aws-node-termination-handle"
+    repository  = "https://aws.github.io/eks-charts"
+    version     = "1.14.0"
+    namespace   = "kube-system"
+    timeout     = "1200"
+    values      = [templatefile("${path.module}/aws-node-termination-handler-values.yaml", {})]
+    verify      = false
+    description = "The AWS Node Termination Handler Helm Chart deployment configuration"
   }
   aws_node_termination_handler_helm_app = merge(
     local.default_aws_node_termination_handler_helm_app,
