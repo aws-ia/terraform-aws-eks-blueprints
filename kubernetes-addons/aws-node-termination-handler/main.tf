@@ -26,6 +26,19 @@ resource "aws_autoscaling_lifecycle_hook" "aws_node_termination_handler_hook" {
   lifecycle_transition   = "autoscaling:EC2_INSTANCE_TERMINATING"
 }
 
+resource "aws_autoscaling_group_tag" "aws_node_termination_handler_tag" {
+  count = length(var.autoscaling_group_names)
+
+  autoscaling_group_name = var.autoscaling_group_names[count.index]
+
+  tag {
+    key   = "aws-node-termination-handler/managed"
+    value = "true"
+
+    propagate_at_launch = true
+  }
+}
+
 resource "helm_release" "aws_node_termination_handler" {
   name        = local.aws_node_termination_handler_helm_app["name"]
   repository  = local.aws_node_termination_handler_helm_app["repository"]
