@@ -19,7 +19,7 @@
 locals {
   default_aws_node_termination_handler_helm_app = {
     name        = "aws-node-termination-handler"
-    chart       = "aws-node-termination-handle"
+    chart       = "aws-node-termination-handler"
     repository  = "https://aws.github.io/eks-charts"
     version     = "0.16.0"
     namespace   = "kube-system"
