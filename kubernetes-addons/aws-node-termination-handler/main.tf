@@ -41,7 +41,7 @@ resource "aws_autoscaling_group_tag" "aws_node_termination_handler_tag" {
 
 
 resource "aws_sqs_queue" "aws_node_termination_handler_queue" {
-  name_prefix = "aws_node_termination_handler"
+  name_prefix               = "aws_node_termination_handler"
   message_retention_seconds = "300"
 }
 
@@ -49,19 +49,51 @@ resource "aws_sqs_queue_policy" "test" {
   queue_url = aws_sqs_queue.aws_node_termination_handler_queue.id
 
   policy = jsonencode({
-    Version: "2012-10-17"
-    Id: "MyQueuePolicy"
-    Statement: [{
-        Effect: "Allow"
-        Principal: {
-            Service: ["events.amazonaws.com", "sqs.amazonaws.com"]
-        }
-        Action: "sqs:SendMessage"
-        Resource: [
-          aws_sqs_queue.aws_node_termination_handler_queue.arn
-        ]
+    Version : "2012-10-17"
+    Id : "MyQueuePolicy"
+    Statement : [{
+      Effect : "Allow"
+      Principal : {
+        Service : ["events.amazonaws.com", "sqs.amazonaws.com"]
+      }
+      Action : "sqs:SendMessage"
+      Resource : [
+        aws_sqs_queue.aws_node_termination_handler_queue.arn
+      ]
     }]
   })
+}
+
+locals {
+  rules = [
+    {
+      name          = "ASGTermRule",
+      event_pattern = <<EOF
+{"source":["aws.autoscaling"],"detail-type":["EC2 Instance-terminate Lifecycle Action"]}
+EOF
+    },
+    {
+      name          = "SpotTermRule",
+      event_pattern = <<EOF
+{"source": ["aws.ec2"],"detail-type": ["EC2 Spot Instance Interruption Warning"]}
+EOF
+    }
+  ]
+}
+
+resource "aws_cloudwatch_event_rule" "aws_node_termination_handler_rule" {
+  count = length(local.rules)
+
+  name          = rules[count.index].name
+  event_pattern = rules[count.index].event_pattern
+}
+
+resource "aws_cloudwatch_event_target" "aws_node_termination_handler_rule_target" {
+  count = length(aws_cloudwatch_event_rule.aws_node_termination_handler_rule)
+
+  id     = "1"
+  rule   = aws_cloudwatch_event_rule.aws_node_termination_handler_rule[count.index].id
+  target = aws_sqs_queue.aws_node_termination_handler_queue.arn
 }
 
 resource "helm_release" "aws_node_termination_handler" {
