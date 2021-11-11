@@ -16,12 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
-data "aws_security_group" "eks_worker_group" {
-  id = var.eks_worker_security_group_id
-}
-
-resource "helm_release" "agones" {
+resource "helm_release" "keda" {
   name                       = local.agones_helm_app["name"]
   repository                 = local.agones_helm_app["repository"]
   chart                      = local.agones_helm_app["chart"]
@@ -78,14 +73,4 @@ resource "helm_release" "agones" {
       value = each_item.value.value
     }
   }
-}
-
-resource "aws_security_group_rule" "agones_sg_ingress_rule" {
-  type              = "ingress"
-  from_port         = local.agones_helm_app["gameserver_minport"]
-  to_port           = local.agones_helm_app["gameserver_maxport"]
-  protocol          = "udp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  ipv6_cidr_blocks  = ["::/0"]
-  security_group_id = data.aws_security_group.eks_worker_group.id
 }

@@ -1,11 +1,10 @@
 # Agones Helm Chart
 
-##What is Agones
+## Agones
 Agones is an Open source Kubernetes Controller with custom resource definitions and is used to create, run, manage and scale dedicated game server processes within Kubernetes clusters using standard Kubernetes tooling and APIs. This model also allows any matchmaker to interact directly with Agones via the Kubernetes API to provision a dedicated game server
 
-##What is GameLift
+## GameLift
 Amazon GameLift enables developers to deploy, operate, and scale dedicated, low-cost servers in the cloud for session-based, multiplayer games. Built on AWS global computing infrastructure, GameLift helps deliver high-performance, high-reliability, low-cost game servers while dynamically scaling your resource usage to meet worldwide player demand.
-
 
      https://github.com/googleforgames/agones/tree/main/install/helm/agones
      https://artifacthub.io/packages/helm/agones/agones

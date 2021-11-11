@@ -1,0 +1,25 @@
+
+image:
+  keda:
+    repository: ghcr.io/kedacore/keda
+    # Allows people to override tag if they don't want to use the app version
+    tag:
+  metricsApiServer:
+    repository: ghcr.io/kedacore/keda-metrics-apiserver
+    # Allows people to override tag if they don't want to use the app version
+    tag:
+  pullPolicy: Always
+
+operator:
+  name: keda-operator
+
+resources:
+  limits:
+    cpu: 1
+    memory: 1000Mi
+  requests:
+    cpu: 100m
+    memory: 100Mi
+
+nodeSelector:
+  kubernetes.io/os: linux

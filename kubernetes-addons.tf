@@ -148,3 +148,11 @@ module "argocd" {
 
   depends_on = [module.aws_eks]
 }
+
+module "keda" {
+  count           = var.create_eks && var.keda_enable ? 1 : 0
+  source          = "./kubernetes-addons/keda"
+  keda_helm_chart = var.keda_helm_chart
+
+  depends_on = [module.aws_eks]
+}

@@ -376,3 +376,14 @@ variable "argocd_applications" {
   default     = {}
   description = "ARGO CD Applications config to bootstrap the cluster"
 }
+#-----------ARGOCD ADDON-------------
+variable "keda_enable" {
+  type        = bool
+  default     = false
+  description = "Enable KEDA Event-based autoscaler for workloads on Kubernetes"
+}
+variable "keda_helm_chart" {
+  type        = any
+  default     = {}
+  description = "KEDA Event-based autoscaler Kubernetes Addon Configuration"
+}

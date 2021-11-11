@@ -61,6 +61,7 @@ module "aws_vpc" {
   enable_nat_gateway   = true
   create_igw           = true
   enable_dns_hostnames = true
+  single_nat_gateway   = true
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
