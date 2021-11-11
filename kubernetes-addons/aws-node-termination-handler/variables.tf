@@ -21,3 +21,8 @@ variable "aws_node_termination_handler_helm_chart" {
   type        = any
   default     = {}
 }
+
+variable "autoscaling_group_names" {
+  description = "EKS Node Group ASG names"
+  type        = list(string)
+}

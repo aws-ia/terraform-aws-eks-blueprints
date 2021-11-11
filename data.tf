@@ -44,3 +44,14 @@ data "http" "eks_cluster_readiness" {
   timeout        = 300
 
 }
+
+data "aws_eks_node_groups" "cluster" {
+  cluster_name = module.aws_eks.cluster_id
+}
+
+data "aws_eks_node_group" "cluster" {
+  for_each = data.aws_eks_node_groups.cluster.names
+
+  cluster_name    = module.aws_eks.cluster_id
+  node_group_name = each.value
+}

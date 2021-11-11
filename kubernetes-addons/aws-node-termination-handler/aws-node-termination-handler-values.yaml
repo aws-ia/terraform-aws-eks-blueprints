@@ -44,7 +44,8 @@ resources:
     cpu: "100m"
 
 # enableSqsTerminationDraining If true, this turns on queue-processor mode which drains nodes when an SQS termination event is received
-enableSqsTerminationDraining: false
+# original default: false
+enableSqsTerminationDraining: true
 
 # enableRebalanceMonitoring If true, cordon nodes when the rebalance recommendation notice is received
 enableRebalanceMonitoring: false
