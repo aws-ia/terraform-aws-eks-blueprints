@@ -39,6 +39,31 @@ resource "aws_autoscaling_group_tag" "aws_node_termination_handler_tag" {
   }
 }
 
+
+resource "aws_sqs_queue" "aws_node_termination_handler_queue" {
+  name_prefix = "aws_node_termination_handler"
+  message_retention_seconds = "300"
+}
+
+resource "aws_sqs_queue_policy" "test" {
+  queue_url = aws_sqs_queue.aws_node_termination_handler_queue.id
+
+  policy = jsonencode({
+    Version: "2012-10-17"
+    Id: "MyQueuePolicy"
+    Statement: [{
+        Effect: "Allow"
+        Principal: {
+            Service: ["events.amazonaws.com", "sqs.amazonaws.com"]
+        }
+        Action: "sqs:SendMessage"
+        Resource: [
+          aws_sqs_queue.aws_node_termination_handler_queue.arn
+        ]
+    }]
+  })
+}
+
 resource "helm_release" "aws_node_termination_handler" {
   name        = local.aws_node_termination_handler_helm_app["name"]
   repository  = local.aws_node_termination_handler_helm_app["repository"]
