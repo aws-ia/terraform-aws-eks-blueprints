@@ -79,19 +79,19 @@ EOF
 EOF
     },
     {
-      name = "RebalanceRule",
+      name          = "RebalanceRule",
       event_pattern = <<EOF
 {"source": ["aws.ec2"],"detail-type": ["EC2 Instance Rebalance Recommendation"]}
 EOF
     },
     {
-      name = "InstanceStateChangeRule",
+      name          = "InstanceStateChangeRule",
       event_pattern = <<EOF
 {"source": ["aws.ec2"],"detail-type": ["EC2 Instance State-change Notification"]}
 EOF
     },
     {
-      name = "ScheduledChangeRule",
+      name          = "ScheduledChangeRule",
       event_pattern = <<EOF
 {"source": ["aws.health"],"detail-type": ["AWS Health Event"]}
 EOF
@@ -114,13 +114,23 @@ resource "aws_cloudwatch_event_target" "aws_node_termination_handler_rule_target
 }
 
 resource "helm_release" "aws_node_termination_handler" {
-  name        = local.aws_node_termination_handler_helm_app["name"]
-  repository  = local.aws_node_termination_handler_helm_app["repository"]
-  chart       = local.aws_node_termination_handler_helm_app["chart"]
-  version     = local.aws_node_termination_handler_helm_app["version"]
-  namespace   = local.aws_node_termination_handler_helm_app["namespace"]
-  timeout     = local.aws_node_termination_handler_helm_app["timeout"]
-  values      = local.aws_node_termination_handler_helm_app["values"]
-  description = local.aws_node_termination_handler_helm_app["description"]
-  verify      = local.aws_node_termination_handler_helm_app["verify"]
+  name       = "aws-node-termination-handler"
+  repository = "https://aws.github.io/eks-charts"
+  chart      = "aws-node-termination-handler"
+  version    = "0.16.0"
+  namespace  = "kube-system"
+  verify     = false
+
+  set {
+    name  = "awsRegion"
+    value = data.aws_region.current.name
+  }
+  set {
+    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = module.iam_assumable_role_admin.iam_role_arn
+  }
+  set {
+    name  = "queueURL"
+    value = aws_sqs_queue.aws_node_termination_handler_queue.url
+  }
 }
