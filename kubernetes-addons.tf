@@ -151,7 +151,7 @@ module "argocd" {
 
 locals {
   asg_names = flatten([
-    for ng in data.aws_eks_node_groups.cluster: [
+    for ng in data.aws_eks_node_group.cluster: [
       ng.resources[*].autoscaling_groups[*].name
     ]
   ])
