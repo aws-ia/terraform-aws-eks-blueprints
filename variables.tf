@@ -376,7 +376,7 @@ variable "argocd_applications" {
   default     = {}
   description = "ARGO CD Applications config to bootstrap the cluster"
 }
-#-----------ARGOCD ADDON-------------
+#-----------KEDA ADDON-------------
 variable "keda_enable" {
   type        = bool
   default     = false
