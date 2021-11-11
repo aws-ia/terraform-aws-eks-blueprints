@@ -91,7 +91,6 @@ resource "aws_cloudwatch_event_rule" "aws_node_termination_handler_rule" {
 resource "aws_cloudwatch_event_target" "aws_node_termination_handler_rule_target" {
   count = length(aws_cloudwatch_event_rule.aws_node_termination_handler_rule)
 
-  id   = "1"
   rule = aws_cloudwatch_event_rule.aws_node_termination_handler_rule[count.index].id
   arn  = aws_sqs_queue.aws_node_termination_handler_queue.arn
 }
