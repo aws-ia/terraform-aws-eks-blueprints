@@ -21,7 +21,7 @@ locals {
     name        = "aws-node-termination-handler"
     chart       = "aws-node-termination-handle"
     repository  = "https://aws.github.io/eks-charts"
-    version     = "1.14.0"
+    version     = "0.16.0"
     namespace   = "kube-system"
     timeout     = "1200"
     values      = [templatefile("${path.module}/aws-node-termination-handler-values.yaml", {})]
