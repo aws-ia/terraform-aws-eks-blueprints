@@ -156,6 +156,6 @@ module "aws_node_termination_handler" {
   count                                   = var.create_eks && var.aws_node_termination_handler_enable ? 1 : 0
   source                                  = "./kubernetes-addons/aws-node-termination-handler"
   aws_node_termination_handler_helm_chart = var.aws_node_termination_handler_helm_chart
-  autoscaling_group_names                 = asg_names
+  autoscaling_group_names                 = local.asg_names
   depends_on                              = [module.aws_eks]
 }
