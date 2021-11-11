@@ -1,0 +1,245 @@
+# Default values for aws-node-termination-handler.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: public.ecr.aws/aws-ec2/aws-node-termination-handler
+  tag: v1.14.0
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+securityContext:
+  runAsUserID: 1000
+  runAsGroupID: 1000
+
+nameOverride: ""
+fullnameOverride: ""
+
+extraEnv: []
+
+priorityClassName: system-node-critical
+
+podAnnotations: {}
+linuxPodAnnotations: {}
+windowsPodAnnotations: {}
+
+podLabels: {}
+linuxPodLabels: {}
+windowsPodLabels: {}
+
+# liveness probe settings.
+probes:
+  httpGet:
+    path: /healthz
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "50m"
+  limits:
+    memory: "128Mi"
+    cpu: "100m"
+
+# enableSqsTerminationDraining If true, this turns on queue-processor mode which drains nodes when an SQS termination event is received
+enableSqsTerminationDraining: false
+
+# enableRebalanceMonitoring If true, cordon nodes when the rebalance recommendation notice is received
+enableRebalanceMonitoring: false
+
+# enableRebalanceDraining If true, drain nodes when the rebalance recommendation notice is received
+enableRebalanceDraining: false
+
+# queueURL Listens for messages on the specified SQS queue URL
+queueURL: ""
+
+# checkASGTagBeforeDraining  If true, check that the instance is tagged with "aws-node-termination-handler/managed" as the key before draining the node
+checkASGTagBeforeDraining: true
+
+# managedAsgTag  The tag to ensure is on a node if checkASGTagBeforeDraining is true
+managedAsgTag: "aws-node-termination-handler/managed"
+
+# awsRegion If specified, use the AWS region for AWS API calls
+awsRegion: ""
+
+# awsEndpoint If specified, use the AWS endpoint to make API calls.
+awsEndpoint: ""
+
+# These should only be used for testing w/ localstack!
+awsSecretAccessKey:
+awsAccessKeyID:
+
+# enableSpotInterruptionDraining If false, do not drain nodes when the spot interruption termination notice is received
+enableSpotInterruptionDraining: ""
+
+# enableScheduledEventDraining [EXPERIMENTAL] If true, drain nodes before the maintenance window starts for an EC2 instance scheduled event
+enableScheduledEventDraining: ""
+
+# Total number of times to try making the metadata request before failing.
+metadataTries: 3
+
+# Cordon but do not drain nodes upon spot interruption termination notice.
+cordonOnly: false
+
+# Taint node upon spot interruption termination notice.
+taintNode: false
+
+# Log messages in JSON format.
+jsonLogging: false
+
+# Sets the log level
+logLevel: "info"
+
+# dryRun tells node-termination-handler to only log calls to kubernetes control plane
+dryRun: false
+
+# deleteLocalData tells kubectl to continue even if there are pods using
+# emptyDir (local data that will be deleted when the node is drained).
+deleteLocalData: ""
+
+# ignoreDaemonSets causes kubectl to skip Daemon Set managed pods.
+ignoreDaemonSets: ""
+
+# gracePeriod (DEPRECATED - use podTerminationGracePeriod instead) is time in seconds given to each pod to terminate gracefully.
+# If negative, the default value specified in the pod will be used.
+gracePeriod: ""
+podTerminationGracePeriod: ""
+
+# nodeTerminationGracePeriod specifies the period of time in seconds given to each NODE to terminate gracefully. Node draining will be scheduled based on this value to optimize the amount of compute time, but still safely drain the node before an event.
+nodeTerminationGracePeriod: ""
+
+# webhookURL if specified, posts event data to URL upon instance interruption action.
+webhookURL: ""
+
+# Webhook URL will be fetched from the secret store using the given name.
+webhookURLSecretName: ""
+
+# webhookProxy if specified, uses this HTTP(S) proxy configuration.
+webhookProxy: ""
+
+# webhookHeaders if specified, replaces the default webhook headers.
+webhookHeaders: ""
+
+# webhook template file will be fetched from given config map name
+# if specified, replaces the default webhook message with the content of the template file
+webhookTemplateConfigMapName: ""
+
+# template file name stored in configmap
+webhookTemplateConfigMapKey: ""
+
+# webhookTemplate if specified, replaces the default webhook message template.
+webhookTemplate: ""
+
+# instanceMetadataURL is used to override the default metadata URL (default: http://169.254.169.254:80)
+instanceMetadataURL: ""
+
+# (TESTING USE): Mount path for uptime file
+procUptimeFile: ""
+
+# Create node OS specific daemonset(s). (e.g. "linux", "windows", "linux windows")
+targetNodeOs: "linux"
+
+# nodeSelector tells both linux and windows daemonsets where to place the node-termination-handler
+# pods. By default, this value is empty and every node will receive a pod.
+nodeSelector: {}
+# linuxNodeSelector tells the linux daemonset where to place the node-termination-handler
+# pods. By default, this value is empty and every linux node will receive a pod.
+linuxNodeSelector: {}
+# windowsNodeSelector tells the windows daemonset where to place the node-termination-handler
+# pods. By default, this value is empty and every windows node will receive a pod.
+windowsNodeSelector: {}
+
+nodeSelectorTermsOs: ""
+nodeSelectorTermsArch: ""
+
+enablePrometheusServer: false
+prometheusServerPort: 9092
+
+enableProbesServer: false
+probesServerPort: 8080
+probesServerEndpoint: "/healthz"
+
+# emitKubernetesEvents If true, Kubernetes events will be emitted when interruption events are received and when actions are taken on Kubernetes nodes. In IMDS Processor mode a default set of annotations with all the node metadata gathered from IMDS will be attached to each event
+emitKubernetesEvents: false
+
+# kubernetesEventsExtraAnnotations A comma-separated list of key=value extra annotations to attach to all emitted Kubernetes events
+# Example: "first=annotation,sample.annotation/number=two"
+kubernetesEventsExtraAnnotations: ""
+
+tolerations:
+  - operator: "Exists"
+
+affinity: {}
+linuxAffinity: {}
+windowsAffinity: {}
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use. If namenot set and create is true,
+  # a name is generated using fullname template
+  name:
+  annotations: {}
+    # eks.amazonaws.com/role-arn: arn:aws:iam::AWS_ACCOUNT_ID:role/IAM_ROLE_NAME
+
+rbac:
+  # rbac.pspEnabled: `true` if PodSecurityPolicy resources should be created
+  pspEnabled: true
+
+dnsPolicy: ""
+
+podMonitor:
+  # Specifies whether PodMonitor should be created
+  # this needs enableSqsTerminationDraining: false
+  # and enablePrometheusServer: true
+  create: false
+  # Specifies whether the PodMonitor should be created in a different namespace than
+  # the Helm release
+  namespace:
+  # Additional labels to add to the metadata
+  labels: {}
+  # The Prometheus scrape interval
+  interval: 30s
+  # The number of scraped samples that will be accepted
+  sampleLimit: 5000
+
+serviceMonitor:
+  # Specifies whether ServiceMonitor should be created
+  # this needs enableSqsTerminationDraining: rue
+  # and enablePrometheusServer: true
+  create: false
+  # Specifies whether the ServiceMonitor should be created in a different namespace than
+  # the Helm release
+  namespace:
+  # Additional labels to add to the metadata
+  labels: {}
+  # The Prometheus scrape interval
+  interval: 30s
+  # The number of scraped samples that will be accepted
+  sampleLimit: 5000
+
+# K8s DaemonSet update strategy.
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+linuxUpdateStrategy: ""
+windowsUpdateStrategy: ""
+
+# Determines if NTH uses host networking for Linux when running the DaemonSet (only IMDS mode; queue-processor never runs with host networking)
+# If you have disabled IMDSv1 and are relying on IMDSv2, you'll need to increase the IP hop count to 2 before switching this to false
+# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html
+useHostNetwork: true
+
+# The maximal amount of parallel event processors to handle concurrent events
+workers: 10
+
+# The number of replicas in the NTH deployment when using queue-processor mode (NOTE: increasing this may cause duplicate webhooks since NTH pods are stateless)
+replicas: 1
+
+# podDisruptionBudget specifies the disruption budget for the controller pods.
+# Disruption budget will be configured only when the replicaCount is greater than 1
+podDisruptionBudget: {}
+#  maxUnavailable: 1
