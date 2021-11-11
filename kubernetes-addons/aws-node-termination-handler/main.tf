@@ -77,6 +77,24 @@ EOF
       event_pattern = <<EOF
 {"source": ["aws.ec2"],"detail-type": ["EC2 Spot Instance Interruption Warning"]}
 EOF
+    },
+    {
+      name = "RebalanceRule",
+      event_pattern = <<EOF
+{"source": ["aws.ec2"],"detail-type": ["EC2 Instance Rebalance Recommendation"]}
+EOF
+    },
+    {
+      name = "InstanceStateChangeRule",
+      event_pattern = <<EOF
+{"source": ["aws.ec2"],"detail-type": ["EC2 Instance State-change Notification"]}
+EOF
+    },
+    {
+      name = "ScheduledChangeRule",
+      event_pattern = <<EOF
+{"source": ["aws.health"],"detail-type": ["AWS Health Event"]}
+EOF
     }
   ]
 }
