@@ -42,7 +42,7 @@ module "eks-ssp" {
     cluster_autoscaler_enable           = true
     metrics_server_enable               = true
     aws_lb_ingress_controller_enable    = true
-    aws_for_fluent_bit_enable           = true
+    aws_for_fluentbit_enable           = true
     cert_manager_enable                 = true
     nginx_ingress_controller_enable     = true
 
