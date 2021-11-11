@@ -20,7 +20,7 @@ resource "aws_autoscaling_lifecycle_hook" "aws_node_termination_handler_hook" {
   count = length(var.autoscaling_group_names)
 
   name                   = "aws_node_termination_handler_hook"
-  autoscaling_group_name = var.autoscaling_group_name[count.index]
+  autoscaling_group_name = var.autoscaling_group_names[count.index]
   default_result         = "CONTINUE"
   heartbeat_timeout      = 300
   lifecycle_transition   = "autoscaling:EC2_INSTANCE_TERMINATING"
