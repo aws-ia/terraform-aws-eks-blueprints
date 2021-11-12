@@ -93,52 +93,9 @@ module "irsa" {
 resource "aws_iam_policy" "keda_irsa" {
   count = var.keda_create_irsa ? 1 : 0
 
+  description = "KEDA IAM role policy for SQS and CloudWatch"
   name        = "${var.eks_cluster_name}-${local.keda_helm_app["name"]}-irsa"
   path        = var.iam_role_path
-  description = "KEDA IAM role policy for SQS and CloudWatch"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "sqs:GetQueueUrl",
-        "sqs:ListDeadLetterSourceQueues",
-        "sqs:ReceiveMessage",
-        "sqs:GetQueueAttributes",
-        "sqs:ListQueueTags",
-        "cloudwatch:DescribeAlarmHistory",
-        "cloudwatch:GetDashboard",
-        "cloudwatch:GetInsightRuleReport",
-        "cloudwatch:ListTagsForResource",
-        "cloudwatch:DescribeAlarms",
-        "cloudwatch:GetMetricStream"
-      ],
-      "Resource": [
-        "arn:aws:cloudwatch:*:${data.aws_caller_identity.current.account_id}:metric-stream/*",
-        "arn:aws:sqs:*:${data.aws_caller_identity.current.account_id}:*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "cloudwatch:DescribeInsightRules",
-        "sqs:ListQueues",
-        "cloudwatch:GetMetricData",
-        "cloudwatch:ListMetricStreams",
-        "cloudwatch:DescribeAlarmsForMetric",
-        "cloudwatch:ListDashboards",
-        "cloudwatch:GetMetricStatistics",
-        "cloudwatch:GetMetricWidgetImage",
-        "cloudwatch:ListMetrics",
-        "cloudwatch:DescribeAnomalyDetectors"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
+  policy      = file("${path.module}/keda-default-iam-policy.json")
 
 }

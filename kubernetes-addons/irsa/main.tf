@@ -17,21 +17,21 @@
  */
 
 # Kubernetes Namesapce
-resource "kubernetes_namespace" "ns" {
+resource "kubernetes_namespace" "add_on_ns" {
   metadata {
     name = var.kubernetes_namespace
 
     labels = {
-      "app.kubernetes.io/managed-by" = "terraform-aws-eks-accelerator"
+      "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
     }
   }
 }
 
 # Kubernetes service account
-resource "kubernetes_service_account" "keda_sa" {
+resource "kubernetes_service_account" "add_on_sa" {
   metadata {
     name        = var.kubernetes_service_account
-    namespace   = kubernetes_namespace.ns.id
+    namespace   = kubernetes_namespace.add_on_ns.id
     annotations = { "eks.amazonaws.com/role-arn" : aws_iam_role.irsa.arn }
   }
   automount_service_account_token = true
