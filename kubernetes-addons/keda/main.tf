@@ -16,15 +16,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+data "aws_caller_identity" "current" {}
+
 resource "helm_release" "keda" {
   name                       = local.keda_helm_app["name"]
   repository                 = local.keda_helm_app["repository"]
   chart                      = local.keda_helm_app["chart"]
   version                    = local.keda_helm_app["version"]
-  namespace                  = local.keda_helm_app["namespace"]
   timeout                    = local.keda_helm_app["timeout"]
   values                     = local.keda_helm_app["values"]
-  create_namespace           = local.keda_helm_app["create_namespace"]
+  create_namespace           = var.keda_create_irsa ? false : local.keda_helm_app["create_namespace"]
+  namespace                  = var.keda_create_irsa ? local.keda_namespace : local.keda_helm_app["namespace"]
   lint                       = local.keda_helm_app["lint"]
   description                = local.keda_helm_app["description"]
   repository_key_file        = local.keda_helm_app["repository_key_file"]
@@ -56,7 +58,7 @@ resource "helm_release" "keda" {
 
   dynamic "set" {
     iterator = each_item
-    for_each = local.keda_helm_app["set"] == null ? [] : local.keda_helm_app["set"]
+    for_each = var.keda_create_irsa ? distinct(concat(local.irsa_set_values, local.keda_helm_app["set"])) : local.keda_helm_app["set"]
 
     content {
       name  = each_item.value.name
@@ -73,4 +75,70 @@ resource "helm_release" "keda" {
       value = each_item.value.value
     }
   }
+
+  depends_on = [module.irsa]
+}
+
+module "irsa" {
+  count = var.keda_create_irsa ? 1 : 0
+
+  source                     = "../irsa"
+  eks_cluster_name           = var.eks_cluster_name
+  kubernetes_namespace       = local.keda_namespace
+  kubernetes_service_account = local.keda_service_account_name
+  irsa_iam_policies          = concat([aws_iam_policy.keda_irsa[0].arn], var.keda_irsa_policies)
+  tags                       = var.tags
+}
+
+resource "aws_iam_policy" "keda_irsa" {
+  count = var.keda_create_irsa ? 1 : 0
+
+  name        = "${var.eks_cluster_name}-${local.keda_helm_app["name"]}-irsa"
+  path        = var.iam_role_path
+  description = "KEDA IAM role policy for SQS and CloudWatch"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sqs:GetQueueUrl",
+        "sqs:ListDeadLetterSourceQueues",
+        "sqs:ReceiveMessage",
+        "sqs:GetQueueAttributes",
+        "sqs:ListQueueTags",
+        "cloudwatch:DescribeAlarmHistory",
+        "cloudwatch:GetDashboard",
+        "cloudwatch:GetInsightRuleReport",
+        "cloudwatch:ListTagsForResource",
+        "cloudwatch:DescribeAlarms",
+        "cloudwatch:GetMetricStream"
+      ],
+      "Resource": [
+        "arn:aws:cloudwatch:*:${data.aws_caller_identity.current.account_id}:metric-stream/*",
+        "arn:aws:sqs:*:${data.aws_caller_identity.current.account_id}:*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:DescribeInsightRules",
+        "sqs:ListQueues",
+        "cloudwatch:GetMetricData",
+        "cloudwatch:ListMetricStreams",
+        "cloudwatch:DescribeAlarmsForMetric",
+        "cloudwatch:ListDashboards",
+        "cloudwatch:GetMetricStatistics",
+        "cloudwatch:GetMetricWidgetImage",
+        "cloudwatch:ListMetrics",
+        "cloudwatch:DescribeAnomalyDetectors"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+
 }

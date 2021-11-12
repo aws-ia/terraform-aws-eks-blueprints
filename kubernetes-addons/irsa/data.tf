@@ -16,23 +16,28 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "lb_ingress_controller_helm_app" {
-  type        = any
-  description = "Helm chart definition for lb_ingress_controller."
-  default     = {}
+# Assume role policy for your service account
+data "aws_iam_policy_document" "irsa_with_oidc" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    principals {
+      type        = "Federated"
+      identifiers = [local.eks_oidc_provider_arn]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "${local.eks_oidc_issuer_url}:sub"
+      values   = ["system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}"]
+    }
+  }
 }
 
-variable "eks_cluster_id" {
-  type        = string
-  description = "EKS cluster Id"
+data "aws_eks_cluster" "eks_cluster" {
+  name = var.eks_cluster_name
 }
 
-variable "eks_oidc_issuer_url" {
-  type        = string
-  description = "The URL on the EKS cluster OIDC Issuer"
-}
+data "aws_partition" "current" {}
 
-variable "eks_oidc_provider_arn" {
-  type        = string
-  description = "The ARN of the OIDC Provider if `enable_irsa = true`."
-}
+data "aws_caller_identity" "current" {}

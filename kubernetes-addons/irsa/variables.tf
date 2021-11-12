@@ -16,23 +16,31 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "lb_ingress_controller_helm_app" {
-  type        = any
-  description = "Helm chart definition for lb_ingress_controller."
-  default     = {}
+variable "kubernetes_namespace" {
+  description = "Kubernetes Namespace name"
 }
 
-variable "eks_cluster_id" {
-  type        = string
-  description = "EKS cluster Id"
+variable "kubernetes_service_account" {
+  description = "Kubernetes Service Account Name"
 }
 
-variable "eks_oidc_issuer_url" {
+variable "eks_cluster_name" {
   type        = string
-  description = "The URL on the EKS cluster OIDC Issuer"
+  description = "EKS Cluster Id"
 }
 
-variable "eks_oidc_provider_arn" {
+variable "iam_role_path" {
   type        = string
-  description = "The ARN of the OIDC Provider if `enable_irsa = true`."
+  default     = "/"
+  description = "IAM Role path"
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "Common tags for AWS resources"
+}
+
+variable "irsa_iam_policies" {
+  type        = list(string)
+  description = "IAM Policies for IRSA IAM role"
 }

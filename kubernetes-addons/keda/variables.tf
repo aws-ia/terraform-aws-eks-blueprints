@@ -21,3 +21,29 @@ variable "keda_helm_chart" {
   default     = {}
   description = "Keda Event-based autoscaler for workloads on Kubernetes Helm chart config"
 }
+
+variable "eks_cluster_name" {
+  type        = string
+  description = "EKS Cluster Id"
+}
+
+variable "iam_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM role path"
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "Common Tags for AWS resources"
+}
+
+variable "keda_create_irsa" {
+  type        = bool
+  description = "Indicates if the add-on should create a IAM role + service account"
+}
+
+variable "keda_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+}

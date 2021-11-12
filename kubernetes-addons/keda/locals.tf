@@ -1,6 +1,33 @@
-data "aws_region" "current" {}
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: MIT-0
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ * software and associated documentation files (the "Software"), to deal in the Software
+ * without restriction, including without limitation the rights to use, copy, modify,
+ * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 locals {
+  keda_service_account_name = "keda-operator"
+  keda_namespace            = "keda-ns"
+
+  irsa_set_values = [{
+    name  = "serviceAccount.create"
+    value = "false"
+    },
+    {
+      name  = "serviceAccount.name"
+      value = local.keda_service_account_name
+  }]
 
   default_keda_helm_app = {
     name                       = "keda"
@@ -9,15 +36,12 @@ locals {
     version                    = "2.4.0"
     namespace                  = "keda"
     timeout                    = "1200"
-    create_namespace           = true
+    create_namespace           = false
     description                = "Keda Event-based autoscaler for workloads on Kubernetes"
     lint                       = false
-    values                     = local.default_keda_helm_values
     wait                       = true
     wait_for_jobs              = false
     verify                     = false
-    set                        = null
-    set_sensitive              = null
     keyring                    = ""
     repository_key_file        = ""
     repository_cert_file       = ""
@@ -38,14 +62,18 @@ locals {
     dependency_update          = false
     replace                    = false
     postrender                 = ""
-    gameserver_minport         = 7000
-    gameserver_maxport         = 8000
+    set                        = []
+    set_sensitive              = []
+    values                     = local.default_keda_helm_values
   }
   keda_helm_app = merge(
     local.default_keda_helm_app,
     var.keda_helm_chart
   )
 
-  default_keda_helm_values = [templatefile("${path.module}/keda-values.yaml", {})]
+  default_keda_helm_values = [templatefile("${path.module}/keda-values.yaml", {
+    keda-sa-name = local.keda_service_account_name
+  })]
+
 
 }

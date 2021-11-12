@@ -387,3 +387,13 @@ variable "keda_helm_chart" {
   default     = {}
   description = "KEDA Event-based autoscaler Kubernetes Addon Configuration"
 }
+variable "keda_create_irsa" {
+  type        = bool
+  description = "Indicates if the add-on should create a IAM role + service account"
+  default     = true
+}
+variable "keda_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
