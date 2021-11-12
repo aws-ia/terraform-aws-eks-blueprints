@@ -35,20 +35,28 @@ No requirements.
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_irsa"></a> [irsa](#module\_irsa) | ../irsa | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
+| [aws_iam_policy.keda_irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [helm_release.keda](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
-| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | EKS Cluster Id | `string` | n/a | yes |
+| <a name="input_iam_role_path"></a> [iam\_role\_path](#input\_iam\_role\_path) | IAM role path | `string` | `"/"` | no |
+| <a name="input_keda_create_irsa"></a> [keda\_create\_irsa](#input\_keda\_create\_irsa) | Indicates if the add-on should create a IAM role + service account | `bool` | n/a | yes |
 | <a name="input_keda_helm_chart"></a> [keda\_helm\_chart](#input\_keda\_helm\_chart) | Keda Event-based autoscaler for workloads on Kubernetes Helm chart config | `any` | `{}` | no |
+| <a name="input_keda_irsa_policies"></a> [keda\_irsa\_policies](#input\_keda\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | Common Tags for AWS resources | `map(string)` | n/a | yes |
 
 ## Outputs
 
