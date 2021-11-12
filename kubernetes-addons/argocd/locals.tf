@@ -1,19 +1,17 @@
 
 locals {
+  default_helm_values = [templatefile("${path.module}/argocd-values.yaml", {})]
+
   default_argocd_helm_app = {
-    name             = "argo-cd"
-    chart            = "argo-cd"
-    repository       = "https://argoproj.github.io/argo-helm"
-    version          = "3.26.3"
-    namespace        = "argocd"
-    timeout          = "1200"
-    create_namespace = true
-    values           = local.default_argocd_helm_values
-    set = [{
-      name  = "nodeSelector.kubernetes\\.io/os"
-      value = "linux"
-    }]
-    set_sensitive              = null
+    name             				 	 = "argo-cd"
+    chart            					 = "argo-cd"
+    repository       					 = "https://argoproj.github.io/argo-helm"
+    version          					 = "3.26.8"
+    namespace        					 = "argocd"
+    timeout          					 = "1200"
+    create_namespace 					 = true
+    values           					 = local.default_helm_values
+    set_sensitive							 = null
     lint                       = false
     verify                     = false
     keyring                    = ""
@@ -40,11 +38,11 @@ locals {
     description                = "The argocd HelmChart Ingress Controller deployment configuration"
     postrender                 = ""
   }
+
   argocd_helm_app = merge(
     local.default_argocd_helm_app,
     var.argocd_helm_chart
   )
-  default_argocd_helm_values = [templatefile("${path.module}/argocd-values.yaml", {})]
 
   # Global Values for ArgoCD App of Apps.
   global_values = {

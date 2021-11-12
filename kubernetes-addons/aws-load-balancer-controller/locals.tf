@@ -1,21 +1,25 @@
+data "aws_region" "current" {}
 
 locals {
-  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
+  default_helm_values = [templatefile("${path.module}/values.yaml", {
+		aws_region    = data.aws_region.current.name,
+		cluster_name	= var.eks_cluster_id
+  })]
 
-  default_windows_vpc_controllers_helm_app = {
-    name             						= "windows-vpc-controllers"
-    chart            						= "windows-vpc-controllers"
-    repository       						= "https://charts.jetstack.io"
-    version          						= "v1.5.4"
+  default_lb_ingress_controller_helm_app = {
+    name             						= "aws-load-balancer-controller"
+    chart            						= "aws-load-balancer-controller"
+    repository       						= "https://aws.github.io/eks-charts"
+    version          						= "1.3.1"	
     namespace        						= "kube-system"
-    timeout          						= "600"
-    create_namespace 						= false
+    timeout          						= "1200"	
+    create_namespace 						= false	
+    values 											= local.default_helm_values
     set_sensitive              	= null
-    lint                       	= false
-    values                     	= local.default_helm_values
+    lint                       	= true
     wait                       	= true
     wait_for_jobs              	= false
-    description                	= "Cert Manager Helm chart deployment configuration"
+    description                	= "aws-lb-ingress-controller Helm Chart for ingress resources"
     verify                     	= false
     keyring                    	= ""
     repository_key_file        	= ""
@@ -39,8 +43,8 @@ locals {
     postrender                 	= ""
   }
 
-  windows_vpc_controllers_helm_app = merge(
-    local.default_windows_vpc_controllers_helm_app,
-  	var.windows_vpc_controllers_helm_chart
+  lb_ingress_controller_helm_app = merge(
+    local.default_lb_ingress_controller_helm_app,
+  	var.lb_ingress_controller_helm_app
 	)
 }

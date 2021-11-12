@@ -74,5 +74,4 @@ resource "helm_release" "cluster_autoscaler" {
       value = each_item.value.value
     }
   }
-
 }
