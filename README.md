@@ -216,8 +216,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_fargate_fluentbit_config"></a> [fargate\_fluentbit\_config](#input\_fargate\_fluentbit\_config) | Fargate fluentbit configuration | `any` | `{}` | no |
 | <a name="input_fargate_fluentbit_enable"></a> [fargate\_fluentbit\_enable](#input\_fargate\_fluentbit\_enable) | Enabling fargate\_fluent\_bit module on eks cluster | `bool` | `false` | no |
 | <a name="input_fargate_profiles"></a> [fargate\_profiles](#input\_fargate\_profiles) | Fargate Profile configuration | `any` | `{}` | no |
+| <a name="input_keda_create_irsa"></a> [keda\_create\_irsa](#input\_keda\_create\_irsa) | Indicates if the add-on should create a IAM role + service account | `bool` | `true` | no |
 | <a name="input_keda_enable"></a> [keda\_enable](#input\_keda\_enable) | Enable KEDA Event-based autoscaler for workloads on Kubernetes | `bool` | `false` | no |
 | <a name="input_keda_helm_chart"></a> [keda\_helm\_chart](#input\_keda\_helm\_chart) | KEDA Event-based autoscaler Kubernetes Addon Configuration | `any` | `{}` | no |
+| <a name="input_keda_irsa_policies"></a> [keda\_irsa\_policies](#input\_keda\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
 | <a name="input_kube_proxy_addon_version"></a> [kube\_proxy\_addon\_version](#input\_kube\_proxy\_addon\_version) | KubeProxy Addon version | `string` | `"v1.20.4-eksbuild.2"` | no |
 | <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | Desired Kubernetes master version. If you do not specify a value, the latest available version is used | `string` | `"1.21"` | no |
 | <a name="input_managed_node_groups"></a> [managed\_node\_groups](#input\_managed\_node\_groups) | Managed Node groups configuration | `any` | `{}` | no |
