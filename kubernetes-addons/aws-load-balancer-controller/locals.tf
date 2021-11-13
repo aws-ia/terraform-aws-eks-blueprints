@@ -1,9 +1,12 @@
 data "aws_region" "current" {}
 
 locals {
+	aws_load_balancer_controller_sa = "aws-load-balancer-controller-sa"
+
   default_helm_values = [templatefile("${path.module}/values.yaml", {
-		aws_region    = data.aws_region.current.name,
-		cluster_name	= var.eks_cluster_id
+		aws_region    				= data.aws_region.current.name,
+		cluster_name					= var.eks_cluster_id,
+		service_account_name	= local.aws_load_balancer_controller_sa
   })]
 
   default_lb_ingress_controller_helm_app = {
@@ -15,11 +18,12 @@ locals {
     timeout          						= "1200"	
     create_namespace 						= false	
     values 											= local.default_helm_values
+		set												 	= []
     set_sensitive              	= null
     lint                       	= true
     wait                       	= true
     wait_for_jobs              	= false
-    description                	= "aws-lb-ingress-controller Helm Chart for ingress resources"
+    description                	= "aws-load-balancer-controller Helm Chart for ingress resources"
     verify                     	= false
     keyring                    	= ""
     repository_key_file        	= ""

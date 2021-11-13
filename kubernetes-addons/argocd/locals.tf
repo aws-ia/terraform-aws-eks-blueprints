@@ -1,6 +1,6 @@
 
 locals {
-  default_helm_values = [templatefile("${path.module}/argocd-values.yaml", {})]
+  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
   default_argocd_helm_app = {
     name             				 	 = "argo-cd"
@@ -11,7 +11,8 @@ locals {
     timeout          					 = "1200"
     create_namespace 					 = true
     values           					 = local.default_helm_values
-    set_sensitive							 = null
+    set												 = []
+		set_sensitive							 = null
     lint                       = false
     verify                     = false
     keyring                    = ""

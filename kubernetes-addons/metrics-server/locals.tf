@@ -8,6 +8,7 @@ locals {
     namespace                   = "kube-system"
     timeout                     = "1200"
     create_namespace            = false
+		set												 	= []
     set_sensitive               = null
     lint                        = false
     values                      = null

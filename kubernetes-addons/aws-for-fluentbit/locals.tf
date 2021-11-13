@@ -18,6 +18,7 @@ locals {
     aws_for_fluent_bit_cw_log_group           = local.log_group_name
     aws_for_fluentbit_cwlog_retention_in_days = 90
     values 																		= local.default_helm_values
+		set												 								= []
     set_sensitive              								= null
     lint                       								= true
     wait                       								= true

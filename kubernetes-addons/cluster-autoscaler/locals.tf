@@ -40,6 +40,7 @@ locals {
     replace                    = false
     description                = "Cluster AutoScaler helm Chart deployment configuration"
     postrender                 = ""
+		set												 = []
     set_sensitive = null
   }
 

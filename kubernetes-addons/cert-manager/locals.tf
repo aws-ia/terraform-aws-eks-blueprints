@@ -10,6 +10,7 @@ locals {
     namespace        					 = "kube-system"
     timeout          					 = "600"
     create_namespace 					 = false
+		set												 = []
     set_sensitive              = null
     lint                       = false
     values                     = local.default_helm_values

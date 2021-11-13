@@ -17,7 +17,7 @@ locals {
     wait                       = true
     wait_for_jobs              = false
     verify                     = false
-    set                        = null
+    set                        = []
     set_sensitive              = null
     keyring                    = ""
     repository_key_file        = ""

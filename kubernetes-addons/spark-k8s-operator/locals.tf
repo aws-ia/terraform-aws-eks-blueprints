@@ -9,6 +9,7 @@ locals {
     timeout          						= "1200"
     create_namespace 						= true
     values           						= null
+		set												 	= []
     set_sensitive              	= null
     lint                       	= false
     verify                     	= false

@@ -1,5 +1,7 @@
 # Prometheus Helm Chart
 
+https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-onboard-ingest-metrics-new-Prometheus.html
+
 ###### Instructions to upload Prometheus Docker image to AWS ECR
 
 Step1: Get the latest docker image from this link
