@@ -3,16 +3,16 @@ locals {
   default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
   default_argocd_helm_app = {
-    name             				 	 = "argo-cd"
-    chart            					 = "argo-cd"
-    repository       					 = "https://argoproj.github.io/argo-helm"
-    version          					 = "3.26.8"
-    namespace        					 = "argocd"
-    timeout          					 = "1200"
-    create_namespace 					 = true
-    values           					 = local.default_helm_values
-    set												 = []
-		set_sensitive							 = null
+    name                       = "argo-cd"
+    chart                      = "argo-cd"
+    repository                 = "https://argoproj.github.io/argo-helm"
+    version                    = "3.26.8"
+    namespace                  = "argocd"
+    timeout                    = "1200"
+    create_namespace           = true
+    values                     = local.default_helm_values
+    set                        = []
+    set_sensitive              = null
     lint                       = false
     verify                     = false
     keyring                    = ""

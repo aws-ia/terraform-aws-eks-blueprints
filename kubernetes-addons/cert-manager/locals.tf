@@ -1,16 +1,16 @@
 
 locals {
-	default_helm_values = [templatefile("${path.module}/values.yaml", {})]
+  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
   default_cert_manager_helm_app = {
-    name             					 = "cert-manager"
-    chart            					 = "cert-manager"
-    repository       					 = "https://charts.jetstack.io"
-    version          					 = "v1.6.1"
-    namespace        					 = "kube-system"
-    timeout          					 = "600"
-    create_namespace 					 = false
-		set												 = []
+    name                       = "cert-manager"
+    chart                      = "cert-manager"
+    repository                 = "https://charts.jetstack.io"
+    version                    = "v1.6.1"
+    namespace                  = "kube-system"
+    timeout                    = "600"
+    create_namespace           = false
+    set                        = []
     set_sensitive              = null
     lint                       = false
     values                     = local.default_helm_values
@@ -42,7 +42,7 @@ locals {
     # See ./cert-manager-ca/templates/ca.yaml
     install_default_ca = true
   }
-	
+
   cert_manager_helm_app = merge(
     local.default_cert_manager_helm_app,
     var.cert_manager_helm_chart

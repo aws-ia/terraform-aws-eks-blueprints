@@ -12,9 +12,9 @@ locals {
     aws_open_telemetry_mg_node_iam_role_arns            = []
     aws_open_telemetry_self_mg_node_iam_role_arns       = []
   }
-	
+
   aws_open_telemetry_app = merge(
     local.default_aws_open_telemetry_helm_app,
     var.aws_open_telemetry_addon
-	)
+  )
 }

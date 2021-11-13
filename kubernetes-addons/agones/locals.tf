@@ -1,9 +1,9 @@
 data "aws_region" "current" {}
 
 locals {
-	default_helm_values = [templatefile("${path.module}/values.yaml", {})]
+  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
-  default_agones_helm_chart = {
+  default_agones_helm_app = {
     name                       = "agones"
     chart                      = "agones"
     repository                 = "https://agones.dev/chart/stable"
@@ -42,9 +42,9 @@ locals {
     gameserver_minport         = 7000
     gameserver_maxport         = 8000
   }
-  
+
   agones_helm_app = merge(
-    local.default_agones_helm_chart,
+    local.default_agones_helm_app,
     var.agones_helm_chart
   )
 }

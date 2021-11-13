@@ -2,9 +2,9 @@ data "aws_region" "current" {}
 
 locals {
   default_helm_values = [templatefile("${path.module}/values.yaml", {
-    aws_region    = data.aws_region.current.name,
-    cluster_name	= var.eks_cluster_id
-	})]
+    aws_region   = data.aws_region.current.name,
+    cluster_name = var.eks_cluster_id
+  })]
 
   default_cluster_autoscaler_helm_app = {
     name                       = "cluster-autoscaler"
@@ -40,8 +40,8 @@ locals {
     replace                    = false
     description                = "Cluster AutoScaler helm Chart deployment configuration"
     postrender                 = ""
-		set												 = []
-    set_sensitive = null
+    set                        = []
+    set_sensitive              = null
   }
 
   cluster_autoscaler_helm_app = merge(
