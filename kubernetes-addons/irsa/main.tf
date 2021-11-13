@@ -16,7 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-# Kubernetes Namesapce
+# Kubernetes Namespace
 resource "kubernetes_namespace" "add_on_ns" {
   metadata {
     name = var.kubernetes_namespace
@@ -46,7 +46,7 @@ resource "aws_iam_role" "irsa" {
   tags                  = var.tags
 }
 
-# Attach IMA policies for IAM role
+# Attach IAM policies for IAM role
 resource "aws_iam_role_policy_attachment" "keda_irsa" {
   count      = length(var.irsa_iam_policies)
   policy_arn = var.irsa_iam_policies[count.index]

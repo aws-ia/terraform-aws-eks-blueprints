@@ -26,7 +26,7 @@ resource "helm_release" "keda" {
   timeout                    = local.keda_helm_app["timeout"]
   values                     = local.keda_helm_app["values"]
   create_namespace           = var.keda_create_irsa ? false : local.keda_helm_app["create_namespace"]
-  namespace                  = var.keda_create_irsa ? local.keda_namespace : local.keda_helm_app["namespace"]
+  namespace                  = var.keda_create_irsa ? module.irsa[0].kubernetes_namespace_id : local.keda_helm_app["namespace"]
   lint                       = local.keda_helm_app["lint"]
   description                = local.keda_helm_app["description"]
   repository_key_file        = local.keda_helm_app["repository_key_file"]
@@ -96,6 +96,49 @@ resource "aws_iam_policy" "keda_irsa" {
   description = "KEDA IAM role policy for SQS and CloudWatch"
   name        = "${var.eks_cluster_name}-${local.keda_helm_app["name"]}-irsa"
   path        = var.iam_role_path
-  policy      = file("${path.module}/keda-default-iam-policy.json")
+  policy      = data.aws_iam_policy_document.keda_irsa.json
+}
 
+data "aws_iam_policy_document" "keda_irsa" {
+  statement {
+    effect = "Allow"
+
+    resources = [
+      "arn:aws:cloudwatch:*:${data.aws_caller_identity.current.account_id}:metric-stream/*",
+      "arn:aws:sqs:*:${data.aws_caller_identity.current.account_id}:*",
+    ]
+
+    actions = [
+      "sqs:GetQueueUrl",
+      "sqs:ListDeadLetterSourceQueues",
+      "sqs:ReceiveMessage",
+      "sqs:GetQueueAttributes",
+      "sqs:ListQueueTags",
+      "cloudwatch:DescribeAlarmHistory",
+      "cloudwatch:GetDashboard",
+      "cloudwatch:GetInsightRuleReport",
+      "cloudwatch:ListTagsForResource",
+      "cloudwatch:DescribeAlarms",
+      "cloudwatch:GetMetricStream",
+    ]
+  }
+
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "cloudwatch:DescribeInsightRules",
+      "sqs:ListQueues",
+      "cloudwatch:GetMetricData",
+      "cloudwatch:ListMetricStreams",
+      "cloudwatch:DescribeAlarmsForMetric",
+      "cloudwatch:ListDashboards",
+      "cloudwatch:GetMetricStatistics",
+      "cloudwatch:GetMetricWidgetImage",
+      "cloudwatch:ListMetrics",
+      "cloudwatch:DescribeAnomalyDetectors",
+    ]
+  }
 }

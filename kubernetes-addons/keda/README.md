@@ -5,6 +5,17 @@
 
 KEDA is a single-purpose and lightweight component that can be added into any Kubernetes cluster. KEDA works alongside standard Kubernetes components like the [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) and can extend functionality without overwriting or duplication. With KEDA you can explicitly map the apps you want to use event-driven scale, with other apps continuing to function. This makes KEDA a flexible and safe option to run alongside any number of any other Kubernetes applications or frameworks
 
+
+## WARNING
+Sometimes kubernetes namespace `keda-ns` created by this helm chart failed to delete due to the [defect](https://github.com/kedacore/keda/issues/1231)
+
+Workaround is to run the following command manually to clean up the namespace and rerun the `terraform apply` 
+
+```shell script
+kubectl delete apiservice v1beta1.external.metrics.k8s.io
+``` 
+
+
 <!--- BEGIN_TF_DOCS --->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: MIT-0
