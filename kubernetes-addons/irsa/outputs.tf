@@ -27,11 +27,11 @@ output "irsa_iam_role_name" {
 }
 
 output "kubernetes_namespace_id" {
-  value = kubernetes_namespace.add_on_ns.id
+  value       = kubernetes_namespace.add_on_ns.id
   description = "Kubernetes Namespace id"
 }
 
 output "kubernetes_service_account_id" {
-  value = kubernetes_service_account.add_on_sa.id
+  value       = kubernetes_service_account.add_on_sa.id
   description = "Kubernetes Service Account id"
 }

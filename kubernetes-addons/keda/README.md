@@ -9,11 +9,11 @@ KEDA is a single-purpose and lightweight component that can be added into any Ku
 ## WARNING
 Sometimes kubernetes namespace `keda-ns` created by this helm chart failed to delete due to the [defect](https://github.com/kedacore/keda/issues/1231)
 
-Workaround is to run the following command manually to clean up the namespace and rerun the `terraform apply` 
+Workaround is to run the following command manually to clean up the namespace and rerun the `terraform apply`
 
 ```shell script
 kubectl delete apiservice v1beta1.external.metrics.k8s.io
-``` 
+```
 
 
 <!--- BEGIN_TF_DOCS --->
