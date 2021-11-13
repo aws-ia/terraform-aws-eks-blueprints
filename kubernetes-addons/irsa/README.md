@@ -70,5 +70,7 @@ No modules.
 |------|-------------|
 | <a name="output_irsa_iam_role_arn"></a> [irsa\_iam\_role\_arn](#output\_irsa\_iam\_role\_arn) | IAM role ARN for your service account |
 | <a name="output_irsa_iam_role_name"></a> [irsa\_iam\_role\_name](#output\_irsa\_iam\_role\_name) | IAM role name for your service account |
+| <a name="output_kubernetes_namespace_id"></a> [kubernetes\_namespace\_id](#output\_kubernetes\_namespace\_id) | Kubernetes Namespace id |
+| <a name="output_kubernetes_service_account_id"></a> [kubernetes\_service\_account\_id](#output\_kubernetes\_service\_account\_id) | Kubernetes Service Account id |
 
  <!--- END_TF_DOCS --->

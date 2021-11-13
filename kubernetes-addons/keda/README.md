@@ -5,6 +5,17 @@
 
 KEDA is a single-purpose and lightweight component that can be added into any Kubernetes cluster. KEDA works alongside standard Kubernetes components like the [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) and can extend functionality without overwriting or duplication. With KEDA you can explicitly map the apps you want to use event-driven scale, with other apps continuing to function. This makes KEDA a flexible and safe option to run alongside any number of any other Kubernetes applications or frameworks
 
+
+## WARNING
+Sometimes kubernetes namespace `keda-ns` created by this helm chart failed to delete due to the [defect](https://github.com/kedacore/keda/issues/1231)
+
+Workaround is to run the following command manually to clean up the namespace and rerun the `terraform apply`
+
+```shell script
+kubectl delete apiservice v1beta1.external.metrics.k8s.io
+```
+
+
 <!--- BEGIN_TF_DOCS --->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: MIT-0
@@ -46,6 +57,7 @@ No requirements.
 | [aws_iam_policy.keda_irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [helm_release.keda](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
+| [aws_iam_policy_document.keda_irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
