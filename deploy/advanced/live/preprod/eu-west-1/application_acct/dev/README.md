@@ -23,14 +23,14 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 #### Step1: Clone the repo using the command below
 
 ```shell script
-git clone https://gitlab.aws.dev/vabonthu/terraform-aws-eks-accelerator-patterns.git
+git clone https://github.com/aws-samples/terraform-ssp-eks-patterns.git
 ```
 
 #### Step2: Run Terraform INIT
 to initialize a working directory with configuration files
 
 ```shell script
-cd deploy/advanced/live/preprod/eu-west-1/application_acct/dev
+cd examples/advanced/live/preprod/
 terraform init
 ```
 

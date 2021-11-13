@@ -148,3 +148,16 @@ module "argocd" {
 
   depends_on = [module.aws_eks]
 }
+
+module "keda" {
+  count              = var.create_eks && var.keda_enable ? 1 : 0
+  source             = "./kubernetes-addons/keda"
+  keda_helm_chart    = var.keda_helm_chart
+  eks_cluster_name   = module.aws_eks.cluster_id
+  keda_create_irsa   = var.keda_create_irsa
+  keda_irsa_policies = var.keda_irsa_policies
+  tags               = var.tags
+
+  depends_on = [module.aws_eks]
+
+}

@@ -16,32 +16,28 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-# Help on Fargate Logging with Fluentbit and CloudWatch
-# https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html
+# Assume role policy for your service account
+data "aws_iam_policy_document" "irsa_with_oidc" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
 
-data "aws_region" "current" {}
+    principals {
+      type        = "Federated"
+      identifiers = [local.eks_oidc_provider_arn]
+    }
 
-resource "kubernetes_namespace" "aws_observability" {
-  metadata {
-    name = "aws-observability"
-
-    labels = {
-      aws-observability              = "enabled"
-      "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
+    condition {
+      test     = "StringEquals"
+      variable = "${local.eks_oidc_issuer_url}:sub"
+      values   = ["system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}"]
     }
   }
 }
 
-# fluent-bit-cloudwatch value as the name of the CloudWatch log group that is automatically created as soon as your apps start logging
-resource "kubernetes_config_map" "aws_logging" {
-  metadata {
-    name      = "aws-logging"
-    namespace = kubernetes_namespace.aws_observability.id
-  }
-
-  data = {
-    "parsers.conf" = local.fargate_fluentbit_app["parsers_conf"]
-    "filters.conf" = local.fargate_fluentbit_app["filters_conf"]
-    "output.conf"  = local.fargate_fluentbit_app["output_conf"]
-  }
+data "aws_eks_cluster" "eks_cluster" {
+  name = var.eks_cluster_name
 }
+
+data "aws_partition" "current" {}
+
+data "aws_caller_identity" "current" {}

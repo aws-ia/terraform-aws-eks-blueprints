@@ -16,32 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-# Help on Fargate Logging with Fluentbit and CloudWatch
-# https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html
-
-data "aws_region" "current" {}
-
-resource "kubernetes_namespace" "aws_observability" {
-  metadata {
-    name = "aws-observability"
-
-    labels = {
-      aws-observability              = "enabled"
-      "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
-    }
-  }
-}
-
-# fluent-bit-cloudwatch value as the name of the CloudWatch log group that is automatically created as soon as your apps start logging
-resource "kubernetes_config_map" "aws_logging" {
-  metadata {
-    name      = "aws-logging"
-    namespace = kubernetes_namespace.aws_observability.id
-  }
-
-  data = {
-    "parsers.conf" = local.fargate_fluentbit_app["parsers_conf"]
-    "filters.conf" = local.fargate_fluentbit_app["filters_conf"]
-    "output.conf"  = local.fargate_fluentbit_app["output_conf"]
-  }
+locals {
+  eks_oidc_issuer_url   = replace(data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer, "https://", "")
+  eks_oidc_provider_arn = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.eks_oidc_issuer_url}"
 }

@@ -21,7 +21,7 @@ data "aws_security_group" "eks_worker_group" {
   id = var.eks_worker_security_group_id
 }
 
-resource "helm_release" "prometheus" {
+resource "helm_release" "agones" {
   name                       = local.agones_helm_app["name"]
   repository                 = local.agones_helm_app["repository"]
   chart                      = local.agones_helm_app["chart"]

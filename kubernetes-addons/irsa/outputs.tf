@@ -16,32 +16,12 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-# Help on Fargate Logging with Fluentbit and CloudWatch
-# https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html
-
-data "aws_region" "current" {}
-
-resource "kubernetes_namespace" "aws_observability" {
-  metadata {
-    name = "aws-observability"
-
-    labels = {
-      aws-observability              = "enabled"
-      "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
-    }
-  }
+output "irsa_iam_role_arn" {
+  description = "IAM role ARN for your service account"
+  value       = aws_iam_role.irsa.arn
 }
 
-# fluent-bit-cloudwatch value as the name of the CloudWatch log group that is automatically created as soon as your apps start logging
-resource "kubernetes_config_map" "aws_logging" {
-  metadata {
-    name      = "aws-logging"
-    namespace = kubernetes_namespace.aws_observability.id
-  }
-
-  data = {
-    "parsers.conf" = local.fargate_fluentbit_app["parsers_conf"]
-    "filters.conf" = local.fargate_fluentbit_app["filters_conf"]
-    "output.conf"  = local.fargate_fluentbit_app["output_conf"]
-  }
+output "irsa_iam_role_name" {
+  description = "IAM role name for your service account"
+  value       = aws_iam_role.irsa.name
 }
