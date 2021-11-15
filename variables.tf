@@ -376,3 +376,17 @@ variable "argocd_applications" {
   default     = {}
   description = "ARGO CD Applications config to bootstrap the cluster"
 }
+
+
+# Teams
+variable "enable_teams" {
+  description = "Enable Teams"
+  type        = bool
+  default     = false
+}
+
+variable "teams" {
+  description = "Map of maps of teams to create"
+  type        = any
+  default     = {}
+}
