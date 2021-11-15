@@ -16,19 +16,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "aws_for_fluentbit_helm_chart" {
-  type        = any
-  description = "Helm chart definition for aws_for_fluent_bit."
-  default     = {}
+output "amp_ingest_role_arn" {
+  value = var.amp_ingest_role_arn
 }
 
-variable "eks_cluster_id" {
-  type        = string
-  description = "EKS cluster Id"
+output "amp_workspace_url" {
+  value = local.amp_workspace_url
 }
 
-variable "manage_via_gitops" {
-  type        = bool
-  default     = false
-  description = "Determines if the add-on should be managed via GitOps."
+output "gitops_config" {
+  description = "Configuration needed for GitOps"
+  value = var.manage_via_gitops ? {
+    enable           = true
+    ampIngestRoleArn = var.amp_ingest_role_arn
+    ampWorkspaceUrl  = local.amp_workspace_url
+  } : null
 }

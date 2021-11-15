@@ -24,6 +24,7 @@ resource "aws_cloudwatch_log_group" "eks_worker_logs" {
 }
 
 resource "helm_release" "aws_for_fluent_bit" {
+  count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.aws_for_fluentbit_helm_app["name"]
   repository                 = local.aws_for_fluentbit_helm_app["repository"]
   chart                      = local.aws_for_fluentbit_helm_app["chart"]

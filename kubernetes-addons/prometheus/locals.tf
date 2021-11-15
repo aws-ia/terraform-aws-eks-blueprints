@@ -5,8 +5,8 @@ locals {
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
     aws_region           = data.aws_region.current.name,
-    ingest_role_arn      = var.amp_ingest_role_arn
     service_account_name = var.service_account_amp_ingest_name
+    amp_ingest_role_arn  = var.amp_ingest_role_arn
     amp_workspace_url    = local.amp_workspace_url
   })]
 

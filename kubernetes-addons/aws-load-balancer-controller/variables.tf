@@ -36,3 +36,10 @@ variable "eks_oidc_provider_arn" {
   type        = string
   description = "The ARN of the OIDC Provider if `enable_irsa = true`."
 }
+
+variable "manage_via_gitops" {
+  type        = bool
+  default     = false
+  description = "Determines if the add-on should be managed via GitOps."
+}
+

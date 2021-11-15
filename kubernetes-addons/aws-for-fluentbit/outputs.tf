@@ -16,11 +16,21 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-output "aws_fluent_bit_cw_log_group_name" {
+output "log_group_name" {
   description = "AWS Fluent Bit CloudWatch Log Group Name"
   value       = aws_cloudwatch_log_group.eks_worker_logs.name
 }
-output "aws_fluent_bit_cw_log_group_arn" {
+
+output "log_group_arn" {
   description = "AWS Fluent Bit CloudWatch Log Group ARN"
   value       = aws_cloudwatch_log_group.eks_worker_logs.arn
+}
+
+output "argocd_gitops_config" {
+  description = "Configuration needed for GitOps"
+  value = var.manage_via_gitops ? {
+    enable       = true
+    logGroupName = aws_cloudwatch_log_group.eks_worker_logs.name
+    logGroupArn  = aws_cloudwatch_log_group.eks_worker_logs.arn
+  } : null
 }

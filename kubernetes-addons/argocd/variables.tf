@@ -32,3 +32,9 @@ variable "eks_cluster_name" {
   type        = string
   description = "Name for the EKS Cluster"
 }
+
+variable "gitops_add_on_config" {
+  type        = any
+  default     = {}
+  description = "Add-on configuration"
+}

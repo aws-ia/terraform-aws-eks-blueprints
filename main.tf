@@ -90,7 +90,6 @@ module "aws_managed_prometheus" {
   service_account_amp_ingest_name = local.service_account_amp_ingest_name
   service_account_amp_query_name  = local.service_account_amp_query_name
   amp_workspace_name              = var.aws_managed_prometheus_workspace_name
-
 }
 
 module "emr_on_eks" {
