@@ -396,4 +396,17 @@ variable "keda_irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
   default     = []
+
+
+# Teams
+variable "enable_teams" {
+  description = "Enable Teams"
+  type        = bool
+  default     = false
+}
+
+variable "teams" {
+  description = "Map of maps of teams to create"
+  type        = any
+  default     = {}
 }
