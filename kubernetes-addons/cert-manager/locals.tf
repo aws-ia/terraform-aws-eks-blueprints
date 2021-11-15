@@ -1,35 +1,19 @@
 
 locals {
+  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
+
   default_cert_manager_helm_app = {
-    name             = "cert-manager"
-    chart            = "cert-manager"
-    repository       = "https://charts.jetstack.io"
-    version          = "v1.5.4"
-    namespace        = "kube-system"
-    timeout          = "600"
-    create_namespace = false
-    set = [{
-      name  = "extraArgs[0]"
-      value = "--enable-certificate-owner-ref=true"
-      }, {
-      name  = "installCRDs"
-      value = "true"
-      }, {
-      name  = "nodeSelector.kubernetes\\.io/os"
-      value = "linux"
-      }, {
-      name  = "cainjector.nodeSelector.kubernetes\\.io/os"
-      value = "linux"
-      }, {
-      name  = "startupapicheck.nodeSelector.kubernetes\\.io/os"
-      value = "linux"
-      }, {
-      name  = "webhook.nodeSelector.kubernetes\\.io/os"
-      value = "linux"
-    }]
+    name                       = "cert-manager"
+    chart                      = "cert-manager"
+    repository                 = "https://charts.jetstack.io"
+    version                    = "v1.6.1"
+    namespace                  = "kube-system"
+    timeout                    = "600"
+    create_namespace           = false
+    set                        = []
     set_sensitive              = null
     lint                       = false
-    values                     = null
+    values                     = local.default_helm_values
     wait                       = true
     wait_for_jobs              = false
     description                = "Cert Manager Helm chart deployment configuration"
@@ -58,7 +42,9 @@ locals {
     # See ./cert-manager-ca/templates/ca.yaml
     install_default_ca = true
   }
+
   cert_manager_helm_app = merge(
     local.default_cert_manager_helm_app,
-  var.cert_manager_helm_chart)
+    var.cert_manager_helm_chart
+  )
 }

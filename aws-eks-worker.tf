@@ -101,7 +101,6 @@ module "aws_eks_fargate_profiles" {
 # AWS EKS Add-ons (VPC CNI, CoreDNS, KubeProxy )
 # ---------------------------------------------------------------------------------------------------------------------
 module "aws_eks_addon" {
-
   count = var.create_eks && var.enable_managed_nodegroups || var.create_eks && var.enable_self_managed_nodegroups || var.create_eks && var.enable_fargate ? 1 : 0
 
   source                = "./modules/aws-eks-addon"
@@ -116,7 +115,5 @@ module "aws_eks_addon" {
   kube_proxy_addon_version = var.kube_proxy_addon_version
   tags                     = module.eks_tags.tags
 
-  depends_on = [
-    module.aws_eks
-  ]
+  depends_on = [module.aws_eks]
 }

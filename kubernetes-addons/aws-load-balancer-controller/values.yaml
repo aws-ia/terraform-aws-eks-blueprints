@@ -1,0 +1,5 @@
+clusterName: ${cluster_name}
+region: ${aws_region}
+serviceAccount:
+  create: false
+  name: ${service_account_name}

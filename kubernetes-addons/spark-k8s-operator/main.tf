@@ -73,5 +73,4 @@ resource "helm_release" "spark_k8s_operator" {
       value = each_item.value.value
     }
   }
-
 }

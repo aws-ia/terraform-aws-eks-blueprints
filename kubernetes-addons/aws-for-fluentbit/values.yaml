@@ -1,0 +1,9 @@
+cloudWatch:
+  region: ${aws_region}
+  logGroupName: ${log_group_name}
+
+firehose:
+  region: ${aws_region}
+
+kinesis:
+  region: ${aws_region}
