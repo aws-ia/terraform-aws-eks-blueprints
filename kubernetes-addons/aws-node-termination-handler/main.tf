@@ -153,6 +153,7 @@ resource "helm_release" "aws_node_termination_handler" {
   version    = "0.16.0"
   namespace  = local.namespace
   verify     = false
+  timeout    = "1200"
 
   set {
     name  = "awsRegion"
