@@ -32,7 +32,7 @@ resource "kubernetes_namespace" "add_on_ns" {
 resource "kubernetes_service_account" "add_on_sa" {
   metadata {
     name        = var.kubernetes_service_account
-    namespace   = kubernetes_namespace.add_on_ns.id
+    namespace   = kubernetes_namespace.add_on_ns[0].id
     annotations = { "eks.amazonaws.com/role-arn" : aws_iam_role.irsa.arn }
   }
   automount_service_account_token = true
