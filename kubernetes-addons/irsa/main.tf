@@ -18,6 +18,7 @@
 
 # Kubernetes Namespace
 resource "kubernetes_namespace" "add_on_ns" {
+  count = lookup(data.kubernetes_namespace.namespace, "id", false) ? 1 : 0
   metadata {
     name = var.kubernetes_namespace
 
