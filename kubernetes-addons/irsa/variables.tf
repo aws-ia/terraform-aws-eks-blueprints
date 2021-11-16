@@ -38,6 +38,7 @@ variable "iam_role_path" {
 variable "tags" {
   type        = map(string)
   description = "Common tags for AWS resources"
+  default     = {}
 }
 
 variable "irsa_iam_policies" {
