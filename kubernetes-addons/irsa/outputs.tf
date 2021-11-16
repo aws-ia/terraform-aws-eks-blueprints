@@ -27,7 +27,7 @@ output "irsa_iam_role_name" {
 }
 
 output "kubernetes_namespace_id" {
-  value       = kubernetes_namespace.add_on_ns[0].id
+  value       = data.kubernetes_namespace.namespace.id
   description = "Kubernetes Namespace id"
 }
 
