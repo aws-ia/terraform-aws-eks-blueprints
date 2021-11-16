@@ -1,22 +1,23 @@
 data "aws_region" "current" {}
 
 locals {
+  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
   default_agones_helm_app = {
     name                       = "agones"
     chart                      = "agones"
     repository                 = "https://agones.dev/chart/stable"
-    version                    = "1.15.0"
+    version                    = "1.18.0"
     namespace                  = "agones-system"
     timeout                    = "1200"
     create_namespace           = true
     description                = "Agones Gaming Server Helm Chart deployment configuration"
     lint                       = false
-    values                     = local.default_agones_helm_values
+    values                     = local.default_helm_values
     wait                       = true
     wait_for_jobs              = false
     verify                     = false
-    set                        = null
+    set                        = []
     set_sensitive              = null
     keyring                    = ""
     repository_key_file        = ""
@@ -41,11 +42,9 @@ locals {
     gameserver_minport         = 7000
     gameserver_maxport         = 8000
   }
+
   agones_helm_app = merge(
     local.default_agones_helm_app,
     var.agones_helm_chart
   )
-
-  default_agones_helm_values = [templatefile("${path.module}/agones-values.yaml", {})]
-
 }

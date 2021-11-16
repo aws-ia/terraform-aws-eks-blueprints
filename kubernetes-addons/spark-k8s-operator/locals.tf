@@ -1,18 +1,15 @@
 
 locals {
   default_spark_k8s_operator_helm_app = {
-    name             = "spark-operator"
-    chart            = "spark-operator"
-    repository       = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
-    version          = "1.1.6"
-    namespace        = "spark-k8s-operator"
-    timeout          = "1200"
-    create_namespace = true
-    values           = local.default_spark_k8s_operator_helm_values
-    set = [{
-      name  = "nodeSelector.kubernetes\\.io/os"
-      value = "linux"
-    }]
+    name                       = "spark-operator"
+    chart                      = "spark-operator"
+    repository                 = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
+    version                    = "1.1.6"
+    namespace                  = "spark-k8s-operator"
+    timeout                    = "1200"
+    create_namespace           = true
+    values                     = null
+    set                        = []
     set_sensitive              = null
     lint                       = false
     verify                     = false
@@ -40,9 +37,9 @@ locals {
     description                = "The spark_k8s_operator HelmChart Ingress Controller deployment configuration"
     postrender                 = ""
   }
+
   spark_k8s_operator_helm_app = merge(
     local.default_spark_k8s_operator_helm_app,
     var.spark_on_k8s_operator_helm_chart
   )
-  default_spark_k8s_operator_helm_values = [templatefile("${path.module}/spark-k8s-operator-values.yaml", {})]
 }

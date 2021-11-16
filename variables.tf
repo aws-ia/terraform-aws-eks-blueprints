@@ -387,3 +387,24 @@ variable "aws_node_termination_handler_helm_chart" {
   description = "Helm chart definition for aws_node_termination_handler"
   default     = {}
 }
+#-----------KEDA ADDON-------------
+variable "keda_enable" {
+  type        = bool
+  default     = false
+  description = "Enable KEDA Event-based autoscaler for workloads on Kubernetes"
+}
+variable "keda_helm_chart" {
+  type        = any
+  default     = {}
+  description = "KEDA Event-based autoscaler Kubernetes Addon Configuration"
+}
+variable "keda_create_irsa" {
+  type        = bool
+  description = "Indicates if the add-on should create a IAM role + service account"
+  default     = true
+}
+variable "keda_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}

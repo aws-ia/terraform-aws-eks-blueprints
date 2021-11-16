@@ -45,6 +45,7 @@ module "prometheus" {
   count                 = var.create_eks && var.prometheus_enable ? 1 : 0
   source                = "./kubernetes-addons/prometheus"
   prometheus_helm_chart = var.prometheus_helm_chart
+  
   #AWS Managed Prometheus Workspace
   aws_managed_prometheus_enable   = var.aws_managed_prometheus_enable
   amp_workspace_id                = var.aws_managed_prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : ""
@@ -54,9 +55,9 @@ module "prometheus" {
   depends_on = [module.aws_eks]
 }
 
-module "lb_ingress_controller" {
+module "aws_load_balancer_controller" {
   count                          = var.create_eks && var.aws_lb_ingress_controller_enable ? 1 : 0
-  source                         = "./kubernetes-addons/lb-ingress-controller"
+  source                         = "./kubernetes-addons/aws-load-balancer-controller"
   eks_cluster_id                 = module.aws_eks.cluster_id
   lb_ingress_controller_helm_app = var.aws_lb_ingress_controller_helm_app
   eks_oidc_issuer_url            = module.aws_eks.cluster_oidc_issuer_url
@@ -161,5 +162,17 @@ module "aws_node_termination_handler" {
   source                                  = "./kubernetes-addons/aws-node-termination-handler"
   aws_node_termination_handler_helm_chart = var.aws_node_termination_handler_helm_chart
   autoscaling_group_names                 = local.asg_names
+  
   depends_on                              = [module.aws_eks]
+}
+module "keda" {
+  count              = var.create_eks && var.keda_enable ? 1 : 0
+  source             = "./kubernetes-addons/keda"
+  keda_helm_chart    = var.keda_helm_chart
+  eks_cluster_name   = module.aws_eks.cluster_id
+  keda_create_irsa   = var.keda_create_irsa
+  keda_irsa_policies = var.keda_irsa_policies
+  tags               = var.tags
+
+  depends_on = [module.aws_eks]
 }

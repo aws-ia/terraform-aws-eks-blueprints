@@ -16,32 +16,23 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-# Help on Fargate Logging with Fluentbit and CloudWatch
-# https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html
-
-data "aws_region" "current" {}
-
-resource "kubernetes_namespace" "aws_observability" {
-  metadata {
-    name = "aws-observability"
-
-    labels = {
-      aws-observability              = "enabled"
-      "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
-    }
-  }
+variable "lb_ingress_controller_helm_app" {
+  type        = any
+  description = "Helm chart definition for lb_ingress_controller."
+  default     = {}
 }
 
-# fluent-bit-cloudwatch value as the name of the CloudWatch log group that is automatically created as soon as your apps start logging
-resource "kubernetes_config_map" "aws_logging" {
-  metadata {
-    name      = "aws-logging"
-    namespace = kubernetes_namespace.aws_observability.id
-  }
+variable "eks_cluster_id" {
+  type        = string
+  description = "EKS cluster Id"
+}
 
-  data = {
-    "parsers.conf" = local.fargate_fluentbit_app["parsers_conf"]
-    "filters.conf" = local.fargate_fluentbit_app["filters_conf"]
-    "output.conf"  = local.fargate_fluentbit_app["output_conf"]
-  }
+variable "eks_oidc_issuer_url" {
+  type        = string
+  description = "The URL on the EKS cluster OIDC Issuer"
+}
+
+variable "eks_oidc_provider_arn" {
+  type        = string
+  description = "The ARN of the OIDC Provider if `enable_irsa = true`."
 }

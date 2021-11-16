@@ -1,15 +1,20 @@
 data "aws_region" "current" {}
 
 locals {
+  default_helm_values = [templatefile("${path.module}/values.yaml", {
+    aws_region   = data.aws_region.current.name,
+    cluster_name = var.eks_cluster_id
+  })]
+
   default_cluster_autoscaler_helm_app = {
     name                       = "cluster-autoscaler"
     chart                      = "cluster-autoscaler"
     repository                 = "https://kubernetes.github.io/autoscaler"
-    version                    = "9.10.7"
+    version                    = "9.10.8"
     namespace                  = "kube-system"
     timeout                    = "1200"
     create_namespace           = false
-    values                     = null
+    values                     = local.default_helm_values
     lint                       = false
     verify                     = false
     keyring                    = ""
@@ -35,29 +40,10 @@ locals {
     replace                    = false
     description                = "Cluster AutoScaler helm Chart deployment configuration"
     postrender                 = ""
-    set = [
-      {
-        name  = "autoDiscovery.clusterName"
-        value = var.eks_cluster_id
-      },
-      {
-        name  = "extraArgs.aws-use-static-instance-list"
-        value = "true"
-      },
-      {
-        name  = "replicaCount"
-        value = "2"
-      },
-      {
-        name  = "awsRegion"
-        value = data.aws_region.current.id
-      },
-      {
-        name  = "nodeSelector.kubernetes\\.io/os"
-        value = "linux"
-    }]
-    set_sensitive = null
+    set                        = []
+    set_sensitive              = null
   }
+
   cluster_autoscaler_helm_app = merge(
     local.default_cluster_autoscaler_helm_app,
     var.cluster_autoscaler_helm_chart

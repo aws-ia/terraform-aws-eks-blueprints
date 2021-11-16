@@ -16,22 +16,10 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "lb_ingress_controller_helm_app" {
-  type        = any
-  description = "Helm chart definition for lb_ingress_controller."
-  default     = {}
-}
-variable "eks_cluster_id" {
-  type        = string
-  description = "EKS cluster Id"
-}
-variable "eks_oidc_issuer_url" {
-  type        = string
-  description = "The URL on the EKS cluster OIDC Issuer"
+output "ingress_namespace" {
+  value = helm_release.lb_ingress.metadata[0].namespace
 }
 
-variable "eks_oidc_provider_arn" {
-  type        = string
-  description = "The ARN of the OIDC Provider if `enable_irsa = true`."
-
+output "ingress_name" {
+  value = helm_release.lb_ingress.metadata[0].name
 }

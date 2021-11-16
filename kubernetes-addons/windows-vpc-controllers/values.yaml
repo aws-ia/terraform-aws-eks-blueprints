@@ -1,0 +1,10 @@
+resourceController:
+  containerCommand:
+    args:
+      - -stderrthreshold=info
+admissionWebhook:
+  certificate:
+    key: 
+        rotationPolicy: Always
+    issuer: 
+      name: cert-manager-ca

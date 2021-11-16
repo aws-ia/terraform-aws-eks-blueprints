@@ -16,32 +16,39 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-# Help on Fargate Logging with Fluentbit and CloudWatch
-# https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html
-
-data "aws_region" "current" {}
-
-resource "kubernetes_namespace" "aws_observability" {
+# Kubernetes Namespace
+resource "kubernetes_namespace" "add_on_ns" {
   metadata {
-    name = "aws-observability"
+    name = var.kubernetes_namespace
 
     labels = {
-      aws-observability              = "enabled"
       "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
     }
   }
 }
 
-# fluent-bit-cloudwatch value as the name of the CloudWatch log group that is automatically created as soon as your apps start logging
-resource "kubernetes_config_map" "aws_logging" {
+# Kubernetes service account
+resource "kubernetes_service_account" "add_on_sa" {
   metadata {
-    name      = "aws-logging"
-    namespace = kubernetes_namespace.aws_observability.id
+    name        = var.kubernetes_service_account
+    namespace   = kubernetes_namespace.add_on_ns.id
+    annotations = { "eks.amazonaws.com/role-arn" : aws_iam_role.irsa.arn }
   }
+  automount_service_account_token = true
+}
 
-  data = {
-    "parsers.conf" = local.fargate_fluentbit_app["parsers_conf"]
-    "filters.conf" = local.fargate_fluentbit_app["filters_conf"]
-    "output.conf"  = local.fargate_fluentbit_app["output_conf"]
-  }
+# IAM role and assume role policy for your service account
+resource "aws_iam_role" "irsa" {
+  name                  = "${var.eks_cluster_name}-${var.kubernetes_service_account}-irsa"
+  assume_role_policy    = join("", data.aws_iam_policy_document.irsa_with_oidc.*.json)
+  path                  = var.iam_role_path
+  force_detach_policies = true
+  tags                  = var.tags
+}
+
+# Attach IAM policies for IAM role
+resource "aws_iam_role_policy_attachment" "keda_irsa" {
+  count      = length(var.irsa_iam_policies)
+  policy_arn = var.irsa_iam_policies[count.index]
+  role       = aws_iam_role.irsa.name
 }

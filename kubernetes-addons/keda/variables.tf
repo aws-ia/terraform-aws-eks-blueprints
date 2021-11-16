@@ -16,32 +16,34 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-# Help on Fargate Logging with Fluentbit and CloudWatch
-# https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html
-
-data "aws_region" "current" {}
-
-resource "kubernetes_namespace" "aws_observability" {
-  metadata {
-    name = "aws-observability"
-
-    labels = {
-      aws-observability              = "enabled"
-      "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
-    }
-  }
+variable "keda_helm_chart" {
+  type        = any
+  default     = {}
+  description = "Keda Event-based autoscaler for workloads on Kubernetes Helm chart config"
 }
 
-# fluent-bit-cloudwatch value as the name of the CloudWatch log group that is automatically created as soon as your apps start logging
-resource "kubernetes_config_map" "aws_logging" {
-  metadata {
-    name      = "aws-logging"
-    namespace = kubernetes_namespace.aws_observability.id
-  }
+variable "eks_cluster_name" {
+  type        = string
+  description = "EKS Cluster Id"
+}
 
-  data = {
-    "parsers.conf" = local.fargate_fluentbit_app["parsers_conf"]
-    "filters.conf" = local.fargate_fluentbit_app["filters_conf"]
-    "output.conf"  = local.fargate_fluentbit_app["output_conf"]
-  }
+variable "iam_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM role path"
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "Common Tags for AWS resources"
+}
+
+variable "keda_create_irsa" {
+  type        = bool
+  description = "Indicates if the add-on should create a IAM role + service account"
+}
+
+variable "keda_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
 }

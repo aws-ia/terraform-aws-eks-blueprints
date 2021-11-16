@@ -1,26 +1,18 @@
 
 locals {
+  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
+
   default_windows_vpc_controllers_helm_app = {
-    name             = "windows-vpc-controllers"
-    chart            = "windows-vpc-controllers"
-    repository       = "https://charts.jetstack.io"
-    version          = "v1.5.4"
-    namespace        = "kube-system"
-    timeout          = "600"
-    create_namespace = false
-    set = [{
-      name  = "resourceController.containerCommand.args[0]"
-      value = "-stderrthreshold=info"
-      }, {
-      name  = "admissionWebhook.certificate.key.rotationPolicy"
-      value = "Always"
-      }, {
-      name  = "admissionWebhook.certificate.issuer.name"
-      value = "cert-manager-ca"
-    }]
+    name                       = "windows-vpc-controllers"
+    chart                      = "windows-vpc-controllers"
+    repository                 = "https://charts.jetstack.io"
+    version                    = "v1.5.4"
+    namespace                  = "kube-system"
+    timeout                    = "600"
+    create_namespace           = false
     set_sensitive              = null
     lint                       = false
-    values                     = null
+    values                     = local.default_helm_values
     wait                       = true
     wait_for_jobs              = false
     description                = "Cert Manager Helm chart deployment configuration"
@@ -46,7 +38,9 @@ locals {
     replace                    = false
     postrender                 = ""
   }
+
   windows_vpc_controllers_helm_app = merge(
     local.default_windows_vpc_controllers_helm_app,
-  var.windows_vpc_controllers_helm_chart)
+    var.windows_vpc_controllers_helm_chart
+  )
 }
