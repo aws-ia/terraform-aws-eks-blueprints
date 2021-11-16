@@ -175,4 +175,8 @@ resource "helm_release" "aws_node_termination_handler" {
     name  = "queueURL"
     value = aws_sqs_queue.aws_node_termination_handler_queue.url
   }
+  set {
+    name  = "enablePrometheusServer"
+    value = true
+  }
 }
