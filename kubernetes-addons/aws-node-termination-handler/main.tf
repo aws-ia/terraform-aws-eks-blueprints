@@ -50,7 +50,7 @@ resource "aws_sqs_queue_policy" "test" {
 
   policy = jsonencode({
     Version : "2012-10-17"
-    Id : "MyQueuePolicy"
+    Id : "NTHQueuePolicy"
     Statement : [{
       Effect : "Allow"
       Principal : {
@@ -65,33 +65,35 @@ resource "aws_sqs_queue_policy" "test" {
 }
 
 locals {
+  namespace            = "kube-system"
+  service_account_name = "aws-node-termination-handler-sa"
   rules = [
     {
-      name          = "ASGTermRule",
+      name          = "NTHASGTermRule",
       event_pattern = <<EOF
 {"source":["aws.autoscaling"],"detail-type":["EC2 Instance-terminate Lifecycle Action"]}
 EOF
     },
     {
-      name          = "SpotTermRule",
+      name          = "NTHSpotTermRule",
       event_pattern = <<EOF
 {"source": ["aws.ec2"],"detail-type": ["EC2 Spot Instance Interruption Warning"]}
 EOF
     },
     {
-      name          = "RebalanceRule",
+      name          = "NTHRebalanceRule",
       event_pattern = <<EOF
 {"source": ["aws.ec2"],"detail-type": ["EC2 Instance Rebalance Recommendation"]}
 EOF
     },
     {
-      name          = "InstanceStateChangeRule",
+      name          = "NTHInstanceStateChangeRule",
       event_pattern = <<EOF
 {"source": ["aws.ec2"],"detail-type": ["EC2 Instance State-change Notification"]}
 EOF
     },
     {
-      name          = "ScheduledChangeRule",
+      name          = "NTHScheduledChangeRule",
       event_pattern = <<EOF
 {"source": ["aws.health"],"detail-type": ["AWS Health Event"]}
 EOF
@@ -113,12 +115,43 @@ resource "aws_cloudwatch_event_target" "aws_node_termination_handler_rule_target
   arn  = aws_sqs_queue.aws_node_termination_handler_queue.arn
 }
 
+module "irsa" {
+  source                     = "../irsa"
+  eks_cluster_name           = var.eks_cluster_name
+  kubernetes_namespace       = local.namespace
+  kubernetes_service_account = local.service_account_name
+  irsa_iam_policies          = aws_iam_policy.aws_node_termination_handler_irsa.arn
+}
+
+resource "aws_iam_policy" "aws_node_termination_handler_irsa" {
+  description = "IAM role policy for AWS Node Termination Handler"
+  name        = "${var.eks_cluster_name}-aws-nth-irsa"
+  policy      = data.aws_iam_policy_document.aws_node_termination_handler_irsa_policy_document.json
+}
+
+data "aws_iam_policy_document" "aws_node_termination_handler_irsa_policy_document" {
+  statement {
+    effect = "Allow"
+
+    resources = ["*"]
+
+    actions = [
+      "autoscaling:CompleteLifecycleAction",
+      "autoscaling:DescribeAutoScalingInstances",
+      "autoscaling:DescribeTags",
+      "ec2:DescribeInstances",
+      "sqs:DeleteMessage",
+      "sqs:ReceiveMessage"
+    ]
+  }
+}
+
 resource "helm_release" "aws_node_termination_handler" {
   name       = "aws-node-termination-handler"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-node-termination-handler"
   version    = "0.16.0"
-  namespace  = "kube-system"
+  namespace  = local.namespace
   verify     = false
 
   set {
@@ -126,8 +159,16 @@ resource "helm_release" "aws_node_termination_handler" {
     value = data.aws_region.current.name
   }
   set {
-    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = module.iam_assumable_role_admin.iam_role_arn
+    name  = "serviceAccount.name"
+    value = local.service_account_name
+  }
+  set {
+    name  = "serviceAccount.create"
+    value = false
+  }
+  set {
+    name  = "enableSqsTerminationDraining"
+    value = true
   }
   set {
     name  = "queueURL"

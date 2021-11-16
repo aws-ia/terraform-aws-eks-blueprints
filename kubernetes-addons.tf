@@ -45,7 +45,7 @@ module "prometheus" {
   count                 = var.create_eks && var.prometheus_enable ? 1 : 0
   source                = "./kubernetes-addons/prometheus"
   prometheus_helm_chart = var.prometheus_helm_chart
-  
+
   #AWS Managed Prometheus Workspace
   aws_managed_prometheus_enable   = var.aws_managed_prometheus_enable
   amp_workspace_id                = var.aws_managed_prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : ""
@@ -160,11 +160,13 @@ locals {
 module "aws_node_termination_handler" {
   count                                   = var.create_eks && var.aws_node_termination_handler_enable ? 1 : 0
   source                                  = "./kubernetes-addons/aws-node-termination-handler"
+  eks_cluster_name                        = module.aws_eks.cluster_id
   aws_node_termination_handler_helm_chart = var.aws_node_termination_handler_helm_chart
   autoscaling_group_names                 = local.asg_names
-  
-  depends_on                              = [module.aws_eks]
+
+  depends_on = [module.aws_eks]
 }
+
 module "keda" {
   count              = var.create_eks && var.keda_enable ? 1 : 0
   source             = "./kubernetes-addons/keda"

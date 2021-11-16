@@ -26,3 +26,8 @@ variable "autoscaling_group_names" {
   description = "EKS Node Group ASG names"
   type        = list(string)
 }
+
+variable "eks_cluster_name" {
+  type        = string
+  description = "EKS Cluster Id"
+}
