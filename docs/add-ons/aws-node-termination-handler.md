@@ -6,7 +6,7 @@ The aws-node-termination-handler (NTH) can operate in two different modes: Insta
 
 The NTH will be deployed in the `kube-system` namespace. AWS resources required as part of the setup of NTH will be provisioned for you. These include: 
 
-1. Worker group ASG tagged with `key=aws-node-termination-handler/managed`
+1. Node group ASG tagged with `key=aws-node-termination-handler/managed`
 2. AutoScaling Group Termination Lifecycle Hook
 3. Amazon Simple Queue Service (SQS) Queue
 4. Amazon EventBridge Rule
