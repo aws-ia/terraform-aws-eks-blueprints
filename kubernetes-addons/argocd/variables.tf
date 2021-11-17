@@ -36,5 +36,5 @@ variable "eks_cluster_name" {
 variable "gitops_add_on_config" {
   type        = any
   default     = {}
-  description = "Add-on configuration"
+  description = "Configuration for managing add-ons via ArgoCD"
 }

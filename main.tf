@@ -107,5 +107,4 @@ module "emr_on_eks" {
   zone           = var.zone
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
-
 }

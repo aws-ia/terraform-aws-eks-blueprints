@@ -51,9 +51,8 @@ module "prometheus" {
   amp_workspace_id                = var.aws_managed_prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : ""
   amp_ingest_role_arn             = var.aws_managed_prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : ""
   service_account_amp_ingest_name = local.service_account_amp_ingest_name
-  manage_via_gitops               = var.argocd_manage_add_ons
 
-  depends_on                      = [module.aws_eks]
+  depends_on = [module.aws_eks]
 }
 
 module "aws_load_balancer_controller" {
@@ -63,9 +62,8 @@ module "aws_load_balancer_controller" {
   lb_ingress_controller_helm_app = var.aws_lb_ingress_controller_helm_app
   eks_oidc_issuer_url            = module.aws_eks.cluster_oidc_issuer_url
   eks_oidc_provider_arn          = module.aws_eks.oidc_provider_arn
-  manage_via_gitops              = var.argocd_manage_add_ons
-  
-  depends_on                     = [module.aws_eks]
+
+  depends_on = [module.aws_eks]
 }
 
 module "nginx_ingress" {

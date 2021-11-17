@@ -100,7 +100,7 @@ resource "kubernetes_manifest" "argocd_application" {
           releaseName = each.key
           values : yamlencode(merge(
             each.value.values,
-            local.global_argo_values,
+            local.global_application_values,
             each.value.add_on_application ? var.gitops_add_on_config : {}
           ))
         }

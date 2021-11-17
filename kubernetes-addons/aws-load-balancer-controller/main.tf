@@ -17,7 +17,6 @@
  */
 
 resource "helm_release" "lb_ingress" {
-  count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.lb_ingress_controller_helm_app["name"]
   repository                 = local.lb_ingress_controller_helm_app["repository"]
   chart                      = local.lb_ingress_controller_helm_app["chart"]

@@ -23,8 +23,3 @@ output "ingress_namespace" {
 output "ingress_name" {
   value = local.lb_ingress_controller_helm_app["name"]
 }
-
-output "gitops_config" {
-  description = "Configuration needed for GitOps"
-  value       = var.manage_via_gitops ? { enable = true } : null
-}
