@@ -1,5 +1,6 @@
 
 resource "kubernetes_namespace" "aws_otel_eks" {
+  count = var.manage_via_gitops ? 0 : 1
   metadata {
     name = local.aws_open_telemetry_app["aws_open_telemetry_namespace"]
 
@@ -10,6 +11,7 @@ resource "kubernetes_namespace" "aws_otel_eks" {
 }
 
 resource "kubernetes_deployment" "aws_otel_eks_sidecar" {
+  count = var.manage_via_gitops ? 0 : 1
   metadata {
     name      = "aws-otel-eks-sidecar"
     namespace = local.aws_open_telemetry_app["aws_open_telemetry_namespace"]
@@ -89,7 +91,7 @@ resource "kubernetes_deployment" "aws_otel_eks_sidecar" {
 resource "aws_iam_policy" "eks_aws_otel_policy" {
   name        = "AWSDistroOpenTelemetryPolicy"
   path        = "/"
-  description = "eks autoscaler policy"
+  description = "AWS OTEL IAM Policy"
 
   policy = <<EOF
 {

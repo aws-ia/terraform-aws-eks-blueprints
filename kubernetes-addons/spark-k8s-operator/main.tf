@@ -17,6 +17,7 @@
  */
 
 resource "helm_release" "spark_k8s_operator" {
+  count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.spark_k8s_operator_helm_app["name"]
   repository                 = local.spark_k8s_operator_helm_app["repository"]
   chart                      = local.spark_k8s_operator_helm_app["chart"]

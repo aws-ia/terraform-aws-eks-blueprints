@@ -19,6 +19,7 @@
 data "aws_caller_identity" "current" {}
 
 resource "helm_release" "keda" {
+  count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.keda_helm_app["name"]
   repository                 = local.keda_helm_app["repository"]
   chart                      = local.keda_helm_app["chart"]

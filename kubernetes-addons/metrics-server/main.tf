@@ -17,6 +17,7 @@
  */
 
 resource "helm_release" "metrics_server" {
+  count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.metric_server_helm_app["name"]
   repository                 = local.metric_server_helm_app["repository"]
   chart                      = local.metric_server_helm_app["chart"]

@@ -16,13 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "nginx_helm_chart" {
-  type    = any
-  default = {}
-}
-
-variable "manage_via_gitops" {
-  type        = bool
-  default     = false
-  description = "Determines if the add-on should be managed via GitOps."
+output "argocd_gitops_config" {
+  description = "Configuration used for managing the add-on with GitOps"
+  value       = var.manage_via_gitops ? local.argocd_gitops_config : null
 }

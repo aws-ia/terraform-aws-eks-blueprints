@@ -42,4 +42,8 @@ locals {
     local.default_metric_server_helm_app,
     var.metrics_server_helm_chart
   )
+
+  argocd_gitops_config = {
+    enable = true
+  }
 }

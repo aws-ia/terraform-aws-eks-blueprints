@@ -89,8 +89,16 @@ locals {
     agones                    = var.agones_enable ? module.agones[0].argocd_gitops_config : null
     awsForFluentBit           = var.aws_for_fluentbit_enable ? module.aws_for_fluent_bit[0].argocd_gitops_config : null
     awsLoadBalancerController = var.aws_lb_ingress_controller_enable ? module.aws_load_balancer_controller[0].argocd_gitops_config : null
+    awsOtelCollector          = var.aws_open_telemetry_enable ? module.aws_opentelemetry_collector[0].argocd_gitops_config : null
     certManager               = var.cert_manager_enable ? module.cert_manager[0].argocd_gitops_config : null
     clusterAutoscaler         = var.cluster_autoscaler_enable ? module.cluster_autoscaler[0].argocd_gitops_config : null
-
+    ingressNginx              = var.nginx_ingress_controller_enable ? module.nginx_ingress[0].argocd_gitops_config : null
+    keda                      = var.keda_enable ? module.keda[0].argocd_gitops_config : null
+    metricsServer             = var.metrics_server_enable ? module.metrics_server[0].argocd_gitops_config : null
+    nginxIngress              = var.nginx_ingress_controller_enable ? module.nginx_ingress[0].argocd_gitops_config : null
+    prometheus                = var.prometheus_enable ? module.prometheus[0].argocd_gitops_config : null
+    sparkOperator             = var.spark_on_k8s_operator_enable ? module.spark-k8s-operator[0].argocd_gitops_config : null
+    traefik                   = var.traefik_ingress_controller_enable ? module.traefik_ingress[0].argocd_gitops_config : null
+    windowsVpcControllers     = var.enable_windows_support ? module.windows_vpc_controllers[0].argocd_gitops_config : null
   }
 }
