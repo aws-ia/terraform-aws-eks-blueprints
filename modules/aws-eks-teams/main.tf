@@ -64,6 +64,7 @@ resource "kubernetes_network_policy" "default_deny_all" {
   }
 }
 
+#TODO we can probably skip proxy config for now.
 ###########
 # Proxy Config
 ###########
@@ -188,4 +189,12 @@ resource "kubernetes_role_binding" "k8s_role_binding_reader" {
     api_group = "rbac.authorization.k8s.io"
     namespace = kubernetes_namespace.namespaces[each.key].metadata[0].name
   }
+}
+
+
+
+# Kubernetes Manifests
+resource "kubernetes_manifest" "k8s_manifests" {
+  for_each = { for manifest in local.team_manifests: manifest => manifest } 
+  manifest = yamldecode(file(each.key))
 }

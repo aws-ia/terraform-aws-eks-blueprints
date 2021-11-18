@@ -396,7 +396,7 @@ variable "keda_irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
   default     = []
-
+}
 
 # Teams
 variable "enable_teams" {
