@@ -19,8 +19,8 @@
 data "aws_region" "current" {}
 
 resource "aws_cloudwatch_log_group" "eks_worker_logs" {
-  name              = local.aws_for_fluentbit_helm_app["aws_for_fluent_bit_cw_log_group"]
-  retention_in_days = local.aws_for_fluentbit_helm_app["aws_for_fluentbit_cwlog_retention_in_days"]
+  name              = local.log_group_name
+  retention_in_days = local.log_group_retention
 }
 
 resource "helm_release" "aws_for_fluent_bit" {
