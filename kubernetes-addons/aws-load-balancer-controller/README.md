@@ -110,13 +110,11 @@ No modules.
 | <a name="input_eks_oidc_issuer_url"></a> [eks\_oidc\_issuer\_url](#input\_eks\_oidc\_issuer\_url) | The URL on the EKS cluster OIDC Issuer | `string` | n/a | yes |
 | <a name="input_eks_oidc_provider_arn"></a> [eks\_oidc\_provider\_arn](#input\_eks\_oidc\_provider\_arn) | The ARN of the OIDC Provider if `enable_irsa = true`. | `string` | n/a | yes |
 | <a name="input_lb_ingress_controller_helm_app"></a> [lb\_ingress\_controller\_helm\_app](#input\_lb\_ingress\_controller\_helm\_app) | Helm chart definition for lb\_ingress\_controller. | `any` | `{}` | no |
-| <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_gitops_config"></a> [gitops\_config](#output\_gitops\_config) | Configuration used for managing the add-on with GitOps |
 | <a name="output_ingress_name"></a> [ingress\_name](#output\_ingress\_name) | n/a |
 | <a name="output_ingress_namespace"></a> [ingress\_namespace](#output\_ingress\_namespace) | n/a |
 
