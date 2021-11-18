@@ -27,6 +27,6 @@ output "aws_fluent_bit_cw_log_group_arn" {
 }
 
 output "argocd_gitops_config" {
-  description = "Configuration used for managing the add-on with GitOps"
+  description = "Configuration used for managing the add-on with ArgoCD"
   value       = var.manage_via_gitops ? local.argocd_gitops_config : null
 }

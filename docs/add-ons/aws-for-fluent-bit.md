@@ -22,6 +22,5 @@ The following properties are made available for use when managing the add-on via
 awsForFluentBit = {
   enable       = true
   logGroupName = "<log_group_name>"
-  logGroupArn  = "<log_group_arn>"
 }
 ```
