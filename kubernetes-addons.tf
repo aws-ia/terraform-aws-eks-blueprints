@@ -45,7 +45,7 @@ module "prometheus" {
   count                 = var.create_eks && var.prometheus_enable ? 1 : 0
   source                = "./kubernetes-addons/prometheus"
   prometheus_helm_chart = var.prometheus_helm_chart
-  
+
   #AWS Managed Prometheus Workspace
   aws_managed_prometheus_enable   = var.aws_managed_prometheus_enable
   amp_workspace_id                = var.aws_managed_prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : ""
@@ -74,11 +74,12 @@ module "nginx_ingress" {
   depends_on = [module.aws_eks]
 }
 
-module "aws-for-fluent-bit" {
+module "aws_for_fluent_bit" {
   count                        = var.create_eks && var.aws_for_fluentbit_enable ? 1 : 0
   source                       = "./kubernetes-addons/aws-for-fluentbit"
   aws_for_fluentbit_helm_chart = var.aws_for_fluentbit_helm_chart
   eks_cluster_id               = module.aws_eks.cluster_id
+  manage_via_gitops            = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
@@ -141,11 +142,12 @@ module "aws_opentelemetry_collector" {
 }
 
 module "argocd" {
-  count               = var.create_eks && var.argocd_enable ? 1 : 0
-  source              = "./kubernetes-addons/argocd"
-  argocd_helm_chart   = var.argocd_helm_chart
-  argocd_applications = var.argocd_applications
-  eks_cluster_name    = module.aws_eks.cluster_id
+  count                = var.create_eks && var.argocd_enable ? 1 : 0
+  source               = "./kubernetes-addons/argocd"
+  argocd_helm_chart    = var.argocd_helm_chart
+  argocd_applications  = var.argocd_applications
+  eks_cluster_name     = module.aws_eks.cluster_id
+  gitops_add_on_config = local.gitops_add_on_config
 
   depends_on = [module.aws_eks]
 }

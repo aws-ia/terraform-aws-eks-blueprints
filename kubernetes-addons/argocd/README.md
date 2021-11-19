@@ -56,6 +56,7 @@ No modules.
 | <a name="input_argocd_applications"></a> [argocd\_applications](#input\_argocd\_applications) | ARGO CD Applications config to bootstrap the cluster | `any` | `{}` | no |
 | <a name="input_argocd_helm_chart"></a> [argocd\_helm\_chart](#input\_argocd\_helm\_chart) | ArgoCD Helm Chart Config values | `any` | `{}` | no |
 | <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | Name for the EKS Cluster | `string` | n/a | yes |
+| <a name="input_gitops_add_on_config"></a> [gitops\_add\_on\_config](#input\_gitops\_add\_on\_config) | Configuration for managing add-ons via ArgoCD | `any` | `{}` | no |
 
 ## Outputs
 

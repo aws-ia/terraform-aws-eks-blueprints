@@ -2,7 +2,7 @@ serviceAccounts:
   server:
     name: ${service_account_name}
     annotations: 
-        eks.amazonaws.com/role-arn: ${ingest_role_arn}
+        eks.amazonaws.com/role-arn: ${amp_ingest_role_arn}
 server:
   remoteWrite:
     - url: ${amp_workspace_url}

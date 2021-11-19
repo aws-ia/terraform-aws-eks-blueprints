@@ -17,9 +17,9 @@
  */
 
 output "ingress_namespace" {
-  value = helm_release.lb_ingress.metadata[0].namespace
+  value = local.lb_ingress_controller_helm_app["namespace"]
 }
 
 output "ingress_name" {
-  value = helm_release.lb_ingress.metadata[0].name
+  value = local.lb_ingress_controller_helm_app["name"]
 }

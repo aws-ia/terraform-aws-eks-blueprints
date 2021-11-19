@@ -1,6 +1,7 @@
 
 locals {
   log_group_name = "/${var.eks_cluster_id}/worker-fluentbit-logs"
+  log_group_retention = 90
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
     aws_region     = data.aws_region.current.name,
@@ -15,8 +16,6 @@ locals {
     namespace                                 = "kube-system"
     timeout                                   = "1200"
     create_namespace                          = true
-    aws_for_fluent_bit_cw_log_group           = local.log_group_name
-    aws_for_fluentbit_cwlog_retention_in_days = 90
     values                                    = local.default_helm_values
     set                                       = []
     set_sensitive                             = null
@@ -51,4 +50,10 @@ locals {
     local.default_aws_for_fluentbit_helm_app,
     var.aws_for_fluentbit_helm_chart
   )
+
+  argocd_gitops_config = {
+    enable       = true
+    logGroupName = aws_cloudwatch_log_group.eks_worker_logs.name
+    logGroupArn  = aws_cloudwatch_log_group.eks_worker_logs.arn
+  }
 }
