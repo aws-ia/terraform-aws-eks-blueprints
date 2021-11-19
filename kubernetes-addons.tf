@@ -74,7 +74,7 @@ module "nginx_ingress" {
   depends_on = [module.aws_eks]
 }
 
-module "aws-for-fluent-bit" {
+module "aws_for_fluent_bit" {
   count                        = var.create_eks && var.aws_for_fluentbit_enable ? 1 : 0
   source                       = "./kubernetes-addons/aws-for-fluentbit"
   aws_for_fluentbit_helm_chart = var.aws_for_fluentbit_helm_chart
