@@ -138,12 +138,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 |------|--------|---------|
 | <a name="module_agones"></a> [agones](#module\_agones) | ./kubernetes-addons/agones | n/a |
 | <a name="module_argocd"></a> [argocd](#module\_argocd) | ./kubernetes-addons/argocd | n/a |
-| <a name="module_aws-for-fluent-bit"></a> [aws-for-fluent-bit](#module\_aws-for-fluent-bit) | ./kubernetes-addons/aws-for-fluentbit | n/a |
 | <a name="module_aws_eks"></a> [aws\_eks](#module\_aws\_eks) | terraform-aws-modules/eks/aws | v17.20.0 |
 | <a name="module_aws_eks_addon"></a> [aws\_eks\_addon](#module\_aws\_eks\_addon) | ./modules/aws-eks-addon | n/a |
 | <a name="module_aws_eks_fargate_profiles"></a> [aws\_eks\_fargate\_profiles](#module\_aws\_eks\_fargate\_profiles) | ./modules/aws-eks-fargate-profiles | n/a |
 | <a name="module_aws_eks_managed_node_groups"></a> [aws\_eks\_managed\_node\_groups](#module\_aws\_eks\_managed\_node\_groups) | ./modules/aws-eks-managed-node-groups | n/a |
 | <a name="module_aws_eks_self_managed_node_groups"></a> [aws\_eks\_self\_managed\_node\_groups](#module\_aws\_eks\_self\_managed\_node\_groups) | ./modules/aws-eks-self-managed-node-groups | n/a |
+| <a name="module_aws_for_fluent_bit"></a> [aws\_for\_fluent\_bit](#module\_aws\_for\_fluent\_bit) | ./kubernetes-addons/aws-for-fluentbit | n/a |
 | <a name="module_aws_load_balancer_controller"></a> [aws\_load\_balancer\_controller](#module\_aws\_load\_balancer\_controller) | ./kubernetes-addons/aws-load-balancer-controller | n/a |
 | <a name="module_aws_managed_prometheus"></a> [aws\_managed\_prometheus](#module\_aws\_managed\_prometheus) | ./modules/aws-managed-prometheus | n/a |
 | <a name="module_aws_opentelemetry_collector"></a> [aws\_opentelemetry\_collector](#module\_aws\_opentelemetry\_collector) | ./kubernetes-addons/aws-opentelemetry-eks | n/a |
