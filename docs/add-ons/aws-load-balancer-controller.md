@@ -27,11 +27,11 @@ Here is the link to get the AWS ELB [service annotations](https://kubernetes-sig
 
 ### GitOps Configuration 
 
-The following properties are made available for use when managing the add-on via GitOps 
+The following properties are made available for use when managing the add-on via GitOps. 
 
 ```
 awsLoadBalancerController = {
-  enable                = true
-  serviceAccountName    = "<service_account_name>"
+  enable             = true
+  serviceAccountName = "<service_account_name>"
 }
 ```

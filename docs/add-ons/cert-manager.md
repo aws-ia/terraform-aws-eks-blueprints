@@ -14,10 +14,10 @@ cert_manager_enable = true
 
 ### GitOps Configuration 
 
-The following properties are made available for use when managing the add-on via GitOps 
+The following properties are made available for use when managing the add-on via GitOps. 
 
 ```
 certManager = {
-  enable       = true
+  enable = true
 }
 ```
