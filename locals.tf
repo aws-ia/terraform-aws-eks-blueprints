@@ -84,4 +84,9 @@ locals {
   service_account_amp_ingest_name = format("%s-%s", module.aws_eks.cluster_id, "amp-ingest")
   service_account_amp_query_name  = format("%s-%s", module.aws_eks.cluster_id, "amp-query")
 
+  asg_names = flatten([
+    for ng in data.aws_eks_node_group.cluster : [
+      ng.resources[*].autoscaling_groups[*].name
+    ]
+  ])
 }

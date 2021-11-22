@@ -45,67 +45,17 @@ resource "aws_sqs_queue" "aws_node_termination_handler_queue" {
   message_retention_seconds = "300"
 }
 
-resource "aws_sqs_queue_policy" "test" {
+resource "aws_sqs_queue_policy" "aws_node_termination_handler_queue_policy" {
   queue_url = aws_sqs_queue.aws_node_termination_handler_queue.id
 
-  policy = jsonencode({
-    Version : "2012-10-17"
-    Id : "NTHQueuePolicy"
-    Statement : [{
-      Effect : "Allow"
-      Principal : {
-        Service : ["events.amazonaws.com", "sqs.amazonaws.com"]
-      }
-      Action : "sqs:SendMessage"
-      Resource : [
-        aws_sqs_queue.aws_node_termination_handler_queue.arn
-      ]
-    }]
-  })
-}
-
-locals {
-  namespace            = "kube-system"
-  service_account_name = "aws-node-termination-handler-sa"
-  rules = [
-    {
-      name          = "NTHASGTermRule",
-      event_pattern = <<EOF
-{"source":["aws.autoscaling"],"detail-type":["EC2 Instance-terminate Lifecycle Action"]}
-EOF
-    },
-    {
-      name          = "NTHSpotTermRule",
-      event_pattern = <<EOF
-{"source": ["aws.ec2"],"detail-type": ["EC2 Spot Instance Interruption Warning"]}
-EOF
-    },
-    {
-      name          = "NTHRebalanceRule",
-      event_pattern = <<EOF
-{"source": ["aws.ec2"],"detail-type": ["EC2 Instance Rebalance Recommendation"]}
-EOF
-    },
-    {
-      name          = "NTHInstanceStateChangeRule",
-      event_pattern = <<EOF
-{"source": ["aws.ec2"],"detail-type": ["EC2 Instance State-change Notification"]}
-EOF
-    },
-    {
-      name          = "NTHScheduledChangeRule",
-      event_pattern = <<EOF
-{"source": ["aws.health"],"detail-type": ["AWS Health Event"]}
-EOF
-    }
-  ]
+  policy = local.queue_policy
 }
 
 resource "aws_cloudwatch_event_rule" "aws_node_termination_handler_rule" {
-  count = length(local.rules)
+  count = length(local.event_rules)
 
-  name          = local.rules[count.index].name
-  event_pattern = local.rules[count.index].event_pattern
+  name          = local.event_rules[count.index].name
+  event_pattern = local.event_rules[count.index].event_pattern
 }
 
 resource "aws_cloudwatch_event_target" "aws_node_termination_handler_rule_target" {
@@ -126,24 +76,7 @@ module "irsa" {
 resource "aws_iam_policy" "aws_node_termination_handler_irsa" {
   description = "IAM role policy for AWS Node Termination Handler"
   name        = "${var.eks_cluster_name}-aws-nth-irsa"
-  policy      = data.aws_iam_policy_document.aws_node_termination_handler_irsa_policy_document.json
-}
-
-data "aws_iam_policy_document" "aws_node_termination_handler_irsa_policy_document" {
-  statement {
-    effect = "Allow"
-
-    resources = ["*"]
-
-    actions = [
-      "autoscaling:CompleteLifecycleAction",
-      "autoscaling:DescribeAutoScalingInstances",
-      "autoscaling:DescribeTags",
-      "ec2:DescribeInstances",
-      "sqs:DeleteMessage",
-      "sqs:ReceiveMessage"
-    ]
-  }
+  policy      = local.irsa_policy
 }
 
 resource "helm_release" "aws_node_termination_handler" {

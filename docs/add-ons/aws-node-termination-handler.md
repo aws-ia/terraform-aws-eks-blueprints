@@ -4,7 +4,7 @@ This project ensures that the Kubernetes control plane responds appropriately to
 
 The aws-node-termination-handler (NTH) can operate in two different modes: Instance Metadata Service (IMDS) or the Queue Processor. In the SSP, we provision the NTH in Queue Processor mode. This means that NTH will monitor an SQS queue of events from Amazon EventBridge for ASG lifecycle events, EC2 status change events, Spot Interruption Termination Notice events, and Spot Rebalance Recommendation events. When NTH detects an instance is going down, NTH uses the Kubernetes API to cordon the node to ensure no new work is scheduled there, then drain it, removing any existing work.
 
-The NTH will be deployed in the `kube-system` namespace. AWS resources required as part of the setup of NTH will be provisioned for you. These include: 
+The NTH will be deployed in the `kube-system` namespace. AWS resources required as part of the setup of NTH will be provisioned for you. These include:
 
 1. Node group ASG tagged with `key=aws-node-termination-handler/managed`
 2. AutoScaling Group Termination Lifecycle Hook
