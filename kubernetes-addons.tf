@@ -74,11 +74,12 @@ module "nginx_ingress" {
   depends_on = [module.aws_eks]
 }
 
-module "aws-for-fluent-bit" {
+module "aws_for_fluent_bit" {
   count                        = var.create_eks && var.aws_for_fluentbit_enable ? 1 : 0
   source                       = "./kubernetes-addons/aws-for-fluentbit"
   aws_for_fluentbit_helm_chart = var.aws_for_fluentbit_helm_chart
   eks_cluster_id               = module.aws_eks.cluster_id
+  manage_via_gitops            = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
@@ -141,22 +142,16 @@ module "aws_opentelemetry_collector" {
 }
 
 module "argocd" {
-  count               = var.create_eks && var.argocd_enable ? 1 : 0
-  source              = "./kubernetes-addons/argocd"
-  argocd_helm_chart   = var.argocd_helm_chart
-  argocd_applications = var.argocd_applications
-  eks_cluster_name    = module.aws_eks.cluster_id
+  count                = var.create_eks && var.argocd_enable ? 1 : 0
+  source               = "./kubernetes-addons/argocd"
+  argocd_helm_chart    = var.argocd_helm_chart
+  argocd_applications  = var.argocd_applications
+  eks_cluster_name     = module.aws_eks.cluster_id
+  gitops_add_on_config = local.gitops_add_on_config
 
   depends_on = [module.aws_eks]
 }
 
-locals {
-  asg_names = flatten([
-    for ng in data.aws_eks_node_group.cluster : [
-      ng.resources[*].autoscaling_groups[*].name
-    ]
-  ])
-}
 module "aws_node_termination_handler" {
   count                                   = var.create_eks && var.aws_node_termination_handler_enable ? 1 : 0
   source                                  = "./kubernetes-addons/aws-node-termination-handler"

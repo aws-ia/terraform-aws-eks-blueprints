@@ -199,12 +199,15 @@ variable "aws_auth_additional_labels" {
   default     = {}
   type        = map(string)
 }
+
 # KUBERNETES ADDONS VARIABLES
+
 variable "enable_emr_on_eks" {
   type        = bool
   default     = false
   description = "Enabling EMR on EKS Config"
 }
+
 variable "emr_on_eks_teams" {
   description = "EMR on EKS Teams configuration"
   type        = any
@@ -387,6 +390,12 @@ variable "aws_node_termination_handler_helm_chart" {
   description = "Helm chart definition for aws_node_termination_handler"
   default     = {}
 }
+variable "argocd_manage_add_ons" {
+  type        = bool
+  default     = false
+  description = "Enables managing add-on configuration via ArgoCD"
+}
+
 #-----------KEDA ADDON-------------
 variable "keda_enable" {
   type        = bool

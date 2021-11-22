@@ -89,4 +89,9 @@ locals {
       ng.resources[*].autoscaling_groups[*].name
     ]
   ])
+
+  # Configuration for managing add-ons via GitOps.
+  gitops_add_on_config = {
+    awsForFluentBit = var.aws_for_fluentbit_enable ? module.aws_for_fluent_bit[0].gitops_config : null
+  }
 }
