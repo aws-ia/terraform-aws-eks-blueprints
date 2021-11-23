@@ -17,7 +17,7 @@ For complete project documentation, please visit the [Spark K8S Operator documen
 ```hcl
   spark_on_k8s_operator_enable = true
   # Optional Map value
-  # NOTE: This block requires passing the helm prometheus-values.yaml
+  # NOTE: This block requires passing the helm values.yaml
   spark_on_k8s_operator_helm_chart = {
     name             = "spark-operator"
     chart            = "spark-operator"
@@ -26,7 +26,7 @@ For complete project documentation, please visit the [Spark K8S Operator documen
     namespace        = "spark-k8s-operator"
     timeout          = "1200"
     create_namespace = true
-    values = [templatefile("${path.module}/spark-k8s-operator-prometheus-values.yaml", {})]
+    values = [templatefile("${path.module}/spark-k8s-operator-values.yaml", {})]
 
   }
 ```
