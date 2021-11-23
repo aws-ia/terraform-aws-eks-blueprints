@@ -153,11 +153,11 @@ module "argocd" {
 }
 
 module "aws_node_termination_handler" {
-  count                                   = var.create_eks && var.aws_node_termination_handler_enable ? 1 : 0
+  count                                   = var.create_eks && var.aws_node_termination_handler_enable && enable_self_managed_nodegroups ? 1 : 0
   source                                  = "./kubernetes-addons/aws-node-termination-handler"
   eks_cluster_name                        = module.aws_eks.cluster_id
   aws_node_termination_handler_helm_chart = var.aws_node_termination_handler_helm_chart
-  autoscaling_group_names                 = local.asg_names
+  autoscaling_group_names                 = module.aws_eks_self_managed_node_groups.self_managed_asg_names
 
   depends_on = [module.aws_eks]
 }
