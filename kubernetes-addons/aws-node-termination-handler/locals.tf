@@ -52,22 +52,23 @@ EOF
   ]
 
   irsa_policy = <<EOT
-  {
-    "Version": "2012-10-17",
-    "Statement": [{
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
       "Effect": "Allow",
-      "Resource": "*",
-
-      "Actions": [
-        "autoscaling:CompleteLifecycleAction",
-        "autoscaling:DescribeAutoScalingInstances",
-        "autoscaling:DescribeTags",
-        "ec2:DescribeInstances",
-        "sqs:DeleteMessage",
-        "sqs:ReceiveMessage"
-      ]
-    }]
-  }
+      "Action": [
+          "autoscaling:CompleteLifecycleAction",
+          "autoscaling:DescribeAutoScalingInstances",
+          "autoscaling:DescribeTags",
+          "ec2:DescribeInstances",
+          "sqs:DeleteMessage",
+          "sqs:ReceiveMessage"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
 EOT
 
   default_nth_helm_app = {
