@@ -91,5 +91,6 @@ locals {
     awsLoadBalancerController = var.aws_lb_ingress_controller_enable ? module.aws_load_balancer_controller[0].argocd_gitops_config : null
     certManager               = var.cert_manager_enable ? module.cert_manager[0].argocd_gitops_config : null
     clusterAutoscaler         = var.cluster_autoscaler_enable ? module.cluster_autoscaler[0].argocd_gitops_config : null
+
   }
 }

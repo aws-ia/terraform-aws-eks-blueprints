@@ -158,6 +158,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="module_prometheus"></a> [prometheus](#module\_prometheus) | ./kubernetes-addons/prometheus | n/a |
 | <a name="module_spark-k8s-operator"></a> [spark-k8s-operator](#module\_spark-k8s-operator) | ./kubernetes-addons/spark-k8s-operator | n/a |
 | <a name="module_traefik_ingress"></a> [traefik\_ingress](#module\_traefik\_ingress) | ./kubernetes-addons/traefik-ingress | n/a |
+| <a name="module_vpa"></a> [vpa](#module\_vpa) | ./kubernetes-addons/vertical-pod-autoscaler | n/a |
 | <a name="module_windows_vpc_controllers"></a> [windows\_vpc\_controllers](#module\_windows\_vpc\_controllers) | ./kubernetes-addons/windows-vpc-controllers | n/a |
 
 ## Resources
@@ -244,6 +245,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_terraform_version"></a> [terraform\_version](#input\_terraform\_version) | Terraform Version | `string` | `"Terraform"` | no |
 | <a name="input_traefik_helm_chart"></a> [traefik\_helm\_chart](#input\_traefik\_helm\_chart) | Traefik Helm Addon Config | `any` | `{}` | no |
 | <a name="input_traefik_ingress_controller_enable"></a> [traefik\_ingress\_controller\_enable](#input\_traefik\_ingress\_controller\_enable) | Enabling Traefik Ingress Controller on eks cluster | `bool` | `false` | no |
+| <a name="input_vpa_enable"></a> [vpa\_enable](#input\_vpa\_enable) | Enable Kubernetes Vertical Pod Autoscaler | `bool` | `false` | no |
+| <a name="input_vpa_helm_chart"></a> [vpa\_helm\_chart](#input\_vpa\_helm\_chart) | Kubernetes Vertical Pod Autoscaler Helm chart config | `any` | `{}` | no |
 | <a name="input_vpc_cni_addon_version"></a> [vpc\_cni\_addon\_version](#input\_vpc\_cni\_addon\_version) | VPC CNI Addon version | `string` | `"v1.8.0-eksbuild.1"` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC id | `string` | n/a | yes |
 | <a name="input_windows_vpc_controllers_helm_chart"></a> [windows\_vpc\_controllers\_helm\_chart](#input\_windows\_vpc\_controllers\_helm\_chart) | Windows VPC Controllers Helm chart configuration | `any` | `{}` | no |

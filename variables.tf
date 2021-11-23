@@ -384,7 +384,6 @@ variable "argocd_manage_add_ons" {
   default     = false
   description = "Enables managing add-on configuration via ArgoCD"
 }
-
 #-----------KEDA ADDON-------------
 variable "keda_enable" {
   type        = bool
@@ -405,4 +404,15 @@ variable "keda_irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
   default     = []
+}
+#-----------Vertical Pod Autoscaler(VPA) ADDON-------------
+variable "vpa_enable" {
+  type        = bool
+  default     = false
+  description = "Enable Kubernetes Vertical Pod Autoscaler"
+}
+variable "vpa_helm_chart" {
+  type        = any
+  default     = {}
+  description = "Kubernetes Vertical Pod Autoscaler Helm chart config"
 }

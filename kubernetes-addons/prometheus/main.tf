@@ -23,7 +23,6 @@ resource "helm_release" "prometheus" {
   version                    = local.prometheus_helm_app["version"]
   namespace                  = local.prometheus_helm_app["namespace"]
   timeout                    = local.prometheus_helm_app["timeout"]
-  values                     = local.prometheus_helm_app["values"]
   create_namespace           = local.prometheus_helm_app["create_namespace"]
   lint                       = local.prometheus_helm_app["lint"]
   description                = local.prometheus_helm_app["description"]
@@ -49,6 +48,7 @@ resource "helm_release" "prometheus" {
   wait_for_jobs              = local.prometheus_helm_app["wait_for_jobs"]
   dependency_update          = local.prometheus_helm_app["dependency_update"]
   replace                    = local.prometheus_helm_app["replace"]
+  values                     = local.prometheus_helm_app["values"]
 
   postrender {
     binary_path = local.prometheus_helm_app["postrender"]
@@ -56,7 +56,7 @@ resource "helm_release" "prometheus" {
 
   dynamic "set" {
     iterator = each_item
-    for_each = local.prometheus_helm_app["set"] == null ? [] : local.prometheus_helm_app["set"]
+    for_each = var.aws_managed_prometheus_enable ? distinct(concat(local.amp_config_values, local.prometheus_helm_app["set"])) : local.prometheus_helm_app["set"]
 
     content {
       name  = each_item.value.name
