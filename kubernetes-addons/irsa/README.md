@@ -1,14 +1,3 @@
-# IRSA module
-
-This module creates the following resources
-
- 1. Kubernetes Namespace for Kubernetes Addon
- 2. Service Account for Kubernetes Addon
- 3. IAM Role for Service Account with OIDC assume role policy
- 4. Creates default policy required for Addon
- 5. Attaches the additional IAM policies provided by consumer module
-
- <!--- BEGIN_TF_DOCS --->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: MIT-0
 
@@ -58,6 +47,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_create_namespace"></a> [create\_namespace](#input\_create\_namespace) | Should the module create the namespace | `bool` | `true` | no |
 | <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | EKS Cluster Id | `string` | n/a | yes |
 | <a name="input_iam_role_path"></a> [iam\_role\_path](#input\_iam\_role\_path) | IAM Role path | `string` | `"/"` | no |
 | <a name="input_irsa_iam_policies"></a> [irsa\_iam\_policies](#input\_irsa\_iam\_policies) | IAM Policies for IRSA IAM role | `list(string)` | n/a | yes |
@@ -73,4 +63,3 @@ No modules.
 | <a name="output_irsa_iam_role_name"></a> [irsa\_iam\_role\_name](#output\_irsa\_iam\_role\_name) | IAM role name for your service account |
 | <a name="output_kubernetes_namespace_id"></a> [kubernetes\_namespace\_id](#output\_kubernetes\_namespace\_id) | Kubernetes Namespace id |
 | <a name="output_kubernetes_service_account_id"></a> [kubernetes\_service\_account\_id](#output\_kubernetes\_service\_account\_id) | Kubernetes Service Account id |
-<!--- END_TF_DOCS --->
