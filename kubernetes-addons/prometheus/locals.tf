@@ -63,7 +63,7 @@ locals {
   )
 
   default_prometheus_values = [templatefile("${path.module}/prometheus-values.yaml", {
-    operating_system           = "linux",
+    operating_system = "linux",
   })]
 
 }
