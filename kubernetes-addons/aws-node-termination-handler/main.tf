@@ -65,7 +65,7 @@ data "aws_iam_policy_document" "aws_node_termination_handler_queue_policy_docume
 resource "aws_sqs_queue_policy" "aws_node_termination_handler_queue_policy" {
   queue_url = aws_sqs_queue.aws_node_termination_handler_queue.id
 
-  policy = data.aws_iam_policy_document.aws_node_termination_handler_queue_policy_document
+  policy = data.aws_iam_policy_document.aws_node_termination_handler_queue_policy_document.json
 }
 
 resource "aws_cloudwatch_event_rule" "aws_node_termination_handler_rule" {
@@ -99,7 +99,7 @@ data "aws_iam_policy_document" "irsa_policy" {
 resource "aws_iam_policy" "aws_node_termination_handler_irsa" {
   description = "IAM role policy for AWS Node Termination Handler"
   name        = "${var.eks_cluster_name}-aws-nth-irsa"
-  policy      = data.aws_iam_policy_document.irsa_policy
+  policy      = data.aws_iam_policy_document.irsa_policy.json
 }
 
 module "irsa" {
