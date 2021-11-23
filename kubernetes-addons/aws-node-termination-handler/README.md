@@ -1,15 +1,3 @@
-# IRSA module
-
-This module creates the following resources
-
- 1. Kubernetes Namespace for Kubernetes Addon
- 2. Service Account for Kubernetes Addon
- 3. IAM Role for Service Account with OIDC assume role policy
- 4. Creates default policy required for Addon
- 5. Attaches the additional IAM policies provided by consumer module
-
- <!--- BEGIN_TF_DOCS --->
-
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: MIT-0
 
@@ -56,6 +44,8 @@ No requirements.
 | [aws_sqs_queue_policy.aws_node_termination_handler_queue_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue_policy) | resource |
 | [helm_release.aws_node_termination_handler](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
+| [aws_iam_policy_document.aws_node_termination_handler_queue_policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.irsa_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
@@ -69,4 +59,3 @@ No requirements.
 ## Outputs
 
 No outputs.
-<!--- END_TF_DOCS --->
