@@ -25,9 +25,9 @@ aws-load-balancer-controller                               2/2     2            
 
 Here is the link to get the AWS ELB [service annotations](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/service/annotations/) for LB Ingress controller.
 
-### GitOps Configuration 
+### GitOps Configuration
 
-The following properties are made available for use when managing the add-on via GitOps. 
+The following properties are made available for use when managing the add-on via GitOps.
 
 ```
 awsLoadBalancerController = {

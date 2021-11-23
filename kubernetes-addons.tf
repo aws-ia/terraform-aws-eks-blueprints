@@ -174,5 +174,3 @@ module "vpa" {
 
   depends_on = [module.aws_eks]
 }
-
-
