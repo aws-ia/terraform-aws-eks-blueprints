@@ -29,7 +29,7 @@ locals {
     create_namespace           = true
     description                = "Prometheus helm Chart deployment configuration"
     lint                       = false
-    values                     = []
+    values                     = local.default_prometheus_values
     wait                       = true
     wait_for_jobs              = false
     verify                     = false
@@ -61,5 +61,9 @@ locals {
     local.default_prometheus_helm_app,
     var.prometheus_helm_chart
   )
+
+  default_prometheus_values = [templatefile("${path.module}/prometheus-values.yaml", {
+    operating_system           = "linux",
+  })]
 
 }
