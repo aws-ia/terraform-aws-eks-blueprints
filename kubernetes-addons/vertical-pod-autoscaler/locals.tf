@@ -63,7 +63,7 @@ locals {
   )
 
   default_vpa_helm_values = [templatefile("${path.module}/vpa-values.yaml", {
-    vpa-sa-name = local.vpa_service_account_name
+    vpa_sa_name = local.vpa_service_account_name
   })]
 
 

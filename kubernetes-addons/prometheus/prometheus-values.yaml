@@ -11,9 +11,6 @@ server:
         capacity: 2500
 
   resources:
-    # limits:
-    #   cpu: 1000m
-    #   memory: 2048Mi
     requests:
       cpu: 500m
       memory: 512Mi
@@ -29,7 +26,6 @@ server:
         maxAllowed:
           cpu: 1000m
           memory: 2048Mi
-        # controlledResources: ["cpu", "memory"]
 
   global:
     scrape_interval: 15s
