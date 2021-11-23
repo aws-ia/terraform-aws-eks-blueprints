@@ -1,5 +1,7 @@
 locals {
   queue_policy = jsonencode({
+    Version = "2012-10-17"
+
     Statement = [{
       Effect = "Allow"
       Principal = {
@@ -11,6 +13,7 @@ locals {
       ]
     }]
   })
+
   namespace = "kube-system"
 
   service_account_name = "aws-node-termination-handler-sa"
@@ -49,6 +52,8 @@ EOF
   ]
 
   irsa_policy = jsonencode({
+    Version = "2012-10-17"
+
     Statement = [{
       Effect = "Allow"
       Resource = "*"
