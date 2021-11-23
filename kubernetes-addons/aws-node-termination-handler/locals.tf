@@ -17,20 +17,6 @@
  */
 
 locals {
-  queue_policy = jsonencode({
-    Version = "2012-10-17"
-
-    Statement = [{
-      Effect = "Allow"
-      Principal = {
-        Service = ["events.amazonaws.com", "sqs.amazonaws.com"]
-      }
-      Action = "sqs:SendMessage"
-      Resource = [
-        aws_sqs_queue.aws_node_termination_handler_queue.arn
-      ]
-    }]
-  })
 
   namespace = "kube-system"
 
@@ -68,26 +54,6 @@ EOF
 EOF
     }
   ]
-
-  irsa_policy = <<EOT
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-          "autoscaling:CompleteLifecycleAction",
-          "autoscaling:DescribeAutoScalingInstances",
-          "autoscaling:DescribeTags",
-          "ec2:DescribeInstances",
-          "sqs:DeleteMessage",
-          "sqs:ReceiveMessage"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOT
 
   default_nth_helm_app = {
     name                       = "aws-node-termination-handler"

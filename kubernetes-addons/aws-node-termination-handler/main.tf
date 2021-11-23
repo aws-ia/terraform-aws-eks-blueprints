@@ -45,10 +45,27 @@ resource "aws_sqs_queue" "aws_node_termination_handler_queue" {
   message_retention_seconds = "300"
 }
 
+data "aws_iam_policy_document" "aws_node_termination_handler_queue_policy_document" {
+  statement {
+    actions = [
+      "sqs:SendMessage"
+    ]
+    principals {
+      type = "Service"
+      identifiers = [
+        "events.amazonaws.com",
+        "sqs.amazonaws.com"
+      ]
+    }
+    resources = [
+      aws_sqs_queue.aws_node_termination_handler_queue.arn
+    ]
+  }
+}
 resource "aws_sqs_queue_policy" "aws_node_termination_handler_queue_policy" {
   queue_url = aws_sqs_queue.aws_node_termination_handler_queue.id
 
-  policy = local.queue_policy
+  policy = data.aws_iam_policy_document.aws_node_termination_handler_queue_policy_document
 }
 
 resource "aws_cloudwatch_event_rule" "aws_node_termination_handler_rule" {
@@ -65,6 +82,26 @@ resource "aws_cloudwatch_event_target" "aws_node_termination_handler_rule_target
   arn  = aws_sqs_queue.aws_node_termination_handler_queue.arn
 }
 
+data "aws_iam_policy_document" "irsa_policy" {
+  statement {
+    actions = [
+      "autoscaling:CompleteLifecycleAction",
+      "autoscaling:DescribeAutoScalingInstances",
+      "autoscaling:DescribeTags",
+      "ec2:DescribeInstances",
+      "sqs:DeleteMessage",
+      "sqs:ReceiveMessage"
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "aws_node_termination_handler_irsa" {
+  description = "IAM role policy for AWS Node Termination Handler"
+  name        = "${var.eks_cluster_name}-aws-nth-irsa"
+  policy      = data.aws_iam_policy_document.irsa_policy
+}
+
 module "irsa" {
   source                     = "../irsa"
   eks_cluster_name           = var.eks_cluster_name
@@ -72,12 +109,6 @@ module "irsa" {
   create_namespace           = false
   kubernetes_service_account = local.service_account_name
   irsa_iam_policies          = [aws_iam_policy.aws_node_termination_handler_irsa.arn]
-}
-
-resource "aws_iam_policy" "aws_node_termination_handler_irsa" {
-  description = "IAM role policy for AWS Node Termination Handler"
-  name        = "${var.eks_cluster_name}-aws-nth-irsa"
-  policy      = local.irsa_policy
 }
 
 resource "helm_release" "aws_node_termination_handler" {
