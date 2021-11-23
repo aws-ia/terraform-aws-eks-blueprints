@@ -2,7 +2,7 @@
 
 The [`kubernetes-addons`](../../modules/kubernetes-addons) module within this framework allows you to configure the add-ons you would like deployed into you EKS cluster with simple **true/false** flags.
 
-The framework currently provides support for the following add-ons:
+The framework currently provides support for the following add-ons. Each individual add-on directory contains a README.md file with info on the Helm repositories each add-on uses.
 
 | Add-on    | Description   |
 |-----------|-----------------
@@ -76,7 +76,7 @@ metrics_server_helm_config = {
 }
 ```
 
-Each add-on module is configured to fetch Helm Charts from Open Source, public Helm repositories and Docker images from Docker Hub/Public ECR repositories. This requires outbound Internet connection from your EKS Cluster.
+By default, each add-on module is configured to fetch Helm Charts from Open Source, public Helm repositories and Docker images from Docker Hub/Public ECR repositories. This requires outbound Internet connection from your EKS Cluster.
 
 If you would like to use private repositories, you can download Docker images for each add-on and push them to an AWS ECR repository. ECR can be accessed from within a private existing VPC using an ECR VPC endpoint. For instructions on how to download existing images and push them to ECR, see [ECR instructions](../advanced/ecr-instructions.md).
 
