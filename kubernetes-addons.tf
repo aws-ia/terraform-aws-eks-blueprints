@@ -157,7 +157,7 @@ module "aws_node_termination_handler" {
   source                                  = "./kubernetes-addons/aws-node-termination-handler"
   eks_cluster_name                        = module.aws_eks.cluster_id
   aws_node_termination_handler_helm_chart = var.aws_node_termination_handler_helm_chart
-  autoscaling_group_names                 = module.aws_eks_self_managed_node_groups.self_managed_asg_names
+  autoscaling_group_names                 = var.create_eks && var.enable_self_managed_nodegroups ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_asg_names) }) : []
 
   depends_on = [module.aws_eks]
 }
