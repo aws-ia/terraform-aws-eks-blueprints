@@ -44,7 +44,7 @@ metrics_server_helm_chart = {
     timeout        = "1200"
 
     # (Optional) Example to pass metrics-server-prometheus-values.yaml from your local repo
-    values = [templatefile("${path.module}/k8s_addons/metrics-server-prometheus-values.yaml", {
+    values = [templatefile("${path.module}/k8s_addons/metrics-server-values.yaml", {
         operating_system                = "linux"
     })]
 }
