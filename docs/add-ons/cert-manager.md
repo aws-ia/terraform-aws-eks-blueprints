@@ -12,9 +12,9 @@ cert-manger can be deployed by enabling the add-on via the following.
 cert_manager_enable = true
 ```
 
-### GitOps Configuration 
+### GitOps Configuration
 
-The following properties are made available for use when managing the add-on via GitOps. 
+The following properties are made available for use when managing the add-on via GitOps.
 
 ```
 certManager = {

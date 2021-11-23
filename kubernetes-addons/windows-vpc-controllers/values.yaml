@@ -4,7 +4,7 @@ resourceController:
       - -stderrthreshold=info
 admissionWebhook:
   certificate:
-    key: 
+    key:
         rotationPolicy: Always
-    issuer: 
+    issuer:
       name: cert-manager-ca
