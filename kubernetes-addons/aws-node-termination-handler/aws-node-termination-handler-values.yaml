@@ -1,0 +1,7 @@
+---
+serviceAccount:
+  name: ${nth-sa-name}
+
+enableSqsTerminationDraining: true
+
+enablePrometheusServer: true

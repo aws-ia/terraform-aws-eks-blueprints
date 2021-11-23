@@ -81,36 +81,66 @@ resource "aws_iam_policy" "aws_node_termination_handler_irsa" {
 }
 
 resource "helm_release" "aws_node_termination_handler" {
-  name       = "aws-node-termination-handler"
-  repository = "https://aws.github.io/eks-charts"
-  chart      = "aws-node-termination-handler"
-  version    = "0.16.0"
-  namespace  = local.namespace
-  verify     = false
-  timeout    = "1200"
+  name                       = local.aws_node_termination_handler_helm_app["name"]
+  repository                 = local.aws_node_termination_handler_helm_app["repository"]
+  chart                      = local.aws_node_termination_handler_helm_app["chart"]
+  version                    = local.aws_node_termination_handler_helm_app["version"]
+  namespace                  = local.aws_node_termination_handler_helm_app["namespace"]
+  timeout                    = local.aws_node_termination_handler_helm_app["timeout"]
+  values                     = local.aws_node_termination_handler_helm_app["values"]
+  create_namespace           = local.aws_node_termination_handler_helm_app["create_namespace"]
+  lint                       = local.aws_node_termination_handler_helm_app["lint"]
+  description                = local.aws_node_termination_handler_helm_app["description"]
+  repository_key_file        = local.aws_node_termination_handler_helm_app["repository_key_file"]
+  repository_cert_file       = local.aws_node_termination_handler_helm_app["repository_cert_file"]
+  repository_ca_file         = local.aws_node_termination_handler_helm_app["repository_ca_file"]
+  repository_username        = local.aws_node_termination_handler_helm_app["repository_username"]
+  repository_password        = local.aws_node_termination_handler_helm_app["repository_password"]
+  verify                     = local.aws_node_termination_handler_helm_app["verify"]
+  keyring                    = local.aws_node_termination_handler_helm_app["keyring"]
+  disable_webhooks           = local.aws_node_termination_handler_helm_app["disable_webhooks"]
+  reuse_values               = local.aws_node_termination_handler_helm_app["reuse_values"]
+  reset_values               = local.aws_node_termination_handler_helm_app["reset_values"]
+  force_update               = local.aws_node_termination_handler_helm_app["force_update"]
+  recreate_pods              = local.aws_node_termination_handler_helm_app["recreate_pods"]
+  cleanup_on_fail            = local.aws_node_termination_handler_helm_app["cleanup_on_fail"]
+  max_history                = local.aws_node_termination_handler_helm_app["max_history"]
+  atomic                     = local.aws_node_termination_handler_helm_app["atomic"]
+  skip_crds                  = local.aws_node_termination_handler_helm_app["skip_crds"]
+  render_subchart_notes      = local.aws_node_termination_handler_helm_app["render_subchart_notes"]
+  disable_openapi_validation = local.aws_node_termination_handler_helm_app["disable_openapi_validation"]
+  wait                       = local.aws_node_termination_handler_helm_app["wait"]
+  wait_for_jobs              = local.aws_node_termination_handler_helm_app["wait_for_jobs"]
+  dependency_update          = local.aws_node_termination_handler_helm_app["dependency_update"]
+  replace                    = local.aws_node_termination_handler_helm_app["replace"]
 
-  set {
-    name  = "awsRegion"
-    value = data.aws_region.current.name
+  postrender {
+    binary_path = local.aws_node_termination_handler_helm_app["postrender"]
   }
-  set {
-    name  = "serviceAccount.name"
-    value = local.service_account_name
+
+  dynamic "set" {
+    iterator = each_item
+    for_each = local.aws_node_termination_handler_helm_app["set"] == null ? [] : local.aws_node_termination_handler_helm_app["set"]
+
+    content {
+      name  = each_item.value.name
+      value = each_item.value.value
+    }
   }
-  set {
-    name  = "serviceAccount.create"
-    value = false
-  }
-  set {
-    name  = "enableSqsTerminationDraining"
-    value = true
+
+  dynamic "set_sensitive" {
+    iterator = each_item
+    for_each = local.aws_node_termination_handler_helm_app["set_sensitive"] == null ? [] : local.aws_node_termination_handler_helm_app["set_sensitive"]
+
+    content {
+      name  = each_item.value.name
+      value = each_item.value.value
+    }
   }
   set {
     name  = "queueURL"
     value = aws_sqs_queue.aws_node_termination_handler_queue.url
   }
-  set {
-    name  = "enablePrometheusServer"
-    value = true
-  }
+
+  depends_on = [module.irsa]
 }
