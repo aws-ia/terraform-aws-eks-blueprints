@@ -51,4 +51,9 @@ locals {
     local.default_lb_ingress_controller_helm_app,
     var.lb_ingress_controller_helm_app
   )
+
+  argocd_gitops_config = {
+    enable             = true
+    serviceAccountName = local.aws_load_balancer_controller_sa
+  }
 }

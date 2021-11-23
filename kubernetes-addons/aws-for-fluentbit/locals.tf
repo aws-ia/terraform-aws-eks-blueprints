@@ -1,4 +1,3 @@
-
 locals {
   log_group_name      = "/${var.eks_cluster_id}/worker-fluentbit-logs"
   log_group_retention = 90
@@ -54,6 +53,5 @@ locals {
   argocd_gitops_config = {
     enable       = true
     logGroupName = aws_cloudwatch_log_group.eks_worker_logs.name
-    logGroupArn  = aws_cloudwatch_log_group.eks_worker_logs.arn
   }
 }

@@ -27,8 +27,9 @@ module "metrics_server" {
 module "cluster_autoscaler" {
   count                         = var.create_eks && var.cluster_autoscaler_enable ? 1 : 0
   source                        = "./kubernetes-addons/cluster-autoscaler"
-  eks_cluster_id                = module.aws_eks.cluster_id
   cluster_autoscaler_helm_chart = var.cluster_autoscaler_helm_chart
+  eks_cluster_id                = module.aws_eks.cluster_id
+  manage_via_gitops             = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
@@ -62,6 +63,7 @@ module "aws_load_balancer_controller" {
   lb_ingress_controller_helm_app = var.aws_lb_ingress_controller_helm_app
   eks_oidc_issuer_url            = module.aws_eks.cluster_oidc_issuer_url
   eks_oidc_provider_arn          = module.aws_eks.oidc_provider_arn
+  manage_via_gitops              = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
@@ -98,6 +100,7 @@ module "agones" {
   source                       = "./kubernetes-addons/agones"
   agones_helm_chart            = var.agones_helm_chart
   eks_worker_security_group_id = module.aws_eks.worker_security_group_id
+  manage_via_gitops            = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
@@ -111,10 +114,10 @@ module "spark-k8s-operator" {
 }
 
 module "cert_manager" {
-  count  = var.create_eks && (var.cert_manager_enable || var.enable_windows_support) ? 1 : 0
-  source = "./kubernetes-addons/cert-manager"
-
+  count                   = var.create_eks && (var.cert_manager_enable || var.enable_windows_support) ? 1 : 0
+  source                  = "./kubernetes-addons/cert-manager"
   cert_manager_helm_chart = var.cert_manager_helm_chart
+  manage_via_gitops       = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
@@ -142,12 +145,12 @@ module "aws_opentelemetry_collector" {
 }
 
 module "argocd" {
-  count                = var.create_eks && var.argocd_enable ? 1 : 0
-  source               = "./kubernetes-addons/argocd"
-  argocd_helm_chart    = var.argocd_helm_chart
-  argocd_applications  = var.argocd_applications
-  eks_cluster_name     = module.aws_eks.cluster_id
-  gitops_add_on_config = local.gitops_add_on_config
+  count               = var.create_eks && var.argocd_enable ? 1 : 0
+  source              = "./kubernetes-addons/argocd"
+  argocd_helm_chart   = var.argocd_helm_chart
+  argocd_applications = var.argocd_applications
+  eks_cluster_name    = module.aws_eks.cluster_id
+  add_on_config       = local.argocd_add_on_config
 
   depends_on = [module.aws_eks]
 }

@@ -16,7 +16,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 variable "cluster_autoscaler_helm_chart" {
   type    = any
   default = {}
@@ -25,4 +24,10 @@ variable "cluster_autoscaler_helm_chart" {
 variable "eks_cluster_id" {
   type        = string
   description = "EKS_Cluster_ID"
+}
+
+variable "manage_via_gitops" {
+  type        = bool
+  default     = false
+  description = "Determines if the add-on should be managed via GitOps."
 }

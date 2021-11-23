@@ -22,6 +22,7 @@ data "aws_security_group" "eks_worker_group" {
 }
 
 resource "helm_release" "agones" {
+  count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.agones_helm_app["name"]
   repository                 = local.agones_helm_app["repository"]
   chart                      = local.agones_helm_app["chart"]
