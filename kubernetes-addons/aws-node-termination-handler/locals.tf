@@ -109,7 +109,7 @@ EOF
     var.aws_node_termination_handler_helm_chart
   )
 
-  default_nth_helm_values = [templatefile("${path.module}/aws-node-termination-handler-values.yaml"), {
+  default_nth_helm_values = [templatefile("${path.module}/aws-node-termination-handler-values.yaml", {
     nth-sa-name = local.service_account_name
-  }]
+  })]
 }
