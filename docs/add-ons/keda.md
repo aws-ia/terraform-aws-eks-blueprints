@@ -19,13 +19,13 @@ keda_enable = true
 Deploy KEDA with custom `values.yaml`
 
 ```hcl
-  # Optional Map value; pass keda-values.yaml from consumer module
+  # Optional Map value; pass vpa-values.yaml from consumer module
   keda_helm_chart = {
     name       = "keda"                                               # (Required) Release name.
     repository = "https://kedacore.github.io/charts"                  # (Optional) Repository URL where to locate the requested chart.
     chart      = "keda"                                               # (Required) Chart name to be installed.
     version    = "2.4.0"                                              # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
     namespace  = "keda"                                               # (Optional) The namespace to install the release into. Defaults to default
-    values = [templatefile("${path.module}/keda-values.yaml", {})]
+    values = [templatefile("${path.module}/vpa-values.yaml", {})]
   }
 ```
