@@ -51,14 +51,14 @@ EOF
     }
   ]
 
-  irsa_policy = jsonencode({
-    Version = "2012-10-17"
+  irsa_policy = <<EOT
+  {
+    "Version": "2012-10-17",
+    "Statement": [{
+      "Effect": "Allow",
+      "Resource": "*",
 
-    Statement = [{
-      Effect = "Allow"
-      Resource = "*"
-
-      Actions = [
+      "Actions": [
         "autoscaling:CompleteLifecycleAction",
         "autoscaling:DescribeAutoScalingInstances",
         "autoscaling:DescribeTags",
@@ -67,7 +67,8 @@ EOF
         "sqs:ReceiveMessage"
       ]
     }]
-  })
+  }
+EOT
 
   default_nth_helm_app = {
     name                       = "aws-node-termination-handler"
