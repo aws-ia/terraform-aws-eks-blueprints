@@ -54,6 +54,5 @@ locals {
   argocd_gitops_config = {
     enable       = true
     logGroupName = aws_cloudwatch_log_group.eks_worker_logs.name
-    logGroupArn  = aws_cloudwatch_log_group.eks_worker_logs.arn
   }
 }

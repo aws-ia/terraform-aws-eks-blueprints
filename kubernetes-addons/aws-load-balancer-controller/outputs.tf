@@ -23,3 +23,8 @@ output "ingress_namespace" {
 output "ingress_name" {
   value = local.lb_ingress_controller_helm_app["name"]
 }
+
+output "argocd_gitops_config" {
+  description = "Configuration used for managing the add-on with ArgoCD"
+  value       = var.manage_via_gitops ? local.argocd_gitops_config : null
+}

@@ -52,7 +52,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with GitOps |
+| <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
 | <a name="output_aws_fluent_bit_cw_log_group_arn"></a> [aws\_fluent\_bit\_cw\_log\_group\_arn](#output\_aws\_fluent\_bit\_cw\_log\_group\_arn) | AWS Fluent Bit CloudWatch Log Group ARN |
 | <a name="output_aws_fluent_bit_cw_log_group_name"></a> [aws\_fluent\_bit\_cw\_log\_group\_name](#output\_aws\_fluent\_bit\_cw\_log\_group\_name) | AWS Fluent Bit CloudWatch Log Group Name |
 

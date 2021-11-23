@@ -17,6 +17,7 @@
  */
 
 resource "helm_release" "cert_manager" {
+  count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.cert_manager_helm_app["name"]
   repository                 = local.cert_manager_helm_app["repository"]
   chart                      = local.cert_manager_helm_app["chart"]
@@ -82,7 +83,5 @@ resource "helm_release" "cert_manager_ca" {
   version   = "0.2.0"
   namespace = "kube-system"
 
-  depends_on = [
-    helm_release.cert_manager
-  ]
+  depends_on = [helm_release.cert_manager]
 }
