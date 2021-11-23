@@ -1,14 +1,12 @@
 locals {
   queue_policy = jsonencode({
-    Version : "2012-10-17"
-    Id : "NTHQueuePolicy"
-    Statement : [{
-      Effect : "Allow"
-      Principal : {
-        Service : ["events.amazonaws.com", "sqs.amazonaws.com"]
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Service = ["events.amazonaws.com", "sqs.amazonaws.com"]
       }
-      Action : "sqs:SendMessage"
-      Resource : [
+      Action = "sqs:SendMessage"
+      Resource = [
         aws_sqs_queue.aws_node_termination_handler_queue.arn
       ]
     }]
@@ -51,11 +49,11 @@ EOF
   ]
 
   irsa_policy = jsonencode({
-    Statement : {
-      Effect : "Allow"
-      Resources : ["*"]
+    Statement = [{
+      Effect = "Allow"
+      Resource = "*"
 
-      Actions : [
+      Actions = [
         "autoscaling:CompleteLifecycleAction",
         "autoscaling:DescribeAutoScalingInstances",
         "autoscaling:DescribeTags",
@@ -63,7 +61,7 @@ EOF
         "sqs:DeleteMessage",
         "sqs:ReceiveMessage"
       ]
-    }
+    }]
   })
 
   default_nth_helm_app = {
