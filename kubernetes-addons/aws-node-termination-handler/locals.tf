@@ -13,7 +13,7 @@ locals {
       ]
     }]
   })
-  namespace            = "kube-system"
+  namespace = "kube-system"
 
   service_account_name = "aws-node-termination-handler-sa"
 
@@ -51,11 +51,11 @@ EOF
   ]
 
   irsa_policy = jsonencode({
-    Statement: {
-      Effect: "Allow"
-      Resources: ["*"]
+    Statement : {
+      Effect : "Allow"
+      Resources : ["*"]
 
-      Actions: [
+      Actions : [
         "autoscaling:CompleteLifecycleAction",
         "autoscaling:DescribeAutoScalingInstances",
         "autoscaling:DescribeTags",
