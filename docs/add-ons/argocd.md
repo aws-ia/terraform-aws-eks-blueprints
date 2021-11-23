@@ -26,7 +26,7 @@ argocd_helm_chart = {
   namespace        = "argocd"
   timeout          = "1200"
   create_namespace = true
-  values = [templatefile("${path.module}/argocd-values.yaml", {})]
+  values = [templatefile("${path.module}/argocd-prometheus-values.yaml", {})]
 }
 ```
 
