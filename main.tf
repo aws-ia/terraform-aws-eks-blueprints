@@ -105,6 +105,8 @@ module "emr_on_eks" {
   environment    = var.environment
   tenant         = var.tenant
   zone           = var.zone
+  tags           = var.tags
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
+
 }
