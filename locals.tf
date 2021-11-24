@@ -81,6 +81,15 @@ locals {
     }
   ] : []
 
+  teams_config_map = var.enable_teams == true && length(var.teams) > 0 ? [
+    for team_name, team_data in var.teams : {
+      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${format("%s-%s-%s-%s-%s", var.tenant, var.environment, var.zone, "${team_name}", "access")}"
+      username : "${team_name}"
+      groups : [
+        "${team_name}-group"
+      ]
+    }
+  ] : []
   service_account_amp_ingest_name = format("%s-%s", module.aws_eks.cluster_id, "amp-ingest")
   service_account_amp_query_name  = format("%s-%s", module.aws_eks.cluster_id, "amp-query")
 
