@@ -66,7 +66,6 @@ locals {
     operating_system = "linux",
   })]
 
-
   argocd_gitops_config = {
     enable             = true
     ampWorkspaceUrl    = local.amp_workspace_url
