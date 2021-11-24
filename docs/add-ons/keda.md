@@ -29,3 +29,14 @@ Deploy KEDA with custom `values.yaml`
     values = [templatefile("${path.module}/keda-values.yaml", {})]
   }
 ```
+
+### GitOps Configuration 
+
+The following properties are made available for use when managing the add-on via GitOps. 
+
+```
+keda = {
+  enable             = true
+  serviceAccountName = "<service_account_name>"
+}
+```

@@ -17,6 +17,7 @@
  */
 
 resource "helm_release" "prometheus" {
+  count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.prometheus_helm_app["name"]
   repository                 = local.prometheus_helm_app["repository"]
   chart                      = local.prometheus_helm_app["chart"]

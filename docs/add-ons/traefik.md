@@ -31,3 +31,13 @@ http://127.0.0.1:9000/dashboard/
 #### AWS Service annotations for Traefik Ingress Controller
 
 Here is the link to get the AWS ELB [service annotations](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/service/annotations/) for Traefik Ingress controller
+
+### GitOps Configuration 
+
+The following properties are made available for use when managing the add-on via GitOps 
+
+```
+traefik = {
+  enable = true
+}
+```

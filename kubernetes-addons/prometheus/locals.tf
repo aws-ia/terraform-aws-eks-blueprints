@@ -66,4 +66,10 @@ locals {
     operating_system = "linux",
   })]
 
+  argocd_gitops_config = {
+    enable             = true
+    ampWorkspaceUrl    = local.amp_workspace_url
+    roleArn            = var.amp_ingest_role_arn
+    serviceAccountName = var.service_account_amp_ingest_name
+  }
 }

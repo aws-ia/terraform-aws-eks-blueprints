@@ -47,3 +47,10 @@ variable "keda_irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
 }
+
+variable "manage_via_gitops" {
+  type        = bool
+  default     = false
+  description = "Determines if the add-on should be managed via GitOps."
+}
+

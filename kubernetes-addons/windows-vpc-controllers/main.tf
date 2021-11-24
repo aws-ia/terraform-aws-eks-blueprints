@@ -17,6 +17,7 @@
  */
 
 resource "helm_release" "windows_vpc_controllers" {
+  count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.windows_vpc_controllers_helm_app["name"]
   repository                 = local.windows_vpc_controllers_helm_app["repository"]
   chart                      = "${path.module}/chart"
