@@ -159,6 +159,16 @@ module "argocd" {
   depends_on = [module.aws_eks]
 }
 
+module "aws_node_termination_handler" {
+  count                                   = var.create_eks && var.aws_node_termination_handler_enable && var.enable_self_managed_nodegroups ? 1 : 0
+  source                                  = "./kubernetes-addons/aws-node-termination-handler"
+  eks_cluster_name                        = module.aws_eks.cluster_id
+  aws_node_termination_handler_helm_chart = var.aws_node_termination_handler_helm_chart
+  autoscaling_group_names                 = var.create_eks && var.enable_self_managed_nodegroups ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_asg_names) }) : []
+
+  depends_on = [module.aws_eks]
+}
+
 module "keda" {
   count              = var.create_eks && var.keda_enable ? 1 : 0
   source             = "./kubernetes-addons/keda"

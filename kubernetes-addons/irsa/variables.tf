@@ -20,6 +20,11 @@ variable "kubernetes_namespace" {
   description = "Kubernetes Namespace name"
 }
 
+variable "create_namespace" {
+  description = "Should the module create the namespace"
+  type        = bool
+  default     = true
+}
 variable "kubernetes_service_account" {
   description = "Kubernetes Service Account Name"
 }
@@ -38,6 +43,7 @@ variable "iam_role_path" {
 variable "tags" {
   type        = map(string)
   description = "Common tags for AWS resources"
+  default     = null
 }
 
 variable "irsa_iam_policies" {

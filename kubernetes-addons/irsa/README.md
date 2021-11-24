@@ -1,5 +1,3 @@
-# IRSA module
-
 This module creates the following resources
 
  1. Kubernetes Namespace for Kubernetes Addon
@@ -9,6 +7,7 @@ This module creates the following resources
  5. Attaches the additional IAM policies provided by consumer module
 
  <!--- BEGIN_TF_DOCS --->
+
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: MIT-0
 
@@ -52,17 +51,19 @@ No modules.
 | [aws_eks_cluster.eks_cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
 | [aws_iam_policy_document.irsa_with_oidc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |
+| [kubernetes_namespace.namespace](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/data-sources/namespace) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_create_namespace"></a> [create\_namespace](#input\_create\_namespace) | Should the module create the namespace | `bool` | `true` | no |
 | <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | EKS Cluster Id | `string` | n/a | yes |
 | <a name="input_iam_role_path"></a> [iam\_role\_path](#input\_iam\_role\_path) | IAM Role path | `string` | `"/"` | no |
 | <a name="input_irsa_iam_policies"></a> [irsa\_iam\_policies](#input\_irsa\_iam\_policies) | IAM Policies for IRSA IAM role | `list(string)` | n/a | yes |
 | <a name="input_kubernetes_namespace"></a> [kubernetes\_namespace](#input\_kubernetes\_namespace) | Kubernetes Namespace name | `any` | n/a | yes |
 | <a name="input_kubernetes_service_account"></a> [kubernetes\_service\_account](#input\_kubernetes\_service\_account) | Kubernetes Service Account Name | `any` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | Common tags for AWS resources | `map(string)` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | Common tags for AWS resources | `map(string)` | `null` | no |
 
 ## Outputs
 
@@ -72,5 +73,4 @@ No modules.
 | <a name="output_irsa_iam_role_name"></a> [irsa\_iam\_role\_name](#output\_irsa\_iam\_role\_name) | IAM role name for your service account |
 | <a name="output_kubernetes_namespace_id"></a> [kubernetes\_namespace\_id](#output\_kubernetes\_namespace\_id) | Kubernetes Namespace id |
 | <a name="output_kubernetes_service_account_id"></a> [kubernetes\_service\_account\_id](#output\_kubernetes\_service\_account\_id) | Kubernetes Service Account id |
-
- <!--- END_TF_DOCS --->
+<!--- END_TF_DOCS --->

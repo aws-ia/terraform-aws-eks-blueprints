@@ -16,34 +16,18 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-# Assume role policy for your service account
-data "aws_iam_policy_document" "irsa_with_oidc" {
-  statement {
-    actions = ["sts:AssumeRoleWithWebIdentity"]
-
-    principals {
-      type        = "Federated"
-      identifiers = [local.eks_oidc_provider_arn]
-    }
-
-    condition {
-      test     = "StringEquals"
-      variable = "${local.eks_oidc_issuer_url}:sub"
-      values   = ["system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}"]
-    }
-  }
+variable "aws_node_termination_handler_helm_chart" {
+  description = "AWS Node Termination Handler Helm Chart Configuration"
+  type        = any
+  default     = {}
 }
 
-data "aws_eks_cluster" "eks_cluster" {
-  name = var.eks_cluster_name
+variable "autoscaling_group_names" {
+  description = "EKS Node Group ASG names"
+  type        = list(string)
 }
 
-data "aws_partition" "current" {}
-
-data "aws_caller_identity" "current" {}
-
-data "kubernetes_namespace" "namespace" {
-  metadata {
-    name = var.kubernetes_namespace
-  }
+variable "eks_cluster_name" {
+  type        = string
+  description = "EKS Cluster Id"
 }
