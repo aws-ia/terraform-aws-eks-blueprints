@@ -16,18 +16,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "agones_helm_chart" {
+variable "vpa_helm_chart" {
   type        = any
   default     = {}
-  description = "Agones GameServer Helm chart config"
-}
-
-variable "eks_worker_security_group_id" {
-  type = string
-}
-
-variable "manage_via_gitops" {
-  type        = bool
-  default     = false
-  description = "Determines if the add-on should be managed via GitOps."
+  description = "Kubernetes Vertical Pod Autoscaler Helm chart config"
 }

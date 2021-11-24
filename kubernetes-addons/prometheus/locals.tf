@@ -1,14 +1,23 @@
 data "aws_region" "current" {}
 
 locals {
-  amp_workspace_url = "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${var.amp_workspace_id}/api/v1/remote_write"
 
-  default_helm_values = [templatefile("${path.module}/values.yaml", {
-    aws_region           = data.aws_region.current.name,
-    service_account_name = var.service_account_amp_ingest_name
-    amp_ingest_role_arn  = var.amp_ingest_role_arn
-    amp_workspace_url    = local.amp_workspace_url
-  })]
+  amp_config_values = var.aws_managed_prometheus_enable ? [{
+    name  = "serviceAccounts.server.name"
+    value = var.service_account_amp_ingest_name
+    },
+    {
+      name  = "serviceAccounts.server.annotations.eks\\.amazonaws\\.com/role-arn"
+      value = var.amp_ingest_role_arn
+    },
+    {
+      name  = "server.remoteWrite[0].url"
+      value = "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${var.amp_workspace_id}/api/v1/remote_write"
+    },
+    {
+      name  = "server.remoteWrite[0].sigv4.region"
+      value = data.aws_region.current.id
+  }] : []
 
   default_prometheus_helm_app = {
     name                       = "prometheus"
@@ -20,7 +29,7 @@ locals {
     create_namespace           = true
     description                = "Prometheus helm Chart deployment configuration"
     lint                       = false
-    values                     = local.default_helm_values
+    values                     = local.default_prometheus_values
     wait                       = true
     wait_for_jobs              = false
     verify                     = false
@@ -52,4 +61,9 @@ locals {
     local.default_prometheus_helm_app,
     var.prometheus_helm_chart
   )
+
+  default_prometheus_values = [templatefile("${path.module}/prometheus-values.yaml", {
+    operating_system = "linux",
+  })]
+
 }

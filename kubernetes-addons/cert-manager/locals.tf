@@ -38,7 +38,7 @@ locals {
     dependency_update          = false
     replace                    = false
     postrender                 = ""
-    
+
     # Install a CA issuer with a helper chart
     # See ./cert-manager-ca/templates/ca.yaml
     install_default_ca = var.manage_via_gitops ? false : true
