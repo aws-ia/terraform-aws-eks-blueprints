@@ -21,3 +21,9 @@ variable "windows_vpc_controllers_helm_chart" {
   description = "Windows VPC Controllers Helm chart configuration"
   default     = {}
 }
+
+variable "manage_via_gitops" {
+  type        = bool
+  default     = false
+  description = "Determines if the add-on should be managed via GitOps."
+}

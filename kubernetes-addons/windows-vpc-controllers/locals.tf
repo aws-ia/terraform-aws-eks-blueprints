@@ -43,4 +43,8 @@ locals {
     local.default_windows_vpc_controllers_helm_app,
     var.windows_vpc_controllers_helm_chart
   )
+
+  argocd_gitops_config = {
+    enable = true
+  }
 }

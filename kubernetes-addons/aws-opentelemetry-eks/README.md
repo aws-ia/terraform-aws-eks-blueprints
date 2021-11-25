@@ -34,9 +34,12 @@ No modules.
 | <a name="input_aws_open_telemetry_addon"></a> [aws\_open\_telemetry\_addon](#input\_aws\_open\_telemetry\_addon) | AWS Open Telemetry Distro Addon Configuration | `any` | `{}` | no |
 | <a name="input_aws_open_telemetry_mg_node_iam_role_arns"></a> [aws\_open\_telemetry\_mg\_node\_iam\_role\_arns](#input\_aws\_open\_telemetry\_mg\_node\_iam\_role\_arns) | n/a | `list(string)` | `[]` | no |
 | <a name="input_aws_open_telemetry_self_mg_node_iam_role_arns"></a> [aws\_open\_telemetry\_self\_mg\_node\_iam\_role\_arns](#input\_aws\_open\_telemetry\_self\_mg\_node\_iam\_role\_arns) | n/a | `list(string)` | `[]` | no |
+| <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
 
 <!--- END_TF_DOCS --->

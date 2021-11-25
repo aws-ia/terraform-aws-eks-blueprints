@@ -16,3 +16,16 @@ aws_managed_prometheus_workspace_name = "EKS-Metrics-Workspace"
 # Deploys Pometheus server with remote write to AWS AMP Workspace
 prometheus_enable             = false
 ```
+
+### GitOps Configuration 
+
+The following properties are made available for use when managing the add-on via GitOps 
+
+```
+prometheus = {
+  enable             = true
+  ampWorkspaceUrl    = "<workspace_url>"
+  roleArn            = "<role_arn>"
+  serviceAccountName = "<service_account_name>"
+}
+```

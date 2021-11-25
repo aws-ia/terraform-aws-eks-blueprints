@@ -44,4 +44,8 @@ locals {
     local.default_nginx_helm_app,
     var.nginx_helm_chart
   )
+
+  argocd_gitops_config = {
+    enable = true
+  }
 }

@@ -1,4 +1,3 @@
-
 locals {
   log_group_name      = "/${var.eks_cluster_id}/worker-fluentbit-logs"
   log_group_retention = 90

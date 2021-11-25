@@ -42,4 +42,8 @@ locals {
     local.default_traefik_helm_app,
     var.traefik_helm_chart
   )
+
+  argocd_gitops_config = {
+    enable = true
+  }
 }
