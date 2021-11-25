@@ -22,9 +22,9 @@ ssp-addon-nginx-ingress-78b8567p4q6   1/1     Running   0          4d10h
 
 Note that the ingress controller is deployed in the `kube-system` namespace.
 
-### GitOps Configuration 
+### GitOps Configuration
 
-The following properties are made available for use when managing the add-on via GitOps 
+The following properties are made available for use when managing the add-on via GitOps
 
 ```
 ingressNginx = {

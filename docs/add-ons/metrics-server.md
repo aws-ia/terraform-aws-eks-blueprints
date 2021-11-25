@@ -21,9 +21,9 @@ NAME                                                          READY   UP-TO-DATE
 metrics-server                                                1/1     1            1           20m
 ```
 
-### GitOps Configuration 
+### GitOps Configuration
 
-The following properties are made available for use when managing the add-on via GitOps 
+The following properties are made available for use when managing the add-on via GitOps
 
 ```
 metricsServer = {
