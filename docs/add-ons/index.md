@@ -68,12 +68,10 @@ If you would like to use private repositories, you can download Docker images fo
 
 ### GitOps with ArgoCD
 
-In order to manage add-ons via ArgoCD, you will leverage the [`ssp-eks-add-ons`](https://github.com/aws-samples/ssp-eks-add-ons) repository. This repository is configured to follow the App of Apps pattern from ArgoCD and has configuration for managing the same set add-ons that are offered directly via Terraform. 
-
 To indicate that you would like to manage add-ons via ArgoCD, you must do the following: 
 
 1. Enable the ArgoCD add-on by setting `argocd_enable` to `true`.
-2. Specify you would like ArgoCD to be responsible for deploying your add-ons by setting `argocd_manage_add_ons` to `true`. This will prevent individual add-on modules from deploying Helm charts.
+2. Specify you would like ArgoCD to be responsible for deploying your add-ons by setting `argocd_manage_add_ons` to `true`. This will prevent the individual Terraform add-on modules from deploying Helm charts.
 3. Pass Application configuration for your add-ons repository via the `argocd_applications` property. 
 
 Note, that the `add_on_application` flag in your `Application` configuration must be set to `true`.
@@ -84,8 +82,8 @@ argocd_manage_add_ons   = true
 argocd_applications     = {
   infra = {
     namespace             = "argocd"
-    path                  = "chart"
-    repo_url              = "https://github.com/aws-samples/ssp-eks-add-ons"
+    path                  = "<path>"
+    repo_url              = "<repo_url>"
     values                = {}
     add_on_application    = true # Indicates the root add-on application. 
   }
@@ -94,7 +92,7 @@ argocd_applications     = {
 
 #### GitOps Bridge 
 
-When managing add-ons via ArgoCD, certain AWS resources may still need to be created via Terraform in order to support add-on functionality (e.g. IAM Roles and Services Account). Certain values will also need to passed from Terraform to ArgoCD via the ArgoCD Application resource's values map. We refer to the mechanism that passes values from Terraform to ArgoCD as the `GitOps Bridge`
+When managing add-ons via ArgoCD, certain AWS resources may still need to be created via Terraform in order to support add-on functionality (e.g. IAM Roles and Services Account). Certain resource values will also need to passed from Terraform to ArgoCD via the ArgoCD Application resource's values map. We refer to this concept as the `GitOps Bridge`
 
 To ensure that AWS resources needed for add-on functionality are created, you still need to indicate in Terraform configuration which add-ons will be managed via ArgoCD. To do so, simply enable the add-ons via their boolean properties. 
 
@@ -104,5 +102,5 @@ cluster_autoscaler_enable   = true # Deploys Cluster Autoscaler Addon
 prometheus_enable           = true # Deploys Prometheus Addon
 ```
 
-This will indicate to each add-on module that it should that it should create the necessary AWS resources and pass the relevant values to the ArgoCD Application resource via the Application's values map. 
+This will indicate to each add-on module that it should create the necessary AWS resources and pass the relevant values to the ArgoCD Application resource via the Application's values map. 
 
