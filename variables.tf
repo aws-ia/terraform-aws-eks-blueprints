@@ -133,7 +133,7 @@ variable "kube_proxy_addon_version" {
 
 # EKS WORKER NODES
 variable "enable_managed_nodegroups" {
-  description = "Enable self-managed worker groups"
+  description = "Enable managed node groups"
   type        = bool
   default     = false
 }
