@@ -339,17 +339,11 @@ variable "fargate_fluentbit_config" {
 variable "cert_manager_enable" {
   type        = bool
   default     = false
-  description = "Enabling Cert Manager Helm Chart installation. It is automatically enabled if Windows support is enabled."
+  description = "Enabling Cert Manager Helm Chart installation."
 }
 variable "cert_manager_helm_chart" {
   type        = any
   description = "Cert Manager Helm chart configuration"
-  default     = {}
-}
-#------WINDOWS VPC CONTROLLERS-------------
-variable "windows_vpc_controllers_helm_chart" {
-  type        = any
-  description = "Windows VPC Controllers Helm chart configuration"
   default     = {}
 }
 #-----------AWS OPEN TELEMETRY ADDON-------------

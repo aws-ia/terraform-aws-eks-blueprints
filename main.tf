@@ -110,3 +110,18 @@ module "emr_on_eks" {
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
 
 }
+
+resource "kubernetes_config_map" "amazon_vpc_cni" {
+  metadata {
+    name      = "amazon-vpc-cni"
+    namespace = "kube-system"
+  }
+
+  data = {
+    "enable-windows-ipam" = var.enable_windows_support ? "true" : "false"
+  }
+
+  depends_on = [
+    module.aws_eks
+  ]
+}

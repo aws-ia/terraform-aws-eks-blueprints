@@ -18,7 +18,6 @@ The framework currently provides support for the following add-ons.
 | [Nginx](./nginx) | Deploys the NGINX Ingress Controller into an EKS cluster. |
 | [Prometheus](./prometheus) | Deploys Prometheus into an EKS cluster. |
 | [Traefik](./traefik) | Deploys Traefik Proxy into an EKS cluster.
-| [Windows VPC Controller](./windows-vpc-controllers) |
 
 ## Usage
 

@@ -99,6 +99,5 @@ locals {
     prometheus                = var.prometheus_enable ? module.prometheus[0].argocd_gitops_config : null
     sparkOperator             = var.spark_on_k8s_operator_enable ? module.spark-k8s-operator[0].argocd_gitops_config : null
     traefik                   = var.traefik_ingress_controller_enable ? module.traefik_ingress[0].argocd_gitops_config : null
-    windowsVpcControllers     = var.enable_windows_support ? module.windows_vpc_controllers[0].argocd_gitops_config : null
   }
 }

@@ -28,7 +28,6 @@ nav:
     - Prometheus: 'add-ons/prometheus.md'
     - Spark K8S Operator: 'add-ons/spark-k8s-operator.md'
     - Traefik: 'add-ons/traefik.md'
-    - Windows VPC Controllers: 'add-ons/windows-vpc-controllers.md'
   - Advanced:
     - Bottlerocket: 'advanced/bottlerocket.md'
     - Cluster Upgrades: 'advanced/cluster-upgrades.md'
