@@ -26,7 +26,8 @@ The below demonstrates how you can leverage this framework to deploy an EKS clus
 
 ```hcl
 module "eks-ssp" {
-    source = "git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git"
+    source = "git::https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git?ref=v3.1.1"
+    
 
     # EKS CLUSTER
     kubernetes_version       = "1.21"
