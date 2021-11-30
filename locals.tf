@@ -90,6 +90,16 @@ locals {
       ]
     }
   ] : []
+
+  platform_teams_config_map = var.enable_platform_teams == true && length(var.platform_teams) > 0 ? [
+    for platform_team_name, platform_team_data in var.platform_teams : {
+      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${format("%s-%s-%s-%s-%s", var.tenant, var.environment, var.zone, "${platform_team_name}", "PlatformTeam")}"
+      username : "${platform_team_name}"
+      groups : [
+        "system:masters"
+      ]
+    }
+  ] : []
   service_account_amp_ingest_name = format("%s-%s", module.aws_eks.cluster_id, "amp-ingest")
   service_account_amp_query_name  = format("%s-%s", module.aws_eks.cluster_id, "amp-query")
 

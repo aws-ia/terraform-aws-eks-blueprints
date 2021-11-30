@@ -19,11 +19,8 @@
 module "aws_eks_teams" {
   source = "./modules/aws-eks-teams"
 
-  for_each = { for key, value in var.teams : key => value
-    if var.enable_teams && length(var.teams) > 0
-  }
-
   teams            = var.teams
+  platform_teams   = var.platform_teams
   environment      = var.environment
   tenant           = var.tenant
   zone             = var.zone

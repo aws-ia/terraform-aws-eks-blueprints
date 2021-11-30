@@ -49,23 +49,22 @@ resource "kubernetes_resource_quota" "team_object_quota" {
 # IAM / RBAC
 ###########
 
-data "aws_iam_policy_document" "team_access" {
-  for_each = var.teams
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type = "AWS"
-      identifiers = [
-        format("arn:aws:iam::%s:root", data.aws_caller_identity.current.account_id)
-      ]
-    }
-  }
-}
 resource "aws_iam_role" "team_access" {
-  for_each           = var.teams
-  assume_role_policy = data.aws_iam_policy_document.team_access[each.key].json
-  name               = format("%s-%s-%s-%s-%s", var.tenant, var.environment, var.zone, "${each.key}", "access")
-  tags               = var.tags
+  for_each = { for team_name, team_data in var.teams : team_name => team_data if lookup(team_data, "users", "") != "" }
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : each.value.users
+        },
+        "Action" : "sts:AssumeRole"
+      }
+    ]
+  })
+  name = format("%s-%s-%s-%s-%s", var.tenant, var.environment, var.zone, "${each.key}", "access")
+  tags = var.tags
 }
 
 resource "kubernetes_cluster_role" "team" {
@@ -177,3 +176,63 @@ resource "kubernetes_manifest" "team" {
   for_each = { for manifest in local.team_manifests : manifest => manifest }
   manifest = yamldecode(file(each.key))
 }
+
+####  Platform Team ###
+
+# Platform team IAM Role
+resource "aws_iam_role" "platform_team" {
+  for_each            = var.platform_teams
+  name                = format("%s-%s-%s-%s-%s", var.tenant, var.environment, var.zone, "${each.key}", "PlatformTeam")
+  tags                = var.tags
+  managed_policy_arns = [aws_iam_policy.platform_team_eks_access.arn]
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : each.value.users
+        },
+        "Action" : "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+
+# Platform Team EKS access IAM policy
+resource "aws_iam_policy" "platform_team_eks_access" {
+  name        = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, "PlatformTeamEksAccess")
+  path        = "/"
+  description = "Platform Team EKS Console Access"
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "eks:DescribeNodegroup",
+          "eks:ListNodegroups",
+          "eks:DescribeCluster",
+          "eks:ListClusters",
+          "eks:AccessKubernetesApi",
+          "ssm:GetParameter",
+          "eks:ListUpdates",
+          "eks:ListFargateProfiles"
+        ]
+        Effect   = "Allow"
+        Resource = data.aws_eks_cluster.eks_cluster.arn
+        }, {
+        Action = [
+          "eks:ListClusters",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      }
+
+    ]
+  })
+}
+

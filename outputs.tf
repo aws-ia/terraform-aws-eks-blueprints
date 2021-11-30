@@ -120,3 +120,8 @@ output "emr_on_eks_role_id" {
   description = "IAM execution role ID for EMR on EKS"
   value       = var.create_eks && var.enable_emr_on_eks ? values({ for nodes in sort(keys(var.emr_on_eks_teams)) : nodes => join(",", module.emr_on_eks[nodes].emr_on_eks_role_id) }) : []
 }
+
+output "teams" {
+  description = "Outputs from EKS Fargate profiles groups "
+  value       = var.create_eks && (var.enable_teams || var.enable_platform_teams) ? module.aws_eks_teams.* : []
+}
