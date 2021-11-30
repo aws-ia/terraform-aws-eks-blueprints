@@ -3,7 +3,7 @@
 ###########
 
 resource "kubernetes_namespace" "team" {
-  for_each = var.teams
+  for_each = var.application_teams
   metadata {
     name   = each.key
     labels = each.value["labels"]
@@ -15,7 +15,7 @@ resource "kubernetes_namespace" "team" {
 ###########
 
 resource "kubernetes_resource_quota" "team_compute_quota" {
-  for_each = var.teams
+  for_each = var.application_teams
   metadata {
     name      = "compute-quota"
     namespace = each.key
@@ -31,7 +31,7 @@ resource "kubernetes_resource_quota" "team_compute_quota" {
 }
 
 resource "kubernetes_resource_quota" "team_object_quota" {
-  for_each = var.teams
+  for_each = var.application_teams
   metadata {
     name      = "object-quota"
     namespace = each.key
@@ -50,7 +50,7 @@ resource "kubernetes_resource_quota" "team_object_quota" {
 ###########
 
 resource "aws_iam_role" "team_access" {
-  for_each = { for team_name, team_data in var.teams : team_name => team_data if lookup(team_data, "users", "") != "" }
+  for_each = { for team_name, team_data in var.application_teams : team_name => team_data if lookup(team_data, "users", "") != "" }
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -68,7 +68,7 @@ resource "aws_iam_role" "team_access" {
 }
 
 resource "kubernetes_cluster_role" "team" {
-  for_each = var.teams
+  for_each = var.application_teams
   metadata {
     name = "${each.key}-team-cluster-role"
   }
@@ -81,7 +81,7 @@ resource "kubernetes_cluster_role" "team" {
 }
 
 resource "kubernetes_cluster_role_binding" "team" {
-  for_each = var.teams
+  for_each = var.application_teams
   metadata {
     name = "${each.key}-team-cluster-role-binding"
   }
@@ -98,7 +98,7 @@ resource "kubernetes_cluster_role_binding" "team" {
 }
 
 resource "kubernetes_role" "team" {
-  for_each = var.teams
+  for_each = var.application_teams
   metadata {
     name      = "${each.key}-role"
     namespace = each.key
@@ -116,7 +116,7 @@ resource "kubernetes_role" "team" {
 }
 
 resource "kubernetes_role_binding" "team" {
-  for_each = var.teams
+  for_each = var.application_teams
   metadata {
     name      = "${each.key}-role-binding"
     namespace = each.key
@@ -136,7 +136,7 @@ resource "kubernetes_role_binding" "team" {
 
 
 resource "aws_iam_role" "team_sa_irsa" {
-  for_each = var.teams
+  for_each = var.application_teams
   name     = format("%s-%s-%s-%s-%s", var.tenant, var.environment, var.zone, "${each.key}", "saRole")
   tags     = var.tags
   assume_role_policy = jsonencode({
@@ -162,7 +162,7 @@ resource "aws_iam_role" "team_sa_irsa" {
 
 # Kubernetes Team Service Account
 resource "kubernetes_service_account" "team" {
-  for_each = var.teams
+  for_each = var.application_teams
   metadata {
     name        = format("%s-sa", each.key)
     namespace   = each.key

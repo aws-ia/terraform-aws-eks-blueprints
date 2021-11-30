@@ -19,7 +19,7 @@
 module "aws_eks_teams" {
   source = "./modules/aws-eks-teams"
 
-  teams            = var.teams
+  application_teams            = var.application_teams
   platform_teams   = var.platform_teams
   environment      = var.environment
   tenant           = var.tenant

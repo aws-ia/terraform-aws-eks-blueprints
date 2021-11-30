@@ -399,14 +399,14 @@ variable "keda_irsa_policies" {
 }
 
 # Teams
-variable "enable_teams" {
+variable "enable_application_teams" {
   description = "Enable Teams"
   type        = bool
   default     = false
 }
 
-variable "teams" {
-  description = "Map of maps of teams to create"
+variable "application_teams" {
+  description = "Map of maps of Application Teams to create"
   type        = any
   default     = {}
 }
@@ -418,7 +418,7 @@ variable "enable_platform_teams" {
 }
 
 variable "platform_teams" {
-  description = "Map of maps of teams to create"
+  description = "Map of maps of platform teams to create"
   type        = any
   default     = {}
 }

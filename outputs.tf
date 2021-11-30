@@ -123,5 +123,5 @@ output "emr_on_eks_role_id" {
 
 output "teams" {
   description = "Outputs from EKS Fargate profiles groups "
-  value       = var.create_eks && (var.enable_teams || var.enable_platform_teams) ? module.aws_eks_teams.* : []
+  value       = var.create_eks && (var.enable_application_teams || var.enable_platform_teams) ? module.aws_eks_teams.* : []
 }

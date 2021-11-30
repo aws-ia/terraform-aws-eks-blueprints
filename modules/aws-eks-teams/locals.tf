@@ -1,6 +1,6 @@
 locals {
   team_manifests = flatten([
-    for team_name, team_data in var.teams :
+    for team_name, team_data in var.application_teams :
     fileset(path.root, "${team_data.manifests_dir}/*")
   ])
 

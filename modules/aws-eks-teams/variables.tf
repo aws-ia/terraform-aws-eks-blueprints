@@ -1,9 +1,9 @@
-variable "enable_teams" {
+variable "enable_application_teams" {
   description = "Enable Teams"
   type        = bool
   default     = false
 }
-variable "teams" {
+variable "application_teams" {
   description = "Map of maps of teams to create"
   type        = any
   default     = {}
