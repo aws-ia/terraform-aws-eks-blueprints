@@ -1,6 +1,7 @@
 # Amazon EKS SSP for Terraform
 
 ![GitHub](https://img.shields.io/github/license/aws-samples/aws-eks-accelerator-for-terraform)
+[![e2e-test](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/e2e-test.yml)
 
 Welcome to the Amazon EKS Shared Services Platform (SSP) for Terraform.
 

@@ -24,8 +24,10 @@ provider "aws" {
 }
 
 terraform {
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
+  backend "s3" {
+    bucket = "terraform-ssp-github-actions-state"
+    key    = "tf-state"
+    region = "us-west-2"
   }
 }
 
