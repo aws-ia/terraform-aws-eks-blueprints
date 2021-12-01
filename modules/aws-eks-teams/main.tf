@@ -1,4 +1,3 @@
-
 # ---------------------------------------------------------------------------------------------------------------------
 # Namespace
 # ---------------------------------------------------------------------------------------------------------------------
@@ -10,7 +9,6 @@ resource "kubernetes_namespace" "team" {
     labels = each.value["labels"]
   }
 }
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Quotas
@@ -136,7 +134,6 @@ resource "kubernetes_role_binding" "team" {
   }
 }
 
-
 resource "aws_iam_role" "team_sa_irsa" {
   for_each = var.application_teams
   name     = format("%s-%s-%s", local.role_prefix_name, "${each.key}", "sa-role")
@@ -241,4 +238,3 @@ resource "aws_iam_policy" "platform_team_eks_access" {
     ]
   })
 }
-
