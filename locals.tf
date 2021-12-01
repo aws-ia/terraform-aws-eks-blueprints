@@ -81,7 +81,7 @@ locals {
     }
   ] : []
 
-  teams_config_map = var.enable_application_teams == true && length(var.application_teams) > 0 ? [
+  application_teams_config_map = var.enable_application_teams == true && length(var.application_teams) > 0 ? [
     for team_name, team_data in var.application_teams : {
       rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${format("%s-%s-%s-%s-%s", var.tenant, var.environment, var.zone, "${team_name}", "access")}"
       username : "${team_name}"
