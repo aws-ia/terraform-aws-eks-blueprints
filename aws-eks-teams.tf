@@ -25,7 +25,7 @@ module "aws_eks_teams" {
   tenant            = var.tenant
   zone              = var.zone
   eks_cluster_name  = module.aws_eks.cluster_id
-  #   tags = module.eks_tags.tags
+  tags              = module.eks_tags.tags
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
 

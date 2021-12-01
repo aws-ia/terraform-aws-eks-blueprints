@@ -1,7 +1,7 @@
-###########
-# Namespace
-###########
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Namespace
+# ---------------------------------------------------------------------------------------------------------------------
 resource "kubernetes_namespace" "team" {
   for_each = var.application_teams
   metadata {
@@ -10,10 +10,10 @@ resource "kubernetes_namespace" "team" {
   }
 }
 
-###########
-# Quotas
-###########
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Quotas
+# ---------------------------------------------------------------------------------------------------------------------
 resource "kubernetes_resource_quota" "team_compute_quota" {
   for_each = var.application_teams
   metadata {
@@ -45,12 +45,13 @@ resource "kubernetes_resource_quota" "team_object_quota" {
   }
 }
 
-###########
+# ---------------------------------------------------------------------------------------------------------------------
 # IAM / RBAC
-###########
+# ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_iam_role" "team_access" {
   for_each = { for team_name, team_data in var.application_teams : team_name => team_data if lookup(team_data, "users", "") != "" }
+  name     = format("%s-%s-%s", local.role_prefix_name, "${each.key}", "Access")
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -63,7 +64,6 @@ resource "aws_iam_role" "team_access" {
       }
     ]
   })
-  name = format("%s-%s-%s-%s-%s", var.tenant, var.environment, var.zone, "${each.key}", "access")
   tags = var.tags
 }
 
@@ -137,7 +137,7 @@ resource "kubernetes_role_binding" "team" {
 
 resource "aws_iam_role" "team_sa_irsa" {
   for_each = var.application_teams
-  name     = format("%s-%s-%s-%s-%s", var.tenant, var.environment, var.zone, "${each.key}", "saRole")
+  name     = format("%s-%s-%s", local.role_prefix_name, "${each.key}", "sa-role")
   tags     = var.tags
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
@@ -159,8 +159,9 @@ resource "aws_iam_role" "team_sa_irsa" {
   })
 }
 
-
+# ---------------------------------------------------------------------------------------------------------------------
 # Kubernetes Team Service Account
+# ---------------------------------------------------------------------------------------------------------------------
 resource "kubernetes_service_account" "team" {
   for_each = var.application_teams
   metadata {
@@ -171,18 +172,25 @@ resource "kubernetes_service_account" "team" {
   automount_service_account_token = true
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
 # Kubernetes Manifests
+# ---------------------------------------------------------------------------------------------------------------------
 resource "kubernetes_manifest" "team" {
   for_each = { for manifest in local.team_manifests : manifest => manifest }
   manifest = yamldecode(file(each.key))
 }
 
-####  Platform Team ###
+# ---------------------------------------------------------------------------------------------------------------------
+# Platform Team
+# ---------------------------------------------------------------------------------------------------------------------
 
-# Platform team IAM Role
+# ---------------------------------------------------------------------------------------------------------------------
+# Platform Team
+# ---------------------------------------------------------------------------------------------------------------------
+
 resource "aws_iam_role" "platform_team" {
   for_each            = var.platform_teams
-  name                = format("%s-%s-%s-%s-%s", var.tenant, var.environment, var.zone, "${each.key}", "PlatformTeam")
+  name                = format("%s-%s-%s", local.role_prefix_name, "${each.key}", "Access")
   tags                = var.tags
   managed_policy_arns = [aws_iam_policy.platform_team_eks_access.arn]
   assume_role_policy = jsonencode({
@@ -199,10 +207,11 @@ resource "aws_iam_role" "platform_team" {
   })
 }
 
-
+# ---------------------------------------------------------------------------------------------------------------------
 # Platform Team EKS access IAM policy
+# ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_policy" "platform_team_eks_access" {
-  name        = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, "PlatformTeamEksAccess")
+  name        = format("%s-%s", local.role_prefix_name, "PlatformTeamEKSAccess")
   path        = "/"
   description = "Platform Team EKS Console Access"
   policy = jsonencode({

@@ -1,25 +1,14 @@
-variable "enable_application_teams" {
-  description = "Enable Teams"
-  type        = bool
-  default     = false
-}
 variable "application_teams" {
   description = "Map of maps of teams to create"
   type        = any
   default     = {}
 }
 
-variable "enable_platform_teams" {
-  description = "Enable Teams"
-  type        = bool
-  default     = false
-}
 variable "platform_teams" {
   description = "Map of maps of teams to create"
   type        = any
   default     = {}
 }
-
 
 variable "environment" {
   type = string

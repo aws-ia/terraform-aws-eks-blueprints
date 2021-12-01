@@ -7,7 +7,7 @@ The `ssp-amazon-eks` framework provides support for onboarding and managing team
 
 ### ApplicationTeam
 
-To create an `application_teams` for your cluster, you will need to supply a team name, with the options to pass map of labels, map of resource quotas, existing IAM entities (user/roles) ,and (optionally) a directory where you may optionally place any policy definitions and generic manifests for the team.  
+To create an `application_team` for your cluster, you will need to supply a team name, with the options to pass map of labels, map of resource quotas, existing IAM entities (user/roles), and a directory where you may optionally place any policy definitions and generic manifests for the team.  
 These manifests will be applied by the platform and will be outside of the team control  
 **NOTE:** When the manifests are applied, namespaces are not checked. Therefore, you are responsible for namespace settings in the yaml files.
 
@@ -15,7 +15,6 @@ These manifests will be applied by the platform and will be outside of the team 
 
 ```hcl
   # EKS Application Teams
-  enable_application_teams = true
 
   application_teams = {
     # First Team
@@ -84,7 +83,6 @@ To create an `Platform Team` for your cluster, simply use `platform_teams`. You 
 #### Platform Team Example
 
 ```hcl
-    enable_platform_teams = true
   platform_teams = {
     admin-team-name-example = {
       users = [
@@ -153,24 +151,22 @@ No modules.
 
 ## Inputs
 
-| Name                                                                                                      | Description                           | Type          | Default | Required |
-| --------------------------------------------------------------------------------------------------------- | ------------------------------------- | ------------- | ------- | :------: |
-| <a name="input_application_teams"></a> [application_teams](#input_application_teams)                      | Map of maps of teams to create        | `any`         | `{}`    |    no    |
-| <a name="input_eks_cluster_name"></a> [eks_cluster_name](#input_eks_cluster_name)                         | EKS Cluster name                      | `string`      | n/a     |   yes    |
-| <a name="input_enable_application_teams"></a> [enable_application_teams](#input_enable_application_teams) | Enable Teams                          | `bool`        | `false` |    no    |
-| <a name="input_enable_platform_teams"></a> [enable_platform_teams](#input_enable_platform_teams)          | Enable Teams                          | `bool`        | `false` |    no    |
-| <a name="input_environment"></a> [environment](#input_environment)                                        | n/a                                   | `string`      | n/a     |   yes    |
-| <a name="input_platform_teams"></a> [platform_teams](#input_platform_teams)                               | Map of maps of teams to create        | `any`         | `{}`    |    no    |
-| <a name="input_tags"></a> [tags](#input_tags)                                                             | A map of tags to add to all resources | `map(string)` | `{}`    |    no    |
-| <a name="input_tenant"></a> [tenant](#input_tenant)                                                       | n/a                                   | `string`      | n/a     |   yes    |
-| <a name="input_zone"></a> [zone](#input_zone)                                                             | n/a                                   | `string`      | n/a     |   yes    |
+| Name                                                                                 | Description                           | Type          | Default | Required |
+| ------------------------------------------------------------------------------------ | ------------------------------------- | ------------- | ------- | :------: |
+| <a name="input_application_teams"></a> [application_teams](#input_application_teams) | Map of maps of teams to create        | `any`         | `{}`    |    no    |
+| <a name="input_eks_cluster_name"></a> [eks_cluster_name](#input_eks_cluster_name)    | EKS Cluster name                      | `string`      | n/a     |   yes    |
+| <a name="input_environment"></a> [environment](#input_environment)                   | n/a                                   | `string`      | n/a     |   yes    |
+| <a name="input_platform_teams"></a> [platform_teams](#input_platform_teams)          | Map of maps of teams to create        | `any`         | `{}`    |    no    |
+| <a name="input_tags"></a> [tags](#input_tags)                                        | A map of tags to add to all resources | `map(string)` | `{}`    |    no    |
+| <a name="input_tenant"></a> [tenant](#input_tenant)                                  | n/a                                   | `string`      | n/a     |   yes    |
+| <a name="input_zone"></a> [zone](#input_zone)                                        | n/a                                   | `string`      | n/a     |   yes    |
 
 ## Outputs
 
-| Name                                                                                                                 | Description                                       |
-| -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| <a name="output_platform_teams_iam_role_arn"></a> [platform_teams_iam_role_arn](#output_platform_teams_iam_role_arn) | IAM role ARN for Platform Teams                   |
-| <a name="output_team_sa_irsa_iam_role_arn"></a> [team_sa_irsa_iam_role_arn](#output_team_sa_irsa_iam_role_arn)       | IAM role ARN for Teams EKS Service Account (IRSA) |
-| <a name="output_teams_iam_role_arn"></a> [teams_iam_role_arn](#output_teams_iam_role_arn)                            | IAM role ARN for Teams                            |
+| Name                                                                                                                          | Description                                       |
+| ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| <a name="output_application_teams_iam_role_arn"></a> [application_teams_iam_role_arn](#output_application_teams_iam_role_arn) | IAM role ARN for Teams                            |
+| <a name="output_platform_teams_iam_role_arn"></a> [platform_teams_iam_role_arn](#output_platform_teams_iam_role_arn)          | IAM role ARN for Platform Teams                   |
+| <a name="output_team_sa_irsa_iam_role_arn"></a> [team_sa_irsa_iam_role_arn](#output_team_sa_irsa_iam_role_arn)                | IAM role ARN for Teams EKS Service Account (IRSA) |
 
 <!--- END_TF_DOCS --->

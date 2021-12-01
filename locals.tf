@@ -81,9 +81,12 @@ locals {
     }
   ] : []
 
-  application_teams_config_map = var.enable_application_teams == true && length(var.application_teams) > 0 ? [
+  partition        = data.aws_partition.current.partition
+  account_id       = data.aws_caller_identity.current.account_id
+  role_prefix_name = format("%s-%s-%s", var.tenant, var.environment, var.zone)
+  application_teams_config_map = length(var.application_teams) > 0 ? [
     for team_name, team_data in var.application_teams : {
-      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${format("%s-%s-%s-%s-%s", var.tenant, var.environment, var.zone, "${team_name}", "access")}"
+      rolearn : "arn:${local.partition}:iam::${local.account_id}:role/${format("%s-%s-%s", local.role_prefix_name, "${team_name}", "Access")}"
       username : "${team_name}"
       groups : [
         "${team_name}-group"
@@ -91,9 +94,9 @@ locals {
     }
   ] : []
 
-  platform_teams_config_map = var.enable_platform_teams == true && length(var.platform_teams) > 0 ? [
+  platform_teams_config_map = length(var.platform_teams) > 0 ? [
     for platform_team_name, platform_team_data in var.platform_teams : {
-      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${format("%s-%s-%s-%s-%s", var.tenant, var.environment, var.zone, "${platform_team_name}", "PlatformTeam")}"
+      rolearn : "arn:${local.partition}:iam::${local.account_id}:role/${format("%s-%s-%s", local.role_prefix_name, "${platform_team_name}", "Access")}"
       username : "${platform_team_name}"
       groups : [
         "system:masters"
