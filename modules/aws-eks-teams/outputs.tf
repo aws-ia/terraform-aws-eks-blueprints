@@ -1,4 +1,3 @@
-
 output "platform_teams_iam_role_arn" {
   description = "IAM role ARN for Platform Teams"
   value = tomap({
