@@ -379,6 +379,13 @@ variable "argocd_applications" {
   default     = {}
   description = "ARGO CD Applications config to bootstrap the cluster"
 }
+
+variable "argocd_manage_add_ons" {
+  type        = bool
+  default     = false
+  description = "Enables managing add-on configuration via ArgoCD"
+}
+
 #-----------AWS NODE TERMINATION HANDLER-------------
 variable "aws_node_termination_handler_enable" {
   type        = bool
@@ -390,11 +397,7 @@ variable "aws_node_termination_handler_helm_chart" {
   description = "Helm chart definition for aws_node_termination_handler"
   default     = {}
 }
-variable "argocd_manage_add_ons" {
-  type        = bool
-  default     = false
-  description = "Enables managing add-on configuration via ArgoCD"
-}
+
 #-----------KEDA ADDON-------------
 variable "keda_enable" {
   type        = bool
