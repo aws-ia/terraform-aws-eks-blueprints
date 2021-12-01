@@ -7,7 +7,7 @@ output "platform_teams_iam_role_arn" {
   })
 }
 
-output "teams_iam_role_arn" {
+output "application_teams_iam_role_arn" {
   description = "IAM role ARN for Teams"
   value = tomap({
     for k, v in aws_iam_role.team_access : k => v.arn

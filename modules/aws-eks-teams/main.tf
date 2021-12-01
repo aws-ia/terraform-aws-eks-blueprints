@@ -205,9 +205,7 @@ resource "aws_iam_policy" "platform_team_eks_access" {
   name        = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, "PlatformTeamEksAccess")
   path        = "/"
   description = "Platform Team EKS Console Access"
-
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
+  
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
