@@ -41,3 +41,9 @@ data "aws_eks_cluster" "eks_cluster" {
 data "aws_partition" "current" {}
 
 data "aws_caller_identity" "current" {}
+
+data "kubernetes_namespace" "namespace" {
+  metadata {
+    name = var.kubernetes_namespace
+  }
+}

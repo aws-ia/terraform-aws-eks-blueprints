@@ -32,3 +32,9 @@ variable "eks_cluster_name" {
   type        = string
   description = "Name for the EKS Cluster"
 }
+
+variable "add_on_config" {
+  type        = any
+  default     = {}
+  description = "Configuration for managing add-ons via ArgoCD"
+}

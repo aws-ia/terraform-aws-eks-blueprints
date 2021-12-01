@@ -45,10 +45,10 @@ locals {
     var.argocd_helm_chart
   )
 
-  # Global Values for ArgoCD App of Apps.
-  global_values = {
-    region : data.aws_region.current.id
-    account : data.aws_caller_identity.current.account_id
-    clusterName : var.eks_cluster_name
+  # Global Application Values
+  global_application_values = {
+    region      = data.aws_region.current.id
+    account     = data.aws_caller_identity.current.account_id
+    clusterName = var.eks_cluster_name
   }
 }

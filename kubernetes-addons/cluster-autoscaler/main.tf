@@ -16,8 +16,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 resource "helm_release" "cluster_autoscaler" {
+  count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.cluster_autoscaler_helm_app["name"]
   repository                 = local.cluster_autoscaler_helm_app["repository"]
   chart                      = local.cluster_autoscaler_helm_app["chart"]

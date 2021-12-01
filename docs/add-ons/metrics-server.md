@@ -20,3 +20,13 @@ $ kubectl get deployments -n kube-system
 NAME                                                          READY   UP-TO-DATE   AVAILABLE   AGE
 metrics-server                                                1/1     1            1           20m
 ```
+
+### GitOps Configuration
+
+The following properties are made available for use when managing the add-on via GitOps
+
+```
+metricsServer = {
+  enable = true
+}
+```

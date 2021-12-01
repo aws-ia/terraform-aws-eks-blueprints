@@ -18,7 +18,6 @@ resource "aws_iam_instance_profile" "managed_ng" {
   }
 }
 
-#TODO Allow IAM policies can be passed from tfvars file
 resource "aws_iam_role_policy_attachment" "managed_ng_AmazonEKSWorkerNodePolicy" {
   policy_arn = "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.managed_ng.name
@@ -34,53 +33,28 @@ resource "aws_iam_role_policy_attachment" "managed_ng_AmazonEC2ContainerRegistry
   role       = aws_iam_role.managed_ng.name
 }
 
-resource "aws_iam_role_policy_attachment" "managed_ng_AmazonSSMManagedInstanceCore" {
-  policy_arn = "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"
+# Cluster Autoscaler
+resource "aws_iam_policy" "cluster_autoscaler" {
+  name        = "${var.eks_cluster_name}-${local.managed_node_group["node_group_name"]}-ca"
+  description = "IAM policy for Cluster Autoscaler"
+  path        = var.path
+  policy      = data.aws_iam_policy_document.cluster_autoscaler.json
+}
+
+resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
+  policy_arn = aws_iam_policy.cluster_autoscaler.arn
   role       = aws_iam_role.managed_ng.name
 }
 
-resource "aws_iam_role_policy_attachment" "managed_ng_CloudWatchFullAccess" {
-  policy_arn = "${local.policy_arn_prefix}/CloudWatchFullAccess"
+# CloudWatch Log access
+resource "aws_iam_policy" "cwlogs" {
+  name        = "${var.eks_cluster_name}-${local.managed_node_group["node_group_name"]}-cwlogs"
+  description = "IAM policy for CloudWatch Logs access"
+  path        = var.path
+  policy      = data.aws_iam_policy_document.cwlogs.json
+}
+
+resource "aws_iam_role_policy_attachment" "cwlogs" {
+  policy_arn = aws_iam_policy.cwlogs.arn
   role       = aws_iam_role.managed_ng.name
-}
-
-resource "aws_iam_role_policy_attachment" "managed_ng_ElasticLoadBalancingFullAccess" {
-  policy_arn = "${local.policy_arn_prefix}/ElasticLoadBalancingFullAccess"
-  role       = aws_iam_role.managed_ng.name
-}
-
-resource "aws_iam_role_policy_attachment" "managed_ng_AmazonPrometheusRemoteWriteAccess" {
-  policy_arn = "${local.policy_arn_prefix}/AmazonPrometheusRemoteWriteAccess"
-  role       = aws_iam_role.managed_ng.name
-}
-
-resource "aws_iam_role_policy_attachment" "managed_ng_cluster_autoscaler" {
-  policy_arn = aws_iam_policy.eks_autoscaler_policy.arn
-  role       = aws_iam_role.managed_ng.name
-}
-
-resource "aws_iam_policy" "eks_autoscaler_policy" {
-  name        = "${var.eks_cluster_name}-${local.managed_node_group["node_group_name"]}"
-  path        = "/"
-  description = "eks autoscaler policy"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "autoscaling:DescribeAutoScalingGroups",
-        "autoscaling:DescribeAutoScalingInstances",
-        "autoscaling:DescribeLaunchConfigurations",
-        "autoscaling:DescribeTags",
-        "autoscaling:SetDesiredCapacity",
-        "autoscaling:TerminateInstanceInAutoScalingGroup"
-      ],
-      "Resource": "arn:aws:autoscaling:*:${data.aws_caller_identity.current.account_id}:autoScalingGroup:*:autoScalingGroupName/*"
-    }
-  ]
-}
-EOF
 }

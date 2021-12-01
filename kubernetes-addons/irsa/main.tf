@@ -18,6 +18,7 @@
 
 # Kubernetes Namespace
 resource "kubernetes_namespace" "add_on_ns" {
+  count = var.create_namespace ? 1 : 0
   metadata {
     name = var.kubernetes_namespace
 
@@ -31,7 +32,7 @@ resource "kubernetes_namespace" "add_on_ns" {
 resource "kubernetes_service_account" "add_on_sa" {
   metadata {
     name        = var.kubernetes_service_account
-    namespace   = kubernetes_namespace.add_on_ns.id
+    namespace   = var.kubernetes_namespace
     annotations = { "eks.amazonaws.com/role-arn" : aws_iam_role.irsa.arn }
   }
   automount_service_account_token = true

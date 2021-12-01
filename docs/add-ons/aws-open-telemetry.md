@@ -11,3 +11,13 @@ The AWS Distro for OpenTelemetry Collector can be deployed into an EKS cluster b
 ```
 aws_open_telemetry_enable = true
 ```
+
+### GitOps Configuration
+
+The following properties are made available for use when managing the add-on via GitOps.
+
+```
+awsOtelCollector = {
+  enable = true
+}
+```

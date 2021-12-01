@@ -46,10 +46,13 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
 | <a name="input_spark_on_k8s_operator_helm_chart"></a> [spark\_on\_k8s\_operator\_helm\_chart](#input\_spark\_on\_k8s\_operator\_helm\_chart) | Spark on K8s Operator Helm Chart Configuration | `any` | `{}` | no |
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
 
 <!--- END_TF_DOCS --->

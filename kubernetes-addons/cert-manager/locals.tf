@@ -38,13 +38,18 @@ locals {
     dependency_update          = false
     replace                    = false
     postrender                 = ""
+
     # Install a CA issuer with a helper chart
     # See ./cert-manager-ca/templates/ca.yaml
-    install_default_ca = true
+    install_default_ca = var.manage_via_gitops ? false : true
   }
 
   cert_manager_helm_app = merge(
     local.default_cert_manager_helm_app,
     var.cert_manager_helm_chart
   )
+
+  argocd_gitops_config = {
+    enable = true
+  }
 }

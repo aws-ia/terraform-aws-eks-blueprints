@@ -15,3 +15,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "path" {
+  type        = string
+  default     = "/"
+  description = "IAM resource path, e.g. /dev/"
+}
