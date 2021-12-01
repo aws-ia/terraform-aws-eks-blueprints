@@ -95,7 +95,7 @@ To create an `Platform Team` for your cluster, simply use `platform_teams`. You 
   }
 ```
 
-The `PlatformTeam` class does the following:
+`Platform Team` does the following:
 
 - Registers IAM users for admin access to the cluster (`kubectl` and console)
 - Registers an existing role (or create a new role) for cluster access with trust relationship with the provided/created role
@@ -105,6 +105,7 @@ The `PlatformTeam` class does the following:
 The output will contain the IAM roles for every application(`application_teams_iam_role_arn`) or platform team(`platform_teams_iam_role_arn`).
 
 To update your kubeconfig, you can run the following command:
+
 ```
 aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION} --role-arn ${TEAM_ROLE_ARN}
 ```
