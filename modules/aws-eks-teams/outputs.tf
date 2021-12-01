@@ -23,6 +23,7 @@ output "application_teams_config_map" {
   description = "Application Teams AWS Auth Configmap"
   value       = local.application_teams_config_map
 }
+
 output "platform_teams_config_map" {
   description = "Platform Teams AWS Auth Configmap"
   value       = local.platform_teams_config_map

@@ -238,7 +238,6 @@ resource "aws_iam_policy" "platform_team_eks_access" {
         Effect   = "Allow"
         Resource = "*"
       }
-
     ]
   })
 }
