@@ -1,4 +1,3 @@
-data "aws_region" "current" {}
 
 resource "kubernetes_namespace" "spark" {
   metadata {
@@ -81,58 +80,19 @@ resource "kubernetes_role_binding" "emr_containers" {
   }
 }
 
-
-# EMR jobs will assume this IAM role when they run on EKS
 resource "aws_iam_role" "emr_on_eks_execution" {
-  name               = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, local.emr_on_eks_team["emr_on_eks_iam_role_name"])
-  assume_role_policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "elasticmapreduce.amazonaws.com"
-        },
-        "Action": "sts:AssumeRole"
-      }
-    ]
-  }
-EOF
+  name                  = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, local.emr_on_eks_team["emr_on_eks_iam_role_name"])
+  assume_role_policy    = data.aws_iam_policy_document.emr_assume_role.json
+  force_detach_policies = true
+  path                  = var.iam_role_path
+  tags                  = var.tags
 }
 
 resource "aws_iam_policy" "emr_on_eks_execution" {
   name        = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, local.emr_on_eks_team["emr_on_eks_iam_role_name"])
-  description = "Allows role to generate kubeconfig for Kubectl access"
-
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:PutObject",
-                "s3:GetObject",
-                "s3:ListBucket"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:PutLogEvents",
-                "logs:CreateLogStream",
-                "logs:DescribeLogGroups",
-                "logs:DescribeLogStreams"
-            ],
-            "Resource": [
-                "arn:aws:logs:*:*:*"
-            ]
-        }
-    ]
-}
-EOF
+  description = "IAM policy for EMR on EKS Job execution"
+  path        = var.iam_role_path
+  policy      = data.aws_iam_policy_document.emr_on_eks.json
 }
 
 resource "aws_iam_role_policy_attachment" "emr_on_eks_execution" {

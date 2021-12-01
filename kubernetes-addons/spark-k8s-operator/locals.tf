@@ -42,4 +42,8 @@ locals {
     local.default_spark_k8s_operator_helm_app,
     var.spark_on_k8s_operator_helm_chart
   )
+
+  argocd_gitops_config = {
+    enable = true
+  }
 }

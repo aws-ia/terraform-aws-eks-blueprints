@@ -47,4 +47,8 @@ locals {
     local.default_agones_helm_app,
     var.agones_helm_chart
   )
+
+  argocd_gitops_config = {
+    enable = true
+  }
 }

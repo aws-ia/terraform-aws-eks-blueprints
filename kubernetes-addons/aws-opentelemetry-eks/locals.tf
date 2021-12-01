@@ -17,4 +17,8 @@ locals {
     local.default_aws_open_telemetry_helm_app,
     var.aws_open_telemetry_addon
   )
+
+  argocd_gitops_config = {
+    enable = true
+  }
 }

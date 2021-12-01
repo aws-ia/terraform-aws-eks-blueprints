@@ -17,6 +17,7 @@
  */
 
 resource "helm_release" "nginx" {
+  count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.nginx_helm_app["name"]
   repository                 = local.nginx_helm_app["repository"]
   chart                      = local.nginx_helm_app["chart"]

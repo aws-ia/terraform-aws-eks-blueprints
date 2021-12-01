@@ -58,7 +58,7 @@ variable "private_subnet_ids" {
   type        = list(string)
 }
 variable "public_subnet_ids" {
-  description = "list of private subnets Id's for the Worker nodes"
+  description = "list of public subnets Id's for the Worker nodes"
   type        = list(string)
   default     = []
 }
@@ -133,7 +133,7 @@ variable "kube_proxy_addon_version" {
 
 # EKS WORKER NODES
 variable "enable_managed_nodegroups" {
-  description = "Enable self-managed worker groups"
+  description = "Enable managed node groups"
   type        = bool
   default     = false
 }
@@ -199,12 +199,15 @@ variable "aws_auth_additional_labels" {
   default     = {}
   type        = map(string)
 }
+
 # KUBERNETES ADDONS VARIABLES
+
 variable "enable_emr_on_eks" {
   type        = bool
   default     = false
   description = "Enabling EMR on EKS Config"
 }
+
 variable "emr_on_eks_teams" {
   description = "EMR on EKS Teams configuration"
   type        = any
@@ -376,6 +379,22 @@ variable "argocd_applications" {
   default     = {}
   description = "ARGO CD Applications config to bootstrap the cluster"
 }
+#-----------AWS NODE TERMINATION HANDLER-------------
+variable "aws_node_termination_handler_enable" {
+  type        = bool
+  default     = false
+  description = "Enabling AWS Node Termination Handler"
+}
+variable "aws_node_termination_handler_helm_chart" {
+  type        = any
+  description = "Helm chart definition for aws_node_termination_handler"
+  default     = {}
+}
+variable "argocd_manage_add_ons" {
+  type        = bool
+  default     = false
+  description = "Enables managing add-on configuration via ArgoCD"
+}
 #-----------KEDA ADDON-------------
 variable "keda_enable" {
   type        = bool
@@ -421,5 +440,16 @@ variable "platform_teams" {
   description = "Map of maps of platform teams to create"
   type        = any
   default     = {}
+}
+#-----------Vertical Pod Autoscaler(VPA) ADDON-------------
+variable "vpa_enable" {
+  type        = bool
+  default     = false
+  description = "Enable Kubernetes Vertical Pod Autoscaler"
+}
+variable "vpa_helm_chart" {
+  type        = any
+  default     = {}
+  description = "Kubernetes Vertical Pod Autoscaler Helm chart config"
 }
 

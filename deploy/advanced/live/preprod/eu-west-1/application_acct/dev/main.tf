@@ -5,15 +5,15 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.60.0"
+      version = ">= 3.66.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.5.0"
+      version = ">= 2.6.1"
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.3.0"
+      version = ">= 2.4.1"
     }
   }
 }
@@ -509,7 +509,7 @@ module "aws-eks-accelerator-for-terraform" {
       name  = "service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
       value = "nlb"
     }]
-    # (Optional) Example to show how to pass metrics-server-values.yaml
+    # (Optional) Example to show how to pass traefik-values.yaml
     values = [templatefile("${path.module}/k8s_addons/traefik-values.yaml", {
       operating_system = "linux"
     })]
@@ -551,7 +551,7 @@ module "aws-eks-accelerator-for-terraform" {
     timeout    = "1200"                                    # (Optional)
     lint       = "true"                                    # (Optional)
 
-    # (Optional) Example to show how to pass metrics-server-values.yaml
+    # (Optional) Example to show how to pass cluster-autoscaler-values.yaml
     values = [templatefile("${path.module}/k8s_addons/cluster-autoscaler-vaues.yaml", {
       operating_system = "linux"
     })]

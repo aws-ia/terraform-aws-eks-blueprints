@@ -48,4 +48,8 @@ locals {
     local.default_cluster_autoscaler_helm_app,
     var.cluster_autoscaler_helm_chart
   )
+
+  argocd_gitops_config = {
+    enable = true
+  }
 }

@@ -17,6 +17,7 @@
  */
 
 resource "helm_release" "traefik" {
+  count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.traefik_helm_app["name"]
   repository                 = local.traefik_helm_app["repository"]
   chart                      = local.traefik_helm_app["chart"]

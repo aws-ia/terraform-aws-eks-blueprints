@@ -66,14 +66,18 @@ locals {
     set_sensitive              = []
     values                     = local.default_keda_helm_values
   }
+
   keda_helm_app = merge(
     local.default_keda_helm_app,
     var.keda_helm_chart
   )
 
-  default_keda_helm_values = [templatefile("${path.module}/keda-values.yaml", {
+  default_keda_helm_values = [templatefile("${path.module}/values.yaml", {
     keda-sa-name = local.keda_service_account_name
   })]
 
-
+  argocd_gitops_config = {
+    enable             = true
+    serviceAccountName = local.keda_service_account_name
+  }
 }

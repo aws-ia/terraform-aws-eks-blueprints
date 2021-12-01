@@ -90,7 +90,6 @@ module "aws_managed_prometheus" {
   service_account_amp_ingest_name = local.service_account_amp_ingest_name
   service_account_amp_query_name  = local.service_account_amp_query_name
   amp_workspace_name              = var.aws_managed_prometheus_workspace_name
-
 }
 
 module "emr_on_eks" {
@@ -106,6 +105,7 @@ module "emr_on_eks" {
   environment    = var.environment
   tenant         = var.tenant
   zone           = var.zone
+  tags           = var.tags
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
 
