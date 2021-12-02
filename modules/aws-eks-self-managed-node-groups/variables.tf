@@ -1,9 +1,3 @@
-variable "enable_self_managed_nodegroups" {
-  description = "Enable self-managed worker groups"
-  type        = bool
-  default     = false
-}
-
 variable "self_managed_ng" {
   description = "Map of maps of `eks_self_managed_node_groups` to create"
   type        = any
