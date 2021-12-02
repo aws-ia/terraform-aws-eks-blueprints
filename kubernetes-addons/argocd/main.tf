@@ -87,7 +87,7 @@ resource "helm_release" "argocd_application" {
   version   = "0.1.0"
   namespace = "argocd"
 
-  # Application Meta. 
+  # Application Meta.
   set {
     name  = "name"
     value = each.key

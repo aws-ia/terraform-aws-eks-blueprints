@@ -100,7 +100,6 @@ module "aws-eks-accelerator-for-terraform" {
   #    3. Security Group for Node group (Optional)
   #    4. Launch Templates for Node group   (Optional)
   #---------------------------------------------------------#
-  enable_managed_nodegroups = true
   managed_node_groups = {
     #---------------------------------------------------------#
     # ON-DEMAND Worker Group - Worker Group - 1
@@ -243,8 +242,6 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------------------------#
 
   enable_windows_support = false
-
-  enable_self_managed_nodegroups = false
 
   self_managed_node_groups = {
     #---------------------------------------------------------#
@@ -402,8 +399,6 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------------------------#
   # FARGATE PROFILES
   #---------------------------------------------------------#
-  enable_fargate = false
-
   fargate_profiles = {
     default = {
       fargate_profile_name = "default"

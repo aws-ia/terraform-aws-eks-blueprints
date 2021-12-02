@@ -12,7 +12,7 @@ This document provides a high level overview of the Core Concepts that are embed
 
 ## Cluster
 
-A `cluster` is simply an EKS cluster. The `terraform-ssp-amazon-eks` framework provides for customizing the compute options you leverage with your `clusters`. The framework currently supports `EC2`, `Fargate` and `BottleRocket` instances. It also supports managed and self-managed node groups. To specify the type of compute you want to use for your `cluster`, you use the `enable_managed_nodegroups`, `enable_self_managed_nodegroups`, or `enable_fargate` variables.
+A `cluster` is simply an EKS cluster. The `terraform-ssp-amazon-eks` framework provides for customizing the compute options you leverage with your `clusters`. The framework currently supports `EC2`, `Fargate` and `BottleRocket` instances. It also supports managed and self-managed node groups. To specify the type of compute you want to use for your `cluster`, you use the `managed_node_groups`, `self_managed_nodegroups`, or `fargate_profiles` variables.
 
 See our [Node Groups](./node-groups) documentation page for detailed information.
 

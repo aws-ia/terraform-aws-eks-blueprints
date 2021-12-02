@@ -5,18 +5,18 @@ name: ""
 project: "default"
 
 # Source config for the Application
-source: 
-  
-  # Git Repo the Application points to. 
+source:
+
+  # Git Repo the Application points to.
   repoUrl: ""
-  
-  # Target revision for the repo. 
+
+  # Target revision for the repo.
   targetRevision: "HEAD"
 
-  # Path in the repo Argo should look for manifests. 
+  # Path in the repo Argo should look for manifests.
   path: ""
 
-  # Helm configuration. 
+  # Helm configuration.
   helm :
     values: ""
 
