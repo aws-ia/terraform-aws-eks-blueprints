@@ -18,7 +18,7 @@ resource "kubernetes_resource_quota" "team_compute_quota" {
   for_each = var.application_teams
   metadata {
     name      = "compute-quota"
-    namespace = each.key
+    namespace = kubernetes_namespace.team[each.key].metadata[0].name
   }
   spec {
     hard = {
@@ -34,7 +34,7 @@ resource "kubernetes_resource_quota" "team_object_quota" {
   for_each = var.application_teams
   metadata {
     name      = "object-quota"
-    namespace = each.key
+    namespace = kubernetes_namespace.team[each.key].metadata[0].name
   }
   spec {
     hard = {
@@ -101,7 +101,7 @@ resource "kubernetes_role" "team" {
   for_each = var.application_teams
   metadata {
     name      = "${each.key}-role"
-    namespace = each.key
+    namespace = kubernetes_namespace.team[each.key].metadata[0].name
   }
   rule {
     api_groups = ["*"]
@@ -119,7 +119,7 @@ resource "kubernetes_role_binding" "team" {
   for_each = var.application_teams
   metadata {
     name      = "${each.key}-role-binding"
-    namespace = each.key
+    namespace = kubernetes_namespace.team[each.key].metadata[0].name
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
@@ -130,7 +130,7 @@ resource "kubernetes_role_binding" "team" {
     kind      = "Group"
     name      = "${each.key}-group"
     api_group = "rbac.authorization.k8s.io"
-    namespace = each.key
+    namespace = kubernetes_namespace.team[each.key].metadata[0].name
   }
 }
 
@@ -166,7 +166,7 @@ resource "kubernetes_service_account" "team" {
   for_each = var.application_teams
   metadata {
     name        = format("%s-sa", each.key)
-    namespace   = each.key
+    namespace   = kubernetes_namespace.team[each.key].metadata[0].name
     annotations = { "eks.amazonaws.com/role-arn" : aws_iam_role.team_sa_irsa[each.key].arn }
   }
   automount_service_account_token = true
