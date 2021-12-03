@@ -3,6 +3,8 @@
 ![GitHub](https://img.shields.io/github/license/aws-samples/aws-eks-accelerator-for-terraform)
 [![e2e-test](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/e2e-test.yml)
 
+**Note**: EKS SSP for Terraform is in active development and should be considered **pre-production** framework. Backwards incompatible Terraform changes are possible in future releases and support is best-effort by the EKS SSP community.
+
 Welcome to the Amazon EKS Shared Services Platform (SSP) for Terraform.
 
 This repository contains the source code for a Terraform framework that aims to accelerate the delivery of a batteries-included, multi-tenant container platform on top of Amazon EKS. This framework can be used by AWS customers, partners, and internal AWS teams to implement the foundational structure of a SSP according to AWS best practices and recommendations.
