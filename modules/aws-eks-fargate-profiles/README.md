@@ -6,10 +6,9 @@ The Fargate profile allows you to declare which pods run on Fargate for Amazon E
 
 ## Fargate Profile Example
 ```hcl
-#---------------------------------------------------------#
+  #---------------------------------------------------------#
   # FARGATE PROFILES
   #---------------------------------------------------------#
-  enable_fargate = true
 
   fargate_profiles = {
     default = {

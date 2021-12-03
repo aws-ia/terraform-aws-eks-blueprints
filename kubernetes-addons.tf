@@ -141,8 +141,8 @@ module "aws_opentelemetry_collector" {
   source = "./kubernetes-addons/aws-opentelemetry-eks"
 
   aws_open_telemetry_addon                      = var.aws_open_telemetry_addon
-  aws_open_telemetry_mg_node_iam_role_arns      = var.create_eks && var.enable_managed_nodegroups ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_role_name) }) : []
-  aws_open_telemetry_self_mg_node_iam_role_arns = var.create_eks && var.enable_self_managed_nodegroups ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_node_group_iam_role_arns) }) : []
+  aws_open_telemetry_mg_node_iam_role_arns      = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_role_name) }) : []
+  aws_open_telemetry_self_mg_node_iam_role_arns = var.create_eks && length(var.self_managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_node_group_iam_role_arns) }) : []
   manage_via_gitops                             = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
@@ -160,11 +160,11 @@ module "argocd" {
 }
 
 module "aws_node_termination_handler" {
-  count                                   = var.create_eks && var.aws_node_termination_handler_enable && var.enable_self_managed_nodegroups ? 1 : 0
+  count                                   = var.create_eks && var.aws_node_termination_handler_enable && length(var.self_managed_node_groups) > 0 ? 1 : 0
   source                                  = "./kubernetes-addons/aws-node-termination-handler"
   eks_cluster_name                        = module.aws_eks.cluster_id
   aws_node_termination_handler_helm_chart = var.aws_node_termination_handler_helm_chart
-  autoscaling_group_names                 = var.create_eks && var.enable_self_managed_nodegroups ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_asg_names) }) : []
+  autoscaling_group_names                 = var.create_eks && length(var.self_managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_asg_names) }) : []
 
   depends_on = [module.aws_eks]
 }

@@ -4,15 +4,15 @@ This document provides a high level overview of the Core Concepts that are embed
 
 | Concept       | Description                                                           |
 |---------------|-----------------------------------------------------------------------|
-| [Cluster](#cluster) | A Well-Architected EKS Cluster. |
-| [Add-on](#add-on) |  Allow you to configure, deploy, and update the operational software, or add-ons, that provide key functionality to support your Kubernetes applications. |
-| [Team](#team) | A logical grouping of IAM identities that have access to a Kubernetes namespace(s). |
+| [Cluster](#cluster) | An Amazon EKS Cluster and associated worker groups. |
+| [Add-on](#add-on) | Operational software that provides key functionality to support your Kubernetes applications. |
+| [Team](#team) | A logical grouping of IAM identities that have access to Kubernetes resources. |
 | [Pipeline](#pipeline) | Continuous Delivery pipelines for deploying `clusters` and `add-ons`. |
 | [Application](#application) | An application that runs within an EKS Cluster. |
 
 ## Cluster
 
-A `cluster` is simply an EKS cluster. The `terraform-ssp-amazon-eks` framework provides for customizing the compute options you leverage with your `clusters`. The framework currently supports `EC2`, `Fargate` and `BottleRocket` instances. It also supports managed and self-managed node groups. To specify the type of compute you want to use for your `cluster`, you use the `enable_managed_nodegroups`, `enable_self_managed_nodegroups`, or `enable_fargate` variables.
+A `cluster` is simply an EKS cluster. The `terraform-ssp-amazon-eks` framework provides for customizing the compute options you leverage with your `clusters`. The framework currently supports `EC2`, `Fargate` and `BottleRocket` instances. It also supports managed and self-managed node groups. To specify the type of compute you want to use for your `cluster`, you use the `managed_node_groups`, `self_managed_nodegroups`, or `fargate_profiles` variables.
 
 See our [Node Groups](./node-groups) documentation page for detailed information.
 
@@ -20,9 +20,9 @@ See our [Node Groups](./node-groups) documentation page for detailed information
 
 `Add-ons` allow you to configure the operational tools that you would like to deploy into your EKS cluster. When you configure `add-ons` for a `cluster`, the `add-ons` will be provisioned at deploy time by leveraging the Terraform Helm provider. Add-ons can deploy both Kubernetes specific resources and AWS resources needed to support add-on functionality.
 
-For examples, the `metrics-server` add-on only deploys the Kubernetes manifests that are needed to run the Kubernetes Metrics Server. By contrast, the `aws-load-balancer-controller` add-on deploys both Kubernetes YAML, in addition to creating resources via AWS APIs that are needed to support the AWS Load Balancer Controller functionality.
+For example, the `metrics-server` add-on only deploys the Kubernetes manifests that are needed to run the Kubernetes Metrics Server. By contrast, the `aws-load-balancer-controller` add-on deploys both Kubernetes YAML, in addition to creating resources via AWS APIs that are needed to support the AWS Load Balancer Controller functionality.
 
-See our [`Add-ons`](./add-ons) documentation page for detailed information.
+The `terraform-ssp-amazon-eks` framework allows you to manage your add-ons directly via Terraform (by leveraging the Terraform Helm provider) or via GitOps with ArgoCD. See our [`Add-ons`](./add-ons) documentation page for detailed information.
 
 ## Team
 
