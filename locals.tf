@@ -23,7 +23,7 @@ locals {
   ecr_image_repo_url = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.id}.amazonaws.com"
 
   # Managed node IAM Roles for aws-auth
-  managed_node_group_aws_auth_config_map = var.enable_managed_nodegroups == true ? [
+  managed_node_group_aws_auth_config_map = length(var.managed_node_groups) > 0 == true ? [
     for key, node in var.managed_node_groups : {
       rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.aws_eks.cluster_id}-${node.node_group_name}"
       username : "system:node:{{EC2PrivateDNSName}}"
@@ -35,7 +35,7 @@ locals {
   ] : []
 
   # Self Managed node IAM Roles for aws-auth
-  self_managed_node_group_aws_auth_config_map = var.enable_self_managed_nodegroups ? [
+  self_managed_node_group_aws_auth_config_map = length(var.self_managed_node_groups) > 0 ? [
     for key, node in var.self_managed_node_groups : {
       rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.aws_eks.cluster_id}-${node.node_group_name}"
       username : "system:node:{{EC2PrivateDNSName}}"
@@ -47,7 +47,7 @@ locals {
   ] : []
 
   # Self Managed Windows node IAM Roles for aws-auth
-  windows_node_group_aws_auth_config_map = var.enable_self_managed_nodegroups && var.enable_windows_support ? [
+  windows_node_group_aws_auth_config_map = length(var.self_managed_node_groups) > 0 && var.enable_windows_support ? [
     for key, node in var.self_managed_node_groups : {
       rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.aws_eks.cluster_id}-${node.node_group_name}"
       username : "system:node:{{EC2PrivateDNSName}}"
@@ -60,7 +60,7 @@ locals {
   ] : []
 
   # Fargate node IAM Roles for aws-auth
-  fargate_profiles_aws_auth_config_map = var.enable_fargate == true ? [
+  fargate_profiles_aws_auth_config_map = length(var.fargate_profiles) > 0 ? [
     for key, node in var.fargate_profiles : {
       rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${module.aws_eks.cluster_id}-${node.fargate_profile_name}"
       username : "system:node:{{SessionName}}"
@@ -86,20 +86,19 @@ locals {
   service_account_amp_query_name  = format("%s-%s", module.aws_eks.cluster_id, "amp-query")
 
   # Configuration for managing add-ons via ArgoCD.
-  argocd_add_on_config = {
-    agones                    = var.agones_enable ? module.agones[0].argocd_gitops_config : null
-    awsForFluentBit           = var.aws_for_fluentbit_enable ? module.aws_for_fluent_bit[0].argocd_gitops_config : null
-    awsLoadBalancerController = var.aws_lb_ingress_controller_enable ? module.aws_load_balancer_controller[0].argocd_gitops_config : null
-    awsOtelCollector          = var.aws_open_telemetry_enable ? module.aws_opentelemetry_collector[0].argocd_gitops_config : null
-    certManager               = var.cert_manager_enable ? module.cert_manager[0].argocd_gitops_config : null
-    clusterAutoscaler         = var.cluster_autoscaler_enable ? module.cluster_autoscaler[0].argocd_gitops_config : null
-    ingressNginx              = var.nginx_ingress_controller_enable ? module.nginx_ingress[0].argocd_gitops_config : null
-    keda                      = var.keda_enable ? module.keda[0].argocd_gitops_config : null
-    metricsServer             = var.metrics_server_enable ? module.metrics_server[0].argocd_gitops_config : null
-    nginxIngress              = var.nginx_ingress_controller_enable ? module.nginx_ingress[0].argocd_gitops_config : null
-    prometheus                = var.prometheus_enable ? module.prometheus[0].argocd_gitops_config : null
-    sparkOperator             = var.spark_on_k8s_operator_enable ? module.spark-k8s-operator[0].argocd_gitops_config : null
-    traefik                   = var.traefik_ingress_controller_enable ? module.traefik_ingress[0].argocd_gitops_config : null
-    windowsVpcControllers     = var.enable_windows_support ? module.windows_vpc_controllers[0].argocd_gitops_config : null
-  }
+  argocd_add_on_config = var.argocd_manage_add_ons ? {
+    agones                    = var.agones_enable ? module.agones[0].argocd_gitops_config : {}
+    awsForFluentBit           = var.aws_for_fluentbit_enable ? module.aws_for_fluent_bit[0].argocd_gitops_config : {}
+    awsLoadBalancerController = var.aws_lb_ingress_controller_enable ? module.aws_load_balancer_controller[0].argocd_gitops_config : {}
+    awsOtelCollector          = var.aws_open_telemetry_enable ? module.aws_opentelemetry_collector[0].argocd_gitops_config : {}
+    certManager               = var.cert_manager_enable ? module.cert_manager[0].argocd_gitops_config : {}
+    clusterAutoscaler         = var.cluster_autoscaler_enable ? module.cluster_autoscaler[0].argocd_gitops_config : {}
+    ingressNginx              = var.nginx_ingress_controller_enable ? module.nginx_ingress[0].argocd_gitops_config : {}
+    keda                      = var.keda_enable ? module.keda[0].argocd_gitops_config : {}
+    metricsServer             = var.metrics_server_enable ? module.metrics_server[0].argocd_gitops_config : {}
+    prometheus                = var.prometheus_enable ? module.prometheus[0].argocd_gitops_config : {}
+    sparkOperator             = var.spark_on_k8s_operator_enable ? module.spark-k8s-operator[0].argocd_gitops_config : {}
+    traefik                   = var.traefik_ingress_controller_enable ? module.traefik_ingress[0].argocd_gitops_config : {}
+    windowsVpcControllers     = var.enable_windows_support ? module.windows_vpc_controllers[0].argocd_gitops_config : {}
+  } : {}
 }

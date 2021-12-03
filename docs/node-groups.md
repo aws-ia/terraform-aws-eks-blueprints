@@ -13,7 +13,6 @@ The below example demonstrates the minimum configuration required to deploy a ma
 
 ```hcl
     # EKS MANAGED NODE GROUPS
-    enable_managed_nodegroups = true
     managed_node_groups = {
         mg_4 = {
             node_group_name = "managed-ondemand"
@@ -26,8 +25,6 @@ The below example demonstrates the minimum configuration required to deploy a ma
 The below example demonstrates advanced configuration options for a manged node group.
 
 ```hcl
-    enable_managed_nodegroups = true
-
     managed_node_groups = {
       mg_m4 = {
         # 1> Node Group configuration
@@ -74,8 +71,6 @@ The below example demonstrates advanced configuration options for a manged node 
 The example below demonstrates how you can customize and deploy a self-managed node group for your cluster.
 
 ```hcl
-  enable_self_managed_nodegroups = true
-
   self_managed_node_groups = {
     self_mg_4 = {
       node_group_name    = "self-managed-ondemand"
@@ -118,8 +113,6 @@ The example below demonstrates how you can customize and deploy a self-managed n
 The example below demonstrates how you can customize a Fargate profile for your cluster.
 
 ```hcl
-    enable_fargate = true
-
     fargate_profiles = {
       default = {
         fargate_profile_name = "default"

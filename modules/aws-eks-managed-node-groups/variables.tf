@@ -1,10 +1,3 @@
-
-variable "enable_managed_nodegroups" {
-  description = "Enable Managed worker groups"
-  type        = bool
-  default     = false
-}
-
 variable "managed_ng" {
   description = "Map of maps of `eks_node_groups` to create"
   type        = any
