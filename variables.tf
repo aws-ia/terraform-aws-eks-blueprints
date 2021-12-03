@@ -486,4 +486,3 @@ variable "vpa_helm_chart" {
   default     = {}
   description = "Kubernetes Vertical Pod Autoscaler Helm chart config"
 }
-
