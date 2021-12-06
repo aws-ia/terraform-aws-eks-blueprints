@@ -25,7 +25,7 @@ module "aws_eks_managed_node_groups" {
   source = "./modules/aws-eks-managed-node-groups"
 
   for_each = { for key, value in var.managed_node_groups : key => value
-    if var.enable_managed_nodegroups && length(var.managed_node_groups) > 0
+    if length(var.managed_node_groups) > 0
   }
 
   managed_ng = each.value
@@ -56,7 +56,7 @@ module "aws_eks_self_managed_node_groups" {
   source = "./modules/aws-eks-self-managed-node-groups"
 
   for_each = { for key, value in var.self_managed_node_groups : key => value
-    if var.enable_self_managed_nodegroups && length(var.self_managed_node_groups) > 0
+    if length(var.self_managed_node_groups) > 0
   }
 
   self_managed_ng = each.value
@@ -86,7 +86,7 @@ module "aws_eks_self_managed_node_groups" {
 module "aws_eks_fargate_profiles" {
   source = "./modules/aws-eks-fargate-profiles"
 
-  for_each = { for k, v in var.fargate_profiles : k => v if var.enable_fargate && length(var.fargate_profiles) > 0 }
+  for_each = { for k, v in var.fargate_profiles : k => v if length(var.fargate_profiles) > 0 }
 
   fargate_profile  = each.value
   eks_cluster_name = module.aws_eks.cluster_id
@@ -101,7 +101,7 @@ module "aws_eks_fargate_profiles" {
 # AWS EKS Add-ons (VPC CNI, CoreDNS, KubeProxy )
 # ---------------------------------------------------------------------------------------------------------------------
 module "aws_eks_addon" {
-  count = var.create_eks && var.enable_managed_nodegroups || var.create_eks && var.enable_self_managed_nodegroups || var.create_eks && var.enable_fargate ? 1 : 0
+  count = var.create_eks && length(var.managed_node_groups) > 0 || var.create_eks && length(var.self_managed_node_groups) > 0 || var.create_eks && length(var.fargate_profiles) > 0 ? 1 : 0
 
   source                = "./modules/aws-eks-addon"
   cluster_name          = module.aws_eks.cluster_id
