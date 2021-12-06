@@ -161,7 +161,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="module_spark-k8s-operator"></a> [spark-k8s-operator](#module\_spark-k8s-operator) | ./kubernetes-addons/spark-k8s-operator | n/a |
 | <a name="module_traefik_ingress"></a> [traefik\_ingress](#module\_traefik\_ingress) | ./kubernetes-addons/traefik-ingress | n/a |
 | <a name="module_vpa"></a> [vpa](#module\_vpa) | ./kubernetes-addons/vertical-pod-autoscaler | n/a |
-| <a name="module_windows_vpc_controllers"></a> [windows\_vpc\_controllers](#module\_windows\_vpc\_controllers) | ./kubernetes-addons/windows-vpc-controllers | n/a |
 
 ## Resources
 
@@ -196,7 +195,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_aws_managed_prometheus_workspace_name"></a> [aws\_managed\_prometheus\_workspace\_name](#input\_aws\_managed\_prometheus\_workspace\_name) | AWS Managed Prometheus WorkSpace Name | `string` | `"aws-managed-prometheus-workspace"` | no |
 | <a name="input_aws_open_telemetry_addon"></a> [aws\_open\_telemetry\_addon](#input\_aws\_open\_telemetry\_addon) | AWS Open Telemetry Distro Addon Configuration | `any` | `{}` | no |
 | <a name="input_aws_open_telemetry_enable"></a> [aws\_open\_telemetry\_enable](#input\_aws\_open\_telemetry\_enable) | Enable AWS Open Telemetry Distro Addon | `bool` | `false` | no |
-| <a name="input_cert_manager_enable"></a> [cert\_manager\_enable](#input\_cert\_manager\_enable) | Enabling Cert Manager Helm Chart installation. It is automatically enabled if Windows support is enabled. | `bool` | `false` | no |
+| <a name="input_cert_manager_enable"></a> [cert\_manager\_enable](#input\_cert\_manager\_enable) | Enabling Cert Manager Helm Chart installation. | `bool` | `false` | no |
 | <a name="input_cert_manager_helm_chart"></a> [cert\_manager\_helm\_chart](#input\_cert\_manager\_helm\_chart) | Cert Manager Helm chart configuration | `any` | `{}` | no |
 | <a name="input_cluster_autoscaler_enable"></a> [cluster\_autoscaler\_enable](#input\_cluster\_autoscaler\_enable) | Enabling Cluster autoscaler on eks cluster | `bool` | `false` | no |
 | <a name="input_cluster_autoscaler_helm_chart"></a> [cluster\_autoscaler\_helm\_chart](#input\_cluster\_autoscaler\_helm\_chart) | Cluster Autoscaler Helm Chart Config | `any` | `{}` | no |
@@ -248,7 +247,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_vpa_helm_chart"></a> [vpa\_helm\_chart](#input\_vpa\_helm\_chart) | Kubernetes Vertical Pod Autoscaler Helm chart config | `any` | `{}` | no |
 | <a name="input_vpc_cni_addon_version"></a> [vpc\_cni\_addon\_version](#input\_vpc\_cni\_addon\_version) | VPC CNI Addon version | `string` | `"v1.8.0-eksbuild.1"` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC id | `string` | n/a | yes |
-| <a name="input_windows_vpc_controllers_helm_chart"></a> [windows\_vpc\_controllers\_helm\_chart](#input\_windows\_vpc\_controllers\_helm\_chart) | Windows VPC Controllers Helm chart configuration | `any` | `{}` | no |
 | <a name="input_zone"></a> [zone](#input\_zone) | zone, e.g. dev or qa or load or ops etc... | `string` | `"dev"` | no |
 
 ## Outputs
