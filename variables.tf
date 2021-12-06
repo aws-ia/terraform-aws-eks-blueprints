@@ -461,6 +461,19 @@ variable "keda_irsa_policies" {
   default     = []
 }
 
+#-----------TEAMS-------------
+variable "application_teams" {
+  description = "Map of maps of Application Teams to create"
+  type        = any
+  default     = {}
+}
+
+variable "platform_teams" {
+  description = "Map of maps of platform teams to create"
+  type        = any
+  default     = {}
+}
+
 #-----------Vertical Pod Autoscaler(VPA) ADDON-------------
 variable "vpa_enable" {
   type        = bool

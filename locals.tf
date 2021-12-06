@@ -80,7 +80,8 @@ locals {
       groups : []
     }
   ] : []
-
+  platform_teams_config_map       = module.aws_eks_teams.platform_teams_config_map
+  application_teams_config_map    = module.aws_eks_teams.application_teams_config_map
   service_account_amp_ingest_name = format("%s-%s", module.aws_eks.cluster_id, "amp-ingest")
   service_account_amp_query_name  = format("%s-%s", module.aws_eks.cluster_id, "amp-query")
 
