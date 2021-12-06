@@ -79,57 +79,60 @@ resource "helm_release" "argocd" {
 # ArgoCD App of Apps Bootstrapping
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "kubernetes_manifest" "argocd_application" {
+resource "helm_release" "argocd_application" {
   for_each = var.argocd_applications
 
-  manifest = {
-    apiVersion : "argoproj.io/v1alpha1"
-    kind : "Application"
-    metadata : {
-      name : each.key
-      namespace : each.value.namespace
-    }
-    spec : {
-      destination : {
-        namespace : each.value.namespace
-        server : each.value.destination
-      }
-      project : each.value.project
-      source : {
-        helm : {
-          releaseName = each.key
-          values : yamlencode(merge(
-            each.value.values,
-            local.global_application_values,
-            each.value.add_on_application ? var.add_on_config : {}
-          ))
-        }
-        path : each.value.path
-        repoURL : each.value.repo_url
-        targetRevision : each.value.target_revision
-      }
-      syncPolicy = {
-        automated = {
-          allowEmpty = false
-          prune      = true
-          selfHeal   = true
-        }
-        retry = {
-          backoff = {
-            duration    = "10s"
-            factor      = 2
-            maxDuration = "3m"
-          }
-          limit = 5
-        }
-        syncOptions = [
-          "Validate=false",                    # disables resource validation (equivalent to 'kubectl apply --validate=false') ( true by default )
-          "CreateNamespace=true",              # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
-          "PrunePropagationPolicy=foreground", # Supported policies are background, foreground and orphan.
-          "PruneLast=true",                    # Allow the ability for resource pruning to happen as a final, implicit wave of a sync operation
-        ]
-      }
-    }
+  name      = each.key
+  chart     = "${path.module}/argocd-application"
+  version   = "0.1.0"
+  namespace = "argocd"
+
+  # Application Meta.
+  set {
+    name  = "name"
+    value = each.key
   }
-  depends_on = [helm_release.argocd]
+
+  set {
+    name  = "project"
+    value = each.value.project
+  }
+
+  # Source Config.
+  set {
+    name  = "source.repoUrl"
+    value = each.value.repo_url
+  }
+
+  set {
+    name  = "source.targetRevision"
+    value = each.value.target_revision
+  }
+
+  set {
+    name  = "source.path"
+    value = each.value.path
+  }
+
+  set {
+    name  = "source.helm.releaseName"
+    value = each.key
+  }
+
+  set {
+    name = "source.helm.values"
+    value = yamlencode(merge(
+      each.value.values,
+      local.global_application_values,
+      each.value.add_on_application ? var.add_on_config : {}
+    ))
+  }
+
+  # Desintation Config.
+  set {
+    name  = "destination.server"
+    value = each.value.destination
+  }
+
+  depends_on = [resource.helm_release.argocd]
 }

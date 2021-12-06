@@ -2,6 +2,8 @@ data "aws_region" "current" {}
 
 locals {
 
+  amp_workspace_url = "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${var.amp_workspace_id}/api/v1/remote_write"
+
   amp_config_values = var.aws_managed_prometheus_enable ? [{
     name  = "serviceAccounts.server.name"
     value = var.service_account_amp_ingest_name
@@ -12,7 +14,7 @@ locals {
     },
     {
       name  = "server.remoteWrite[0].url"
-      value = "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${var.amp_workspace_id}/api/v1/remote_write"
+      value = local.amp_workspace_url
     },
     {
       name  = "server.remoteWrite[0].sigv4.region"
@@ -62,7 +64,7 @@ locals {
     var.prometheus_helm_chart
   )
 
-  default_prometheus_values = [templatefile("${path.module}/prometheus-values.yaml", {
+  default_prometheus_values = [templatefile("${path.module}/values.yaml", {
     operating_system = "linux",
   })]
 

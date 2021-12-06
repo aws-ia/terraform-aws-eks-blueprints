@@ -24,8 +24,10 @@ provider "aws" {
 }
 
 terraform {
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
+  backend "s3" {
+    bucket = "terraform-ssp-github-actions-state"
+    key    = "tf-state"
+    region = "us-west-2"
   }
 }
 
@@ -94,7 +96,6 @@ module "aws-eks-accelerator-for-terraform" {
   kubernetes_version = local.kubernetes_version
 
   # EKS MANAGED NODE GROUPS
-  enable_managed_nodegroups = true # default false
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
@@ -104,7 +105,6 @@ module "aws-eks-accelerator-for-terraform" {
   }
 
   # FARGATE
-  enable_fargate = false
   fargate_profiles = {
     default = {
       fargate_profile_name = "default"

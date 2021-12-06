@@ -17,9 +17,9 @@ aws_managed_prometheus_workspace_name = "EKS-Metrics-Workspace"
 prometheus_enable             = false
 ```
 
-### GitOps Configuration 
+### GitOps Configuration
 
-The following properties are made available for use when managing the add-on via GitOps 
+The following properties are made available for use when managing the add-on via GitOps
 
 ```
 prometheus = {
