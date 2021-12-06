@@ -7,7 +7,7 @@ locals {
 
   team_manifests = flatten([
     for team_name, team_data in var.application_teams :
-    fileset(path.root, "${team_data.manifests_dir}/*")
+    try(fileset(path.root, "${team_data.manifests_dir}/*"), [])
   ])
 
   platform_teams_config_map = length(var.platform_teams) > 0 ? [
