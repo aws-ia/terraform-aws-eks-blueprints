@@ -369,7 +369,7 @@ variable "fargate_fluentbit_config" {
 variable "cert_manager_enable" {
   type        = bool
   default     = false
-  description = "Enabling Cert Manager Helm Chart installation. It is automatically enabled if Windows support is enabled."
+  description = "Enabling Cert Manager Helm Chart installation."
 }
 
 variable "cert_manager_helm_chart" {
@@ -377,14 +377,6 @@ variable "cert_manager_helm_chart" {
   description = "Cert Manager Helm chart configuration"
   default     = {}
 }
-
-#------WINDOWS VPC CONTROLLERS-------------
-variable "windows_vpc_controllers_helm_chart" {
-  type        = any
-  description = "Windows VPC Controllers Helm chart configuration"
-  default     = {}
-}
-
 #-----------AWS OPEN TELEMETRY ADDON-------------
 variable "aws_open_telemetry_enable" {
   type        = bool
@@ -459,6 +451,19 @@ variable "keda_irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
   default     = []
+}
+
+#-----------TEAMS-------------
+variable "application_teams" {
+  description = "Map of maps of Application Teams to create"
+  type        = any
+  default     = {}
+}
+
+variable "platform_teams" {
+  description = "Map of maps of platform teams to create"
+  type        = any
+  default     = {}
 }
 
 #-----------Vertical Pod Autoscaler(VPA) ADDON-------------

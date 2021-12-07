@@ -39,6 +39,8 @@ resource "kubernetes_config_map" "aws_auth" {
         local.windows_node_group_aws_auth_config_map,
         local.fargate_profiles_aws_auth_config_map,
         local.emr_on_eks_config_map,
+        local.application_teams_config_map,
+        local.platform_teams_config_map,
         var.map_roles,
       ))
     )

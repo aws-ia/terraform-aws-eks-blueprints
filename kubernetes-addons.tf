@@ -119,21 +119,12 @@ module "spark-k8s-operator" {
 }
 
 module "cert_manager" {
-  count                   = var.create_eks && (var.cert_manager_enable || var.enable_windows_support) ? 1 : 0
+  count                   = var.create_eks && var.cert_manager_enable ? 1 : 0
   source                  = "./kubernetes-addons/cert-manager"
   cert_manager_helm_chart = var.cert_manager_helm_chart
   manage_via_gitops       = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
-}
-
-module "windows_vpc_controllers" {
-  count                              = var.create_eks && var.enable_windows_support ? 1 : 0
-  source                             = "./kubernetes-addons/windows-vpc-controllers"
-  windows_vpc_controllers_helm_chart = var.windows_vpc_controllers_helm_chart
-  manage_via_gitops                  = var.argocd_manage_add_ons
-
-  depends_on = [module.cert_manager, module.aws_eks]
 }
 
 module "aws_opentelemetry_collector" {

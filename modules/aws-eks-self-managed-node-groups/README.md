@@ -13,9 +13,10 @@ This module allows you to create on-demand or spot self managed Linux or Windows
   #---------------------------------------------------------#
 
   # -------- START WINDOWS ONLY
-  enable_windows_support                    = false
-  windows_vpc_resource_controller_image_tag = "v0.2.7" # enable_windows_support= true
-  windows_vpc_admission_webhook_image_tag   = "v0.2.7" # enable_windows_support= true
+  enable_windows_support                    = false # Set to true to enable Windows support
+  # Ensure AWS VPC CNI is used
+  enable_vpc_cni_addon  = true
+  vpc_cni_addon_version = "v1.10.1-eksbuild.1"
   # -------- END WINDOWS ONLY
 
   self_managed_node_groups = {

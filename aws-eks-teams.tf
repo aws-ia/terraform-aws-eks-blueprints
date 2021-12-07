@@ -16,14 +16,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "windows_vpc_controllers_helm_chart" {
-  type        = any
-  description = "Windows VPC Controllers Helm chart configuration"
-  default     = {}
-}
+module "aws_eks_teams" {
+  source = "./modules/aws-eks-teams"
 
-variable "manage_via_gitops" {
-  type        = bool
-  default     = false
-  description = "Determines if the add-on should be managed via GitOps."
+  application_teams = var.application_teams
+  platform_teams    = var.platform_teams
+  environment       = var.environment
+  tenant            = var.tenant
+  zone              = var.zone
+  eks_cluster_name  = module.aws_eks.cluster_id
+  tags              = module.eks_tags.tags
+
+  depends_on = [module.aws_eks]
+
 }
