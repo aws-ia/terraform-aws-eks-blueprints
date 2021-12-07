@@ -6,10 +6,6 @@ on:
       - main
   pull_request:
 
-env:
-  tf_version: 'latest'
-  tf_working_dir: '.'
-
 jobs:
     terraform:
       name: Format and Validate Terraform Code
