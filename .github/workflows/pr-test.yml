@@ -1,11 +1,14 @@
-name: e2e-test
+name: pr-test
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
-    deploy:
-      name: Run e2e test
+    terraform:
+      name: Format and Validate Terraform Code
       runs-on: ubuntu-latest
 
       # These permissions are needed to interact with GitHub's OIDC Token endpoint.
@@ -51,16 +54,4 @@ jobs:
           id: plan
           working-directory: .github/test/e2e
           run: terraform plan -no-color
-          continue-on-error: false
-
-        - name: Terraform Apply
-          id: apply
-          working-directory: .github/test/e2e
-          run: terraform apply -no-color --auto-approve=true
-          continue-on-error: false
-
-        - name: Terraform Destroy
-          id: destroy
-          working-directory: .github/test/e2e
-          run: terraform destroy -no-color --auto-approve=true
           continue-on-error: false

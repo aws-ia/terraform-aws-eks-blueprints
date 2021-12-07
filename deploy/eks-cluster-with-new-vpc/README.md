@@ -18,6 +18,8 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 3. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 4. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
+**NOTE**: Terraform state file defaults to local. You can modify this in `main.tf` file for any remote state.
+
 ## Deployment Steps
 
 #### Step1: Clone the repo using the command below
