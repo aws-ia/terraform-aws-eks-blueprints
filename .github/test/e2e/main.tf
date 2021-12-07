@@ -18,13 +18,13 @@ terraform {
   }
 }
 
-terraform {
-  backend "s3" {
-    bucket = "terraform-ssp-github-actions-state"
-    key    = "tf-state"
-    region = "us-west-2"
-  }
-}
+//terraform {
+//  backend "s3" {
+//    bucket = "terraform-ssp-github-actions-state"
+//    key    = "tf-state"
+//    region = "us-west-2"
+//  }
+//}
 
 provider "aws" {
   region = data.aws_region.current.id

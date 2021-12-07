@@ -25,4 +25,3 @@ jobs:
           VALIDATE_MD: true
           VALIDATE_TERRAFORM: true
           VALIDATE_YAML: true
-
