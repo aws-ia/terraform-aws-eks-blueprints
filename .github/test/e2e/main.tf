@@ -18,15 +18,17 @@ terraform {
   }
 }
 
+terraform {
+  backend "s3" {
+    bucket = "terraform-ssp-github-actions-state"
+    key    = "tf-state"
+    region = "us-west-2"
+  }
+}
+
 provider "aws" {
   region = data.aws_region.current.id
   alias  = "default"
-}
-
-terraform {
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
-  }
 }
 
 data "aws_region" "current" {}
@@ -78,7 +80,7 @@ module "aws_vpc" {
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  source = "../.."
+  source = "../../.."
 
   tenant            = local.tenant
   environment       = local.environment
