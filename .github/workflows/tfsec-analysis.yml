@@ -6,6 +6,7 @@ on:
   pull_request:
     branches: [ main ]
 
+  workflow_dispatch:
 jobs:
   tfsec:
     name: Run tfsec sarif report

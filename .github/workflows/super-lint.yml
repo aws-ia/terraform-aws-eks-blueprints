@@ -1,7 +1,7 @@
 ---
 name: super-lint
 on:
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   superlinter:
