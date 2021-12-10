@@ -180,3 +180,11 @@ module "vpa" {
 
   depends_on = [module.aws_eks]
 }
+
+module "yunikorn" {
+  count               = var.create_eks && var.yunikorn_enable ? 1 : 0
+  source              = "./kubernetes-addons/yunikorn"
+  yunikorn_helm_chart = var.yunikorn_helm_chart
+
+  depends_on = [module.aws_eks]
+}

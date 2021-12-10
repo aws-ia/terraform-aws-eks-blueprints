@@ -210,7 +210,6 @@ variable "aws_auth_additional_labels" {
 }
 
 # KUBERNETES ADDONS VARIABLES
-
 variable "enable_emr_on_eks" {
   type        = bool
   default     = false
@@ -477,4 +476,17 @@ variable "vpa_helm_chart" {
   type        = any
   default     = {}
   description = "Kubernetes Vertical Pod Autoscaler Helm chart config"
+}
+
+#-----------Apache YuniKorn ADDON-------------
+variable "yunikorn_enable" {
+  type        = bool
+  default     = false
+  description = "Enable Apache YuniKorn K8s scheduler"
+}
+
+variable "yunikorn_helm_chart" {
+  type        = any
+  default     = {}
+  description = "YuniKorn K8s scheduler Helm chart config"
 }
