@@ -145,9 +145,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="module_aws_eks_fargate_profiles"></a> [aws\_eks\_fargate\_profiles](#module\_aws\_eks\_fargate\_profiles) | ./modules/aws-eks-fargate-profiles | n/a |
 | <a name="module_aws_eks_managed_node_groups"></a> [aws\_eks\_managed\_node\_groups](#module\_aws\_eks\_managed\_node\_groups) | ./modules/aws-eks-managed-node-groups | n/a |
 | <a name="module_aws_eks_self_managed_node_groups"></a> [aws\_eks\_self\_managed\_node\_groups](#module\_aws\_eks\_self\_managed\_node\_groups) | ./modules/aws-eks-self-managed-node-groups | n/a |
+| <a name="module_aws_eks_teams"></a> [aws\_eks\_teams](#module\_aws\_eks\_teams) | ./modules/aws-eks-teams | n/a |
 | <a name="module_aws_for_fluent_bit"></a> [aws\_for\_fluent\_bit](#module\_aws\_for\_fluent\_bit) | ./kubernetes-addons/aws-for-fluentbit | n/a |
 | <a name="module_aws_load_balancer_controller"></a> [aws\_load\_balancer\_controller](#module\_aws\_load\_balancer\_controller) | ./kubernetes-addons/aws-load-balancer-controller | n/a |
 | <a name="module_aws_managed_prometheus"></a> [aws\_managed\_prometheus](#module\_aws\_managed\_prometheus) | ./modules/aws-managed-prometheus | n/a |
+| <a name="module_aws_node_termination_handler"></a> [aws\_node\_termination\_handler](#module\_aws\_node\_termination\_handler) | ./kubernetes-addons/aws-node-termination-handler | n/a |
 | <a name="module_aws_opentelemetry_collector"></a> [aws\_opentelemetry\_collector](#module\_aws\_opentelemetry\_collector) | ./kubernetes-addons/aws-opentelemetry-eks | n/a |
 | <a name="module_cert_manager"></a> [cert\_manager](#module\_cert\_manager) | ./kubernetes-addons/cert-manager | n/a |
 | <a name="module_cluster_autoscaler"></a> [cluster\_autoscaler](#module\_cluster\_autoscaler) | ./kubernetes-addons/cluster-autoscaler | n/a |
@@ -161,12 +163,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="module_spark-k8s-operator"></a> [spark-k8s-operator](#module\_spark-k8s-operator) | ./kubernetes-addons/spark-k8s-operator | n/a |
 | <a name="module_traefik_ingress"></a> [traefik\_ingress](#module\_traefik\_ingress) | ./kubernetes-addons/traefik-ingress | n/a |
 | <a name="module_vpa"></a> [vpa](#module\_vpa) | ./kubernetes-addons/vertical-pod-autoscaler | n/a |
+| <a name="module_yunikorn"></a> [yunikorn](#module\_yunikorn) | ./kubernetes-addons/yunikorn | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
 | [aws_kms_key.eks](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
+| [kubernetes_config_map.amazon_vpc_cni](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/config_map) | resource |
 | [kubernetes_config_map.aws_auth](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/config_map) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
@@ -182,6 +186,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 |------|-------------|------|---------|:--------:|
 | <a name="input_agones_enable"></a> [agones\_enable](#input\_agones\_enable) | Enabling Agones Gaming Helm Chart | `bool` | `false` | no |
 | <a name="input_agones_helm_chart"></a> [agones\_helm\_chart](#input\_agones\_helm\_chart) | Agones GameServer Helm chart config | `any` | `{}` | no |
+| <a name="input_application_teams"></a> [application\_teams](#input\_application\_teams) | Map of maps of Application Teams to create | `any` | `{}` | no |
 | <a name="input_argocd_applications"></a> [argocd\_applications](#input\_argocd\_applications) | ARGO CD Applications config to bootstrap the cluster | `any` | `{}` | no |
 | <a name="input_argocd_enable"></a> [argocd\_enable](#input\_argocd\_enable) | Enable ARGO CD Kubernetes Addon | `bool` | `false` | no |
 | <a name="input_argocd_helm_chart"></a> [argocd\_helm\_chart](#input\_argocd\_helm\_chart) | ARGO CD Kubernetes Addon Configuration | `any` | `{}` | no |
@@ -193,6 +198,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_aws_lb_ingress_controller_helm_app"></a> [aws\_lb\_ingress\_controller\_helm\_app](#input\_aws\_lb\_ingress\_controller\_helm\_app) | Helm chart definition for aws\_lb\_ingress\_controller | `any` | `{}` | no |
 | <a name="input_aws_managed_prometheus_enable"></a> [aws\_managed\_prometheus\_enable](#input\_aws\_managed\_prometheus\_enable) | Enable AWS Managed Prometheus service | `bool` | `false` | no |
 | <a name="input_aws_managed_prometheus_workspace_name"></a> [aws\_managed\_prometheus\_workspace\_name](#input\_aws\_managed\_prometheus\_workspace\_name) | AWS Managed Prometheus WorkSpace Name | `string` | `"aws-managed-prometheus-workspace"` | no |
+| <a name="input_aws_node_termination_handler_enable"></a> [aws\_node\_termination\_handler\_enable](#input\_aws\_node\_termination\_handler\_enable) | Enabling AWS Node Termination Handler | `bool` | `false` | no |
+| <a name="input_aws_node_termination_handler_helm_chart"></a> [aws\_node\_termination\_handler\_helm\_chart](#input\_aws\_node\_termination\_handler\_helm\_chart) | Helm chart definition for aws\_node\_termination\_handler | `any` | `{}` | no |
 | <a name="input_aws_open_telemetry_addon"></a> [aws\_open\_telemetry\_addon](#input\_aws\_open\_telemetry\_addon) | AWS Open Telemetry Distro Addon Configuration | `any` | `{}` | no |
 | <a name="input_aws_open_telemetry_enable"></a> [aws\_open\_telemetry\_enable](#input\_aws\_open\_telemetry\_enable) | Enable AWS Open Telemetry Distro Addon | `bool` | `false` | no |
 | <a name="input_cert_manager_enable"></a> [cert\_manager\_enable](#input\_cert\_manager\_enable) | Enabling Cert Manager Helm Chart installation. | `bool` | `false` | no |
@@ -231,10 +238,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_nginx_helm_chart"></a> [nginx\_helm\_chart](#input\_nginx\_helm\_chart) | NGINX Ingress Controller Helm Chart Configuration | `any` | `{}` | no |
 | <a name="input_nginx_ingress_controller_enable"></a> [nginx\_ingress\_controller\_enable](#input\_nginx\_ingress\_controller\_enable) | Enabling NGINX Ingress Controller on EKS Cluster | `bool` | `false` | no |
 | <a name="input_org"></a> [org](#input\_org) | tenant, which could be your organization name, e.g. aws' | `string` | `""` | no |
+| <a name="input_platform_teams"></a> [platform\_teams](#input\_platform\_teams) | Map of maps of platform teams to create | `any` | `{}` | no |
 | <a name="input_private_subnet_ids"></a> [private\_subnet\_ids](#input\_private\_subnet\_ids) | list of private subnets Id's for the Worker nodes | `list(string)` | n/a | yes |
 | <a name="input_prometheus_enable"></a> [prometheus\_enable](#input\_prometheus\_enable) | Enable Community Prometheus Helm Addon | `bool` | `false` | no |
 | <a name="input_prometheus_helm_chart"></a> [prometheus\_helm\_chart](#input\_prometheus\_helm\_chart) | Community Prometheus Helm Addon Config | `any` | `{}` | no |
-| <a name="input_public_subnet_ids"></a> [public\_subnet\_ids](#input\_public\_subnet\_ids) | list of private subnets Id's for the Worker nodes | `list(string)` | `[]` | no |
+| <a name="input_public_subnet_ids"></a> [public\_subnet\_ids](#input\_public\_subnet\_ids) | list of public subnets Id's for the Worker nodes | `list(string)` | `[]` | no |
 | <a name="input_self_managed_node_groups"></a> [self\_managed\_node\_groups](#input\_self\_managed\_node\_groups) | Self-Managed Node groups configuration | `any` | `{}` | no |
 | <a name="input_spark_on_k8s_operator_enable"></a> [spark\_on\_k8s\_operator\_enable](#input\_spark\_on\_k8s\_operator\_enable) | Enabling Spark on K8s Operator on EKS Cluster | `bool` | `false` | no |
 | <a name="input_spark_on_k8s_operator_helm_chart"></a> [spark\_on\_k8s\_operator\_helm\_chart](#input\_spark\_on\_k8s\_operator\_helm\_chart) | Spark on K8s Operator Helm Chart Configuration | `any` | `{}` | no |
@@ -247,6 +255,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_vpa_helm_chart"></a> [vpa\_helm\_chart](#input\_vpa\_helm\_chart) | Kubernetes Vertical Pod Autoscaler Helm chart config | `any` | `{}` | no |
 | <a name="input_vpc_cni_addon_version"></a> [vpc\_cni\_addon\_version](#input\_vpc\_cni\_addon\_version) | VPC CNI Addon version | `string` | `"v1.8.0-eksbuild.1"` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC id | `string` | n/a | yes |
+| <a name="input_yunikorn_enable"></a> [yunikorn\_enable](#input\_yunikorn\_enable) | Enable Apache YuniKorn K8s scheduler | `bool` | `false` | no |
+| <a name="input_yunikorn_helm_chart"></a> [yunikorn\_helm\_chart](#input\_yunikorn\_helm\_chart) | YuniKorn K8s scheduler Helm chart config | `any` | `{}` | no |
 | <a name="input_zone"></a> [zone](#input\_zone) | zone, e.g. dev or qa or load or ops etc... | `string` | `"dev"` | no |
 
 ## Outputs
@@ -272,6 +282,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="output_self_managed_node_group_aws_auth_config_map"></a> [self\_managed\_node\_group\_aws\_auth\_config\_map](#output\_self\_managed\_node\_group\_aws\_auth\_config\_map) | Self managed node groups AWS auth map |
 | <a name="output_self_managed_node_group_iam_role_arns"></a> [self\_managed\_node\_group\_iam\_role\_arns](#output\_self\_managed\_node\_group\_iam\_role\_arns) | IAM role arn's of self managed node groups |
 | <a name="output_self_managed_node_groups"></a> [self\_managed\_node\_groups](#output\_self\_managed\_node\_groups) | Outputs from EKS Self-managed node groups |
+| <a name="output_teams"></a> [teams](#output\_teams) | Outputs from EKS Fargate profiles groups |
 | <a name="output_windows_node_group_aws_auth_config_map"></a> [windows\_node\_group\_aws\_auth\_config\_map](#output\_windows\_node\_group\_aws\_auth\_config\_map) | Windows node groups AWS auth map |
 | <a name="output_worker_security_group_id"></a> [worker\_security\_group\_id](#output\_worker\_security\_group\_id) | EKS Worker Security group ID created by EKS module |
 
