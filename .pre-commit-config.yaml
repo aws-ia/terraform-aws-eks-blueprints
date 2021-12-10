@@ -3,6 +3,7 @@ repos:
     rev: v4.0.1
     hooks:
       - id: trailing-whitespace
+        args: ['--markdown-linebreak-ext=md']
       - id: check-yaml
         exclude: '[\w\-\/]+/templates/'
       - id: end-of-file-fixer

@@ -176,9 +176,12 @@ resource "kubernetes_service_account" "team" {
 # Kubernetes Manifests
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "kubernetes_manifest" "team" {
-  for_each = { for manifest in local.team_manifests : manifest => manifest }
-  manifest = yamldecode(file(each.key))
+resource "kubectl_manifest" "team" {
+  for_each  = { for manifest in local.team_manifests : manifest => file(manifest) }
+  yaml_body = each.value
+  depends_on = [
+    kubernetes_namespace.team
+  ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
