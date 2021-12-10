@@ -18,7 +18,6 @@ This module deploys the necessary resources to run EMR Spark Jobs on EKS Cluster
   #---------------------------------------
   # ENABLE EMR ON EKS
   #---------------------------------------
-  enable_emr_on_eks = true
 
   emr_on_eks_teams = {
     data_team_a = {

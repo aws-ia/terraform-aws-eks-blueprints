@@ -8,3 +8,8 @@ output "emr_on_eks_role_id" {
   description = "IAM execution role ID for EMR on EKS"
   value       = aws_iam_role.emr_on_eks_execution[*].id
 }
+
+output "emr_on_eks_config_map" {
+  description = "EMR on EKS Auth Configmap"
+  value       = local.emr_on_eks_config_map
+}

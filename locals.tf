@@ -73,13 +73,7 @@ locals {
   ] : []
 
   # EMR on EKS IAM Roles for aws-auth
-  emr_on_eks_config_map = var.enable_emr_on_eks == true ? [
-    {
-      rolearn : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/AWSServiceRoleForAmazonEMRContainers"
-      username : "emr-containers"
-      groups : []
-    }
-  ] : []
+  emr_on_eks_config_map           = module.emr_on_eks.emr_on_eks_config_map
   platform_teams_config_map       = module.aws_eks_teams.platform_teams_config_map
   application_teams_config_map    = module.aws_eks_teams.application_teams_config_map
   service_account_amp_ingest_name = format("%s-%s", module.aws_eks.cluster_id, "amp-ingest")

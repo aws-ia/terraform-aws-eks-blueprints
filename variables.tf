@@ -211,12 +211,6 @@ variable "aws_auth_additional_labels" {
 
 # KUBERNETES ADDONS VARIABLES
 
-variable "enable_emr_on_eks" {
-  type        = bool
-  default     = false
-  description = "Enabling EMR on EKS Config"
-}
-
 variable "emr_on_eks_teams" {
   description = "EMR on EKS Teams configuration"
   type        = any

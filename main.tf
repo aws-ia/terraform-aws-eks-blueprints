@@ -96,7 +96,7 @@ module "emr_on_eks" {
   source = "./modules/emr-on-eks"
 
   for_each = { for key, value in var.emr_on_eks_teams : key => value
-    if var.enable_emr_on_eks && length(var.emr_on_eks_teams) > 0
+    if length(var.emr_on_eks_teams) > 0
   }
 
   emr_on_eks_teams = each.value

@@ -579,7 +579,6 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # ENABLE EMR ON EKS
   #---------------------------------------
-  enable_emr_on_eks = true
 
   emr_on_eks_teams = {
     data_team_a = {
