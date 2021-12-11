@@ -248,7 +248,7 @@ No modules.
 | <a name="output_launch_template_arn"></a> [launch\_template\_arn](#output\_launch\_template\_arn) | launch templated id for EKS Self Managed Node Group |
 | <a name="output_launch_template_ids"></a> [launch\_template\_ids](#output\_launch\_template\_ids) | launch templated id for EKS Self Managed Node Group |
 | <a name="output_launch_template_latest_versions"></a> [launch\_template\_latest\_versions](#output\_launch\_template\_latest\_versions) | launch templated version for EKS Self Managed Node Group |
-| <a name="output_self_managed_asg_name"></a> [self\_managed\_asg\_name](#output\_self\_managed\_asg\_name) | Self managed group ASG names |
+| <a name="output_self_managed_asg_names"></a> [self\_managed\_asg\_names](#output\_self\_managed\_asg\_names) | Self managed group ASG names |
 | <a name="output_self_managed_iam_role_name"></a> [self\_managed\_iam\_role\_name](#output\_self\_managed\_iam\_role\_name) | Self managed groups IAM role names |
 | <a name="output_self_managed_node_group_iam_role_arns"></a> [self\_managed\_node\_group\_iam\_role\_arns](#output\_self\_managed\_node\_group\_iam\_role\_arns) | Self managed groups IAM role arns |
 | <a name="output_self_managed_node_group_name"></a> [self\_managed\_node\_group\_name](#output\_self\_managed\_node\_group\_name) | EKS Self Managed node group id |
