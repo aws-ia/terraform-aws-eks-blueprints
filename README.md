@@ -2,6 +2,8 @@
 
 ![GitHub](https://img.shields.io/github/license/aws-samples/aws-eks-accelerator-for-terraform)
 [![e2e-test](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/e2e-test.yml)
+[![terrascan](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/terrascan.yml/badge.svg)](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/terrascan.yml)
+[![tfsec](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/tfsec-analysis.yml/badge.svg)](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/tfsec-analysis.yml)
 
 > **Note**: EKS SSP for Terraform is in active development and should be considered a **pre-production** framework. Backwards incompatible Terraform changes are possible in future releases and support is best-effort by the EKS SSP community.
 
