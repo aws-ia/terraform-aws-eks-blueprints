@@ -114,17 +114,16 @@ aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION} --role-a
 Make sure to replace the `${CLUSTER_NAME}`, `${AWS_REGION}` and `${TEAM_ROLE_ARN}` with the actual values.
 
 <!--- BEGIN_TF_DOCS --->
-
 ## Requirements
 
 No requirements.
 
 ## Providers
 
-| Name                                                                  | Version |
-| --------------------------------------------------------------------- | ------- |
-| <a name="provider_aws"></a> [aws](#provider_aws)                      | n/a     |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider_kubernetes) | n/a     |
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
 
 ## Modules
 
@@ -132,44 +131,46 @@ No modules.
 
 ## Resources
 
-| Name                                                                                                                                              | Type        |
-| ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| [aws_iam_policy.platform_team_eks_access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy)                 | resource    |
-| [aws_iam_role.platform_team](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role)                                | resource    |
-| [aws_iam_role.team_access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role)                                  | resource    |
-| [aws_iam_role.team_sa_irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role)                                 | resource    |
-| [kubernetes_cluster_role.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role)                   | resource    |
-| [kubernetes_cluster_role_binding.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role_binding)   | resource    |
-| [kubernetes_manifest.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest)                           | resource    |
-| [kubernetes_namespace.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace)                         | resource    |
-| [kubernetes_resource_quota.team_compute_quota](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/resource_quota) | resource    |
-| [kubernetes_resource_quota.team_object_quota](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/resource_quota)  | resource    |
-| [kubernetes_role.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/role)                                   | resource    |
-| [kubernetes_role_binding.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/role_binding)                   | resource    |
-| [kubernetes_service_account.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account)             | resource    |
-| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity)                     | data source |
-| [aws_eks_cluster.eks_cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster)                         | data source |
-| [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition)                                 | data source |
-| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region)                                       | data source |
+| Name | Type |
+|------|------|
+| [aws_iam_policy.platform_team_eks_access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_role.platform_team](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role.team_access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role.team_sa_irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [kubernetes_cluster_role.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role) | resource |
+| [kubernetes_cluster_role_binding.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role_binding) | resource |
+| [kubernetes_manifest.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_namespace.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
+| [kubernetes_resource_quota.team_compute_quota](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/resource_quota) | resource |
+| [kubernetes_resource_quota.team_object_quota](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/resource_quota) | resource |
+| [kubernetes_role.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/role) | resource |
+| [kubernetes_role_binding.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/role_binding) | resource |
+| [kubernetes_service_account.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account) | resource |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
+| [aws_eks_cluster.eks_cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
+| [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
-| Name                                                                                 | Description                           | Type          | Default | Required |
-| ------------------------------------------------------------------------------------ | ------------------------------------- | ------------- | ------- | :------: |
-| <a name="input_application_teams"></a> [application_teams](#input_application_teams) | Map of maps of teams to create        | `any`         | `{}`    |    no    |
-| <a name="input_eks_cluster_name"></a> [eks_cluster_name](#input_eks_cluster_name)    | EKS Cluster name                      | `string`      | n/a     |   yes    |
-| <a name="input_environment"></a> [environment](#input_environment)                   | n/a                                   | `string`      | n/a     |   yes    |
-| <a name="input_platform_teams"></a> [platform_teams](#input_platform_teams)          | Map of maps of teams to create        | `any`         | `{}`    |    no    |
-| <a name="input_tags"></a> [tags](#input_tags)                                        | A map of tags to add to all resources | `map(string)` | `{}`    |    no    |
-| <a name="input_tenant"></a> [tenant](#input_tenant)                                  | n/a                                   | `string`      | n/a     |   yes    |
-| <a name="input_zone"></a> [zone](#input_zone)                                        | n/a                                   | `string`      | n/a     |   yes    |
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_application_teams"></a> [application\_teams](#input\_application\_teams) | Map of maps of teams to create | `any` | `{}` | no |
+| <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | EKS Cluster name | `string` | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | n/a | `string` | n/a | yes |
+| <a name="input_platform_teams"></a> [platform\_teams](#input\_platform\_teams) | Map of maps of teams to create | `any` | `{}` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
+| <a name="input_tenant"></a> [tenant](#input\_tenant) | n/a | `string` | n/a | yes |
+| <a name="input_zone"></a> [zone](#input\_zone) | n/a | `string` | n/a | yes |
 
 ## Outputs
 
-| Name                                                                                                                          | Description                                       |
-| ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| <a name="output_application_teams_iam_role_arn"></a> [application_teams_iam_role_arn](#output_application_teams_iam_role_arn) | IAM role ARN for Teams                            |
-| <a name="output_platform_teams_iam_role_arn"></a> [platform_teams_iam_role_arn](#output_platform_teams_iam_role_arn)          | IAM role ARN for Platform Teams                   |
-| <a name="output_team_sa_irsa_iam_role_arn"></a> [team_sa_irsa_iam_role_arn](#output_team_sa_irsa_iam_role_arn)                | IAM role ARN for Teams EKS Service Account (IRSA) |
+| Name | Description |
+|------|-------------|
+| <a name="output_application_teams_config_map"></a> [application\_teams\_config\_map](#output\_application\_teams\_config\_map) | Application Teams AWS Auth Configmap |
+| <a name="output_application_teams_iam_role_arn"></a> [application\_teams\_iam\_role\_arn](#output\_application\_teams\_iam\_role\_arn) | IAM role ARN for Teams |
+| <a name="output_platform_teams_config_map"></a> [platform\_teams\_config\_map](#output\_platform\_teams\_config\_map) | Platform Teams AWS Auth Configmap |
+| <a name="output_platform_teams_iam_role_arn"></a> [platform\_teams\_iam\_role\_arn](#output\_platform\_teams\_iam\_role\_arn) | IAM role ARN for Platform Teams |
+| <a name="output_team_sa_irsa_iam_role_arn"></a> [team\_sa\_irsa\_iam\_role\_arn](#output\_team\_sa\_irsa\_iam\_role\_arn) | IAM role ARN for Teams EKS Service Account (IRSA) |
 
 <!--- END_TF_DOCS --->
