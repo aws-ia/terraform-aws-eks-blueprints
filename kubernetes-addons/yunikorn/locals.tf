@@ -72,10 +72,10 @@ locals {
   })]
 
   argocd_gitops_config = {
-    enable                     = true
-    serviceAccount             = local.yunikorn_service_account_name
-    operatorPlugins            = local.operator_plugins
-    serviceType                = local.service_type
-    embedAdmissionController   = false
+    enable                   = true
+    serviceAccount           = local.yunikorn_service_account_name
+    operatorPlugins          = local.operator_plugins
+    serviceType              = local.service_type
+    embedAdmissionController = false
   }
 }
