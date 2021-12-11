@@ -1,7 +1,7 @@
 # AWS Node Termination handler Helm Chart
 
 ## What is aws-node-termination-handler
-[aws-node-termination-handler](https://github.com/aws/aws-node-termination-handler) 
+[aws-node-termination-handler](https://github.com/aws/aws-node-termination-handler)
 This project ensures that the Kubernetes control plane responds appropriately to events that can cause your EC2 instance to become unavailable, such as EC2 maintenance events, EC2 Spot interruptions, ASG Scale-In, ASG AZ Rebalance, and EC2 Instance Termination via the API or Console. If not handled, your application code may not stop gracefully, take longer to recover full availability, or accidentally schedule work to nodes that are going down.
 
 

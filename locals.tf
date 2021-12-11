@@ -100,6 +100,6 @@ locals {
     prometheus                = var.prometheus_enable ? module.prometheus[0].argocd_gitops_config : null
     sparkOperator             = var.spark_on_k8s_operator_enable ? module.spark-k8s-operator[0].argocd_gitops_config : null
     traefik                   = var.traefik_ingress_controller_enable ? module.traefik_ingress[0].argocd_gitops_config : null
-    yunikorn                   = var.yunikorn_enable ? module.yunikorn[0].argocd_gitops_config : null
+    yunikorn                  = var.yunikorn_enable ? module.yunikorn[0].argocd_gitops_config : null
   }
 }
