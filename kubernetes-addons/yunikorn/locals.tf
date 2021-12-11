@@ -18,6 +18,8 @@
 
 locals {
   yunikorn_service_account_name = "yunikorn-admin"
+  operator_plugins = "general,spark-k8s-operator"
+  service_type = "ClusterIP"
 
   default_yunikorn_helm_app = {
     name                       = "yunikorn"
@@ -63,11 +65,17 @@ locals {
   )
 
   default_yunikorn_helm_values = [templatefile("${path.module}/values.yaml", {
-    yunikorn-sa-name = local.yunikorn_service_account_name
+    yunikorn_sa_name = local.yunikorn_service_account_name
+    operator_plugins = local.operator_plugins
+    service_type = local.service_type
+    embed_admission_controller = false
   })]
 
   argocd_gitops_config = {
     enable             = true
-    serviceAccountName = local.yunikorn_service_account_name
+    serviceAccount = local.yunikorn_service_account_name
+    operatorPlugins = local.operator_plugins
+    serviceType = local.service_type
+    embed_admission_controller = false
   }
 }
