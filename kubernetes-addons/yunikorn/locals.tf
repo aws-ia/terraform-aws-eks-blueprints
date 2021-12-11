@@ -76,6 +76,6 @@ locals {
     serviceAccount             = local.yunikorn_service_account_name
     operatorPlugins            = local.operator_plugins
     serviceType                = local.service_type
-    embed_admission_controller = false
+    embedAdmissionController   = false
   }
 }
