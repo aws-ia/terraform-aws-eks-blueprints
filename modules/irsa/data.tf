@@ -16,37 +16,34 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "kubernetes_namespace" {
-  description = "Kubernetes Namespace name"
+# Assume role policy for your service account
+data "aws_iam_policy_document" "irsa_with_oidc" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    principals {
+      type        = "Federated"
+      identifiers = [local.eks_oidc_provider_arn]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "${local.eks_oidc_issuer_url}:sub"
+      values   = ["system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}"]
+    }
+  }
 }
 
-variable "create_namespace" {
-  description = "Should the module create the namespace"
-  type        = bool
-  default     = true
-}
-variable "kubernetes_service_account" {
-  description = "Kubernetes Service Account Name"
+data "aws_eks_cluster" "eks_cluster" {
+  name = var.eks_cluster_name
 }
 
-variable "eks_cluster_name" {
-  type        = string
-  description = "EKS Cluster Id"
-}
+data "aws_partition" "current" {}
 
-variable "iam_role_path" {
-  type        = string
-  default     = "/"
-  description = "IAM Role path"
-}
+data "aws_caller_identity" "current" {}
 
-variable "tags" {
-  type        = map(string)
-  description = "Common tags for AWS resources"
-  default     = null
-}
-
-variable "irsa_iam_policies" {
-  type        = list(string)
-  description = "IAM Policies for IRSA IAM role"
+data "kubernetes_namespace_v1" "namespace" {
+  metadata {
+    name = var.kubernetes_namespace
+  }
 }

@@ -18,4 +18,5 @@ locals {
     { "kubernetes.io/cluster/${var.eks_cluster_name}" = "owned" },
   { "k8s.io/cluster/${var.eks_cluster_name}" = "owned" })
 
+
 }

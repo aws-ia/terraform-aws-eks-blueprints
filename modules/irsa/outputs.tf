@@ -16,29 +16,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "cluster_name" {
-  type = string
-}
-variable "vpc_cni_addon_version" {
-  type = string
-}
-variable "enable_vpc_cni_addon" {
-  type = string
+output "irsa_iam_role_arn" {
+  description = "IAM role ARN for your service account"
+  value       = aws_iam_role.irsa.arn
 }
 
-variable "enable_coredns_addon" {
-  type = string
-}
-variable "coredns_addon_version" {
-  type = string
+output "irsa_iam_role_name" {
+  description = "IAM role name for your service account"
+  value       = aws_iam_role.irsa.name
 }
 
-variable "enable_kube_proxy_addon" {
-  type = bool
+output "kubernetes_namespace_id" {
+  value       = data.kubernetes_namespace_v1.namespace.id
+  description = "Kubernetes Namespace id"
 }
-variable "kube_proxy_addon_version" {
-  type = string
-}
-variable "tags" {
-  type = map(string)
+
+output "kubernetes_service_account_id" {
+  value       = kubernetes_service_account_v1.irsa.id
+  description = "Kubernetes Service Account id"
 }

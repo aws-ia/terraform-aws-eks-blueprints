@@ -17,7 +17,7 @@
  */
 
 # Kubernetes Namespace
-resource "kubernetes_namespace" "add_on_ns" {
+resource "kubernetes_namespace_v1" "irsa" {
   count = var.create_namespace ? 1 : 0
   metadata {
     name = var.kubernetes_namespace
@@ -29,7 +29,7 @@ resource "kubernetes_namespace" "add_on_ns" {
 }
 
 # Kubernetes service account
-resource "kubernetes_service_account" "add_on_sa" {
+resource "kubernetes_service_account_v1" "irsa" {
   metadata {
     name        = var.kubernetes_service_account
     namespace   = var.kubernetes_namespace
@@ -48,7 +48,7 @@ resource "aws_iam_role" "irsa" {
 }
 
 # Attach IAM policies for IAM role
-resource "aws_iam_role_policy_attachment" "keda_irsa" {
+resource "aws_iam_role_policy_attachment" "irsa" {
   count      = length(var.irsa_iam_policies)
   policy_arn = var.irsa_iam_policies[count.index]
   role       = aws_iam_role.irsa.name

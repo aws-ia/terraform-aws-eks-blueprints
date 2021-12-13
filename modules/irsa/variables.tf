@@ -16,36 +16,38 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 3.66.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.7.1"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.4.1"
-    }
-    local = {
-      source  = "hashicorp/local"
-      version = "2.1.0"
-    }
-    null = {
-      source  = "hashicorp/null"
-      version = "3.1.0"
-    }
-    http = {
-      source  = "terraform-aws-modules/http"
-      version = "2.4.1"
-    }
-    kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.7.0"
-    }
-  }
-  required_version = ">= 1.0.0"
+variable "kubernetes_namespace" {
+  description = "Kubernetes Namespace name"
+}
+
+variable "create_namespace" {
+  description = "Should the module create the namespace"
+  type        = bool
+  default     = true
+}
+
+variable "kubernetes_service_account" {
+  description = "Kubernetes Service Account Name"
+}
+
+variable "eks_cluster_name" {
+  type        = string
+  description = "EKS Cluster Id"
+}
+
+variable "iam_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM Role path"
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "Common tags for AWS resources"
+  default     = null
+}
+
+variable "irsa_iam_policies" {
+  type        = list(string)
+  description = "IAM Policies for IRSA IAM role"
 }

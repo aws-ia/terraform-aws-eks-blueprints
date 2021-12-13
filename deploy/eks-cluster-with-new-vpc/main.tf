@@ -121,7 +121,14 @@ module "aws-eks-accelerator-for-terraform" {
       }
     },
   }
-  #ADDON
+
+  # EKS Managed Add-ons
+  enable_eks_addon_vpc_cni            = true
+  enable_eks_addon_coredns            = true
+  enable_eks_addon_kube_proxy         = true
+  enable_eks_addon_aws_ebs_csi_driver = true
+
+  # KUBERNETES Add-ons
   aws_lb_ingress_controller_enable = true
   metrics_server_enable            = true
   cluster_autoscaler_enable        = true

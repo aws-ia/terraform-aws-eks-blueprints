@@ -103,7 +103,7 @@ resource "aws_iam_policy" "aws_node_termination_handler_irsa" {
 }
 
 module "irsa" {
-  source                     = "../irsa"
+  source                     = "../../modules/irsa"
   eks_cluster_name           = var.eks_cluster_name
   kubernetes_namespace       = local.namespace
   create_namespace           = false

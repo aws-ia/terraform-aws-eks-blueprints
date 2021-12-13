@@ -16,22 +16,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-output "irsa_iam_role_arn" {
-  description = "IAM role ARN for your service account"
-  value       = aws_iam_role.irsa.arn
-}
+resource "aws_eks_addon" "coredns" {
+  cluster_name             = var.cluster_id
+  addon_name               = local.add_on_config["addon_name"]
+  addon_version            = local.add_on_config["addon_version"]
+  resolve_conflicts        = local.add_on_config["resolve_conflicts"]
+  service_account_role_arn = local.add_on_config["service_account_role_arn"]
+  tags = merge(
+    var.common_tags, local.add_on_config["tags"],
+    { "eks_addon" = "coredns" }
+  )
 
-output "irsa_iam_role_name" {
-  description = "IAM role name for your service account"
-  value       = aws_iam_role.irsa.name
-}
-
-output "kubernetes_namespace_id" {
-  value       = data.kubernetes_namespace.namespace.id
-  description = "Kubernetes Namespace id"
-}
-
-output "kubernetes_service_account_id" {
-  value       = kubernetes_service_account.add_on_sa.id
-  description = "Kubernetes Service Account id"
 }
