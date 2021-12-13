@@ -40,8 +40,8 @@ module "eks-ssp" {
 
     # EKS MANAGED ADD-ON VARIABLES
     enable_eks_addon_vpc_cni = true
-    enable_eks_addon_coredns = true 
-    enable_eks_addon_kube_proxy = true 
+    enable_eks_addon_coredns = true
+    enable_eks_addon_kube_proxy = true
 
     # KUBERNETES ADD-ON VARIABLES
     cluster_autoscaler_enable           = true

@@ -17,41 +17,41 @@
  */
 
 module "vpc_cni" {
-  count                    = var.create_eks && var.enable_eks_addon_vpc_cni ? 1 : 0
-  source                   = "./modules/aws-eks-addon/vpc-cni"
-  eks_addon_vpc_cni_config = var.eks_addon_vpc_cni_config
-  cluster_id               = module.aws_eks.cluster_id
-  common_tags              = var.tags
+  count         = var.create_eks && var.enable_eks_addon_vpc_cni ? 1 : 0
+  source        = "./modules/aws-eks-addon/vpc-cni"
+  add_on_config = var.eks_addon_vpc_cni_config
+  cluster_id    = module.aws_eks.cluster_id
+  common_tags   = var.tags
 
   depends_on = [module.aws_eks]
 }
 
 module "coredns" {
-  count                    = var.create_eks && var.enable_eks_addon_coredns ? 1 : 0
-  source                   = "./modules/aws-eks-addon/coredns"
-  eks_addon_coredns_config = var.eks_addon_coredns_config
-  cluster_id               = module.aws_eks.cluster_id
-  common_tags              = var.tags
+  count         = var.create_eks && var.enable_eks_addon_coredns ? 1 : 0
+  source        = "./modules/aws-eks-addon/coredns"
+  add_on_config = var.eks_addon_coredns_config
+  cluster_id    = module.aws_eks.cluster_id
+  common_tags   = var.tags
 
   depends_on = [module.aws_eks]
 }
 
 module "kube_proxy" {
-  count                       = var.create_eks && var.enable_eks_addon_kube_proxy ? 1 : 0
-  source                      = "./modules/aws-eks-addon/kube-proxy"
-  eks_addon_kube_proxy_config = var.eks_addon_kube_proxy_config
-  cluster_id                  = module.aws_eks.cluster_id
-  common_tags                 = var.tags
+  count         = var.create_eks && var.enable_eks_addon_kube_proxy ? 1 : 0
+  source        = "./modules/aws-eks-addon/kube-proxy"
+  add_on_config = var.eks_addon_kube_proxy_config
+  cluster_id    = module.aws_eks.cluster_id
+  common_tags   = var.tags
 
   depends_on = [module.aws_eks]
 }
 
 module "aws_ebs_csi_driver" {
-  count                               = var.create_eks && var.enable_eks_addon_aws_ebs_csi_driver ? 1 : 0
-  source                              = "./modules/aws-eks-addon/aws-ebs-csi-driver"
-  eks_addon_aws_ebs_csi_driver_config = var.eks_addon_aws_ebs_csi_driver_config
-  cluster_id                          = module.aws_eks.cluster_id
-  common_tags                         = var.tags
+  count         = var.create_eks && var.enable_eks_addon_aws_ebs_csi_driver ? 1 : 0
+  source        = "./modules/aws-eks-addon/aws-ebs-csi-driver"
+  add_on_config = var.eks_addon_aws_ebs_csi_driver_config
+  cluster_id    = module.aws_eks.cluster_id
+  common_tags   = var.tags
 
   depends_on = [module.aws_eks]
 }

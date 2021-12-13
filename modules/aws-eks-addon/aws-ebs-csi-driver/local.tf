@@ -1,6 +1,6 @@
 
 locals {
-  default_aws_ebs_csi_driver_config = {
+  default_add_on_config = {
     addon_name               = "aws-ebs-csi-driver"
     addon_version            = "v1.4.0-eksbuild.preview"
     service_account          = "ebs-csi-controller-sa"
@@ -10,8 +10,8 @@ locals {
     service_account_role_arn = ""
     tags                     = {}
   }
-  aws_ebs_csi_driver_config = merge(
-    local.default_aws_ebs_csi_driver_config,
-    var.eks_addon_aws_ebs_csi_driver_config
+  add_on_config = merge(
+    local.default_add_on_config,
+    var.add_on_config
   )
 }

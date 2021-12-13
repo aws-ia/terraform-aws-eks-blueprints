@@ -6,8 +6,8 @@ variable "common_tags" {
   type = map(string)
 }
 
-variable "eks_addon_aws_ebs_csi_driver_config" {
-  description = "Amazon EKS Managed Add-on"
+variable "add_on_config" {
+  description = "Amazon EKS Managed Add-on config for EBS CSI Driver"
   type        = any
   default     = {}
 }

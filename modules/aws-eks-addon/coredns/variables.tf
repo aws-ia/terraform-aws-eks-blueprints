@@ -6,8 +6,8 @@ variable "common_tags" {
   type = map(string)
 }
 
-variable "eks_addon_coredns_config" {
-  description = "Amazon EKS Managed Add-on"
+variable "add_on_config" {
+  description = "Amazon EKS Managed CoreDNS Add-on config"
   type        = any
   default     = {}
 }

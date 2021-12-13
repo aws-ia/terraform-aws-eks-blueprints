@@ -6,7 +6,7 @@ variable "common_tags" {
   type = map(string)
 }
 
-variable "eks_addon_vpc_cni_config" {
+variable "add_on_config" {
   description = "Amazon EKS Managed Add-on"
   type        = any
   default     = {}

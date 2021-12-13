@@ -6,8 +6,8 @@ variable "common_tags" {
   type = map(string)
 }
 
-variable "eks_addon_kube_proxy_config" {
-  description = "Amazon EKS Managed Add-on"
+variable "add_on_config" {
+  description = "Amazon EKS Managed Add-on config for Kube Proxy"
   type        = any
   default     = {}
 }

@@ -1,6 +1,6 @@
 
 locals {
-  default_eks_addon_coredns_config = {
+  default_add_on_config = {
     addon_name               = "coredns"
     addon_version            = "v1.8.4-eksbuild.1"
     service_account          = "coredns"
@@ -10,8 +10,8 @@ locals {
     additional_iam_policies  = []
     tags                     = {}
   }
-  eks_addon_coredns_config = merge(
-    local.default_eks_addon_coredns_config,
-    var.eks_addon_coredns_config
+  add_on_config = merge(
+    local.default_add_on_config,
+    var.add_on_config
   )
 }

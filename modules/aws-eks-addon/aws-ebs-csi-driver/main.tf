@@ -18,12 +18,12 @@
 
 resource "aws_eks_addon" "aws_ebs_csi_driver" {
   cluster_name             = var.cluster_id
-  addon_name               = local.aws_ebs_csi_driver_config["addon_name"]
-  addon_version            = local.aws_ebs_csi_driver_config["addon_version"]
-  resolve_conflicts        = local.aws_ebs_csi_driver_config["resolve_conflicts"]
-  service_account_role_arn = local.aws_ebs_csi_driver_config["service_account_role_arn"] == "" ? module.irsa_addon.irsa_iam_role_arn : local.aws_ebs_csi_driver_config["service_account_role_arn"]
+  addon_name               = local.add_on_config["addon_name"]
+  addon_version            = local.add_on_config["addon_version"]
+  resolve_conflicts        = local.add_on_config["resolve_conflicts"]
+  service_account_role_arn = local.add_on_config["service_account_role_arn"] == "" ? module.irsa_addon.irsa_iam_role_arn : local.add_on_config["service_account_role_arn"]
   tags = merge(
-    var.common_tags, local.aws_ebs_csi_driver_config["tags"],
+    var.common_tags, local.add_on_config["tags"],
     { "eks_addon" = "aws-ebs-csi-driver" }
   )
 
@@ -34,16 +34,16 @@ module "irsa_addon" {
   source                     = "../../irsa"
   eks_cluster_name           = var.cluster_id
   create_namespace           = false
-  kubernetes_namespace       = local.aws_ebs_csi_driver_config["namespace"]
-  kubernetes_service_account = local.aws_ebs_csi_driver_config["service_account"]
-  irsa_iam_policies          = concat([aws_iam_policy.aws_ebs_csi_driver.arn], local.aws_ebs_csi_driver_config["additional_iam_policies"])
+  kubernetes_namespace       = local.add_on_config["namespace"]
+  kubernetes_service_account = local.add_on_config["service_account"]
+  irsa_iam_policies          = concat([aws_iam_policy.aws_ebs_csi_driver.arn], local.add_on_config["additional_iam_policies"])
   tags                       = var.common_tags
 }
 
 resource "aws_iam_policy" "aws_ebs_csi_driver" {
 
   description = "IAM Policy for AWS EBS CSI Driver"
-  name        = "${var.cluster_id}-${local.aws_ebs_csi_driver_config["addon_name"]}-irsa"
+  name        = "${var.cluster_id}-${local.add_on_config["addon_name"]}-irsa"
   path        = var.iam_role_path
   policy      = data.aws_iam_policy_document.aws-ebs-csi-driver.json
 }
