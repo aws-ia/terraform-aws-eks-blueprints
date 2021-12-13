@@ -25,6 +25,7 @@ variable "create_namespace" {
   type        = bool
   default     = true
 }
+
 variable "kubernetes_service_account" {
   description = "Kubernetes Service Account Name"
 }

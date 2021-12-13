@@ -14,9 +14,58 @@ EKS currently provides support for the following managed add-ons.
 EKS managed add-ons can be enabled via the following.
 
 ```
-enable_vpc_cni_addon        = true
-enable_coredns_addon        = true
-enable_kube_proxy_addon     = true
+# EKS Addons
+  enable_eks_addon_vpc_cni = true # default is false
+  #Optional
+  eks_addon_vpc_cni_config = {
+    addon_name               = "vpc-cni"
+    addon_version            = "v1.10.1-eksbuild.1"
+    service_account          = "aws-node"
+    resolve_conflicts        = "OVERWRITE"
+    namespace                = "kube-system"
+    additional_iam_policies  = []
+    service_account_role_arn = ""
+    tags                     = {}
+  }
+
+  enable_eks_addon_coredns = true # default is false
+  #Optional
+  eks_addon_coredns_config = {
+    addon_name               = "coredns"
+    addon_version            = "v1.8.4-eksbuild.1"
+    service_account          = "coredns"
+    resolve_conflicts        = "OVERWRITE"
+    namespace                = "kube-system"
+    service_account_role_arn = ""
+    additional_iam_policies  = []
+    tags                     = {}
+  }
+
+  enable_eks_addon_kube_proxy = true # default is false
+  #Optional
+  eks_addon_kube_proxy_config = {
+    addon_name               = "kube-proxy"
+    addon_version            = "v1.21.2-eksbuild.2"
+    service_account          = "kube-proxy"
+    resolve_conflicts        = "OVERWRITE"
+    namespace                = "kube-system"
+    additional_iam_policies  = []
+    service_account_role_arn = ""
+    tags                     = {}
+  }
+
+  enable_eks_addon_aws_ebs_csi_driver = true # default is false
+  #Optional
+  eks_addon_aws_ebs_csi_driver_config = {
+    addon_name               = "aws-ebs-csi-driver"
+    addon_version            = "v1.4.0-eksbuild.preview"
+    service_account          = "ebs-csi-controller-sa"
+    resolve_conflicts        = "OVERWRITE"
+    namespace                = "kube-system"
+    additional_iam_policies  = []
+    service_account_role_arn = ""
+    tags                     = {}
+  }
 ```
 
 ## Updating Managed Add-ons

@@ -39,22 +39,51 @@ EKS Addon latest versions can be found in AWS EKS Console under Addon section or
 ##### KubeProxy
 
 ```hcl-terraform
-enable_kube_proxy_addon  = true
-kube_proxy_addon_version = "v1.20.4-eksbuild.2"
+  enable_eks_addon_kube_proxy = true # default is false
+  #Optional
+  eks_addon_kube_proxy_config = {
+    addon_name               = "kube-proxy"
+    addon_version            = "v1.21.2-eksbuild.2"
+    service_account          = "kube-proxy"
+    resolve_conflicts        = "OVERWRITE"
+    namespace                = "kube-system"
+    additional_iam_policies  = []
+    service_account_role_arn = ""
+    tags                     = {}
+  }
 ```
 
 ##### CoreDNS
 
 ```hcl-terraform
-enable_coredns_addon  = true
-coredns_addon_version = "v1.8.3-eksbuild.1"
+  enable_eks_addon_coredns = true # default is false
+  #Optional
+  eks_addon_coredns_config = {
+    addon_name               = "coredns"
+    addon_version            = "v1.8.4-eksbuild.1"
+    service_account          = "coredns"
+    resolve_conflicts        = "OVERWRITE"
+    namespace                = "kube-system"
+    service_account_role_arn = ""
+    additional_iam_policies  = []
+    tags                     = {}
+  }
 ```
 
 ##### VPC CNI
 
 ```hcl-terraform
-enable_vpc_cni_addon  = true
-vpc_cni_addon_version = "v1.8.0-eksbuild.1"
+  enable_eks_addon_vpc_cni = true
+  eks_addon_vpc_cni_config = {
+    addon_name               = "vpc-cni"
+    addon_version            = "v1.10.1-eksbuild.1"
+    service_account          = "aws-node"
+    resolve_conflicts        = "OVERWRITE"
+    namespace                = "kube-system"
+    additional_iam_policies  = []
+    service_account_role_arn = ""
+    tags                     = {}
+  }
 ```
 
 Apply the changes to the cluster with Terraform.

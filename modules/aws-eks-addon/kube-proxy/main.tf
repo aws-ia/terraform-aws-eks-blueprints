@@ -16,29 +16,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "cluster_name" {
-  type = string
-}
-variable "vpc_cni_addon_version" {
-  type = string
-}
-variable "enable_vpc_cni_addon" {
-  type = string
-}
+resource "aws_eks_addon" "kube_proxy" {
+  cluster_name             = var.cluster_id
+  addon_name               = local.eks_addon_kube_proxy_config["addon_name"]
+  addon_version            = local.eks_addon_kube_proxy_config["addon_version"]
+  resolve_conflicts        = local.eks_addon_kube_proxy_config["resolve_conflicts"]
+  service_account_role_arn = local.eks_addon_kube_proxy_config["service_account_role_arn"]
+  tags = merge(
+    var.common_tags, local.eks_addon_kube_proxy_config["tags"],
+    { "eks_addon" = "kube-proxy" }
+  )
 
-variable "enable_coredns_addon" {
-  type = string
-}
-variable "coredns_addon_version" {
-  type = string
-}
-
-variable "enable_kube_proxy_addon" {
-  type = bool
-}
-variable "kube_proxy_addon_version" {
-  type = string
-}
-variable "tags" {
-  type = map(string)
 }

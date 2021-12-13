@@ -96,24 +96,3 @@ module "aws_eks_fargate_profiles" {
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
 
 }
-
-# ---------------------------------------------------------------------------------------------------------------------
-# AWS EKS Add-ons (VPC CNI, CoreDNS, KubeProxy )
-# ---------------------------------------------------------------------------------------------------------------------
-module "aws_eks_addon" {
-  count = var.create_eks && length(var.managed_node_groups) > 0 || var.create_eks && length(var.self_managed_node_groups) > 0 || var.create_eks && length(var.fargate_profiles) > 0 ? 1 : 0
-
-  source                = "./modules/aws-eks-addon"
-  cluster_name          = module.aws_eks.cluster_id
-  enable_vpc_cni_addon  = var.enable_vpc_cni_addon
-  vpc_cni_addon_version = var.vpc_cni_addon_version
-
-  enable_coredns_addon  = var.enable_coredns_addon
-  coredns_addon_version = var.coredns_addon_version
-
-  enable_kube_proxy_addon  = var.enable_kube_proxy_addon
-  kube_proxy_addon_version = var.kube_proxy_addon_version
-  tags                     = module.eks_tags.tags
-
-  depends_on = [module.aws_eks]
-}

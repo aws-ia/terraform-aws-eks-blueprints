@@ -114,40 +114,52 @@ variable "cluster_log_retention_period" {
 }
 
 # EKS MANAGED ADDONS
-variable "enable_vpc_cni_addon" {
+variable "eks_addon_vpc_cni_config" {
+  description = "Map of Amazon EKS VPC CNI Add-on"
+  type        = any
+  default     = {}
+}
+
+variable "eks_addon_coredns_config" {
+  description = "Map of Amazon COREDNS EKS Add-on"
+  type        = any
+  default     = {}
+}
+
+variable "eks_addon_kube_proxy_config" {
+  description = "Map of Amazon EKS KUBE_PROXY Add-on"
+  type        = any
+  default     = {}
+}
+
+variable "eks_addon_aws_ebs_csi_driver_config" {
+  description = "Map of Amazon EKS aws_ebs_csi_driver Add-on"
+  type        = any
+  default     = {}
+}
+
+variable "enable_eks_addon_vpc_cni" {
   type        = bool
   default     = false
   description = "Enable VPC CNI Addon"
 }
 
-variable "enable_coredns_addon" {
+variable "enable_eks_addon_coredns" {
   type        = bool
   default     = false
   description = "Enable CoreDNS Addon"
 }
 
-variable "enable_kube_proxy_addon" {
+variable "enable_eks_addon_kube_proxy" {
   type        = bool
   default     = false
   description = "Enable Kube Proxy Addon"
 }
 
-variable "vpc_cni_addon_version" {
-  type        = string
-  default     = "v1.8.0-eksbuild.1"
-  description = "VPC CNI Addon version"
-}
-
-variable "coredns_addon_version" {
-  type        = string
-  default     = "v1.8.3-eksbuild.1"
-  description = "CoreDNS Addon version"
-}
-
-variable "kube_proxy_addon_version" {
-  type        = string
-  default     = "v1.20.4-eksbuild.2"
-  description = "KubeProxy Addon version"
+variable "enable_eks_addon_aws_ebs_csi_driver" {
+  type        = bool
+  default     = false
+  description = "Enable EKS Managed EBS CSI Driver Addon"
 }
 
 # EKS WORKER NODES

@@ -16,22 +16,34 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-output "irsa_iam_role_arn" {
-  description = "IAM role ARN for your service account"
-  value       = aws_iam_role.irsa.arn
+# Assume role policy for your service account
+data "aws_iam_policy_document" "irsa_with_oidc" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    principals {
+      type        = "Federated"
+      identifiers = [local.eks_oidc_provider_arn]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "${local.eks_oidc_issuer_url}:sub"
+      values   = ["system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}"]
+    }
+  }
 }
 
-output "irsa_iam_role_name" {
-  description = "IAM role name for your service account"
-  value       = aws_iam_role.irsa.name
+data "aws_eks_cluster" "eks_cluster" {
+  name = var.eks_cluster_name
 }
 
-output "kubernetes_namespace_id" {
-  value       = data.kubernetes_namespace.namespace.id
-  description = "Kubernetes Namespace id"
-}
+data "aws_partition" "current" {}
 
-output "kubernetes_service_account_id" {
-  value       = kubernetes_service_account.add_on_sa.id
-  description = "Kubernetes Service Account id"
+data "aws_caller_identity" "current" {}
+
+data "kubernetes_namespace_v1" "namespace" {
+  metadata {
+    name = var.kubernetes_namespace
+  }
 }

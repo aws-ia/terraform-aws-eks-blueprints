@@ -92,6 +92,12 @@ module "aws-eks-accelerator-for-terraform" {
   create_eks         = true
   kubernetes_version = local.kubernetes_version
 
+  # EKS Managed Add-ons
+  enable_eks_addon_vpc_cni            = true
+  enable_eks_addon_coredns            = true
+  enable_eks_addon_kube_proxy         = true
+  enable_eks_addon_aws_ebs_csi_driver = true
+
   #---------------------------------------------------------#
   # EKS WORKER NODE GROUPS
   # Define Node groups as map of maps object as shown below. Each node group creates the following

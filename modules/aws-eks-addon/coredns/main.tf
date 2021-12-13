@@ -16,36 +16,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 3.66.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.7.1"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.4.1"
-    }
-    local = {
-      source  = "hashicorp/local"
-      version = "2.1.0"
-    }
-    null = {
-      source  = "hashicorp/null"
-      version = "3.1.0"
-    }
-    http = {
-      source  = "terraform-aws-modules/http"
-      version = "2.4.1"
-    }
-    kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.7.0"
-    }
-  }
-  required_version = ">= 1.0.0"
+resource "aws_eks_addon" "coredns" {
+  cluster_name             = var.cluster_id
+  addon_name               = local.eks_addon_coredns_config["addon_name"]
+  addon_version            = local.eks_addon_coredns_config["addon_version"]
+  resolve_conflicts        = local.eks_addon_coredns_config["resolve_conflicts"]
+  service_account_role_arn = local.eks_addon_coredns_config["service_account_role_arn"]
+  tags = merge(
+    var.common_tags, local.eks_addon_coredns_config["tags"],
+    { "eks_addon" = "coredns" }
+  )
+
 }
