@@ -325,7 +325,7 @@ variable "aws_lb_ingress_controller_helm_app" {
 }
 
 #-----------NGINX-------------
-variable "nginx_ingress_controller_enable" {
+variable "ingress_nginx_controller_enable" {
   type        = bool
   default     = false
   description = "Enabling NGINX Ingress Controller on EKS Cluster"
