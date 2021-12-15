@@ -21,7 +21,7 @@ terraform {
 terraform {
   backend "s3" {
     bucket = "terraform-ssp-github-actions-state"
-    key    = "tf-state"
+    key    = "pr/tf-state"
     region = "us-west-2"
   }
 }
@@ -80,7 +80,7 @@ module "aws_vpc" {
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  source = "../../.."
+  source = "../.."
 
   tenant            = local.tenant
   environment       = local.environment
@@ -103,8 +103,15 @@ module "aws-eks-accelerator-for-terraform" {
       subnet_ids      = module.aws_vpc.private_subnets
     }
   }
-
-  # FARGATE
+  # EKS SELF-MANAGED NODE GROUPS
+  self_managed_node_groups = {
+    self_mg_4 = {
+      node_group_name    = "self-managed-ondemand"
+      instance_types  = ["m4.large"]
+      subnet_ids      = module.aws_vpc.private_subnets
+    }
+  }
+  # Fargate profiles
   fargate_profiles = {
     default = {
       fargate_profile_name = "default"
@@ -116,16 +123,52 @@ module "aws-eks-accelerator-for-terraform" {
             Zone        = "dev"
             env         = "fargate"
           }
-      }]
+        }]
       subnet_ids = module.aws_vpc.private_subnets
       additional_tags = {
         ExtraTag = "Fargate"
       }
     },
   }
-  #ADDON
+
+  # EKS Addons
+  enable_eks_addon_vpc_cni = true
+  enable_eks_addon_coredns = true
+  enable_eks_addon_kube_proxy = true
+  enable_eks_addon_aws_ebs_csi_driver = true
+
+  #K8s Add-ons
   aws_lb_ingress_controller_enable = true
   metrics_server_enable            = true
   cluster_autoscaler_enable        = true
+  prometheus_enable = true
+  ingress_nginx_controller_enable = true
+  aws_for_fluentbit_enable = true
+  traefik_ingress_controller_enable = true
+  agones_enable = false
+  aws_open_telemetry_enable = false
+  spark_on_k8s_operator_enable = true
+  argocd_enable = true
+  keda_enable = true
+  vpa_enable = true
+  yunikorn_enable = true
+  fargate_fluentbit_enable = true
+
+  # AWS Managed Services
+  aws_managed_prometheus_enable         = true
+  aws_managed_prometheus_workspace_name = "amp-workspace-${local.cluster_name}"
+
+  enable_emr_on_eks = true
+  emr_on_eks_teams = {
+    data_team_a = {
+      emr_on_eks_namespace     = "emr-data-team-a"
+      emr_on_eks_iam_role_name = "emr-eks-data-team-a"
+    }
+
+    data_team_b = {
+      emr_on_eks_namespace     = "emr-data-team-b"
+      emr_on_eks_iam_role_name = "emr-eks-data-team-b"
+    }
+  }
 
 }
