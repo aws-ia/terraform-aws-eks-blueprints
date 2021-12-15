@@ -20,8 +20,14 @@ variable "kubernetes_namespace" {
   description = "Kubernetes Namespace name"
 }
 
-variable "create_namespace" {
+variable "create_kubernetes_namespace" {
   description = "Should the module create the namespace"
+  type        = bool
+  default     = true
+}
+
+variable "create_kubernetes_service_account" {
+  description = "Should the module create the Service Account"
   type        = bool
   default     = true
 }
