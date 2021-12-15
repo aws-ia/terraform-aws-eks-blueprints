@@ -31,13 +31,13 @@ resource "aws_eks_addon" "aws_ebs_csi_driver" {
 }
 
 module "irsa_addon" {
-  source                     = "../../irsa"
-  eks_cluster_name           = var.cluster_id
-  create_kubernetes_namespace           = false
-  kubernetes_namespace       = local.add_on_config["namespace"]
-  kubernetes_service_account = local.add_on_config["service_account"]
-  irsa_iam_policies          = concat([aws_iam_policy.aws_ebs_csi_driver.arn], local.add_on_config["additional_iam_policies"])
-  tags                       = var.common_tags
+  source                      = "../../irsa"
+  eks_cluster_name            = var.cluster_id
+  create_kubernetes_namespace = false
+  kubernetes_namespace        = local.add_on_config["namespace"]
+  kubernetes_service_account  = local.add_on_config["service_account"]
+  irsa_iam_policies           = concat([aws_iam_policy.aws_ebs_csi_driver.arn], local.add_on_config["additional_iam_policies"])
+  tags                        = var.common_tags
 }
 
 resource "aws_iam_policy" "aws_ebs_csi_driver" {
