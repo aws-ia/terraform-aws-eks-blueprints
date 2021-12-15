@@ -49,7 +49,7 @@ module "eks-ssp" {
     aws_lb_ingress_controller_enable    = true
     aws_for_fluentbit_enable             = true
     cert_manager_enable                 = true
-    nginx_ingress_controller_enable     = true
+    ingress_nginx_controller_enable     = true
 
     # EKS MANAGED NODE GROUPS
     managed_node_groups = {
@@ -163,9 +163,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="module_keda"></a> [keda](#module\_keda) | ./kubernetes-addons/keda | n/a |
 | <a name="module_kube_proxy"></a> [kube\_proxy](#module\_kube\_proxy) | ./modules/aws-eks-addon/kube-proxy | n/a |
 | <a name="module_metrics_server"></a> [metrics\_server](#module\_metrics\_server) | ./kubernetes-addons/metrics-server | n/a |
-| <a name="module_nginx_ingress"></a> [nginx\_ingress](#module\_nginx\_ingress) | ./kubernetes-addons/nginx-ingress | n/a |
+| <a name="module_ingress_nginx"></a> [nginx\_ingress](#module\_nginx\_ingress) | ./kubernetes-addons/ingress-nginx | n/a |
 | <a name="module_prometheus"></a> [prometheus](#module\_prometheus) | ./kubernetes-addons/prometheus | n/a |
-| <a name="module_spark-k8s-operator"></a> [spark-k8s-operator](#module\_spark-k8s-operator) | ./kubernetes-addons/spark-k8s-operator | n/a |
+| <a name="module_spark_k8s_operator"></a> [spark_k8s_operator](#module\_spark_k8s_operator) | ./kubernetes-addons/spark-k8s-operator | n/a |
 | <a name="module_traefik_ingress"></a> [traefik\_ingress](#module\_traefik\_ingress) | ./kubernetes-addons/traefik-ingress | n/a |
 | <a name="module_vpa"></a> [vpa](#module\_vpa) | ./kubernetes-addons/vertical-pod-autoscaler | n/a |
 | <a name="module_vpc_cni"></a> [vpc\_cni](#module\_vpc\_cni) | ./modules/aws-eks-addon/vpc-cni | n/a |
@@ -245,7 +245,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_metrics_server_enable"></a> [metrics\_server\_enable](#input\_metrics\_server\_enable) | Enabling metrics server on eks cluster | `bool` | `false` | no |
 | <a name="input_metrics_server_helm_chart"></a> [metrics\_server\_helm\_chart](#input\_metrics\_server\_helm\_chart) | Metrics Server Helm Addon Config | `any` | `{}` | no |
 | <a name="input_nginx_helm_chart"></a> [nginx\_helm\_chart](#input\_nginx\_helm\_chart) | NGINX Ingress Controller Helm Chart Configuration | `any` | `{}` | no |
-| <a name="input_nginx_ingress_controller_enable"></a> [nginx\_ingress\_controller\_enable](#input\_nginx\_ingress\_controller\_enable) | Enabling NGINX Ingress Controller on EKS Cluster | `bool` | `false` | no |
+| <a name="input_ingress_nginx_controller_enable"></a> [nginx\_ingress\_controller\_enable](#input\_nginx\_ingress\_controller\_enable) | Enabling NGINX Ingress Controller on EKS Cluster | `bool` | `false` | no |
 | <a name="input_org"></a> [org](#input\_org) | tenant, which could be your organization name, e.g. aws' | `string` | `""` | no |
 | <a name="input_platform_teams"></a> [platform\_teams](#input\_platform\_teams) | Map of maps of platform teams to create | `any` | `{}` | no |
 | <a name="input_private_subnet_ids"></a> [private\_subnet\_ids](#input\_private\_subnet\_ids) | list of private subnets Id's for the Worker nodes | `list(string)` | n/a | yes |

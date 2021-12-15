@@ -604,7 +604,7 @@ module "aws-eks-accelerator-for-terraform" {
   # ENABLE NGINX
   #---------------------------------------
 
-  nginx_ingress_controller_enable = false
+  ingress_nginx_controller_enable = false
   # Optional nginx_helm_chart
   nginx_helm_chart = {
     name       = "ingress-nginx"
