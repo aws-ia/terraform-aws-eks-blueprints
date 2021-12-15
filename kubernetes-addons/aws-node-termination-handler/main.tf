@@ -106,7 +106,7 @@ module "irsa" {
   source                     = "../../modules/irsa"
   eks_cluster_name           = var.eks_cluster_name
   kubernetes_namespace       = local.namespace
-  create_namespace           = false
+  create_kubernetes_namespace           = false
   kubernetes_service_account = local.service_account_name
   irsa_iam_policies          = [aws_iam_policy.aws_node_termination_handler_irsa.arn]
 }

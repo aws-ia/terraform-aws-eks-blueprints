@@ -27,7 +27,7 @@ resource "helm_release" "keda" {
   timeout                    = local.keda_helm_app["timeout"]
   values                     = local.keda_helm_app["values"]
   create_namespace           = var.keda_create_irsa ? false : local.keda_helm_app["create_namespace"]
-  namespace                  = var.keda_create_irsa ? module.irsa[0].kubernetes_namespace_id : local.keda_helm_app["namespace"]
+  namespace                  = var.keda_create_irsa ? local.keda_namespace : local.keda_helm_app["namespace"]
   lint                       = local.keda_helm_app["lint"]
   description                = local.keda_helm_app["description"]
   repository_key_file        = local.keda_helm_app["repository_key_file"]
