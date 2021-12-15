@@ -160,12 +160,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="module_eks_tags"></a> [eks\_tags](#module\_eks\_tags) | ./modules/aws-resource-tags | n/a |
 | <a name="module_emr_on_eks"></a> [emr\_on\_eks](#module\_emr\_on\_eks) | ./modules/emr-on-eks | n/a |
 | <a name="module_fargate_fluentbit"></a> [fargate\_fluentbit](#module\_fargate\_fluentbit) | ./kubernetes-addons/fargate-fluentbit | n/a |
+| <a name="module_ingress_nginx"></a> [ingress\_nginx](#module\_ingress\_nginx) | ./kubernetes-addons/ingress-nginx | n/a |
 | <a name="module_keda"></a> [keda](#module\_keda) | ./kubernetes-addons/keda | n/a |
 | <a name="module_kube_proxy"></a> [kube\_proxy](#module\_kube\_proxy) | ./modules/aws-eks-addon/kube-proxy | n/a |
 | <a name="module_metrics_server"></a> [metrics\_server](#module\_metrics\_server) | ./kubernetes-addons/metrics-server | n/a |
-| <a name="module_ingress_nginx"></a> [nginx\_ingress](#module\_nginx\_ingress) | ./kubernetes-addons/ingress-nginx | n/a |
 | <a name="module_prometheus"></a> [prometheus](#module\_prometheus) | ./kubernetes-addons/prometheus | n/a |
-| <a name="module_spark_k8s_operator"></a> [spark_k8s_operator](#module\_spark_k8s_operator) | ./kubernetes-addons/spark-k8s-operator | n/a |
+| <a name="module_spark_k8s_operator"></a> [spark\_k8s\_operator](#module\_spark\_k8s\_operator) | ./kubernetes-addons/spark-k8s-operator | n/a |
 | <a name="module_traefik_ingress"></a> [traefik\_ingress](#module\_traefik\_ingress) | ./kubernetes-addons/traefik-ingress | n/a |
 | <a name="module_vpa"></a> [vpa](#module\_vpa) | ./kubernetes-addons/vertical-pod-autoscaler | n/a |
 | <a name="module_vpc_cni"></a> [vpc\_cni](#module\_vpc\_cni) | ./modules/aws-eks-addon/vpc-cni | n/a |
@@ -233,6 +233,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_fargate_fluentbit_config"></a> [fargate\_fluentbit\_config](#input\_fargate\_fluentbit\_config) | Fargate fluentbit configuration | `any` | `{}` | no |
 | <a name="input_fargate_fluentbit_enable"></a> [fargate\_fluentbit\_enable](#input\_fargate\_fluentbit\_enable) | Enabling fargate\_fluent\_bit module on eks cluster | `bool` | `false` | no |
 | <a name="input_fargate_profiles"></a> [fargate\_profiles](#input\_fargate\_profiles) | Fargate Profile configuration | `any` | `{}` | no |
+| <a name="input_ingress_nginx_controller_enable"></a> [ingress\_nginx\_controller\_enable](#input\_ingress\_nginx\_controller\_enable) | Enabling NGINX Ingress Controller on EKS Cluster | `bool` | `false` | no |
 | <a name="input_keda_create_irsa"></a> [keda\_create\_irsa](#input\_keda\_create\_irsa) | Indicates if the add-on should create a IAM role + service account | `bool` | `true` | no |
 | <a name="input_keda_enable"></a> [keda\_enable](#input\_keda\_enable) | Enable KEDA Event-based autoscaler for workloads on Kubernetes | `bool` | `false` | no |
 | <a name="input_keda_helm_chart"></a> [keda\_helm\_chart](#input\_keda\_helm\_chart) | KEDA Event-based autoscaler Kubernetes Addon Configuration | `any` | `{}` | no |
@@ -245,7 +246,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_metrics_server_enable"></a> [metrics\_server\_enable](#input\_metrics\_server\_enable) | Enabling metrics server on eks cluster | `bool` | `false` | no |
 | <a name="input_metrics_server_helm_chart"></a> [metrics\_server\_helm\_chart](#input\_metrics\_server\_helm\_chart) | Metrics Server Helm Addon Config | `any` | `{}` | no |
 | <a name="input_nginx_helm_chart"></a> [nginx\_helm\_chart](#input\_nginx\_helm\_chart) | NGINX Ingress Controller Helm Chart Configuration | `any` | `{}` | no |
-| <a name="input_ingress_nginx_controller_enable"></a> [nginx\_ingress\_controller\_enable](#input\_nginx\_ingress\_controller\_enable) | Enabling NGINX Ingress Controller on EKS Cluster | `bool` | `false` | no |
 | <a name="input_org"></a> [org](#input\_org) | tenant, which could be your organization name, e.g. aws' | `string` | `""` | no |
 | <a name="input_platform_teams"></a> [platform\_teams](#input\_platform\_teams) | Map of maps of platform teams to create | `any` | `{}` | no |
 | <a name="input_private_subnet_ids"></a> [private\_subnet\_ids](#input\_private\_subnet\_ids) | list of private subnets Id's for the Worker nodes | `list(string)` | n/a | yes |
