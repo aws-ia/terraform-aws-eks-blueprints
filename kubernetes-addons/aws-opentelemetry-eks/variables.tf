@@ -4,12 +4,7 @@ variable "aws_open_telemetry_addon" {
   description = "AWS Open Telemetry Distro Addon Configuration"
 }
 
-variable "aws_open_telemetry_mg_node_iam_role_arns" {
-  type    = list(string)
-  default = []
-}
-
-variable "aws_open_telemetry_self_mg_node_iam_role_arns" {
+variable "node_groups_iam_role_arn" {
   type    = list(string)
   default = []
 }

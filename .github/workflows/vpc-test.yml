@@ -50,11 +50,15 @@ jobs:
       - name: Terraform Plan
         id: plan
         working-directory: test/e2e/vpc
-        run: terraform plan -no-color
+        run: |
+         export AWS_REGION="us-west-2"
+         terraform plan -no-color
         continue-on-error: false
 
       - name: Terraform Apply
         id: apply
         working-directory: test/e2e/vpc
-        run: terraform apply -no-color --auto-approve=true
+        run: |
+         export AWS_REGION="us-west-2"
+         terraform apply -no-color --auto-approve=true
         continue-on-error: false

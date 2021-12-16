@@ -119,14 +119,8 @@ resource "aws_iam_policy" "eks_aws_otel_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "managed_node_role" {
-  for_each   = toset(var.aws_open_telemetry_mg_node_iam_role_arns)
-  role       = each.value
-  policy_arn = aws_iam_policy.eks_aws_otel_policy.arn
-}
-
-resource "aws_iam_role_policy_attachment" "self_managed_role" {
-  for_each   = toset(var.aws_open_telemetry_self_mg_node_iam_role_arns)
+resource "aws_iam_role_policy_attachment" "node_groups_role_arn" {
+  for_each   = toset(var.node_groups_iam_role_arn)
   role       = each.value
   policy_arn = aws_iam_policy.eks_aws_otel_policy.arn
 }

@@ -87,10 +87,14 @@ module "aws_managed_prometheus" {
   region                          = data.aws_region.current.id
   eks_cluster_id                  = module.aws_eks.cluster_id
   eks_oidc_provider               = split("//", module.aws_eks.cluster_oidc_issuer_url)[1]
-  service_account_amp_ingest_name = local.service_account_amp_ingest_name
-  service_account_amp_query_name  = local.service_account_amp_query_name
-  amp_workspace_name              = var.aws_managed_prometheus_workspace_name
+  service_account_amp_ingest_name = local.aws_managed_prometheus_ingest_service_account
+  service_account_amp_query_name  = local.aws_managed_prometheus_query_service_account
+  amp_workspace_name              = var.aws_managed_prometheus_workspace_id == "" ? local.aws_managed_prometheus_workspace_id: var.aws_managed_prometheus_workspace_id
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Amazon EMR on EKS Virtual Clusters
+# ---------------------------------------------------------------------------------------------------------------------
 
 module "emr_on_eks" {
   source = "./modules/emr-on-eks"
