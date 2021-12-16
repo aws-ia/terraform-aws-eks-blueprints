@@ -16,9 +16,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-# Kubernetes Namespace
 resource "kubernetes_namespace_v1" "irsa" {
-  count = var.create_namespace ? 1 : 0
+  count = var.create_kubernetes_namespace ? 1 : 0
   metadata {
     name = var.kubernetes_namespace
 
@@ -28,17 +27,20 @@ resource "kubernetes_namespace_v1" "irsa" {
   }
 }
 
-# Kubernetes service account
 resource "kubernetes_service_account_v1" "irsa" {
+  count = var.create_kubernetes_service_account ? 1 : 0
   metadata {
     name        = var.kubernetes_service_account
     namespace   = var.kubernetes_namespace
     annotations = { "eks.amazonaws.com/role-arn" : aws_iam_role.irsa.arn }
+    labels = {
+      "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
+    }
   }
+
   automount_service_account_token = true
 }
 
-# IAM role and assume role policy for your service account
 resource "aws_iam_role" "irsa" {
   name                  = "${var.eks_cluster_name}-${var.kubernetes_service_account}-irsa"
   assume_role_policy    = join("", data.aws_iam_policy_document.irsa_with_oidc.*.json)
@@ -47,7 +49,6 @@ resource "aws_iam_role" "irsa" {
   tags                  = var.tags
 }
 
-# Attach IAM policies for IAM role
 resource "aws_iam_role_policy_attachment" "irsa" {
   count      = length(var.irsa_iam_policies)
   policy_arn = var.irsa_iam_policies[count.index]
