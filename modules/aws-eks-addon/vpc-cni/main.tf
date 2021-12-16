@@ -31,11 +31,12 @@ resource "aws_eks_addon" "vpc_cni" {
 }
 
 module "irsa_addon" {
-  source                     = "../../irsa"
-  eks_cluster_name           = var.cluster_id
-  create_namespace           = false
-  kubernetes_namespace       = local.add_on_config["namespace"]
-  kubernetes_service_account = local.add_on_config["service_account"]
-  irsa_iam_policies          = concat(["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"], local.add_on_config["additional_iam_policies"])
-  tags                       = var.common_tags
+  source                            = "../../irsa"
+  eks_cluster_name                  = var.cluster_id
+  create_kubernetes_namespace       = false
+  create_kubernetes_service_account = false
+  kubernetes_namespace              = local.add_on_config["namespace"]
+  kubernetes_service_account        = local.add_on_config["service_account"]
+  irsa_iam_policies                 = concat(["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"], local.add_on_config["additional_iam_policies"])
+  tags                              = var.common_tags
 }

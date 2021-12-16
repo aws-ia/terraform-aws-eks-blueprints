@@ -25,13 +25,3 @@ output "irsa_iam_role_name" {
   description = "IAM role name for your service account"
   value       = aws_iam_role.irsa.name
 }
-
-output "kubernetes_namespace_id" {
-  value       = data.kubernetes_namespace_v1.namespace.id
-  description = "Kubernetes Namespace id"
-}
-
-output "kubernetes_service_account_id" {
-  value       = kubernetes_service_account_v1.irsa.id
-  description = "Kubernetes Service Account id"
-}
