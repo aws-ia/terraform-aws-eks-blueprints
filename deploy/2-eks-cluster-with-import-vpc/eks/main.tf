@@ -158,6 +158,7 @@ module "kubernetes-addons" {
   aws_lb_ingress_controller_enable  = true
   metrics_server_enable             = true
   cluster_autoscaler_enable         = true
+  vpa_enable = true
   prometheus_enable                 = true
   ingress_nginx_controller_enable   = true
   aws_for_fluentbit_enable          = true

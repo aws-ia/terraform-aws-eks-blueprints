@@ -2,18 +2,18 @@
 
 terraform {
   backend "s3" {
-    bucket = "terraform-state-327949925549"
+    bucket = "terraform-ssp-github-actions-state"
     key    = "pr/eks/terraform-main.tfstate"
-    region = "eu-west-1"
+    region = "us-west-2"
   }
 }
 # Importing VPC remote state config
 data "terraform_remote_state" "vpc_s3_backend" {
   backend = "s3"
   config = {
-    bucket = "terraform-state-327949925549"
+    bucket = "terraform-ssp-github-actions-state"
     key    = "e2e/vpc/terraform-main.tfstate"
-    region = "eu-west-1"
+    region = "us-west-2"
   }
 }
 
