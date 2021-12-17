@@ -122,15 +122,24 @@ module "aws-eks-accelerator-for-terraform" {
     },
   }
 
-  # EKS Managed Add-ons
+}
+
+module "kubernetes-addons" {
+  source = "../../kubernetes-addons"
+
+  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_cluster_oidc_url = module.aws-eks-accelerator-for-terraform.eks_cluster_oidc_url
+  eks_oidc_provider_arn = module.aws-eks-accelerator-for-terraform.eks_cluster_oidc_provider_arn
+  eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_security_group_id
+  auto_scaling_group_names = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
+
+  # EKS Addons
   enable_eks_addon_vpc_cni            = true
   enable_eks_addon_coredns            = true
   enable_eks_addon_kube_proxy         = true
-  enable_eks_addon_aws_ebs_csi_driver = true
 
-  # KUBERNETES Add-ons
-  aws_lb_ingress_controller_enable = true
-  metrics_server_enable            = true
-  cluster_autoscaler_enable        = true
-
+  #K8s Add-ons
+  aws_lb_ingress_controller_enable  = true
+  metrics_server_enable             = true
+  cluster_autoscaler_enable         = true
 }
