@@ -27,7 +27,7 @@ module "vpc_cni" {
 }
 
 module "coredns" {
-  count         =  var.enable_eks_addon_coredns ? 1 : 0
+  count         = var.enable_eks_addon_coredns ? 1 : 0
   source        = "./aws-coredns"
   add_on_config = var.eks_addon_coredns_config
   cluster_id    = local.eks_cluster_id
@@ -35,7 +35,7 @@ module "coredns" {
 }
 
 module "kube_proxy" {
-  count         =  var.enable_eks_addon_kube_proxy ? 1 : 0
+  count         = var.enable_eks_addon_kube_proxy ? 1 : 0
   source        = "./aws-kube-proxy"
   add_on_config = var.eks_addon_kube_proxy_config
   cluster_id    = local.eks_cluster_id
@@ -43,7 +43,7 @@ module "kube_proxy" {
 }
 
 module "aws_ebs_csi_driver" {
-  count         =  var.enable_eks_addon_aws_ebs_csi_driver ? 1 : 0
+  count         = var.enable_eks_addon_aws_ebs_csi_driver ? 1 : 0
   source        = "./aws-ebs-csi-driver"
   add_on_config = var.eks_addon_aws_ebs_csi_driver_config
   cluster_id    = local.eks_cluster_id
@@ -53,8 +53,8 @@ module "aws_ebs_csi_driver" {
 #-----------------Kubernetes Add-ons----------------------
 
 module "agones" {
-  count                        = var.agones_enable ? 1 : 0
-  source                       = "./agones"
+  count  = var.agones_enable ? 1 : 0
+  source = "./agones"
 
   agones_helm_chart            = var.agones_helm_chart
   eks_worker_security_group_id = var.eks_worker_security_group_id
@@ -62,18 +62,18 @@ module "agones" {
 }
 
 module "argocd" {
-  count               = var.argocd_enable ? 1 : 0
-  source              = "./argocd"
+  count  = var.argocd_enable ? 1 : 0
+  source = "./argocd"
 
   argocd_helm_chart   = var.argocd_helm_chart
   argocd_applications = var.argocd_applications
   eks_cluster_name    = local.eks_cluster_id
-  add_on_config        = local.argocd_add_on_config
+  add_on_config       = local.argocd_add_on_config
 }
 
 module "aws_for_fluent_bit" {
-  count                        = var.aws_for_fluentbit_enable ? 1 : 0
-  source                       = "./aws-for-fluentbit"
+  count  = var.aws_for_fluentbit_enable ? 1 : 0
+  source = "./aws-for-fluentbit"
 
   aws_for_fluentbit_helm_chart = var.aws_for_fluentbit_helm_chart
   eks_cluster_id               = local.eks_cluster_id
@@ -81,8 +81,8 @@ module "aws_for_fluent_bit" {
 }
 
 module "aws_load_balancer_controller" {
-  count                          = var.aws_lb_ingress_controller_enable ? 1 : 0
-  source                         = "./aws-load-balancer-controller"
+  count  = var.aws_lb_ingress_controller_enable ? 1 : 0
+  source = "./aws-load-balancer-controller"
 
   eks_cluster_id                 = local.eks_cluster_id
   lb_ingress_controller_helm_app = var.aws_lb_ingress_controller_helm_app
@@ -92,8 +92,8 @@ module "aws_load_balancer_controller" {
 }
 
 module "aws_node_termination_handler" {
-  count                                   = var.aws_node_termination_handler_enable && length(var.auto_scaling_group_names) > 0 ? 1 : 0
-  source                                  = "./aws-node-termination-handler"
+  count  = var.aws_node_termination_handler_enable && length(var.auto_scaling_group_names) > 0 ? 1 : 0
+  source = "./aws-node-termination-handler"
 
   eks_cluster_name                        = local.eks_cluster_id
   aws_node_termination_handler_helm_chart = var.aws_node_termination_handler_helm_chart
@@ -104,14 +104,14 @@ module "aws_opentelemetry_collector" {
   count  = var.aws_open_telemetry_enable ? 1 : 0
   source = "./aws-opentelemetry-eks"
 
-  aws_open_telemetry_addon                      = var.aws_open_telemetry_addon
+  aws_open_telemetry_addon = var.aws_open_telemetry_addon
   node_groups_iam_role_arn = var.node_groups_iam_role_arn
-  manage_via_gitops                             = var.argocd_manage_add_ons
+  manage_via_gitops        = var.argocd_manage_add_ons
 }
 
 module "cert_manager" {
-  count                   = var.cert_manager_enable ? 1 : 0
-  source                  = "./cert-manager"
+  count  = var.cert_manager_enable ? 1 : 0
+  source = "./cert-manager"
 
   cert_manager_helm_chart = var.cert_manager_helm_chart
   manage_via_gitops       = var.argocd_manage_add_ons
@@ -119,8 +119,8 @@ module "cert_manager" {
 }
 
 module "cluster_autoscaler" {
-  count                         = var.cluster_autoscaler_enable ? 1 : 0
-  source                        = "./cluster-autoscaler"
+  count  = var.cluster_autoscaler_enable ? 1 : 0
+  source = "./cluster-autoscaler"
 
   eks_cluster_id                = local.eks_cluster_id
   cluster_autoscaler_helm_chart = var.cluster_autoscaler_helm_chart
@@ -128,16 +128,16 @@ module "cluster_autoscaler" {
 }
 
 module "fargate_fluentbit" {
-  count                    = var.fargate_fluentbit_enable ? 1 : 0
-  source                   = "./fargate-fluentbit"
+  count  = var.fargate_fluentbit_enable ? 1 : 0
+  source = "./fargate-fluentbit"
 
   eks_cluster_id           = local.eks_cluster_id
   fargate_fluentbit_config = var.fargate_fluentbit_config
 }
 
 module "keda" {
-  count              = var.keda_enable ? 1 : 0
-  source             = "./keda"
+  count  = var.keda_enable ? 1 : 0
+  source = "./keda"
 
   keda_helm_chart    = var.keda_helm_chart
   eks_cluster_name   = local.eks_cluster_id
@@ -148,24 +148,24 @@ module "keda" {
 }
 
 module "metrics_server" {
-  count                     = var.metrics_server_enable ? 1 : 0
-  source                    = "./metrics-server"
+  count  = var.metrics_server_enable ? 1 : 0
+  source = "./metrics-server"
 
   metrics_server_helm_chart = var.metrics_server_helm_chart
   manage_via_gitops         = var.argocd_manage_add_ons
 }
 
 module "ingress_nginx" {
-  count             = var.ingress_nginx_controller_enable ? 1 : 0
-  source            = "./ingress-nginx"
+  count  = var.ingress_nginx_controller_enable ? 1 : 0
+  source = "./ingress-nginx"
 
   nginx_helm_chart  = var.nginx_helm_chart
   manage_via_gitops = var.argocd_manage_add_ons
 }
 
 module "prometheus" {
-  count                 = var.prometheus_enable ? 1 : 0
-  source                = "./prometheus"
+  count  = var.prometheus_enable ? 1 : 0
+  source = "./prometheus"
 
   prometheus_helm_chart = var.prometheus_helm_chart
 
@@ -179,31 +179,31 @@ module "prometheus" {
 }
 
 module "spark_k8s_operator" {
-  count                            = var.spark_on_k8s_operator_enable ? 1 : 0
-  source                           = "./spark-k8s-operator"
+  count  = var.spark_on_k8s_operator_enable ? 1 : 0
+  source = "./spark-k8s-operator"
 
   spark_on_k8s_operator_helm_chart = var.spark_on_k8s_operator_helm_chart
   manage_via_gitops                = var.argocd_manage_add_ons
 }
 
 module "traefik_ingress" {
-  count              = var.traefik_ingress_controller_enable ? 1 : 0
-  source             = "./traefik-ingress"
+  count  = var.traefik_ingress_controller_enable ? 1 : 0
+  source = "./traefik-ingress"
 
   traefik_helm_chart = var.traefik_helm_chart
   manage_via_gitops  = var.argocd_manage_add_ons
 }
 
 module "vpa" {
-  count          = var.vpa_enable ? 1 : 0
-  source         = "./vertical-pod-autoscaler"
+  count  = var.vpa_enable ? 1 : 0
+  source = "./vertical-pod-autoscaler"
 
   vpa_helm_chart = var.vpa_helm_chart
 }
 
 module "yunikorn" {
-  count               = var.yunikorn_enable ? 1 : 0
-  source              = "./yunikorn"
+  count  = var.yunikorn_enable ? 1 : 0
+  source = "./yunikorn"
 
   yunikorn_helm_chart = var.yunikorn_helm_chart
   manage_via_gitops   = var.argocd_manage_add_ons

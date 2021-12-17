@@ -37,11 +37,11 @@ data "terraform_remote_state" "vpc_s3_backend" {
 module "eks-cluster-with-import-vpc" {
   source = "../../../deploy/2-eks-cluster-with-import-vpc/eks"
 
-  tenant = "aws"
+  tenant      = "aws"
   environment = "preprod"
-  zone = "e2e"
+  zone        = "e2e"
 
-  vpc_id = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
+  vpc_id             = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
   private_subnet_ids = data.terraform_remote_state.vpc_s3_backend.outputs.private_subnets
-  public_subnet_ids = data.terraform_remote_state.vpc_s3_backend.outputs.public_subnets
+  public_subnet_ids  = data.terraform_remote_state.vpc_s3_backend.outputs.public_subnets
 }

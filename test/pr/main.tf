@@ -20,12 +20,12 @@ data "terraform_remote_state" "vpc_s3_backend" {
 module "eks-cluster-with-import-vpc" {
   source = "../../deploy/advanced/k8s_addons"
 
-  tenant = "aws"
+  tenant      = "aws"
   environment = "preprod"
-  zone = "pr"
+  zone        = "pr"
 
-  vpc_id = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
+  vpc_id             = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
   private_subnet_ids = data.terraform_remote_state.vpc_s3_backend.outputs.private_subnets
-  public_subnet_ids = data.terraform_remote_state.vpc_s3_backend.outputs.public_subnets
+  public_subnet_ids  = data.terraform_remote_state.vpc_s3_backend.outputs.public_subnets
 
 }

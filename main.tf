@@ -89,7 +89,7 @@ module "aws_managed_prometheus" {
   eks_oidc_provider               = split("//", module.aws_eks.cluster_oidc_issuer_url)[1]
   service_account_amp_ingest_name = local.aws_managed_prometheus_ingest_service_account
   service_account_amp_query_name  = local.aws_managed_prometheus_query_service_account
-  amp_workspace_name              = var.aws_managed_prometheus_workspace_id == "" ? local.aws_managed_prometheus_workspace_id: var.aws_managed_prometheus_workspace_id
+  amp_workspace_name              = var.aws_managed_prometheus_workspace_id == "" ? local.aws_managed_prometheus_workspace_id : var.aws_managed_prometheus_workspace_id
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

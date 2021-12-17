@@ -15,7 +15,7 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
- 
+
 terraform {
   required_version = ">= 1.0.1"
 
@@ -63,9 +63,9 @@ data "terraform_remote_state" "vpc_s3_backend" {
 }*/
 
 locals {
-  tenant             = var.tenant
-  environment        = var.environment
-  zone               = var.zone
+  tenant       = var.tenant
+  environment  = var.environment
+  zone         = var.zone
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   kubernetes_version = "1.21"
@@ -113,7 +113,7 @@ module "aws-eks-accelerator-for-terraform" {
             Zone        = "dev"
             env         = "fargate"
           }
-        }]
+      }]
       subnet_ids = local.private_subnet_ids
       additional_tags = {
         ExtraTag = "Fargate"
@@ -122,7 +122,7 @@ module "aws-eks-accelerator-for-terraform" {
   }
 
   # AWS Managed Services
-  aws_managed_prometheus_enable         = true
+  aws_managed_prometheus_enable = true
 
   enable_emr_on_eks = true
   emr_on_eks_teams = {
@@ -142,11 +142,11 @@ module "aws-eks-accelerator-for-terraform" {
 module "kubernetes-addons" {
   source = "../../../kubernetes-addons"
 
-  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-  eks_cluster_oidc_url = module.aws-eks-accelerator-for-terraform.eks_cluster_oidc_url
-  eks_oidc_provider_arn = module.aws-eks-accelerator-for-terraform.eks_cluster_oidc_provider_arn
+  eks_cluster_id               = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_cluster_oidc_url         = module.aws-eks-accelerator-for-terraform.eks_cluster_oidc_url
+  eks_oidc_provider_arn        = module.aws-eks-accelerator-for-terraform.eks_cluster_oidc_provider_arn
   eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_security_group_id
-  auto_scaling_group_names = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
+  auto_scaling_group_names     = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
 
   # EKS Addons
   enable_eks_addon_vpc_cni            = true
@@ -155,14 +155,14 @@ module "kubernetes-addons" {
   enable_eks_addon_aws_ebs_csi_driver = true
 
   #K8s Add-ons
-  aws_lb_ingress_controller_enable  = true
-  metrics_server_enable             = true
-  cluster_autoscaler_enable         = true
-  vpa_enable = true
-  prometheus_enable                 = true
-  ingress_nginx_controller_enable   = true
-  aws_for_fluentbit_enable          = true
-  argocd_enable                     = true
-  fargate_fluentbit_enable          = true
+  aws_lb_ingress_controller_enable = true
+  metrics_server_enable            = true
+  cluster_autoscaler_enable        = true
+  vpa_enable                       = true
+  prometheus_enable                = true
+  ingress_nginx_controller_enable  = true
+  aws_for_fluentbit_enable         = true
+  argocd_enable                    = true
+  fargate_fluentbit_enable         = true
 
 }

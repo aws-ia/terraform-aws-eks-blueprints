@@ -4,17 +4,17 @@ variable "eks_cluster_id" {
 
 variable "eks_worker_security_group_id" {
   description = "EKS Worker Security group ID created by EKS module"
-  default       = ""
+  default     = ""
 }
 
 variable "eks_cluster_oidc_url" {
   description = "The URL on the EKS cluster OIDC Issuer"
-  default       = ""
+  default     = ""
 }
 
 variable "eks_oidc_provider_arn" {
   description = "The ARN of the OIDC Provider if `enable_irsa = true`."
-  default       = ""
+  default     = ""
 }
 
 variable "auto_scaling_group_names" {

@@ -20,7 +20,7 @@ variable "zone" {
 variable "vpc_id" {
   type        = string
   description = "VPC id"
-  default = ""
+  default     = ""
 }
 
 variable "private_subnet_ids" {
