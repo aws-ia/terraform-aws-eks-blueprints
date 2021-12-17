@@ -7,6 +7,16 @@
 
 Helm Chart Repo  https://github.com/apache/incubator-yunikorn-release/tree/master/helm-charts
 
+### NOTE
+If you get this error while destroying this add-on then perform the follwoing steps to resolve the issue.
+
+**Error**
+
+    Error: warning: Hook pre-delete yunikorn/templates/cleanup.yaml failed: jobs.batch "yunikorn-cleanup" already exists
+
+**Resolution**:
+
+
 
 <!--- BEGIN_TF_DOCS --->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.

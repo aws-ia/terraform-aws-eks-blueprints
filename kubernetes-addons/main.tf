@@ -16,6 +16,42 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#-----------------AWS Managed EKS Add-ons----------------------
+
+module "vpc_cni" {
+  count         = var.enable_eks_addon_vpc_cni ? 1 : 0
+  source        = "./aws-vpc-cni"
+  add_on_config = var.eks_addon_vpc_cni_config
+  cluster_id    = local.eks_cluster_id
+  common_tags   = var.tags
+}
+
+module "coredns" {
+  count         =  var.enable_eks_addon_coredns ? 1 : 0
+  source        = "./aws-coredns"
+  add_on_config = var.eks_addon_coredns_config
+  cluster_id    = local.eks_cluster_id
+  common_tags   = var.tags
+}
+
+module "kube_proxy" {
+  count         =  var.enable_eks_addon_kube_proxy ? 1 : 0
+  source        = "./aws-kube-proxy"
+  add_on_config = var.eks_addon_kube_proxy_config
+  cluster_id    = local.eks_cluster_id
+  common_tags   = var.tags
+}
+
+module "aws_ebs_csi_driver" {
+  count         =  var.enable_eks_addon_aws_ebs_csi_driver ? 1 : 0
+  source        = "./aws-ebs-csi-driver"
+  add_on_config = var.eks_addon_aws_ebs_csi_driver_config
+  cluster_id    = local.eks_cluster_id
+  common_tags   = var.tags
+}
+
+#-----------------Kubernetes Add-ons----------------------
+
 module "agones" {
   count                        = var.agones_enable ? 1 : 0
   source                       = "./agones"

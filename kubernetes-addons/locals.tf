@@ -1,7 +1,7 @@
 
 locals {
 
-  eks_cluster_id = data.aws_eks_cluster.eks_cluster_id.id
+  eks_cluster_id = data.aws_eks_cluster.cluster.id
 
   # Configuration for managing add-ons via ArgoCD.
   argocd_add_on_config = {
