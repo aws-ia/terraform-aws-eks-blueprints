@@ -17,11 +17,11 @@ The log router allows you to use the breadth of services at AWS for log analytic
 You can stream logs from Fargate directly to `Amazon CloudWatch`, `Amazon OpenSearch Service`.
 You can also stream logs to destinations such as `Amazon S3`, `Amazon Kinesis Data Streams`, and partner tools through Amazon Kinesis Data Firehose.
 
-# Fluent Bit CloudWatch Config
+## Fluent Bit CloudWatch Config
 Please find the updated configuration from [AWS Docs](https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html)
 
 ```hcl
- #---------------------------------------
+  #---------------------------------------
   # FARGATE FLUENTBIT
   #---------------------------------------
   fargate_fluentbit_enable = true
@@ -92,5 +92,4 @@ No modules.
 ## Outputs
 
 No outputs.
-
 <!--- END_TF_DOCS --->
