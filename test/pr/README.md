@@ -20,7 +20,7 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eks-cluster-with-import-vpc"></a> [eks-cluster-with-import-vpc](#module\_eks-cluster-with-import-vpc) | ../../../deploy/2-eks-cluster-with-import-vpc/eks | n/a |
+| <a name="module_eks-cluster-with-import-vpc"></a> [eks-cluster-with-import-vpc](#module\_eks-cluster-with-import-vpc) | ../../deploy/2-eks-cluster-with-import-vpc/eks | n/a |
 
 ## Resources
 
