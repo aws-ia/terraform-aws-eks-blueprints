@@ -36,7 +36,7 @@ variable "service_account_amp_ingest_name" {
   default = ""
 }
 
-variable "prometheus_helm_chart" {
+variable "helm_provider_config" {
   type    = any
   default = {}
 }

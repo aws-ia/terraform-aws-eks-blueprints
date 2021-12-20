@@ -145,7 +145,7 @@ module "ingress_nginx" {
 module "prometheus" {
   count                 = var.create_eks && var.prometheus_enable ? 1 : 0
   source                = "./kubernetes-addons/prometheus"
-  prometheus_helm_chart = var.prometheus_helm_chart
+  helm_provider_config = var.prometheus_helm_chart
 
   #AWS Managed Prometheus Workspace
   aws_managed_prometheus_enable   = var.aws_managed_prometheus_enable
