@@ -2,8 +2,6 @@ name: terraform-docs
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   docs:
