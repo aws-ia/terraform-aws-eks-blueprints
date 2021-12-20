@@ -16,7 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "keda_helm_chart" {
+variable "helm_provider_config" {
   type        = any
   default     = {}
   description = "Keda Event-based autoscaler for workloads on Kubernetes Helm chart config"
@@ -38,12 +38,12 @@ variable "tags" {
   description = "Common Tags for AWS resources"
 }
 
-variable "keda_create_irsa" {
+variable "create_irsa" {
   type        = bool
   description = "Indicates if the add-on should create a IAM role + service account"
 }
 
-variable "keda_irsa_policies" {
+variable "irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
 }

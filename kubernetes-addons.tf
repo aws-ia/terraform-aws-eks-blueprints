@@ -114,10 +114,10 @@ module "fargate_fluentbit" {
 module "keda" {
   count              = var.create_eks && var.keda_enable ? 1 : 0
   source             = "./kubernetes-addons/keda"
-  keda_helm_chart    = var.keda_helm_chart
+  helm_provider_config    = var.keda_helm_chart
   eks_cluster_name   = module.aws_eks.cluster_id
-  keda_create_irsa   = var.keda_create_irsa
-  keda_irsa_policies = var.keda_irsa_policies
+  create_irsa   = var.keda_create_irsa
+  irsa_policies = var.keda_irsa_policies
   tags               = var.tags
   manage_via_gitops  = var.argocd_manage_add_ons
 
@@ -136,7 +136,7 @@ module "metrics_server" {
 module "ingress_nginx" {
   count             = var.create_eks && var.ingress_nginx_controller_enable ? 1 : 0
   source            = "./kubernetes-addons/ingress-nginx"
-  nginx_helm_chart  = var.nginx_helm_chart
+  helm_provider_config  = var.nginx_helm_chart
   manage_via_gitops = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
