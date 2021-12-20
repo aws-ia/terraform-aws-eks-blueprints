@@ -1,11 +1,28 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: MIT-0
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ * software and associated documentation files (the "Software"), to deal in the Software
+ * without restriction, including without limitation the rights to use, copy, modify,
+ * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 resource "kubernetes_namespace" "aws_otel_eks" {
   count = var.manage_via_gitops ? 0 : 1
   metadata {
-    name = local.aws_open_telemetry_app["aws_open_telemetry_namespace"]
+    name = local.default_addon_config["namespace"]
 
     labels = {
-      name = local.aws_open_telemetry_app["aws_open_telemetry_namespace"]
+      name = local.default_addon_config["namespace"]
     }
   }
 }
@@ -14,7 +31,7 @@ resource "kubernetes_deployment" "aws_otel_eks_sidecar" {
   count = var.manage_via_gitops ? 0 : 1
   metadata {
     name      = "aws-otel-eks-sidecar"
-    namespace = local.aws_open_telemetry_app["aws_open_telemetry_namespace"]
+    namespace = local.default_addon_config["namespace"]
 
     labels = {
       name = "aws-otel-eks-sidecar"
@@ -39,22 +56,22 @@ resource "kubernetes_deployment" "aws_otel_eks_sidecar" {
 
       spec {
         container {
-          name  = local.aws_open_telemetry_app["aws_open_telemetry_emitter_name"]
-          image = local.aws_open_telemetry_app["aws_open_telemetry_emitter_image"]
+          name  = local.default_addon_config["emitter_name"]
+          image = local.default_addon_config["emitter_image"]
 
           env {
             name  = "OTEL_OTLP_ENDPOINT"
-            value = local.aws_open_telemetry_app["aws_open_telemetry_emitter_oltp_endpoint"]
+            value = local.default_addon_config["emitter_oltp_endpoint"]
           }
 
           env {
             name  = "OTEL_RESOURCE_ATTRIBUTES"
-            value = local.aws_open_telemetry_app["aws_open_telemetry_emitter_otel_resource_attributes"]
+            value = local.default_addon_config["emitter_otel_resource_attributes"]
           }
 
           env {
             name  = "S3_REGION"
-            value = local.aws_open_telemetry_app["aws_open_telemetry_aws_region"]
+            value = local.default_addon_config["aws_region"]
           }
 
           image_pull_policy = "Always"
@@ -62,11 +79,11 @@ resource "kubernetes_deployment" "aws_otel_eks_sidecar" {
 
         container {
           name  = "aws-otel-collector"
-          image = local.aws_open_telemetry_app["aws_open_telemetry_collector_image"]
+          image = local.default_addon_config["collector_image"]
 
           env {
             name  = "AWS_REGION"
-            value = local.aws_open_telemetry_app["aws_open_telemetry_aws_region"]
+            value = local.default_addon_config["aws_region"]
           }
 
           resources {
@@ -120,13 +137,13 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "managed_node_role" {
-  for_each   = toset(var.aws_open_telemetry_mg_node_iam_role_arns)
+  for_each   = toset(var.mg_node_iam_role_arns)
   role       = each.value
   policy_arn = aws_iam_policy.eks_aws_otel_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "self_managed_role" {
-  for_each   = toset(var.aws_open_telemetry_self_mg_node_iam_role_arns)
+  for_each   = toset(var.self_mg_node_iam_role_arns)
   role       = each.value
   policy_arn = aws_iam_policy.eks_aws_otel_policy.arn
 }
