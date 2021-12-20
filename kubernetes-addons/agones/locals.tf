@@ -1,7 +1,7 @@
 data "aws_region" "current" {}
 
 locals {
-  default_helm_provider_config_values = [templatefile("${path.module}/values.yaml", {})]
+  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
   default_helm_provider_config = {
     name                       = "agones"
@@ -13,7 +13,7 @@ locals {
     create_namespace           = true
     description                = "Agones Gaming Server Helm Chart deployment configuration"
     lint                       = false
-    values                     = local.default_helm_provider_config_values
+    values                     = local.default_helm_values
     wait                       = true
     wait_for_jobs              = false
     verify                     = false
