@@ -17,7 +17,7 @@
  */
 
 locals {
-  namespace = "kube-system"
+  namespace            = "kube-system"
   service_account_name = "aws-node-termination-handler-sa"
 
   default_helm_provider_config = {
@@ -67,7 +67,7 @@ locals {
     nth-sa-name = local.service_account_name
   })]
 
-   event_rules = [
+  event_rules = [
     {
       name          = "NTHASGTermRule",
       event_pattern = <<EOF
