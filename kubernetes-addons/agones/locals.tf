@@ -1,9 +1,9 @@
 data "aws_region" "current" {}
 
 locals {
-  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
+  default_helm_provider_config_values = [templatefile("${path.module}/values.yaml", {})]
 
-  default_agones_helm_app = {
+  default_helm_provider_config = {
     name                       = "agones"
     chart                      = "agones"
     repository                 = "https://agones.dev/chart/stable"
@@ -13,7 +13,7 @@ locals {
     create_namespace           = true
     description                = "Agones Gaming Server Helm Chart deployment configuration"
     lint                       = false
-    values                     = local.default_helm_values
+    values                     = local.default_helm_provider_config_values
     wait                       = true
     wait_for_jobs              = false
     verify                     = false
@@ -43,9 +43,9 @@ locals {
     gameserver_maxport         = 8000
   }
 
-  agones_helm_app = merge(
-    local.default_agones_helm_app,
-    var.agones_helm_chart
+  helm_provider_config = merge(
+    local.default_helm_provider_config,
+    var.helm_provider_config
   )
 
   argocd_gitops_config = {
