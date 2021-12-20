@@ -40,8 +40,8 @@ resource "kubernetes_config_map" "aws_logging" {
   }
 
   data = {
-    "parsers.conf" = local.fargate_fluentbit_app["parsers_conf"]
-    "filters.conf" = local.fargate_fluentbit_app["filters_conf"]
-    "output.conf"  = local.fargate_fluentbit_app["output_conf"]
+    "parsers.conf" = local.config["parsers_conf"]
+    "filters.conf" = local.config["filters_conf"]
+    "output.conf"  = local.config["output_conf"]
   }
 }
