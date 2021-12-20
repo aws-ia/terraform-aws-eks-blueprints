@@ -64,14 +64,14 @@ data "terraform_remote_state" "vpc_s3_backend" {
 locals {
   tenant             = "aws001"  # AWS account name or unique id for tenant
   environment        = "preprod" # Environment area eg., preprod or prod
-  zone               = "test"     # Environment with in one sub_tenant or business unit
+  zone               = "test"    # Environment with in one sub_tenant or business unit
   kubernetes_version = "1.21"
   terraform_version  = "Terraform v1.0.1"
 
   vpc_id             = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
   private_subnet_ids = data.terraform_remote_state.vpc_s3_backend.outputs.private_subnets
   public_subnet_ids  = data.terraform_remote_state.vpc_s3_backend.outputs.public_subnets
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  cluster_name       = join("-", [local.tenant, local.environment, local.zone, "eks"])
 }
 
 module "aws-eks-accelerator-for-terraform" {
@@ -101,7 +101,7 @@ module "aws-eks-accelerator-for-terraform" {
   # EKS SELF-MANAGED NODE GROUPS
   self_managed_node_groups = {
     self_mg_4 = {
-      node_group_name    = "self-managed-ondemand"
+      node_group_name = "self-managed-ondemand"
       instance_types  = ["m4.large"]
       subnet_ids      = local.private_subnet_ids
     }
@@ -118,7 +118,7 @@ module "aws-eks-accelerator-for-terraform" {
             Zone        = "dev"
             env         = "fargate"
           }
-        }]
+      }]
       subnet_ids = local.private_subnet_ids
       additional_tags = {
         ExtraTag = "Fargate"
@@ -127,27 +127,27 @@ module "aws-eks-accelerator-for-terraform" {
   }
 
   # EKS Addons
-  enable_eks_addon_vpc_cni = true
-  enable_eks_addon_coredns = true
-  enable_eks_addon_kube_proxy = true
+  enable_eks_addon_vpc_cni            = true
+  enable_eks_addon_coredns            = true
+  enable_eks_addon_kube_proxy         = true
   enable_eks_addon_aws_ebs_csi_driver = true
 
   #K8s Add-ons
-  aws_lb_ingress_controller_enable = true
-  metrics_server_enable            = true
-  cluster_autoscaler_enable        = true
-  prometheus_enable = true
-  ingress_nginx_controller_enable = true
-  aws_for_fluentbit_enable = true
+  aws_lb_ingress_controller_enable  = true
+  metrics_server_enable             = true
+  cluster_autoscaler_enable         = true
+  prometheus_enable                 = true
+  ingress_nginx_controller_enable   = true
+  aws_for_fluentbit_enable          = true
   traefik_ingress_controller_enable = true
-  agones_enable = true
-  aws_open_telemetry_enable = true
-  spark_on_k8s_operator_enable = true
-  argocd_enable = true
-  keda_enable = true
-  vpa_enable = true
-  yunikorn_enable = true
-  fargate_fluentbit_enable = true
+  agones_enable                     = true
+  aws_open_telemetry_enable         = true
+  spark_on_k8s_operator_enable      = true
+  argocd_enable                     = true
+  keda_enable                       = true
+  vpa_enable                        = true
+  yunikorn_enable                   = true
+  fargate_fluentbit_enable          = true
 
   # AWS Managed Services
   aws_managed_prometheus_enable         = true
