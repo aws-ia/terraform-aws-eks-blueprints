@@ -2,7 +2,7 @@
 locals {
   default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
-  default_nginx_helm_app = {
+  default_helm_provider_config = {
     name                       = "ingress-nginx"
     chart                      = "ingress-nginx"
     repository                 = "https://kubernetes.github.io/ingress-nginx"
@@ -40,9 +40,9 @@ locals {
     postrender                 = ""
   }
 
-  nginx_helm_app = merge(
-    local.default_nginx_helm_app,
-    var.nginx_helm_chart
+  helm_provider_config = merge(
+    local.default_helm_provider_config,
+    var.helm_provider_config
   )
 
   argocd_gitops_config = {

@@ -17,8 +17,8 @@
  */
 
 locals {
-  keda_service_account_name = "keda-operator"
-  keda_namespace            = "keda-ns"
+  service_account_name = "keda-operator"
+  namespace            = "keda-ns"
 
   irsa_set_values = [{
     name  = "serviceAccount.create"
@@ -26,10 +26,10 @@ locals {
     },
     {
       name  = "serviceAccount.name"
-      value = local.keda_service_account_name
+      value = local.service_account_name
   }]
 
-  default_keda_helm_app = {
+  default_helm_provider_config = {
     name                       = "keda"
     chart                      = "keda"
     repository                 = "https://kedacore.github.io/charts"
@@ -64,20 +64,20 @@ locals {
     postrender                 = ""
     set                        = []
     set_sensitive              = []
-    values                     = local.default_keda_helm_values
+    values                     = local.default_helm_values
   }
 
-  keda_helm_app = merge(
-    local.default_keda_helm_app,
-    var.keda_helm_chart
+  helm_provider_config = merge(
+    local.default_helm_provider_config,
+    var.helm_provider_config
   )
 
-  default_keda_helm_values = [templatefile("${path.module}/values.yaml", {
-    keda-sa-name = local.keda_service_account_name
+  default_helm_values = [templatefile("${path.module}/values.yaml", {
+    keda-sa-name = local.service_account_name
   })]
 
   argocd_gitops_config = {
     enable             = true
-    serviceAccountName = local.keda_service_account_name
+    serviceAccountName = local.service_account_name
   }
 }
