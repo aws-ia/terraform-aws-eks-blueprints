@@ -112,14 +112,14 @@ module "fargate_fluentbit" {
 }
 
 module "keda" {
-  count              = var.create_eks && var.keda_enable ? 1 : 0
-  source             = "./kubernetes-addons/keda"
-  helm_provider_config    = var.keda_helm_chart
-  eks_cluster_name   = module.aws_eks.cluster_id
-  create_irsa   = var.keda_create_irsa
-  irsa_policies = var.keda_irsa_policies
-  tags               = var.tags
-  manage_via_gitops  = var.argocd_manage_add_ons
+  count                = var.create_eks && var.keda_enable ? 1 : 0
+  source               = "./kubernetes-addons/keda"
+  helm_provider_config = var.keda_helm_chart
+  eks_cluster_name     = module.aws_eks.cluster_id
+  create_irsa          = var.keda_create_irsa
+  irsa_policies        = var.keda_irsa_policies
+  tags                 = var.tags
+  manage_via_gitops    = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
@@ -134,10 +134,10 @@ module "metrics_server" {
 }
 
 module "ingress_nginx" {
-  count             = var.create_eks && var.ingress_nginx_controller_enable ? 1 : 0
-  source            = "./kubernetes-addons/ingress-nginx"
-  helm_provider_config  = var.nginx_helm_chart
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                = var.create_eks && var.ingress_nginx_controller_enable ? 1 : 0
+  source               = "./kubernetes-addons/ingress-nginx"
+  helm_provider_config = var.nginx_helm_chart
+  manage_via_gitops    = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
@@ -158,10 +158,10 @@ module "prometheus" {
 }
 
 module "spark_k8s_operator" {
-  count                            = var.create_eks && var.spark_on_k8s_operator_enable ? 1 : 0
-  source                           = "./kubernetes-addons/spark-k8s-operator"
-  spark_on_k8s_operator_helm_chart = var.spark_on_k8s_operator_helm_chart
-  manage_via_gitops                = var.argocd_manage_add_ons
+  count                = var.create_eks && var.spark_on_k8s_operator_enable ? 1 : 0
+  source               = "./kubernetes-addons/spark-k8s-operator"
+  helm_provider_config = var.spark_on_k8s_operator_helm_chart
+  manage_via_gitops    = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
