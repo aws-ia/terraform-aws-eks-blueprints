@@ -16,7 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "cluster_autoscaler_helm_chart" {
+variable "helm_provider_config" {
   type    = any
   default = {}
 }
