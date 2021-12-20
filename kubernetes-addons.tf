@@ -38,23 +38,23 @@ module "argocd" {
 }
 
 module "aws_for_fluent_bit" {
-  count                        = var.create_eks && var.aws_for_fluentbit_enable ? 1 : 0
-  source                       = "./kubernetes-addons/aws-for-fluentbit"
-  aws_for_fluentbit_helm_chart = var.aws_for_fluentbit_helm_chart
-  eks_cluster_id               = module.aws_eks.cluster_id
-  manage_via_gitops            = var.argocd_manage_add_ons
+  count                = var.create_eks && var.aws_for_fluentbit_enable ? 1 : 0
+  source               = "./kubernetes-addons/aws-for-fluentbit"
+  helm_provider_config = var.aws_for_fluentbit_helm_chart
+  eks_cluster_id       = module.aws_eks.cluster_id
+  manage_via_gitops    = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
 
 module "aws_load_balancer_controller" {
-  count                          = var.create_eks && var.aws_lb_ingress_controller_enable ? 1 : 0
-  source                         = "./kubernetes-addons/aws-load-balancer-controller"
-  eks_cluster_id                 = module.aws_eks.cluster_id
-  lb_ingress_controller_helm_app = var.aws_lb_ingress_controller_helm_app
-  eks_oidc_issuer_url            = module.aws_eks.cluster_oidc_issuer_url
-  eks_oidc_provider_arn          = module.aws_eks.oidc_provider_arn
-  manage_via_gitops              = var.argocd_manage_add_ons
+  count                 = var.create_eks && var.aws_lb_ingress_controller_enable ? 1 : 0
+  source                = "./kubernetes-addons/aws-load-balancer-controller"
+  helm_provider_config  = var.aws_lb_ingress_controller_helm_app
+  eks_cluster_id        = module.aws_eks.cluster_id
+  eks_oidc_issuer_url   = module.aws_eks.cluster_oidc_issuer_url
+  eks_oidc_provider_arn = module.aws_eks.oidc_provider_arn
+  manage_via_gitops     = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }

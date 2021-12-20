@@ -7,7 +7,7 @@ locals {
     log_group_name = local.log_group_name
   })]
 
-  default_aws_for_fluentbit_helm_app = {
+  default_helm_provider_config = {
     name                       = "aws-for-fluent-bit"
     chart                      = "aws-for-fluent-bit"
     repository                 = "https://aws.github.io/eks-charts"
@@ -45,8 +45,8 @@ locals {
     postrender                 = ""
   }
 
-  aws_for_fluentbit_helm_app = merge(
-    local.default_aws_for_fluentbit_helm_app,
+  helm_provider_config = merge(
+    local.default_helm_provider_config,
     var.aws_for_fluentbit_helm_chart
   )
 

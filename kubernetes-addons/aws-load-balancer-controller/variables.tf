@@ -16,9 +16,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "lb_ingress_controller_helm_app" {
+variable "helm_provider_config" {
   type        = any
-  description = "Helm chart definition for lb_ingress_controller."
+  description = "Helm provider config for aws_load_balancer_controller."
   default     = {}
 }
 
