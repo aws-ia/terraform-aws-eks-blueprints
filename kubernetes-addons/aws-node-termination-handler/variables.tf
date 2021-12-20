@@ -16,7 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "aws_node_termination_handler_helm_chart" {
+variable "helm_provider_config" {
   description = "AWS Node Termination Handler Helm Chart Configuration"
   type        = any
   default     = {}
