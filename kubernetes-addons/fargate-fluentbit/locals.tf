@@ -1,17 +1,16 @@
-
 locals {
 
-  fargate_fluentbit_cwlog_group         = "/${var.eks_cluster_id}/fargate-fluentbit-logs"
-  fargate_fluentbit_cwlog_stream_prefix = "fargate-logs-"
+  cwlog_group         = "/${var.eks_cluster_id}/fargate-fluentbit-logs"
+  cwlog_stream_prefix = "fargate-logs-"
 
-  default_fargate_fluentbit_helm_app = {
+  default_config = {
     output_conf  = <<EOF
 [OUTPUT]
   Name cloudwatch_logs
   Match *
   region ${data.aws_region.current.id}
-  log_group_name ${local.fargate_fluentbit_cwlog_group}
-  log_stream_prefix ${local.fargate_fluentbit_cwlog_stream_prefix}
+  log_group_name ${local.cwlog_group}
+  log_stream_prefix ${local.cwlog_stream_prefix}
   auto_create_group true
     EOF
     filters_conf = <<EOF
@@ -33,10 +32,10 @@ locals {
   Time_Keep On
   Decode_Field_As json message
     EOF
-
   }
-  fargate_fluentbit_app = merge(
-    local.default_fargate_fluentbit_helm_app,
-  var.fargate_fluentbit_config)
 
+  config = merge(
+    local.default_config,
+    var.fargate_fluentbit_config
+  )
 }
