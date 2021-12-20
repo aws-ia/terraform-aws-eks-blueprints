@@ -167,10 +167,10 @@ module "spark_k8s_operator" {
 }
 
 module "traefik_ingress" {
-  count              = var.create_eks && var.traefik_ingress_controller_enable ? 1 : 0
-  source             = "./kubernetes-addons/traefik-ingress"
-  traefik_helm_chart = var.traefik_helm_chart
-  manage_via_gitops  = var.argocd_manage_add_ons
+  count                = var.create_eks && var.traefik_ingress_controller_enable ? 1 : 0
+  source               = "./kubernetes-addons/traefik-ingress"
+  helm_provider_config = var.traefik_helm_chart
+  manage_via_gitops    = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }

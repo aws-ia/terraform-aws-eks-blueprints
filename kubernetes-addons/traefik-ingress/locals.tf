@@ -1,6 +1,6 @@
 
 locals {
-  default_traefik_helm_app = {
+  default_helm_provider_config = {
     name                       = "traefik"
     chart                      = "traefik"
     repository                 = "https://helm.traefik.io/traefik"
@@ -38,9 +38,9 @@ locals {
     postrender                 = ""
   }
 
-  traefik_helm_app = merge(
-    local.default_traefik_helm_app,
-    var.traefik_helm_chart
+  helm_provider_config = merge(
+    local.default_helm_provider_config,
+    var.helm_provider_config
   )
 
   argocd_gitops_config = {
