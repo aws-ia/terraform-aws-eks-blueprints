@@ -23,46 +23,46 @@ data "aws_security_group" "eks_worker_group" {
 
 resource "helm_release" "agones" {
   count                      = var.manage_via_gitops ? 0 : 1
-  name                       = local.agones_helm_app["name"]
-  repository                 = local.agones_helm_app["repository"]
-  chart                      = local.agones_helm_app["chart"]
-  version                    = local.agones_helm_app["version"]
-  namespace                  = local.agones_helm_app["namespace"]
-  timeout                    = local.agones_helm_app["timeout"]
-  values                     = local.agones_helm_app["values"]
-  create_namespace           = local.agones_helm_app["create_namespace"]
-  lint                       = local.agones_helm_app["lint"]
-  description                = local.agones_helm_app["description"]
-  repository_key_file        = local.agones_helm_app["repository_key_file"]
-  repository_cert_file       = local.agones_helm_app["repository_cert_file"]
-  repository_ca_file         = local.agones_helm_app["repository_ca_file"]
-  repository_username        = local.agones_helm_app["repository_username"]
-  repository_password        = local.agones_helm_app["repository_password"]
-  verify                     = local.agones_helm_app["verify"]
-  keyring                    = local.agones_helm_app["keyring"]
-  disable_webhooks           = local.agones_helm_app["disable_webhooks"]
-  reuse_values               = local.agones_helm_app["reuse_values"]
-  reset_values               = local.agones_helm_app["reset_values"]
-  force_update               = local.agones_helm_app["force_update"]
-  recreate_pods              = local.agones_helm_app["recreate_pods"]
-  cleanup_on_fail            = local.agones_helm_app["cleanup_on_fail"]
-  max_history                = local.agones_helm_app["max_history"]
-  atomic                     = local.agones_helm_app["atomic"]
-  skip_crds                  = local.agones_helm_app["skip_crds"]
-  render_subchart_notes      = local.agones_helm_app["render_subchart_notes"]
-  disable_openapi_validation = local.agones_helm_app["disable_openapi_validation"]
-  wait                       = local.agones_helm_app["wait"]
-  wait_for_jobs              = local.agones_helm_app["wait_for_jobs"]
-  dependency_update          = local.agones_helm_app["dependency_update"]
-  replace                    = local.agones_helm_app["replace"]
+  name                       = local.helm_provider_config["name"]
+  repository                 = local.helm_provider_config["repository"]
+  chart                      = local.helm_provider_config["chart"]
+  version                    = local.helm_provider_config["version"]
+  namespace                  = local.helm_provider_config["namespace"]
+  timeout                    = local.helm_provider_config["timeout"]
+  values                     = local.helm_provider_config["values"]
+  create_namespace           = local.helm_provider_config["create_namespace"]
+  lint                       = local.helm_provider_config["lint"]
+  description                = local.helm_provider_config["description"]
+  repository_key_file        = local.helm_provider_config["repository_key_file"]
+  repository_cert_file       = local.helm_provider_config["repository_cert_file"]
+  repository_ca_file         = local.helm_provider_config["repository_ca_file"]
+  repository_username        = local.helm_provider_config["repository_username"]
+  repository_password        = local.helm_provider_config["repository_password"]
+  verify                     = local.helm_provider_config["verify"]
+  keyring                    = local.helm_provider_config["keyring"]
+  disable_webhooks           = local.helm_provider_config["disable_webhooks"]
+  reuse_values               = local.helm_provider_config["reuse_values"]
+  reset_values               = local.helm_provider_config["reset_values"]
+  force_update               = local.helm_provider_config["force_update"]
+  recreate_pods              = local.helm_provider_config["recreate_pods"]
+  cleanup_on_fail            = local.helm_provider_config["cleanup_on_fail"]
+  max_history                = local.helm_provider_config["max_history"]
+  atomic                     = local.helm_provider_config["atomic"]
+  skip_crds                  = local.helm_provider_config["skip_crds"]
+  render_subchart_notes      = local.helm_provider_config["render_subchart_notes"]
+  disable_openapi_validation = local.helm_provider_config["disable_openapi_validation"]
+  wait                       = local.helm_provider_config["wait"]
+  wait_for_jobs              = local.helm_provider_config["wait_for_jobs"]
+  dependency_update          = local.helm_provider_config["dependency_update"]
+  replace                    = local.helm_provider_config["replace"]
 
   postrender {
-    binary_path = local.agones_helm_app["postrender"]
+    binary_path = local.helm_provider_config["postrender"]
   }
 
   dynamic "set" {
     iterator = each_item
-    for_each = local.agones_helm_app["set"] == null ? [] : local.agones_helm_app["set"]
+    for_each = local.helm_provider_config["set"] == null ? [] : local.helm_provider_config["set"]
 
     content {
       name  = each_item.value.name
@@ -72,7 +72,7 @@ resource "helm_release" "agones" {
 
   dynamic "set_sensitive" {
     iterator = each_item
-    for_each = local.agones_helm_app["set_sensitive"] == null ? [] : local.agones_helm_app["set_sensitive"]
+    for_each = local.helm_provider_config["set_sensitive"] == null ? [] : local.helm_provider_config["set_sensitive"]
 
     content {
       name  = each_item.value.name
@@ -83,8 +83,8 @@ resource "helm_release" "agones" {
 
 resource "aws_security_group_rule" "agones_sg_ingress_rule" {
   type              = "ingress"
-  from_port         = local.agones_helm_app["gameserver_minport"]
-  to_port           = local.agones_helm_app["gameserver_maxport"]
+  from_port         = local.helm_provider_config["gameserver_minport"]
+  to_port           = local.helm_provider_config["gameserver_maxport"]
   protocol          = "udp"
   cidr_blocks       = ["0.0.0.0/0"]
   ipv6_cidr_blocks  = ["::/0"]

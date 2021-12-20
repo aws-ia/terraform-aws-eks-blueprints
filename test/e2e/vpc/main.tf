@@ -16,18 +16,33 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "helm_provider_config" {
-  type        = any
-  default     = {}
-  description = "Agones GameServer Helm chart config"
+terraform {
+  required_version = ">= 1.0.1"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 3.66.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.7.1"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = ">= 2.4.1"
+    }
+  }
 }
 
-variable "eks_worker_security_group_id" {
-  type = string
+terraform {
+  backend "s3" {
+    bucket = "terraform-state-327949925549"
+    key    = "e2e/vpc/terraform-main.tfstate"
+    region = "eu-west-1"
+  }
 }
 
-variable "manage_via_gitops" {
-  type        = bool
-  default     = false
-  description = "Determines if the add-on should be managed via GitOps."
+module "eks-cluster-with-import-vpc" {
+  source = "../../../deploy/2-eks-cluster-with-import-vpc/vpc"
 }

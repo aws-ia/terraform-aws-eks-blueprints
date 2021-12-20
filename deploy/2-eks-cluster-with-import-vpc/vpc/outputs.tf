@@ -16,18 +16,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "helm_provider_config" {
-  type        = any
-  default     = {}
-  description = "Agones GameServer Helm chart config"
+output "vpc_id" {
+  description = "The ID of the VPC"
+  value       = module.aws_vpc.vpc_id
 }
 
-variable "eks_worker_security_group_id" {
-  type = string
+output "private_subnets" {
+  description = "List of IDs of private subnets"
+  value       = module.aws_vpc.private_subnets
 }
 
-variable "manage_via_gitops" {
-  type        = bool
-  default     = false
-  description = "Determines if the add-on should be managed via GitOps."
+output "public_subnets" {
+  description = "List of IDs of public subnets"
+  value       = module.aws_vpc.public_subnets
 }
