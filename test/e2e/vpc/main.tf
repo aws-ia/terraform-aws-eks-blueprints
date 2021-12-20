@@ -46,4 +46,3 @@ terraform {
 module "eks-cluster-with-import-vpc" {
   source = "../../../deploy/2-eks-cluster-with-import-vpc/vpc"
 }
-

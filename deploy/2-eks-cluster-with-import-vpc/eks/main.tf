@@ -113,7 +113,7 @@ module "aws-eks-accelerator-for-terraform" {
             Zone        = "dev"
             env         = "fargate"
           }
-        }]
+      }]
       subnet_ids = local.private_subnet_ids
       additional_tags = {
         ExtraTag = "Fargate"
