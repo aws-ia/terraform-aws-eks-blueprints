@@ -17,45 +17,10 @@
  */
 
 locals {
-
   namespace = "kube-system"
-
   service_account_name = "aws-node-termination-handler-sa"
 
-  event_rules = [
-    {
-      name          = "NTHASGTermRule",
-      event_pattern = <<EOF
-{"source":["aws.autoscaling"],"detail-type":["EC2 Instance-terminate Lifecycle Action"]}
-EOF
-    },
-    {
-      name          = "NTHSpotTermRule",
-      event_pattern = <<EOF
-{"source": ["aws.ec2"],"detail-type": ["EC2 Spot Instance Interruption Warning"]}
-EOF
-    },
-    {
-      name          = "NTHRebalanceRule",
-      event_pattern = <<EOF
-{"source": ["aws.ec2"],"detail-type": ["EC2 Instance Rebalance Recommendation"]}
-EOF
-    },
-    {
-      name          = "NTHInstanceStateChangeRule",
-      event_pattern = <<EOF
-{"source": ["aws.ec2"],"detail-type": ["EC2 Instance State-change Notification"]}
-EOF
-    },
-    {
-      name          = "NTHScheduledChangeRule",
-      event_pattern = <<EOF
-{"source": ["aws.health"],"detail-type": ["AWS Health Event"]}
-EOF
-    }
-  ]
-
-  default_nth_helm_app = {
+  default_helm_provider_config = {
     name                       = "aws-node-termination-handler"
     chart                      = "aws-node-termination-handler"
     repository                 = "https://aws.github.io/eks-charts"
@@ -90,15 +55,48 @@ EOF
     postrender                 = ""
     set                        = []
     set_sensitive              = []
-    values                     = local.default_nth_helm_values
+    values                     = local.default_helm_values
   }
 
-  aws_node_termination_handler_helm_app = merge(
-    local.default_nth_helm_app,
-    var.aws_node_termination_handler_helm_chart
+  helm_provider_config = merge(
+    local.default_helm_provider_config,
+    var.helm_provider_config
   )
 
-  default_nth_helm_values = [templatefile("${path.module}/values.yaml", {
+  default_helm_values = [templatefile("${path.module}/values.yaml", {
     nth-sa-name = local.service_account_name
   })]
+
+   event_rules = [
+    {
+      name          = "NTHASGTermRule",
+      event_pattern = <<EOF
+{"source":["aws.autoscaling"],"detail-type":["EC2 Instance-terminate Lifecycle Action"]}
+EOF
+    },
+    {
+      name          = "NTHSpotTermRule",
+      event_pattern = <<EOF
+{"source": ["aws.ec2"],"detail-type": ["EC2 Spot Instance Interruption Warning"]}
+EOF
+    },
+    {
+      name          = "NTHRebalanceRule",
+      event_pattern = <<EOF
+{"source": ["aws.ec2"],"detail-type": ["EC2 Instance Rebalance Recommendation"]}
+EOF
+    },
+    {
+      name          = "NTHInstanceStateChangeRule",
+      event_pattern = <<EOF
+{"source": ["aws.ec2"],"detail-type": ["EC2 Instance State-change Notification"]}
+EOF
+    },
+    {
+      name          = "NTHScheduledChangeRule",
+      event_pattern = <<EOF
+{"source": ["aws.health"],"detail-type": ["AWS Health Event"]}
+EOF
+    }
+  ]
 }
