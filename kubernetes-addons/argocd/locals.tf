@@ -1,8 +1,8 @@
 
 locals {
-  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
+  default_helm_provider_config_values = [templatefile("${path.module}/values.yaml", {})]
 
-  default_argocd_helm_app = {
+  default_helm_provider_config = {
     name                       = "argo-cd"
     chart                      = "argo-cd"
     repository                 = "https://argoproj.github.io/argo-helm"
@@ -10,7 +10,7 @@ locals {
     namespace                  = "argocd"
     timeout                    = "1200"
     create_namespace           = true
-    values                     = local.default_helm_values
+    values                     = local.default_helm_provider_config_values
     set                        = []
     set_sensitive              = null
     lint                       = false
@@ -40,9 +40,9 @@ locals {
     postrender                 = ""
   }
 
-  argocd_helm_app = merge(
-    local.default_argocd_helm_app,
-    var.argocd_helm_chart
+  helm_provider_config = merge(
+    local.default_helm_provider_config,
+    var.helm_provider_config
   )
 
   # Global Application Values
