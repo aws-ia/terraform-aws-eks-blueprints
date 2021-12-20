@@ -127,7 +127,7 @@ module "keda" {
 module "metrics_server" {
   count                     = var.create_eks && var.metrics_server_enable ? 1 : 0
   source                    = "./kubernetes-addons/metrics-server"
-  metrics_server_helm_chart = var.metrics_server_helm_chart
+  helm_provider_config = var.metrics_server_helm_chart
   manage_via_gitops         = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
