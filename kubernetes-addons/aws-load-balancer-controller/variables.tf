@@ -18,7 +18,7 @@
 
 variable "helm_provider_config" {
   type        = any
-  description = "Helm provider config for aws_load_balancer_controller."
+  description = "Helm provider config for the aws_load_balancer_controller."
   default     = {}
 }
 
