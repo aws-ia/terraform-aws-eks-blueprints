@@ -16,9 +16,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "aws_for_fluentbit_helm_chart" {
+variable "helm_provider_config" {
   type        = any
-  description = "Helm chart definition for aws_for_fluent_bit."
+  description = "Helm provider config aws_for_fluent_bit."
   default     = {}
 }
 

@@ -1,15 +1,15 @@
 data "aws_region" "current" {}
 
 locals {
-  aws_load_balancer_controller_sa = "aws-load-balancer-controller-sa"
+  service_account_name = "aws-load-balancer-controller-sa"
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
     aws_region           = data.aws_region.current.name,
     cluster_name         = var.eks_cluster_id,
-    service_account_name = local.aws_load_balancer_controller_sa
+    service_account_name = local.service_account_name
   })]
 
-  default_lb_ingress_controller_helm_app = {
+  default_helm_provider_config = {
     name                       = "aws-load-balancer-controller"
     chart                      = "aws-load-balancer-controller"
     repository                 = "https://aws.github.io/eks-charts"
@@ -48,12 +48,12 @@ locals {
   }
 
   lb_ingress_controller_helm_app = merge(
-    local.default_lb_ingress_controller_helm_app,
+    local.default_helm_provider_config,
     var.lb_ingress_controller_helm_app
   )
 
   argocd_gitops_config = {
     enable             = true
-    serviceAccountName = local.aws_load_balancer_controller_sa
+    serviceAccountName = local.service_account_name
   }
 }
