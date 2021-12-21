@@ -16,19 +16,25 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "addon_config" {
-  type        = any
-  default     = {}
-  description = "AWS Open Telemetry Distro Addon Configuration"
+
+provider "aws" {
+  region = data.aws_region.current.id
+  alias  = "default"
 }
 
-variable "node_groups_iam_role_arn" {
-  type    = list(string)
-  default = []
+provider "kubernetes" {
+  experiments {
+    manifest_resource = true
+  }
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
-variable "manage_via_gitops" {
-  type        = bool
-  default     = false
-  description = "Determines if the add-on should be managed via GitOps."
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.cluster.endpoint
+    token                  = data.aws_eks_cluster_auth.cluster.token
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  }
 }

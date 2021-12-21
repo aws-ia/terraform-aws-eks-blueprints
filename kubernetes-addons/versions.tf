@@ -16,19 +16,28 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "addon_config" {
-  type        = any
-  default     = {}
-  description = "AWS Open Telemetry Distro Addon Configuration"
-}
-
-variable "node_groups_iam_role_arn" {
-  type    = list(string)
-  default = []
-}
-
-variable "manage_via_gitops" {
-  type        = bool
-  default     = false
-  description = "Determines if the add-on should be managed via GitOps."
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 3.66.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.7.1"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = ">= 2.4.1"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "2.1.0"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = "3.1.0"
+    }
+  }
+  required_version = ">= 1.0.0"
 }
