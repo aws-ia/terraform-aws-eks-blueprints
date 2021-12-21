@@ -183,10 +183,10 @@ module "vpa" {
 }
 
 module "yunikorn" {
-  count               = var.create_eks && var.yunikorn_enable ? 1 : 0
-  source              = "./kubernetes-addons/yunikorn"
-  yunikorn_helm_chart = var.yunikorn_helm_chart
-  manage_via_gitops   = var.argocd_manage_add_ons
+  count                = var.create_eks && var.yunikorn_enable ? 1 : 0
+  source               = "./kubernetes-addons/yunikorn"
+  helm_provider_config = var.yunikorn_helm_chart
+  manage_via_gitops    = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
