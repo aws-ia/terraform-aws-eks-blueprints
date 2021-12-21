@@ -16,7 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "spark_on_k8s_operator_helm_chart" {
+variable "helm_provider_config" {
   description = "Spark on K8s Operator Helm Chart Configuration"
   type        = any
   default     = {}

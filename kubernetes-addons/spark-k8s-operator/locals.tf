@@ -1,6 +1,6 @@
 
 locals {
-  default_spark_k8s_operator_helm_app = {
+  default_helm_provider_config = {
     name                       = "spark-operator"
     chart                      = "spark-operator"
     repository                 = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
@@ -38,9 +38,9 @@ locals {
     postrender                 = ""
   }
 
-  spark_k8s_operator_helm_app = merge(
-    local.default_spark_k8s_operator_helm_app,
-    var.spark_on_k8s_operator_helm_chart
+  helm_provider_config = merge(
+    local.default_helm_provider_config,
+    var.helm_provider_config
   )
 
   argocd_gitops_config = {

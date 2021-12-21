@@ -157,19 +157,19 @@ module "prometheus" {
 }
 
 module "spark_k8s_operator" {
-  count                            = var.create_eks && var.spark_on_k8s_operator_enable ? 1 : 0
-  source                           = "./kubernetes-addons/spark-k8s-operator"
-  spark_on_k8s_operator_helm_chart = var.spark_on_k8s_operator_helm_chart
-  manage_via_gitops                = var.argocd_manage_add_ons
+  count                = var.create_eks && var.spark_on_k8s_operator_enable ? 1 : 0
+  source               = "./kubernetes-addons/spark-k8s-operator"
+  helm_provider_config = var.spark_on_k8s_operator_helm_chart
+  manage_via_gitops    = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
 
 module "traefik_ingress" {
-  count              = var.create_eks && var.traefik_ingress_controller_enable ? 1 : 0
-  source             = "./kubernetes-addons/traefik-ingress"
-  traefik_helm_chart = var.traefik_helm_chart
-  manage_via_gitops  = var.argocd_manage_add_ons
+  count                = var.create_eks && var.traefik_ingress_controller_enable ? 1 : 0
+  source               = "./kubernetes-addons/traefik-ingress"
+  helm_provider_config = var.traefik_helm_chart
+  manage_via_gitops    = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
