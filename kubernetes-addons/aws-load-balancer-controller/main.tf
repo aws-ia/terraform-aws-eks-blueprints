@@ -319,7 +319,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_assume_policy" {
     condition {
       test     = "StringEquals"
       variable = "${replace(var.eks_oidc_issuer_url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:${local.aws_load_balancer_controller_sa}"]
+      values   = ["system:serviceaccount:kube-system:${local.service_account_name}"]
     }
 
     principals {
@@ -345,7 +345,7 @@ resource "aws_iam_role_policy_attachment" "eks_role_policy" {
 # Kubernetes service account for lb controller
 resource "kubernetes_service_account" "aws_load_balancer_controller_sa" {
   metadata {
-    name        = local.aws_load_balancer_controller_sa
+    name        = local.service_account_name
     namespace   = "kube-system"
     annotations = { "eks.amazonaws.com/role-arn" : aws_iam_role.aws_load_balancer_controller_role.arn }
   }
