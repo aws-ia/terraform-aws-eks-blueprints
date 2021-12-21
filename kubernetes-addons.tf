@@ -81,25 +81,23 @@ module "aws_opentelemetry_collector" {
 }
 
 module "cert_manager" {
-  count                   = var.create_eks && var.cert_manager_enable ? 1 : 0
-  source                  = "./kubernetes-addons/cert-manager"
-  cert_manager_helm_chart = var.cert_manager_helm_chart
-  manage_via_gitops       = var.argocd_manage_add_ons
+  count                = var.create_eks && var.cert_manager_enable ? 1 : 0
+  source               = "./kubernetes-addons/cert-manager"
+  helm_provider_config = var.cert_manager_helm_chart
+  manage_via_gitops    = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
 
 module "cluster_autoscaler" {
-  count                         = var.create_eks && var.cluster_autoscaler_enable ? 1 : 0
-  source                        = "./kubernetes-addons/cluster-autoscaler"
-  cluster_autoscaler_helm_chart = var.cluster_autoscaler_helm_chart
-  eks_cluster_id                = module.aws_eks.cluster_id
-  manage_via_gitops             = var.argocd_manage_add_ons
+  count                = var.create_eks && var.cluster_autoscaler_enable ? 1 : 0
+  source               = "./kubernetes-addons/cluster-autoscaler"
+  helm_provider_config = var.cluster_autoscaler_helm_chart
+  eks_cluster_id       = module.aws_eks.cluster_id
+  manage_via_gitops    = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
-
-
 
 module "fargate_fluentbit" {
   count                    = var.create_eks && var.fargate_fluentbit_enable ? 1 : 0
