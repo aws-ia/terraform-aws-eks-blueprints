@@ -93,6 +93,13 @@ module "fargate_fluentbit" {
   fargate_fluentbit_config = var.fargate_fluentbit_config
 }
 
+module "ingress_nginx" {
+  count                = var.ingress_nginx_controller_enable ? 1 : 0
+  source               = "./ingress-nginx"
+  helm_provider_config = var.nginx_helm_chart
+  manage_via_gitops    = var.argocd_manage_add_ons
+}
+
 module "keda" {
   count                = var.keda_enable ? 1 : 0
   source               = "./keda"
@@ -108,13 +115,6 @@ module "metrics_server" {
   count                = var.metrics_server_enable ? 1 : 0
   source               = "./metrics-server"
   helm_provider_config = var.metrics_server_helm_chart
-  manage_via_gitops    = var.argocd_manage_add_ons
-}
-
-module "ingress_nginx" {
-  count                = var.ingress_nginx_controller_enable ? 1 : 0
-  source               = "./ingress-nginx"
-  helm_provider_config = var.nginx_helm_chart
   manage_via_gitops    = var.argocd_manage_add_ons
 }
 

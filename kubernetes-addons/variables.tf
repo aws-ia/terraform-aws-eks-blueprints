@@ -32,55 +32,7 @@ variable "tags" {
   default     = {}
   description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }
-#-----------EKS MANAGED ADD-ONS------------
-# EKS MANAGED ADDONS
-variable "eks_addon_vpc_cni_config" {
-  description = "Map of Amazon EKS VPC CNI Add-on"
-  type        = any
-  default     = {}
-}
 
-variable "eks_addon_coredns_config" {
-  description = "Map of Amazon COREDNS EKS Add-on"
-  type        = any
-  default     = {}
-}
-
-variable "eks_addon_kube_proxy_config" {
-  description = "Map of Amazon EKS KUBE_PROXY Add-on"
-  type        = any
-  default     = {}
-}
-
-variable "eks_addon_aws_ebs_csi_driver_config" {
-  description = "Map of Amazon EKS aws_ebs_csi_driver Add-on"
-  type        = any
-  default     = {}
-}
-
-variable "enable_eks_addon_vpc_cni" {
-  type        = bool
-  default     = false
-  description = "Enable VPC CNI Addon"
-}
-
-variable "enable_eks_addon_coredns" {
-  type        = bool
-  default     = false
-  description = "Enable CoreDNS Addon"
-}
-
-variable "enable_eks_addon_kube_proxy" {
-  type        = bool
-  default     = false
-  description = "Enable Kube Proxy Addon"
-}
-
-variable "enable_eks_addon_aws_ebs_csi_driver" {
-  type        = bool
-  default     = false
-  description = "Enable EKS Managed EBS CSI Driver Addon"
-}
 #-----------CLUSTER AUTOSCALER-------------
 variable "cluster_autoscaler_enable" {
   type        = bool
@@ -94,7 +46,7 @@ variable "cluster_autoscaler_helm_chart" {
   description = "Cluster Autoscaler Helm Chart Config"
 }
 
-#-----------PROMETHEUS-------------
+#-----------Amazon Managed Service for Prometheus-------------
 variable "aws_managed_prometheus_enable" {
   type        = bool
   default     = false
@@ -119,6 +71,7 @@ variable "aws_managed_prometheus_ingest_service_account" {
   description = "AWS Managed Prometheus Ingest Service Account"
 }
 
+#-----------PROMETHEUS-------------
 variable "prometheus_enable" {
   description = "Enable Community Prometheus Helm Addon"
   type        = bool
