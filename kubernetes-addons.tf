@@ -124,10 +124,10 @@ module "keda" {
 }
 
 module "metrics_server" {
-  count                     = var.create_eks && var.metrics_server_enable ? 1 : 0
-  source                    = "./kubernetes-addons/metrics-server"
-  metrics_server_helm_chart = var.metrics_server_helm_chart
-  manage_via_gitops         = var.argocd_manage_add_ons
+  count                = var.create_eks && var.metrics_server_enable ? 1 : 0
+  source               = "./kubernetes-addons/metrics-server"
+  helm_provider_config = var.metrics_server_helm_chart
+  manage_via_gitops    = var.argocd_manage_add_ons
 
   depends_on = [module.aws_eks]
 }
@@ -142,9 +142,9 @@ module "ingress_nginx" {
 }
 
 module "prometheus" {
-  count                 = var.create_eks && var.prometheus_enable ? 1 : 0
-  source                = "./kubernetes-addons/prometheus"
-  prometheus_helm_chart = var.prometheus_helm_chart
+  count                = var.create_eks && var.prometheus_enable ? 1 : 0
+  source               = "./kubernetes-addons/prometheus"
+  helm_provider_config = var.prometheus_helm_chart
 
   #AWS Managed Prometheus Workspace
   aws_managed_prometheus_enable   = var.aws_managed_prometheus_enable
