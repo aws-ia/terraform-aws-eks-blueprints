@@ -33,7 +33,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.4.1 |
 
 ## Modules
 
@@ -49,10 +49,9 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_vpa_helm_chart"></a> [vpa\_helm\_chart](#input\_vpa\_helm\_chart) | Kubernetes Vertical Pod Autoscaler Helm chart config | `any` | `{}` | no |
+| <a name="input_helm_provider_config"></a> [helm\_provider\_config](#input\_helm\_provider\_config) | Kubernetes Vertical Pod Autoscaler Helm chart config | `any` | `{}` | no |
 
 ## Outputs
 
 No outputs.
-
 <!--- END_TF_DOCS --->

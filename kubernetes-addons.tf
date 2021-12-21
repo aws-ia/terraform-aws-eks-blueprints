@@ -175,9 +175,9 @@ module "traefik_ingress" {
 }
 
 module "vpa" {
-  count          = var.create_eks && var.vpa_enable ? 1 : 0
-  source         = "./kubernetes-addons/vertical-pod-autoscaler"
-  vpa_helm_chart = var.vpa_helm_chart
+  count                = var.create_eks && var.vpa_enable ? 1 : 0
+  source               = "./kubernetes-addons/vertical-pod-autoscaler"
+  helm_provider_config = var.vpa_helm_chart
 
   depends_on = [module.aws_eks]
 }
