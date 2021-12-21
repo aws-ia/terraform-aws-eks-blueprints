@@ -16,17 +16,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-output "cluster_oidc_url" {
+output "eks_cluster_oidc_url" {
   description = "The URL on the EKS cluster OIDC Issuer"
   value       = var.create_eks ? split("//", module.aws_eks.cluster_oidc_issuer_url)[1] : "EKS Cluster not enabled"
 }
 
-output "oidc_provider_arn" {
+output "eks_cluster_oidc_provider_arn" {
   description = "The ARN of the OIDC Provider if `enable_irsa = true`."
   value       = var.create_eks ? module.aws_eks.oidc_provider_arn : "EKS Cluster not enabled"
 }
 
-output "cluster_name" {
+output "eks_cluster_id" {
   description = "Kubernetes Cluster Name"
   value       = var.create_eks ? module.aws_eks.cluster_id : "EKS Cluster not enabled"
 }
@@ -64,6 +64,11 @@ output "amp_work_arn" {
 output "self_managed_node_group_iam_role_arns" {
   description = "IAM role arn's of self managed node groups"
   value       = var.create_eks && length(var.self_managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_node_group_iam_role_arns) }) : []
+}
+
+output "self_managed_node_group_autoscaling_groups" {
+  description = "Autoscaling group names of self managed node groups"
+  value       = var.create_eks && length(var.self_managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_asg_names) }) : []
 }
 
 output "managed_node_group_iam_role_arns" {
