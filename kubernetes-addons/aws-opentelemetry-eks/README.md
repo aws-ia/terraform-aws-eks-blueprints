@@ -1,6 +1,22 @@
 # aws-opentelemetry-eks
 
 <!--- BEGIN_TF_DOCS --->
+Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+SPDX-License-Identifier: MIT-0
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in the Software
+without restriction, including without limitation the rights to use, copy, modify,
+merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 ## Requirements
 
 No requirements.
@@ -31,10 +47,10 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_aws_open_telemetry_addon"></a> [aws\_open\_telemetry\_addon](#input\_aws\_open\_telemetry\_addon) | AWS Open Telemetry Distro Addon Configuration | `any` | `{}` | no |
-| <a name="input_aws_open_telemetry_mg_node_iam_role_arns"></a> [aws\_open\_telemetry\_mg\_node\_iam\_role\_arns](#input\_aws\_open\_telemetry\_mg\_node\_iam\_role\_arns) | n/a | `list(string)` | `[]` | no |
-| <a name="input_aws_open_telemetry_self_mg_node_iam_role_arns"></a> [aws\_open\_telemetry\_self\_mg\_node\_iam\_role\_arns](#input\_aws\_open\_telemetry\_self\_mg\_node\_iam\_role\_arns) | n/a | `list(string)` | `[]` | no |
+| <a name="input_addon_config"></a> [addon\_config](#input\_addon\_config) | AWS Open Telemetry Distro Addon Configuration | `any` | `{}` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
+| <a name="input_mg_node_iam_role_arns"></a> [mg\_node\_iam\_role\_arns](#input\_mg\_node\_iam\_role\_arns) | n/a | `list(string)` | `[]` | no |
+| <a name="input_self_mg_node_iam_role_arns"></a> [self\_mg\_node\_iam\_role\_arns](#input\_self\_mg\_node\_iam\_role\_arns) | n/a | `list(string)` | `[]` | no |
 
 ## Outputs
 

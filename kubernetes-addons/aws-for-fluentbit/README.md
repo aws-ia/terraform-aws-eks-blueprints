@@ -44,8 +44,8 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_aws_for_fluentbit_helm_chart"></a> [aws\_for\_fluentbit\_helm\_chart](#input\_aws\_for\_fluentbit\_helm\_chart) | Helm chart definition for aws\_for\_fluent\_bit. | `any` | `{}` | no |
 | <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS cluster Id | `string` | n/a | yes |
+| <a name="input_helm_provider_config"></a> [helm\_provider\_config](#input\_helm\_provider\_config) | Helm provider config aws\_for\_fluent\_bit. | `any` | `{}` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
 
 ## Outputs
@@ -53,7 +53,7 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
-| <a name="output_aws_fluent_bit_cw_log_group_arn"></a> [aws\_fluent\_bit\_cw\_log\_group\_arn](#output\_aws\_fluent\_bit\_cw\_log\_group\_arn) | AWS Fluent Bit CloudWatch Log Group ARN |
-| <a name="output_aws_fluent_bit_cw_log_group_name"></a> [aws\_fluent\_bit\_cw\_log\_group\_name](#output\_aws\_fluent\_bit\_cw\_log\_group\_name) | AWS Fluent Bit CloudWatch Log Group Name |
+| <a name="output_cw_log_group_arn"></a> [cw\_log\_group\_arn](#output\_cw\_log\_group\_arn) | AWS Fluent Bit CloudWatch Log Group ARN |
+| <a name="output_cw_log_group_name"></a> [cw\_log\_group\_name](#output\_cw\_log\_group\_name) | AWS Fluent Bit CloudWatch Log Group Name |
 
 <!--- END_TF_DOCS --->

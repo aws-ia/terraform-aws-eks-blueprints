@@ -61,8 +61,8 @@ No requirements.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_autoscaling_group_names"></a> [autoscaling\_group\_names](#input\_autoscaling\_group\_names) | EKS Node Group ASG names | `list(string)` | n/a | yes |
-| <a name="input_aws_node_termination_handler_helm_chart"></a> [aws\_node\_termination\_handler\_helm\_chart](#input\_aws\_node\_termination\_handler\_helm\_chart) | AWS Node Termination Handler Helm Chart Configuration | `any` | `{}` | no |
 | <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | EKS Cluster Id | `string` | n/a | yes |
+| <a name="input_helm_provider_config"></a> [helm\_provider\_config](#input\_helm\_provider\_config) | AWS Node Termination Handler Helm Chart Configuration | `any` | `{}` | no |
 
 ## Outputs
 
