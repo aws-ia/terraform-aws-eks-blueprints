@@ -58,4 +58,3 @@ No inputs.
 | <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | The ID of the VPC |
 
 <!--- END_TF_DOCS --->
-
