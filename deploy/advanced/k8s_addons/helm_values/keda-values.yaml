@@ -1,0 +1,192 @@
+# Default values for keda.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  keda:
+    repository: ghcr.io/kedacore/keda
+    # Allows people to override tag if they don't want to use the app version
+    tag:
+  metricsApiServer:
+    repository: ghcr.io/kedacore/keda-metrics-apiserver
+    # Allows people to override tag if they don't want to use the app version
+    tag:
+  pullPolicy: Always
+
+crds:
+  install: true
+
+watchNamespace: ""
+
+imagePullSecrets: []
+operator:
+  name: keda-operator
+
+metricsServer:
+  # use ClusterFirstWithHostNet if `useHostNetwork: true` https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
+  dnsPolicy: ClusterFirst
+  useHostNetwork: false
+
+additionalLabels: ""
+podAnnotations:
+  keda: {}
+  metricsAdapter: {}
+podLabels:
+  keda: {}
+  metricsAdapter: {}
+
+## See `kubectl explain poddisruptionbudget.spec` for more
+## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+podDisruptionBudget: {}
+#  minAvailable: 1
+#  maxUnavailable: 1
+
+rbac:
+  create: true
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: keda-operator
+  # Annotations to add to the service account
+  annotations: {}
+
+# Set to the value of the Azure Active Directory Pod Identity
+# This will be set as a label on the KEDA Pod(s)
+podIdentity:
+  activeDirectory:
+    identity: ""
+
+# Set this if you are using an external scaler and want to communicate
+# over TLS (recommended). This variable holds the name of the secret that
+# will be mounted to the /grpccerts path on the Pod
+grpcTLSCertsSecret: ""
+
+# Set this if you are using HashiCorp Vault and want to communicate
+# over TLS (recommended). This variable holds the name of the secret that
+# will be mounted to the /vault path on the Pod
+hashiCorpVaultTLS: ""
+
+logging:
+  operator:
+    ## Logging level for KEDA Operator
+    # allowed values: 'debug', 'info', 'error', or an integer value greater than 0, specified as string
+    # default value: info
+    level: info
+    # allowed valuesL 'json' or 'console'
+    # default value: console
+    format: console
+  metricServer:
+    ## Logging level for Metrics Server
+    # allowed values: '0' for info, '4' for debug, or an integer value greater than 0, specified as string
+    # default value: 0
+    level: 0
+
+podSecurityContext: {}
+# fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+# runAsUser: 1000
+
+service:
+  type: ClusterIP
+  portHttp: 80
+  portHttpTarget: 8080
+  portHttps: 443
+  portHttpsTarget: 6443
+
+  annotations: {}
+
+resources:
+  limits:
+    cpu: 1
+    memory: 1000Mi
+  requests:
+    cpu: 100m
+    memory: 100Mi
+
+nodeSelector:
+  kubernetes.io/os: linux
+
+tolerations: []
+
+affinity: {}
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #   - labelSelector:
+  #       matchExpressions:
+  #       - key: app
+  #         operator: In
+  #         values:
+  #         - keda-operator
+  #         - keda-operator-metrics-apiserver
+#     topologyKey: "kubernetes.io/hostname"
+
+## Optional priorityClassName for KEDA Operator and Metrics Adapter
+priorityClassName: ""
+
+## The default HTTP timeout in milliseconds that KEDA should use
+## when making requests to external services. Removing this defaults to a
+## reasonable default
+http:
+  timeout: 3000
+
+## Extra environment variables that will be passed onto KEDA operator and metrics api service
+env:
+# - name: ENV_NAME
+#   value: 'ENV-VALUE'
+
+# Extra volumes and volume mounts for the deployment. Optional.
+volumes:
+  keda:
+    extraVolumes: []
+    extraVolumeMounts: []
+
+  metricsApiServer:
+    extraVolumes: []
+    extraVolumeMounts: []
+
+prometheus:
+  metricServer:
+    enabled: false
+    port: 9022
+    portName: metrics
+    path: /metrics
+    podMonitor:
+      # Enables PodMonitor creation for the Prometheus Operator
+      enabled: false
+      interval:
+      scrapeTimeout:
+      namespace:
+      additionalLabels: {}
+  operator:
+    enabled: false
+    port: 8080
+    path: /metrics
+    podMonitor:
+      # Enables PodMonitor creation for the Prometheus Operator
+      enabled: false
+      interval:
+      scrapeTimeout:
+      namespace:
+      additionalLabels: {}
+    prometheusRules:
+      # Enables PrometheusRules creation for the Prometheus Operator
+      enabled: false
+      namespace:
+      additionalLabels: {}
+      alerts: []
+        # - alert: KedaScalerErrors
+        #   annotations:
+        #     description: Keda scaledObject {{ $labels.scaledObject }} is experiencing errors with {{ $labels.scaler }} scaler
+        #     summary: Keda Scaler {{ $labels.scaler }} Errors
+        #   expr: sum by ( scaledObject , scaler) (rate(keda_metrics_adapter_scaler_errors[2m]))  > 0
+        #   for: 2m
+      #   labels:
