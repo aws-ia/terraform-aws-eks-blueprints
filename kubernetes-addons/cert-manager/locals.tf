@@ -2,7 +2,7 @@
 locals {
   default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
-  default_cert_manager_helm_app = {
+  default_helm_provider_config = {
     name                       = "cert-manager"
     chart                      = "cert-manager"
     repository                 = "https://charts.jetstack.io"
@@ -44,9 +44,9 @@ locals {
     install_default_ca = var.manage_via_gitops ? false : true
   }
 
-  cert_manager_helm_app = merge(
-    local.default_cert_manager_helm_app,
-    var.cert_manager_helm_chart
+  helm_provider_config = merge(
+    local.default_helm_provider_config,
+    var.helm_provider_config
   )
 
   argocd_gitops_config = {
