@@ -57,16 +57,16 @@ module "aws_node_termination_handler" {
   count  = var.aws_node_termination_handler_enable && length(var.auto_scaling_group_names) > 0 ? 1 : 0
   source = "./aws-node-termination-handler"
 
-  eks_cluster_name                        = local.eks_cluster_id
-  helm_provider_config = var.aws_node_termination_handler_helm_chart
-  autoscaling_group_names                 = var.auto_scaling_group_names
+  eks_cluster_name        = local.eks_cluster_id
+  helm_provider_config    = var.aws_node_termination_handler_helm_chart
+  autoscaling_group_names = var.auto_scaling_group_names
 }
 
 module "aws_opentelemetry_collector" {
   count  = var.aws_open_telemetry_enable ? 1 : 0
   source = "./aws-opentelemetry-eks"
 
-  addon_config = var.aws_open_telemetry_addon
+  addon_config             = var.aws_open_telemetry_addon
   node_groups_iam_role_arn = var.node_groups_iam_role_arn
   manage_via_gitops        = var.argocd_manage_add_ons
 }
