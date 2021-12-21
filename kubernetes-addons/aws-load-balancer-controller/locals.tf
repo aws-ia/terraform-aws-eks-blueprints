@@ -47,9 +47,9 @@ locals {
     postrender                 = ""
   }
 
-  lb_ingress_controller_helm_app = merge(
+  helm_provider_config = merge(
     local.default_helm_provider_config,
-    var.lb_ingress_controller_helm_app
+    var.helm_provider_config
   )
 
   argocd_gitops_config = {

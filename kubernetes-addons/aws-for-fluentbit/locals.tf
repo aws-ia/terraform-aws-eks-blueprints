@@ -47,7 +47,7 @@ locals {
 
   helm_provider_config = merge(
     local.default_helm_provider_config,
-    var.aws_for_fluentbit_helm_chart
+    var.helm_provider_config
   )
 
   argocd_gitops_config = {
