@@ -22,6 +22,6 @@ Alternatively, you can override the helm values by using the code snippet below
     chart      = "vpa"                                 # (Required) Chart name to be installed.
     version    = "0.5.0"                               # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
     namespace  = "vpa-ns"                              # (Optional) The namespace to install the release into. Defaults to default
-    values     = [templatefile("${path.module}/k8s_addons/vpa-values.yaml", {})]
+    values     = [templatefile("${path.module}/values.yaml", {})]
   }
 ```

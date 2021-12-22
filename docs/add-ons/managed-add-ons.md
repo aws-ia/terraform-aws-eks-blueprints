@@ -6,10 +6,10 @@ EKS currently provides support for the following managed add-ons.
 
 | Name | Description |
 |------|-------------|
-| [Amazon VPC CNI] | Native VPC networking for Kubernetes pods. |
-| [CoreDNS] | A flexible, extensible DNS server that can serve as the Kubernetes cluster DNS. |
-| [kube-proxy] | Enables network communication to your pods. |
-
+| [Amazon VPC CNI](https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html)  | Native VPC networking for Kubernetes pods. |
+| [CoreDNS](https://docs.aws.amazon.com/eks/latest/userguide/managing-coredns.html) | A flexible, extensible DNS server that can serve as the Kubernetes cluster DNS. |
+| [kube-proxy](https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html) | Enables network communication to your pods. |
+| [Amazon EBS CSI](https://docs.aws.amazon.com/eks/latest/userguide/managing-ebs-csi.html) | Manage the Amazon EBS CSI driver as an Amazon EKS add-on. |
 
 EKS managed add-ons can be enabled via the following.
 
@@ -75,7 +75,3 @@ EKS won't modify any of your Kubernetes add-ons when you update a cluster to a n
 Our [Cluster Upgrade](../advanced/cluster-upgrades.md) guide demonstrates how you can leverage this framework to upgrade your EKS cluster in addition to the EKS managed add-ons running in each cluster.
 
 Additional information on updating a EKS cluster can be found in the [EKS documentation](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html).
-
-[Amazon VPC CNI]:(https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html)
-[CoreDNS]:(https://docs.aws.amazon.com/eks/latest/userguide/managing-coredns.html)
-[kube-proxy]:(https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html)
