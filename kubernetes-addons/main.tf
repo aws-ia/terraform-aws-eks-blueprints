@@ -19,25 +19,25 @@
 #-----------------AWS Managed EKS Add-ons----------------------
 
 module "aws_vpc_cni" {
-  count         = var.enable_eks_addon_vpc_cni ? 1 : 0
+  count         = var.amazon_eks_vpc_cni_enable ? 1 : 0
   source        = "./aws-vpc-cni"
-  add_on_config = var.eks_addon_vpc_cni_config
+  add_on_config = var.amazon_eks_vpc_cni_config
   cluster_id    = local.eks_cluster_id
   common_tags   = var.tags
 }
 
 module "aws_coredns" {
-  count         = var.enable_eks_addon_coredns ? 1 : 0
+  count         = var.amazon_eks_coredns_enable ? 1 : 0
   source        = "./aws-coredns"
-  add_on_config = var.eks_addon_coredns_config
+  add_on_config = var.amazon_eks_coredns_config
   cluster_id    = local.eks_cluster_id
   common_tags   = var.tags
 }
 
 module "aws_kube_proxy" {
-  count         = var.enable_eks_addon_kube_proxy ? 1 : 0
+  count         = var.amazon_eks_kube_proxy_enable ? 1 : 0
   source        = "./aws-kube-proxy"
-  add_on_config = var.eks_addon_kube_proxy_config
+  add_on_config = var.amazon_eks_kube_proxy_config
   cluster_id    = local.eks_cluster_id
   common_tags   = var.tags
 }

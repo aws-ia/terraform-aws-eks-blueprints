@@ -56,9 +56,9 @@ module "eks-ssp-kubernetes-addons" {
     eks_cluster_id               = module.eks-ssp.eks_cluster_id
     
     # EKS Addons
-    enable_eks_addon_vpc_cni                = true
-    enable_eks_addon_coredns                = true
-    enable_eks_addon_kube_proxy             = true
+    amazon_eks_vpc_cni_enable                = true
+    amazon_eks_coredns_enable                = true
+    amazon_eks_kube_proxy_enable             = true
     amazon_eks_ebs_csi_driver_enable     = true
 
     #K8s Add-ons
@@ -226,14 +226,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_cluster_log_retention_period"></a> [cluster\_log\_retention\_period](#input\_cluster\_log\_retention\_period) | Number of days to retain cluster logs | `number` | `7` | no |
 | <a name="input_create_eks"></a> [create\_eks](#input\_create\_eks) | Enable Create EKS | `bool` | `false` | no |
 | <a name="input_amazon_eks_ebs_csi_driver_config"></a> [eks\_addon\_aws\_ebs\_csi\_driver\_config](#input\_eks\_addon\_aws\_ebs\_csi\_driver\_config) | Map of Amazon EKS aws\_ebs\_csi\_driver Add-on | `any` | `{}` | no |
-| <a name="input_eks_addon_coredns_config"></a> [eks\_addon\_coredns\_config](#input\_eks\_addon\_coredns\_config) | Map of Amazon COREDNS EKS Add-on | `any` | `{}` | no |
-| <a name="input_eks_addon_kube_proxy_config"></a> [eks\_addon\_kube\_proxy\_config](#input\_eks\_addon\_kube\_proxy\_config) | Map of Amazon EKS KUBE\_PROXY Add-on | `any` | `{}` | no |
-| <a name="input_eks_addon_vpc_cni_config"></a> [eks\_addon\_vpc\_cni\_config](#input\_eks\_addon\_vpc\_cni\_config) | Map of Amazon EKS VPC CNI Add-on | `any` | `{}` | no |
+| <a name="input_amazon_eks_coredns_config"></a> [eks\_addon\_coredns\_config](#input\_eks\_addon\_coredns\_config) | Map of Amazon COREDNS EKS Add-on | `any` | `{}` | no |
+| <a name="input_amazon_eks_kube_proxy_config"></a> [eks\_addon\_kube\_proxy\_config](#input\_eks\_addon\_kube\_proxy\_config) | Map of Amazon EKS KUBE\_PROXY Add-on | `any` | `{}` | no |
+| <a name="input_amazon_eks_vpc_cni_config"></a> [eks\_addon\_vpc\_cni\_config](#input\_eks\_addon\_vpc\_cni\_config) | Map of Amazon EKS VPC CNI Add-on | `any` | `{}` | no |
 | <a name="input_emr_on_eks_teams"></a> [emr\_on\_eks\_teams](#input\_emr\_on\_eks\_teams) | EMR on EKS Teams configuration | `any` | `{}` | no |
 | <a name="input_amazon_eks_ebs_csi_driver_enable"></a> [enable\_eks\_addon\_aws\_ebs\_csi\_driver](#input\_enable\_eks\_addon\_aws\_ebs\_csi\_driver) | Enable EKS Managed EBS CSI Driver Addon | `bool` | `false` | no |
-| <a name="input_enable_eks_addon_coredns"></a> [enable\_eks\_addon\_coredns](#input\_enable\_eks\_addon\_coredns) | Enable CoreDNS Addon | `bool` | `false` | no |
-| <a name="input_enable_eks_addon_kube_proxy"></a> [enable\_eks\_addon\_kube\_proxy](#input\_enable\_eks\_addon\_kube\_proxy) | Enable Kube Proxy Addon | `bool` | `false` | no |
-| <a name="input_enable_eks_addon_vpc_cni"></a> [enable\_eks\_addon\_vpc\_cni](#input\_enable\_eks\_addon\_vpc\_cni) | Enable VPC CNI Addon | `bool` | `false` | no |
+| <a name="input_amazon_eks_coredns_enable"></a> [enable\_eks\_addon\_coredns](#input\_enable\_eks\_addon\_coredns) | Enable CoreDNS Addon | `bool` | `false` | no |
+| <a name="input_amazon_eks_kube_proxy_enable"></a> [enable\_eks\_addon\_kube\_proxy](#input\_enable\_eks\_addon\_kube\_proxy) | Enable Kube Proxy Addon | `bool` | `false` | no |
+| <a name="input_amazon_eks_vpc_cni_enable"></a> [enable\_eks\_addon\_vpc\_cni](#input\_enable\_eks\_addon\_vpc\_cni) | Enable VPC CNI Addon | `bool` | `false` | no |
 | <a name="input_enable_emr_on_eks"></a> [enable\_emr\_on\_eks](#input\_enable\_emr\_on\_eks) | Enabling EMR on EKS Config | `bool` | `false` | no |
 | <a name="input_enable_irsa"></a> [enable\_irsa](#input\_enable\_irsa) | Indicates whether or not the Amazon EKS public API server endpoint is enabled. Default to AWS EKS resource and it is true | `bool` | `true` | no |
 | <a name="input_enable_windows_support"></a> [enable\_windows\_support](#input\_enable\_windows\_support) | Enable Windows support | `bool` | `false` | no |

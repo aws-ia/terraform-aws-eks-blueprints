@@ -34,19 +34,19 @@ variable "tags" {
 }
 
 #-----------EKS MANAGED ADD-ONS------------
-variable "eks_addon_vpc_cni_config" {
+variable "amazon_eks_vpc_cni_config" {
   description = "Map of Amazon EKS VPC CNI Add-on"
   type        = any
   default     = {}
 }
 
-variable "eks_addon_coredns_config" {
+variable "amazon_eks_coredns_config" {
   description = "Map of Amazon COREDNS EKS Add-on"
   type        = any
   default     = {}
 }
 
-variable "eks_addon_kube_proxy_config" {
+variable "amazon_eks_kube_proxy_config" {
   description = "Map of Amazon EKS KUBE_PROXY Add-on"
   type        = any
   default     = {}
@@ -58,19 +58,19 @@ variable "amazon_eks_ebs_csi_driver_config" {
   default     = {}
 }
 
-variable "enable_eks_addon_vpc_cni" {
+variable "amazon_eks_vpc_cni_enable" {
   type        = bool
   default     = false
   description = "Enable VPC CNI Addon"
 }
 
-variable "enable_eks_addon_coredns" {
+variable "amazon_eks_coredns_enable" {
   type        = bool
   default     = false
   description = "Enable CoreDNS Addon"
 }
 
-variable "enable_eks_addon_kube_proxy" {
+variable "amazon_eks_kube_proxy_enable" {
   type        = bool
   default     = false
   description = "Enable Kube Proxy Addon"

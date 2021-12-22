@@ -44,9 +44,9 @@ module "eks-ssp-kubernetes-addons" {
     eks_cluster_id               = <EKS-CLUSTER-ID>
     
     # EKS Addons
-    enable_eks_addon_vpc_cni                = true
-    enable_eks_addon_coredns                = true
-    enable_eks_addon_kube_proxy             = true
+    amazon_eks_vpc_cni_enable                = true
+    amazon_eks_coredns_enable                = true
+    amazon_eks_kube_proxy_enable             = true
     amazon_eks_ebs_csi_driver_enable     = true
 
     #K8s Add-ons
