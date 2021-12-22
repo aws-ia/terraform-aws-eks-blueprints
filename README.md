@@ -59,7 +59,7 @@ module "eks-ssp-kubernetes-addons" {
     enable_eks_addon_vpc_cni                = true
     enable_eks_addon_coredns                = true
     enable_eks_addon_kube_proxy             = true
-    enable_eks_addon_aws_ebs_csi_driver     = true
+    amazon_eks_ebs_csi_driver_enable     = true
 
     #K8s Add-ons
     aws_lb_ingress_controller_enable  = true
@@ -225,12 +225,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_cluster_endpoint_public_access"></a> [cluster\_endpoint\_public\_access](#input\_cluster\_endpoint\_public\_access) | Indicates whether or not the Amazon EKS public API server endpoint is enabled. Default to AWS EKS resource and it is true | `bool` | `true` | no |
 | <a name="input_cluster_log_retention_period"></a> [cluster\_log\_retention\_period](#input\_cluster\_log\_retention\_period) | Number of days to retain cluster logs | `number` | `7` | no |
 | <a name="input_create_eks"></a> [create\_eks](#input\_create\_eks) | Enable Create EKS | `bool` | `false` | no |
-| <a name="input_eks_addon_aws_ebs_csi_driver_config"></a> [eks\_addon\_aws\_ebs\_csi\_driver\_config](#input\_eks\_addon\_aws\_ebs\_csi\_driver\_config) | Map of Amazon EKS aws\_ebs\_csi\_driver Add-on | `any` | `{}` | no |
+| <a name="input_amazon_eks_ebs_csi_driver_config"></a> [eks\_addon\_aws\_ebs\_csi\_driver\_config](#input\_eks\_addon\_aws\_ebs\_csi\_driver\_config) | Map of Amazon EKS aws\_ebs\_csi\_driver Add-on | `any` | `{}` | no |
 | <a name="input_eks_addon_coredns_config"></a> [eks\_addon\_coredns\_config](#input\_eks\_addon\_coredns\_config) | Map of Amazon COREDNS EKS Add-on | `any` | `{}` | no |
 | <a name="input_eks_addon_kube_proxy_config"></a> [eks\_addon\_kube\_proxy\_config](#input\_eks\_addon\_kube\_proxy\_config) | Map of Amazon EKS KUBE\_PROXY Add-on | `any` | `{}` | no |
 | <a name="input_eks_addon_vpc_cni_config"></a> [eks\_addon\_vpc\_cni\_config](#input\_eks\_addon\_vpc\_cni\_config) | Map of Amazon EKS VPC CNI Add-on | `any` | `{}` | no |
 | <a name="input_emr_on_eks_teams"></a> [emr\_on\_eks\_teams](#input\_emr\_on\_eks\_teams) | EMR on EKS Teams configuration | `any` | `{}` | no |
-| <a name="input_enable_eks_addon_aws_ebs_csi_driver"></a> [enable\_eks\_addon\_aws\_ebs\_csi\_driver](#input\_enable\_eks\_addon\_aws\_ebs\_csi\_driver) | Enable EKS Managed EBS CSI Driver Addon | `bool` | `false` | no |
+| <a name="input_amazon_eks_ebs_csi_driver_enable"></a> [enable\_eks\_addon\_aws\_ebs\_csi\_driver](#input\_enable\_eks\_addon\_aws\_ebs\_csi\_driver) | Enable EKS Managed EBS CSI Driver Addon | `bool` | `false` | no |
 | <a name="input_enable_eks_addon_coredns"></a> [enable\_eks\_addon\_coredns](#input\_enable\_eks\_addon\_coredns) | Enable CoreDNS Addon | `bool` | `false` | no |
 | <a name="input_enable_eks_addon_kube_proxy"></a> [enable\_eks\_addon\_kube\_proxy](#input\_enable\_eks\_addon\_kube\_proxy) | Enable Kube Proxy Addon | `bool` | `false` | no |
 | <a name="input_enable_eks_addon_vpc_cni"></a> [enable\_eks\_addon\_vpc\_cni](#input\_enable\_eks\_addon\_vpc\_cni) | Enable VPC CNI Addon | `bool` | `false` | no |

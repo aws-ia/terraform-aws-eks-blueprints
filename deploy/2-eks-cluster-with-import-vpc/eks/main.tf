@@ -152,7 +152,7 @@ module "kubernetes-addons" {
   enable_eks_addon_vpc_cni            = true
   enable_eks_addon_coredns            = true
   enable_eks_addon_kube_proxy         = true
-  enable_eks_addon_aws_ebs_csi_driver = true
+  amazon_eks_ebs_csi_driver_enable = true
 
   #K8s Add-ons
   aws_lb_ingress_controller_enable = true

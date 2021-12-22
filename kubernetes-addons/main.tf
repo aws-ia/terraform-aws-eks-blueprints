@@ -43,9 +43,9 @@ module "aws_kube_proxy" {
 }
 
 module "aws_ebs_csi_driver" {
-  count         = var.enable_eks_addon_aws_ebs_csi_driver ? 1 : 0
+  count         = var.amazon_eks_ebs_csi_driver_enable ? 1 : 0
   source        = "./aws-ebs-csi-driver"
-  add_on_config = var.eks_addon_aws_ebs_csi_driver_config
+  add_on_config = var.amazon_eks_ebs_csi_driver_config
   cluster_id    = local.eks_cluster_id
   common_tags   = var.tags
 }

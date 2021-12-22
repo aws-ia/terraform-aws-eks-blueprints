@@ -52,7 +52,7 @@ variable "eks_addon_kube_proxy_config" {
   default     = {}
 }
 
-variable "eks_addon_aws_ebs_csi_driver_config" {
+variable "amazon_eks_ebs_csi_driver_config" {
   description = "Map of Amazon EKS aws_ebs_csi_driver Add-on"
   type        = any
   default     = {}
@@ -76,7 +76,7 @@ variable "enable_eks_addon_kube_proxy" {
   description = "Enable Kube Proxy Addon"
 }
 
-variable "enable_eks_addon_aws_ebs_csi_driver" {
+variable "amazon_eks_ebs_csi_driver_enable" {
   type        = bool
   default     = false
   description = "Enable EKS Managed EBS CSI Driver Addon"
