@@ -21,8 +21,8 @@ variable "eks_cluster_id" {
   description = "EKS cluster Id"
 }
 
-variable "fargate_fluentbit_config" {
+variable "addon_config" {
   type        = any
-  description = "Fargate fluentbit configuration "
+  description = "Fargate fluentbit configuration"
   default     = {}
 }

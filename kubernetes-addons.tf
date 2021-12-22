@@ -102,10 +102,10 @@ module "cluster_autoscaler" {
 
 
 module "fargate_fluentbit" {
-  count                    = var.create_eks && var.fargate_fluentbit_enable ? 1 : 0
-  source                   = "./kubernetes-addons/fargate-fluentbit"
-  eks_cluster_id           = module.aws_eks.cluster_id
-  fargate_fluentbit_config = var.fargate_fluentbit_config
+  count          = var.create_eks && var.fargate_fluentbit_enable ? 1 : 0
+  source         = "./kubernetes-addons/fargate-fluentbit"
+  eks_cluster_id = module.aws_eks.cluster_id
+  addon_config   = var.fargate_fluentbit_config
 
   depends_on = [module.aws_eks]
 }
