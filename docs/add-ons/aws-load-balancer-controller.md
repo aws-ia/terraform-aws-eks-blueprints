@@ -13,7 +13,7 @@ For more information about AWS Load Balancer Controller please see the [official
 aws_lb_ingress_controller_enable = true
 ```
 
-You can optionally customize the Helm chart that deploys `aws_lb_ingress_controller` via the following configuration.
+You can optionally customize the Helm chart that deploys `aws-lb-ingress-controller` via the following configuration.
 
 ```hcl 
   aws_lb_ingress_controller_enable = true
