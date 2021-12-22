@@ -63,9 +63,9 @@ data "terraform_remote_state" "vpc_s3_backend" {
 }*/
 
 locals {
-  tenant       = var.tenant
-  environment  = var.environment
-  zone         = var.zone
+  tenant       = "aws"
+  environment  = "test"
+  zone         = "e2e"
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   kubernetes_version = "1.21"
