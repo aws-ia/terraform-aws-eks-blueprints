@@ -52,9 +52,9 @@ module "eks-ssp" {
 
 module "eks-ssp-kubernetes-addons" {
     source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//kubernetes-addons"
-    
+
     eks_cluster_id               = module.eks-ssp.eks_cluster_id
-    
+
     # EKS Addons
     amazon_eks_vpc_cni_enable                = true
     amazon_eks_coredns_enable                = true

@@ -15,8 +15,8 @@ agones_enable = true
 You can optionally customize the Helm chart that deploys `Agones` via the following configuration.
 
 *NOTE: Agones requires a Node group in Public Subnets and enable Public IP*
- 
-```hcl 
+
+```hcl
   agones_enable = true
   # Optional  agones_helm_chart
   agones_helm_chart = {
@@ -43,5 +43,3 @@ agones = {
   enable = true
 }
 ```
-
-

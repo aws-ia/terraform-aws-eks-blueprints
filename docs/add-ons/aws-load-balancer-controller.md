@@ -15,7 +15,7 @@ aws_lb_ingress_controller_enable = true
 
 You can optionally customize the Helm chart that deploys `aws-lb-ingress-controller` via the following configuration.
 
-```hcl 
+```hcl
   aws_lb_ingress_controller_enable = true
   # Optional  
   aws_lb_ingress_controller_helm_chart = {

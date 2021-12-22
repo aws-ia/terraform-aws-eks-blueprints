@@ -93,9 +93,9 @@ module "aws-eks-accelerator-for-terraform" {
   kubernetes_version = local.kubernetes_version
 
   # EKS Managed Add-ons
-  amazon_eks_vpc_cni_enable            = true
-  amazon_eks_coredns_enable            = true
-  amazon_eks_kube_proxy_enable         = true
+  amazon_eks_vpc_cni_enable        = true
+  amazon_eks_coredns_enable        = true
+  amazon_eks_kube_proxy_enable     = true
   amazon_eks_ebs_csi_driver_enable = true
 
   #---------------------------------------------------------#

@@ -40,9 +40,9 @@ In order to deploy an add-on with default configuration, simply enable the add-o
 ```hcl
 module "eks-ssp-kubernetes-addons" {
     source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//kubernetes-addons"
-    
+
     eks_cluster_id               = <EKS-CLUSTER-ID>
-    
+
     # EKS Addons
     amazon_eks_vpc_cni_enable                = true
     amazon_eks_coredns_enable                = true

@@ -220,11 +220,11 @@ module "kubernetes-addons" {
   aws_lb_ingress_controller_enable = true
   # Optional
   aws_lb_ingress_controller_helm_chart = {
-    name                       = "aws-load-balancer-controller"
-    chart                      = "aws-load-balancer-controller"
-    repository                 = "https://aws.github.io/eks-charts"
-    version                    = "1.3.1"
-    namespace                  = "kube-system"
+    name       = "aws-load-balancer-controller"
+    chart      = "aws-load-balancer-controller"
+    repository = "https://aws.github.io/eks-charts"
+    version    = "1.3.1"
+    namespace  = "kube-system"
   }
 
   #---------------------------------------
@@ -233,11 +233,11 @@ module "kubernetes-addons" {
   aws_node_termination_handler_enable = true
   # Optional
   aws_node_termination_handler_helm_chart = {
-    name                       = "aws-node-termination-handler"
-    chart                      = "aws-node-termination-handler"
-    repository                 = "https://aws.github.io/eks-charts"
-    version                    = "0.16.0"
-    timeout                    = "1200"
+    name       = "aws-node-termination-handler"
+    chart      = "aws-node-termination-handler"
+    repository = "https://aws.github.io/eks-charts"
+    version    = "0.16.0"
+    timeout    = "1200"
   }
   #---------------------------------------
   # TRAEFIK INGRESS CONTROLLER HELM ADDON
