@@ -22,6 +22,6 @@ Alternatively, you can override the helm values by using the code snippet below
     repository = "https://apache.github.io/incubator-yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
     chart      = "yunikorn"                                 # (Required) Chart name to be installed.
     version    = "0.12.0"                               # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    values     = [templatefile("${path.module}/k8s_addons/yunikorn-values.yaml", {})]
+    values     = [templatefile("${path.module}/values.yaml", {})]
   }
 ```

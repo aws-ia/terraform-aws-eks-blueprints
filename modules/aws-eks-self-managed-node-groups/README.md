@@ -15,9 +15,9 @@ This module allows you to create on-demand or spot self managed Linux or Windows
   # -------- START WINDOWS ONLY
   enable_windows_support                    = false # Set to true to enable Windows support
   # Ensure AWS VPC CNI is used
-  enable_eks_addon_vpc_cni = true # default is false
+  amazon_eks_vpc_cni_enable = true # default is false
   #Optional
-  eks_addon_vpc_cni_config = {
+  amazon_eks_vpc_cni_config = {
     addon_version            = "v1.10.1-eksbuild.1"
     resolve_conflicts        = "OVERWRITE"
   }

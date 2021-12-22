@@ -38,9 +38,24 @@ The default method for managing add-on configuration is via Terraform. By defaul
 In order to deploy an add-on with default configuration, simply enable the add-on via Terraform properties.
 
 ```hcl
-metrics_server_enable       = true # Deploys Metrics Server Addon
-cluster_autoscaler_enable   = true # Deploys Cluster Autoscaler Addon
-prometheus_enable           = true # Deploys Prometheus Addon
+module "eks-ssp-kubernetes-addons" {
+    source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//kubernetes-addons"
+
+    eks_cluster_id                    = <EKS-CLUSTER-ID>
+
+    # EKS Addons
+    amazon_eks_vpc_cni_enable         = true
+    amazon_eks_coredns_enable         = true
+    amazon_eks_kube_proxy_enable      = true
+    amazon_eks_ebs_csi_driver_enable  = true
+
+    #K8s Add-ons
+    aws_lb_ingress_controller_enable  = true
+    metrics_server_enable             = true
+    cluster_autoscaler_enable         = true
+    aws_for_fluentbit_enable          = true
+    argocd_enable                     = true
+}
 ```
 
 To customize the behavior of the Helm charts that are ultimately deployed, you can supply custom Helm configuration. The following demonstrates how you can supply this configuration, including a dedicated `values.yaml` file.
@@ -54,8 +69,8 @@ metrics_server_helm_chart = {
 	namespace      = "kube-system"
 	timeout        = "1200"
 
-	# (Optional) Example to pass metrics-server-values.yaml from your local repo
-	values = [templatefile("${path.module}/k8s_addons/metrics-server-values.yaml", {
+	# (Optional) Example to pass values.yaml from your local repo
+	values         = [templatefile("${path.module}/values.yaml", {
 			operating_system = "linux"
 	})]
 }

@@ -19,33 +19,33 @@
 #-----------------AWS Managed EKS Add-ons----------------------
 
 module "aws_vpc_cni" {
-  count         = var.enable_eks_addon_vpc_cni ? 1 : 0
+  count         = var.amazon_eks_vpc_cni_enable ? 1 : 0
   source        = "./aws-vpc-cni"
-  add_on_config = var.eks_addon_vpc_cni_config
+  add_on_config = var.amazon_eks_vpc_cni_config
   cluster_id    = local.eks_cluster_id
   common_tags   = var.tags
 }
 
 module "aws_coredns" {
-  count         = var.enable_eks_addon_coredns ? 1 : 0
+  count         = var.amazon_eks_coredns_enable ? 1 : 0
   source        = "./aws-coredns"
-  add_on_config = var.eks_addon_coredns_config
+  add_on_config = var.amazon_eks_coredns_config
   cluster_id    = local.eks_cluster_id
   common_tags   = var.tags
 }
 
 module "aws_kube_proxy" {
-  count         = var.enable_eks_addon_kube_proxy ? 1 : 0
+  count         = var.amazon_eks_kube_proxy_enable ? 1 : 0
   source        = "./aws-kube-proxy"
-  add_on_config = var.eks_addon_kube_proxy_config
+  add_on_config = var.amazon_eks_kube_proxy_config
   cluster_id    = local.eks_cluster_id
   common_tags   = var.tags
 }
 
 module "aws_ebs_csi_driver" {
-  count         = var.enable_eks_addon_aws_ebs_csi_driver ? 1 : 0
+  count         = var.amazon_eks_ebs_csi_driver_enable ? 1 : 0
   source        = "./aws-ebs-csi-driver"
-  add_on_config = var.eks_addon_aws_ebs_csi_driver_config
+  add_on_config = var.amazon_eks_ebs_csi_driver_config
   cluster_id    = local.eks_cluster_id
   common_tags   = var.tags
 }
@@ -79,7 +79,7 @@ module "aws_for_fluent_bit" {
 module "aws_load_balancer_controller" {
   count                 = var.aws_lb_ingress_controller_enable ? 1 : 0
   source                = "./aws-load-balancer-controller"
-  helm_provider_config  = var.aws_lb_ingress_controller_helm_app
+  helm_provider_config  = var.aws_lb_ingress_controller_helm_chart
   eks_cluster_id        = local.eks_cluster_id
   eks_oidc_issuer_url   = var.eks_cluster_oidc_url
   eks_oidc_provider_arn = var.eks_oidc_provider_arn

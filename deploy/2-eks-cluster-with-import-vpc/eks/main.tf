@@ -149,10 +149,10 @@ module "kubernetes-addons" {
   auto_scaling_group_names     = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
 
   # EKS Addons
-  enable_eks_addon_vpc_cni            = true
-  enable_eks_addon_coredns            = true
-  enable_eks_addon_kube_proxy         = true
-  enable_eks_addon_aws_ebs_csi_driver = true
+  amazon_eks_vpc_cni_enable        = true
+  amazon_eks_coredns_enable        = true
+  amazon_eks_kube_proxy_enable     = true
+  amazon_eks_ebs_csi_driver_enable = true
 
   #K8s Add-ons
   aws_lb_ingress_controller_enable = true

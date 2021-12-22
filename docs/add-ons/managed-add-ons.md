@@ -6,18 +6,18 @@ EKS currently provides support for the following managed add-ons.
 
 | Name | Description |
 |------|-------------|
-| [Amazon VPC CNI] | Native VPC networking for Kubernetes pods. |
-| [CoreDNS] | A flexible, extensible DNS server that can serve as the Kubernetes cluster DNS. |
-| [kube-proxy] | Enables network communication to your pods. |
-
+| [Amazon VPC CNI](https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html)  | Native VPC networking for Kubernetes pods. |
+| [CoreDNS](https://docs.aws.amazon.com/eks/latest/userguide/managing-coredns.html) | A flexible, extensible DNS server that can serve as the Kubernetes cluster DNS. |
+| [kube-proxy](https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html) | Enables network communication to your pods. |
+| [Amazon EBS CSI](https://docs.aws.amazon.com/eks/latest/userguide/managing-ebs-csi.html) | Manage the Amazon EBS CSI driver as an Amazon EKS add-on. |
 
 EKS managed add-ons can be enabled via the following.
 
 ```
 # EKS Addons
-  enable_eks_addon_vpc_cni = true # default is false
+  amazon_eks_vpc_cni_enable = true # default is false
   #Optional
-  eks_addon_vpc_cni_config = {
+  amazon_eks_vpc_cni_config = {
     addon_name               = "vpc-cni"
     addon_version            = "v1.10.1-eksbuild.1"
     service_account          = "aws-node"
@@ -28,9 +28,9 @@ EKS managed add-ons can be enabled via the following.
     tags                     = {}
   }
 
-  enable_eks_addon_coredns = true # default is false
+  amazon_eks_coredns_enable = true # default is false
   #Optional
-  eks_addon_coredns_config = {
+  amazon_eks_coredns_config = {
     addon_name               = "coredns"
     addon_version            = "v1.8.4-eksbuild.1"
     service_account          = "coredns"
@@ -41,9 +41,9 @@ EKS managed add-ons can be enabled via the following.
     tags                     = {}
   }
 
-  enable_eks_addon_kube_proxy = true # default is false
+  amazon_eks_kube_proxy_enable = true # default is false
   #Optional
-  eks_addon_kube_proxy_config = {
+  amazon_eks_kube_proxy_config = {
     addon_name               = "kube-proxy"
     addon_version            = "v1.21.2-eksbuild.2"
     service_account          = "kube-proxy"
@@ -54,9 +54,9 @@ EKS managed add-ons can be enabled via the following.
     tags                     = {}
   }
 
-  enable_eks_addon_aws_ebs_csi_driver = true # default is false
+  amazon_eks_ebs_csi_driver_enable = true # default is false
   #Optional
-  eks_addon_aws_ebs_csi_driver_config = {
+  amazon_eks_ebs_csi_driver_config = {
     addon_name               = "aws-ebs-csi-driver"
     addon_version            = "v1.4.0-eksbuild.preview"
     service_account          = "ebs-csi-controller-sa"
@@ -75,7 +75,3 @@ EKS won't modify any of your Kubernetes add-ons when you update a cluster to a n
 Our [Cluster Upgrade](../advanced/cluster-upgrades.md) guide demonstrates how you can leverage this framework to upgrade your EKS cluster in addition to the EKS managed add-ons running in each cluster.
 
 Additional information on updating a EKS cluster can be found in the [EKS documentation](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html).
-
-[Amazon VPC CNI]:(https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html)
-[CoreDNS]:(https://docs.aws.amazon.com/eks/latest/userguide/managing-coredns.html)
-[kube-proxy]:(https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html)

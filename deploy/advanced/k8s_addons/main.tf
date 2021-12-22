@@ -163,9 +163,9 @@ module "kubernetes-addons" {
   auto_scaling_group_names     = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
 
   # EKS Addons
-  enable_eks_addon_vpc_cni = true # default is false
+  amazon_eks_vpc_cni_enable = true # default is false
   #Optional
-  eks_addon_vpc_cni_config = {
+  amazon_eks_vpc_cni_config = {
     addon_name               = "vpc-cni"
     addon_version            = "v1.10.1-eksbuild.1"
     service_account          = "aws-node"
@@ -176,9 +176,9 @@ module "kubernetes-addons" {
     tags                     = {}
   }
 
-  enable_eks_addon_coredns = true # default is false
+  amazon_eks_coredns_enable = true # default is false
   #Optional
-  eks_addon_coredns_config = {
+  amazon_eks_coredns_config = {
     addon_name               = "coredns"
     addon_version            = "v1.8.4-eksbuild.1"
     service_account          = "coredns"
@@ -189,9 +189,9 @@ module "kubernetes-addons" {
     tags                     = {}
   }
 
-  enable_eks_addon_kube_proxy = true # default is false
+  amazon_eks_kube_proxy_enable = true # default is false
   #Optional
-  eks_addon_kube_proxy_config = {
+  amazon_eks_kube_proxy_config = {
     addon_name               = "kube-proxy"
     addon_version            = "v1.21.2-eksbuild.2"
     service_account          = "kube-proxy"
@@ -202,9 +202,9 @@ module "kubernetes-addons" {
     tags                     = {}
   }
 
-  enable_eks_addon_aws_ebs_csi_driver = true # default is false
+  amazon_eks_ebs_csi_driver_enable = true # default is false
   #Optional
-  eks_addon_aws_ebs_csi_driver_config = {
+  amazon_eks_ebs_csi_driver_config = {
     addon_name               = "aws-ebs-csi-driver"
     addon_version            = "v1.4.0-eksbuild.preview"
     service_account          = "ebs-csi-controller-sa"
@@ -213,6 +213,31 @@ module "kubernetes-addons" {
     additional_iam_policies  = []
     service_account_role_arn = ""
     tags                     = {}
+  }
+  #---------------------------------------
+  # AWS LOAD BALANCER INGRESS CONTROLLER HELM ADDON
+  #---------------------------------------
+  aws_lb_ingress_controller_enable = true
+  # Optional
+  aws_lb_ingress_controller_helm_chart = {
+    name       = "aws-load-balancer-controller"
+    chart      = "aws-load-balancer-controller"
+    repository = "https://aws.github.io/eks-charts"
+    version    = "1.3.1"
+    namespace  = "kube-system"
+  }
+
+  #---------------------------------------
+  # AWS NODE TERMINATION HANDLER HELM ADDON
+  #---------------------------------------
+  aws_node_termination_handler_enable = true
+  # Optional
+  aws_node_termination_handler_helm_chart = {
+    name       = "aws-node-termination-handler"
+    chart      = "aws-node-termination-handler"
+    repository = "https://aws.github.io/eks-charts"
+    version    = "0.16.0"
+    timeout    = "1200"
   }
   #---------------------------------------
   # TRAEFIK INGRESS CONTROLLER HELM ADDON
@@ -280,8 +305,6 @@ module "kubernetes-addons" {
       operating_system = "linux"
     })]
   }
-
-
   #---------------------------------------
   # COMMUNITY PROMETHEUS ENABLE
   #---------------------------------------
@@ -300,10 +323,12 @@ module "kubernetes-addons" {
 
   }
 
+
   #---------------------------------------
   # ENABLE NGINX
   #---------------------------------------
-  ingress_nginx_controller_enable = false
+  ingress_nginx_controller_enable = true
+
   # Optional nginx_helm_chart
   nginx_helm_chart = {
     name       = "ingress-nginx"
@@ -318,7 +343,7 @@ module "kubernetes-addons" {
   # ENABLE AGONES
   #---------------------------------------
   # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
-  agones_enable = false
+  agones_enable = true
   # Optional  agones_helm_chart
   agones_helm_chart = {
     name               = "agones"
@@ -339,7 +364,8 @@ module "kubernetes-addons" {
   #---------------------------------------
   # ENABLE AWS DISTRO OPEN TELEMETRY
   #---------------------------------------
-  aws_open_telemetry_enable = false
+  aws_open_telemetry_enable = true
+  # Optional
   aws_open_telemetry_addon = {
     aws_open_telemetry_namespace                        = "aws-otel-eks"
     aws_open_telemetry_emitter_otel_resource_attributes = "service.namespace=AWSObservability,service.name=ADOTEmitService"
@@ -354,7 +380,7 @@ module "kubernetes-addons" {
   # AWS-FOR-FLUENTBIT HELM ADDON
   #---------------------------------------
   aws_for_fluentbit_enable = true
-
+  # Optional
   aws_for_fluentbit_helm_chart = {
     name                                      = "aws-for-fluent-bit"
     chart                                     = "aws-for-fluent-bit"
@@ -381,7 +407,7 @@ module "kubernetes-addons" {
   #---------------------------------------
   spark_on_k8s_operator_enable = true
 
-  # Optional Map value
+  # Optional
   spark_on_k8s_operator_helm_chart = {
     name             = "spark-operator"
     chart            = "spark-operator"
@@ -398,6 +424,8 @@ module "kubernetes-addons" {
   # FARGATE FLUENTBIT
   #---------------------------------------
   fargate_fluentbit_enable = true
+
+  # Optional
   fargate_fluentbit_config = {
     output_conf  = <<EOF
 [OUTPUT]
@@ -433,7 +461,8 @@ module "kubernetes-addons" {
   # ENABLE ARGOCD
   #---------------------------------------
   argocd_enable = true
-  # Optional Map value
+
+  # Optional
   argocd_helm_chart = {
     name             = "argo-cd"
     chart            = "argo-cd"
@@ -450,7 +479,7 @@ module "kubernetes-addons" {
   #---------------------------------------
   keda_enable = true
 
-  # Optional Map value
+  # Optional
   keda_helm_chart = {
     name       = "keda"                              # (Required) Release name.
     repository = "https://kedacore.github.io/charts" # (Optional) Repository URL where to locate the requested chart.

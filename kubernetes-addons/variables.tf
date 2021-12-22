@@ -34,49 +34,49 @@ variable "tags" {
 }
 
 #-----------EKS MANAGED ADD-ONS------------
-variable "eks_addon_vpc_cni_config" {
+variable "amazon_eks_vpc_cni_config" {
   description = "Map of Amazon EKS VPC CNI Add-on"
   type        = any
   default     = {}
 }
 
-variable "eks_addon_coredns_config" {
+variable "amazon_eks_coredns_config" {
   description = "Map of Amazon COREDNS EKS Add-on"
   type        = any
   default     = {}
 }
 
-variable "eks_addon_kube_proxy_config" {
+variable "amazon_eks_kube_proxy_config" {
   description = "Map of Amazon EKS KUBE_PROXY Add-on"
   type        = any
   default     = {}
 }
 
-variable "eks_addon_aws_ebs_csi_driver_config" {
+variable "amazon_eks_ebs_csi_driver_config" {
   description = "Map of Amazon EKS aws_ebs_csi_driver Add-on"
   type        = any
   default     = {}
 }
 
-variable "enable_eks_addon_vpc_cni" {
+variable "amazon_eks_vpc_cni_enable" {
   type        = bool
   default     = false
   description = "Enable VPC CNI Addon"
 }
 
-variable "enable_eks_addon_coredns" {
+variable "amazon_eks_coredns_enable" {
   type        = bool
   default     = false
   description = "Enable CoreDNS Addon"
 }
 
-variable "enable_eks_addon_kube_proxy" {
+variable "amazon_eks_kube_proxy_enable" {
   type        = bool
   default     = false
   description = "Enable Kube Proxy Addon"
 }
 
-variable "enable_eks_addon_aws_ebs_csi_driver" {
+variable "amazon_eks_ebs_csi_driver_enable" {
   type        = bool
   default     = false
   description = "Enable EKS Managed EBS CSI Driver Addon"
@@ -179,7 +179,7 @@ variable "aws_lb_ingress_controller_enable" {
   description = "enabling LB Ingress Controller on eks cluster"
 }
 
-variable "aws_lb_ingress_controller_helm_app" {
+variable "aws_lb_ingress_controller_helm_chart" {
   type        = any
   description = "Helm chart definition for aws_lb_ingress_controller"
   default     = {}

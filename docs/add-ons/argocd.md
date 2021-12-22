@@ -15,7 +15,7 @@ ArgoCD can be deployed by enabling the add-on via the following.
 argocd_enable = true
 ```
 
-You can optionally customize the Helm chart that deploys ArgoCD via the following configuration.
+You can optionally customize the Helm chart that deploys `ArgoCD` via the following configuration.
 
 ```hcl
 argocd_helm_chart = {

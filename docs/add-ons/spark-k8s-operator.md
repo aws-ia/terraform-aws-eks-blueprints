@@ -26,7 +26,7 @@ For complete project documentation, please visit the [Spark K8S Operator documen
     namespace        = "spark-k8s-operator"
     timeout          = "1200"
     create_namespace = true
-    values = [templatefile("${path.module}/spark-k8s-operator-values.yaml", {})]
+    values = [templatefile("${path.module}/values.yaml", {})]
 
   }
 ```
