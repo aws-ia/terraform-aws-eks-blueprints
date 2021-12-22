@@ -9,7 +9,7 @@ locals {
     service_account_name = local.service_account_name
   })]
 
-  default_helm_provider_config = {
+  default_helm_config = {
     name                       = "aws-load-balancer-controller"
     chart                      = "aws-load-balancer-controller"
     repository                 = "https://aws.github.io/eks-charts"
@@ -47,9 +47,9 @@ locals {
     postrender                 = ""
   }
 
-  helm_provider_config = merge(
-    local.default_helm_provider_config,
-    var.helm_provider_config
+  helm_config = merge(
+    local.default_helm_config,
+    var.helm_config
   )
 
   argocd_gitops_config = {

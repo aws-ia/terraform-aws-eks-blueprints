@@ -9,7 +9,7 @@ For complete project documentation, please visit the [Traefik documentation site
 [Traefik](kubernetes-addons/traefik-ingress/README.md) can be deployed by enabling the add-on via the following.
 
 ```hcl
-traefik_ingress_controller_enable = true
+enable_traefik = true
 ```
 
 ## How to test Traefik Web UI

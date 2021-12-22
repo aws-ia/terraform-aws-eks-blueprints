@@ -16,7 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "helm_provider_config" {
+variable "helm_config" {
   type        = any
   default     = {}
   description = "Keda Event-based autoscaler for workloads on Kubernetes Helm chart config"

@@ -50,22 +50,22 @@ variable "tags" {
 variable "terraform_version" {
   type        = string
   default     = "Terraform"
-  description = "Terraform Version"
+  description = "Terraform version"
 }
 
 # VPC Config for EKS Cluster
 variable "vpc_id" {
   type        = string
-  description = "VPC id"
+  description = "VPC Id"
 }
 
 variable "private_subnet_ids" {
-  description = "list of private subnets Id's for the Worker nodes"
+  description = "List of private subnets Ids for the worker nodes"
   type        = list(string)
 }
 
 variable "public_subnet_ids" {
-  description = "list of public subnets Id's for the Worker nodes"
+  description = "List of public subnets Ids for the worker nodes"
   type        = list(string)
   default     = []
 }
@@ -74,31 +74,31 @@ variable "public_subnet_ids" {
 variable "create_eks" {
   type        = bool
   default     = false
-  description = "Enable Create EKS"
+  description = "Create EKS cluster"
 }
 
 variable "kubernetes_version" {
   type        = string
   default     = "1.21"
-  description = "Desired Kubernetes master version. If you do not specify a value, the latest available version is used"
+  description = "Desired kubernetes version. If you do not specify a value, the latest available version is used"
 }
 
 variable "cluster_endpoint_private_access" {
   type        = bool
   default     = false
-  description = "Indicates whether or not the Amazon EKS private API server endpoint is enabled. Default to AWS EKS resource and it is false"
+  description = "Indicates whether or not the EKS private API server endpoint is enabled. Default to EKS resource and it is false"
 }
 
 variable "cluster_endpoint_public_access" {
   type        = bool
   default     = true
-  description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled. Default to AWS EKS resource and it is true"
+  description = "Indicates whether or not the EKS public API server endpoint is enabled. Default to EKS resource and it is true"
 }
 
 variable "enable_irsa" {
   type        = bool
   default     = true
-  description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled. Default to AWS EKS resource and it is true"
+  description = "Enable IAM Roles for Service Accounts"
 }
 
 variable "cluster_enabled_log_types" {
@@ -115,19 +115,19 @@ variable "cluster_log_retention_period" {
 
 # EKS WORKER NODES
 variable "managed_node_groups" {
-  description = "Managed Node groups configuration"
+  description = "Managed node groups configuration"
   type        = any
   default     = {}
 }
 
 variable "self_managed_node_groups" {
-  description = "Self-Managed Node groups configuration"
+  description = "Self-managed node groups configuration"
   type        = any
   default     = {}
 }
 
 variable "fargate_profiles" {
-  description = "Fargate Profile configuration"
+  description = "Fargate profile configuration"
   type        = any
   default     = {}
 }
@@ -141,13 +141,13 @@ variable "enable_windows_support" {
 
 # CONFIGMAP AWS-AUTH
 variable "map_accounts" {
-  description = "Additional AWS account numbers to add to the aws-auth configmap. "
+  description = "Additional AWS account numbers to add to the aws-auth ConfigMap"
   type        = list(string)
   default     = []
 }
 
 variable "map_roles" {
-  description = "Additional IAM roles to add to the aws-auth configmap."
+  description = "Additional IAM roles to add to the aws-auth ConfigMap"
   type = list(object({
     rolearn  = string
     username = string
@@ -157,7 +157,7 @@ variable "map_roles" {
 }
 
 variable "map_users" {
-  description = "Additional IAM users to add to the aws-auth configmap. "
+  description = "Additional IAM users to add to the aws-auth ConfigMap"
   type = list(object({
     userarn  = string
     username = string
@@ -173,7 +173,7 @@ variable "aws_auth_additional_labels" {
 }
 
 #-----------Amazon Managed Prometheus-------------
-variable "aws_managed_prometheus_enable" {
+variable "enable_aws_managed_prometheus" {
   type        = bool
   default     = false
   description = "Enable AWS Managed Prometheus service"
@@ -189,11 +189,11 @@ variable "aws_managed_prometheus_workspace_id" {
 variable "enable_emr_on_eks" {
   type        = bool
   default     = false
-  description = "Enabling EMR on EKS Config"
+  description = "Enable EMR on EKS"
 }
 
 variable "emr_on_eks_teams" {
-  description = "EMR on EKS Teams configuration"
+  description = "EMR on EKS Teams config"
   type        = any
   default     = {}
 }

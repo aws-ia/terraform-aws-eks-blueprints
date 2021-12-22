@@ -7,7 +7,7 @@ locals {
     log_group_name = local.log_group_name
   })]
 
-  default_helm_provider_config = {
+  default_helm_config = {
     name                       = "aws-for-fluent-bit"
     chart                      = "aws-for-fluent-bit"
     repository                 = "https://aws.github.io/eks-charts"
@@ -45,9 +45,9 @@ locals {
     postrender                 = ""
   }
 
-  helm_provider_config = merge(
-    local.default_helm_provider_config,
-    var.helm_provider_config
+  helm_config = merge(
+    local.default_helm_config,
+    var.helm_config
   )
 
   argocd_gitops_config = {

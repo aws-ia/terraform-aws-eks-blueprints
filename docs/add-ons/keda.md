@@ -13,14 +13,14 @@ For complete project documentation, please visit the [KEDA documentation site](h
 KEDA can be deployed by enabling the add-on via the following.
 
 ```hcl
-keda_enable = true
+enable_keda = true
 ```
 
 Deploy KEDA with custom `values.yaml`
 
 ```hcl
   # Optional Map value; pass keda-values.yaml from consumer module
-  keda_helm_chart = {
+  keda_helm_config = {
     name       = "keda"                                               # (Required) Release name.
     repository = "https://kedacore.github.io/charts"                  # (Optional) Repository URL where to locate the requested chart.
     chart      = "keda"                                               # (Required) Chart name to be installed.

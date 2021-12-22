@@ -1,9 +1,9 @@
 variable "eks_cluster_id" {
-  description = "EKS Cluster ID"
+  description = "EKS Cluster Id"
 }
 
 variable "eks_worker_security_group_id" {
-  description = "EKS Worker Security group ID created by EKS module"
+  description = "EKS Worker Security group Id created by EKS module"
   default     = ""
 }
 
@@ -18,7 +18,7 @@ variable "eks_oidc_provider_arn" {
 }
 
 variable "auto_scaling_group_names" {
-  description = "List of Self Managed Node Groups Autoscaling group names"
+  description = "List of self-managed node groups autoscaling group names"
   default     = []
 }
 
@@ -35,71 +35,71 @@ variable "tags" {
 
 #-----------EKS MANAGED ADD-ONS------------
 variable "amazon_eks_vpc_cni_config" {
-  description = "Map of Amazon EKS VPC CNI Add-on"
+  description = "ConfigMap of Amazon EKS VPC CNI add-on"
   type        = any
   default     = {}
 }
 
 variable "amazon_eks_coredns_config" {
-  description = "Map of Amazon COREDNS EKS Add-on"
+  description = "ConfigMap for Amazon CoreDNS EKS add-on"
   type        = any
   default     = {}
 }
 
 variable "amazon_eks_kube_proxy_config" {
-  description = "Map of Amazon EKS KUBE_PROXY Add-on"
+  description = "ConfigMap for Amazon EKS Kube-Proxy add-on"
   type        = any
   default     = {}
 }
 
-variable "amazon_eks_ebs_csi_driver_config" {
-  description = "Map of Amazon EKS aws_ebs_csi_driver Add-on"
+variable "amazon_eks_aws_ebs_csi_driver_config" {
+  description = "configMap for AWS EBS CSI Driver add-on"
   type        = any
   default     = {}
 }
 
-variable "amazon_eks_vpc_cni_enable" {
+variable "enable_amazon_eks_vpc_cni" {
   type        = bool
   default     = false
-  description = "Enable VPC CNI Addon"
+  description = "Enable VPC CNI add-on"
 }
 
-variable "amazon_eks_coredns_enable" {
+variable "enable_amazon_eks_coredns" {
   type        = bool
   default     = false
-  description = "Enable CoreDNS Addon"
+  description = "Enable CoreDNS add-on"
 }
 
-variable "amazon_eks_kube_proxy_enable" {
+variable "enable_amazon_eks_kube_proxy" {
   type        = bool
   default     = false
-  description = "Enable Kube Proxy Addon"
+  description = "Enable Kube Proxy add-on"
 }
 
-variable "amazon_eks_ebs_csi_driver_enable" {
+variable "enable_amazon_eks_aws_ebs_csi_driver" {
   type        = bool
   default     = false
-  description = "Enable EKS Managed EBS CSI Driver Addon"
+  description = "Enable EKS Managed AWS EBS CSI Driver add-on"
 }
 
 #-----------CLUSTER AUTOSCALER-------------
-variable "cluster_autoscaler_enable" {
+variable "enable_cluster_autoscaler" {
   type        = bool
   default     = false
-  description = "Enabling Cluster autoscaler on eks cluster"
+  description = "Enable Cluster autoscaler add-on"
 }
 
-variable "cluster_autoscaler_helm_chart" {
+variable "cluster_autoscaler_helm_config" {
   type        = any
   default     = {}
-  description = "Cluster Autoscaler Helm Chart Config"
+  description = "Cluster Autoscaler Helm Chart config"
 }
 
 #-----------Amazon Managed Service for Prometheus-------------
-variable "aws_managed_prometheus_enable" {
+variable "enable_aws_managed_prometheus" {
   type        = bool
   default     = false
-  description = "Enable AWS Managed Prometheus service"
+  description = "Enable AWS Managed Prometheus Service"
 }
 
 variable "aws_managed_prometheus_workspace_id" {
@@ -121,196 +121,196 @@ variable "aws_managed_prometheus_ingest_service_account" {
 }
 
 #-----------PROMETHEUS-------------
-variable "prometheus_enable" {
-  description = "Enable Community Prometheus Helm Addon"
+variable "enable_prometheus" {
+  description = "Enable Community Prometheus add-on"
   type        = bool
   default     = false
 }
 
-variable "prometheus_helm_chart" {
-  description = "Community Prometheus Helm Addon Config"
+variable "prometheus_helm_config" {
+  description = "Community Prometheus Helm Chart config"
   type        = any
   default     = {}
 }
 
 #-----------METRIC SERVER-------------
-variable "metrics_server_enable" {
+variable "enable_metrics_server" {
   type        = bool
   default     = false
-  description = "Enabling metrics server on eks cluster"
+  description = "Enable metrics server add-on"
 }
 
-variable "metrics_server_helm_chart" {
+variable "metrics_server_helm_config" {
   type        = any
   default     = {}
-  description = "Metrics Server Helm Addon Config"
+  description = "Metrics Server Helm Chart config"
 }
 
 #-----------TRAEFIK-------------
-variable "traefik_ingress_controller_enable" {
+variable "enable_traefik" {
   type        = bool
   default     = false
-  description = "Enabling Traefik Ingress Controller on eks cluster"
+  description = "Enable Traefik add-on"
 }
 
-variable "traefik_helm_chart" {
+variable "traefik_helm_config" {
   type        = any
   default     = {}
-  description = "Traefik Helm Addon Config"
+  description = "Traefik Helm Chart config"
 }
 
 #-----------AGONES-------------
-variable "agones_enable" {
+variable "enable_agones" {
   type        = bool
   default     = false
-  description = "Enabling Agones Gaming Helm Chart"
+  description = "Enable Agones GamServer add-on"
 }
 
-variable "agones_helm_chart" {
+variable "agones_helm_config" {
   type        = any
   default     = {}
-  description = "Agones GameServer Helm chart config"
+  description = "Agones GameServer Helm Chart config"
 }
 
 #-----------AWS LB Ingress Controller-------------
-variable "aws_lb_ingress_controller_enable" {
+variable "enable_aws_load_balancer_controller" {
   type        = bool
   default     = false
-  description = "enabling LB Ingress Controller on eks cluster"
+  description = "Enable AWS Load Balancer Controller add-on"
 }
 
-variable "aws_lb_ingress_controller_helm_chart" {
+variable "aws_load_balancer_controller_helm_config" {
   type        = any
-  description = "Helm chart definition for aws_lb_ingress_controller"
+  description = "AWS Load Balancer Controller Helm Chart config"
   default     = {}
 }
 
 #-----------NGINX-------------
-variable "ingress_nginx_controller_enable" {
+variable "enable_ingress_nginx" {
   type        = bool
   default     = false
-  description = "Enabling NGINX Ingress Controller on EKS Cluster"
+  description = "Enable Ingress Nginx add-on"
 }
 
-variable "nginx_helm_chart" {
-  description = "NGINX Ingress Controller Helm Chart Configuration"
+variable "ingress_nginx_helm_config" {
+  description = "Ingress Nginx Helm Chart config"
   type        = any
   default     = {}
 }
 
 #-----------SPARK K8S OPERATOR-------------
-variable "spark_on_k8s_operator_enable" {
+variable "enable_spark_on_k8s_operator" {
   type        = bool
   default     = false
-  description = "Enabling Spark on K8s Operator on EKS Cluster"
+  description = "Enable Spark on K8s Operator add-on"
 }
 
-variable "spark_on_k8s_operator_helm_chart" {
-  description = "Spark on K8s Operator Helm Chart Configuration"
+variable "spark_on_k8s_operator_helm_config" {
+  description = "Spark on K8s Operator Helm Chart config"
   type        = any
   default     = {}
 }
 
 #-----------AWS FOR FLUENT BIT-------------
-variable "aws_for_fluentbit_enable" {
+variable "enable_aws_for_fluentbit" {
   type        = bool
   default     = false
-  description = "Enabling FluentBit Addon on EKS Worker Nodes"
+  description = "Enable AWS for FluentBit add-on"
 }
 
-variable "aws_for_fluentbit_helm_chart" {
+variable "aws_for_fluentbit_helm_config" {
   type        = any
-  description = "Helm chart definition for aws_for_fluent_bit"
+  description = "AWS for FluentBit Helm Chart config"
   default     = {}
 }
 
 #-----------FARGATE FLUENT BIT-------------
-variable "fargate_fluentbit_enable" {
+variable "enable_fargate_fluentbit" {
   type        = bool
   default     = false
-  description = "Enabling fargate_fluent_bit module on eks cluster"
+  description = "Enable Fargate FluentBit add-on"
 }
 
-variable "fargate_fluentbit_config" {
+variable "fargate_fluentbit_addon_config" {
   type        = any
-  description = "Fargate fluentbit configuration "
+  description = "Fargate fluentbit add-on config"
   default     = {}
 }
 
 #-----------CERT MANAGER-------------
-variable "cert_manager_enable" {
+variable "enable_cert_manager" {
   type        = bool
   default     = false
-  description = "Enabling Cert Manager Helm Chart installation."
+  description = "Enable Cert Manager add-on"
 }
 
-variable "cert_manager_helm_chart" {
+variable "cert_manager_helm_config" {
   type        = any
-  description = "Cert Manager Helm chart configuration"
+  description = "Cert Manager Helm Chart config"
   default     = {}
 }
 #-----------AWS OPEN TELEMETRY ADDON-------------
-variable "aws_open_telemetry_enable" {
+variable "enable_aws_open_telemetry" {
   type        = bool
   default     = false
-  description = "Enable AWS Open Telemetry Distro Addon "
+  description = "Enable AWS Open Telemetry Distro add-on"
 }
 
-variable "aws_open_telemetry_addon" {
+variable "aws_open_telemetry_addon_config" {
   type        = any
   default     = {}
-  description = "AWS Open Telemetry Distro Addon Configuration"
+  description = "AWS Open Telemetry Distro add-on config"
 }
 
 #-----------ARGOCD ADDON-------------
-variable "argocd_enable" {
+variable "enable_argocd" {
   type        = bool
   default     = false
-  description = "Enable ARGO CD Kubernetes Addon"
+  description = "Enable Argo CD Kubernetes add-on"
 }
 
-variable "argocd_helm_chart" {
+variable "argocd_helm_config" {
   type        = any
   default     = {}
-  description = "ARGO CD Kubernetes Addon Configuration"
+  description = "Argo CD Kubernetes add-on config"
 }
 
 variable "argocd_applications" {
   type        = any
   default     = {}
-  description = "ARGO CD Applications config to bootstrap the cluster"
+  description = "Argo CD Applications config to bootstrap the cluster"
 }
 
 variable "argocd_manage_add_ons" {
   type        = bool
   default     = false
-  description = "Enables managing add-on configuration via ArgoCD"
+  description = "Enable managing add-on configuration via ArgoCD"
 }
 
 #-----------AWS NODE TERMINATION HANDLER-------------
-variable "aws_node_termination_handler_enable" {
+variable "enable_aws_node_termination_handler" {
   type        = bool
   default     = false
-  description = "Enabling AWS Node Termination Handler"
+  description = "Enable AWS Node Termination Handler add-on"
 }
 
-variable "aws_node_termination_handler_helm_chart" {
+variable "aws_node_termination_handler_helm_config" {
   type        = any
-  description = "Helm chart definition for aws_node_termination_handler"
+  description = "AWS Node Termination Handler Helm Chart config"
   default     = {}
 }
 
 #-----------KEDA ADDON-------------
-variable "keda_enable" {
+variable "enable_keda" {
   type        = bool
   default     = false
-  description = "Enable KEDA Event-based autoscaler for workloads on Kubernetes"
+  description = "Enable KEDA Event-based autoscaler add-on"
 }
 
-variable "keda_helm_chart" {
+variable "keda_helm_config" {
   type        = any
   default     = {}
-  description = "KEDA Event-based autoscaler Kubernetes Addon Configuration"
+  description = "KEDA Event-based autoscaler add-on config"
 }
 
 variable "keda_create_irsa" {
@@ -325,41 +325,41 @@ variable "keda_irsa_policies" {
   default     = []
 }
 
+#-----------Vertical Pod Autoscaler(VPA) ADDON-------------
+variable "enable_vpa" {
+  type        = bool
+  default     = false
+  description = "Enable Kubernetes Vertical Pod Autoscaler add-on"
+}
+
+variable "vpa_helm_config" {
+  type        = any
+  default     = {}
+  description = "Vertical Pod Autoscaler Helm Chart config"
+}
+
+#-----------Apache YuniKorn ADDON-------------
+variable "enable_yunikorn" {
+  type        = bool
+  default     = false
+  description = "Enable Apache YuniKorn K8s scheduler add-on"
+}
+
+variable "yunikorn_helm_config" {
+  type        = any
+  default     = {}
+  description = "YuniKorn K8s scheduler Helm Chart config"
+}
+
 #-----------TEAMS-------------
 variable "application_teams" {
-  description = "Map of maps of Application Teams to create"
+  description = "Map of maps of Application teams to create"
   type        = any
   default     = {}
 }
 
 variable "platform_teams" {
-  description = "Map of maps of platform teams to create"
+  description = "Map of maps of Platform teams to create"
   type        = any
   default     = {}
-}
-
-#-----------Vertical Pod Autoscaler(VPA) ADDON-------------
-variable "vpa_enable" {
-  type        = bool
-  default     = false
-  description = "Enable Kubernetes Vertical Pod Autoscaler"
-}
-
-variable "vpa_helm_chart" {
-  type        = any
-  default     = {}
-  description = "Kubernetes Vertical Pod Autoscaler Helm chart config"
-}
-
-#-----------Apache YuniKorn ADDON-------------
-variable "yunikorn_enable" {
-  type        = bool
-  default     = false
-  description = "Enable Apache YuniKorn K8s scheduler"
-}
-
-variable "yunikorn_helm_chart" {
-  type        = any
-  default     = {}
-  description = "YuniKorn K8s scheduler Helm chart config"
 }

@@ -1,6 +1,6 @@
 
 locals {
-  default_helm_provider_config = {
+  default_helm_config = {
     name                       = "metrics-server"
     chart                      = "metrics-server"
     repository                 = "https://kubernetes-sigs.github.io/metrics-server/"
@@ -38,9 +38,9 @@ locals {
     postrender                 = ""
   }
 
-  helm_provider_config = merge(
-    local.default_helm_provider_config,
-    var.helm_provider_config
+  helm_config = merge(
+    local.default_helm_config,
+    var.helm_config
   )
 
   argocd_gitops_config = {

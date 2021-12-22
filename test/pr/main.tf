@@ -46,5 +46,4 @@ module "eks-cluster-with-import-vpc" {
   vpc_id             = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
   private_subnet_ids = data.terraform_remote_state.vpc_s3_backend.outputs.private_subnets
   public_subnet_ids  = data.terraform_remote_state.vpc_s3_backend.outputs.public_subnets
-
 }
