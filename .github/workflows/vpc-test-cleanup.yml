@@ -45,5 +45,5 @@ jobs:
       - name: Terraform Destroy
         id: destroy
         working-directory: test/e2e/vpc
-        run: terraform destroy -no-color --auto-approve=true
+        run: terraform destroy -no-color -auto-approve
         continue-on-error: false

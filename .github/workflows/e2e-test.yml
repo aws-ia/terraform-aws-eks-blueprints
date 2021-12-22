@@ -56,11 +56,11 @@ jobs:
         - name: Terraform Apply
           id: apply
           working-directory: test/e2e/eks
-          run: terraform apply -no-color --auto-approve=true
+          run: terraform apply -no-color -auto-approve
           continue-on-error: false
 
         - name: Terraform Destroy
           id: destroy
           working-directory: test/e2e/eks
-          run: terraform destroy -no-color --auto-approve=true
+          run: terraform destroy -no-color -auto-approve
           continue-on-error: false
