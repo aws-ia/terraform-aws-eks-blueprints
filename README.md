@@ -53,19 +53,19 @@ module "eks-ssp" {
 module "eks-ssp-kubernetes-addons" {
     source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//kubernetes-addons"
 
-    eks_cluster_id               = module.eks-ssp.eks_cluster_id
+    eks_cluster_id                    = module.eks-ssp.eks_cluster_id
 
     # EKS Addons
-    amazon_eks_vpc_cni_enable                = true
-    amazon_eks_coredns_enable                = true
-    amazon_eks_kube_proxy_enable             = true
-    amazon_eks_ebs_csi_driver_enable     = true
+    amazon_eks_vpc_cni_enable         = true
+    amazon_eks_coredns_enable         = true
+    amazon_eks_kube_proxy_enable      = true
+    amazon_eks_ebs_csi_driver_enable  = true
 
     #K8s Add-ons
     aws_lb_ingress_controller_enable  = true
     metrics_server_enable             = true
     cluster_autoscaler_enable         = true
-    aws_for_fluentbit_enable           = true
+    aws_for_fluentbit_enable          = true
     argocd_enable                     = true
 }
 ```
