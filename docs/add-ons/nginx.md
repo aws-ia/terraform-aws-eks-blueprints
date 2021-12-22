@@ -9,7 +9,7 @@ Other than handling Kubernetes ingress objects, this ingress controller can faci
 [Nginx Ingress Controller](kubernetes-addons/ingress-nginx/README.md) can be deployed by enabling the add-on via the following.
 
 ```hcl
-ingress_nginx_controller_enable = true
+enable_ingress_nginx = true
 ```
 
 To validate that installation is successful run the following command:

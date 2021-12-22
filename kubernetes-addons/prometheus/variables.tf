@@ -36,7 +36,7 @@ variable "service_account_amp_ingest_name" {
   default = ""
 }
 
-variable "helm_provider_config" {
+variable "helm_config" {
   type    = any
   default = {}
 }

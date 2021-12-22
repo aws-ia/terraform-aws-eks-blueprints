@@ -9,7 +9,7 @@ For complete documentation, please visit the [AWS Distro for OpenTelemetry docum
 The AWS Distro for OpenTelemetry Collector can be deployed into an EKS cluster by enabling the add-on via the following.
 
 ```
-aws_open_telemetry_enable = true
+enable_aws_open_telemetry = true
 ```
 
 ### GitOps Configuration

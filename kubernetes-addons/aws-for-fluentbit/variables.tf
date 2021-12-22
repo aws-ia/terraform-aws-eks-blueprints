@@ -16,7 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "helm_provider_config" {
+variable "helm_config" {
   type        = any
   description = "Helm provider config aws_for_fluent_bit."
   default     = {}

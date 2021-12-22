@@ -129,8 +129,7 @@ module "aws-eks-accelerator-for-terraform" {
   enable_eks_addon_aws_ebs_csi_driver = true
 
   # KUBERNETES Add-ons
-  aws_lb_ingress_controller_enable = true
-  metrics_server_enable            = true
-  cluster_autoscaler_enable        = true
-
+  enable_aws_lb_ingress_controller = true
+  enable_metrics_server            = true
+  enable_cluster_autoscaler        = true
 }

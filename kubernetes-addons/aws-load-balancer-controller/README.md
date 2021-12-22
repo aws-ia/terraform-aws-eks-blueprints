@@ -109,7 +109,7 @@ No modules.
 | <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS cluster Id | `string` | n/a | yes |
 | <a name="input_eks_oidc_issuer_url"></a> [eks\_oidc\_issuer\_url](#input\_eks\_oidc\_issuer\_url) | The URL on the EKS cluster OIDC Issuer | `string` | n/a | yes |
 | <a name="input_eks_oidc_provider_arn"></a> [eks\_oidc\_provider\_arn](#input\_eks\_oidc\_provider\_arn) | The ARN of the OIDC Provider if `enable_irsa = true`. | `string` | n/a | yes |
-| <a name="input_helm_provider_config"></a> [helm\_provider\_config](#input\_helm\_provider\_config) | Helm provider config for the aws\_load\_balancer\_controller. | `any` | `{}` | no |
+| <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | Helm provider config for the aws\_load\_balancer\_controller. | `any` | `{}` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
 
 ## Outputs
@@ -119,5 +119,4 @@ No modules.
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
 | <a name="output_ingress_name"></a> [ingress\_name](#output\_ingress\_name) | n/a |
 | <a name="output_ingress_namespace"></a> [ingress\_namespace](#output\_ingress\_namespace) | n/a |
-
 <!--- END_TF_DOCS --->

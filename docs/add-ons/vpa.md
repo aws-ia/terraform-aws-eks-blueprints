@@ -8,7 +8,7 @@ NOTE: Metrics Server add-on is a dependency for this addon
 This step deploys the Vertical Pod Autoscaler with default Helm Chart config
 
 ```hcl
-  vpa_enable = true
+  enable_vpa = true
 ```
 
 Alternatively, you can override the helm values by using the code snippet below
@@ -16,7 +16,7 @@ Alternatively, you can override the helm values by using the code snippet below
 ```hcl
   vpa_enable = true
 
-  vpa_helm_chart = {
+  vpa_helm_config = {
     name       = "vpa"                                 # (Required) Release name.
     repository = "https://charts.fairwinds.com/stable" # (Optional) Repository URL where to locate the requested chart.
     chart      = "vpa"                                 # (Required) Chart name to be installed.

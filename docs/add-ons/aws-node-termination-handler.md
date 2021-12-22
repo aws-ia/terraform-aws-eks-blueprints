@@ -15,7 +15,7 @@ The NTH will be deployed in the `kube-system` namespace. AWS resources required 
 ## Usage
 
 ```hcl
-aws_node_termination_handler = true
+enable_aws_node_termination_handler = true
 ```
 
 To validate that controller is running, ensure that controller deployment is in RUNNING state:

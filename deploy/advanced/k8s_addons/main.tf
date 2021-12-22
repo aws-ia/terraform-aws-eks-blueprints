@@ -136,7 +136,7 @@ module "aws-eks-accelerator-for-terraform" {
   }
 
   # AWS Managed Services
-  aws_managed_prometheus_enable = true
+  enable_aws_managed_prometheus = true
 
   enable_emr_on_eks = true
   emr_on_eks_teams = {
@@ -206,10 +206,10 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # TRAEFIK INGRESS CONTROLLER HELM ADDON
   #---------------------------------------
-  traefik_ingress_controller_enable = true
+  enable_traefik = true
 
   # Optional Map value
-  traefik_helm_chart = {
+  traefik_helm_config = {
     name       = "traefik"                         # (Required) Release name.
     repository = "https://helm.traefik.io/traefik" # (Optional) Repository URL where to locate the requested chart.
     chart      = "traefik"                         # (Required) Chart name to be installed.
@@ -231,10 +231,10 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # METRICS SERVER HELM ADDON
   #---------------------------------------
-  metrics_server_enable = true
+  enable_metrics_server = true
 
   # Optional Map value
-  metrics_server_helm_chart = {
+  metrics_server_helm_config = {
     name       = "metrics-server"                                    # (Required) Release name.
     repository = "https://kubernetes-sigs.github.io/metrics-server/" # (Optional) Repository URL where to locate the requested chart.
     chart      = "metrics-server"                                    # (Required) Chart name to be installed.
@@ -252,10 +252,10 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # CLUSTER AUTOSCALER HELM ADDON
   #---------------------------------------
-  cluster_autoscaler_enable = true
+  enable_cluster_autoscaler = true
 
   # Optional Map value
-  cluster_autoscaler_helm_chart = {
+  cluster_autoscaler_helm_config = {
     name       = "cluster-autoscaler"                      # (Required) Release name.
     repository = "https://kubernetes.github.io/autoscaler" # (Optional) Repository URL where to locate the requested chart.
     chart      = "cluster-autoscaler"                      # (Required) Chart name to be installed.
@@ -274,10 +274,10 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # COMMUNITY PROMETHEUS ENABLE
   #---------------------------------------
-  prometheus_enable = true
+  enable_prometheus = true
 
   # Optional Map value
-  prometheus_helm_chart = {
+  prometheus_helm_config = {
     name       = "prometheus"                                         # (Required) Release name.
     repository = "https://prometheus-community.github.io/helm-charts" # (Optional) Repository URL where to locate the requested chart.
     chart      = "prometheus"                                         # (Required) Chart name to be installed.
@@ -292,9 +292,10 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # ENABLE NGINX
   #---------------------------------------
-  ingress_nginx_controller_enable = false
+  enable_ingress_nginx = false
+
   # Optional nginx_helm_chart
-  nginx_helm_chart = {
+  ingress_nginx_helm_config = {
     name       = "ingress-nginx"
     chart      = "ingress-nginx"
     repository = "https://kubernetes.github.io/ingress-nginx"
@@ -307,9 +308,9 @@ module "aws-eks-accelerator-for-terraform" {
   # ENABLE AGONES
   #---------------------------------------
   # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
-  agones_enable = false
+  enable_agones = false
   # Optional  agones_helm_chart
-  agones_helm_chart = {
+  agones_helm_config = {
     name               = "agones"
     chart              = "agones"
     repository         = "https://agones.dev/chart/stable"
@@ -328,8 +329,8 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # ENABLE AWS DISTRO OPEN TELEMETRY
   #---------------------------------------
-  aws_open_telemetry_enable = false
-  aws_open_telemetry_addon = {
+  enable_aws_open_telemetry = false
+  aws_open_telemetry_addon_config = {
     aws_open_telemetry_namespace                        = "aws-otel-eks"
     aws_open_telemetry_emitter_otel_resource_attributes = "service.namespace=AWSObservability,service.name=ADOTEmitService"
     aws_open_telemetry_emitter_name                     = "trace-emitter"
@@ -342,9 +343,9 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # AWS-FOR-FLUENTBIT HELM ADDON
   #---------------------------------------
-  aws_for_fluentbit_enable = true
+  enable_aws_for_fluentbit = true
 
-  aws_for_fluentbit_helm_chart = {
+  aws_for_fluentbit_helm_config = {
     name                                      = "aws-for-fluent-bit"
     chart                                     = "aws-for-fluent-bit"
     repository                                = "https://aws.github.io/eks-charts"
@@ -368,10 +369,10 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # ENABLE SPARK on K8S OPERATOR
   #---------------------------------------
-  spark_on_k8s_operator_enable = true
+  enable_spark_on_k8s_operator = true
 
   # Optional Map value
-  spark_on_k8s_operator_helm_chart = {
+  spark_on_k8s_operator_helm_config = {
     name             = "spark-operator"
     chart            = "spark-operator"
     repository       = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
@@ -386,8 +387,8 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # FARGATE FLUENTBIT
   #---------------------------------------
-  fargate_fluentbit_enable = true
-  fargate_fluentbit_config = {
+  enable_fargate_fluentbit = true
+  fargate_fluentbit_addon_config = {
     output_conf  = <<EOF
 [OUTPUT]
   Name cloudwatch_logs
@@ -421,9 +422,9 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # ENABLE ARGOCD
   #---------------------------------------
-  argocd_enable = true
+  enable_argocd = true
   # Optional Map value
-  argocd_helm_chart = {
+  argocd_helm_config = {
     name             = "argo-cd"
     chart            = "argo-cd"
     repository       = "https://argoproj.github.io/argo-helm"
@@ -437,10 +438,10 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # KEDA ENABLE
   #---------------------------------------
-  keda_enable = true
+  enable_keda = true
 
   # Optional Map value
-  keda_helm_chart = {
+  keda_helm_config = {
     name       = "keda"                              # (Required) Release name.
     repository = "https://kedacore.github.io/charts" # (Optional) Repository URL where to locate the requested chart.
     chart      = "keda"                              # (Required) Chart name to be installed.
@@ -452,9 +453,9 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # Vertical Pod Autoscaling
   #---------------------------------------
-  vpa_enable = true
+  enable_vpa = true
 
-  vpa_helm_chart = {
+  vpa_helm_config = {
     name       = "vpa"                                 # (Required) Release name.
     repository = "https://charts.fairwinds.com/stable" # (Optional) Repository URL where to locate the requested chart.
     chart      = "vpa"                                 # (Required) Chart name to be installed.
@@ -466,9 +467,9 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # Apache YuniKorn K8s Spark Scheduler
   #---------------------------------------
-  yunikorn_enable = true
+  enable_yunikorn = true
 
-  yunikorn_helm_chart = {
+  yunikorn_helm_config = {
     name       = "yunikorn"                                            # (Required) Release name.
     repository = "https://apache.github.io/incubator-yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
     chart      = "yunikorn"                                            # (Required) Chart name to be installed.

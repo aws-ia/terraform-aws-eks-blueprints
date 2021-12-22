@@ -10,15 +10,15 @@ For complete project documentation, please visit the [Spark K8S Operator documen
 ### Basic Example
 
 ```hcl
-  spark_on_k8s_operator_enable = true
+  enable_spark_on_k8s_operator = true
 ```
 
 ### Advanced Example
 ```hcl
-  spark_on_k8s_operator_enable = true
+  enable_spark_on_k8s_operator = true
   # Optional Map value
   # NOTE: This block requires passing the helm values.yaml
-  spark_on_k8s_operator_helm_chart = {
+  spark_on_k8s_operator_helm_config = {
     name             = "spark-operator"
     chart            = "spark-operator"
     repository       = "https://googlecloudplatform.github.io/spark-on-k8s-operator"

@@ -6,7 +6,7 @@ locals {
     cluster_name = var.eks_cluster_id
   })]
 
-  default_helm_provider_config = {
+  default_helm_config = {
     name                       = "cluster-autoscaler"
     chart                      = "cluster-autoscaler"
     repository                 = "https://kubernetes.github.io/autoscaler"
@@ -44,9 +44,9 @@ locals {
     set_sensitive              = null
   }
 
-  helm_provider_config = merge(
-    local.default_helm_provider_config,
-    var.helm_provider_config
+  helm_config = merge(
+    local.default_helm_config,
+    var.helm_config
   )
 
   argocd_gitops_config = {

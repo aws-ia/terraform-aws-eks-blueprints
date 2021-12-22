@@ -16,16 +16,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-resource "helm_release" "nginx" {
-  count                      = var.manage_via_gitops ? 0 : 1
+resource "helm_release" "vpa" {
   name                       = local.helm_config["name"]
   repository                 = local.helm_config["repository"]
   chart                      = local.helm_config["chart"]
   version                    = local.helm_config["version"]
-  namespace                  = local.helm_config["namespace"]
   timeout                    = local.helm_config["timeout"]
   values                     = local.helm_config["values"]
   create_namespace           = local.helm_config["create_namespace"]
+  namespace                  = local.helm_config["namespace"]
   lint                       = local.helm_config["lint"]
   description                = local.helm_config["description"]
   repository_key_file        = local.helm_config["repository_key_file"]
@@ -57,7 +56,7 @@ resource "helm_release" "nginx" {
 
   dynamic "set" {
     iterator = each_item
-    for_each = local.helm_config["set"] == null ? [] : local.helm_config["set"]
+    for_each = local.helm_config["set"]
 
     content {
       name  = each_item.value.name

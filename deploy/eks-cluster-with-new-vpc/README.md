@@ -87,7 +87,7 @@ terraform destroy
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.66.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.67.0 |
 
 ## Modules
 
@@ -112,5 +112,4 @@ No inputs.
 | Name | Description |
 |------|-------------|
 | <a name="output_configure_kubectl"></a> [configure\_kubectl](#output\_configure\_kubectl) | Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
-
 <!--- END_TF_DOCS --->

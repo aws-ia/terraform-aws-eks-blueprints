@@ -10,7 +10,7 @@ For more information about AWS Load Balancer Controller please see the [official
 ## Usage
 
 ```hcl
-aws_lb_ingress_controller_enable = true
+enable_aws_load_balancer_controller = true
 ```
 
 To validate that controller is running, ensure that controller deployment is in RUNNING state:

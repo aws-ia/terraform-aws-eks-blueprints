@@ -123,7 +123,7 @@ module "aws-eks-accelerator-for-terraform" {
   }
 
   #K8s Add-ons
-  aws_lb_ingress_controller_enable = true
-  metrics_server_enable            = true
-  cluster_autoscaler_enable        = true
+  enable_aws_load_balancer_controller = true
+  enable_metrics_server               = true
+  enable_cluster_autoscaler           = true
 }

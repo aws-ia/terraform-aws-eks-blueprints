@@ -31,34 +31,34 @@ The below demonstrates how you can leverage this framework to deploy an EKS clus
 
 ```hcl
 module "eks-ssp" {
-    source = "git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git"
+  source = "git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git"
 
-    # EKS CLUSTER
-    kubernetes_version       = "1.21"
-    vpc_id             = "<vpcid>"     # Enter VPC ID
-    private_subnet_ids = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]     # Enter Private Subnet IDs
+  # EKS CLUSTER
+  kubernetes_version = "1.21"
+  vpc_id             = "<vpcid>"                                  # Enter VPC ID
+  private_subnet_ids = ["<subnet-a>", "<subnet-b>", "<subnet-c>"] # Enter Private Subnet IDs
 
-    # EKS MANAGED ADD-ON VARIABLES
-    enable_eks_addon_vpc_cni = true
-    enable_eks_addon_coredns = true
-    enable_eks_addon_kube_proxy = true
+  # EKS MANAGED ADD-ON VARIABLES
+  enable_eks_addon_vpc_cni    = true
+  enable_eks_addon_coredns    = true
+  enable_eks_addon_kube_proxy = true
 
-    # KUBERNETES ADD-ON VARIABLES
-    cluster_autoscaler_enable           = true
-    metrics_server_enable               = true
-    aws_lb_ingress_controller_enable    = true
-    aws_for_fluentbit_enable             = true
-    cert_manager_enable                 = true
-    ingress_nginx_controller_enable     = true
+  # KUBERNETES ADD-ON VARIABLES
+  enable_cluster_autoscaler           = true
+  enable_metrics_server_enable        = true
+  enable_aws_load_balancer_controller = true
+  enable_aws_for_fluentbit            = true
+  enable_cert_manager                 = true
+  enable_ingress_nginx                = true
 
-    # EKS MANAGED NODE GROUPS
-    managed_node_groups = {
-        mg_m4l = {
-            node_group_name = "managed-ondemand"
-            instance_types  = ["m4.large"]
-            subnet_ids      = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]
-        }
+  # EKS MANAGED NODE GROUPS
+  managed_node_groups = {
+    mg_m4l = {
+      node_group_name = "managed-ondemand"
+      instance_types  = ["m4.large"]
+      subnet_ids      = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]
     }
+  }
 }
 ```
 
@@ -133,9 +133,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.66.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.67.0 |
 | <a name="provider_http"></a> [http](#provider\_http) | 2.4.1 |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.7.1 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.7.0 |
 
 ## Modules
 
@@ -165,9 +165,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="module_kube_proxy"></a> [kube\_proxy](#module\_kube\_proxy) | ./modules/aws-eks-addon/kube-proxy | n/a |
 | <a name="module_metrics_server"></a> [metrics\_server](#module\_metrics\_server) | ./kubernetes-addons/metrics-server | n/a |
 | <a name="module_prometheus"></a> [prometheus](#module\_prometheus) | ./kubernetes-addons/prometheus | n/a |
-| <a name="module_spark_k8s_operator"></a> [spark\_k8s\_operator](#module\_spark\_k8s\_operator) | ./kubernetes-addons/spark-k8s-operator | n/a |
-| <a name="module_traefik_ingress"></a> [traefik\_ingress](#module\_traefik\_ingress) | ./kubernetes-addons/traefik-ingress | n/a |
-| <a name="module_vpa"></a> [vpa](#module\_vpa) | ./kubernetes-addons/vertical-pod-autoscaler | n/a |
+| <a name="module_spark_on_k8s_operator"></a> [spark\_on\_k8s\_operator](#module\_spark\_on\_k8s\_operator) | ./kubernetes-addons/spark-on-k8s-operator | n/a |
+| <a name="module_traefik"></a> [traefik](#module\_traefik) | ./kubernetes-addons/traefik-ingress | n/a |
+| <a name="module_vpa"></a> [vpa](#module\_vpa) | ./kubernetes-addons/vpa | n/a |
 | <a name="module_vpc_cni"></a> [vpc\_cni](#module\_vpc\_cni) | ./modules/aws-eks-addon/vpc-cni | n/a |
 | <a name="module_yunikorn"></a> [yunikorn](#module\_yunikorn) | ./kubernetes-addons/yunikorn | n/a |
 
@@ -190,81 +190,81 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_agones_enable"></a> [agones\_enable](#input\_agones\_enable) | Enabling Agones Gaming Helm Chart | `bool` | `false` | no |
-| <a name="input_agones_helm_chart"></a> [agones\_helm\_chart](#input\_agones\_helm\_chart) | Agones GameServer Helm chart config | `any` | `{}` | no |
+| <a name="input_agones_helm_config"></a> [agones\_helm\_config](#input\_agones\_helm\_config) | Agones GameServer Helm Chart config | `any` | `{}` | no |
 | <a name="input_application_teams"></a> [application\_teams](#input\_application\_teams) | Map of maps of Application Teams to create | `any` | `{}` | no |
-| <a name="input_argocd_applications"></a> [argocd\_applications](#input\_argocd\_applications) | ARGO CD Applications config to bootstrap the cluster | `any` | `{}` | no |
-| <a name="input_argocd_enable"></a> [argocd\_enable](#input\_argocd\_enable) | Enable ARGO CD Kubernetes Addon | `bool` | `false` | no |
-| <a name="input_argocd_helm_chart"></a> [argocd\_helm\_chart](#input\_argocd\_helm\_chart) | ARGO CD Kubernetes Addon Configuration | `any` | `{}` | no |
+| <a name="input_argocd_applications"></a> [argocd\_applications](#input\_argocd\_applications) | Argo CD applications config to bootstrap the cluster | `any` | `{}` | no |
+| <a name="input_argocd_helm_config"></a> [argocd\_helm\_config](#input\_argocd\_helm\_config) | Argo CD Helm Chart config | `any` | `{}` | no |
 | <a name="input_argocd_manage_add_ons"></a> [argocd\_manage\_add\_ons](#input\_argocd\_manage\_add\_ons) | Enables managing add-on configuration via ArgoCD | `bool` | `false` | no |
 | <a name="input_aws_auth_additional_labels"></a> [aws\_auth\_additional\_labels](#input\_aws\_auth\_additional\_labels) | Additional kubernetes labels applied on aws-auth ConfigMap | `map(string)` | `{}` | no |
-| <a name="input_aws_for_fluentbit_enable"></a> [aws\_for\_fluentbit\_enable](#input\_aws\_for\_fluentbit\_enable) | Enabling FluentBit Addon on EKS Worker Nodes | `bool` | `false` | no |
-| <a name="input_aws_for_fluentbit_helm_chart"></a> [aws\_for\_fluentbit\_helm\_chart](#input\_aws\_for\_fluentbit\_helm\_chart) | Helm chart definition for aws\_for\_fluent\_bit | `any` | `{}` | no |
-| <a name="input_aws_lb_ingress_controller_enable"></a> [aws\_lb\_ingress\_controller\_enable](#input\_aws\_lb\_ingress\_controller\_enable) | enabling LB Ingress Controller on eks cluster | `bool` | `false` | no |
-| <a name="input_aws_lb_ingress_controller_helm_app"></a> [aws\_lb\_ingress\_controller\_helm\_app](#input\_aws\_lb\_ingress\_controller\_helm\_app) | Helm chart definition for aws\_lb\_ingress\_controller | `any` | `{}` | no |
-| <a name="input_aws_managed_prometheus_enable"></a> [aws\_managed\_prometheus\_enable](#input\_aws\_managed\_prometheus\_enable) | Enable AWS Managed Prometheus service | `bool` | `false` | no |
+| <a name="input_aws_for_fluentbit_helm_config"></a> [aws\_for\_fluentbit\_helm\_config](#input\_aws\_for\_fluentbit\_helm\_config) | AWS for FluentBit Helm Chart config | `any` | `{}` | no |
+| <a name="input_aws_load_balancer_controller_helm_config"></a> [aws\_load\_balancer\_controller\_helm\_config](#input\_aws\_load\_balancer\_controller\_helm\_config) | AWS Load Balancer Controller Helm Chart config | `any` | `{}` | no |
 | <a name="input_aws_managed_prometheus_workspace_name"></a> [aws\_managed\_prometheus\_workspace\_name](#input\_aws\_managed\_prometheus\_workspace\_name) | AWS Managed Prometheus WorkSpace Name | `string` | `"aws-managed-prometheus-workspace"` | no |
-| <a name="input_aws_node_termination_handler_enable"></a> [aws\_node\_termination\_handler\_enable](#input\_aws\_node\_termination\_handler\_enable) | Enabling AWS Node Termination Handler | `bool` | `false` | no |
-| <a name="input_aws_node_termination_handler_helm_chart"></a> [aws\_node\_termination\_handler\_helm\_chart](#input\_aws\_node\_termination\_handler\_helm\_chart) | Helm chart definition for aws\_node\_termination\_handler | `any` | `{}` | no |
-| <a name="input_aws_open_telemetry_addon"></a> [aws\_open\_telemetry\_addon](#input\_aws\_open\_telemetry\_addon) | AWS Open Telemetry Distro Addon Configuration | `any` | `{}` | no |
-| <a name="input_aws_open_telemetry_enable"></a> [aws\_open\_telemetry\_enable](#input\_aws\_open\_telemetry\_enable) | Enable AWS Open Telemetry Distro Addon | `bool` | `false` | no |
-| <a name="input_cert_manager_enable"></a> [cert\_manager\_enable](#input\_cert\_manager\_enable) | Enabling Cert Manager Helm Chart installation. | `bool` | `false` | no |
-| <a name="input_cert_manager_helm_chart"></a> [cert\_manager\_helm\_chart](#input\_cert\_manager\_helm\_chart) | Cert Manager Helm chart configuration | `any` | `{}` | no |
-| <a name="input_cluster_autoscaler_enable"></a> [cluster\_autoscaler\_enable](#input\_cluster\_autoscaler\_enable) | Enabling Cluster autoscaler on eks cluster | `bool` | `false` | no |
-| <a name="input_cluster_autoscaler_helm_chart"></a> [cluster\_autoscaler\_helm\_chart](#input\_cluster\_autoscaler\_helm\_chart) | Cluster Autoscaler Helm Chart Config | `any` | `{}` | no |
+| <a name="input_aws_node_termination_handler_helm_config"></a> [aws\_node\_termination\_handler\_helm\_config](#input\_aws\_node\_termination\_handler\_helm\_config) | AWS Node Termination Handler Helm Chart config | `any` | `{}` | no |
+| <a name="input_aws_open_telemetry_addon_config"></a> [aws\_open\_telemetry\_addon\_config](#input\_aws\_open\_telemetry\_addon\_config) | AWS Open Telemetry Distro cddon configuration | `any` | `{}` | no |
+| <a name="input_cert_manager_helm_config"></a> [cert\_manager\_helm\_config](#input\_cert\_manager\_helm\_config) | Cert Manager Helm chart config | `any` | `{}` | no |
+| <a name="input_cluster_autoscaler_helm_config"></a> [cluster\_autoscaler\_helm\_config](#input\_cluster\_autoscaler\_helm\_config) | Cluster Autoscaler Helm Chart config | `any` | `{}` | no |
 | <a name="input_cluster_enabled_log_types"></a> [cluster\_enabled\_log\_types](#input\_cluster\_enabled\_log\_types) | A list of the desired control plane logging to enable | `list(string)` | <pre>[<br>  "api",<br>  "audit",<br>  "authenticator",<br>  "controllerManager",<br>  "scheduler"<br>]</pre> | no |
-| <a name="input_cluster_endpoint_private_access"></a> [cluster\_endpoint\_private\_access](#input\_cluster\_endpoint\_private\_access) | Indicates whether or not the Amazon EKS private API server endpoint is enabled. Default to AWS EKS resource and it is false | `bool` | `false` | no |
-| <a name="input_cluster_endpoint_public_access"></a> [cluster\_endpoint\_public\_access](#input\_cluster\_endpoint\_public\_access) | Indicates whether or not the Amazon EKS public API server endpoint is enabled. Default to AWS EKS resource and it is true | `bool` | `true` | no |
+| <a name="input_cluster_endpoint_private_access"></a> [cluster\_endpoint\_private\_access](#input\_cluster\_endpoint\_private\_access) | Indicates whether or not the EKS private API server endpoint is enabled. Default to EKS resource and it is false | `bool` | `false` | no |
+| <a name="input_cluster_endpoint_public_access"></a> [cluster\_endpoint\_public\_access](#input\_cluster\_endpoint\_public\_access) | Indicates whether or not the EKS public API server endpoint is enabled. Default to EKS resource and it is true | `bool` | `true` | no |
 | <a name="input_cluster_log_retention_period"></a> [cluster\_log\_retention\_period](#input\_cluster\_log\_retention\_period) | Number of days to retain cluster logs | `number` | `7` | no |
-| <a name="input_create_eks"></a> [create\_eks](#input\_create\_eks) | Enable Create EKS | `bool` | `false` | no |
-| <a name="input_eks_addon_aws_ebs_csi_driver_config"></a> [eks\_addon\_aws\_ebs\_csi\_driver\_config](#input\_eks\_addon\_aws\_ebs\_csi\_driver\_config) | Map of Amazon EKS aws\_ebs\_csi\_driver Add-on | `any` | `{}` | no |
-| <a name="input_eks_addon_coredns_config"></a> [eks\_addon\_coredns\_config](#input\_eks\_addon\_coredns\_config) | Map of Amazon COREDNS EKS Add-on | `any` | `{}` | no |
-| <a name="input_eks_addon_kube_proxy_config"></a> [eks\_addon\_kube\_proxy\_config](#input\_eks\_addon\_kube\_proxy\_config) | Map of Amazon EKS KUBE\_PROXY Add-on | `any` | `{}` | no |
-| <a name="input_eks_addon_vpc_cni_config"></a> [eks\_addon\_vpc\_cni\_config](#input\_eks\_addon\_vpc\_cni\_config) | Map of Amazon EKS VPC CNI Add-on | `any` | `{}` | no |
-| <a name="input_emr_on_eks_teams"></a> [emr\_on\_eks\_teams](#input\_emr\_on\_eks\_teams) | EMR on EKS Teams configuration | `any` | `{}` | no |
+| <a name="input_create_eks"></a> [create\_eks](#input\_create\_eks) | Create EKS cluster | `bool` | `false` | no |
+| <a name="input_eks_addon_aws_ebs_csi_driver_config"></a> [eks\_addon\_aws\_ebs\_csi\_driver\_config](#input\_eks\_addon\_aws\_ebs\_csi\_driver\_config) | ConfigMap for AWS EBS CSI driver Add-on | `any` | `{}` | no |
+| <a name="input_eks_addon_coredns_config"></a> [eks\_addon\_coredns\_config](#input\_eks\_addon\_coredns\_config) | ConfigMap for CoreDNS EKS Add-on | `any` | `{}` | no |
+| <a name="input_eks_addon_kube_proxy_config"></a> [eks\_addon\_kube\_proxy\_config](#input\_eks\_addon\_kube\_proxy\_config) | ConfigMap for EKS kube-proxy Add-on | `any` | `{}` | no |
+| <a name="input_eks_addon_vpc_cni_config"></a> [eks\_addon\_vpc\_cni\_config](#input\_eks\_addon\_vpc\_cni\_config) | ConfigMap for EKS VPC CNI Add-on | `any` | `{}` | no |
+| <a name="input_emr_on_eks_teams"></a> [emr\_on\_eks\_teams](#input\_emr\_on\_eks\_teams) | EMR on EKS Teams config | `any` | `{}` | no |
+| <a name="input_enable_agones"></a> [enable\_agones](#input\_enable\_agones) | Enable Agones GameServer addon | `bool` | `false` | no |
+| <a name="input_enable_argocd"></a> [enable\_argocd](#input\_enable\_argocd) | Enable Argo CD Kubernetes addon | `bool` | `false` | no |
+| <a name="input_enable_aws_for_fluentbit"></a> [enable\_aws\_for\_fluentbit](#input\_enable\_aws\_for\_fluentbit) | Enable AWS for FluentBit addon | `bool` | `false` | no |
+| <a name="input_enable_aws_load_balancer_controller"></a> [enable\_aws\_load\_balancer\_controller](#input\_enable\_aws\_load\_balancer\_controller) | Enable AWS Load Balancer Controller addon | `bool` | `false` | no |
+| <a name="input_enable_aws_managed_prometheus"></a> [enable\_aws\_managed\_prometheus](#input\_enable\_aws\_managed\_prometheus) | Enable AWS Managed Prometheus addon | `bool` | `false` | no |
+| <a name="input_enable_aws_node_termination_handler"></a> [enable\_aws\_node\_termination\_handler](#input\_enable\_aws\_node\_termination\_handler) | Enable AWS Node Termination Handler addon (only applicable for self-managed workers) | `bool` | `false` | no |
+| <a name="input_enable_aws_open_telemetry"></a> [enable\_aws\_open\_telemetry](#input\_enable\_aws\_open\_telemetry) | Enable AWS Open Telemetry addon | `bool` | `false` | no |
+| <a name="input_enable_cert_manager"></a> [enable\_cert\_manager](#input\_enable\_cert\_manager) | Enable Cert Manager addon | `bool` | `false` | no |
+| <a name="input_enable_cluster_autoscaler"></a> [enable\_cluster\_autoscaler](#input\_enable\_cluster\_autoscaler) | Enable Cluster Autoscaler addon | `bool` | `false` | no |
 | <a name="input_enable_eks_addon_aws_ebs_csi_driver"></a> [enable\_eks\_addon\_aws\_ebs\_csi\_driver](#input\_enable\_eks\_addon\_aws\_ebs\_csi\_driver) | Enable EKS Managed EBS CSI Driver Addon | `bool` | `false` | no |
 | <a name="input_enable_eks_addon_coredns"></a> [enable\_eks\_addon\_coredns](#input\_enable\_eks\_addon\_coredns) | Enable CoreDNS Addon | `bool` | `false` | no |
-| <a name="input_enable_eks_addon_kube_proxy"></a> [enable\_eks\_addon\_kube\_proxy](#input\_enable\_eks\_addon\_kube\_proxy) | Enable Kube Proxy Addon | `bool` | `false` | no |
-| <a name="input_enable_eks_addon_vpc_cni"></a> [enable\_eks\_addon\_vpc\_cni](#input\_enable\_eks\_addon\_vpc\_cni) | Enable VPC CNI Addon | `bool` | `false` | no |
-| <a name="input_enable_emr_on_eks"></a> [enable\_emr\_on\_eks](#input\_enable\_emr\_on\_eks) | Enabling EMR on EKS Config | `bool` | `false` | no |
-| <a name="input_enable_irsa"></a> [enable\_irsa](#input\_enable\_irsa) | Indicates whether or not the Amazon EKS public API server endpoint is enabled. Default to AWS EKS resource and it is true | `bool` | `true` | no |
+| <a name="input_enable_eks_addon_kube_proxy"></a> [enable\_eks\_addon\_kube\_proxy](#input\_enable\_eks\_addon\_kube\_proxy) | Enable kube-proxy Addon | `bool` | `false` | no |
+| <a name="input_enable_eks_addon_vpc_cni"></a> [enable\_eks\_addon\_vpc\_cni](#input\_enable\_eks\_addon\_vpc\_cni) | Enable Amazon VPC CNI Addon | `bool` | `false` | no |
+| <a name="input_enable_emr_on_eks"></a> [enable\_emr\_on\_eks](#input\_enable\_emr\_on\_eks) | Enable EMR on EKS | `bool` | `false` | no |
+| <a name="input_enable_fargate_fluentbit"></a> [enable\_fargate\_fluentbit](#input\_enable\_fargate\_fluentbit) | Enable FluentBit for EKS on Fargate | `bool` | `false` | no |
+| <a name="input_enable_ingress_nginx"></a> [enable\_ingress\_nginx](#input\_enable\_ingress\_nginx) | Enable Ingress Nginx addon | `bool` | `false` | no |
+| <a name="input_enable_irsa"></a> [enable\_irsa](#input\_enable\_irsa) | Enable IAM Roles for Service Accounts | `bool` | `true` | no |
+| <a name="input_enable_keda"></a> [enable\_keda](#input\_enable\_keda) | Enable KEDA Event-based autoscaler for workloads on Kubernetes | `bool` | `false` | no |
+| <a name="input_enable_metrics_server"></a> [enable\_metrics\_server](#input\_enable\_metrics\_server) | Enable metrics server addon | `bool` | `false` | no |
+| <a name="input_enable_prometheus"></a> [enable\_prometheus](#input\_enable\_prometheus) | Enable community Prometheus addon | `bool` | `false` | no |
+| <a name="input_enable_spark_on_k8s_operator"></a> [enable\_spark\_on\_k8s\_operator](#input\_enable\_spark\_on\_k8s\_operator) | Enable Spark on K8s Operator | `bool` | `false` | no |
+| <a name="input_enable_traefik"></a> [enable\_traefik](#input\_enable\_traefik) | Enable Traefik addon | `bool` | `false` | no |
+| <a name="input_enable_vpa"></a> [enable\_vpa](#input\_enable\_vpa) | Enable Kubernetes Vertical Pod Autoscaler (VPA) | `bool` | `false` | no |
 | <a name="input_enable_windows_support"></a> [enable\_windows\_support](#input\_enable\_windows\_support) | Enable Windows support | `bool` | `false` | no |
+| <a name="input_enable_yunikorn"></a> [enable\_yunikorn](#input\_enable\_yunikorn) | Enable Apache YuniKorn K8s scheduler | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment area, e.g. prod or preprod | `string` | `"preprod"` | no |
-| <a name="input_fargate_fluentbit_config"></a> [fargate\_fluentbit\_config](#input\_fargate\_fluentbit\_config) | Fargate fluentbit configuration | `any` | `{}` | no |
-| <a name="input_fargate_fluentbit_enable"></a> [fargate\_fluentbit\_enable](#input\_fargate\_fluentbit\_enable) | Enabling fargate\_fluent\_bit module on eks cluster | `bool` | `false` | no |
-| <a name="input_fargate_profiles"></a> [fargate\_profiles](#input\_fargate\_profiles) | Fargate Profile configuration | `any` | `{}` | no |
-| <a name="input_ingress_nginx_controller_enable"></a> [ingress\_nginx\_controller\_enable](#input\_ingress\_nginx\_controller\_enable) | Enabling NGINX Ingress Controller on EKS Cluster | `bool` | `false` | no |
-| <a name="input_keda_create_irsa"></a> [keda\_create\_irsa](#input\_keda\_create\_irsa) | Indicates if the add-on should create a IAM role + service account | `bool` | `true` | no |
-| <a name="input_keda_enable"></a> [keda\_enable](#input\_keda\_enable) | Enable KEDA Event-based autoscaler for workloads on Kubernetes | `bool` | `false` | no |
-| <a name="input_keda_helm_chart"></a> [keda\_helm\_chart](#input\_keda\_helm\_chart) | KEDA Event-based autoscaler Kubernetes Addon Configuration | `any` | `{}` | no |
+| <a name="input_fargate_fluentbit_config"></a> [fargate\_fluentbit\_config](#input\_fargate\_fluentbit\_config) | EKS on Fargate fluentbit config | `any` | `{}` | no |
+| <a name="input_fargate_profiles"></a> [fargate\_profiles](#input\_fargate\_profiles) | Fargate profile configuration | `any` | `{}` | no |
+| <a name="input_ingress_nginx_helm_config"></a> [ingress\_nginx\_helm\_config](#input\_ingress\_nginx\_helm\_config) | Ingress Nginx Helm Chart config | `any` | `{}` | no |
+| <a name="input_keda_create_irsa"></a> [keda\_create\_irsa](#input\_keda\_create\_irsa) | Indicates if the add-on should create a IAM role for service account | `bool` | `true` | no |
+| <a name="input_keda_helm_config"></a> [keda\_helm\_config](#input\_keda\_helm\_config) | KEDA Helm Chart config | `any` | `{}` | no |
 | <a name="input_keda_irsa_policies"></a> [keda\_irsa\_policies](#input\_keda\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
-| <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | Desired Kubernetes master version. If you do not specify a value, the latest available version is used | `string` | `"1.21"` | no |
-| <a name="input_managed_node_groups"></a> [managed\_node\_groups](#input\_managed\_node\_groups) | Managed Node groups configuration | `any` | `{}` | no |
-| <a name="input_map_accounts"></a> [map\_accounts](#input\_map\_accounts) | Additional AWS account numbers to add to the aws-auth configmap. | `list(string)` | `[]` | no |
-| <a name="input_map_roles"></a> [map\_roles](#input\_map\_roles) | Additional IAM roles to add to the aws-auth configmap. | <pre>list(object({<br>    rolearn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
-| <a name="input_map_users"></a> [map\_users](#input\_map\_users) | Additional IAM users to add to the aws-auth configmap. | <pre>list(object({<br>    userarn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
-| <a name="input_metrics_server_enable"></a> [metrics\_server\_enable](#input\_metrics\_server\_enable) | Enabling metrics server on eks cluster | `bool` | `false` | no |
-| <a name="input_metrics_server_helm_chart"></a> [metrics\_server\_helm\_chart](#input\_metrics\_server\_helm\_chart) | Metrics Server Helm Addon Config | `any` | `{}` | no |
-| <a name="input_nginx_helm_chart"></a> [nginx\_helm\_chart](#input\_nginx\_helm\_chart) | NGINX Ingress Controller Helm Chart Configuration | `any` | `{}` | no |
+| <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | Desired kubernetes version. If you do not specify a value, the latest available version is used | `string` | `"1.21"` | no |
+| <a name="input_managed_node_groups"></a> [managed\_node\_groups](#input\_managed\_node\_groups) | Managed node groups configuration | `any` | `{}` | no |
+| <a name="input_map_accounts"></a> [map\_accounts](#input\_map\_accounts) | Additional AWS account numbers to add to the aws-auth ConfigMap | `list(string)` | `[]` | no |
+| <a name="input_map_roles"></a> [map\_roles](#input\_map\_roles) | Additional IAM roles to add to the aws-auth ConfigMap | <pre>list(object({<br>    rolearn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
+| <a name="input_map_users"></a> [map\_users](#input\_map\_users) | Additional IAM users to add to the aws-auth ConfigMap | <pre>list(object({<br>    userarn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
+| <a name="input_metrics_server_helm_config"></a> [metrics\_server\_helm\_config](#input\_metrics\_server\_helm\_config) | Metrics Server Helm Chart config | `any` | `{}` | no |
 | <a name="input_org"></a> [org](#input\_org) | tenant, which could be your organization name, e.g. aws' | `string` | `""` | no |
 | <a name="input_platform_teams"></a> [platform\_teams](#input\_platform\_teams) | Map of maps of platform teams to create | `any` | `{}` | no |
-| <a name="input_private_subnet_ids"></a> [private\_subnet\_ids](#input\_private\_subnet\_ids) | list of private subnets Id's for the Worker nodes | `list(string)` | n/a | yes |
-| <a name="input_prometheus_enable"></a> [prometheus\_enable](#input\_prometheus\_enable) | Enable Community Prometheus Helm Addon | `bool` | `false` | no |
-| <a name="input_prometheus_helm_chart"></a> [prometheus\_helm\_chart](#input\_prometheus\_helm\_chart) | Community Prometheus Helm Addon Config | `any` | `{}` | no |
-| <a name="input_public_subnet_ids"></a> [public\_subnet\_ids](#input\_public\_subnet\_ids) | list of public subnets Id's for the Worker nodes | `list(string)` | `[]` | no |
-| <a name="input_self_managed_node_groups"></a> [self\_managed\_node\_groups](#input\_self\_managed\_node\_groups) | Self-Managed Node groups configuration | `any` | `{}` | no |
-| <a name="input_spark_on_k8s_operator_enable"></a> [spark\_on\_k8s\_operator\_enable](#input\_spark\_on\_k8s\_operator\_enable) | Enabling Spark on K8s Operator on EKS Cluster | `bool` | `false` | no |
-| <a name="input_spark_on_k8s_operator_helm_chart"></a> [spark\_on\_k8s\_operator\_helm\_chart](#input\_spark\_on\_k8s\_operator\_helm\_chart) | Spark on K8s Operator Helm Chart Configuration | `any` | `{}` | no |
+| <a name="input_private_subnet_ids"></a> [private\_subnet\_ids](#input\_private\_subnet\_ids) | List of private subnets Ids for the worker nodes | `list(string)` | n/a | yes |
+| <a name="input_prometheus_helm_config"></a> [prometheus\_helm\_config](#input\_prometheus\_helm\_config) | Community Prometheus Helm Chart config | `any` | `{}` | no |
+| <a name="input_public_subnet_ids"></a> [public\_subnet\_ids](#input\_public\_subnet\_ids) | List of public subnets Ids for the worker nodes | `list(string)` | `[]` | no |
+| <a name="input_self_managed_node_groups"></a> [self\_managed\_node\_groups](#input\_self\_managed\_node\_groups) | Self-managed node groups configuration | `any` | `{}` | no |
+| <a name="input_spark_on_k8s_operator_helm_config"></a> [spark\_on\_k8s\_operator\_helm\_config](#input\_spark\_on\_k8s\_operator\_helm\_config) | Spark on K8s Operator Helm Chart config | `any` | `{}` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `map('BusinessUnit`,`XYZ`) | `map(string)` | `{}` | no |
 | <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | `"aws"` | no |
-| <a name="input_terraform_version"></a> [terraform\_version](#input\_terraform\_version) | Terraform Version | `string` | `"Terraform"` | no |
-| <a name="input_traefik_helm_chart"></a> [traefik\_helm\_chart](#input\_traefik\_helm\_chart) | Traefik Helm Addon Config | `any` | `{}` | no |
-| <a name="input_traefik_ingress_controller_enable"></a> [traefik\_ingress\_controller\_enable](#input\_traefik\_ingress\_controller\_enable) | Enabling Traefik Ingress Controller on eks cluster | `bool` | `false` | no |
-| <a name="input_vpa_enable"></a> [vpa\_enable](#input\_vpa\_enable) | Enable Kubernetes Vertical Pod Autoscaler | `bool` | `false` | no |
-| <a name="input_vpa_helm_chart"></a> [vpa\_helm\_chart](#input\_vpa\_helm\_chart) | Kubernetes Vertical Pod Autoscaler Helm chart config | `any` | `{}` | no |
-| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC id | `string` | n/a | yes |
-| <a name="input_yunikorn_enable"></a> [yunikorn\_enable](#input\_yunikorn\_enable) | Enable Apache YuniKorn K8s scheduler | `bool` | `false` | no |
-| <a name="input_yunikorn_helm_chart"></a> [yunikorn\_helm\_chart](#input\_yunikorn\_helm\_chart) | YuniKorn K8s scheduler Helm chart config | `any` | `{}` | no |
+| <a name="input_terraform_version"></a> [terraform\_version](#input\_terraform\_version) | Terraform version | `string` | `"Terraform"` | no |
+| <a name="input_traefik_helm_config"></a> [traefik\_helm\_config](#input\_traefik\_helm\_config) | Traefik Helm Chart config | `any` | `{}` | no |
+| <a name="input_vpa_helm_config"></a> [vpa\_helm\_config](#input\_vpa\_helm\_config) | Kubernetes Vertical Pod Autoscaler Helm Chart config | `any` | `{}` | no |
+| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC Id | `string` | n/a | yes |
+| <a name="input_yunikorn_helm_config"></a> [yunikorn\_helm\_config](#input\_yunikorn\_helm\_config) | YuniKorn K8s scheduler Helm Chart config | `any` | `{}` | no |
 | <a name="input_zone"></a> [zone](#input\_zone) | zone, e.g. dev or qa or load or ops etc... | `string` | `"dev"` | no |
 
 ## Outputs
@@ -293,7 +293,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="output_teams"></a> [teams](#output\_teams) | Outputs from EKS Fargate profiles groups |
 | <a name="output_windows_node_group_aws_auth_config_map"></a> [windows\_node\_group\_aws\_auth\_config\_map](#output\_windows\_node\_group\_aws\_auth\_config\_map) | Windows node groups AWS auth map |
 | <a name="output_worker_security_group_id"></a> [worker\_security\_group\_id](#output\_worker\_security\_group\_id) | EKS Worker Security group ID created by EKS module |
-
 <!--- END_TF_DOCS --->
 
 ## Security
