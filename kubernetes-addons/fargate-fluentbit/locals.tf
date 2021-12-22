@@ -36,6 +36,6 @@ locals {
 
   config = merge(
     local.default_config,
-    var.fargate_fluentbit_config
+    var.addon_config
   )
 }
