@@ -179,7 +179,7 @@ variable "aws_lb_ingress_controller_enable" {
   description = "enabling LB Ingress Controller on eks cluster"
 }
 
-variable "aws_lb_ingress_controller_helm_app" {
+variable "aws_lb_ingress_controller_helm_chart" {
   type        = any
   description = "Helm chart definition for aws_lb_ingress_controller"
   default     = {}

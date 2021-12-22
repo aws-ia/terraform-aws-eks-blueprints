@@ -280,8 +280,6 @@ module "kubernetes-addons" {
       operating_system = "linux"
     })]
   }
-
-
   #---------------------------------------
   # COMMUNITY PROMETHEUS ENABLE
   #---------------------------------------
@@ -300,10 +298,12 @@ module "kubernetes-addons" {
 
   }
 
+
   #---------------------------------------
   # ENABLE NGINX
   #---------------------------------------
-  ingress_nginx_controller_enable = false
+  ingress_nginx_controller_enable = true
+
   # Optional nginx_helm_chart
   nginx_helm_chart = {
     name       = "ingress-nginx"
@@ -318,7 +318,7 @@ module "kubernetes-addons" {
   # ENABLE AGONES
   #---------------------------------------
   # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
-  agones_enable = false
+  agones_enable = true
   # Optional  agones_helm_chart
   agones_helm_chart = {
     name               = "agones"
@@ -339,7 +339,8 @@ module "kubernetes-addons" {
   #---------------------------------------
   # ENABLE AWS DISTRO OPEN TELEMETRY
   #---------------------------------------
-  aws_open_telemetry_enable = false
+  aws_open_telemetry_enable = true
+  # Optional
   aws_open_telemetry_addon = {
     aws_open_telemetry_namespace                        = "aws-otel-eks"
     aws_open_telemetry_emitter_otel_resource_attributes = "service.namespace=AWSObservability,service.name=ADOTEmitService"
@@ -354,7 +355,7 @@ module "kubernetes-addons" {
   # AWS-FOR-FLUENTBIT HELM ADDON
   #---------------------------------------
   aws_for_fluentbit_enable = true
-
+  # Optional
   aws_for_fluentbit_helm_chart = {
     name                                      = "aws-for-fluent-bit"
     chart                                     = "aws-for-fluent-bit"
@@ -381,7 +382,7 @@ module "kubernetes-addons" {
   #---------------------------------------
   spark_on_k8s_operator_enable = true
 
-  # Optional Map value
+  # Optional
   spark_on_k8s_operator_helm_chart = {
     name             = "spark-operator"
     chart            = "spark-operator"
@@ -398,6 +399,8 @@ module "kubernetes-addons" {
   # FARGATE FLUENTBIT
   #---------------------------------------
   fargate_fluentbit_enable = true
+
+  # Optional
   fargate_fluentbit_config = {
     output_conf  = <<EOF
 [OUTPUT]
@@ -433,7 +436,8 @@ module "kubernetes-addons" {
   # ENABLE ARGOCD
   #---------------------------------------
   argocd_enable = true
-  # Optional Map value
+
+  # Optional
   argocd_helm_chart = {
     name             = "argo-cd"
     chart            = "argo-cd"
@@ -450,7 +454,7 @@ module "kubernetes-addons" {
   #---------------------------------------
   keda_enable = true
 
-  # Optional Map value
+  # Optional
   keda_helm_chart = {
     name       = "keda"                              # (Required) Release name.
     repository = "https://kedacore.github.io/charts" # (Optional) Repository URL where to locate the requested chart.

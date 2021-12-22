@@ -31,25 +31,12 @@ The below demonstrates how you can leverage this framework to deploy an EKS clus
 
 ```hcl
 module "eks-ssp" {
-    source = "git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git"
+    source = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
 
     # EKS CLUSTER
-    kubernetes_version       = "1.21"
-    vpc_id             = "<vpcid>"     # Enter VPC ID
-    private_subnet_ids = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]     # Enter Private Subnet IDs
-
-    # EKS MANAGED ADD-ON VARIABLES
-    enable_eks_addon_vpc_cni = true
-    enable_eks_addon_coredns = true
-    enable_eks_addon_kube_proxy = true
-
-    # KUBERNETES ADD-ON VARIABLES
-    cluster_autoscaler_enable           = true
-    metrics_server_enable               = true
-    aws_lb_ingress_controller_enable    = true
-    aws_for_fluentbit_enable             = true
-    cert_manager_enable                 = true
-    ingress_nginx_controller_enable     = true
+    kubernetes_version        = "1.21"
+    vpc_id                    = "<vpcid>"                                      # Enter VPC ID
+    private_subnet_ids        = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]     # Enter Private Subnet IDs
 
     # EKS MANAGED NODE GROUPS
     managed_node_groups = {
@@ -60,12 +47,33 @@ module "eks-ssp" {
         }
     }
 }
+
+# Deploy Kubernetes Add-ons with sub module
+
+module "eks-ssp-kubernetes-addons" {
+    source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//kubernetes-addons"
+    
+    eks_cluster_id               = module.eks-ssp.eks_cluster_id
+    
+    # EKS Addons
+    enable_eks_addon_vpc_cni                = true
+    enable_eks_addon_coredns                = true
+    enable_eks_addon_kube_proxy             = true
+    enable_eks_addon_aws_ebs_csi_driver     = true
+
+    #K8s Add-ons
+    aws_lb_ingress_controller_enable  = true
+    metrics_server_enable             = true
+    cluster_autoscaler_enable         = true
+    aws_for_fluentbit_enable           = true
+    argocd_enable                     = true
+}
 ```
 
 The code above will provision the following:
 
 ✅  A new EKS Cluster with a managed node group.\
-✅  EKS managed add-ons `vpc-cni`, `CoreDNS`, and `kube-proxy`.\
+✅  EKS managed add-ons `vpc-cni`, `CoreDNS`, `kube-proxy`, and `aws-ebs-csi-driver`.\
 ✅  `Cluster Autoscaler` and `Metrics Server` for scaling your workloads.\
 ✅  `Fluent Bit` for routing metrics.\
 ✅  `AWS Load Balancer Controller` for distributing traffic.\
@@ -201,7 +209,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_aws_for_fluentbit_enable"></a> [aws\_for\_fluentbit\_enable](#input\_aws\_for\_fluentbit\_enable) | Enabling FluentBit Addon on EKS Worker Nodes | `bool` | `false` | no |
 | <a name="input_aws_for_fluentbit_helm_chart"></a> [aws\_for\_fluentbit\_helm\_chart](#input\_aws\_for\_fluentbit\_helm\_chart) | Helm chart definition for aws\_for\_fluent\_bit | `any` | `{}` | no |
 | <a name="input_aws_lb_ingress_controller_enable"></a> [aws\_lb\_ingress\_controller\_enable](#input\_aws\_lb\_ingress\_controller\_enable) | enabling LB Ingress Controller on eks cluster | `bool` | `false` | no |
-| <a name="input_aws_lb_ingress_controller_helm_app"></a> [aws\_lb\_ingress\_controller\_helm\_app](#input\_aws\_lb\_ingress\_controller\_helm\_app) | Helm chart definition for aws\_lb\_ingress\_controller | `any` | `{}` | no |
+| <a name="input_aws_lb_ingress_controller_helm_chart"></a> [aws\_lb\_ingress\_controller\_helm\_app](#input\_aws\_lb\_ingress\_controller\_helm\_app) | Helm chart definition for aws\_lb\_ingress\_controller | `any` | `{}` | no |
 | <a name="input_aws_managed_prometheus_enable"></a> [aws\_managed\_prometheus\_enable](#input\_aws\_managed\_prometheus\_enable) | Enable AWS Managed Prometheus service | `bool` | `false` | no |
 | <a name="input_aws_managed_prometheus_workspace_name"></a> [aws\_managed\_prometheus\_workspace\_name](#input\_aws\_managed\_prometheus\_workspace\_name) | AWS Managed Prometheus WorkSpace Name | `string` | `"aws-managed-prometheus-workspace"` | no |
 | <a name="input_aws_node_termination_handler_enable"></a> [aws\_node\_termination\_handler\_enable](#input\_aws\_node\_termination\_handler\_enable) | Enabling AWS Node Termination Handler | `bool` | `false` | no |

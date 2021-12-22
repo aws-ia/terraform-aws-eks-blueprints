@@ -79,7 +79,7 @@ module "aws_for_fluent_bit" {
 module "aws_load_balancer_controller" {
   count                 = var.aws_lb_ingress_controller_enable ? 1 : 0
   source                = "./aws-load-balancer-controller"
-  helm_provider_config  = var.aws_lb_ingress_controller_helm_app
+  helm_provider_config  = var.aws_lb_ingress_controller_helm_chart
   eks_cluster_id        = local.eks_cluster_id
   eks_oidc_issuer_url   = var.eks_cluster_oidc_url
   eks_oidc_provider_arn = var.eks_oidc_provider_arn

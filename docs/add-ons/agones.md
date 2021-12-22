@@ -12,6 +12,28 @@ Agones can be deployed by enabling the add-on via the following.
 agones_enable = true
 ```
 
+You can optionally customize the Helm chart that deploys `Agones` via the following configuration.
+
+*NOTE: Agones requires a Node group in Public Subnets and enable Public IP*
+ 
+```hcl 
+  agones_enable = true
+  # Optional  agones_helm_chart
+  agones_helm_chart = {
+    name                       = "aws-load-balancer-controller"
+    chart                      = "aws-load-balancer-controller"
+    repository                 = "https://aws.github.io/eks-charts"
+    version                    = "1.3.1"
+    namespace                  = "kube-system"
+    values = [templatefile("${path.module}/values.yaml", {
+      expose_udp            = true
+      gameserver_namespaces = "{${join(",", ["default", "xbox-gameservers", "xbox-gameservers"])}}"
+      gameserver_minport    = 7000
+      gameserver_maxport    = 8000
+    })]
+  }
+```
+
 ### GitOps Configuration
 
 The following properties are made available for use when managing the add-on via GitOps.
@@ -21,3 +43,5 @@ agones = {
   enable = true
 }
 ```
+
+
