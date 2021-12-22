@@ -141,9 +141,9 @@ module "aws-eks-accelerator-for-terraform" {
   aws_lb_ingress_controller_enable = true
   metrics_server_enable            = true
   cluster_autoscaler_enable        = true
-  vpa_enable                       = true
-  prometheus_enable                = true
-  ingress_nginx_controller_enable  = true
+  vpa_enable                       = false
+  prometheus_enable                = false
+  ingress_nginx_controller_enable  = false
   aws_for_fluentbit_enable         = true
   argocd_enable                    = true
   fargate_fluentbit_enable         = true
