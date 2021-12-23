@@ -4,7 +4,7 @@ locals {
 
   amp_workspace_url = "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${var.amp_workspace_id}/api/v1/remote_write"
 
-  amp_config_values = var.aws_managed_prometheus_enable ? [{
+  amp_config_values = var.enable_aws_managed_prometheus ? [{
     name  = "serviceAccounts.server.name"
     value = var.service_account_amp_ingest_name
     },

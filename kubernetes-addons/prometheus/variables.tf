@@ -16,7 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "aws_managed_prometheus_enable" {
+variable "enable_aws_managed_prometheus" {
   type    = bool
   default = false
 }
