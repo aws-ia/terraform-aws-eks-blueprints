@@ -65,3 +65,12 @@ jobs:
           working-directory: test/e2e/eks
           run: terraform destroy -no-color -auto-approve
           continue-on-error: false
+
+        - name: Fail if TF apply failed
+          if: steps.apply.outcome == 'failure'
+          id: fail-if-tf-apply-failed
+          run: |
+            echo "Terraform Apply step failed...Please check the logs of the Terraform Apply step."
+            echo "Failing the job to avoid false positives."
+            exit 1
+          continue-on-error: false
