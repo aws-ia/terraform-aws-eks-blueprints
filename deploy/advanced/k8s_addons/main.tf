@@ -204,7 +204,7 @@ module "kubernetes-addons" {
 
   enable_amazon_eks_aws_ebs_csi_driver = true # default is false
   #Optional
-  amazon_eks_aws_aws_ebs_csi_driver_config = {
+  amazon_eks_aws_ebs_csi_driver_config = {
     addon_name               = "aws-ebs-csi-driver"
     addon_version            = "v1.4.0-eksbuild.preview"
     service_account          = "ebs-csi-controller-sa"
