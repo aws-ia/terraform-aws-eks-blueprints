@@ -19,35 +19,35 @@
 #-----------------AWS Managed EKS Add-ons----------------------
 
 module "aws_vpc_cni" {
-  count         = var.enable_amazon_eks_vpc_cni ? 1 : 0
-  source        = "./aws-vpc-cni"
-  add_on_config = var.amazon_eks_vpc_cni_config
-  eks_cluster_id    = local.eks_cluster_id
-  common_tags   = var.tags
+  count          = var.enable_amazon_eks_vpc_cni ? 1 : 0
+  source         = "./aws-vpc-cni"
+  add_on_config  = var.amazon_eks_vpc_cni_config
+  eks_cluster_id = local.eks_cluster_id
+  common_tags    = var.tags
 }
 
 module "aws_coredns" {
-  count         = var.enable_amazon_eks_coredns ? 1 : 0
-  source        = "./aws-coredns"
-  add_on_config = var.amazon_eks_coredns_config
-  eks_cluster_id    = local.eks_cluster_id
-  common_tags   = var.tags
+  count          = var.enable_amazon_eks_coredns ? 1 : 0
+  source         = "./aws-coredns"
+  add_on_config  = var.amazon_eks_coredns_config
+  eks_cluster_id = local.eks_cluster_id
+  common_tags    = var.tags
 }
 
 module "aws_kube_proxy" {
-  count         = var.enable_amazon_eks_kube_proxy ? 1 : 0
-  source        = "./aws-kube-proxy"
-  add_on_config = var.amazon_eks_kube_proxy_config
-  eks_cluster_id    = local.eks_cluster_id
-  common_tags   = var.tags
+  count          = var.enable_amazon_eks_kube_proxy ? 1 : 0
+  source         = "./aws-kube-proxy"
+  add_on_config  = var.amazon_eks_kube_proxy_config
+  eks_cluster_id = local.eks_cluster_id
+  common_tags    = var.tags
 }
 
 module "aws_ebs_csi_driver" {
-  count         = var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
-  source        = "./aws-ebs-csi-driver"
-  add_on_config = var.amazon_eks_aws_ebs_csi_driver_config
-  eks_cluster_id    = local.eks_cluster_id
-  common_tags   = var.tags
+  count          = var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
+  source         = "./aws-ebs-csi-driver"
+  add_on_config  = var.amazon_eks_aws_ebs_csi_driver_config
+  eks_cluster_id = local.eks_cluster_id
+  common_tags    = var.tags
 }
 
 #-----------------Kubernetes Add-ons----------------------

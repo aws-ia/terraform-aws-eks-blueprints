@@ -17,7 +17,7 @@
  */
 
 resource "aws_eks_addon" "vpc_cni" {
-  cluster_name              = var.eks_cluster_id
+  cluster_name             = var.eks_cluster_id
   addon_name               = local.add_on_config["addon_name"]
   addon_version            = local.add_on_config["addon_version"]
   resolve_conflicts        = local.add_on_config["resolve_conflicts"]

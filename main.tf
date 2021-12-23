@@ -43,7 +43,7 @@ module "aws_eks" {
   create_eks      = var.create_eks
   manage_aws_auth = false
 
-  cluster_name  = module.eks_tags.id
+  cluster_name    = module.eks_tags.id
   cluster_version = var.kubernetes_version
 
   # NETWORK CONFIG
@@ -53,9 +53,9 @@ module "aws_eks" {
   cluster_endpoint_private_access = var.cluster_endpoint_private_access
   cluster_endpoint_public_access  = var.cluster_endpoint_public_access
 
-  worker_create_security_group    = var.worker_create_security_group
+  worker_create_security_group         = var.worker_create_security_group
   worker_additional_security_group_ids = var.worker_additional_security_group_ids
-  cluster_log_retention_in_days       = var.cluster_log_retention_in_days
+  cluster_log_retention_in_days        = var.cluster_log_retention_in_days
 
   # IRSA
   enable_irsa            = var.enable_irsa
