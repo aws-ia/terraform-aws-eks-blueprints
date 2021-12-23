@@ -17,11 +17,11 @@
  */
 
 output "ingress_namespace" {
-  value = local.helm_provider_config["namespace"]
+  value = local.helm_config["namespace"]
 }
 
 output "ingress_name" {
-  value = local.helm_provider_config["name"]
+  value = local.helm_config["name"]
 }
 
 output "argocd_gitops_config" {

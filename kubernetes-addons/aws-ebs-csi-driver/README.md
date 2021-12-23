@@ -34,7 +34,7 @@ No requirements.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_irsa_addon"></a> [irsa\_addon](#module\_irsa\_addon) | ../../irsa | n/a |
+| <a name="module_irsa_addon"></a> [irsa\_addon](#module\_irsa\_addon) | ../../modules/irsa | n/a |
 
 ## Resources
 
@@ -56,5 +56,4 @@ No requirements.
 ## Outputs
 
 No outputs.
-
- <!--- END_TF_DOCS --->
+<!--- END_TF_DOCS --->

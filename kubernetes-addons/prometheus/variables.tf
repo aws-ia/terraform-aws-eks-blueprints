@@ -16,7 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "aws_managed_prometheus_enable" {
+variable "enable_aws_managed_prometheus" {
   type    = bool
   default = false
 }
@@ -36,7 +36,7 @@ variable "service_account_amp_ingest_name" {
   default = ""
 }
 
-variable "helm_provider_config" {
+variable "helm_config" {
   type    = any
   default = {}
 }

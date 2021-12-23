@@ -17,7 +17,7 @@ The framework currently provides support for the following add-ons:
 | [EKS Managed Add-ons](./managed-add-ons) | Enables EKS managed add-ons. |
 | [Keda](./keda) | Deploys Keda into an EKS cluster. |
 | [Metrics Server](./metrics-server) | Deploys the Kubernetes Metrics Server into an EKS cluster. |
-| [Nginx](./nginx) | Deploys the NGINX Ingress Controller into an EKS cluster. |
+| [Nginx](./ingress-nginx) | Deploys the NGINX Ingress Controller into an EKS cluster. |
 | [Prometheus](./prometheus) | Deploys Prometheus into an EKS cluster. |
 | [Traefik](./traefik) | Deploys Traefik Proxy into an EKS cluster.
 
@@ -44,24 +44,24 @@ module "eks-ssp-kubernetes-addons" {
     eks_cluster_id                    = <EKS-CLUSTER-ID>
 
     # EKS Addons
-    amazon_eks_vpc_cni_enable         = true
-    amazon_eks_coredns_enable         = true
-    amazon_eks_kube_proxy_enable      = true
-    amazon_eks_ebs_csi_driver_enable  = true
+    enable_amazon_eks_vpc_cni             = true
+    enable_amazon_eks_coredns             = true
+    enable_amazon_eks_kube_proxy          = true
+    enable_amazon_eks_aws_ebs_csi_driver  = true
 
     #K8s Add-ons
-    aws_lb_ingress_controller_enable  = true
-    metrics_server_enable             = true
-    cluster_autoscaler_enable         = true
-    aws_for_fluentbit_enable          = true
-    argocd_enable                     = true
+    enable_aws_load_balancer_controller  = true
+    enable_metrics_server                = true
+    enable_cluster_autoscaler            = true
+    enable_aws_for_fluentbit             = true
+    enable_argocd                        = true
 }
 ```
 
 To customize the behavior of the Helm charts that are ultimately deployed, you can supply custom Helm configuration. The following demonstrates how you can supply this configuration, including a dedicated `values.yaml` file.
 
 ```hcl
-metrics_server_helm_chart = {
+metrics_server_helm_config = {
 	name           = "metrics-server"
 	repository     = "https://kubernetes-sigs.github.io/metrics-server/"
 	chart          = "metrics-server"
@@ -91,7 +91,7 @@ To indicate that you would like to manage add-ons via ArgoCD, you must do the fo
 Note, that the `add_on_application` flag in your `Application` configuration must be set to `true`.
 
 ```
-argocd_enable           = true
+enable_argocd           = true
 argocd_manage_add_ons   = true
 argocd_applications     = {
   infra = {
@@ -111,9 +111,9 @@ When managing add-ons via ArgoCD, certain AWS resources may still need to be cre
 To ensure that AWS resources needed for add-on functionality are created, you still need to indicate in Terraform configuration which add-ons will be managed via ArgoCD. To do so, simply enable the add-ons via their boolean properties.
 
 ```
-metrics_server_enable       = true # Deploys Metrics Server Addon
-cluster_autoscaler_enable   = true # Deploys Cluster Autoscaler Addon
-prometheus_enable           = true # Deploys Prometheus Addon
+enable_metrics_server       = true # Deploys Metrics Server Addon
+enable_cluster_autoscaler   = true # Deploys Cluster Autoscaler Addon
+enable_prometheus           = true # Deploys Prometheus Addon
 ```
 
 This will indicate to each add-on module that it should create the necessary AWS resources and pass the relevant values to the ArgoCD Application resource via the Application's values map.

@@ -9,7 +9,7 @@ For complete project documentation, please visit the [Agones documentation site]
 Agones can be deployed by enabling the add-on via the following.
 
 ```hcl
-agones_enable = true
+enable_agones = true
 ```
 
 You can optionally customize the Helm chart that deploys `Agones` via the following configuration.

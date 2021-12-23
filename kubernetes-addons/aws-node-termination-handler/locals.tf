@@ -20,7 +20,7 @@ locals {
   namespace            = "kube-system"
   service_account_name = "aws-node-termination-handler-sa"
 
-  default_helm_provider_config = {
+  default_helm_config = {
     name                       = "aws-node-termination-handler"
     chart                      = "aws-node-termination-handler"
     repository                 = "https://aws.github.io/eks-charts"
@@ -58,9 +58,9 @@ locals {
     values                     = local.default_helm_values
   }
 
-  helm_provider_config = merge(
-    local.default_helm_provider_config,
-    var.helm_provider_config
+  helm_config = merge(
+    local.default_helm_config,
+    var.helm_config
   )
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {

@@ -20,7 +20,7 @@ locals {
   service_account_name = "vpa-sa"
   namespace            = "vpa-ns"
 
-  default_helm_provider_config = {
+  default_helm_config = {
     name                       = "vpa"
     chart                      = "vpa"
     repository                 = "https://charts.fairwinds.com/stable"
@@ -57,9 +57,9 @@ locals {
     set_sensitive              = []
     values                     = local.default_helm_values
   }
-  helm_provider_config = merge(
-    local.default_helm_provider_config,
-    var.helm_provider_config
+  helm_config = merge(
+    local.default_helm_config,
+    var.helm_config
   )
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {

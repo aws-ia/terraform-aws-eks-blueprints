@@ -15,7 +15,7 @@ EKS managed add-ons can be enabled via the following.
 
 ```
 # EKS Addons
-  amazon_eks_vpc_cni_enable = true # default is false
+  enable_amazon_eks_vpc_cni = true # default is false
   #Optional
   amazon_eks_vpc_cni_config = {
     addon_name               = "vpc-cni"
@@ -28,7 +28,7 @@ EKS managed add-ons can be enabled via the following.
     tags                     = {}
   }
 
-  amazon_eks_coredns_enable = true # default is false
+  enable_amazon_eks_coredns = true # default is false
   #Optional
   amazon_eks_coredns_config = {
     addon_name               = "coredns"
@@ -41,7 +41,7 @@ EKS managed add-ons can be enabled via the following.
     tags                     = {}
   }
 
-  amazon_eks_kube_proxy_enable = true # default is false
+  enable_amazon_eks_kube_proxy = true # default is false
   #Optional
   amazon_eks_kube_proxy_config = {
     addon_name               = "kube-proxy"
@@ -54,9 +54,9 @@ EKS managed add-ons can be enabled via the following.
     tags                     = {}
   }
 
-  amazon_eks_ebs_csi_driver_enable = true # default is false
+  enable_amazon_eks_aws_ebs_csi_driver = true # default is false
   #Optional
-  amazon_eks_ebs_csi_driver_config = {
+  amazon_eks_aws_ebs_csi_driver_config = {
     addon_name               = "aws-ebs-csi-driver"
     addon_version            = "v1.4.0-eksbuild.preview"
     service_account          = "ebs-csi-controller-sa"

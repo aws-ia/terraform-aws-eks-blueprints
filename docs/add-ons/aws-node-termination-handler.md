@@ -15,15 +15,15 @@ The NTH will be deployed in the `kube-system` namespace. AWS resources required 
 ## Usage
 
 ```hcl
-  aws_node_termination_handler_enable = true
+enable_aws_node_termination_handler = true
 ```
 
 You can optionally customize the Helm chart that deploys `aws-node-termination-handler` via the following configuration.
 
 ```hcl
-  aws_node_termination_handler_enable = true
+  enable_aws_node_termination_handler = true
 
-  aws_node_termination_handler_helm_chart = {
+  aws_node_termination_handler_helm_config = {
     name                       = "aws-node-termination-handler"
     chart                      = "aws-node-termination-handler"
     repository                 = "https://aws.github.io/eks-charts"

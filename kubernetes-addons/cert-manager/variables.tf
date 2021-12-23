@@ -16,7 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "helm_provider_config" {
+variable "helm_config" {
   type        = any
   description = "Cert Manager Helm chart configuration"
   default     = {}

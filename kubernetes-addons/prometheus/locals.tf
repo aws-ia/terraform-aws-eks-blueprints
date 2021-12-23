@@ -4,7 +4,7 @@ locals {
 
   amp_workspace_url = "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${var.amp_workspace_id}/api/v1/remote_write"
 
-  amp_config_values = var.aws_managed_prometheus_enable ? [{
+  amp_config_values = var.enable_aws_managed_prometheus ? [{
     name  = "serviceAccounts.server.name"
     value = var.service_account_amp_ingest_name
     },
@@ -21,7 +21,7 @@ locals {
       value = data.aws_region.current.id
   }] : []
 
-  default_helm_provider_config = {
+  default_helm_config = {
     name                       = "prometheus"
     chart                      = "prometheus"
     repository                 = "https://prometheus-community.github.io/helm-charts"
@@ -59,9 +59,9 @@ locals {
     postrender                 = ""
   }
 
-  helm_provider_config = merge(
-    local.default_helm_provider_config,
-    var.helm_provider_config
+  helm_config = merge(
+    local.default_helm_config,
+    var.helm_config
   )
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {

@@ -21,7 +21,7 @@ locals {
   operator_plugins     = "general,spark-k8s-operator"
   service_type         = "ClusterIP"
 
-  default_helm_provider_config = {
+  default_helm_config = {
     name                       = "yunikorn"
     chart                      = "yunikorn"
     repository                 = "https://apache.github.io/incubator-yunikorn-release"
@@ -59,9 +59,9 @@ locals {
     values                     = local.default_helm_values
   }
 
-  helm_provider_config = merge(
-    local.default_helm_provider_config,
-    var.helm_provider_config
+  helm_config = merge(
+    local.default_helm_config,
+    var.helm_config
   )
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {

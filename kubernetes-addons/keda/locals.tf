@@ -29,7 +29,7 @@ locals {
       value = local.service_account_name
   }]
 
-  default_helm_provider_config = {
+  default_helm_config = {
     name                       = "keda"
     chart                      = "keda"
     repository                 = "https://kedacore.github.io/charts"
@@ -67,9 +67,9 @@ locals {
     values                     = local.default_helm_values
   }
 
-  helm_provider_config = merge(
-    local.default_helm_provider_config,
-    var.helm_provider_config
+  helm_config = merge(
+    local.default_helm_config,
+    var.helm_config
   )
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {

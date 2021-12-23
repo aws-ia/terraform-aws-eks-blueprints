@@ -16,9 +16,10 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "helm_provider_config" {
-  type    = any
-  default = {}
+variable "helm_config" {
+  description = "Spark on K8s Operator Helm Chart Configuration"
+  type        = any
+  default     = {}
 }
 
 variable "manage_via_gitops" {

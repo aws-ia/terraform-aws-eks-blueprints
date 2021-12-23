@@ -16,7 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-resource "helm_release" "nginx" {
+resource "helm_release" "traefik" {
   count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.helm_config["name"]
   repository                 = local.helm_config["repository"]

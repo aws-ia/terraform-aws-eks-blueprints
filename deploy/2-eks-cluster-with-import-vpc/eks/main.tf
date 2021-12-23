@@ -122,7 +122,7 @@ module "aws-eks-accelerator-for-terraform" {
   }
 
   # AWS Managed Services
-  aws_managed_prometheus_enable = true
+  enable_aws_managed_prometheus = true
 
   enable_emr_on_eks = true
   emr_on_eks_teams = {
@@ -149,20 +149,19 @@ module "kubernetes-addons" {
   auto_scaling_group_names     = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
 
   # EKS Addons
-  amazon_eks_vpc_cni_enable        = true
-  amazon_eks_coredns_enable        = true
-  amazon_eks_kube_proxy_enable     = true
-  amazon_eks_ebs_csi_driver_enable = true
+  enable_amazon_eks_vpc_cni            = true
+  enable_amazon_eks_coredns            = true
+  enable_amazon_eks_kube_proxy         = true
+  enable_amazon_eks_aws_ebs_csi_driver = true
 
   #K8s Add-ons
-  aws_lb_ingress_controller_enable = true
-  metrics_server_enable            = true
-  cluster_autoscaler_enable        = true
-  vpa_enable                       = true
-  prometheus_enable                = true
-  ingress_nginx_controller_enable  = true
-  aws_for_fluentbit_enable         = true
-  argocd_enable                    = true
-  fargate_fluentbit_enable         = true
-
+  enable_aws_load_balancer_controller = true
+  enable_metrics_server               = true
+  enable_cluster_autoscaler           = true
+  enable_vpa                          = true
+  enable_prometheus                   = true
+  enable_ingress_nginx                = true
+  enable_aws_for_fluentbit            = true
+  enable_argocd                       = true
+  enable_fargate_fluentbit            = true
 }

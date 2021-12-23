@@ -77,7 +77,7 @@ module "aws_eks" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "aws_managed_prometheus" {
-  count  = var.create_eks && var.aws_managed_prometheus_enable == true ? 1 : 0
+  count  = var.create_eks && var.enable_aws_managed_prometheus == true ? 1 : 0
   source = "./modules/aws-managed-prometheus"
 
   environment                     = var.environment
