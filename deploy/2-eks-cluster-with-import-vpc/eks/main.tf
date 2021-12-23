@@ -147,7 +147,7 @@ module "kubernetes-addons" {
   eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_security_group_id
   auto_scaling_group_names     = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
 
-  # EKS Addons
+  # EKS Managed Add-ons
   enable_amazon_eks_vpc_cni            = true
   enable_amazon_eks_coredns            = true
   enable_amazon_eks_kube_proxy         = true
