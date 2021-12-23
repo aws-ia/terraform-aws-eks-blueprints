@@ -171,7 +171,7 @@ module "spark_on_k8s_operator" {
   manage_via_gitops = var.argocd_manage_add_ons
 }
 
-module "traefik_ingress" {
+module "traefik" {
   count             = var.enable_traefik ? 1 : 0
   source            = "./traefik"
   helm_config       = var.traefik_helm_config
