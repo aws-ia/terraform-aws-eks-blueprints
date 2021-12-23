@@ -91,7 +91,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_amp_ingest_role_arn"></a> [amp\_ingest\_role\_arn](#input\_amp\_ingest\_role\_arn) | n/a | `string` | `""` | no |
 | <a name="input_amp_workspace_id"></a> [amp\_workspace\_id](#input\_amp\_workspace\_id) | n/a | `string` | `""` | no |
-| <a name="input_aws_managed_prometheus_enable"></a> [aws\_managed\_prometheus\_enable](#input\_aws\_managed\_prometheus\_enable) | n/a | `bool` | `false` | no |
+| <a name="input_enable_aws_managed_prometheus"></a> [enable\_aws\_managed\_prometheus](#input\_enable\_aws\_managed\_prometheus) | n/a | `bool` | `false` | no |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | n/a | `any` | `{}` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
 | <a name="input_service_account_amp_ingest_name"></a> [service\_account\_amp\_ingest\_name](#input\_service\_account\_amp\_ingest\_name) | n/a | `string` | `""` | no |
@@ -101,4 +101,5 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
+
 <!--- END_TF_DOCS --->
