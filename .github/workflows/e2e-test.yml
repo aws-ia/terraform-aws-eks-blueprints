@@ -57,9 +57,10 @@ jobs:
           id: apply
           working-directory: test/e2e/eks
           run: terraform apply -no-color -auto-approve
-          continue-on-error: false
+          continue-on-error: true
 
         - name: Terraform Destroy
+          if: steps.apply.outcome == 'success' || steps.apply.outcome == 'failure'
           id: destroy
           working-directory: test/e2e/eks
           run: terraform destroy -no-color -auto-approve
