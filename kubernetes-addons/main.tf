@@ -129,7 +129,7 @@ module "fargate_fluentbit" {
 module "ingress_nginx" {
   count             = var.enable_ingress_nginx ? 1 : 0
   source            = "./ingress-nginx"
-  helm_config       = var.nginx_helm_config
+  helm_config       = var.ingress_nginx_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
 }
 
