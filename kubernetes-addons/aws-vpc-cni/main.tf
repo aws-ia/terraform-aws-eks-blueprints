@@ -17,7 +17,7 @@
  */
 
 resource "aws_eks_addon" "vpc_cni" {
-  cluster_name             = var.cluster_id
+  cluster_name             = var.eks_cluster_id
   addon_name               = local.add_on_config["addon_name"]
   addon_version            = local.add_on_config["addon_version"]
   resolve_conflicts        = local.add_on_config["resolve_conflicts"]
@@ -32,7 +32,7 @@ resource "aws_eks_addon" "vpc_cni" {
 
 module "irsa_addon" {
   source                            = "../../modules/irsa"
-  eks_cluster_name                  = var.cluster_id
+  eks_cluster_id                    = var.eks_cluster_id
   create_kubernetes_namespace       = false
   create_kubernetes_service_account = false
   kubernetes_namespace              = local.add_on_config["namespace"]

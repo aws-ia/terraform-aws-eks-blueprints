@@ -28,7 +28,7 @@ variable "tags" {
   default     = {}
 }
 
-variable "eks_cluster_name" {
+variable "eks_cluster_id" {
   description = "EKS Cluster name"
   type        = string
 }

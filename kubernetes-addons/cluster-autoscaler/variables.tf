@@ -23,7 +23,7 @@ variable "helm_config" {
 
 variable "eks_cluster_id" {
   type        = string
-  description = "EKS_Cluster_ID"
+  description = "EKS Cluster Name"
 }
 
 variable "manage_via_gitops" {

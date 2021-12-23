@@ -7,7 +7,7 @@ variable "eks_worker_security_group_id" {
   default     = ""
 }
 
-variable "eks_cluster_oidc_url" {
+variable "eks_oidc_issuer_url" {
   description = "The URL on the EKS cluster OIDC Issuer"
   default     = ""
 }
@@ -199,13 +199,13 @@ variable "ingress_nginx_helm_config" {
 }
 
 #-----------SPARK K8S OPERATOR-------------
-variable "enable_spark_on_k8s_operator" {
+variable "enable_spark_k8s_operator" {
   type        = bool
   default     = false
   description = "Enable Spark on K8s Operator add-on"
 }
 
-variable "spark_on_k8s_operator_helm_config" {
+variable "spark_k8s_operator_helm_config" {
   description = "Spark on K8s Operator Helm Chart config"
   type        = any
   default     = {}
@@ -349,17 +349,4 @@ variable "yunikorn_helm_config" {
   type        = any
   default     = {}
   description = "YuniKorn K8s scheduler Helm Chart config"
-}
-
-#-----------TEAMS-------------
-variable "application_teams" {
-  description = "Map of maps of Application teams to create"
-  type        = any
-  default     = {}
-}
-
-variable "platform_teams" {
-  description = "Map of maps of Platform teams to create"
-  type        = any
-  default     = {}
 }

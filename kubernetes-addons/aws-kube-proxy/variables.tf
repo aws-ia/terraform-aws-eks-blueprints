@@ -1,4 +1,4 @@
-variable "cluster_id" {
+variable "eks_cluster_id" {
   type = string
 }
 

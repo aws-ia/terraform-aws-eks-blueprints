@@ -24,7 +24,7 @@ variable "kubernetes_version" {
   description = "Kubernetes version of the cluster"
 }
 
-variable "eks_cluster_name" {
+variable "eks_cluster_id" {
   description = "EKS Cluster name"
   type        = string
 }

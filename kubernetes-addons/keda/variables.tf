@@ -22,7 +22,7 @@ variable "helm_config" {
   description = "Keda Event-based autoscaler for workloads on Kubernetes Helm chart config"
 }
 
-variable "eks_cluster_name" {
+variable "eks_cluster_id" {
   type        = string
   description = "EKS Cluster Id"
 }

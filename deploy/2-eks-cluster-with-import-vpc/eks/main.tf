@@ -63,10 +63,9 @@ data "terraform_remote_state" "vpc_s3_backend" {
 }*/
 
 locals {
-  tenant       = var.tenant
-  environment  = var.environment
-  zone         = var.zone
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  tenant      = var.tenant
+  environment = var.environment
+  zone        = var.zone
 
   kubernetes_version = "1.21"
   terraform_version  = "Terraform v1.0.1"
@@ -143,8 +142,8 @@ module "kubernetes-addons" {
   source = "../../../kubernetes-addons"
 
   eks_cluster_id               = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-  eks_cluster_oidc_url         = module.aws-eks-accelerator-for-terraform.eks_cluster_oidc_url
-  eks_oidc_provider_arn        = module.aws-eks-accelerator-for-terraform.eks_cluster_oidc_provider_arn
+  eks_oidc_issuer_url          = module.aws-eks-accelerator-for-terraform.eks_oidc_issuer_url
+  eks_oidc_provider_arn        = module.aws-eks-accelerator-for-terraform.eks_oidc_provider_arn
   eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_security_group_id
   auto_scaling_group_names     = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
 

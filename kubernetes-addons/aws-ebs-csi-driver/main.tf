@@ -17,7 +17,7 @@
  */
 
 resource "aws_eks_addon" "aws_ebs_csi_driver" {
-  cluster_name             = var.cluster_id
+  cluster_name             = var.eks_cluster_id
   addon_name               = local.add_on_config["addon_name"]
   addon_version            = local.add_on_config["addon_version"]
   resolve_conflicts        = local.add_on_config["resolve_conflicts"]
@@ -32,7 +32,7 @@ resource "aws_eks_addon" "aws_ebs_csi_driver" {
 
 module "irsa_addon" {
   source                      = "../../modules/irsa"
-  eks_cluster_name            = var.cluster_id
+  eks_cluster_id              = var.eks_cluster_id
   create_kubernetes_namespace = false
   kubernetes_namespace        = local.add_on_config["namespace"]
   kubernetes_service_account  = local.add_on_config["service_account"]
@@ -43,7 +43,7 @@ module "irsa_addon" {
 resource "aws_iam_policy" "aws_ebs_csi_driver" {
 
   description = "IAM Policy for AWS EBS CSI Driver"
-  name        = "${var.cluster_id}-${local.add_on_config["addon_name"]}-irsa"
+  name        = "${var.eks_cluster_id}-${local.add_on_config["addon_name"]}-irsa"
   path        = var.iam_role_path
   policy      = data.aws_iam_policy_document.aws-ebs-csi-driver.json
 }

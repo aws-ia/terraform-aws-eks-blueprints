@@ -27,7 +27,7 @@ variable "autoscaling_group_names" {
   type        = list(string)
 }
 
-variable "eks_cluster_name" {
+variable "eks_cluster_id" {
   type        = string
   description = "EKS Cluster Id"
 }
