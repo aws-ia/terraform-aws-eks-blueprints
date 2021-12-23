@@ -40,9 +40,9 @@ locals {
 
   kubernetes_version = "1.21"
 
-  vpc_cidr     = "10.0.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  vpc_cidr       = "10.0.0.0/16"
+  vpc_name       = join("-", [local.tenant, local.environment, local.zone, "vpc"])
+  eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.0.1"
 }
@@ -64,13 +64,13 @@ module "aws_vpc" {
   single_nat_gateway   = true
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
+    "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
+    "kubernetes.io/role/elb"                        = "1"
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
+    "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
+    "kubernetes.io/role/internal-elb"               = "1"
   }
 
 }
@@ -128,8 +128,8 @@ module "kubernetes-addons" {
   source = "../../kubernetes-addons"
 
   eks_cluster_id               = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-  eks_cluster_oidc_url         = module.aws-eks-accelerator-for-terraform.eks_cluster_oidc_url
-  eks_oidc_provider_arn        = module.aws-eks-accelerator-for-terraform.eks_cluster_oidc_provider_arn
+  eks_oidc_issuer_url         = module.aws-eks-accelerator-for-terraform.eks_oidc_issuer_url
+  eks_oidc_provider_arn        = module.aws-eks-accelerator-for-terraform.eks_oidc_provider_arn
   eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_security_group_id
   auto_scaling_group_names     = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
 

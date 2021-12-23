@@ -40,9 +40,9 @@ locals {
 
   kubernetes_version = "1.21"
 
-  vpc_cidr     = "10.0.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  vpc_cidr       = "10.0.0.0/16"
+  vpc_name       = join("-", [local.tenant, local.environment, local.zone, "vpc"])
+  eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.0.1"
 }
@@ -64,13 +64,13 @@ module "aws_vpc" {
   single_nat_gateway   = true
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
+    "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
+    "kubernetes.io/role/elb"                        = "1"
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
+    "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
+    "kubernetes.io/role/internal-elb"               = "1"
   }
 
 }
@@ -466,7 +466,7 @@ module "aws-eks-accelerator-for-terraform" {
   Name cloudwatch_logs
   Match *
   region eu-west-1
-  log_group_name /${local.cluster_name}/fargate-fluentbit-logs
+  log_group_name /${local.eks_cluster_id}/fargate-fluentbit-logs
   log_stream_prefix "fargate-logs-"
   auto_create_group true
     EOF
@@ -664,12 +664,12 @@ module "aws-eks-accelerator-for-terraform" {
     repository                                = "https://aws.github.io/eks-charts"
     version                                   = "0.1.0"
     namespace                                 = "logging"
-    aws_for_fluent_bit_cw_log_group           = "/${local.cluster_name}/worker-fluentbit-logs" # Optional
+    aws_for_fluent_bit_cw_log_group           = "/${local.eks_cluster_id}/worker-fluentbit-logs" # Optional
     aws_for_fluentbit_cwlog_retention_in_days = 90
     create_namespace                          = true
     values = [templatefile("${path.module}/k8s_addons/aws-for-fluentbit-values.yaml", {
       region                          = data.aws_region.current.name,
-      aws_for_fluent_bit_cw_log_group = "/${local.cluster_name}/worker-fluentbit-logs"
+      aws_for_fluent_bit_cw_log_group = "/${local.eks_cluster_id}/worker-fluentbit-logs"
     })]
     set = [
       {
@@ -681,10 +681,10 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # SPARK K8S OPERATOR HELM ADDON
   #---------------------------------------
-  enable_spark_on_k8s_operator = false
+  enable_spark_k8s_operator = false
 
   # Optional Map value
-  spark_on_k8s_operator_helm_config = {
+  spark_k8s_operator_helm_config = {
     name             = "spark-operator"
     chart            = "spark-operator"
     repository       = "https://googlecloudplatform.github.io/spark-on-k8s-operator"

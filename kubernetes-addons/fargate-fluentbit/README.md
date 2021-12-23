@@ -32,7 +32,7 @@ Please find the updated configuration from [AWS Docs](https://docs.aws.amazon.co
   Name cloudwatch_logs
   Match *
   region eu-west-1
-  log_group_name /${local.cluster_name}/fargate-fluentbit-logs
+  log_group_name /${local.eks_cluster_id}/fargate-fluentbit-logs
   log_stream_prefix "fargate-logs-"
   auto_create_group true
     EOF
@@ -87,7 +87,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_addon_config"></a> [addon\_config](#input\_addon\_config) | Fargate fluentbit configuration | `any` | `{}` | no |
-| <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS cluster Id | `string` | n/a | yes |
+| <a name="input_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS cluster Id | `string` | n/a | yes |
 
 ## Outputs
 

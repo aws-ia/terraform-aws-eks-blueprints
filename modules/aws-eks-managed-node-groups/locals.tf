@@ -50,7 +50,7 @@ locals {
   ec2_principal     = "ec2.${data.aws_partition.current.dns_suffix}"
 
   userdata_params = {
-    cluster_name         = var.eks_cluster_name
+    eks_cluster_id       = var.eks_cluster_id
     cluster_ca_base64    = var.cluster_ca_base64
     cluster_endpoint     = var.cluster_endpoint
     bootstrap_extra_args = local.managed_node_group["bootstrap_extra_args"]
@@ -66,10 +66,10 @@ locals {
   common_tags = merge(
     var.tags,
     {
-      Name = "${var.eks_cluster_name}-${local.managed_node_group["node_group_name"]}"
+      Name = "${var.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
     },
     {
-      "kubernetes.io/cluster/${var.eks_cluster_name}" = "owned"
+      "kubernetes.io/cluster/${var.eks_cluster_id}" = "owned"
   })
 
 }

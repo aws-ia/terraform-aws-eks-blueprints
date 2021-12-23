@@ -36,7 +36,7 @@ variable "kubernetes_service_account" {
   description = "Kubernetes Service Account Name"
 }
 
-variable "eks_cluster_name" {
+variable "eks_cluster_id" {
   type        = string
   description = "EKS Cluster Id"
 }

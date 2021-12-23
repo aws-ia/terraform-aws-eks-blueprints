@@ -163,13 +163,13 @@ data "aws_iam_policy_document" "irsa_policy" {
 
 resource "aws_iam_policy" "aws_node_termination_handler_irsa" {
   description = "IAM role policy for AWS Node Termination Handler"
-  name        = "${var.eks_cluster_name}-aws-nth-irsa"
+  name        = "${var.eks_cluster_id}-aws-nth-irsa"
   policy      = data.aws_iam_policy_document.irsa_policy.json
 }
 
 module "irsa" {
   source                      = "../../modules/irsa"
-  eks_cluster_name            = var.eks_cluster_name
+  eks_cluster_id              = var.eks_cluster_id
   kubernetes_namespace        = local.namespace
   create_kubernetes_namespace = false
   kubernetes_service_account  = local.service_account_name

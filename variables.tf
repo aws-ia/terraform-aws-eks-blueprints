@@ -95,6 +95,12 @@ variable "cluster_endpoint_public_access" {
   description = "Indicates whether or not the EKS public API server endpoint is enabled. Default to EKS resource and it is true"
 }
 
+variable "cluster_log_retention_in_days" {
+  description = "Number of days to retain log events. Default retention - 90 days."
+  type        = number
+  default     = 90
+}
+
 variable "enable_irsa" {
   type        = bool
   default     = true
@@ -111,6 +117,18 @@ variable "cluster_log_retention_period" {
   type        = number
   default     = 7
   description = "Number of days to retain cluster logs"
+}
+
+variable "worker_additional_security_group_ids" {
+  description = "A list of additional security group ids to attach to worker instances"
+  type        = list(string)
+  default     = []
+}
+
+variable "worker_create_security_group" {
+  description = "Whether to create a security group for the workers or attach the workers to `worker_security_group_id`."
+  type        = bool
+  default     = true
 }
 
 # EKS WORKER NODES

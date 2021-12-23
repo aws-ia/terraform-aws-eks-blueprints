@@ -57,7 +57,7 @@ locals {
   custom_ami_id         = local.self_managed_node_group["custom_ami_id"] == "" ? local.default_custom_ami_id : local.self_managed_node_group["custom_ami_id"]
 
   userdata_params = {
-    cluster_name         = var.eks_cluster_name
+    eks_cluster_id       = var.eks_cluster_id
     cluster_ca_base64    = var.cluster_ca_base64
     cluster_endpoint     = var.cluster_endpoint
     bootstrap_extra_args = local.self_managed_node_group["bootstrap_extra_args"]
@@ -83,10 +83,10 @@ locals {
   common_tags = merge(
     var.tags,
     {
-      Name                                                = "${var.eks_cluster_name}-${local.self_managed_node_group["node_group_name"]}"
-      "k8s.io/cluster-autoscaler/${var.eks_cluster_name}" = "owned"
-      "k8s.io/cluster-autoscaler/enabled"                 = "TRUE"
-      "kubernetes.io/cluster/${var.eks_cluster_name}"     = "owned"
+      Name                                              = "${var.eks_cluster_id}-${local.self_managed_node_group["node_group_name"]}"
+      "k8s.io/cluster-autoscaler/${var.eks_cluster_id}" = "owned"
+      "k8s.io/cluster-autoscaler/enabled"               = "TRUE"
+      "kubernetes.io/cluster/${var.eks_cluster_id}"     = "owned"
   })
 
 }

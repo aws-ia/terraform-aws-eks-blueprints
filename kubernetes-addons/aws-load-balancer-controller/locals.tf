@@ -5,7 +5,7 @@ locals {
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
     aws_region           = data.aws_region.current.name,
-    cluster_name         = var.eks_cluster_id,
+    eks_cluster_id       = var.eks_cluster_id,
     service_account_name = local.service_account_name
   })]
 

@@ -53,7 +53,7 @@ module "eks-ssp" {
 module "eks-ssp-kubernetes-addons" {
     source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//kubernetes-addons"
 
-    eks_cluster_id                        = module.eks-ssp.eks_cluster_id
+    cluster_id                        = module.eks-ssp.cluster_id
 
     # EKS Addons
     enable_amazon_eks_vpc_cni             = true
@@ -217,9 +217,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="output_cluster_primary_security_group_id"></a> [cluster\_primary\_security\_group\_id](#output\_cluster\_primary\_security\_group\_id) | EKS Cluster Security group ID |
 | <a name="output_cluster_security_group_id"></a> [cluster\_security\_group\_id](#output\_cluster\_security\_group\_id) | EKS Control Plane Security Group ID |
 | <a name="output_configure_kubectl"></a> [configure\_kubectl](#output\_configure\_kubectl) | Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
-| <a name="output_eks_cluster_id"></a> [eks\_cluster\_id](#output\_eks\_cluster\_id) | Kubernetes Cluster Name |
-| <a name="output_eks_cluster_oidc_provider_arn"></a> [eks\_cluster\_oidc\_provider\_arn](#output\_eks\_cluster\_oidc\_provider\_arn) | The ARN of the OIDC Provider if `enable_irsa = true`. |
-| <a name="output_eks_cluster_oidc_url"></a> [eks\_cluster\_oidc\_url](#output\_eks\_cluster\_oidc\_url) | The URL on the EKS cluster OIDC Issuer |
+| <a name="output_cluster_id"></a> [eks\_cluster\_id](#output\_eks\_cluster\_id) | Kubernetes Cluster Name |
+| <a name="output_cluster_oidc_provider_arn"></a> [eks\_cluster\_oidc\_provider\_arn](#output\_eks\_cluster\_oidc\_provider\_arn) | The ARN of the OIDC Provider if `enable_irsa = true`. |
+| <a name="output_cluster_oidc_url"></a> [eks\_cluster\_oidc\_url](#output\_eks\_cluster\_oidc\_url) | The URL on the EKS cluster OIDC Issuer |
 | <a name="output_emr_on_eks_role_arn"></a> [emr\_on\_eks\_role\_arn](#output\_emr\_on\_eks\_role\_arn) | IAM execution role ARN for EMR on EKS |
 | <a name="output_emr_on_eks_role_id"></a> [emr\_on\_eks\_role\_id](#output\_emr\_on\_eks\_role\_id) | IAM execution role ID for EMR on EKS |
 | <a name="output_fargate_profiles"></a> [fargate\_profiles](#output\_fargate\_profiles) | Outputs from EKS Fargate profiles groups |

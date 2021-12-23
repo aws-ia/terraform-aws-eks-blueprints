@@ -1,5 +1,5 @@
 resource "aws_launch_template" "self_managed_ng" {
-  name        = "${var.eks_cluster_name}-${local.self_managed_node_group["node_group_name"]}"
+  name        = "${var.eks_cluster_id}-${local.self_managed_node_group["node_group_name"]}"
   description = "Launch Template for EKS Self Managed Node Groups"
 
   instance_type = local.self_managed_node_group["instance_type"]

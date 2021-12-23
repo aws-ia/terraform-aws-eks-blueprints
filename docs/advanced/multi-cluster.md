@@ -41,14 +41,14 @@ If you are using an existing VPC, you need to ensure that the following tags are
 
 Add Tags to **VPC**
 ```hcl
-    Key = "Kubernetes.io/cluster/${local.cluster_name}"
+    Key = "Kubernetes.io/cluster/${local.cluster_id}"
     Value = "Shared"
 ```
 
 Add Tags to **Public Subnets tagging** requirement
 ```hcl
     public_subnet_tags = {
-      "Kubernetes.io/cluster/${local.cluster_name}" = "shared"
+      "Kubernetes.io/cluster/${local.cluster_id}" = "shared"
       "Kubernetes.io/role/elb"                      = "1"
     }
 ```
@@ -56,7 +56,7 @@ Add Tags to **Public Subnets tagging** requirement
 Add Tags to **Private Subnets tagging** requirement
 ```hcl
     private_subnet_tags = {
-      "Kubernetes.io/cluster/${local.cluster_name}" = "shared"
+      "Kubernetes.io/cluster/${local.cluster_id}" = "shared"
       "Kubernetes.io/role/internal-elb"             = "1"
     }
 ```

@@ -28,7 +28,7 @@ variable "argocd_applications" {
   description = "ARGO CD Applications config to bootstrap the cluster"
 }
 
-variable "eks_cluster_name" {
+variable "eks_cluster_id" {
   type        = string
   description = "Name for the EKS Cluster"
 }

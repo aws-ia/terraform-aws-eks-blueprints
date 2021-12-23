@@ -1,4 +1,4 @@
-clusterName: ${cluster_name}
+clusterName: ${eks_cluster_id}
 region: ${aws_region}
 serviceAccount:
   create: false

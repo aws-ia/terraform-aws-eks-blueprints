@@ -1,7 +1,7 @@
 awsRegion: ${aws_region}
 
 autoDiscovery:
-  clusterName: ${cluster_name}
+  clusterName: ${eks_cluster_id}
 extraArgs:
   aws-use-static-instance-list: true
 

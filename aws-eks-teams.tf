@@ -24,7 +24,7 @@ module "aws_eks_teams" {
   environment       = var.environment
   tenant            = var.tenant
   zone              = var.zone
-  eks_cluster_name  = module.aws_eks.cluster_id
+  eks_cluster_id    = module.aws_eks.cluster_id
   tags              = module.eks_tags.tags
 
   depends_on = [module.aws_eks]

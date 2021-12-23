@@ -41,7 +41,7 @@ In order to deploy an add-on with default configuration, simply enable the add-o
 module "eks-ssp-kubernetes-addons" {
     source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//kubernetes-addons"
 
-    eks_cluster_id                    = <EKS-CLUSTER-ID>
+    cluster_id                    = <EKS-CLUSTER-ID>
 
     # EKS Addons
     enable_amazon_eks_vpc_cni             = true
