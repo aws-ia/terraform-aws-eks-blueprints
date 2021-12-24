@@ -561,8 +561,8 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # AWS MANAGED PROMETHEUS ENABLE
   #---------------------------------------
-  enable_aws_managed_prometheus         = false
-  aws_managed_prometheus_workspace_name = "aws-managed-prometheus-workspace" # Optional
+  enable_aws_managed_prometheus       = false
+  aws_managed_prometheus_workspace_id = "aws-managed-prometheus-workspace" # Optional
 
   #---------------------------------------
   # COMMUNITY PROMETHEUS ENABLE

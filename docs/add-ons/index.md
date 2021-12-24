@@ -1,6 +1,6 @@
 # Kubernetes Addons Module
 
-The [`kubernetes-addons`](../../kubernetes-addons) module within this framework allows you to configure the add-ons you would like deployed into you EKS cluster with simple **true/false** flags.
+The [`kubernetes-addons`](../../modules/kubernetes-addons) module within this framework allows you to configure the add-ons you would like deployed into you EKS cluster with simple **true/false** flags.
 
 The framework currently provides support for the following add-ons:
 
@@ -39,7 +39,7 @@ In order to deploy an add-on with default configuration, simply enable the add-o
 
 ```hcl
 module "eks-ssp-kubernetes-addons" {
-    source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//kubernetes-addons"
+    source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
 
     cluster_id                    = <EKS-CLUSTER-ID>
 

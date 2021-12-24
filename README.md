@@ -51,7 +51,7 @@ module "eks-ssp" {
 # Deploy Kubernetes Add-ons with sub module
 
 module "eks-ssp-kubernetes-addons" {
-    source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//kubernetes-addons"
+    source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
 
     cluster_id                        = module.eks-ssp.cluster_id
 
