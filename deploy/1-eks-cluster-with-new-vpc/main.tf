@@ -125,7 +125,7 @@ module "aws-eks-accelerator-for-terraform" {
 }
 
 module "kubernetes-addons" {
-  source         = "../../../modules/kubernetes-addons"
+  source = "../../../modules/kubernetes-addons"
 
   eks_cluster_id               = module.aws-eks-accelerator-for-terraform.eks_cluster_id
   eks_oidc_issuer_url          = module.aws-eks-accelerator-for-terraform.eks_oidc_issuer_url
