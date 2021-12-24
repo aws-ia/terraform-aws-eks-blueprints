@@ -31,7 +31,7 @@ resource "aws_eks_addon" "aws_ebs_csi_driver" {
 }
 
 module "irsa_addon" {
-  source                      = "../../irsa"
+  source                      = "../../../modules/irsa"
   eks_cluster_id              = var.eks_cluster_id
   create_kubernetes_namespace = false
   kubernetes_namespace        = local.add_on_config["namespace"]

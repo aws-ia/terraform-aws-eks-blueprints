@@ -168,7 +168,7 @@ resource "aws_iam_policy" "aws_node_termination_handler_irsa" {
 }
 
 module "irsa" {
-  source                      = "../../modules/irsa"
+  source                      = "../../../modules/irsa"
   eks_cluster_id              = var.eks_cluster_id
   kubernetes_namespace        = local.namespace
   create_kubernetes_namespace = false

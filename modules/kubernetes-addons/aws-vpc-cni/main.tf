@@ -31,7 +31,7 @@ resource "aws_eks_addon" "vpc_cni" {
 }
 
 module "irsa_addon" {
-  source                            = "../../irsa"
+  source                            = "../../../modules/irsa"
   eks_cluster_id                    = var.eks_cluster_id
   create_kubernetes_namespace       = false
   create_kubernetes_service_account = false

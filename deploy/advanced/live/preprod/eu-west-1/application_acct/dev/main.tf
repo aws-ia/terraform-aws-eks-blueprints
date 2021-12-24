@@ -78,7 +78,8 @@ module "aws_vpc" {
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  source            = "../../../../../../.."
+  source = "../../../../../../.."
+
   tenant            = local.tenant
   environment       = local.environment
   zone              = local.zone
@@ -455,259 +456,81 @@ module "aws-eks-accelerator-for-terraform" {
     }, */
   } # END OF FARGATE PROFILES
 
-  #---------------------------------------
-  # FARGATE FLUENTBIT
-  #---------------------------------------
-  enable_fargate_fluentbit = false
+}
 
-  fargate_fluentbit_addon_config = {
-    output_conf  = <<EOF
-[OUTPUT]
-  Name cloudwatch_logs
-  Match *
-  region eu-west-1
-  log_group_name /${local.eks_cluster_id}/fargate-fluentbit-logs
-  log_stream_prefix "fargate-logs-"
-  auto_create_group true
-    EOF
-    filters_conf = <<EOF
-[FILTER]
-  Name parser
-  Match *
-  Key_Name log
-  Parser regex
-  Preserve_Key On
-  Reserve_Data On
-    EOF
-    parsers_conf = <<EOF
-[PARSER]
-  Name regex
-  Format regex
-  Regex ^(?<time>[^ ]+) (?<stream>[^ ]+) (?<logtag>[^ ]+) (?<message>.+)$
-  Time_Key time
-  Time_Format %Y-%m-%dT%H:%M:%S.%L%z
-  Time_Keep On
-  Decode_Field_As json message
-    EOF
+module "kubernetes-addons" {
+  source = "../../../../../../../modules/kubernetes-addons"
+
+  eks_cluster_id               = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_oidc_issuer_url          = module.aws-eks-accelerator-for-terraform.eks_oidc_issuer_url
+  eks_oidc_provider_arn        = module.aws-eks-accelerator-for-terraform.eks_oidc_provider_arn
+  eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_security_group_id
+  auto_scaling_group_names     = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
+
+  # EKS Addons
+  enable_amazon_eks_vpc_cni = true # default is false
+  #Optional
+  amazon_eks_vpc_cni_config = {
+    addon_name               = "vpc-cni"
+    addon_version            = "v1.10.1-eksbuild.1"
+    service_account          = "aws-node"
+    resolve_conflicts        = "OVERWRITE"
+    namespace                = "kube-system"
+    additional_iam_policies  = []
+    service_account_role_arn = ""
+    tags                     = {}
   }
 
-  #---------------------------------------
-  # TRAEFIK INGRESS CONTROLLER HELM ADDON
-  #---------------------------------------
-  enable_traefik = false
-
-  # Optional Map value
-  traefik_helm_config = {
-    name       = "traefik"                         # (Required) Release name.
-    repository = "https://helm.traefik.io/traefik" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "traefik"                         # (Required) Chart name to be installed.
-    version    = "10.0.0"                          # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "kube-system"                     # (Optional) The namespace to install the release into. Defaults to default
-    timeout    = "1200"                            # (Optional)
-    lint       = "true"                            # (Optional)
-    # (Optional) Example to show how to override values using SET
-    set = [{
-      name  = "service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
-      value = "nlb"
-    }]
-    # (Optional) Example to show how to pass traefik-values.yaml
-    values = [templatefile("${path.module}/k8s_addons/traefik-values.yaml", {
-      operating_system = "linux"
-    })]
+  enable_amazon_eks_coredns = true # default is false
+  #Optional
+  amazon_eks_coredns_config = {
+    addon_name               = "coredns"
+    addon_version            = "v1.8.4-eksbuild.1"
+    service_account          = "coredns"
+    resolve_conflicts        = "OVERWRITE"
+    namespace                = "kube-system"
+    service_account_role_arn = ""
+    additional_iam_policies  = []
+    tags                     = {}
   }
 
-  #---------------------------------------
-  # METRICS SERVER HELM ADDON
-  #---------------------------------------
-  enable_metrics_server = true
-
-  # Optional Map value
-  metrics_server_helm_config = {
-    name       = "metrics-server"                                    # (Required) Release name.
-    repository = "https://kubernetes-sigs.github.io/metrics-server/" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "metrics-server"                                    # (Required) Chart name to be installed.
-    version    = "3.5.0"                                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "kube-system"                                       # (Optional) The namespace to install the release into. Defaults to default
-    timeout    = "1200"                                              # (Optional)
-    lint       = "true"                                              # (Optional)
-
-    # (Optional) Example to show how to pass metrics-server-values.yaml
-    values = [templatefile("${path.module}/k8s_addons/metrics-server-values.yaml", {
-      operating_system = "linux"
-    })]
+  enable_amazon_eks_kube_proxy = true # default is false
+  #Optional
+  amazon_eks_kube_proxy_config = {
+    addon_name               = "kube-proxy"
+    addon_version            = "v1.21.2-eksbuild.2"
+    service_account          = "kube-proxy"
+    resolve_conflicts        = "OVERWRITE"
+    namespace                = "kube-system"
+    additional_iam_policies  = []
+    service_account_role_arn = ""
+    tags                     = {}
   }
 
-  #---------------------------------------
-  # CLUSTER AUTOSCALER HELM ADDON
-  #---------------------------------------
-  enable_cluster_autoscaler = true
-
-  # Optional Map value
-  cluster_autoscaler_helm_config = {
-    name       = "cluster-autoscaler"                      # (Required) Release name.
-    repository = "https://kubernetes.github.io/autoscaler" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "cluster-autoscaler"                      # (Required) Chart name to be installed.
-    version    = "9.10.7"                                  # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "kube-system"                             # (Optional) The namespace to install the release into. Defaults to default
-    timeout    = "1200"                                    # (Optional)
-    lint       = "true"                                    # (Optional)
-
-    # (Optional) Example to show how to pass cluster-autoscaler-values.yaml
-    values = [templatefile("${path.module}/k8s_addons/cluster-autoscaler-vaues.yaml", {
-      operating_system = "linux"
-    })]
-  }
-
-  #---------------------------------------
-  # AWS MANAGED PROMETHEUS ENABLE
-  #---------------------------------------
-  enable_aws_managed_prometheus       = false
-  aws_managed_prometheus_workspace_id = "aws-managed-prometheus-workspace" # Optional
-
-  #---------------------------------------
-  # COMMUNITY PROMETHEUS ENABLE
-  #---------------------------------------
-  enable_prometheus = false
-
-  # Optional Map value
-  prometheus_helm_config = {
-    name       = "prometheus"                                         # (Required) Release name.
-    repository = "https://prometheus-community.github.io/helm-charts" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "prometheus"                                         # (Required) Chart name to be installed.
-    version    = "14.4."                                              # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "prometheus"                                         # (Optional) The namespace to install the release into. Defaults to default
-    values = [templatefile("${path.module}/k8s_addons/prometheus-values.yaml", {
-      operating_system = "linux"
-    })]
-
-  }
-
-  #---------------------------------------
-  # ENABLE EMR ON EKS
-  #---------------------------------------
-  enable_emr_on_eks = true
-
-  emr_on_eks_teams = {
-    data_team_a = {
-      emr_on_eks_username      = "emr-containers"
-      emr_on_eks_namespace     = "spark"
-      emr_on_eks_iam_role_name = "EMRonEKSExecution"
-    }
-
-    data_team_b = {
-      emr_on_eks_username      = "data-team-b-user"
-      emr_on_eks_namespace     = "data-team-b"
-      emr_on_eks_iam_role_name = "data_team_b"
-    }
+  enable_amazon_eks_aws_ebs_csi_driver = true # default is false
+  #Optional
+  amazon_eks_aws_ebs_csi_driver_config = {
+    addon_name               = "aws-ebs-csi-driver"
+    addon_version            = "v1.4.0-eksbuild.preview"
+    service_account          = "ebs-csi-controller-sa"
+    resolve_conflicts        = "OVERWRITE"
+    namespace                = "kube-system"
+    additional_iam_policies  = []
+    service_account_role_arn = ""
+    tags                     = {}
   }
   #---------------------------------------
-  # ENABLE NGINX
+  # AWS LOAD BALANCER INGRESS CONTROLLER HELM ADDON
   #---------------------------------------
-
-  enable_ingress_nginx = false
-
-  # Optional nginx_helm_chart
-  nginx_helm_config = {
-    name       = "ingress-nginx"
-    chart      = "ingress-nginx"
-    repository = "https://kubernetes.github.io/ingress-nginx"
-    version    = "3.33.0"
+  enable_aws_load_balancer_controller = true
+  # Optional
+  aws_load_balancer_controller_helm_config = {
+    name       = "aws-load-balancer-controller"
+    chart      = "aws-load-balancer-controller"
+    repository = "https://aws.github.io/eks-charts"
+    version    = "1.3.1"
     namespace  = "kube-system"
-    values     = [templatefile("${path.module}/k8s_addons/nginx-values.yaml", {})]
   }
 
-  #---------------------------------------
-  # ENABLE AGONES
-  #---------------------------------------
-  # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
-  enable_agones = false
 
-  # Optional  agones_helm_chart
-  agones_helm_config = {
-    name               = "agones"
-    chart              = "agones"
-    repository         = "https://agones.dev/chart/stable"
-    version            = "1.15.0"
-    namespace          = "kube-system"
-    gameserver_minport = 7000 # required for sec group changes to worker nodes
-    gameserver_maxport = 8000 # required for sec group changes to worker nodes
-    values = [templatefile("${path.module}/k8s_addons/agones-values.yaml", {
-      expose_udp            = true
-      gameserver_namespaces = "{${join(",", ["default", "xbox-gameservers", "xbox-gameservers"])}}"
-      gameserver_minport    = 7000
-      gameserver_maxport    = 8000
-    })]
-  }
-
-  #---------------------------------------
-  # ENABLE AWS OPEN TELEMETRY
-  #---------------------------------------
-  enable_aws_open_telemetry = false
-  aws_open_telemetry_addon_config = {
-    aws_open_telemetry_namespace                        = "aws-otel-eks"
-    aws_open_telemetry_emitter_otel_resource_attributes = "service.namespace=AWSObservability,service.name=ADOTEmitService"
-    aws_open_telemetry_emitter_name                     = "trace-emitter"
-    aws_open_telemetry_emitter_image                    = "public.ecr.aws/g9c4k4i4/trace-emitter:1"
-    aws_open_telemetry_collector_image                  = "public.ecr.aws/aws-observability/aws-otel-collector:latest"
-    aws_open_telemetry_aws_region                       = "eu-west-1"
-    aws_open_telemetry_emitter_oltp_endpoint            = "localhost:55680"
-  }
-
-  #---------------------------------------
-  # AWS-FOR-FLUENTBIT HELM ADDON
-  #---------------------------------------
-  enable_aws_for_fluentbit = false
-
-  aws_for_fluentbit_helm_config = {
-    name                                      = "aws-for-fluent-bit"
-    chart                                     = "aws-for-fluent-bit"
-    repository                                = "https://aws.github.io/eks-charts"
-    version                                   = "0.1.0"
-    namespace                                 = "logging"
-    aws_for_fluent_bit_cw_log_group           = "/${local.eks_cluster_id}/worker-fluentbit-logs" # Optional
-    aws_for_fluentbit_cwlog_retention_in_days = 90
-    create_namespace                          = true
-    values = [templatefile("${path.module}/k8s_addons/aws-for-fluentbit-values.yaml", {
-      region                          = data.aws_region.current.name,
-      aws_for_fluent_bit_cw_log_group = "/${local.eks_cluster_id}/worker-fluentbit-logs"
-    })]
-    set = [
-      {
-        name  = "nodeSelector.kubernetes\\.io/os"
-        value = "linux"
-      }
-    ]
-  }
-  #---------------------------------------
-  # SPARK K8S OPERATOR HELM ADDON
-  #---------------------------------------
-  enable_spark_k8s_operator = false
-
-  # Optional Map value
-  spark_k8s_operator_helm_config = {
-    name             = "spark-operator"
-    chart            = "spark-operator"
-    repository       = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
-    version          = "1.1.6"
-    namespace        = "spark-k8s-operator"
-    timeout          = "1200"
-    create_namespace = true
-    values           = [templatefile("${path.module}/k8s_addons/spark-k8s-operator-values.yaml", {})]
-  }
-
-  #---------------------------------------
-  # ENABLE ARGOCD
-  #---------------------------------------
-  enable_argocd = true
-  # Optional Map value
-  argocd_helm_config = {
-    name             = "argo-cd"
-    chart            = "argo-cd"
-    repository       = "https://argoproj.github.io/argo-helm"
-    version          = "3.26.3"
-    namespace        = "argocd"
-    timeout          = "1200"
-    create_namespace = true
-    values           = [templatefile("${path.module}/k8s_addons/argocd-values.yaml", {})]
-  }
 }

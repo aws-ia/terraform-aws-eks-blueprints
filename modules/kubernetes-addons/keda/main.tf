@@ -81,9 +81,8 @@ resource "helm_release" "keda" {
 }
 
 module "irsa" {
-  count = var.create_irsa ? 1 : 0
-
-  source                     = "../../modules/irsa"
+  count                      = var.create_irsa ? 1 : 0
+  source                     = "../../../modules/irsa"
   eks_cluster_id             = var.eks_cluster_id
   kubernetes_namespace       = local.namespace
   kubernetes_service_account = local.service_account_name
