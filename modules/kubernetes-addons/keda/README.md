@@ -48,7 +48,7 @@ No requirements.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_irsa"></a> [irsa](#module\_irsa) | ../../modules/irsa | n/a |
+| <a name="module_irsa"></a> [irsa](#module\_irsa) | ../../../modules/irsa | n/a |
 
 ## Resources
 
