@@ -329,7 +329,7 @@ module "kubernetes-addons" {
   #---------------------------------------
   enable_ingress_nginx = true
 
-  # Optional nginx_helm_chart
+  # Optional ingress_nginx_helm_config
   ingress_nginx_helm_config = {
     name       = "ingress-nginx"
     chart      = "ingress-nginx"
@@ -344,7 +344,7 @@ module "kubernetes-addons" {
   #---------------------------------------
   # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
   enable_agones = true
-  # Optional  agones_helm_chart
+  # Optional  agones_helm_config
   agones_helm_config = {
     name               = "agones"
     chart              = "agones"

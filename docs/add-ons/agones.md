@@ -17,9 +17,9 @@ You can optionally customize the Helm chart that deploys `Agones` via the follow
 *NOTE: Agones requires a Node group in Public Subnets and enable Public IP*
 
 ```hcl
-  agones_enable = true
-  # Optional  agones_helm_chart
-  agones_helm_chart = {
+  enable_agones = true
+  # Optional  agones_helm_config
+  agones_helm_config = {
     name                       = "aws-load-balancer-controller"
     chart                      = "aws-load-balancer-controller"
     repository                 = "https://aws.github.io/eks-charts"

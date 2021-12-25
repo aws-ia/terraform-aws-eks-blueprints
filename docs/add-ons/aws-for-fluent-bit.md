@@ -17,8 +17,8 @@ enable_aws_for_fluentbit = true
 You can optionally customize the Helm chart that deploys `aws_for_fluentbit` via the following configuration.
 
 ```hcl
-  aws_for_fluentbit_enable = true
-  aws_for_fluentbit_helm_chart = {
+  enable_aws_for_fluentbit = true
+  aws_for_fluentbit_helm_config = {
     name                                      = "aws-for-fluent-bit"
     chart                                     = "aws-for-fluent-bit"
     repository                                = "https://aws.github.io/eks-charts"
