@@ -81,19 +81,13 @@ module "aws_eks" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "aws_managed_prometheus" {
-  count  = var.create_eks && var.enable_aws_managed_prometheus == true ? 1 : 0
+  count  = var.create_eks && var.enable_amazon_prometheus == true ? 1 : 0
   source = "./modules/aws-managed-prometheus"
 
-  environment                     = var.environment
-  tenant                          = var.tenant
-  zone                            = var.zone
-  account_id                      = data.aws_caller_identity.current.account_id
-  region                          = data.aws_region.current.id
+  amazon_prometheus_workspace_alias              = var.amazon_prometheus_workspace_alias
   eks_cluster_id                  = module.aws_eks.cluster_id
-  eks_oidc_provider               = split("//", module.aws_eks.cluster_oidc_issuer_url)[1]
-  service_account_amp_ingest_name = local.aws_managed_prometheus_ingest_service_account
-  service_account_amp_query_name  = local.aws_managed_prometheus_query_service_account
-  amp_workspace_name              = var.aws_managed_prometheus_workspace_id == "" ? local.aws_managed_prometheus_workspace_id : var.aws_managed_prometheus_workspace_id
+  tags           = var.tags
+
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

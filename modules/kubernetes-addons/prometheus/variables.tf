@@ -19,21 +19,25 @@
 variable "enable_aws_managed_prometheus" {
   type    = bool
   default = false
+  description = "Enable Amazon Managed Prometheus"
 }
 
-variable "amp_workspace_id" {
+variable "aws_managed_prometheus_workspace_id" {
   type    = string
   default = ""
+  description = "Amazon Managed Prometheus Workspace ID"
 }
 
-variable "amp_ingest_role_arn" {
+variable "aws_managed_prometheus_ingest_iam_role_arn" {
   type    = string
   default = ""
+  description = "Amazon Managed Prometheus Ingest IAM Role ARN"
 }
 
-variable "service_account_amp_ingest_name" {
+variable "aws_managed_prometheus_ingest_service_account" {
   type    = string
   default = ""
+  description = "Amazon Managed Prometheus Ingest Service Account"
 }
 
 variable "helm_config" {

@@ -130,3 +130,28 @@ output "teams" {
   description = "Outputs from EKS Fargate profiles groups "
   value       = var.create_eks && (length(var.platform_teams) > 0 || length(var.application_teams) > 0) ? module.aws_eks_teams.* : []
 }
+
+output "amazon_prometheus_workspace_id" {
+  description = "Amazon Managed Prometheus Workspace ID"
+  value = var.create_eks && var.enable_amazon_prometheus == true ? module.aws_managed_prometheus[0].aws_prometheus_workspace_id: "AWS Prometheus not enabled"
+}
+
+output "amazon_prometheus_ingest_iam_role_arn" {
+  description = "Amazon Managed Prometheus Ingest IAM Role ARN"
+  value = var.create_eks && var.enable_amazon_prometheus == true ? module.aws_managed_prometheus[0].aws_prometheus_ingest_iam_role_arn: "AWS Prometheus not enabled"
+}
+
+output "amazon_prometheus_query_iam_role_arn" {
+  description = "Amazon Managed Prometheus Ingest IAM Role ARN"
+  value = var.create_eks && var.enable_amazon_prometheus == true ? module.aws_managed_prometheus[0].aws_prometheus_query_iam_role_arn: "AWS Prometheus not enabled"
+}
+
+output "amazon_prometheus_ingest_service_account" {
+  description = "Amazon Managed Prometheus Ingest Service Account"
+  value = var.create_eks && var.enable_amazon_prometheus == true ? module.aws_managed_prometheus[0].amazon_prometheus_ingest_service_account: "AWS Prometheus not enabled"
+}
+
+output "amazon_prometheus_query_service_account" {
+  description = "Amazon Managed Prometheus Ingest Service Account"
+  value = var.create_eks && var.enable_amazon_prometheus == true ? module.aws_managed_prometheus[0].amazon_prometheus_query_service_account: "AWS Prometheus not enabled"
+}

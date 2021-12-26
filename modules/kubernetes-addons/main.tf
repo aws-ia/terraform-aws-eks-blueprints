@@ -158,9 +158,9 @@ module "prometheus" {
 
   #AWS Managed Prometheus Workspace
   enable_aws_managed_prometheus   = var.enable_aws_managed_prometheus
-  amp_workspace_id                = var.aws_managed_prometheus_workspace_id
-  amp_ingest_role_arn             = var.aws_managed_prometheus_ingest_iam_role_arn
-  service_account_amp_ingest_name = var.aws_managed_prometheus_ingest_service_account
+  aws_managed_prometheus_workspace_id                = var.aws_managed_prometheus_workspace_id
+  aws_managed_prometheus_ingest_iam_role_arn             = var.aws_managed_prometheus_ingest_iam_role_arn
+  aws_managed_prometheus_ingest_service_account = var.aws_managed_prometheus_ingest_service_account
   manage_via_gitops               = var.argocd_manage_add_ons
 }
 

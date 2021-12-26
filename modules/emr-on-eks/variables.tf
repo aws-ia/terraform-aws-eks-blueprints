@@ -1,18 +1,21 @@
-
-variable "environment" {
-  type = string
+variable "tenant" {
+  type        = string
+  description = "Account Name or unique account unique id e.g., apps or management or aws007"
 }
 
-variable "tenant" {
-  type = string
+variable "environment" {
+  type        = string
+  description = "Environment area, e.g. prod or preprod "
 }
 
 variable "zone" {
-  type = string
+  type        = string
+  description = "zone, e.g. dev or qa or load or ops etc..."
 }
 
 variable "eks_cluster_id" {
   type = string
+  description = "EKS Cluster ID"
 }
 
 variable "tags" {
