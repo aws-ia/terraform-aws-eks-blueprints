@@ -2,15 +2,15 @@ data "aws_region" "current" {}
 
 locals {
 
-  amp_workspace_url = "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${var.aws_managed_prometheus_workspace_id}/api/v1/remote_write"
+  amp_workspace_url = "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${var.amazon_prometheus_workspace_id}/api/v1/remote_write"
 
-  amp_config_values = var.enable_aws_managed_prometheus ? [{
+  amp_config_values = var.enable_amazon_prometheus ? [{
     name  = "serviceAccounts.server.name"
-    value = var.aws_managed_prometheus_ingest_service_account
+    value = var.amazon_prometheus_ingest_service_account
     },
     {
       name  = "serviceAccounts.server.annotations.eks\\.amazonaws\\.com/role-arn"
-      value = var.aws_managed_prometheus_ingest_iam_role_arn
+      value = var.amazon_prometheus_ingest_iam_role_arn
     },
     {
       name  = "server.remoteWrite[0].url"
@@ -71,7 +71,7 @@ locals {
   argocd_gitops_config = {
     enable             = true
     ampWorkspaceUrl    = local.amp_workspace_url
-    roleArn            = var.aws_managed_prometheus_ingest_iam_role_arn
-    serviceAccountName = var.aws_managed_prometheus_ingest_service_account
+    roleArn            = var.amazon_prometheus_ingest_iam_role_arn
+    serviceAccountName = var.amazon_prometheus_ingest_service_account
   }
 }

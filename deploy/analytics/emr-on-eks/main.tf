@@ -60,7 +60,7 @@ locals {
   vpc_cidr                            = "10.0.0.0/16"
   vpc_name                            = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   cluster_name                        = join("-", [local.tenant, local.environment, local.zone, "eks"])
-  aws_managed_prometheus_workspace_id = join("-", ["amp-workspace", local.tenant, local.environment, local.zone, "eks"])
+  amazon_prometheus_workspace_alias = join("-", ["amp-workspace", local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.0.1"
 }
@@ -123,8 +123,8 @@ module "aws-eks-accelerator-for-terraform" {
   }
 
   # Enable Amazon Managed Prometheus
-  enable_aws_managed_prometheus       = true
-  aws_managed_prometheus_workspace_id = local.aws_managed_prometheus_workspace_id
+  enable_amazon_prometheus       = true
+  amazon_prometheus_workspace_alias = local.amazon_prometheus_workspace_alias
 
   #---------------------------------------
   # ENABLE EMR ON EKS
@@ -161,8 +161,8 @@ module "kubernetes-addons" {
   enable_cluster_autoscaler = true
 
   # Integrate Amazon Managed Prometheus with Prometheus server add-on
-  enable_aws_managed_prometheus       = true
-  aws_managed_prometheus_workspace_id = local.aws_managed_prometheus_workspace_id
+  enable_amazon_prometheus       = true
+  amazon_prometheus_workspace_alias = local.amazon_prometheus_workspace_alias
 
   #---------------------------------------
   # COMMUNITY PROMETHEUS ENABLE

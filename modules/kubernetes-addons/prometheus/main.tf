@@ -57,7 +57,7 @@ resource "helm_release" "prometheus" {
 
   dynamic "set" {
     iterator = each_item
-    for_each = var.enable_aws_managed_prometheus ? distinct(concat(local.amp_config_values, local.helm_config["set"])) : local.helm_config["set"]
+    for_each = var.enable_amazon_prometheus ? distinct(concat(local.amp_config_values, local.helm_config["set"])) : local.helm_config["set"]
 
     content {
       name  = each_item.value.name

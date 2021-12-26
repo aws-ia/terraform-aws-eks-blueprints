@@ -157,8 +157,8 @@ module "prometheus" {
   helm_config = var.prometheus_helm_config
 
   #AWS Managed Prometheus Workspace
-  enable_aws_managed_prometheus   = var.enable_aws_managed_prometheus
-  aws_managed_prometheus_workspace_id                = var.aws_managed_prometheus_workspace_id
+  enable_amazon_prometheus   = var.enable_amazon_prometheus
+  amazon_prometheus_workspace_alias                = var.amazon_prometheus_workspace_alias
   aws_managed_prometheus_ingest_iam_role_arn             = var.aws_managed_prometheus_ingest_iam_role_arn
   aws_managed_prometheus_ingest_service_account = var.aws_managed_prometheus_ingest_service_account
   manage_via_gitops               = var.argocd_manage_add_ons

@@ -96,13 +96,13 @@ variable "cluster_autoscaler_helm_config" {
 }
 
 #-----------Amazon Managed Service for Prometheus-------------
-variable "enable_aws_managed_prometheus" {
+variable "enable_amazon_prometheus" {
   type        = bool
   default     = false
   description = "Enable AWS Managed Prometheus Service"
 }
 
-variable "aws_managed_prometheus_workspace_id" {
+variable "amazon_prometheus_workspace_alias" {
   type        = string
   default     = ""
   description = "AWS Managed Prometheus WorkSpace Name"

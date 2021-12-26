@@ -10,8 +10,8 @@ The following will deploy the Prometheus server into an EKS Cluster and provisio
 
 ```hcl
 # Creates the AMP workspace and all the relevent IAM Roles
-enable_aws_managed_prometheus         = true
-aws_managed_prometheus_workspace_id = "EKS-Metrics-Workspace"
+enable_amazon_prometheus         = true
+amazon_prometheus_workspace_alias = "EKS-Metrics-Workspace"
 
 # Deploys Pometheus server with remote write to AWS AMP Workspace
 enable_prometheus             = true
