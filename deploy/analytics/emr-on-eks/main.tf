@@ -57,9 +57,9 @@ locals {
 
   kubernetes_version = "1.21"
 
-  vpc_cidr                            = "10.0.0.0/16"
-  vpc_name                            = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  cluster_name                        = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  vpc_cidr                          = "10.0.0.0/16"
+  vpc_name                          = join("-", [local.tenant, local.environment, local.zone, "vpc"])
+  cluster_name                      = join("-", [local.tenant, local.environment, local.zone, "eks"])
   amazon_prometheus_workspace_alias = join("-", ["amp-workspace", local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.0.1"
@@ -96,7 +96,7 @@ module "aws_vpc" {
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  source     = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
+  source = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
 
   create_eks = true
 
@@ -123,7 +123,7 @@ module "aws-eks-accelerator-for-terraform" {
   }
 
   # Enable Amazon Managed Prometheus
-  enable_amazon_prometheus       = true
+  enable_amazon_prometheus          = true
   amazon_prometheus_workspace_alias = local.amazon_prometheus_workspace_alias
 
   #---------------------------------------
@@ -152,7 +152,7 @@ module "aws-eks-accelerator-for-terraform" {
 }
 
 module "kubernetes-addons" {
-  source         = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
+  source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
 
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
@@ -161,7 +161,7 @@ module "kubernetes-addons" {
   enable_cluster_autoscaler = true
 
   # Integrate Amazon Managed Prometheus with Prometheus server add-on
-  enable_amazon_prometheus       = true
+  enable_amazon_prometheus          = true
   amazon_prometheus_workspace_alias = local.amazon_prometheus_workspace_alias
 
   #---------------------------------------

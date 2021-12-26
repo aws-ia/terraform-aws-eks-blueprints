@@ -23,25 +23,25 @@ resource "aws_prometheus_workspace" "amp_workspace" {
 module "irsa" {
   for_each = local.irsa_config
 
-  source                     = "../irsa"
-  eks_cluster_id             = var.eks_cluster_id
-  kubernetes_namespace       = var.namespace
+  source                      = "../irsa"
+  eks_cluster_id              = var.eks_cluster_id
+  kubernetes_namespace        = var.namespace
   create_kubernetes_namespace = each.value["create_kubernetes_namespace"]
-  kubernetes_service_account = each.value["service_account"]
-  irsa_iam_policies          = each.value["irsa_iam_policies"]
-  tags                       = var.tags
+  kubernetes_service_account  = each.value["service_account"]
+  irsa_iam_policies           = each.value["irsa_iam_policies"]
+  tags                        = var.tags
 }
 
 resource "aws_iam_policy" "ingest" {
-  name = format("%s-%s", "amp-ingest", var.eks_cluster_id)
+  name        = format("%s-%s", "amp-ingest", var.eks_cluster_id)
   description = "Set up the permission policy that grants ingest (remote write) permissions for AMP workspace"
-  path = var.iam_role_path
-  policy = data.aws_iam_policy_document.ingest.json
+  path        = var.iam_role_path
+  policy      = data.aws_iam_policy_document.ingest.json
 }
 
 resource "aws_iam_policy" "query" {
-  name = format("%s-%s", "amp-query", var.eks_cluster_id)
+  name        = format("%s-%s", "amp-query", var.eks_cluster_id)
   description = "Set up the permission policy that grants query permissions for AMP workspace"
-  path = var.iam_role_path
-  policy = data.aws_iam_policy_document.query.json
+  path        = var.iam_role_path
+  policy      = data.aws_iam_policy_document.query.json
 }

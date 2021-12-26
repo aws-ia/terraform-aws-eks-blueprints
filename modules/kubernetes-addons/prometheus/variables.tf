@@ -17,26 +17,26 @@
  */
 
 variable "enable_amazon_prometheus" {
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
   description = "Enable Amazon Managed Prometheus"
 }
 
 variable "amazon_prometheus_workspace_id" {
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Amazon Managed Prometheus Workspace ID"
 }
 
 variable "amazon_prometheus_ingest_iam_role_arn" {
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Amazon Managed Prometheus Ingest IAM Role ARN"
 }
 
 variable "amazon_prometheus_ingest_service_account" {
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Amazon Managed Prometheus Ingest Service Account"
 }
 

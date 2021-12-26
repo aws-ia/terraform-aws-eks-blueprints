@@ -14,7 +14,7 @@ variable "zone" {
 }
 
 variable "eks_cluster_id" {
-  type = string
+  type        = string
   description = "EKS Cluster ID"
 }
 

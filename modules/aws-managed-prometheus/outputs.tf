@@ -18,12 +18,12 @@
 
 output "aws_prometheus_ingest_iam_role_arn" {
   description = "Amazon Managed Prometheus Ingest IAM Role ARN"
-  value = module.irsa[0].irsa_iam_role_arn
+  value       = module.irsa[0].irsa_iam_role_arn
 }
 
 output "aws_prometheus_query_iam_role_arn" {
   description = "Amazon Managed Prometheus Query IAM Role ARN"
-  value = module.irsa[1].irsa_iam_role_arn
+  value       = module.irsa[1].irsa_iam_role_arn
 }
 
 output "aws_prometheus_workspace_id" {

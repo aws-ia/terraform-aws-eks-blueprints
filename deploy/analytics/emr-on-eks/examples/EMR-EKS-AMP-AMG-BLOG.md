@@ -64,7 +64,7 @@ Navigate to the directory below and execute create_emr_virtual_cluster_for_eks.s
 ```sh
 cd ~/aws-eks-accelerator-for-terraform/deploy/analytics/emr-on-eks/examples
 
-./create_emr_virtual_cluster_for_eks.sh aws001-preprod-test-eks-emr-data-team-a 
+./create_emr_virtual_cluster_for_eks.sh aws001-preprod-test-eks-emr-data-team-a
 ```
 
 This script uses EMR_VIRTUAL_CLUSTER_ID, EKS_CLUSTER_ID and EMR_ON_EKS_NAMESPACE as inputs to create an EMR Virtual Cluster. This script also creates a CloudWatch log group to write Spark Job Driver and Executor logs to CloudWatch Logs.

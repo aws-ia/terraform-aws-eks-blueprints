@@ -1,6 +1,6 @@
 
 variable "eks_cluster_id" {
-  type = string
+  type        = string
   description = "EKS Cluster ID"
 }
 
@@ -11,8 +11,8 @@ variable "amazon_prometheus_workspace_alias" {
 }
 
 variable "namespace" {
-  type = string
-  default = "prometheus"
+  type        = string
+  default     = "prometheus"
   description = "Prometheus Server Namespace"
 }
 

@@ -102,19 +102,19 @@ variable "enable_amazon_prometheus" {
   description = "Enable AWS Managed Prometheus Service"
 }
 
-variable "amazon_prometheus_workspace_alias" {
+variable "amazon_prometheus_workspace_id" {
   type        = string
   default     = ""
   description = "AWS Managed Prometheus WorkSpace Name"
 }
 
-variable "aws_managed_prometheus_ingest_iam_role_arn" {
+variable "amazon_prometheus_ingest_iam_role_arn" {
   type        = string
   default     = ""
   description = "AWS Managed Prometheus WorkSpaceSpace IAM role ARN"
 }
 
-variable "aws_managed_prometheus_ingest_service_account" {
+variable "amazon_prometheus_ingest_service_account" {
   type        = string
   default     = ""
   description = "AWS Managed Prometheus Ingest Service Account"

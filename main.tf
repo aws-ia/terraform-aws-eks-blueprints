@@ -84,9 +84,9 @@ module "aws_managed_prometheus" {
   count  = var.create_eks && var.enable_amazon_prometheus == true ? 1 : 0
   source = "./modules/aws-managed-prometheus"
 
-  amazon_prometheus_workspace_alias              = var.amazon_prometheus_workspace_alias
-  eks_cluster_id                  = module.aws_eks.cluster_id
-  tags           = var.tags
+  amazon_prometheus_workspace_alias = var.amazon_prometheus_workspace_alias
+  eks_cluster_id                    = module.aws_eks.cluster_id
+  tags                              = var.tags
 
 }
 
