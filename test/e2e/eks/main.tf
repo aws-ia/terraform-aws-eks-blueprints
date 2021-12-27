@@ -56,7 +56,7 @@ module "eks-cluster-with-import-vpc" {
   source = "../../../deploy/2-eks-cluster-with-import-vpc/eks"
 
   tenant      = "aws"
-  environment = "preprod"
+  environment = "test"
   zone        = "e2e"
 
   vpc_id             = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
