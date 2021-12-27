@@ -81,7 +81,7 @@ resource "kubernetes_role_binding" "emr_containers" {
 }
 
 resource "aws_iam_role" "emr_on_eks_execution" {
-  name                  = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, local.emr_on_eks_team["emr_on_eks_iam_role_name"])
+  name                  = format("%s-%s", var.eks_cluster_id, local.emr_on_eks_team["emr_on_eks_iam_role_name"])
   assume_role_policy    = data.aws_iam_policy_document.emr_assume_role.json
   force_detach_policies = true
   path                  = var.iam_role_path
@@ -89,7 +89,7 @@ resource "aws_iam_role" "emr_on_eks_execution" {
 }
 
 resource "aws_iam_policy" "emr_on_eks_execution" {
-  name        = format("%s-%s-%s-%s", var.tenant, var.environment, var.zone, local.emr_on_eks_team["emr_on_eks_iam_role_name"])
+  name        = format("%s-%s", var.eks_cluster_id,local.emr_on_eks_team["emr_on_eks_iam_role_name"])
   description = "IAM policy for EMR on EKS Job execution"
   path        = var.iam_role_path
   policy      = data.aws_iam_policy_document.emr_on_eks.json
