@@ -15,8 +15,8 @@ locals {
   )
 
   fargate_tags = merge(
-    { "kubernetes.io/cluster/${var.eks_cluster_name}" = "owned" },
-  { "k8s.io/cluster/${var.eks_cluster_name}" = "owned" })
+    { "kubernetes.io/cluster/${var.eks_cluster_id}" = "owned" },
+  { "k8s.io/cluster/${var.eks_cluster_id}" = "owned" })
 
 
 }

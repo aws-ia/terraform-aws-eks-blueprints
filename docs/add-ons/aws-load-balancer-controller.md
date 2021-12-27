@@ -10,7 +10,22 @@ For more information about AWS Load Balancer Controller please see the [official
 ## Usage
 
 ```hcl
-aws_lb_ingress_controller_enable = true
+enable_aws_load_balancer_controller = true
+```
+
+You can optionally customize the Helm chart that deploys `aws-lb-ingress-controller` via the following configuration.
+
+```hcl
+  enable_aws_load_balancer_controller = true
+  # Optional  
+  aws_load_balancer_controller_helm_config = {
+    name                       = "aws-load-balancer-controller"
+    chart                      = "aws-load-balancer-controller"
+    repository                 = "https://aws.github.io/eks-charts"
+    version                    = "1.3.1"
+    namespace                  = "kube-system"
+    values = [templatefile("${path.module}/values.yaml", {})]
+  }
 ```
 
 To validate that controller is running, ensure that controller deployment is in RUNNING state:

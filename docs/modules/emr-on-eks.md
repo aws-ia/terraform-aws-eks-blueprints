@@ -33,6 +33,4 @@ This module deploys the necessary resources to run EMR Spark Jobs on EKS Cluster
   }
 ```
 
-Once deployed, you can create Virtual EMR Cluster and execute Spark jobs. See the document below for more details.
-
-https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/setting-up-registration.html
+Once deployed, you can create Virtual EMR Cluster and execute Spark jobs. See the [document](https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/setting-up-registration.html) below for more details.

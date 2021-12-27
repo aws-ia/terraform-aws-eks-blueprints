@@ -1,39 +1,29 @@
-variable "environment" {
-  type = string
-}
-
-variable "tenant" {
-  type = string
-}
-
-variable "zone" {
-  type = string
-}
-
-variable "account_id" {
-  type = string
-}
-
-variable "region" {
-  type = string
-}
 
 variable "eks_cluster_id" {
-  type = string
+  type        = string
+  description = "EKS Cluster ID"
 }
 
-variable "eks_oidc_provider" {
-  type = string
+variable "amazon_prometheus_workspace_alias" {
+  type        = string
+  default     = null
+  description = "AWS Managed Prometheus WorkSpace Name"
 }
 
-variable "service_account_amp_ingest_name" {
-  type = string
+variable "namespace" {
+  type        = string
+  default     = "prometheus"
+  description = "Prometheus Server Namespace"
 }
 
-variable "service_account_amp_query_name" {
-  type = string
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }
 
-variable "amp_workspace_name" {
-  type = string
+variable "iam_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM role path"
 }

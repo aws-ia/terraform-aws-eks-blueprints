@@ -30,7 +30,7 @@ module "aws_eks_managed_node_groups" {
 
   managed_ng = each.value
 
-  eks_cluster_name  = module.aws_eks.cluster_id
+  eks_cluster_id    = module.aws_eks.cluster_id
   cluster_ca_base64 = module.aws_eks.cluster_certificate_authority_data
   cluster_endpoint  = module.aws_eks.cluster_endpoint
 
@@ -41,8 +41,7 @@ module "aws_eks_managed_node_groups" {
   worker_security_group_id          = module.aws_eks.worker_security_group_id
   cluster_security_group_id         = module.aws_eks.cluster_security_group_id
   cluster_primary_security_group_id = module.aws_eks.cluster_primary_security_group_id
-
-  tags = module.eks_tags.tags
+  tags                              = module.eks_tags.tags
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
 
@@ -61,10 +60,10 @@ module "aws_eks_self_managed_node_groups" {
 
   self_managed_ng = each.value
 
-  eks_cluster_name  = module.aws_eks.cluster_id
-  cluster_endpoint  = module.aws_eks.cluster_endpoint
-  cluster_ca_base64 = module.aws_eks.cluster_certificate_authority_data
-  tags              = module.eks_tags.tags
+  eks_cluster_id     = module.aws_eks.cluster_id
+  cluster_endpoint   = module.aws_eks.cluster_endpoint
+  cluster_ca_base64  = module.aws_eks.cluster_certificate_authority_data
+  kubernetes_version = var.kubernetes_version
 
   vpc_id             = var.vpc_id
   private_subnet_ids = var.private_subnet_ids
@@ -73,8 +72,7 @@ module "aws_eks_self_managed_node_groups" {
   worker_security_group_id          = module.aws_eks.worker_security_group_id
   cluster_security_group_id         = module.aws_eks.cluster_security_group_id
   cluster_primary_security_group_id = module.aws_eks.cluster_primary_security_group_id
-
-  kubernetes_version = var.kubernetes_version
+  tags                              = module.eks_tags.tags
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
 
@@ -88,10 +86,9 @@ module "aws_eks_fargate_profiles" {
 
   for_each = { for k, v in var.fargate_profiles : k => v if length(var.fargate_profiles) > 0 }
 
-  fargate_profile  = each.value
-  eks_cluster_name = module.aws_eks.cluster_id
-
-  tags = module.eks_tags.tags
+  fargate_profile = each.value
+  eks_cluster_id  = module.aws_eks.cluster_id
+  tags            = module.eks_tags.tags
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
 

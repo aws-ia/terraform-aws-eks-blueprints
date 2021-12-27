@@ -1,0 +1,44 @@
+
+serviceAccounts:
+  server:
+    create: true
+    name:
+    annotations:
+      eks.amazonaws.com/role-arn:
+
+server:
+  # AWS MANAGED Prometheus config for remoteWrite
+  remoteWrite:
+    - url:
+      sigv4:
+        region:
+      queue_config:
+        max_samples_per_send: 1000
+        max_shards: 200
+        capacity: 2500
+  retention: 1h
+
+  global:
+    scrape_interval: 15s
+
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+
+alertmanager:
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+
+kube-state-metrics:
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+
+nodeExporter:
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+
+pushgateway:
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+
+nodeSelector:
+  kubernetes.io/os: ${operating_system}

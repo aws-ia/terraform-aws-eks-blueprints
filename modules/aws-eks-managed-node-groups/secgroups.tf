@@ -2,8 +2,8 @@
 resource "aws_security_group" "managed_ng" {
   count = local.managed_node_group["create_worker_security_group"] == true ? 1 : 0
 
-  name        = "${var.eks_cluster_name}-${local.managed_node_group["node_group_name"]}"
-  description = "Security group for all nodes in the ${var.eks_cluster_name} cluster - Fully managed node groups"
+  name        = "${var.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
+  description = "Security group for all nodes in the ${var.eks_cluster_id} cluster - Fully managed node groups"
   vpc_id      = var.vpc_id
 
   egress {

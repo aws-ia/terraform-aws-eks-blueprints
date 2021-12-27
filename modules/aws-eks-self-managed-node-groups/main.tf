@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "self_managed_ng" {
-  name = "${var.eks_cluster_name}-${local.self_managed_node_group["node_group_name"]}"
+  name = "${var.eks_cluster_id}-${local.self_managed_node_group["node_group_name"]}"
 
   max_size            = local.self_managed_node_group["max_size"]
   min_size            = local.self_managed_node_group["min_size"]

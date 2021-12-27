@@ -12,7 +12,7 @@ The [Cluster Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cl
 [Cluster Autoscaler](kubernetes-addons/cluster-autoscaler/README.md) can be deployed by enabling the add-on via the following.
 
 ```hcl
-cluster_autoscaler_enable = true
+enable_cluster_autoscaler = true
 ```
 
 ### GitOps Configuration

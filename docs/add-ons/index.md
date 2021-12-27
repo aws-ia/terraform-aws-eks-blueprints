@@ -1,6 +1,6 @@
 # Kubernetes Addons Module
 
-The [`kubernetes-addons`](../../kubernetes-addons) module within this framework allows you to configure the add-ons you would like deployed into you EKS cluster with simple **true/false** flags.
+The [`kubernetes-addons`](../../modules/kubernetes-addons) module within this framework allows you to configure the add-ons you would like deployed into you EKS cluster with simple **true/false** flags.
 
 The framework currently provides support for the following add-ons:
 
@@ -17,7 +17,7 @@ The framework currently provides support for the following add-ons:
 | [EKS Managed Add-ons](./managed-add-ons) | Enables EKS managed add-ons. |
 | [Keda](./keda) | Deploys Keda into an EKS cluster. |
 | [Metrics Server](./metrics-server) | Deploys the Kubernetes Metrics Server into an EKS cluster. |
-| [Nginx](./nginx) | Deploys the NGINX Ingress Controller into an EKS cluster. |
+| [Nginx](./ingress-nginx) | Deploys the NGINX Ingress Controller into an EKS cluster. |
 | [Prometheus](./prometheus) | Deploys Prometheus into an EKS cluster. |
 | [Traefik](./traefik) | Deploys Traefik Proxy into an EKS cluster.
 
@@ -38,15 +38,30 @@ The default method for managing add-on configuration is via Terraform. By defaul
 In order to deploy an add-on with default configuration, simply enable the add-on via Terraform properties.
 
 ```hcl
-metrics_server_enable       = true # Deploys Metrics Server Addon
-cluster_autoscaler_enable   = true # Deploys Cluster Autoscaler Addon
-prometheus_enable           = true # Deploys Prometheus Addon
+module "eks-ssp-kubernetes-addons" {
+    source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
+
+    cluster_id                    = <EKS-CLUSTER-ID>
+
+    # EKS Addons
+    enable_amazon_eks_vpc_cni             = true
+    enable_amazon_eks_coredns             = true
+    enable_amazon_eks_kube_proxy          = true
+    enable_amazon_eks_aws_ebs_csi_driver  = true
+
+    #K8s Add-ons
+    enable_aws_load_balancer_controller  = true
+    enable_metrics_server                = true
+    enable_cluster_autoscaler            = true
+    enable_aws_for_fluentbit             = true
+    enable_argocd                        = true
+}
 ```
 
 To customize the behavior of the Helm charts that are ultimately deployed, you can supply custom Helm configuration. The following demonstrates how you can supply this configuration, including a dedicated `values.yaml` file.
 
 ```hcl
-metrics_server_helm_chart = {
+metrics_server_helm_config = {
 	name           = "metrics-server"
 	repository     = "https://kubernetes-sigs.github.io/metrics-server/"
 	chart          = "metrics-server"
@@ -54,8 +69,8 @@ metrics_server_helm_chart = {
 	namespace      = "kube-system"
 	timeout        = "1200"
 
-	# (Optional) Example to pass metrics-server-values.yaml from your local repo
-	values = [templatefile("${path.module}/k8s_addons/metrics-server-values.yaml", {
+	# (Optional) Example to pass values.yaml from your local repo
+	values         = [templatefile("${path.module}/values.yaml", {
 			operating_system = "linux"
 	})]
 }
@@ -76,7 +91,7 @@ To indicate that you would like to manage add-ons via ArgoCD, you must do the fo
 Note, that the `add_on_application` flag in your `Application` configuration must be set to `true`.
 
 ```
-argocd_enable           = true
+enable_argocd           = true
 argocd_manage_add_ons   = true
 argocd_applications     = {
   infra = {
@@ -96,9 +111,9 @@ When managing add-ons via ArgoCD, certain AWS resources may still need to be cre
 To ensure that AWS resources needed for add-on functionality are created, you still need to indicate in Terraform configuration which add-ons will be managed via ArgoCD. To do so, simply enable the add-ons via their boolean properties.
 
 ```
-metrics_server_enable       = true # Deploys Metrics Server Addon
-cluster_autoscaler_enable   = true # Deploys Cluster Autoscaler Addon
-prometheus_enable           = true # Deploys Prometheus Addon
+enable_metrics_server       = true # Deploys Metrics Server Addon
+enable_cluster_autoscaler   = true # Deploys Cluster Autoscaler Addon
+enable_prometheus           = true # Deploys Prometheus Addon
 ```
 
 This will indicate to each add-on module that it should create the necessary AWS resources and pass the relevant values to the ArgoCD Application resource via the Application's values map.

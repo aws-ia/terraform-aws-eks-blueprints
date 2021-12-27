@@ -1,0 +1,14 @@
+awsRegion: ${aws_region}
+
+autoDiscovery:
+  clusterName: ${eks_cluster_id}
+extraArgs:
+  aws-use-static-instance-list: true
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 512Mi

@@ -57,7 +57,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_create_kubernetes_namespace"></a> [create\_kubernetes\_namespace](#input\_create\_kubernetes\_namespace) | Should the module create the namespace | `bool` | `true` | no |
 | <a name="input_create_kubernetes_service_account"></a> [create\_kubernetes\_service\_account](#input\_create\_kubernetes\_service\_account) | Should the module create the Service Account | `bool` | `true` | no |
-| <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | EKS Cluster Id | `string` | n/a | yes |
+| <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS Cluster Id | `string` | n/a | yes |
 | <a name="input_iam_role_path"></a> [iam\_role\_path](#input\_iam\_role\_path) | IAM Role path | `string` | `"/"` | no |
 | <a name="input_irsa_iam_policies"></a> [irsa\_iam\_policies](#input\_irsa\_iam\_policies) | IAM Policies for IRSA IAM role | `list(string)` | n/a | yes |
 | <a name="input_kubernetes_namespace"></a> [kubernetes\_namespace](#input\_kubernetes\_namespace) | Kubernetes Namespace name | `any` | n/a | yes |

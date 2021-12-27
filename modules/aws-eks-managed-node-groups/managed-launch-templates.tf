@@ -1,6 +1,6 @@
 
 resource "aws_launch_template" "managed_node_groups" {
-  name                   = "${var.eks_cluster_name}-${local.managed_node_group["node_group_name"]}"
+  name                   = "${var.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
   description            = "Launch Template for EKS Managed Node Groups"
   update_default_version = true
 

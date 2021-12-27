@@ -63,10 +63,9 @@ data "terraform_remote_state" "vpc_s3_backend" {
 }*/
 
 locals {
-  tenant       = "aws"
-  environment  = "test"
-  zone         = "e2e"
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  tenant      = var.tenant
+  environment = var.environment
+  zone        = var.zone
 
   kubernetes_version = "1.21"
   terraform_version  = "Terraform v1.0.1"
@@ -122,7 +121,7 @@ module "aws-eks-accelerator-for-terraform" {
   }
 
   # AWS Managed Services
-  aws_managed_prometheus_enable = true
+  enable_amazon_prometheus = true
 
   enable_emr_on_eks = true
   emr_on_eks_teams = {
@@ -137,15 +136,31 @@ module "aws-eks-accelerator-for-terraform" {
     }
   }
 
-  #K8s Add-ons
-  aws_lb_ingress_controller_enable = true
-  metrics_server_enable            = true
-  cluster_autoscaler_enable        = true
-  vpa_enable                       = false
-  prometheus_enable                = false
-  ingress_nginx_controller_enable  = false
-  aws_for_fluentbit_enable         = true
-  argocd_enable                    = true
-  fargate_fluentbit_enable         = true
+}
 
+module "kubernetes-addons" {
+  source = "../../../modules/kubernetes-addons"
+
+  eks_cluster_id               = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_oidc_issuer_url          = module.aws-eks-accelerator-for-terraform.eks_oidc_issuer_url
+  eks_oidc_provider_arn        = module.aws-eks-accelerator-for-terraform.eks_oidc_provider_arn
+  eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_security_group_id
+  auto_scaling_group_names     = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
+
+  # EKS Managed Add-ons
+  enable_amazon_eks_vpc_cni            = true
+  enable_amazon_eks_coredns            = true
+  enable_amazon_eks_kube_proxy         = true
+  enable_amazon_eks_aws_ebs_csi_driver = true
+
+  #K8s Add-ons
+  enable_aws_load_balancer_controller = true
+  enable_metrics_server               = true
+  enable_cluster_autoscaler           = true
+  enable_vpa                          = true
+  enable_prometheus                   = true
+  enable_ingress_nginx                = true
+  enable_aws_for_fluentbit            = true
+  enable_argocd                       = true
+  enable_fargate_fluentbit            = true
 }

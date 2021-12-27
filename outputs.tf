@@ -16,17 +16,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-output "cluster_oidc_url" {
+output "eks_oidc_issuer_url" {
   description = "The URL on the EKS cluster OIDC Issuer"
   value       = var.create_eks ? split("//", module.aws_eks.cluster_oidc_issuer_url)[1] : "EKS Cluster not enabled"
 }
 
-output "oidc_provider_arn" {
+output "eks_oidc_provider_arn" {
   description = "The ARN of the OIDC Provider if `enable_irsa = true`."
   value       = var.create_eks ? module.aws_eks.oidc_provider_arn : "EKS Cluster not enabled"
 }
 
-output "cluster_name" {
+output "eks_cluster_id" {
   description = "Kubernetes Cluster Name"
   value       = var.create_eks ? module.aws_eks.cluster_id : "EKS Cluster not enabled"
 }
@@ -51,19 +51,14 @@ output "worker_security_group_id" {
   value       = module.aws_eks.worker_security_group_id
 }
 
-output "amp_work_id" {
-  description = "AWS Managed Prometheus workspace id"
-  value       = var.aws_managed_prometheus_enable ? module.aws_managed_prometheus[0].amp_workspace_id : "AMP not enabled"
-}
-
-output "amp_work_arn" {
-  description = "AWS Managed Prometheus workspace ARN"
-  value       = var.aws_managed_prometheus_enable ? module.aws_managed_prometheus[0].service_account_amp_ingest_role_arn : "AMP not enabled"
-}
-
 output "self_managed_node_group_iam_role_arns" {
   description = "IAM role arn's of self managed node groups"
   value       = var.create_eks && length(var.self_managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_node_group_iam_role_arns) }) : []
+}
+
+output "self_managed_node_group_autoscaling_groups" {
+  description = "Autoscaling group names of self managed node groups"
+  value       = var.create_eks && length(var.self_managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_asg_names) }) : []
 }
 
 output "managed_node_group_iam_role_arns" {
@@ -124,4 +119,29 @@ output "emr_on_eks_role_id" {
 output "teams" {
   description = "Outputs from EKS Fargate profiles groups "
   value       = var.create_eks && (length(var.platform_teams) > 0 || length(var.application_teams) > 0) ? module.aws_eks_teams.* : []
+}
+
+output "amazon_prometheus_workspace_id" {
+  description = "Amazon Managed Prometheus Workspace ID"
+  value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_workspace_id : null
+}
+
+output "amazon_prometheus_ingest_iam_role_arn" {
+  description = "Amazon Managed Prometheus Ingest IAM Role ARN"
+  value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_ingest_iam_role_arn : null
+}
+
+output "amazon_prometheus_query_iam_role_arn" {
+  description = "Amazon Managed Prometheus Ingest IAM Role ARN"
+  value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_query_iam_role_arn : null
+}
+
+output "amazon_prometheus_ingest_service_account" {
+  description = "Amazon Managed Prometheus Ingest Service Account"
+  value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_ingest_service_account : null
+}
+
+output "amazon_prometheus_query_service_account" {
+  description = "Amazon Managed Prometheus Ingest Service Account"
+  value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_query_service_account : null
 }

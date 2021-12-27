@@ -9,7 +9,7 @@ For complete project documentation, please visit the [cert-manager documentation
 cert-manger can be deployed by enabling the add-on via the following.
 
 ```hcl
-cert_manager_enable = true
+enable_cert_manager = true
 ```
 
 ### GitOps Configuration

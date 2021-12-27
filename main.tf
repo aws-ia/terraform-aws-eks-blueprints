@@ -53,6 +53,10 @@ module "aws_eks" {
   cluster_endpoint_private_access = var.cluster_endpoint_private_access
   cluster_endpoint_public_access  = var.cluster_endpoint_public_access
 
+  worker_create_security_group         = var.worker_create_security_group
+  worker_additional_security_group_ids = var.worker_additional_security_group_ids
+  cluster_log_retention_in_days        = var.cluster_log_retention_in_days
+
   # IRSA
   enable_irsa            = var.enable_irsa
   kubeconfig_output_path = "./kubeconfig/"
@@ -77,20 +81,18 @@ module "aws_eks" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "aws_managed_prometheus" {
-  count  = var.create_eks && var.aws_managed_prometheus_enable == true ? 1 : 0
+  count  = var.create_eks && var.enable_amazon_prometheus ? 1 : 0
   source = "./modules/aws-managed-prometheus"
 
-  environment                     = var.environment
-  tenant                          = var.tenant
-  zone                            = var.zone
-  account_id                      = data.aws_caller_identity.current.account_id
-  region                          = data.aws_region.current.id
-  eks_cluster_id                  = module.aws_eks.cluster_id
-  eks_oidc_provider               = split("//", module.aws_eks.cluster_oidc_issuer_url)[1]
-  service_account_amp_ingest_name = local.service_account_amp_ingest_name
-  service_account_amp_query_name  = local.service_account_amp_query_name
-  amp_workspace_name              = var.aws_managed_prometheus_workspace_name
+  amazon_prometheus_workspace_alias = var.amazon_prometheus_workspace_alias
+  eks_cluster_id                    = module.aws_eks.cluster_id
+  tags                              = var.tags
+
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Amazon EMR on EKS Virtual Clusters
+# ---------------------------------------------------------------------------------------------------------------------
 
 module "emr_on_eks" {
   source = "./modules/emr-on-eks"
@@ -100,12 +102,8 @@ module "emr_on_eks" {
   }
 
   emr_on_eks_teams = each.value
-
-  eks_cluster_id = module.aws_eks.cluster_id
-  environment    = var.environment
-  tenant         = var.tenant
-  zone           = var.zone
-  tags           = var.tags
+  eks_cluster_id   = module.aws_eks.cluster_id
+  tags             = var.tags
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
 

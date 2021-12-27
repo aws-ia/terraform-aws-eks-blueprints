@@ -1,6 +1,6 @@
 resource "aws_eks_node_group" "managed_ng" {
 
-  cluster_name           = var.eks_cluster_name
+  cluster_name           = var.eks_cluster_id
   node_group_name_prefix = local.managed_node_group["node_group_name"]
   #node_group_name = local.managed_node_group["node_group_name"] Optional
   node_role_arn = aws_iam_role.managed_ng.arn
@@ -67,4 +67,5 @@ resource "aws_eks_node_group" "managed_ng" {
     aws_iam_role_policy_attachment.managed_ng_AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.managed_ng_AmazonEC2ContainerRegistryReadOnly,
   ]
+
 }

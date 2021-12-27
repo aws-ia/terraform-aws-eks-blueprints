@@ -63,10 +63,10 @@ data "terraform_remote_state" "vpc_s3_backend" {
 }*/
 
 locals {
-  tenant       = var.tenant
-  environment  = var.environment
-  zone         = var.zone
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  tenant         = var.tenant
+  environment    = var.environment
+  zone           = var.zone
+  eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   kubernetes_version = "1.21"
   terraform_version  = "Terraform v1.0.1"
@@ -136,7 +136,7 @@ module "aws-eks-accelerator-for-terraform" {
   }
 
   # AWS Managed Services
-  aws_managed_prometheus_enable = true
+  enable_amazon_prometheus = true
 
   enable_emr_on_eks = true
   emr_on_eks_teams = {
@@ -151,10 +151,21 @@ module "aws-eks-accelerator-for-terraform" {
     }
   }
 
+}
+
+module "kubernetes-addons" {
+  source = "../../../modules/kubernetes-addons"
+
+  eks_cluster_id               = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_oidc_issuer_url          = module.aws-eks-accelerator-for-terraform.eks_oidc_issuer_url
+  eks_oidc_provider_arn        = module.aws-eks-accelerator-for-terraform.eks_oidc_provider_arn
+  eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_security_group_id
+  auto_scaling_group_names     = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
+
   # EKS Addons
-  enable_eks_addon_vpc_cni = true # default is false
+  enable_amazon_eks_vpc_cni = true # default is false
   #Optional
-  eks_addon_vpc_cni_config = {
+  amazon_eks_vpc_cni_config = {
     addon_name               = "vpc-cni"
     addon_version            = "v1.10.1-eksbuild.1"
     service_account          = "aws-node"
@@ -165,9 +176,9 @@ module "aws-eks-accelerator-for-terraform" {
     tags                     = {}
   }
 
-  enable_eks_addon_coredns = true # default is false
+  enable_amazon_eks_coredns = true # default is false
   #Optional
-  eks_addon_coredns_config = {
+  amazon_eks_coredns_config = {
     addon_name               = "coredns"
     addon_version            = "v1.8.4-eksbuild.1"
     service_account          = "coredns"
@@ -178,9 +189,9 @@ module "aws-eks-accelerator-for-terraform" {
     tags                     = {}
   }
 
-  enable_eks_addon_kube_proxy = true # default is false
+  enable_amazon_eks_kube_proxy = true # default is false
   #Optional
-  eks_addon_kube_proxy_config = {
+  amazon_eks_kube_proxy_config = {
     addon_name               = "kube-proxy"
     addon_version            = "v1.21.2-eksbuild.2"
     service_account          = "kube-proxy"
@@ -191,9 +202,9 @@ module "aws-eks-accelerator-for-terraform" {
     tags                     = {}
   }
 
-  enable_eks_addon_aws_ebs_csi_driver = true # default is false
+  enable_amazon_eks_aws_ebs_csi_driver = true # default is false
   #Optional
-  eks_addon_aws_ebs_csi_driver_config = {
+  amazon_eks_aws_ebs_csi_driver_config = {
     addon_name               = "aws-ebs-csi-driver"
     addon_version            = "v1.4.0-eksbuild.preview"
     service_account          = "ebs-csi-controller-sa"
@@ -204,12 +215,37 @@ module "aws-eks-accelerator-for-terraform" {
     tags                     = {}
   }
   #---------------------------------------
+  # AWS LOAD BALANCER INGRESS CONTROLLER HELM ADDON
+  #---------------------------------------
+  enable_aws_load_balancer_controller = true
+  # Optional
+  aws_load_balancer_controller_helm_config = {
+    name       = "aws-load-balancer-controller"
+    chart      = "aws-load-balancer-controller"
+    repository = "https://aws.github.io/eks-charts"
+    version    = "1.3.1"
+    namespace  = "kube-system"
+  }
+
+  #---------------------------------------
+  # AWS NODE TERMINATION HANDLER HELM ADDON
+  #---------------------------------------
+  enable_aws_node_termination_handler = true
+  # Optional
+  aws_node_termination_handler_helm_config = {
+    name       = "aws-node-termination-handler"
+    chart      = "aws-node-termination-handler"
+    repository = "https://aws.github.io/eks-charts"
+    version    = "0.16.0"
+    timeout    = "1200"
+  }
+  #---------------------------------------
   # TRAEFIK INGRESS CONTROLLER HELM ADDON
   #---------------------------------------
-  traefik_ingress_controller_enable = true
+  enable_traefik = true
 
   # Optional Map value
-  traefik_helm_chart = {
+  traefik_helm_config = {
     name       = "traefik"                         # (Required) Release name.
     repository = "https://helm.traefik.io/traefik" # (Optional) Repository URL where to locate the requested chart.
     chart      = "traefik"                         # (Required) Chart name to be installed.
@@ -231,10 +267,10 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # METRICS SERVER HELM ADDON
   #---------------------------------------
-  metrics_server_enable = true
+  enable_metrics_server = true
 
   # Optional Map value
-  metrics_server_helm_chart = {
+  metrics_server_helm_config = {
     name       = "metrics-server"                                    # (Required) Release name.
     repository = "https://kubernetes-sigs.github.io/metrics-server/" # (Optional) Repository URL where to locate the requested chart.
     chart      = "metrics-server"                                    # (Required) Chart name to be installed.
@@ -252,10 +288,10 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # CLUSTER AUTOSCALER HELM ADDON
   #---------------------------------------
-  cluster_autoscaler_enable = true
+  enable_cluster_autoscaler = true
 
   # Optional Map value
-  cluster_autoscaler_helm_chart = {
+  cluster_autoscaler_helm_config = {
     name       = "cluster-autoscaler"                      # (Required) Release name.
     repository = "https://kubernetes.github.io/autoscaler" # (Optional) Repository URL where to locate the requested chart.
     chart      = "cluster-autoscaler"                      # (Required) Chart name to be installed.
@@ -269,15 +305,13 @@ module "aws-eks-accelerator-for-terraform" {
       operating_system = "linux"
     })]
   }
-
-
   #---------------------------------------
   # COMMUNITY PROMETHEUS ENABLE
   #---------------------------------------
-  prometheus_enable = true
+  enable_prometheus = true
 
   # Optional Map value
-  prometheus_helm_chart = {
+  prometheus_helm_config = {
     name       = "prometheus"                                         # (Required) Release name.
     repository = "https://prometheus-community.github.io/helm-charts" # (Optional) Repository URL where to locate the requested chart.
     chart      = "prometheus"                                         # (Required) Chart name to be installed.
@@ -292,9 +326,10 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # ENABLE NGINX
   #---------------------------------------
-  ingress_nginx_controller_enable = false
-  # Optional nginx_helm_chart
-  nginx_helm_chart = {
+  enable_ingress_nginx = true
+
+  # Optional ingress_nginx_helm_config
+  ingress_nginx_helm_config = {
     name       = "ingress-nginx"
     chart      = "ingress-nginx"
     repository = "https://kubernetes.github.io/ingress-nginx"
@@ -307,9 +342,9 @@ module "aws-eks-accelerator-for-terraform" {
   # ENABLE AGONES
   #---------------------------------------
   # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
-  agones_enable = false
-  # Optional  agones_helm_chart
-  agones_helm_chart = {
+  enable_agones = true
+  # Optional  agones_helm_config
+  agones_helm_config = {
     name               = "agones"
     chart              = "agones"
     repository         = "https://agones.dev/chart/stable"
@@ -328,8 +363,8 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # ENABLE AWS DISTRO OPEN TELEMETRY
   #---------------------------------------
-  aws_open_telemetry_enable = false
-  aws_open_telemetry_addon = {
+  enable_aws_open_telemetry = true
+  aws_open_telemetry_addon_config = {
     aws_open_telemetry_namespace                        = "aws-otel-eks"
     aws_open_telemetry_emitter_otel_resource_attributes = "service.namespace=AWSObservability,service.name=ADOTEmitService"
     aws_open_telemetry_emitter_name                     = "trace-emitter"
@@ -342,20 +377,20 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # AWS-FOR-FLUENTBIT HELM ADDON
   #---------------------------------------
-  aws_for_fluentbit_enable = true
+  enable_aws_for_fluentbit = true
 
-  aws_for_fluentbit_helm_chart = {
+  aws_for_fluentbit_helm_config = {
     name                                      = "aws-for-fluent-bit"
     chart                                     = "aws-for-fluent-bit"
     repository                                = "https://aws.github.io/eks-charts"
     version                                   = "0.1.0"
     namespace                                 = "logging"
-    aws_for_fluent_bit_cw_log_group           = "/${local.cluster_name}/worker-fluentbit-logs" # Optional
+    aws_for_fluent_bit_cw_log_group           = "/${local.eks_cluster_id}/worker-fluentbit-logs" # Optional
     aws_for_fluentbit_cwlog_retention_in_days = 90
     create_namespace                          = true
     values = [templatefile("${path.module}/helm_values/aws-for-fluentbit-values.yaml", {
       region                          = data.aws_region.current.name,
-      aws_for_fluent_bit_cw_log_group = "/${local.cluster_name}/worker-fluentbit-logs"
+      aws_for_fluent_bit_cw_log_group = "/${local.eks_cluster_id}/worker-fluentbit-logs"
     })]
     set = [
       {
@@ -368,10 +403,10 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # ENABLE SPARK on K8S OPERATOR
   #---------------------------------------
-  spark_on_k8s_operator_enable = true
+  enable_spark_k8s_operator = true
 
   # Optional Map value
-  spark_on_k8s_operator_helm_chart = {
+  spark_k8s_operator_helm_config = {
     name             = "spark-operator"
     chart            = "spark-operator"
     repository       = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
@@ -386,14 +421,14 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # FARGATE FLUENTBIT
   #---------------------------------------
-  fargate_fluentbit_enable = true
-  fargate_fluentbit_config = {
+  enable_fargate_fluentbit = true
+  fargate_fluentbit_addon_config = {
     output_conf  = <<EOF
 [OUTPUT]
   Name cloudwatch_logs
   Match *
   region eu-west-1
-  log_group_name /${local.cluster_name}/fargate-fluentbit-logs
+  log_group_name /${local.eks_cluster_id}/fargate-fluentbit-logs
   log_stream_prefix "fargate-logs-"
   auto_create_group true
     EOF
@@ -421,9 +456,9 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # ENABLE ARGOCD
   #---------------------------------------
-  argocd_enable = true
+  enable_argocd = true
   # Optional Map value
-  argocd_helm_chart = {
+  argocd_helm_config = {
     name             = "argo-cd"
     chart            = "argo-cd"
     repository       = "https://argoproj.github.io/argo-helm"
@@ -437,10 +472,10 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # KEDA ENABLE
   #---------------------------------------
-  keda_enable = true
+  enable_keda = true
 
   # Optional Map value
-  keda_helm_chart = {
+  keda_helm_config = {
     name       = "keda"                              # (Required) Release name.
     repository = "https://kedacore.github.io/charts" # (Optional) Repository URL where to locate the requested chart.
     chart      = "keda"                              # (Required) Chart name to be installed.
@@ -452,9 +487,9 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # Vertical Pod Autoscaling
   #---------------------------------------
-  vpa_enable = true
+  enable_vpa = true
 
-  vpa_helm_chart = {
+  vpa_helm_config = {
     name       = "vpa"                                 # (Required) Release name.
     repository = "https://charts.fairwinds.com/stable" # (Optional) Repository URL where to locate the requested chart.
     chart      = "vpa"                                 # (Required) Chart name to be installed.
@@ -466,9 +501,9 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------
   # Apache YuniKorn K8s Spark Scheduler
   #---------------------------------------
-  yunikorn_enable = true
+  enable_yunikorn = true
 
-  yunikorn_helm_chart = {
+  yunikorn_helm_config = {
     name       = "yunikorn"                                            # (Required) Release name.
     repository = "https://apache.github.io/incubator-yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
     chart      = "yunikorn"                                            # (Required) Chart name to be installed.
