@@ -1,7 +1,3 @@
-serviceAccounts:
-  server:
-    create: true
-
 server:
   retention: 1h
   remoteWrite:

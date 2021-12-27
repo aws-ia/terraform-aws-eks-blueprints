@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: taxidata
+  namespace: emr-data-team-a
+spec:
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND # or SPOT
+    topology.kubernetes.io/zone: eu-west-1b
+#    node.kubernetes.io/instance-type: m5.xlarge

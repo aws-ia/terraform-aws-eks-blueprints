@@ -89,12 +89,11 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_amp_ingest_role_arn"></a> [amp\_ingest\_role\_arn](#input\_amp\_ingest\_role\_arn) | n/a | `string` | `""` | no |
-| <a name="input_amp_workspace_id"></a> [amp\_workspace\_id](#input\_amp\_workspace\_id) | n/a | `string` | `""` | no |
-| <a name="input_enable_aws_managed_prometheus"></a> [enable\_aws\_managed\_prometheus](#input\_enable\_aws\_managed\_prometheus) | n/a | `bool` | `false` | no |
+| <a name="input_amazon_prometheus_ingest_iam_role_arn"></a> [amazon\_prometheus\_ingest\_iam\_role\_arn](#input\_amazon\_prometheus\_ingest\_iam\_role\_arn) | Amazon Managed Prometheus Ingest IAM Role ARN | `string` | `null` | no |
+| <a name="input_amazon_prometheus_ingest_service_account"></a> [amazon\_prometheus\_ingest\_service\_account](#input\_amazon\_prometheus\_ingest\_service\_account) | Amazon Managed Prometheus Ingest Service Account | `string` | `null` | no |
+| <a name="input_amazon_prometheus_workspace_id"></a> [amazon\_prometheus\_workspace\_id](#input\_amazon\_prometheus\_workspace\_id) | Amazon Managed Prometheus Workspace ID | `string` | `null` | no |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | n/a | `any` | `{}` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
-| <a name="input_service_account_amp_ingest_name"></a> [service\_account\_amp\_ingest\_name](#input\_service\_account\_amp\_ingest\_name) | n/a | `string` | `""` | no |
 
 ## Outputs
 

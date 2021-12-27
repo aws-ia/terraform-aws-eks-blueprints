@@ -84,7 +84,4 @@ locals {
   platform_teams_config_map    = module.aws_eks_teams.platform_teams_config_map
   application_teams_config_map = module.aws_eks_teams.application_teams_config_map
 
-  aws_managed_prometheus_ingest_service_account = format("%s-%s", module.aws_eks.cluster_id, "amp-ingest")
-  aws_managed_prometheus_query_service_account  = format("%s-%s", module.aws_eks.cluster_id, "amp-query")
-  aws_managed_prometheus_workspace_id           = format("%s-%s", "amp-workspace-", module.aws_eks.cluster_id)
 }

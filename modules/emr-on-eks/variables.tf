@@ -1,18 +1,6 @@
-
-variable "environment" {
-  type = string
-}
-
-variable "tenant" {
-  type = string
-}
-
-variable "zone" {
-  type = string
-}
-
 variable "eks_cluster_id" {
-  type = string
+  type        = string
+  description = "EKS Cluster ID"
 }
 
 variable "tags" {

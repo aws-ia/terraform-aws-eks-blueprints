@@ -191,15 +191,15 @@ variable "aws_auth_additional_labels" {
 }
 
 #-----------Amazon Managed Prometheus-------------
-variable "enable_aws_managed_prometheus" {
+variable "enable_amazon_prometheus" {
   type        = bool
   default     = false
   description = "Enable AWS Managed Prometheus service"
 }
 
-variable "aws_managed_prometheus_workspace_id" {
+variable "amazon_prometheus_workspace_alias" {
   type        = string
-  default     = ""
+  default     = null
   description = "AWS Managed Prometheus WorkSpace Name"
 }
 

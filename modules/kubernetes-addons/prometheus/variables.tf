@@ -16,24 +16,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "enable_aws_managed_prometheus" {
-  type    = bool
-  default = false
+variable "amazon_prometheus_workspace_id" {
+  type        = string
+  default     = null
+  description = "Amazon Managed Prometheus Workspace ID"
 }
 
-variable "amp_workspace_id" {
-  type    = string
-  default = ""
+variable "amazon_prometheus_ingest_iam_role_arn" {
+  type        = string
+  default     = null
+  description = "Amazon Managed Prometheus Ingest IAM Role ARN"
 }
 
-variable "amp_ingest_role_arn" {
-  type    = string
-  default = ""
-}
-
-variable "service_account_amp_ingest_name" {
-  type    = string
-  default = ""
+variable "amazon_prometheus_ingest_service_account" {
+  type        = string
+  default     = null
+  description = "Amazon Managed Prometheus Ingest Service Account"
 }
 
 variable "helm_config" {

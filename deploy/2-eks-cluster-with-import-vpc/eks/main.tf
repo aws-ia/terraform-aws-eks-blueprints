@@ -121,7 +121,7 @@ module "aws-eks-accelerator-for-terraform" {
   }
 
   # AWS Managed Services
-  enable_aws_managed_prometheus = true
+  enable_amazon_prometheus = true
 
   enable_emr_on_eks = true
   emr_on_eks_teams = {
