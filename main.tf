@@ -102,12 +102,8 @@ module "emr_on_eks" {
   }
 
   emr_on_eks_teams = each.value
-
-  eks_cluster_id = module.aws_eks.cluster_id
-  environment    = var.environment
-  tenant         = var.tenant
-  zone           = var.zone
-  tags           = var.tags
+  eks_cluster_id   = module.aws_eks.cluster_id
+  tags             = var.tags
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
 
