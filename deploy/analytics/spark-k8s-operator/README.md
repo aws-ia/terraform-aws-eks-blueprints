@@ -47,4 +47,9 @@ Execute first spark job with simple example
 .examples/8-Spark-on-k8s-operator-with-EKS/test/spark-k8s-templates/pyspark-pi-job.yaml
 ```
 
-##Step4:
+
+
+<!--- BEGIN_TF_DOCS --->
+
+<!--- END_TF_DOCS --->
+ 

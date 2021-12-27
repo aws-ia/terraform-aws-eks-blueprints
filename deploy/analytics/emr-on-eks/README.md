@@ -146,3 +146,9 @@ Specifically, you can use persistent volume claims if the jobs require large shu
       spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.options.sizeLimit=500Gi
       spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.mount.path=/data
       spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.mount.readOnly=false
+
+
+<!--- BEGIN_TF_DOCS --->
+
+<!--- END_TF_DOCS --->
+ 
