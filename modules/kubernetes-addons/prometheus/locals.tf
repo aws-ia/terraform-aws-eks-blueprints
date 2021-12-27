@@ -2,7 +2,7 @@ data "aws_region" "current" {}
 
 locals {
 
-  amp_workspace_url = "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${var.amazon_prometheus_workspace_id}/api/v1/remote_write"
+  amp_workspace_url = var.amazon_prometheus_workspace_id != null ? "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${var.amazon_prometheus_workspace_id}/api/v1/remote_write" : null
 
   amp_config_values = var.amazon_prometheus_workspace_id != null ? [{
     name  = "serviceAccounts.server.name"

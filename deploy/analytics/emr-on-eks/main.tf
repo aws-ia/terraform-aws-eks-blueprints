@@ -150,8 +150,7 @@ module "aws-eks-accelerator-for-terraform" {
 }
 
 module "k8s-addons" {
-  source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
-
+  source         = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
   #K8s Add-ons
