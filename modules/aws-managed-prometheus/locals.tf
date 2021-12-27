@@ -3,13 +3,13 @@ locals {
 
   irsa_config = {
     ingest = {
-      service_account             = format("%s-%s", var.eks_cluster_id, "amp-ingest"),
+      service_account             = "amp-ingest",
       create_kubernetes_namespace = true,
       irsa_iam_policies           = [aws_iam_policy.ingest.arn]
 
     },
     query = {
-      service_account             = format("%s-%s", var.eks_cluster_id, "amp-query"),
+      service_account             = "amp-query",
       create_kubernetes_namespace = false,
       irsa_iam_policies           = [aws_iam_policy.query.arn]
     }

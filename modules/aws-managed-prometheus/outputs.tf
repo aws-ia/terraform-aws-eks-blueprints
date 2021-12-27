@@ -16,17 +16,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-output "aws_prometheus_ingest_iam_role_arn" {
+output "amazon_prometheus_ingest_iam_role_arn" {
   description = "Amazon Managed Prometheus Ingest IAM Role ARN"
-  value       = module.irsa[0].irsa_iam_role_arn
+  value       = module.irsa.*.ingest.irsa_iam_role_arn[0]
 }
 
-output "aws_prometheus_query_iam_role_arn" {
+output "amazon_prometheus_query_iam_role_arn" {
   description = "Amazon Managed Prometheus Query IAM Role ARN"
-  value       = module.irsa[1].irsa_iam_role_arn
+  value       = module.irsa.*.query.irsa_iam_role_arn[0]
 }
 
-output "aws_prometheus_workspace_id" {
+output "amazon_prometheus_workspace_id" {
   description = "Amazon Managed Prometheus Workspace ID"
   value       = aws_prometheus_workspace.amp_workspace.id
 }

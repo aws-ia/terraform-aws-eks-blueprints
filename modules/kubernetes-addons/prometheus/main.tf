@@ -24,7 +24,7 @@ resource "helm_release" "prometheus" {
   version                    = local.helm_config["version"]
   namespace                  = local.helm_config["namespace"]
   timeout                    = local.helm_config["timeout"]
-  create_namespace           = local.helm_config["create_namespace"]
+  create_namespace           = var.amazon_prometheus_workspace_id != null ? false : local.helm_config["create_namespace"]
   lint                       = local.helm_config["lint"]
   description                = local.helm_config["description"]
   repository_key_file        = local.helm_config["repository_key_file"]
@@ -57,7 +57,7 @@ resource "helm_release" "prometheus" {
 
   dynamic "set" {
     iterator = each_item
-    for_each = var.enable_amazon_prometheus ? distinct(concat(local.amp_config_values, local.helm_config["set"])) : local.helm_config["set"]
+    for_each = var.amazon_prometheus_workspace_id != null ? distinct(concat(local.amp_config_values, local.helm_config["set"])) : local.helm_config["set"]
 
     content {
       name  = each_item.value.name

@@ -157,7 +157,6 @@ module "prometheus" {
   helm_config = var.prometheus_helm_config
 
   #AWS Managed Prometheus Workspace
-  enable_amazon_prometheus                      = var.enable_amazon_prometheus
   amazon_prometheus_workspace_id                = var.amazon_prometheus_workspace_id
   amazon_prometheus_ingest_iam_role_arn    = var.amazon_prometheus_ingest_iam_role_arn
   amazon_prometheus_ingest_service_account = var.amazon_prometheus_ingest_service_account

@@ -96,27 +96,21 @@ variable "cluster_autoscaler_helm_config" {
 }
 
 #-----------Amazon Managed Service for Prometheus-------------
-variable "enable_amazon_prometheus" {
-  type        = bool
-  default     = false
-  description = "Enable AWS Managed Prometheus Service"
-}
-
 variable "amazon_prometheus_workspace_id" {
   type        = string
-  default     = ""
+  default     = null
   description = "AWS Managed Prometheus WorkSpace Name"
 }
 
 variable "amazon_prometheus_ingest_iam_role_arn" {
   type        = string
-  default     = ""
+  default     = null
   description = "AWS Managed Prometheus WorkSpaceSpace IAM role ARN"
 }
 
 variable "amazon_prometheus_ingest_service_account" {
   type        = string
-  default     = ""
+  default     = null
   description = "AWS Managed Prometheus Ingest Service Account"
 }
 

@@ -60,7 +60,6 @@ locals {
   vpc_cidr                          = "10.0.0.0/16"
   vpc_name                          = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   cluster_name                      = join("-", [local.tenant, local.environment, local.zone, "eks"])
-  amazon_prometheus_workspace_alias = join("-", ["amp-workspace", local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.0.1"
 }
@@ -123,8 +122,7 @@ module "aws-eks-accelerator-for-terraform" {
   }
 
   # Enable Amazon Managed Prometheus
-  enable_amazon_prometheus          = true
-  amazon_prometheus_workspace_alias = local.amazon_prometheus_workspace_alias
+  enable_amazon_prometheus       = true
 
   #---------------------------------------
   # ENABLE EMR ON EKS
@@ -160,15 +158,14 @@ module "kubernetes-addons" {
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
 
-  # Integrate Amazon Managed Prometheus with Prometheus server add-on
-  enable_amazon_prometheus          = true
-  amazon_prometheus_workspace_alias = local.amazon_prometheus_workspace_alias
+  #---------------------------------------
+  # PROMETHEUS CONFIG
+  #---------------------------------------
+  amazon_prometheus_workspace_id = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_id
+  amazon_prometheus_ingest_iam_role_arn = module.aws-eks-accelerator-for-terraform.amazon_prometheus_ingest_iam_role_arn
+  amazon_prometheus_ingest_service_account = module.aws-eks-accelerator-for-terraform.amazon_prometheus_ingest_service_account
 
-  #---------------------------------------
-  # COMMUNITY PROMETHEUS ENABLE
-  #---------------------------------------
   enable_prometheus = true
-
   # Optional Map value
   prometheus_helm_config = {
     name       = "prometheus"                                         # (Required) Release name.

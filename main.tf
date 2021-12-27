@@ -81,7 +81,7 @@ module "aws_eks" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "aws_managed_prometheus" {
-  count  = var.create_eks && var.enable_amazon_prometheus == true ? 1 : 0
+  count  = var.create_eks && var.enable_amazon_prometheus ? 1 : 0
   source = "./modules/aws-managed-prometheus"
 
   amazon_prometheus_workspace_alias = var.amazon_prometheus_workspace_alias
