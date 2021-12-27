@@ -22,7 +22,7 @@ jobs:
           with:
             role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
             aws-region: us-west-2
-            role-duration-seconds: 1800
+            role-duration-seconds: 7200
             role-session-name: GithubActions-Session
 
         - name: Terraform Job
