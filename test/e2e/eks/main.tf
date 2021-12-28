@@ -55,9 +55,9 @@ data "terraform_remote_state" "vpc_s3_backend" {
 module "eks-cluster-with-import-vpc" {
   source = "../../../deploy/2-eks-cluster-with-import-vpc/eks"
 
-  tenant      = "aws"
-  environment = "testing"
-  zone        = "e2e"
+  tenant      = "aws001"
+  environment = "preprod"
+  zone        = "test"
 
   vpc_id             = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
   private_subnet_ids = data.terraform_remote_state.vpc_s3_backend.outputs.private_subnets
