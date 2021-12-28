@@ -36,7 +36,7 @@ terraform {
 }
 
 provider "aws" {
-  region = data.aws_region.current.id
+  region = data.aws_region.current.name
   alias  = "default"
 }
 
