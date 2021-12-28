@@ -36,7 +36,7 @@ terraform {
 }
 
 provider "aws" {
-  region = data.aws_region.current.name
+  region = "us-west-2"
   alias  = "default"
 }
 
