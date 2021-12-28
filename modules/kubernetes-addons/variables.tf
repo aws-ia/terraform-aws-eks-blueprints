@@ -34,22 +34,10 @@ variable "tags" {
 }
 
 #-----------EKS MANAGED ADD-ONS------------
-variable "enable_amazon_eks_vpc_cni" {
-  type        = bool
-  default     = true
-  description = "Enable VPC CNI add-on"
-}
-
 variable "amazon_eks_vpc_cni_config" {
   description = "ConfigMap of Amazon EKS VPC CNI add-on"
   type        = any
   default     = {}
-}
-
-variable "enable_amazon_eks_coredns" {
-  type        = bool
-  default     = true
-  description = "Enable CoreDNS add-on"
 }
 
 variable "amazon_eks_coredns_config" {
@@ -58,28 +46,40 @@ variable "amazon_eks_coredns_config" {
   default     = {}
 }
 
-variable "enable_amazon_eks_kube_proxy" {
-  type        = bool
-  default     = true
-  description = "Enable Kube Proxy add-on"
-}
-
 variable "amazon_eks_kube_proxy_config" {
   description = "ConfigMap for Amazon EKS Kube-Proxy add-on"
   type        = any
   default     = {}
 }
 
-variable "enable_amazon_eks_aws_ebs_csi_driver" {
-  type        = bool
-  default     = true
-  description = "Enable EKS Managed AWS EBS CSI Driver add-on"
-}
-
 variable "amazon_eks_aws_ebs_csi_driver_config" {
   description = "configMap for AWS EBS CSI Driver add-on"
   type        = any
   default     = {}
+}
+
+variable "enable_amazon_eks_vpc_cni" {
+  type        = bool
+  default     = false
+  description = "Enable VPC CNI add-on"
+}
+
+variable "enable_amazon_eks_coredns" {
+  type        = bool
+  default     = false
+  description = "Enable CoreDNS add-on"
+}
+
+variable "enable_amazon_eks_kube_proxy" {
+  type        = bool
+  default     = false
+  description = "Enable Kube Proxy add-on"
+}
+
+variable "enable_amazon_eks_aws_ebs_csi_driver" {
+  type        = bool
+  default     = false
+  description = "Enable EKS Managed AWS EBS CSI Driver add-on"
 }
 
 #-----------CLUSTER AUTOSCALER-------------
