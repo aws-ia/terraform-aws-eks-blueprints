@@ -170,6 +170,7 @@ module "kubernetes-addons" {
   providers = {
     kubernetes = kubernetes
     helm       = helm
+    aws        = aws
   }
 
   source = "../../../modules/kubernetes-addons"
