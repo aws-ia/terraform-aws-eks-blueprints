@@ -196,7 +196,7 @@ module "kubernetes-addons" {
   enable_ingress_nginx                = true
   enable_aws_for_fluentbit            = true
   enable_argocd                       = true
-  enable_fargate_fluentbit            = true
+  enable_fargate_fluentbit            = false
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }
