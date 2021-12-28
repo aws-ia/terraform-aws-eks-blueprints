@@ -1,27 +1,10 @@
 server:
   retention: 1h
-  remoteWrite:
-    - queue_config:
-        max_samples_per_send: 1000
-        max_shards: 200
-        capacity: 2500
 
   resources:
     requests:
       cpu: 500m
       memory: 512Mi
-
-  verticalAutoscaler:
-    enabled: true
-    updateMode: "Auto"
-    containerPolicies:
-      - containerName: "prometheus-server"
-        minAllowed:
-          cpu: 500m
-          memory: 512Mi
-        maxAllowed:
-          cpu: 1000m
-          memory: 2048Mi
 
   global:
     scrape_interval: 15s
