@@ -17,20 +17,19 @@
  */
 
 # Assume role policy for your service account
-// data "aws_iam_policy_document" "irsa_with_oidc" {
-//   statement {
-//     actions = ["sts:AssumeRoleWithWebIdentity"]
+data "aws_iam_policy_document" "irsa_with_oidc" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
 
-//     principals {
-//       type        = "Federated"
-//       identifiers = [var.eks_oidc_provider_arn]
-//     }
+    principals {
+      type        = "Federated"
+      identifiers = [var.eks_oidc_provider_arn]
+    }
 
-//     condition {
-//       test     = "StringEquals"
-//       variable = "${var.eks_oidc_issuer_url}:sub"
-//       values   = ["system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}"]
-//     }
-//   }
-// }
-
+    condition {
+      test     = "StringEquals"
+      variable = "${var.eks_oidc_issuer_url}:sub"
+      values   = ["system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}"]
+    }
+  }
+}
