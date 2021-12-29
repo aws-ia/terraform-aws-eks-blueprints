@@ -84,6 +84,8 @@ module "irsa" {
   count                      = var.create_irsa ? 1 : 0
   source                     = "../../../modules/irsa"
   eks_cluster_id             = var.eks_cluster_id
+  eks_oidc_issuer_url        = var.eks_oidc_issuer_url
+  eks_oidc_provider_arn      = var.eks_oidc_provider_arn
   kubernetes_namespace       = local.namespace
   kubernetes_service_account = local.service_account_name
   irsa_iam_policies          = concat([aws_iam_policy.keda_irsa[0].arn], var.irsa_policies)

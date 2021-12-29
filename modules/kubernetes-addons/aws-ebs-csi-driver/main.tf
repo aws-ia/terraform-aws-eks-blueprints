@@ -35,6 +35,8 @@ module "irsa_addon" {
   create_kubernetes_namespace       = false
   create_kubernetes_service_account = false
   eks_cluster_id                    = var.eks_cluster_id
+  eks_oidc_issuer_url               = var.eks_oidc_issuer_url
+  eks_oidc_provider_arn             = var.eks_oidc_provider_arn
   kubernetes_namespace              = local.add_on_config["namespace"]
   kubernetes_service_account        = local.add_on_config["service_account"]
   irsa_iam_policies                 = concat([aws_iam_policy.aws_ebs_csi_driver.arn], local.add_on_config["additional_iam_policies"])

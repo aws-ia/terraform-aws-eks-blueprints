@@ -19,11 +19,13 @@
 #-----------------AWS Managed EKS Add-ons----------------------
 
 module "aws_vpc_cni" {
-  count          = var.enable_amazon_eks_vpc_cni ? 1 : 0
-  source         = "./aws-vpc-cni"
-  add_on_config  = var.amazon_eks_vpc_cni_config
-  eks_cluster_id = var.eks_cluster_id
-  common_tags    = var.tags
+  count                 = var.enable_amazon_eks_vpc_cni ? 1 : 0
+  source                = "./aws-vpc-cni"
+  add_on_config         = var.amazon_eks_vpc_cni_config
+  eks_cluster_id        = local.eks_cluster_id
+  eks_oidc_issuer_url   = var.eks_oidc_issuer_url
+  eks_oidc_provider_arn = var.eks_oidc_provider_arn
+  common_tags           = var.tags
 }
 
 module "aws_coredns" {
@@ -43,14 +45,17 @@ module "aws_kube_proxy" {
 }
 
 module "aws_ebs_csi_driver" {
-  count          = var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
-  source         = "./aws-ebs-csi-driver"
-  add_on_config  = var.amazon_eks_aws_ebs_csi_driver_config
-  eks_cluster_id = var.eks_cluster_id
-  common_tags    = var.tags
+  count                 = var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
+  source                = "./aws-ebs-csi-driver"
+  add_on_config         = var.amazon_eks_aws_ebs_csi_driver_config
+  eks_cluster_id        = local.eks_cluster_id
+  eks_oidc_issuer_url   = var.eks_oidc_issuer_url
+  eks_oidc_provider_arn = var.eks_oidc_provider_arn
+  common_tags           = var.tags
 }
 
 #-----------------Kubernetes Add-ons----------------------
+
 module "agones" {
   count                        = var.enable_agones ? 1 : 0
   source                       = "./agones"
@@ -90,7 +95,9 @@ module "aws_node_termination_handler" {
   count  = var.enable_aws_node_termination_handler && length(var.auto_scaling_group_names) > 0 ? 1 : 0
   source = "./aws-node-termination-handler"
 
-  eks_cluster_id          = var.eks_cluster_id
+  eks_cluster_id          = local.eks_cluster_id
+  eks_oidc_issuer_url     = var.eks_oidc_issuer_url
+  eks_oidc_provider_arn   = var.eks_oidc_provider_arn
   helm_config             = var.aws_node_termination_handler_helm_config
   autoscaling_group_names = var.auto_scaling_group_names
 }
@@ -134,14 +141,16 @@ module "ingress_nginx" {
 }
 
 module "keda" {
-  count             = var.enable_keda ? 1 : 0
-  source            = "./keda"
-  helm_config       = var.keda_helm_config
-  eks_cluster_id    = var.eks_cluster_id
-  create_irsa       = var.keda_create_irsa
-  irsa_policies     = var.keda_irsa_policies
-  tags              = var.tags
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                 = var.enable_keda ? 1 : 0
+  source                = "./keda"
+  helm_config           = var.keda_helm_config
+  eks_cluster_id        = local.eks_cluster_id
+  eks_oidc_issuer_url   = var.eks_oidc_issuer_url
+  eks_oidc_provider_arn = var.eks_oidc_provider_arn
+  create_irsa           = var.keda_create_irsa
+  irsa_policies         = var.keda_irsa_policies
+  tags                  = var.tags
+  manage_via_gitops     = var.argocd_manage_add_ons
 }
 
 module "metrics_server" {

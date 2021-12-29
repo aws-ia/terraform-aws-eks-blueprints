@@ -27,6 +27,16 @@ variable "eks_cluster_id" {
   description = "EKS Cluster Id"
 }
 
+variable "eks_oidc_issuer_url" {
+  description = "The URL on the EKS cluster OIDC Issuer."
+  default     = ""
+}
+
+variable "eks_oidc_provider_arn" {
+  description = "The ARN of the OIDC Provider."
+  default     = ""
+}
+
 variable "iam_role_path" {
   type        = string
   default     = "/"
