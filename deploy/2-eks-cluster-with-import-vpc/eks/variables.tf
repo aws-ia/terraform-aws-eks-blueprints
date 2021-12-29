@@ -1,21 +1,21 @@
 variable "kubernetes_version" {
-  type = string
+  type        = string
   description = "Kubernetes Version"
-  default = "1.21"
+  default     = "1.21"
 }
 
 variable "region" {
-  type = string
+  type        = string
   description = "AWS region"
 }
 
 variable "tf_state_vpc_s3_bucket" {
-  type = string
+  type        = string
   description = "Terraform state S3 Bucket Name"
 }
 
 variable "tf_state_vpc_s3_key" {
-  type = string
+  type        = string
   description = "Terraform state S3 Key path"
 }
 

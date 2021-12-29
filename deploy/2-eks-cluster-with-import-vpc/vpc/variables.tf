@@ -1,11 +1,11 @@
 variable "region" {
-  type = string
+  type        = string
   description = "AWS region"
 }
 
 variable "vpc_cidr" {
-  type = string
-  default = "10.1.0.0/16"
+  type        = string
+  default     = "10.1.0.0/16"
   description = "VPC CIDR range"
 }
 

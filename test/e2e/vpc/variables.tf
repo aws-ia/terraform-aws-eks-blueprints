@@ -1,11 +1,11 @@
 variable "kubernetes_version" {
-  type = string
+  type        = string
   description = "Kubernetes Version"
-  default = "1.21"
+  default     = "1.21"
 }
 
 variable "region" {
-  type = string
+  type        = string
   description = "AWS region"
 }
 
