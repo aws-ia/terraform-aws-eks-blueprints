@@ -158,5 +158,5 @@ module "kubernetes-addons" {
   enable_argocd                       = true
   enable_fargate_fluentbit            = false
 
-  depends_on = [module.aws-eks-accelerator-for-terraform]
+  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }
