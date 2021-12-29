@@ -16,33 +16,24 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-terraform {
-  required_version = ">= 1.0.1"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 3.66.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.7.1"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.4.1"
-    }
-  }
+provider "aws" {
+  region = var.region
 }
 
 terraform {
   backend "s3" {
-    bucket = "terraform-ssp-github-actions-state"
-    key    = "e2e/vpc/terraform-main.tfstate"
-    region = "us-west-2"
+    bucket = ""
+    key    = ""
+    region = ""
   }
 }
 
 module "eks-cluster-with-import-vpc" {
   source = "../../../deploy/2-eks-cluster-with-import-vpc/vpc"
+
+  tenant      = var.tenant
+  environment = var.environment
+  zone        = var.zone
+  region      = var.region
+
 }

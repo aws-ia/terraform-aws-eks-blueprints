@@ -42,7 +42,7 @@ jobs:
 
         - name: Terraform Init
           id: init
-          run: terraform init
+          run: terraform init -backend-config backend.conf -reconfigure
           working-directory: test/e2e/eks
           continue-on-error: false
 
@@ -55,20 +55,20 @@ jobs:
         - name: Terraform Plan
           id: plan
           working-directory: test/e2e/eks
-          run: terraform plan -no-color
+          run: terraform plan -var-file base.tfvars -no-color
           continue-on-error: false
 
         - name: Terraform Apply
           id: apply
           working-directory: test/e2e/eks
-          run: terraform apply -no-color -auto-approve
+          run: terraform apply -var-file base.tfvars -no-color -auto-approve
           continue-on-error: true
 
         - name: Terraform Destroy
           if: github.event.inputs.TFDestroy == 'true' && (steps.apply.outcome == 'success' || steps.apply.outcome == 'failure')
           id: destroy
           working-directory: test/e2e/eks
-          run: terraform destroy -no-color -auto-approve
+          run: terraform destroy -var-file base.tfvars -no-color -auto-approve
           continue-on-error: false
 
         - name: Fail if TF apply failed

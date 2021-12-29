@@ -1,4 +1,20 @@
-# Usage
+## How to deploy the example
+
+    git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+
+    cd ~/aws-eks-accelerator-for-terraform/test/e2e/vpc
+    
+    terraform init -backend-config backend.conf -reconfigure
+    
+    terraform plan -var-file base.tfvars
+    
+    terraform apply -var-file base.tfvars -auto-approve
+    
+    
+## How to Destroy the cluster
+
+    terraform destroy -var-file base.tfvars -auto-approve    
+    
 
 <!--- BEGIN_TF_DOCS --->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
