@@ -21,11 +21,7 @@ provider "aws" {
 }
 
 terraform {
-  backend "s3" {
-    bucket = ""
-    key    = ""
-    region = ""
-  }
+  backend "s3" {}
 }
 
 module "eks-cluster-with-import-vpc" {
