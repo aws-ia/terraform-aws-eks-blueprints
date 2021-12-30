@@ -1,15 +1,55 @@
-# Spark on K8s Operator with EKS.
+# Spark on K8s Operator with EKS
 
 This example deploys an EKS Cluster running the Spark K8s operator into a new VPC.
-
  - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
  - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
  - Creates EKS Cluster Control plane with public endpoint (for demo reasons only) with one managed node group
- - Deploys Metrics server, Cluster Autoscaler and EMR on EKS Addon
+ - Deploys Metrics server, Cluster Autoscaler, Spark-k8s-operator, Yunikorn and Prometheus
 
- This will install the Kubernetes Operator for Apache Spark into the namespace spark-operator. The operator by default watches and handles SparkApplications in every namespaces. If you would like to limit the operator to watch and handle SparkApplications in a single namespace, e.g., default instead, add the following option to the helm install command:
+ This will install the Kubernetes Operator for Apache Spark into the namespace spark-operator. 
+ The operator by default watches and handles SparkApplications in all namespaces. 
+ If you would like to limit the operator to watch and handle SparkApplications in a single namespace, e.g., default instead, add the following option to the helm install command:
 
-## Step1:
+## Prerequisites
+
+Ensure that you have installed the following tools on your machine.
+
+1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+3. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
+4. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+
+## Step1: Deploy EKS Cluster with Spark-K8s-Operator feature
+
+Clone the repository
+
+```
+git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+```
+
+Navigate into one of the example directories and run `terraform init`
+
+```
+cd deploy/analytics/spark-k8s-operator
+terraform init
+```
+
+Run Terraform plan to verify the resources created by this execution.
+
+```
+export AWS_REGION="eu-west-1"   # Select your own region
+terraform plan
+
+```
+
+Deploy the pattern
+
+```
+terraform apply
+```
+
+Enter `yes` to apply.
+
+## Steps to enable the Spark K8s Operator on EKS Cluster
 
 Enable Spark-K8S-Operator on EKS Cluster
 
@@ -17,10 +57,10 @@ Enable Spark-K8S-Operator on EKS Cluster
  #---------------------------------------
   # ENABLE SPARK on K8S OPERATOR
   #---------------------------------------
-  spark_on_k8s_operator_enable = true
+  enable_spark_k8s_operator = true
 
   # Optional Map value
-  spark_on_k8s_operator_helm_chart = {
+  spark_k8s_operator_helm_config = {
     name             = "spark-operator"
     chart            = "spark-operator"
     repository       = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
@@ -28,23 +68,23 @@ Enable Spark-K8S-Operator on EKS Cluster
     namespace        = "spark-k8s-operator"
     timeout          = "1200"
     create_namespace = true
-    values           = [templatefile("${path.module}/k8s_addons/spark-k8s-operator-values.yaml", {})]
-
+    values           = [templatefile("${path.module}/helm_values/spark-k8s-operator-values.yaml", {})]
   }
 ```
 
-##Step2:
-Create Spark Namespace, Service Account and ClusterRole and ClusterRole Binding for the jobs
+## Execute Sample SPatk Job on EKS Cluster with Spark-k8s-operator:
+ - Create Spark Namespace, Service Account and ClusterRole and ClusterRole Binding for the jobs
 
 ```shell script
-./examples/8-Spark-on-k8s-operator-with-EKS/test/spark-k8s-templates/spark-teams-setup.yaml
+   cd deploy/analytics/spark-k8s-operator/k8s-schedular
+   kubectl apply -f spark-teams-setup.yaml
 ```
 
-##Step3:
-Execute first spark job with simple example
+- Execute first spark job with simple example
 
 ```shell script
-.examples/8-Spark-on-k8s-operator-with-EKS/test/spark-k8s-templates/pyspark-pi-job.yaml
+  cd deploy/analytics/spark-k8s-operator/k8s-schedular
+  kubectl apply -f pyspark-pi-job.yaml
 ```
 
 

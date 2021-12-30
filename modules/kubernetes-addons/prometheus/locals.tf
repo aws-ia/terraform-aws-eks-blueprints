@@ -9,10 +9,6 @@ locals {
     value = var.amazon_prometheus_ingest_service_account
     },
     {
-      name  = "serviceAccounts.server.create"
-      value = false
-    },
-    {
       name  = "serviceAccounts.server.annotations.eks\\.amazonaws\\.com/role-arn"
       value = var.amazon_prometheus_ingest_iam_role_arn
     },
