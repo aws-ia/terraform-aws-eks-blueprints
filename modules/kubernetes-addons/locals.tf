@@ -1,8 +1,5 @@
 
 locals {
-
-  eks_cluster_id = data.aws_eks_cluster.cluster.id
-
   # Configuration for managing add-ons via ArgoCD.
   argocd_add_on_config = {
     agones                    = var.enable_agones ? module.agones[0].argocd_gitops_config : null

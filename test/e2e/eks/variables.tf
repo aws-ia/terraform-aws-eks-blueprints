@@ -22,17 +22,14 @@ variable "tf_state_vpc_s3_key" {
 variable "tenant" {
   type        = string
   description = "Account Name or unique account unique id e.g., apps or management or aws007"
-  default     = "aws"
 }
 
 variable "environment" {
   type        = string
-  default     = "preprod"
   description = "Environment area, e.g. prod or preprod "
 }
 
 variable "zone" {
   type        = string
   description = "zone, e.g. dev or qa or load or ops etc..."
-  default     = "test"
 }

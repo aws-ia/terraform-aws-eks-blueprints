@@ -1,4 +1,21 @@
-# Usage
+## How to deploy the example
+
+    git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+
+    cd ~/aws-eks-accelerator-for-terraform/test/e2e/eks
+
+    terraform init -backend-config backend.conf -reconfigure
+
+    terraform plan -var-file base.tfvars
+
+    terraform apply -var-file base.tfvars -auto-approve
+
+
+## How to Destroy the cluster
+
+    terraform destroy -var-file base.tfvars -auto-approve  
+
+
 
 <!--- BEGIN_TF_DOCS --->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -19,18 +36,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.66.0 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.7.1 |
+No requirements.
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
+No providers.
 
 ## Modules
 
@@ -40,13 +50,19 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [terraform_remote_state.vpc_s3_backend](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
+No resources.
 
 ## Inputs
 
-No inputs.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_environment"></a> [environment](#input\_environment) | Environment area, e.g. prod or preprod | `string` | n/a | yes |
+| <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | Kubernetes Version | `string` | `"1.21"` | no |
+| <a name="input_region"></a> [region](#input\_region) | AWS region | `string` | n/a | yes |
+| <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | n/a | yes |
+| <a name="input_tf_state_vpc_s3_bucket"></a> [tf\_state\_vpc\_s3\_bucket](#input\_tf\_state\_vpc\_s3\_bucket) | Terraform state S3 Bucket Name | `string` | n/a | yes |
+| <a name="input_tf_state_vpc_s3_key"></a> [tf\_state\_vpc\_s3\_key](#input\_tf\_state\_vpc\_s3\_key) | Terraform state S3 Key path | `string` | n/a | yes |
+| <a name="input_zone"></a> [zone](#input\_zone) | zone, e.g. dev or qa or load or ops etc... | `string` | n/a | yes |
 
 ## Outputs
 

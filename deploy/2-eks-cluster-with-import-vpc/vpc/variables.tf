@@ -1,22 +1,12 @@
-variable "kubernetes_version" {
-  type        = string
-  description = "Kubernetes Version"
-  default     = "1.21"
-}
-
 variable "region" {
   type        = string
   description = "AWS region"
 }
 
-variable "tf_state_vpc_s3_bucket" {
+variable "vpc_cidr" {
   type        = string
-  description = "Terraform state S3 Bucket Name"
-}
-
-variable "tf_state_vpc_s3_key" {
-  type        = string
-  description = "Terraform state S3 Key path"
+  default     = "10.1.0.0/16"
+  description = "VPC CIDR range"
 }
 
 variable "tenant" {

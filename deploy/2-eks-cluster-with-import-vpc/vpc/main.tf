@@ -16,40 +16,18 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-terraform {
-  required_version = ">= 1.0.1"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 3.66.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.6.1"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.4.1"
-    }
-  }
-}
-
 provider "aws" {
-  region = data.aws_region.current.id
-  alias  = "default"
+  region = var.region
 }
-
-data "aws_region" "current" {}
 
 data "aws_availability_zones" "available" {}
 
 locals {
-  tenant      = "aws001"  # AWS account name or unique id for tenant
-  environment = "preprod" # Environment area eg., preprod or prod
-  zone        = "test"    # Environment with in one sub_tenant or business unit
+  tenant      = var.tenant
+  environment = var.environment
+  zone        = var.zone
 
-  vpc_cidr       = "10.1.0.0/16"
+  vpc_cidr       = var.vpc_cidr
   vpc_name       = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
