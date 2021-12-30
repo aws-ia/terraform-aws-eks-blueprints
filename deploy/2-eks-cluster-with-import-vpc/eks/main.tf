@@ -68,7 +68,6 @@ locals {
   vpc_id             = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
   private_subnet_ids = data.terraform_remote_state.vpc_s3_backend.outputs.private_subnets
   public_subnet_ids  = data.terraform_remote_state.vpc_s3_backend.outputs.public_subnets
-
 }
 
 module "aws-eks-accelerator-for-terraform" {
@@ -95,43 +94,6 @@ module "aws-eks-accelerator-for-terraform" {
       subnet_ids      = local.private_subnet_ids
     }
   }
-
-  # Fargate profiles
-  fargate_profiles = {
-    default = {
-      fargate_profile_name = "default"
-      fargate_profile_namespaces = [
-        {
-          namespace = "default"
-          k8s_labels = {
-            Environment = local.environment
-            Zone        = local.zone
-            env         = "fargate"
-          }
-      }]
-      subnet_ids = local.private_subnet_ids
-      additional_tags = {
-        ExtraTag = "Fargate"
-      }
-    },
-  }
-
-  # AWS Managed Services
-  enable_amazon_prometheus = true
-
-  enable_emr_on_eks = true
-  emr_on_eks_teams = {
-    data_team_a = {
-      emr_on_eks_namespace     = "emr-data-team-a"
-      emr_on_eks_iam_role_name = "emr-eks-data-team-a"
-    }
-
-    data_team_b = {
-      emr_on_eks_namespace     = "emr-data-team-b"
-      emr_on_eks_iam_role_name = "emr-eks-data-team-b"
-    }
-  }
-
 }
 
 module "kubernetes-addons" {
@@ -152,7 +114,8 @@ module "kubernetes-addons" {
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_cluster_autoscaler           = true
-  enable_prometheus                   = true
+  enable_vpa                          = false
+  enable_prometheus                   = false
   enable_ingress_nginx                = true
   enable_aws_for_fluentbit            = true
   enable_argocd                       = true
