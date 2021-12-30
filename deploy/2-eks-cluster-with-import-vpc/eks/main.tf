@@ -99,54 +99,15 @@ module "aws-eks-accelerator-for-terraform" {
       subnet_ids      = local.private_subnet_ids
     }
   }
-
-  # Fargate profiles
-  fargate_profiles = {
-    default = {
-      fargate_profile_name = "default"
-      fargate_profile_namespaces = [
-        {
-          namespace = "default"
-          k8s_labels = {
-            Environment = "preprod"
-            Zone        = "dev"
-            env         = "fargate"
-          }
-      }]
-      subnet_ids = local.private_subnet_ids
-      additional_tags = {
-        ExtraTag = "Fargate"
-      }
-    },
-  }
-
-  # AWS Managed Services
-  enable_amazon_prometheus = true
-
-  enable_emr_on_eks = true
-  emr_on_eks_teams = {
-    data_team_a = {
-      emr_on_eks_namespace     = "emr-data-team-a"
-      emr_on_eks_iam_role_name = "emr-eks-data-team-a"
-    }
-
-    data_team_b = {
-      emr_on_eks_namespace     = "emr-data-team-b"
-      emr_on_eks_iam_role_name = "emr-eks-data-team-b"
-    }
-  }
-
 }
 
 data "aws_eks_cluster" "cluster" {
   name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 }
 
-
 data "aws_eks_cluster_auth" "cluster" {
   name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 }
-
 
 provider "kubernetes" {
   experiments {
@@ -191,8 +152,8 @@ module "kubernetes-addons" {
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_cluster_autoscaler           = true
-  enable_vpa                          = true
-  enable_prometheus                   = true
+  enable_vpa                          = false
+  enable_prometheus                   = false
   enable_ingress_nginx                = true
   enable_aws_for_fluentbit            = true
   enable_argocd                       = true
