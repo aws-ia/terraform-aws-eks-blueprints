@@ -16,6 +16,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+resource "kubernetes_namespace_v1" "prometheus" {
+  metadata {
+    name = local.helm_config["namespace"]
+    labels = {
+      "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
+    }
+  }
+}
+
 resource "helm_release" "prometheus" {
   count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.helm_config["name"]
@@ -24,7 +33,7 @@ resource "helm_release" "prometheus" {
   version                    = local.helm_config["version"]
   namespace                  = local.helm_config["namespace"]
   timeout                    = local.helm_config["timeout"]
-  create_namespace           = var.amazon_prometheus_workspace_id != null ? false : local.helm_config["create_namespace"]
+  create_namespace           = local.helm_config["create_namespace"]
   lint                       = local.helm_config["lint"]
   description                = local.helm_config["description"]
   repository_key_file        = local.helm_config["repository_key_file"]
@@ -74,5 +83,5 @@ resource "helm_release" "prometheus" {
       value = each_item.value.value
     }
   }
-
+  depends_on = [kubernetes_namespace_v1.prometheus]
 }
