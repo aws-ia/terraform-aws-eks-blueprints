@@ -4,12 +4,8 @@ repos:
     hooks:
       - id: trailing-whitespace
         args: ['--markdown-linebreak-ext=md']
-      - id: check-yaml
-        exclude: '[\w\-\/]+/templates/'
       - id: end-of-file-fixer
       - id: check-merge-conflict
-      - id: no-commit-to-branch
-        args: [--branch, main]
       - id: detect-private-key
       - id: detect-aws-credentials
         args: ['--allow-missing-credentials']
