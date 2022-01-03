@@ -21,7 +21,6 @@ terraform {
   }
 }
 
-
 data "aws_region" "current" {}
 
 data "aws_availability_zones" "available" {}
@@ -150,11 +149,9 @@ module "aws-eks-accelerator-for-terraform" {
 module "kubernetes-addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id               = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-  eks_oidc_issuer_url          = module.aws-eks-accelerator-for-terraform.eks_oidc_issuer_url
-  eks_oidc_provider_arn        = module.aws-eks-accelerator-for-terraform.eks_oidc_provider_arn
-  eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_security_group_id
-  auto_scaling_group_names     = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
+  eks_cluster_id        = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_oidc_issuer_url   = module.aws-eks-accelerator-for-terraform.eks_oidc_issuer_url
+  eks_oidc_provider_arn = module.aws-eks-accelerator-for-terraform.eks_oidc_provider_arn
 
   # EKS Managed Add-ons
   enable_amazon_eks_vpc_cni    = true
@@ -166,5 +163,5 @@ module "kubernetes-addons" {
   enable_metrics_server               = true
   enable_cluster_autoscaler           = true
 
-  depends_on = [module.aws-eks-accelerator-for-terraform]
+  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }
