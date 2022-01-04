@@ -76,11 +76,23 @@ resource "helm_release" "argocd" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# Admin Password
+# ---------------------------------------------------------------------------------------------------------------------
+
+data "aws_secretsmanager_secret" "admin_password_secret" {
+  name = var.admin_password_secret_name
+}
+
+data "aws_secretsmanager_secret_version" "admin_password_secret_version" {
+  secret_id = data.aws_secretsmanager_secret.admin_password_secret.id
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # ArgoCD App of Apps Bootstrapping
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "helm_release" "argocd_application" {
-  for_each = var.argocd_applications
+  for_each = var.applications
 
   name      = each.key
   chart     = "${path.module}/argocd-application"
@@ -135,4 +147,34 @@ resource "helm_release" "argocd_application" {
   }
 
   depends_on = [resource.helm_release.argocd]
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Private Repo Access
+# ---------------------------------------------------------------------------------------------------------------------
+
+data "aws_secretsmanager_secret" "ssh_key_secret" {
+  for_each = var.applications
+  name     = each.value.ssh_key_secret_name
+}
+
+data "aws_secretsmanager_secret_version" "ssh_key_secret_version" {
+  for_each  = var.applications
+  secret_id = data.aws_secretsmanager_secret.ssh_key_secret[each.key].id
+}
+
+resource "kubernetes_secret" "argocd_gitops" {
+  for_each = var.applications
+
+  metadata {
+    name      = "${each.key}-repo-secret"
+    namespace = "argocd"
+    labels    = { "argocd.argoproj.io/secret-type" : "repository" }
+  }
+
+  data = {
+    type          = "git"
+    url           = each.value.repo_url
+    sshPrivateKey = data.aws_secretsmanager_secret_version.ssh_key_secret_version[each.key].secret_string
+  }
 }

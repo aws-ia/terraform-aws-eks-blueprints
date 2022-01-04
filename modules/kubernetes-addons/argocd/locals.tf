@@ -1,12 +1,10 @@
 
 locals {
-  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
-
   default_helm_config = {
     name                       = "argo-cd"
     chart                      = "argo-cd"
     repository                 = "https://argoproj.github.io/argo-helm"
-    version                    = "3.26.8"
+    version                    = "3.29.5"
     namespace                  = "argocd"
     timeout                    = "1200"
     create_namespace           = true
@@ -51,4 +49,9 @@ locals {
     account     = data.aws_caller_identity.current.account_id
     clusterName = var.eks_cluster_id
   }
+
+  admin_password = data.aws_secretsmanager_secret_version.admin_password_secret_version.secret_string
+  default_helm_values = [templatefile("${path.module}/values.yaml", {
+    admin_password : bcrypt(local.admin_password, 10)
+  })]
 }

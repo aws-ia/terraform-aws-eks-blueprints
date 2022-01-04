@@ -275,6 +275,12 @@ variable "argocd_applications" {
   description = "Argo CD Applications config to bootstrap the cluster"
 }
 
+variable "argocd_admin_password_secret_name" {
+  type        = any
+  default     = {}
+  description = "Name for a secret stored in AWS Secrets Manager that contains an plaintext admin password."
+}
+
 variable "argocd_manage_add_ons" {
   type        = bool
   default     = false

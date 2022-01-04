@@ -9,20 +9,31 @@ Application definitions, configurations, and environments should be declarative 
 ArgoCD can be deployed by enabling the add-on via the following.
 
 ```hcl
-#---------------------------------------
-# ENABLE ARGOCD
-#---------------------------------------
 enable_argocd = true
 ```
 
-You can optionally customize the Helm chart that deploys `ArgoCD` via the following configuration.
+### Admin Password 
+
+ArgoCD has a built in `admin` user that has full access to the ArgoCD instance. By default, Argo will create a password for the admin user. 
+
+You can optionally configure a custom password for the admin user by specifying the name of an AWS Secrets Manager secret. The value for the secret will be stored as a Kubernetes Secret and used as the admin password. 
+
+```
+argocd_admin_password_secret_name = <secret_name>
+```
+
+See the [ArgoCD documentation](https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/) for additional details on managing users.
+
+### Customizing the Helm Chart 
+
+You can customize the Helm chart that deploys `ArgoCD` via the following configuration:
 
 ```hcl
 argocd_helm_config = {
   name             = "argo-cd"
   chart            = "argo-cd"
   repository       = "https://argoproj.github.io/argo-helm"
-  version          = "3.26.3"
+  version          = "3.29.5"
   namespace        = "argocd"
   timeout          = "1200"
   create_namespace = true
@@ -32,24 +43,27 @@ argocd_helm_config = {
 
 ### Boostrapping
 
-The framework provides an approach to bootstraping workloads and/or additional add-ons by leveraging the ArgoCD [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern.
+The framework provides an approach to bootstrapping workloads and/or additional add-ons by leveraging the ArgoCD [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern.
 
- The following code example demonstrates how you can supply information for a repository in order to bootstrap multiple workloads in a new EKS cluster. The example leverages a [sample App of Apps repository](https://github.com/aws-samples/ssp-eks-workloads.git) that ships with the EKS SSP solution.
+The following code example demonstrates how you can supply information for a repository in order to bootstrap multiple workloads in a new EKS cluster. The example leverages a [sample App of Apps repository](https://github.com/aws-samples/ssp-eks-workloads.git) that ships with the EKS SSP solution.
 
 ```hcl
 argocd_applications = {
   workloads = {
-    namespace         = "argocd"
-    path              = "envs/dev"
-    repo_url          = "https://github.com/aws-samples/ssp-eks-workloads.git"
-    target_revision   = "HEAD"
-    destination       = "https://kubernetes.default.svc"
-    project           = "default"
-    add_on_application= false # Indicates the root add-on application.
-    values            = {}
+    namespace           = "argocd"
+    path                = "envs/dev"
+    repo_url            = "https://github.com/aws-samples/ssp-eks-workloads.git"
+    target_revision     = "HEAD"
+    destination         = "https://kubernetes.default.svc"
+    project             = "default"
+    ssh_key_secret_name = "github-ssh-key"  # Needed for private repos
+    add_on_application  = false             # Indicates the root add-on application.
+    values              = {}
   }
 }
 ```
+
+The value for the `ssh_key_secret_name` should be the name of a secret in AWS Secrets Manager. The value for the secret should be a private SSH Key.
 
 ### Add-ons
 
@@ -66,14 +80,61 @@ enable_argocd           = true
 argocd_manage_add_ons   = true
 argocd_applications     = {
   infra = {
-    namespace             = "argocd"
-    path                  = "<path>"
-    repo_url              = "<repo_url>"
-    target_revision       = "HEAD"
-    destination           = "https://kubernetes.default.svc"
-    project               = "default"
-    values                = {}
-    add_on_application    = true # Indicates the root add-on application.
+    namespace           = "argocd"
+    path                = "<path>"
+    repo_url            = "<repo_url>"
+    target_revision     = "HEAD"
+    destination         = "https://kubernetes.default.svc"
+    project             = "default"
+    ssh_key_secret_name = "github-ssh-key"  # Needed for private repos
+    add_on_application  = true              # Indicates the root add-on application.
+    values              = {}
+  }
+}
+```
+
+### Complete Example 
+
+The following demonstrates a complete example for configuring ArgoCD. 
+
+```
+enable_argocd                       = true
+argocd_manage_add_ons               = true
+argocd_admin_password_secret_name   = <secret_name>
+
+argocd_helm_config = {
+  name             = "argo-cd"
+  chart            = "argo-cd"
+  repository       = "https://argoproj.github.io/argo-helm"
+  version          = "3.29.5"
+  namespace        = "argocd"
+  timeout          = "1200"
+  create_namespace = true
+  values = [templatefile("${path.module}/argocd-values.yaml", {})]
+}
+
+argocd_applications = {
+  workloads = {
+    namespace           = "argocd"
+    path                = "<path>"
+    repo_url            = "<repo_url>"
+    target_revision     = "HEAD"
+    destination         = "https://kubernetes.default.svc"
+    project             = "default"
+    ssh_key_secret_name = "github-ssh-key"  # Needed for private repos
+    add_on_application  = false             # Indicates the root add-on application.
+    values              = {}
+  }
+  infra = {
+    namespace           = "argocd"
+    path                = "<path>"
+    repo_url            = "<repo_url>"
+    target_revision     = "HEAD"
+    destination         = "https://kubernetes.default.svc"
+    project             = "default"
+    ssh_key_secret_name = "github-ssh-key"  # Needed for private repos
+    add_on_application  = true              # Indicates the root add-on application.
+    values              = {}
   }
 }
 ```

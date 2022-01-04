@@ -51,6 +51,7 @@ module "aws_ebs_csi_driver" {
 }
 
 #-----------------Kubernetes Add-ons----------------------
+
 module "agones" {
   count                        = var.enable_agones ? 1 : 0
   source                       = "./agones"
@@ -60,12 +61,13 @@ module "agones" {
 }
 
 module "argocd" {
-  count               = var.enable_argocd ? 1 : 0
-  source              = "./argocd"
-  helm_config         = var.argocd_helm_config
-  argocd_applications = var.argocd_applications
-  eks_cluster_id      = var.eks_cluster_id
-  add_on_config       = local.argocd_add_on_config
+  count                      = var.enable_argocd ? 1 : 0
+  source                     = "./argocd"
+  helm_config                = var.argocd_helm_config
+  applications               = var.argocd_applications
+  admin_password_secret_name = var.argocd_admin_password_secret_name
+  eks_cluster_id             = var.eks_cluster_id
+  add_on_config              = local.argocd_add_on_config
 }
 
 module "aws_for_fluent_bit" {
