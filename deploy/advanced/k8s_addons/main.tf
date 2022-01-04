@@ -308,7 +308,8 @@ module "kubernetes-addons" {
   #---------------------------------------
   # COMMUNITY PROMETHEUS ENABLE
   #---------------------------------------
-  enable_prometheus = true
+  enable_amp_for_prometheus = true
+  enable_prometheus         = true
 
   # Optional Map value
   prometheus_helm_config = {
