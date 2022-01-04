@@ -24,7 +24,7 @@ resource "helm_release" "prometheus" {
   version                    = local.helm_config["version"]
   namespace                  = local.helm_config["namespace"]
   timeout                    = local.helm_config["timeout"]
-  create_namespace           = var.amazon_prometheus_workspace_id != null ? false : local.helm_config["create_namespace"]
+  create_namespace           = local.helm_config["create_namespace"]
   lint                       = local.helm_config["lint"]
   description                = local.helm_config["description"]
   repository_key_file        = local.helm_config["repository_key_file"]
@@ -57,7 +57,7 @@ resource "helm_release" "prometheus" {
 
   dynamic "set" {
     iterator = each_item
-    for_each = var.amazon_prometheus_workspace_id != null ? distinct(concat(local.amp_config_values, local.helm_config["set"])) : local.helm_config["set"]
+    for_each = var.enable_amp_for_prometheus ? distinct(concat(local.amp_config_values, local.helm_config["set"])) : local.helm_config["set"]
 
     content {
       name  = each_item.value.name
@@ -75,4 +75,52 @@ resource "helm_release" "prometheus" {
     }
   }
 
+  depends_on = [kubernetes_namespace_v1.prometheus]
+
+}
+
+resource "kubernetes_namespace_v1" "prometheus" {
+  metadata {
+    name = local.helm_config["namespace"]
+    labels = {
+      "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
+    }
+  }
+}
+
+# Amazon Managed Prometheus Resources
+
+resource "aws_prometheus_workspace" "amp_workspace" {
+  count = var.amazon_prometheus_workspace_id == null && var.enable_amp_for_prometheus ? 1 : 0
+  alias = format("%s-%s", "amp", var.eks_cluster_id)
+}
+
+module "irsa" {
+  for_each = {for k, v in local.irsa_config : k => v if var.enable_amp_for_prometheus }
+
+  source                      = "../../../modules/irsa"
+  eks_cluster_id              = var.eks_cluster_id
+  kubernetes_namespace        = local.helm_config["namespace"]
+  create_kubernetes_namespace = each.value["create_kubernetes_namespace"]
+  kubernetes_service_account  = each.value["service_account"]
+  irsa_iam_policies           = each.value["irsa_iam_policies"]
+  tags                        = var.tags
+
+  depends_on = [kubernetes_namespace_v1.prometheus]
+}
+
+resource "aws_iam_policy" "ingest" {
+  count = var.enable_amp_for_prometheus ? 1 : 0
+  name        = format("%s-%s", "amp-ingest", var.eks_cluster_id)
+  description = "Set up the permission policy that grants ingest (remote write) permissions for AMP workspace"
+  path        = var.iam_role_path
+  policy      = data.aws_iam_policy_document.ingest.json
+}
+
+resource "aws_iam_policy" "query" {
+  count = var.enable_amp_for_prometheus ? 1 : 0
+  name        = format("%s-%s", "amp-query", var.eks_cluster_id)
+  description = "Set up the permission policy that grants query permissions for AMP workspace"
+  path        = var.iam_role_path
+  policy      = data.aws_iam_policy_document.query.json
 }

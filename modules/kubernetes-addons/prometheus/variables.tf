@@ -16,27 +16,38 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+variable "helm_config" {
+  type    = any
+  default = {}
+}
+
+variable "eks_cluster_id" {
+  type        = string
+  description = "EKS Cluster Id"
+}
+
+variable "enable_amp_for_prometheus" {
+  type        = bool
+  default     = false
+  description = "Enable AWS Managed Prometheus service"
+}
+
 variable "amazon_prometheus_workspace_id" {
   type        = string
   default     = null
   description = "Amazon Managed Prometheus Workspace ID"
 }
 
-variable "amazon_prometheus_ingest_iam_role_arn" {
+variable "iam_role_path" {
   type        = string
-  default     = null
-  description = "Amazon Managed Prometheus Ingest IAM Role ARN"
+  default     = "/"
+  description = "IAM role path"
 }
 
-variable "amazon_prometheus_ingest_service_account" {
-  type        = string
-  default     = null
-  description = "Amazon Managed Prometheus Ingest Service Account"
-}
-
-variable "helm_config" {
-  type    = any
-  default = {}
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }
 
 variable "manage_via_gitops" {

@@ -114,8 +114,8 @@ module "kubernetes-addons" {
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_cluster_autoscaler           = true
-  enable_vpa                          = false
-  enable_prometheus                   = false
+  enable_vpa                          = true
+  enable_prometheus                   = true
   enable_ingress_nginx                = true
   enable_aws_for_fluentbit            = true
   enable_argocd                       = true

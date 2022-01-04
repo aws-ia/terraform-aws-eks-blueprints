@@ -99,6 +99,7 @@ module "aws_vpc" {
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
   source     = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
+
   create_eks = true
 
   tenant            = local.tenant
@@ -123,9 +124,6 @@ module "aws-eks-accelerator-for-terraform" {
     }
   }
 
-  # Enable Amazon Managed Prometheus
-  enable_amazon_prometheus = true
-
   #---------------------------------------
   # ENABLE EMR ON EKS
   # 1. Creates namespace
@@ -146,10 +144,12 @@ module "aws-eks-accelerator-for-terraform" {
       emr_on_eks_iam_role_name = "emr-eks-data-team-b"
     }
   }
+
 }
 
-module "k8s-addons" {
+module "kubernetes-addons" {
   source         = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
+
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
   #K8s Add-ons
@@ -157,12 +157,10 @@ module "k8s-addons" {
   enable_cluster_autoscaler = true
 
   #---------------------------------------
-  # PROMETHEUS CONFIG
+  # PROMETHEUS and Amazon Prometheus Config
   #---------------------------------------
-  amazon_prometheus_workspace_id           = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_id
-  amazon_prometheus_ingest_iam_role_arn    = module.aws-eks-accelerator-for-terraform.amazon_prometheus_ingest_iam_role_arn
-  amazon_prometheus_ingest_service_account = module.aws-eks-accelerator-for-terraform.amazon_prometheus_ingest_service_account
-
+  enable_amp_for_prometheus = true
+  # amazon_prometheus_workspace_id = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_id # Optional variable to use existing AMP workspace or it will create a new one
   enable_prometheus = true
   # Optional Map value
   prometheus_helm_config = {
@@ -174,7 +172,6 @@ module "k8s-addons" {
     values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
       operating_system = "linux"
     })]
-
   }
   #---------------------------------------
   # Vertical Pod Autoscaling
