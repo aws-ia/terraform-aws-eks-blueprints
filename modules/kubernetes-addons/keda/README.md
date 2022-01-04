@@ -65,6 +65,8 @@ No requirements.
 |------|-------------|------|---------|:--------:|
 | <a name="input_create_irsa"></a> [create\_irsa](#input\_create\_irsa) | Indicates if the add-on should create a IAM role + service account | `bool` | n/a | yes |
 | <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS Cluster Id | `string` | n/a | yes |
+| <a name="input_eks_oidc_issuer_url"></a> [eks\_oidc\_issuer\_url](#input\_eks\_oidc\_issuer\_url) | The URL on the EKS cluster OIDC Issuer. | `string` | `""` | no |
+| <a name="input_eks_oidc_provider_arn"></a> [eks\_oidc\_provider\_arn](#input\_eks\_oidc\_provider\_arn) | The ARN of the OIDC Provider. | `string` | `""` | no |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | Keda Event-based autoscaler for workloads on Kubernetes Helm chart config | `any` | `{}` | no |
 | <a name="input_iam_role_path"></a> [iam\_role\_path](#input\_iam\_role\_path) | IAM role path | `string` | `"/"` | no |
 | <a name="input_irsa_policies"></a> [irsa\_policies](#input\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | n/a | yes |
