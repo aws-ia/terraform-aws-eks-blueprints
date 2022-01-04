@@ -19,6 +19,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # LABELING EKS RESOURCES
 # ---------------------------------------------------------------------------------------------------------------------
+
 module "eks_tags" {
   source      = "./modules/aws-resource-tags"
   tenant      = var.tenant
@@ -31,6 +32,7 @@ module "eks_tags" {
 # ---------------------------------------------------------------------------------------------------------------------
 # EKS CONTROL PLANE
 # ---------------------------------------------------------------------------------------------------------------------
+
 #TODO Create KMS alias and assign it
 resource "aws_kms_key" "eks" {
   description = "EKS Cluster Secret Encryption Key"
@@ -87,7 +89,6 @@ module "aws_managed_prometheus" {
   amazon_prometheus_workspace_alias = var.amazon_prometheus_workspace_alias
   eks_cluster_id                    = module.aws_eks.cluster_id
   tags                              = var.tags
-
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -119,7 +120,5 @@ resource "kubernetes_config_map" "amazon_vpc_cni" {
     "enable-windows-ipam" = var.enable_windows_support ? "true" : "false"
   }
 
-  depends_on = [
-    module.aws_eks
-  ]
+  depends_on = [module.aws_eks]
 }

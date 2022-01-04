@@ -124,7 +124,7 @@ resource "helm_release" "argocd_application" {
     value = yamlencode(merge(
       each.value.values,
       local.global_application_values,
-      each.value.add_on_application ? var.add_on_config : {}
+      each.value.add_on_application ? var.add_on_config : null
     ))
   }
 
