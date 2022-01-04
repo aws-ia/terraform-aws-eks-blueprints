@@ -96,7 +96,7 @@ resource "aws_prometheus_workspace" "amp_workspace" {
 }
 
 module "irsa" {
-  for_each = {for k, v in local.irsa_config : k => v if var.enable_amp_for_prometheus }
+  for_each = { for k, v in local.irsa_config : k => v if var.enable_amp_for_prometheus }
 
   source                      = "../../../modules/irsa"
   eks_cluster_id              = var.eks_cluster_id
@@ -110,7 +110,7 @@ module "irsa" {
 }
 
 resource "aws_iam_policy" "ingest" {
-  count = var.enable_amp_for_prometheus ? 1 : 0
+  count       = var.enable_amp_for_prometheus ? 1 : 0
   name        = format("%s-%s", "amp-ingest", var.eks_cluster_id)
   description = "Set up the permission policy that grants ingest (remote write) permissions for AMP workspace"
   path        = var.iam_role_path
@@ -118,7 +118,7 @@ resource "aws_iam_policy" "ingest" {
 }
 
 resource "aws_iam_policy" "query" {
-  count = var.enable_amp_for_prometheus ? 1 : 0
+  count       = var.enable_amp_for_prometheus ? 1 : 0
   name        = format("%s-%s", "amp-query", var.eks_cluster_id)
   description = "Set up the permission policy that grants query permissions for AMP workspace"
   path        = var.iam_role_path

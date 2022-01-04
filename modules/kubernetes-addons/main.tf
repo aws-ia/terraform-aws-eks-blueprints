@@ -152,15 +152,15 @@ module "metrics_server" {
 }
 
 module "prometheus" {
-  count       = var.enable_prometheus ? 1 : 0
-  source      = "./prometheus"
+  count          = var.enable_prometheus ? 1 : 0
+  source         = "./prometheus"
   eks_cluster_id = var.eks_cluster_id
-  helm_config = var.prometheus_helm_config
+  helm_config    = var.prometheus_helm_config
   #AWS Managed Prometheus Workspace
-  enable_amp_for_prometheus                 = var.enable_amp_for_prometheus
-  amazon_prometheus_workspace_id           = var.amazon_prometheus_workspace_id
-  manage_via_gitops                        = var.argocd_manage_add_ons
-  tags    = var.tags
+  enable_amp_for_prometheus      = var.enable_amp_for_prometheus
+  amazon_prometheus_workspace_id = var.amazon_prometheus_workspace_id
+  manage_via_gitops              = var.argocd_manage_add_ons
+  tags                           = var.tags
 }
 
 module "spark_k8s_operator" {

@@ -30,4 +30,3 @@ output "amazon_prometheus_workspace_endpoint" {
   description = "Amazon Managed Prometheus Workspace Endpoint"
   value       = aws_prometheus_workspace.amp_workspace.prometheus_endpoint
 }
-

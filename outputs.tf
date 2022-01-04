@@ -125,4 +125,3 @@ output "amazon_prometheus_workspace_id" {
   description = "Amazon Managed Prometheus Workspace ID"
   value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_workspace_id : null
 }
-
