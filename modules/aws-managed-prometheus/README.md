@@ -31,20 +31,13 @@ No requirements.
 
 ## Modules
 
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_irsa"></a> [irsa](#module\_irsa) | ../irsa | n/a |
+No modules.
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [aws_iam_policy.ingest](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
-| [aws_iam_policy.query](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_prometheus_workspace.amp_workspace](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/prometheus_workspace) | resource |
-| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
-| [aws_iam_policy_document.ingest](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.query](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
@@ -52,18 +45,13 @@ No requirements.
 |------|-------------|------|---------|:--------:|
 | <a name="input_amazon_prometheus_workspace_alias"></a> [amazon\_prometheus\_workspace\_alias](#input\_amazon\_prometheus\_workspace\_alias) | AWS Managed Prometheus WorkSpace Name | `string` | `null` | no |
 | <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS Cluster ID | `string` | n/a | yes |
-| <a name="input_iam_role_path"></a> [iam\_role\_path](#input\_iam\_role\_path) | IAM role path | `string` | `"/"` | no |
-| <a name="input_namespace"></a> [namespace](#input\_namespace) | Prometheus Server Namespace | `string` | `"prometheus"` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `map('BusinessUnit`,`XYZ`) | `map(string)` | `{}` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_amazon_prometheus_ingest_iam_role_arn"></a> [amazon\_prometheus\_ingest\_iam\_role\_arn](#output\_amazon\_prometheus\_ingest\_iam\_role\_arn) | Amazon Managed Prometheus Ingest IAM Role ARN |
-| <a name="output_amazon_prometheus_ingest_service_account"></a> [amazon\_prometheus\_ingest\_service\_account](#output\_amazon\_prometheus\_ingest\_service\_account) | n/a |
-| <a name="output_amazon_prometheus_query_iam_role_arn"></a> [amazon\_prometheus\_query\_iam\_role\_arn](#output\_amazon\_prometheus\_query\_iam\_role\_arn) | Amazon Managed Prometheus Query IAM Role ARN |
-| <a name="output_amazon_prometheus_query_service_account"></a> [amazon\_prometheus\_query\_service\_account](#output\_amazon\_prometheus\_query\_service\_account) | n/a |
+| <a name="output_amazon_prometheus_workspace_arn"></a> [amazon\_prometheus\_workspace\_arn](#output\_amazon\_prometheus\_workspace\_arn) | Amazon Managed Prometheus Workspace ARN |
+| <a name="output_amazon_prometheus_workspace_endpoint"></a> [amazon\_prometheus\_workspace\_endpoint](#output\_amazon\_prometheus\_workspace\_endpoint) | Amazon Managed Prometheus Workspace Endpoint |
 | <a name="output_amazon_prometheus_workspace_id"></a> [amazon\_prometheus\_workspace\_id](#output\_amazon\_prometheus\_workspace\_id) | Amazon Managed Prometheus Workspace ID |
 
 <!--- END_TF_DOCS --->
