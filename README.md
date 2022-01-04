@@ -14,19 +14,15 @@ This repository contains the source code for a Terraform framework that aims to 
 This project leverages the community [terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks) modules for deploying EKS Clusters.
 
 ## Getting Started
-
 The easiest way to get started with this framework is to follow our [Getting Started guide](./docs/getting-started.md).
 
 ## Documentation
-
 For complete project documentation, please visit our [documentation directory](./docs).
 
 ## Patterns
-
 To view examples for how you can leverage this framework, see the [deploy](./deploy) directory.
 
 ## Usage Example
-
 The below demonstrates how you can leverage this framework to deploy an EKS cluster, a managed node group, and various Kubernetes add-ons.
 
 ```hcl
@@ -49,11 +45,12 @@ module "eks-ssp" {
 }
 
 # Deploy Kubernetes Add-ons with sub module
-
 module "eks-ssp-kubernetes-addons" {
     source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
 
-    cluster_id                        = module.eks-ssp.cluster_id
+    eks_cluster_id                        = module.eks-ssp.eks_cluster_id
+    eks_oidc_issuer_url                   = module.eks-ssp.eks_oidc_issuer_url
+    eks_oidc_provider_arn                 = module.eks-ssp.eks_oidc_provider_arn
 
     # EKS Addons
     enable_amazon_eks_vpc_cni             = true
@@ -67,18 +64,23 @@ module "eks-ssp-kubernetes-addons" {
     enable_cluster_autoscaler             = true
     enable_aws_for_fluentbit              = true
     enable_argocd                         = true
+    enable_ingress_nginx                  = true
+
+    depends_on = [module.eks-ssp.managed_node_groups]
 }
 ```
 
 The code above will provision the following:
 
 ✅  A new EKS Cluster with a managed node group.\
-✅  EKS managed add-ons `vpc-cni`, `CoreDNS`, `kube-proxy`, and `aws-ebs-csi-driver`.\
+✅  Amazon EKS add-ons `vpc-cni`, `CoreDNS`, `kube-proxy`, and `aws-ebs-csi-driver`.\
 ✅  `Cluster Autoscaler` and `Metrics Server` for scaling your workloads.\
 ✅  `Fluent Bit` for routing metrics.\
 ✅  `AWS Load Balancer Controller` for distributing traffic.\
 ✅  `cert-manager` for managing SSL/TLS certificates.\
+✅  `Argocd` for declarative GitOps CD for Kubernetes.\
 ✅  `Nginx` for managing ingress.
+
 
 ## Add-ons
 
@@ -89,13 +91,13 @@ For complete documentation on deploying add-ons, please visit our [add-on docume
 
 ## Submodules
 
-The root module calls into several submodules which provides support for deploying and integrating a number of external AWS services that can be used in concert with EKS. This included Amazon Managed Prometheus and EMR with EKS etc.
+The root module calls into several submodules which provides support for deploying and integrating a number of external AWS services that can be used in concert with Amazon EKS. This included Amazon Managed Prometheus and EMR with EKS etc.
 
 For complete documentation on deploying external services, please visit our submodules documentation.
 
 ## Motivation
 
-The Amazon EKS SSP for Terraform allows customers to easily configure and deploy a multi-tenant, enterprise-ready container platform on top of EKS. With a large number of design choices, deploying production-grade container platform can take a significant about of time, involve integrating a wide range or AWS services and open source tools, and require deep understand of AWS and Kubernetes concepts.
+The Amazon EKS SSP for Terraform allows customers to easily configure and deploy a multi-tenant, enterprise-ready container platform on top of EKS. With a large number of design choices, deploying production-grade container platform can take a significant amount of time, involve integrating a wide range or AWS services and open source tools, and require deep understand of AWS and Kubernetes concepts.
 
 This solution handles integrating EKS with popular open source and partner tools, in addition to AWS services, in order to allow customers to deploy a cohesive container platform that can be offered as a service to application teams. It provides out-of-the-box support for common operational tasks such as auto-scaling workloads, collecting logs and metrics from both clusters and running applications, managing ingress and egress, configuring network policy, managing secrets, deploying workloads via GitOps, and more. Customers can leverage the solution to deploy a container platform and start onboarding workloads in days, rather than months.
 
