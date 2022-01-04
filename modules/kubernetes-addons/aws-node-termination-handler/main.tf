@@ -107,7 +107,6 @@ resource "aws_autoscaling_group_tag" "aws_node_termination_handler_tag" {
 resource "aws_sqs_queue" "aws_node_termination_handler_queue" {
   name_prefix               = "aws_node_termination_handler"
   message_retention_seconds = "300"
-  sqs_managed_sse_enabled   = true
   tags                      = var.tags
 }
 

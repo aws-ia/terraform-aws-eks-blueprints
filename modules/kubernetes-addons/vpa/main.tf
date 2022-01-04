@@ -74,5 +74,4 @@ resource "helm_release" "vpa" {
       value = each_item.value.value
     }
   }
-
 }

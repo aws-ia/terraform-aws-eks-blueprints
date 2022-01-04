@@ -182,6 +182,7 @@ module "kubernetes-addons" {
   enable_karpenter                    = true
   enable_keda                         = true
   enable_metrics_server               = true
+  enable_prometheus                   = true
   enable_traefik                      = true
   enable_vpa                          = true
   enable_yunikorn                     = true

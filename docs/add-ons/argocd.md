@@ -9,20 +9,31 @@ Application definitions, configurations, and environments should be declarative 
 ArgoCD can be deployed by enabling the add-on via the following.
 
 ```hcl
-#---------------------------------------
-# ENABLE ARGOCD
-#---------------------------------------
 enable_argocd = true
 ```
 
-You can optionally customize the Helm chart that deploys `ArgoCD` via the following configuration.
+### Admin Password 
+
+ArgoCD has a built-in `admin` user that has full access to the ArgoCD instance. By default, Argo will create a password for the admin user. 
+
+You can optionally provide a custom password for the admin user by specifying the name of an AWS Secrets Manager secret. The value for the secret should be a [bcrypt hash](https://github.com/argoproj/argo-helm/blob/master/charts/argo-cd/values.yaml#L1785) of your admin password. The hashed value will be stored as a Kubernetes Secret and will be used to configure the admin password for Argo. 
+
+```
+argocd_admin_password_secret_name = <secret_name>
+```
+
+See the [ArgoCD documentation](https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/) for additional details on managing users.
+
+### Customizing the Helm Chart 
+
+You can customize the Helm chart that deploys `ArgoCD` via the following configuration:
 
 ```hcl
 argocd_helm_config = {
   name             = "argo-cd"
   chart            = "argo-cd"
   repository       = "https://argoproj.github.io/argo-helm"
-  version          = "3.26.3"
+  version          = "3.29.5"
   namespace        = "argocd"
   timeout          = "1200"
   create_namespace = true
@@ -32,32 +43,27 @@ argocd_helm_config = {
 
 ### Boostrapping
 
-The framework provides an approach to bootstraping workloads and/or additional add-ons by leveraging the ArgoCD [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern.
+The framework provides an approach to bootstrapping workloads and/or additional add-ons by leveraging the ArgoCD [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern.
 
- The following code example demonstrates how you can supply information for a repository in order to bootstrap multiple workloads in a new EKS cluster. The example leverages a [sample App of Apps repository](https://github.com/aws-samples/ssp-eks-workloads.git) that ships with the EKS SSP solution.
+The following code example demonstrates how you can supply information for a repository in order to bootstrap multiple workloads in a new EKS cluster. The example leverages a [sample App of Apps repository](https://github.com/aws-samples/ssp-eks-workloads.git) that ships with the EKS SSP solution.
 
 ```hcl
 argocd_applications = {
-  workloads = {
-    namespace         = "argocd"
-    path              = "envs/dev"
-    repo_url          = "https://github.com/aws-samples/ssp-eks-workloads.git"
-    target_revision   = "HEAD"
-    destination       = "https://kubernetes.default.svc"
-    project           = "default"
-    add_on_application= false # Indicates the root add-on application.
-    values            = {}
+  addons = {
+    path                = "chart"
+    repo_url            = "https://github.com/aws-samples/ssp-eks-add-ons.git"
+    add_on_application  = true # Indicates the root add-on application.
   }
 }
 ```
 
 ### Add-ons
 
-A common operational pattern is to leverage Infrastructure as Code for provisioning EKS clusters (in addition to other AWS resources) and GitOps for managing cluster configuration. The framework provides support for this approach by leveraging the ArgoCD [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern.
+A common operational pattern for EKS customers is to leverage Infrastructure as Code to provision EKS clusters (in addition to other AWS resources), and ArgoCD to manage cluster add-ons. This can present a challenge when add-ons manged by ArgoCD depend on AWS resource values which are created via Terraform execution (such as an IAM arn for an add-on that leverages IRSA), to function properly. The framework provides an approach to bridging the gap between Terraform and ArgoCD by leveraging the ArgoCD [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern.
 
-To configure the framework to leverage ArgoCD for managing add-ons, you must pass configuration for a root ArgoCD Application that points to your desired add-ons. You can specify the root application by setting the `add_on_application` value to true in your application configuration.
+To indicate that ArgoCD should responsible for managing cluster add-ons (applying add-on Helm charts to a cluster), you can set the `argocd_manage_add_ons` property to true. When this flag is set, the framework will still provision all AWS resources necessary to support add-on functionality, but it will not apply Helm charts directly via the Terraform Helm provider. 
 
-Additionally, you must set the `argocd_manage_add_ons` property to true. When this flag is set, the framework will still provision all AWS resources necessary to support add-on functionality, but it will not apply Helm charts directly via Terraform. Instead, the framework will pass AWS resource values needed for each add-on to ArgoCD via the values map of the root add-on Application. For specific values passed for each add-on, see the individual add-on documentation.
+Next, identify which ArgoCD Application will serve as the add-on configuration repository by setting the `add_on_application` flag to true. When this flag is set, the framework will aggregate AWS resource values that are needed for each add-on into an object. It will then pass that object to ArgoCD via the values map of the Application resource. [See here](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/blob/main/modules/kubernetes-addons/locals.tf#L4) for the values object that gets passed to the ArgoCD add-ons Application. 
 
 Sample configuration can be found below:
 
@@ -65,15 +71,71 @@ Sample configuration can be found below:
 enable_argocd           = true
 argocd_manage_add_ons   = true
 argocd_applications     = {
-  infra = {
-    namespace             = "argocd"
-    path                  = "<path>"
-    repo_url              = "<repo_url>"
-    target_revision       = "HEAD"
-    destination           = "https://kubernetes.default.svc"
-    project               = "default"
-    values                = {}
-    add_on_application    = true # Indicates the root add-on application.
+  addons = {
+    path                = "chart"
+    repo_url            = "https://github.com/aws-samples/ssp-eks-add-ons.git"
+    add_on_application  = true # Indicates the root add-on application.
+  }
+}
+```
+
+### Private Repositories
+
+In order to leverage ArgoCD with private Git repositories, you must supply a private SSH key to Argo. The framework provides support for doing so via an integration with AWS Secrets Manager. 
+
+To leverage private repositories, do the following:
+
+1. Create a new secret in AWS Secrets Manager for your desired region. The value for the secret should be a private SSH key for your Git provider. 
+2. Set the `ssh_key_secret_name` in each Application's configuration as the name of the secret. 
+
+Internally, the framework will create a Kubernetes Secret, which ArgoCD will leverage when making requests to your Git provider. See example configuration below.
+
+```
+enable_argocd           = true
+argocd_manage_add_ons   = true
+argocd_applications     = {
+  addons = {
+    path                = "chart"
+    repo_url            = "git@github.com:aws-samples/ssp-eks-add-ons.git"
+    project             = "default"
+    add_on_application  = true              # Indicates the root add-on application.
+    ssh_key_secret_name = "github-ssh-key"  # Needed for private repos
+  }
+}
+```
+
+### Complete Example 
+
+The following demonstrates a complete example for configuring ArgoCD. 
+
+```
+enable_argocd                       = true
+argocd_manage_add_ons               = true
+argocd_admin_password_secret_name   = <secret_name>
+
+argocd_helm_config = {
+  name             = "argo-cd"
+  chart            = "argo-cd"
+  repository       = "https://argoproj.github.io/argo-helm"
+  version          = "3.29.5"
+  namespace        = "argocd"
+  timeout          = "1200"
+  create_namespace = true
+  values = [templatefile("${path.module}/argocd-values.yaml", {})]
+}
+
+argocd_applications = {
+  workloads = {
+    path                = "envs/dev"
+    repo_url            = "https://github.com/aws-samples/ssp-eks-workloads.git"
+    values              = {}
+  }
+  addons = {
+    path                = "chart"
+    repo_url            = "git@github.com:aws-samples/ssp-eks-add-ons.git"
+    add_on_application  = true              # Indicates the root add-on application.
+    ssh_key_secret_name = "github-ssh-key"  # Needed for private repos
+    values              = {}
   }
 }
 ```

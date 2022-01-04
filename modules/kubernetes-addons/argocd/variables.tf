@@ -22,10 +22,16 @@ variable "helm_config" {
   description = "ArgoCD Helm Chart Config values"
 }
 
-variable "argocd_applications" {
+variable "applications" {
   type        = any
   default     = {}
   description = "ArgoCD Application config used to bootstrap a cluster."
+}
+
+variable "admin_password_secret_name" {
+  type        = string
+  default     = ""
+  description = "Name for a secret stored in AWS Secrets Manager that contains the admin password for ArgoCD."
 }
 
 variable "eks_cluster_id" {
