@@ -56,7 +56,7 @@ terraform {
 locals {
   tenant      = "aws001"  # AWS account name or unique id for tenant
   environment = "preprod" # Environment area eg., preprod or prod
-  zone        = "spark"     # Environment with in one sub_tenant or business unit
+  zone        = "spark"   # Environment with in one sub_tenant or business unit
 
   kubernetes_version = "1.21"
 
