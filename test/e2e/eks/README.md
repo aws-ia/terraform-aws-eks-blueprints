@@ -2,7 +2,7 @@
 
     git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 
-    cd ~/aws-eks-accelerator-for-terraform/test/e2e/eks
+    cd ~/aws-eks-accelerator-for-terraform/deploy/e2e/eks
 
     terraform init -backend-config backend.conf -reconfigure
 
