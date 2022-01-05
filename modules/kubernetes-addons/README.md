@@ -76,6 +76,7 @@ No resources.
 | <a name="input_amazon_prometheus_ingest_iam_role_arn"></a> [amazon\_prometheus\_ingest\_iam\_role\_arn](#input\_amazon\_prometheus\_ingest\_iam\_role\_arn) | AWS Managed Prometheus WorkSpaceSpace IAM role ARN | `string` | `null` | no |
 | <a name="input_amazon_prometheus_ingest_service_account"></a> [amazon\_prometheus\_ingest\_service\_account](#input\_amazon\_prometheus\_ingest\_service\_account) | AWS Managed Prometheus Ingest Service Account | `string` | `null` | no |
 | <a name="input_amazon_prometheus_workspace_id"></a> [amazon\_prometheus\_workspace\_id](#input\_amazon\_prometheus\_workspace\_id) | AWS Managed Prometheus WorkSpace Name | `string` | `null` | no |
+| <a name="input_argocd_admin_password_secret_name"></a> [argocd\_admin\_password\_secret\_name](#input\_argocd\_admin\_password\_secret\_name) | Name for a secret stored in AWS Secrets Manager that contains an plaintext admin password. | `string` | `""` | no |
 | <a name="input_argocd_applications"></a> [argocd\_applications](#input\_argocd\_applications) | Argo CD Applications config to bootstrap the cluster | `any` | `{}` | no |
 | <a name="input_argocd_helm_config"></a> [argocd\_helm\_config](#input\_argocd\_helm\_config) | Argo CD Kubernetes add-on config | `any` | `{}` | no |
 | <a name="input_argocd_manage_add_ons"></a> [argocd\_manage\_add\_ons](#input\_argocd\_manage\_add\_ons) | Enable managing add-on configuration via ArgoCD | `bool` | `false` | no |
