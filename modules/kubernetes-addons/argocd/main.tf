@@ -156,7 +156,7 @@ resource "helm_release" "argocd_application" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 data "aws_secretsmanager_secret" "ssh_key_secret" {
-	for_each = { for k, v in var.applications : k => v if v.ssh_key_secret_name == "" }
+  for_each = { for k, v in var.applications : k => v if v.ssh_key_secret_name == "" }
   name     = each.value.ssh_key_secret_name
 }
 
@@ -166,7 +166,7 @@ data "aws_secretsmanager_secret_version" "ssh_key_secret_version" {
 }
 
 resource "kubernetes_secret" "argocd_gitops" {
-	for_each = { for k, v in var.applications : k => v if v.ssh_key_secret_name == "" }
+  for_each = { for k, v in var.applications : k => v if v.ssh_key_secret_name == "" }
 
   metadata {
     name      = "${each.key}-repo-secret"
