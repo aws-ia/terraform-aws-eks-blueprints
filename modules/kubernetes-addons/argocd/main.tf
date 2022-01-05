@@ -80,11 +80,13 @@ resource "helm_release" "argocd" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 data "aws_secretsmanager_secret" "admin_password_secret" {
-  name = var.admin_password_secret_name
+  count = var.admin_password_secret_name == "" ? 0 : 1
+  name  = var.admin_password_secret_name
 }
 
 data "aws_secretsmanager_secret_version" "admin_password_secret_version" {
-  secret_id = data.aws_secretsmanager_secret.admin_password_secret.id
+  count     = var.admin_password_secret_name == "" ? 0 : 1
+  secret_id = data.aws_secretsmanager_secret.admin_password_secret[0].id
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -154,17 +156,17 @@ resource "helm_release" "argocd_application" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 data "aws_secretsmanager_secret" "ssh_key_secret" {
-  for_each = var.applications
+	for_each = { for k, v in var.applications : k => v if v.ssh_key_secret_name == "" }
   name     = each.value.ssh_key_secret_name
 }
 
 data "aws_secretsmanager_secret_version" "ssh_key_secret_version" {
-  for_each  = var.applications
+  for_each = { for k, v in var.applications : k => v if v.ssh_key_secret_name == "" }
   secret_id = data.aws_secretsmanager_secret.ssh_key_secret[each.key].id
 }
 
 resource "kubernetes_secret" "argocd_gitops" {
-  for_each = var.applications
+	for_each = { for k, v in var.applications : k => v if v.ssh_key_secret_name == "" }
 
   metadata {
     name      = "${each.key}-repo-secret"

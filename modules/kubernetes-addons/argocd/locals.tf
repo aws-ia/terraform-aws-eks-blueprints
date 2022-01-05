@@ -50,7 +50,7 @@ locals {
     clusterName = var.eks_cluster_id
   }
 
-  admin_password = data.aws_secretsmanager_secret_version.admin_password_secret_version.secret_string
+  admin_password = var.admin_password_secret_name == "" ? "" : data.aws_secretsmanager_secret_version.admin_password_secret_version[0].secret_string
   default_helm_values = [templatefile("${path.module}/values.yaml", {
     admin_password : bcrypt(local.admin_password, 10)
   })]

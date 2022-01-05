@@ -29,7 +29,7 @@ variable "applications" {
 }
 
 variable "admin_password_secret_name" {
-  type        = any
+  type        = string
   default     = ""
   description = "Name for a secret stored in AWS Secrets Manager that contains the admin password for ArgoCD."
 }

@@ -276,8 +276,8 @@ variable "argocd_applications" {
 }
 
 variable "argocd_admin_password_secret_name" {
-  type        = any
-  default     = {}
+  type        = string
+  default     = ""
   description = "Name for a secret stored in AWS Secrets Manager that contains an plaintext admin password."
 }
 
