@@ -70,7 +70,7 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
 
 # How to Destroy
 ```shell script
-cd deploy/1-eks-cluster-with-new-vpc
+cd examples/1-eks-cluster-with-new-vpc
 terraform destroy
 ```
 

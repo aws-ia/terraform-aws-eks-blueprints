@@ -25,7 +25,7 @@ Clone `aws-eks-accelerator-for-terraform` repo and change to `emr-on-eks` direct
 ```sh
 git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 
-cd aws-eks-accelerator-for-terraform/deploy/analytics/emr-on-eks
+cd aws-eks-accelerator-for-terraform/examples/analytics/emr-on-eks
 ```
 
 ### Step2: Deploy EKS Cluster with EMR on EKS Resources
@@ -62,7 +62,7 @@ Let’s verify the resources
 
 Navigate to the directory below and execute create_emr_virtual_cluster_for_eks.sh script. This command should take a few seconds to create an EMR Virtual cluster
 ```sh
-cd ~/aws-eks-accelerator-for-terraform/deploy/analytics/emr-on-eks/examples
+cd ~/aws-eks-accelerator-for-terraform/examples/analytics/emr-on-eks/examples
 
 ./create_emr_virtual_cluster_for_eks.sh aws001-preprod-test-eks-emr-data-team-a
 ```
@@ -99,7 +99,7 @@ if [[ $VIRTUAL_CLUSTER_ID = "" ]]; then
 Navigate to the below directory and execute the shell script by providing EMR_VIRTUAL_CLUSTER_ID and S3_BUCKET names as input parameters. Please note that you need to _create an S3 Bucket_ (https://docs.aws.amazon.com/cli/latest/reference/s3api/create-bucket.html) in the AWS account and provide the bucket's name before running this command.
 
 ```shell script
-cd ~/aws-eks-accelerator-for-terraform/deploy/analytics/emr-on-eks/examples/spark-execute
+cd ~/aws-eks-accelerator-for-terraform/examples/analytics/emr-on-eks/examples/spark-execute
 
 ./5-spark-job-with-AMP-AMG.sh \
     aws001-preprod-test-eks-emr-data-team-a \

@@ -25,7 +25,7 @@ terraform {
 }
 
 module "eks-cluster-with-import-vpc" {
-  source = "../../../deploy/2-eks-cluster-with-import-vpc/vpc"
+  source = "../../../examples/2-eks-cluster-with-import-vpc/vpc"
 
   tenant      = var.tenant
   environment = var.environment
