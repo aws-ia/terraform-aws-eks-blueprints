@@ -95,7 +95,7 @@ resource "aws_prometheus_workspace" "amp_workspace" {
 }
 
 module "irsa_amp_ingest" {
-  count = var.enable_amp_for_prometheus ? 1 : 0
+  count                       = var.enable_amp_for_prometheus ? 1 : 0
   source                      = "../../../modules/irsa"
   eks_cluster_id              = var.eks_cluster_id
   kubernetes_namespace        = local.helm_config["namespace"]
@@ -108,7 +108,7 @@ module "irsa_amp_ingest" {
 }
 
 module "irsa_amp_query" {
-  count = var.enable_amp_for_prometheus ? 1 : 0
+  count                       = var.enable_amp_for_prometheus ? 1 : 0
   source                      = "../../../modules/irsa"
   eks_cluster_id              = var.eks_cluster_id
   kubernetes_namespace        = local.helm_config["namespace"]
