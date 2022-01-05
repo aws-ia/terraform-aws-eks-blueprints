@@ -48,9 +48,9 @@ locals {
   })]
 
   amazon_prometheus_workspace_id           = var.amazon_prometheus_workspace_id == null && var.enable_amp_for_prometheus ? aws_prometheus_workspace.amp_workspace[0].id : var.amazon_prometheus_workspace_id
-  amp_workspace_url                        = var.enable_amp_for_prometheus && local.amazon_prometheus_workspace_id != null ? "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${local.amazon_prometheus_workspace_id}/api/v1/remote_write" : null
-  amazon_prometheus_ingest_iam_role_arn    = var.enable_amp_for_prometheus ? module.irsa.*.ingest.irsa_iam_role_arn[0] : null
-  amazon_prometheus_ingest_service_account = local.irsa_config.ingest.service_account
+  amazon_prometheus_workspace_url          = var.enable_amp_for_prometheus ? "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${local.amazon_prometheus_workspace_id}/api/v1/remote_write" : null
+  amazon_prometheus_ingest_iam_role_arn    = var.enable_amp_for_prometheus ? module.irsa_amp_ingest[0].irsa_iam_role_arn : null
+  amazon_prometheus_ingest_service_account = "amp-ingest"
 
   amp_config_values = var.enable_amp_for_prometheus ? [{
     name  = "serviceAccounts.server.name"
@@ -66,30 +66,16 @@ locals {
     },
     {
       name  = "server.remoteWrite[0].url"
-      value = local.amp_workspace_url
+      value = local.amazon_prometheus_workspace_url
     },
     {
       name  = "server.remoteWrite[0].sigv4.region"
       value = data.aws_region.current.id
   }] : []
 
-  irsa_config = {
-    ingest = {
-      service_account             = "amp-ingest",
-      create_kubernetes_namespace = false,
-      irsa_iam_policies           = var.enable_amp_for_prometheus ? [aws_iam_policy.ingest[0].arn] : []
-
-    },
-    query = {
-      service_account             = "amp-query",
-      create_kubernetes_namespace = false,
-      irsa_iam_policies           = var.enable_amp_for_prometheus ? [aws_iam_policy.query[0].arn] : []
-    }
-  }
-
   argocd_gitops_config = {
     enable             = true
-    ampWorkspaceUrl    = local.amp_workspace_url
+    ampWorkspaceUrl    = local.amazon_prometheus_workspace_url
     roleArn            = local.amazon_prometheus_ingest_iam_role_arn
     serviceAccountName = local.amazon_prometheus_ingest_service_account
   }

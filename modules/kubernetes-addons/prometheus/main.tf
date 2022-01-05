@@ -89,21 +89,32 @@ resource "kubernetes_namespace_v1" "prometheus" {
 }
 
 # Amazon Managed Prometheus Resources
-
 resource "aws_prometheus_workspace" "amp_workspace" {
   count = var.amazon_prometheus_workspace_id == null && var.enable_amp_for_prometheus ? 1 : 0
   alias = format("%s-%s", "amp", var.eks_cluster_id)
 }
 
-module "irsa" {
-  for_each = { for k, v in local.irsa_config : k => v if var.enable_amp_for_prometheus }
-
+module "irsa_amp_ingest" {
+  count = var.enable_amp_for_prometheus ? 1 : 0
   source                      = "../../../modules/irsa"
   eks_cluster_id              = var.eks_cluster_id
   kubernetes_namespace        = local.helm_config["namespace"]
-  create_kubernetes_namespace = each.value["create_kubernetes_namespace"]
-  kubernetes_service_account  = each.value["service_account"]
-  irsa_iam_policies           = each.value["irsa_iam_policies"]
+  create_kubernetes_namespace = false
+  kubernetes_service_account  = local.amazon_prometheus_ingest_service_account
+  irsa_iam_policies           = [aws_iam_policy.ingest[0].arn]
+  tags                        = var.tags
+
+  depends_on = [kubernetes_namespace_v1.prometheus]
+}
+
+module "irsa_amp_query" {
+  count = var.enable_amp_for_prometheus ? 1 : 0
+  source                      = "../../../modules/irsa"
+  eks_cluster_id              = var.eks_cluster_id
+  kubernetes_namespace        = local.helm_config["namespace"]
+  create_kubernetes_namespace = false
+  kubernetes_service_account  = "amp-query"
+  irsa_iam_policies           = [aws_iam_policy.query[0].arn]
   tags                        = var.tags
 
   depends_on = [kubernetes_namespace_v1.prometheus]
