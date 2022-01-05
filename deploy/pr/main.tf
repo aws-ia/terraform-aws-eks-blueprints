@@ -37,7 +37,7 @@ data "terraform_remote_state" "vpc_s3_backend" {
 }
 
 module "eks-cluster-with-import-vpc" {
-  source = "../../deploy/advanced/k8s_addons"
+  source = "../../examples/advanced/k8s_addons"
 
   tenant      = "aws"
   environment = "preprod"

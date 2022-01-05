@@ -37,14 +37,14 @@ Enable Spark-K8S-Operator on EKS Cluster
 Create Spark Namespace, Service Account and ClusterRole and ClusterRole Binding for the jobs
 
 ```shell script
-./examples/8-Spark-on-k8s-operator-with-EKS/test/spark-k8s-templates/spark-teams-setup.yaml
+./examples/analytics/spark-k8s-operator/k8s-schedular/spark-teams-setup.yaml
 ```
 
 ##Step3:
 Execute first spark job with simple example
 
 ```shell script
-.examples/8-Spark-on-k8s-operator-with-EKS/test/spark-k8s-templates/pyspark-pi-job.yaml
+./examples/analytics/spark-k8s-operator/k8s-schedular/pyspark-pi-job.yaml
 ```
 
 

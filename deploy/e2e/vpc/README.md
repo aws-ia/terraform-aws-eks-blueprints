@@ -2,7 +2,7 @@
 
     git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 
-    cd ~/aws-eks-accelerator-for-terraform/test/e2e/vpc
+    cd ~/aws-eks-accelerator-for-terraform/deploy/e2e/vpc
 
     terraform init -backend-config backend.conf -reconfigure
 
@@ -45,7 +45,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eks-cluster-with-import-vpc"></a> [eks-cluster-with-import-vpc](#module\_eks-cluster-with-import-vpc) | ../../../deploy/2-eks-cluster-with-import-vpc/vpc | n/a |
+| <a name="module_eks-cluster-with-import-vpc"></a> [eks-cluster-with-import-vpc](#module\_eks-cluster-with-import-vpc) | ../../../examples/2-eks-cluster-with-import-vpc/vpc | n/a |
 
 ## Resources
 

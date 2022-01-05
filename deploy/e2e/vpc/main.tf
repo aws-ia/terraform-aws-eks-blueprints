@@ -25,15 +25,11 @@ terraform {
 }
 
 module "eks-cluster-with-import-vpc" {
-  source = "../../../deploy/2-eks-cluster-with-import-vpc/eks"
+  source = "../../../examples/2-eks-cluster-with-import-vpc/vpc"
 
   tenant      = var.tenant
   environment = var.environment
   zone        = var.zone
   region      = var.region
-
-  # VPC S3 TF State
-  tf_state_vpc_s3_bucket = var.tf_state_vpc_s3_bucket
-  tf_state_vpc_s3_key    = var.tf_state_vpc_s3_key
 
 }
