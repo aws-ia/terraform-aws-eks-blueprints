@@ -79,7 +79,8 @@ No requirements.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_irsa"></a> [irsa](#module\_irsa) | ../../../modules/irsa | n/a |
+| <a name="module_irsa_amp_ingest"></a> [irsa\_amp\_ingest](#module\_irsa\_amp\_ingest) | ../../../modules/irsa | n/a |
+| <a name="module_irsa_amp_query"></a> [irsa\_amp\_query](#module\_irsa\_amp\_query) | ../../../modules/irsa | n/a |
 
 ## Resources
 
