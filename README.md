@@ -20,7 +20,7 @@ The easiest way to get started with this framework is to follow our [Getting Sta
 For complete project documentation, please visit our [documentation directory](./docs).
 
 ## Patterns
-To view examples for how you can leverage this framework, see the [deploy](./deploy) directory.
+To view examples for how you can leverage this framework, see the [examples](./examples) directory.
 
 ## Usage Example
 The below demonstrates how you can leverage this framework to deploy an EKS cluster, a managed node group, and various Kubernetes add-ons.

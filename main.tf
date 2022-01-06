@@ -105,6 +105,7 @@ module "emr_on_eks" {
 }
 
 resource "kubernetes_config_map" "amazon_vpc_cni" {
+  count = var.enable_windows_support ? 1 : 0
   metadata {
     name      = "amazon-vpc-cni"
     namespace = "kube-system"
@@ -115,6 +116,7 @@ resource "kubernetes_config_map" "amazon_vpc_cni" {
   }
 
   depends_on = [
-    module.aws_eks
+    module.aws_eks,
+    data.http.eks_cluster_readiness[0]
   ]
 }

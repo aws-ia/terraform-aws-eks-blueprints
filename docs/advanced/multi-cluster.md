@@ -2,7 +2,7 @@
 
 This example shows how to structure folders in your repo when you want to deploy multiple EKS Clusters across multiple regions and accounts.
 
-The top-level `deploy\advanced` folder provides an example of how you can structure your folders and files to define multiple EKS Cluster environments and consume this accelerator module. This approach is suitable for large projects, with clearly defined sub directory and file structure.
+The top-level `examples\advanced` folder provides an example of how you can structure your folders and files to define multiple EKS Cluster environments and consume this accelerator module. This approach is suitable for large projects, with clearly defined sub directory and file structure.
 
 Each folder under `live/<region>/application` represents an EKS cluster environment(e.g., dev, test, load etc.). Each folder contains a `backend.conf` and `<env>.tfvars`, used to create a unique Terraform state for each cluster environment.
 
@@ -10,7 +10,7 @@ Terraform backend configuration can be updated in `backend.conf` and cluster com
 
 e.g. folder/file structure for defining multiple clusters
 
-        ├── deploy\advanced
+        ├── examples\advanced
         │   └── live
         │       └── preprod
         │           └── eu-west-1
