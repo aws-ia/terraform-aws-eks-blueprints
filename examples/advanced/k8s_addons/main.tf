@@ -309,10 +309,10 @@ module "kubernetes-addons" {
   # COMMUNITY PROMETHEUS ENABLE
   #---------------------------------------
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
-  enable_amp_for_prometheus = true
+  enable_amp_for_prometheus      = true
   amazon_prometheus_workspace_id = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_id
 
-  enable_prometheus         = true
+  enable_prometheus = true
   # Optional Map value
   prometheus_helm_config = {
     name       = "prometheus"                                         # (Required) Release name.
