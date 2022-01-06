@@ -163,8 +163,8 @@ module "kubernetes-addons" {
   # PROMETHEUS and Amazon Prometheus Config
   #---------------------------------------
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
-  enable_amp_for_prometheus      = true
-  amazon_prometheus_workspace_id = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_id
+  enable_amazon_prometheus      = true
+  amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
 
   # Enabling Prometheus Server Add-on
   enable_prometheus = true

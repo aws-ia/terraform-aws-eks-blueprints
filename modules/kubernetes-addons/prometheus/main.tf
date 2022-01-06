@@ -57,7 +57,7 @@ resource "helm_release" "prometheus" {
 
   dynamic "set" {
     iterator = each_item
-    for_each = var.enable_amp_for_prometheus && var.amazon_prometheus_workspace_id != null ? distinct(concat(local.amp_config_values, local.helm_config["set"])) : local.helm_config["set"]
+    for_each = var.amazon_prometheus_workspace_endpoint != null ? distinct(concat(local.amp_config_values, local.helm_config["set"])) : local.helm_config["set"]
 
     content {
       name  = each_item.value.name
@@ -89,7 +89,7 @@ resource "kubernetes_namespace_v1" "prometheus" {
 }
 
 module "irsa_amp_ingest" {
-  count                       = var.enable_amp_for_prometheus ? 1 : 0
+  count                       = var.enable_amazon_prometheus ? 1 : 0
   source                      = "../../../modules/irsa"
   eks_cluster_id              = var.eks_cluster_id
   kubernetes_namespace        = local.helm_config["namespace"]
@@ -102,7 +102,7 @@ module "irsa_amp_ingest" {
 }
 
 module "irsa_amp_query" {
-  count                       = var.enable_amp_for_prometheus ? 1 : 0
+  count                       = var.enable_amazon_prometheus ? 1 : 0
   source                      = "../../../modules/irsa"
   eks_cluster_id              = var.eks_cluster_id
   kubernetes_namespace        = local.helm_config["namespace"]
@@ -115,7 +115,7 @@ module "irsa_amp_query" {
 }
 
 resource "aws_iam_policy" "ingest" {
-  count       = var.enable_amp_for_prometheus ? 1 : 0
+  count       = var.enable_amazon_prometheus ? 1 : 0
   name        = format("%s-%s", "amp-ingest", var.eks_cluster_id)
   description = "Set up the permission policy that grants ingest (remote write) permissions for AMP workspace"
   path        = var.iam_role_path
@@ -123,7 +123,7 @@ resource "aws_iam_policy" "ingest" {
 }
 
 resource "aws_iam_policy" "query" {
-  count       = var.enable_amp_for_prometheus ? 1 : 0
+  count       = var.enable_amazon_prometheus ? 1 : 0
   name        = format("%s-%s", "amp-query", var.eks_cluster_id)
   description = "Set up the permission policy that grants query permissions for AMP workspace"
   path        = var.iam_role_path

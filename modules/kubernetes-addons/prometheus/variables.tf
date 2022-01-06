@@ -26,16 +26,16 @@ variable "eks_cluster_id" {
   description = "EKS Cluster Id"
 }
 
-variable "enable_amp_for_prometheus" {
+variable "enable_amazon_prometheus" {
   type        = bool
   default     = false
   description = "Enable AWS Managed Prometheus service"
 }
 
-variable "amazon_prometheus_workspace_id" {
+variable "amazon_prometheus_workspace_endpoint" {
   type        = string
   default     = null
-  description = "Amazon Managed Prometheus Workspace ID"
+  description = "Amazon Managed Prometheus Workspace Endpoint"
 }
 
 variable "iam_role_path" {

@@ -96,16 +96,16 @@ variable "cluster_autoscaler_helm_config" {
 }
 
 #-----------Amazon Managed Service for Prometheus-------------
-variable "enable_amp_for_prometheus" {
+variable "enable_amazon_prometheus" {
   type        = bool
   default     = false
   description = "Enable AWS Managed Prometheus service"
 }
 
-variable "amazon_prometheus_workspace_id" {
+variable "amazon_prometheus_workspace_endpoint" {
   type        = string
   default     = null
-  description = "AWS Managed Prometheus WorkSpace Name"
+  description = "AWS Managed Prometheus WorkSpace Endpoint"
 }
 
 variable "amazon_prometheus_ingest_iam_role_arn" {

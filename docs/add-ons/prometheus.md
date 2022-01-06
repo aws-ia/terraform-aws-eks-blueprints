@@ -10,7 +10,7 @@ The following will deploy the Prometheus server into an EKS Cluster and provisio
 
 ```hcl-terraform
 # Creates the AMP workspace and all the relevent IAM Roles
-enable_amp_for_prometheus         = true
+enable_amazon_prometheus         = true
 
 # Deploys Prometheus server with remote write to AWS AMP Workspace
 enable_prometheus             = true
@@ -23,8 +23,8 @@ Enable Prometheus with custom `values.yaml`
   # Prometheus Server integration with Amazon Prometheus
   #---------------------------------------
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
-  enable_amp_for_prometheus = true
-  amazon_prometheus_workspace_id = "<Enter Amazon Workspace ID>" # eg.,  module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_id
+  enable_amazon_prometheus = true
+  amazon_prometheus_workspace_endpoint = "<Enter Amazon Workspace Endpoint>" # eg.,  module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
 
   enable_prometheus = true
   # Optional Map value
