@@ -29,7 +29,7 @@ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 Navigate into one of the example directories and run `terraform init`
 
 ```
-cd deploy/analytics/spark-k8s-operator
+cd examples/analytics/spark-k8s-operator
 terraform init
 ```
 
@@ -76,14 +76,14 @@ Enable Spark-K8S-Operator on EKS Cluster
  - Create Spark Namespace, Service Account and ClusterRole and ClusterRole Binding for the jobs
 
 ```shell script
-   cd deploy/analytics/spark-k8s-operator/k8s-schedular
+   cd examples/analytics/spark-k8s-operator/k8s-schedular
    kubectl apply -f spark-teams-setup.yaml
 ```
 
 - Execute first spark job with simple example
 
 ```shell script
-  cd deploy/analytics/spark-k8s-operator/k8s-schedular
+  cd examples/analytics/spark-k8s-operator/k8s-schedular
   kubectl apply -f pyspark-pi-job.yaml
 ```
 
