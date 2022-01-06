@@ -57,7 +57,7 @@ resource "helm_release" "prometheus" {
 
   dynamic "set" {
     iterator = each_item
-    for_each = var.enable_amp_for_prometheus ? distinct(concat(local.amp_config_values, local.helm_config["set"])) : local.helm_config["set"]
+    for_each = var.enable_amp_for_prometheus && var.amazon_prometheus_workspace_id != null ? distinct(concat(local.amp_config_values, local.helm_config["set"])) : local.helm_config["set"]
 
     content {
       name  = each_item.value.name
@@ -86,12 +86,6 @@ resource "kubernetes_namespace_v1" "prometheus" {
       "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
     }
   }
-}
-
-# Amazon Managed Prometheus Resources
-resource "aws_prometheus_workspace" "amp_workspace" {
-  count = var.amazon_prometheus_workspace_id == null && var.enable_amp_for_prometheus ? 1 : 0
-  alias = format("%s-%s", "amp", var.eks_cluster_id)
 }
 
 module "irsa_amp_ingest" {

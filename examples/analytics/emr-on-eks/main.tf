@@ -98,7 +98,7 @@ module "aws_vpc" {
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  source = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
+  source = "../../.."
 
   create_eks = true
 
@@ -145,10 +145,13 @@ module "aws-eks-accelerator-for-terraform" {
     }
   }
 
+  # Enable Amazon Prometheus - Creates a new Workspace id
+  enable_amazon_prometheus = true
+
 }
 
 module "kubernetes-addons" {
-  source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
+  source = "../../../modules/kubernetes-addons"
 
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
@@ -159,8 +162,11 @@ module "kubernetes-addons" {
   #---------------------------------------
   # PROMETHEUS and Amazon Prometheus Config
   #---------------------------------------
+  # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
   enable_amp_for_prometheus = true
-  # amazon_prometheus_workspace_id = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_id # Optional variable to use existing AMP workspace or it will create a new one
+  amazon_prometheus_workspace_id = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_id
+
+  # Enabling Prometheus Server Add-on
   enable_prometheus = true
   # Optional Map value
   prometheus_helm_config = {
