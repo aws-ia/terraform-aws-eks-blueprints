@@ -309,7 +309,7 @@ module "kubernetes-addons" {
   # COMMUNITY PROMETHEUS ENABLE
   #---------------------------------------
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
-  enable_amazon_prometheus      = true
+  enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
 
   enable_prometheus = true
