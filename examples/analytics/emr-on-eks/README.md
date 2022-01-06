@@ -27,7 +27,7 @@ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 Navigate into one of the example directories and run `terraform init`
 
 ```
-cd deploy/analytics/emr-on-eks
+cd examples/analytics/emr-on-eks
 terraform init
 ```
 
@@ -52,7 +52,7 @@ Enter `yes` to apply.
 We are using AWS CLI to create EMR on EKS Clusters. You can leverage Terraform Module once the [EMR on EKS TF provider](https://github.com/hashicorp/terraform-provider-aws/pull/20003) is available.
 
 ```shell script
-vi deploy/analytics/emr-on-eks/examples/create_emr_virtual_cluster_for_eks.sh
+vi examples/analytics/emr-on-eks/examples/create_emr_virtual_cluster_for_eks.sh
 ```
 
 Update the following variables.
@@ -66,7 +66,7 @@ Extract the cluster_name as **EKS_CLUSTER_ID** from Terraform Outputs (**Step1**
 Execute the shell script to create virtual cluster
 
 ```shell script
-cd deploy/analytics/emr-on-eks/examples/
+cd examples/analytics/emr-on-eks/examples/
 ./create_emr_virtual_cluster_for_eks.sh
 ```
 
@@ -75,7 +75,7 @@ cd deploy/analytics/emr-on-eks/examples/
 Open and edit the `5-spark-job-with-AMP-AMG.sh` file
 
 ```shell script
-vi deploy/analytics/emr-on-eks/examples/spark-execute/5-spark-job-with-AMP-AMG.sh
+vi examples/analytics/emr-on-eks/examples/spark-execute/5-spark-job-with-AMP-AMG.sh
 ```
 
 Update the following variables. Extract the emr_on_eks_role_id as **EMR_ROLE_ID** and cluster_name as **EKS_CLUSTER_ID** from Terraform Outputs (**Step1**)
@@ -88,7 +88,7 @@ Update the following variables. Extract the emr_on_eks_role_id as **EMR_ROLE_ID*
 Execute Sample PySpark Job.
 
 ```shell script
-cd deploy/analytics/emr-on-eks/examples/spark-execute/
+cd examples/analytics/emr-on-eks/examples/spark-execute/
 ./5-spark-job-with-AMP-AMG.sh
 ```
 
@@ -99,7 +99,7 @@ Verify the job is running in EMR under Virtual Clusters. Also, query JOB resourc
 ### Delete EMR Virtual Cluster for EKS
 
 ```shell script
-cd deploy/analytics/emr-on-eks/examples/
+cd examples/analytics/emr-on-eks/examples/
 ./delete_emr_virtual_cluster_for_eks.sh
 ```
 
