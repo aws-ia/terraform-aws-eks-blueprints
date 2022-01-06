@@ -48,7 +48,7 @@ locals {
   })]
 
   amazon_prometheus_workspace_id           = var.amazon_prometheus_workspace_id != null && var.enable_amp_for_prometheus ? var.amazon_prometheus_workspace_id : null
-  amazon_prometheus_workspace_url          = var.enable_amp_for_prometheus && var.amazon_prometheus_workspace_id != null? "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${local.amazon_prometheus_workspace_id}/api/v1/remote_write" : null
+  amazon_prometheus_workspace_url          = var.enable_amp_for_prometheus && var.amazon_prometheus_workspace_id != null ? "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${local.amazon_prometheus_workspace_id}/api/v1/remote_write" : null
   amazon_prometheus_ingest_iam_role_arn    = var.enable_amp_for_prometheus ? module.irsa_amp_ingest[0].irsa_iam_role_arn : null
   amazon_prometheus_ingest_service_account = "amp-ingest"
 
