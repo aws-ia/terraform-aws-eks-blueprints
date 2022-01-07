@@ -96,4 +96,3 @@ resource "aws_iam_policy" "keda_irsa" {
   path        = var.iam_role_path
   policy      = data.aws_iam_policy_document.keda_irsa.json
 }
-
