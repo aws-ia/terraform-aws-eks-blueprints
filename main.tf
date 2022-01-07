@@ -31,7 +31,7 @@ module "eks_tags" {
 # ---------------------------------------------------------------------------------------------------------------------
 # EKS CONTROL PLANE
 # ---------------------------------------------------------------------------------------------------------------------
-#TODO Create KMS alias and assign it
+
 resource "aws_kms_key" "eks" {
   description = "EKS Cluster Secret Encryption Key"
 }
@@ -121,6 +121,9 @@ resource "kubernetes_config_map" "amazon_vpc_cni" {
   ]
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Teams
+# ---------------------------------------------------------------------------------------------------------------------
 module "aws_eks_teams" {
   source = "./modules/aws-eks-teams"
 
@@ -133,5 +136,4 @@ module "aws_eks_teams" {
   tags              = module.eks_tags.tags
 
   depends_on = [module.aws_eks]
-
 }
