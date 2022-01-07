@@ -75,7 +75,7 @@ resource "helm_release" "lb_ingress" {
     }
   }
 
-  depends_on = [aws_iam_role.aws_load_balancer_controller_role, kubernetes_service_account.aws_load_balancer_controller_sa]
+  depends_on = [module.irsa_addon]
 }
 
 resource "aws_iam_policy" "aws_load_balancer_controller" {
@@ -92,5 +92,5 @@ module "irsa_addon" {
   kubernetes_namespace              = local.helm_config["namespace"]
   kubernetes_service_account        = local.service_account_name
   irsa_iam_policies                 = concat([aws_iam_policy.aws_load_balancer_controller.arn], local.helm_config["additional_iam_policies"])
-  tags                              = var.common_tags
+  tags                              = var.tags
 }

@@ -83,6 +83,7 @@ module "aws_load_balancer_controller" {
   eks_cluster_id        = var.eks_cluster_id
   eks_oidc_issuer_url   = var.eks_oidc_issuer_url
   eks_oidc_provider_arn = var.eks_oidc_provider_arn
+  tags                  = var.tags
   manage_via_gitops     = var.argocd_manage_add_ons
 }
 
