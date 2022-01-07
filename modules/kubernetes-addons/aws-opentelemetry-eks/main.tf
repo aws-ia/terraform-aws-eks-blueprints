@@ -109,7 +109,7 @@ resource "aws_iam_policy" "eks_aws_otel_policy" {
   name        = "AWSDistroOpenTelemetryPolicy"
   path        = "/"
   description = "AWS OTEL IAM Policy"
-  policy = data.aws_iam_policy_document.otel.json
+  policy      = data.aws_iam_policy_document.otel.json
 }
 
 resource "aws_iam_role_policy_attachment" "node_groups_role_arn" {
