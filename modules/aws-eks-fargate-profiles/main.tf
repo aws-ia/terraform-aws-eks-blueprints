@@ -1,4 +1,3 @@
-
 resource "aws_eks_fargate_profile" "eks_fargate" {
   cluster_name           = var.eks_cluster_id
   fargate_profile_name   = "${local.fargate_profiles["fargate_profile_name"]}-${var.eks_cluster_id}"
