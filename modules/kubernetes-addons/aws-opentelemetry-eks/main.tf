@@ -109,31 +109,7 @@ resource "aws_iam_policy" "eks_aws_otel_policy" {
   name        = "AWSDistroOpenTelemetryPolicy"
   path        = "/"
   description = "AWS OTEL IAM Policy"
-
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:PutLogEvents",
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:DescribeLogStreams",
-                "logs:DescribeLogGroups",
-                "xray:PutTraceSegments",
-                "xray:PutTelemetryRecords",
-                "xray:GetSamplingRules",
-                "xray:GetSamplingTargets",
-                "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-EOF
+  policy = data.aws_iam_policy_document.otel.json
 }
 
 resource "aws_iam_role_policy_attachment" "node_groups_role_arn" {

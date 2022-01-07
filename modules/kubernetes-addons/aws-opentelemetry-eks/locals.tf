@@ -16,8 +16,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-data "aws_region" "current" {}
-
 locals {
   default_addon_config = {
     namespace                        = "aws-otel-eks"
