@@ -1,4 +1,3 @@
-data "aws_region" "current" {}
 
 locals {
   default_helm_values = [templatefile("${path.module}/values.yaml", {})]
