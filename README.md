@@ -217,11 +217,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_amazon_prometheus_ingest_iam_role_arn"></a> [amazon\_prometheus\_ingest\_iam\_role\_arn](#output\_amazon\_prometheus\_ingest\_iam\_role\_arn) | Amazon Managed Prometheus Ingest IAM Role ARN |
-| <a name="output_amazon_prometheus_ingest_service_account"></a> [amazon\_prometheus\_ingest\_service\_account](#output\_amazon\_prometheus\_ingest\_service\_account) | Amazon Managed Prometheus Ingest Service Account |
-| <a name="output_amazon_prometheus_query_iam_role_arn"></a> [amazon\_prometheus\_query\_iam\_role\_arn](#output\_amazon\_prometheus\_query\_iam\_role\_arn) | Amazon Managed Prometheus Ingest IAM Role ARN |
-| <a name="output_amazon_prometheus_query_service_account"></a> [amazon\_prometheus\_query\_service\_account](#output\_amazon\_prometheus\_query\_service\_account) | Amazon Managed Prometheus Ingest Service Account |
-| <a name="output_amazon_prometheus_workspace_id"></a> [amazon\_prometheus\_workspace\_id](#output\_amazon\_prometheus\_workspace\_id) | Amazon Managed Prometheus Workspace ID |
+| <a name="output_amazon_prometheus_workspace_endpoint"></a> [amazon\_prometheus\_workspace\_endpoint](#output\_amazon\_prometheus\_workspace\_endpoint) | Amazon Managed Prometheus Workspace Endpoint |
 | <a name="output_cluster_primary_security_group_id"></a> [cluster\_primary\_security\_group\_id](#output\_cluster\_primary\_security\_group\_id) | EKS Cluster Security group ID |
 | <a name="output_cluster_security_group_id"></a> [cluster\_security\_group\_id](#output\_cluster\_security\_group\_id) | EKS Control Plane Security Group ID |
 | <a name="output_configure_kubectl"></a> [configure\_kubectl](#output\_configure\_kubectl) | Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |

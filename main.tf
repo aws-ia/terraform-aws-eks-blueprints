@@ -79,21 +79,17 @@ module "aws_eks" {
 # ---------------------------------------------------------------------------------------------------------------------
 # AWS Managed Prometheus Module
 # ---------------------------------------------------------------------------------------------------------------------
-
 module "aws_managed_prometheus" {
   count  = var.create_eks && var.enable_amazon_prometheus ? 1 : 0
   source = "./modules/aws-managed-prometheus"
 
   amazon_prometheus_workspace_alias = var.amazon_prometheus_workspace_alias
   eks_cluster_id                    = module.aws_eks.cluster_id
-  tags                              = var.tags
-
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Amazon EMR on EKS Virtual Clusters
 # ---------------------------------------------------------------------------------------------------------------------
-
 module "emr_on_eks" {
   source = "./modules/emr-on-eks"
 
@@ -106,7 +102,6 @@ module "emr_on_eks" {
   tags             = var.tags
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
-
 }
 
 resource "kubernetes_config_map" "amazon_vpc_cni" {

@@ -121,27 +121,7 @@ output "teams" {
   value       = var.create_eks && (length(var.platform_teams) > 0 || length(var.application_teams) > 0) ? module.aws_eks_teams.* : []
 }
 
-output "amazon_prometheus_workspace_id" {
-  description = "Amazon Managed Prometheus Workspace ID"
-  value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_workspace_id : null
-}
-
-output "amazon_prometheus_ingest_iam_role_arn" {
-  description = "Amazon Managed Prometheus Ingest IAM Role ARN"
-  value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_ingest_iam_role_arn : null
-}
-
-output "amazon_prometheus_query_iam_role_arn" {
-  description = "Amazon Managed Prometheus Ingest IAM Role ARN"
-  value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_query_iam_role_arn : null
-}
-
-output "amazon_prometheus_ingest_service_account" {
-  description = "Amazon Managed Prometheus Ingest Service Account"
-  value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_ingest_service_account : null
-}
-
-output "amazon_prometheus_query_service_account" {
-  description = "Amazon Managed Prometheus Ingest Service Account"
-  value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_query_service_account : null
+output "amazon_prometheus_workspace_endpoint" {
+  description = "Amazon Managed Prometheus Workspace Endpoint"
+  value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_workspace_endpoint : null
 }

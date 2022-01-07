@@ -1,29 +1,4 @@
-data "aws_region" "current" {}
-
 locals {
-
-  amp_workspace_url = var.amazon_prometheus_workspace_id != null ? "https://aps-workspaces.${data.aws_region.current.id}.amazonaws.com/workspaces/${var.amazon_prometheus_workspace_id}/api/v1/remote_write" : null
-
-  amp_config_values = var.amazon_prometheus_workspace_id != null ? [{
-    name  = "serviceAccounts.server.name"
-    value = var.amazon_prometheus_ingest_service_account
-    },
-    {
-      name  = "serviceAccounts.server.create"
-      value = false
-    },
-    {
-      name  = "serviceAccounts.server.annotations.eks\\.amazonaws\\.com/role-arn"
-      value = var.amazon_prometheus_ingest_iam_role_arn
-    },
-    {
-      name  = "server.remoteWrite[0].url"
-      value = local.amp_workspace_url
-    },
-    {
-      name  = "server.remoteWrite[0].sigv4.region"
-      value = data.aws_region.current.id
-  }] : []
 
   default_helm_config = {
     name                       = "prometheus"
@@ -31,8 +6,8 @@ locals {
     repository                 = "https://prometheus-community.github.io/helm-charts"
     version                    = "14.4.0"
     namespace                  = "prometheus"
-    timeout                    = "1200"
-    create_namespace           = true
+    timeout                    = "300"
+    create_namespace           = false
     description                = "Prometheus helm Chart deployment configuration"
     lint                       = false
     values                     = local.default_helm_values
@@ -72,10 +47,35 @@ locals {
     operating_system = "linux",
   })]
 
+  amazon_prometheus_workspace_url          = var.amazon_prometheus_workspace_endpoint != null ? "${var.amazon_prometheus_workspace_endpoint}api/v1/remote_write" : null
+  amazon_prometheus_ingest_iam_role_arn    = var.enable_amazon_prometheus ? module.irsa_amp_ingest[0].irsa_iam_role_arn : null
+  amazon_prometheus_ingest_service_account = "amp-ingest"
+
+  amp_config_values = var.enable_amazon_prometheus ? [{
+    name  = "serviceAccounts.server.name"
+    value = local.amazon_prometheus_ingest_service_account
+    },
+    {
+      name  = "serviceAccounts.server.create"
+      value = false
+    },
+    {
+      name  = "serviceAccounts.server.annotations.eks\\.amazonaws\\.com/role-arn"
+      value = local.amazon_prometheus_ingest_iam_role_arn
+    },
+    {
+      name  = "server.remoteWrite[0].url"
+      value = local.amazon_prometheus_workspace_url
+    },
+    {
+      name  = "server.remoteWrite[0].sigv4.region"
+      value = data.aws_region.current.id
+  }] : []
+
   argocd_gitops_config = {
     enable             = true
-    ampWorkspaceUrl    = local.amp_workspace_url
-    roleArn            = var.amazon_prometheus_ingest_iam_role_arn
-    serviceAccountName = var.amazon_prometheus_ingest_service_account
+    ampWorkspaceUrl    = local.amazon_prometheus_workspace_url
+    roleArn            = local.amazon_prometheus_ingest_iam_role_arn
+    serviceAccountName = local.amazon_prometheus_ingest_service_account
   }
 }

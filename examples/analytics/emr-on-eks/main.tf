@@ -16,28 +16,35 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-terraform {
-  required_version = ">= 1.0.1"
+provider "aws" {}
 
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 3.66.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.7.1"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.4.1"
-    }
+provider "kubernetes" {
+  experiments {
+    manifest_resource = true
+  }
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.cluster.endpoint
+    token                  = data.aws_eks_cluster_auth.cluster.token
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   }
 }
 
-provider "aws" {
-  region = data.aws_region.current.id
-  alias  = "default"
+data "aws_region" "current" {}
+
+data "aws_availability_zones" "available" {}
+
+data "aws_eks_cluster" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 }
 
 terraform {
@@ -45,10 +52,6 @@ terraform {
     path = "local_tf_state/terraform-main.tfstate"
   }
 }
-
-data "aws_region" "current" {}
-
-data "aws_availability_zones" "available" {}
 
 locals {
   tenant      = "aws001"  # AWS account name or unique id for tenant
@@ -121,9 +124,6 @@ module "aws-eks-accelerator-for-terraform" {
     }
   }
 
-  # Enable Amazon Managed Prometheus
-  enable_amazon_prometheus = true
-
   #---------------------------------------
   # ENABLE EMR ON EKS
   # 1. Creates namespace
@@ -139,18 +139,20 @@ module "aws-eks-accelerator-for-terraform" {
       emr_on_eks_namespace     = "emr-data-team-a"
       emr_on_eks_iam_role_name = "emr-eks-data-team-a"
     }
-
     data_team_b = {
       emr_on_eks_namespace     = "emr-data-team-b"
       emr_on_eks_iam_role_name = "emr-eks-data-team-b"
     }
-
   }
+
+  # Enable Amazon Prometheus - Creates a new Workspace id
+  enable_amazon_prometheus = true
 
 }
 
-module "k8s-addons" {
-  source         = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
+module "kubernetes-addons" {
+  source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
+
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
   #K8s Add-ons
@@ -158,12 +160,13 @@ module "k8s-addons" {
   enable_cluster_autoscaler = true
 
   #---------------------------------------
-  # PROMETHEUS CONFIG
+  # PROMETHEUS and Amazon Prometheus Config
   #---------------------------------------
-  amazon_prometheus_workspace_id           = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_id
-  amazon_prometheus_ingest_iam_role_arn    = module.aws-eks-accelerator-for-terraform.amazon_prometheus_ingest_iam_role_arn
-  amazon_prometheus_ingest_service_account = module.aws-eks-accelerator-for-terraform.amazon_prometheus_ingest_service_account
+  # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
+  enable_amazon_prometheus             = true
+  amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
 
+  # Enabling Prometheus Server Add-on
   enable_prometheus = true
   # Optional Map value
   prometheus_helm_config = {
@@ -175,7 +178,6 @@ module "k8s-addons" {
     values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
       operating_system = "linux"
     })]
-
   }
   #---------------------------------------
   # Vertical Pod Autoscaling
@@ -190,5 +192,7 @@ module "k8s-addons" {
     namespace  = "vpa-ns"                              # (Optional) The namespace to install the release into. Defaults to default
     values     = [templatefile("${path.module}/helm_values/vpa-values.yaml", {})]
   }
+
+  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 
 }
