@@ -16,8 +16,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-data "aws_caller_identity" "current" {}
-
 resource "helm_release" "keda" {
   count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.helm_config["name"]
@@ -99,46 +97,3 @@ resource "aws_iam_policy" "keda_irsa" {
   policy      = data.aws_iam_policy_document.keda_irsa.json
 }
 
-data "aws_iam_policy_document" "keda_irsa" {
-  statement {
-    effect = "Allow"
-
-    resources = [
-      "arn:aws:cloudwatch:*:${data.aws_caller_identity.current.account_id}:metric-stream/*",
-      "arn:aws:sqs:*:${data.aws_caller_identity.current.account_id}:*",
-    ]
-
-    actions = [
-      "sqs:GetQueueUrl",
-      "sqs:ListDeadLetterSourceQueues",
-      "sqs:ReceiveMessage",
-      "sqs:GetQueueAttributes",
-      "sqs:ListQueueTags",
-      "cloudwatch:DescribeAlarmHistory",
-      "cloudwatch:GetDashboard",
-      "cloudwatch:GetInsightRuleReport",
-      "cloudwatch:ListTagsForResource",
-      "cloudwatch:DescribeAlarms",
-      "cloudwatch:GetMetricStream",
-    ]
-  }
-
-  statement {
-    sid       = ""
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "cloudwatch:DescribeInsightRules",
-      "sqs:ListQueues",
-      "cloudwatch:GetMetricData",
-      "cloudwatch:ListMetricStreams",
-      "cloudwatch:DescribeAlarmsForMetric",
-      "cloudwatch:ListDashboards",
-      "cloudwatch:GetMetricStatistics",
-      "cloudwatch:GetMetricWidgetImage",
-      "cloudwatch:ListMetrics",
-      "cloudwatch:DescribeAnomalyDetectors",
-    ]
-  }
-}
