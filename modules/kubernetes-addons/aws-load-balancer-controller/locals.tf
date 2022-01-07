@@ -1,13 +1,5 @@
-data "aws_region" "current" {}
-
 locals {
   service_account_name = "aws-load-balancer-controller-sa"
-
-  default_helm_values = [templatefile("${path.module}/values.yaml", {
-    aws_region           = data.aws_region.current.name,
-    eks_cluster_id       = var.eks_cluster_id,
-    service_account_name = local.service_account_name
-  })]
 
   default_helm_config = {
     name                       = "aws-load-balancer-controller"
@@ -51,6 +43,12 @@ locals {
     local.default_helm_config,
     var.helm_config
   )
+
+  default_helm_values = [templatefile("${path.module}/values.yaml", {
+    aws_region           = data.aws_region.current.name,
+    eks_cluster_id       = var.eks_cluster_id,
+    service_account_name = local.service_account_name
+  })]
 
   argocd_gitops_config = {
     enable             = true
