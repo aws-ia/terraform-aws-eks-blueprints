@@ -91,6 +91,6 @@ module "irsa_addon" {
   eks_cluster_id                    = var.eks_cluster_id
   kubernetes_namespace              = local.helm_config["namespace"]
   kubernetes_service_account        = local.service_account_name
-  irsa_iam_policies                 = concat([aws_iam_policy.aws_load_balancer_controller.arn], local.add_on_config["additional_iam_policies"])
+  irsa_iam_policies                 = concat([aws_iam_policy.aws_load_balancer_controller.arn], local.helm_config["additional_iam_policies"])
   tags                              = var.common_tags
 }
