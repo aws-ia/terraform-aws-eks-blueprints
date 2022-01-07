@@ -24,4 +24,4 @@ Customers can use this solution to easily architect and deploy a multi-tenant SS
 
 ## Examples
 
-To view a library of examples for how you can leverage the ssp-amazon-eks, please see our [SSP Patterns repository](https://github.com/aws-ia/terraform-ssp-eks-patterns).
+To view a library of examples for how you can leverage the ssp-amazon-eks, please see our [SSP Patterns repository](https://github.com/aws-ia/aws-eks-accelerator-for-terraform).

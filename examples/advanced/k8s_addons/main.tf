@@ -514,4 +514,5 @@ module "kubernetes-addons" {
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
 
+  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }

@@ -1,0 +1,103 @@
+image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
+variables:
+  TF_ROOT: ${CI_PROJECT_DIR}
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
+
+cache:
+  key: ssp-amazon-eks
+  paths:
+    - ${TF_ROOT}/.terraform
+
+before_script:
+  - cd ${TF_ROOT}
+
+stages:
+  - tf-init
+  - tf-fmt
+  - tf-validate
+  - tf-plan
+  - tf-apply
+  - tf-destroy
+
+tf-init:
+  stage: tf-init
+  rules:
+    - exists:
+        - .destroy-cluster
+      when: never
+    - changes:
+        - "*.tf"
+  script:
+    - export DEBUG_OUTPUT=true
+    - gitlab-terraform init
+
+tf-fmt:
+  stage: tf-fmt
+  rules:
+    - exists:
+        - .destroy-cluster
+      when: never
+    - changes:
+        - "*.tf"
+  script:
+    - gitlab-terraform fmt -recursive
+
+tf-validate:
+  stage: tf-validate
+  rules:
+    - exists:
+        - .destroy-cluster
+      when: never
+    - changes:
+        - "*.tf"
+  script:
+    - gitlab-terraform validate
+
+# ${TF_ROOT}/plan.json pushes the plan into the Terraform backend of GitLab (CI)
+tf-plan:
+  stage: tf-plan
+  artifacts:
+    name: plan
+    paths:
+      - ${TF_ROOT}/plan.cache
+    reports:
+      terraform: ${TF_ROOT}/plan.json
+  rules:
+    - exists:
+        - .destroy-cluster
+      when: never
+    - changes:
+        - "*.tf"
+  script:
+    - gitlab-terraform plan
+    - gitlab-terraform plan-json
+
+tf-apply:
+  stage: tf-apply
+  dependencies:
+    - tf-plan
+  rules:
+    - exists:
+        - .destroy-cluster
+      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      changes:
+        - "*.tf"
+      when: manual
+      allow_failure: true
+  script:
+    - gitlab-terraform apply
+
+tf-destroy:
+  stage: tf-destroy
+  rules:
+    - changes:
+        - "*.tf"
+      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      exists:
+        - .destroy-cluster
+      when: manual
+      allow_failure: true
+  script:
+    - gitlab-terraform destroy -auto-approve

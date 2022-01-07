@@ -23,7 +23,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 #### Step1: Clone the repo using the command below
 
 ```shell script
-git clone https://github.com/aws-samples/terraform-ssp-eks-patterns.git
+git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 ```
 
 #### Step2: Run Terraform INIT
