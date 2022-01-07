@@ -70,8 +70,8 @@ locals {
 }
 
 module "aws_vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "v3.2.0"
+  source = "git@github.com:terraform-aws-modules/terraform-aws-vpc.git?ref=v3.2.0"
+  # version = "v3.2.0"
 
   name = local.vpc_name
   cidr = local.vpc_cidr

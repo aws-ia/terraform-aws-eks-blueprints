@@ -31,14 +31,18 @@ module "eks_tags" {
 # ---------------------------------------------------------------------------------------------------------------------
 # EKS CONTROL PLANE
 # ---------------------------------------------------------------------------------------------------------------------
-#TODO Create KMS alias and assign it
-resource "aws_kms_key" "eks" {
+# Create the cluster's KMS key
+module "kms" {
+  source = "./modules/aws-kms"
+
+  alias       = "alias/${module.eks_tags.id}"
   description = "EKS Cluster Secret Encryption Key"
+  tags        = module.eks_tags.tags
 }
 
 module "aws_eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "v17.20.0"
+  source = "git@github.com:terraform-aws-modules/terraform-aws-eks.git?ref=v17.20.0"
+  # version = "v17.20.0"
 
   create_eks      = var.create_eks
   manage_aws_auth = false
@@ -70,7 +74,7 @@ module "aws_eks" {
   # CLUSTER ENCRYPTION
   cluster_encryption_config = [
     {
-      provider_key_arn = aws_kms_key.eks.arn
+      provider_key_arn = module.kms.key_arn
       resources        = ["secrets"]
     }
   ]
