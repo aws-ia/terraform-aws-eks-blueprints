@@ -1,6 +1,5 @@
-# gitlab CI/CD example
-
-This pattern shows the example to dpeloy the EKS Clusters using gitlab CI/CD
+# Gitlab CI/CD example
+This pattern shows the example to deploy the Amazon EKS Clusters using Gitlab CI/CD
 
 ### Step1: Clone this repo
 
@@ -8,16 +7,13 @@ This pattern shows the example to dpeloy the EKS Clusters using gitlab CI/CD
 git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git
 ```
 
-## Step2: Create a new gitlab repo
-
+## Step2: Create a new Gitlab repo
 Copy this folder(`gitlab-ci-cd`) to your new gitlab repo. Rename the folder according to your naming convention.
-
 
     cd examples/advanced/gitlab-ci-cd
     gitlab-ci-cd
 
 ## Step3: Update CI/CD settings config
-
  - Login to gitlab console, click on your repo and navigate to `settings/ci_cd`
  - Add the following variables before triggering the pipeline
 
@@ -29,23 +25,7 @@ Copy this folder(`gitlab-ci-cd`) to your new gitlab repo. Rename the folder acco
 
 ## Step5: Commit changes to verify the pipeline
 
-
 <!--- BEGIN_TF_DOCS --->
-Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-SPDX-License-Identifier: MIT-0
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this
-software and associated documentation files (the "Software"), to deal in the Software
-without restriction, including without limitation the rights to use, copy, modify,
-merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## Requirements
 

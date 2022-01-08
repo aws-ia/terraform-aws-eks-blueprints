@@ -1,21 +1,3 @@
-/*
- * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * SPDX-License-Identifier: MIT-0
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the Software
- * without restriction, including without limitation the rights to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 terraform {
   required_version = ">= 1.0.1"
 
@@ -33,7 +15,6 @@ terraform {
       version = ">= 2.4.1"
     }
   }
-
   backend "local" {
     path = "local_tf_state/terraform-main.tfstate"
   }
@@ -87,7 +68,6 @@ module "aws_vpc" {
     "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
     "kubernetes.io/role/internal-elb"               = "1"
   }
-
 }
 #---------------------------------------------------------------
 # Example to consume aws-eks-accelerator-for-terraform module
@@ -126,11 +106,9 @@ module "aws-eks-accelerator-for-terraform" {
 
       disk_size     = 20
       instance_type = "m5.large"
-
       desired_size = 2
       max_size     = 10
       min_size     = 2
-
       capacity_type = "" # Optional Use this only for SPOT capacity as  capacity_type = "spot"
 
       k8s_labels = {
@@ -144,7 +122,6 @@ module "aws-eks-accelerator-for-terraform" {
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-
       create_worker_security_group = false # Creates a dedicated sec group for this Node Group
     },
   } # END OF SELF MANAGED NODE GROUPS

@@ -1,21 +1,35 @@
-
 terraform {
   required_version = ">= 1.0.1"
 
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
+      source = "hashicorp/aws"
       version = ">= 3.66.0"
     }
     kubernetes = {
-      source  = "hashicorp/kubernetes"
+      source = "hashicorp/kubernetes"
       version = ">= 2.6.1"
     }
     helm = {
-      source  = "hashicorp/helm"
+      source = "hashicorp/helm"
       version = ">= 2.4.1"
     }
   }
+
+  backend "local" {
+    path = "local_tf_state/terraform-main.tfstate"
+  }
+}
+data "aws_region" "current" {}
+
+data "aws_availability_zones" "available" {}
+
+data "aws_eks_cluster" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 }
 
 provider "aws" {
@@ -23,15 +37,22 @@ provider "aws" {
   alias  = "default"
 }
 
-terraform {
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
+provider "kubernetes" {
+  experiments {
+    manifest_resource = true
   }
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
-data "aws_region" "current" {}
-
-data "aws_availability_zones" "available" {}
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.cluster.endpoint
+    token                  = data.aws_eks_cluster_auth.cluster.token
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  }
+}
 
 locals {
   tenant      = "aws001"  # AWS account name or unique id for tenant
@@ -72,7 +93,6 @@ module "aws_vpc" {
     "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
     "kubernetes.io/role/internal-elb"               = "1"
   }
-
 }
 #---------------------------------------------------------------
 # Example to consume aws-eks-accelerator-for-terraform module
@@ -92,12 +112,6 @@ module "aws-eks-accelerator-for-terraform" {
   # EKS CONTROL PLANE VARIABLES
   create_eks         = true
   kubernetes_version = local.kubernetes_version
-
-  # EKS Managed Add-ons
-  enable_amazon_eks_vpc_cni            = true
-  enable_amazon_eks_coredns            = true
-  enable_amazon_eks_kube_proxy         = true
-  enable_amazon_eks_aws_ebs_csi_driver = true
 
   #---------------------------------------------------------#
   # EKS WORKER NODE GROUPS
@@ -531,6 +545,4 @@ module "kubernetes-addons" {
     version    = "1.3.1"
     namespace  = "kube-system"
   }
-
-
 }

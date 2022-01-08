@@ -1,7 +1,5 @@
-
-# Quickstart - EKS with Agones Gaming Kubernetes Controller
-
-In this workshop, we will learn how to deploy and run Gaming applications on AWS EKS with Agones Kubernetes Controller
+# Amazon EKS Deployment with Agones Gaming Kubernetes Controller
+This example shows how to deploy and run Gaming applications on Amazon EKS with Agones Kubernetes Controller
 
  - Deploy Private VPC, Subnets and all the required VPC endpoints
  - Deploy EKS Cluster with one managed node group in an VPC
@@ -9,93 +7,71 @@ In this workshop, we will learn how to deploy and run Gaming applications on AWS
  - Deploy a simple gaming server and test the application
 
 # What is Agones
-
 Agones is an Open source Kubernetes Controller with custom resource definitions and is used to create, run, manage and scale dedicated game server processes within Kubernetes clusters using standard Kubernetes tooling and APIs.
 This model also allows any matchmaker to interact directly with Agones via the Kubernetes API to provision a dedicated game server
 
 # What is GameLift
-
 Amazon GameLift enables developers to deploy, operate, and scale dedicated, low-cost servers in the cloud for session-based, multiplayer games.
 Built on AWS global computing infrastructure, GameLift helps deliver high-performance, high-reliability, low-cost game servers while dynamically scaling your resource usage to meet worldwide player demand.
 
-# Deployment Steps
+## How to Deploy
+### Prerequisites:
+Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
+1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+3. [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
+4. [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
-Execute **Step1** only when you are running this workshop using AWS EventEngine. Workshop conducted by the AWS teams at Customer sites
+### Deployment Steps
+#### Step1: Clone the repo using the command below
 
-## Step1: Login to Event Engine as advised by AWS team. You may need a temporary AWS Account token for this step
+```shell script
+git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+```
 
-    https://www.eksworkshop.com/020_prerequisites/aws_event/portal/
+#### Step2: Run Terraform INIT
+Initialize a working directory with configuration files
 
-## Step2: Create [Cloud9 IDE in AWS Environment](https://www.eksworkshop.com/020_prerequisites/workspace/#region-1) and install Pre-requisites
+```shell script
+cd examples/game_tech/agones-game-controller
+terraform init
+```
 
-Use the following link to install Cloud9 IDE and all the pre-requisites Kubernetes tools
+#### Step3: Run Terraform PLAN
+Verify the resources created by this execution
 
-    https://www.eksworkshop.com/020_prerequisites/workspace/#region-1
+```shell script
+export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
+terraform plan
+```
 
-### Step2.1: Install [Kubernetes Tools](https://www.eksworkshop.com/020_prerequisites/k8stools/)
-    https://www.eksworkshop.com/020_prerequisites/k8stools/
+#### Step4: Finally, Terraform APPLY
+to create resources
 
-### Step2.2: Create [IAM Role for Workspaces](https://www.eksworkshop.com/020_prerequisites/iamrole/)
-    https://www.eksworkshop.com/020_prerequisites/iamrole/
+```shell script
+terraform apply
+```
 
-### Step2.3: Attach IAM role to Cloud9 IDE and update IAM settings
-    https://www.eksworkshop.com/020_prerequisites/ec2instance/
-    https://www.eksworkshop.com/020_prerequisites/workspaceiam/
+Enter `yes` to apply
 
-## Step3: Install `aws-iam-authenticator` in Cloud9 IDE
-     curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/aws-iam-authenticator
+### Configure `kubectl` and test cluster
+EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster. 
+This following command used to update the `kubeconfig` in your local machine where you run kubectl commands to interact with your EKS Cluster.
 
-     openssl sha1 -sha256 aws-iam-authenticator
+#### Step5: Run `update-kubeconfig` command
 
-     chmod +x ./aws-iam-authenticator
+`~/.kube/config` file gets updated with cluster details and certificate from the below command
 
-     mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
+    $ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 
-     echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+#### Step6: List all the worker nodes by running the command below
 
-     Verify the installation
+    $ kubectl get nodes
 
-     aws-iam-authenticator help
+#### Step7: List all the pods running in `kube-system` namespace
 
-## Step4: Install Terraform in Cloud9 IDE
+    $ kubectl get pods -n kube-system
 
-    sudo yum remove -y terraform
-
-    sudo yum install -y yum-utils
-
-    sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
-
-    sudo yum -y install terraform-1.0.1
-
-    sudo terraform version
-
-## Step5: Clone AWS Terraform AWS Accelerator from GITHUB Repo
-
-    git clone <thisrepo>
-
-    cd examples/game_tech/agones-game-controller/
-
-## Step6: Run Terraform init on the Gaming EKS Cluster Configuration
-To initialize a working directory with configuration files.
-
-     terraform init
-
-## Step7: Run Terraform plan
-To verify the resources created by this execution
-
-     terraform plan
-
-## Step8: Finally, Terraform apply
-This step may take up-to 15 to 17 mins to create AWS VPC resources, EKS Cluster and necessary Addons using Helm Provider
-
-     terraform apply
-
-## Step9:
-     aws eks --region <region> update-kubeconfig --name <eks cluster name>
-
-    e.g., $ aws eks --region eu-west-1 update-kubeconfig --name gaming-preprod-test-eks
-
-## Step10: Install K9s
+## Step8: Install K9s
 This step is to install K9s client tool to interact with EKS Cluster
 
      curl -sS https://webinstall.dev/k9s | bash
@@ -106,7 +82,7 @@ Just type k9s after the installation and then you will see the output like this
 
 ![Alt Text](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/blob/9c6f8ea3e710f7b0137be07835653a2bf4f9fdfe/images/k9s-agones-cluster.png "K9s")
 
-## Step11: Add EKS Workshop IAM role as EKS Cluster Administrator
+## Step9: Add EKS Workshop IAM role as EKS Cluster Administrator
 
     $ aws sts get-caller-identity
 
@@ -116,7 +92,7 @@ Just type k9s after the installation and then you will see the output like this
 
     kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/aws-auth-patch.yml)"
 
-## Step12: Deploying the Sample game server
+## Step10: Deploying the Sample game server
 
     kubectl create -f https://raw.githubusercontent.com/googleforgames/agones/release-1.15.0/examples/simple-game-server/gameserver.yaml
 
@@ -127,7 +103,7 @@ Output looks like below
     NAME                       STATE   ADDRESS         PORT   NODE                                        AGE
     simple-game-server-7r6jr   Ready   34.243.345.22   7902   ip-10-1-23-233.eu-west-1.compute.internal   11h
 
-## Step13: Testing the Sample Game Server
+## Step11: Testing the Sample Game Server
 
     sudo yum install netcat
 
@@ -143,7 +119,6 @@ Output looks like below
     EXIT
     ACK: EXIT
 
-
 # Deploy GameLift FleetIQ
 
 Amazon GameLift FleetIQ optimizes the use of low-cost Spot Instances for cloud-based game hosting with Amazon EC2. With GameLift FleetIQ, you can work directly with your hosting resources in Amazon EC2 and Auto Scaling while taking advantage of GameLift optimizations to deliver inexpensive, resilient game hosting for your players and makes the use of low-cost Spot Instances viable for game hosting
@@ -154,23 +129,15 @@ Download the shell script and execute
 
     curl -O https://raw.githubusercontent.com/awslabs/fleetiq-adapter-for-agones/master/Agones_EKS_FleetIQ_Integration_Package%5BBETA%5D/quick_install/fleet_eks_agones_quickinstall.sh
 
+## How to Destroy
+The following command destroys the resources created by `terraform apply` 
+
+```shell script
+cd examples/1-eks-cluster-with-new-vpc
+terraform destroy --auto-approve
+```
 
 <!--- BEGIN_TF_DOCS --->
-Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-SPDX-License-Identifier: MIT-0
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this
-software and associated documentation files (the "Software"), to deal in the Software
-without restriction, including without limitation the rights to use, copy, modify,
-merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## Requirements
 

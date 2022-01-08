@@ -11,15 +11,12 @@ This example deploys an EKS Cluster running the Spark K8s operator into a new VP
  If you would like to limit the operator to watch and handle SparkApplications in a single namespace, e.g., default instead, add the following option to the helm install command:
 
 ## Prerequisites
-
 Ensure that you have installed the following tools on your machine.
-
 1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 3. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 4. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
 ## Step1: Deploy EKS Cluster with Spark-K8s-Operator feature
-
 Clone the repository
 
 ```
@@ -36,9 +33,8 @@ terraform init
 Run Terraform plan to verify the resources created by this execution.
 
 ```
-export AWS_REGION="eu-west-1"   # Select your own region
+export AWS_REGION=<enter-your-region>   # Select your own region
 terraform plan
-
 ```
 
 Deploy the pattern
@@ -50,7 +46,6 @@ terraform apply
 Enter `yes` to apply.
 
 ## Steps to enable the Spark K8s Operator on EKS Cluster
-
 Enable Spark-K8S-Operator on EKS Cluster
 
 ```hcl
@@ -72,7 +67,7 @@ Enable Spark-K8S-Operator on EKS Cluster
   }
 ```
 
-## Execute Sample SPatk Job on EKS Cluster with Spark-k8s-operator:
+## Execute Sample Spark Job on EKS Cluster with spark-k8s-operator
  - Create Spark Namespace, Service Account and ClusterRole and ClusterRole Binding for the jobs
 
 ```shell script
@@ -87,24 +82,7 @@ Enable Spark-K8S-Operator on EKS Cluster
   kubectl apply -f pyspark-pi-job.yaml
 ```
 
-
-
 <!--- BEGIN_TF_DOCS --->
-Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-SPDX-License-Identifier: MIT-0
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this
-software and associated documentation files (the "Software"), to deal in the Software
-without restriction, including without limitation the rights to use, copy, modify,
-merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## Requirements
 

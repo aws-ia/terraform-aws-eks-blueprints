@@ -12,21 +12,18 @@ This example deploys a new EKS Cluster with Teams to a new VPC.
 
 ### Prerequisites:
 Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
-
-1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-2. [aws-iam-authenticator](https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html)
-3. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
-4. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+3. [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
+4. [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
 ### Deployment Steps
-
 #### Step1: Clone the repo using the command below
 
 ```shell script
 git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 ```
 
-#### Step2: Run Terraform INIT
+#### Step2: Run `terraform init`
 to initialize a working directory with configuration files
 
 ```shell script
@@ -34,15 +31,15 @@ cd examples/7-eks-cluster-with-teams/
 terraform init
 ```
 
-#### Step3: Run Terraform PLAN
+#### Step3: Run `terraform plan`
 to verify the resources created by this execution
 
 ```shell script
-export AWS_REGION="eu-west-1"   # Select your own region
+export AWS_REGION=<enter-your-region>   # Select your own region
 terraform plan
 ```
 
-#### Step4: Finally, Terraform APPLY
+#### Step4: Finally, `terraform apply`
 to create resources
 
 ```shell script
@@ -58,7 +55,7 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
 
 `~/.kube/config` file gets updated with cluster details and certificate from the below command
 
-    $ aws eks --region eu-west-1 update-kubeconfig --name <cluster-name>
+    $ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 
 #### Step6: List all the worker nodes by running the command below
 

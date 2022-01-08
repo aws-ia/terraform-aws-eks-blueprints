@@ -1,7 +1,6 @@
 # EMR on EKS Deployment and Test
 
 This example deploys the following resources
-
  - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
  - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
  - Creates EKS Cluster Control plane with public endpoint (for demo purpose only) with one managed node group
@@ -9,9 +8,7 @@ This example deploys the following resources
  - Creates Amazon managed Prometheus and configures Prometheus addon to remote write metrics to AMP
 
 ## Prerequisites:
-
 Ensure that you have installed the following tools on your machine.
-
 1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 3. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 4. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
