@@ -2,7 +2,6 @@
 This deployment creates VPC and three private subnets, three public subnets, NAT gateway and Internet gateway
 
 <!--- BEGIN_TF_DOCS --->
-
 ## Requirements
 
 No requirements.
