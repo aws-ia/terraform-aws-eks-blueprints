@@ -26,7 +26,6 @@ Copy this folder(`gitlab-ci-cd`) to your new gitlab repo. Rename the folder acco
 ## Step5: Commit changes to verify the pipeline
 
 <!--- BEGIN_TF_DOCS --->
-
 ## Requirements
 
 | Name | Version |

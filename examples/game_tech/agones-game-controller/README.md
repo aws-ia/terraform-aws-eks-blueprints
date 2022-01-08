@@ -138,7 +138,6 @@ terraform destroy --auto-approve
 ```
 
 <!--- BEGIN_TF_DOCS --->
-
 ## Requirements
 
 | Name | Version |
