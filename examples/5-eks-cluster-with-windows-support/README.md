@@ -53,8 +53,8 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
     $ aws eks --region <enter-your-region> update-kubeconfig --name <eks_cluster_name>
 
 ### Step6: (Optional) Deploy sample Windows and Linux workloads to verify support for both operating systems
-When Windows support is enabled in the cluster, it is necessary to use one of the ways to assign pods to specific nodes, such as `nodeSelector` or `affinity`. 
-See the [K8s documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/) for more info. 
+When Windows support is enabled in the cluster, it is necessary to use one of the ways to assign pods to specific nodes, such as `nodeSelector` or `affinity`.
+See the [K8s documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/) for more info.
 This example uses `nodeSelector`s to select nodes with appropriate OS for pods.
 
 #### Sample Windows deployment

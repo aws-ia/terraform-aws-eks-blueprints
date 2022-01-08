@@ -4,7 +4,7 @@ This example deploys a fully private EKS Cluster into a new VPC.
  - Creates a new VPC and 3 Private Subnets
  - VPC Endpoints for various services and S3 VPC Endpoint gateway
  - Creates EKS Cluster Control plane with one Managed node group
- 
+
 Please see this [document](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html) for more details on configuring fully private EKS Clusters
 
 ## How to Deploy
@@ -47,7 +47,7 @@ terraform apply
 Enter `yes` to apply
 
 ### Configure `kubectl` and test cluster
-EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster. 
+EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster.
 This following command used to update the `kubeconfig` in your local machine where you run kubectl commands to interact with your EKS Cluster.
 
 #### Step5: Run `update-kubeconfig` command
@@ -65,7 +65,7 @@ This following command used to update the `kubeconfig` in your local machine whe
     $ kubectl get pods -n kube-system
 
 ## How to Destroy
-The following command destroys the resources created by `terraform apply` 
+The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/6-eks-fully-private-eks-cluster

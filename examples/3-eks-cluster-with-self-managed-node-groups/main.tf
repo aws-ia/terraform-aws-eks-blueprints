@@ -106,9 +106,9 @@ module "aws-eks-accelerator-for-terraform" {
 
       disk_size     = 20
       instance_type = "m5.large"
-      desired_size = 2
-      max_size     = 10
-      min_size     = 2
+      desired_size  = 2
+      max_size      = 10
+      min_size      = 2
       capacity_type = "" # Optional Use this only for SPOT capacity as  capacity_type = "spot"
 
       k8s_labels = {

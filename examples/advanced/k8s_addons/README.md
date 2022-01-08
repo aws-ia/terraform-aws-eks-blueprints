@@ -41,7 +41,7 @@ terraform apply
 Enter `yes` to apply
 
 ### Configure `kubectl` and test cluster
-EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster. 
+EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster.
 This following command used to update the `kubeconfig` in your local machine where you run kubectl commands to interact with your EKS Cluster.
 
 #### Step5: Run `update-kubeconfig` command
@@ -59,7 +59,7 @@ This following command used to update the `kubeconfig` in your local machine whe
     $ kubectl get pods -n kube-system
 
 ## How to Destroy
-The following command destroys the resources created by `terraform apply` 
+The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/advanced/k8s_addons
