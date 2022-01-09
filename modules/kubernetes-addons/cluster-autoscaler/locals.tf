@@ -36,7 +36,7 @@ locals {
     replace                    = false
     description                = "Cluster AutoScaler helm Chart deployment configuration"
     postrender                 = ""
-    set                        = []
+    set                        = null
     set_sensitive              = null
   }
 
@@ -48,21 +48,21 @@ locals {
   ca_set_values = [{
     name  = "rbac.serviceAccount.create"
     value = "false"
-  },
+    },
     {
       name  = "rbac.serviceAccount.name"
       value = local.service_account_name
-    }]
+  }]
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
-    aws_region     = data.aws_region.current.name,
-    eks_cluster_id = var.eks_cluster_id
+    aws_region           = data.aws_region.current.name,
+    eks_cluster_id       = var.eks_cluster_id
     service_account_name = local.service_account_name
   })]
 
   argocd_gitops_config = {
-    enable = true
-    awsRegion = data.aws_region.current.name
+    enable             = true
+    awsRegion          = data.aws_region.current.name
     serviceAccountName = local.service_account_name
   }
 }

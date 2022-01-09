@@ -56,9 +56,9 @@ provider "helm" {
 }
 
 locals {
-  tenant      = "aws001"  # AWS account name or unique id for tenant
-  environment = "preprod" # Environment area eg., preprod or prod
-  zone        = "dev"     # Environment with in one sub_tenant or business unit
+  tenant             = "aws001"  # AWS account name or unique id for tenant
+  environment        = "preprod" # Environment area eg., preprod or prod
+  zone               = "dev"     # Environment with in one sub_tenant or business unit
   kubernetes_version = "1.21"
 
   vpc_cidr       = "10.0.0.0/16"
@@ -144,8 +144,8 @@ module "aws-eks-accelerator-for-terraform" {
 }
 
 module "kubernetes-addons" {
-  source = "../../modules/kubernetes-addons"
-  eks_cluster_id        = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  source         = "../../modules/kubernetes-addons"
+  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
   # EKS Managed Add-ons
   enable_amazon_eks_vpc_cni    = true

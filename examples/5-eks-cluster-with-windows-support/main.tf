@@ -148,7 +148,7 @@ module "aws-eks-accelerator-for-terraform" {
 module "kubernetes-addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id        = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
   # EKS Managed Add-ons
   enable_amazon_eks_vpc_cni    = true
