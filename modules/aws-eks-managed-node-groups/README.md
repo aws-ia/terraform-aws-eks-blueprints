@@ -6,6 +6,10 @@ Amazon EKS Managed Node Groups lets you create, update, scale, and terminate wor
 
 This module allows you to create ON-DEMAND, SPOT and BOTTLEROCKET(with custom ami) managed nodegroups. You can instantiate the module once with map of node group values to create multiple node groups.
 
+**NOTE**: 
+ - You can't create managed nodes in an AWS Region where you have AWS Outposts, AWS Wavelength, or AWS Local Zones enabled. 
+ - You can create self-managed nodes in an AWS Region where you have AWS Outposts, AWS Wavelength, or AWS Local Zones enabled
+
 ## Managed Node Groups Example
 
 ```hcl
