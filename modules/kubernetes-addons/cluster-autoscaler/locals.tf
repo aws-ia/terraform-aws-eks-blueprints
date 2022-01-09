@@ -7,7 +7,7 @@ locals {
     chart                      = "cluster-autoscaler"
     repository                 = "https://kubernetes.github.io/autoscaler"
     version                    = "9.10.8"
-    namespace                  = "kube-system"
+    namespace                  = local.namespace
     timeout                    = "300"
     create_namespace           = false
     values                     = local.default_helm_values
