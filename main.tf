@@ -28,27 +28,31 @@ module "eks_tags" {
   tags        = local.tags
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# EKS CONTROL PLANE
-# ---------------------------------------------------------------------------------------------------------------------
+
 # Create the cluster's KMS key
 module "kms" {
   source = "./modules/aws-kms"
 
-  alias       = "alias/${module.eks_tags.id}"
-  description = "EKS Cluster Secret Encryption Key"
-  tags        = module.eks_tags.tags
+  alias                 = "alias/${module.eks_tags.id}"
+  description           = "EKS Cluster Secret Encryption Key"
+  eks_cluster_role_name = local.iam_role_name
+  tags                  = module.eks_tags.tags
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
+# EKS CONTROL PLANE
+# ---------------------------------------------------------------------------------------------------------------------
+
 module "aws_eks" {
-  source = "git@github.com:terraform-aws-modules/terraform-aws-eks.git?ref=v17.20.0"
-  # version = "v17.20.0"
+  source  = "terraform-aws-modules/eks/aws"
+  version = "v17.20.0"
 
   create_eks      = var.create_eks
   manage_aws_auth = false
 
-  cluster_name    = module.eks_tags.id
-  cluster_version = var.kubernetes_version
+  cluster_name          = module.eks_tags.id
+  cluster_version       = var.kubernetes_version
+  cluster_iam_role_name = local.iam_role_name
 
   # NETWORK CONFIG
   vpc_id  = var.vpc_id

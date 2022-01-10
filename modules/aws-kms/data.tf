@@ -2,68 +2,77 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
+data "aws_iam_session_context" "current" {
+  arn = data.aws_caller_identity.current.arn
+}
+
 data "aws_iam_policy_document" "this" {
+
   statement {
-    sid    = "Enable IAM User Permissions"
+    sid    = "Allow access for all principals in the account that are authorized"
     effect = "Allow"
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:CreateGrant",
+      "kms:DescribeKey"
+    ]
+    resources = ["*"]
 
     principals {
       type = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
       ]
     }
 
-    actions = [
-      "kms:*",
-    ]
-    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:ViaService"
+      values   = ["eks.${data.aws_region.current.name}.amazonaws.com"]
+    }
   }
 
   statement {
-    sid    = "Allow logs KMS access"
+    sid    = "Allow direct access to key metadata to the account"
     effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["logs.${data.aws_region.current}.amazonaws.com"]
-    }
-
     actions = [
-      "kms:Encrypt*",
-      "kms:Decrypt*",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:Describe*"
+      "kms:Describe*",
+      "kms:Get*",
+      "kms:List*",
+      "kms:RevokeGrant"
     ]
     resources = ["*"]
+
+    principals {
+      type = "AWS"
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+      ]
+    }
   }
 
   statement {
     sid    = "Allow access for Key Administrators"
     effect = "Allow"
     actions = [
-      "kms:Create*",
-      "kms:Describe*",
-      "kms:Enable*",
-      "kms:List*",
-      "kms:Put*",
-      "kms:Update*",
-      "kms:Revoke*",
-      "kms:Disable*",
-      "kms:Get*",
-      "kms:Delete*",
-      "kms:TagResource",
-      "kms:UntagResource",
-      "kms:ScheduleKeyDeletion",
-      "kms:CancelKeyDeletion"
+      "kms:*"
     ]
     resources = ["*"]
 
     principals {
       type = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.admin_role_name}"
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_cluster_role_name}",
+        data.aws_iam_session_context.current.issuer_arn
       ]
     }
   }
@@ -83,7 +92,7 @@ data "aws_iam_policy_document" "this" {
     principals {
       type = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.admin_role_name}"
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_cluster_role_name}"
       ]
     }
   }
@@ -103,7 +112,7 @@ data "aws_iam_policy_document" "this" {
     principals {
       type = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.tf_admin_username}"
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_cluster_role_name}"
       ]
     }
 
@@ -111,48 +120,6 @@ data "aws_iam_policy_document" "this" {
       test     = "Bool"
       variable = "kms:GrantIsForAWSResource"
       values   = ["true"]
-    }
-  }
-
-  statement {
-    sid    = "Allow direct access to key metadata to the account"
-    effect = "Allow"
-    actions = [
-      "kms:Describe*",
-      "kms:Get*",
-      "kms:List*"
-    ]
-    resources = ["*"]
-
-    principals {
-      type = "AWS"
-      identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
-      ]
-    }
-  }
-
-  statement {
-    sid    = "Deny other AWS services from using this key"
-    effect = "Deny"
-    actions = [
-      "kms:RevokeGrant",
-      "kms:ListGrants",
-      "kms:CreateGrant"
-    ]
-    resources = ["*"]
-
-    principals {
-      type = "AWS"
-      identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
-      ]
-    }
-
-    condition {
-      test     = "StringNotEquals"
-      variable = "kms:ViaService"
-      values   = ["ssm.*.amazonaws.com"]
     }
   }
 }

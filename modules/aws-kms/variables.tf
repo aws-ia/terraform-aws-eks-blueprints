@@ -16,9 +16,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "admin_role_name" {
+variable "eks_cluster_role_name" {
   type        = string
-  description = "The description of the key."
+  description = "The EKS cluster role name."
 }
 
 variable "description" {

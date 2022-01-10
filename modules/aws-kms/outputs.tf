@@ -22,6 +22,6 @@ output "key_id" {
 }
 
 output "key_arn" {
-  value = aws_kms_key.this.arn
+  value       = aws_kms_key.this.arn
   description = "The Amazon Resource Name (ARN) of the key."
 }
