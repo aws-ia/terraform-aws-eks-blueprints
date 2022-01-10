@@ -304,13 +304,13 @@ variable "aws_node_termination_handler_helm_config" {
 variable "enable_karpenter" {
   type        = bool
   default     = false
-  description = "Enable karpenter autoscaler add-on"
+  description = "Enable Karpenter autoscaler add-on"
 }
 
 variable "karpenter_helm_config" {
   type        = any
   default     = {}
-  description = "karpenter autoscaler add-on config"
+  description = "Karpenter autoscaler add-on config"
 }
 
 variable "karpenter_irsa_policies" {
