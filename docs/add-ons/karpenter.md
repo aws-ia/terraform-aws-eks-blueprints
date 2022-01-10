@@ -16,7 +16,7 @@ You can optionally customize the Helm chart that deploys `Karpenter` via the fol
 
 ```hcl
   enable_karpenter = true
-  # Optional  agones_helm_config
+  # Optional  karpenter_helm_config
   karpenter_helm_config = {
     name                       = "karpenter"
     chart                      = "karpenter"

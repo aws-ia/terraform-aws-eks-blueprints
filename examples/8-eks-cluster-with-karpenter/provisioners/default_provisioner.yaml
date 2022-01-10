@@ -15,4 +15,7 @@ spec:
       cpu: 1000
   provider:
     instanceProfile: "aws001-preprod-dev-eks-self-managed-ondemand" # self-managed IAM Instance profile Name
+#    launchTemplate: MyLaunchTemplate   # Optional to provide Launch template
+    subnetSelector:
+      Name: "*private*"
   ttlSecondsAfterEmpty: 30
