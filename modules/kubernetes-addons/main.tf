@@ -134,6 +134,16 @@ module "ingress_nginx" {
   manage_via_gitops = var.argocd_manage_add_ons
 }
 
+module "karpenter" {
+  count             = var.enable_karpenter ? 1 : 0
+  source            = "./karpenter"
+  helm_config       = var.karpenter_helm_config
+  eks_cluster_id    = var.eks_cluster_id
+  irsa_policies     = var.karpenter_irsa_policies
+  tags              = var.tags
+  manage_via_gitops = var.argocd_manage_add_ons
+}
+
 module "keda" {
   count             = var.enable_keda ? 1 : 0
   source            = "./keda"

@@ -115,15 +115,8 @@ module "aws-eks-accelerator-for-terraform" {
   create_eks         = true
   kubernetes_version = local.kubernetes_version
 
-//  # EKS MANAGED NODE GROUPS
-//  managed_node_groups = {
-//    mg_4 = {
-//      node_group_name = "managed-ondemand"
-//      instance_types  = ["m4.large"]
-//      subnet_ids      = module.aws_vpc.private_subnets
-//    }
-//  }
-  # Self-managed Node Groups
+  # Self-managed Node Group
+  # Karpenter requires one node to get up and running
   self_managed_node_groups = {
     self_mg_4 = {
       node_group_name = "self-managed-ondemand"
@@ -133,45 +126,16 @@ module "aws-eks-accelerator-for-terraform" {
       subnet_ids      = module.aws_vpc.private_subnets
     }
   }
-//  # FARGATE
-//  fargate_profiles = {
-//    default = {
-//      fargate_profile_name = "default"
-//      fargate_profile_namespaces = [
-//        {
-//          namespace = "default"
-//          k8s_labels = {
-//            Environment = "preprod"
-//            Zone        = "dev"
-//            env         = "fargate"
-//          }
-//      }]
-//      subnet_ids = module.aws_vpc.private_subnets
-//      additional_tags = {
-//        ExtraTag = "Fargate"
-//      }
-//    },
-//  }
-
 }
 
 module "kubernetes-addons" {
   source = "../../modules/kubernetes-addons"
 
   eks_cluster_id        = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-  eks_oidc_issuer_url   = module.aws-eks-accelerator-for-terraform.eks_oidc_issuer_url
-  eks_oidc_provider_arn = module.aws-eks-accelerator-for-terraform.eks_oidc_provider_arn
-
-  # EKS Managed Add-ons
-  enable_amazon_eks_vpc_cni    = true
-  enable_amazon_eks_coredns    = true
-  enable_amazon_eks_kube_proxy = true
 
   #K8s Add-ons
-  enable_aws_load_balancer_controller = false
-  enable_metrics_server               = true
-  enable_cluster_autoscaler           = false
   enable_karpenter                    = true
+  enable_metrics_server               = true
 
-//  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups, module.aws-eks-accelerator-for-terraform.self_managed_node_groups]
+  depends_on = [module.aws-eks-accelerator-for-terraform.self_managed_node_groups]
 }

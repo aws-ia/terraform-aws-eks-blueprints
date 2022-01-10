@@ -8,6 +8,11 @@ output "self_managed_node_group_iam_role_arns" {
   value       = aws_iam_role.self_managed_ng[*].arn
 }
 
+output "self_managed_node_group_iam_instance_profile" {
+  description = "Self managed groups IAM role arns"
+  value       = aws_iam_instance_profile.self_managed_ng[*].arn
+}
+
 output "self_managed_iam_role_name" {
   description = "Self managed groups IAM role names"
   value       = aws_iam_role.self_managed_ng[*].name
