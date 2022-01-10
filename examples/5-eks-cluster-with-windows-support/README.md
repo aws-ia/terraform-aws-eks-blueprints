@@ -98,3 +98,7 @@ terraform destroy -auto-approve
 # See also
 
 * [EKS Windows support considerations](https://docs.aws.amazon.com/eks/latest/userguide/windows-support.html)
+
+<!--- BEGIN_TF_DOCS --->
+
+<!--- END_TF_DOCS --->
