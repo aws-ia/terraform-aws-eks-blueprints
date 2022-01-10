@@ -1,4 +1,4 @@
-# EKS Cluster with Karpenter Cluster Autoscaler 
+# EKS Cluster with Karpenter Cluster Autoscaler
 
 Karpenter is an open-source node provisioning project built for Kubernetes. Karpenter automatically launches just the right compute resources to handle your cluster's applications. It is designed to let you take full advantage of the cloud with fast and simple compute provisioning for Kubernetes clusters.
 
@@ -7,7 +7,7 @@ This example shows how to deploy and leverage Karpenter for Autoscaling. The fol
  - Creates a new VPC, 3 Private Subnets and 3 Public Subnets
  - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
  - Creates EKS Cluster Control plane with one Self-managed node group with Max ASG of 1
- - Deploys Karpenter Helm Chart 
+ - Deploys Karpenter Helm Chart
 
 # How to Deploy
 ## Prerequisites:
@@ -66,12 +66,12 @@ You should see one Self-managed node up and running
 #### Step7: List all the pods running in karpenter namespace
 
     $ kubectl get pods -n karpenter
-    
+
     # Output should look like below
       NAME                                    READY   STATUS    RESTARTS   AGE
       karpenter-controller-5f959cdc44-8dmjb   1/1     Running   0          31m
       karpenter-webhook-65f48f8d49-5hkpb      1/1     Running   0          31m
-    
+
 #### Step8: Deploy the default provisionar
 Kaprpenter will be ready to spin up SPOT/ON-DEMAND nodes based on the provided configuraiton in `default_provisionar.yaml`
 

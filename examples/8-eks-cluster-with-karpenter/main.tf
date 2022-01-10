@@ -119,11 +119,11 @@ module "aws-eks-accelerator-for-terraform" {
   # Karpenter requires one node to get up and running
   self_managed_node_groups = {
     self_mg_4 = {
-      node_group_name = "self-managed-ondemand"
-      custom_ami_id = "ami-0dfaa019a300f219c"
-      launch_template_os= "amazonlinux2eks"
-      max_size = 1
-      subnet_ids      = module.aws_vpc.private_subnets
+      node_group_name    = "self-managed-ondemand"
+      custom_ami_id      = "ami-0dfaa019a300f219c"
+      launch_template_os = "amazonlinux2eks"
+      max_size           = 1
+      subnet_ids         = module.aws_vpc.private_subnets
     }
   }
 }
@@ -131,11 +131,11 @@ module "aws-eks-accelerator-for-terraform" {
 module "kubernetes-addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id        = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
   #K8s Add-ons
-  enable_karpenter                    = true
-  enable_metrics_server               = true
+  enable_karpenter      = true
+  enable_metrics_server = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.self_managed_node_groups]
 }

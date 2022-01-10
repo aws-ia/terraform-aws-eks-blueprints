@@ -2,11 +2,11 @@ locals {
   namespace            = "karpenter"
   service_account_name = "karpenter-sa"
   eks_cluster_endpoint = data.aws_eks_cluster.eks.endpoint
-  
+
   karpenter_set_values = [{
     name  = "serviceAccount.name"
     value = local.service_account_name
-  },
+    },
     {
       name  = "serviceAccount.create"
       value = false
@@ -18,7 +18,7 @@ locals {
     {
       name  = "controller.clusterEndpoint"
       value = local.eks_cluster_endpoint
-    }]
+  }]
 
   default_helm_config = {
     name                       = "karpenter"

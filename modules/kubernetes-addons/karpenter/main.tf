@@ -67,10 +67,10 @@ resource "aws_iam_policy" "karpenter" {
 }
 
 module "irsa_addon" {
-  source                            = "../../../modules/irsa"
-  eks_cluster_id                    = var.eks_cluster_id
-  kubernetes_namespace              = local.namespace
-  kubernetes_service_account        = local.service_account_name
-  irsa_iam_policies                 = concat([aws_iam_policy.karpenter.arn], var.irsa_policies)
-  tags                              = var.tags
+  source                     = "../../../modules/irsa"
+  eks_cluster_id             = var.eks_cluster_id
+  kubernetes_namespace       = local.namespace
+  kubernetes_service_account = local.service_account_name
+  irsa_iam_policies          = concat([aws_iam_policy.karpenter.arn], var.irsa_policies)
+  tags                       = var.tags
 }

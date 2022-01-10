@@ -12,7 +12,7 @@ variable "eks_cluster_id" {
 variable "irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
-  default = []
+  default     = []
 }
 
 variable "manage_via_gitops" {
