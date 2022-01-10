@@ -254,6 +254,7 @@ No modules.
 | <a name="output_launch_template_latest_versions"></a> [launch\_template\_latest\_versions](#output\_launch\_template\_latest\_versions) | launch templated version for EKS Self Managed Node Group |
 | <a name="output_self_managed_asg_names"></a> [self\_managed\_asg\_names](#output\_self\_managed\_asg\_names) | Self managed group ASG names |
 | <a name="output_self_managed_iam_role_name"></a> [self\_managed\_iam\_role\_name](#output\_self\_managed\_iam\_role\_name) | Self managed groups IAM role names |
+| <a name="output_self_managed_node_group_iam_instance_profile"></a> [self\_managed\_node\_group\_iam\_instance\_profile](#output\_self\_managed\_node\_group\_iam\_instance\_profile) | Self managed groups IAM role arns |
 | <a name="output_self_managed_node_group_iam_role_arns"></a> [self\_managed\_node\_group\_iam\_role\_arns](#output\_self\_managed\_node\_group\_iam\_role\_arns) | Self managed groups IAM role arns |
 | <a name="output_self_managed_node_group_name"></a> [self\_managed\_node\_group\_name](#output\_self\_managed\_node\_group\_name) | EKS Self Managed node group id |
 | <a name="output_self_managed_sec_group_id"></a> [self\_managed\_sec\_group\_id](#output\_self\_managed\_sec\_group\_id) | Self managed group security group id/ids |
