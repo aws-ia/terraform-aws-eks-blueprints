@@ -290,6 +290,25 @@ variable "aws_node_termination_handler_helm_config" {
   default     = {}
 }
 
+#-----------KARPENTER ADDON-------------
+variable "enable_karpenter" {
+  type        = bool
+  default     = false
+  description = "Enable Karpenter autoscaler add-on"
+}
+
+variable "karpenter_helm_config" {
+  type        = any
+  default     = {}
+  description = "Karpenter autoscaler add-on config"
+}
+
+variable "karpenter_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
+
 #-----------KEDA ADDON-------------
 variable "enable_keda" {
   type        = bool

@@ -1,0 +1,8 @@
+serviceAccount:
+  create: false
+  name: ${service_account_name}
+controller:
+  clusterName: ${eks_cluster_id}
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+  clusterEndpoint: ${eks_cluster_endpoint}
