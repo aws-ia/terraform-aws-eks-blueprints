@@ -36,7 +36,7 @@ module "kms" {
   description             = "${module.eks_tags.id} EKS cluster secret encryption key"
   deletion_window_in_days = 30
   enable_key_rotation     = true
-  policy                  = var.kms_key_policy
+  policy                  = try(var.eks_cluster_kms_key_policy, data.aws_iam_policy_document.eks_key.json)
   tags                    = module.eks_tags.tags
 }
 
@@ -53,7 +53,7 @@ module "aws_eks" {
 
   cluster_name          = module.eks_tags.id
   cluster_version       = var.kubernetes_version
-  cluster_iam_role_name = local.iam_role_name
+  cluster_iam_role_name = local.cluster_iam_role_name
 
   # NETWORK CONFIG
   vpc_id  = var.vpc_id
