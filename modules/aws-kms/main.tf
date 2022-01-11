@@ -19,11 +19,10 @@
 # Create a KMS customer managed key
 resource "aws_kms_key" "this" {
   description             = var.description
-  policy                  = data.aws_iam_policy_document.this.json
-  enable_key_rotation     = true
-  deletion_window_in_days = 30
-
-  tags = var.tags
+  policy                  = var.policy
+  enable_key_rotation     = var.enable_key_rotation
+  deletion_window_in_days = var.deletion_window_in_days
+  tags                    = var.tags
 }
 
 # Assign an alias to the key

@@ -28,15 +28,16 @@ module "eks_tags" {
   tags        = local.tags
 }
 
-
 # Create the cluster's KMS key
 module "kms" {
   source = "./modules/aws-kms"
 
-  alias                 = "alias/${module.eks_tags.id}"
-  description           = "EKS Cluster Secret Encryption Key"
-  eks_cluster_role_name = local.iam_role_name
-  tags                  = module.eks_tags.tags
+  alias                   = "alias/${module.eks_tags.id}"
+  description             = "${module.eks_tags.id} EKS cluster secret encryption key"
+  deletion_window_in_days = 30
+  enable_key_rotation     = true
+  policy                  = var.kms_key_policy
+  tags                    = module.eks_tags.tags
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
