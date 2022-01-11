@@ -33,16 +33,8 @@ resource "aws_iam_role_policy_attachment" "managed_ng_AmazonEC2ContainerRegistry
   role       = aws_iam_role.managed_ng.name
 }
 
-# Cluster Autoscaler
-resource "aws_iam_policy" "cluster_autoscaler" {
-  name        = "${var.eks_cluster_id}-${local.managed_node_group["node_group_name"]}-ca"
-  description = "IAM policy for Cluster Autoscaler"
-  path        = var.path
-  policy      = data.aws_iam_policy_document.cluster_autoscaler.json
-}
-
-resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
-  policy_arn = aws_iam_policy.cluster_autoscaler.arn
+resource "aws_iam_role_policy_attachment" "managed_ng_AmazonSSMManagedInstanceCore" {
+  policy_arn = "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"
   role       = aws_iam_role.managed_ng.name
 }
 

@@ -21,9 +21,9 @@ terraform {
   }
 }
 
-data "aws_availability_zones" "available" {}
+data "aws_region" "current" {}
 
-data "aws_caller_identity" "current" {}
+data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
   name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
@@ -56,12 +56,13 @@ provider "helm" {
 }
 
 locals {
-  tenant             = "aws001"  # AWS account name or unique id for tenant
-  environment        = "preprod" # Environment area eg., preprod or prod
-  zone               = "dev"     # Environment with in one sub_tenant or business unit
+  tenant      = "aws001"  # AWS account name or unique id for tenant
+  environment = "preprod" # Environment area eg., preprod or prod
+  zone        = "dev"     # Environment with in one sub_tenant or business unit
+
   kubernetes_version = "1.21"
 
-  vpc_cidr       = "10.0.0.0/16"
+  vpc_cidr       = "10.1.0.0/16"
   vpc_name       = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
@@ -93,6 +94,7 @@ module "aws_vpc" {
     "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
     "kubernetes.io/role/internal-elb"               = "1"
   }
+
 }
 #---------------------------------------------------------------
 # Example to consume aws-eks-accelerator-for-terraform module
@@ -113,38 +115,39 @@ module "aws-eks-accelerator-for-terraform" {
   create_eks         = true
   kubernetes_version = local.kubernetes_version
 
-  # EKS MANAGED NODE GROUPS
+  # EKS MANAGED NODE GROUP
+  # with Spot instances
   managed_node_groups = {
-    mg_4 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m4.large"]
+    mng_spot_medium = {
+      node_group_name = "mng-spot-med"
+      capacity_type   = "SPOT"
+      instance_types  = ["t3.medium", "t3a.medium"]
       subnet_ids      = module.aws_vpc.private_subnets
+      desired_size    = "2"
+      disk_size       = 30
     }
   }
 
-  # FARGATE
-  fargate_profiles = {
-    default = {
-      fargate_profile_name = "default"
-      fargate_profile_namespaces = [
-        {
-          namespace = "default"
-          k8s_labels = {
-            Environment = "preprod"
-            Zone        = "dev"
-            env         = "fargate"
-          }
-      }]
-      subnet_ids = module.aws_vpc.private_subnets
-      additional_tags = {
-        ExtraTag = "Fargate"
-      }
-    },
+  # SELF-MANAGED NODE GROUP
+  # with Windows support
+  enable_windows_support = true
+
+  self_managed_node_groups = {
+    ng_od_windows = {
+      node_group_name        = "ng-od-windows"
+      create_launch_template = true
+      launch_template_os     = "windows"
+      instance_type          = "m5n.large"
+      subnet_ids             = module.aws_vpc.private_subnets
+      desired_size           = "2"
+    }
   }
+
 }
 
 module "kubernetes-addons" {
-  source         = "../../modules/kubernetes-addons"
+  source = "../../modules/kubernetes-addons"
+
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
   # EKS Managed Add-ons

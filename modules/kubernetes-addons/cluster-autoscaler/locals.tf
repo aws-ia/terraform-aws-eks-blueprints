@@ -1,18 +1,14 @@
-data "aws_region" "current" {}
-
 locals {
-  default_helm_values = [templatefile("${path.module}/values.yaml", {
-    aws_region     = data.aws_region.current.name,
-    eks_cluster_id = var.eks_cluster_id
-  })]
+  service_account_name = "cluster-autoscaler-sa"
+  namespace            = "kube-system"
 
   default_helm_config = {
     name                       = "cluster-autoscaler"
     chart                      = "cluster-autoscaler"
     repository                 = "https://kubernetes.github.io/autoscaler"
     version                    = "9.10.8"
-    namespace                  = "kube-system"
-    timeout                    = "1200"
+    namespace                  = local.namespace
+    timeout                    = "300"
     create_namespace           = false
     values                     = local.default_helm_values
     lint                       = false
@@ -40,7 +36,7 @@ locals {
     replace                    = false
     description                = "Cluster AutoScaler helm Chart deployment configuration"
     postrender                 = ""
-    set                        = []
+    set                        = null
     set_sensitive              = null
   }
 
@@ -49,7 +45,24 @@ locals {
     var.helm_config
   )
 
+  ca_set_values = [{
+    name  = "rbac.serviceAccount.create"
+    value = "false"
+    },
+    {
+      name  = "rbac.serviceAccount.name"
+      value = local.service_account_name
+  }]
+
+  default_helm_values = [templatefile("${path.module}/values.yaml", {
+    aws_region           = data.aws_region.current.name,
+    eks_cluster_id       = var.eks_cluster_id
+    service_account_name = local.service_account_name
+  })]
+
   argocd_gitops_config = {
-    enable = true
+    enable             = true
+    awsRegion          = data.aws_region.current.name
+    serviceAccountName = local.service_account_name
   }
 }

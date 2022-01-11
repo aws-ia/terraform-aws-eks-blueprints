@@ -16,11 +16,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
-data "aws_security_group" "eks_worker_group" {
-  id = var.eks_worker_security_group_id
-}
-
 resource "helm_release" "agones" {
   count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.helm_config["name"]

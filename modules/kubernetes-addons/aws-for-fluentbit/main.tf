@@ -16,8 +16,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-data "aws_region" "current" {}
-
 resource "aws_cloudwatch_log_group" "eks_worker_logs" {
   name              = local.log_group_name
   retention_in_days = local.log_group_retention

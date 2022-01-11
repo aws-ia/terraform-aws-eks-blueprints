@@ -1,7 +1,6 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # Namespace
 # ---------------------------------------------------------------------------------------------------------------------
-
 resource "kubernetes_namespace" "team" {
   for_each = var.application_teams
   metadata {
@@ -13,7 +12,6 @@ resource "kubernetes_namespace" "team" {
 # ---------------------------------------------------------------------------------------------------------------------
 # Quotas
 # ---------------------------------------------------------------------------------------------------------------------
-
 resource "kubernetes_resource_quota" "team_compute_quota" {
   for_each = var.application_teams
   metadata {
@@ -48,7 +46,6 @@ resource "kubernetes_resource_quota" "team_object_quota" {
 # ---------------------------------------------------------------------------------------------------------------------
 # IAM / RBAC
 # ---------------------------------------------------------------------------------------------------------------------
-
 resource "aws_iam_role" "team_access" {
   for_each = { for team_name, team_data in var.application_teams : team_name => team_data if lookup(team_data, "users", "") != "" }
   name     = format("%s-%s-%s", local.role_prefix_name, "${each.key}", "Access")

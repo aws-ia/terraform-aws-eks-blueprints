@@ -54,7 +54,6 @@ resource "aws_security_group_rule" "workers_ingress_control_plane_sgr" {
   protocol                 = "tcp"
   security_group_id        = aws_security_group.managed_ng[0].id
   source_security_group_id = var.cluster_security_group_id
-
 }
 
 resource "aws_security_group_rule" "control_plane_ingress_from_worker_https" {
@@ -79,7 +78,6 @@ resource "aws_security_group_rule" "control_plane_egress_to_worker_sgr" {
   protocol                 = "tcp"
   security_group_id        = var.cluster_security_group_id
   source_security_group_id = aws_security_group.managed_ng[0].id
-
 }
 
 resource "aws_security_group_rule" "control_plane_egress_to_worker_https" {

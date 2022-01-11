@@ -7,16 +7,6 @@ variable "eks_worker_security_group_id" {
   default     = ""
 }
 
-variable "eks_oidc_issuer_url" {
-  description = "The URL on the EKS cluster OIDC Issuer"
-  default     = ""
-}
-
-variable "eks_oidc_provider_arn" {
-  description = "The ARN of the OIDC Provider if `enable_irsa = true`."
-  default     = ""
-}
-
 variable "auto_scaling_group_names" {
   description = "List of self-managed node groups autoscaling group names"
   default     = []
