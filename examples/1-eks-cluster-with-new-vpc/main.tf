@@ -140,8 +140,7 @@ data "aws_iam_policy_document" "eks_key" {
       "kms:ListGrants",
       "kms:RevokeGrant"
     ]
-    resources = [
-      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/aa0bf5eb-ad0c-4cf2-93f1-443c550df4cb"]
+    resources = ["*"]
 
     principals {
       type = "AWS"
