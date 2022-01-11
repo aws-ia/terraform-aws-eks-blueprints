@@ -129,3 +129,20 @@ resource "kubernetes_config_map" "amazon_vpc_cni" {
     data.http.eks_cluster_readiness[0]
   ]
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Teams
+# ---------------------------------------------------------------------------------------------------------------------
+module "aws_eks_teams" {
+  source = "./modules/aws-eks-teams"
+
+  application_teams = var.application_teams
+  platform_teams    = var.platform_teams
+  environment       = var.environment
+  tenant            = var.tenant
+  zone              = var.zone
+  eks_cluster_id    = module.aws_eks.cluster_id
+  tags              = module.eks_tags.tags
+
+  depends_on = [module.aws_eks]
+}

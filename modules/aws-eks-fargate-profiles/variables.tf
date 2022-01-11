@@ -1,4 +1,3 @@
-
 variable "fargate_profile" {
   description = "Map of maps of `eks_node_groups` to create"
   type        = any
