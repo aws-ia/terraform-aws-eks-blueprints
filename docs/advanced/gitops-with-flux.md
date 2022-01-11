@@ -2,7 +2,7 @@
 
 Once you have deployed your EKS cluster(s) with Terraform, you can leverage [Flux](https://fluxcd.io) to manage your cluster's configuration with [GitOps](https://www.gitops.tech/), including the deployment of add-ons, cluster configuration (e.g. cluster policies) and applications. Using GitOps practices to manage your clusters configuration will simplfy management, scaling the number of clusters you run and be able to easily recreate your clusters, treating them as ephemeral resources. Recreating your cluster is as simple as deploying a new cluster with Terraform and bootstraping it with Flux pointing to the repository containing the configuration.
 
-The [aws-samples/ssp-flux-cluster-configuration](https://github.com/ivallhon/k8s-infra) repository provides a sample configuration blueprint for configuring multiple Amazon EKS clusters belonging to different stages (`test` and `production`) using [GitOps](https://www.gitops.tech/) with [Flux v2](https://fluxcd.io/docs/). This repository installs a set of commonly used Kuberntes add-ons to perform policy enforcement, restrict network traffic with network policies, cluster monitoring, extend Kubernetes deployment capabilities enabling progressive Canary deployments for your applications...
+The [aws-samples/flux-eks-gitops-config](https://github.com/aws-samples/flux-eks-gitops-config) repository provides a sample configuration blueprint for configuring multiple Amazon EKS clusters belonging to different stages (`test` and `production`) using [GitOps](https://www.gitops.tech/) with [Flux v2](https://fluxcd.io/docs/). This repository installs a set of commonly used Kuberntes add-ons to perform policy enforcement, restrict network traffic with network policies, cluster monitoring, extend Kubernetes deployment capabilities enabling progressive Canary deployments for your applications...
 
 You can use the above sample repository to experiment with the predefined cluster configurations and use it as a baseline to adjust it to your own needs.
 
@@ -13,11 +13,11 @@ This sample installs the following Kubernetes add-ons:
 * **[Kyverno](https://kyverno.io/):** Kubernetes Policy Management Engine. Kyverno allows cluster administrators to manage environment specific configurations independently of workload configurations and enforce configuration best practices for their clusters. Kyverno can be used to scan existing workloads for best practices, or can be used to enforce best practices by blocking or mutating API requests.
 * **[Prometheus](https://prometheus.io/):** Defacto standard open-source systems monitoring and alerting toolkit for Kubernetes. This repository installs [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack).
 * **[Flagger](https://flagger.app/):** Progressive delivery operator for Flux. Flagger can run automated application analysis, testing, promotion and rollback for the following deployment strategies: Canary, A/B Testing and Blue/Green. For more details, check the [Flagger documentation](https://docs.flagger.app/).
-* **[ingress-nginx](https://kubernetes.github.io/ingress-nginx/):** Ingress controller to expose apps and enable [canary deployments and A/B testing with Flagger](https://docs.flagger.app/tutorials/nginx-progressive-delivery).
+* **[nginx-ingress-controller](https://kubernetes.github.io/ingress-nginx/):** Ingress controller to expose apps and enable [canary deployments and A/B testing with Flagger](https://docs.flagger.app/tutorials/nginx-progressive-delivery).
 
 **NOTE:** The add-ons on the sample are not configured for a production-ready cluster (e.g. Prometheus would need to be configured for long term metric storage, nginx would need HPA and any custom settings you need...).
 
-There're also a set of Kyverno cluster policies deployed to audit (test) or enforce (production) security settings on your workloads, as well as [podinfo](https://github.com/stefanprodan/podinfo) as a sample application, configured with [Flagger](https://flagger.app/) to perform progressive deployments. For further information, visit the [aws-samples/ssp-flux-cluster-configuration](https://github.com/ivallhon/k8s-infra) repository documentation.
+There're also a set of Kyverno cluster policies deployed to audit (test) or enforce (production) security settings on your workloads, as well as [podinfo](https://github.com/stefanprodan/podinfo) as a sample application, configured with [Flagger](https://flagger.app/) to perform progressive deployments. For further information, visit the [aws-samples/flux-eks-gitops-config](https://github.com/aws-samples/flux-eks-gitops-config) repository documentation.
 
 ## Bootstrap your cluster with Flux
 
@@ -34,7 +34,7 @@ You'll also need the following:
 
 ### Bootstrap your cluster
 
-Fork the [aws-samples/ssp-flux-cluster-configuration](https://github.com/ivallhon/k8s-infra) repository on your personal GitHub account and export your GitHub access token, username and repo name:
+Fork the [aws-samples/flux-eks-gitops-config](https://github.com/aws-samples/flux-eks-gitops-config) repository on your personal GitHub account and export your GitHub access token, username and repo name:
 
 ```bash
   export GITHUB_TOKEN=<your-token>
@@ -109,6 +109,6 @@ Confirm that podinfo can be correctly accessed via ingress:
 
 Congratulations! Your cluster has sync'ed all the configuration defined on the repository. Continue exploring the deployed configuration following these docs:
 
-* [Review the repository structure to understand the applied configuration](https://github.com/ivallhon/k8s-infra/docs/repository-structure.md)
-* [Test the cluster policies configured with Kyverno](https://github.com/ivallhon/k8s-infra/docs/test-kyverno-policies.md)
-* [Test progressive deployments with Flux, Flagger and nginx controller](https://github.com/ivallhon/k8s-infra/docs/flagger-canary-deployments.md)
+* [Review the repository structure to understand the applied configuration](https://github.com/aws-samples/flux-eks-gitops-config/blob/main/docs/repository-structure.md)
+* [Test the cluster policies configured with Kyverno](https://github.com/aws-samples/flux-eks-gitops-config/blob/main/docs/test-kyverno-policies.md)
+* [Test progressive deployments with Flux, Flagger and nginx controller](https://github.com/aws-samples/flux-eks-gitops-config/blob/main/docs/flagger-canary-deployments.md)

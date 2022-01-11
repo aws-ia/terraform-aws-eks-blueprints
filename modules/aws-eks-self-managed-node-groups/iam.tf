@@ -24,14 +24,7 @@ resource "aws_iam_role_policy_attachment" "self_managed_AmazonEKSWorkerNodePolic
 }
 
 resource "aws_iam_role_policy_attachment" "self_managed_AmazonEKS_CNI_Policy" {
-  count      = local.enable_windows_support ? 0 : 1
   policy_arn = "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.self_managed_ng.name
-}
-
-resource "aws_iam_role_policy_attachment" "self_managed_windows_nodes_cni" {
-  count      = local.enable_windows_support ? 1 : 0
-  policy_arn = aws_iam_policy.eks_windows_cni.0.arn
   role       = aws_iam_role.self_managed_ng.name
 }
 
@@ -40,16 +33,8 @@ resource "aws_iam_role_policy_attachment" "self_managed_AmazonEC2ContainerRegist
   role       = aws_iam_role.self_managed_ng.name
 }
 
-# Cluster Autoscaler
-resource "aws_iam_policy" "cluster_autoscaler" {
-  name        = "${var.eks_cluster_id}-${local.self_managed_node_group["node_group_name"]}-ca"
-  description = "IAM policy for Cluster Autoscaler"
-  path        = var.path
-  policy      = data.aws_iam_policy_document.cluster_autoscaler.json
-}
-
-resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
-  policy_arn = aws_iam_policy.cluster_autoscaler.arn
+resource "aws_iam_role_policy_attachment" "self_managed_AmazonSSMManagedInstanceCore" {
+  policy_arn = "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"
   role       = aws_iam_role.self_managed_ng.name
 }
 
@@ -65,6 +50,7 @@ resource "aws_iam_role_policy_attachment" "cwlogs" {
   policy_arn = aws_iam_policy.cwlogs.arn
   role       = aws_iam_role.self_managed_ng.name
 }
+
 # Windows nodes only need read-only access to EC2
 resource "aws_iam_policy" "eks_windows_cni" {
   count       = local.enable_windows_support ? 1 : 0
