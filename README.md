@@ -49,8 +49,6 @@ module "eks-ssp-kubernetes-addons" {
     source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
 
     eks_cluster_id                        = module.eks-ssp.eks_cluster_id
-    eks_oidc_issuer_url                   = module.eks-ssp.eks_oidc_issuer_url
-    eks_oidc_provider_arn                 = module.eks-ssp.eks_oidc_provider_arn
 
     # EKS Addons
     enable_amazon_eks_vpc_cni             = true
