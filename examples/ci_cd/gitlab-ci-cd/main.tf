@@ -34,9 +34,31 @@ provider "gitlab" {
   # Configuration options
 }
 
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.cluster.endpoint
+    token                  = data.aws_eks_cluster_auth.cluster.token
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  }
+}
+
 data "aws_region" "current" {}
 
 data "aws_availability_zones" "available" {}
+
+data "aws_eks_cluster" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+}
 
 locals {
   tenant      = "aws001"  # AWS account name or unique id for tenant
@@ -77,7 +99,6 @@ module "aws_vpc" {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb"             = "1"
   }
-
 }
 #---------------------------------------------------------------
 # Example to consume aws-eks-accelerator-for-terraform module

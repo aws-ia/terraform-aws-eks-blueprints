@@ -112,7 +112,6 @@ module "aws-eks-accelerator-for-terraform" {
   # EKS CONTROL PLANE VARIABLES
   create_eks         = true
   kubernetes_version = local.kubernetes_version
-
   #---------------------------------------------------------#
   # EKS WORKER NODE GROUPS
   # Define Node groups as map of maps object as shown below. Each node group creates the following
@@ -162,9 +161,7 @@ module "aws-eks-accelerator-for-terraform" {
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-
       create_worker_security_group = true
-
     },
     #---------------------------------------------------------#
     # SPOT Worker Group - Worker Group - 2
@@ -214,7 +211,6 @@ module "aws-eks-accelerator-for-terraform" {
 
       create_worker_security_group = false
     },
-
     #---------------------------------------------------------#
     # BOTTLEROCKET - Worker Group - 3
     #---------------------------------------------------------#
@@ -254,7 +250,6 @@ module "aws-eks-accelerator-for-terraform" {
       #security_group ID
       create_worker_security_group = true
     }
-
       */
   } # END OF MANAGED NODE GROUPS
 
@@ -263,7 +258,6 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------------------------#
 
   enable_windows_support = false
-
   self_managed_node_groups = {
     #---------------------------------------------------------#
     # ON-DEMAND Self Managed Worker Group - Worker Group - 1
@@ -300,9 +294,7 @@ module "aws-eks-accelerator-for-terraform" {
         subnet_type = "private"
       }
 
-
       subnet_ids = [] # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-
       create_worker_security_group = false # Creates a dedicated sec group for this Node Group
     },
     /*
@@ -342,7 +334,6 @@ module "aws-eks-accelerator-for-terraform" {
         Name        = "spot"
         subnet_type = "private"
       }
-
       create_worker_security_group = false
     },
 
@@ -377,10 +368,8 @@ module "aws-eks-accelerator-for-terraform" {
         ExtraTag = "bottlerocket"
         Name     = "bottlerocket"
       }
-
       create_worker_security_group = true
     }
-
     #---------------------------------------------------------#
     # ON-DEMAND Self Managed Windows Worker Node Group
     #---------------------------------------------------------#
@@ -407,16 +396,13 @@ module "aws-eks-accelerator-for-terraform" {
       additional_tags = {
         ExtraTag    = "windows-on-demand"
         Name        = "windows-on-demand"
-
       }
 
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-
       create_worker_security_group = false # Creates a dedicated sec group for this Node Group
     }
   */
   } # END OF SELF MANAGED NODE GROUPS
-
   #---------------------------------------------------------#
   # FARGATE PROFILES
   #---------------------------------------------------------#
@@ -469,15 +455,12 @@ module "aws-eks-accelerator-for-terraform" {
       }
     }, */
   } # END OF FARGATE PROFILES
-
 }
 
 module "kubernetes-addons" {
   source = "../../../../../../../modules/kubernetes-addons"
 
   eks_cluster_id               = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-  eks_oidc_issuer_url          = module.aws-eks-accelerator-for-terraform.eks_oidc_issuer_url
-  eks_oidc_provider_arn        = module.aws-eks-accelerator-for-terraform.eks_oidc_provider_arn
   eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_security_group_id
   auto_scaling_group_names     = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
 

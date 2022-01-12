@@ -80,7 +80,7 @@ module "aws_vpc" {
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  source = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
+  source = "../../.."
 
   tenant            = local.tenant
   environment       = local.environment
@@ -107,7 +107,7 @@ module "aws-eks-accelerator-for-terraform" {
 }
 
 module "kubernetes-addons" {
-  source         = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
+  source         = "../../../modules/kubernetes-addons"
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
   #K8s Add-ons
@@ -129,7 +129,6 @@ module "kubernetes-addons" {
       operating_system = "linux"
     })]
   }
-
   #---------------------------------------
   # ENABLE SPARK on K8S OPERATOR
   #---------------------------------------
@@ -145,7 +144,6 @@ module "kubernetes-addons" {
     create_namespace = true
     values           = [templatefile("${path.module}/helm_values/spark-k8s-operator-values.yaml", {})]
   }
-
   #---------------------------------------
   # Apache YuniKorn K8s Spark Scheduler
   #---------------------------------------

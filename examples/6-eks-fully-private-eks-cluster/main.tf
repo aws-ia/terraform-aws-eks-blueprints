@@ -15,14 +15,7 @@ terraform {
       version = ">= 2.4.1"
     }
   }
-}
 
-provider "aws" {
-  region = data.aws_region.current.id
-  alias  = "default"
-}
-
-terraform {
   backend "local" {
     path = "local_tf_state/terraform-main.tfstate"
   }
@@ -31,6 +24,28 @@ terraform {
 data "aws_region" "current" {}
 
 data "aws_availability_zones" "available" {}
+
+data "aws_eks_cluster" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+}
+
+provider "aws" {
+  region = data.aws_region.current.id
+  alias  = "default"
+}
+
+provider "kubernetes" {
+  experiments {
+    manifest_resource = true
+  }
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+}
 
 locals {
   tenant      = "aws001"  # AWS account name or unique id for tenant
@@ -169,7 +184,7 @@ module "vpc_endpoints" {
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  source = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
+  source = "../.."
 
   tenant            = local.tenant
   environment       = local.environment

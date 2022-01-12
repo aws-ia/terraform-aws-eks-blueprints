@@ -1,17 +1,3 @@
-data "aws_eks_cluster" "my-cluster" {
-  name = module.aws-eks-accelerator-for-terraform.cluster_name
-}
-
-data "aws_eks_cluster_auth" "my-auth" {
-  name = module.aws-eks-accelerator-for-terraform.cluster_name
-}
-
-provider "kubernetes" {
-  host                   = data.aws_eks_cluster.my-cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.my-cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.my-auth.token
-}
-
 resource "kubernetes_service_account" "gitlab-admin" {
   metadata {
     name      = "gitlab-admin"

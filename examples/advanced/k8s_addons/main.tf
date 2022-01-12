@@ -8,13 +8,29 @@ terraform {
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = ">= 2.7.1"
+      version = ">= 2.6.1"
     }
     helm = {
       source  = "hashicorp/helm"
       version = ">= 2.4.1"
     }
   }
+
+  backend "local" {
+    path = "local_tf_state/terraform-main.tfstate"
+  }
+}
+
+data "aws_region" "current" {}
+
+data "aws_availability_zones" "available" {}
+
+data "aws_eks_cluster" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 }
 
 provider "aws" {
@@ -22,9 +38,22 @@ provider "aws" {
   alias  = "default"
 }
 
-data "aws_region" "current" {}
+provider "kubernetes" {
+  experiments {
+    manifest_resource = true
+  }
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+}
 
-data "aws_availability_zones" "available" {}
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.cluster.endpoint
+    token                  = data.aws_eks_cluster_auth.cluster.token
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  }
+}
 
 locals {
   tenant         = var.tenant
@@ -114,15 +143,12 @@ module "aws-eks-accelerator-for-terraform" {
       emr_on_eks_iam_role_name = "emr-eks-data-team-b"
     }
   }
-
 }
 
 module "kubernetes-addons" {
   source = "../../../modules/kubernetes-addons"
 
   eks_cluster_id               = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-  eks_oidc_issuer_url          = module.aws-eks-accelerator-for-terraform.eks_oidc_issuer_url
-  eks_oidc_provider_arn        = module.aws-eks-accelerator-for-terraform.eks_oidc_provider_arn
   eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_security_group_id
   auto_scaling_group_names     = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
 
@@ -190,7 +216,6 @@ module "kubernetes-addons" {
     version    = "1.3.1"
     namespace  = "kube-system"
   }
-
   #---------------------------------------
   # AWS NODE TERMINATION HANDLER HELM ADDON
   #---------------------------------------
@@ -207,7 +232,6 @@ module "kubernetes-addons" {
   # TRAEFIK INGRESS CONTROLLER HELM ADDON
   #---------------------------------------
   enable_traefik = true
-
   # Optional Map value
   traefik_helm_config = {
     name       = "traefik"                         # (Required) Release name.
@@ -227,12 +251,10 @@ module "kubernetes-addons" {
       operating_system = "linux"
     })]
   }
-
   #---------------------------------------
   # METRICS SERVER HELM ADDON
   #---------------------------------------
   enable_metrics_server = true
-
   # Optional Map value
   metrics_server_helm_config = {
     name       = "metrics-server"                                    # (Required) Release name.
@@ -242,18 +264,15 @@ module "kubernetes-addons" {
     namespace  = "kube-system"                                       # (Optional) The namespace to install the release into. Defaults to default
     timeout    = "1200"                                              # (Optional)
     lint       = "true"                                              # (Optional)
-
     # (Optional) Example to show how to pass metrics-server-values.yaml
     values = [templatefile("${path.module}/helm_values/metrics-server-values.yaml", {
       operating_system = "linux"
     })]
   }
-
   #---------------------------------------
   # CLUSTER AUTOSCALER HELM ADDON
   #---------------------------------------
   enable_cluster_autoscaler = true
-
   # Optional Map value
   cluster_autoscaler_helm_config = {
     name       = "cluster-autoscaler"                      # (Required) Release name.
@@ -263,7 +282,6 @@ module "kubernetes-addons" {
     namespace  = "kube-system"                             # (Optional) The namespace to install the release into. Defaults to default
     timeout    = "1200"                                    # (Optional)
     lint       = "true"                                    # (Optional)
-
     # (Optional) Example to show how to pass metrics-server-values.yaml
     values = [templatefile("${path.module}/helm_values/cluster-autoscaler-vaues.yaml", {
       operating_system = "linux"
@@ -287,14 +305,11 @@ module "kubernetes-addons" {
     values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
       operating_system = "linux"
     })]
-
   }
-
   #---------------------------------------
   # ENABLE NGINX
   #---------------------------------------
   enable_ingress_nginx = true
-
   # Optional ingress_nginx_helm_config
   ingress_nginx_helm_config = {
     name       = "ingress-nginx"
@@ -304,7 +319,6 @@ module "kubernetes-addons" {
     namespace  = "kube-system"
     values     = [templatefile("${path.module}/helm_values/nginx_default_values.yaml", {})]
   }
-
   #---------------------------------------
   # ENABLE AGONES
   #---------------------------------------
@@ -326,7 +340,6 @@ module "kubernetes-addons" {
       gameserver_maxport    = 8000
     })]
   }
-
   #---------------------------------------
   # ENABLE AWS DISTRO OPEN TELEMETRY
   #---------------------------------------
@@ -340,12 +353,10 @@ module "kubernetes-addons" {
     aws_open_telemetry_aws_region                       = "eu-west-1"
     aws_open_telemetry_emitter_oltp_endpoint            = "localhost:55680"
   }
-
   #---------------------------------------
   # AWS-FOR-FLUENTBIT HELM ADDON
   #---------------------------------------
   enable_aws_for_fluentbit = true
-
   aws_for_fluentbit_helm_config = {
     name                                      = "aws-for-fluent-bit"
     chart                                     = "aws-for-fluent-bit"
@@ -366,12 +377,10 @@ module "kubernetes-addons" {
       }
     ]
   }
-
   #---------------------------------------
   # ENABLE SPARK on K8S OPERATOR
   #---------------------------------------
   enable_spark_k8s_operator = true
-
   # Optional Map value
   spark_k8s_operator_helm_config = {
     name             = "spark-operator"
@@ -382,7 +391,6 @@ module "kubernetes-addons" {
     timeout          = "1200"
     create_namespace = true
     values           = [templatefile("${path.module}/helm_values/spark-k8s-operator-values.yaml", {})]
-
   }
 
   #---------------------------------------
@@ -419,7 +427,6 @@ module "kubernetes-addons" {
   Decode_Field_As json message
     EOF
   }
-
   #---------------------------------------
   # ENABLE ARGOCD
   #---------------------------------------
@@ -435,12 +442,10 @@ module "kubernetes-addons" {
     create_namespace = true
     values           = [templatefile("${path.module}/helm_values/argocd-values.yaml", {})]
   }
-
   #---------------------------------------
   # KEDA ENABLE
   #---------------------------------------
   enable_keda = true
-
   # Optional Map value
   keda_helm_config = {
     name       = "keda"                              # (Required) Release name.
@@ -450,12 +455,10 @@ module "kubernetes-addons" {
     namespace  = "keda"                              # (Optional) The namespace to install the release into. Defaults to default
     values     = [templatefile("${path.module}/helm_values/keda-values.yaml", {})]
   }
-
   #---------------------------------------
   # Vertical Pod Autoscaling
   #---------------------------------------
   enable_vpa = true
-
   vpa_helm_config = {
     name       = "vpa"                                 # (Required) Release name.
     repository = "https://charts.fairwinds.com/stable" # (Optional) Repository URL where to locate the requested chart.
@@ -464,12 +467,10 @@ module "kubernetes-addons" {
     namespace  = "vpa-ns"                              # (Optional) The namespace to install the release into. Defaults to default
     values     = [templatefile("${path.module}/helm_values/vpa-values.yaml", {})]
   }
-
   #---------------------------------------
   # Apache YuniKorn K8s Spark Scheduler
   #---------------------------------------
   enable_yunikorn = true
-
   yunikorn_helm_config = {
     name       = "yunikorn"                                            # (Required) Release name.
     repository = "https://apache.github.io/incubator-yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
