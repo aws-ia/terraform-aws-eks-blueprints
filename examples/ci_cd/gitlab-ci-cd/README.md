@@ -60,8 +60,8 @@ Copy this folder(`gitlab-ci-cd`) to your new gitlab repo. Rename the folder acco
 | [kubernetes_secret.gitlab-admin](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
 | [kubernetes_service_account.gitlab-admin](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
-| [aws_eks_cluster.my-cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
-| [aws_eks_cluster_auth.my-auth](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
+| [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
+| [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [gitlab_group.gitops-eks](https://registry.terraform.io/providers/gitlabhq/gitlab/3.7.0/docs/data-sources/group) | data source |
 | [gitlab_projects.ssp-amazon-eks](https://registry.terraform.io/providers/gitlabhq/gitlab/3.7.0/docs/data-sources/projects) | data source |
