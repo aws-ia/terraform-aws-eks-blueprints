@@ -36,7 +36,7 @@ module "kms" {
   description             = "${module.eks_tags.id} EKS cluster secret encryption key"
   deletion_window_in_days = 30
   enable_key_rotation     = true
-  policy                  = try(var.eks_cluster_kms_key_policy, data.aws_iam_policy_document.eks_key.json)
+  policy                  = var.eks_cluster_kms_key_policy == null ? data.aws_iam_policy_document.eks_key.json : var.eks_cluster_kms_key_policy
   tags                    = module.eks_tags.tags
 }
 
