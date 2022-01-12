@@ -73,6 +73,8 @@ module "aws_for_fluent_bit" {
   source            = "./aws-for-fluentbit"
   helm_config       = var.aws_for_fluentbit_helm_config
   eks_cluster_id    = var.eks_cluster_id
+  irsa_policies     = var.aws_for_fluentbit_irsa_policies
+  tags              = var.tags
   manage_via_gitops = var.argocd_manage_add_ons
 }
 
