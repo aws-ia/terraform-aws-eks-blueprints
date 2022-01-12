@@ -1,17 +1,40 @@
 locals {
-  service_account_name = "cluster-autoscaler-sa"
-  namespace            = "kube-system"
+  namespace            = "karpenter"
+  service_account_name = "karpenter-sa"
+  eks_cluster_endpoint = data.aws_eks_cluster.eks.endpoint
+
+  karpenter_set_values = [{
+    name  = "serviceAccount.name"
+    value = local.service_account_name
+    },
+    {
+      name  = "serviceAccount.create"
+      value = false
+    },
+    {
+      name  = "controller.clusterName"
+      value = var.eks_cluster_id
+    },
+    {
+      name  = "controller.clusterEndpoint"
+      value = local.eks_cluster_endpoint
+  }]
 
   default_helm_config = {
-    name                       = "cluster-autoscaler"
-    chart                      = "cluster-autoscaler"
-    repository                 = "https://kubernetes.github.io/autoscaler"
-    version                    = "9.10.8"
+    name                       = "karpenter"
+    chart                      = "karpenter"
+    repository                 = "https://charts.karpenter.sh"
+    version                    = "0.5.4"
     namespace                  = local.namespace
     timeout                    = "300"
     create_namespace           = false
     values                     = local.default_helm_values
-    lint                       = false
+    set                        = []
+    set_sensitive              = null
+    lint                       = true
+    wait                       = true
+    wait_for_jobs              = false
+    description                = "karpenter Helm Chart for Node Autoscaling"
     verify                     = false
     keyring                    = ""
     repository_key_file        = ""
@@ -30,14 +53,9 @@ locals {
     skip_crds                  = false
     render_subchart_notes      = true
     disable_openapi_validation = false
-    wait                       = true
-    wait_for_jobs              = false
     dependency_update          = false
     replace                    = false
-    description                = "Cluster AutoScaler helm Chart deployment configuration"
     postrender                 = ""
-    set                        = null
-    set_sensitive              = null
   }
 
   helm_config = merge(
@@ -45,24 +63,17 @@ locals {
     var.helm_config
   )
 
-  ca_set_values = [{
-    name  = "rbac.serviceAccount.create"
-    value = "false"
-    },
-    {
-      name  = "rbac.serviceAccount.name"
-      value = local.service_account_name
-  }]
-
   default_helm_values = [templatefile("${path.module}/values.yaml", {
-    aws_region           = data.aws_region.current.name,
-    eks_cluster_id       = var.eks_cluster_id
-    service_account_name = local.service_account_name
+    eks_cluster_id       = var.eks_cluster_id,
+    eks_cluster_endpoint = local.eks_cluster_endpoint,
+    service_account_name = local.service_account_name,
+    operating_system     = "linux"
   })]
 
   argocd_gitops_config = {
     enable             = true
-    awsRegion          = data.aws_region.current.name
     serviceAccountName = local.service_account_name
+    clusterName        = var.eks_cluster_id
+    clusterEndpoint    = local.eks_cluster_endpoint
   }
 }

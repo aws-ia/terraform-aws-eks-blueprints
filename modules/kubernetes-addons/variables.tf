@@ -7,16 +7,6 @@ variable "eks_worker_security_group_id" {
   default     = ""
 }
 
-variable "eks_oidc_issuer_url" {
-  description = "The URL on the EKS cluster OIDC Issuer"
-  default     = ""
-}
-
-variable "eks_oidc_provider_arn" {
-  description = "The ARN of the OIDC Provider if `enable_irsa = true`."
-  default     = ""
-}
-
 variable "auto_scaling_group_names" {
   description = "List of self-managed node groups autoscaling group names"
   default     = []
@@ -298,6 +288,25 @@ variable "aws_node_termination_handler_helm_config" {
   type        = any
   description = "AWS Node Termination Handler Helm Chart config"
   default     = {}
+}
+
+#-----------KARPENTER ADDON-------------
+variable "enable_karpenter" {
+  type        = bool
+  default     = false
+  description = "Enable Karpenter autoscaler add-on"
+}
+
+variable "karpenter_helm_config" {
+  type        = any
+  default     = {}
+  description = "Karpenter autoscaler add-on config"
+}
+
+variable "karpenter_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
 }
 
 #-----------KEDA ADDON-------------

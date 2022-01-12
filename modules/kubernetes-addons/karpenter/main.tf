@@ -1,4 +1,4 @@
-resource "helm_release" "cluster_autoscaler" {
+resource "helm_release" "karpenter" {
   count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.helm_config["name"]
   repository                 = local.helm_config["repository"]
@@ -39,7 +39,7 @@ resource "helm_release" "cluster_autoscaler" {
 
   dynamic "set" {
     iterator = each_item
-    for_each = local.helm_config["set"] != null ? distinct(concat(local.ca_set_values, local.helm_config["set"])) : local.ca_set_values
+    for_each = local.helm_config["set"] != null ? distinct(concat(local.karpenter_set_values, local.helm_config["set"])) : local.karpenter_set_values
 
     content {
       name  = each_item.value.name
@@ -56,22 +56,21 @@ resource "helm_release" "cluster_autoscaler" {
       value = each_item.value.value
     }
   }
-  depends_on = [module.irsa]
+
+  depends_on = [module.irsa_addon]
 }
 
-module "irsa" {
-  source                            = "../../../modules/irsa"
-  eks_cluster_id                    = var.eks_cluster_id
-  create_kubernetes_namespace       = false
-  create_kubernetes_service_account = true
-  kubernetes_namespace              = local.namespace
-  kubernetes_service_account        = local.service_account_name
-  irsa_iam_policies                 = [aws_iam_policy.cluster_autoscaler.arn]
-  tags                              = var.tags
+resource "aws_iam_policy" "karpenter" {
+  name        = "${var.eks_cluster_id}-karpenter"
+  description = "IAM Policy for Karpenter"
+  policy      = data.aws_iam_policy_document.karpenter.json
 }
 
-resource "aws_iam_policy" "cluster_autoscaler" {
-  description = "Cluster Autoscaler IAM policy"
-  name        = "${var.eks_cluster_id}-${local.helm_config["name"]}-irsa"
-  policy      = data.aws_iam_policy_document.cluster_autoscaler.json
+module "irsa_addon" {
+  source                     = "../../../modules/irsa"
+  eks_cluster_id             = var.eks_cluster_id
+  kubernetes_namespace       = local.namespace
+  kubernetes_service_account = local.service_account_name
+  irsa_iam_policies          = concat([aws_iam_policy.karpenter.arn], var.irsa_policies)
+  tags                       = var.tags
 }

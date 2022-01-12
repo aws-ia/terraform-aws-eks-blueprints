@@ -5,6 +5,11 @@ autoDiscovery:
 extraArgs:
   aws-use-static-instance-list: true
 
+rbac:
+  serviceAccount:
+    create: false
+    name: ${service_account_name}
+
 resources:
   limits:
     cpu: 200m

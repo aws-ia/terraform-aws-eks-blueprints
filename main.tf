@@ -28,13 +28,21 @@ module "eks_tags" {
   tags        = local.tags
 }
 
+# Create the cluster's KMS key
+module "kms" {
+  source = "./modules/aws-kms"
+
+  alias                   = "alias/${module.eks_tags.id}"
+  description             = "${module.eks_tags.id} EKS cluster secret encryption key"
+  deletion_window_in_days = 30
+  enable_key_rotation     = true
+  policy                  = var.eks_cluster_kms_key_policy == null ? data.aws_iam_policy_document.eks_key.json : var.eks_cluster_kms_key_policy
+  tags                    = module.eks_tags.tags
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # EKS CONTROL PLANE
 # ---------------------------------------------------------------------------------------------------------------------
-
-resource "aws_kms_key" "eks" {
-  description = "EKS Cluster Secret Encryption Key"
-}
 
 module "aws_eks" {
   source  = "terraform-aws-modules/eks/aws"
@@ -43,8 +51,9 @@ module "aws_eks" {
   create_eks      = var.create_eks
   manage_aws_auth = false
 
-  cluster_name    = module.eks_tags.id
-  cluster_version = var.kubernetes_version
+  cluster_name          = module.eks_tags.id
+  cluster_version       = var.kubernetes_version
+  cluster_iam_role_name = local.cluster_iam_role_name
 
   # NETWORK CONFIG
   vpc_id  = var.vpc_id
@@ -70,7 +79,7 @@ module "aws_eks" {
   # CLUSTER ENCRYPTION
   cluster_encryption_config = [
     {
-      provider_key_arn = aws_kms_key.eks.arn
+      provider_key_arn = module.kms.key_arn
       resources        = ["secrets"]
     }
   ]

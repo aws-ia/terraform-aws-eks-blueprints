@@ -16,24 +16,12 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "helm_config" {
-  type        = any
-  description = "Helm provider config for the aws_load_balancer_controller."
-  default     = {}
+output "key_id" {
+  value       = aws_kms_key.this.key_id
+  description = "The globally unique identifier for the key."
 }
 
-variable "eks_cluster_id" {
-  type        = string
-  description = "EKS cluster Id"
-}
-
-variable "manage_via_gitops" {
-  type        = bool
-  default     = false
-  description = "Determines if the add-on should be managed via GitOps."
-}
-
-variable "tags" {
-  type        = map(string)
-  description = "Common Tags for AWS resources"
+output "key_arn" {
+  value       = aws_kms_key.this.arn
+  description = "The Amazon Resource Name (ARN) of the key."
 }

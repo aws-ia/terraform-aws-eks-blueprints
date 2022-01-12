@@ -62,7 +62,7 @@ locals {
 
   kubernetes_version = "1.21"
 
-  vpc_cidr       = "10.1.0.0/16"
+  vpc_cidr       = "10.0.0.0/16"
   vpc_name       = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
@@ -94,7 +94,6 @@ module "aws_vpc" {
     "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
     "kubernetes.io/role/internal-elb"               = "1"
   }
-
 }
 #---------------------------------------------------------------
 # Example to consume aws-eks-accelerator-for-terraform module
@@ -115,34 +114,17 @@ module "aws-eks-accelerator-for-terraform" {
   create_eks         = true
   kubernetes_version = local.kubernetes_version
 
-  # EKS MANAGED NODE GROUP
-  # with Spot instances
-  managed_node_groups = {
-    mng_spot_medium = {
-      node_group_name = "mng-spot-med"
-      capacity_type   = "SPOT"
-      instance_types  = ["t3.medium", "t3a.medium"]
-      subnet_ids      = module.aws_vpc.private_subnets
-      desired_size    = "2"
-      disk_size       = 30
-    }
-  }
-
-  # SELF-MANAGED NODE GROUP
-  # with Windows support
-  enable_windows_support = true
-
+  # Self-managed Node Group
+  # Karpenter requires one node to get up and running
   self_managed_node_groups = {
-    ng_od_windows = {
-      node_group_name        = "ng-od-windows"
-      create_launch_template = true
-      launch_template_os     = "windows"
-      instance_type          = "m5n.large"
-      subnet_ids             = module.aws_vpc.private_subnets
-      desired_size           = "2"
+    self_mg_4 = {
+      node_group_name    = "self-managed-ondemand"
+      custom_ami_id      = "ami-0dfaa019a300f219c"
+      launch_template_os = "amazonlinux2eks"
+      max_size           = 1
+      subnet_ids         = module.aws_vpc.private_subnets
     }
   }
-
 }
 
 module "kubernetes-addons" {
@@ -150,15 +132,9 @@ module "kubernetes-addons" {
 
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
-  # EKS Managed Add-ons
-  enable_amazon_eks_vpc_cni    = true
-  enable_amazon_eks_coredns    = true
-  enable_amazon_eks_kube_proxy = true
-
   #K8s Add-ons
-  enable_aws_load_balancer_controller = true
-  enable_metrics_server               = true
-  enable_cluster_autoscaler           = true
+  enable_karpenter      = true
+  enable_metrics_server = true
 
-  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
+  depends_on = [module.aws-eks-accelerator-for-terraform.self_managed_node_groups]
 }

@@ -228,3 +228,9 @@ variable "platform_teams" {
   type        = any
   default     = {}
 }
+
+variable "eks_cluster_kms_key_policy" {
+  type        = string
+  default     = null
+  description = "A valid KMS key policy JSON document. Although this is a key policy, not an IAM policy, an aws_iam_policy_document, in the form that designates a principal, can be used."
+}
