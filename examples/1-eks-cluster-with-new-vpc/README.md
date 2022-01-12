@@ -83,7 +83,7 @@ terraform destroy --auto-approve
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.71.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.66.0 |
 
 ## Modules
 
