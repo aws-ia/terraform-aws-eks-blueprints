@@ -294,7 +294,7 @@ module "aws-eks-accelerator-for-terraform" {
         subnet_type = "private"
       }
 
-      subnet_ids = [] # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
+      subnet_ids                   = []    # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
       create_worker_security_group = false # Creates a dedicated sec group for this Node Group
     },
     /*
