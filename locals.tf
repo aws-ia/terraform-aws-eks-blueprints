@@ -83,5 +83,5 @@ locals {
 
   platform_teams_config_map    = module.aws_eks_teams.platform_teams_config_map
   application_teams_config_map = module.aws_eks_teams.application_teams_config_map
-
+  cluster_iam_role_name        = "${module.eks_tags.tags.name}-cluster-role"
 }
