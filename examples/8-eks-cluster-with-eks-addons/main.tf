@@ -61,8 +61,8 @@ locals {
 
   kubernetes_version = "1.21"
 
-  vpc_cidr       = "10.0.0.0/16"
-  vpc_name       = join("-", [local.tenant, local.environment, local.zone, "vpc"])
+  vpc_cidr     = "10.0.0.0/16"
+  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.0.1"
