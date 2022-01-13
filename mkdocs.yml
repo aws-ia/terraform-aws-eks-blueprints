@@ -27,7 +27,7 @@ nav:
       - Metrics Server: "add-ons/metrics-server.md"
       - Nginx: "add-ons/nginx.md"
       - Prometheus: "add-ons/prometheus.md"
-      - Spark K8S Operator: "add-ons/spark-k8s-operator.md"
+      - Spark K8S Operator: "add-ons/spark-on-k8s-operator.md"
       - Traefik: "add-ons/traefik.md"
   - Advanced:
       - Bottlerocket: "advanced/bottlerocket.md"

@@ -8,7 +8,7 @@ AWS provides a Fluent Bit image with plugins for both CloudWatch Logs and Kinesi
 
 ### Usage
 
-[aws-for-fluent-bit](../../modules/kubernetes-addons/aws-for-fluent-bit/README.md) can be deployed by enabling the add-on via the following.
+[aws-for-fluent-bit](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/modules/kubernetes-addons/aws-for-fluent-bit/README.md) can be deployed by enabling the add-on via the following.
 
 ```hcl
 enable_aws_for_fluentbit = true

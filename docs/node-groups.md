@@ -1,11 +1,9 @@
 # Node Groups
 
-The framework uses dedicated sub modules for creating [AWS Managed Node Groups](modules/aws-eks-managed-node-groups), [Self-managed Node groups](modules/aws-eks-self-managed-node-groups) and [Fargate profiles](modules/aws-eks-fargate-profiles). These modules provide flexibility to add or remove managed/self-managed node groups/fargate profiles by simply adding/removing map of values to input config. See [example](examples/1-eks-cluster-with-new-vpc/main.tf).
+The framework uses dedicated sub modules for creating [AWS Managed Node Groups](modules/aws-eks-managed-node-groups), [Self-managed Node groups](modules/aws-eks-self-managed-node-groups) and [Fargate profiles](modules/aws-eks-fargate-profiles). These modules provide flexibility to add or remove managed/self-managed node groups/fargate profiles by simply adding/removing map of values to input config. See [example](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/examples/1-eks-cluster-with-new-vpc).
 
 The `aws-auth` ConfigMap handled by this module allow your nodes to join your cluster, and you also use this ConfigMap to add RBAC access to IAM users and roles.
 Each Node Group can have dedicated IAM role, Launch template and Security Group to improve the security.
-
-Please refer this [full example](examples/1-eks-cluster-with-new-vpc/main.tf)
 
 ## Managed Node Groups
 
