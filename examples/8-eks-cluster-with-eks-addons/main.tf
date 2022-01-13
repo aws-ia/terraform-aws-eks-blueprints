@@ -64,6 +64,7 @@ locals {
   vpc_cidr       = "10.0.0.0/16"
   vpc_name       = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  cluster_name   = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.0.1"
 }
