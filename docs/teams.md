@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The `ssp-amazon-eks` framework provides support for onboarding and managing teams and easily configuring cluster access. We currently support two "`Team`" types: `application_teams` and `platform_teams`.
+The `ssp-amazon-eks` framework provides support for onboarding and managing teams and easily configuring cluster access. We currently support two `Team` types: `application_teams` and `platform_teams`.
 `Application Teams` represent teams managing workloads running in cluster namespaces and `Platform Teams` represents platform administrators who have admin access (masters group) to clusters.
 
 You can reference the [aws-eks-teams](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/aws-eks-teams) module to create your own team implementations.
