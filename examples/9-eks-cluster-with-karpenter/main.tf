@@ -64,7 +64,7 @@ locals {
 
   vpc_cidr       = "10.0.0.0/16"
   vpc_name       = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.0.1"
 }
@@ -86,12 +86,12 @@ module "aws_vpc" {
   single_nat_gateway   = true
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/elb"                        = "1"
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb"               = "1"
   }
 }

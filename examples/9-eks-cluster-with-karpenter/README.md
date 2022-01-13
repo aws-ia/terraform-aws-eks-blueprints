@@ -56,7 +56,7 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
 #### Step5: Run update-kubeconfig command.
 `~/.kube/config` file gets updated with cluster details and certificate from the below command
 
-    $ aws eks --region eu-west-1 update-kubeconfig --name <cluster-name>
+    $ aws eks --region <Enter-your-region> update-kubeconfig --name <cluster-name>
 
 #### Step6: List all the worker nodes by running the command below
 You should see one Self-managed node up and running
@@ -72,13 +72,13 @@ You should see one Self-managed node up and running
       karpenter-controller-5f959cdc44-8dmjb   1/1     Running   0          31m
       karpenter-webhook-65f48f8d49-5hkpb      1/1     Running   0          31m
 
-#### Step8: Deploy the default provisionar
-Kaprpenter will be ready to spin up SPOT/ON-DEMAND nodes based on the provided configuraiton in `default_provisionar.yaml`
+#### Step8: Deploy the default provisioner
+Kaprpenter will be ready to spin up SPOT/ON-DEMAND nodes based on the provided configuraiton in `default_provisioner.yaml`
 
     $ cd examples/8-eks-cluster-with-karpenter/provisioners
-    $ kubectl apply -f default_provisionar.yaml
+    $ kubectl apply -f default_provisioner.yaml
 
-#### Step9: Run this sample `deplolyment` to verify the Autoscaling triggered by Karpenter
+#### Step9: Run this sample `deployment` to verify the Autoscaling triggered by Karpenter
 
     $ cd examples/8-eks-cluster-with-karpenter/provisioners
     $ kubectl apply -f sample_deployment.yaml
