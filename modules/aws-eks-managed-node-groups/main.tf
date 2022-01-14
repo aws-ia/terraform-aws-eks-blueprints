@@ -1,20 +1,19 @@
 resource "aws_eks_node_group" "managed_ng" {
   cluster_name           = var.eks_cluster_id
   node_group_name_prefix = local.managed_node_group["node_group_name"]
-  #node_group_name = local.managed_node_group["node_group_name"]
-  node_role_arn = aws_iam_role.managed_ng.arn
-  subnet_ids    = local.managed_node_group["subnet_ids"]
+  node_role_arn          = aws_iam_role.managed_ng.arn
+  subnet_ids             = local.managed_node_group["subnet_ids"]
+
+  ami_type       = local.managed_node_group["ami_type"] != "" ? local.managed_node_group["ami_type"] : null
+  capacity_type  = local.managed_node_group["capacity_type"]
+  disk_size      = local.managed_node_group["create_launch_template"] == true ? null : local.managed_node_group["disk_size"]
+  instance_types = local.managed_node_group["instance_types"]
 
   scaling_config {
     desired_size = local.managed_node_group["desired_size"]
     max_size     = local.managed_node_group["max_size"]
     min_size     = local.managed_node_group["min_size"]
   }
-
-  ami_type       = local.managed_node_group["ami_type"] != "" ? local.managed_node_group["ami_type"] : null
-  capacity_type  = local.managed_node_group["capacity_type"]
-  disk_size      = local.managed_node_group["create_launch_template"] == true ? null : local.managed_node_group["disk_size"]
-  instance_types = local.managed_node_group["instance_types"]
 
   lifecycle {
     create_before_destroy = true

@@ -1,17 +1,19 @@
 locals {
   log_group_name       = "/${var.eks_cluster_id}/worker-fluentbit-logs"
   log_group_retention  = 90
-  namespace            = "fluent-bit"
-  service_account_name = "fluent-bit-sa"
+  namespace            = "kube-system"
+  service_account_name = "aws-for-fluent-bit-sa"
 
-  override_set_values = [{
-    name  = "serviceAccount.name"
-    value = local.service_account_name
+  override_set_values = [
+    {
+      name  = "serviceAccount.name"
+      value = local.service_account_name
     },
     {
       name  = "serviceAccount.create"
       value = false
-  }]
+    }
+  ]
 
   default_helm_config = {
     name                       = "aws-for-fluent-bit"

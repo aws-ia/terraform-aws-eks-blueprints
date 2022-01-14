@@ -45,14 +45,16 @@ locals {
     var.helm_config
   )
 
-  ca_set_values = [{
-    name  = "rbac.serviceAccount.create"
-    value = "false"
+  ca_set_values = [
+    {
+      name  = "rbac.serviceAccount.create"
+      value = "false"
     },
     {
       name  = "rbac.serviceAccount.name"
       value = local.service_account_name
-  }]
+    }
+  ]
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
     aws_region           = data.aws_region.current.name,
@@ -62,7 +64,7 @@ locals {
 
   argocd_gitops_config = {
     enable             = true
-    awsRegion          = data.aws_region.current.name
+    clusterName        = var.eks_cluster_id
     serviceAccountName = local.service_account_name
   }
 }

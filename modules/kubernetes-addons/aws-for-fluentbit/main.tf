@@ -62,7 +62,7 @@ resource "helm_release" "aws_for_fluent_bit" {
     }
   }
 
-  depends_on = [aws_cloudwatch_log_group.aws_for_fluent_bit, module.irsa_addon]
+  depends_on = [aws_cloudwatch_log_group.aws_for_fluent_bit, module.irsa]
 }
 
 resource "aws_iam_policy" "aws_for_fluent_bit" {
@@ -71,11 +71,12 @@ resource "aws_iam_policy" "aws_for_fluent_bit" {
   policy      = data.aws_iam_policy_document.aws_for_fluent_bit.json
 }
 
-module "irsa_addon" {
-  source                     = "../../../modules/irsa"
-  eks_cluster_id             = var.eks_cluster_id
-  kubernetes_namespace       = local.helm_config["namespace"]
-  kubernetes_service_account = local.service_account_name
-  irsa_iam_policies          = concat([aws_iam_policy.aws_for_fluent_bit.arn], var.irsa_policies)
-  tags                       = var.tags
+module "irsa" {
+  source                      = "../../../modules/irsa"
+  eks_cluster_id              = var.eks_cluster_id
+  kubernetes_namespace        = local.helm_config["namespace"]
+  create_kubernetes_namespace = local.helm_config["create_namespace"]
+  kubernetes_service_account  = local.service_account_name
+  irsa_iam_policies           = concat([aws_iam_policy.aws_for_fluent_bit.arn], var.irsa_policies)
+  tags                        = var.tags
 }

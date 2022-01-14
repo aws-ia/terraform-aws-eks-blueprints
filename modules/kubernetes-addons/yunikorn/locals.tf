@@ -73,8 +73,8 @@ locals {
 
   argocd_gitops_config = {
     enable                   = true
-    serviceAccount           = local.service_account_name
-    operatorPlugins          = local.operator_plugins
+    serviceAccountName       = local.service_account_name
+    
     serviceType              = local.service_type
     embedAdmissionController = false
   }
