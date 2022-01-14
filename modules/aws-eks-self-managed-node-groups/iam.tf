@@ -18,23 +18,9 @@ resource "aws_iam_instance_profile" "self_managed_ng" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "self_managed_AmazonEKSWorkerNodePolicy" {
-  policy_arn = "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.self_managed_ng.name
-}
-
-resource "aws_iam_role_policy_attachment" "self_managed_AmazonEKS_CNI_Policy" {
-  policy_arn = "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.self_managed_ng.name
-}
-
-resource "aws_iam_role_policy_attachment" "self_managed_AmazonEC2ContainerRegistryReadOnly" {
-  policy_arn = "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.self_managed_ng.name
-}
-
-resource "aws_iam_role_policy_attachment" "self_managed_AmazonSSMManagedInstanceCore" {
-  policy_arn = "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"
+resource "aws_iam_role_policy_attachment" "self_managed_ng" {
+  for_each = local.eks_worker_policies
+  policy_arn = each.key
   role       = aws_iam_role.self_managed_ng.name
 }
 

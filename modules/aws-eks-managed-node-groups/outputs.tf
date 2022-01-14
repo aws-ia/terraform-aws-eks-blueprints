@@ -20,7 +20,7 @@ output "managed_nodegroup_launch_template_id" {
 }
 
 output "managed_nodegroup_launch_template_arn" {
-  description = "launch templated id for EKS Self Managed Node Group"
+  description = "launch templated id for EKS Managed Node Group"
   value       = aws_launch_template.managed_node_groups[*].arn
 }
 

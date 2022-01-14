@@ -60,9 +60,7 @@ resource "aws_launch_template" "self_managed_ng" {
   depends_on = [
     aws_iam_role.self_managed_ng,
     aws_iam_instance_profile.self_managed_ng,
-    aws_iam_role_policy_attachment.self_managed_AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.self_managed_AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.self_managed_AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.self_managed_ng
   ]
 
 }

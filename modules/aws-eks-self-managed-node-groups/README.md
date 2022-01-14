@@ -39,29 +39,17 @@ This module allows you to create on-demand or spot self managed Linux or Windows
 
       disk_size     = 20
       instance_type = "m5.large"
-
-      desired_size = 2
       max_size     = 10
       min_size     = 2
-
-      capacity_type = "" # Optional Use this only for SPOT capacity as  capacity_type = "spot"
-
-      k8s_labels = {
-        Environment = "preprod"
-        Zone        = "test"
-        WorkerType  = "SELF_MANAGED_ON_DEMAND"
-      }
+      capacity_type = ""                            # Optional Use this only for SPOT capacity as  capacity_type = "spot"
 
       additional_tags = {
         ExtraTag    = "m5x-on-demand"
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-
-
-      subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-
-      create_worker_security_group = false # Creates a dedicated sec group for this Node Group
+      subnet_ids  = []                              # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
+      create_worker_security_group = false          # Creates a dedicated sec group for this Node Group
     },
     /*
     spot_m5 = {
@@ -78,28 +66,17 @@ This module allows you to create on-demand or spot self managed Linux or Windows
       disk_size     = 20
       instance_type = "m5.large"
 
-      desired_size = 2
       max_size     = 10
       min_size     = 2
-
       capacity_type = "spot"
 
       # Node Group network configuration
-
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-
-      k8s_taints = []
-      k8s_labels = {
-        Environment = "preprod"
-        Zone        = "dev"
-        WorkerType  = "SPOT"
-      }
       additional_tags = {
         ExtraTag    = "spot_nodes"
         Name        = "spot"
         subnet_type = "private"
       }
-
       create_worker_security_group = false
     },
 
@@ -110,30 +87,15 @@ This module allows you to create on-demand or spot self managed Linux or Windows
       public_ip       = false                   # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
       pre_userdata    = ""
 
-      desired_size    = 3
       max_size        = 3
       min_size        = 3
-      max_unavailable = 1
-
       instance_types = "m5.large"
       disk_size      = 50
-
-
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-
-      k8s_taints = []
-
-      k8s_labels = {
-        Environment = "preprod"
-        Zone        = "dev"
-        OS          = "bottlerocket"
-        WorkerType  = "ON_DEMAND_BOTTLEROCKET"
-      }
       additional_tags = {
         ExtraTag = "bottlerocket"
         Name     = "bottlerocket"
       }
-
       create_worker_security_group = true
     }
 
@@ -148,26 +110,15 @@ This module allows you to create on-demand or spot self managed Linux or Windows
 
       disk_size     = 50
       instance_type = "m5.large"
-
-      desired_size = 2
       max_size     = 4
       min_size     = 2
-
-      k8s_labels = {
-        Environment = "preprod"
-        Zone        = "dev"
-        WorkerType  = "WINDOWS_ON_DEMAND"
-      }
 
       additional_tags = {
         ExtraTag    = "windows-on-demand"
         Name        = "windows-on-demand"
         subnet_type = "private"
       }
-
-
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-
       create_worker_security_group = false # Creates a dedicated sec group for this Node Group
     }
   */
