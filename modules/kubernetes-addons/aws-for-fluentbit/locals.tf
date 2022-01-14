@@ -1,20 +1,26 @@
 locals {
-  log_group_name      = "/${var.eks_cluster_id}/worker-fluentbit-logs"
-  log_group_retention = 90
+  log_group_name       = "/${var.eks_cluster_id}/worker-fluentbit-logs"
+  log_group_retention  = 90
+  namespace            = "fluent-bit"
+  service_account_name = "fluent-bit-sa"
 
-  default_helm_values = [templatefile("${path.module}/values.yaml", {
-    aws_region     = data.aws_region.current.name,
-    log_group_name = local.log_group_name
-  })]
+  override_set_values = [{
+    name  = "serviceAccount.name"
+    value = local.service_account_name
+    },
+    {
+      name  = "serviceAccount.create"
+      value = false
+  }]
 
   default_helm_config = {
     name                       = "aws-for-fluent-bit"
     chart                      = "aws-for-fluent-bit"
     repository                 = "https://aws.github.io/eks-charts"
     version                    = "0.1.11"
-    namespace                  = "kube-system"
-    timeout                    = "1200"
-    create_namespace           = true
+    namespace                  = local.namespace
+    timeout                    = "300"
+    create_namespace           = false
     values                     = local.default_helm_values
     set                        = []
     set_sensitive              = null
@@ -50,8 +56,15 @@ locals {
     var.helm_config
   )
 
+  default_helm_values = [templatefile("${path.module}/values.yaml", {
+    aws_region           = data.aws_region.current.name,
+    log_group_name       = local.log_group_name,
+    service_account_name = local.service_account_name
+  })]
+
   argocd_gitops_config = {
-    enable       = true
-    logGroupName = aws_cloudwatch_log_group.eks_worker_logs.name
+    enable             = true
+    logGroupName       = aws_cloudwatch_log_group.aws_for_fluent_bit.name
+    serviceAccountName = local.service_account_name
   }
 }
