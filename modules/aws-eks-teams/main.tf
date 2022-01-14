@@ -212,29 +212,5 @@ resource "aws_iam_policy" "platform_team_eks_access" {
   name        = format("%s-%s", local.role_prefix_name, "PlatformTeamEKSAccess")
   path        = "/"
   description = "Platform Team EKS Console Access"
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "eks:DescribeNodegroup",
-          "eks:ListNodegroups",
-          "eks:DescribeCluster",
-          "eks:ListClusters",
-          "eks:AccessKubernetesApi",
-          "ssm:GetParameter",
-          "eks:ListUpdates",
-          "eks:ListFargateProfiles"
-        ]
-        Effect   = "Allow"
-        Resource = data.aws_eks_cluster.eks_cluster.arn
-        }, {
-        Action = [
-          "eks:ListClusters",
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      }
-    ]
-  })
+  policy      = data.aws_iam_policy_document.platform_team_eks_access.json
 }
