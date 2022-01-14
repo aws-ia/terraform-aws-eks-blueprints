@@ -67,8 +67,7 @@ module "aws_eks" {
   cluster_log_retention_in_days        = var.cluster_log_retention_in_days
 
   # IRSA
-  enable_irsa            = var.enable_irsa
-  kubeconfig_output_path = "./kubeconfig/"
+  enable_irsa = var.enable_irsa
 
   # TAGS
   tags = module.eks_tags.tags

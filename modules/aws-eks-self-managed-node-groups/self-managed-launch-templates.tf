@@ -25,7 +25,7 @@ resource "aws_launch_template" "self_managed_ng" {
     device_name = "/dev/xvda"
 
     ebs {
-      volume_type = "gp2"
+      volume_type = local.self_managed_node_group["disk_type"]
       volume_size = local.self_managed_node_group["disk_size"]
       encrypted   = true
       # kms_key_id            = ""
@@ -40,7 +40,7 @@ resource "aws_launch_template" "self_managed_ng" {
   }
 
   monitoring {
-    enabled = true
+    enabled = local.self_managed_node_group["enable_monitoring"]
   }
 
   lifecycle {
