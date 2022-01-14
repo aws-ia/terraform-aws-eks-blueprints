@@ -28,21 +28,6 @@ data "aws_ami" "predefined" {
   }
 }
 
-data "aws_iam_policy_document" "cwlogs" {
-  statement {
-    sid       = ""
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "logs:CreateLogStream",
-      "logs:CreateLogGroup",
-      "logs:DescribeLogStreams",
-      "logs:PutLogEvents",
-    ]
-  }
-}
-
 data "aws_iam_policy_document" "eks_windows_cni" {
   statement {
     sid       = ""

@@ -37,16 +37,3 @@ resource "aws_iam_role_policy_attachment" "managed_ng_AmazonSSMManagedInstanceCo
   policy_arn = "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"
   role       = aws_iam_role.managed_ng.name
 }
-
-# CloudWatch Log access
-resource "aws_iam_policy" "cwlogs" {
-  name        = "${var.eks_cluster_id}-${local.managed_node_group["node_group_name"]}-cwlogs"
-  description = "IAM policy for CloudWatch Logs access"
-  path        = var.path
-  policy      = data.aws_iam_policy_document.cwlogs.json
-}
-
-resource "aws_iam_role_policy_attachment" "cwlogs" {
-  policy_arn = aws_iam_policy.cwlogs.arn
-  role       = aws_iam_role.managed_ng.name
-}

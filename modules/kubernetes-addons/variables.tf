@@ -214,6 +214,12 @@ variable "aws_for_fluentbit_helm_config" {
   default     = {}
 }
 
+variable "aws_for_fluentbit_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
+
 #-----------FARGATE FLUENT BIT-------------
 variable "enable_fargate_fluentbit" {
   type        = bool
