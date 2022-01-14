@@ -1,25 +1,30 @@
 # Kubernetes Addons Module
 
-The [`kubernetes-addons`](../../modules/kubernetes-addons) module within this framework allows you to configure the add-ons you would like deployed into you EKS cluster with simple **true/false** flags.
+The [`kubernetes-addons`](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/kubernetes-addons) module within this framework allows you to configure the add-ons you would like deployed into you EKS cluster with simple **true/false** flags.
 
 The framework currently provides support for the following add-ons:
 
 | Add-on    | Description   |
 |-----------|-----------------
-| [Agones](./agones) | Deploys Agones into an EKS cluster. |
-| [ArgoCD](./argocd) | Deploys ArgoCD into an EKS cluster. |
-| [AWS for Fluent Bit](./aws-for-fluent-bit) | Deploys Fluent Bit into an EKS cluster. |
-| [AWS Load Balancer Controller](./fargate-fluent-bit) | Deploys the AWS Load Balancer Controller into an EKS cluster. |
-| [AWS Distro for Open Telemetry](./aws-open-telemetry) | Deploys the AWS Open Telemetry Collector into an EKS cluster. |
-| [cert-manager](./cert-manager) | Deploys cert-manager into an EKS cluster. |
-| [Cluster Autoscaler](./cluster-autoscaler) | Deploys the standard cluster autoscaler into an EKS cluster. |
-| [Fargate Fluent Bit](./fargate-fluent-bit) | Adds Fluent Bit support for EKS Fargate |
-| [EKS Managed Add-ons](./managed-add-ons) | Enables EKS managed add-ons. |
-| [Keda](./keda) | Deploys Keda into an EKS cluster. |
-| [Metrics Server](./metrics-server) | Deploys the Kubernetes Metrics Server into an EKS cluster. |
-| [Nginx](./ingress-nginx) | Deploys the NGINX Ingress Controller into an EKS cluster. |
-| [Prometheus](./prometheus) | Deploys Prometheus into an EKS cluster. |
-| [Traefik](./traefik) | Deploys Traefik Proxy into an EKS cluster.
+| [Agones](../add-ons/agones) | Deploys Agones into an EKS cluster. |
+| [Amazon EKS Add-ons](../add-ons/managed-add-ons) | Enables Amazon EKS add-ons. |
+| [ArgoCD](../add-ons/argocd) | Deploys ArgoCD into an EKS cluster. |
+| [AWS for Fluent Bit](../add-ons/aws-for-fluent-bit) | Deploys Fluent Bit into an EKS cluster. |
+| [AWS Load Balancer Controller](../add-ons/aws-load-balancer-controller) | Deploys the AWS Load Balancer Controller into an EKS cluster. |
+| [AWS Distro for Open Telemetry](../add-ons/aws-open-telemetry) | Deploys the AWS Open Telemetry Collector into an EKS cluster. |
+| [AWS Node Termination Handler](../add-ons/aws-node-termination-handler) | Deploys the AWS Node Termination Handler into an EKS cluster. |
+| [cert-manager](../add-ons/cert-manager) | Deploys cert-manager into an EKS cluster. |
+| [Cluster Autoscaler](../add-ons/cluster-autoscaler) | Deploys the standard cluster autoscaler into an EKS cluster. |
+| [Fargate Fluent Bit](../add-ons/fargate-fluent-bit) | Adds Fluent Bit support for EKS Fargate |
+| [Karpenter](../add-ons/karpenter) | Deploys Karpenter into an EKS cluster. |
+| [Keda](../add-ons/keda) | Deploys Keda into an EKS cluster. |
+| [Metrics Server](../add-ons/metrics-server) | Deploys the Kubernetes Metrics Server into an EKS cluster. |
+| [Nginx](../add-ons/nginx) | Deploys the NGINX Ingress Controller into an EKS cluster. |
+| [Prometheus](../add-ons/prometheus) | Deploys Prometheus into an EKS cluster. |
+| [Spark K8S Operator](../add-ons/spark-on-k8s-operator) | Deploys the Kubernetes Operator for Apache Spark into an EKS cluster. |
+| [Traefik](../add-ons/traefik) | Deploys Traefik Proxy into an EKS cluster.
+| [VPA](../add-ons/vpa) | Deploys the Vertical Pod Autoscaler into an EKS cluster. |
+| [YuniKorn](../add-ons/yunikorn) | Deploys Apache YuniKorn into an EKS cluster. |
 
 ## Add-on Management
 

@@ -6,7 +6,7 @@ Other than handling Kubernetes ingress objects, this ingress controller can faci
 
 ## Usage
 
-[Nginx Ingress Controller](kubernetes-addons/ingress-nginx/README.md) can be deployed by enabling the add-on via the following.
+[Nginx Ingress Controller](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/kubernetes-addons/ingress-nginx) can be deployed by enabling the add-on via the following.
 
 ```hcl
 enable_ingress_nginx = true

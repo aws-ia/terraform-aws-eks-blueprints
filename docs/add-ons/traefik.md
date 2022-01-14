@@ -6,7 +6,7 @@ For complete project documentation, please visit the [Traefik documentation site
 
 ## Usage
 
-[Traefik](kubernetes-addons/traefik-ingress/README.md) can be deployed by enabling the add-on via the following.
+[Traefik](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/kubernetes-addons/traefik) can be deployed by enabling the add-on via the following.
 
 ```hcl
 enable_traefik = true
