@@ -17,6 +17,7 @@ nav:
   - Add-ons:
       - Overview: "add-ons/index.md"
       - Agones: "add-ons/agones.md"
+      - Amazon EKS Add-ons: "add-ons/managed-add-ons.md"
       - Argo CD: "add-ons/argocd.md"
       - AWS for Fluent Bit: "add-ons/aws-for-fluent-bit.md"
       - AWS Load Balancer Controller: "add-ons/aws-load-balancer-controller.md"
@@ -27,7 +28,6 @@ nav:
       - Fargate Fluent Bit: "add-ons/fargate-fluent-bit.md"
       - Karpenter: "add-ons/karpenter.md"
       - KEDA: "add-ons/keda.md"
-      - Managed EKS Add-ons: "add-ons/managed-add-ons.md"
       - Metrics Server: "add-ons/metrics-server.md"
       - Nginx: "add-ons/nginx.md"
       - Prometheus: "add-ons/prometheus.md"
