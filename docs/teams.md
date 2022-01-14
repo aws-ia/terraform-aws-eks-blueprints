@@ -78,7 +78,7 @@ The `application_teams` will do the following for every provided team:
 - Register quotas
 - Register IAM users for cross-account access
 - Create a shared role for cluster access. Alternatively, an existing role can be supplied.
-- Register provided users/role in the `awsAuth` map for `kubectl` and console access to the cluster and namespace.
+- Register provided users/role in the `aws-auth` configmap for `kubectl` and console access to the cluster and namespace.
 - (Optionally) read all additional manifests (e.g., network policies, OPA policies, others) stored in a provided directory, and applies them.
 
 ### PlatformTeam
@@ -102,15 +102,6 @@ To create an `Platform Team` for your cluster, simply use `platform_teams`. You 
 
 - Registers IAM users for admin access to the cluster (`kubectl` and console)
 - Registers an existing role (or create a new role) for cluster access with trust relationship with the provided/created role
-
-## Team Benefits
-
-By managing teams via infrastructure as code, we achieve the following benefits:
-
-1. Self-documenting code
-2. Centralized logic related to the team
-3. Clear place where to add additional provisioning, for example adding Kubernetes Service Accounts and/or infrastructure, such as S3 buckets
-4. IDE support to locate the required team, e.g. CTRL+T in VSCode to lookup class name.
 
 ## Cluster Access (`kubectl`)
 

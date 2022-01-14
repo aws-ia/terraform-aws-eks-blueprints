@@ -76,7 +76,7 @@ The `application_teams` will do the following for every provided team:
 - Register quotas
 - Register IAM users for cross-account access
 - Create a shared role for cluster access. Alternatively, an existing role can be supplied.
-- Register provided users/role in the `awsAuth` map for `kubectl` and console access to the cluster and namespace.
+- Register provided users/role in the `aws-auth` configmap for `kubectl` and console access to the cluster and namespace.
 - (Optionally) read all additional manifests (e.g., network policies, OPA policies, others) stored in a provided directory, and applies them.
 
 ### PlatformTeam
