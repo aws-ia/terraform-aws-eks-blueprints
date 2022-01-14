@@ -19,7 +19,7 @@ resource "aws_iam_instance_profile" "managed_ng" {
 }
 
 resource "aws_iam_role_policy_attachment" "managed_ng" {
-  for_each = local.eks_worker_policies
+  for_each   = local.eks_worker_policies
   policy_arn = each.key
   role       = aws_iam_role.managed_ng.name
 }

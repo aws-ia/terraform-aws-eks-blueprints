@@ -117,26 +117,10 @@ module "aws-eks-accelerator-for-terraform" {
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["m4.large"]
-      min_size           = "2"
-      subnet_ids      = module.aws_vpc.private_subnets
-
-      k8s_labels = {
-        Environment = "test"
-        GithubRepo  = "terraform-aws-eks"
-        GithubOrg   = "terraform-aws-modules"
-      }
+      instance_types = ["m4.large"]
+      min_size   = "2"
+      subnet_ids = module.aws_vpc.private_subnets
     }
-  }
-
-  self_managed_node_groups = {
-    self_mg_4 = {
-      node_group_name    = "self-managed-ondemand"
-      custom_ami_id      = "ami-020452378df41ab4b"
-      launch_template_os = "amazonlinux2eks"
-      min_size           = "2"
-      subnet_ids         = module.aws_vpc.private_subnets
-    },
   }
 
   # FARGATE
@@ -165,15 +149,14 @@ module "kubernetes-addons" {
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
   # EKS Managed Add-ons
-  enable_amazon_eks_vpc_cni    = false
-  enable_amazon_eks_coredns    = false
-  enable_amazon_eks_kube_proxy = false
+  enable_amazon_eks_vpc_cni    = true
+  enable_amazon_eks_coredns    = true
+  enable_amazon_eks_kube_proxy = true
 
   #K8s Add-ons
-  enable_aws_load_balancer_controller = false
+  enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_cluster_autoscaler           = true
-  enable_aws_for_fluentbit = false
 
-//  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
+  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }

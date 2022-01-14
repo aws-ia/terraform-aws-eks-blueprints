@@ -133,11 +133,11 @@ module "aws-eks-accelerator-for-terraform" {
 
   self_managed_node_groups = {
     ng_od_windows = {
-      node_group_name        = "ng-od-windows"
-      launch_template_os     = "windows"
-      instance_type          = "m5n.large"
-      subnet_ids             = module.aws_vpc.private_subnets
-      min_size               = "2"
+      node_group_name    = "ng-od-windows"
+      launch_template_os = "windows"
+      instance_type      = "m5n.large"
+      subnet_ids         = module.aws_vpc.private_subnets
+      min_size           = "2"
     }
   }
 }

@@ -101,7 +101,7 @@ The below example demonstrates advanced configuration options for a self-managed
           disk_size     = 20
           disk_type       = "gp2"
           enable_monitoring = false
-          public_ip         = false                           # Enable only for public subnets             
+          public_ip         = false                           # Enable only for public subnets  
           # AUTOSCALING
           max_size        = "3"
           min_size        = "1"
