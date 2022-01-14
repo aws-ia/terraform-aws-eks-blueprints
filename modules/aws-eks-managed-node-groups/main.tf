@@ -1,8 +1,7 @@
 resource "aws_eks_node_group" "managed_ng" {
-
   cluster_name           = var.eks_cluster_id
   node_group_name_prefix = local.managed_node_group["node_group_name"]
-  #node_group_name = local.managed_node_group["node_group_name"] Optional
+  #node_group_name = local.managed_node_group["node_group_name"]
   node_role_arn = aws_iam_role.managed_ng.arn
   subnet_ids    = local.managed_node_group["subnet_ids"]
 
@@ -52,7 +51,7 @@ resource "aws_eks_node_group" "managed_ng" {
 
   labels = local.managed_node_group["k8s_labels"]
 
-  tags = merge(local.common_tags, local.managed_node_group["additional_tags"])
+  tags = local.common_tags
 
   timeouts {
     create = "2h"
@@ -63,9 +62,6 @@ resource "aws_eks_node_group" "managed_ng" {
   depends_on = [
     aws_iam_role.managed_ng,
     aws_iam_instance_profile.managed_ng,
-    aws_iam_role_policy_attachment.managed_ng_AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.managed_ng_AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.managed_ng_AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.managed_ng
   ]
-
 }

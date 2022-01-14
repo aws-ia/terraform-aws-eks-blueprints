@@ -128,21 +128,18 @@ module "aws-eks-accelerator-for-terraform" {
     }
   }
 
-  # SELF-MANAGED NODE GROUP
-  # with Windows support
+  # SELF-MANAGED NODE GROUP with Windows support
   enable_windows_support = true
 
   self_managed_node_groups = {
     ng_od_windows = {
-      node_group_name        = "ng-od-windows"
-      create_launch_template = true
-      launch_template_os     = "windows"
-      instance_type          = "m5n.large"
-      subnet_ids             = module.aws_vpc.private_subnets
-      desired_size           = "2"
+      node_group_name    = "ng-od-windows"
+      launch_template_os = "windows"
+      instance_type      = "m5n.large"
+      subnet_ids         = module.aws_vpc.private_subnets
+      min_size           = "2"
     }
   }
-
 }
 
 module "kubernetes-addons" {

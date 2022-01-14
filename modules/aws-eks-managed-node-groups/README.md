@@ -173,10 +173,7 @@ No modules.
 | [aws_eks_node_group.managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_node_group) | resource |
 | [aws_iam_instance_profile.managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_role.managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
-| [aws_iam_role_policy_attachment.managed_ng_AmazonEC2ContainerRegistryReadOnly](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.managed_ng_AmazonEKSWorkerNodePolicy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.managed_ng_AmazonEKS_CNI_Policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.managed_ng_AmazonSSMManagedInstanceCore](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_launch_template.managed_node_groups](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template) | resource |
 | [aws_security_group.managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group_rule.cluster_primary_sg_ingress_worker_sgr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
@@ -217,7 +214,7 @@ No modules.
 |------|-------------|
 | <a name="output_managed_nodegroup_iam_role_arn"></a> [managed\_nodegroup\_iam\_role\_arn](#output\_managed\_nodegroup\_iam\_role\_arn) | IAM role ARN for EKS Managed Node Group |
 | <a name="output_managed_nodegroup_iam_role_name"></a> [managed\_nodegroup\_iam\_role\_name](#output\_managed\_nodegroup\_iam\_role\_name) | IAM role Names for EKS Managed Node Group |
-| <a name="output_managed_nodegroup_launch_template_arn"></a> [managed\_nodegroup\_launch\_template\_arn](#output\_managed\_nodegroup\_launch\_template\_arn) | launch templated id for EKS Self Managed Node Group |
+| <a name="output_managed_nodegroup_launch_template_arn"></a> [managed\_nodegroup\_launch\_template\_arn](#output\_managed\_nodegroup\_launch\_template\_arn) | launch templated id for EKS Managed Node Group |
 | <a name="output_managed_nodegroup_launch_template_id"></a> [managed\_nodegroup\_launch\_template\_id](#output\_managed\_nodegroup\_launch\_template\_id) | launch templated id for EKS Managed Node Group |
 | <a name="output_managed_nodegroup_launch_template_latest_version"></a> [managed\_nodegroup\_launch\_template\_latest\_version](#output\_managed\_nodegroup\_launch\_template\_latest\_version) | launch templated version for EKS Managed Node Group |
 | <a name="output_managed_nodegroup_sec_group_id"></a> [managed\_nodegroup\_sec\_group\_id](#output\_managed\_nodegroup\_sec\_group\_id) | Security group ID for Managed node group |
