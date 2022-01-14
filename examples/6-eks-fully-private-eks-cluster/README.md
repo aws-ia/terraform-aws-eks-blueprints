@@ -4,6 +4,7 @@ This example deploys a fully private EKS Cluster into a new VPC.
  - Creates a new VPC and 3 Private Subnets
  - VPC Endpoints for various services and S3 VPC Endpoint gateway
  - Creates EKS Cluster Control plane with one Managed node group
+    - EKS Cluster API endpoint that can be set to public and private, and then into private only.
 
 Please see this [document](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html) for more details on configuring fully private EKS Clusters
 
@@ -37,7 +38,7 @@ export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
 terraform plan
 ```
 
-#### Step4: Finally, Terraform APPLY
+#### Step4: Terraform APPLY
 to create resources
 
 ```shell script
@@ -63,6 +64,19 @@ This following command used to update the `kubeconfig` in your local machine whe
 #### Step7: List all the pods running in `kube-system` namespace
 
     $ kubectl get pods -n kube-system
+
+### Setting up private only API endpoint and accessing the cluster
+
+- To set the API endpoint to private only, on the `main.tf` file under the SSP module:
+    - Set `eks_cluster_api_endpoint_public = false`
+    - Set `eks_cluster_api_endpoint_private = true`
+
+- To access the private cluster, you need to access it from a machine that can access the VPC and the private subnets. Few ways to do this are:
+    - Create a bastion host in the VPC and then access the cluster from the bastion host
+    - Create a cloud9 instance in the VPC and then access the cluster from the cloud9 instance
+These examples assume you do not have any other network infrastructure in place (e.g. direct connect(DX), VPN etc.).
+
+Learn more about private EKS clusters [here](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html)
 
 ## How to Destroy
 The following command destroys the resources created by `terraform apply`
