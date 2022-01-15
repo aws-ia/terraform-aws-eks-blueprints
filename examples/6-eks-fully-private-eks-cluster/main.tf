@@ -199,6 +199,14 @@ module "aws-eks-accelerator-for-terraform" {
   create_eks         = true
   kubernetes_version = local.kubernetes_version
 
+  # Step 1. Set cluster API endpoint both private and public
+  cluster_endpoint_public_access  = true
+  cluster_endpoint_private_access = true
+
+  # Step 2. Change cluster endpoint to private only, comment out the above lines and uncomment the below lines.
+  # cluster_endpoint_public_access  = false
+  # cluster_endpoint_private_access = true
+
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     mg_4 = {
