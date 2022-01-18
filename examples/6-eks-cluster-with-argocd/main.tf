@@ -74,7 +74,7 @@ locals {
 
   addon_application = {
     path               = "chart"
-    repo_url           = "https://github.com/kcoleman731/argo-add-ons.git"
+    repo_url           = "https://github.com/aws-samples/ssp-eks-add-ons.git"
     add_on_application = true
   }
 
