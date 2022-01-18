@@ -16,25 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "helm_config" {
-  type        = any
-  default     = {}
-  description = "ArgoCD Helm Chart Config values"
-}
-
-variable "argocd_applications" {
-  type        = any
-  default     = {}
-  description = "ArgoCD Application config used to bootstrap a cluster."
-}
-
-variable "eks_cluster_id" {
-  type        = string
-  description = "Name for the EKS Cluster"
-}
-
-variable "add_on_config" {
-  type        = any
-  default     = {}
-  description = "Configuration for managing add-ons via ArgoCD"
+output "argocd_gitops_config" {
+  description = "Configuration used for managing the add-on with ArgoCD"
+  value       = var.manage_via_gitops ? local.argocd_gitops_config : null
 }

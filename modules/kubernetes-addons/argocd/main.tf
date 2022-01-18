@@ -80,11 +80,11 @@ resource "helm_release" "argocd" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "helm_release" "argocd_application" {
-  for_each = var.argocd_applications
+  for_each = { for k, v in var.argocd_applications : k => merge(local.default_argocd_application, v) }
 
   name      = each.key
   chart     = "${path.module}/argocd-application"
-  version   = "0.1.0"
+  version   = "1.0.0"
   namespace = "argocd"
 
   # Application Meta.
