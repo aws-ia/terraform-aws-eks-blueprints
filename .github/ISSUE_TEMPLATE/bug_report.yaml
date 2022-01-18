@@ -1,6 +1,7 @@
-name: Bug Report
+name: 🐞 Bug Report
+title: "[Bug]: <title>"
 description: Create a report to help us improve.
-labels: ['status/triage']
+labels: ["bug", "triage"]
 body:
   - type: markdown
     attributes:
@@ -17,7 +18,7 @@ body:
   - type: checkboxes
     id: terms
     attributes:
-      label: Welcome to Amazon EKS Accelerator!
+      label: Welcome to Amazon SSP EKS Accelerator!
       options:
         - label: Yes, I've searched similar issues on [GitHub](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/issues) and didn't find any.
           required: true
