@@ -45,6 +45,15 @@ locals {
     var.helm_config
   )
 
+  default_argocd_application = {
+    namespace          = "argocd"
+    target_revision    = "HEAD"
+    destination        = "https://kubernetes.default.svc"
+    project            = "default"
+    values             = {}
+    add_on_application = false
+  }
+
   # Global Application Values
   global_application_values = {
     region      = data.aws_region.current.id

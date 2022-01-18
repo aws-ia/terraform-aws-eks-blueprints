@@ -79,6 +79,6 @@ variable "http_tokens" {
 
 variable "http_put_response_hop_limit" {
   type        = number
-  default     = 1
+  default     = 2
   description = "HTTP PUT response hop limit for instance metadata requests. Supported values: 1-64."
 }

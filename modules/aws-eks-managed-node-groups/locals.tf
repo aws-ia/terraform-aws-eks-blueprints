@@ -64,11 +64,13 @@ locals {
     templatefile("${path.module}/templates/userdata-${local.managed_node_group["launch_template_os"]}.tpl", local.userdata_params)
   )
 
-  eks_worker_policies = toset(concat(["${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy",
+  eks_worker_policies = toset(concat([
+    "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy",
     "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy",
     "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly",
     "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"],
-    local.managed_node_group["additional_iam_policies"]))
+    local.managed_node_group["additional_iam_policies"
+  ]))
 
   common_tags = merge(
     var.tags,
@@ -77,7 +79,8 @@ locals {
       Name = "${var.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
     },
     {
-      "kubernetes.io/cluster/${var.eks_cluster_id}" = "owned"
+      "kubernetes.io/cluster/${var.eks_cluster_id}"     = "owned"
+      "k8s.io/cluster-autoscaler/${var.eks_cluster_id}" = "owned"
+      "k8s.io/cluster-autoscaler/enabled"               = "TRUE"
   })
-
 }
