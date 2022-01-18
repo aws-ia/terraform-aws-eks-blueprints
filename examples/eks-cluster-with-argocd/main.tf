@@ -34,7 +34,7 @@ data "aws_eks_cluster_auth" "cluster" {
 }
 
 provider "aws" {
-  region = data.aws_region.current.id
+  region = "us-west-1"
   alias  = "default"
 }
 
