@@ -26,7 +26,7 @@ jobs:
             "minimal-ui": false,
             "no-color": false,
             "no-progress": true,
-            "output-path": "./results-dir",
+            "output-path": "results-dir",
             "output-name": "results"
             "preview-lines": 5,
             "report-formats": "json,sarif",
@@ -43,4 +43,4 @@ jobs:
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v1
         with:
-          sarif_file: ./results-dir/results.sarif
+          sarif_file: results-dir/results.sarif
