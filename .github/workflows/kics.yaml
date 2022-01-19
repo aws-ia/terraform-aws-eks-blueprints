@@ -1,4 +1,4 @@
-name: Scan with KICS and upload SARIF
+name: kics-security-scan
 
 on:
   workflow_dispatch:
@@ -28,9 +28,8 @@ jobs:
             "no-progress": true,
             "output-path": "./results-dir",
             "output-name": "kics-result"
-            "payload-path": "file path to store source internal representation in JSON format",
             "preview-lines": 5,
-            "report-formats": "sarif,json,pdf",
+            "report-formats": "sarif",
             "type": "terraform",
             "verbose": true
           }
