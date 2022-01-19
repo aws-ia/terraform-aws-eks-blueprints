@@ -34,6 +34,7 @@ data "kubernetes_secret" "gitlab-admin-token" {
 resource "kubernetes_cluster_role_binding" "gitlab-admin" {
   metadata {
     name = "gitlab-admin"
+
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"

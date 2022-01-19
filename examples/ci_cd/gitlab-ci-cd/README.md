@@ -1,5 +1,5 @@
-# Gitlab CI/CD example
-This pattern shows the example to deploy the Amazon EKS Clusters using Gitlab CI/CD
+# GitLab CI/CD example
+This pattern shows an example of how to deploy an Amazon EKS Cluster using GitLab CI/CD.
 
 ### Step1: Clone this repo
 
@@ -8,22 +8,24 @@ git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git
 ```
 
 ## Step2: Create a new Gitlab repo
-Copy this folder(`gitlab-ci-cd`) to your new gitlab repo. Rename the folder according to your naming convention.
+Copy the files in the folder(`gitlab-ci-cd`) to your new GitLab repo. Rename the folder according to your naming convention.
 
     cd examples/advanced/gitlab-ci-cd
-    gitlab-ci-cd
+    cp . $YOUR_GITLAB_REPO_ROOT
 
 ## Step3: Update CI/CD settings config
- - Login to gitlab console, click on your repo and navigate to `settings/ci_cd`
+ - Login to the GitLab console, click on your repo and navigate to `settings/ci_cd`
  - Add the following variables before triggering the pipeline
 
         AWS_ACCESS_KEY_ID           e.g., access key from devops admin iam role
         AWS_SECRET_ACCESS_KEY       e.g., secret key from devops admin iam role
         AWS_REGION                  e.g., eu-west-1
-        GITLAB_BASE_URL             e.g., https://gitlab.aws.dev/api/v4/
-        GITLAB_TOKEN                e.g., gitlab access token  
+        GITLAB_BASE_URL             e.g., https://gitlab.example.com/api/v4/
+        GITLAB_TOKEN                e.g., GitLab access token 
 
 ## Step5: Commit changes to verify the pipeline
+
+Create a `.destroy-cluster` and commit it to the GitLab repository to destroy your deployment.
 
 <!--- BEGIN_TF_DOCS --->
 ## Requirements

@@ -31,7 +31,7 @@ provider "aws" {
 }
 
 provider "gitlab" {
-  # Configuration options
+  # Configuration options - the GitLab token is pulled from the variables set in the CI/CD settings of the repository
 }
 
 provider "kubernetes" {
@@ -82,8 +82,8 @@ module "aws_vpc" {
   cidr = local.vpc_cidr
   azs  = data.aws_availability_zones.available.names
 
-  public_subnets  = [for k, v in slice(data.aws_availability_zones.available.names, 0, 3) : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in slice(data.aws_availability_zones.available.names, 0, 3) : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+  public_subnets  = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
   enable_nat_gateway   = true
   create_igw           = true
@@ -120,7 +120,6 @@ module "aws-eks-accelerator-for-terraform" {
   kubernetes_version = local.kubernetes_version
 
   # EKS MANAGED NODE GROUPS
-
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
