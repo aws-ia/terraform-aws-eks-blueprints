@@ -14,6 +14,10 @@ terraform {
       source  = "hashicorp/helm"
       version = ">= 2.4.1"
     }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = "1.13.1"
+    }
   }
 
   backend "local" {
@@ -118,8 +122,8 @@ module "aws-eks-accelerator-for-terraform" {
   # Karpenter requires one node to get up and running
   self_managed_node_groups = {
     self_mg_4 = {
-      node_group_name    = "self-managed-ondemand"
-      custom_ami_id      = "ami-0dfaa019a300f219c"
+      node_group_name = "self-managed-ondemand"
+      # custom_ami_id      = "ami-0dfaa019a300f219c"
       launch_template_os = "amazonlinux2eks"
       max_size           = 1
       subnet_ids         = module.aws_vpc.private_subnets
@@ -137,4 +141,24 @@ module "kubernetes-addons" {
   enable_metrics_server = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.self_managed_node_groups]
+}
+
+resource "kubectl_manifest" "karpenter_provisioner" {
+  yaml_body = <<EOF
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: default
+spec:
+  limits:
+    resources:
+      cpu: 1000
+  labels:
+    intent: apps
+  provider:
+    instanceProfile: "aws001-preprod-dev-eks-self-managed-ondemand" # self-managed IAM Instance profile Name
+    subnetSelector:
+      Name: "*private*"
+  ttlSecondsAfterEmpty: 30
+EOF
 }
