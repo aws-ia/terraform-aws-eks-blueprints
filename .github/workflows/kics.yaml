@@ -16,31 +16,23 @@ jobs:
         uses: actions/checkout@v2
       - name: Mkdir results-dir
         run: mkdir -p results-dir
-      - name: Create config file
-        run: |
-          cat <<EOF >>kics.config
-          {
-            "exclude-categories": "Encryption",
-            "exclude-paths": "examples/,deploy/,docs/,images/,modules/kubernetes-addons/agones/main.tf",
-            "log-file": true,
-            "minimal-ui": false,
-            "no-color": false,
-            "no-progress": true,
-            "output-path": "results-dir",
-            "output-name": "results"
-            "preview-lines": 5,
-            "report-formats": "json,sarif",
-            "type": "terraform",
-            "verbose": true
-          }
-          EOF
-      - name: Run KICS Scan using config
+      - name: Run KICS Scan with SARIF result
         uses: checkmarx/kics-action@v1.4
         with:
           path: '.,modules/'
+          output_path: results-dir
+          platform_type: terraform
+          output_formats: 'json,sarif'
+          exclude_paths: "examples/,deploy/,docs/,images/,modules/kubernetes-addons/agones/main.tf"
+          fail_on: HIGH
           ignore_on_exit: results
-          config_path: ./kics.config
+#          exclude_results: "" # exclude results by providing the similarity ID of a result
+#          exclude_categories:   # exclude categories by providing its name, comma separated list e.g., Observability,Networking and Firewall
+      - name: Show results
+        run: |
+          cat results-dir/results.sarif
+          cat results-dir/results.json
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v1
         with:
-          sarif_file: results.sarif
+          sarif_file: results-dir/results.sarif
