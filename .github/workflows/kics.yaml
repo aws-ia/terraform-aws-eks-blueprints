@@ -35,7 +35,7 @@ jobs:
           }
           EOF
       - name: Run KICS Scan using config
-        uses: checkmarx/kics-action@latest
+        uses: checkmarx/kics-action@v1.4
         with:
           path: '.,modules/'
           ignore_on_exit: results
