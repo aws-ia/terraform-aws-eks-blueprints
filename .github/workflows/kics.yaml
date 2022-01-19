@@ -1,0 +1,45 @@
+name: Scan with KICS and upload SARIF
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  kics-job:
+    runs-on: ubuntu-latest
+    name: kics-action
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Mkdir results-dir
+        run: mkdir -p results-dir
+      - name: Create config file
+        run: |
+          cat <<EOF >>kics.config
+          {
+            "exclude-categories": "Encryption",
+            "exclude-paths": "examples/,deploy/,docs/,images/",
+            "log-file": true,
+            "minimal-ui": false,
+            "no-color": false,
+            "no-progress": true,
+            "output-path": "./results-dir",
+            "payload-path": "file path to store source internal representation in JSON format",
+            "preview-lines": 5,
+            "report-formats": "json,sarif",
+            "type": "terraform",
+            "verbose": true
+          }
+          EOF
+      - name: Run KICS Scan using config
+        uses: checkmarx/kics-action@v1.2
+        with:
+          path: 'terraform'
+          config_path: ./kics.config
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: results-dir/results.sarif
