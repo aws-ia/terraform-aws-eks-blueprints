@@ -1,19 +1,19 @@
 # GitLab CI/CD example
 This pattern shows an example of how to deploy an Amazon EKS Cluster using GitLab CI/CD.
 
-### Step1: Clone this repo
+### Step 1: Clone this repo
 
 ```
 git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git
 ```
 
-## Step2: Create a new Gitlab repo
+## Step 2: Create a new Gitlab repo
 Copy the files in the folder(`gitlab-ci-cd`) to your new GitLab repo. Rename the folder according to your naming convention.
 
     cd examples/advanced/gitlab-ci-cd
     cp . $YOUR_GITLAB_REPO_ROOT
 
-## Step3: Update CI/CD settings config
+## Step 3: Update CI/CD settings config
  - Login to the GitLab console, click on your repo and navigate to `settings/ci_cd`
  - Add the following variables before triggering the pipeline
 
@@ -23,7 +23,7 @@ Copy the files in the folder(`gitlab-ci-cd`) to your new GitLab repo. Rename the
         GITLAB_BASE_URL             e.g., https://gitlab.example.com/api/v4/
         GITLAB_TOKEN                e.g., GitLab access token 
 
-## Step5: Commit changes to verify the pipeline
+## Step 4: Commit changes to verify the pipeline
 
 Create a `.destroy-cluster` and commit it to the GitLab repository to destroy your deployment.
 
@@ -66,7 +66,6 @@ Create a `.destroy-cluster` and commit it to the GitLab repository to destroy yo
 | [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [gitlab_group.gitops-eks](https://registry.terraform.io/providers/gitlabhq/gitlab/3.7.0/docs/data-sources/group) | data source |
-| [gitlab_projects.ssp-amazon-eks](https://registry.terraform.io/providers/gitlabhq/gitlab/3.7.0/docs/data-sources/projects) | data source |
 | [kubernetes_secret.gitlab-admin-token](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/data-sources/secret) | data source |
 
 ## Inputs
