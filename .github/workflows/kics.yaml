@@ -37,7 +37,7 @@ jobs:
       - name: Run KICS Scan using config
         uses: checkmarx/kics-action@v1.2
         with:
-          path: 'terraform'
+          path: '.,modules/'
           config_path: ./kics.config
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v1
