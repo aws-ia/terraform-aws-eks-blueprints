@@ -25,13 +25,9 @@ jobs:
           output_formats: 'json,sarif'
           exclude_paths: "examples/,deploy/,docs/,images/,modules/kubernetes-addons/agones/main.tf"
           fail_on: HIGH
-          ignore_on_exit: results
+#          ignore_on_exit: results
 #          exclude_results: "" # exclude results by providing the similarity ID of a result
 #          exclude_categories:   # exclude categories by providing its name, comma separated list e.g., Observability,Networking and Firewall
-      - name: Show results
-        run: |
-          cat results-dir/results.sarif
-          cat results-dir/results.json
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v1
         with:
