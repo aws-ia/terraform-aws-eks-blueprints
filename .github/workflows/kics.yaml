@@ -21,7 +21,7 @@ jobs:
           cat <<EOF >>kics.config
           {
             "exclude-categories": "Encryption",
-            "exclude-paths": "examples/,deploy/,docs/,images/",
+            "exclude-paths": "examples/,deploy/,docs/,images/,modules/kubernetes-addons/agones/main.tf",
             "log-file": true,
             "minimal-ui": false,
             "no-color": false,
@@ -35,9 +35,10 @@ jobs:
           }
           EOF
       - name: Run KICS Scan using config
-        uses: checkmarx/kics-action@v1.2
+        uses: checkmarx/kics-action@latest
         with:
           path: '.,modules/'
+          ignore_on_exit: results
           config_path: ./kics.config
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v1
