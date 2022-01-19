@@ -63,7 +63,7 @@ resource "helm_release" "aws_for_fluent_bit" {
 resource "aws_cloudwatch_log_group" "aws_for_fluent_bit" {
   name              = local.log_group_name
   retention_in_days = var.cw_log_group_retention
-  kms_key_id        = var.cw_log_group_kms_key == null ? module.kms.key_arn : var.cw_log_group_kms_key_arn
+  kms_key_id        = var.cw_log_group_kms_key == null ? module.kms[0].key_arn : var.cw_log_group_kms_key_arn
   tags              = var.tags
 }
 
@@ -84,6 +84,7 @@ module "irsa" {
 }
 
 module "kms" {
+  count       = var.cw_log_group_kms_key_arn == null ? 1 : 0
   source      = "../../../modules/aws-kms"
   description = "EKS Workers FluentBit CloudWatch Log group KMS Key"
   alias       = "alias/${var.eks_cluster_id}-cw-fluent-bit"
