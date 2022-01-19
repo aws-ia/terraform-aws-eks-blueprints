@@ -97,6 +97,7 @@ module "aws_node_termination_handler" {
   eks_cluster_id          = var.eks_cluster_id
   helm_config             = var.aws_node_termination_handler_helm_config
   autoscaling_group_names = var.auto_scaling_group_names
+  tags                    = var.tags
 }
 
 module "aws_opentelemetry_collector" {
