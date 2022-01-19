@@ -27,15 +27,15 @@ jobs:
             "no-color": false,
             "no-progress": true,
             "output-path": "./results-dir",
-            "output-name": "kics-result"
+            "output-name": "results"
             "preview-lines": 5,
-            "report-formats": "sarif",
+            "report-formats": "json,sarif",
             "type": "terraform",
             "verbose": true
           }
           EOF
       - name: Run KICS Scan using config
-        uses: checkmarx/kics-action@v1.4
+        uses: checkmarx/kics-action@v1.4.9
         with:
           path: '.,modules/'
           ignore_on_exit: results
