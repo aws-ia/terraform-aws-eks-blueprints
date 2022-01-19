@@ -1,23 +1,23 @@
 variable "eks_cluster_id" {
   description = "EKS Cluster Id"
-  type = string
+  type        = string
 }
 
 variable "eks_worker_security_group_id" {
   description = "EKS Worker Security group Id created by EKS module"
   default     = ""
-  type = string
+  type        = string
 }
 
 variable "auto_scaling_group_names" {
   description = "List of self-managed node groups autoscaling group names"
   default     = []
-  type = list(string)
+  type        = list(string)
 }
 
 variable "node_groups_iam_role_arn" {
-  type    = list(string)
-  default = []
+  type        = list(string)
+  default     = []
   description = "Node Groups IAM role ARNs"
 }
 

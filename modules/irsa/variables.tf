@@ -18,7 +18,7 @@
 
 variable "kubernetes_namespace" {
   description = "Kubernetes Namespace name"
-  type = string
+  type        = string
 }
 
 variable "create_kubernetes_namespace" {

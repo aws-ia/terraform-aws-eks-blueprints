@@ -17,8 +17,8 @@
  */
 
 variable "helm_config" {
-  type    = any
-  default = {}
+  type        = any
+  default     = {}
   description = "Helm Config for Prometheus"
 }
 

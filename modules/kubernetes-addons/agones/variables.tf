@@ -23,7 +23,7 @@ variable "helm_config" {
 }
 
 variable "eks_worker_security_group_id" {
-  type = string
+  type        = string
   description = "EKS Worker Security Group ID"
 }
 

@@ -17,8 +17,8 @@
  */
 
 variable "helm_config" {
-  type    = any
-  default = {}
+  type        = any
+  default     = {}
   description = "Ingress NGINX Helm Configuration"
 }
 

@@ -71,7 +71,7 @@ resource "aws_iam_policy" "aws_for_fluent_bit" {
   name        = "${var.eks_cluster_id}-fluentbit"
   description = "IAM Policy for AWS for FluentBit"
   policy      = data.aws_iam_policy_document.irsa.json
-  tags              = var.tags
+  tags        = var.tags
 }
 
 module "irsa" {

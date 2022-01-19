@@ -18,7 +18,7 @@
 
 variable "s3_bucket_name" {
   description = "S3 Bucket Name to be created"
-  type = string
+  type        = string
 }
 
 variable "tags" {
