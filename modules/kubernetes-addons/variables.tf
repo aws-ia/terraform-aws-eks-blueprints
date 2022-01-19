@@ -1,20 +1,24 @@
 variable "eks_cluster_id" {
   description = "EKS Cluster Id"
+  type = string
 }
 
 variable "eks_worker_security_group_id" {
   description = "EKS Worker Security group Id created by EKS module"
   default     = ""
+  type = string
 }
 
 variable "auto_scaling_group_names" {
   description = "List of self-managed node groups autoscaling group names"
   default     = []
+  type = list(string)
 }
 
 variable "node_groups_iam_role_arn" {
   type    = list(string)
   default = []
+  description = "Node Groups IAM role ARNs"
 }
 
 variable "tags" {
@@ -223,7 +227,7 @@ variable "aws_for_fluentbit_irsa_policies" {
 variable "aws_for_fluentbit_cw_log_group_name" {
   type        = string
   description = "FluentBit CloudWatch Log group name"
-  default     = ""
+  default     = null
 }
 
 variable "aws_for_fluentbit_cw_log_group_retention" {
@@ -232,10 +236,10 @@ variable "aws_for_fluentbit_cw_log_group_retention" {
   default     = "90"
 }
 
-variable "aws_for_fluentbit_cw_log_group_kms_key" {
+variable "aws_for_fluentbit_cw_log_group_kms_key_arn" {
   type        = string
   description = "FluentBit CloudWatch Log group KMS Key"
-  default     = ""
+  default     = null
 }
 #-----------FARGATE FLUENT BIT-------------
 variable "enable_fargate_fluentbit" {

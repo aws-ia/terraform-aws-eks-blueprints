@@ -69,16 +69,16 @@ module "argocd" {
 }
 
 module "aws_for_fluent_bit" {
-  count                  = var.enable_aws_for_fluentbit ? 1 : 0
-  source                 = "./aws-for-fluentbit"
-  helm_config            = var.aws_for_fluentbit_helm_config
-  eks_cluster_id         = var.eks_cluster_id
-  irsa_policies          = var.aws_for_fluentbit_irsa_policies
-  cw_log_group_name      = var.aws_for_fluentbit_cw_log_group_name
-  cw_log_group_retention = var.aws_for_fluentbit_cw_log_group_retention
-  cw_log_group_kms_key   = var.aws_for_fluentbit_cw_log_group_kms_key
-  tags                   = var.tags
-  manage_via_gitops      = var.argocd_manage_add_ons
+  count                    = var.enable_aws_for_fluentbit ? 1 : 0
+  source                   = "./aws-for-fluentbit"
+  helm_config              = var.aws_for_fluentbit_helm_config
+  eks_cluster_id           = var.eks_cluster_id
+  irsa_policies            = var.aws_for_fluentbit_irsa_policies
+  cw_log_group_name        = var.aws_for_fluentbit_cw_log_group_name
+  cw_log_group_retention   = var.aws_for_fluentbit_cw_log_group_retention
+  cw_log_group_kms_key_arn = var.aws_for_fluentbit_cw_log_group_kms_key_arn
+  tags                     = var.tags
+  manage_via_gitops        = var.argocd_manage_add_ons
 }
 
 module "aws_load_balancer_controller" {

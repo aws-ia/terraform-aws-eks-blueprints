@@ -1,6 +1,5 @@
 locals {
-  log_group_name       = var.cw_log_group_name == "" ? "/${var.eks_cluster_id}/worker-fluentbit-logs" : var.cw_log_group_name
-  namespace            = "kube-system"
+  log_group_name       = var.cw_log_group_name == null ? "/${var.eks_cluster_id}/worker-fluentbit-logs" : var.cw_log_group_name
   service_account_name = "aws-for-fluent-bit-sa"
 
   override_set_values = [
@@ -19,7 +18,7 @@ locals {
     chart                      = "aws-for-fluent-bit"
     repository                 = "https://aws.github.io/eks-charts"
     version                    = "0.1.11"
-    namespace                  = local.namespace
+    namespace                  = "logging"
     timeout                    = "300"
     create_namespace           = false
     values                     = local.default_helm_values

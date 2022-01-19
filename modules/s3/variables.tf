@@ -16,6 +16,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "account_id" {}
+variable "s3_bucket_name" {
+  description = "S3 Bucket Name to be created"
+  type = string
+}
 
-variable "s3_bucket_name" {}
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
+}

@@ -2,6 +2,10 @@ data "aws_region" "current" {}
 
 data "aws_caller_identity" "current" {}
 
+data "aws_iam_session_context" "current" {
+  arn = data.aws_caller_identity.current.arn
+}
+
 data "aws_iam_policy_document" "irsa" {
   statement {
     sid       = "PutLogEvents"
@@ -32,8 +36,9 @@ data "aws_iam_policy_document" "kms" {
     actions   = ["kms:*"]
 
     principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+      type = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
+      data.aws_iam_session_context.current.issuer_arn]
     }
   }
 

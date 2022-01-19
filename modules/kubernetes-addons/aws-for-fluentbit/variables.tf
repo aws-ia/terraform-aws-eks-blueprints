@@ -30,7 +30,7 @@ variable "eks_cluster_id" {
 variable "cw_log_group_name" {
   type        = string
   description = "FluentBit CloudWatch Log group name"
-  default     = ""
+  default     = null
 }
 
 variable "cw_log_group_retention" {
@@ -39,10 +39,10 @@ variable "cw_log_group_retention" {
   default     = "90"
 }
 
-variable "cw_log_group_kms_key" {
+variable "cw_log_group_kms_key_arn" {
   type        = string
   description = "FluentBit CloudWatch Log group KMS Key"
-  default     = ""
+  default     = null
 }
 
 variable "manage_via_gitops" {

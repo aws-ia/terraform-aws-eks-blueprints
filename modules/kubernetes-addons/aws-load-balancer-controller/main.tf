@@ -82,6 +82,7 @@ resource "aws_iam_policy" "aws_load_balancer_controller" {
   name        = "${var.eks_cluster_id}-lb-controller-policy"
   description = "Allows lb controller to manage ALB and NLB"
   policy      = data.aws_iam_policy_document.aws_lb.json
+  tags        = var.tags
 }
 
 module "irsa_addon" {

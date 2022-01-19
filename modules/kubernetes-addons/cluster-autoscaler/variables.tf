@@ -19,6 +19,7 @@
 variable "helm_config" {
   type    = any
   default = {}
+  description = "Cluster Autoscaler Helm Config"
 }
 
 variable "eks_cluster_id" {

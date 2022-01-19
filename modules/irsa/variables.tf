@@ -18,6 +18,7 @@
 
 variable "kubernetes_namespace" {
   description = "Kubernetes Namespace name"
+  type = string
 }
 
 variable "create_kubernetes_namespace" {
@@ -34,6 +35,7 @@ variable "create_kubernetes_service_account" {
 
 variable "kubernetes_service_account" {
   description = "Kubernetes Service Account Name"
+  type        = string
 }
 
 variable "eks_cluster_id" {

@@ -18,8 +18,10 @@
 
 output "s3_bucket_name" {
   value = aws_s3_bucket.s3_logs_bucket.id
+  description = "S3 Bucket Name"
 }
 
 output "s3_bucket_arn" {
   value = aws_s3_bucket.s3_logs_bucket.arn
+  description = "S3 Bucket ARN"
 }

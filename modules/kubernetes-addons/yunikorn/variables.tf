@@ -19,6 +19,7 @@
 variable "helm_config" {
   type    = any
   default = {}
+  description = "YuniKorn Helm Configuration"
 }
 
 variable "manage_via_gitops" {

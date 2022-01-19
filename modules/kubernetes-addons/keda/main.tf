@@ -95,4 +95,5 @@ resource "aws_iam_policy" "keda_irsa" {
   name        = "${var.eks_cluster_id}-${local.helm_config["name"]}-irsa"
   path        = var.iam_role_path
   policy      = data.aws_iam_policy_document.keda_irsa.json
+  tags        = var.tags
 }
