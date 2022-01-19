@@ -220,6 +220,23 @@ variable "aws_for_fluentbit_irsa_policies" {
   default     = []
 }
 
+variable "aws_for_fluentbit_cw_log_group_name" {
+  type        = string
+  description = "FluentBit CloudWatch Log group name"
+  default     = ""
+}
+
+variable "aws_for_fluentbit_cw_log_group_retention" {
+  type        = string
+  description = "FluentBit CloudWatch Log group retention period"
+  default     = "90"
+}
+
+variable "aws_for_fluentbit_cw_log_group_kms_key" {
+  type        = string
+  description = "FluentBit CloudWatch Log group KMS Key"
+  default     = ""
+}
 #-----------FARGATE FLUENT BIT-------------
 variable "enable_fargate_fluentbit" {
   type        = bool

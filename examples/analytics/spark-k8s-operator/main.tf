@@ -131,6 +131,7 @@ module "kubernetes-addons" {
   #K8s Add-ons
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
+  enable_aws_for_fluentbit  = true
 
   #---------------------------------------
   # COMMUNITY PROMETHEUS ENABLE

@@ -1,6 +1,5 @@
 locals {
-  log_group_name       = "/${var.eks_cluster_id}/worker-fluentbit-logs"
-  log_group_retention  = 90
+  log_group_name       = var.cw_log_group_name == "" ? "/${var.eks_cluster_id}/worker-fluentbit-logs" : var.cw_log_group_name
   namespace            = "kube-system"
   service_account_name = "aws-for-fluent-bit-sa"
 
@@ -60,7 +59,7 @@ locals {
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
     aws_region           = data.aws_region.current.name,
-    log_group_name       = local.log_group_name,
+    log_group_name       = aws_cloudwatch_log_group.aws_for_fluent_bit.name,
     service_account_name = local.service_account_name
   })]
 
