@@ -8,7 +8,7 @@ git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git
 ```
 
 ## Step 2: Create a new Gitlab repo
-Copy the files in the folder(`gitlab-ci-cd`) to your new GitLab repo. Rename the folder according to your naming convention.
+Copy the files in the folder(`gitlab-ci-cd`) into the root of your new GitLab repo.
 
     cd examples/advanced/gitlab-ci-cd
     cp . $YOUR_GITLAB_REPO_ROOT
@@ -25,7 +25,21 @@ Copy the files in the folder(`gitlab-ci-cd`) to your new GitLab repo. Rename the
 
 ## Step 4: Commit changes to verify the pipeline
 
-Create a `.destroy-cluster` and commit it to the GitLab repository to destroy your deployment.
+Start the `tf-destroy` step in the GitLab Ci/CD pipeline to destroy your deployment.
+
+## Troubleshooting:
+
+- ### 403 Error when creating resource gitlab_group_cluster.aws_cluster
+
+    - Make sure the GitLab group that you're referencing in `data.gitlab_group.gitops-eks` exists and that you have access to it.
+
+- ### 400 Error when creating resource
+
+    - If the error contains `{message: {environment_scope: [cannot add duplicated environment scope]}}`, it is likely that an existing Kubernetes integration with the same environment scope was not removed. Remove any Kubernetes clusters with the same environment scope from the GitLab group before redeploying.
+
+- ### What's gitlab-terraform?
+
+    - `gitlab-terraform` is a thin wrapper around the `terraform` binary as part of the [GitLab Terraform docker image](registry.gitlab.com/gitlab-org/terraform-images/stable:latest) used in `.gitlab-ci.yml`
 
 <!--- BEGIN_TF_DOCS --->
 ## Requirements

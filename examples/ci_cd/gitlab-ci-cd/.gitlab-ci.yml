@@ -22,9 +22,6 @@ stages:
 tf-init:
   stage: tf-init
   rules:
-    - exists:
-        - .destroy-cluster
-      when: never
     - changes:
         - "*.tf"
   script:
@@ -33,10 +30,6 @@ tf-init:
 
 tf-fmt:
   stage: tf-fmt
-  rules:
-    - exists:
-        - .destroy-cluster
-      when: never
     - changes:
         - "*.tf"
   script:
@@ -45,9 +38,6 @@ tf-fmt:
 tf-validate:
   stage: tf-validate
   rules:
-    - exists:
-        - .destroy-cluster
-      when: never
     - changes:
         - "*.tf"
   script:
@@ -63,9 +53,6 @@ tf-plan:
     reports:
       terraform: ${TF_ROOT}/plan.json
   rules:
-    - exists:
-        - .destroy-cluster
-      when: never
     - changes:
         - "*.tf"
   script:
@@ -77,9 +64,6 @@ tf-apply:
   dependencies:
     - tf-plan
   rules:
-    - exists:
-        - .destroy-cluster
-      when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - "*.tf"
@@ -90,14 +74,9 @@ tf-apply:
 
 tf-destroy:
   stage: tf-destroy
-  rules:
-    - changes:
-        - "*.tf"
-      when: never
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      exists:
-        - .destroy-cluster
-      when: manual
-      allow_failure: true
+  dependencies:
+    - "tf-apply"
+  when: manual
+  allow_failure: true
   script:
     - gitlab-terraform destroy -auto-approve

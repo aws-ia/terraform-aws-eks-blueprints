@@ -20,8 +20,8 @@ terraform {
     }
   }
 
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
+  # storing tfstate with GitLab-managed Terraform state, read more here: https://docs.gitlab.com/ee/user/infrastructure/iac/terraform_state.html
+  backend "http" {
   }
 }
 
@@ -31,7 +31,7 @@ provider "aws" {
 }
 
 provider "gitlab" {
-  # Configuration options - the GitLab token is pulled from the variables set in the CI/CD settings of the repository
+  # Configuration options - the GitLab token that this provider requires is pulled from the variables set in the CI/CD settings of the GitLab repository
 }
 
 provider "kubernetes" {
