@@ -1,10 +1,14 @@
 variable "eks_cluster_id" {
-  type = string
+  type        = string
+  description = "EKS Cluster ID"
 }
 
 variable "common_tags" {
-  type = map(string)
+  type        = map(string)
+  default     = {}
+  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }
+
 
 variable "add_on_config" {
   description = "Amazon EKS Managed CoreDNS Add-on config"

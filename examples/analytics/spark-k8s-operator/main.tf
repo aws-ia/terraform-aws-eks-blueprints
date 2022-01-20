@@ -98,7 +98,7 @@ module "aws_vpc" {
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  source = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
+  source = "../../.."
 
   tenant            = local.tenant
   environment       = local.environment
@@ -119,18 +119,29 @@ module "aws-eks-accelerator-for-terraform" {
     mg_4 = {
       node_group_name = "managed-ondemand"
       instance_types  = ["m5.xlarge"]
+      min_size        = 3
       subnet_ids      = module.aws_vpc.private_subnets
     }
   }
+
+  # Enable Amazon Prometheus - Creates a new Workspace id
+  enable_amazon_prometheus = true
 }
 
 module "kubernetes-addons" {
-  source         = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
+  source         = "../../../modules/kubernetes-addons"
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
   #K8s Add-ons
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
+
+  #---------------------------------------
+  # PROMETHEUS and Amazon Prometheus Config
+  #---------------------------------------
+  # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
+  enable_amazon_prometheus             = true
+  amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
 
   #---------------------------------------
   # COMMUNITY PROMETHEUS ENABLE
@@ -157,9 +168,9 @@ module "kubernetes-addons" {
     name             = "spark-operator"
     chart            = "spark-operator"
     repository       = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
-    version          = "1.1.6"
+    version          = "1.1.15"
     namespace        = "spark-k8s-operator"
-    timeout          = "1200"
+    timeout          = "300"
     create_namespace = true
     values           = [templatefile("${path.module}/helm_values/spark-k8s-operator-values.yaml", {})]
   }
@@ -172,7 +183,9 @@ module "kubernetes-addons" {
     name       = "yunikorn"                                            # (Required) Release name.
     repository = "https://apache.github.io/incubator-yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
     chart      = "yunikorn"                                            # (Required) Chart name to be installed.
-    version    = "0.12.0"                                              # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
+    version    = "0.12.1"                                              # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
+
+  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }

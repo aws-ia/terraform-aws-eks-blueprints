@@ -120,6 +120,7 @@ resource "aws_iam_policy" "ingest" {
   description = "Set up the permission policy that grants ingest (remote write) permissions for AMP workspace"
   path        = var.iam_role_path
   policy      = data.aws_iam_policy_document.ingest.json
+  tags        = var.tags
 }
 
 resource "aws_iam_policy" "query" {
@@ -128,4 +129,5 @@ resource "aws_iam_policy" "query" {
   description = "Set up the permission policy that grants query permissions for AMP workspace"
   path        = var.iam_role_path
   policy      = data.aws_iam_policy_document.query.json
+  tags        = var.tags
 }
