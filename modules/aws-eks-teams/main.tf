@@ -213,4 +213,5 @@ resource "aws_iam_policy" "platform_team_eks_access" {
   path        = "/"
   description = "Platform Team EKS Console Access"
   policy      = data.aws_iam_policy_document.platform_team_eks_access.json
+  tags        = var.tags
 }

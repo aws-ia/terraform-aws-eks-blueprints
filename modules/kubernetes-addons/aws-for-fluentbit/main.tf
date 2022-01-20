@@ -1,8 +1,3 @@
-resource "aws_cloudwatch_log_group" "aws_for_fluent_bit" {
-  name              = local.log_group_name
-  retention_in_days = local.log_group_retention
-}
-
 resource "helm_release" "aws_for_fluent_bit" {
   count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.helm_config["name"]
@@ -65,18 +60,34 @@ resource "helm_release" "aws_for_fluent_bit" {
   depends_on = [aws_cloudwatch_log_group.aws_for_fluent_bit, module.irsa]
 }
 
+resource "aws_cloudwatch_log_group" "aws_for_fluent_bit" {
+  name              = local.log_group_name
+  retention_in_days = var.cw_log_group_retention
+  kms_key_id        = var.cw_log_group_kms_key_arn == null ? module.kms[0].key_arn : var.cw_log_group_kms_key_arn
+  tags              = var.tags
+}
+
 resource "aws_iam_policy" "aws_for_fluent_bit" {
   name        = "${var.eks_cluster_id}-fluentbit"
   description = "IAM Policy for AWS for FluentBit"
-  policy      = data.aws_iam_policy_document.aws_for_fluent_bit.json
+  policy      = data.aws_iam_policy_document.irsa.json
+  tags        = var.tags
 }
 
 module "irsa" {
-  source                      = "../../../modules/irsa"
-  eks_cluster_id              = var.eks_cluster_id
-  kubernetes_namespace        = local.helm_config["namespace"]
-  create_kubernetes_namespace = local.helm_config["create_namespace"]
-  kubernetes_service_account  = local.service_account_name
-  irsa_iam_policies           = concat([aws_iam_policy.aws_for_fluent_bit.arn], var.irsa_policies)
-  tags                        = var.tags
+  source                     = "../../../modules/irsa"
+  eks_cluster_id             = var.eks_cluster_id
+  kubernetes_namespace       = local.helm_config["namespace"]
+  kubernetes_service_account = local.service_account_name
+  irsa_iam_policies          = concat([aws_iam_policy.aws_for_fluent_bit.arn], var.irsa_policies)
+  tags                       = var.tags
+}
+
+module "kms" {
+  count       = var.cw_log_group_kms_key_arn == null ? 1 : 0
+  source      = "../../../modules/aws-kms"
+  description = "EKS Workers FluentBit CloudWatch Log group KMS Key"
+  alias       = "alias/${var.eks_cluster_id}-cw-fluent-bit"
+  policy      = data.aws_iam_policy_document.kms.json
+  tags        = var.tags
 }

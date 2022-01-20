@@ -31,3 +31,8 @@ variable "eks_cluster_id" {
   type        = string
   description = "EKS Cluster Id"
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "Common Tags for AWS resources"
+}
