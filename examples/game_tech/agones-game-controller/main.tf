@@ -62,9 +62,9 @@ locals {
 
   kubernetes_version = "1.21"
 
-  vpc_cidr       = "10.0.0.0/16"
-  vpc_name       = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  vpc_cidr     = "10.0.0.0/16"
+  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
+  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.0.1"
 }
@@ -121,7 +121,7 @@ module "aws-eks-accelerator-for-terraform" {
       node_group_name        = "managed-ondemand" # Max 40 characters for node group name
       create_launch_template = true               # false will use the default launch template
       launch_template_os     = "amazonlinux2eks"  # amazonlinux2eks or bottlerocket
-      public_ip              = false              # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+      public_ip              = true               # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
       pre_userdata           = <<-EOT
             yum install -y amazon-ssm-agent
             systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
