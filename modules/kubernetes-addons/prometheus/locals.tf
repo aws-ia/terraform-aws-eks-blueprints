@@ -1,5 +1,4 @@
 locals {
-
   default_helm_config = {
     name                       = "prometheus"
     chart                      = "prometheus"
@@ -47,13 +46,14 @@ locals {
     operating_system = "linux",
   })]
 
-  amazon_prometheus_workspace_url          = var.amazon_prometheus_workspace_endpoint != null ? "${var.amazon_prometheus_workspace_endpoint}api/v1/remote_write" : null
-  amazon_prometheus_ingest_iam_role_arn    = var.enable_amazon_prometheus ? module.irsa_amp_ingest[0].irsa_iam_role_arn : null
+  amazon_prometheus_workspace_url          = var.amazon_prometheus_workspace_endpoint != null ? "${var.amazon_prometheus_workspace_endpoint}api/v1/remote_write" : ""
+  amazon_prometheus_ingest_iam_role_arn    = var.enable_amazon_prometheus ? module.irsa_amp_ingest[0].irsa_iam_role_arn : ""
   amazon_prometheus_ingest_service_account = "amp-ingest"
 
-  amp_config_values = var.enable_amazon_prometheus ? [{
-    name  = "serviceAccounts.server.name"
-    value = local.amazon_prometheus_ingest_service_account
+  amp_config_values = var.enable_amazon_prometheus ? [
+    {
+      name  = "serviceAccounts.server.name"
+      value = local.amazon_prometheus_ingest_service_account
     },
     {
       name  = "serviceAccounts.server.create"
@@ -70,12 +70,17 @@ locals {
     {
       name  = "server.remoteWrite[0].sigv4.region"
       value = data.aws_region.current.id
-  }] : []
+    }
+  ] : []
 
-  argocd_gitops_config = {
-    enable             = true
-    ampWorkspaceUrl    = local.amazon_prometheus_workspace_url
+  amp_gitops_config = var.enable_amazon_prometheus ? {
     roleArn            = local.amazon_prometheus_ingest_iam_role_arn
+    ampWorkspaceUrl    = local.amazon_prometheus_workspace_url
     serviceAccountName = local.amazon_prometheus_ingest_service_account
-  }
+  } : {}
+
+  argocd_gitops_config = merge(
+    { enable = true },
+    local.amp_gitops_config
+  )
 }

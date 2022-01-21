@@ -10,6 +10,9 @@ AWS provides a Fluent Bit image with plugins for both CloudWatch Logs and Kinesi
 
 [aws-for-fluent-bit](../../modules/kubernetes-addons/aws-for-fluent-bit/README.md) can be deployed by enabling the add-on via the following.
 
+This add-on is configured to stream the worker node logs to CloudWatch Logs by default. It can further be configured to stream the logs to additional destinations like Kinesis Data Firehose, Kinesis Data Streams and Amazon OpenSearch Service by passing the custom `values.yaml`.
+See this [Helm Chart](https://github.com/aws/eks-charts/tree/master/stable/aws-for-fluent-bit) for more details.
+
 ```hcl
 enable_aws_for_fluentbit = true
 ```
@@ -18,6 +21,7 @@ You can optionally customize the Helm chart that deploys `aws_for_fluentbit` via
 
 ```hcl
   enable_aws_for_fluentbit = true
+  aws_for_fluentbit_irsa_policies = ["IAM Policies"] # Add list of additional policies to IRSA to enable access to Kinesis, OpenSearch etc.
   aws_for_fluentbit_helm_config = {
     name                                      = "aws-for-fluent-bit"
     chart                                     = "aws-for-fluent-bit"

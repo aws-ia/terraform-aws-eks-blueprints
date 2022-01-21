@@ -65,15 +65,20 @@ module "argocd" {
   helm_config         = var.argocd_helm_config
   argocd_applications = var.argocd_applications
   eks_cluster_id      = var.eks_cluster_id
-  add_on_config       = local.argocd_add_on_config
+  add_on_config       = { for k, v in local.argocd_add_on_config : k => v if v != null }
 }
 
 module "aws_for_fluent_bit" {
-  count             = var.enable_aws_for_fluentbit ? 1 : 0
-  source            = "./aws-for-fluentbit"
-  helm_config       = var.aws_for_fluentbit_helm_config
-  eks_cluster_id    = var.eks_cluster_id
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                    = var.enable_aws_for_fluentbit ? 1 : 0
+  source                   = "./aws-for-fluentbit"
+  helm_config              = var.aws_for_fluentbit_helm_config
+  eks_cluster_id           = var.eks_cluster_id
+  irsa_policies            = var.aws_for_fluentbit_irsa_policies
+  cw_log_group_name        = var.aws_for_fluentbit_cw_log_group_name
+  cw_log_group_retention   = var.aws_for_fluentbit_cw_log_group_retention
+  cw_log_group_kms_key_arn = var.aws_for_fluentbit_cw_log_group_kms_key_arn
+  tags                     = var.tags
+  manage_via_gitops        = var.argocd_manage_add_ons
 }
 
 module "aws_load_balancer_controller" {
@@ -92,6 +97,7 @@ module "aws_node_termination_handler" {
   eks_cluster_id          = var.eks_cluster_id
   helm_config             = var.aws_node_termination_handler_helm_config
   autoscaling_group_names = var.auto_scaling_group_names
+  tags                    = var.tags
 }
 
 module "aws_opentelemetry_collector" {
@@ -188,9 +194,10 @@ module "traefik" {
 }
 
 module "vpa" {
-  count       = var.enable_vpa ? 1 : 0
-  source      = "./vpa"
-  helm_config = var.vpa_helm_config
+  count             = var.enable_vpa ? 1 : 0
+  source            = "./vpa"
+  helm_config       = var.vpa_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
 }
 
 module "yunikorn" {

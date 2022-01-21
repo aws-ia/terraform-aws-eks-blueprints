@@ -4,7 +4,7 @@ locals {
     name                       = "metrics-server"
     chart                      = "metrics-server"
     repository                 = "https://kubernetes-sigs.github.io/metrics-server/"
-    version                    = "3.5.0"
+    version                    = "3.7.0"
     namespace                  = "kube-system"
     timeout                    = "1200"
     create_namespace           = false

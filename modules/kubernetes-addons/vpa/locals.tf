@@ -57,6 +57,7 @@ locals {
     set_sensitive              = []
     values                     = local.default_helm_values
   }
+
   helm_config = merge(
     local.default_helm_config,
     var.helm_config
@@ -66,5 +67,8 @@ locals {
     vpa_sa_name = local.service_account_name
   })]
 
-
+  argocd_gitops_config = {
+    enable             = true
+    serviceAccountName = local.service_account_name
+  }
 }

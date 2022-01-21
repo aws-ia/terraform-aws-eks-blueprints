@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: {{ .Values.name }}
   namespace: "argocd"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: {{ .Values.project }}
   source:

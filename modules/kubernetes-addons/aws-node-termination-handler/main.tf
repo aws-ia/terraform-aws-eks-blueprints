@@ -104,33 +104,16 @@ resource "aws_autoscaling_group_tag" "aws_node_termination_handler_tag" {
   }
 }
 
-
 resource "aws_sqs_queue" "aws_node_termination_handler_queue" {
   name_prefix               = "aws_node_termination_handler"
   message_retention_seconds = "300"
+  sqs_managed_sse_enabled   = true
+  tags                      = var.tags
 }
 
-data "aws_iam_policy_document" "aws_node_termination_handler_queue_policy_document" {
-  statement {
-    actions = [
-      "sqs:SendMessage"
-    ]
-    principals {
-      type = "Service"
-      identifiers = [
-        "events.amazonaws.com",
-        "sqs.amazonaws.com"
-      ]
-    }
-    resources = [
-      aws_sqs_queue.aws_node_termination_handler_queue.arn
-    ]
-  }
-}
 resource "aws_sqs_queue_policy" "aws_node_termination_handler_queue_policy" {
   queue_url = aws_sqs_queue.aws_node_termination_handler_queue.id
-
-  policy = data.aws_iam_policy_document.aws_node_termination_handler_queue_policy_document.json
+  policy    = data.aws_iam_policy_document.aws_node_termination_handler_queue_policy_document.json
 }
 
 resource "aws_cloudwatch_event_rule" "aws_node_termination_handler_rule" {
@@ -147,24 +130,11 @@ resource "aws_cloudwatch_event_target" "aws_node_termination_handler_rule_target
   arn  = aws_sqs_queue.aws_node_termination_handler_queue.arn
 }
 
-data "aws_iam_policy_document" "irsa_policy" {
-  statement {
-    actions = [
-      "autoscaling:CompleteLifecycleAction",
-      "autoscaling:DescribeAutoScalingInstances",
-      "autoscaling:DescribeTags",
-      "ec2:DescribeInstances",
-      "sqs:DeleteMessage",
-      "sqs:ReceiveMessage"
-    ]
-    resources = ["*"]
-  }
-}
-
 resource "aws_iam_policy" "aws_node_termination_handler_irsa" {
   description = "IAM role policy for AWS Node Termination Handler"
   name        = "${var.eks_cluster_id}-aws-nth-irsa"
   policy      = data.aws_iam_policy_document.irsa_policy.json
+  tags        = var.tags
 }
 
 module "irsa" {

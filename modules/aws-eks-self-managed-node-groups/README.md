@@ -39,29 +39,17 @@ This module allows you to create on-demand or spot self managed Linux or Windows
 
       disk_size     = 20
       instance_type = "m5.large"
-
-      desired_size = 2
       max_size     = 10
       min_size     = 2
-
-      capacity_type = "" # Optional Use this only for SPOT capacity as  capacity_type = "spot"
-
-      k8s_labels = {
-        Environment = "preprod"
-        Zone        = "test"
-        WorkerType  = "SELF_MANAGED_ON_DEMAND"
-      }
+      capacity_type = ""                            # Optional Use this only for SPOT capacity as  capacity_type = "spot"
 
       additional_tags = {
         ExtraTag    = "m5x-on-demand"
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-
-
-      subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-
-      create_worker_security_group = false # Creates a dedicated sec group for this Node Group
+      subnet_ids  = []                              # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
+      create_worker_security_group = false          # Creates a dedicated sec group for this Node Group
     },
     /*
     spot_m5 = {
@@ -78,28 +66,17 @@ This module allows you to create on-demand or spot self managed Linux or Windows
       disk_size     = 20
       instance_type = "m5.large"
 
-      desired_size = 2
       max_size     = 10
       min_size     = 2
-
       capacity_type = "spot"
 
       # Node Group network configuration
-
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-
-      k8s_taints = []
-      k8s_labels = {
-        Environment = "preprod"
-        Zone        = "dev"
-        WorkerType  = "SPOT"
-      }
       additional_tags = {
         ExtraTag    = "spot_nodes"
         Name        = "spot"
         subnet_type = "private"
       }
-
       create_worker_security_group = false
     },
 
@@ -110,30 +87,15 @@ This module allows you to create on-demand or spot self managed Linux or Windows
       public_ip       = false                   # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
       pre_userdata    = ""
 
-      desired_size    = 3
       max_size        = 3
       min_size        = 3
-      max_unavailable = 1
-
       instance_types = "m5.large"
       disk_size      = 50
-
-
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-
-      k8s_taints = []
-
-      k8s_labels = {
-        Environment = "preprod"
-        Zone        = "dev"
-        OS          = "bottlerocket"
-        WorkerType  = "ON_DEMAND_BOTTLEROCKET"
-      }
       additional_tags = {
         ExtraTag = "bottlerocket"
         Name     = "bottlerocket"
       }
-
       create_worker_security_group = true
     }
 
@@ -148,26 +110,15 @@ This module allows you to create on-demand or spot self managed Linux or Windows
 
       disk_size     = 50
       instance_type = "m5.large"
-
-      desired_size = 2
       max_size     = 4
       min_size     = 2
-
-      k8s_labels = {
-        Environment = "preprod"
-        Zone        = "dev"
-        WorkerType  = "WINDOWS_ON_DEMAND"
-      }
 
       additional_tags = {
         ExtraTag    = "windows-on-demand"
         Name        = "windows-on-demand"
         subnet_type = "private"
       }
-
-
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-
       create_worker_security_group = false # Creates a dedicated sec group for this Node Group
     }
   */
@@ -195,15 +146,10 @@ No modules.
 |------|------|
 | [aws_autoscaling_group.self_managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group) | resource |
 | [aws_iam_instance_profile.self_managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
-| [aws_iam_policy.cwlogs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.eks_windows_cni](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role.self_managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
-| [aws_iam_role_policy_attachment.cwlogs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.eks_windows_cni](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.self_managed_AmazonEC2ContainerRegistryReadOnly](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.self_managed_AmazonEKSWorkerNodePolicy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.self_managed_AmazonEKS_CNI_Policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.self_managed_AmazonSSMManagedInstanceCore](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.self_managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_launch_template.self_managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template) | resource |
 | [aws_security_group.self_managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group_rule.cluster_primary_sg_ingress_worker_sgr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
@@ -216,7 +162,6 @@ No modules.
 | [aws_security_group_rule.workers_ingress_control_plane_sgr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_ami.predefined](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
-| [aws_iam_policy_document.cwlogs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.eks_windows_cni](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.self_managed_ng_assume_role_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |

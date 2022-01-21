@@ -23,12 +23,19 @@ variable "addon_config" {
 }
 
 variable "node_groups_iam_role_arn" {
-  type    = list(string)
-  default = []
+  type        = list(string)
+  default     = []
+  description = "Node goups IAM role ARN"
 }
 
 variable "manage_via_gitops" {
   type        = bool
   default     = false
   description = "Determines if the add-on should be managed via GitOps."
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "Common Tags for AWS resources"
+  default     = {}
 }

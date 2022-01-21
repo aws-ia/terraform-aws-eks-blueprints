@@ -17,8 +17,9 @@
  */
 
 variable "helm_config" {
-  type    = any
-  default = {}
+  type        = any
+  default     = {}
+  description = "Ingress NGINX Helm Configuration"
 }
 
 variable "manage_via_gitops" {
