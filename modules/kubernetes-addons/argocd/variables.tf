@@ -25,7 +25,7 @@ variable "helm_config" {
 variable "argocd_applications" {
   type        = any
   default     = {}
-  description = "ARGO CD Applications config to bootstrap the cluster"
+  description = "ArgoCD Application config used to bootstrap a cluster."
 }
 
 variable "eks_cluster_id" {

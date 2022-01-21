@@ -1,26 +1,3 @@
-/*
- * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * SPDX-License-Identifier: MIT-0
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the Software
- * without restriction, including without limitation the rights to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
-resource "aws_cloudwatch_log_group" "eks_worker_logs" {
-  name              = local.log_group_name
-  retention_in_days = local.log_group_retention
-}
-
 resource "helm_release" "aws_for_fluent_bit" {
   count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.helm_config["name"]
@@ -62,7 +39,7 @@ resource "helm_release" "aws_for_fluent_bit" {
 
   dynamic "set" {
     iterator = each_item
-    for_each = local.helm_config["set"] == null ? [] : local.helm_config["set"]
+    for_each = local.helm_config["set"] != null ? distinct(concat(local.override_set_values, local.helm_config["set"])) : local.helm_config["set"]
 
     content {
       name  = each_item.value.name
@@ -80,5 +57,37 @@ resource "helm_release" "aws_for_fluent_bit" {
     }
   }
 
-  depends_on = [aws_cloudwatch_log_group.eks_worker_logs]
+  depends_on = [aws_cloudwatch_log_group.aws_for_fluent_bit, module.irsa]
+}
+
+resource "aws_cloudwatch_log_group" "aws_for_fluent_bit" {
+  name              = local.log_group_name
+  retention_in_days = var.cw_log_group_retention
+  kms_key_id        = var.cw_log_group_kms_key_arn == null ? module.kms[0].key_arn : var.cw_log_group_kms_key_arn
+  tags              = var.tags
+}
+
+resource "aws_iam_policy" "aws_for_fluent_bit" {
+  name        = "${var.eks_cluster_id}-fluentbit"
+  description = "IAM Policy for AWS for FluentBit"
+  policy      = data.aws_iam_policy_document.irsa.json
+  tags        = var.tags
+}
+
+module "irsa" {
+  source                     = "../../../modules/irsa"
+  eks_cluster_id             = var.eks_cluster_id
+  kubernetes_namespace       = local.helm_config["namespace"]
+  kubernetes_service_account = local.service_account_name
+  irsa_iam_policies          = concat([aws_iam_policy.aws_for_fluent_bit.arn], var.irsa_policies)
+  tags                       = var.tags
+}
+
+module "kms" {
+  count       = var.cw_log_group_kms_key_arn == null ? 1 : 0
+  source      = "../../../modules/aws-kms"
+  description = "EKS Workers FluentBit CloudWatch Log group KMS Key"
+  alias       = "alias/${var.eks_cluster_id}-cw-fluent-bit"
+  policy      = data.aws_iam_policy_document.kms.json
+  tags        = var.tags
 }

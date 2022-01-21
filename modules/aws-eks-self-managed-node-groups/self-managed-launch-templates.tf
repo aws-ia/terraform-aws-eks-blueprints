@@ -25,7 +25,7 @@ resource "aws_launch_template" "self_managed_ng" {
     device_name = "/dev/xvda"
 
     ebs {
-      volume_type = "gp2"
+      volume_type = local.self_managed_node_group["disk_type"]
       volume_size = local.self_managed_node_group["disk_size"]
       encrypted   = true
       # kms_key_id            = ""
@@ -40,7 +40,7 @@ resource "aws_launch_template" "self_managed_ng" {
   }
 
   monitoring {
-    enabled = true
+    enabled = local.self_managed_node_group["enable_monitoring"]
   }
 
   lifecycle {
@@ -60,9 +60,7 @@ resource "aws_launch_template" "self_managed_ng" {
   depends_on = [
     aws_iam_role.self_managed_ng,
     aws_iam_instance_profile.self_managed_ng,
-    aws_iam_role_policy_attachment.self_managed_AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.self_managed_AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.self_managed_AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.self_managed_ng
   ]
 
 }

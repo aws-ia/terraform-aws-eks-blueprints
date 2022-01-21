@@ -114,7 +114,7 @@ No requirements.
 | Name | Description |
 |------|-------------|
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
-| <a name="output_ingress_name"></a> [ingress\_name](#output\_ingress\_name) | n/a |
-| <a name="output_ingress_namespace"></a> [ingress\_namespace](#output\_ingress\_namespace) | n/a |
+| <a name="output_ingress_name"></a> [ingress\_name](#output\_ingress\_name) | AWS LoadBalancer Controller Ingress Name |
+| <a name="output_ingress_namespace"></a> [ingress\_namespace](#output\_ingress\_namespace) | AWS LoadBalancer Controller Ingress Namespace |
 
 <!--- END_TF_DOCS --->

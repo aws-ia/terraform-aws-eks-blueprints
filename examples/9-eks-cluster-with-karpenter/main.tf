@@ -119,7 +119,6 @@ module "aws-eks-accelerator-for-terraform" {
   self_managed_node_groups = {
     self_mg_4 = {
       node_group_name    = "self-managed-ondemand"
-      custom_ami_id      = "ami-0dfaa019a300f219c"
       launch_template_os = "amazonlinux2eks"
       max_size           = 1
       subnet_ids         = module.aws_vpc.private_subnets

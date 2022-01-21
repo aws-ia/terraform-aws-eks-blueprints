@@ -7,3 +7,28 @@ data "aws_eks_cluster" "eks_cluster" {
 }
 
 data "aws_partition" "current" {}
+
+data "aws_iam_policy_document" "platform_team_eks_access" {
+  statement {
+    sid = "AllowPlatformTeamEKSAccess"
+    actions = [
+      "eks:DescribeNodegroup",
+      "eks:ListNodegroups",
+      "eks:DescribeCluster",
+      "eks:ListClusters",
+      "eks:AccessKubernetesApi",
+      "ssm:GetParameter",
+      "eks:ListUpdates",
+      "eks:ListFargateProfiles"
+    ]
+    resources = [
+      data.aws_eks_cluster.eks_cluster.arn
+    ]
+  }
+
+  statement {
+    sid       = "AllowListClusters"
+    actions   = ["eks:ListClusters"]
+    resources = ["*"]
+  }
+}

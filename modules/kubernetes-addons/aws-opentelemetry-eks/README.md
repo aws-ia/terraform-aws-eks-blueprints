@@ -49,7 +49,8 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_addon_config"></a> [addon\_config](#input\_addon\_config) | AWS Open Telemetry Distro Addon Configuration | `any` | `{}` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
-| <a name="input_node_groups_iam_role_arn"></a> [node\_groups\_iam\_role\_arn](#input\_node\_groups\_iam\_role\_arn) | n/a | `list(string)` | `[]` | no |
+| <a name="input_node_groups_iam_role_arn"></a> [node\_groups\_iam\_role\_arn](#input\_node\_groups\_iam\_role\_arn) | Node goups IAM role ARN | `list(string)` | `[]` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Common Tags for AWS resources | `map(string)` | `{}` | no |
 
 ## Outputs
 

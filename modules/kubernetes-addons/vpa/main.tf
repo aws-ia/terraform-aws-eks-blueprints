@@ -17,6 +17,7 @@
  */
 
 resource "helm_release" "vpa" {
+  count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.helm_config["name"]
   repository                 = local.helm_config["repository"]
   chart                      = local.helm_config["chart"]

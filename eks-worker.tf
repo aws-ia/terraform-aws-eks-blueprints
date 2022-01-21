@@ -44,7 +44,6 @@ module "aws_eks_managed_node_groups" {
   tags                              = module.eks_tags.tags
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
-
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -75,7 +74,6 @@ module "aws_eks_self_managed_node_groups" {
   tags                              = module.eks_tags.tags
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
-
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -91,5 +89,4 @@ module "aws_eks_fargate_profiles" {
   tags            = module.eks_tags.tags
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
-
 }
