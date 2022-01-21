@@ -30,6 +30,7 @@ tf-init:
 
 tf-fmt:
   stage: tf-fmt
+  rules:
     - changes:
         - "*.tf"
   script:
@@ -56,7 +57,7 @@ tf-plan:
     - changes:
         - "*.tf"
   script:
-    - gitlab-terraform plan
+    - gitlab-terraform plan -var-file="input.tfvars"
     - gitlab-terraform plan-json
 
 tf-apply:
@@ -79,4 +80,4 @@ tf-destroy:
   when: manual
   allow_failure: true
   script:
-    - gitlab-terraform destroy -auto-approve
+    - gitlab-terraform destroy -var-file="input.tfvars" -auto-approve

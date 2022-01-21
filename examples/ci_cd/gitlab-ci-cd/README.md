@@ -39,7 +39,7 @@ Start the `tf-destroy` step in the GitLab Ci/CD pipeline to destroy your deploym
 
 - ### What's gitlab-terraform?
 
-    - `gitlab-terraform` is a thin wrapper around the `terraform` binary as part of the [GitLab Terraform docker image](registry.gitlab.com/gitlab-org/terraform-images/stable:latest) used in `.gitlab-ci.yml`
+    - `gitlab-terraform` is a thin wrapper around the `terraform` binary as part of the [GitLab Terraform docker image](registry.gitlab.com/gitlab-org/terraform-images/stable:latest) used in `.gitlab-ci.yml`.
 
 <!--- BEGIN_TF_DOCS --->
 ## Requirements
