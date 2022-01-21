@@ -231,9 +231,9 @@ variable "aws_for_fluentbit_cw_log_group_name" {
 }
 
 variable "aws_for_fluentbit_cw_log_group_retention" {
-  type        = string
+  type        = number
   description = "FluentBit CloudWatch Log group retention period"
-  default     = "90"
+  default     = 90
 }
 
 variable "aws_for_fluentbit_cw_log_group_kms_key_arn" {
