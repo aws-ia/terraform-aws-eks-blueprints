@@ -240,4 +240,3 @@ variable "platform_teams" {
   type        = any
   default     = {}
 }
-
