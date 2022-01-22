@@ -12,7 +12,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 ## Deployment Steps
 
-The following steps will walk you through the deployment of an example [DEV cluster](../examples/1-eks-cluster-with-new-vpc/main.tf) configuration.
+The following steps will walk you through the deployment of an example [DEV cluster](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/blob/main/examples/1-eks-cluster-with-new-vpc/main.tf) configuration.
 This configuration will deploy a private EKS cluster with public and private subnets.
 One managed node group and a Fargate profile for the default namespace will be placed in private subnets. The ALB created by the AWS LB Ingress controller will be placed in Public subnets. The example will also deploy the following Kubernetes add-ons
 
