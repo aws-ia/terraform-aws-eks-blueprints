@@ -45,29 +45,7 @@ terraform apply
 
 Enter `yes` to apply.
 
-## Steps to enable the Spark K8s Operator on EKS Cluster
-Enable Spark-K8S-Operator on EKS Cluster
-
-```hcl
- #---------------------------------------
-  # ENABLE SPARK on K8S OPERATOR
-  #---------------------------------------
-  enable_spark_k8s_operator = true
-
-  # Optional Map value
-  spark_k8s_operator_helm_config = {
-    name             = "spark-operator"
-    chart            = "spark-operator"
-    repository       = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
-    version          = "1.1.6"
-    namespace        = "spark-k8s-operator"
-    timeout          = "1200"
-    create_namespace = true
-    values           = [templatefile("${path.module}/helm_values/spark-k8s-operator-values.yaml", {})]
-  }
-```
-
-## Execute Sample Spark Job on EKS Cluster with spark-k8s-operator
+## Execute Sample Spark Job on EKS Cluster with Spark-k8s-operator:
  - Create Spark Namespace, Service Account and ClusterRole and ClusterRole Binding for the jobs
 
 ```shell script
@@ -80,6 +58,14 @@ Enable Spark-K8S-Operator on EKS Cluster
 ```shell script
   cd examples/analytics/spark-k8s-operator/k8s-schedular
   kubectl apply -f pyspark-pi-job.yaml
+```
+
+- Verify the Spark job status
+
+```shell script
+  kubectl get sparkapplications -n spark-ns
+
+  kubectl describe sparkapplication pyspark-pi -n spark-ns
 ```
 
 <!--- BEGIN_TF_DOCS --->
