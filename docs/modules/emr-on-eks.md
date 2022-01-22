@@ -11,7 +11,7 @@ This module deploys the necessary resources to run EMR Spark Jobs on EKS Cluster
 
 ## Usage
 
-[EMR on EKS](modules/emr-on-eks/README.md) can be deployed by enabling the module via the following.
+[EMR on EKS](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/emr-on-eks) can be deployed by enabling the module via the following.
 
 
 ```hcl
