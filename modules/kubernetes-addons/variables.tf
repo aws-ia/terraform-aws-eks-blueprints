@@ -386,3 +386,22 @@ variable "yunikorn_helm_config" {
   default     = {}
   description = "YuniKorn K8s scheduler Helm Chart config"
 }
+
+#-----------Argo Rollouts ADDON-------------
+variable "enable_argo_rollouts" {
+  type        = bool
+  default     = false
+  description = "Enable Argo Rollouts add-on"
+}
+
+variable "argo_rollouts_helm_config" {
+  type        = any
+  default     = null
+  description = "Argo Rollouts Helm Chart config"
+}
+
+variable "argo_rollouts_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for Argo Rollouts IRSA"
+}

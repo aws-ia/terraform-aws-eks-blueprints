@@ -16,5 +16,10 @@ locals {
     traefik                   = var.enable_traefik ? module.traefik[0].argocd_gitops_config : null
     vpa                       = var.enable_vpa ? module.vpa[0].argocd_gitops_config : null
     yunikorn                  = var.enable_yunikorn ? module.yunikorn[0].argocd_gitops_config : null
+    argoRollouts              = var.enable_argo_rollouts ? module.argo_rollouts[0].argocd_gitops_config : null
   }
+
+  # Argo Rollouts
+  argo_rollouts_repository = "https://argoproj.github.io/argo-helm"
+  argo_rollouts_version    = "2.9.1"
 }
