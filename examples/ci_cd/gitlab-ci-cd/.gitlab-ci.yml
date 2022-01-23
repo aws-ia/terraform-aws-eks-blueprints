@@ -78,7 +78,7 @@ tf-plan:
     - changes:
         - "*.tf"
   script:
-    - gitlab-terraform plan -var-file="input.tfvars"
+    - gitlab-terraform plan -var-file="dev.tfvars"
     - gitlab-terraform plan-json
 
 tf-apply:
@@ -104,4 +104,4 @@ tf-destroy:
   when: manual
   allow_failure: true
   script:
-    - gitlab-terraform destroy -var-file="input.tfvars" -auto-approve
+    - gitlab-terraform destroy -var-file="dev.tfvars" -auto-approve

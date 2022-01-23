@@ -66,15 +66,14 @@ locals {
 }
 
 module "aws_vpc" {
-  source = "terraform-aws-modules/vpc/aws"
-  //version = "v3.2.0"
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "3.11.3"
+  name    = local.vpc_name
+  cidr    = var.vpc_cidr
+  azs     = data.aws_availability_zones.available.names
 
-  name = local.vpc_name
-  cidr = var.vpc_cidr
-  azs  = data.aws_availability_zones.available.names
-
-  public_subnets  = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(var.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(var.vpc_cidr, 8, k + 10)]
+  public_subnets  = [for k, v in slice(data.aws_availability_zones.available.names, 0, 3) : cidrsubnet(var.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in slice(data.aws_availability_zones.available.names, 0, 3) : cidrsubnet(var.vpc_cidr, 8, k + 10)]
 
   enable_nat_gateway   = true
   create_igw           = true
@@ -95,8 +94,7 @@ module "aws_vpc" {
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  source = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
-
+  source            = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
   tenant            = var.tenant
   environment       = var.environment
   zone              = var.zone

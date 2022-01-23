@@ -24,13 +24,3 @@ variable "vpc_cidr" {
 variable "terraform_version" {
   type = string
 }
-
-variable "group_id" {
-  type        = number
-  description = "The group id for an existing GitLab group"
-}
-
-variable "gitlab_project_id" {
-  type        = number
-  description = "GitLab project id used to manage the Kubernetes cluster"
-}

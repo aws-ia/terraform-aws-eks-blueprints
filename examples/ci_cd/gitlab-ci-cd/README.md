@@ -25,7 +25,7 @@ git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git
         GITLAB_BASE_URL             e.g., https://gitlab.example.com/api/v4/
         GITLAB_TOKEN                e.g., GitLab access token
 
-## Step 4: Update variables in input.tfvars file   
+## Step 4: Update variables in input.tfvars file  
    1. Update tenant,environment,zone as per your requirement
    2. Update kubernetes_version to any version > "1.20"
    3. Update CIDR of your VPC, vpc_cidcr = "10.2.0.0/16"
@@ -34,7 +34,7 @@ git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git
 ## Step5: Commit changes and push to verify the pipeline
 Manually trigger the `tf-apply` to provision the resources
 
-## Step6: Verify the state file is updated in  your project (Infrastructure->Terraform-states) 
+## Step6: Verify the state file is updated in  your project (Infrastructure->Terraform-states)
 
 ## Step7: (Optional)  Manually Install, Configure and Run GitLab Agent for Kubernetes (“Agent”, for short) is your active in-cluster.
 This is for or connecting Kubernetes clusters to GitLab. Refer https://docs.gitlab.com/ee/user/clusters/agent/install/
@@ -53,7 +53,7 @@ Manually trigger the `tf-destroy` stage in the GitLab Ci/CD pipeline to destroy 
 
 - ### What's gitlab-terraform?
 
-    - `gitlab-terraform` is a thin wrapper around the `terraform` binary as part of the [GitLab Terraform docker image](registry.gitlab.com/gitlab-org/terraform-images/stable:latest) used in `.gitlab-ci.yml`.
+    - `gitlab-terraform` is a thin wrapper around the `terraform` binary. as part of the [GitLab Terraform docker image](https://gitlab.com/gitlab-org/terraform-images) used in `.gitlab-ci.yml`.
 - ### In case your tf-apply stage is failed in between
     -  Correct the source code ,commit and push the code  or ensure you manually trigger tf-destroy stage and cleanup the provisioned resources
 <!--- BEGIN_TF_DOCS --->
