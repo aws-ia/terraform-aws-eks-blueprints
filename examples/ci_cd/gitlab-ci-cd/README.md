@@ -22,8 +22,6 @@ git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git
         AWS_ACCESS_KEY_ID           e.g., access key from devops admin iam role
         AWS_SECRET_ACCESS_KEY       e.g., secret key from devops admin iam role
         AWS_REGION                  e.g., eu-west-1
-        GITLAB_BASE_URL             e.g., https://gitlab.example.com/api/v4/
-        GITLAB_TOKEN                e.g., GitLab access token
 
 ## Step 4: Update variables in input.tfvars file  
    1. Update tenant,environment,zone as per your requirement
@@ -34,18 +32,14 @@ git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git
 ## Step5: Commit changes and push to verify the pipeline
 Manually trigger the `tf-apply` to provision the resources
 
-## Step6: Verify the state file is updated in  your project (Infrastructure->Terraform-states)
+## Step6: Verify whether the state file update happened in your project (Infrastructure->Terraform-states)
 
 ## Step7: (Optional)  Manually Install, Configure and Run GitLab Agent for Kubernetes (“Agent”, for short) is your active in-cluster.
-This is for or connecting Kubernetes clusters to GitLab. Refer https://docs.gitlab.com/ee/user/clusters/agent/install/
+This is for or connecting Kubernetes clusters to GitLab. Refer https://docs.gitlab.com/ee/user/clusters/agent/install/index.html
 ## Step8: Cleanup the deployed resources
 Manually trigger the `tf-destroy` stage in the GitLab Ci/CD pipeline to destroy your deployment.
 
 ## Troubleshooting:
-
-- ### 403 Error when creating resource gitlab_group_cluster.aws_cluster
-
-    - Make sure the GitLab group that you're referencing in `data.gitlab_group.gitops-eks` exists and that you have access to it.
 
 - ### 400 Error when creating resource
 
