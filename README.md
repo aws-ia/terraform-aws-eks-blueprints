@@ -82,22 +82,22 @@ The code above will provision the following:
 ✅  `Nginx` for managing ingress.
 
 ## Add-ons
-This framework provides out of the box support for a wide range of popular Kubernetes add-ons. 
+This framework provides out of the box support for a wide range of popular Kubernetes add-ons.
 By default, the [Terraform Helm provider](https://github.com/hashicorp/terraform-provider-helm) is used to deploy add-ons with publicly available [Helm Charts](https://artifacthub.io/).
 The framework provides support for leveraging self-hosted Helm Chart as well.
 
 For complete documentation on deploying add-ons, please visit our [add-on documentation](./docs/add-ons/index.md)
 
 ## Submodules
-The root module calls into several submodules which provides support for deploying and integrating a number of external AWS services that can be used in concert with Amazon EKS. 
+The root module calls into several submodules which provides support for deploying and integrating a number of external AWS services that can be used in concert with Amazon EKS.
 This included Amazon Managed Prometheus and EMR with EKS etc.
 For complete documentation on deploying external services, please visit our submodules documentation.
 
 ## Motivation
 The Amazon EKS SSP for Terraform allows customers to easily configure and deploy a multi-tenant, enterprise-ready container platform on top of EKS.
 With a large number of design choices, deploying production-grade container platform can take a significant amount of time, involve integrating a wide range or AWS services and open source tools, and require deep understand of AWS and Kubernetes concepts.
-This solution handles integrating EKS with popular open source and partner tools, in addition to AWS services, in order to allow customers to deploy a cohesive container platform that can be offered as a service to application teams. 
-It provides out-of-the-box support for common operational tasks such as auto-scaling workloads, collecting logs and metrics from both clusters and running applications, managing ingress and egress, configuring network policy, managing secrets, deploying workloads via GitOps, and more. 
+This solution handles integrating EKS with popular open source and partner tools, in addition to AWS services, in order to allow customers to deploy a cohesive container platform that can be offered as a service to application teams.
+It provides out-of-the-box support for common operational tasks such as auto-scaling workloads, collecting logs and metrics from both clusters and running applications, managing ingress and egress, configuring network policy, managing secrets, deploying workloads via GitOps, and more.
 Customers can leverage the solution to deploy a container platform and start onboarding workloads in days, rather than months.
 
 ## Feedback
