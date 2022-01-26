@@ -1,12 +1,22 @@
+# The purpose of this file is to demonstrate how to use GitLab CICD template to automate build and deployent of Terraform IaC
+#
+# This is a opinionated template which also demonstrates the best practise to implement gitops with Terraform IaC
 image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
 variables:
   TF_ROOT: ${CI_PROJECT_DIR}
-  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
+  TF_HTTP_PASSWORD: ${CI_JOB_TOKEN}
+  TF_HTTP_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}-tfstate
+  TF_HTTP_LOCK_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}-tfstate/lock
+  TF_HTTP_UNLOCK_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}-tfstate/lock
+  TF_HTTP_LOCK_METHOD : POST
+  TF_HTTP_UNLOCK_METHOD: DELETE
+  TF_HTTP_RETRY_WAIT_MIN: 1
+
 
 cache:
-  key: ssp-amazon-eks
+  key: "${TF_ROOT}"
   paths:
-    - ${TF_ROOT}/.terraform
+    - ${TF_ROOT}/.terraform/
 
 before_script:
   - cd ${TF_ROOT}
@@ -28,7 +38,7 @@ tf-init:
     - changes:
         - "*.tf"
   script:
-    - export DEBUG_OUTPUT=true
+    - export DEBUG_OUTPUT=true # Optional use for debug purpose only
     - gitlab-terraform init
 
 tf-fmt:
@@ -69,7 +79,7 @@ tf-plan:
     - changes:
         - "*.tf"
   script:
-    - gitlab-terraform plan
+    - gitlab-terraform plan -var-file="dev.tfvars"
     - gitlab-terraform plan-json
 
 tf-apply:
@@ -90,14 +100,9 @@ tf-apply:
 
 tf-destroy:
   stage: tf-destroy
-  rules:
-    - changes:
-        - "*.tf"
-      when: never
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      exists:
-        - .destroy-cluster
-      when: manual
-      allow_failure: true
+  dependencies:
+    - "tf-apply"
+  when: manual
+  allow_failure: true
   script:
-    - gitlab-terraform destroy -auto-approve
+    - gitlab-terraform destroy -var-file="dev.tfvars" -auto-approve
