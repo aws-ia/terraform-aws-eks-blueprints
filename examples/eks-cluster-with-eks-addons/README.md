@@ -1,8 +1,11 @@
-# EKS Cluster Deployment with new VPC
-This example deploys the following Basic EKS Cluster with VPC
- - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
- - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
- - Creates EKS Cluster Control plane with one managed node group and fargate profile
+# EKS Cluster with Amazon EKS Managed Add-ons
+
+This example deploys a new EKS Cluster into a new VPC with EKS managed Add-ons
+
+ - Creates a new VPC, 3 Private Subnets and 3 Public Subnets
+ - Creates an Internet gateway for the Public Subnets and a NAT Gateway for the Private Subnets
+ - Creates an EKS Cluster Control plane with public endpoint with one managed node group
+ - Creates EKS managed Addons (`vpc-cni`, `coredns`, `kube-proxy`, `aws-ebs-csi-driver`)
 
 ## How to Deploy
 ### Prerequisites:
@@ -22,7 +25,7 @@ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 Initialize a working directory with configuration files
 
 ```shell script
-cd examples/1-eks-cluster-with-new-vpc/
+cd examples/eks-cluster-with-eks-addons/
 terraform init
 ```
 
@@ -65,7 +68,7 @@ This following command used to update the `kubeconfig` in your local machine whe
 The following command destroys the resources created by `terraform apply`
 
 ```shell script
-cd examples/1-eks-cluster-with-new-vpc
+cd examples/eks-cluster-with-eks-addons
 terraform destroy --auto-approve
 ```
 

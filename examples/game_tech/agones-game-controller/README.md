@@ -133,7 +133,7 @@ Download the shell script and execute
 The following command destroys the resources created by `terraform apply`
 
 ```shell script
-cd examples/1-eks-cluster-with-new-vpc
+cd examples/eks-cluster-with-new-vpc
 terraform destroy --auto-approve
 ```
 

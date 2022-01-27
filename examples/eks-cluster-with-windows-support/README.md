@@ -24,7 +24,7 @@ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 to initialize a working directory with configuration files
 
 ```bash
-cd examples/5-eks-cluster-with-windows-support
+cd examples/eks-cluster-with-windows-support
 terraform init
 ```
 
@@ -59,7 +59,7 @@ This example uses `nodeSelector`s to select nodes with appropriate OS for pods.
 
 #### Sample Windows deployment
 ```bash
-cd examples/5-eks-cluster-with-windows-support
+cd examples/eks-cluster-with-windows-support
 
 # Sample Windows deployment
   kubectl apply -f ./k8s/windows-iis-aspnet.yaml
@@ -82,7 +82,7 @@ kubectl apply -f ./k8s/linux-nginx.yaml
 ## Cleanup
 
 ```bash
-cd examples/5-eks-cluster-with-windows-support
+cd examples/eks-cluster-with-windows-support
 
 # If you deployed sample Windows & Linux workloads from Step6
 kubectl delete svc,deploy -n windows --all

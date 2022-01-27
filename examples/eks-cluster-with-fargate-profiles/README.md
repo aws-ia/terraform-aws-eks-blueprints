@@ -23,7 +23,7 @@ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 Initialize a working directory with configuration files
 
 ```shell script
-cd examples/4-eks-cluster-with-fargate-profiles/
+cd examples/eks-cluster-with-fargate-profiles/
 terraform init
 ```
 
@@ -66,7 +66,7 @@ This following command used to update the `kubeconfig` in your local machine whe
 The following command destroys the resources created by `terraform apply`
 
 ```shell script
-cd examples/4-eks-cluster-with-fargate-profiles
+cd examples/eks-cluster-with-fargate-profiles
 terraform destroy --auto-approve
 ```
 

@@ -29,7 +29,7 @@ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 to initialize a working directory with configuration files
 
 ```shell script
-cd examples/8-eks-cluster-with-karpenter/
+cd examples/eks-cluster-with-karpenter/
 terraform init
 ```
 
@@ -75,18 +75,18 @@ You should see one Self-managed node up and running
 #### Step8: Deploy the default provisioner
 Kaprpenter will be ready to spin up SPOT/ON-DEMAND nodes based on the provided configuraiton in `default_provisioner.yaml`
 
-    $ cd examples/8-eks-cluster-with-karpenter/provisioners
+    $ cd examples/eks-cluster-with-karpenter/provisioners
     $ kubectl apply -f default_provisioner.yaml
 
 #### Step9: Run this sample `deployment` to verify the Autoscaling triggered by Karpenter
 
-    $ cd examples/8-eks-cluster-with-karpenter/provisioners
+    $ cd examples/eks-cluster-with-karpenter/provisioners
     $ kubectl apply -f sample_deployment.yaml
 
 
 # How to Destroy
 ```shell script
-cd examples/8-eks-cluster-with-karpenter
+cd examples/eks-cluster-with-karpenter
 terraform destroy
 ```
 
