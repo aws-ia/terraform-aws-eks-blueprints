@@ -83,6 +83,18 @@ variable "kubernetes_version" {
   description = "Desired kubernetes version. If you do not specify a value, the latest available version is used"
 }
 
+variable "cluster_name" {
+  type        = string
+  default     = ""
+  description = "EKS Cluster Name"
+}
+
+variable "cluster_kms_key_arn" {
+  type        = string
+  default     = null
+  description = "A valid EKS Cluster KMS Key ARN to encrypt Kubernetes secrets"
+}
+
 variable "cluster_endpoint_private_access" {
   type        = bool
   default     = false
@@ -227,10 +239,4 @@ variable "platform_teams" {
   description = "Map of maps of platform teams to create"
   type        = any
   default     = {}
-}
-
-variable "eks_cluster_kms_key_policy" {
-  type        = string
-  default     = null
-  description = "A valid KMS key policy JSON document. Although this is a key policy, not an IAM policy, an aws_iam_policy_document, in the form that designates a principal, can be used."
 }

@@ -5,7 +5,7 @@ For complete project documentation, please visit the [Spark K8S Operator documen
 
 ## Usage
 
-[Spark K8S Operator](kubernetes-addons/spark-k8s-operator/README.md) can be deployed by enabling the add-on via the following.
+[Spark K8S Operator](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/kubernetes-addons/spark-k8s-operator) can be deployed by enabling the add-on via the following.
 
 ### Basic Example
 

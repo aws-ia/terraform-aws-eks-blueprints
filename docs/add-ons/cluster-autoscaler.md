@@ -9,7 +9,7 @@ The [Cluster Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cl
 
 ## Usage
 
-[Cluster Autoscaler](kubernetes-addons/cluster-autoscaler/README.md) can be deployed by enabling the add-on via the following.
+[Cluster Autoscaler](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/kubernetes-addons/cluster-autoscaler) can be deployed by enabling the add-on via the following.
 
 ```hcl
 enable_cluster_autoscaler = true

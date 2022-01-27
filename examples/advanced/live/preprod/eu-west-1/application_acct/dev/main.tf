@@ -1,4 +1,3 @@
-
 terraform {
   required_version = ">= 1.0.1"
 
@@ -16,6 +15,21 @@ terraform {
       version = ">= 2.4.1"
     }
   }
+
+  backend "local" {
+    path = "local_tf_state/terraform-main.tfstate"
+  }
+}
+data "aws_region" "current" {}
+
+data "aws_availability_zones" "available" {}
+
+data "aws_eks_cluster" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 }
 
 provider "aws" {
@@ -23,15 +37,22 @@ provider "aws" {
   alias  = "default"
 }
 
-terraform {
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
+provider "kubernetes" {
+  experiments {
+    manifest_resource = true
   }
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
-data "aws_region" "current" {}
-
-data "aws_availability_zones" "available" {}
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.cluster.endpoint
+    token                  = data.aws_eks_cluster_auth.cluster.token
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  }
+}
 
 locals {
   tenant      = "aws001"  # AWS account name or unique id for tenant
@@ -40,9 +61,9 @@ locals {
 
   kubernetes_version = "1.21"
 
-  vpc_cidr       = "10.0.0.0/16"
-  vpc_name       = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  vpc_cidr     = "10.0.0.0/16"
+  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
+  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.0.1"
 }
@@ -64,15 +85,14 @@ module "aws_vpc" {
   single_nat_gateway   = true
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
-    "kubernetes.io/role/elb"                        = "1"
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                      = "1"
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
-    "kubernetes.io/role/internal-elb"               = "1"
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"             = "1"
   }
-
 }
 #---------------------------------------------------------------
 # Example to consume aws-eks-accelerator-for-terraform module
@@ -92,13 +112,6 @@ module "aws-eks-accelerator-for-terraform" {
   # EKS CONTROL PLANE VARIABLES
   create_eks         = true
   kubernetes_version = local.kubernetes_version
-
-  # EKS Managed Add-ons
-  enable_amazon_eks_vpc_cni            = true
-  enable_amazon_eks_coredns            = true
-  enable_amazon_eks_kube_proxy         = true
-  enable_amazon_eks_aws_ebs_csi_driver = true
-
   #---------------------------------------------------------#
   # EKS WORKER NODE GROUPS
   # Define Node groups as map of maps object as shown below. Each node group creates the following
@@ -148,9 +161,7 @@ module "aws-eks-accelerator-for-terraform" {
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-
       create_worker_security_group = true
-
     },
     #---------------------------------------------------------#
     # SPOT Worker Group - Worker Group - 2
@@ -200,7 +211,6 @@ module "aws-eks-accelerator-for-terraform" {
 
       create_worker_security_group = false
     },
-
     #---------------------------------------------------------#
     # BOTTLEROCKET - Worker Group - 3
     #---------------------------------------------------------#
@@ -240,7 +250,6 @@ module "aws-eks-accelerator-for-terraform" {
       #security_group ID
       create_worker_security_group = true
     }
-
       */
   } # END OF MANAGED NODE GROUPS
 
@@ -249,7 +258,6 @@ module "aws-eks-accelerator-for-terraform" {
   #---------------------------------------------------------#
 
   enable_windows_support = false
-
   self_managed_node_groups = {
     #---------------------------------------------------------#
     # ON-DEMAND Self Managed Worker Group - Worker Group - 1
@@ -286,9 +294,7 @@ module "aws-eks-accelerator-for-terraform" {
         subnet_type = "private"
       }
 
-
-      subnet_ids = [] # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-
+      subnet_ids                   = []    # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
       create_worker_security_group = false # Creates a dedicated sec group for this Node Group
     },
     /*
@@ -328,7 +334,6 @@ module "aws-eks-accelerator-for-terraform" {
         Name        = "spot"
         subnet_type = "private"
       }
-
       create_worker_security_group = false
     },
 
@@ -363,10 +368,8 @@ module "aws-eks-accelerator-for-terraform" {
         ExtraTag = "bottlerocket"
         Name     = "bottlerocket"
       }
-
       create_worker_security_group = true
     }
-
     #---------------------------------------------------------#
     # ON-DEMAND Self Managed Windows Worker Node Group
     #---------------------------------------------------------#
@@ -393,16 +396,13 @@ module "aws-eks-accelerator-for-terraform" {
       additional_tags = {
         ExtraTag    = "windows-on-demand"
         Name        = "windows-on-demand"
-
       }
 
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-
       create_worker_security_group = false # Creates a dedicated sec group for this Node Group
     }
   */
   } # END OF SELF MANAGED NODE GROUPS
-
   #---------------------------------------------------------#
   # FARGATE PROFILES
   #---------------------------------------------------------#
@@ -455,7 +455,6 @@ module "aws-eks-accelerator-for-terraform" {
       }
     }, */
   } # END OF FARGATE PROFILES
-
 }
 
 module "kubernetes-addons" {
@@ -529,6 +528,4 @@ module "kubernetes-addons" {
     version    = "1.3.1"
     namespace  = "kube-system"
   }
-
-
 }

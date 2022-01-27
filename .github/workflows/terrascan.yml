@@ -27,7 +27,7 @@ jobs:
         #non_recursive:
         #iac_dir:
         #policy_path:
-        #skip_rules:
+        skip_rules: "AC_AWS_0366,AC_AWS_0276" #These are valid rules to skip
         #config_path:
         #webhook_url:
         #webhook_token:

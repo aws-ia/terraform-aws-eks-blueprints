@@ -6,7 +6,7 @@ The purpose of this document is to provide an overview of the steps for upgradin
 
 The current version of the upgrade documentation while writing this [README](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html)
 
-#### Pre-Requisites:
+#### Prerequisites:
 
     1. Download the latest upgrade docs from AWS sites (https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html)
     2. Always upgrade one increment at a time (E.g., 1.17 to 1.18). AWS doesn't support upgrades from 1.16 to 1.18 directly

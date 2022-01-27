@@ -23,7 +23,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 #### Step1: Clone the repo using the command below
 
 ```shell script
-git clone https://github.com/aws-samples/terraform-ssp-eks-patterns.git
+git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 ```
 
 #### Step2: Run Terraform INIT
@@ -102,6 +102,8 @@ terraform destroy
 | Name | Type |
 |------|------|
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
+| [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
+| [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs

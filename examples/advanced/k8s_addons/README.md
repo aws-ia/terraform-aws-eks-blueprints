@@ -1,22 +1,72 @@
-# Usage
+# Kubernetes Add-on deployment with User defined Helm Chart Values
+This example shows how to pass and deploy the user defined Helm Chart  `values.yaml` to all the available Kubernetes add-ons
+
+## How to Deploy
+### Prerequisites:
+Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
+1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+3. [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
+4. [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+
+### Deployment Steps
+#### Step1: Clone the repo using the command below
+
+```shell script
+git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+```
+
+#### Step2: Run Terraform INIT
+Initialize a working directory with configuration files
+
+```shell script
+cd examples/advanced/k8s_addons/
+terraform init
+```
+
+#### Step3: Run Terraform PLAN
+Verify the resources created by this execution
+
+```shell script
+export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
+terraform plan
+```
+
+#### Step4: Finally, Terraform APPLY
+to create resources
+
+```shell script
+terraform apply
+```
+
+Enter `yes` to apply
+
+### Configure `kubectl` and test cluster
+EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster.
+This following command used to update the `kubeconfig` in your local machine where you run kubectl commands to interact with your EKS Cluster.
+
+#### Step5: Run `update-kubeconfig` command
+
+`~/.kube/config` file gets updated with cluster details and certificate from the below command
+
+    $ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
+
+#### Step6: List all the worker nodes by running the command below
+
+    $ kubectl get nodes
+
+#### Step7: List all the pods running in `kube-system` namespace
+
+    $ kubectl get pods -n kube-system
+
+## How to Destroy
+The following command destroys the resources created by `terraform apply`
+
+```shell script
+cd examples/advanced/k8s_addons
+terraform destroy --auto-approve
+```
 
 <!--- BEGIN_TF_DOCS --->
-Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-SPDX-License-Identifier: MIT-0
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this
-software and associated documentation files (the "Software"), to deal in the Software
-without restriction, including without limitation the rights to use, copy, modify,
-merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 ## Requirements
 
 | Name | Version |
@@ -24,7 +74,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.1 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.66.0 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.7.1 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.6.1 |
 
 ## Providers
 
@@ -44,6 +94,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | Name | Type |
 |------|------|
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
+| [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
+| [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs

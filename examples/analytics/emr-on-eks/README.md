@@ -1,7 +1,6 @@
 # EMR on EKS Deployment and Test
 
 This example deploys the following resources
-
  - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
  - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
  - Creates EKS Cluster Control plane with public endpoint (for demo purpose only) with one managed node group
@@ -9,9 +8,7 @@ This example deploys the following resources
  - Creates Amazon managed Prometheus and configures Prometheus addon to remote write metrics to AMP
 
 ## Prerequisites:
-
 Ensure that you have installed the following tools on your machine.
-
 1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 3. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 4. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
@@ -149,22 +146,6 @@ Specifically, you can use persistent volume claims if the jobs require large shu
 
 
 <!--- BEGIN_TF_DOCS --->
-Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-SPDX-License-Identifier: MIT-0
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this
-software and associated documentation files (the "Software"), to deal in the Software
-without restriction, including without limitation the rights to use, copy, modify,
-merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 ## Requirements
 
 No requirements.
