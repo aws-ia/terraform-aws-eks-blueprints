@@ -34,9 +34,11 @@ No requirements.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | Add-on helm chart config, provide repository and version at the minimum | `any` | n/a | yes |
-| <a name="input_irsa_config"></a> [irsa\_config](#input\_irsa\_config) | Input configuration for IRSA | <pre>object({<br>    kubernetes_namespace              = string<br>    create_kubernetes_namespace       = bool<br>    kubernetes_service_account        = string<br>    create_kubernetes_service_account = bool<br>    eks_cluster_id                    = string<br>    iam_role_path                     = string<br>    tags                              = string<br>    irsa_iam_policies                 = list(string)<br>  })</pre> | n/a | yes |
+| <a name="input_irsa_config"></a> [irsa\_config](#input\_irsa\_config) | Input configuration for IRSA module | `map(any)` | `null` | no |
+| <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
 
 ## Outputs
 
 No outputs.
+
 <!--- END_TF_DOCS --->

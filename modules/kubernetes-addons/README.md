@@ -39,7 +39,7 @@ No providers.
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_agones"></a> [agones](#module\_agones) | ./agones | n/a |
-| <a name="module_argo_rollouts"></a> [argo\_rollouts](#module\_argo\_rollouts) | ./helm_addon | n/a |
+| <a name="module_argo_rollouts"></a> [argo\_rollouts](#module\_argo\_rollouts) | ./argo-rollouts | n/a |
 | <a name="module_argocd"></a> [argocd](#module\_argocd) | ./argocd | n/a |
 | <a name="module_aws_coredns"></a> [aws\_coredns](#module\_aws\_coredns) | ./aws-coredns | n/a |
 | <a name="module_aws_ebs_csi_driver"></a> [aws\_ebs\_csi\_driver](#module\_aws\_ebs\_csi\_driver) | ./aws-ebs-csi-driver | n/a |
