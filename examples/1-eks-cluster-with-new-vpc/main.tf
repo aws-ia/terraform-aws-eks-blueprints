@@ -56,12 +56,12 @@ provider "helm" {
 }
 
 locals {
-  tenant             = "aws001"  # AWS account name or unique id for tenant
+  tenant             = "aws002"  # AWS account name or unique id for tenant
   environment        = "preprod" # Environment area eg., preprod or prod
   zone               = "dev"     # Environment with in one sub_tenant or business unit
   kubernetes_version = "1.21"
 
-  vpc_cidr       = "10.0.0.0/16"
+  vpc_cidr       = "10.1.0.0/16"
   vpc_name       = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
@@ -116,9 +116,10 @@ module "aws-eks-accelerator-for-terraform" {
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     mg_4 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m4.large"]
-      subnet_ids      = module.aws_vpc.private_subnets
+      node_group_name      = "managed-ondemand"
+      instance_types       = ["m4.large"]
+      subnet_ids           = module.aws_vpc.private_subnets
+      bootstrap_extra_args = "--container-runtime containerd"
     }
   }
 
@@ -156,6 +157,7 @@ module "kubernetes-addons" {
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_cluster_autoscaler           = true
+  enable_ingress_nginx                = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }
