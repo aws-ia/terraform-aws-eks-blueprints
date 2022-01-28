@@ -1,6 +1,5 @@
 module "helm_addon" {
-  source      = "../helm_addon"
-  helm_config = local.helm_config
-  irsa_config = local.irsa_config
-  cluster_id  = var.eks_cluster_id
+  source            = "../helm_addon"
+  manage_via_gitops = var.manage_via_gitops
+  helm_config       = local.helm_config
 }

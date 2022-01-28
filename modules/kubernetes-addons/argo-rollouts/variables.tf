@@ -18,4 +18,5 @@ variable "manage_via_gitops" {
 variable "tags" {
   type        = map(string)
   description = "Common Tags for AWS resources"
+  default     = null
 }
