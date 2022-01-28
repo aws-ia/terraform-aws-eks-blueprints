@@ -208,16 +208,9 @@ module "yunikorn" {
 }
 
 module "argo_rollouts" {
-  count          = var.enable_argo_rollouts ? 1 : 0
-  source         = "./helm_addon"
-  name           = "argo-rollouts"
-  eks_cluster_id = var.eks_cluster_id
-  irsa_policies  = var.argo_rollouts_irsa_policies
-  tags           = var.tags
-  helm_config = var.argo_rollouts_helm_config == null ? {
-    repository = local.argo_rollouts_repository
-    version    = local.argo_rollouts_version
-    values     = [templatefile("${path.module}/argo-rollouts/values.yaml", {})]
-  } : var.argo_rollouts_helm_config
+  count             = var.enable_argo_rollouts ? 1 : 0
+  source            = "./argo-rollouts"
+  eks_cluster_id    = var.eks_cluster_id
+  helm_config       = var.argo_rollouts_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
 }

@@ -60,12 +60,12 @@ resource "helm_release" "addon" {
 }
 
 module "irsa" {
-  source                            = "../../../modules/irsa"
-  eks_cluster_id                    = var.eks_cluster_id
-  create_kubernetes_namespace       = true
-  create_kubernetes_service_account = true
-  kubernetes_namespace              = local.namespace
-  kubernetes_service_account        = local.service_account_name
-  irsa_iam_policies                 = var.irsa_policies
-  tags                              = var.tags
+  source                            = "../../irsa"
+  eks_cluster_id                    = var.irsa_config.eks_cluster_id
+  create_kubernetes_namespace       = var.irsa_config.create_kubernetes_namespace
+  create_kubernetes_service_account = var.irsa_config.create_kubernetes_service_account
+  kubernetes_namespace              = var.irsa_config.kubernetes_namespace
+  kubernetes_service_account        = var.irsa_config.kubernetes_service_account
+  irsa_iam_policies                 = var.irsa_config.irsa_policies
+  tags                              = var.irsa_config.tags
 }
