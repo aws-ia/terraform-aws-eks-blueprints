@@ -1,0 +1,20 @@
+serviceAccount:
+  create: false
+  name: ${service_account_name}
+
+cloudWatch:
+  enabled: true
+  region: ${aws_region}
+  logGroupName: ${log_group_name}
+
+firehose:
+  enabled: false
+
+kinesis:
+  enabled: false
+
+elasticsearch:
+  enabled: true
+  match: "*"
+  awsRegion: ${aws_region}
+  host: ${host}
