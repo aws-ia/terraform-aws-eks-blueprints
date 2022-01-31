@@ -74,8 +74,7 @@ locals {
 
   addon_application = {
     path               = "chart"
-    repo_url           = "https://github.com/askulkarni2/ssp-eks-add-ons.git"
-    target_revision    = "feature/argo-rollout"
+    repo_url           = "https://github.com/aws-samples/ssp-eks-add-ons.git"
     add_on_application = true
   }
 
@@ -185,8 +184,8 @@ module "kubernetes-addons" {
   enable_metrics_server               = true
   enable_traefik                      = true
   enable_vpa                          = true
-  #enable_yunikorn                     = true
-  enable_argo_rollouts = true
+  enable_yunikorn                     = true
+  enable_argo_rollouts                = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }
