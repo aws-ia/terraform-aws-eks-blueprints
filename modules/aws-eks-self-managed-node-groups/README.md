@@ -199,8 +199,8 @@ No modules.
 | <a name="output_self_managed_iam_role_name"></a> [self\_managed\_iam\_role\_name](#output\_self\_managed\_iam\_role\_name) | Self managed groups IAM role names |
 | <a name="output_self_managed_node_group_iam_role_arns"></a> [self\_managed\_node\_group\_iam\_role\_arns](#output\_self\_managed\_node\_group\_iam\_role\_arns) | Self managed groups IAM role arns |
 | <a name="output_self_managed_node_group_name"></a> [self\_managed\_node\_group\_name](#output\_self\_managed\_node\_group\_name) | EKS Self Managed node group id |
-| <a name="output_self_managed_nodegroup_iam_instance_profile_arn"></a> [self\_managed\_nodegroup\_iam\_instance\_profile\_arn](#output\_self\_managed\_nodegroup\_iam\_instance\_profile\_arn) | IAM role Names for EKS Managed Node Group |
-| <a name="output_self_managed_nodegroup_iam_instance_profile_id"></a> [self\_managed\_nodegroup\_iam\_instance\_profile\_id](#output\_self\_managed\_nodegroup\_iam\_instance\_profile\_id) | IAM role Names for EKS Managed Node Group |
+| <a name="output_self_managed_nodegroup_iam_instance_profile_arn"></a> [self\_managed\_nodegroup\_iam\_instance\_profile\_arn](#output\_self\_managed\_nodegroup\_iam\_instance\_profile\_arn) | IAM Instance Profile arnd for EKS Self Managed Node Group |
+| <a name="output_self_managed_nodegroup_iam_instance_profile_id"></a> [self\_managed\_nodegroup\_iam\_instance\_profile\_id](#output\_self\_managed\_nodegroup\_iam\_instance\_profile\_id) | IAM Instance Profile ID for EKS Self Managed Node Group |
 | <a name="output_self_managed_sec_group_id"></a> [self\_managed\_sec\_group\_id](#output\_self\_managed\_sec\_group\_id) | Self managed group security group id/ids |
 
 <!--- END_TF_DOCS --->

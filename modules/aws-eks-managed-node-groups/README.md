@@ -213,13 +213,13 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_managed_nodegroup_iam_instance_profile_arn"></a> [managed\_nodegroup\_iam\_instance\_profile\_arn](#output\_managed\_nodegroup\_iam\_instance\_profile\_arn) | IAM role Names for EKS Managed Node Group |
-| <a name="output_managed_nodegroup_iam_instance_profile_id"></a> [managed\_nodegroup\_iam\_instance\_profile\_id](#output\_managed\_nodegroup\_iam\_instance\_profile\_id) | IAM role Names for EKS Managed Node Group |
+| <a name="output_managed_nodegroup_iam_instance_profile_arn"></a> [managed\_nodegroup\_iam\_instance\_profile\_arn](#output\_managed\_nodegroup\_iam\_instance\_profile\_arn) | IAM instance profile arn for EKS Managed Node Group |
+| <a name="output_managed_nodegroup_iam_instance_profile_id"></a> [managed\_nodegroup\_iam\_instance\_profile\_id](#output\_managed\_nodegroup\_iam\_instance\_profile\_id) | IAM instance profile id for EKS Managed Node Group |
 | <a name="output_managed_nodegroup_iam_role_arn"></a> [managed\_nodegroup\_iam\_role\_arn](#output\_managed\_nodegroup\_iam\_role\_arn) | IAM role ARN for EKS Managed Node Group |
-| <a name="output_managed_nodegroup_iam_role_name"></a> [managed\_nodegroup\_iam\_role\_name](#output\_managed\_nodegroup\_iam\_role\_name) | IAM role Names for EKS Managed Node Group |
-| <a name="output_managed_nodegroup_launch_template_arn"></a> [managed\_nodegroup\_launch\_template\_arn](#output\_managed\_nodegroup\_launch\_template\_arn) | launch templated id for EKS Managed Node Group |
-| <a name="output_managed_nodegroup_launch_template_id"></a> [managed\_nodegroup\_launch\_template\_id](#output\_managed\_nodegroup\_launch\_template\_id) | launch templated id for EKS Managed Node Group |
-| <a name="output_managed_nodegroup_launch_template_latest_version"></a> [managed\_nodegroup\_launch\_template\_latest\_version](#output\_managed\_nodegroup\_launch\_template\_latest\_version) | launch templated version for EKS Managed Node Group |
+| <a name="output_managed_nodegroup_iam_role_name"></a> [managed\_nodegroup\_iam\_role\_name](#output\_managed\_nodegroup\_iam\_role\_name) | IAM role name for EKS Managed Node Group |
+| <a name="output_managed_nodegroup_launch_template_arn"></a> [managed\_nodegroup\_launch\_template\_arn](#output\_managed\_nodegroup\_launch\_template\_arn) | Launch Template ARN for EKS Managed Node Group |
+| <a name="output_managed_nodegroup_launch_template_id"></a> [managed\_nodegroup\_launch\_template\_id](#output\_managed\_nodegroup\_launch\_template\_id) | Launch Template ID for EKS Managed Node Group |
+| <a name="output_managed_nodegroup_launch_template_latest_version"></a> [managed\_nodegroup\_launch\_template\_latest\_version](#output\_managed\_nodegroup\_launch\_template\_latest\_version) | Launch Template version for EKS Managed Node Group |
 | <a name="output_managed_nodegroup_sec_group_id"></a> [managed\_nodegroup\_sec\_group\_id](#output\_managed\_nodegroup\_sec\_group\_id) | Security group ID for Managed node group |
 | <a name="output_managed_nodegroups"></a> [managed\_nodegroups](#output\_managed\_nodegroups) | EKS Managed node group id |
 
