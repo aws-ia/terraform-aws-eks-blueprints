@@ -39,11 +39,11 @@ output "launch_template_arn" {
 }
 
 output "self_managed_nodegroup_iam_instance_profile_id" {
-  description = "IAM role Names for EKS Managed Node Group"
+  description = "IAM Instance Profile ID for EKS Self Managed Node Group"
   value       = aws_iam_instance_profile.self_managed_ng[*].id
 }
 
 output "self_managed_nodegroup_iam_instance_profile_arn" {
-  description = "IAM role Names for EKS Managed Node Group"
+  description = "IAM Instance Profile arnd for EKS Self Managed Node Group"
   value       = aws_iam_instance_profile.self_managed_ng[*].arn
 }
