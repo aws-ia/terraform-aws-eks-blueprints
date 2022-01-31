@@ -1,6 +1,21 @@
 variable "helm_config" {
   type        = any
-  description = "Add-on helm chart config, provide repository and version at the minimum"
+  description = <<EOT
+Add-on helm chart config, provide repository and version at the minimum.
+See https://registry.terraform.io/providers/hashicorp/helm/latest/docs.
+EOT
+}
+
+variable "set_values" {
+  type        = any
+  description = "Forced set values"
+  default     = []
+}
+
+variable "set_sensitive_values" {
+  type        = any
+  description = "Forced set_sensitive values"
+  default     = []
 }
 
 variable "manage_via_gitops" {

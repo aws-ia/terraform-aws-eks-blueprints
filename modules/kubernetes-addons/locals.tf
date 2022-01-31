@@ -1,4 +1,3 @@
-
 locals {
   # Configuration for managing add-ons via ArgoCD.
   argocd_add_on_config = {
@@ -18,8 +17,4 @@ locals {
     yunikorn                  = var.enable_yunikorn ? module.yunikorn[0].argocd_gitops_config : null
     argoRollouts              = var.enable_argo_rollouts ? module.argo_rollouts[0].argocd_gitops_config : null
   }
-
-  # Argo Rollouts
-  argo_rollouts_repository = "https://argoproj.github.io/argo-helm"
-  argo_rollouts_version    = "2.9.1"
 }

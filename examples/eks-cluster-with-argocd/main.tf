@@ -186,7 +186,7 @@ module "kubernetes-addons" {
   enable_traefik                      = true
   enable_vpa                          = true
   #enable_yunikorn                     = true
-  enable_argo_rollouts                = true
+  enable_argo_rollouts = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }
