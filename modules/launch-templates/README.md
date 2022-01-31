@@ -46,4 +46,3 @@ No modules.
 | <a name="output_launch_template_name"></a> [launch\_template\_name](#output\_launch\_template\_name) | Launch Template Names |
 
 <!--- END_TF_DOCS --->
-
