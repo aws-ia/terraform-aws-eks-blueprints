@@ -336,6 +336,11 @@ variable "karpenter_irsa_policies" {
   default     = []
 }
 
+variable "karpenter_node_iam_instance_profile" {
+  description = "Karpenter Node IAM Instance profile id"
+  default     = ""
+  type        = string
+}
 #-----------KEDA ADDON-------------
 variable "enable_keda" {
   type        = bool

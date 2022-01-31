@@ -6,16 +6,24 @@ spec:
   requirements:
     - key: "topology.kubernetes.io/zone"
       operator: In
-      values: ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+      values: ["eu-west-1b"]                                  # Update the correct region and zones
     - key: "karpenter.sh/capacity-type"
       operator: In
       values: ["spot", "on-demand"]
+    - key: "node.kubernetes.io/instance-type"                  #If not included, all instance types are considered
+      operator: In
+      values: ["m5.2xlarge", "m5.4xlarge"]
+    - key: "kubernetes.io/arch"                               #If not included, all architectures are considered
+      operator: In
+      values: ["arm64", "amd64"]
   limits:
     resources:
       cpu: 1000
   provider:
-    instanceProfile: "aws001-preprod-dev-eks-self-managed-ondemand" # self-managed IAM Instance profile Name
-#    launchTemplate: MyLaunchTemplate   # Optional to provide Launch template
+    #    instanceProfile: "aws-dev-spark-eks-self-managed-ondemand"         # Conflicts with launchTemplate
+    launchTemplate: "karpenter-aws001-preprod-dev-eks"                     # Used by Karpenter Nodes
     subnetSelector:
       Name: "*private*"
-  ttlSecondsAfterEmpty: 30
+    securityGroupSelector:
+      kubernetes.io/cluster/aws-dev-spark-eks: owned
+  ttlSecondsAfterEmpty: 120

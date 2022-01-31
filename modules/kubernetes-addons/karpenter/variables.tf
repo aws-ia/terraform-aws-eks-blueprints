@@ -25,3 +25,9 @@ variable "tags" {
   type        = map(string)
   description = "Common Tags for AWS resources"
 }
+
+variable "node_iam_instance_profile" {
+  description = "Karpenter Node IAM Instance profile id"
+  default     = ""
+  type        = string
+}
