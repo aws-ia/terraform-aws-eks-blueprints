@@ -4,8 +4,8 @@ locals {
     node_group_name = "m4_on_demand" # Max node group length is 40 characters; including the node_group_name_prefix random id it's 63
     instance_types  = ["m4.large"]
     capacity_type   = "ON_DEMAND"  # ON_DEMAND, SPOT
-    ami_type        = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
-    custom_ami_id   = ""           # Used only with Bottlerocket with custom AMI id
+    ami_type        = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
+    custom_ami_id   = ""
     subnet_ids      = []
 
     desired_size    = "3"
@@ -24,17 +24,18 @@ locals {
     k8s_taints      = []
     additional_tags = {}
 
-    create_worker_security_group = false
+    create_worker_security_group         = false
+    worker_additional_security_group_ids = [] # Will use this when create_worker_security_group = true
 
     # LAUNCH TEMPLATES
     create_launch_template  = false
     launch_template_os      = "amazonlinux2eks" # amazonlinux2eks/bottlerocket # Used to identify the launch template
     pre_userdata            = ""
     post_userdata           = ""
-    launch_template_id      = null
-    launch_template_version = "$Latest"
     kubelet_extra_args      = ""
     bootstrap_extra_args    = ""
+    launch_template_id      = null
+    launch_template_version = "$Latest"
 
     # SSH ACCESS
     remote_access           = false
@@ -69,8 +70,7 @@ locals {
     "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy",
     "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly",
     "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"],
-    local.managed_node_group["additional_iam_policies"
-  ]))
+  local.managed_node_group["additional_iam_policies"]))
 
   common_tags = merge(
     var.tags,
