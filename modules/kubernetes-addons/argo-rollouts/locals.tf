@@ -31,6 +31,17 @@ locals {
     }
   ]
 
+  irsa_config = {
+    kubernetes_namespace              = local.name
+    kubernetes_service_account        = local.service_account_name
+    create_kubernetes_namespace       = true
+    create_kubernetes_service_account = true
+    iam_role_path                     = "/"
+    tags                              = var.tags
+    eks_cluster_id                    = var.eks_cluster_id
+    irsa_iam_policies                 = []
+  }
+
   argocd_gitops_config = {
     enable             = true
     serviceAccountName = local.service_account_name
