@@ -62,8 +62,8 @@ locals {
 
   kubernetes_version = "1.21"
 
-  vpc_cidr     = "10.104.0.0/16"
-#   vpc_cidr     = "10.0.0.0/16"
+  vpc_cidr = "10.104.0.0/16"
+  #   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
@@ -130,7 +130,7 @@ module "aws_vpc" {
 
 # BBSECAWS-189
 resource "aws_ec2_transit_gateway_vpc_attachment" "tgw_routes" {
-# TODO ADD A NAME
+  # TODO ADD A NAME
   subnet_ids         = module.aws_vpc.private_subnets
   transit_gateway_id = local.transit_gateway_id
   vpc_id             = module.aws_vpc.vpc_id
@@ -300,11 +300,11 @@ module "kubernetes-addons" {
   enable_ingress_nginx                = true
   enable_karpenter                    = true
   # https://keda.sh/docs/2.5/scalers/solace/
-  enable_keda                         = true
-  enable_metrics_server               = true
-  enable_traefik                      = false
-  enable_vpa                          = false
-  enable_yunikorn                     = false
+  enable_keda           = true
+  enable_metrics_server = true
+  enable_traefik        = false
+  enable_vpa            = false
+  enable_yunikorn       = false
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }
