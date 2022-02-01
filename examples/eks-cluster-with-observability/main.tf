@@ -112,14 +112,8 @@ module "aws-eks-accelerator-for-terraform" {
     }
   }
 
-  # Enable Amazon Prometheus - Creates a new Workspace id
+  # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
   enable_amazon_prometheus = true
-}
-
-resource "aws_iam_policy" "fluentbit-opensearch-access" {
-  name        = "fluentbit-opensearch-access"
-  description = "IAM policy to allow Fluentbit access to OpenSearch"
-  policy      = data.aws_iam_policy_document.fluentbit-opensearch-access.json
 }
 
 module "kubernetes-addons" {
@@ -135,40 +129,18 @@ module "kubernetes-addons" {
   enable_aws_for_fluentbit        = true
   aws_for_fluentbit_irsa_policies = [aws_iam_policy.fluentbit-opensearch-access.arn]
   aws_for_fluentbit_helm_config = {
-    aws_for_fluentbit_cw_log_group_name = "/${module.aws-eks-accelerator-for-terraform.eks_cluster_id
-    }/worker-fluentbit-logs"
     values = [templatefile("${path.module}/helm_values/aws-for-fluentbit-values.yaml", {
-      aws_region = data.aws_region.current.name,
-      log_group_name = "/${module.aws-eks-accelerator-for-terraform.eks_cluster_id
-      }/worker-fluentbit-logs",
-      service_account_name = "aws=for-fluent-bit-sa",
-      host                 = aws_elasticsearch_domain.opensearch.endpoint,
-      match                = "*",
+      aws_region           = data.aws_region.current.name,
+      service_account_name = "aws-for-fluent-bit-sa",
+      host                 = aws_elasticsearch_domain.opensearch.endpoint
     })]
   }
 
-  #---------------------------------------
-  # PROMETHEUS and Amazon Prometheus Config
-  #---------------------------------------
-  # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
-  enable_amazon_prometheus             = true
-  amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
-
-  #---------------------------------------
-  # COMMUNITY PROMETHEUS ENABLE
-  #---------------------------------------
+  # Prometheus and Amazon Managed Prometheus integration
   enable_prometheus = true
-  # Optional Map value
-  prometheus_helm_config = {
-    name       = "prometheus"                                         # (Required) Release name.
-    repository = "https://prometheus-community.github.io/helm-charts" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "prometheus"                                         # (Required) Chart name to be installed.
-    version    = "15.0.4"                                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "prometheus"                                         # (Optional) The namespace to install the release into. Defaults to default
-    # values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
-    #   operating_system = "linux"
-    # })]
-  }
+  enable_amazon_prometheus = true
+  amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
+  
 }
 
 

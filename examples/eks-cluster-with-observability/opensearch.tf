@@ -49,25 +49,26 @@ variable "ebs_volume_size" {
   description = "volume size in gigabytes"
 }
 
-# variable "main_role_arn" {
-#   type        = string
-#   description = "arn for the principal accessing opensearch"
-# }
+resource "aws_iam_policy" "fluentbit-opensearch-access" {
+  name        = "fluentbit-opensearch-access"
+  description = "IAM policy to allow Fluentbit access to OpenSearch"
+  policy      = data.aws_iam_policy_document.fluentbit-opensearch-access.json
+}
 
-# resource "aws_elasticsearch_domain_policy" "opensearch_policy" {
-#   domain_name = aws_elasticsearch_domain.opensearch.domain_name
+resource "aws_elasticsearch_domain_policy" "opensearch_policy" {
+  domain_name = aws_elasticsearch_domain.opensearch.domain_name
 
-#   access_policies = <<POLICIES
-# {
-#     "Version": "2012-10-17",
-#     "Statement": [
-#         {
-#             "Action": "es:*",
-#             "Principal": "*",
-#             "Effect": "Allow",
-#             "Resource": "${aws_elasticsearch_domain.opensearch.arn}/*"
-#         }
-#     ]
-# }
-# POLICIES
-# }
+  access_policies = <<POLICIES
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": "es:ESHttp*",
+            "Principal": "*",
+            "Effect": "Allow",
+            "Resource": "${aws_elasticsearch_domain.opensearch.arn}/*"
+        }
+    ]
+}
+POLICIES
+}
