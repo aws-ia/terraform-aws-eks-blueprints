@@ -1,5 +1,17 @@
 # Amazon EKS SSP for Terraform
 
+## Bitbuy manaul run
+
+BBSECAWS-203
+```bash
+cd live/nonpord/ca-central-1
+tf init
+tf plan
+tf apply
+```
+
+## orignal doco
+
 ![GitHub](https://img.shields.io/github/license/aws-samples/aws-eks-accelerator-for-terraform)
 [![e2e-test](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/e2e-test.yml)
 [![terrascan](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/terrascan.yml/badge.svg)](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/terrascan.yml)
