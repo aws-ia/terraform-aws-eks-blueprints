@@ -206,3 +206,11 @@ module "yunikorn" {
   helm_config       = var.yunikorn_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
 }
+
+module "argo_rollouts" {
+  count             = var.enable_argo_rollouts ? 1 : 0
+  source            = "./argo-rollouts"
+  eks_cluster_id    = var.eks_cluster_id
+  helm_config       = var.argo_rollouts_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+}

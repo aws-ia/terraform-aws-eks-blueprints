@@ -144,7 +144,7 @@ module "aws-eks-accelerator-for-terraform" {
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["m4.large"]
+      instance_types  = ["m5.large"]
       subnet_ids      = module.aws_vpc.private_subnets
 
       desired_size = "5"
@@ -185,6 +185,7 @@ module "kubernetes-addons" {
   enable_traefik                      = true
   enable_vpa                          = true
   enable_yunikorn                     = true
+  enable_argo_rollouts                = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }
