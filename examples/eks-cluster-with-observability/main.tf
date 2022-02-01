@@ -137,10 +137,10 @@ module "kubernetes-addons" {
   }
 
   # Prometheus and Amazon Managed Prometheus integration
-  enable_prometheus = true
-  enable_amazon_prometheus = true
+  enable_prometheus                    = true
+  enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
-  
+
 }
 
 
