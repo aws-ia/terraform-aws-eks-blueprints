@@ -1,6 +1,6 @@
-# Title Here
+# EKS Cluster with Observability Tools
 
-Sets up a new Kubernetes Cluster with Amazon Managed Prometheus, Amazon Managed Grafana, and Opensearch. This example sends logs with FluentBit to OpenSearch.
+This example deploy a new Kubernetes Cluster with Amazon Managed Prometheus, Amazon Managed Grafana, FluentBit, and Opensearch. It also includes instructions for deploying a sample workload with ArgoCD to generate logs and metrics.
 
 ---
 **NOTE**
