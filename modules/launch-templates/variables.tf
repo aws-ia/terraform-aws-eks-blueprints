@@ -5,8 +5,8 @@ variable "launch_template_config" {
     launch_template_id = string
     block_device_mappings = list(object({
       device_name           = string
-      disk_type             = string
-      disk_size             = string
+      volume_type           = string
+      volume_size           = string
       delete_on_termination = optional(bool)
       encrypted             = optional(bool)
       kms_key_id            = optional(string)

@@ -38,8 +38,10 @@ resource "aws_launch_template" "this" {
         delete_on_termination = try(block_device_mappings.value.delete_on_termination, true)
         encrypted             = try(block_device_mappings.value.encrypted, true)
         kms_key_id            = try(block_device_mappings.value.kms_key_id, null)
-        volume_size           = try(block_device_mappings.value.disk_size, null)
-        volume_type           = try(block_device_mappings.value.disk_type, null)
+        volume_size           = try(block_device_mappings.value.volume_size, null)
+        volume_type           = try(block_device_mappings.value.volume_type, null)
+        iops                  = try(block_device_mappings.value.iops, null)
+        throughput            = try(block_device_mappings.value.throughput, null)
       }
     }
   }
