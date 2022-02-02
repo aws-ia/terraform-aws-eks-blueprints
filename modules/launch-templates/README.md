@@ -6,18 +6,18 @@ This example shows how to consume the `launch-templates` module. See this full [
 
 ```hcl
 module "launch_templates" {
-  source                           = "aws-samples/aws-eks-accelerator-for-terraform//modules/launch-templates"
-  tags                             = { Name = "terraform-ssp-eks"}
-  eks_cluster_id                   = "<Enter EKS CLuster ID>"
+  source                         = "aws-samples/aws-eks-accelerator-for-terraform//modules/launch-templates"
+  tags                           = { Name = "terraform-ssp-eks"}
+  eks_cluster_id                 = "<Enter EKS CLuster ID>"
 
   launch_template_config = {
     io1 = {
-      ami = "ami-0adc757be1e4e11a1"
-      launch_template_prefix = "io1"
-      launch_template_os = "amazonlinux2eks"
-      vpc_security_group_ids         = "<comma separated security groups ids>"
-      iam_instance_profile = "IAM Instance Profile"
-      block_device_mappings = [
+      ami                         = "ami-0adc757be1e4e11a1"
+      launch_template_prefix      = "io1"
+      launch_template_os          = "amazonlinux2eks"
+      vpc_security_group_ids      = "<comma separated security groups ids>"
+      iam_instance_profile        = "IAM Instance Profile"
+      block_device_mappings       = [
         {
           device_name = "/dev/xvda"
           volume_type = "io1"
@@ -27,12 +27,12 @@ module "launch_templates" {
       ]
     },
     io2 = {
-      ami = "ami-0adc757be1e4e11a1"
-      launch_template_prefix = "io2"
-      launch_template_os = "amazonlinux2eks"
-      vpc_security_group_ids         = "<comma separated security groups ids>"
-      iam_instance_profile = "IAM Instance Profile"
-      block_device_mappings = [
+      ami                          = "ami-0adc757be1e4e11a1"
+      launch_template_prefix       = "io2"
+      launch_template_os           = "amazonlinux2eks"
+      vpc_security_group_ids       = "<comma separated security groups ids>"
+      iam_instance_profile         = "IAM Instance Profile"
+      block_device_mappings        = [
         {
           device_name = "/dev/xvda"
           volume_type = "io2"
@@ -42,12 +42,12 @@ module "launch_templates" {
       ]
     },
     gp3 = {
-      ami = "ami-0adc757be1e4e11a1"
-      launch_template_prefix = "gp3"
-      launch_template_os = "amazonlinux2eks"
-      vpc_security_group_ids         = "<comma separated security groups ids>"
-      iam_instance_profile = "IAM Instance Profile"
-      block_device_mappings = [
+      ami                          = "ami-0adc757be1e4e11a1"
+      launch_template_prefix       = "gp3"
+      launch_template_os           = "amazonlinux2eks"
+      vpc_security_group_ids       = "<comma separated security groups ids>"
+      iam_instance_profile         = "IAM Instance Profile"
+      block_device_mappings        = [
         {
           device_name = "/dev/xvda"
           volume_type = "gp3"
@@ -59,11 +59,12 @@ module "launch_templates" {
     },
     gp2 = {
       ami = "ami-0adc757be1e4e11a1"
-      launch_template_prefix = "karpenter"
-      launch_template_os = "amazonlinux2eks"
-      vpc_security_group_ids         = "<comma separated security groups ids>"
-      iam_instance_profile = "IAM Instance Profile"]
-      block_device_mappings = [
+      ami                          = "ami-0adc757be1e4e11a1"
+      launch_template_prefix       = "gp2"
+      launch_template_os           = "amazonlinux2eks"
+      vpc_security_group_ids       = "<comma separated security groups ids>"
+      iam_instance_profile         = "IAM Instance Profile"
+      block_device_mappings        = [
         {
           device_name = "/dev/xvda"
           volume_type = "gp2"
@@ -72,12 +73,12 @@ module "launch_templates" {
       ]
     },
     bottlerocket = {
-      ami = "ami-03909df9bfcc1e215"
-      launch_template_os = "bottlerocket"
-      launch_template_prefix = "bottle"
-      vpc_security_group_ids         = "<comma separated security groups ids>"
-      iam_instance_profile = "IAM Instance Profile"
-      block_device_mappings = [
+      ami                           = "ami-03909df9bfcc1e215"
+      launch_template_os            = "bottlerocket"
+      launch_template_prefix        = "bottle"
+      vpc_security_group_ids        = "<comma separated security groups ids>"
+      iam_instance_profile          = "IAM Instance Profile"
+      block_device_mappings         = [
         {
           device_name = "/dev/xvda"
           volume_type = "gp2"

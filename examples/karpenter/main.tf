@@ -126,6 +126,7 @@ module "aws-eks-accelerator-for-terraform" {
   }
 }
 # Creates Launch templates for Karpenter
+# Launch template outputs will be used in Karpenter Provisioners yaml files
 module "karpenter-launch-templates" {
   source         = "../../modules/launch-templates"
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
