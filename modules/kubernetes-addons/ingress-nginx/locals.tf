@@ -1,10 +1,10 @@
 
 locals {
-  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
-
+  name                 = "ingress-nginx"
+  service_account_name = "${local.name}-sa"
   default_helm_config = {
-    name                       = "ingress-nginx"
-    chart                      = "ingress-nginx"
+    name                       = local.name
+    chart                      = local.name
     repository                 = "https://kubernetes.github.io/ingress-nginx"
     version                    = "4.0.6"
     namespace                  = "kube-system"
@@ -40,12 +40,37 @@ locals {
     postrender                 = ""
   }
 
+  default_helm_values = [templatefile("${path.module}/values.yaml", { sa-name = local.service_account_name })]
+
   helm_config = merge(
     local.default_helm_config,
     var.helm_config
   )
 
+  set_values = [
+    {
+      name  = "serviceAccount.name"
+      value = local.service_account_name
+    },
+    {
+      name  = "serviceAccount.create"
+      value = false
+    }
+  ]
+
+  irsa_config = {
+    kubernetes_namespace              = "kube-system"
+    kubernetes_service_account        = local.service_account_name
+    create_kubernetes_namespace       = false
+    create_kubernetes_service_account = true
+    iam_role_path                     = "/"
+    eks_cluster_id                    = var.eks_cluster_id
+    irsa_iam_policies                 = [] # todo: Create policies, add names here
+    tags                              = var.tags
+  }
+
   argocd_gitops_config = {
-    enable = true
+    enable             = true
+    serviceAccountName = local.service_account_name
   }
 }

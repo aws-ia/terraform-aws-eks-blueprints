@@ -27,3 +27,14 @@ variable "manage_via_gitops" {
   default     = false
   description = "Determines if the add-on should be managed via GitOps."
 }
+
+variable "eks_cluster_id" {
+  type        = string
+  description = "EKS cluster Id"
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "Common Tags for AWS resources"
+  default     = null
+}
