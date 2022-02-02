@@ -96,11 +96,6 @@ curl -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" \
 '
 ```
 
-#### Deploy the Example Workload to Generate Logs and Metrics
-
-- Install ArgoCD https://argo-cd.readthedocs.io/en/stable/cli_installation/
-- Navigate to this [quickstart](https://aws-quickstart.github.io/ssp-amazon-eks/getting-started/#deploy-workloads-with-argocd) Follow the instructions under __Deploy workloads with ArgoCD__ to deploy a sample workload.
-
 #### Set up an Index Pattern in OpenSearch to Explore Log Data
 
 - Log into console, navigate to OpenSearch console, click on the "opensearch" domain and click on the link under __OpenSearch Dashboards URL__ to access the Kibana dashboard.
