@@ -3,7 +3,7 @@ variable "grafana_endpoint" {
 }
 
 variable "grafana_api_key" {
-  type = string
+  type        = string
   sensitive   = true
   description = "Api key for authorizing the Grafana provider to make changes to Amazon Managed Grafana"
 }

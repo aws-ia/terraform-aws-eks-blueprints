@@ -37,6 +37,13 @@ locals {
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.1.4"
+
+  # Sample workload managed by ArgoCD. For generating metrics and logs
+  workload_application = {
+    path               = "envs/dev"
+    repo_url           = "https://github.com/aws-samples/ssp-eks-workloads.git"
+    add_on_application = false
+  }
 }
 
 module "aws_vpc" {
@@ -103,6 +110,9 @@ module "kubernetes-addons" {
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
   enable_argocd             = true
+  argocd_applications = {
+    workloads = local.workload_application
+  }
 
   # Fluentbit
   enable_aws_for_fluentbit        = true
@@ -177,6 +187,6 @@ resource "aws_iam_policy" "fluentbit-opensearch-access" {
 }
 
 resource "aws_elasticsearch_domain_policy" "opensearch_access_policy" {
-  domain_name = aws_elasticsearch_domain.opensearch.domain_name
+  domain_name     = aws_elasticsearch_domain.opensearch.domain_name
   access_policies = data.aws_iam_policy_document.opensearch_access_policy.json
 }

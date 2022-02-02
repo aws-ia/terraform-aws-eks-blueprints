@@ -31,14 +31,14 @@ For the sake of simplicity in this example, we store sensitive information and c
 ### Deployment Steps
 
 - Clone this repository: `git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git`
-- Initialize a working directory:
+- Initialize a working directory
 ```
 cd examples/observability/eks-cluster-with-observability
 terraform init
 ```
 - Fill-in the values for the variables in `dev.tfvars`
   - The password for OpenSearch must be a minimum of eight characters with at least one uppercase, one lowercase, one digit, and one special character
-- Verify the resources created by this execution:
+- Verify the resources created by this execution
 ```
 export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
 terraform validate
@@ -76,10 +76,9 @@ curl -sS -X GET $AMP_ENDPOINT/api/v1/rules
   - Navigate to http://localhost:8080 and confirm that the dashboard webpage loads.
   - Press `CTRL+C` to stop port forwarding.
 
-- Check that FluentBit is healthy
-```
-curl -X GET $FLUENTBIT_ENDPOINT/api/v1/health
-```
+- To check that FluentBit is working:
+  - FluentBit is provisioned properly if you see the option to add an index pattern while following the steps for the section below named __Set up an Index Pattern in OpenSearch to Explore Log Data__
+
 #### Map the FluentBit Role as a Backend Role in OpenSearch
 
 OpenSearch roles are the core method for controlling access to your OpenSearch cluster. Role mapping is part of OpenSearch's fine-grained access control security layer. Backend roles are a way to map an external identity to an OpenSearch role. In this case we map the FluentBit IAM role as a backend role to OpenSearch's *all_access* role so FluentBit can send logs to OpenSearch.
