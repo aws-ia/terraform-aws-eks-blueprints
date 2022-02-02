@@ -52,21 +52,18 @@ terraform plan -tf-vars=dev.tfvars
 #### Verify that the Resources Deployed Sucessfully
 - Set up environment variables for future steps
 ```
-export OS_ENDPOINT=$(terraform output opensearch_domain_endpoint)
-export OS_DOMAIN_USER=$(terraform output opensearch_user)
-export OS_DOMAIN_PASSWORD=$(terraform output opensearch_pw)
-export AMP_ENDPOINT=$(terraform output amazon_prometheus_workspace_endpoint)
+export OS_ENDPOINT=$(terraform output -raw opensearch_domain_endpoint)
+export OS_DOMAIN_USER=$(terraform output -raw opensearch_user)
+export OS_DOMAIN_PASSWORD=$(terraform output -raw opensearch_pw)
 ```
 
 - Check that the status of OpenSearch is green
 ```
-curl -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" -X GET https://${OS_ENDPOINT}/_cluster/health
+curl -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" -X GET "https://${OS_ENDPOINT}/_cluster/health"  
 ```
 
 - Check that Amazon Managed Prometheus is healthy
-```
-curl -sS -X GET $AMP_ENDPOINT/api/v1/rules
-```
+  - Check the status of Amazon Managed Prometheus workspace through the AWS console.
 
 - Check that Prometheus is healthy
   - The following command gets the pod running the Prometheus server and sets up port fowarding to http://localhost:8080
@@ -83,18 +80,12 @@ curl -sS -X GET $AMP_ENDPOINT/api/v1/rules
 
 OpenSearch roles are the core method for controlling access to your OpenSearch cluster. Role mapping is part of OpenSearch's fine-grained access control security layer. Backend roles are a way to map an external identity to an OpenSearch role. In this case we map the FluentBit IAM role as a backend role to OpenSearch's *all_access* role so FluentBit can send logs to OpenSearch.
 
-- Map the FluentBit Role as a Backend Role to OpenSearch:
-  - Replace "\<Your AWS Account ID\>", "\<Your Username\>", and "\<Your Password\>" with your own values.
-
 ```
-export FLUENTBIT_ROLE="arn:aws:iam::<Your AWS Account ID>:role/aws001-preprod-observability-eks-aws-for-fluent-bit-sa-irsa"
-export ES_ENDPOINT=$(aws opensearch describe-domain --domain-name opensearch --output text --query "DomainStatus.Endpoint")
-export ES_DOMAIN_USER="<Your Username>"
-export ES_DOMAIN_PASSWORD='<Your Password>'
+export FLUENTBIT_ROLE="arn:aws:iam::$(aws sts get-caller-identity | jq -r '.Account'):role/aws001-preprod-observability-eks-aws-for-fluent-bit-sa-irsa"
 
-curl -sS -u "${ES_DOMAIN_USER}:${ES_DOMAIN_PASSWORD}" \
+curl -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" \
     -X PATCH \
-    https://${ES_ENDPOINT}/_opendistro/_security/api/rolesmapping/all_access?pretty \
+    https://${OS_ENDPOINT}/_opendistro/_security/api/rolesmapping/all_access?pretty \
     -H 'Content-Type: application/json' \
     -d'
 [
@@ -127,6 +118,10 @@ curl -sS -u "${ES_DOMAIN_USER}:${ES_DOMAIN_PASSWORD}" \
 
  - Run `terraform destroy -var-file=dev.tfvars` to remove all resources except for your Amazon Managed Grafana workspace.
  - Delete your Amazon Managed Grafana workspace through the AWS console.
+
+## Troubleshooting
+
+When running `terraform apply`, the process will sometimes time-out. If that happens, run `terraform apply` again and the operation will continue where it left off.
 
 ## Requirements
 

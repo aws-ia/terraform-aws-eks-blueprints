@@ -25,7 +25,7 @@ data "aws_iam_policy_document" "opensearch_access_policy" {
     resources = ["${aws_elasticsearch_domain.opensearch.arn}/*"]
     actions   = ["es:ESHttp*"]
     principals {
-      type = "*"
+      type        = "*"
       identifiers = ["*"]
     }
   }
