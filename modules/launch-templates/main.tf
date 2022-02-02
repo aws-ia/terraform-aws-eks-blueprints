@@ -1,7 +1,7 @@
 resource "aws_launch_template" "this" {
   for_each = local.launch_template_config
 
-  name        = format("%s-%s", each.value.launch_template_id, var.eks_cluster_id)
+  name        = format("%s-%s", each.value.launch_template_prefix, var.eks_cluster_id)
   description = "Launch Template for Karpenter Nodes"
 
   image_id               = each.value.ami
@@ -9,21 +9,17 @@ resource "aws_launch_template" "this" {
 
   user_data = base64encode(templatefile("${path.module}/templates/userdata-${each.value.launch_template_os}.tpl",
     {
-      pre_userdata         = try(each.value.pre_userdata, null)
-      post_userdata        = try(each.value.post_userdata, null)
-      bootstrap_extra_args = try(each.value.bootstrap_extra_args, null)
-      kubelet_extra_args   = try(each.value.kubelet_extra_args, null)
+      pre_userdata         = each.value.pre_userdata
+      post_userdata        = each.value.post_userdata
+      bootstrap_extra_args = each.value.bootstrap_extra_args
+      kubelet_extra_args   = each.value.kubelet_extra_args
       eks_cluster_id       = var.eks_cluster_id
       cluster_ca_base64    = data.aws_eks_cluster.eks.certificate_authority[0].data
       cluster_endpoint     = data.aws_eks_cluster.eks.endpoint
   }))
 
-  vpc_security_group_ids = [
-    var.worker_security_group_id
-  ]
-
   iam_instance_profile {
-    name = var.iam_instance_profile
+    name = each.value.iam_instance_profile
   }
 
   ebs_optimized = true
@@ -40,16 +36,26 @@ resource "aws_launch_template" "this" {
         kms_key_id            = try(block_device_mappings.value.kms_key_id, null)
         volume_size           = try(block_device_mappings.value.volume_size, null)
         volume_type           = try(block_device_mappings.value.volume_type, null)
-        iops                  = try(block_device_mappings.value.iops, null)
-        throughput            = try(block_device_mappings.value.throughput, null)
+        iops                  = block_device_mappings.value.volume_type == "gp3" || block_device_mappings.value.volume_type == "io1" || block_device_mappings.value.volume_type == "io2" ? block_device_mappings.value.iops : null
+        throughput            = block_device_mappings.value.volume_type == "gp3" ? block_device_mappings.value.throughput : null
       }
     }
   }
 
+  vpc_security_group_ids = each.value.vpc_security_group_ids != "" ? [each.value.vpc_security_group_ids] : null
+
+  dynamic "network_interfaces" {
+    for_each = each.value.network_interfaces
+    content {
+      associate_public_ip_address = try(network_interfaces.value.public_ip, false)
+      security_groups             = each.value.network_interfaces.security_groups != "" ? [network_interfaces.value.security_groups] : null
+    }
+  }
+
   metadata_options {
-    http_endpoint               = var.http_endpoint
-    http_tokens                 = var.http_tokens
-    http_put_response_hop_limit = var.http_put_response_hop_limit
+    http_endpoint               = each.value.http_endpoint
+    http_tokens                 = each.value.http_tokens
+    http_put_response_hop_limit = each.value.http_put_response_hop_limit
   }
 
   lifecycle {
