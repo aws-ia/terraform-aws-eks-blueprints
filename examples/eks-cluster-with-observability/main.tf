@@ -25,25 +25,6 @@ terraform {
   }
 }
 
-provider "aws" {}
-
-provider "kubernetes" {
-  experiments {
-    manifest_resource = true
-  }
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
-}
-
-provider "helm" {
-  kubernetes {
-    host                   = data.aws_eks_cluster.cluster.endpoint
-    token                  = data.aws_eks_cluster_auth.cluster.token
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  }
-}
-
 locals {
   tenant      = "aws001"        # AWS account name or unique id for tenant
   environment = "preprod"       # Environment area eg., preprod or prod
@@ -83,7 +64,6 @@ module "aws_vpc" {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb"             = "1"
   }
-
 }
 
 module "aws-eks-accelerator-for-terraform" {
@@ -98,11 +78,10 @@ module "aws-eks-accelerator-for-terraform" {
   vpc_id             = module.aws_vpc.vpc_id
   private_subnet_ids = module.aws_vpc.private_subnets
 
-  # EKS CONTROL PLANE VARIABLES
+  # EKS Control Plane Variables
   create_eks         = true
   kubernetes_version = local.kubernetes_version
 
-  # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
@@ -112,7 +91,7 @@ module "aws-eks-accelerator-for-terraform" {
     }
   }
 
-  # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
+  # Provisions a new Amazon Managed Service for Prometheus instance
   enable_amazon_prometheus = true
 }
 
@@ -130,9 +109,8 @@ module "kubernetes-addons" {
   aws_for_fluentbit_irsa_policies = [aws_iam_policy.fluentbit-opensearch-access.arn]
   aws_for_fluentbit_helm_config = {
     values = [templatefile("${path.module}/helm_values/aws-for-fluentbit-values.yaml", {
-      aws_region           = data.aws_region.current.name,
-      service_account_name = "aws-for-fluent-bit-sa",
-      host                 = aws_elasticsearch_domain.opensearch.endpoint
+      aws_region = data.aws_region.current.name,
+      host       = aws_elasticsearch_domain.opensearch.endpoint
     })]
   }
 
@@ -140,7 +118,65 @@ module "kubernetes-addons" {
   enable_prometheus                    = true
   enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
-
 }
 
+resource "grafana_data_source" "prometheus" {
+  type       = "prometheus"
+  name       = "amp"
+  is_default = true
+  url        = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
+  json_data {
+    http_method     = "POST"
+    sigv4_auth      = true
+    sigv4_auth_type = "workspace-iam-role"
+    sigv4_region    = data.aws_region.current.name
+  }
+}
 
+resource "aws_elasticsearch_domain" "opensearch" {
+  domain_name           = "opensearch"
+  elasticsearch_version = "OpenSearch_1.1"
+
+  cluster_config {
+    instance_type          = "m4.large.elasticsearch"
+    instance_count         = 3
+    zone_awareness_enabled = true
+    zone_awareness_config {
+      availability_zone_count = 3
+    }
+  }
+  node_to_node_encryption {
+    enabled = true
+  }
+  domain_endpoint_options {
+    enforce_https       = true
+    tls_security_policy = "Policy-Min-TLS-1-2-2019-07"
+  }
+  encrypt_at_rest {
+    enabled = true
+  }
+  ebs_options {
+    ebs_enabled = true
+    volume_size = var.ebs_volume_size
+  }
+
+  advanced_security_options {
+    enabled                        = true
+    internal_user_database_enabled = true
+    master_user_options {
+      master_user_name     = var.opensearch_dashboard_user
+      master_user_password = var.opensearch_dashboard_pw
+    }
+  }
+}
+
+resource "aws_iam_policy" "fluentbit-opensearch-access" {
+  name        = "fluentbit-opensearch-access"
+  description = "IAM policy to allow Fluentbit access to OpenSearch"
+  policy      = data.aws_iam_policy_document.fluentbit-opensearch-access.json
+}
+
+resource "aws_elasticsearch_domain_policy" "opensearch_access_policy" {
+  domain_name = aws_elasticsearch_domain.opensearch.domain_name
+  access_policies = data.aws_iam_policy_document.opensearch_access_policy.json
+}

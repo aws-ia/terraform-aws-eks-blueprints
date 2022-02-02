@@ -15,6 +15,15 @@ data "aws_iam_policy_document" "fluentbit-opensearch-access" {
     sid       = "OpenSearchAccess"
     effect    = "Allow"
     resources = [aws_elasticsearch_domain.opensearch.arn]
-    actions   = ["es:*"]
+    actions   = ["es:ESHttp*"]
+  }
+}
+
+data "aws_iam_policy_document" "opensearch_access_policy" {
+  statement {
+    effect    = "Allow"
+    resources = ["${aws_elasticsearch_domain.opensearch.arn}/*"]
+    actions   = ["es:ESHttp*"]
+    principal = "*"
   }
 }

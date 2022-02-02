@@ -1,11 +1,13 @@
 # EKS Cluster with Observability Tools
 
-This example deploy a new Kubernetes Cluster with Amazon Managed Prometheus, Amazon Managed Grafana, FluentBit, and Opensearch. It also includes instructions for deploying a sample workload with ArgoCD to generate logs and metrics.
+This example demonstrates how to use the AWS EKS Accelerator for Terraform to deploy a new Amazon EKS Cluster with Amazon Managed Prometheus (AMP), Prometheus, FluentBit, and OpenSearch with Amazon Managed Grafana integration. It also provisions a sample workload with ArgoCD to generate logs and metrics.
+
+Prometheus collects and sends application metrics to AMP, and Amazon Managed Grafana ingests data from AMP. FluentBit sends application logs to Amazon OpenSearch Service.
 
 ---
 **NOTE**
 
-For the sake of simplicity in this example, we store sensitive information and credentials in `dev.tfvars`. This should not be done in a production environment. Instead, store the information in AWS Secrets Manager.
+For the sake of simplicity in this example, we store sensitive information and credentials in `dev.tfvars`. This should not be done in a production environment. Instead, use an external secret store such as AWS Secrets Manager and use the [aws_secretsmanager_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret) data source to retrieve them.
 
 ---
 
@@ -14,11 +16,11 @@ For the sake of simplicity in this example, we store sensitive information and c
 ### Prerequisites
 
 - An existing Amazon Managed Grafana (AMG) Workspace.
-  - As of this writing (January 25, 2022), the AWS Terraform Provider does not support Amazon Managed Grafana, so it must be manually created beforehand. Instructions [here](https://docs.aws.amazon.com/grafana/latest/userguide/getting-started-with-AMG.html)
+  - As of this writing (January 25, 2022), the AWS Terraform Provider does not support Amazon Managed Grafana, so it must be manually created beforehand. Instructions [here](https://docs.aws.amazon.com/grafana/latest/userguide/getting-started-with-AMG.html).
 
 #### Generate a Grafana API Key
 - Give the SSO user you set up in when creating the AMG Workspace admin access. 
-  - In the AWS Console, navigate to Amazon Grafana. In the left navigation bar, click __All workspaces__, then click __eks-ssp-observability__
+  - In the AWS Console, navigate to Amazon Grafana. In the left navigation bar, click __All workspaces__, then click on the workspace name you are using for this example.
   - Under __Authentication__ within __AWS Single Sign-On (SSO)__, click __Configure users and user groups__
   - Check the box next to the SSO user you created and click __Make admin__
 - Navigate back to the Grafana Dashboard. If you don't see the gear icon in the left navigation bar, log out and log back in.
@@ -45,7 +47,42 @@ terraform plan -tf-vars=dev.tfvars
 - Deploy resources with `terraform apply -tf-vars=dev.tfvars`
 - Add the cluster to your kubeconfig: `aws eks --region $AWS_REGION update-kubeconfig --name aws001-preprod-observability-eks`
 
-#### Map the FluentBit Role as a Backend Role to OpenSearch
+`terraform apply` will provision a new EKS cluster with FluentBit, Prometheus, and a sample workload. It will also provision Amazon Managed Prometheus to ingest metrics from Prometheus and an Amazon OpenSearch service domain for ingesting logs from Fluentbit.
+
+#### Verify that the Resources Deployed Sucessfully
+- Set up environment variables for future steps
+```
+export OS_ENDPOINT=$(terraform output opensearch_domain_endpoint)
+export OS_DOMAIN_USER=$(terraform output opensearch_user)
+export OS_DOMAIN_PASSWORD=$(terraform output opensearch_pw)
+export AMP_ENDPOINT=$(terraform output amazon_prometheus_workspace_endpoint)
+```
+
+- Check that the status of OpenSearch is green
+```
+curl -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" -X GET https://${OS_ENDPOINT}/_cluster/health
+```
+
+- Check that Amazon Managed Prometheus is healthy
+```
+curl -sS -X GET $AMP_ENDPOINT/api/v1/rules
+```
+
+- Check that Prometheus is healthy
+  - The following command gets the pod running the Prometheus server and sets up port fowarding to http://localhost:8080
+  ``` 
+  kubectl port-forward $(kubectl get pods --namespace=prometheus --selector='component=server' --output=name) 8080:9090 -n prometheus
+  ```
+  - Navigate to http://localhost:8080 and confirm that the dashboard webpage loads.
+  - Press `CTRL+C` to stop port forwarding.
+
+- Check that FluentBit is healthy
+```
+curl -X GET $FLUENTBIT_ENDPOINT/api/v1/health
+```
+#### Map the FluentBit Role as a Backend Role in OpenSearch
+
+OpenSearch roles are the core method for controlling access to your OpenSearch cluster. Role mapping is part of OpenSearch's fine-grained access control security layer. Backend roles are a way to map an external identity to an OpenSearch role. In this case we map the FluentBit IAM role as a backend role to OpenSearch's *all_access* role so FluentBit can send logs to OpenSearch.
 
 - Map the FluentBit Role as a Backend Role to OpenSearch:
   - Replace "\<Your AWS Account ID\>", "\<Your Username\>", and "\<Your Password\>" with your own values.
