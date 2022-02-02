@@ -14,12 +14,11 @@ For the sake of simplicity in this example, we store sensitive information and c
 ## How to Deploy
 
 ### Prerequisites
-
 - An existing Amazon Managed Grafana (AMG) Workspace.
-  - As of this writing (January 25, 2022), the AWS Terraform Provider does not support Amazon Managed Grafana, so it must be manually created beforehand. Instructions [here](https://docs.aws.amazon.com/grafana/latest/userguide/getting-started-with-AMG.html).
+  - As of this writing (February 3, 2022), the AWS Terraform Provider does not support Amazon Managed Grafana, so it must be manually created beforehand. Instructions [here](https://docs.aws.amazon.com/grafana/latest/userguide/getting-started-with-AMG.html).
 
 #### Generate a Grafana API Key
-- Give the SSO user you set up in when creating the AMG Workspace admin access. 
+- Give admin access to the SSO user you set up when creating the AMG Workspace:
   - In the AWS Console, navigate to Amazon Grafana. In the left navigation bar, click __All workspaces__, then click on the workspace name you are using for this example.
   - Under __Authentication__ within __AWS Single Sign-On (SSO)__, click __Configure users and user groups__
   - Check the box next to the SSO user you created and click __Make admin__
@@ -29,7 +28,6 @@ For the sake of simplicity in this example, we store sensitive information and c
 - Copy your API key into `dev.tfvars` under `grafana_api_key` 
 
 ### Deployment Steps
-
 - Clone this repository: `git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git`
 - Initialize a working directory
 ```
@@ -66,7 +64,7 @@ curl -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" -X GET "https://${OS_ENDPO
   - Check the status of Amazon Managed Prometheus workspace through the AWS console.
 
 - Check that Prometheus is healthy
-  - The following command gets the pod running the Prometheus server and sets up port fowarding to http://localhost:8080
+  - The following command gets the pod that is running the Prometheus server and sets up port fowarding to http://localhost:8080
   ``` 
   kubectl port-forward $(kubectl get pods --namespace=prometheus --selector='component=server' --output=name) 8080:9090 -n prometheus
   ```
@@ -77,7 +75,6 @@ curl -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" -X GET "https://${OS_ENDPO
   - FluentBit is provisioned properly if you see the option to add an index pattern while following the steps for the section below named __Set up an Index Pattern in OpenSearch to Explore Log Data__
 
 #### Map the FluentBit Role as a Backend Role in OpenSearch
-
 OpenSearch roles are the core method for controlling access to your OpenSearch cluster. Role mapping is part of OpenSearch's fine-grained access control security layer. Backend roles are a way to map an external identity to an OpenSearch role. In this case we map the FluentBit IAM role as a backend role to OpenSearch's *all_access* role so FluentBit can send logs to OpenSearch.
 
 ```
@@ -97,9 +94,8 @@ curl -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" \
 ```
 
 #### Set up an Index Pattern in OpenSearch to Explore Log Data
-
-- Log into console, navigate to OpenSearch console, click on the "opensearch" domain and click on the link under __OpenSearch Dashboards URL__ to access the Kibana dashboard.
-- Log into the OpenSearch dashboard with the credentials set in `dev.tfvars`
+- Log into the AWS console, navigate to Amazon OpenSearch Service, click on the "opensearch" domain and click on the link under __OpenSearch Dashboards URL__ to access the Kibana dashboard.
+- Log into the OpenSearch dashboard with the credentials you set in `dev.tfvars`
 - From the OpenSearch Dashboards Welcome screen select __Explore on my own__
 - On _Select your tenant_ screen, select Private and click __Confirm__
 - On the next screen click on the _OpenSearch Dashboards_ tile
@@ -110,13 +106,11 @@ curl -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" \
 - Select __Discover__ from the left panel and start exploring the logs
 
 ## Cleanup
-
  - Run `terraform destroy -var-file=dev.tfvars` to remove all resources except for your Amazon Managed Grafana workspace.
  - Delete your Amazon Managed Grafana workspace through the AWS console.
 
 ## Troubleshooting
-
-When running `terraform apply`, the process will sometimes time-out. If that happens, run `terraform apply` again and the operation will continue where it left off.
+When running `terraform apply` or `terraform destroy`, the process will sometimes time-out. If that happens, run the command again and the operation will continue where it left off.
 
 ## Requirements
 
