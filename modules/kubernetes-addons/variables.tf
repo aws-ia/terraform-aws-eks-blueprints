@@ -89,6 +89,25 @@ variable "cluster_autoscaler_helm_config" {
   description = "Cluster Autoscaler Helm Chart config"
 }
 
+#-----------Crossplane ADDON-------------
+variable "enable_crossplane" {
+  type        = bool
+  default     = false
+  description = "Enable Crossplane add-on"
+}
+
+variable "crossplane_helm_config" {
+  type        = any
+  default     = null
+  description = "Crossplane Helm Chart config"
+}
+
+variable "crossplane_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for crossplane IRSA"
+}
+
 #-----------Amazon Managed Service for Prometheus-------------
 variable "enable_amazon_prometheus" {
   type        = bool

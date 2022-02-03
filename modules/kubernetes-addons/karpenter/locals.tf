@@ -1,6 +1,6 @@
 locals {
   namespace            = "karpenter"
-  service_account_name = "karpenter-sa"
+  service_account_name = "karpenter"
   eks_cluster_endpoint = data.aws_eks_cluster.eks.endpoint
 
   karpenter_set_values = [{
