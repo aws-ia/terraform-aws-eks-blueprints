@@ -2,7 +2,7 @@ resource "aws_launch_template" "this" {
   for_each = local.launch_template_config
 
   name        = format("%s-%s", each.value.launch_template_prefix, var.eks_cluster_id)
-  description = "Launch Template for Karpenter Nodes"
+  description = "Launch Template for Amazon EKS Worker Nodes"
 
   image_id               = each.value.ami
   update_default_version = true

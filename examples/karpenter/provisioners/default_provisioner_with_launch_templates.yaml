@@ -20,7 +20,6 @@ spec:
     resources:
       cpu: 1000
   provider:
-    #    instanceProfile: "aws-dev-spark-eks-self-managed-ondemand"         # Conflicts with launchTemplate
     launchTemplate: "karpenter-aws001-preprod-dev-eks"                     # Used by Karpenter Nodes
     subnetSelector:
       Name: "*private*"
