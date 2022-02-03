@@ -138,6 +138,8 @@ module "crossplane" {
   source            = "./crossplane"
   eks_cluster_id    = var.eks_cluster_id
   helm_config       = var.crossplane_helm_config
+  irsa_policies     = var.crossplane_irsa_policies
+  tags              = var.tags
   manage_via_gitops = var.argocd_manage_add_ons
 }
 

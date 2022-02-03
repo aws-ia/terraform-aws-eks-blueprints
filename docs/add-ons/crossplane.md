@@ -20,7 +20,7 @@ You can optionally customize the Helm chart that deploys `Crossplane` via the fo
 
 ```hcl
   enable_crossplane = true
-  # Optional  karpenter_helm_config
+
   crossplane_helm_config = {
     name                      = "crossplane"
     chart                     = "crossplane"

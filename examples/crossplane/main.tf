@@ -129,7 +129,7 @@ module "kubernetes-addons" {
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
   enable_crossplane = true
-  # Optional  karpenter_helm_config
+
   crossplane_helm_config = {
     name       = "crossplane"
     chart      = "crossplane"
