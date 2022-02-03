@@ -19,7 +19,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_helm_addon"></a> [helm\_addon](#module\_helm\_addon) | ../helm_addon | n/a |
+| <a name="module_helm_addon"></a> [helm\_addon](#module\_helm\_addon) | ../helm-addon | n/a |
 
 ## Resources
 
