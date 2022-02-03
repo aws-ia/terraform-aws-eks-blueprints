@@ -79,8 +79,8 @@ locals {
   argocd_gitops_config = {
     enable                    = true
     serviceAccountName        = local.service_account_name
-    clusterName               = var.eks_cluster_id
-    clusterEndpoint           = local.eks_cluster_endpoint
-    node_iam_instance_profile = var.node_iam_instance_profile
+    controllerClusterName     = var.eks_cluster_id
+    controllerClusterEndpoint = local.eks_cluster_endpoint
+    awsDefaultInstanceProfile = var.node_iam_instance_profile
   }
 }
