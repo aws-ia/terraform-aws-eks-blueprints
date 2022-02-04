@@ -46,6 +46,10 @@ locals {
   }
 }
 
+#---------------------------------------------------------------
+# Networking
+#---------------------------------------------------------------
+
 module "aws_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "v3.11.3"
@@ -72,6 +76,67 @@ module "aws_vpc" {
     "kubernetes.io/role/internal-elb"             = "1"
   }
 }
+
+#---------------------------------------------------------------
+# Provision resources for accessing and testing OpenSearch
+#---------------------------------------------------------------
+
+resource "tls_private_key" "ec2_private_key" {
+  algorithm   = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "ec2_instance_key_pair" {
+  key_name   = "eks-observability-instance-key"
+  public_key = tls_private_key.ec2_private_key.public_key_openssh
+}
+
+resource "local_file" "pem_file" {
+  filename = pathexpand("./ec2_instance_key_pair.pem")
+  file_permission = "600"
+  directory_permission = "700"
+  sensitive_content = tls_private_key.ec2_private_key.private_key_pem
+}
+
+resource "aws_instance" "ec2_instance" {
+  ami                         = data.aws_ami.amazon_linux_2.id
+  instance_type               = "t2.micro"
+  vpc_security_group_ids      = [aws_security_group.ec2_instance_access.id]
+  subnet_id                   = module.aws_vpc.public_subnets[0]
+  associate_public_ip_address = true
+}
+
+resource "aws_route_table" "opensearch_access" {
+  vpc_id = module.aws_vpc.vpc_id
+
+  route {
+    cidr_block = "${var.local_computer_ip}/32"
+    gateway_id = module.aws_vpc.igw_id
+  }
+}
+
+resource "aws_security_group" "ec2_instance_access" {
+  vpc_id = module.aws_vpc.vpc_id
+
+  ingress {
+    description = "SSH from local computer to ec2 host"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["${var.local_computer_ip}/32"]
+  }
+  ingress {
+    description = "host access to OpenSearch"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    self        = true
+  }
+}
+
+#---------------------------------------------------------------
+# Provision EKS and Helm Charts
+#---------------------------------------------------------------
 
 module "aws-eks-accelerator-for-terraform" {
   source = "../.."
@@ -130,6 +195,9 @@ module "kubernetes-addons" {
   amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
 }
 
+#---------------------------------------------------------------
+# Configure AMP as a Grafana Data Source
+#---------------------------------------------------------------
 resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
   name       = "amp"
@@ -142,6 +210,10 @@ resource "grafana_data_source" "prometheus" {
     sigv4_region    = data.aws_region.current.name
   }
 }
+
+#---------------------------------------------------------------
+# Provision OpenSearch and allow Fluent Bit Access
+#---------------------------------------------------------------
 
 resource "aws_elasticsearch_domain" "opensearch" {
   domain_name           = "opensearch"
@@ -167,7 +239,7 @@ resource "aws_elasticsearch_domain" "opensearch" {
   }
   ebs_options {
     ebs_enabled = true
-    volume_size = var.ebs_volume_size
+    volume_size = 10 # size in gb
   }
 
   advanced_security_options {
@@ -178,6 +250,15 @@ resource "aws_elasticsearch_domain" "opensearch" {
       master_user_password = var.opensearch_dashboard_pw
     }
   }
+
+  vpc_options {
+    subnet_ids         = module.aws_vpc.public_subnets
+    security_group_ids = [aws_security_group.ec2_instance_access.id]
+  }
+}
+
+resource "aws_iam_service_linked_role" "opensearch" {
+  aws_service_name = "es.amazonaws.com"
 }
 
 resource "aws_iam_policy" "fluentbit-opensearch-access" {

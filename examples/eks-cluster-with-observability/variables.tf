@@ -17,7 +17,13 @@ variable "opensearch_dashboard_pw" {
   sensitive = true
 }
 
-variable "ebs_volume_size" {
-  type        = number
-  description = "volume size in gigabytes"
+variable "local_computer_ip" {
+  type        = string
+  description = "IP Address of the computer you are running and testing this example from"
+}
+
+variable "ec2_public_key" {
+  type        = string
+  description = "A public key to use for signing into the ec2 instance to access OpenSearch"
+  sensitive   = true
 }

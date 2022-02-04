@@ -1,8 +1,8 @@
 # EKS Cluster with Observability Tools
 
-This example demonstrates how to use the AWS EKS Accelerator for Terraform to deploy a new Amazon EKS Cluster with Amazon Managed Prometheus (AMP), Prometheus, FluentBit, and OpenSearch with Amazon Managed Grafana integration. It also provisions a sample workload with ArgoCD to generate logs and metrics.
+This example demonstrates how to use the AWS EKS Accelerator for Terraform to deploy a new Amazon EKS Cluster with Prometheus and Fluent Bit. It also provisions Amazon Managed Prometheus (AMP) and Amazon OpenSearch Service, and integrates AMP with Amazon Managed Grafana. Lastly, it includes a sample workload, provisioned with ArgoCD to generate logs and metrics.
 
-Prometheus collects and sends application metrics to AMP, and Amazon Managed Grafana ingests data from AMP. FluentBit sends application logs to Amazon OpenSearch Service.
+Prometheus collects and sends application metrics to AMP, and AMG ingests data from AMP. Fluent Bit sends logs to Amazon OpenSearch Service.
 
 ---
 **NOTE**
@@ -45,20 +45,12 @@ terraform plan -tf-vars=dev.tfvars
 - Deploy resources with `terraform apply -tf-vars=dev.tfvars`
 - Add the cluster to your kubeconfig: `aws eks --region $AWS_REGION update-kubeconfig --name aws001-preprod-observability-eks`
 
-`terraform apply` will provision a new EKS cluster with FluentBit, Prometheus, and a sample workload. It will also provision Amazon Managed Prometheus to ingest metrics from Prometheus and an Amazon OpenSearch service domain for ingesting logs from Fluentbit.
+`terraform apply` will provision a new EKS cluster with Fluent Bit, Prometheus, and a sample workload. It will also provision Amazon Managed Prometheus to ingest metrics from Prometheus and an Amazon OpenSearch service domain for ingesting logs from Fluent Bit.
 
 #### Verify that the Resources Deployed Sucessfully
-- Set up environment variables for future steps
-```
-export OS_ENDPOINT=$(terraform output -raw opensearch_domain_endpoint)
-export OS_DOMAIN_USER=$(terraform output -raw opensearch_user)
-export OS_DOMAIN_PASSWORD=$(terraform output -raw opensearch_pw)
-```
 
 - Check that the status of OpenSearch is green
-```
-curl -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" -X GET "https://${OS_ENDPOINT}/_cluster/health"  
-```
+Navigate to Amazon OpenSearch in the AWS Console and select the __opensearch__ domain. Verify that *Cluster Health* under *General Information* lists Green.
 
 - Check that Amazon Managed Prometheus is healthy
   - Check the status of Amazon Managed Prometheus workspace through the AWS console.
@@ -71,18 +63,38 @@ curl -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" -X GET "https://${OS_ENDPO
   - Navigate to http://localhost:8080 and confirm that the dashboard webpage loads.
   - Press `CTRL+C` to stop port forwarding.
 
-- To check that FluentBit is working:
-  - FluentBit is provisioned properly if you see the option to add an index pattern while following the steps for the section below named __Set up an Index Pattern in OpenSearch to Explore Log Data__
+- To check that Fluent Bit is working:
+  - Fluent Bit is provisioned properly if you see the option to add an index pattern while following the steps for the section below named __Set up an Index Pattern in OpenSearch to Explore Log Data__
 
-#### Map the FluentBit Role as a Backend Role in OpenSearch
-OpenSearch roles are the core method for controlling access to your OpenSearch cluster. Role mapping is part of OpenSearch's fine-grained access control security layer. Backend roles are a way to map an external identity to an OpenSearch role. In this case we map the FluentBit IAM role as a backend role to OpenSearch's *all_access* role so FluentBit can send logs to OpenSearch.
-
+- Check that the sample workload is running
+  - Run the command below, then navigate to http://localhost:4040 and confirm the webpage loads.
 ```
+kubectl port-forward svc/guestbook-ui -n team-riker 4040:80
+```
+
+#### Map the Fluent Bit Role as a Backend Role in OpenSearch
+OpenSearch roles are the core method for controlling access to your OpenSearch cluster. Role mapping is part of OpenSearch's fine-grained access control security layer. Backend roles are a way to map an external identity to an OpenSearch role. In this case we map the Fluent Bit IAM role as a backend role to OpenSearch's *all_access* role so Fluent Bit can send logs to OpenSearch.
+
+Because we provisioned OpenSearch within our VPC, we use an EC2 instance with port forwarding to test and access our OpenSearch endpoints. Refer to the [Amazon OpenSearch Developer Guide](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html) for more information.
+
+- In a different terminal window, cd back to the example directory and forward requests from https://localhost:9200 to your OpenSearch Service domain through the EC2 instance
+  - This example automatically generates a key-pair for you and saves the private key to your current directory
+```
+export PRIVATE_KEY_FILE=ec2_instance_key_pair.pem
+export EC2_IP=$(terraform output -raw ec2_public_ip)
+export OS_VPC_ENDPOINT=$(terraform output -raw opensearch_vpc_endpoint)
+ssh -i $PRIVATE_KEY_FILE ec2-user@$EC2_IP -N -L "9200:${OS_VPC_ENDPOINT}:443"
+```
+- Back in your first terminal window, 
+```
+export EC2_IP=$(terraform output -raw ec2_public_ip)
+export OS_DOMAIN_USER=$(terraform output -raw opensearch_user)
+export OS_DOMAIN_PASSWORD=$(terraform output -raw opensearch_pw)
 export FLUENTBIT_ROLE="arn:aws:iam::$(aws sts get-caller-identity | jq -r '.Account'):role/aws001-preprod-observability-eks-aws-for-fluent-bit-sa-irsa"
 
 curl -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" \
     -X PATCH \
-    https://${OS_ENDPOINT}/_opendistro/_security/api/rolesmapping/all_access?pretty \
+    https://${EC2_IP}/_opendistro/_security/api/rolesmapping/all_access?pretty \
     -H 'Content-Type: application/json' \
     -d'
 [
@@ -94,6 +106,9 @@ curl -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" \
 ```
 
 #### Set up an Index Pattern in OpenSearch to Explore Log Data
+
+You must set up an index pattern before you can search it in the OpenSearch Dashboard. Read more about indexing in OpenSearch [here]().
+
 - Log into the AWS console, navigate to Amazon OpenSearch Service, click on the "opensearch" domain and click on the link under __OpenSearch Dashboards URL__ to access the Kibana dashboard.
 - Log into the OpenSearch dashboard with the credentials you set in `dev.tfvars`
 - From the OpenSearch Dashboards Welcome screen select __Explore on my own__
