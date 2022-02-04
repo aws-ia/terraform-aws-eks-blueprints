@@ -1,5 +1,5 @@
 locals {
-  namespace                 = "crossplane-system"
+  namespace = "crossplane-system"
 
   default_helm_config = {
     name        = "crossplane"
@@ -21,6 +21,6 @@ locals {
   })]
 
   argocd_gitops_config = {
-    enable             = true
+    enable = true
   }
 }

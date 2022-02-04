@@ -73,7 +73,7 @@ module "argo_rollouts" {
   source            = "./argo-rollouts"
   eks_cluster_id    = var.eks_cluster_id
   helm_config       = var.argo_rollouts_helm_config
-  tags                     = var.tags
+  tags              = var.tags
   manage_via_gitops = var.argocd_manage_add_ons
 }
 
