@@ -82,7 +82,7 @@ module "aws_vpc" {
 #---------------------------------------------------------------
 
 resource "tls_private_key" "ec2_private_key" {
-  algorithm   = "RSA"
+  algorithm = "RSA"
   rsa_bits  = 4096
 }
 
@@ -92,10 +92,10 @@ resource "aws_key_pair" "ec2_instance_key_pair" {
 }
 
 resource "local_file" "pem_file" {
-  filename = pathexpand("./ec2_instance_key_pair.pem")
-  file_permission = "600"
+  filename             = pathexpand("./ec2_instance_private_key.pem")
+  file_permission      = "600"
   directory_permission = "700"
-  sensitive_content = tls_private_key.ec2_private_key.private_key_pem
+  sensitive_content    = tls_private_key.ec2_private_key.private_key_pem
 }
 
 resource "aws_instance" "ec2_instance" {

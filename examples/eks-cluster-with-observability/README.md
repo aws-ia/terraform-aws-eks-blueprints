@@ -80,7 +80,7 @@ Because we provisioned OpenSearch within our VPC, we use an EC2 instance with po
 - In a different terminal window, cd back to the example directory and forward requests from https://localhost:9200 to your OpenSearch Service domain through the EC2 instance
   - This example automatically generates a key-pair for you and saves the private key to your current directory
 ```
-export PRIVATE_KEY_FILE=ec2_instance_key_pair.pem
+export PRIVATE_KEY_FILE=ec2_instance_private_key.pem
 export EC2_IP=$(terraform output -raw ec2_public_ip)
 export OS_VPC_ENDPOINT=$(terraform output -raw opensearch_vpc_endpoint)
 ssh -i $PRIVATE_KEY_FILE ec2-user@$EC2_IP -N -L "9200:${OS_VPC_ENDPOINT}:443"
