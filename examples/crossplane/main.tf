@@ -98,7 +98,7 @@ module "aws_vpc" {
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  source = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
+  source = "../.."
 
   tenant            = local.tenant
   environment       = local.environment
@@ -125,24 +125,11 @@ module "aws-eks-accelerator-for-terraform" {
 }
 
 module "kubernetes-addons" {
-  source         = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
+  source         = "../../modules/kubernetes-addons"
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
   enable_crossplane = true
-
-  crossplane_helm_config = {
-    name       = "crossplane"
-    chart      = "crossplane"
-    repository = "https://charts.crossplane.io/stable/"
-    version    = "1.6.2"
-    namespace  = "crossplane-system"
-    values = [templatefile("${path.module}/values.yaml", {
-      sa-name          = "crossplane",
-      operating-system = "linux"
-    })]
-  }
-
-  crossplane_irsa_policies = [] # Optional to add additional policies to Crossplane IRSA
+  # Refer to docs/add-ons/crossplane.md for advanced configuration
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }

@@ -36,52 +36,7 @@ You can optionally customize the Helm chart that deploys `Crossplane` via the fo
   crossplane_irsa_policies = [] # Optional to add additional policies to Crossplane IRSA
 ```
 
-Here is a full example to consume `kubernetes-addons` module and deploy Crossplane
-
-```hcl
-
-data "aws_eks_cluster" "cluster" {
-  name = var.eks_cluster_id
-}
-
-data "aws_eks_cluster_auth" "cluster" {
-  name = var.eks_cluster_id
-}
-# Very important to authenticate with Kubernetes Server
-provider "kubernetes" {
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
-}
-# Helm provider to deploy Crossplane Add-on
-provider "helm" {
-  kubernetes {
-    host                   = data.aws_eks_cluster.cluster.endpoint
-    token                  = data.aws_eks_cluster_auth.cluster.token
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  }
-}
-# This example is showing one add-on however you can add other add-ons to this module block
-module "kubernetes-addons" {
-  source         = "github/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
-  eks_cluster_id = var.eks_cluster_id
-  tags           = var.tags
-
-  enable_crossplane = true
-  crossplane_helm_config = {
-    name                   = "crossplane"
-    chart                  = "crossplane"
-    repository             = "https://charts.crossplane.io/stable/"
-    version                = "1.6.2"
-    namespace              = "crossplane-system"
-    values = [templatefile("${path.module}/values.yaml", {
-      service_account_name = var.service_account_name,
-      operating_system     = "linux"
-    })]
-  }
-  crossplane_irsa_policies = [] # Optional to add additional policies to Crossplane IRSA
-}
-```
+Checkout the full [example](examples/crossplane) to deploy Crossplane with `kubernetes-addons` module
 
 ### GitOps Configuration
 The following properties made available for use when managing the add-on via GitOps.

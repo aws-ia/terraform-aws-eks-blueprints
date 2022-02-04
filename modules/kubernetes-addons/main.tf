@@ -73,6 +73,7 @@ module "argo_rollouts" {
   source            = "./argo-rollouts"
   eks_cluster_id    = var.eks_cluster_id
   helm_config       = var.argo_rollouts_helm_config
+  tags                     = var.tags
   manage_via_gitops = var.argocd_manage_add_ons
 }
 
@@ -136,10 +137,7 @@ module "cluster_autoscaler" {
 module "crossplane" {
   count             = var.enable_crossplane ? 1 : 0
   source            = "./crossplane"
-  eks_cluster_id    = var.eks_cluster_id
   helm_config       = var.crossplane_helm_config
-  irsa_policies     = var.crossplane_irsa_policies
-  tags              = var.tags
   manage_via_gitops = var.argocd_manage_add_ons
 }
 

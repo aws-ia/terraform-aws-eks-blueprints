@@ -102,12 +102,6 @@ variable "crossplane_helm_config" {
   description = "Crossplane Helm Chart config"
 }
 
-variable "crossplane_irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM policy ARNs for crossplane IRSA"
-}
-
 #-----------Amazon Managed Service for Prometheus-------------
 variable "enable_amazon_prometheus" {
   type        = bool

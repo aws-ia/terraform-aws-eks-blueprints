@@ -1,5 +1,3 @@
 nodeSelector:
   kubernetes.io/os: ${operating-system}
 
-serviceAccount:
-  name: ${sa-name}
