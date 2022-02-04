@@ -1,9 +1,9 @@
-output "self_managed_node_group_name" {
+output "self_managed_nodegroup_name" {
   description = "EKS Self Managed node group id"
   value       = local.self_managed_node_group["node_group_name"].*
 }
 
-output "self_managed_node_group_iam_role_arns" {
+output "self_managed_nodegroup_iam_role_arns" {
   description = "Self managed groups IAM role arns"
   value       = aws_iam_role.self_managed_ng[*].arn
 }

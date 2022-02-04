@@ -24,8 +24,8 @@ locals {
       delete_on_termination = true
       encrypted             = true
       kms_key_id            = ""
-      iops                  = "0"
-      throughput            = 0
+      iops                  = 3000
+      throughput            = 125
     }
 
     pre_userdata         = ""

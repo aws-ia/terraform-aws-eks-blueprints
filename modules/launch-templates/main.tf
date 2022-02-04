@@ -42,13 +42,13 @@ resource "aws_launch_template" "this" {
     }
   }
 
-  vpc_security_group_ids = each.value.vpc_security_group_ids != "" ? [each.value.vpc_security_group_ids] : null
+  vpc_security_group_ids = length(each.value.vpc_security_group_ids) == 0 ? null : each.value.vpc_security_group_ids
 
   dynamic "network_interfaces" {
     for_each = each.value.network_interfaces
     content {
       associate_public_ip_address = try(network_interfaces.value.public_ip, false)
-      security_groups             = each.value.network_interfaces.security_groups != "" ? [network_interfaces.value.security_groups] : null
+      security_groups             = length(each.value.network_interfaces.security_groups) == 0 ? null : network_interfaces.value.security_groups
     }
   }
 

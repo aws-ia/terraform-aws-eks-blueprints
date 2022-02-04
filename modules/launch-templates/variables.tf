@@ -4,11 +4,11 @@ variable "launch_template_config" {
     launch_template_os     = optional(string)
     launch_template_prefix = string
     iam_instance_profile   = optional(string)
-    vpc_security_group_ids = optional(string) # conflicts with network_interfaces
+    vpc_security_group_ids = optional(list(string)) # conflicts with network_interfaces
 
     network_interfaces = optional(list(object({
       public_ip       = optional(bool)
-      security_groups = optional(string)
+      security_groups = optional(list(string))
     })))
 
     block_device_mappings = list(object({
