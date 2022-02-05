@@ -16,5 +16,6 @@ locals {
     vpa                       = var.enable_vpa ? module.vpa[0].argocd_gitops_config : null
     yunikorn                  = var.enable_yunikorn ? module.yunikorn[0].argocd_gitops_config : null
     argoRollouts              = var.enable_argo_rollouts ? module.argo_rollouts[0].argocd_gitops_config : null
+    crossplane                = var.enable_crossplane ? module.crossplane[0].argocd_gitops_config : null
   }
 }
