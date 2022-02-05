@@ -14,7 +14,7 @@ locals {
     name                       = "argo-cd"
     chart                      = "argo-cd"
     repository                 = "https://argoproj.github.io/argo-helm"
-    version                    = "3.32.1"
+    version                    = "3.33.3"
     namespace                  = "argocd"
     timeout                    = "1200"
     create_namespace           = true

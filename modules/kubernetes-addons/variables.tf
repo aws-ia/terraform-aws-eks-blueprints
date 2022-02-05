@@ -89,6 +89,19 @@ variable "cluster_autoscaler_helm_config" {
   description = "Cluster Autoscaler Helm Chart config"
 }
 
+#-----------Crossplane ADDON-------------
+variable "enable_crossplane" {
+  type        = bool
+  default     = false
+  description = "Enable Crossplane add-on"
+}
+
+variable "crossplane_helm_config" {
+  type        = any
+  default     = null
+  description = "Crossplane Helm Chart config"
+}
+
 #-----------Amazon Managed Service for Prometheus-------------
 variable "enable_amazon_prometheus" {
   type        = bool
@@ -342,6 +355,11 @@ variable "karpenter_irsa_policies" {
   default     = []
 }
 
+variable "karpenter_node_iam_instance_profile" {
+  description = "Karpenter Node IAM Instance profile id"
+  default     = ""
+  type        = string
+}
 #-----------KEDA ADDON-------------
 variable "enable_keda" {
   type        = bool

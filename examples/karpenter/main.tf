@@ -125,12 +125,48 @@ module "aws-eks-accelerator-for-terraform" {
     }
   }
 }
+# Creates Launch templates for Karpenter
+# Launch template outputs will be used in Karpenter Provisioners yaml files
+module "karpenter-launch-templates" {
+  source         = "../../modules/launch-templates"
+  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  tags           = { Name = "karpenter" }
+
+  launch_template_config = {
+    linux = {
+      ami                    = "ami-0adc757be1e4e11a1"
+      launch_template_prefix = "karpenter"
+      iam_instance_profile   = module.aws-eks-accelerator-for-terraform.self_managed_node_group_iam_instance_profile_id[0]
+      vpc_security_group_ids = module.aws-eks-accelerator-for-terraform.worker_security_group_id
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp2"
+          volume_size = "200"
+        }
+      ]
+    },
+    bottlerocket = {
+      ami                    = "ami-03909df9bfcc1e215"
+      launch_template_os     = "bottlerocket"
+      launch_template_prefix = "bottle"
+      iam_instance_profile   = module.aws-eks-accelerator-for-terraform.self_managed_node_group_iam_instance_profile_id[0]
+      vpc_security_group_ids = module.aws-eks-accelerator-for-terraform.worker_security_group_id
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp2"
+          volume_size = "200"
+        }
+      ]
+    },
+  }
+}
 
 module "kubernetes-addons" {
   source = "../../modules/kubernetes-addons"
 
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-
   #K8s Add-ons
   enable_karpenter      = true
   enable_metrics_server = true

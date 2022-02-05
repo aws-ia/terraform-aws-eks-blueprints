@@ -32,7 +32,7 @@ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 Initialize a working directory with configuration files
 
 ```shell script
-cd examples/game_tech/agones-game-controller
+cd examples/game-tech/agones-game-controller
 terraform init
 ```
 

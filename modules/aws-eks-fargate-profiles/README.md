@@ -28,7 +28,6 @@ The Fargate profile allows you to declare which pods run on Fargate for Amazon E
         ExtraTag = "Fargate"
       }
     },
-    /*
     multi = {
       fargate_profile_name = "multi-namespaces"
       fargate_profile_namespaces = [{
@@ -57,7 +56,7 @@ The Fargate profile allows you to declare which pods run on Fargate for Amazon E
       additional_tags = {
         ExtraTag = "Fargate"
       }
-    }, */
+    },
   } # END OF FARGATE PROFILES
 ```
 

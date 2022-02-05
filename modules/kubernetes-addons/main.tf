@@ -70,6 +70,15 @@ module "argocd" {
   add_on_config              = { for k, v in local.argocd_add_on_config : k => v if v != null }
 }
 
+module "argo_rollouts" {
+  count             = var.enable_argo_rollouts ? 1 : 0
+  source            = "./argo-rollouts"
+  eks_cluster_id    = var.eks_cluster_id
+  helm_config       = var.argo_rollouts_helm_config
+  tags              = var.tags
+  manage_via_gitops = var.argocd_manage_add_ons
+}
+
 module "aws_for_fluent_bit" {
   count                    = var.enable_aws_for_fluentbit ? 1 : 0
   source                   = "./aws-for-fluentbit"
@@ -127,6 +136,13 @@ module "cluster_autoscaler" {
   manage_via_gitops = var.argocd_manage_add_ons
 }
 
+module "crossplane" {
+  count             = var.enable_crossplane ? 1 : 0
+  source            = "./crossplane"
+  helm_config       = var.crossplane_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+}
+
 module "fargate_fluentbit" {
   count          = var.enable_fargate_fluentbit ? 1 : 0
   source         = "./fargate-fluentbit"
@@ -142,13 +158,14 @@ module "ingress_nginx" {
 }
 
 module "karpenter" {
-  count             = var.enable_karpenter ? 1 : 0
-  source            = "./karpenter"
-  helm_config       = var.karpenter_helm_config
-  eks_cluster_id    = var.eks_cluster_id
-  irsa_policies     = var.karpenter_irsa_policies
-  tags              = var.tags
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                     = var.enable_karpenter ? 1 : 0
+  source                    = "./karpenter"
+  helm_config               = var.karpenter_helm_config
+  eks_cluster_id            = var.eks_cluster_id
+  irsa_policies             = var.karpenter_irsa_policies
+  node_iam_instance_profile = var.karpenter_node_iam_instance_profile
+  tags                      = var.tags
+  manage_via_gitops         = var.argocd_manage_add_ons
 }
 
 module "keda" {
@@ -206,13 +223,5 @@ module "yunikorn" {
   count             = var.enable_yunikorn ? 1 : 0
   source            = "./yunikorn"
   helm_config       = var.yunikorn_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
-}
-
-module "argo_rollouts" {
-  count             = var.enable_argo_rollouts ? 1 : 0
-  source            = "./argo-rollouts"
-  eks_cluster_id    = var.eks_cluster_id
-  helm_config       = var.argo_rollouts_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
 }
