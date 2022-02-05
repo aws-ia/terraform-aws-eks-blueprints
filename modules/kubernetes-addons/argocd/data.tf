@@ -29,4 +29,3 @@ data "aws_secretsmanager_secret_version" "ssh_key_version" {
   for_each  = { for k, v in var.applications : k => v if v.ssh_key_secret_name != null }
   secret_id = data.aws_secretsmanager_secret.ssh_key[each.key].id
 }
-
