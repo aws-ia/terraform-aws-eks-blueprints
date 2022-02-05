@@ -78,63 +78,6 @@ module "aws_vpc" {
 }
 
 #---------------------------------------------------------------
-# Provision resources for accessing and testing OpenSearch
-#---------------------------------------------------------------
-
-resource "tls_private_key" "ec2_private_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-resource "aws_key_pair" "ec2_instance_key_pair" {
-  key_name   = "eks-observability-instance-key"
-  public_key = tls_private_key.ec2_private_key.public_key_openssh
-}
-
-resource "local_file" "pem_file" {
-  filename             = pathexpand("./ec2_instance_private_key.pem")
-  file_permission      = "600"
-  directory_permission = "700"
-  sensitive_content    = tls_private_key.ec2_private_key.private_key_pem
-}
-
-resource "aws_instance" "ec2_instance" {
-  ami                         = data.aws_ami.amazon_linux_2.id
-  instance_type               = "t2.micro"
-  vpc_security_group_ids      = [aws_security_group.ec2_instance_access.id]
-  subnet_id                   = module.aws_vpc.public_subnets[0]
-  associate_public_ip_address = true
-}
-
-resource "aws_route_table" "opensearch_access" {
-  vpc_id = module.aws_vpc.vpc_id
-
-  route {
-    cidr_block = "${var.local_computer_ip}/32"
-    gateway_id = module.aws_vpc.igw_id
-  }
-}
-
-resource "aws_security_group" "ec2_instance_access" {
-  vpc_id = module.aws_vpc.vpc_id
-
-  ingress {
-    description = "SSH from local computer to ec2 host"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["${var.local_computer_ip}/32"]
-  }
-  ingress {
-    description = "host access to OpenSearch"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    self        = true
-  }
-}
-
-#---------------------------------------------------------------
 # Provision EKS and Helm Charts
 #---------------------------------------------------------------
 
@@ -196,6 +139,77 @@ module "kubernetes-addons" {
 }
 
 #---------------------------------------------------------------
+# Provision resources for accessing and testing OpenSearch
+#---------------------------------------------------------------
+
+resource "tls_private_key" "ec2_private_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "ec2_instance_key_pair" {
+  key_name   = "eks-observability-instance-key"
+  public_key = tls_private_key.ec2_private_key.public_key_openssh
+}
+
+resource "local_file" "private_key_pem_file" {
+  filename          = pathexpand("./ec2_instance_private_key.pem")
+  file_permission   = "400"
+  sensitive_content = tls_private_key.ec2_private_key.private_key_pem
+}
+
+resource "aws_instance" "ec2_instance" {
+  ami                         = data.aws_ami.amazon_linux_2.id
+  instance_type               = "t2.micro"
+  vpc_security_group_ids      = [aws_security_group.opensearch_access.id]
+  subnet_id                   = module.aws_vpc.public_subnets[0]
+  associate_public_ip_address = true
+  key_name                    = aws_key_pair.ec2_instance_key_pair.key_name
+}
+
+resource "aws_route_table" "opensearch_access" {
+  vpc_id = module.aws_vpc.vpc_id
+
+  route {
+    cidr_block = "${var.local_computer_ip}/32"
+    gateway_id = module.aws_vpc.igw_id
+  }
+}
+
+resource "aws_security_group" "opensearch_access" {
+  vpc_id = module.aws_vpc.vpc_id
+
+  ingress {
+    description = "SSH from local computer to ec2 host"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["${var.local_computer_ip}/32"]
+  }
+  ingress {
+    description = "host access to OpenSearch"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    self        = true
+  }
+  ingress {
+    description = "allow instances in the VPC (like EKS) to communicate with OpenSearch"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+
+    cidr_blocks = [local.vpc_cidr]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+#---------------------------------------------------------------
 # Configure AMP as a Grafana Data Source
 #---------------------------------------------------------------
 resource "grafana_data_source" "prometheus" {
@@ -253,7 +267,7 @@ resource "aws_elasticsearch_domain" "opensearch" {
 
   vpc_options {
     subnet_ids         = module.aws_vpc.public_subnets
-    security_group_ids = [aws_security_group.ec2_instance_access.id]
+    security_group_ids = [aws_security_group.opensearch_access.id]
   }
 }
 
