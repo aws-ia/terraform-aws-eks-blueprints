@@ -2,6 +2,14 @@
 locals {
   default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
+  # Admin Password
+  default_helm_set_sensitive = var.admin_password_secret_name != "" ? [
+    {
+      name  = "configs.secret.argocdServerAdminPassword"
+      value = data.aws_secretsmanager_secret_version.admin_password_version[0].secret_string
+    }
+  ] : []
+
   default_helm_config = {
     name                       = "argo-cd"
     chart                      = "argo-cd"
@@ -10,9 +18,9 @@ locals {
     namespace                  = "argocd"
     timeout                    = "1200"
     create_namespace           = true
-    values                     = local.default_helm_values
     set                        = []
-    set_sensitive              = null
+    set_sensitive              = local.default_helm_set_sensitive
+    values                     = local.default_helm_values
     lint                       = false
     verify                     = false
     keyring                    = ""
@@ -54,7 +62,6 @@ locals {
     add_on_application = false
   }
 
-  # Global Application Values
   global_application_values = {
     region      = data.aws_region.current.id
     account     = data.aws_caller_identity.current.account_id
