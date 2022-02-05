@@ -1,16 +1,11 @@
-output "self_managed_node_group_name" {
+output "self_managed_nodegroup_name" {
   description = "EKS Self Managed node group id"
   value       = local.self_managed_node_group["node_group_name"].*
 }
 
-output "self_managed_node_group_iam_role_arns" {
+output "self_managed_nodegroup_iam_role_arns" {
   description = "Self managed groups IAM role arns"
   value       = aws_iam_role.self_managed_ng[*].arn
-}
-
-output "self_managed_node_group_iam_instance_profile" {
-  description = "Self managed groups IAM Instance profile name"
-  value       = aws_iam_instance_profile.self_managed_ng[*].name
 }
 
 output "self_managed_iam_role_name" {
@@ -41,4 +36,14 @@ output "launch_template_ids" {
 output "launch_template_arn" {
   description = "launch templated id for EKS Self Managed Node Group"
   value       = aws_launch_template.self_managed_ng[*].arn
+}
+
+output "self_managed_nodegroup_iam_instance_profile_id" {
+  description = "IAM Instance Profile ID for EKS Self Managed Node Group"
+  value       = aws_iam_instance_profile.self_managed_ng[*].id
+}
+
+output "self_managed_nodegroup_iam_instance_profile_arn" {
+  description = "IAM Instance Profile arnd for EKS Self Managed Node Group"
+  value       = aws_iam_instance_profile.self_managed_ng[*].arn
 }

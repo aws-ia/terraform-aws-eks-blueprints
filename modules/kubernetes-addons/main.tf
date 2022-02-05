@@ -156,13 +156,14 @@ module "ingress_nginx" {
 }
 
 module "karpenter" {
-  count             = var.enable_karpenter ? 1 : 0
-  source            = "./karpenter"
-  helm_config       = var.karpenter_helm_config
-  eks_cluster_id    = var.eks_cluster_id
-  irsa_policies     = var.karpenter_irsa_policies
-  tags              = var.tags
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                     = var.enable_karpenter ? 1 : 0
+  source                    = "./karpenter"
+  helm_config               = var.karpenter_helm_config
+  eks_cluster_id            = var.eks_cluster_id
+  irsa_policies             = var.karpenter_irsa_policies
+  node_iam_instance_profile = var.karpenter_node_iam_instance_profile
+  tags                      = var.tags
+  manage_via_gitops         = var.argocd_manage_add_ons
 }
 
 module "keda" {

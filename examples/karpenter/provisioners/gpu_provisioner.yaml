@@ -3,7 +3,6 @@ kind: Provisioner
 metadata:
   name: gpu
 spec:
-  ttlSecondsAfterEmpty: 60
   requirements:
     - key: node.kubernetes.io/instance-type
       operator: In
@@ -14,4 +13,4 @@ spec:
       effect: “NoSchedule”
   provider:
     instanceProfile: "aws001-preprod-dev-eks-self-managed-ondemand" # self-managed IAM Instance profile Name
-  ttlSecondsAfterEmpty: 30
+  ttlSecondsAfterEmpty: 60

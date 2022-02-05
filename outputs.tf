@@ -53,7 +53,7 @@ output "worker_security_group_id" {
 
 output "self_managed_node_group_iam_role_arns" {
   description = "IAM role arn's of self managed node groups"
-  value       = var.create_eks && length(var.self_managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_node_group_iam_role_arns) }) : []
+  value       = var.create_eks && length(var.self_managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_nodegroup_iam_role_arns) }) : []
 }
 
 output "self_managed_node_group_autoscaling_groups" {
@@ -61,9 +61,24 @@ output "self_managed_node_group_autoscaling_groups" {
   value       = var.create_eks && length(var.self_managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_asg_names) }) : []
 }
 
+output "self_managed_node_group_iam_instance_profile_id" {
+  description = "IAM instance profile id of managed node groups"
+  value       = var.create_eks && length(var.self_managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_nodegroup_iam_instance_profile_id) }) : []
+}
+
 output "managed_node_group_iam_role_arns" {
   description = "IAM role arn's of managed node groups"
   value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_role_name) }) : []
+}
+
+output "managed_node_group_iam_instance_profile_id" {
+  description = "IAM instance profile id of managed node groups"
+  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_instance_profile_id) }) : []
+}
+
+output "managed_node_group_iam_instance_profile_arns" {
+  description = "IAM instance profile arn's of managed node groups"
+  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_instance_profile_arn) }) : []
 }
 
 output "fargate_profiles_iam_role_arns" {
