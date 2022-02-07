@@ -225,3 +225,12 @@ module "yunikorn" {
   helm_config       = var.yunikorn_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
 }
+
+module "kube_state_metrics" {
+  count             = var.enable_kube_state_metrics ? 1 : 0
+  source            = "github.com/askulkarni2/kube-state-metrics-addon"
+  eks_cluster_id    = var.eks_cluster_id
+  helm_config       = var.argo_rollouts_helm_config
+  tags              = var.tags
+  manage_via_gitops = var.argocd_manage_add_ons
+}

@@ -30,12 +30,18 @@ data "aws_eks_cluster_auth" "cluster" {
 #---------------------------------------------------------------
 # Terraform VPC remote state import from S3
 #---------------------------------------------------------------
+#data "terraform_remote_state" "vpc_s3_backend" {
+#  backend = "s3"
+#  config = {
+#    bucket = var.tf_state_vpc_s3_bucket
+#    key    = var.tf_state_vpc_s3_key
+#    region = var.region
+#  }
+#}
 data "terraform_remote_state" "vpc_s3_backend" {
-  backend = "s3"
+  backend = "local"
   config = {
-    bucket = var.tf_state_vpc_s3_bucket
-    key    = var.tf_state_vpc_s3_key
-    region = var.region
+    path = "../vpc/terraform.tfstate"
   }
 }
 
@@ -101,6 +107,7 @@ module "kubernetes-addons" {
   enable_argocd                       = true
   enable_fargate_fluentbit            = false
   enable_argo_rollouts                = true
+  enable_kube_state_metrics           = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }
