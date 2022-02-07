@@ -107,7 +107,6 @@ module "kubernetes-addons" {
   enable_argocd                       = true
   enable_fargate_fluentbit            = false
   enable_argo_rollouts                = true
-  enable_kube_state_metrics           = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }

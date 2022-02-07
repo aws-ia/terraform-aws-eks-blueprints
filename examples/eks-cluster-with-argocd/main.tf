@@ -187,7 +187,6 @@ module "kubernetes-addons" {
   enable_vpa                          = true
   enable_yunikorn                     = true
   enable_argo_rollouts                = true
-  enablenable_kube_state_metrics      = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }
