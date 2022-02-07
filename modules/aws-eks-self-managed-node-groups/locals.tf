@@ -1,4 +1,6 @@
 locals {
+  lt_self_managed_group_map_key = "self-managed-node-group"
+
   default_self_managed_ng = {
     node_group_name = "m4_on_demand"
     instance_type   = "m4.large"
@@ -16,8 +18,9 @@ locals {
 
     block_device_mappings = [
       {
-        volume_size = 50
+        device_name = "/dev/xvda"
         volume_type = "gp2"
+        volume_size = 50
       }
     ]
 

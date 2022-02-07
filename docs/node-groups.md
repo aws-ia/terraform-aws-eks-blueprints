@@ -96,8 +96,13 @@ The below example demonstrates advanced configuration options for a self-managed
           post_userdata         = ""
           kubelet_extra_args    = ""
           bootstrap_extra_args  = ""
-          disk_size             = 20
-          disk_type             = "gp2"
+          block_device_mapping = [
+            {
+              device_name = "/dev/xvda"
+              volume_type = "gp2"
+              volume_size = 20
+            }
+          ]
           enable_monitoring     = false
           public_ip             = false                           # Enable only for public subnets  
           # AUTOSCALING

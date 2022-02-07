@@ -121,7 +121,14 @@ module "aws-eks-accelerator-for-terraform" {
             systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
         EOT
 
-      disk_size     = 20
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp2"
+          volume_size = 20
+        }
+      ]
+
       instance_type = "m5.large"
       desired_size  = 2
       max_size      = 10

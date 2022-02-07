@@ -1,13 +1,6 @@
 <powershell>
 ${pre_userdata}
 
-# Bootstrap and join the cluster
-[string]$EKSBinDir = "$env:ProgramFiles\Amazon\EKS"
-[string]$EKSBootstrapScriptName = 'Start-EKSBootstrap.ps1'
-[string]$EKSBootstrapScriptFile = "$EKSBinDir\$EKSBootstrapScriptName"
-& $EKSBootstrapScriptFile -EKSClusterName ${eks_cluster_id} -KubeletExtraArgs '${kubelet_extra_args}' 3>&1 4>&1 5>&1 6>&1
-$LastError = if ($?) { 0 } else { $Error[0].Exception.HResult }
-
 # Deal with extra new disks
 $disks_to_adjust = Get-Disk | Select-Object Number,Size,PartitionStyle | Where-Object PartitionStyle -Match RAW
 if ($disks_to_adjust -ne $null) {
@@ -23,6 +16,13 @@ if ($disks_to_adjust -ne $null) {
     New-Partition -DiskNumber $disk.Number -UseMaximumSize -AssignDriveLetter | Format-Volume -FileSystem NTFS
   }
 }
+
+# Bootstrap and join the cluster
+[string]$EKSBinDir = "$env:ProgramFiles\Amazon\EKS"
+[string]$EKSBootstrapScriptName = 'Start-EKSBootstrap.ps1'
+[string]$EKSBootstrapScriptFile = "$EKSBinDir\$EKSBootstrapScriptName"
+& $EKSBootstrapScriptFile -EKSClusterName ${eks_cluster_id} -KubeletExtraArgs '${kubelet_extra_args}' 3>&1 4>&1 5>&1 6>&1
+$LastError = if ($?) { 0 } else { $Error[0].Exception.HResult }
 
 ${post_userdata}
 </powershell>

@@ -37,7 +37,14 @@ This module allows you to create on-demand or spot self managed Linux or Windows
             systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
         EOT
 
-      disk_size     = 20
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp2"
+          volume_size = 20
+        }
+      ]
+
       instance_type = "m5.large"
       max_size     = 10
       min_size     = 2
@@ -63,7 +70,14 @@ This module allows you to create on-demand or spot self managed Linux or Windows
               systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
           EOT
 
-      disk_size     = 20
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp2"
+          volume_size = 20
+        }
+      ]
+      
       instance_type = "m5.large"
 
       max_size     = 10
@@ -90,7 +104,15 @@ This module allows you to create on-demand or spot self managed Linux or Windows
       max_size        = 3
       min_size        = 3
       instance_types = "m5.large"
-      disk_size      = 50
+      
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp3"
+          volume_size = 50
+        }
+      ]
+
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
       additional_tags = {
         ExtraTag = "bottlerocket"
@@ -108,7 +130,14 @@ This module allows you to create on-demand or spot self managed Linux or Windows
       # custom_ami_id   = "ami-xxxxxxxxxxxxxxxx" # Bring your own custom AMI. Default Windows AMI is the latest EKS Optimized Windows Server 2019 English Core AMI.
       public_ip = false # Enable only for public subnets
 
-      disk_size     = 50
+      block_device_mappings = [
+        {
+          device_name = "/dev/sda1"
+          volume_type = "gp3"
+          volume_size = 50
+        }
+      ]
+
       instance_type = "m5.large"
       max_size     = 4
       min_size     = 2

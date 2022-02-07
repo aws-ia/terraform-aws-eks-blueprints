@@ -24,7 +24,7 @@ resource "aws_launch_template" "this" {
     for_each = try(length(each.value.iam_instance_profile), 0) == 0 ? {} : { iam_instance_profile : each.value.iam_instance_profile }
     iterator = iam
     content {
-      name = iam.value.iam_instance_profile
+      name = iam.value
     }
   }
 

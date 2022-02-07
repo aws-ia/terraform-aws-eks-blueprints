@@ -3,7 +3,7 @@ module "launch_template_self_managed_ng" {
 
   eks_cluster_id = var.eks_cluster_id
   launch_template_config = {
-    self-managed-node-group = {
+    "${local.lt_self_managed_group_map_key}" = {
       ami                    = local.custom_ami_id
       launch_template_os     = local.self_managed_node_group["launch_template_os"]
       launch_template_prefix = local.self_managed_node_group["node_group_name"]
@@ -28,13 +28,4 @@ module "launch_template_self_managed_ng" {
   }
 
   tags = local.common_tags
-
-  /*depends_on = [
-    aws_iam_role.self_managed_ng,
-    aws_iam_instance_profile.self_managed_ng,
-    aws_iam_role_policy_attachment.self_managed_ng
-  ]*/
-}
-resource "aws_launch_template" "self_managed_ng" {
-
 }

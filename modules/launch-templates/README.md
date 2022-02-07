@@ -127,8 +127,10 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_launch_template_arn"></a> [launch\_template\_arn](#output\_launch\_template\_arn) | Launch Template ARNs |
+| <a name="output_launch_template_default_version"></a> [launch\_template\_default_version](#output\_launch\_template\_default\_version) | Launch Template Default Versions |
 | <a name="output_launch_template_id"></a> [launch\_template\_id](#output\_launch\_template\_id) | Launch Template IDs |
 | <a name="output_launch_template_image_id"></a> [launch\_template\_image\_id](#output\_launch\_template\_image\_id) | Launch Template Image IDs |
+| <a name="output_launch_template_latest_version"></a> [launch\_template\_latest_version](#output\_launch\_template\_latest\_version) | Launch Template Latest Versions |
 | <a name="output_launch_template_name"></a> [launch\_template\_name](#output\_launch\_template\_name) | Launch Template Names |
 
 <!--- END_TF_DOCS --->
