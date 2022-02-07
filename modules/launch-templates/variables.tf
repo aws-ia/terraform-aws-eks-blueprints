@@ -3,6 +3,8 @@ variable "launch_template_config" {
     ami                    = string
     launch_template_os     = optional(string)
     launch_template_prefix = string
+    instance_type          = optional(string)
+    capacity_type          = optional(string)
     iam_instance_profile   = optional(string)
     vpc_security_group_ids = optional(list(string)) # conflicts with network_interfaces
 

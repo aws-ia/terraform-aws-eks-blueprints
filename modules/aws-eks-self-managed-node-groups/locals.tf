@@ -11,10 +11,15 @@ locals {
     post_userdata        = ""
     kubelet_extra_args   = ""
     bootstrap_extra_args = ""
-    disk_size            = 50
-    disk_type            = "gp2"
     enable_monitoring    = false
     public_ip            = false
+
+    block_device_mappings = [
+      {
+        volume_size = 50
+        volume_type = "gp2"
+      }
+    ]
 
     # AUTOSCALING
     max_size                             = "3"
@@ -42,26 +47,6 @@ locals {
   default_custom_ami_id = contains(local.predefined_ami_types, local.self_managed_node_group["launch_template_os"]) ? data.aws_ami.predefined[local.self_managed_node_group["launch_template_os"]].id : ""
   custom_ami_id         = local.self_managed_node_group["custom_ami_id"] == "" ? local.default_custom_ami_id : local.self_managed_node_group["custom_ami_id"]
 
-  userdata_params = {
-    eks_cluster_id       = var.eks_cluster_id
-    cluster_ca_base64    = var.cluster_ca_base64
-    cluster_endpoint     = var.cluster_endpoint
-    bootstrap_extra_args = local.self_managed_node_group["bootstrap_extra_args"]
-    pre_userdata         = local.self_managed_node_group["pre_userdata"]
-    post_userdata        = local.self_managed_node_group["post_userdata"]
-    kubelet_extra_args   = local.self_managed_node_group["kubelet_extra_args"]
-  }
-
-  userdata_base64 = {
-    for launch_template_os in local.predefined_ami_types : launch_template_os => base64encode(
-      templatefile(
-        "${path.module}/templates/userdata-${launch_template_os}.tpl",
-        local.userdata_params
-      )
-    )
-  }
-
-  custom_userdata_base64 = contains(local.predefined_ami_types, local.self_managed_node_group["launch_template_os"]) ? local.userdata_base64[local.self_managed_node_group["launch_template_os"]] : null
   policy_arn_prefix      = "arn:aws:iam::aws:policy"
   ec2_principal          = "ec2.${data.aws_partition.current.dns_suffix}"
 
@@ -78,7 +63,7 @@ locals {
     var.tags,
     local.self_managed_node_group["additional_tags"],
     {
-      Name                                              = "${var.eks_cluster_id}-${local.self_managed_node_group["node_group_name"]}"
+      Name                                              = "${local.self_managed_node_group["node_group_name"]}-${var.eks_cluster_id}"
       "k8s.io/cluster-autoscaler/${var.eks_cluster_id}" = "owned"
       "k8s.io/cluster-autoscaler/enabled"               = "TRUE"
       "kubernetes.io/cluster/${var.eks_cluster_id}"     = "owned"

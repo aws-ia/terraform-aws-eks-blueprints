@@ -9,8 +9,10 @@ locals {
     ami                    = ""
     launch_template_os     = "amazonlinux2eks" #bottlerocket
     launch_template_prefix = ""
-    vpc_security_group_ids = ""
+    instance_type          = ""
+    capacity_type          = ""
     iam_instance_profile   = ""
+    vpc_security_group_ids = ""
 
     network_interfaces = {
       public_ip       = false
