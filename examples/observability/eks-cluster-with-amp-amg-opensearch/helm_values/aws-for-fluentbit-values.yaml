@@ -1,0 +1,19 @@
+serviceAccount:
+  create: false
+  name: "aws-for-fluent-bit-sa"
+
+elasticsearch:
+  enabled: true
+  match: "*"
+  awsRegion: ${aws_region}
+  host: ${host}
+
+# These plugins are not used in this example. They are enabled by default if not explicitly disabled
+firehose:
+  enabled: false
+
+kinesis:
+  enabled: false
+
+cloudWatch:
+  enabled: false
