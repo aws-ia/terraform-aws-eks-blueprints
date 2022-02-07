@@ -167,7 +167,9 @@ No requirements.
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_launch_template_self_managed_ng"></a> [launch\_template\_self\_managed\_ng](#module\_launch\_template\_self\_managed\_ng) | ../launch-templates | n/a |
 
 ## Resources
 
@@ -179,7 +181,6 @@ No modules.
 | [aws_iam_role.self_managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.eks_windows_cni](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.self_managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_launch_template.self_managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template) | resource |
 | [aws_security_group.self_managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group_rule.cluster_primary_sg_ingress_worker_sgr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.control_plane_egress_to_worker_https](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
@@ -221,9 +222,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_launch_template_arn"></a> [launch\_template\_arn](#output\_launch\_template\_arn) | launch templated id for EKS Self Managed Node Group |
-| <a name="output_launch_template_ids"></a> [launch\_template\_ids](#output\_launch\_template\_ids) | launch templated id for EKS Self Managed Node Group |
-| <a name="output_launch_template_latest_versions"></a> [launch\_template\_latest\_versions](#output\_launch\_template\_latest\_versions) | launch templated version for EKS Self Managed Node Group |
+| <a name="output_launch_template_arn"></a> [launch\_template\_arn](#output\_launch\_template\_arn) | Launch Template ARNs for EKS Self Managed Node Group |
+| <a name="output_launch_template_ids"></a> [launch\_template\_ids](#output\_launch\_template\_ids) | Launch Template IDs for EKS Self Managed Node Group |
+| <a name="output_launch_template_latest_versions"></a> [launch\_template\_latest\_versions](#output\_launch\_template\_latest\_versions) | Launch Template latest versions for EKS Self Managed Node Group |
 | <a name="output_self_managed_asg_names"></a> [self\_managed\_asg\_names](#output\_self\_managed\_asg\_names) | Self managed group ASG names |
 | <a name="output_self_managed_iam_role_name"></a> [self\_managed\_iam\_role\_name](#output\_self\_managed\_iam\_role\_name) | Self managed groups IAM role names |
 | <a name="output_self_managed_nodegroup_iam_instance_profile_arn"></a> [self\_managed\_nodegroup\_iam\_instance\_profile\_arn](#output\_self\_managed\_nodegroup\_iam\_instance\_profile\_arn) | IAM Instance Profile arnd for EKS Self Managed Node Group |
