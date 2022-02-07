@@ -30,6 +30,8 @@ variable "launch_template_config" {
     http_endpoint               = optional(string)
     http_tokens                 = optional(string)
     http_put_response_hop_limit = optional(number)
+
+    monitoring = optional(bool)
   }))
   description = "Launch template configuration"
 }

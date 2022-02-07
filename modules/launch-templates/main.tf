@@ -18,8 +18,12 @@ resource "aws_launch_template" "this" {
       cluster_endpoint     = data.aws_eks_cluster.eks.endpoint
   }))
 
-  iam_instance_profile {
-    name = each.value.iam_instance_profile
+  dynamic "iam_instance_profile" {
+    for_each = try(length(each.value.iam_instance_profile), 0) > 0 ? { iam_instance_profile : each.value.iam_instance_profile } : {}
+    iterator = iam
+    content {
+      name = iam.value.iam_instance_profile
+    }
   }
 
   ebs_optimized = true
@@ -49,6 +53,13 @@ resource "aws_launch_template" "this" {
     content {
       associate_public_ip_address = try(network_interfaces.value.public_ip, false)
       security_groups             = length(each.value.network_interfaces.security_groups) == 0 ? null : network_interfaces.value.security_groups
+    }
+  }
+
+  dynamic "monitoring" {
+    for_each = each.value.monitoring ? { enabled = true } : {}
+    content {
+      enabled = true
     }
   }
 
