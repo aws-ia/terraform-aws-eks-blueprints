@@ -231,9 +231,9 @@ resource "aws_security_group" "opensearch_access" {
   }
   ingress {
     description = "allow instances in the VPC (like EKS) to communicate with OpenSearch"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
 
     cidr_blocks = [local.vpc_cidr]
   }
@@ -248,36 +248,27 @@ resource "aws_security_group" "opensearch_access" {
 #---------------------------------------------------------------
 # Provision resources for testing OpenSearch
 #---------------------------------------------------------------
-resource "tls_private_key" "ec2_private_key" {
+resource "tls_private_key" "bastion_host_private_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
-resource "aws_key_pair" "ec2_instance_key_pair" {
+resource "aws_key_pair" "bastion_host_key_pair" {
   key_name   = "eks-observability-instance-key"
-  public_key = tls_private_key.ec2_private_key.public_key_openssh
+  public_key = tls_private_key.bastion_host_private_key.public_key_openssh
 }
 
 resource "local_file" "private_key_pem_file" {
-  filename          = pathexpand("./ec2_instance_private_key.pem")
+  filename          = pathexpand("./bastion_host_private_key.pem")
   file_permission   = "400"
-  sensitive_content = tls_private_key.ec2_private_key.private_key_pem
+  sensitive_content = tls_private_key.bastion_host_private_key.private_key_pem
 }
 
-resource "aws_instance" "ec2_instance" {
+resource "aws_instance" "bastion_host" {
   ami                         = data.aws_ami.amazon_linux_2.id
   instance_type               = "t2.micro"
   vpc_security_group_ids      = [aws_security_group.opensearch_access.id]
   subnet_id                   = module.aws_vpc.public_subnets[0]
   associate_public_ip_address = true
-  key_name                    = aws_key_pair.ec2_instance_key_pair.key_name
-}
-
-resource "aws_route_table" "opensearch_access" {
-  vpc_id = module.aws_vpc.vpc_id
-
-  route {
-    cidr_block = "${var.local_computer_ip}/32"
-    gateway_id = module.aws_vpc.igw_id
-  }
+  key_name                    = aws_key_pair.bastion_host_key_pair.key_name
 }

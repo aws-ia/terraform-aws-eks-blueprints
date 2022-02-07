@@ -14,6 +14,6 @@ output "opensearch_vpc_endpoint" {
   value       = aws_elasticsearch_domain.opensearch.endpoint
 }
 
-output "ec2_public_ip" {
-  value = aws_instance.ec2_instance.public_ip
+output "bastion_host_public_ip" {
+  value = aws_instance.bastion_host.public_ip
 }
