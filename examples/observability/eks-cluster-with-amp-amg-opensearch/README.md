@@ -1,6 +1,6 @@
 # Observability pattern with EKS Cluster, Amazon Managed Prometheus, Amazon Managed Grafana and Amazon Open Search Service
 
-This example demonstrates how to use the Amazon EKS Accelerator for Terraform to deploy a new Amazon EKS Cluster with Prometheus server for metrics and AWS Fluent Bit for logs. It also provisions Amazon Managed Prometheus, Amazon OpenSearch Service within a VPC, and integrates Amazon Managed Prometheus with Amazon Managed Grafana. It also deploys a bastion host to let us test OpenSearch. Lastly, it includes a sample workload, provisioned with ArgoCD, to generate logs and metrics.
+This example demonstrates how to use the Amazon EKS Accelerator for Terraform to deploy a new Amazon EKS Cluster with Prometheus server for metrics and AWS Fluent Bit for logs. Outside of the EKS cluster, it also provisions Amazon Managed Prometheus, Amazon OpenSearch Service within a VPC, and integrates Amazon Managed Prometheus with Amazon Managed Grafana. It also deploys a bastion host to let us test OpenSearch. Lastly, it includes a sample workload, provisioned with ArgoCD, to generate logs and metrics.
 
 Prometheus server collects these metrics and writes to remote Amazon Managed Prometheus endpoint via `remote write` config property. Amazon Managed Grafana is used to visualize the metrics in dashboards by leveraging Amazon Managed Prometheus workspace as a data source.
 
@@ -92,7 +92,7 @@ kubectl port-forward svc/guestbook-ui -n team-riker 4040:80
 ```
 
 #### Map the Fluent Bit Role as a Backend Role in OpenSearch
-OpenSearch roles are the core method for controlling access to your OpenSearch cluster. Backend roles are a way to map an external identity to an OpenSearch role. In this case we map the Fluent Bit IAM role as a backend role to OpenSearch's *all_access* role so Fluent Bit can send logs to OpenSearch.
+OpenSearch roles are the core method for controlling access within your OpenSearch cluster. Backend roles are a method for mapping an external identity (such as an IAM role) to an OpenSearch role. Mapping the external identity to an OpenSearch role allows that identity to gain the permissions of that role. Here we map the Fluent Bit IAM role as a backend role to OpenSearch's *all_access* role. This gives the Fluent Bit IAM role permission to send logs to OpenSearch. Read more about OpenSearch roles [here](https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/).
 
 Because we provisioned OpenSearch within our VPC, we use a bastion host with port forwarding to test and access our OpenSearch endpoints. Refer to the [Amazon OpenSearch Developer Guide](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html#vpc-test) for more information.
 

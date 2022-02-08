@@ -44,6 +44,8 @@ locals {
     repo_url           = "https://github.com/aws-samples/ssp-eks-workloads.git"
     add_on_application = false
   }
+
+  aws_iam_instance_profile_name = "bastion_host_profile"
 }
 
 #---------------------------------------------------------------
@@ -273,3 +275,4 @@ resource "aws_instance" "bastion_host" {
   key_name                    = aws_key_pair.bastion_host_key_pair.key_name
   monitoring                  = true
 }
+
