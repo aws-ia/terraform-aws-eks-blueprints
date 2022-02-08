@@ -16,7 +16,7 @@ for DEV in $DEVICES
 do
   mkfs.xfs /dev/$${DEV}
   mkdir -p /local$${IDX}
-  
+
   echo /dev/$${DEV} /local$${IDX} xfs defaults,noatime 1 2 >> /etc/fstab
 
   IDX=$(($${IDX} + 1))

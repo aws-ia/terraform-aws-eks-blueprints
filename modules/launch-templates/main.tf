@@ -30,7 +30,7 @@ resource "aws_launch_template" "this" {
 
   dynamic "instance_market_options" {
     for_each = trimspace(lower(each.value.capacity_type)) == "spot" ? { enabled = true } : {}
-    
+
     content {
       market_type = each.value.capacity_type
     }

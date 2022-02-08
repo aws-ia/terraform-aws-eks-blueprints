@@ -50,8 +50,8 @@ locals {
   default_custom_ami_id = contains(local.predefined_ami_types, local.self_managed_node_group["launch_template_os"]) ? data.aws_ami.predefined[local.self_managed_node_group["launch_template_os"]].id : ""
   custom_ami_id         = local.self_managed_node_group["custom_ami_id"] == "" ? local.default_custom_ami_id : local.self_managed_node_group["custom_ami_id"]
 
-  policy_arn_prefix      = "arn:aws:iam::aws:policy"
-  ec2_principal          = "ec2.${data.aws_partition.current.dns_suffix}"
+  policy_arn_prefix = "arn:aws:iam::aws:policy"
+  ec2_principal     = "ec2.${data.aws_partition.current.dns_suffix}"
 
   # EKS Worker Managed Policies
   eks_worker_policies = toset(concat([

@@ -77,7 +77,7 @@ This module allows you to create on-demand or spot self managed Linux or Windows
           volume_size = 20
         }
       ]
-      
+
       instance_type = "m5.large"
 
       max_size     = 10
@@ -104,7 +104,7 @@ This module allows you to create on-demand or spot self managed Linux or Windows
       max_size        = 3
       min_size        = 3
       instance_types = "m5.large"
-      
+
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
