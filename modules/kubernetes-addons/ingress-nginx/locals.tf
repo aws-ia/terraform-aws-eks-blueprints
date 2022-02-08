@@ -65,7 +65,7 @@ locals {
     create_kubernetes_service_account = true
     iam_role_path                     = "/"
     eks_cluster_id                    = var.eks_cluster_id
-    irsa_iam_policies                 = [] # todo: Create policies, add names here
+    irsa_iam_policies                 = [aws_iam_policy.this.arn]
     tags                              = var.tags
   }
 

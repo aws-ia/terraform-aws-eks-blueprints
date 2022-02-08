@@ -26,10 +26,9 @@ Note that the ingress controller is deployed in the `kube-system` namespace.
 
 The following properties are made available for use when managing the add-on via GitOps
 
-```
-ingressNginx = {
-  enable       = true
-  logGroupName = "<log_group_name>"
-  logGroupArn  = "<log_group_arn>"
-}
+``` hcl
+argocd_gitops_config = {
+    enable             = true
+    serviceAccountName = local.service_account_name
+  }
 ```

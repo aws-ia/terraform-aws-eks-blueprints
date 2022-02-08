@@ -1,9 +1,8 @@
+data "aws_caller_identity" "current" {}
+
 data "aws_region" "current" {}
 
-#  S3 buckets for logs, 
-# access to spinning new NLB or ALB for now. 
-# We might need to route53 later on once we add support external DNS
-
+# Getting started AWS IAM policy. Modify as needed.
 data "aws_iam_policy_document" "this" {
   statement {
     sid       = "ReadOnly"
@@ -34,70 +33,12 @@ data "aws_iam_policy_document" "this" {
       "elasticloadbalancing:DescribeTargetGroups",
       "elasticloadbalancing:DescribeTargetGroupAttributes",
       "elasticloadbalancing:DescribeTargetHealth",
-      "elasticloadbalancing:DescribeTags",
+      "elasticloadbalancing:DescribeTags"
     ]
   }
 
   statement {
-    sid    = ""
-    effect = "Allow"
-
-    resources = [
-      "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
-      "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
-      "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*",
-    ]
-
-    actions = [
-      "elasticloadbalancing:AddTags",
-      "elasticloadbalancing:RemoveTags",
-      "elasticloadbalancing:DeleteTargetGroup",
-    ]
-
-    condition {
-      test     = "Null"
-      variable = "aws:ResourceTag/ingress.k8s.aws/cluster"
-      values   = ["false"]
-    }
-  }
-
-  statement {
-    sid       = ""
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "ec2:AuthorizeSecurityGroupIngress",
-      "ec2:RevokeSecurityGroupIngress",
-      "ec2:DeleteSecurityGroup",
-    ]
-
-    condition {
-      test     = "Null"
-      variable = "aws:ResourceTag/elbv2.k8s.aws/cluster"
-      values   = ["false"]
-    }
-  }
-
-  statement {
-    sid       = ""
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "elasticloadbalancing:CreateLoadBalancer",
-      "elasticloadbalancing:CreateTargetGroup",
-    ]
-
-    condition {
-      test     = "Null"
-      variable = "aws:RequestTag/elbv2.k8s.aws/cluster"
-      values   = ["false"]
-    }
-  }
-
-  statement {
-    sid       = ""
+    sid       = "ListenerRulesWrite"
     effect    = "Allow"
     resources = ["*"]
 
@@ -110,30 +51,47 @@ data "aws_iam_policy_document" "this" {
   }
 
   statement {
-    sid    = ""
+    sid    = "ConditionalWrite"
     effect = "Allow"
 
     resources = [
-      "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
-      "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
-      "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*",
+      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:targetgroup/*/*",
+      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:loadbalancer/net/*/*",
+      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:loadbalancer/app/*/*"
     ]
 
     actions = [
       "elasticloadbalancing:AddTags",
       "elasticloadbalancing:RemoveTags",
+      "elasticloadbalancing:DeleteTargetGroup"
     ]
 
     condition {
-      test     = "Null"
-      variable = "aws:RequestTag/elbv2.k8s.aws/cluster"
-      values   = ["true"]
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/kubernetes.io/service-name"
+      values   = ["kube-system/ingress-nginx-controller"]
     }
+  }
+
+  statement {
+    sid    = "ConditionalCreate"
+    effect = "Allow"
+
+    resources = [
+      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:targetgroup/*/*",
+      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:loadbalancer/net/*/*",
+      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:loadbalancer/app/*/*"
+    ]
+
+    actions = [
+      "elasticloadbalancing:CreateLoadBalancer",
+      "elasticloadbalancing:CreateTargetGroup",
+    ]
 
     condition {
-      test     = "Null"
-      variable = "aws:ResourceTag/elbv2.k8s.aws/cluster"
-      values   = ["false"]
+      test     = "StringEquals"
+      variable = "aws:RequestTag/kubernetes.io/service-name"
+      values   = ["kube-system/ingress-nginx-controller"]
     }
   }
 }

@@ -23,3 +23,11 @@ module "helm_addon" {
   helm_config       = local.helm_config
   irsa_config       = local.irsa_config
 }
+
+resource "aws_iam_policy" "this" {
+  name        = "${local.service_account_name}-policy"
+  path        = "/"
+  description = "A generic AWS IAM policy for the ingress nginx irsa."
+
+  policy = data.aws_iam_policy_document.this.json
+}
