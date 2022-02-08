@@ -23,7 +23,7 @@ locals {
     name                       = "yunikorn"
     chart                      = "yunikorn"
     repository                 = "https://apache.github.io/incubator-yunikorn-release"
-    version                    = "0.11.0"
+    version                    = "0.12.2"
     namespace                  = "yunikorn"
     timeout                    = "1200"
     create_namespace           = true
