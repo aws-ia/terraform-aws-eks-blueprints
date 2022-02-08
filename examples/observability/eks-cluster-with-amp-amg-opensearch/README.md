@@ -6,7 +6,6 @@ Prometheus server collects these metrics and writes to remote Amazon Managed Pro
 
 AWS FluentBit Addon is configured to collect the container logs from EKS Cluster nodes and write to Amazon Open Search service.
 
-
 ---
 **NOTE**
 
@@ -22,8 +21,8 @@ For the sake of simplicity in this example, we store sensitive information and c
 - kubectl
 - awscli
 - jq
-- An existing Amazon Managed Grafana Workspace.
-  - As of this writing (February 3, 2022), the AWS Terraform Provider does not support Amazon Managed Grafana, so it must be manually created beforehand. Instructions [here](https://docs.aws.amazon.com/grafana/latest/userguide/getting-started-with-AMG.html).
+- An existing Amazon Managed Grafana workspace.
+  - As of this writing (February 3, 2022), the AWS Terraform Provider does not support Amazon Managed Grafana, so it must be manually created beforehand. Follow the instructions [here](https://docs.aws.amazon.com/grafana/latest/userguide/getting-started-with-AMG.html) to deploy an Amazon Managed Grafana workspace.
 
 #### Generate a Grafana API Key
 - Give admin access to the SSO user you set up when creating the Amazon Managed Grafana Workspace:
@@ -64,6 +63,13 @@ aws eks --region $AWS_REGION update-kubeconfig --name aws001-preprod-observabili
 
 `terraform apply` will provision a new EKS cluster with Fluent Bit, Prometheus, and a sample workload. It will also provision Amazon Managed Prometheus to ingest metrics from Prometheus, an Amazon OpenSearch service domain for ingesting logs from Fluent Bit, and a bastion host so we can test OpenSearch.
 
+---
+**NOTE**
+
+This example automatically generates a key-pair for you and saves the private key to your current directory to make the next steps simpler. In production workloads, it is best practice to use your own key-pair instead of using Terraform to generate one for you.
+
+---
+
 #### Verify that the Resources Deployed Successfully
 
 - Check that the bastion host we use to test OpenSearch is running in the EC2 Console.
@@ -94,16 +100,9 @@ kubectl port-forward svc/guestbook-ui -n team-riker 4040:80
 #### Map the Fluent Bit Role as a Backend Role in OpenSearch
 OpenSearch roles are the core method for controlling access within your OpenSearch cluster. Backend roles are a method for mapping an external identity (such as an IAM role) to an OpenSearch role. Mapping the external identity to an OpenSearch role allows that identity to gain the permissions of that role. Here we map the Fluent Bit IAM role as a backend role to OpenSearch's *all_access* role. This gives the Fluent Bit IAM role permission to send logs to OpenSearch. Read more about OpenSearch roles [here](https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/).
 
-Because we provisioned OpenSearch within our VPC, we use a bastion host with port forwarding to test and access our OpenSearch endpoints. Refer to the [Amazon OpenSearch Developer Guide](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html#vpc-test) for more information.
-
-- In a different terminal window, navigate back to the example directory and forward requests from https://localhost:9200 to your OpenSearch Service domain through the bastion host:
-
----
-**NOTE**
-
-This example automatically generates a key-pair for you and saves the private key to your current directory to make the next steps simpler. In production workloads, it is best practice to use your own key-pair instead of using Terraform to generate one for you.
-
----
+- In a different terminal window, navigate back to the example directory and establish and SSH tunnel from https://localhost:9200 to your OpenSearch Service domain through the bastion host:
+  - Because we provisioned OpenSearch within our VPC, we connect to a bastion host with an SSH tunnel to test and access our OpenSearch endpoints. Refer to the [Amazon OpenSearch Developer Guide](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html#vpc-test) for more information.
+  - For connecting with additional access control using Amazon Cognito, see this [page](https://aws.amazon.com/premiumsupport/knowledge-center/opensearch-outside-vpc-ssh/).
 ```
 export PRIVATE_KEY_FILE=bastion_host_private_key.pem
 export BASTION_HOST_IP=$(terraform output -raw bastion_host_public_ip)
@@ -130,12 +129,13 @@ curl  --insecure -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" \
 '
 ```
 
-#### Set up an Index Pattern in OpenSearch to Explore Log Data
+#### Set up an Index Pattern in OpenSearch Dashboards to Explore Log Data
 
-You must set up an index pattern before you can explore data in the OpenSearch Dashboard. An index pattern selects which data to use. Read more about index patterns [here](https://www.elastic.co/guide/en/kibana/current/index-patterns.html).
+You must set up an index pattern before you can explore data in the OpenSearch Dashboards. An index pattern selects which data to use. Read more about index patterns [here](https://www.elastic.co/guide/en/kibana/current/index-patterns.html).
 
-- Log into the AWS console, navigate to Amazon OpenSearch Service, click on the "opensearch" domain and click on the link under __OpenSearch Dashboards URL__ to access the OpenSearch dashboard.
-- Log into the OpenSearch dashboard with the credentials you set in `dev.tfvars`
+- Make sure the SSH tunnel from the previous step is still established.
+- Log into the AWS console, navigate to Amazon OpenSearch Service, click on the "opensearch" domain and click on the link under __OpenSearch Dashboards URL__ to access the OpenSearch Dashboards.
+- Log into the OpenSearch Dashboards with the credentials you set in `dev.tfvars`
 - From the OpenSearch Dashboards Welcome screen select __Explore on my own__
 - On _Select your tenant_ screen, select Private and click __Confirm__
 - On the next screen click on the _OpenSearch Dashboards_ tile
