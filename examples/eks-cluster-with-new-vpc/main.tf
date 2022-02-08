@@ -157,7 +157,6 @@ module "kubernetes-addons" {
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_cluster_autoscaler           = true
-  enable_ingress_nginx                = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }
