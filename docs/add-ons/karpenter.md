@@ -6,7 +6,7 @@ For complete project documentation, please visit the [Karpenter](https://karpent
 
 ## Usage
 
-Karpenter can be deployed by enabling the add-on via the following. Check out the full [example](examples/karpenter/main.tf) to deploy the EKS CLuster with Karpenter.
+Karpenter can be deployed by enabling the add-on via the following. Check out the full [example](examples/karpenter/main.tf) to deploy the EKS Cluster with Karpenter.
 
 ```hcl
 enable_karpenter = true
