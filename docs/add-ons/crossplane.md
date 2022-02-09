@@ -6,11 +6,11 @@ Crossplane is an open source Kubernetes add-on that enables platform teams to as
  - Support managing a myriad of diverse infrastructure using "provider" plugins
  - It's an open source tool with strong communities
 
-For complete project documentation, please visit the [Crossplane](https://crossplane.io/)
+For complete project documentation, please visit the [Crossplane](https://crossplane.io/).
 
 ## Usage
 
-Crossplane can be deployed by enabling the add-on via the following.
+Crossplane can be deployed by enabling the add-on via the following. Check out the full [example](modules/kubernetes-addons/crossplane/locals.tf) to deploy the EKS Cluster with Crossplane.
 
 ```hcl
   enable_crossplane = true
@@ -41,9 +41,10 @@ Checkout the full [example](examples/crossplane) to deploy Crossplane with `kube
 ### GitOps Configuration
 The following properties made available for use when managing the add-on via GitOps.
 
-```
+Refer to [locals.tf](modules/kubernetes-addons/crossplane/locals.tf) for latest config. GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/ssp-eks-add-ons/blob/main/chart/values.yaml)
+
+```hcl
   argocd_gitops_config = {
     enable             = true
-    serviceAccountName = local.service_account_name
   }
 ```
