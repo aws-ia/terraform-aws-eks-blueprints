@@ -41,7 +41,7 @@ Checkout the full [example](examples/crossplane) to deploy Crossplane with `kube
 ### GitOps Configuration
 The following properties made available for use when managing the add-on via GitOps.
 
-Refer to [locals.tf](modules/kubernetes-addons/crossplane/locals.tf) for latest config. GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/ssp-eks-add-ons/blob/main/chart/values.yaml) 
+Refer to [locals.tf](modules/kubernetes-addons/crossplane/locals.tf) for latest config. GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/ssp-eks-add-ons/blob/main/chart/values.yaml)
 
 ```hcl
   argocd_gitops_config = {
