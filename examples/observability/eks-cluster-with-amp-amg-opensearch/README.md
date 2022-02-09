@@ -133,7 +133,7 @@ curl  --insecure -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" \
 
 You must set up an index pattern before you can explore data in the OpenSearch Dashboards. An index pattern selects which data to use. Read more about index patterns [here](https://www.elastic.co/guide/en/kibana/current/index-patterns.html).
 
-- Make sure the SSH tunnel from the previous step is still established.
+- Follow the steps outlined in **Configure the SOCKS proxy** and **Create the SSH tunnel** sections of this [Knowledge Center](https://aws.amazon.com/premiumsupport/knowledge-center/opensearch-outside-vpc-ssh/) article to establish a SOCKS5 tunnel from localhost to OpenSearch via the bastion host.
 - Log into the AWS console, navigate to Amazon OpenSearch Service, click on the "opensearch" domain and click on the link under __OpenSearch Dashboards URL__ to access the OpenSearch Dashboards.
 - Log into the OpenSearch Dashboards with the credentials you set in `dev.tfvars`
 - From the OpenSearch Dashboards Welcome screen select __Explore on my own__
