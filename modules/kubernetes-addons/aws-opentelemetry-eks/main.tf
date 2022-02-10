@@ -19,10 +19,10 @@
 resource "kubernetes_namespace" "aws_otel_eks" {
   count = var.manage_via_gitops ? 0 : 1
   metadata {
-    name = local.default_addon_config["namespace"]
+    name = local.addon_config["namespace"]
 
     labels = {
-      name = local.default_addon_config["namespace"]
+      name = local.addon_config["namespace"]
     }
   }
 }
@@ -31,7 +31,7 @@ resource "kubernetes_deployment" "aws_otel_eks_sidecar" {
   count = var.manage_via_gitops ? 0 : 1
   metadata {
     name      = "aws-otel-eks-sidecar"
-    namespace = local.default_addon_config["namespace"]
+    namespace = local.addon_config["namespace"]
 
     labels = {
       name = "aws-otel-eks-sidecar"
@@ -56,22 +56,22 @@ resource "kubernetes_deployment" "aws_otel_eks_sidecar" {
 
       spec {
         container {
-          name  = local.default_addon_config["emitter_name"]
-          image = local.default_addon_config["emitter_image"]
+          name  = local.addon_config["emitter_name"]
+          image = local.addon_config["emitter_image"]
 
           env {
             name  = "OTEL_OTLP_ENDPOINT"
-            value = local.default_addon_config["emitter_oltp_endpoint"]
+            value = local.addon_config["emitter_oltp_endpoint"]
           }
 
           env {
             name  = "OTEL_RESOURCE_ATTRIBUTES"
-            value = local.default_addon_config["emitter_otel_resource_attributes"]
+            value = local.addon_config["emitter_otel_resource_attributes"]
           }
 
           env {
             name  = "S3_REGION"
-            value = local.default_addon_config["aws_region"]
+            value = local.addon_config["aws_region"]
           }
 
           image_pull_policy = "Always"
@@ -79,11 +79,11 @@ resource "kubernetes_deployment" "aws_otel_eks_sidecar" {
 
         container {
           name  = "aws-otel-collector"
-          image = local.default_addon_config["collector_image"]
+          image = local.addon_config["collector_image"]
 
           env {
             name  = "AWS_REGION"
-            value = local.default_addon_config["aws_region"]
+            value = local.addon_config["aws_region"]
           }
 
           resources {
