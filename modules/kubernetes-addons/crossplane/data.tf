@@ -5,8 +5,8 @@ data "aws_partition" "current" {}
 data "kubectl_path_documents" "aws_provider" {
   pattern = "${path.module}/aws-provider/provider-aws.yaml"
   vars = {
-    provider-aws-version  = var.crossplane_provider_aws.provider_aws_version
-    iam-role-arn = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_cluster_id}-provider-aws--irsa"
+    provider-aws-version = var.crossplane_provider_aws.provider_aws_version
+    iam-role-arn         = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_cluster_id}-provider-aws--irsa"
   }
 }
 

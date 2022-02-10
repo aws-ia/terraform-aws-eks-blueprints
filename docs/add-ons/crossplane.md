@@ -39,10 +39,10 @@ You can optionally customize the Helm chart that deploys `Crossplane` via the fo
 ```
 
 ### Crossplane AWS Provider Deployment
-AWS Provider for Crossplane gets deployed by default when you enable `enable_crossplane = true`. 
+AWS Provider for Crossplane gets deployed by default when you enable `enable_crossplane = true`.
 The below configuration helps you to upgrade the AWS provider version and lets you define custom IAM policies to manage AWS resources through IRSA.
 
-Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role. 
+Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
 This example uses `AdministratorAccess`, but you should select a policy with the minimum permissions required to provision your resources.
 
 Please find more details from [AWS Provider](https://github.com/crossplane/provider-aws)

@@ -63,7 +63,7 @@ This following command used to update the `kubeconfig` in your local machine whe
 
     $ kubectl get pods -n kube-system
 
-### Deploy S3 bucket using Crossplane 
+### Deploy S3 bucket using Crossplane
 
  - Edit the `s3.yaml` to update the new bucket name
 

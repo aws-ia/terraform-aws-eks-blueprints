@@ -23,7 +23,7 @@ variable "tags" {
 
 variable "crossplane_provider_aws" {
   type = object({
-    provider_aws_version  = string
-    additional_irsa_policies   = list(string)
+    provider_aws_version     = string
+    additional_irsa_policies = list(string)
   })
 }

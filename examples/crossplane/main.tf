@@ -133,7 +133,7 @@ module "kubernetes-addons" {
 
   # Optional config to deploy specific verison of AWS Provider and attach more IAM policies to manage AWS resources suing Crossplane
   crossplane_provider_aws = {
-    provider_aws_version = "v0.23.0"
+    provider_aws_version     = "v0.23.0"
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
   }
 

@@ -15,8 +15,8 @@ Crossplane Add-on can be deployed as follows
   enable_crossplane = true
 ```
 
-AWS Provider for Crossplane will be installed by default with IRSA. 
-Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role. 
+AWS Provider for Crossplane will be installed by default with IRSA.
+Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
 This example uses AdministratorAccess, but you should select a policy with the minimum permissions required to provision your resources.
 Please find more details from [AWS Provider](https://github.com/crossplane/provider-aws)
 
