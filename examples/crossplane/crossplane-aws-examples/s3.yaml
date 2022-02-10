@@ -1,0 +1,19 @@
+apiVersion: s3.aws.crossplane.io/v1beta1
+kind: Bucket
+metadata:
+  name: new-bucket
+  annotations:
+    # This will be the actual bucket name. It must be globally unique, so you
+    # probably want to change it before trying to apply this example.
+    crossplane.io/external-name: <Enter new bucket name here>
+spec:
+  forProvider:
+    locationConstraint: eu-west-1  # choose your own region
+    acl: private
+    publicAccessBlockConfiguration:
+      blockPublicAcls: true
+      blockPublicPolicy: true
+      ignorePublicAcls: true
+      restrictPublicBuckets: true
+  providerConfigRef:
+    name: default

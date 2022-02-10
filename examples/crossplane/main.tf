@@ -128,8 +128,14 @@ module "kubernetes-addons" {
   source         = "../../modules/kubernetes-addons"
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
-  enable_crossplane = true
   # Refer to docs/add-ons/crossplane.md for advanced configuration
+  enable_crossplane = true
+
+  # Optional config to deploy specific verison of AWS Provider and attach more IAM policies to manage AWS resources suing Crossplane
+  crossplane_provider_aws = {
+    provider_aws_version = "v0.23.0"
+    additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+  }
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }

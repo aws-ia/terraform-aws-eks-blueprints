@@ -102,6 +102,17 @@ variable "crossplane_helm_config" {
   description = "Crossplane Helm Chart config"
 }
 
+variable "crossplane_provider_aws" {
+  type = object({
+    provider_aws_version  = string
+    additional_irsa_policies   = list(string)
+  })
+  default = {
+    provider_aws_version = "v0.23.0"
+    additional_irsa_policies = []
+  }
+}
+
 #-----------Amazon Managed Service for Prometheus-------------
 variable "enable_amazon_prometheus" {
   type        = bool

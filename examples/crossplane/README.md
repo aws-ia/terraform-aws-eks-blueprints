@@ -4,6 +4,7 @@ This example deploys the following Basic EKS Cluster with VPC
  - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
  - Creates EKS Cluster Control plane with one managed node group
  - Crossplane Add-on to EKS Cluster
+ - AWS Provider for Crossplane
 
 ## How to Deploy
 ### Prerequisites:
@@ -62,6 +63,26 @@ This following command used to update the `kubeconfig` in your local machine whe
 
     $ kubectl get pods -n kube-system
 
+### Deploy S3 bucket using Crossplane 
+
+ - Edit the `s3.yaml` to update the new bucket name
+
+```shell script
+    vi ~/examples/crossplane/crossplane-aws-examples/s3.yaml
+    # Enter new bucket name and the region in YAML file
+    # Save the file using :wq!
+```
+
+ - Use `kubectl` to apply the `s3.yaml`
+
+```shell script
+    cd ~/examples/crossplane/crossplane-aws-examples/
+    kubectl apply -f s3.yaml
+```
+
+ - Login to AWS Console and verify the new S3 bucket
+
+
 ## How to Destroy
 The following command destroys the resources created by `terraform apply`
 
@@ -70,6 +91,7 @@ cd examples/crossplane
 terraform destroy --auto-approve
 ```
 
+---
 
 <!--- BEGIN_TF_DOCS --->
 ## Requirements
