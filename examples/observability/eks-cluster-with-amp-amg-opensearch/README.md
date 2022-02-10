@@ -237,10 +237,10 @@ You must set up an index pattern before you can explore data in the OpenSearch D
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.74.1 |
-| <a name="provider_grafana"></a> [grafana](#provider\_grafana) | 1.19.0 |
-| <a name="provider_local"></a> [local](#provider\_local) | 2.1.0 |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | 3.1.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.73.0 |
+| <a name="provider_grafana"></a> [grafana](#provider\_grafana) | >= 1.13.3 |
+| <a name="provider_local"></a> [local](#provider\_local) | n/a |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | n/a |
 
 ## Modules
 
@@ -291,4 +291,5 @@ You must set up an index pattern before you can explore data in the OpenSearch D
 | <a name="output_opensearch_pw"></a> [opensearch\_pw](#output\_opensearch\_pw) | Amazon OpenSearch Service Domain password |
 | <a name="output_opensearch_user"></a> [opensearch\_user](#output\_opensearch\_user) | Amazon OpenSearch Service Domain username |
 | <a name="output_opensearch_vpc_endpoint"></a> [opensearch\_vpc\_endpoint](#output\_opensearch\_vpc\_endpoint) | Amazon OpenSearch Service Domain-specific endpoint |
+
 <!--- END_TF_DOCS --->
