@@ -69,9 +69,9 @@ This following command used to update the `kubeconfig` in your local machine whe
 
 ```shell script
     vi ~/examples/crossplane/crossplane-aws-examples/s3.yaml
-    # Enter new bucket name and the region in YAML file
-    # Save the file using :wq!
 ```
+Enter the new bucket name and region in YAML file
+Save the file using :wq!
 
  - Use `kubectl` to apply the `s3.yaml`
 
@@ -85,6 +85,10 @@ This following command used to update the `kubeconfig` in your local machine whe
 
 ## How to Destroy
 The following command destroys the resources created by `terraform apply`
+
+Step1: Delete resources created by Crossplane
+
+Step2: Terraform Destroy
 
 ```shell script
 cd examples/crossplane

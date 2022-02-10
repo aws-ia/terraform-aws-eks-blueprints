@@ -32,10 +32,10 @@ For the sake of simplicity in this example, we store sensitive information and c
 - Navigate back to the Grafana Dashboard. If you don't see the gear icon in the left navigation bar, log out and log back in.
 - Click on the gear icon, then click on the __API keys__ tab.
 - Click __Add API key__, fill in the _Key name_ field and select _Admin_ as the Role.
-- Copy your API key into `dev.tfvars` under `grafana_api_key` 
+- Copy your API key into `dev.tfvars` under `grafana_api_key`
 
 ### Deployment Steps
-- Clone this repository: 
+- Clone this repository:
 ```
 git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 ```
@@ -56,7 +56,7 @@ terraform plan -var-file=dev.tfvars
  ```
  terraform apply -var-file=dev.tfvars --auto-approve
  ```
-- Add the cluster to your kubeconfig: 
+- Add the cluster to your kubeconfig:
 ```
 aws eks --region $AWS_REGION update-kubeconfig --name aws001-preprod-observability-eks
 ```
@@ -82,7 +82,7 @@ Navigate to Amazon OpenSearch in the AWS Console and select the __opensearch__ d
 
 - Check that Prometheus Server is healthy:
   - The following command gets the pod that is running the Prometheus server and sets up port fowarding to http://localhost:8080
-  ``` 
+  ```
   kubectl port-forward $(kubectl get pods --namespace=prometheus --selector='component=server' --output=name) 8080:9090 -n prometheus
   ```
   - Navigate to http://localhost:8080 and confirm that the dashboard webpage loads.
