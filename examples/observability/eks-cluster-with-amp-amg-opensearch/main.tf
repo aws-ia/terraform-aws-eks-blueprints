@@ -275,4 +275,3 @@ resource "aws_instance" "bastion_host" {
   key_name                    = aws_key_pair.bastion_host_key_pair.key_name
   monitoring                  = true
 }
-
