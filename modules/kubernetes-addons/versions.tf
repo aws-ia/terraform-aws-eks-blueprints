@@ -38,10 +38,6 @@ terraform {
       source  = "hashicorp/null"
       version = "3.1.0"
     }
-    kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.13.1"
-    }
   }
   required_version = ">= 1.0.0"
 }
