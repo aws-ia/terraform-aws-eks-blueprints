@@ -190,17 +190,18 @@ module "kubernetes-addons" {
 
 # Deploying default provisioner for Karpenter autoscaler
 data "kubectl_path_documents" "karpenter_provisioners" {
-  pattern = "${path.module}/karpenter-provisioners/default-provisioner.yaml"
+  pattern = "${path.module}/provisioners/default_provisioner.yaml"
   vars = {
-    azs                     = local.azs
+    azs                     = join(",", local.azs)
     iam-instance-profile-id = format("%s-%s", local.cluster_name, local.node_group_name)
+    eks-cluster-id          = local.cluster_name
   }
 }
 
 # You can also deploy multiple provisioner files with the below code snippet
-//data "kubectl_path_documents" "karpenter_provisioners" {
-//  pattern = "${path.module}/karpenter-provisioners/*.yaml"
-//}
+# data "kubectl_path_documents" "karpenter_provisioners" {
+#   pattern = "${path.module}/provisioners/*.yaml"
+# }
 
 resource "kubectl_manifest" "karpenter_provisioner" {
   for_each  = toset(data.kubectl_path_documents.karpenter_provisioners.documents)
