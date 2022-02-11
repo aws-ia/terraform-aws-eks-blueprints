@@ -64,7 +64,7 @@ provider "kubectl" {
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   token                  = data.aws_eks_cluster_auth.cluster.token
   load_config_file       = false
-  apply_retry_count      = 10
+  apply_retry_count      = 5
 }
 
 locals {
@@ -148,6 +148,4 @@ module "kubernetes-addons" {
     provider_aws_version     = "v0.23.0"
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
   }
-
-  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }
