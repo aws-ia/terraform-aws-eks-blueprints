@@ -8,6 +8,7 @@ This example shows how to deploy and leverage Karpenter for Autoscaling. The fol
  - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
  - Creates EKS Cluster Control plane with one Self-managed node group with Max ASG of 1
  - Deploys Karpenter Helm Chart
+ - Deploys default Karpenter Provisioner
 
 # How to Deploy
 ## Prerequisites:
@@ -72,19 +73,11 @@ You should see one Self-managed node up and running
       karpenter-controller-5f959cdc44-8dmjb   1/1     Running   0          31m
       karpenter-webhook-65f48f8d49-5hkpb      1/1     Running   0          31m
 
-#### Step8: Deploy the default provisioner
-Kaprpenter will be ready to spin up SPOT/ON-DEMAND nodes based on the provided configuraiton in `default_provisioner.yaml`
-
-    $ cd examples/eks-cluster-with-karpenter/provisioners
-    $ kubectl apply -f default_provisioner.yaml
-
-#### Step9: Run this sample `deployment` to verify the Autoscaling triggered by Karpenter
-
-    $ cd examples/eks-cluster-with-karpenter/provisioners
-    $ kubectl apply -f sample_deployment.yaml
-
-
 # How to Destroy
+
+NOTE: Make sure you delete all the deployments which clean up the nodes spun up by Karpenter Autoscaler
+Ensure no nodes are running created by Karpenter before running the `Terraform Destroy`. Otherwise, EKS Cluster will be cleaned up however this may leave some nodes running in EC2.
+
 ```shell script
 cd examples/eks-cluster-with-karpenter
 terraform destroy
