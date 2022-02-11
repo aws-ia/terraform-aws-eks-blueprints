@@ -2,18 +2,6 @@ data "aws_caller_identity" "current" {}
 
 data "aws_partition" "current" {}
 
-data "kubectl_path_documents" "aws_provider" {
-  pattern = "${path.module}/aws-provider/provider-aws.yaml"
-  vars = {
-    provider-aws-version = var.crossplane_provider_aws.provider_aws_version
-    iam-role-arn         = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_cluster_id}-provider-aws--irsa"
-  }
-}
-
-data "kubectl_path_documents" "aws_provider_config" {
-  pattern = "${path.module}/aws-provider/aws-provider-config.yaml"
-}
-
 data "aws_iam_policy_document" "s3_policy" {
   statement {
     sid       = "VisualEditor0"

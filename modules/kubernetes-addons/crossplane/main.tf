@@ -17,11 +17,18 @@ module "helm_addon" {
   depends_on = [kubernetes_namespace_v1.crossplane]
 }
 
-resource "kubectl_manifest" "aws_provider" {
-  for_each  = toset(data.kubectl_path_documents.aws_provider.documents)
-  yaml_body = each.value
-
+resource "kubectl_manifest" "controller_config" {
+  yaml_body = templatefile("${path.module}/aws-provider/controller-config.yaml", {
+    iam-role-arn = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_cluster_id}-provider-aws--irsa"
+  })
   depends_on = [module.helm_addon]
+}
+
+resource "kubectl_manifest" "aws_provider" {
+  yaml_body = templatefile("${path.module}/aws-provider/provider-aws.yaml", {
+    provider-aws-version = var.crossplane_provider_aws.provider_aws_version
+  })
+  depends_on = [kubectl_manifest.controller_config]
 }
 
 module "aws_provider_irsa" {
@@ -52,8 +59,7 @@ resource "time_sleep" "wait_30_seconds" {
 }
 
 resource "kubectl_manifest" "aws_provider_config" {
-  for_each  = toset(data.kubectl_path_documents.aws_provider_config.documents)
-  yaml_body = each.value
+  yaml_body = templatefile("${path.module}/aws-provider/aws-provider-config.yaml", {})
 
   depends_on = [kubectl_manifest.aws_provider, time_sleep.wait_30_seconds]
 }
