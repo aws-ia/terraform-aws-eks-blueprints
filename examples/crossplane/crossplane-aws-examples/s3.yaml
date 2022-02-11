@@ -5,10 +5,10 @@ metadata:
   annotations:
     # This will be the actual bucket name. It must be globally unique, so you
     # probably want to change it before trying to apply this example.
-    crossplane.io/external-name: <Enter new bucket name here>
+    crossplane.io/external-name: <ENTER_NEW_BUCKET_NAME>
 spec:
   forProvider:
-    locationConstraint: eu-west-1  # choose your own region
+    locationConstraint: <ENTER_YOUR_REGION>
     acl: private
     publicAccessBlockConfiguration:
       blockPublicAcls: true

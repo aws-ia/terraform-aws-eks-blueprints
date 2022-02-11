@@ -50,7 +50,7 @@ Please find more details from [AWS Provider](https://github.com/crossplane/provi
 ```hcl
   crossplane_provider_aws = {
     provider_aws_version = "v0.23.0"
-    additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+    additional_irsa_policies = ["<ENTER_YOUR_IAM_POLICY>"]
   }
 ```
 
