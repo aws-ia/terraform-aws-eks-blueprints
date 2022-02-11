@@ -6,8 +6,8 @@ resource "aws_autoscaling_group" "self_managed_ng" {
   vpc_zone_identifier = local.self_managed_node_group["subnet_ids"]
 
   launch_template {
-    id      = aws_launch_template.self_managed_ng.id
-    version = aws_launch_template.self_managed_ng.latest_version
+    id      = module.launch_template_self_managed_ng.launch_template_id[local.lt_self_managed_group_map_key]
+    version = module.launch_template_self_managed_ng.launch_template_latest_version[local.lt_self_managed_group_map_key]
   }
 
   lifecycle {
@@ -29,5 +29,4 @@ resource "aws_autoscaling_group" "self_managed_ng" {
     aws_iam_instance_profile.self_managed_ng,
     aws_iam_role_policy_attachment.self_managed_ng
   ]
-
 }

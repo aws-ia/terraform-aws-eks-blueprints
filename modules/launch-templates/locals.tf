@@ -9,8 +9,10 @@ locals {
     ami                    = ""
     launch_template_os     = "amazonlinux2eks" #bottlerocket
     launch_template_prefix = ""
-    vpc_security_group_ids = ""
+    instance_type          = ""
+    capacity_type          = ""
     iam_instance_profile   = ""
+    vpc_security_group_ids = ""
 
     network_interfaces = {
       public_ip       = false
@@ -36,5 +38,7 @@ locals {
     http_endpoint               = "enabled"
     http_tokens                 = "optional"
     http_put_response_hop_limit = 1
+
+    monitoring = true
   })
 }
