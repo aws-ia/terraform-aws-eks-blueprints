@@ -14,6 +14,10 @@ terraform {
       source  = "hashicorp/helm"
       version = ">= 2.4.1"
     }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.13.1"
+    }
   }
 
   backend "local" {
@@ -53,6 +57,14 @@ provider "helm" {
     token                  = data.aws_eks_cluster_auth.cluster.token
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   }
+}
+
+provider "kubectl" {
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+  load_config_file       = false
+  apply_retry_count      = 10
 }
 
 locals {
