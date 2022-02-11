@@ -8,6 +8,7 @@ This example shows how to deploy and leverage Karpenter for Autoscaling. The fol
  - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
  - Creates EKS Cluster Control plane with one Self-managed node group with Max ASG of 1
  - Deploys Karpenter Helm Chart
+ - Deploys default Karpenter Provisioner
 
 # How to Deploy
 ## Prerequisites:
@@ -72,19 +73,11 @@ You should see one Self-managed node up and running
       karpenter-controller-5f959cdc44-8dmjb   1/1     Running   0          31m
       karpenter-webhook-65f48f8d49-5hkpb      1/1     Running   0          31m
 
-#### Step8: Deploy the default provisioner
-Kaprpenter will be ready to spin up SPOT/ON-DEMAND nodes based on the provided configuraiton in `default_provisioner.yaml`
-
-    $ cd examples/eks-cluster-with-karpenter/provisioners
-    $ kubectl apply -f default_provisioner.yaml
-
-#### Step9: Run this sample `deployment` to verify the Autoscaling triggered by Karpenter
-
-    $ cd examples/eks-cluster-with-karpenter/provisioners
-    $ kubectl apply -f sample_deployment.yaml
-
-
 # How to Destroy
+
+NOTE: Make sure you delete all the deployments which clean up the nodes spun up by Karpenter Autoscaler
+Ensure no nodes are running created by Karpenter before running the `Terraform Destroy`. Otherwise, EKS Cluster will be cleaned up however this may leave some nodes running in EC2.
+
 ```shell script
 cd examples/eks-cluster-with-karpenter
 terraform destroy
@@ -98,6 +91,7 @@ terraform destroy
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.1 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.66.0 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
+| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | >= 1.13.1 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.6.1 |
 
 ## Providers
@@ -105,6 +99,7 @@ terraform destroy
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.66.0 |
+| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | >= 1.13.1 |
 
 ## Modules
 
@@ -119,10 +114,12 @@ terraform destroy
 
 | Name | Type |
 |------|------|
+| [kubectl_manifest.karpenter_provisioner](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/manifest) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
 | [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
 | [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
+| [kubectl_path_documents.karpenter_provisioners](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/data-sources/path_documents) | data source |
 
 ## Inputs
 
