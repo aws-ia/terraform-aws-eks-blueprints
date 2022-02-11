@@ -75,9 +75,9 @@ locals {
 
   kubernetes_version = "1.21"
 
-  vpc_cidr     = "10.0.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  vpc_cidr        = "10.0.0.0/16"
+  vpc_name        = join("-", [local.tenant, local.environment, local.zone, "vpc"])
+  cluster_name    = join("-", [local.tenant, local.environment, local.zone, "eks"])
   node_group_name = "self-ondemand"
 
   terraform_version = "Terraform v1.0.1"
@@ -183,7 +183,7 @@ module "kubernetes-addons" {
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
   # Deploys Karpenter add-on
-  enable_karpenter      = true
+  enable_karpenter = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.self_managed_node_groups]
 }
@@ -192,7 +192,7 @@ module "kubernetes-addons" {
 data "kubectl_path_documents" "karpenter_provisioners" {
   pattern = "${path.module}/karpenter-provisioners/default-provisioner.yaml"
   vars = {
-    azs = local.azs
+    azs                     = local.azs
     iam-instance-profile-id = format("%s-%s", local.cluster_name, local.node_group_name)
   }
 }
@@ -208,5 +208,3 @@ resource "kubectl_manifest" "karpenter_provisioner" {
 
   depends_on = [module.kubernetes-addons]
 }
-
-

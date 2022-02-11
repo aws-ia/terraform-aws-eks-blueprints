@@ -18,4 +18,3 @@ spec:
     subnetSelector:
       Name: "*private*"
   ttlSecondsAfterEmpty: 120
-
