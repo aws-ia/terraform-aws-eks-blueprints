@@ -1,12 +1,12 @@
 
 locals {
   default_helm_config = {
-    name                       = "spark-operator"
-    chart                      = "spark-operator"
-    repository                 = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
-    version                    = "1.1.15"
+    name       = "spark-operator"
+    chart      = "spark-operator"
+    repository = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
+    version    = "1.1.15"
     # image configuration can be removed once this issue is merged: https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/pull/1454
-    image                      = {
+    image = {
       repository = "ghcr.io/googlecloudplatform/spark-operator"
       tag        = "v1beta2-1.3.3-3.1.1"
     }

@@ -22,7 +22,7 @@ For complete project documentation, please visit the [Spark K8S Operator documen
     name             = "spark-operator"
     chart            = "spark-operator"
     repository       = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
-    version          = "1.1.6"
+    version          = "1.1.15"
     namespace        = "spark-k8s-operator"
     timeout          = "1200"
     create_namespace = true
