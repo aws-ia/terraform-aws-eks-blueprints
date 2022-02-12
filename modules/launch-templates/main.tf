@@ -7,6 +7,8 @@ resource "aws_launch_template" "this" {
   image_id               = each.value.ami
   update_default_version = true
 
+  instance_type = try(length(each.value.instance_type), 0) == 0 ? null : each.value.instance_type
+
   user_data = base64encode(templatefile("${path.module}/templates/userdata-${each.value.launch_template_os}.tpl",
     {
       pre_userdata         = each.value.pre_userdata
@@ -18,8 +20,20 @@ resource "aws_launch_template" "this" {
       cluster_endpoint     = data.aws_eks_cluster.eks.endpoint
   }))
 
-  iam_instance_profile {
-    name = each.value.iam_instance_profile
+  dynamic "iam_instance_profile" {
+    for_each = try(length(each.value.iam_instance_profile), 0) == 0 ? {} : { iam_instance_profile : each.value.iam_instance_profile }
+    iterator = iam
+    content {
+      name = iam.value
+    }
+  }
+
+  dynamic "instance_market_options" {
+    for_each = trimspace(lower(each.value.capacity_type)) == "spot" ? { enabled = true } : {}
+
+    content {
+      market_type = each.value.capacity_type
+    }
   }
 
   ebs_optimized = true
@@ -42,13 +56,20 @@ resource "aws_launch_template" "this" {
     }
   }
 
-  vpc_security_group_ids = length(each.value.vpc_security_group_ids) == 0 ? null : each.value.vpc_security_group_ids
+  vpc_security_group_ids = try(length(each.value.vpc_security_group_ids), 0) == 0 ? null : each.value.vpc_security_group_ids
 
   dynamic "network_interfaces" {
     for_each = each.value.network_interfaces
     content {
       associate_public_ip_address = try(network_interfaces.value.public_ip, false)
-      security_groups             = length(each.value.network_interfaces.security_groups) == 0 ? null : network_interfaces.value.security_groups
+      security_groups             = try(length(each.value.network_interfaces.security_groups), 0) == 0 ? null : network_interfaces.value.security_groups
+    }
+  }
+
+  dynamic "monitoring" {
+    for_each = each.value.monitoring ? { enabled = true } : {}
+    content {
+      enabled = true
     }
   }
 
@@ -65,5 +86,10 @@ resource "aws_launch_template" "this" {
   tag_specifications {
     resource_type = "instance"
     tags          = length(var.tags) > 0 ? var.tags : { Name = "eks" }
+  }
+
+  tag_specifications {
+    resource_type = "volume"
+    tags          = length(var.tags) > 0 ? var.tags : { Name = "eks-volume" }
   }
 }

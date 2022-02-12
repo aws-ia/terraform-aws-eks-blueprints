@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "irsa_with_oidc" {
     }
 
     condition {
-      test     = "StringEquals"
+      test     = "StringLike"
       variable = "${local.eks_oidc_issuer_url}:sub"
       values   = ["system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}"]
     }

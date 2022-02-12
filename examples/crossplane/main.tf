@@ -14,6 +14,10 @@ terraform {
       source  = "hashicorp/helm"
       version = ">= 2.4.1"
     }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.13.1"
+    }
   }
 
   backend "local" {
@@ -53,6 +57,14 @@ provider "helm" {
     token                  = data.aws_eks_cluster_auth.cluster.token
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   }
+}
+
+provider "kubectl" {
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+  load_config_file       = false
+  apply_retry_count      = 5
 }
 
 locals {
@@ -128,8 +140,12 @@ module "kubernetes-addons" {
   source         = "../../modules/kubernetes-addons"
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
-  enable_crossplane = true
   # Refer to docs/add-ons/crossplane.md for advanced configuration
+  enable_crossplane = true
 
-  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
+  # Optional config to deploy specific version of AWS Provider and attach additional IAM policies to manage AWS resources using Crossplane
+  crossplane_provider_aws = {
+    provider_aws_version     = "v0.23.0"
+    additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
+  }
 }

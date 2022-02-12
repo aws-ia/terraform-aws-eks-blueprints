@@ -10,6 +10,8 @@ For complete project documentation, please visit the [Crossplane](https://crossp
 
 ## Usage
 
+### Crossplane Deployment
+
 Crossplane can be deployed by enabling the add-on via the following. Check out the full [example](modules/kubernetes-addons/crossplane/locals.tf) to deploy the EKS Cluster with Crossplane.
 
 ```hcl
@@ -34,6 +36,21 @@ You can optionally customize the Helm chart that deploys `Crossplane` via the fo
   }
 
   crossplane_irsa_policies = [] # Optional to add additional policies to Crossplane IRSA
+```
+
+### Crossplane AWS Provider Deployment
+AWS Provider for Crossplane gets deployed by default when you enable `enable_crossplane = true`.
+The below configuration helps you to upgrade the AWS provider version and lets you define custom IAM policies to manage AWS resources through IRSA.
+
+Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
+
+Please find more details from [AWS Provider](https://github.com/crossplane/provider-aws)
+
+```hcl
+  crossplane_provider_aws = {
+    provider_aws_version = "v0.23.0"
+    additional_irsa_policies = ["<ENTER_YOUR_IAM_POLICY>"]
+  }
 ```
 
 Checkout the full [example](examples/crossplane) to deploy Crossplane with `kubernetes-addons` module
