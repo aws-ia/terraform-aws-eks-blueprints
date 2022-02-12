@@ -51,6 +51,17 @@ resource "helm_release" "spark_k8s_operator" {
   dependency_update          = local.helm_config["dependency_update"]
   replace                    = local.helm_config["replace"]
 
+  # image repository and tag configuration can be removed once this issue is merged: https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/pull/1454
+  set {
+    name  = "image.repository"
+    value = local.helm_config["image"]["repository"]
+  }
+
+  set {
+    name  = "image.tag"
+    value = local.helm_config["image"]["tag"]
+  }
+
   postrender {
     binary_path = local.helm_config["postrender"]
   }
