@@ -46,6 +46,7 @@ terraform init
 ```
 - Fill-in the values for the variables in `dev.tfvars`
   - The password for OpenSearch must be a minimum of eight characters with at least one uppercase, one lowercase, one digit, and one special character.
+  - If the `AWSServiceRoleForAmazonElasticsearchService` role already exists in your account, set `create_iam_service_linked_role = false`.
 - Verify the resources created by this execution:
 ```
 export AWS_REGION=<ENTER YOUR REGION>   # Select your own region

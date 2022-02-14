@@ -106,7 +106,7 @@ module "aws-eks-accelerator-for-terraform" {
     }
   }
 
-  # Provisions a new Amazon Managed Service for Prometheus instance
+  # Provisions a new Amazon Managed Service for Prometheus workspace
   enable_amazon_prometheus = true
 }
 
@@ -200,6 +200,7 @@ resource "aws_elasticsearch_domain" "opensearch" {
 }
 
 resource "aws_iam_service_linked_role" "opensearch" {
+  count            = var.create_iam_service_linked_role == true ? 1 : 0
   aws_service_name = "es.amazonaws.com"
 }
 

@@ -21,3 +21,9 @@ variable "local_computer_ip" {
   type        = string
   description = "IP Address of the computer you are running and testing this example from"
 }
+
+variable "create_iam_service_linked_role" {
+  type = bool
+  description = "Whether to create the AWSServiceRoleForAmazonElasticsearchService role used by the OpenSearch service"
+  default = true
+}
