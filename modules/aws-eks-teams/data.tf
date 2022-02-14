@@ -9,6 +9,7 @@ data "aws_eks_cluster" "eks_cluster" {
 data "aws_partition" "current" {}
 
 data "aws_iam_policy_document" "platform_team_eks_access" {
+  count = length(var.platform_teams) > 0 ? 1 : 0
   statement {
     sid = "AllowPlatformTeamEKSAccess"
     actions = [

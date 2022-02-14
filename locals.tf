@@ -81,7 +81,7 @@ locals {
     }
   ] : []
 
-  platform_teams_config_map    = module.aws_eks_teams.platform_teams_config_map
-  application_teams_config_map = module.aws_eks_teams.application_teams_config_map
+  platform_teams_config_map    = length(var.platform_teams) > 0 ? module.aws_eks_teams[0].platform_teams_config_map : []
+  application_teams_config_map = length(var.application_teams) > 0 ? module.aws_eks_teams[0].application_teams_config_map : []
   cluster_iam_role_name        = "${module.eks_tags.tags.name}-cluster-role"
 }
