@@ -278,6 +278,7 @@ You must set up an index pattern before you can explore data in the OpenSearch D
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_create_iam_service_linked_role"></a> [create\_iam\_service\_linked\_role](#input\_create\_iam\_service\_linked\_role) | Whether to create the AWSServiceRoleForAmazonElasticsearchService role used by the OpenSearch service | `bool` | `true` | no |
 | <a name="input_grafana_api_key"></a> [grafana\_api\_key](#input\_grafana\_api\_key) | Api key for authorizing the Grafana provider to make changes to Amazon Managed Grafana | `string` | n/a | yes |
 | <a name="input_grafana_endpoint"></a> [grafana\_endpoint](#input\_grafana\_endpoint) | n/a | `string` | n/a | yes |
 | <a name="input_local_computer_ip"></a> [local\_computer\_ip](#input\_local\_computer\_ip) | IP Address of the computer you are running and testing this example from | `string` | n/a | yes |
