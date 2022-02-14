@@ -172,9 +172,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_application_teams_config_map"></a> [application\_teams\_config\_map](#output\_application\_teams\_config\_map) | Application Teams AWS Auth Configmap |
 | <a name="output_application_teams_iam_role_arn"></a> [application\_teams\_iam\_role\_arn](#output\_application\_teams\_iam\_role\_arn) | IAM role ARN for Teams |
-| <a name="output_platform_teams_config_map"></a> [platform\_teams\_config\_map](#output\_platform\_teams\_config\_map) | Platform Teams AWS Auth Configmap |
 | <a name="output_platform_teams_iam_role_arn"></a> [platform\_teams\_iam\_role\_arn](#output\_platform\_teams\_iam\_role\_arn) | IAM role ARN for Platform Teams |
 | <a name="output_team_sa_irsa_iam_role_arn"></a> [team\_sa\_irsa\_iam\_role\_arn](#output\_team\_sa\_irsa\_iam\_role\_arn) | IAM role ARN for Teams EKS Service Account (IRSA) |
 
