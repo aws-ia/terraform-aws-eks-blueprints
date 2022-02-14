@@ -43,6 +43,8 @@ module "aws_eks_managed_node_groups" {
   cluster_security_group_id            = module.aws_eks.cluster_security_group_id
   cluster_primary_security_group_id    = module.aws_eks.cluster_primary_security_group_id
   tags                                 = module.eks_tags.tags
+
+  depends_on = [kubernetes_config_map.aws_auth]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -72,6 +74,8 @@ module "aws_eks_self_managed_node_groups" {
   cluster_security_group_id            = module.aws_eks.cluster_security_group_id
   cluster_primary_security_group_id    = module.aws_eks.cluster_primary_security_group_id
   tags                                 = module.eks_tags.tags
+
+  depends_on = [kubernetes_config_map.aws_auth]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -86,4 +90,6 @@ module "aws_eks_fargate_profiles" {
   fargate_profile = each.value
   eks_cluster_id  = module.aws_eks.cluster_id
   tags            = module.eks_tags.tags
+
+  depends_on = [kubernetes_config_map.aws_auth]
 }
