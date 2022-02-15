@@ -93,12 +93,13 @@ module "aws_for_fluent_bit" {
 }
 
 module "aws_load_balancer_controller" {
-  count             = var.enable_aws_load_balancer_controller ? 1 : 0
-  source            = "./aws-load-balancer-controller"
-  helm_config       = var.aws_load_balancer_controller_helm_config
-  eks_cluster_id    = var.eks_cluster_id
-  tags              = var.tags
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                         = var.enable_aws_load_balancer_controller ? 1 : 0
+  source                        = "./aws-load-balancer-controller"
+  helm_config                   = var.aws_load_balancer_controller_helm_config
+  eks_cluster_id                = var.eks_cluster_id
+  irsa_iam_permissions_boundary = var.aws_load_balancer_controller_irsa_permissions_boundary
+  tags                          = var.tags
+  manage_via_gitops             = var.argocd_manage_add_ons
 }
 
 module "aws_node_termination_handler" {

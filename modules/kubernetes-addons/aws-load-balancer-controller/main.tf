@@ -93,5 +93,6 @@ module "irsa_addon" {
   kubernetes_namespace              = local.helm_config["namespace"]
   kubernetes_service_account        = local.service_account_name
   irsa_iam_policies                 = [aws_iam_policy.aws_load_balancer_controller.arn]
+  irsa_iam_permissions_boundary     = var.irsa_iam_permissions_boundary
   tags                              = var.tags
 }
