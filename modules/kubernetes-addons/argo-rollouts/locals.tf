@@ -9,6 +9,7 @@ locals {
     namespace   = local.name
     description = "Argo Rollouts AddOn Helm Chart"
     values      = local.default_helm_values
+    timeout     = "1200"
   }
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
