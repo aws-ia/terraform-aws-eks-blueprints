@@ -74,5 +74,4 @@ resource "helm_release" "yunikorn" {
       value = each_item.value.value
     }
   }
-
 }

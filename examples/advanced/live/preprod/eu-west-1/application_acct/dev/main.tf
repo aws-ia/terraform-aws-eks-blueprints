@@ -273,7 +273,13 @@ module "aws-eks-accelerator-for-terraform" {
             systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
         EOT
 
-      disk_size     = 20
+      block_device_mapping = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp2"
+          volume_size = 20
+        }
+      ]
       instance_type = "m5.large"
 
       desired_size = 2
@@ -310,7 +316,13 @@ module "aws-eks-accelerator-for-terraform" {
               systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
           EOT
 
-      disk_size     = 20
+      block_device_mapping = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp2"
+          volume_size = 20
+        }
+      ]
       instance_type = "m5.large"
 
       desired_size = 2
@@ -351,7 +363,13 @@ module "aws-eks-accelerator-for-terraform" {
       max_unavailable = 1
 
       instance_types = "m5.large"
-      disk_size      = 50
+      block_device_mapping = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp2"
+          volume_size = 50
+        }
+      ]
 
 
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']

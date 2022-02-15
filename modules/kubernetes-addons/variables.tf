@@ -89,6 +89,31 @@ variable "cluster_autoscaler_helm_config" {
   description = "Cluster Autoscaler Helm Chart config"
 }
 
+#-----------Crossplane ADDON-------------
+variable "enable_crossplane" {
+  type        = bool
+  default     = false
+  description = "Enable Crossplane add-on"
+}
+
+variable "crossplane_helm_config" {
+  type        = any
+  default     = null
+  description = "Crossplane Helm Chart config"
+}
+
+variable "crossplane_provider_aws" {
+  description = "AWS Provider config for Crossplane"
+  type = object({
+    provider_aws_version     = string
+    additional_irsa_policies = list(string)
+  })
+  default = {
+    provider_aws_version     = "v0.23.0"
+    additional_irsa_policies = []
+  }
+}
+
 #-----------Amazon Managed Service for Prometheus-------------
 variable "enable_amazon_prometheus" {
   type        = bool
@@ -304,6 +329,12 @@ variable "argocd_applications" {
   description = "Argo CD Applications config to bootstrap the cluster"
 }
 
+variable "argocd_admin_password_secret_name" {
+  type        = string
+  default     = ""
+  description = "Name for a secret stored in AWS Secrets Manager that contains the admin password."
+}
+
 variable "argocd_manage_add_ons" {
   type        = bool
   default     = false
@@ -342,6 +373,11 @@ variable "karpenter_irsa_policies" {
   default     = []
 }
 
+variable "karpenter_node_iam_instance_profile" {
+  description = "Karpenter Node IAM Instance profile id"
+  default     = ""
+  type        = string
+}
 #-----------KEDA ADDON-------------
 variable "enable_keda" {
   type        = bool

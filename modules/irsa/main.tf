@@ -42,7 +42,7 @@ resource "kubernetes_service_account_v1" "irsa" {
 }
 
 resource "aws_iam_role" "irsa" {
-  name                  = "${var.eks_cluster_id}-${var.kubernetes_service_account}-irsa"
+  name                  = format("%s-%s-%s", var.eks_cluster_id, trim(var.kubernetes_service_account, "*"), "irsa")
   description           = "AWS IAM Role for the Kubernetes service account '${var.kubernetes_service_account}'."
   assume_role_policy    = join("", data.aws_iam_policy_document.irsa_with_oidc.*.json)
   path                  = var.iam_role_path

@@ -35,10 +35,11 @@ module "kms" {
   count  = var.create_eks && var.cluster_kms_key_arn == null ? 1 : 0
   source = "./modules/aws-kms"
 
-  alias       = "alias/${module.eks_tags.id}"
-  description = "${module.eks_tags.id} EKS cluster secret encryption key"
-  policy      = data.aws_iam_policy_document.eks_key.json
-  tags        = module.eks_tags.tags
+  alias                   = "alias/${module.eks_tags.id}"
+  description             = "${module.eks_tags.id} EKS cluster secret encryption key"
+  policy                  = data.aws_iam_policy_document.eks_key.json
+  deletion_window_in_days = var.cluster_kms_key_deletion_window_in_days
+  tags                    = module.eks_tags.tags
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -62,9 +63,8 @@ module "aws_eks" {
   cluster_endpoint_private_access = var.cluster_endpoint_private_access
   cluster_endpoint_public_access  = var.cluster_endpoint_public_access
 
-  worker_create_security_group         = var.worker_create_security_group
-  worker_additional_security_group_ids = var.worker_additional_security_group_ids
-  cluster_log_retention_in_days        = var.cluster_log_retention_in_days
+  worker_create_security_group  = var.worker_create_security_group
+  cluster_log_retention_in_days = var.cluster_log_retention_in_days
 
   # IRSA
   enable_irsa = var.enable_irsa

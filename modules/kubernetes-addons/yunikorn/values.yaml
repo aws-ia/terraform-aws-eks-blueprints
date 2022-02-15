@@ -1,14 +1,14 @@
 global:
   serviceAccount: ${yunikorn_sa_name}
 
-operatorPlugins: ${operator_plugins}
+operatorPlugins: general,spark-k8s-operator
 
 service:
-  type: ${service_type}
+  type: ClusterIP
   port: 9080
   port_web: 9889
 
 # When this flag is true, the admission controller will be installed along with the scheduler.
 # When this flag is false, the admission controller will not be installed.
 # Once the admission controller is installed, all traffic will be routing to yunikorn.
-embedAdmissionController: ${embed_admission_controller}
+embedAdmissionController: false

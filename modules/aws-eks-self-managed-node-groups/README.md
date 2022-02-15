@@ -37,7 +37,14 @@ This module allows you to create on-demand or spot self managed Linux or Windows
             systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
         EOT
 
-      disk_size     = 20
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp2"
+          volume_size = 20
+        }
+      ]
+
       instance_type = "m5.large"
       max_size     = 10
       min_size     = 2
@@ -63,7 +70,14 @@ This module allows you to create on-demand or spot self managed Linux or Windows
               systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
           EOT
 
-      disk_size     = 20
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp2"
+          volume_size = 20
+        }
+      ]
+
       instance_type = "m5.large"
 
       max_size     = 10
@@ -90,7 +104,17 @@ This module allows you to create on-demand or spot self managed Linux or Windows
       max_size        = 3
       min_size        = 3
       instance_types = "m5.large"
-      disk_size      = 50
+
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp3"
+          volume_size = 50
+          iops        = 3000
+          throughput  = 125
+        }
+      ]
+
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
       additional_tags = {
         ExtraTag = "bottlerocket"
@@ -108,7 +132,16 @@ This module allows you to create on-demand or spot self managed Linux or Windows
       # custom_ami_id   = "ami-xxxxxxxxxxxxxxxx" # Bring your own custom AMI. Default Windows AMI is the latest EKS Optimized Windows Server 2019 English Core AMI.
       public_ip = false # Enable only for public subnets
 
-      disk_size     = 50
+      block_device_mappings = [
+        {
+          device_name = "/dev/sda1"
+          volume_type = "gp3"
+          volume_size = 50
+          iops        = 3000
+          throughput  = 125
+        }
+      ]
+
       instance_type = "m5.large"
       max_size     = 4
       min_size     = 2
@@ -138,7 +171,9 @@ No requirements.
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_launch_template_self_managed_ng"></a> [launch\_template\_self\_managed\_ng](#module\_launch\_template\_self\_managed\_ng) | ../launch-templates | n/a |
 
 ## Resources
 
@@ -150,7 +185,6 @@ No modules.
 | [aws_iam_role.self_managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.eks_windows_cni](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.self_managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_launch_template.self_managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template) | resource |
 | [aws_security_group.self_managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group_rule.cluster_primary_sg_ingress_worker_sgr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.control_plane_egress_to_worker_https](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
@@ -185,20 +219,22 @@ No modules.
 | <a name="input_self_managed_ng"></a> [self\_managed\_ng](#input\_self\_managed\_ng) | Map of maps of `eks_self_managed_node_groups` to create | `any` | `{}` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC Id used in security group creation | `string` | n/a | yes |
+| <a name="input_worker_additional_security_group_ids"></a> [worker\_additional\_security\_group\_ids](#input\_worker\_additional\_security\_group\_ids) | Worker additional group security IDs | `list(string)` | `[]` | no |
 | <a name="input_worker_security_group_id"></a> [worker\_security\_group\_id](#input\_worker\_security\_group\_id) | Worker group security ID | `string` | `""` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_launch_template_arn"></a> [launch\_template\_arn](#output\_launch\_template\_arn) | launch templated id for EKS Self Managed Node Group |
-| <a name="output_launch_template_ids"></a> [launch\_template\_ids](#output\_launch\_template\_ids) | launch templated id for EKS Self Managed Node Group |
-| <a name="output_launch_template_latest_versions"></a> [launch\_template\_latest\_versions](#output\_launch\_template\_latest\_versions) | launch templated version for EKS Self Managed Node Group |
+| <a name="output_launch_template_arn"></a> [launch\_template\_arn](#output\_launch\_template\_arn) | Launch Template ARNs for EKS Self Managed Node Group |
+| <a name="output_launch_template_ids"></a> [launch\_template\_ids](#output\_launch\_template\_ids) | Launch Template IDs for EKS Self Managed Node Group |
+| <a name="output_launch_template_latest_versions"></a> [launch\_template\_latest\_versions](#output\_launch\_template\_latest\_versions) | Launch Template latest versions for EKS Self Managed Node Group |
 | <a name="output_self_managed_asg_names"></a> [self\_managed\_asg\_names](#output\_self\_managed\_asg\_names) | Self managed group ASG names |
 | <a name="output_self_managed_iam_role_name"></a> [self\_managed\_iam\_role\_name](#output\_self\_managed\_iam\_role\_name) | Self managed groups IAM role names |
-| <a name="output_self_managed_node_group_iam_instance_profile"></a> [self\_managed\_node\_group\_iam\_instance\_profile](#output\_self\_managed\_node\_group\_iam\_instance\_profile) | Self managed groups IAM Instance profile name |
-| <a name="output_self_managed_node_group_iam_role_arns"></a> [self\_managed\_node\_group\_iam\_role\_arns](#output\_self\_managed\_node\_group\_iam\_role\_arns) | Self managed groups IAM role arns |
-| <a name="output_self_managed_node_group_name"></a> [self\_managed\_node\_group\_name](#output\_self\_managed\_node\_group\_name) | EKS Self Managed node group id |
+| <a name="output_self_managed_nodegroup_iam_instance_profile_arn"></a> [self\_managed\_nodegroup\_iam\_instance\_profile\_arn](#output\_self\_managed\_nodegroup\_iam\_instance\_profile\_arn) | IAM Instance Profile arnd for EKS Self Managed Node Group |
+| <a name="output_self_managed_nodegroup_iam_instance_profile_id"></a> [self\_managed\_nodegroup\_iam\_instance\_profile\_id](#output\_self\_managed\_nodegroup\_iam\_instance\_profile\_id) | IAM Instance Profile ID for EKS Self Managed Node Group |
+| <a name="output_self_managed_nodegroup_iam_role_arns"></a> [self\_managed\_nodegroup\_iam\_role\_arns](#output\_self\_managed\_nodegroup\_iam\_role\_arns) | Self managed groups IAM role arns |
+| <a name="output_self_managed_nodegroup_name"></a> [self\_managed\_nodegroup\_name](#output\_self\_managed\_nodegroup\_name) | EKS Self Managed node group id |
 | <a name="output_self_managed_sec_group_id"></a> [self\_managed\_sec\_group\_id](#output\_self\_managed\_sec\_group\_id) | Self managed group security group id/ids |
 
 <!--- END_TF_DOCS --->

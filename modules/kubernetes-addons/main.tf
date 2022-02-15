@@ -51,6 +51,7 @@ module "aws_ebs_csi_driver" {
 }
 
 #-----------------Kubernetes Add-ons----------------------
+
 module "agones" {
   count                        = var.enable_agones ? 1 : 0
   source                       = "./agones"
@@ -60,12 +61,22 @@ module "agones" {
 }
 
 module "argocd" {
-  count               = var.enable_argocd ? 1 : 0
-  source              = "./argocd"
-  helm_config         = var.argocd_helm_config
-  argocd_applications = var.argocd_applications
-  eks_cluster_id      = var.eks_cluster_id
-  add_on_config       = { for k, v in local.argocd_add_on_config : k => v if v != null }
+  count                      = var.enable_argocd ? 1 : 0
+  source                     = "./argocd"
+  helm_config                = var.argocd_helm_config
+  eks_cluster_id             = var.eks_cluster_id
+  applications               = var.argocd_applications
+  admin_password_secret_name = var.argocd_admin_password_secret_name
+  add_on_config              = { for k, v in local.argocd_add_on_config : k => v if v != null }
+}
+
+module "argo_rollouts" {
+  count             = var.enable_argo_rollouts ? 1 : 0
+  source            = "./argo-rollouts"
+  eks_cluster_id    = var.eks_cluster_id
+  helm_config       = var.argo_rollouts_helm_config
+  tags              = var.tags
+  manage_via_gitops = var.argocd_manage_add_ons
 }
 
 module "aws_for_fluent_bit" {
@@ -125,6 +136,15 @@ module "cluster_autoscaler" {
   manage_via_gitops = var.argocd_manage_add_ons
 }
 
+module "crossplane" {
+  count                   = var.enable_crossplane ? 1 : 0
+  source                  = "./crossplane"
+  helm_config             = var.crossplane_helm_config
+  eks_cluster_id          = var.eks_cluster_id
+  manage_via_gitops       = var.argocd_manage_add_ons
+  crossplane_provider_aws = var.crossplane_provider_aws
+}
+
 module "fargate_fluentbit" {
   count          = var.enable_fargate_fluentbit ? 1 : 0
   source         = "./fargate-fluentbit"
@@ -142,13 +162,14 @@ module "ingress_nginx" {
 }
 
 module "karpenter" {
-  count             = var.enable_karpenter ? 1 : 0
-  source            = "./karpenter"
-  helm_config       = var.karpenter_helm_config
-  eks_cluster_id    = var.eks_cluster_id
-  irsa_policies     = var.karpenter_irsa_policies
-  tags              = var.tags
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                     = var.enable_karpenter ? 1 : 0
+  source                    = "./karpenter"
+  helm_config               = var.karpenter_helm_config
+  eks_cluster_id            = var.eks_cluster_id
+  irsa_policies             = var.karpenter_irsa_policies
+  node_iam_instance_profile = var.karpenter_node_iam_instance_profile
+  tags                      = var.tags
+  manage_via_gitops         = var.argocd_manage_add_ons
 }
 
 module "keda" {
@@ -206,13 +227,5 @@ module "yunikorn" {
   count             = var.enable_yunikorn ? 1 : 0
   source            = "./yunikorn"
   helm_config       = var.yunikorn_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
-}
-
-module "argo_rollouts" {
-  count             = var.enable_argo_rollouts ? 1 : 0
-  source            = "./argo-rollouts"
-  eks_cluster_id    = var.eks_cluster_id
-  helm_config       = var.argo_rollouts_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
 }

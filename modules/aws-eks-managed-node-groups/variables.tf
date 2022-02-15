@@ -37,6 +37,12 @@ variable "worker_security_group_id" {
   default     = ""
 }
 
+variable "worker_additional_security_group_ids" {
+  description = "Worker additional group security IDs"
+  type        = list(string)
+  default     = []
+}
+
 variable "vpc_id" {
   description = "VPC Id used in security group creation"
   type        = string

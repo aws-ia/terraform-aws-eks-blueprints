@@ -32,7 +32,7 @@ Enable Prometheus with custom `values.yaml`
     name       = "prometheus"                                         # (Required) Release name.
     repository = "https://prometheus-community.github.io/helm-charts" # (Optional) Repository URL where to locate the requested chart.
     chart      = "prometheus"                                         # (Required) Chart name to be installed.
-    version    = "14.4.0"                                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
+    version    = "14.4.0"                                             # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-samples/aws-eks-accelerator-for-terraform/blob/main/modules/kubernetes-addons/prometheus/locals.tf
     namespace  = "prometheus"                                         # (Optional) The namespace to install the release into. Defaults to default
     values = [templatefile("${path.module}/prometheus-values.yaml", {
       operating_system = "linux"

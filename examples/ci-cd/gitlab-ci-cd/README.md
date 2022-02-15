@@ -12,11 +12,11 @@ git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git
 ```
 
 ## Step 2: Create a new git repo in your GitLab group and copy files from examples/advanced/gitlab-ci-cd folder to the root of your new GitLab repo
-    cd examples/advanced/gitlab-ci-cd
+    cd examples/ci-cd/gitlab-ci-cd
     cp . $YOUR_GITLAB_REPO_ROOT
 
 ## Step 3: Update project settings-> CI/CD ->Variables
- - Login to the GitLab console, Open your repo and navigate to `settings->ci_cd->Variables`
+ - Login to the GitLab console, Open your repo and navigate to `settings->ci-cd->Variables`
  - Update the following variables as Key Value pairs  before triggering the pipeline
 
         AWS_ACCESS_KEY_ID           e.g., access key from devops admin iam role
@@ -50,6 +50,7 @@ Manually trigger the `tf-destroy` stage in the GitLab Ci/CD pipeline to destroy 
     - `gitlab-terraform` is a thin wrapper around the `terraform` binary. as part of the [GitLab Terraform docker image](https://gitlab.com/gitlab-org/terraform-images) used in `.gitlab-ci.yml`.
 - ### In case your tf-apply stage is failed in between
     -  Correct the source code ,commit and push the code  or ensure you manually trigger tf-destroy stage and cleanup the provisioned resources
+---
 <!--- BEGIN_TF_DOCS --->
 ## Requirements
 
