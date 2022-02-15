@@ -18,7 +18,7 @@
 
 variable "helm_config" {
   type        = any
-  description = "Helm provider config for the aws-efs-csi-driver."
+  description = "Helm provider config for the aws_efs_csi_driver."
   default     = {}
 }
 

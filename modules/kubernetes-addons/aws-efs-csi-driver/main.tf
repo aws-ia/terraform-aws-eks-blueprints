@@ -16,7 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-resource "helm_release" "aws-efs-csi-driver" {
+resource "helm_release" "aws_efs_csi_driver" {
   count                      = var.manage_via_gitops ? 0 : 1
   name                       = local.helm_config["name"]
   repository                 = local.helm_config["repository"]
@@ -78,10 +78,10 @@ resource "helm_release" "aws-efs-csi-driver" {
   depends_on = [module.irsa_addon]
 }
 
-resource "aws_iam_policy" "aws-efs-csi-driver" {
+resource "aws_iam_policy" "aws_efs_csi_driver" {
   name        = "${var.eks_cluster_id}-efs-csi-controller-policy"
   description = "IAM Policy for AWS EFS CSI Driver"
-  policy      = data.aws_iam_policy_document.aws-efs-csi-driver.json
+  policy      = data.aws_iam_policy_document.aws_efs_csi_driver.json
   tags        = var.tags
 }
 
@@ -92,6 +92,6 @@ module "irsa_addon" {
   eks_cluster_id                    = var.eks_cluster_id
   kubernetes_namespace              = local.helm_config["namespace"]
   kubernetes_service_account        = local.service_account_name
-  irsa_iam_policies                 = [aws_iam_policy.aws-efs-csi-driver.arn]
+  irsa_iam_policies                 = [aws_iam_policy.aws_efs_csi_driver.arn]
   tags                              = var.tags
 }

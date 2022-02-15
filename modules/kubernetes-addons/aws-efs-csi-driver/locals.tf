@@ -15,7 +15,7 @@ locals {
     lint                       = true
     wait                       = true
     wait_for_jobs              = false
-    description                = "aws-efs-csi-driver Helm Chart for installing the EFS CSI driver"
+    description                = "aws-efs-csi-driver Helm Chart for the EFS CSI driver"
     verify                     = false
     keyring                    = ""
     repository_key_file        = ""
