@@ -2,12 +2,13 @@
 locals {
   name                 = "ingress-nginx"
   service_account_name = "${local.name}-sa"
+  namespace            = "nginx"
   default_helm_config = {
     name                       = local.name
     chart                      = local.name
     repository                 = "https://kubernetes.github.io/ingress-nginx"
     version                    = "4.0.6"
-    namespace                  = "kube-system"
+    namespace                  = local.namespace
     timeout                    = "1200"
     create_namespace           = false
     values                     = local.default_helm_values
@@ -59,13 +60,13 @@ locals {
   ]
 
   irsa_config = {
-    kubernetes_namespace              = "kube-system"
+    kubernetes_namespace              = local.namespace
     kubernetes_service_account        = local.service_account_name
-    create_kubernetes_namespace       = false
+    create_kubernetes_namespace       = true
     create_kubernetes_service_account = true
     iam_role_path                     = "/"
     eks_cluster_id                    = var.eks_cluster_id
-    irsa_iam_policies                 = [aws_iam_policy.this.arn]
+    irsa_iam_policies                 = concat([aws_iam_policy.this.arn], var.irsa_policies)
     tags                              = var.tags
   }
 

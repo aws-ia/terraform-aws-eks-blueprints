@@ -2,7 +2,6 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
-# Getting started AWS IAM policy. Modify as needed.
 data "aws_iam_policy_document" "this" {
   statement {
     sid       = "ReadOnly"
@@ -69,7 +68,7 @@ data "aws_iam_policy_document" "this" {
     condition {
       test     = "StringEquals"
       variable = "aws:ResourceTag/kubernetes.io/service-name"
-      values   = ["kube-system/ingress-nginx-controller"]
+      values   = ["${local.namespace}/ingress-nginx-controller"]
     }
   }
 
@@ -91,7 +90,7 @@ data "aws_iam_policy_document" "this" {
     condition {
       test     = "StringEquals"
       variable = "aws:RequestTag/kubernetes.io/service-name"
-      values   = ["kube-system/ingress-nginx-controller"]
+      values   = ["${local.namespace}/ingress-nginx-controller"]
     }
   }
 }

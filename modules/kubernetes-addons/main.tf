@@ -138,6 +138,7 @@ module "ingress_nginx" {
   helm_config       = var.ingress_nginx_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   eks_cluster_id    = var.eks_cluster_id
+  irsa_policies     = var.nginx_irsa_policies
 }
 
 module "karpenter" {

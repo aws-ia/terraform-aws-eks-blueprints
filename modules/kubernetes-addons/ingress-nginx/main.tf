@@ -25,9 +25,16 @@ module "helm_addon" {
 }
 
 resource "aws_iam_policy" "this" {
-  name        = "${local.service_account_name}-policy"
+  name        = "${var.eks_cluster_id}-${local.service_account_name}-policy"
   path        = "/"
   description = "A generic AWS IAM policy for the ingress nginx irsa."
+  policy      = data.aws_iam_policy_document.this.json
 
-  policy = data.aws_iam_policy_document.this.json
+  tags = merge(
+    {
+      "Name"                         = "${var.eks_cluster_id}-${local.service_account_name}-irsa-policy",
+      "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
+    },
+    var.tags
+  )
 }

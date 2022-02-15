@@ -38,3 +38,9 @@ variable "tags" {
   description = "Common Tags for AWS resources"
   default     = null
 }
+
+variable "irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
