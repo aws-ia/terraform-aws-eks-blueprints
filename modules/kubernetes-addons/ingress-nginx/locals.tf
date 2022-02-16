@@ -41,7 +41,7 @@ locals {
     postrender                 = ""
   }
 
-  default_helm_values = [templatefile("${path.module}/values.yaml", { sa-name = local.service_account_name })]
+  default_helm_values = [templatefile("${path.module}/values.yaml", { service_account_name = local.service_account_name })]
 
   helm_config = merge(
     local.default_helm_config,
