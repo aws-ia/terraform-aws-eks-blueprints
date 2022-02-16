@@ -24,7 +24,7 @@ locals {
     name                       = "vpa"
     chart                      = "vpa"
     repository                 = "https://charts.fairwinds.com/stable"
-    version                    = "0.5.0"
+    version                    = "1.0.0"
     namespace                  = "vpa-ns"
     timeout                    = "1200"
     create_namespace           = true

@@ -4,7 +4,7 @@ KEDA is a Kubernetes-based Event Driven Autoscaler. With KEDA, you can drive the
 
 KEDA is a single-purpose and lightweight component that can be added into any Kubernetes cluster. KEDA works alongside standard Kubernetes components like the Horizontal Pod Autoscaler and can extend functionality without overwriting or duplication. With KEDA you can explicitly map the apps you want to use event-driven scale, with other apps continuing to function. This makes KEDA a flexible and safe option to run alongside any number of any other Kubernetes applications or frameworks..
 
-[KEDA](https://github.com/kedacore/charts/tree/master/keda) chart bootstraps KEDA infrastructure on a Kubernetes cluster using the Helm package manager.
+[KEDA](https://github.com/kedacore/charts/tree/main/keda) chart bootstraps KEDA infrastructure on a Kubernetes cluster using the Helm package manager.
 
 For complete project documentation, please visit the [KEDA documentation site](https://keda.sh/).
 
@@ -24,7 +24,7 @@ Deploy KEDA with custom `values.yaml`
     name       = "keda"                                               # (Required) Release name.
     repository = "https://kedacore.github.io/charts"                  # (Optional) Repository URL where to locate the requested chart.
     chart      = "keda"                                               # (Required) Chart name to be installed.
-    version    = "2.4.0"                                              # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
+    version    = "2.4.0"                                              # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-samples/aws-eks-accelerator-for-terraform/blob/main/modules/kubernetes-addons/keda/locals.tf
     namespace  = "keda"                                               # (Optional) The namespace to install the release into. Defaults to default
     values = [templatefile("${path.module}/keda-values.yaml", {})]
   }

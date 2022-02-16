@@ -137,10 +137,12 @@ module "cluster_autoscaler" {
 }
 
 module "crossplane" {
-  count             = var.enable_crossplane ? 1 : 0
-  source            = "./crossplane"
-  helm_config       = var.crossplane_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                   = var.enable_crossplane ? 1 : 0
+  source                  = "./crossplane"
+  helm_config             = var.crossplane_helm_config
+  eks_cluster_id          = var.eks_cluster_id
+  manage_via_gitops       = var.argocd_manage_add_ons
+  crossplane_provider_aws = var.crossplane_provider_aws
 }
 
 module "fargate_fluentbit" {

@@ -143,7 +143,7 @@ resource "helm_release" "argocd_application" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "kubernetes_secret" "argocd_gitops" {
-  for_each = { for k, v in var.applications : k => v if v.ssh_key_secret_name != null }
+  for_each = { for k, v in var.applications : k => v if try(v.ssh_key_secret_name, null) != null }
 
   metadata {
     name      = "${each.key}-repo-secret"

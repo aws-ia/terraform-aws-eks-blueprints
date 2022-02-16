@@ -14,6 +14,10 @@ terraform {
       source  = "hashicorp/helm"
       version = ">= 2.4.1"
     }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.13.1"
+    }
   }
 
   backend "local" {
@@ -55,16 +59,26 @@ provider "helm" {
   }
 }
 
+provider "kubectl" {
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+  load_config_file       = false
+  apply_retry_count      = 10
+}
+
 locals {
   tenant      = "aws001"  # AWS account name or unique id for tenant
   environment = "preprod" # Environment area eg., preprod or prod
   zone        = "dev"     # Environment with in one sub_tenant or business unit
+  azs         = data.aws_availability_zones.available.names
 
   kubernetes_version = "1.21"
 
-  vpc_cidr     = "10.0.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  vpc_cidr        = "10.0.0.0/16"
+  vpc_name        = join("-", [local.tenant, local.environment, local.zone, "vpc"])
+  cluster_name    = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  node_group_name = "self-ondemand"
 
   terraform_version = "Terraform v1.0.1"
 }
@@ -75,7 +89,7 @@ module "aws_vpc" {
 
   name = local.vpc_name
   cidr = local.vpc_cidr
-  azs  = data.aws_availability_zones.available.names
+  azs  = local.azs
 
   public_subnets  = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(local.vpc_cidr, 8, k)]
   private_subnets = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(local.vpc_cidr, 8, k + 10)]
@@ -118,7 +132,7 @@ module "aws-eks-accelerator-for-terraform" {
   # Karpenter requires one node to get up and running
   self_managed_node_groups = {
     self_mg_4 = {
-      node_group_name    = "self-managed-ondemand"
+      node_group_name    = local.node_group_name
       launch_template_os = "amazonlinux2eks"
       max_size           = 1
       subnet_ids         = module.aws_vpc.private_subnets
@@ -167,9 +181,31 @@ module "kubernetes-addons" {
   source = "../../modules/kubernetes-addons"
 
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-  #K8s Add-ons
-  enable_karpenter      = true
-  enable_metrics_server = true
+
+  # Deploys Karpenter add-on
+  enable_karpenter = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.self_managed_node_groups]
+}
+
+# Deploying default provisioner for Karpenter autoscaler
+data "kubectl_path_documents" "karpenter_provisioners" {
+  pattern = "${path.module}/provisioners/default_provisioner.yaml"
+  vars = {
+    azs                     = join(",", local.azs)
+    iam-instance-profile-id = format("%s-%s", local.cluster_name, local.node_group_name)
+    eks-cluster-id          = local.cluster_name
+  }
+}
+
+# You can also deploy multiple provisioner files with the below code snippet
+# data "kubectl_path_documents" "karpenter_provisioners" {
+#   pattern = "${path.module}/provisioners/*.yaml"
+# }
+
+resource "kubectl_manifest" "karpenter_provisioner" {
+  for_each  = toset(data.kubectl_path_documents.karpenter_provisioners.documents)
+  yaml_body = each.value
+
+  depends_on = [module.kubernetes-addons]
 }
