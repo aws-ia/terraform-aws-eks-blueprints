@@ -189,7 +189,7 @@ resource "aws_iam_role" "platform_team" {
   for_each            = var.platform_teams
   name                = format("%s-%s-%s", local.role_prefix_name, "${each.key}", "Access")
   tags                = var.tags
-  managed_policy_arns = [aws_iam_policy.platform_team_eks_access.arn]
+  managed_policy_arns = [aws_iam_policy.platform_team_eks_access[0].arn]
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -209,9 +209,10 @@ resource "aws_iam_role" "platform_team" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_iam_policy" "platform_team_eks_access" {
+  count       = length(var.platform_teams) > 0 ? 1 : 0
   name        = format("%s-%s", local.role_prefix_name, "PlatformTeamEKSAccess")
   path        = "/"
   description = "Platform Team EKS Console Access"
-  policy      = data.aws_iam_policy_document.platform_team_eks_access.json
+  policy      = data.aws_iam_policy_document.platform_team_eks_access[0].json
   tags        = var.tags
 }
