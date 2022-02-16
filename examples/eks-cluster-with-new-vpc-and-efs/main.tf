@@ -116,10 +116,10 @@ module "aws-eks-accelerator-for-terraform" {
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
-    mg_2 = {
+    mg_4 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["t2.micro"]
-      min_size        = "1"
+      instance_types  = ["m4.large"]
+      min_size        = "2"
       subnet_ids      = module.aws_vpc.private_subnets
     }
   }
@@ -139,10 +139,10 @@ module "kubernetes-addons" {
   enable_amazon_eks_kube_proxy = true
 
   # K8s Add-ons
-  enable_aws_efs_csi_driver           = true
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_cluster_autoscaler           = true
+  enable_aws_efs_csi_driver           = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }
@@ -179,4 +179,9 @@ resource "aws_security_group" "efs-sg" {
     to_port         = 0
     protocol        = "-1"
   }
+}
+
+output "efs_file_system_id" {
+  description = "ID of the EFS file system to use for creating a storage class"
+  value       = aws_efs_file_system.efs.id
 }
