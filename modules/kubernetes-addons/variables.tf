@@ -442,6 +442,12 @@ variable "argo_rollouts_helm_config" {
   description = "Argo Rollouts Helm Chart config"
 }
 
+variable "argo_rollouts_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}
+
 variable "argo_rollouts_irsa_policies" {
   type        = list(string)
   default     = []
