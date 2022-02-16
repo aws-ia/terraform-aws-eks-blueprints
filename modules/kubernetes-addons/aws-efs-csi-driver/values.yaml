@@ -1,7 +1,8 @@
+# Disable service account creation as it's handled by the IRSA add-on module
+
 controller:
   serviceAccount:
-    create: true
-    name: ${service_account_name}
+    create: false
 
 node:
   serviceAccount:
