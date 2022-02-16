@@ -3,7 +3,3 @@
 controller:
   serviceAccount:
     create: false
-
-node:
-  serviceAccount:
-    create: false
