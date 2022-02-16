@@ -137,21 +137,8 @@ module "kubernetes-addons" {
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
   enable_ingress_nginx      = true
-  nginx_irsa_policies       = [aws_iam_policy.this.arn]
 
   ingress_nginx_helm_config = {
     version = "4.0.17"
-  }
-}
-
-resource "aws_iam_policy" "this" {
-  name        = "${module.aws-eks-accelerator-for-terraform.eks_cluster_id}-nginx-sa-additional-policy"
-  path        = "/"
-  description = "Another AWS IAM policy for the ingress nginx irsa."
-  policy      = data.aws_iam_policy_document.this.json
-
-  tags = {
-    "Name"                         = "${module.aws-eks-accelerator-for-terraform.eks_cluster_id}-nginx-sa-additional-policy",
-    "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
   }
 }
