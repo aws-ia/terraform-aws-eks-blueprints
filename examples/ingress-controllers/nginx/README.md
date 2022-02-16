@@ -73,10 +73,10 @@ This following command used to update the `kubeconfig` in your local machine whe
     kubectl get nodes
 ```
 
-#### Step7: List all the pods running in `kube-system` namespace
+#### Step7: List all the pods running in `nginx` namespace
 
 ``` shell
-    kubectl get pods -n kube-system
+    kubectl get pods -n nginx
 ```
 
 ## How to Destroy
@@ -116,11 +116,9 @@ terraform destroy --auto-approve
 
 | Name | Type |
 |------|------|
-| [aws_iam_policy.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
 | [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
 | [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
-| [aws_iam_policy_document.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
