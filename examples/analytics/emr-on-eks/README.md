@@ -77,7 +77,7 @@ This script requires two input parameters.
     S3_BUCKET=$2               # S3 bucket for storing the scripts and spark output data e.g., s3://<bucket-name>
 
 ```shell script
-cd examples/analytics/emr-on-eks/examples/spark-execute/ 
+cd examples/analytics/emr-on-eks/examples/spark-execute/
 ./5-spark-job-with-AMP-AMG.sh aws001-preprod-test-eks-emr-data-team-a <ENTER_S3_BUCKET_NAME>
 ```
 
