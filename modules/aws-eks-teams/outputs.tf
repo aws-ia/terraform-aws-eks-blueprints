@@ -18,13 +18,3 @@ output "team_sa_irsa_iam_role_arn" {
     for k, v in aws_iam_role.team_sa_irsa : k => v.arn
   })
 }
-
-output "application_teams_config_map" {
-  description = "Application Teams AWS Auth Configmap"
-  value       = local.application_teams_config_map
-}
-
-output "platform_teams_config_map" {
-  description = "Platform Teams AWS Auth Configmap"
-  value       = local.platform_teams_config_map
-}
