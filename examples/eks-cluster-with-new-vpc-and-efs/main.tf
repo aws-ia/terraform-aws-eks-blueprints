@@ -173,14 +173,14 @@ resource "aws_efs_file_system" "efs" {
   creation_token   = "efs"
 }
 
-resource "aws_efs_mount_target" "efs-mt" {
+resource "aws_efs_mount_target" "efs_mt" {
   count           = length(module.aws_vpc.private_subnets)
   file_system_id  = aws_efs_file_system.efs.id
   subnet_id       = module.aws_vpc.private_subnets[count.index]
-  security_groups = [aws_security_group.efs-sg.id]
+  security_groups = [aws_security_group.efs_sg.id]
 }
 
-resource "aws_security_group" "efs-sg" {
+resource "aws_security_group" "efs_sg" {
   name        = "efs-sg"
   description = "Allow inbound EFS traffic from EKS worker nodes"
   vpc_id      = module.aws_vpc.vpc_id
