@@ -3,7 +3,6 @@
 
 
 <!--- BEGIN_TF_DOCS --->
-<!--- END_TF_DOCS --->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: MIT-0
 
@@ -147,3 +146,4 @@ No resources.
 ## Outputs
 
 No outputs.
+<!--- END_TF_DOCS --->
