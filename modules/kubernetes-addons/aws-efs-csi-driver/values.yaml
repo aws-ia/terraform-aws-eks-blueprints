@@ -1,6 +1,13 @@
 # Disable service account creation as it's handled by the IRSA add-on module
 
+# Controller Service: CreateVolume, DeleteVolume, ControllerGetCapabilities, ValidateVolumeCapabilities
 controller:
+  serviceAccount:
+    create: false
+    name: ${service_account_name}
+
+# Node Service: NodePublishVolume, NodeUnpublishVolume, NodeGetCapabilities, NodeGetInfo, NodeGetId, NodeGetVolumeStats
+node:
   serviceAccount:
     create: false
     name: ${service_account_name}

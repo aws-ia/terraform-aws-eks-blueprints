@@ -1,11 +1,11 @@
 locals {
-  service_account_name = "efs-csi-controller-sa"
+  service_account_name = "efs-csi-sa"
 
   default_helm_config = {
     name                       = "aws-efs-csi-driver"
     chart                      = "aws-efs-csi-driver"
     repository                 = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
-    version                    = "2.1.3"
+    version                    = "2.2.3"
     namespace                  = "kube-system"
     timeout                    = "1200"
     create_namespace           = false
