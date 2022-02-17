@@ -291,3 +291,11 @@ module "aws_privateca_issuer" {
   aws_privateca_acmca_arn = var.aws_privateca_acmca_arn
   irsa_policies           = var.aws_privateca_issuer_irsa_policies
 }
+
+module "otel_jmx" {
+  count             = var.enable_otel_jmx ? 1 : 0
+  eks_cluster_id    = var.eks_cluster_id
+  source            = "./aws-opentelemetry-eks-jmx"
+  helm_config       = var.otel_jmx_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+}
