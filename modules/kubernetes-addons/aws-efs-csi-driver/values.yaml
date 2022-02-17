@@ -3,3 +3,4 @@
 controller:
   serviceAccount:
     create: false
+    name: ${service_account_name}
