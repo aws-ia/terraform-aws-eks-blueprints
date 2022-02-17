@@ -136,7 +136,7 @@ module "kubernetes-addons" {
   enable_prometheus                    = true
   enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
-  depends_on                           = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
+  depends_on                           = [module.aws-eks-accelerator-for-terraform.managed_node_groups, module.aws_vpc]
 }
 
 #---------------------------------------------------------------
@@ -200,7 +200,7 @@ resource "aws_elasticsearch_domain" "opensearch" {
   }
 
   depends_on = [
-    aws_iam_service_linked_role.opensearch, module.aws_vpc
+    aws_iam_service_linked_role.opensearch
   ]
 }
 
