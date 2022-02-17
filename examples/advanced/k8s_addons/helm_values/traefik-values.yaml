@@ -1,6 +1,6 @@
 image:
   name: traefik
-  tag: v2.4.9
+  tag: v2.6.0
 deployment:
   enabled: true
   kind: Deployment
