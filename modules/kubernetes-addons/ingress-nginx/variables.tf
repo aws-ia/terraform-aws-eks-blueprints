@@ -27,3 +27,26 @@ variable "manage_via_gitops" {
   default     = false
   description = "Determines if the add-on should be managed via GitOps."
 }
+
+variable "eks_cluster_id" {
+  type        = string
+  description = "EKS cluster Id"
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "Common Tags for AWS resources"
+  default     = null
+}
+
+variable "irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
+
+variable "irsa_iam_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}

@@ -155,10 +155,13 @@ module "fargate_fluentbit" {
 }
 
 module "ingress_nginx" {
-  count             = var.enable_ingress_nginx ? 1 : 0
-  source            = "./ingress-nginx"
-  helm_config       = var.ingress_nginx_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                         = var.enable_ingress_nginx ? 1 : 0
+  source                        = "./ingress-nginx"
+  helm_config                   = var.ingress_nginx_helm_config
+  manage_via_gitops             = var.argocd_manage_add_ons
+  eks_cluster_id                = var.eks_cluster_id
+  irsa_policies                 = var.nginx_irsa_policies
+  irsa_iam_permissions_boundary = var.nginx_ingress_controller_irsa_permissions_boundary
 }
 
 module "karpenter" {
