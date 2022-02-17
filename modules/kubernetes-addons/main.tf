@@ -230,7 +230,8 @@ module "yunikorn" {
 
 module "kube_state_metrics" {
   count             = var.enable_kube_state_metrics ? 1 : 0
-  source            = "github.com/askulkarni2/kube-state-metrics-addon"
+  source            = "askulkarni2/kube-state-metrics-addon/eksblueprints"
+  version           = "0.0.1"
   eks_cluster_id    = var.eks_cluster_id
   helm_config       = var.kube_state_metrics_helm_config
   tags              = var.tags
