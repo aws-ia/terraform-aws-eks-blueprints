@@ -229,6 +229,12 @@ variable "nginx_irsa_policies" {
   default     = []
 }
 
+variable "nginx_ingress_controller_irsa_permissions_boundary" {
+  type        = string
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+  default     = ""
+}
+
 #-----------SPARK K8S OPERATOR-------------
 variable "enable_spark_k8s_operator" {
   type        = bool

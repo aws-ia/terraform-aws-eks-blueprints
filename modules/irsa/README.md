@@ -1,4 +1,6 @@
-This module creates the following resources
+# IRSA (IAM roles for Kubernetes Service Accounts)
+
+This Terraform module creates the following resources
 
  1. Kubernetes Namespace for Kubernetes Addon
  2. Service Account for Kubernetes Addon
@@ -31,8 +33,8 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.71.0 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.7.1 |
 
 ## Modules
 

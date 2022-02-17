@@ -56,6 +56,10 @@ resource "aws_iam_role" "irsa" {
     },
     var.tags
   )
+}
+
+resource "aws_iam_role_policy_attachment" "irsa" {
+  count      = length(var.irsa_iam_policies)
   policy_arn = var.irsa_iam_policies[count.index]
   role       = aws_iam_role.irsa.name
 }

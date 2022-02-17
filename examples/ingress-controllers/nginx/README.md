@@ -102,7 +102,7 @@ terraform destroy --auto-approve
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.74.1 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.1.0 |
 
 ## Modules
 

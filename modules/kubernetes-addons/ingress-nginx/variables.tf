@@ -44,3 +44,9 @@ variable "irsa_policies" {
   description = "Additional IAM policies for a IAM role for service accounts"
   default     = []
 }
+
+variable "irsa_iam_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}
