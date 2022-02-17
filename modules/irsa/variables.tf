@@ -59,3 +59,9 @@ variable "irsa_iam_policies" {
   type        = list(string)
   description = "IAM Policies for IRSA IAM role"
 }
+
+variable "irsa_iam_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}

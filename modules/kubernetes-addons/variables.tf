@@ -204,6 +204,12 @@ variable "aws_load_balancer_controller_helm_config" {
   default     = {}
 }
 
+variable "aws_load_balancer_controller_irsa_permissions_boundary" {
+  type        = string
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+  default     = ""
+}
+
 #-----------NGINX-------------
 variable "enable_ingress_nginx" {
   type        = bool
@@ -434,6 +440,12 @@ variable "argo_rollouts_helm_config" {
   type        = any
   default     = null
   description = "Argo Rollouts Helm Chart config"
+}
+
+variable "argo_rollouts_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
 variable "argo_rollouts_irsa_policies" {

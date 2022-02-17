@@ -47,6 +47,7 @@ resource "aws_iam_role" "irsa" {
   path                  = var.iam_role_path
   force_detach_policies = true
   tags                  = var.tags
+  permissions_boundary  = var.irsa_iam_permissions_boundary
 }
 
 resource "aws_iam_role_policy_attachment" "irsa" {
