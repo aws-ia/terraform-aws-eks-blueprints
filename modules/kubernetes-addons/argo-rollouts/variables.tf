@@ -20,3 +20,9 @@ variable "tags" {
   description = "Common Tags for AWS resources"
   default     = {}
 }
+
+variable "irsa_iam_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}

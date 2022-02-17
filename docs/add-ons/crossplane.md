@@ -12,7 +12,7 @@ For complete project documentation, please visit the [Crossplane](https://crossp
 
 ### Crossplane Deployment
 
-Crossplane can be deployed by enabling the add-on via the following. Check out the full [example](modules/kubernetes-addons/crossplane/locals.tf) to deploy the EKS Cluster with Crossplane.
+Crossplane can be deployed by enabling the add-on via the following. Check out the full [example](../../modules/kubernetes-addons/crossplane/locals.tf) to deploy the EKS Cluster with Crossplane.
 
 ```hcl
   enable_crossplane = true

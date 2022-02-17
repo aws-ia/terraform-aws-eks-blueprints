@@ -133,6 +133,7 @@ resource "kubernetes_config_map" "amazon_vpc_cni" {
 # Teams
 # ---------------------------------------------------------------------------------------------------------------------
 module "aws_eks_teams" {
+  count  = length(var.application_teams) > 0 || length(var.platform_teams) > 0 ? 1 : 0
   source = "./modules/aws-eks-teams"
 
   application_teams = var.application_teams

@@ -90,6 +90,7 @@ No resources.
 | <a name="input_aws_for_fluentbit_helm_config"></a> [aws\_for\_fluentbit\_helm\_config](#input\_aws\_for\_fluentbit\_helm\_config) | AWS for FluentBit Helm Chart config | `any` | `{}` | no |
 | <a name="input_aws_for_fluentbit_irsa_policies"></a> [aws\_for\_fluentbit\_irsa\_policies](#input\_aws\_for\_fluentbit\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
 | <a name="input_aws_load_balancer_controller_helm_config"></a> [aws\_load\_balancer\_controller\_helm\_config](#input\_aws\_load\_balancer\_controller\_helm\_config) | AWS Load Balancer Controller Helm Chart config | `any` | `{}` | no |
+| <a name="input_aws_load_balancer_controller_irsa_permissions_boundary"></a> [aws\_load\_balancer\_controller\_irsa\_permissions\_boundary](#input\_aws\_load\_balancer\_controller\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary | `string` | `""` | no |
 | <a name="input_aws_node_termination_handler_helm_config"></a> [aws\_node\_termination\_handler\_helm\_config](#input\_aws\_node\_termination\_handler\_helm\_config) | AWS Node Termination Handler Helm Chart config | `any` | `{}` | no |
 | <a name="input_aws_open_telemetry_addon_config"></a> [aws\_open\_telemetry\_addon\_config](#input\_aws\_open\_telemetry\_addon\_config) | AWS Open Telemetry Distro add-on config | `any` | `{}` | no |
 | <a name="input_cert_manager_helm_config"></a> [cert\_manager\_helm\_config](#input\_cert\_manager\_helm\_config) | Cert Manager Helm Chart config | `any` | `{}` | no |
@@ -143,5 +144,4 @@ No resources.
 ## Outputs
 
 No outputs.
-
 <!--- END_TF_DOCS --->

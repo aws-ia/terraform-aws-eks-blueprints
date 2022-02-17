@@ -67,5 +67,6 @@ module "irsa" {
   kubernetes_namespace              = var.irsa_config.kubernetes_namespace
   kubernetes_service_account        = var.irsa_config.kubernetes_service_account
   irsa_iam_policies                 = var.irsa_config.irsa_iam_policies
+  irsa_iam_permissions_boundary     = try(var.irsa_config.irsa_iam_permissions_boundary, "")
   tags                              = var.irsa_config.tags
 }

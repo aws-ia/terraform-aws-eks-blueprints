@@ -47,6 +47,7 @@ resource "aws_iam_role" "irsa" {
   assume_role_policy    = join("", data.aws_iam_policy_document.irsa_with_oidc.*.json)
   path                  = var.iam_role_path
   force_detach_policies = true
+  permissions_boundary  = var.irsa_iam_permissions_boundary
 
   tags = merge(
     {
@@ -55,10 +56,6 @@ resource "aws_iam_role" "irsa" {
     },
     var.tags
   )
-}
-
-resource "aws_iam_role_policy_attachment" "irsa" {
-  count      = length(var.irsa_iam_policies)
   policy_arn = var.irsa_iam_policies[count.index]
   role       = aws_iam_role.irsa.name
 }
