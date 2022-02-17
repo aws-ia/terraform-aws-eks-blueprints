@@ -3,7 +3,7 @@ locals {
     name                       = "prometheus"
     chart                      = "prometheus"
     repository                 = "https://prometheus-community.github.io/helm-charts"
-    version                    = "14.6.0"
+    version                    = "15.3.0"
     namespace                  = "prometheus"
     timeout                    = "1200"
     create_namespace           = false
