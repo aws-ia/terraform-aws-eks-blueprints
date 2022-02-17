@@ -44,11 +44,6 @@ terraform apply
 
 Enter `yes` to apply
 
-#### Step5: Terraform output
-Gather the EFS file system ID from the output
-
-    efs_file_system_id = "fs-xxxxxxxxxxxxxxxxx"
-
 ### Configure `kubectl` and test cluster
 EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster.
 This following command used to update the `kubeconfig` in your local machine where you run kubectl commands to interact with your EKS Cluster.
