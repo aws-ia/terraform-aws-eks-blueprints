@@ -451,7 +451,7 @@ module "kubernetes-addons" {
     name       = "keda"                              # (Required) Release name.
     repository = "https://kedacore.github.io/charts" # (Optional) Repository URL where to locate the requested chart.
     chart      = "keda"                              # (Required) Chart name to be installed.
-    version    = "2.4.0"                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
+    version    = "2.6.2"                             # (Optional) Specify the exact chart version to install.
     namespace  = "keda"                              # (Optional) The namespace to install the release into. Defaults to default
     values     = [templatefile("${path.module}/helm_values/keda-values.yaml", {})]
   }
@@ -463,7 +463,7 @@ module "kubernetes-addons" {
     name       = "vpa"                                 # (Required) Release name.
     repository = "https://charts.fairwinds.com/stable" # (Optional) Repository URL where to locate the requested chart.
     chart      = "vpa"                                 # (Required) Chart name to be installed.
-    version    = "1.0.0"                               # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
+    version    = "1.0.0"                               # (Optional) Specify the exact chart version to install.
     namespace  = "vpa-ns"                              # (Optional) The namespace to install the release into. Defaults to default
     values     = [templatefile("${path.module}/helm_values/vpa-values.yaml", {})]
   }
