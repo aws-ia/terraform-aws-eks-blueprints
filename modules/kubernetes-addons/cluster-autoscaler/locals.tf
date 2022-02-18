@@ -8,7 +8,7 @@ locals {
     repository                 = "https://kubernetes.github.io/autoscaler"
     version                    = "9.10.8"
     namespace                  = local.namespace
-    timeout                    = "300"
+    timeout                    = "1200"
     create_namespace           = false
     values                     = local.default_helm_values
     lint                       = false

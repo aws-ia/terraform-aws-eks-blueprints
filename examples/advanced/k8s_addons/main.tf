@@ -260,7 +260,7 @@ module "kubernetes-addons" {
     name       = "metrics-server"                                    # (Required) Release name.
     repository = "https://kubernetes-sigs.github.io/metrics-server/" # (Optional) Repository URL where to locate the requested chart.
     chart      = "metrics-server"                                    # (Required) Chart name to be installed.
-    version    = "3.5.0"                                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
+    version    = "3.8.1"                                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
     namespace  = "kube-system"                                       # (Optional) The namespace to install the release into. Defaults to default
     timeout    = "1200"                                              # (Optional)
     lint       = "true"                                              # (Optional)
@@ -300,7 +300,7 @@ module "kubernetes-addons" {
     name       = "prometheus"                                         # (Required) Release name.
     repository = "https://prometheus-community.github.io/helm-charts" # (Optional) Repository URL where to locate the requested chart.
     chart      = "prometheus"                                         # (Required) Chart name to be installed.
-    version    = "14.4.0"                                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
+    version    = "15.3.0"                                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
     namespace  = "prometheus"                                         # (Optional) The namespace to install the release into. Defaults to default
     values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
       operating_system = "linux"
@@ -463,7 +463,7 @@ module "kubernetes-addons" {
     name       = "vpa"                                 # (Required) Release name.
     repository = "https://charts.fairwinds.com/stable" # (Optional) Repository URL where to locate the requested chart.
     chart      = "vpa"                                 # (Required) Chart name to be installed.
-    version    = "0.5.0"                               # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
+    version    = "1.0.0"                               # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
     namespace  = "vpa-ns"                              # (Optional) The namespace to install the release into. Defaults to default
     values     = [templatefile("${path.module}/helm_values/vpa-values.yaml", {})]
   }
@@ -475,7 +475,7 @@ module "kubernetes-addons" {
     name       = "yunikorn"                                            # (Required) Release name.
     repository = "https://apache.github.io/incubator-yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
     chart      = "yunikorn"                                            # (Required) Chart name to be installed.
-    version    = "0.12.0"                                              # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
+    version    = "0.12.2"                                              # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
 

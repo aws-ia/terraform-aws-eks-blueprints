@@ -9,6 +9,7 @@ locals {
     namespace   = local.name
     description = "Argo Rollouts AddOn Helm Chart"
     values      = local.default_helm_values
+    timeout     = "1200"
   }
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
@@ -40,6 +41,7 @@ locals {
     tags                              = var.tags
     eks_cluster_id                    = var.eks_cluster_id
     irsa_iam_policies                 = []
+    irsa_iam_permissions_boundary     = var.irsa_iam_permissions_boundary
   }
 
   argocd_gitops_config = {
