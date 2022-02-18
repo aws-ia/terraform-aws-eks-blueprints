@@ -1,12 +1,14 @@
 locals {
+  name                 = "aws-efs-csi-driver"
   service_account_name = "efs-csi-sa"
+  namespace            = "kube-system"
 
   default_helm_config = {
-    name                       = "aws-efs-csi-driver"
-    chart                      = "aws-efs-csi-driver"
+    name                       = local.name
+    chart                      = local.name
     repository                 = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
     version                    = "2.2.3"
-    namespace                  = "kube-system"
+    namespace                  = local.namespace
     timeout                    = "1200"
     create_namespace           = false
     values                     = local.default_helm_values
@@ -15,7 +17,7 @@ locals {
     lint                       = true
     wait                       = true
     wait_for_jobs              = false
-    description                = "aws-efs-csi-driver Helm Chart for the EFS CSI driver"
+    description                = "The AWS EFS CSI driver Helm chart deployment configuration"
     verify                     = false
     keyring                    = ""
     repository_key_file        = ""
@@ -47,6 +49,37 @@ locals {
   default_helm_values = [templatefile("${path.module}/values.yaml", {
     service_account_name = local.service_account_name,
   })]
+
+  set_values = [
+    {
+      name  = "controller.serviceAccount.name"
+      value = local.service_account_name
+    },
+    {
+      name  = "controller.serviceAccount.create"
+      value = false
+    },
+    {
+      name  = "node.serviceAccount.name"
+      value = local.service_account_name
+    },
+    {
+      name  = "node.serviceAccount.create"
+      value = false
+    }
+  ]
+
+  irsa_config = {
+    kubernetes_namespace              = local.namespace
+    kubernetes_service_account        = local.service_account_name
+    create_kubernetes_namespace       = false
+    create_kubernetes_service_account = true
+    iam_role_path                     = "/"
+    eks_cluster_id                    = var.eks_cluster_id
+    irsa_iam_policies                 = concat([aws_iam_policy.aws_efs_csi_driver.arn], var.irsa_policies)
+    irsa_iam_permissions_boundary     = var.irsa_iam_permissions_boundary
+    tags                              = var.tags
+  }
 
   argocd_gitops_config = {
     enable             = true
