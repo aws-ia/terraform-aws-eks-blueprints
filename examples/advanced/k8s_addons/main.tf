@@ -260,7 +260,7 @@ module "kubernetes-addons" {
     name       = "metrics-server"                                    # (Required) Release name.
     repository = "https://kubernetes-sigs.github.io/metrics-server/" # (Optional) Repository URL where to locate the requested chart.
     chart      = "metrics-server"                                    # (Required) Chart name to be installed.
-    version    = "3.5.0"                                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
+    version    = "3.8.1"                                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
     namespace  = "kube-system"                                       # (Optional) The namespace to install the release into. Defaults to default
     timeout    = "1200"                                              # (Optional)
     lint       = "true"                                              # (Optional)
