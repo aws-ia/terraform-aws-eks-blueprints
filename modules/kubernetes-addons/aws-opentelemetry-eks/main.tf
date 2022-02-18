@@ -55,11 +55,11 @@ resource "kubernetes_deployment" "aws_otel_eks_sidecar" {
       }
 
       spec {
-        
+
         node_selector = {
           "kubernetes.io/os" = "linux"
-        }  
-        
+        }
+
         container {
           name  = local.addon_config["emitter_name"]
           image = local.addon_config["emitter_image"]
