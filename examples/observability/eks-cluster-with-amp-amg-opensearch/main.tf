@@ -136,7 +136,11 @@ module "kubernetes-addons" {
   enable_prometheus                    = true
   enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
-  depends_on                           = [module.aws-eks-accelerator-for-terraform.managed_node_groups, module.aws_vpc]
+
+  depends_on = [
+    module.aws-eks-accelerator-for-terraform.managed_node_groups,
+    module.aws_vpc
+  ]
 }
 
 #---------------------------------------------------------------
