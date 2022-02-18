@@ -1,4 +1,4 @@
-# EMR on EKS Deployment and Test
+# EMR on EKS
 
 This example deploys the following resources
  - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
@@ -69,24 +69,16 @@ cd examples/analytics/emr-on-eks/examples/
 
 ## Step3: Execute Spark job on EMR Virtual Cluster
 
-Open and edit the `5-spark-job-with-AMP-AMG.sh` file
+Execute the Spark job using the below shell script.
 
-```shell script
-vi examples/analytics/emr-on-eks/examples/spark-execute/5-spark-job-with-AMP-AMG.sh
-```
+This script requires two input parameters.
 
-Update the following variables. Extract the emr_on_eks_role_id as **EMR_ROLE_ID** and cluster_name as **EKS_CLUSTER_ID** from Terraform Outputs (**Step1**)
-
-    EMR_ROLE_ID="aws001-preprod-test-EMRonEKSExecution"                     # Replace EMR IAM role with your ID
-    EKS_CLUSTER_ID='aws001-preprod-test-eks'                                # Replace cluster id with your id
-    S3_BUCKET='s3://<enter-pre-created-bucket-name>'                        # Create your own s3 bucket and replace this value
-    CW_LOG_GROUP='/emr-on-eks-logs/emr-data-team-a'                         # Create your own s3 bucket and replace this value
-
-Execute Sample PySpark Job.
+    EMR_VIRTUAL_CLUSTER_ID=$1  # EMR Cluster ID e.g., aws001-preprod-test-eks-emr-data-team-a
+    S3_BUCKET=$2               # S3 bucket for storing the scripts and spark output data e.g., s3://<bucket-name>
 
 ```shell script
 cd examples/analytics/emr-on-eks/examples/spark-execute/
-./5-spark-job-with-AMP-AMG.sh
+./5-spark-job-with-AMP-AMG.sh aws001-preprod-test-eks-emr-data-team-a <ENTER_S3_BUCKET_NAME>
 ```
 
 Verify the job is running in EMR under Virtual Clusters. Also, query JOB resource in EKS Cluster.
