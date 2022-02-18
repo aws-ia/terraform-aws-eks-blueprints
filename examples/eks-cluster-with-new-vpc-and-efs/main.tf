@@ -171,6 +171,7 @@ module "kubernetes-addons" {
 #--------------
 resource "aws_efs_file_system" "efs" {
   creation_token   = "efs"
+  encrypted        = true
 }
 
 resource "aws_efs_mount_target" "efs_mt" {
