@@ -168,8 +168,8 @@ module "kubernetes-addons" {
     name       = "prometheus"                                         # (Required) Release name.
     repository = "https://prometheus-community.github.io/helm-charts" # (Optional) Repository URL where to locate the requested chart.
     chart      = "prometheus"                                         # (Required) Chart name to be installed.
-    version    = "15.3.0"                                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "prometheus"                                         # (Optional) The namespace to install the release into. Defaults to default
+    version    = "15.3.0"                                             # (Optional) Specify the exact chart version to install.
+    namespace  = "prometheus"                                         # (Optional) The namespace to install the release into.
     values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
       operating_system = "linux"
     })]
@@ -183,8 +183,8 @@ module "kubernetes-addons" {
     name       = "vpa"                                 # (Required) Release name.
     repository = "https://charts.fairwinds.com/stable" # (Optional) Repository URL where to locate the requested chart.
     chart      = "vpa"                                 # (Required) Chart name to be installed.
-    version    = "1.0.0"                               # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "vpa-ns"                              # (Optional) The namespace to install the release into. Defaults to default
+    version    = "1.0.0"                               # (Optional) Specify the exact chart version to install
+    namespace  = "vpa-ns"                              # (Optional) The namespace to install the release into.
     values     = [templatefile("${path.module}/helm_values/vpa-values.yaml", {})]
   }
 
