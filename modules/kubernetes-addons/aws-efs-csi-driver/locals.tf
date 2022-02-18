@@ -46,10 +46,9 @@ locals {
     var.helm_config
   )
 
-  default_helm_values = [templatefile("${path.module}/values.yaml", {
-    service_account_name = local.service_account_name,
-  })]
+  default_helm_values = []
 
+  # Disable service account creation as that's handled by the IRSA add-on module
   set_values = [
     {
       name  = "controller.serviceAccount.name"
