@@ -21,7 +21,7 @@ Alternatively, you can override the helm values by using the code snippet below
     repository = "https://charts.fairwinds.com/stable" # (Optional) Repository URL where to locate the requested chart.
     chart      = "vpa"                                 # (Required) Chart name to be installed.
     version    = "1.0.0"                               # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-samples/aws-eks-accelerator-for-terraform/blob/main/modules/kubernetes-addons/vpa/locals.tf
-    namespace  = "vpa-ns"                              # (Optional) The namespace to install the release into. Defaults to default
+    namespace  = "vpa-ns"                              # (Optional) The namespace to install the release into.
     values     = [templatefile("${path.module}/values.yaml", {})]
   }
 ```
