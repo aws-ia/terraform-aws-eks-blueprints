@@ -26,7 +26,7 @@ You can optionally customize the Helm chart that deploys `nginx` via the followi
 
 ```hcl
   enable_ingress_nginx = true
-  
+
   # Optional  ingress_nginx_helm_config
   ingress_nginx_helm_config = {
     repository  = "https://kubernetes.github.io/ingress-nginx"
