@@ -65,7 +65,7 @@ crossplane_jet_aws_provider = {
   provider_aws_version     = "v0.4.1"  # Get the latest version from  https://github.com/crossplane-contrib/provider-jet-aws
   additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
 }
-``` 
+```
 
 Checkout the full [example](examples/crossplane) to deploy Crossplane with `kubernetes-addons` module
 

@@ -20,7 +20,7 @@ locals {
     operating-system = "linux"
   })]
 
-  aws_provider_sa = "aws-provider"
+  aws_provider_sa     = "aws-provider"
   jet_aws_provider_sa = "jet-aws-provider"
 
   argocd_gitops_config = {

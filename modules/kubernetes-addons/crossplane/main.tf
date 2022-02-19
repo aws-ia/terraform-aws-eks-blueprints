@@ -76,7 +76,7 @@ resource "time_sleep" "wait_30_seconds_aws" {
   count = var.aws_provider.enable == true ? 1 : 0
 
   create_duration = "30s"
-  depends_on = [kubectl_manifest.aws_provider]
+  depends_on      = [kubectl_manifest.aws_provider]
 }
 #--------------------------------------
 # Terrajet AWS Provider
@@ -139,5 +139,5 @@ resource "time_sleep" "wait_30_seconds_jet_aws" {
   count = var.jet_aws_provider.enable == true ? 1 : 0
 
   create_duration = "30s"
-  depends_on = [kubectl_manifest.jet_aws_provider]
+  depends_on      = [kubectl_manifest.jet_aws_provider]
 }
