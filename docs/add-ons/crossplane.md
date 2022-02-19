@@ -39,13 +39,13 @@ You can optionally customize the Helm chart that deploys `Crossplane` via the fo
 ```
 
 ### Crossplane AWS Provider Deployment
-This module allows you to deploy the following AWS providers for Crossplane. These providers disabled by default.
+This module provides options to deploy the following AWS providers for Crossplane. These providers disabled by default, and it can be enabled using the config below.
 
  - [AWS Provider](https://github.com/crossplane/provider-aws)
  - [Provider Jet AWS](https://github.com/crossplane-contrib/provider-jet-aws)
 
 _NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
-This example uses AdministratorAccess, but you should select a policy with the minimum permissions required to provision your resources._
+This example config uses AdministratorAccess, but you should select a policy with the minimum permissions required to provision your resources._
 
 Config to deploy [AWS Provider](https://github.com/crossplane/provider-aws)
 ```hcl
@@ -67,12 +67,12 @@ crossplane_jet_aws_provider = {
 }
 ```
 
-Checkout the full [example](examples/crossplane) to deploy Crossplane with `kubernetes-addons` module
+Checkout the full [example](../../examples/crossplane) to deploy Crossplane with `kubernetes-addons` module
 
 ### GitOps Configuration
 The following properties made available for use when managing the add-on via GitOps.
 
-Refer to [locals.tf](modules/kubernetes-addons/crossplane/locals.tf) for latest config. GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/ssp-eks-add-ons/blob/main/chart/values.yaml)
+Refer to [locals.tf](../../modules/kubernetes-addons/crossplane/locals.tf) for latest config. GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/ssp-eks-add-ons/blob/main/chart/values.yaml)
 
 ```hcl
   argocd_gitops_config = {
