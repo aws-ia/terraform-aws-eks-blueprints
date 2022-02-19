@@ -102,14 +102,30 @@ variable "crossplane_helm_config" {
   description = "Crossplane Helm Chart config"
 }
 
-variable "crossplane_provider_aws" {
+variable "crossplane_aws_provider" {
   description = "AWS Provider config for Crossplane"
   type = object({
+    enable                   = bool
     provider_aws_version     = string
     additional_irsa_policies = list(string)
   })
   default = {
-    provider_aws_version     = "v0.23.0"
+    enable                   = false
+    provider_aws_version     = "v0.24.1"
+    additional_irsa_policies = []
+  }
+}
+
+variable "crossplane_jet_aws_provider" {
+  description = "AWS Provider Jet AWS config for Crossplane"
+  type = object({
+    enable                   = bool
+    provider_aws_version     = string
+    additional_irsa_policies = list(string)
+  })
+  default = {
+    enable                   = false
+    provider_aws_version     = "v0.24.1"
     additional_irsa_policies = []
   }
 }
@@ -465,21 +481,3 @@ variable "argo_rollouts_irsa_policies" {
   default     = []
   description = "IAM policy ARNs for Argo Rollouts IRSA"
 }
-
-#-----------AWS FOR FLUENT BIT-------------
-variable "enable_aws_for_fluentbit1" {
-  type        = bool
-  default     = false
-  description = "Enable AWS for FluentBit add-on"
-}
-
-variable "aws_for_fluentbit_addon_config" {
-  type = object({
-    helm_config = map(object)
-    aws_for_fluentbit_irsa_policies = list(string)
-    aws_for_fluentbit_cw_log_group_name = string
-    aws_for_fluentbit_cw_log_group_retention = number
-    aws_for_fluentbit_cw_log_group_kms_key_arn = string
-  })
-}
-

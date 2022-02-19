@@ -143,9 +143,17 @@ module "kubernetes-addons" {
   # Refer to docs/add-ons/crossplane.md for advanced configuration
   enable_crossplane = true
 
-  # Optional config to deploy specific version of AWS Provider and attach additional IAM policies to manage AWS resources using Crossplane
-  crossplane_provider_aws = {
-    provider_aws_version     = "v0.23.0"
+  # Creates ProviderConfig -> aws-provider
+  crossplane_aws_provider = {
+    enable                   = true
+    provider_aws_version     = "v0.24.1"
+    additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
+  }
+
+  # Creates ProviderConfig -> jet-aws-provider
+  crossplane_jet_aws_provider = {
+    enable                   = true
+    provider_aws_version     = "v0.4.1"
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
   }
 }

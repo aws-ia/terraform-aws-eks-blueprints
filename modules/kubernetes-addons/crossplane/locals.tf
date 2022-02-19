@@ -5,7 +5,7 @@ locals {
     name        = "crossplane"
     chart       = "crossplane"
     repository  = "https://charts.crossplane.io/stable/"
-    version     = "1.6.2"
+    version     = "1.6.3"
     namespace   = local.namespace
     description = "Crossplane Helm chart"
     values      = local.default_helm_values
@@ -20,27 +20,8 @@ locals {
     operating-system = "linux"
   })]
 
-  default_provider_aws = {
-    enable = true
-    version = "v0.23.0"
-    additional_irsa_policies = []
-  }
-
-  provider_aws = merge(
-    local.default_provider_aws,
-    var.provider_aws
-  )
-
-  default_provider_jet_aws = {
-    enable = true
-    version = "v0.4.1"
-    additional_irsa_policies = []
-  }
-
-  provider_jet_aws = merge(
-    local.default_provider_jet_aws,
-    var.provider_jet_aws
-  )
+  aws_provider_sa = "aws-provider"
+  jet_aws_provider_sa = "jet-aws-provider"
 
   argocd_gitops_config = {
     enable = true

@@ -21,7 +21,7 @@ variable "tags" {
   default     = {}
 }
 
-variable "provider_aws" {
+variable "aws_provider" {
   description = "AWS Provider config for Crossplane"
   type = object({
     enable                   = bool
@@ -30,7 +30,7 @@ variable "provider_aws" {
   })
 }
 
-variable "provider_jet_aws" {
+variable "jet_aws_provider" {
   description = "AWS Provider Jet AWS config for Crossplane"
   type = object({
     enable                   = bool

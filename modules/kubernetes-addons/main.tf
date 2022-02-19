@@ -144,7 +144,8 @@ module "crossplane" {
   helm_config             = var.crossplane_helm_config
   eks_cluster_id          = var.eks_cluster_id
   manage_via_gitops       = var.argocd_manage_add_ons
-  crossplane_provider_aws = var.crossplane_provider_aws
+  aws_provider = var.crossplane_aws_provider
+  jet_aws_provider = var.crossplane_jet_aws_provider
 }
 
 module "fargate_fluentbit" {

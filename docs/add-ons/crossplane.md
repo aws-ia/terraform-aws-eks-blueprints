@@ -39,19 +39,33 @@ You can optionally customize the Helm chart that deploys `Crossplane` via the fo
 ```
 
 ### Crossplane AWS Provider Deployment
-AWS Provider for Crossplane gets deployed by default when you enable `enable_crossplane = true`.
-The below configuration helps you to upgrade the AWS provider version and lets you define custom IAM policies to manage AWS resources through IRSA.
+This module allows you to deploy the following AWS providers for Crossplane. These providers disabled by default.
 
-Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
+ - [AWS Provider](https://github.com/crossplane/provider-aws)
+ - [Provider Jet AWS](https://github.com/crossplane-contrib/provider-jet-aws)
 
-Please find more details from [AWS Provider](https://github.com/crossplane/provider-aws)
+_NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
+This example uses AdministratorAccess, but you should select a policy with the minimum permissions required to provision your resources._
 
+Config to deploy [AWS Provider](https://github.com/crossplane/provider-aws)
 ```hcl
-  crossplane_provider_aws = {
-    provider_aws_version = "v0.23.0"
-    additional_irsa_policies = ["<ENTER_YOUR_IAM_POLICY>"]
-  }
-```
+# Creates ProviderConfig -> aws-provider
+crossplane_aws_provider = {
+  enable                   = true
+  provider_aws_version     = "v0.24.1"  # Get the latest version from https://github.com/crossplane/provider-aws
+  additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+}
+```  
+
+Config to deploy [Provider Jet AWS](https://github.com/crossplane-contrib/provider-jet-aws)
+```hcl
+# Creates ProviderConfig -> jet-aws-provider
+crossplane_jet_aws_provider = {
+  enable                   = true
+  provider_aws_version     = "v0.4.1"  # Get the latest version from  https://github.com/crossplane-contrib/provider-jet-aws
+  additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+}
+``` 
 
 Checkout the full [example](examples/crossplane) to deploy Crossplane with `kubernetes-addons` module
 
