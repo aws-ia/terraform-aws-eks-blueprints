@@ -6,7 +6,9 @@ locals {
     capacity_type   = "ON_DEMAND"  # ON_DEMAND, SPOT
     ami_type        = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
     custom_ami_id   = ""
+    subnet_type     = "private"
     subnet_ids      = []
+    release_version = "latest"
 
     desired_size    = "3"
     max_size        = "3"
@@ -24,8 +26,7 @@ locals {
     k8s_taints      = []
     additional_tags = {}
 
-    create_worker_security_group         = false
-    worker_additional_security_group_ids = [] # Will use this when create_worker_security_group = true
+    create_worker_security_group = false
 
     # LAUNCH TEMPLATES
     create_launch_template  = false
