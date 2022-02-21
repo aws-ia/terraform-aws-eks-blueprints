@@ -29,7 +29,7 @@ locals {
     name                       = "karpenter"
     chart                      = "karpenter"
     repository                 = "https://charts.karpenter.sh"
-    version                    = "0.5.6"
+    version                    = "0.6.3"
     namespace                  = local.namespace
     timeout                    = "300"
     create_namespace           = false
