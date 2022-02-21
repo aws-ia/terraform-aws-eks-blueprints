@@ -40,7 +40,7 @@ This module allows you to create on-demand or spot self managed Linux or Windows
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
-          volume_type = "gp2"
+          volume_type = "gp3"
           volume_size = 20
         }
       ]
@@ -73,7 +73,7 @@ This module allows you to create on-demand or spot self managed Linux or Windows
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
-          volume_type = "gp2"
+          volume_type = "gp3"
           volume_size = 20
         }
       ]
