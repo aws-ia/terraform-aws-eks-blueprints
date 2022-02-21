@@ -8,7 +8,7 @@ locals {
     custom_ami_id   = ""
     subnet_type     = "private"
     subnet_ids      = []
-    release_version = "latest"
+    release_version = ""
 
     desired_size    = "3"
     max_size        = "3"

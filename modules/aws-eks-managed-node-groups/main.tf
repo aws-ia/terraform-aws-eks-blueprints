@@ -3,7 +3,7 @@ resource "aws_eks_node_group" "managed_ng" {
   node_group_name_prefix = local.managed_node_group["node_group_name"]
   node_role_arn          = aws_iam_role.managed_ng.arn
   subnet_ids             = length(local.managed_node_group["subnet_ids"]) == 0 ? (local.managed_node_group["subnet_type"] == "public" ? var.public_subnet_ids : var.private_subnet_ids) : local.managed_node_group["subnet_ids"]
-  release_version        = local.managed_node_group["release_version"]
+  release_version        = try(local.managed_node_group["release_version"], "") == "" ? null : local.managed_node_group["release_version"]
 
   ami_type       = local.managed_node_group["ami_type"] != "" ? local.managed_node_group["ami_type"] : null
   capacity_type  = local.managed_node_group["capacity_type"]
