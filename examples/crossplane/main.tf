@@ -143,6 +143,7 @@ module "kubernetes-addons" {
   # Refer to docs/add-ons/crossplane.md for advanced configuration
   enable_crossplane = true
 
+  # You can choose to install either of crossplane_aws_provider or crossplane_jet_aws_provider to work with AWS
   # Creates ProviderConfig -> aws-provider
   crossplane_aws_provider = {
     enable                   = true

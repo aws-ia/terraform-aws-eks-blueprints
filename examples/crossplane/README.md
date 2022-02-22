@@ -5,7 +5,7 @@ This example deploys the following Basic EKS Cluster with VPC
  - Creates EKS Cluster Control plane with one managed node group
  - Crossplane Add-on to EKS Cluster
  - AWS Provider for Crossplane
- - Jet AWS Provider for Crossplane
+ - Terrajet AWS Provider for Crossplane
 
 ## How to Deploy
 ### Prerequisites:
@@ -96,8 +96,8 @@ To Delete the bucket
 cd ~/examples/crossplane/crossplane-aws-examples/
 kubectl delete -f aws-provider-s3.yaml
 ```
-### Jet AWS Provider for Crossplane
-This example shows how to deploy S3 bucket using Crossplane Jet AWS provider
+### Terrajet AWS Provider for Crossplane
+This example shows how to deploy S3 bucket using Crossplane Terrajet AWS Provider
 
  - Open the file below
 

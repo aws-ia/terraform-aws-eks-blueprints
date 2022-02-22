@@ -42,7 +42,7 @@ You can optionally customize the Helm chart that deploys `Crossplane` via the fo
 This module provides options to deploy the following AWS providers for Crossplane. These providers disabled by default, and it can be enabled using the config below.
 
  - [AWS Provider](https://github.com/crossplane/provider-aws)
- - [Provider Jet AWS](https://github.com/crossplane-contrib/provider-jet-aws)
+ - [Terrajet AWS Provider](https://github.com/crossplane-contrib/provider-jet-aws)
 
 _NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
 This example config uses AdministratorAccess, but you should select a policy with the minimum permissions required to provision your resources._
@@ -57,7 +57,7 @@ crossplane_aws_provider = {
 }
 ```  
 
-Config to deploy [Provider Jet AWS](https://github.com/crossplane-contrib/provider-jet-aws)
+Config to deploy [Terrajet AWS Provider](https://github.com/crossplane-contrib/provider-jet-aws)
 ```hcl
 # Creates ProviderConfig -> jet-aws-provider
 crossplane_jet_aws_provider = {
