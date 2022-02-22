@@ -464,7 +464,7 @@ module "kubernetes-addons" {
     repository = "https://charts.fairwinds.com/stable" # (Optional) Repository URL where to locate the requested chart.
     chart      = "vpa"                                 # (Required) Chart name to be installed.
     version    = "1.0.0"                               # (Optional) Specify the exact chart version to install.
-    namespace  = "vpa-ns"                              # (Optional) The namespace to install the release into.
+    namespace  = "vpa"                                 # (Optional) The namespace to install the release into.
     values     = [templatefile("${path.module}/helm_values/vpa-values.yaml", {})]
   }
   #---------------------------------------
