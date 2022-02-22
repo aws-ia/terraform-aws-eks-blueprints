@@ -478,6 +478,5 @@ module "kubernetes-addons" {
     version    = "0.12.2"                                              # (Optional) Specify the exact chart version to install.
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
-
-  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
+  tags = { node_group_ids = module.aws-eks-accelerator-for-terraform.managed_node_group_ids }
 }
