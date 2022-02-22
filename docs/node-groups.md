@@ -99,7 +99,7 @@ The below example demonstrates advanced configuration options for a self-managed
           block_device_mapping = [
             {
               device_name = "/dev/xvda" # mount point to /
-              volume_type = "gp2"
+              volume_type = "gp3"
               volume_size = 20
             },
             {
