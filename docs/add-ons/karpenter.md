@@ -21,7 +21,7 @@ You can optionally customize the Helm chart that deploys `Karpenter` via the fol
     name                       = "karpenter"
     chart                      = "karpenter"
     repository                 = "https://charts.karpenter.sh"
-    version                    = "0.5.4"
+    version                    = "0.6.3"
     namespace                  = "karpenter"
     values = [templatefile("${path.module}/values.yaml", {
          eks_cluster_id       = var.eks_cluster_id,
