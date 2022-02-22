@@ -99,8 +99,6 @@ module "aws_vpc" {
 module "aws-eks-accelerator-for-terraform" {
   source = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
 
-  create_eks = true
-
   tenant            = local.tenant
   environment       = local.environment
   zone              = local.zone
