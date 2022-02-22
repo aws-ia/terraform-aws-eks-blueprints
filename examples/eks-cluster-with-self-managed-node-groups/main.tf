@@ -124,7 +124,7 @@ module "aws-eks-accelerator-for-terraform" {
       block_device_mappings = [
         {
           device_name = "/dev/xvda" # mount point to /
-          volume_type = "gp2"
+          volume_type = "gp3"
           volume_size = 50
         },
         {
