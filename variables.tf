@@ -73,7 +73,7 @@ variable "public_subnet_ids" {
 # EKS CONTROL PLANE
 variable "create_eks" {
   type        = bool
-  default     = false
+  default     = true
   description = "Create EKS cluster"
 }
 
