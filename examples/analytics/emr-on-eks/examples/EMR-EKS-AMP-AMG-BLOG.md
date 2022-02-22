@@ -55,7 +55,7 @@ Let’s verify the resources
 
 * Login to AWS console and verify the VPC, three Private Subnets and three Public Subnets, Internet gateway and single NAT Gateway created with the prefix of aws001-prerpod-test-
 * Open the EKS service page from the AWS console to verify the EKS cluster(aws001-preprod-test-eks) with one Managed node group with an instance type of m5.xlarge.
-* Also, select the workloads dropdown under the workloads tab in EKS cluster page to verify the Prometheus Server pods under prometheus namespace, EMR on EKS Namespaces emr-data-team-a and emr-data-team-b, Vertical Pod Autoscaler pods under vpa-ns and Metrics Server & Cluster Autoscaler under kube-system namespace
+* Also, select the workloads dropdown under the workloads tab in EKS cluster page to verify the Prometheus Server pods under prometheus namespace, EMR on EKS Namespaces `emr-data-team-a` and `emr-data-team-b`, Vertical Pod Autoscaler pods under the `vpa` namespace and Metrics Server & Cluster Autoscaler under `kube-system` namespace
 * This deployment also creates a new Amazon Managed Prometheus workspace and configures community Prometheus Server add-on to *remote write metrics*.
 
 ### Step4: Create EMR Virtual Cluster
