@@ -21,13 +21,13 @@ graph TD;
     Public-Subnet1-->InternetGateway
     Public-Subnet2-->InternetGateway
     Public-Subnet3-->InternetGateway
-    Public-Subnet3-->Sinlge-NATGateway
+    Public-Subnet3-->Single-NATGateway
     Private-Subnet1-->EKS{{"EKS #9829;"}}
     Private-Subnet2-->EKS
     Private-Subnet3-->EKS
     EKS==>ManagedNodeGroup;
     ManagedNodeGroup-->|enable_crossplane=true|id2([Crossplane]);
-    subgraph Kuberenetes Add-ons
+    subgraph Kubernetes Add-ons
     id2([Crossplane])-.->|crossplane_aws_provider.enable=true|id3([AWS-Provider]);
     id2([Crossplane])-.->|crossplane_jet_aws_provider.enable=true|id4([Terrajet-AWS-Provider]);
     end
