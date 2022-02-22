@@ -7,6 +7,33 @@ This example deploys the following Basic EKS Cluster with VPC
  - AWS Provider for Crossplane
  - Terrajet AWS Provider for Crossplane
 
+## Crossplane Design
+
+```mermaid
+graph TD;
+    subgraph AWS Cloud
+    id1(VPC)-->Private-Subnet1;
+    id1(VPC)-->Private-Subnet2;
+    id1(VPC)-->Private-Subnet3;
+    id1(VPC)-->Public-Subnet1;
+    id1(VPC)-->Public-Subnet2;
+    id1(VPC)-->Public-Subnet3;
+    Public-Subnet1-->InternetGateway
+    Public-Subnet2-->InternetGateway
+    Public-Subnet3-->InternetGateway
+    Public-Subnet3-->Sinlge-NATGateway
+    Private-Subnet1-->EKS{{"EKS #9829;"}}
+    Private-Subnet2-->EKS
+    Private-Subnet3-->EKS
+    EKS==>ManagedNodeGroup;
+    ManagedNodeGroup-->|enable_crossplane=true|id2([Crossplane]);
+    subgraph Kuberenetes Add-ons
+    id2([Crossplane])-.->|crossplane_aws_provider.enable=true|id3([AWS-Provider]);
+    id2([Crossplane])-.->|crossplane_jet_aws_provider.enable=true|id4([Terrajet-AWS-Provider]);
+    end
+    end
+```
+
 ## How to Deploy
 ### Prerequisites:
 Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
