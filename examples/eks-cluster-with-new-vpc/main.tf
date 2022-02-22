@@ -158,5 +158,5 @@ module "kubernetes-addons" {
   enable_metrics_server               = true
   enable_cluster_autoscaler           = true
 
-  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
+  tags = { node_group = module.aws-eks-accelerator-for-terraform.managed_node_group_ids }
 }

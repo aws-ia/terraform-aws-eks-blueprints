@@ -68,7 +68,7 @@ output "self_managed_node_group_iam_instance_profile_id" {
 
 output "managed_node_group_ids" {
   description = "IAM role arn's of managed node groups"
-  value       = var.create_eks && length(var.managed_node_groups) > 0 ? join(",", module.aws_eks_managed_node_groups[*].managed_nodegroup_id) : ""
+  value       = var.create_eks && length(var.self_managed_node_groups) > 0 ? join(",", [for name in keys(var.managed_node_groups) : module.aws_eks_managed_node_groups[name].manage_nodegroup_id]) : ""
 }
 
 output "managed_node_group_iam_role_arns" {
