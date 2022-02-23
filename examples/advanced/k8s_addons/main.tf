@@ -339,19 +339,7 @@ module "kubernetes-addons" {
       gameserver_maxport    = 8000
     })]
   }
-  #---------------------------------------
-  # ENABLE AWS DISTRO OPEN TELEMETRY
-  #---------------------------------------
-  enable_aws_open_telemetry = true
-  aws_open_telemetry_addon_config = {
-    aws_open_telemetry_namespace                        = "aws-otel-eks"
-    aws_open_telemetry_emitter_otel_resource_attributes = "service.namespace=AWSObservability,service.name=ADOTEmitService"
-    aws_open_telemetry_emitter_name                     = "trace-emitter"
-    aws_open_telemetry_emitter_image                    = "public.ecr.aws/g9c4k4i4/trace-emitter:1"
-    aws_open_telemetry_collector_image                  = "public.ecr.aws/aws-observability/aws-otel-collector:latest"
-    aws_open_telemetry_aws_region                       = "eu-west-1"
-    aws_open_telemetry_emitter_oltp_endpoint            = "localhost:55680"
-  }
+
   #---------------------------------------
   # AWS-FOR-FLUENTBIT HELM ADDON
   #---------------------------------------
