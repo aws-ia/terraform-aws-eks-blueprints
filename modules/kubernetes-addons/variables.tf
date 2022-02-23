@@ -484,3 +484,9 @@ variable "kube_state_metrics_irsa_policies" {
   default     = []
   description = "IAM policy ARNs for Kube State Metrics IRSA"
 }
+
+variable "kube_state_metrics_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}
