@@ -94,7 +94,6 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS Control Plane Variables
-  create_eks         = true
   kubernetes_version = local.kubernetes_version
 
   managed_node_groups = {

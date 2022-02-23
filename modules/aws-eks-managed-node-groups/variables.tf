@@ -79,7 +79,7 @@ variable "http_endpoint" {
 
 variable "http_tokens" {
   type        = string
-  default     = "optional"
+  default     = "required"
   description = "If enabled, will use Instance Metadata Service Version 2 (IMDSv2). Supported values: optional, required."
 }
 
