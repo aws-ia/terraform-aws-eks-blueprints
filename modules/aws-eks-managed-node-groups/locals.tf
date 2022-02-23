@@ -16,7 +16,7 @@ locals {
     max_unavailable = "1"
 
     disk_size = 50
-    disk_type = "gp2"
+    disk_type = "gp3"
 
     enable_monitoring = true
     eni_delete        = true
