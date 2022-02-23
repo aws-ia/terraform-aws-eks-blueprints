@@ -36,7 +36,7 @@ locals {
     kubelet_extra_args   = ""
 
     http_endpoint               = "enabled"
-    http_tokens                 = "optional"
+    http_tokens                 = "required"
     http_put_response_hop_limit = 1
 
     monitoring = true
