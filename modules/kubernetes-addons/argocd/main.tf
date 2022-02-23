@@ -147,7 +147,7 @@ resource "kubernetes_secret" "argocd_gitops" {
 
   metadata {
     name      = "${each.key}-repo-secret"
-    namespace = "argocd"
+    namespace = local.helm_config["namespace"]
     labels    = { "argocd.argoproj.io/secret-type" : "repository" }
   }
 
