@@ -113,15 +113,6 @@ module "aws_node_termination_handler" {
   tags                    = var.tags
 }
 
-module "aws_opentelemetry_collector" {
-  count  = var.enable_aws_open_telemetry ? 1 : 0
-  source = "./aws-opentelemetry-eks"
-
-  addon_config             = var.aws_open_telemetry_addon_config
-  node_groups_iam_role_arn = var.node_groups_iam_role_arn
-  manage_via_gitops        = var.argocd_manage_add_ons
-}
-
 module "cert_manager" {
   count             = var.enable_cert_manager ? 1 : 0
   source            = "./cert-manager"
