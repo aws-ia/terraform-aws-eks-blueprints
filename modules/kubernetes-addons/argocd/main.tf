@@ -85,7 +85,7 @@ resource "helm_release" "argocd_application" {
   name      = each.key
   chart     = "${path.module}/argocd-application"
   version   = "1.0.0"
-  namespace = "argocd"
+  namespace = local.helm_config["namespace"]
 
   # Application Meta.
   set {
@@ -147,7 +147,7 @@ resource "kubernetes_secret" "argocd_gitops" {
 
   metadata {
     name      = "${each.key}-repo-secret"
-    namespace = "argocd"
+    namespace = local.helm_config["namespace"]
     labels    = { "argocd.argoproj.io/secret-type" : "repository" }
   }
 
