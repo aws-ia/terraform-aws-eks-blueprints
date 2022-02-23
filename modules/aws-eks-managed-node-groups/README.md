@@ -43,6 +43,8 @@ This module allows you to create ON-DEMAND, SPOT and BOTTLEROCKET(with custom am
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
 
       k8s_taints = []
+      # optionally, configure a taint on the node group:
+      # k8s_taints = [{key= "purpose", value="execution", "effect"="NO_SCHEDULE"}]
 
       k8s_labels = {
         Environment = "preprod"
