@@ -94,6 +94,20 @@ Confirm that a persistent volume was created with a status of `Bound` to a `Pers
 
     kubectl get pv
 
+Wait until the sample app `Pod`'s `STATUS` becomes `Running`
+
+    kubectl wait --for=condition=ready pod efs-app
+
+Confirm that the data is written to the volume
+
+    kubectl exec efs-app -- bash -c "cat data/out"
+    Wed Feb 23 13:37:24 UTC 2022
+    Wed Feb 23 13:37:29 UTC 2022
+    Wed Feb 23 13:37:34 UTC 2022
+    Wed Feb 23 13:37:39 UTC 2022
+    Wed Feb 23 13:37:44 UTC 2022
+    Wed Feb 23 13:37:49 UTC 2022
+
 ## How to Destroy
 The following command destroys the resources created by `terraform apply`
 
