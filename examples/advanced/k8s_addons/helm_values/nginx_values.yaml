@@ -2,8 +2,6 @@ controller:
   image:
     registry: k8s.gcr.io
     image: ingress-nginx/controller
-    tag: v1.1.1
-    digest: sha256:0bc88eb15f9e7f84e8e56c14fa5735aaa488b840983f87bd79b1054190e660de
 
   containerName: nginx-controller
 
