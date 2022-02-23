@@ -15,7 +15,7 @@ spec:
       values: {{ toYaml .Values.source.helm.values | toString | indent 6 }}
   destination:
     server: {{ .Values.destination.server }}
-    namespace: "argocd"
+    namespace: {{ .Values.namespace }}
   syncPolicy:
     automated:
       allowEmpty: false
