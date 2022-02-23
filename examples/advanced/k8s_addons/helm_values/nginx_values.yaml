@@ -3,8 +3,6 @@ controller:
     registry: k8s.gcr.io
     image: ingress-nginx/controller
 
-  containerName: nginx-controller
-
   service:
     enabled: true
     annotations:
