@@ -155,7 +155,7 @@ module "karpenter-launch-templates" {
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
-          volume_type = "gp2"
+          volume_type = "gp3"
           volume_size = "200"
         }
       ]
@@ -169,7 +169,7 @@ module "karpenter-launch-templates" {
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
-          volume_type = "gp2"
+          volume_type = "gp3"
           volume_size = "200"
         }
       ]

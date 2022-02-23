@@ -276,7 +276,7 @@ module "aws-eks-accelerator-for-terraform" {
       block_device_mapping = [
         {
           device_name = "/dev/xvda"
-          volume_type = "gp2"
+          volume_type = "gp3"
           volume_size = 20
         }
       ]
@@ -319,7 +319,7 @@ module "aws-eks-accelerator-for-terraform" {
       block_device_mapping = [
         {
           device_name = "/dev/xvda"
-          volume_type = "gp2"
+          volume_type = "gp3"
           volume_size = 20
         }
       ]
@@ -366,7 +366,7 @@ module "aws-eks-accelerator-for-terraform" {
       block_device_mapping = [
         {
           device_name = "/dev/xvda"
-          volume_type = "gp2"
+          volume_type = "gp3"
           volume_size = 50
         }
       ]

@@ -33,7 +33,7 @@ locals {
     name                       = "keda"
     chart                      = "keda"
     repository                 = "https://kedacore.github.io/charts"
-    version                    = "2.4.0"
+    version                    = "2.6.2"
     namespace                  = "keda"
     timeout                    = "1200"
     create_namespace           = false
