@@ -37,3 +37,9 @@ variable "tags" {
   type        = map(string)
   description = "Common Tags for AWS resources"
 }
+
+variable "irsa_iam_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}

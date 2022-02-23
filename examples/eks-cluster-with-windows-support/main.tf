@@ -21,9 +21,21 @@ terraform {
   }
 }
 
-data "aws_region" "current" {}
+data "aws_region" "current" {
+  # Change this per your need
+  name = "us-east-1"
+}
 
-data "aws_availability_zones" "available" {}
+data "aws_availability_zones" "available" {
+  state = "available"
+  # Specify AZs to avoid EKS cluster creation error due to reduced capacity in an AZ.
+  # Change the AZ names per capacity available in the region you selected.
+  # https://aws.amazon.com/premiumsupport/knowledge-center/eks-cluster-creation-errors/
+  filter {
+    name   = "zone-name"
+    values = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  }
+}
 
 data "aws_eks_cluster" "cluster" {
   name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
@@ -100,7 +112,7 @@ module "aws_vpc" {
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  source = "../.."
+  source = "git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git?ref=v3.2.1"
 
   tenant            = local.tenant
   environment       = local.environment
@@ -112,7 +124,6 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS CONTROL PLANE VARIABLES
-  create_eks         = true
   kubernetes_version = local.kubernetes_version
 
   # EKS MANAGED NODE GROUP
@@ -143,7 +154,7 @@ module "aws-eks-accelerator-for-terraform" {
 }
 
 module "kubernetes-addons" {
-  source = "../../modules/kubernetes-addons"
+  source = "git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git//modules/kubernetes-addons?ref=v3.2.1"
 
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
@@ -152,10 +163,37 @@ module "kubernetes-addons" {
   enable_amazon_eks_coredns    = true
   enable_amazon_eks_kube_proxy = true
 
-  #K8s Add-ons
+  # K8s Add-ons
+  # Ensure proper node assignment
   enable_aws_load_balancer_controller = true
-  enable_metrics_server               = true
-  enable_cluster_autoscaler           = true
+  aws_load_balancer_controller_helm_config = {
+    set = [
+      {
+        name  = "nodeSelector.kubernetes\\.io/os"
+        value = "linux"
+      }
+    ]
+  }
+
+  enable_metrics_server = true
+  metrics_server_helm_config = {
+    set = [
+      {
+        name  = "nodeSelector.kubernetes\\.io/os"
+        value = "linux"
+      }
+    ]
+  }
+
+  enable_cluster_autoscaler = true
+  cluster_autoscaler_helm_config = {
+    set = [
+      {
+        name  = "nodeSelector.kubernetes\\.io/os"
+        value = "linux"
+      }
+    ]
+  }
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }

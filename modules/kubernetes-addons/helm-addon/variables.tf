@@ -34,6 +34,7 @@ variable "irsa_config" {
     iam_role_path                     = string
     tags                              = map(string)
     irsa_iam_policies                 = list(string)
+    irsa_iam_permissions_boundary     = string
   })
   description = "Input configuration for IRSA module"
 }

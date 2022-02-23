@@ -94,7 +94,6 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS Control Plane Variables
-  create_eks         = true
   kubernetes_version = local.kubernetes_version
 
   managed_node_groups = {
@@ -136,6 +135,11 @@ module "kubernetes-addons" {
   enable_prometheus                    = true
   enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
+
+  depends_on = [
+    module.aws-eks-accelerator-for-terraform.managed_node_groups,
+    module.aws_vpc
+  ]
 }
 
 #---------------------------------------------------------------
@@ -197,6 +201,10 @@ resource "aws_elasticsearch_domain" "opensearch" {
     subnet_ids         = module.aws_vpc.public_subnets
     security_group_ids = [aws_security_group.opensearch_access.id]
   }
+
+  depends_on = [
+    aws_iam_service_linked_role.opensearch
+  ]
 }
 
 resource "aws_iam_service_linked_role" "opensearch" {

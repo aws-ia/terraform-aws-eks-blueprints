@@ -70,7 +70,7 @@ metrics_server_helm_config = {
 	name           = "metrics-server"
 	repository     = "https://kubernetes-sigs.github.io/metrics-server/"
 	chart          = "metrics-server"
-	version        = "3.5.0"
+	version        = "3.8.1"
 	namespace      = "kube-system"
 	timeout        = "1200"
 

@@ -71,12 +71,13 @@ module "argocd" {
 }
 
 module "argo_rollouts" {
-  count             = var.enable_argo_rollouts ? 1 : 0
-  source            = "./argo-rollouts"
-  eks_cluster_id    = var.eks_cluster_id
-  helm_config       = var.argo_rollouts_helm_config
-  tags              = var.tags
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                         = var.enable_argo_rollouts ? 1 : 0
+  source                        = "./argo-rollouts"
+  eks_cluster_id                = var.eks_cluster_id
+  helm_config                   = var.argo_rollouts_helm_config
+  irsa_iam_permissions_boundary = var.argo_rollouts_irsa_permissions_boundary
+  tags                          = var.tags
+  manage_via_gitops             = var.argocd_manage_add_ons
 }
 
 module "aws_for_fluent_bit" {
@@ -93,12 +94,13 @@ module "aws_for_fluent_bit" {
 }
 
 module "aws_load_balancer_controller" {
-  count             = var.enable_aws_load_balancer_controller ? 1 : 0
-  source            = "./aws-load-balancer-controller"
-  helm_config       = var.aws_load_balancer_controller_helm_config
-  eks_cluster_id    = var.eks_cluster_id
-  tags              = var.tags
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                         = var.enable_aws_load_balancer_controller ? 1 : 0
+  source                        = "./aws-load-balancer-controller"
+  helm_config                   = var.aws_load_balancer_controller_helm_config
+  eks_cluster_id                = var.eks_cluster_id
+  irsa_iam_permissions_boundary = var.aws_load_balancer_controller_irsa_permissions_boundary
+  tags                          = var.tags
+  manage_via_gitops             = var.argocd_manage_add_ons
 }
 
 module "aws_node_termination_handler" {
@@ -153,10 +155,13 @@ module "fargate_fluentbit" {
 }
 
 module "ingress_nginx" {
-  count             = var.enable_ingress_nginx ? 1 : 0
-  source            = "./ingress-nginx"
-  helm_config       = var.ingress_nginx_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                         = var.enable_ingress_nginx ? 1 : 0
+  source                        = "./ingress-nginx"
+  helm_config                   = var.ingress_nginx_helm_config
+  manage_via_gitops             = var.argocd_manage_add_ons
+  eks_cluster_id                = var.eks_cluster_id
+  irsa_policies                 = var.nginx_irsa_policies
+  irsa_iam_permissions_boundary = var.nginx_ingress_controller_irsa_permissions_boundary
 }
 
 module "karpenter" {

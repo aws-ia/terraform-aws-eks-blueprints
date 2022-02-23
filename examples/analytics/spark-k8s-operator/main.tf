@@ -92,7 +92,6 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS CONTROL PLANE VARIABLES
-  create_eks         = true
   kubernetes_version = local.kubernetes_version
 
   # EKS MANAGED NODE GROUPS
@@ -133,8 +132,8 @@ module "kubernetes-addons" {
     name       = "prometheus"                                         # (Required) Release name.
     repository = "https://prometheus-community.github.io/helm-charts" # (Optional) Repository URL where to locate the requested chart.
     chart      = "prometheus"                                         # (Required) Chart name to be installed.
-    version    = "14.4.0"                                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "prometheus"                                         # (Optional) The namespace to install the release into. Defaults to default
+    version    = "15.3.0"                                             # (Optional) Specify the exact chart version to install.
+    namespace  = "prometheus"                                         # (Optional) The namespace to install the release into.
     values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
       operating_system = "linux"
     })]
@@ -162,7 +161,7 @@ module "kubernetes-addons" {
     name       = "yunikorn"                                            # (Required) Release name.
     repository = "https://apache.github.io/incubator-yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
     chart      = "yunikorn"                                            # (Required) Chart name to be installed.
-    version    = "0.12.1"                                              # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
+    version    = "0.12.2"                                              # (Optional) Specify the exact chart version to install.
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
 
