@@ -68,7 +68,7 @@ Retrieve your Amazon EFS file system ID
 
     terraform output -raw efs_file_system_id
 
-Download a `StorageClass` manifest for Amazon EFS 
+Download a `StorageClass` manifest for Amazon EFS
 
     curl -o storageclass.yaml https://raw.githubusercontent.com/kubernetes-sigs/aws-efs-csi-driver/master/examples/kubernetes/dynamic_provisioning/specs/storageclass.yaml
 
