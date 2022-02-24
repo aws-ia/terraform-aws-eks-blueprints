@@ -453,3 +453,28 @@ variable "argo_rollouts_irsa_policies" {
   default     = []
   description = "IAM policy ARNs for Argo Rollouts IRSA"
 }
+
+#-----------Kube State Metrics ADDON-------------
+variable "enable_kube_state_metrics" {
+  type        = bool
+  default     = false
+  description = "Enable Kube State Metrics add-on"
+}
+
+variable "kube_state_metrics_helm_config" {
+  type        = any
+  default     = null
+  description = "Kube State Metrics Helm Chart config"
+}
+
+variable "kube_state_metrics_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for Kube State Metrics IRSA"
+}
+
+variable "kube_state_metrics_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}

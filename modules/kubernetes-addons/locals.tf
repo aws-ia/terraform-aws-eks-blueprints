@@ -16,5 +16,6 @@ locals {
     yunikorn                  = var.enable_yunikorn ? module.yunikorn[0].argocd_gitops_config : null
     argoRollouts              = var.enable_argo_rollouts ? module.argo_rollouts[0].argocd_gitops_config : null
     crossplane                = var.enable_crossplane ? module.crossplane[0].argocd_gitops_config : null
+    kube_state_metrics        = var.enable_kube_state_metrics ? module.kube_state_metrics[0].argocd_gitops_config : null
   }
 }
