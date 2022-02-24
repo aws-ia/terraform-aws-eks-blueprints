@@ -183,21 +183,14 @@ resource "aws_efs_mount_target" "efs_mt" {
 
 resource "aws_security_group" "efs_sg" {
   name        = "efs-sg"
-  description = "Allow inbound EFS traffic from EKS worker nodes"
+  description = "Allow inbound NFS traffic from private subnets of the VPC"
   vpc_id      = module.aws_vpc.vpc_id
 
   ingress {
-    security_groups = [module.aws-eks-accelerator-for-terraform.worker_security_group_id]
+    cidr_blocks     = module.aws_vpc.private_subnets_cidr_blocks
     from_port       = 2049
     to_port         = 2049
     protocol        = "tcp"
-  }
-
-  egress {
-    security_groups = [module.aws-eks-accelerator-for-terraform.worker_security_group_id]
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
   }
 }
 
