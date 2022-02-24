@@ -113,7 +113,7 @@ The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/eks-cluster-with-new-vpc-and-efs/
-terraform destroy --auto-approve
+terraform destroy -auto-approve
 ```
 
 <!--- BEGIN_TF_DOCS --->
