@@ -322,18 +322,6 @@ variable "cert_manager_helm_config" {
   description = "Cert Manager Helm Chart config"
   default     = {}
 }
-#-----------AWS OPEN TELEMETRY ADDON-------------
-variable "enable_aws_open_telemetry" {
-  type        = bool
-  default     = false
-  description = "Enable AWS Open Telemetry Distro add-on"
-}
-
-variable "aws_open_telemetry_addon_config" {
-  type        = any
-  default     = {}
-  description = "AWS Open Telemetry Distro add-on config"
-}
 
 #-----------ARGOCD ADDON-------------
 variable "enable_argocd" {
