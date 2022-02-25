@@ -215,7 +215,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_terraform_version"></a> [terraform\_version](#input\_terraform\_version) | Terraform version | `string` | `"Terraform"` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC Id | `string` | n/a | yes |
 | <a name="input_worker_additional_security_group_ids"></a> [worker\_additional\_security\_group\_ids](#input\_worker\_additional\_security\_group\_ids) | A list of additional security group ids to attach to worker instances | `list(string)` | `[]` | no |
+| <a name="input_worker_create_kms_key"></a> [worker\_create\_kms\_key](#input\_worker\_create\_kms\_key) | Defines if the self managed worked nodes' block devices should use a KMS Customer Managed Key instead of a KMS AWS Managed Key. Defaults to false | `bool` | `false` | no |
 | <a name="input_worker_create_security_group"></a> [worker\_create\_security\_group](#input\_worker\_create\_security\_group) | Whether to create a security group for the workers or attach the workers to `worker_security_group_id`. | `bool` | `true` | no |
+| <a name="input_worker_kms_key_arn"></a> [worker\_kms\_key\_arn](#input\_worker\_kms\_key\_arn) | A valid KMS Key ARN, created externally, used to encrypt self managed worker nodes' block devices | `string` | `null` | no |
 | <a name="input_zone"></a> [zone](#input\_zone) | zone, e.g. dev or qa or load or ops etc... | `string` | `"dev"` | no |
 
 ## Outputs

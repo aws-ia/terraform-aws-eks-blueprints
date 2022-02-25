@@ -173,6 +173,7 @@ No requirements.
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_kms"></a> [kms](#module\_kms) | ../aws-kms | n/a |
 | <a name="module_launch_template_self_managed_ng"></a> [launch\_template\_self\_managed\_ng](#module\_launch\_template\_self\_managed\_ng) | ../launch-templates | n/a |
 
 ## Resources
@@ -198,7 +199,10 @@ No requirements.
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.eks_windows_cni](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.self_managed_ng_assume_role_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.worker_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_session_context.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_session_context) | data source |
 | [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
@@ -220,6 +224,8 @@ No requirements.
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC Id used in security group creation | `string` | n/a | yes |
 | <a name="input_worker_additional_security_group_ids"></a> [worker\_additional\_security\_group\_ids](#input\_worker\_additional\_security\_group\_ids) | Worker additional group security IDs | `list(string)` | `[]` | no |
+| <a name="input_worker_create_kms_key"></a> [worker\_create\_kms\_key](#input\_worker\_create\_kms\_key) | Defines if the self managed worked nodes' block devices should use a KMS Customer Managed Key instead of a KMS AWS Managed Key. Defaults to false | `bool` | `false` | no |
+| <a name="input_worker_kms_key_arn"></a> [worker\_kms\_key\_arn](#input\_worker\_kms\_key\_arn) | A valid KMS Key ARN to encrypt worker node block devices | `string` | `null` | no |
 | <a name="input_worker_security_group_id"></a> [worker\_security\_group\_id](#input\_worker\_security\_group\_id) | Worker group security ID | `string` | `""` | no |
 
 ## Outputs
