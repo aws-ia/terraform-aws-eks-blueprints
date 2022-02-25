@@ -99,11 +99,7 @@ The below example demonstrates advanced configuration options for a self-managed
           block_device_mapping = [
             {
               device_name = "/dev/xvda" # mount point to /
-<<<<<<< HEAD
-              volume_type = "gp2"
-=======
               volume_type = "gp3"
->>>>>>> main
               volume_size = 20
             },
             {
@@ -145,43 +141,38 @@ Check the following references as you may desire:
 *  [AWS NVMe drivers for Windows instances](https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/aws-nvme-drivers.html)
 *  [EC2 Instance Update – M5 Instances with Local NVMe Storage (M5d)](https://aws.amazon.com/blogs/aws/ec2-instance-update-m5-instances-with-local-nvme-storage-m5d/)
 
-<<<<<<< HEAD
 ### Block Device Encryption
 
-For self-managed worker nodes you are able to specify a kms key arn that you desire to encrypt the block devices. In case you do not specify one, the default `aws/ebs` AWS managed key will be used.
+Your worker nodes will always have encrypted block devices.\
 
-The following snippet demonstrates the encryption of two devices in which the first one is encrypted with default `aws/ebs` AWS managed key, while the second is encrypted wit a specified key.
+#### Default Encryption with KMS AWS Managed Key
+
+By default it uses `aws/ebs` KMS AWS managed key in case you assume the default values for `worker_create_kms_key` and `worker_kms_key_arn` variables.
+
+#### Encryption with created KMS Customer Managed Key
+
+You are able to use a KMS Customer Managed Key, created during the process of infrastructure provisioning, by simplying setting `worker_create_kms_key` variable to `true`.
 
 ```hcl
+    worker_create_kms_key = true
+
     self_managed_node_groups = {
-        self_mg_4 = {
-          node_group_name       = "self-managed-ondemand"
-          instance_type         = "m5.large"
-          ...
-          block_device_mapping = [
-            {
-              device_name = "/dev/xvda" # mount point to /
-              volume_type = "gp2"
-              volume_size = 20
-            },
-            {
-              device_name = "/dev/xvdf" # mount point to /local1 (it could be local2, depending upon the disks are attached during boot)
-              volume_type = "gp3"
-              volume_size = 50
-              iops        = 3000
-              throughput  = 125
-              kms_key_id  = "arn:aws:kms:us-west-2:123456789012:key/a4688694-fedc-2222-baee-11d4444b5c6f" #encrypt with specified kms key
-            }
-          ]
-          ...
-        },
-    }
+    ...
 ```
 
-It is important to configure the kms key policy correctly in order to allow Auto Scaling service-linked role to make usage of the key. Check the following [example](https://docs.aws.amazon.com/autoscaling/ec2/userguide/key-policy-requirements-EBS-encryption.html#policy-example-cmk-access) to configure it properly.
+#### Encryption with existing KMS Customer Managed Key
 
-=======
->>>>>>> main
+You are able to use an existing KMS Customer Managed Key, by simplying setting `worker_kms_key_arn` to the desired KMS Key ARN.
+
+It is important to configure the KMS Key policy correctly in order to allow Auto Scaling service-linked role to make usage of the key. Check the following [example](https://docs.aws.amazon.com/autoscaling/ec2/userguide/key-policy-requirements-EBS-encryption.html#policy-example-cmk-access) to configure it properly.
+
+```hcl
+    worker_kms_key_arn = "arn:aws:kms:us-west-2:111111111111:key/e76c7b02-5044-4922-a636-eb1cc7e81659"
+
+    self_managed_node_groups = {
+    ...
+```
+
 ### Fargate Profile
 
 The example below demonstrates how you can customize a Fargate profile for your cluster.

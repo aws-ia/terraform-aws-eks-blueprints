@@ -169,7 +169,7 @@ variable "fargate_profiles" {
 }
 
 variable "worker_create_kms_key" {
-  description = "Defines if the self managed worked nodes' block devices should use a KMS Customer Managed Key instead of a KMS AWS Managed Key. Defaults to false"
+  description = "Defines if the self managed worked nodes' block devices should use a KMS Customer Managed Key instead of a KMS AWS Managed Key"
   type        = bool
   default     = false
 }
