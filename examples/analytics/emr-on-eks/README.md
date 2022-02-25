@@ -13,6 +13,8 @@ Ensure that you have installed the following tools on your machine.
 3. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 4. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
+Note :Currently Amazon Prometheus is supported only in selected regions. Please see this [userguide](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html)
+
 ## Step1: Deploy EKS Clusters with EMR on EKS feature
 
 Clone the repository
@@ -28,10 +30,10 @@ cd examples/analytics/emr-on-eks
 terraform init
 ```
 
-Run Terraform plan to verify the resources created by this execution.
+Set AWS_REGION and Run Terraform plan to verify the resources created by this execution.
 
 ```
-export AWS_REGION="eu-west-1"   # Select your own region
+export AWS_REGION="<enter-your-region>"   
 terraform plan
 
 ```
