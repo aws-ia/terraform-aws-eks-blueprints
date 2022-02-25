@@ -143,7 +143,7 @@ Check the following references as you may desire:
 
 ### Block Device Encryption
 
-Your worker nodes will always have encrypted block devices.\
+Your worker nodes will always have encrypted block devices.
 
 #### Default Encryption with KMS AWS Managed Key
 
