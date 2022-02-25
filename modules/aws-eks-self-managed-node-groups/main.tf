@@ -1,3 +1,16 @@
+# ---------------------------------------------------------------------------------------------------------------------
+# WORKED NODE BLOCK DEVICE KMS KEY
+# ---------------------------------------------------------------------------------------------------------------------
+module "kms" {
+  count  = var.worker_create_kms_key && try(length(trimspace(var.worker_kms_key_arn)), 0) == 0 ? 1 : 0
+  source = "../aws-kms"
+
+  alias       = "alias/${local.self_managed_node_group["node_group_name"]}-${var.eks_cluster_id}"
+  description = "${local.self_managed_node_group["node_group_name"]}-${var.eks_cluster_id} Worker Node block devices' encryption key"
+  policy      = data.aws_iam_policy_document.worker_key.json
+  tags        = local.non_specific_cluster_tags
+}
+
 resource "aws_autoscaling_group" "self_managed_ng" {
   name = "${var.eks_cluster_id}-${local.self_managed_node_group["node_group_name"]}"
 

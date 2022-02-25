@@ -92,3 +92,15 @@ variable "http_put_response_hop_limit" {
   default     = 1
   description = "HTTP PUT response hop limit for instance metadata requests. Supported values: 1-64."
 }
+
+variable "worker_create_kms_key" {
+  description = "Defines if the self managed worked nodes' block devices should use a KMS Customer Managed Key instead of a KMS AWS Managed Key. Defaults to false"
+  type        = bool
+  default     = false
+}
+
+variable "worker_kms_key_arn" {
+  description = "A valid KMS Key ARN to encrypt worker node block devices"
+  type        = string
+  default     = null
+}

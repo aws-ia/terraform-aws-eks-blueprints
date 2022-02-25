@@ -71,6 +71,8 @@ module "aws_eks_self_managed_node_groups" {
 
   worker_security_group_id             = module.aws_eks.worker_security_group_id
   worker_additional_security_group_ids = var.worker_additional_security_group_ids
+  worker_create_kms_key                = var.worker_create_kms_key
+  worker_kms_key_arn                   = var.worker_kms_key_arn
   cluster_security_group_id            = module.aws_eks.cluster_security_group_id
   cluster_primary_security_group_id    = module.aws_eks.cluster_primary_security_group_id
   tags                                 = module.eks_tags.tags

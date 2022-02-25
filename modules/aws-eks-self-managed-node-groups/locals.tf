@@ -62,9 +62,12 @@ locals {
     local.self_managed_node_group["additional_iam_policies"
   ]))
 
-  common_tags = merge(
+  non_specific_cluster_tags = merge(
     var.tags,
-    local.self_managed_node_group["additional_tags"],
+  local.self_managed_node_group["additional_tags"])
+
+  common_tags = merge(
+    local.non_specific_cluster_tags,
     {
       Name                                              = "${local.self_managed_node_group["node_group_name"]}-${var.eks_cluster_id}"
       "k8s.io/cluster-autoscaler/${var.eks_cluster_id}" = "owned"

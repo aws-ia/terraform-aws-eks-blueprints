@@ -11,7 +11,21 @@ module "launch_template_self_managed_ng" {
       capacity_type          = local.self_managed_node_group["capacity_type"]
       iam_instance_profile   = aws_iam_instance_profile.self_managed_ng.name
 
-      block_device_mappings = local.self_managed_node_group["block_device_mappings"]
+      block_device_mappings = [for device in local.self_managed_node_group["block_device_mappings"] : {
+        device_name           = device.device_name
+        volume_type           = try(device.volume_type, null)
+        volume_size           = try(device.volume_size, null)
+        delete_on_termination = try(device.delete_on_termination, true)
+        encrypted             = try(device.encrypted, true)
+        kms_key_id = var.worker_create_kms_key && try(
+          length(trimspace(var.worker_kms_key_arn)), 0) == 0 ? module.kms[0].key_arn : try(
+        length(trimspace(var.worker_kms_key_arn)), 0) > 0 ? var.worker_kms_key_arn : null
+        iops       = try(device.iops, null)
+        throughput = try(device.throughput, null)
+        }
+      ]
+
+      #local.self_managed_node_group["block_device_mappings"]
 
       network_interfaces = [
         {

@@ -162,6 +162,18 @@ variable "fargate_profiles" {
   default     = {}
 }
 
+variable "worker_create_kms_key" {
+  description = "Defines if the self managed worked nodes' block devices should use a KMS Customer Managed Key instead of a KMS AWS Managed Key. Defaults to false"
+  type        = bool
+  default     = false
+}
+
+variable "worker_kms_key_arn" {
+  description = "A valid KMS Key ARN, created externally, used to encrypt self managed worker nodes' block devices"
+  type        = string
+  default     = null
+}
+
 # EKS WINDOWS SUPPORT
 variable "enable_windows_support" {
   description = "Enable Windows support"
