@@ -1,3 +1,26 @@
+terraform {
+  required_version = ">= 1.0.1"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 3.66.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.6.1"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = ">= 2.4.1"
+    }
+  }
+
+  backend "local" {
+    path = "local_tf_state/terraform-main.tfstate"
+  }
+}
+
 provider "aws" {}
 
 provider "kubernetes" {
@@ -27,12 +50,6 @@ data "aws_eks_cluster" "cluster" {
 
 data "aws_eks_cluster_auth" "cluster" {
   name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-}
-
-terraform {
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
-  }
 }
 
 locals {
@@ -81,8 +98,6 @@ module "aws_vpc" {
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
   source = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
-
-  create_eks = true
 
   tenant            = local.tenant
   environment       = local.environment
@@ -151,8 +166,8 @@ module "kubernetes-addons" {
     name       = "prometheus"                                         # (Required) Release name.
     repository = "https://prometheus-community.github.io/helm-charts" # (Optional) Repository URL where to locate the requested chart.
     chart      = "prometheus"                                         # (Required) Chart name to be installed.
-    version    = "14.4.0"                                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "prometheus"                                         # (Optional) The namespace to install the release into. Defaults to default
+    version    = "15.3.0"                                             # (Optional) Specify the exact chart version to install.
+    namespace  = "prometheus"                                         # (Optional) The namespace to install the release into.
     values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
       operating_system = "linux"
     })]
@@ -166,8 +181,8 @@ module "kubernetes-addons" {
     name       = "vpa"                                 # (Required) Release name.
     repository = "https://charts.fairwinds.com/stable" # (Optional) Repository URL where to locate the requested chart.
     chart      = "vpa"                                 # (Required) Chart name to be installed.
-    version    = "0.5.0"                               # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "vpa-ns"                              # (Optional) The namespace to install the release into. Defaults to default
+    version    = "1.0.0"                               # (Optional) Specify the exact chart version to install
+    namespace  = "vpa"                                 # (Optional) The namespace to install the release into.
     values     = [templatefile("${path.module}/helm_values/vpa-values.yaml", {})]
   }
 

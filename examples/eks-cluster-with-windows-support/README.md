@@ -32,9 +32,11 @@ terraform init
 to verify the resources created by this execution
 
 ```bash
-export AWS_REGION=<enter-your-region>   # Select your own region
+export AWS_REGION=us-east-1   # Select your own region
 terraform plan
 ```
+
+If you want to use a region other than `us-east-1`, update the `aws_region` name and `aws_availability_zones` filter in the data sources in [main.tf](./main.tf) accordingly.
 
 ### Step4: Run `terraform apply`
 to create resources
@@ -48,30 +50,35 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
 
 ### Step5: Run `update-kubeconfig` command.
 
-`~/.kube/config` file gets updated with EKS cluster context from the below command. Use the cluster's name available in the Terraform output as `eks_cluster_name`.
+`~/.kube/config` file gets updated with EKS cluster context from the below command. Replace the region name and EKS cluster name with your cluster's name. (If you did not change the `tenant`, `environment`, and `zone` values in this example, the EKS cluster name will be `aws001-preprod-dev-eks`.)
 
-    $ aws eks --region <enter-your-region> update-kubeconfig --name <eks_cluster_name>
+    $ aws eks --region us-east-1 update-kubeconfig --name aws001-preprod-dev-eks
 
 ### Step6: (Optional) Deploy sample Windows and Linux workloads to verify support for both operating systems
-When Windows support is enabled in the cluster, it is necessary to use one of the ways to assign pods to specific nodes, such as `nodeSelector` or `affinity`.
-See the [K8s documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/) for more info.
-This example uses `nodeSelector`s to select nodes with appropriate OS for pods.
+When Windows support is enabled in the cluster, it is necessary to use one of the ways to assign pods to specific nodes, such as `nodeSelector` or `affinity`. See the [K8s documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/) for more info. This example uses `nodeSelector`s to select nodes with appropriate OS for pods.
 
 #### Sample Windows deployment
 ```bash
 cd examples/eks-cluster-with-windows-support
 
 # Sample Windows deployment
-  kubectl apply -f ./k8s/windows-iis-aspnet.yaml
+kubectl apply -f ./k8s/windows-iis-aspnet.yaml
 
 # Wait for the Windows pod status to change to Running
+# The following command will work on Linux
 # On Mac, install the watch command using brew install watch
-  watch -n 1 "kubectl get po -n windows"
+watch -n 1 "kubectl get po -n windows"
 
-# When the pod starts running, forward the service port
-  kubectl port-forward -n windows service/aspnet 8000:80
+# When the pod starts running, create a proxy to the K8s API
+kubectl proxy
 ```
-Now visit [http://localhost:8000/demo](http://localhost:8000/demo) in your browser. If everything went well, the page should display text "Hello, World!". Use Ctrl+C in your terminal to stop the `kubectl` port forwarding.
+Now visit [http://127.0.0.1:8001/api/v1/namespaces/windows/services/aspnet/proxy/demo](http://127.0.0.1:8001/api/v1/namespaces/windows/services/aspnet/proxy/demo) in your browser. If everything went well, the page should display text "Hello, World!". Use Ctrl+C in your terminal to stop the `kubectl` proxy.
+
+Note: The `aspnet` service created by above example is a `LoadBalancer` service, so you can also visit the Network Load Balancer (NLB) endpoint in your browser instead of using `kubectl proxy` as mentioned above. To be able to access the NLB endpoint, update the security group attached to the Windows node where the `aspnet` pod is running to allow inbound access to port 80 from your IP address. You can grab the NLB endpoint from the service using the following command:
+
+```
+kubectl get svc -n windows -o jsonpath="{.items[0].status.loadBalancer.ingress[0].hostname}"
+```
 
 #### Sample Linux deployment
 ```bash
@@ -115,9 +122,9 @@ terraform destroy -auto-approve
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | ../.. | n/a |
+| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git | v3.2.1 |
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
-| <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | ../../modules/kubernetes-addons | n/a |
+| <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git//modules/kubernetes-addons | v3.2.1 |
 
 ## Resources
 

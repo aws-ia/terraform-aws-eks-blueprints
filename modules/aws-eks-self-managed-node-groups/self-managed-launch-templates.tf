@@ -9,7 +9,14 @@ module "launch_template_self_managed_ng" {
       launch_template_prefix = local.self_managed_node_group["node_group_name"]
       instance_type          = local.self_managed_node_group["instance_type"]
       capacity_type          = local.self_managed_node_group["capacity_type"]
-      iam_instance_profile   = aws_iam_instance_profile.self_managed_ng.name
+
+      pre_userdata         = local.self_managed_node_group["pre_userdata"]
+      bootstrap_extra_args = local.self_managed_node_group["bootstrap_extra_args"]
+      post_userdata        = local.self_managed_node_group["post_userdata"]
+      kubelet_extra_args   = local.self_managed_node_group["kubelet_extra_args"]
+      monitoring           = local.self_managed_node_group["enable_monitoring"]
+
+      iam_instance_profile = aws_iam_instance_profile.self_managed_ng.name
 
       block_device_mappings = [for device in local.self_managed_node_group["block_device_mappings"] : {
         device_name           = device.device_name
@@ -25,17 +32,13 @@ module "launch_template_self_managed_ng" {
         }
       ]
 
-      #local.self_managed_node_group["block_device_mappings"]
-
       network_interfaces = [
         {
           public_ip = local.self_managed_node_group["public_ip"]
           security_groups = (
-            local.self_managed_node_group["create_worker_security_group"] == true ? compact(
-              flatten([[aws_security_group.self_managed_ng[0].id],
-              local.self_managed_node_group["worker_additional_security_group_ids"]])) : compact(
-              flatten([[var.worker_security_group_id],
-          var.worker_additional_security_group_ids])))
+            local.self_managed_node_group["create_worker_security_group"] == true
+            ? compact(flatten([[aws_security_group.self_managed_ng[0].id], var.worker_additional_security_group_ids]))
+          : compact(flatten([[var.worker_security_group_id], var.worker_additional_security_group_ids])))
         }
       ]
     }

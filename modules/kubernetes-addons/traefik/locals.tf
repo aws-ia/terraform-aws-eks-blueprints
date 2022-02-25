@@ -4,7 +4,7 @@ locals {
     name                       = "traefik"
     chart                      = "traefik"
     repository                 = "https://helm.traefik.io/traefik"
-    version                    = "10.0.0"
+    version                    = "10.14.1"
     namespace                  = "kube-system"
     timeout                    = "1200"
     create_namespace           = false

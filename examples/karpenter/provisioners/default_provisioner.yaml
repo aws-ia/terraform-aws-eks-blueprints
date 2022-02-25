@@ -6,7 +6,7 @@ spec:
   requirements:
     - key: "topology.kubernetes.io/zone"
       operator: In
-      values: ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+      values: [${azs}]
     - key: "karpenter.sh/capacity-type"
       operator: In
       values: ["spot", "on-demand"]
@@ -14,8 +14,9 @@ spec:
     resources:
       cpu: 1000
   provider:
-    instanceProfile: "aws001-preprod-dev-eks-self-managed-ondemand" # self-managed IAM Instance profile Name
-#    launchTemplate: MyLaunchTemplate   # Optional to provide Launch template
+    instanceProfile: ${iam-instance-profile-id}
     subnetSelector:
       Name: "*private*"
-  ttlSecondsAfterEmpty: 30
+    securityGroupSelector:
+      kubernetes.io/cluster/${eks-cluster-id}: 'owned'
+  ttlSecondsAfterEmpty: 120

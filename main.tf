@@ -35,10 +35,11 @@ module "kms" {
   count  = var.create_eks && var.cluster_kms_key_arn == null ? 1 : 0
   source = "./modules/aws-kms"
 
-  alias       = "alias/${module.eks_tags.id}"
-  description = "${module.eks_tags.id} EKS cluster secret encryption key"
-  policy      = data.aws_iam_policy_document.eks_key.json
-  tags        = module.eks_tags.tags
+  alias                   = "alias/${module.eks_tags.id}"
+  description             = "${module.eks_tags.id} EKS cluster secret encryption key"
+  policy                  = data.aws_iam_policy_document.eks_key.json
+  deletion_window_in_days = var.cluster_kms_key_deletion_window_in_days
+  tags                    = module.eks_tags.tags
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -132,6 +133,7 @@ resource "kubernetes_config_map" "amazon_vpc_cni" {
 # Teams
 # ---------------------------------------------------------------------------------------------------------------------
 module "aws_eks_teams" {
+  count  = length(var.application_teams) > 0 || length(var.platform_teams) > 0 ? 1 : 0
   source = "./modules/aws-eks-teams"
 
   application_teams = var.application_teams

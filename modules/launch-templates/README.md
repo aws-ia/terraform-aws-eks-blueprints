@@ -2,7 +2,7 @@
 This module used to create Launch Templates for Node groups or Karpenter.
 
 ## Usage
-This example shows how to consume the `launch-templates` module. See this full [example](examples/karpenter/main.tf).
+This example shows how to consume the `launch-templates` module. See this full [example](../../examples/karpenter/main.tf).
 
 ```hcl
 module "launch_templates" {

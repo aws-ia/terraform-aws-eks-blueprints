@@ -6,7 +6,7 @@ For complete project documentation, please visit the [Karpenter](https://karpent
 
 ## Usage
 
-Karpenter can be deployed by enabling the add-on via the following.
+Karpenter can be deployed by enabling the add-on via the following. Check out the full [example](../../modules/kubernetes-addons/karpenter/locals.tf) to deploy the EKS Cluster with Karpenter.
 
 ```hcl
 enable_karpenter = true
@@ -21,7 +21,7 @@ You can optionally customize the Helm chart that deploys `Karpenter` via the fol
     name                       = "karpenter"
     chart                      = "karpenter"
     repository                 = "https://charts.karpenter.sh"
-    version                    = "0.5.4"
+    version                    = "0.6.3"
     namespace                  = "karpenter"
     values = [templatefile("${path.module}/values.yaml", {
          eks_cluster_id       = var.eks_cluster_id,
@@ -30,16 +30,21 @@ You can optionally customize the Helm chart that deploys `Karpenter` via the fol
          operating_system     = "linux"
     })]
   }
+
+  karpenter_irsa_policies = [] # Optional to add additional policies to IRSA
 ```
 
 ### GitOps Configuration
 The following properties are made available for use when managing the add-on via GitOps.
 
-```
+Refer to [locals.tf](modules/kubernetes-addons/karpenter/locals.tf) for latest config. GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/ssp-eks-add-ons/blob/main/chart/values.yaml)
+
+```hcl
   argocd_gitops_config = {
-    enable             = true
-    serviceAccountName = local.service_account_name
-    clusterName        = var.eks_cluster_id
-    clusterEndpoint    = local.eks_cluster_endpoint
+    enable                    = true
+    serviceAccountName        = local.service_account_name
+    controllerClusterName     = var.eks_cluster_id
+    controllerClusterEndpoint = local.eks_cluster_endpoint
+    awsDefaultInstanceProfile = var.node_iam_instance_profile
   }
 ```

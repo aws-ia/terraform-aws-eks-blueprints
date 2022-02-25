@@ -102,6 +102,18 @@ variable "crossplane_helm_config" {
   description = "Crossplane Helm Chart config"
 }
 
+variable "crossplane_provider_aws" {
+  description = "AWS Provider config for Crossplane"
+  type = object({
+    provider_aws_version     = string
+    additional_irsa_policies = list(string)
+  })
+  default = {
+    provider_aws_version     = "v0.23.0"
+    additional_irsa_policies = []
+  }
+}
+
 #-----------Amazon Managed Service for Prometheus-------------
 variable "enable_amazon_prometheus" {
   type        = bool
@@ -192,6 +204,12 @@ variable "aws_load_balancer_controller_helm_config" {
   default     = {}
 }
 
+variable "aws_load_balancer_controller_irsa_permissions_boundary" {
+  type        = string
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+  default     = ""
+}
+
 #-----------NGINX-------------
 variable "enable_ingress_nginx" {
   type        = bool
@@ -203,6 +221,18 @@ variable "ingress_nginx_helm_config" {
   description = "Ingress Nginx Helm Chart config"
   type        = any
   default     = {}
+}
+
+variable "nginx_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
+
+variable "nginx_ingress_controller_irsa_permissions_boundary" {
+  type        = string
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+  default     = ""
 }
 
 #-----------SPARK K8S OPERATOR-------------
@@ -278,18 +308,6 @@ variable "cert_manager_helm_config" {
   type        = any
   description = "Cert Manager Helm Chart config"
   default     = {}
-}
-#-----------AWS OPEN TELEMETRY ADDON-------------
-variable "enable_aws_open_telemetry" {
-  type        = bool
-  default     = false
-  description = "Enable AWS Open Telemetry Distro add-on"
-}
-
-variable "aws_open_telemetry_addon_config" {
-  type        = any
-  default     = {}
-  description = "AWS Open Telemetry Distro add-on config"
 }
 
 #-----------ARGOCD ADDON-------------
@@ -424,8 +442,39 @@ variable "argo_rollouts_helm_config" {
   description = "Argo Rollouts Helm Chart config"
 }
 
+variable "argo_rollouts_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}
+
 variable "argo_rollouts_irsa_policies" {
   type        = list(string)
   default     = []
   description = "IAM policy ARNs for Argo Rollouts IRSA"
+}
+
+#-----------Kube State Metrics ADDON-------------
+variable "enable_kube_state_metrics" {
+  type        = bool
+  default     = false
+  description = "Enable Kube State Metrics add-on"
+}
+
+variable "kube_state_metrics_helm_config" {
+  type        = any
+  default     = null
+  description = "Kube State Metrics Helm Chart config"
+}
+
+variable "kube_state_metrics_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for Kube State Metrics IRSA"
+}
+
+variable "kube_state_metrics_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }

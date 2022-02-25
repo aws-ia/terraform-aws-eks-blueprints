@@ -99,7 +99,11 @@ The below example demonstrates advanced configuration options for a self-managed
           block_device_mapping = [
             {
               device_name = "/dev/xvda" # mount point to /
+<<<<<<< HEAD
               volume_type = "gp2"
+=======
+              volume_type = "gp3"
+>>>>>>> main
               volume_size = 20
             },
             {
@@ -141,6 +145,7 @@ Check the following references as you may desire:
 *  [AWS NVMe drivers for Windows instances](https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/aws-nvme-drivers.html)
 *  [EC2 Instance Update – M5 Instances with Local NVMe Storage (M5d)](https://aws.amazon.com/blogs/aws/ec2-instance-update-m5-instances-with-local-nvme-storage-m5d/)
 
+<<<<<<< HEAD
 ### Block Device Encryption
 
 For self-managed worker nodes you are able to specify a kms key arn that you desire to encrypt the block devices. In case you do not specify one, the default `aws/ebs` AWS managed key will be used.
@@ -175,6 +180,8 @@ The following snippet demonstrates the encryption of two devices in which the fi
 
 It is important to configure the kms key policy correctly in order to allow Auto Scaling service-linked role to make usage of the key. Check the following [example](https://docs.aws.amazon.com/autoscaling/ec2/userguide/key-policy-requirements-EBS-encryption.html#policy-example-cmk-access) to configure it properly.
 
+=======
+>>>>>>> main
 ### Fargate Profile
 
 The example below demonstrates how you can customize a Fargate profile for your cluster.
@@ -199,4 +206,37 @@ The example below demonstrates how you can customize a Fargate profile for your 
         }
       }
     }
+```
+
+### Windows Self-Managed Node Groups
+
+The example below demonstrates the minimum configuration required to deploy a Self-managed node group of Windows nodes. Refer to the [AWS EKS user guide](https://docs.aws.amazon.com/eks/latest/userguide/windows-support.html) for more information about Windows support in EKS.
+
+```hcl
+  # SELF-MANAGED NODE GROUP with Windows support
+  enable_windows_support = true
+
+  self_managed_node_groups = {
+    ng_od_windows = {
+      node_group_name    = "ng-od-windows"
+      launch_template_os = "windows"
+      instance_type      = "m5n.large"
+      subnet_ids         = module.aws_vpc.private_subnets
+      min_size           = "2"
+    }
+  }
+```
+
+In clusters where Windows support is enabled, workloads should have explicit node assignments configured using `nodeSelector` or `affinity`, as described in the Kubernetes document [Assigning Pods to Nodes](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/). For example, if you are enabling the `metrics-server` Kubernetes add-on (Helm chart), use the following configuration to ensure its pods are assigned to Linux nodes. See the [EKS Cluster with Windows Support example](../examples/eks-cluster-with-windows-support/) for full Terraform configuration and workload deployment samples.
+
+```hcl
+  enable_metrics_server = true
+  metrics_server_helm_config = {
+    set = [
+      {
+        name  = "nodeSelector.kubernetes\\.io/os"
+        value = "linux"
+      }
+    ]
+  }
 ```

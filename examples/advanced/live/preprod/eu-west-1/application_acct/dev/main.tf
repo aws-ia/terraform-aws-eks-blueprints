@@ -110,7 +110,6 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS CONTROL PLANE VARIABLES
-  create_eks         = true
   kubernetes_version = local.kubernetes_version
   #---------------------------------------------------------#
   # EKS WORKER NODE GROUPS
@@ -276,7 +275,7 @@ module "aws-eks-accelerator-for-terraform" {
       block_device_mapping = [
         {
           device_name = "/dev/xvda"
-          volume_type = "gp2"
+          volume_type = "gp3"
           volume_size = 20
         }
       ]
@@ -319,7 +318,7 @@ module "aws-eks-accelerator-for-terraform" {
       block_device_mapping = [
         {
           device_name = "/dev/xvda"
-          volume_type = "gp2"
+          volume_type = "gp3"
           volume_size = 20
         }
       ]
@@ -366,7 +365,7 @@ module "aws-eks-accelerator-for-terraform" {
       block_device_mapping = [
         {
           device_name = "/dev/xvda"
-          volume_type = "gp2"
+          volume_type = "gp3"
           volume_size = 50
         }
       ]

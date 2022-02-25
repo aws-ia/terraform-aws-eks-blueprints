@@ -102,11 +102,7 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS CONTROL PLANE VARIABLES
-  create_eks         = true
   kubernetes_version = local.kubernetes_version
-
-  worker_create_kms_key = true
-  worker_kms_key_arn    = "arn:aws:kms:us-west-2:408648080612:key/e93c7b02-5046-4122-a636-eb1ff7e81869"
 
   self_managed_node_groups = {
     #---------------------------------------------------------#
@@ -126,22 +122,18 @@ module "aws-eks-accelerator-for-terraform" {
 
       block_device_mappings = [
         {
-          # since kms_key_id is not specified uses default aws/ebs AWS managed key
           device_name = "/dev/xvda" # mount point to /
-          volume_type = "gp2"
+          volume_type = "gp3"
           volume_size = 50
         },
         {
-          # since kms_key_id is specified uses the one declared
           device_name = "/dev/xvdf" # mount point to /local1 (it could be local2, depending upon the disks are attached during boot)
           volume_type = "gp3"
           volume_size = 80
           iops        = 3000
           throughput  = 125
-          #          kms_key_id  = "arn:aws:kms:us-west-2:123456789012:key/a4688694-fedc-2222-baee-11d4444b5c6f" #encrypt with specified kms key
         },
         {
-          # since kms_key_id is not specified uses default aws/ebs AWS managed key
           device_name = "/dev/xvdg" # mount point to /local2 (it could be local1, depending upon the disks are attached during boot)
           volume_type = "gp3"
           volume_size = 100

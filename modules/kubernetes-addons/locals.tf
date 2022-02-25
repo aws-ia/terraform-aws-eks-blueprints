@@ -4,7 +4,6 @@ locals {
     agones                    = var.enable_agones ? module.agones[0].argocd_gitops_config : null
     awsForFluentBit           = var.enable_aws_for_fluentbit ? module.aws_for_fluent_bit[0].argocd_gitops_config : null
     awsLoadBalancerController = var.enable_aws_load_balancer_controller ? module.aws_load_balancer_controller[0].argocd_gitops_config : null
-    awsOtelCollector          = var.enable_aws_open_telemetry ? module.aws_opentelemetry_collector[0].argocd_gitops_config : null
     certManager               = var.enable_cert_manager ? module.cert_manager[0].argocd_gitops_config : null
     clusterAutoscaler         = var.enable_cluster_autoscaler ? module.cluster_autoscaler[0].argocd_gitops_config : null
     ingressNginx              = var.enable_ingress_nginx ? module.ingress_nginx[0].argocd_gitops_config : null
@@ -17,5 +16,6 @@ locals {
     yunikorn                  = var.enable_yunikorn ? module.yunikorn[0].argocd_gitops_config : null
     argoRollouts              = var.enable_argo_rollouts ? module.argo_rollouts[0].argocd_gitops_config : null
     crossplane                = var.enable_crossplane ? module.crossplane[0].argocd_gitops_config : null
+    kube_state_metrics        = var.enable_kube_state_metrics ? module.kube_state_metrics[0].argocd_gitops_config : null
   }
 }

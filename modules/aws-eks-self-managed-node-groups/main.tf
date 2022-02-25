@@ -16,7 +16,7 @@ resource "aws_autoscaling_group" "self_managed_ng" {
 
   max_size            = local.self_managed_node_group["max_size"]
   min_size            = local.self_managed_node_group["min_size"]
-  vpc_zone_identifier = local.self_managed_node_group["subnet_ids"]
+  vpc_zone_identifier = length(local.self_managed_node_group["subnet_ids"]) == 0 ? (local.self_managed_node_group["subnet_type"] == "public" ? var.public_subnet_ids : var.private_subnet_ids) : local.self_managed_node_group["subnet_ids"]
 
   launch_template {
     id      = module.launch_template_self_managed_ng.launch_template_id[local.lt_self_managed_group_map_key]

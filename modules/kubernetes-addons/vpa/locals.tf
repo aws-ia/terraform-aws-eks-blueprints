@@ -18,14 +18,14 @@
 
 locals {
   service_account_name = "vpa-sa"
-  namespace            = "vpa-ns"
+  namespace            = "vpa"
 
   default_helm_config = {
     name                       = "vpa"
     chart                      = "vpa"
     repository                 = "https://charts.fairwinds.com/stable"
-    version                    = "0.5.0"
-    namespace                  = "vpa-ns"
+    version                    = "1.0.0"
+    namespace                  = "vpa"
     timeout                    = "1200"
     create_namespace           = true
     description                = "Kubernetes Vertical Pod Autoscaler"

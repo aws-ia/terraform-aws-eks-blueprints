@@ -73,7 +73,7 @@ variable "public_subnet_ids" {
 # EKS CONTROL PLANE
 variable "create_eks" {
   type        = bool
-  default     = false
+  default     = true
   description = "Create EKS cluster"
 }
 
@@ -93,6 +93,12 @@ variable "cluster_kms_key_arn" {
   type        = string
   default     = null
   description = "A valid EKS Cluster KMS Key ARN to encrypt Kubernetes secrets"
+}
+
+variable "cluster_kms_key_deletion_window_in_days" {
+  type        = number
+  default     = 30
+  description = "The waiting period, specified in number of days (7 - 30). After the waiting period ends, AWS KMS deletes the KMS key"
 }
 
 variable "cluster_endpoint_private_access" {

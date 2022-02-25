@@ -19,19 +19,19 @@ locals {
     block_device_mappings = [
       {
         device_name = "/dev/xvda"
-        volume_type = "gp2"
+        volume_type = "gp3"
         volume_size = 50
       }
     ]
 
     # AUTOSCALING
-    max_size                             = "3"
-    min_size                             = "1"
-    subnet_ids                           = []
-    additional_tags                      = {}
-    create_worker_security_group         = false
-    worker_additional_security_group_ids = [] # Will use this when create_worker_security_group = true
-    additional_iam_policies              = []
+    max_size                     = "3"
+    min_size                     = "1"
+    subnet_type                  = "private"
+    subnet_ids                   = []
+    additional_tags              = {}
+    create_worker_security_group = false
+    additional_iam_policies      = []
   }
 
   self_managed_node_group = merge(

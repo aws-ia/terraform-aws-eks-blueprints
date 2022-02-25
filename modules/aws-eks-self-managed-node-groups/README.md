@@ -40,7 +40,7 @@ This module allows you to create on-demand or spot self managed Linux or Windows
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
-          volume_type = "gp2"
+          volume_type = "gp3"
           volume_size = 20
         }
       ]
@@ -73,7 +73,7 @@ This module allows you to create on-demand or spot self managed Linux or Windows
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
-          volume_type = "gp2"
+          volume_type = "gp3"
           volume_size = 20
         }
       ]
@@ -211,7 +211,7 @@ No requirements.
 | <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS Cluster name | `string` | n/a | yes |
 | <a name="input_http_endpoint"></a> [http\_endpoint](#input\_http\_endpoint) | Whether the Instance Metadata Service (IMDS) is available. Supported values: enabled, disabled | `string` | `"enabled"` | no |
 | <a name="input_http_put_response_hop_limit"></a> [http\_put\_response\_hop\_limit](#input\_http\_put\_response\_hop\_limit) | HTTP PUT response hop limit for instance metadata requests. Supported values: 1-64. | `number` | `1` | no |
-| <a name="input_http_tokens"></a> [http\_tokens](#input\_http\_tokens) | If enabled, will use Instance Metadata Service Version 2 (IMDSv2). Supported values: optional, required. | `string` | `"optional"` | no |
+| <a name="input_http_tokens"></a> [http\_tokens](#input\_http\_tokens) | If enabled, will use Instance Metadata Service Version 2 (IMDSv2). Supported values: optional, required. | `string` | `"required"` | no |
 | <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | Kubernetes version of the cluster | `string` | n/a | yes |
 | <a name="input_path"></a> [path](#input\_path) | IAM resource path, e.g. /dev/ | `string` | `"/"` | no |
 | <a name="input_private_subnet_ids"></a> [private\_subnet\_ids](#input\_private\_subnet\_ids) | list of private subnets Id's for the Worker nodes | `list` | `[]` | no |

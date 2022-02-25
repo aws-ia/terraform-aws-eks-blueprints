@@ -8,11 +8,11 @@ Step1: Get the latest docker image from this link
 
 Step2: Download the docker image to your local Mac/Laptop
 
-        $ docker pull quay.io/prometheus/prometheus:v2.26.0
-        $ docker pull quay.io/prometheus/alertmanager:v0.21.0
+        $ docker pull quay.io/prometheus/prometheus:v2.31.1
+        $ docker pull quay.io/prometheus/alertmanager:v0.23.0
         $ docker pull jimmidyson/configmap-reload:v0.5.0
-        $ docker pull quay.io/prometheus/node-exporter:v1.1.2
-        $ docker pull prom/pushgateway:v1.3.1
+        $ docker pull quay.io/prometheus/node-exporter:v1.3.0
+        $ docker pull prom/pushgateway:v1.4.2
 
 
 Step3: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
@@ -29,13 +29,13 @@ Repeat the above steps for other 4 images
 
 Step5: After the build completes, tag your image so, you can push the image to this repository:
 
-        $ docker tag quay.io/prometheus/prometheus:v2.26.0 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/quay.io/prometheus/prometheus:v2.26.0
+        $ docker tag quay.io/prometheus/prometheus:v2.31.1 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/quay.io/prometheus/prometheus:v2.31.1
 
 Repeat the above steps for other 4 images
 
 Step6: Run the following command to push this image to your newly created AWS repository:
 
-        $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/quay.io/prometheus/prometheus:v2.26.0
+        $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/quay.io/prometheus/prometheus:v2.31.1
 
 Repeat the above steps for other 4 images
 

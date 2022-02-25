@@ -71,12 +71,13 @@ module "argocd" {
 }
 
 module "argo_rollouts" {
-  count             = var.enable_argo_rollouts ? 1 : 0
-  source            = "./argo-rollouts"
-  eks_cluster_id    = var.eks_cluster_id
-  helm_config       = var.argo_rollouts_helm_config
-  tags              = var.tags
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                         = var.enable_argo_rollouts ? 1 : 0
+  source                        = "./argo-rollouts"
+  eks_cluster_id                = var.eks_cluster_id
+  helm_config                   = var.argo_rollouts_helm_config
+  irsa_iam_permissions_boundary = var.argo_rollouts_irsa_permissions_boundary
+  tags                          = var.tags
+  manage_via_gitops             = var.argocd_manage_add_ons
 }
 
 module "aws_for_fluent_bit" {
@@ -93,12 +94,13 @@ module "aws_for_fluent_bit" {
 }
 
 module "aws_load_balancer_controller" {
-  count             = var.enable_aws_load_balancer_controller ? 1 : 0
-  source            = "./aws-load-balancer-controller"
-  helm_config       = var.aws_load_balancer_controller_helm_config
-  eks_cluster_id    = var.eks_cluster_id
-  tags              = var.tags
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                         = var.enable_aws_load_balancer_controller ? 1 : 0
+  source                        = "./aws-load-balancer-controller"
+  helm_config                   = var.aws_load_balancer_controller_helm_config
+  eks_cluster_id                = var.eks_cluster_id
+  irsa_iam_permissions_boundary = var.aws_load_balancer_controller_irsa_permissions_boundary
+  tags                          = var.tags
+  manage_via_gitops             = var.argocd_manage_add_ons
 }
 
 module "aws_node_termination_handler" {
@@ -109,15 +111,6 @@ module "aws_node_termination_handler" {
   helm_config             = var.aws_node_termination_handler_helm_config
   autoscaling_group_names = var.auto_scaling_group_names
   tags                    = var.tags
-}
-
-module "aws_opentelemetry_collector" {
-  count  = var.enable_aws_open_telemetry ? 1 : 0
-  source = "./aws-opentelemetry-eks"
-
-  addon_config             = var.aws_open_telemetry_addon_config
-  node_groups_iam_role_arn = var.node_groups_iam_role_arn
-  manage_via_gitops        = var.argocd_manage_add_ons
 }
 
 module "cert_manager" {
@@ -137,10 +130,12 @@ module "cluster_autoscaler" {
 }
 
 module "crossplane" {
-  count             = var.enable_crossplane ? 1 : 0
-  source            = "./crossplane"
-  helm_config       = var.crossplane_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                   = var.enable_crossplane ? 1 : 0
+  source                  = "./crossplane"
+  helm_config             = var.crossplane_helm_config
+  eks_cluster_id          = var.eks_cluster_id
+  manage_via_gitops       = var.argocd_manage_add_ons
+  crossplane_provider_aws = var.crossplane_provider_aws
 }
 
 module "fargate_fluentbit" {
@@ -151,10 +146,13 @@ module "fargate_fluentbit" {
 }
 
 module "ingress_nginx" {
-  count             = var.enable_ingress_nginx ? 1 : 0
-  source            = "./ingress-nginx"
-  helm_config       = var.ingress_nginx_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                         = var.enable_ingress_nginx ? 1 : 0
+  source                        = "./ingress-nginx"
+  helm_config                   = var.ingress_nginx_helm_config
+  manage_via_gitops             = var.argocd_manage_add_ons
+  eks_cluster_id                = var.eks_cluster_id
+  irsa_policies                 = var.nginx_irsa_policies
+  irsa_iam_permissions_boundary = var.nginx_ingress_controller_irsa_permissions_boundary
 }
 
 module "karpenter" {
@@ -224,4 +222,16 @@ module "yunikorn" {
   source            = "./yunikorn"
   helm_config       = var.yunikorn_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
+}
+
+module "kube_state_metrics" {
+  count                     = var.enable_kube_state_metrics ? 1 : 0
+  source                    = "askulkarni2/kube-state-metrics-addon/eksblueprints"
+  version                   = "0.0.2"
+  eks_cluster_id            = var.eks_cluster_id
+  helm_config               = var.kube_state_metrics_helm_config
+  irsa_policies             = var.kube_state_metrics_irsa_policies
+  irsa_permissions_boundary = var.kube_state_metrics_irsa_permissions_boundary
+  tags                      = var.tags
+  manage_via_gitops         = var.argocd_manage_add_ons
 }

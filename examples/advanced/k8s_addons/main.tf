@@ -85,7 +85,6 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = local.private_subnet_ids
 
   # EKS CONTROL PLANE VARIABLES
-  create_eks         = true
   kubernetes_version = local.kubernetes_version
 
   # EKS MANAGED NODE GROUPS
@@ -237,8 +236,8 @@ module "kubernetes-addons" {
     name       = "traefik"                         # (Required) Release name.
     repository = "https://helm.traefik.io/traefik" # (Optional) Repository URL where to locate the requested chart.
     chart      = "traefik"                         # (Required) Chart name to be installed.
-    version    = "10.0.0"                          # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "kube-system"                     # (Optional) The namespace to install the release into. Defaults to default
+    version    = "10.0.0"                          # (Optional) Specify the exact chart version to install.
+    namespace  = "kube-system"                     # (Optional) The namespace to install the release into.
     timeout    = "1200"                            # (Optional)
     lint       = "true"                            # (Optional)
     # (Optional) Example to show how to override values using SET
@@ -260,8 +259,8 @@ module "kubernetes-addons" {
     name       = "metrics-server"                                    # (Required) Release name.
     repository = "https://kubernetes-sigs.github.io/metrics-server/" # (Optional) Repository URL where to locate the requested chart.
     chart      = "metrics-server"                                    # (Required) Chart name to be installed.
-    version    = "3.5.0"                                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "kube-system"                                       # (Optional) The namespace to install the release into. Defaults to default
+    version    = "3.8.1"                                             # (Optional) Specify the exact chart version to install.
+    namespace  = "kube-system"                                       # (Optional) The namespace to install the release into.
     timeout    = "1200"                                              # (Optional)
     lint       = "true"                                              # (Optional)
     # (Optional) Example to show how to pass metrics-server-values.yaml
@@ -278,8 +277,8 @@ module "kubernetes-addons" {
     name       = "cluster-autoscaler"                      # (Required) Release name.
     repository = "https://kubernetes.github.io/autoscaler" # (Optional) Repository URL where to locate the requested chart.
     chart      = "cluster-autoscaler"                      # (Required) Chart name to be installed.
-    version    = "9.10.7"                                  # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "kube-system"                             # (Optional) The namespace to install the release into. Defaults to default
+    version    = "9.10.7"                                  # (Optional) Specify the exact chart version to install.
+    namespace  = "kube-system"                             # (Optional) The namespace to install the release into.
     timeout    = "1200"                                    # (Optional)
     lint       = "true"                                    # (Optional)
     # (Optional) Example to show how to pass metrics-server-values.yaml
@@ -300,8 +299,8 @@ module "kubernetes-addons" {
     name       = "prometheus"                                         # (Required) Release name.
     repository = "https://prometheus-community.github.io/helm-charts" # (Optional) Repository URL where to locate the requested chart.
     chart      = "prometheus"                                         # (Required) Chart name to be installed.
-    version    = "14.4.0"                                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "prometheus"                                         # (Optional) The namespace to install the release into. Defaults to default
+    version    = "15.3.0"                                             # (Optional) Specify the exact chart version to install.
+    namespace  = "prometheus"                                         # (Optional) The namespace to install the release into.
     values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
       operating_system = "linux"
     })]
@@ -340,19 +339,7 @@ module "kubernetes-addons" {
       gameserver_maxport    = 8000
     })]
   }
-  #---------------------------------------
-  # ENABLE AWS DISTRO OPEN TELEMETRY
-  #---------------------------------------
-  enable_aws_open_telemetry = true
-  aws_open_telemetry_addon_config = {
-    aws_open_telemetry_namespace                        = "aws-otel-eks"
-    aws_open_telemetry_emitter_otel_resource_attributes = "service.namespace=AWSObservability,service.name=ADOTEmitService"
-    aws_open_telemetry_emitter_name                     = "trace-emitter"
-    aws_open_telemetry_emitter_image                    = "public.ecr.aws/g9c4k4i4/trace-emitter:1"
-    aws_open_telemetry_collector_image                  = "public.ecr.aws/aws-observability/aws-otel-collector:latest"
-    aws_open_telemetry_aws_region                       = "eu-west-1"
-    aws_open_telemetry_emitter_oltp_endpoint            = "localhost:55680"
-  }
+
   #---------------------------------------
   # AWS-FOR-FLUENTBIT HELM ADDON
   #---------------------------------------
@@ -451,8 +438,8 @@ module "kubernetes-addons" {
     name       = "keda"                              # (Required) Release name.
     repository = "https://kedacore.github.io/charts" # (Optional) Repository URL where to locate the requested chart.
     chart      = "keda"                              # (Required) Chart name to be installed.
-    version    = "2.4.0"                             # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "keda"                              # (Optional) The namespace to install the release into. Defaults to default
+    version    = "2.6.2"                             # (Optional) Specify the exact chart version to install.
+    namespace  = "keda"                              # (Optional) The namespace to install the release into.
     values     = [templatefile("${path.module}/helm_values/keda-values.yaml", {})]
   }
   #---------------------------------------
@@ -463,8 +450,8 @@ module "kubernetes-addons" {
     name       = "vpa"                                 # (Required) Release name.
     repository = "https://charts.fairwinds.com/stable" # (Optional) Repository URL where to locate the requested chart.
     chart      = "vpa"                                 # (Required) Chart name to be installed.
-    version    = "0.5.0"                               # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
-    namespace  = "vpa-ns"                              # (Optional) The namespace to install the release into. Defaults to default
+    version    = "1.0.0"                               # (Optional) Specify the exact chart version to install.
+    namespace  = "vpa"                                 # (Optional) The namespace to install the release into.
     values     = [templatefile("${path.module}/helm_values/vpa-values.yaml", {})]
   }
   #---------------------------------------
@@ -475,7 +462,7 @@ module "kubernetes-addons" {
     name       = "yunikorn"                                            # (Required) Release name.
     repository = "https://apache.github.io/incubator-yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
     chart      = "yunikorn"                                            # (Required) Chart name to be installed.
-    version    = "0.12.0"                                              # (Optional) Specify the exact chart version to install. If this is not specified, the latest version is installed.
+    version    = "0.12.2"                                              # (Optional) Specify the exact chart version to install.
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
 
