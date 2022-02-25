@@ -143,21 +143,22 @@ Check the following references as you may desire:
 
 ### Block Device Encryption
 
-Your worker nodes will always have encrypted block devices.
+Your worker nodes are always going to have encrypted block devices.
 
 #### Default Encryption with KMS AWS Managed Key
 
-By default it uses `aws/ebs` KMS AWS managed key in case you assume the default values for `worker_create_kms_key` and `worker_kms_key_arn` variables.
+By default it uses `aws/ebs` KMS AWS Managed Key in case you assume the default values for `worker_create_kms_key` and `worker_kms_key_arn` variables.
 
 #### Encryption with created KMS Customer Managed Key
 
-You are able to use a KMS Customer Managed Key, created during the process of infrastructure provisioning, by simplying setting `worker_create_kms_key` variable to `true`.
+You are able to use a KMS Customer Managed Key, created during infrastructure provisioning process, by simplying setting `worker_create_kms_key` variable to `true`.
 
 ```hcl
+  ...
     worker_create_kms_key = true
 
     self_managed_node_groups = {
-    ...
+  ...
 ```
 
 #### Encryption with existing KMS Customer Managed Key
@@ -167,10 +168,11 @@ You are able to use an existing KMS Customer Managed Key, by simplying setting `
 It is important to configure the KMS Key policy correctly in order to allow Auto Scaling service-linked role to make usage of the key. Check the following [example](https://docs.aws.amazon.com/autoscaling/ec2/userguide/key-policy-requirements-EBS-encryption.html#policy-example-cmk-access) to configure it properly.
 
 ```hcl
+  ...
     worker_kms_key_arn = "arn:aws:kms:us-west-2:111111111111:key/e76c7b02-5044-4922-a636-eb1cc7e81659"
 
     self_managed_node_groups = {
-    ...
+  ...
 ```
 
 ### Fargate Profile
