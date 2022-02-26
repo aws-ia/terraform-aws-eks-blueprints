@@ -13,6 +13,8 @@ Ensure that you have installed the following tools on your machine.
 3. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 4. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
+Note :Currently Amazon Prometheus is supported only in selected regions. Please see this [userguide](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html)
+
 ## Step1: Deploy EKS Clusters with EMR on EKS feature
 
 Clone the repository
@@ -28,10 +30,10 @@ cd examples/analytics/emr-on-eks
 terraform init
 ```
 
-Run Terraform plan to verify the resources created by this execution.
+Set AWS_REGION and Run Terraform plan to verify the resources created by this execution.
 
 ```
-export AWS_REGION="eu-west-1"   # Select your own region
+export AWS_REGION="<enter-your-region>"  
 terraform plan
 
 ```
@@ -132,10 +134,25 @@ Specifically, you can use persistent volume claims if the jobs require large shu
 
       spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.options.claimName=OnDemand
       spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.options.storageClass=gp
-      spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.options.sizeLimit=500Gi
+      spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.options.sizeLimit=500Gipwd
+
       spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.mount.path=/data
       spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.mount.readOnly=false
+## Debugging
 
+##### Issue1: Error: local-exec provisioner error
+```shell script
+Error: local-exec provisioner error \
+with module.aws-eks-accelerator-for-terraform.module.emr_on_eks["data_team_b"].null_resource.update_trust_policy,\
+ on .terraform/modules/aws-eks-accelerator-for-terraform/modules/emr-on-eks/main.tf line 105, in resource "null_resource" \
+ "update_trust_policy":│ 105: provisioner "local-exec" {│ │ Error running command 'set -e│ │ aws emr-containers update-role-trust-policy \
+ │ --cluster-name aws001-preprod-test-eks \│ --namespace emr-data-team-b \│ --role-name aws001-preprod-test-eks-emr-eks-data-team-b
+```
+
+##### Solution :  
+ - emr-containers not present in cli version 2.0.41 Python/3.7.4. For more [details](https://github.com/aws/aws-cli/issues/6162)
+This is fixed in version 2.0.54.
+- Action: aws cli version should be updated to 2.0.54 or later : Execute  `pip install --upgrade awscliv2 `
 
 <!--- BEGIN_TF_DOCS --->
 ## Requirements
