@@ -316,7 +316,7 @@ module "kubernetes-addons" {
     repository = "https://kubernetes.github.io/ingress-nginx"
     version    = "3.33.0"
     namespace  = "kube-system"
-    values     = [templatefile("${path.module}/helm_values/nginx_default_values.yaml", {})]
+    values     = [templatefile("${path.module}/helm_values/nginx_values.yaml", {})]
   }
   #---------------------------------------
   # ENABLE AGONES

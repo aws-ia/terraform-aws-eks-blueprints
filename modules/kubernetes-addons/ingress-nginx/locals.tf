@@ -7,7 +7,7 @@ locals {
     name                       = local.name
     chart                      = local.name
     repository                 = "https://kubernetes.github.io/ingress-nginx"
-    version                    = "4.0.6"
+    version                    = "4.0.17"
     namespace                  = local.namespace
     timeout                    = "1200"
     create_namespace           = false
