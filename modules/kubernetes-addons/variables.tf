@@ -498,7 +498,7 @@ variable "kubernetes_dashboard_irsa_policies" {
   description = "IAM policy ARNs for Kubernetes Dashboard IRSA"
 }
 
-variable "Kubernetes_dashboard_irsa_permissions_boundary" {
+variable "kubernetes_dashboard_irsa_permissions_boundary" {
   type        = string
   default     = ""
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"
