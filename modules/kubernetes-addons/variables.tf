@@ -478,3 +478,28 @@ variable "kube_state_metrics_irsa_permissions_boundary" {
   default     = ""
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
+
+#-----------Kubernetes Dashboard ADDON-------------
+variable "enable_kubernetes_dashboard" {
+  type        = bool
+  default     = false
+  description = "Enable Kubernetes Dashboard add-on"
+}
+
+variable "kubernetes_dashboard_helm_config" {
+  type        = any
+  default     = null
+  description = "Kubernetes Dashboard Helm Chart config"
+}
+
+variable "kubernetes_dashboard_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for Kubernetes Dashboard IRSA"
+}
+
+variable "Kubernetes_dashboard_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}
