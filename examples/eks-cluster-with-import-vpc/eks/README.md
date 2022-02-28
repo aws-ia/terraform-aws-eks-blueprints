@@ -10,7 +10,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.74.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -43,4 +43,5 @@ No requirements.
 ## Outputs
 
 No outputs.
+
 <!--- END_TF_DOCS --->
