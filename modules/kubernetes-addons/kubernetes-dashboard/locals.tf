@@ -34,7 +34,7 @@ locals {
   ]
 
   irsa_config = {
-    kubernetes_namespace              = local.name
+    kubernetes_namespace              = local.namespace
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = false
     create_kubernetes_service_account = true
