@@ -4,13 +4,13 @@ locals {
   namespace            = "kube-system"
 
   default_helm_config = {
-    name                       = local.name
-    chart                      = local.name
-    repository                 = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
-    version                    = "2.2.3"
-    namespace                  = local.namespace
-    values                     = local.default_helm_values
-    description                = "The AWS EFS CSI driver Helm chart deployment configuration"
+    name        = local.name
+    chart       = local.name
+    repository  = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
+    version     = "2.2.3"
+    namespace   = local.namespace
+    values      = local.default_helm_values
+    description = "The AWS EFS CSI driver Helm chart deployment configuration"
   }
 
   helm_config = merge(
