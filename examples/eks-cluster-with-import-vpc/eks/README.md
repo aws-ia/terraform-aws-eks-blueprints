@@ -16,7 +16,7 @@ This deployment imports VPC state file from S3 bucket and deploys EKS Cluster us
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.74.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.66.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -49,4 +49,5 @@ This deployment imports VPC state file from S3 bucket and deploys EKS Cluster us
 ## Outputs
 
 No outputs.
+
 <!--- END_TF_DOCS --->
