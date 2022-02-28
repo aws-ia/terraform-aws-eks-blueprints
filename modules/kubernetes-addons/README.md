@@ -51,9 +51,10 @@ No providers.
 | <a name="module_crossplane"></a> [crossplane](#module\_crossplane) | ./crossplane | n/a |
 | <a name="module_fargate_fluentbit"></a> [fargate\_fluentbit](#module\_fargate\_fluentbit) | ./fargate-fluentbit | n/a |
 | <a name="module_ingress_nginx"></a> [ingress\_nginx](#module\_ingress\_nginx) | ./ingress-nginx | n/a |
+| <a name="module_istio"></a> [istio](#module\_istio) | ./istio | n/a |
 | <a name="module_karpenter"></a> [karpenter](#module\_karpenter) | ./karpenter | n/a |
 | <a name="module_keda"></a> [keda](#module\_keda) | ./keda | n/a |
-| <a name="module_kube_state_metrics"></a> [kube\_state\_metrics](#module\_kube\_state\_metrics) | askulkarni2/kube-state-metrics-addon/eksblueprints | 0.0.1 |
+| <a name="module_kube_state_metrics"></a> [kube\_state\_metrics](#module\_kube\_state\_metrics) | askulkarni2/kube-state-metrics-addon/eksblueprints | 0.0.2 |
 | <a name="module_metrics_server"></a> [metrics\_server](#module\_metrics\_server) | ./metrics-server | n/a |
 | <a name="module_prometheus"></a> [prometheus](#module\_prometheus) | ./prometheus | n/a |
 | <a name="module_spark_k8s_operator"></a> [spark\_k8s\_operator](#module\_spark\_k8s\_operator) | ./spark-k8s-operator | n/a |
@@ -115,6 +116,7 @@ No resources.
 | <a name="input_enable_crossplane"></a> [enable\_crossplane](#input\_enable\_crossplane) | Enable Crossplane add-on | `bool` | `false` | no |
 | <a name="input_enable_fargate_fluentbit"></a> [enable\_fargate\_fluentbit](#input\_enable\_fargate\_fluentbit) | Enable Fargate FluentBit add-on | `bool` | `false` | no |
 | <a name="input_enable_ingress_nginx"></a> [enable\_ingress\_nginx](#input\_enable\_ingress\_nginx) | Enable Ingress Nginx add-on | `bool` | `false` | no |
+| <a name="input_enable_istio"></a> [enable\_istio](#input\_enable\_istio) | Enable Istio add-on | `bool` | `false` | no |
 | <a name="input_enable_karpenter"></a> [enable\_karpenter](#input\_enable\_karpenter) | Enable Karpenter autoscaler add-on | `bool` | `false` | no |
 | <a name="input_enable_keda"></a> [enable\_keda](#input\_enable\_keda) | Enable KEDA Event-based autoscaler add-on | `bool` | `false` | no |
 | <a name="input_enable_kube_state_metrics"></a> [enable\_kube\_state\_metrics](#input\_enable\_kube\_state\_metrics) | Enable Kube State Metrics add-on | `bool` | `false` | no |
@@ -126,6 +128,14 @@ No resources.
 | <a name="input_enable_yunikorn"></a> [enable\_yunikorn](#input\_enable\_yunikorn) | Enable Apache YuniKorn K8s scheduler add-on | `bool` | `false` | no |
 | <a name="input_fargate_fluentbit_addon_config"></a> [fargate\_fluentbit\_addon\_config](#input\_fargate\_fluentbit\_addon\_config) | Fargate fluentbit add-on config | `any` | `{}` | no |
 | <a name="input_ingress_nginx_helm_config"></a> [ingress\_nginx\_helm\_config](#input\_ingress\_nginx\_helm\_config) | Ingress Nginx Helm Chart config | `any` | `{}` | no |
+| <a name="input_istio_base_helm_config"></a> [istio\_base\_helm\_config](#input\_istio\_base\_helm\_config) | Istio `base` Helm Chart config | `any` | `{}` | no |
+| <a name="input_istio_cni_helm_config"></a> [istio\_cni\_helm\_config](#input\_istio\_cni\_helm\_config) | Istio `cni` Helm Chart config | `any` | `{}` | no |
+| <a name="input_istio_gateway_helm_config"></a> [istio\_gateway\_helm\_config](#input\_istio\_gateway\_helm\_config) | Istio `gateway` Helm Chart config | `any` | `{}` | no |
+| <a name="input_istio_install_base"></a> [istio\_install\_base](#input\_istio\_install\_base) | Install Istio `base` Helm Chart | `bool` | `true` | no |
+| <a name="input_istio_install_cni"></a> [istio\_install\_cni](#input\_istio\_install\_cni) | Install Istio `cni` Helm Chart | `bool` | `false` | no |
+| <a name="input_istio_install_gateway"></a> [istio\_install\_gateway](#input\_istio\_install\_gateway) | Install Istio `gateway` Helm Chart | `bool` | `true` | no |
+| <a name="input_istio_install_istiod"></a> [istio\_install\_istiod](#input\_istio\_install\_istiod) | Install Istio `istiod` Helm Chart | `bool` | `true` | no |
+| <a name="input_istio_istiod_helm_config"></a> [istio\_istiod\_helm\_config](#input\_istio\_istiod\_helm\_config) | Istio `istiod` Helm Chart config | `any` | `{}` | no |
 | <a name="input_karpenter_helm_config"></a> [karpenter\_helm\_config](#input\_karpenter\_helm\_config) | Karpenter autoscaler add-on config | `any` | `{}` | no |
 | <a name="input_karpenter_irsa_policies"></a> [karpenter\_irsa\_policies](#input\_karpenter\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
 | <a name="input_karpenter_node_iam_instance_profile"></a> [karpenter\_node\_iam\_instance\_profile](#input\_karpenter\_node\_iam\_instance\_profile) | Karpenter Node IAM Instance profile id | `string` | `""` | no |
@@ -149,4 +159,5 @@ No resources.
 ## Outputs
 
 No outputs.
+
 <!--- END_TF_DOCS --->
