@@ -16,7 +16,7 @@ Enable Kubernetes Dashboard with custom `values.yaml`
   enable_kubernetes_dashboard = true
 
   # Optional Map value
-  kube_state_metrics_helm_config = {
+  kubernetes_dashboard_helm_config = {
     name       = "kubernetes-dashboard" # (Required) Release name.
     repository = "https://kubernetes.github.io/dashboard/" # (Optional) Repository URL where to locate the requested chart.
     chart      = "kubernetes-dashboard" # (Required) Chart name to be installed.
@@ -36,3 +36,7 @@ argocd_gitops_config = {
   serviceAccountName = local.service_account_name
 }
 ```
+
+### Connecting to the Dashboard
+
+Follow the steps outlined [here](https://docs.aws.amazon.com/eks/latest/userguide/dashboard-tutorial.html#view-dashboard) to connect to the dashboard
