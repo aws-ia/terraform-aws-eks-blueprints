@@ -17,5 +17,6 @@ locals {
     argoRollouts              = var.enable_argo_rollouts ? module.argo_rollouts[0].argocd_gitops_config : null
     crossplane                = var.enable_crossplane ? module.crossplane[0].argocd_gitops_config : null
     kube_state_metrics        = var.enable_kube_state_metrics ? module.kube_state_metrics[0].argocd_gitops_config : null
+    istio                     = var.enable_istio ? module.istio[0].argocd_gitops_config : null
   }
 }

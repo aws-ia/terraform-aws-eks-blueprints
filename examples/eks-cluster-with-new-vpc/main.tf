@@ -33,9 +33,19 @@ data "aws_eks_cluster_auth" "cluster" {
   name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 }
 
+locals {
+  default_tags = {
+      "Tetrate:Owner" = "yaroslav@tetrate.io"
+  }
+}
+
 provider "aws" {
   region = data.aws_region.current.id
   alias  = "default"
+
+  default_tags {
+    tags = local.default_tags
+  }
 }
 
 provider "kubernetes" {
@@ -119,6 +129,7 @@ module "aws-eks-accelerator-for-terraform" {
       instance_types  = ["m4.large"]
       min_size        = "2"
       subnet_ids      = module.aws_vpc.private_subnets
+      additional_tags = local.default_tags
     }
   }
 
@@ -156,6 +167,7 @@ module "kubernetes-addons" {
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_cluster_autoscaler           = true
+  enable_istio                        = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }

@@ -478,3 +478,58 @@ variable "kube_state_metrics_irsa_permissions_boundary" {
   default     = ""
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
+
+#-----------ISTIO-------------
+variable "enable_istio" {
+  type        = bool
+  default     = false
+  description = "Enable Istio add-on"
+}
+
+variable "istio_install_base" {
+  type        = bool
+  default     = true
+  description = "Install Istio `base` Helm Chart"
+}
+
+variable "istio_install_istiod" {
+  type        = bool
+  default     = true
+  description = "Install Istio `istiod` Helm Chart"
+}
+
+variable "istio_install_gateway" {
+  type        = bool
+  default     = true
+  description = "Install Istio `gateway` Helm Chart"
+}
+
+variable "istio_install_cni" {
+  type        = bool
+  default     = false
+  description = "Install Istio `cni` Helm Chart"
+}
+
+variable "istio_base_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `base` Helm Chart config"
+}
+
+variable "istio_istiod_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `istiod` Helm Chart config"
+}
+
+variable "istio_gateway_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `gateway` Helm Chart config"
+}
+
+variable "istio_cni_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `cni` Helm Chart config"
+}

@@ -235,3 +235,17 @@ module "kube_state_metrics" {
   tags                      = var.tags
   manage_via_gitops         = var.argocd_manage_add_ons
 }
+
+module "istio" {
+  count               = var.enable_istio ? 1 : 0
+  source              = "./istio"
+  install_base        = var.istio_install_base
+  install_istiod      = var.istio_install_istiod
+  install_gateway     = var.istio_install_gateway
+  install_cni         = var.istio_install_cni
+  base_helm_config    = var.istio_base_helm_config
+  istiod_helm_config  = var.istio_istiod_helm_config
+  gateway_helm_config = var.istio_gateway_helm_config
+  cni_helm_config     = var.istio_cni_helm_config
+  manage_via_gitops   = var.argocd_manage_add_ons
+}
