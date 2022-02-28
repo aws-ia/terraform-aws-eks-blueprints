@@ -21,13 +21,13 @@ variable "tags" {
   default     = {}
 }
 
-variable "irsa_iam_policies" {
+variable "irsa_policies" {
   type        = list(string)
   default     = []
   description = "IAM Policy ARN list for any IRSA policies"
 }
 
-variable "irsa_iam_permissions_boundary" {
+variable "irsa_permissions_boundary" {
   type        = string
   default     = ""
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"

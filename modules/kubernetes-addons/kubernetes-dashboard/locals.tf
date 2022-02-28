@@ -41,8 +41,8 @@ locals {
     iam_role_path                     = "/"
     tags                              = var.tags
     eks_cluster_id                    = var.eks_cluster_id
-    irsa_iam_policies                 = var.irsa_iam_policies
-    irsa_iam_permissions_boundary     = var.irsa_iam_permissions_boundary
+    irsa_iam_policies                 = var.irsa_policies
+    irsa_iam_permissions_boundary     = var.irsa_permissions_boundary
   }
 
   argocd_gitops_config = {
