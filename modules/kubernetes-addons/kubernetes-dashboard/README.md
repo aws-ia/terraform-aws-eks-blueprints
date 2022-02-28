@@ -38,8 +38,8 @@ This add-on bootstraps the Kubernetes Dashboard on the EKS cluster using a [helm
 |------|-------------|------|---------|:--------:|
 | <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS cluster Id | `string` | n/a | yes |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | Helm provider config for the Kubernetes Dashboard | `any` | `{}` | no |
-| <a name="input_irsa_iam_permissions_boundary"></a> [irsa\_iam\_permissions\_boundary](#input\_irsa\_iam\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary | `string` | `""` | no |
-| <a name="input_irsa_iam_policies"></a> [irsa\_iam\_policies](#input\_irsa\_iam\_policies) | IAM Policy ARN list for any IRSA policies | `list(string)` | `[]` | no |
+| <a name="input_irsa_permissions_boundary"></a> [irsa\_permissions\_boundary](#input\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary | `string` | `""` | no |
+| <a name="input_irsa_policies"></a> [irsa\_policies](#input\_irsa\_policies) | IAM Policy ARN list for any IRSA policies | `list(string)` | `[]` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps | `bool` | `false` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Common Tags for AWS resources | `map(string)` | `{}` | no |
 
@@ -48,5 +48,4 @@ This add-on bootstraps the Kubernetes Dashboard on the EKS cluster using a [helm
 | Name | Description |
 |------|-------------|
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
-
 <!--- END_TF_DOCS --->
