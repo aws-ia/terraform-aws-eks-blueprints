@@ -34,6 +34,7 @@ resource "kubectl_manifest" "aws_provider" {
     provider-aws-version = var.aws_provider.provider_aws_version
     aws-provider-name    = local.aws_provider_sa
   })
+  wait = true
   depends_on = [kubectl_manifest.aws_controller_config]
 }
 
@@ -63,16 +64,9 @@ resource "kubectl_manifest" "aws_provider_config" {
   count     = var.aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-provider-config.yaml", {})
 
-  depends_on = [kubectl_manifest.aws_provider, time_sleep.wait_30_seconds_aws]
-}
-
-# Wait for the AWS Provider CRDs to be fully created before initiating aws_provider_config deployment
-resource "time_sleep" "wait_30_seconds_aws" {
-  count           = var.aws_provider.enable == true ? 1 : 0
-  create_duration = "30s"
-
   depends_on = [kubectl_manifest.aws_provider]
 }
+
 #--------------------------------------
 # Terrajet AWS Provider
 #--------------------------------------
@@ -87,11 +81,11 @@ resource "kubectl_manifest" "jet_aws_controller_config" {
 
 resource "kubectl_manifest" "jet_aws_provider" {
   count = var.jet_aws_provider.enable == true ? 1 : 0
-
   yaml_body = templatefile("${path.module}/aws-provider/jet-aws-provider.yaml", {
     provider-aws-version = var.jet_aws_provider.provider_aws_version
     aws-provider-name    = local.jet_aws_provider_sa
   })
+  wait = true
 
   depends_on = [kubectl_manifest.jet_aws_controller_config]
 }
@@ -123,13 +117,6 @@ resource "kubectl_manifest" "jet_aws_provider_config" {
   count     = var.jet_aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/jet-aws-provider-config.yaml", {})
 
-  depends_on = [kubectl_manifest.jet_aws_provider, time_sleep.wait_30_seconds_jet_aws]
-}
-
-# Wait for the AWS Provider CRDs to be fully created before initiating jet_aws_provider_config deployment
-resource "time_sleep" "wait_30_seconds_jet_aws" {
-  count           = var.jet_aws_provider.enable == true ? 1 : 0
-  create_duration = "30s"
-
   depends_on = [kubectl_manifest.jet_aws_provider]
 }
+
