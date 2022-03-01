@@ -425,8 +425,20 @@ variable "enable_yunikorn" {
 
 variable "yunikorn_helm_config" {
   type        = any
-  default     = {}
-  description = "YuniKorn K8s scheduler Helm Chart config"
+  default     = null
+  description = "Yunikorn Helm Chart config"
+}
+
+variable "yunikorn_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for Yunikorn IRSA"
+}
+
+variable "yunikorn_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
 #-----------Argo Rollouts ADDON-------------
