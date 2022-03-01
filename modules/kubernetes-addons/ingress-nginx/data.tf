@@ -1,7 +1,3 @@
-data "aws_caller_identity" "current" {}
-
-data "aws_region" "current" {}
-
 data "aws_iam_policy_document" "this" {
   statement {
     sid       = "ReadOnly"
@@ -54,9 +50,9 @@ data "aws_iam_policy_document" "this" {
     effect = "Allow"
 
     resources = [
-      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:targetgroup/*/*",
-      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:loadbalancer/net/*/*",
-      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:loadbalancer/app/*/*"
+      "arn:aws:elasticloadbalancing:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:targetgroup/*/*",
+      "arn:aws:elasticloadbalancing:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:loadbalancer/net/*/*",
+      "arn:aws:elasticloadbalancing:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:loadbalancer/app/*/*"
     ]
 
     actions = [
@@ -77,9 +73,9 @@ data "aws_iam_policy_document" "this" {
     effect = "Allow"
 
     resources = [
-      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:targetgroup/*/*",
-      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:loadbalancer/net/*/*",
-      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:loadbalancer/app/*/*"
+      "arn:aws:elasticloadbalancing:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:targetgroup/*/*",
+      "arn:aws:elasticloadbalancing:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:loadbalancer/net/*/*",
+      "arn:aws:elasticloadbalancing:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:loadbalancer/app/*/*"
     ]
 
     actions = [
