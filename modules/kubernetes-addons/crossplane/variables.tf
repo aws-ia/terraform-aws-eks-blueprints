@@ -38,3 +38,13 @@ variable "jet_aws_provider" {
     additional_irsa_policies = list(string)
   })
 }
+
+variable "account_id" {
+  description = "Current AWS Account ID"
+  type        = string
+}
+
+variable "aws_partition" {
+  description = "AWS Identifier of the current partition e.g., aws or aws-cn"
+  type        = string
+}

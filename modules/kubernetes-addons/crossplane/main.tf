@@ -34,7 +34,7 @@ resource "kubectl_manifest" "aws_provider" {
     provider-aws-version = var.aws_provider.provider_aws_version
     aws-provider-name    = local.aws_provider_sa
   })
-  wait = true
+  wait       = true
   depends_on = [kubectl_manifest.aws_controller_config]
 }
 
@@ -119,4 +119,3 @@ resource "kubectl_manifest" "jet_aws_provider_config" {
 
   depends_on = [kubectl_manifest.jet_aws_provider]
 }
-
