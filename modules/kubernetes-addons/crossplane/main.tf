@@ -20,7 +20,7 @@ module "helm_addon" {
 
 resource "kubectl_manifest" "controller_config" {
   yaml_body = templatefile("${path.module}/aws-provider/controller-config.yaml", {
-    iam-role-arn = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_cluster_id}-provider-aws--irsa"
+    iam-role-arn = "arn:${var.context.aws_partition.partition}:iam::${var.context.aws_caller_identity.account_id}:role/${var.eks_cluster_id}-provider-aws--irsa"
   })
   depends_on = [module.helm_addon]
 }

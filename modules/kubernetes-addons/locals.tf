@@ -24,5 +24,6 @@ locals {
     aws_partition       = data.aws_partition.current
     aws_caller_identity = data.aws_caller_identity.current
     aws_eks_cluster     = data.aws_eks_cluster.eks_cluster
+    aws_region          = data.aws_region.current
   }
 }

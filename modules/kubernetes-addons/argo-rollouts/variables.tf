@@ -32,6 +32,7 @@ variable "context" {
     aws_partition       = any
     aws_caller_identity = any
     aws_eks_cluster     = any
+    aws_region          = any
   })
   description = "Input configuration for IRSA module"
 }

@@ -73,7 +73,7 @@ module "argocd" {
   applications               = var.argocd_applications
   admin_password_secret_name = var.argocd_admin_password_secret_name
   add_on_config              = { for k, v in local.argocd_add_on_config : k => v if v != null }
-  # context = local.irsa_context
+  context                    = local.irsa_context
 }
 
 module "argo_rollouts" {
@@ -156,7 +156,7 @@ module "fargate_fluentbit" {
   source         = "./fargate-fluentbit"
   eks_cluster_id = var.eks_cluster_id
   addon_config   = var.fargate_fluentbit_addon_config
-  # context = local.irsa_context
+  context        = local.irsa_context
 }
 
 module "ingress_nginx" {

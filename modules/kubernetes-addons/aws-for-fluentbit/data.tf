@@ -1,23 +1,19 @@
-data "aws_region" "current" {}
-
-data "aws_caller_identity" "current" {}
-
 data "aws_iam_session_context" "current" {
-  arn = data.aws_caller_identity.current.arn
+  arn = var.context.aws_caller_identity.arn
 }
 
 data "aws_iam_policy_document" "irsa" {
   statement {
     sid       = "PutLogEvents"
     effect    = "Allow"
-    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*:log-stream:*"]
+    resources = ["arn:aws:logs:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:log-group:*:log-stream:*"]
     actions   = ["logs:PutLogEvents"]
   }
 
   statement {
     sid       = "CreateCWLogs"
     effect    = "Allow"
-    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*"]
+    resources = ["arn:aws:logs:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:log-group:*"]
 
     actions = [
       "logs:CreateLogStream",
@@ -37,7 +33,7 @@ data "aws_iam_policy_document" "kms" {
 
     principals {
       type = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
+      identifiers = ["arn:aws:iam::${var.context.aws_caller_identity.account_id}:root",
       data.aws_iam_session_context.current.issuer_arn]
     }
   }
@@ -58,12 +54,12 @@ data "aws_iam_policy_document" "kms" {
     condition {
       test     = "ArnEquals"
       variable = "kms:EncryptionContext:aws:logs:arn"
-      values   = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${local.log_group_name}"]
+      values   = ["arn:aws:logs:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:log-group:${local.log_group_name}"]
     }
 
     principals {
       type        = "Service"
-      identifiers = ["logs.${data.aws_region.current.name}.amazonaws.com"]
+      identifiers = ["logs.${var.context.aws_region.name}.amazonaws.com"]
     }
   }
 }
