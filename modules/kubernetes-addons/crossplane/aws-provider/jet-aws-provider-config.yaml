@@ -1,8 +1,8 @@
 ---
-apiVersion: aws.crossplane.io/v1beta1
+apiVersion: aws.jet.crossplane.io/v1alpha1
 kind: ProviderConfig
 metadata:
-  name: aws-provider-config
+  name: jet-aws-provider-config
 spec:
   credentials:
     source: InjectedIdentity

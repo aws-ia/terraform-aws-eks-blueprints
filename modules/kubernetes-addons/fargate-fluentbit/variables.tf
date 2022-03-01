@@ -26,3 +26,8 @@ variable "addon_config" {
   description = "Fargate fluentbit configuration"
   default     = {}
 }
+
+variable "region" {
+  type        = string
+  description = "AWS region"
+}
