@@ -31,3 +31,12 @@ variable "node_iam_instance_profile" {
   default     = ""
   type        = string
 }
+
+variable "context" {
+  type = object({
+    aws_partition       = any
+    aws_caller_identity = any
+    aws_eks_cluster     = any
+  })
+  description = "Input configuration for IRSA module"
+}

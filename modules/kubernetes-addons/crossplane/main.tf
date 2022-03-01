@@ -13,6 +13,7 @@ module "helm_addon" {
   manage_via_gitops = var.manage_via_gitops
   helm_config       = local.helm_config
   irsa_config       = null
+  context           = var.context
 
   depends_on = [kubernetes_namespace_v1.crossplane]
 }
@@ -40,6 +41,7 @@ module "aws_provider_irsa" {
   kubernetes_service_account        = "provider-aws-*"
   irsa_iam_policies                 = concat([aws_iam_policy.aws_provider.arn], var.crossplane_provider_aws.additional_irsa_policies)
   tags                              = var.tags
+  context                           = var.context
 
   depends_on = [kubectl_manifest.aws_provider]
 }

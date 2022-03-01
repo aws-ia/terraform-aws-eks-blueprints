@@ -69,4 +69,5 @@ module "irsa" {
   irsa_iam_policies                 = var.irsa_config.irsa_iam_policies
   irsa_iam_permissions_boundary     = try(var.irsa_config.irsa_iam_permissions_boundary, "")
   tags                              = var.irsa_config.tags
+  context                           = var.context
 }

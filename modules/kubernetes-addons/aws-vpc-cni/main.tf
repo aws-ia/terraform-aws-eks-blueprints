@@ -39,4 +39,5 @@ module "irsa_addon" {
   kubernetes_service_account        = local.add_on_config["service_account"]
   irsa_iam_policies                 = concat(["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"], local.add_on_config["additional_iam_policies"])
   tags                              = var.common_tags
+  context                           = var.context
 }

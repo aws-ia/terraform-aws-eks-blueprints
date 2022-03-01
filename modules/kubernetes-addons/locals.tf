@@ -19,4 +19,10 @@ locals {
     kubeStateMetrics          = var.enable_kube_state_metrics ? module.kube_state_metrics[0].argocd_gitops_config : null
     kubernetesDashboard       = var.enable_kubernetes_dashboard ? module.kubernetes_dashboard[0].argocd_gitops_config : null
   }
+
+  irsa_context = {
+    aws_partition       = data.aws_partition.current
+    aws_caller_identity = data.aws_caller_identity.current
+    aws_eks_cluster     = data.aws_eks_cluster.eks_cluster
+  }
 }

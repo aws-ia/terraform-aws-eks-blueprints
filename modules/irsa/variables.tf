@@ -65,3 +65,17 @@ variable "irsa_iam_permissions_boundary" {
   default     = ""
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
+
+variable "context" {
+  type = object({
+    aws_partition       = any
+    aws_caller_identity = any
+    aws_eks_cluster     = any
+  })
+  # default =({
+  #   aws_partition = null
+  #   aws_caller_identity    = null
+  #   aws_eks_cluster = null
+  # })
+  description = "Input configuration for IRSA module"
+}

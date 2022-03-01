@@ -97,6 +97,7 @@ module "irsa_amp_ingest" {
   kubernetes_service_account  = local.amazon_prometheus_ingest_service_account
   irsa_iam_policies           = [aws_iam_policy.ingest[0].arn]
   tags                        = var.tags
+  context                     = var.context
 
   depends_on = [kubernetes_namespace_v1.prometheus]
 }
@@ -110,6 +111,7 @@ module "irsa_amp_query" {
   kubernetes_service_account  = "amp-query"
   irsa_iam_policies           = [aws_iam_policy.query[0].arn]
   tags                        = var.tags
+  context                     = var.context
 
   depends_on = [kubernetes_namespace_v1.prometheus]
 }

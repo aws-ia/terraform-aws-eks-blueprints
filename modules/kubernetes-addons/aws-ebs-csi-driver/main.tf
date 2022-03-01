@@ -39,6 +39,7 @@ module "irsa_addon" {
   kubernetes_service_account        = local.add_on_config["service_account"]
   irsa_iam_policies                 = concat([aws_iam_policy.aws_ebs_csi_driver.arn], local.add_on_config["additional_iam_policies"])
   tags                              = var.common_tags
+  context                           = var.context
 }
 
 resource "aws_iam_policy" "aws_ebs_csi_driver" {

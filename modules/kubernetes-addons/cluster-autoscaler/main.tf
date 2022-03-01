@@ -68,6 +68,7 @@ module "irsa" {
   kubernetes_service_account        = local.service_account_name
   irsa_iam_policies                 = [aws_iam_policy.cluster_autoscaler.arn]
   tags                              = var.tags
+  context                           = var.context
 }
 
 resource "aws_iam_policy" "cluster_autoscaler" {

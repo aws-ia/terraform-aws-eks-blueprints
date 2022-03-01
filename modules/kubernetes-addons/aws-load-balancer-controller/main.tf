@@ -95,4 +95,5 @@ module "irsa_addon" {
   irsa_iam_policies                 = [aws_iam_policy.aws_load_balancer_controller.arn]
   irsa_iam_permissions_boundary     = var.irsa_iam_permissions_boundary
   tags                              = var.tags
+  context                           = var.context
 }

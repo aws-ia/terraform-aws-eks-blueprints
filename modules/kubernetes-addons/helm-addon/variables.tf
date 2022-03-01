@@ -38,3 +38,12 @@ variable "irsa_config" {
   })
   description = "Input configuration for IRSA module"
 }
+
+variable "context" {
+  type = object({
+    aws_partition       = any
+    aws_caller_identity = any
+    aws_eks_cluster     = any
+  })
+  description = "Input configuration for IRSA module"
+}

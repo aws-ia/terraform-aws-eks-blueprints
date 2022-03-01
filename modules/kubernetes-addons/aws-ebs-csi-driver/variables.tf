@@ -20,3 +20,12 @@ variable "iam_role_path" {
   default     = "/"
   description = "IAM role path"
 }
+
+variable "context" {
+  type = object({
+    aws_partition       = any
+    aws_caller_identity = any
+    aws_eks_cluster     = any
+  })
+  description = "Input configuration for IRSA module"
+}

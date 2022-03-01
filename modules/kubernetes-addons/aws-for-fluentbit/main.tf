@@ -81,6 +81,7 @@ module "irsa" {
   kubernetes_service_account = local.service_account_name
   irsa_iam_policies          = concat([aws_iam_policy.aws_for_fluent_bit.arn], var.irsa_policies)
   tags                       = var.tags
+  context                    = var.context
 }
 
 module "kms" {

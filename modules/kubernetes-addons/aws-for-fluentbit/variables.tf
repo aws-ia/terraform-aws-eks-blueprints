@@ -61,3 +61,12 @@ variable "irsa_policies" {
   description = "Additional IAM policies for a IAM role for service accounts"
   default     = []
 }
+
+variable "context" {
+  type = object({
+    aws_partition       = any
+    aws_caller_identity = any
+    aws_eks_cluster     = any
+  })
+  description = "Input configuration for IRSA module"
+}

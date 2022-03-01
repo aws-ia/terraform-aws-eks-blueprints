@@ -28,3 +28,12 @@ variable "crossplane_provider_aws" {
     additional_irsa_policies = list(string)
   })
 }
+
+variable "context" {
+  type = object({
+    aws_partition = any
+    aws_caller_identity    = any
+    aws_eks_cluster = any
+  })
+  description = "Input configuration for IRSA module"
+}
