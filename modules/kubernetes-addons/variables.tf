@@ -102,14 +102,30 @@ variable "crossplane_helm_config" {
   description = "Crossplane Helm Chart config"
 }
 
-variable "crossplane_provider_aws" {
+variable "crossplane_aws_provider" {
   description = "AWS Provider config for Crossplane"
   type = object({
+    enable                   = bool
     provider_aws_version     = string
     additional_irsa_policies = list(string)
   })
   default = {
-    provider_aws_version     = "v0.23.0"
+    enable                   = false
+    provider_aws_version     = "v0.24.1"
+    additional_irsa_policies = []
+  }
+}
+
+variable "crossplane_jet_aws_provider" {
+  description = "AWS Provider Jet AWS config for Crossplane"
+  type = object({
+    enable                   = bool
+    provider_aws_version     = string
+    additional_irsa_policies = list(string)
+  })
+  default = {
+    enable                   = false
+    provider_aws_version     = "v0.24.1"
     additional_irsa_policies = []
   }
 }

@@ -130,12 +130,16 @@ module "cluster_autoscaler" {
 }
 
 module "crossplane" {
-  count                   = var.enable_crossplane ? 1 : 0
-  source                  = "./crossplane"
-  helm_config             = var.crossplane_helm_config
-  eks_cluster_id          = var.eks_cluster_id
-  manage_via_gitops       = var.argocd_manage_add_ons
-  crossplane_provider_aws = var.crossplane_provider_aws
+  count             = var.enable_crossplane ? 1 : 0
+  source            = "./crossplane"
+  helm_config       = var.crossplane_helm_config
+  eks_cluster_id    = var.eks_cluster_id
+  manage_via_gitops = var.argocd_manage_add_ons
+  aws_provider      = var.crossplane_aws_provider
+  jet_aws_provider  = var.crossplane_jet_aws_provider
+  account_id        = data.aws_caller_identity.current.account_id
+  aws_partition     = data.aws_partition.current.id
+  tags              = var.tags
 }
 
 module "fargate_fluentbit" {
@@ -143,6 +147,7 @@ module "fargate_fluentbit" {
   source         = "./fargate-fluentbit"
   eks_cluster_id = var.eks_cluster_id
   addon_config   = var.fargate_fluentbit_addon_config
+  region         = data.aws_region.current.id
 }
 
 module "ingress_nginx" {
