@@ -218,10 +218,14 @@ module "vpa" {
 }
 
 module "yunikorn" {
-  count             = var.enable_yunikorn ? 1 : 0
-  source            = "./yunikorn"
-  helm_config       = var.yunikorn_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                     = var.enable_yunikorn ? 1 : 0
+  source                    = "./yunikorn"
+  eks_cluster_id            = var.eks_cluster_id
+  helm_config               = var.yunikorn_helm_config
+  irsa_policies             = var.yunikorn_irsa_policies
+  irsa_permissions_boundary = var.yunikorn_irsa_permissions_boundary
+  tags                      = var.tags
+  manage_via_gitops         = var.argocd_manage_add_ons
 }
 
 module "kube_state_metrics" {
