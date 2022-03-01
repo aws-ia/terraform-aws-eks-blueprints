@@ -235,3 +235,14 @@ module "kube_state_metrics" {
   tags                      = var.tags
   manage_via_gitops         = var.argocd_manage_add_ons
 }
+
+module "kubernetes_dashboard" {
+  count                     = var.enable_kubernetes_dashboard ? 1 : 0
+  source                    = "./kubernetes-dashboard"
+  eks_cluster_id            = var.eks_cluster_id
+  helm_config               = var.kubernetes_dashboard_helm_config
+  irsa_policies             = var.kubernetes_dashboard_irsa_policies
+  irsa_permissions_boundary = var.kubernetes_dashboard_irsa_permissions_boundary
+  tags                      = var.tags
+  manage_via_gitops         = var.argocd_manage_add_ons
+}

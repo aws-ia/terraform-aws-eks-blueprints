@@ -25,6 +25,8 @@ The framework currently provides support for the following add-ons:
 | [Traefik](../add-ons/traefik.md) | Deploys Traefik Proxy into an EKS cluster.
 | [VPA](../add-ons/vpa.md) | Deploys the Vertical Pod Autoscaler into an EKS cluster. |
 | [YuniKorn](../add-ons/yunikorn.md) | Deploys Apache YuniKorn into an EKS cluster. |
+| [Kube State Metrics](../add-ons/kube-state-metrics.md) | Deploys Kube State Metrics into an EKS cluster. |
+| [Kubernetes Dashboard](../add-ons/kubernetes-dashboard.md) | Deploys Kubernetes Dashboard into an EKS cluster. |
 
 ## Add-on Management
 
