@@ -102,7 +102,7 @@ module "aws-eks-accelerator-for-terraform" {
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["m5.large"]
+      instance_types  = ["m5.xlarge"]
       subnet_ids      = local.private_subnet_ids
     }
   }
@@ -132,6 +132,7 @@ module "kubernetes-addons" {
   enable_fargate_fluentbit            = false
   enable_argo_rollouts                = true
   enable_kubernetes_dashboard         = true
+  enable_yunikorn                     = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }
