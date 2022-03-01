@@ -148,6 +148,7 @@ module "crossplane" {
   jet_aws_provider  = var.crossplane_jet_aws_provider
   account_id        = data.aws_caller_identity.current.account_id
   aws_partition     = data.aws_partition.current.id
+  tags              = var.tags
 }
 
 module "fargate_fluentbit" {
