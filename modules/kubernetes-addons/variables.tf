@@ -420,10 +420,10 @@ variable "vpa_helm_config" {
 variable "enable_yunikorn" {
   type        = bool
   default     = false
-  description = "Enable Yunikorn add-on"
+  description = "Enable Apache YuniKorn K8s scheduler add-on"
 }
 
-variable "yunikotn_helm_config" {
+variable "yunikorn_helm_config" {
   type        = any
   default     = null
   description = "Yunikorn Helm Chart config"
