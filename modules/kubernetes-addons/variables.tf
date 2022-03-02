@@ -445,18 +445,6 @@ variable "vpa_helm_config" {
   description = "VPA Helm Chart config"
 }
 
-variable "vpa_irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM policy ARNs for VPA IRSA"
-}
-
-variable "vpa_irsa_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
-}
-
 #-----------Apache YuniKorn ADDON-------------
 variable "enable_yunikorn" {
   type        = bool
