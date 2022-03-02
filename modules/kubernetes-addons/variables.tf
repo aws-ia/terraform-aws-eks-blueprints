@@ -567,3 +567,11 @@ variable "kubernetes_dashboard_irsa_permissions_boundary" {
   default     = ""
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
+
+#-----------BOSS JMX-------------
+variable "enable_jmx_dashboards" {
+  type        = bool
+  default     = false
+  description = "Enable metrics for JMX workloads and automatic Grafana Dashboards"
+}
+variable "amazon_prometheus_remote_write_url" {}

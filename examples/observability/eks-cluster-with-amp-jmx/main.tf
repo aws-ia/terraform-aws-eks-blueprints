@@ -100,7 +100,7 @@ module "aws-eks-accelerator-for-terraform" {
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["m5.large"]
+      instance_types  = ["t3.large"]
       min_size        = 2
       subnet_ids      = module.aws_vpc.private_subnets
     }
@@ -119,25 +119,9 @@ module "kubernetes-addons" {
   enable_cluster_autoscaler = true
   enable_argocd             = false
 
-  # Fluentbit
-  enable_aws_for_fluentbit        = true
-  aws_for_fluentbit_irsa_policies = [aws_iam_policy.fluentbit-opensearch-access.arn]
-  aws_for_fluentbit_helm_config = {
-    values = [templatefile("${path.module}/helm_values/aws-for-fluentbit-values.yaml", {
-      aws_region = data.aws_region.current.name,
-      host       = aws_elasticsearch_domain.opensearch.endpoint
-    })]
-  }
-  
   # OTEL JMX use cases
   enable_jmx_dashboards = true
-  # otel_jmx_helm_config
-  
-
-  # Prometheus and Amazon Managed Prometheus integration
-  enable_prometheus                    = true
-  enable_amazon_prometheus             = true
-  amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_remote_write_url = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
 }
 
 #---------------------------------------------------------------
@@ -155,8 +139,18 @@ resource "grafana_data_source" "prometheus" {
     sigv4_region    = data.aws_region.current.name
   }
 }
-
-
 #---------------------------------------------------------------
 # Configure JMX default Grafana dashboards
 #---------------------------------------------------------------
+
+
+resource "grafana_folder" "jmx_dashboards" {
+  title = "JMX Dashboards"
+}
+
+resource "grafana_dashboard" "jmx_dashboards" {
+  folder = grafana_folder.jmx_dashboards.id
+  config_json = file("files/dashboard.json")
+
+  depends_on = [kubernetes_namespace_v1.prometheus]
+}
