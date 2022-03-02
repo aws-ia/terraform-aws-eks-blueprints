@@ -32,10 +32,9 @@ variable "irsa_config" {
     create_kubernetes_service_account = optional(bool)
     eks_cluster_id                    = string
     iam_role_path                     = optional(string)
-    tags                              = optional(map)
+    tags                              = optional(map(string))
     irsa_iam_policies                 = optional(list(string))
     irsa_iam_permissions_boundary     = optional(string)
   })
   description = "Input configuration for IRSA module"
-  default     = null
 }
