@@ -48,7 +48,6 @@ module "aws_provider_irsa" {
   kubernetes_namespace              = local.namespace
   kubernetes_service_account        = "${local.aws_provider_sa}-*"
   irsa_iam_policies                 = concat([aws_iam_policy.aws_provider[0].arn], var.aws_provider.additional_irsa_policies)
-  tags                              = var.tags
   addon_context                     = var.addon_context
 
   depends_on = [kubectl_manifest.aws_provider]
@@ -102,7 +101,7 @@ module "jet_aws_provider_irsa" {
   kubernetes_namespace              = local.namespace
   kubernetes_service_account        = "${local.jet_aws_provider_sa}-*"
   irsa_iam_policies                 = concat([aws_iam_policy.jet_aws_provider[0].arn], var.jet_aws_provider.additional_irsa_policies)
-  tags                              = var.tags
+  addon_context                     = var.addon_context
 
   depends_on = [kubectl_manifest.jet_aws_provider]
 }
@@ -112,7 +111,7 @@ resource "aws_iam_policy" "jet_aws_provider" {
   description = "Crossplane Jet AWS Provider IAM policy"
   name        = "${var.eks_cluster_id}-${local.jet_aws_provider_sa}-irsa"
   policy      = data.aws_iam_policy_document.s3_policy.json
-  tags        = var.tags
+  tags        = var.addon_context.tags
 }
 
 resource "kubectl_manifest" "jet_aws_provider_config" {

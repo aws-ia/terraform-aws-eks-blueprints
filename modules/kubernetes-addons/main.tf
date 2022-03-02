@@ -88,6 +88,7 @@ module "aws_efs_csi_driver" {
   eks_cluster_id    = var.eks_cluster_id
   tags              = var.tags
   manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "aws_for_fluent_bit" {
@@ -114,8 +115,8 @@ module "aws_load_balancer_controller" {
 }
 
 module "aws_node_termination_handler" {
-  count  = var.enable_aws_node_termination_handler && length(var.auto_scaling_group_names) > 0 ? 1 : 0
-  source = "./aws-node-termination-handler"
+  count                   = var.enable_aws_node_termination_handler && length(var.auto_scaling_group_names) > 0 ? 1 : 0
+  source                  = "./aws-node-termination-handler"
   eks_cluster_id          = var.eks_cluster_id
   helm_config             = var.aws_node_termination_handler_helm_config
   autoscaling_group_names = var.auto_scaling_group_names
@@ -148,7 +149,6 @@ module "crossplane" {
   jet_aws_provider  = var.crossplane_jet_aws_provider
   account_id        = data.aws_caller_identity.current.account_id
   aws_partition     = data.aws_partition.current.id
-  tags              = var.tags
   addon_context     = local.addon_context
 }
 
@@ -242,6 +242,7 @@ module "yunikorn" {
   irsa_permissions_boundary = var.yunikorn_irsa_permissions_boundary
   tags                      = var.tags
   manage_via_gitops         = var.argocd_manage_add_ons
+  addon_context             = local.addon_context
 }
 
 module "kube_state_metrics" {

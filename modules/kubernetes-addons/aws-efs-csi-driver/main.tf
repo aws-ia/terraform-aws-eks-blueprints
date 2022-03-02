@@ -22,6 +22,7 @@ module "helm_addon" {
   set_values        = local.set_values
   helm_config       = local.helm_config
   irsa_config       = local.irsa_config
+  addon_context     = var.addon_context
 }
 
 resource "aws_iam_policy" "aws_efs_csi_driver" {

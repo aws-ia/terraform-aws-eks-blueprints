@@ -15,13 +15,6 @@ variable "manage_via_gitops" {
   description = "Determines if the add-on should be managed via GitOps."
 }
 
-
-variable "tags" {
-  type        = map(string)
-  description = "Common Tags for AWS resources"
-  default     = {}
-}
-
 variable "aws_provider" {
   description = "AWS Provider config for Crossplane"
   type = object({
