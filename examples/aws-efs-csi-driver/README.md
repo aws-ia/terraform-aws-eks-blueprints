@@ -130,7 +130,11 @@ terraform destroy -auto-approve
 
 | Name | Version |
 |------|---------|
+<<<<<<< HEAD
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.66.0 |
+=======
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.1.0 |
+>>>>>>> main
 
 ## Modules
 
@@ -161,5 +165,4 @@ No inputs.
 | Name | Description |
 |------|-------------|
 | <a name="output_efs_file_system_id"></a> [efs\_file\_system\_id](#output\_efs\_file\_system\_id) | ID of the EFS file system to use for creating a storage class |
-
 <!--- END_TF_DOCS --->
