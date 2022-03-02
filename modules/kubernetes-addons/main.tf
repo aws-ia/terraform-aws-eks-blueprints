@@ -80,6 +80,15 @@ module "argo_rollouts" {
   manage_via_gitops             = var.argocd_manage_add_ons
 }
 
+module "aws_efs_csi_driver" {
+  count             = var.enable_aws_efs_csi_driver ? 1 : 0
+  source            = "./aws-efs-csi-driver"
+  helm_config       = var.aws_efs_csi_driver_helm_config
+  eks_cluster_id    = var.eks_cluster_id
+  tags              = var.tags
+  manage_via_gitops = var.argocd_manage_add_ons
+}
+
 module "aws_for_fluent_bit" {
   count                    = var.enable_aws_for_fluentbit ? 1 : 0
   source                   = "./aws-for-fluentbit"
