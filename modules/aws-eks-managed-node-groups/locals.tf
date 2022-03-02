@@ -49,7 +49,7 @@ locals {
     var.managed_ng
   )
 
-  policy_arn_prefix = "arn:aws:iam::aws:policy"
+  policy_arn_prefix = "arn:${data.aws_partition.current.partition}:iam::aws:policy"
   ec2_principal     = "ec2.${data.aws_partition.current.dns_suffix}"
 
   userdata_params = {

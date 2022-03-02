@@ -1,12 +1,14 @@
 data "aws_caller_identity" "current" {}
 
+data "aws_partition" "current" {}
+
 data "aws_iam_policy_document" "keda_irsa" {
   statement {
     effect = "Allow"
 
     resources = [
-      "arn:aws:cloudwatch:*:${data.aws_caller_identity.current.account_id}:metric-stream/*",
-      "arn:aws:sqs:*:${data.aws_caller_identity.current.account_id}:*",
+      "arn:${data.aws_partition.current.partition}:cloudwatch:*:${data.aws_caller_identity.current.account_id}:metric-stream/*",
+      "arn:${data.aws_partition.current.partition}:sqs:*:${data.aws_caller_identity.current.account_id}:*",
     ]
 
     actions = [

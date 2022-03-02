@@ -1,8 +1,10 @@
+data "aws_partition" "current" {}
+
 data "aws_iam_policy_document" "s3_policy" {
   statement {
     sid       = "VisualEditor0"
     effect    = "Allow"
-    resources = ["arn:aws:s3:::*"]
+    resources = ["arn:${data.aws_partition.current.partition}:s3:::*"]
 
     actions = [
       "s3:Get*",

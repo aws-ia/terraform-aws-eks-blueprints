@@ -66,7 +66,7 @@ data "aws_iam_policy_document" "eks_key" {
     principals {
       type = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:root"
       ]
     }
 
@@ -97,7 +97,7 @@ data "aws_iam_policy_document" "eks_key" {
     principals {
       type = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:root"
       ]
     }
   }
@@ -113,7 +113,7 @@ data "aws_iam_policy_document" "eks_key" {
     principals {
       type = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.cluster_iam_role_name}",
+        "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${local.cluster_iam_role_name}",
         data.aws_iam_session_context.current.issuer_arn
       ]
     }
@@ -134,7 +134,7 @@ data "aws_iam_policy_document" "eks_key" {
     principals {
       type = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.cluster_iam_role_name}"
+        "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${local.cluster_iam_role_name}"
       ]
     }
   }
@@ -154,7 +154,7 @@ data "aws_iam_policy_document" "eks_key" {
     principals {
       type = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.cluster_iam_role_name}"
+        "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${local.cluster_iam_role_name}"
       ]
     }
 

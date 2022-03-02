@@ -1,5 +1,7 @@
 data "aws_region" "current" {}
 
+data "aws_partition" "current" {}
+
 data "aws_iam_policy_document" "aws_lb" {
   statement {
     sid       = ""
@@ -80,7 +82,7 @@ data "aws_iam_policy_document" "aws_lb" {
   statement {
     sid       = ""
     effect    = "Allow"
-    resources = ["arn:aws:ec2:*:*:security-group/*"]
+    resources = ["arn:${data.aws_partition.current.partition}:ec2:*:*:security-group/*"]
     actions   = ["ec2:CreateTags"]
 
     condition {
@@ -99,7 +101,7 @@ data "aws_iam_policy_document" "aws_lb" {
   statement {
     sid       = ""
     effect    = "Allow"
-    resources = ["arn:aws:ec2:*:*:security-group/*"]
+    resources = ["arn:${data.aws_partition.current.partition}:ec2:*:*:security-group/*"]
 
     actions = [
       "ec2:CreateTags",
@@ -118,9 +120,9 @@ data "aws_iam_policy_document" "aws_lb" {
     effect = "Allow"
 
     resources = [
-      "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
-      "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
-      "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:*:*:targetgroup/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:*:*:loadbalancer/net/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:*:*:loadbalancer/app/*/*",
     ]
 
     actions = [
@@ -139,7 +141,7 @@ data "aws_iam_policy_document" "aws_lb" {
   statement {
     sid       = ""
     effect    = "Allow"
-    resources = ["arn:aws:ec2:*:*:security-group/*"]
+    resources = ["arn:${data.aws_partition.current.partition}:ec2:*:*:security-group/*"]
 
     actions = [
       "ec2:CreateTags",
@@ -212,9 +214,9 @@ data "aws_iam_policy_document" "aws_lb" {
     effect = "Allow"
 
     resources = [
-      "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
-      "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
-      "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:*:*:targetgroup/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:*:*:loadbalancer/net/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:*:*:loadbalancer/app/*/*",
     ]
 
     actions = [
@@ -261,7 +263,7 @@ data "aws_iam_policy_document" "aws_lb" {
   statement {
     sid       = ""
     effect    = "Allow"
-    resources = ["arn:aws:elasticloadbalancing:*:*:targetgroup/*/*"]
+    resources = ["arn:${data.aws_partition.current.partition}:elasticloadbalancing:*:*:targetgroup/*/*"]
 
     actions = [
       "elasticloadbalancing:RegisterTargets",

@@ -1,5 +1,7 @@
 data "aws_region" "current" {}
 
+data "aws_partition" "current" {}
+
 data "aws_caller_identity" "current" {}
 
 data "aws_iam_session_context" "current" {
@@ -10,14 +12,14 @@ data "aws_iam_policy_document" "irsa" {
   statement {
     sid       = "PutLogEvents"
     effect    = "Allow"
-    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*:log-stream:*"]
+    resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*:log-stream:*"]
     actions   = ["logs:PutLogEvents"]
   }
 
   statement {
     sid       = "CreateCWLogs"
     effect    = "Allow"
-    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*"]
+    resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*"]
 
     actions = [
       "logs:CreateLogStream",
@@ -37,7 +39,7 @@ data "aws_iam_policy_document" "kms" {
 
     principals {
       type = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
+      identifiers = ["arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:root",
       data.aws_iam_session_context.current.issuer_arn]
     }
   }
@@ -58,7 +60,7 @@ data "aws_iam_policy_document" "kms" {
     condition {
       test     = "ArnEquals"
       variable = "kms:EncryptionContext:aws:logs:arn"
-      values   = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${local.log_group_name}"]
+      values   = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${local.log_group_name}"]
     }
 
     principals {

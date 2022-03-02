@@ -25,6 +25,8 @@ terraform {
   }
 }
 
+data "aws_partition" "current" {}
+
 data "aws_region" "current" {}
 
 data "aws_availability_zones" "available" {}
@@ -149,7 +151,7 @@ module "kubernetes-addons" {
     provider_aws_version = "v0.24.1"
     # NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
     # This example config uses AmazonS3FullAccess for demo purpose only, but you should select a policy with the minimum permissions required to provision your resources.
-    additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
+    additional_irsa_policies = ["arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonS3FullAccess"]
   }
 
   # Creates ProviderConfig -> jet-aws-provider
@@ -158,6 +160,6 @@ module "kubernetes-addons" {
     provider_aws_version = "v0.4.1"
     # NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
     # This example config uses AmazonS3FullAccess for demo purpose only, but you should select a policy with the minimum permissions required to provision your resources.
-    additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
+    additional_irsa_policies = ["arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonS3FullAccess"]
   }
 }
