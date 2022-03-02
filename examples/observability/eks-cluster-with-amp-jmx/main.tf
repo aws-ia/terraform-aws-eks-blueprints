@@ -146,11 +146,13 @@ resource "grafana_data_source" "prometheus" {
 
 resource "grafana_folder" "jmx_dashboards" {
   title = "JMX Dashboards"
+
+  depends_on = [module.kubernetes-addons]
 }
 
 resource "grafana_dashboard" "jmx_dashboards" {
   folder = grafana_folder.jmx_dashboards.id
   config_json = file("files/dashboard.json")
 
-  depends_on = [kubernetes_namespace_v1.prometheus]
+  
 }
