@@ -69,7 +69,7 @@ locals {
     },
     {
       name  = "server.remoteWrite[0].sigv4.region"
-      value = var.context.aws_region.id
+      value = var.addon_context.aws_region_id
     }
   ] : []
 

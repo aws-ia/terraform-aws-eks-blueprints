@@ -13,14 +13,14 @@ module "helm_addon" {
   manage_via_gitops = var.manage_via_gitops
   helm_config       = local.helm_config
   irsa_config       = null
-  context           = var.context
+  addon_context     = var.addon_context
 
   depends_on = [kubernetes_namespace_v1.crossplane]
 }
 
 resource "kubectl_manifest" "controller_config" {
   yaml_body = templatefile("${path.module}/aws-provider/controller-config.yaml", {
-    iam-role-arn = "arn:${var.context.aws_partition.partition}:iam::${var.context.aws_caller_identity.account_id}:role/${var.eks_cluster_id}-provider-aws--irsa"
+    iam-role-arn = "arn:${var.addon_context.aws_partition_partition}:iam::${var.addon_context.aws_caller_identity_account_id}:role/${var.eks_cluster_id}-provider-aws--irsa"
   })
   depends_on = [module.helm_addon]
 }
@@ -40,8 +40,7 @@ module "aws_provider_irsa" {
   kubernetes_namespace              = local.namespace
   kubernetes_service_account        = "provider-aws-*"
   irsa_iam_policies                 = concat([aws_iam_policy.aws_provider.arn], var.crossplane_provider_aws.additional_irsa_policies)
-  tags                              = var.tags
-  context                           = var.context
+  addon_context                     = var.addon_context
 
   depends_on = [kubectl_manifest.aws_provider]
 }
@@ -50,7 +49,7 @@ resource "aws_iam_policy" "aws_provider" {
   description = "Crossplane AWS Provider IAM policy"
   name        = "${var.eks_cluster_id}-aws-provider-irsa"
   policy      = data.aws_iam_policy_document.s3_policy.json
-  tags        = var.tags
+  tags        = var.addon_context.tags
 }
 
 # Wait for the AWS Provider CRDs to be fully created before initiating aws_provider_config deployment

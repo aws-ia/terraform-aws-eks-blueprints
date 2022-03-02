@@ -85,8 +85,7 @@ module "irsa" {
   kubernetes_namespace       = local.namespace
   kubernetes_service_account = local.service_account_name
   irsa_iam_policies          = concat([aws_iam_policy.keda_irsa[0].arn], var.irsa_policies)
-  tags                       = var.tags
-  context                    = var.context
+  addon_context              = var.addon_context
 }
 
 resource "aws_iam_policy" "keda_irsa" {
@@ -96,5 +95,5 @@ resource "aws_iam_policy" "keda_irsa" {
   name        = "${var.eks_cluster_id}-${local.helm_config["name"]}-irsa"
   path        = var.iam_role_path
   policy      = data.aws_iam_policy_document.keda_irsa.json
-  tags        = var.tags
+  tags        = var.addon_context.tags
 }

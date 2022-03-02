@@ -33,23 +33,23 @@ variable "manage_via_gitops" {
   description = "Determines if the add-on should be managed via GitOps."
 }
 
-variable "tags" {
-  type        = map(string)
-  description = "Common Tags for AWS resources"
-}
-
 variable "irsa_iam_permissions_boundary" {
   type        = string
   default     = ""
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
-variable "context" {
+variable "addon_context" {
   type = object({
-    aws_partition       = any
-    aws_caller_identity = any
-    aws_eks_cluster     = any
-    aws_region          = any
+    aws_caller_identity_account_id = string
+    aws_caller_identity_arn        = string
+    aws_eks_cluster_endpoint       = string
+    aws_partition_partition        = string
+    aws_region_id                  = string
+    aws_region_name                = string
+    eks_oidc_issuer_url            = string
+    eks_oidc_provider_arn          = string
+    tags                           = map(string)
   })
-  description = "Input configuration for IRSA module"
+  description = "Input configuration for the addon"
 }

@@ -54,7 +54,7 @@ resource "aws_iam_role" "irsa" {
       "Name"                         = "${var.eks_cluster_id}-${var.kubernetes_service_account}-irsa",
       "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
     },
-    var.tags
+    var.addon_context.tags
   )
 }
 

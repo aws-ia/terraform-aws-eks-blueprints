@@ -50,9 +50,9 @@ data "aws_iam_policy_document" "this" {
     effect = "Allow"
 
     resources = [
-      "arn:aws:elasticloadbalancing:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:targetgroup/*/*",
-      "arn:aws:elasticloadbalancing:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:loadbalancer/net/*/*",
-      "arn:aws:elasticloadbalancing:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:loadbalancer/app/*/*"
+      "arn:aws:elasticloadbalancing:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:targetgroup/*/*",
+      "arn:aws:elasticloadbalancing:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:loadbalancer/net/*/*",
+      "arn:aws:elasticloadbalancing:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:loadbalancer/app/*/*"
     ]
 
     actions = [
@@ -73,9 +73,9 @@ data "aws_iam_policy_document" "this" {
     effect = "Allow"
 
     resources = [
-      "arn:aws:elasticloadbalancing:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:targetgroup/*/*",
-      "arn:aws:elasticloadbalancing:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:loadbalancer/net/*/*",
-      "arn:aws:elasticloadbalancing:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:loadbalancer/app/*/*"
+      "arn:aws:elasticloadbalancing:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:targetgroup/*/*",
+      "arn:aws:elasticloadbalancing:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:loadbalancer/net/*/*",
+      "arn:aws:elasticloadbalancing:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:loadbalancer/app/*/*"
     ]
 
     actions = [

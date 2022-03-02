@@ -82,7 +82,7 @@ resource "aws_iam_policy" "aws_load_balancer_controller" {
   name        = "${var.eks_cluster_id}-lb-controller-policy"
   description = "Allows lb controller to manage ALB and NLB"
   policy      = data.aws_iam_policy_document.aws_lb.json
-  tags        = var.tags
+  tags        = var.addon_context.tags
 }
 
 module "irsa_addon" {
@@ -94,6 +94,5 @@ module "irsa_addon" {
   kubernetes_service_account        = local.service_account_name
   irsa_iam_policies                 = [aws_iam_policy.aws_load_balancer_controller.arn]
   irsa_iam_permissions_boundary     = var.irsa_iam_permissions_boundary
-  tags                              = var.tags
-  context                           = var.context
+  addon_context                     = var.addon_context
 }

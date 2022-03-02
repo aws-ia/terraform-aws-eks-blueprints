@@ -72,6 +72,5 @@ module "irsa_addon" {
   kubernetes_namespace       = local.namespace
   kubernetes_service_account = local.service_account_name
   irsa_iam_policies          = concat([aws_iam_policy.karpenter.arn], var.irsa_policies)
-  tags                       = var.tags
-  context                    = var.context
+  addon_context              = var.addon_context
 }

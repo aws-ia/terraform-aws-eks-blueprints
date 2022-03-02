@@ -38,7 +38,7 @@ locals {
     create_kubernetes_namespace       = true
     create_kubernetes_service_account = true
     iam_role_path                     = "/"
-    tags                              = var.tags
+    tags                              = var.addon_context.tags
     eks_cluster_id                    = var.eks_cluster_id
     irsa_iam_policies                 = []
     irsa_iam_permissions_boundary     = var.irsa_iam_permissions_boundary

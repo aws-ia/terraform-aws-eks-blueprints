@@ -3,8 +3,8 @@ data "aws_iam_policy_document" "keda_irsa" {
     effect = "Allow"
 
     resources = [
-      "arn:aws:cloudwatch:*:${var.context.aws_caller_identity.account_id}:metric-stream/*",
-      "arn:aws:sqs:*:${var.context.aws_caller_identity.account_id}:*",
+      "arn:aws:cloudwatch:*:${var.addon_context.aws_caller_identity_account_id}:metric-stream/*",
+      "arn:aws:sqs:*:${var.addon_context.aws_caller_identity_account_id}:*",
     ]
 
     actions = [

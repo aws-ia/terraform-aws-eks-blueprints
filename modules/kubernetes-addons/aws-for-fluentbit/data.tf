@@ -1,19 +1,19 @@
 data "aws_iam_session_context" "current" {
-  arn = var.context.aws_caller_identity.arn
+  arn = var.addon_context.aws_caller_identity_arn
 }
 
 data "aws_iam_policy_document" "irsa" {
   statement {
     sid       = "PutLogEvents"
     effect    = "Allow"
-    resources = ["arn:aws:logs:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:log-group:*:log-stream:*"]
+    resources = ["arn:aws:logs:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:log-group:*:log-stream:*"]
     actions   = ["logs:PutLogEvents"]
   }
 
   statement {
     sid       = "CreateCWLogs"
     effect    = "Allow"
-    resources = ["arn:aws:logs:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:log-group:*"]
+    resources = ["arn:aws:logs:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:log-group:*"]
 
     actions = [
       "logs:CreateLogStream",
@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "kms" {
 
     principals {
       type = "AWS"
-      identifiers = ["arn:aws:iam::${var.context.aws_caller_identity.account_id}:root",
+      identifiers = ["arn:aws:iam::${var.addon_context.aws_caller_identity_account_id}:root",
       data.aws_iam_session_context.current.issuer_arn]
     }
   }
@@ -54,12 +54,12 @@ data "aws_iam_policy_document" "kms" {
     condition {
       test     = "ArnEquals"
       variable = "kms:EncryptionContext:aws:logs:arn"
-      values   = ["arn:aws:logs:${var.context.aws_region.name}:${var.context.aws_caller_identity.account_id}:log-group:${local.log_group_name}"]
+      values   = ["arn:aws:logs:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:log-group:${local.log_group_name}"]
     }
 
     principals {
       type        = "Service"
-      identifiers = ["logs.${var.context.aws_region.name}.amazonaws.com"]
+      identifiers = ["logs.${var.addon_context.aws_region_name}.amazonaws.com"]
     }
   }
 }

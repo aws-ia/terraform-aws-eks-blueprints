@@ -108,7 +108,7 @@ resource "aws_sqs_queue" "aws_node_termination_handler_queue" {
   name_prefix               = "aws_node_termination_handler"
   message_retention_seconds = "300"
   sqs_managed_sse_enabled   = true
-  tags                      = var.tags
+  tags                      = var.addon_context.tags
 }
 
 resource "aws_sqs_queue_policy" "aws_node_termination_handler_queue_policy" {
@@ -134,7 +134,7 @@ resource "aws_iam_policy" "aws_node_termination_handler_irsa" {
   description = "IAM role policy for AWS Node Termination Handler"
   name        = "${var.eks_cluster_id}-aws-nth-irsa"
   policy      = data.aws_iam_policy_document.irsa_policy.json
-  tags        = var.tags
+  tags        = var.addon_context.tags
 }
 
 module "irsa" {
@@ -144,5 +144,5 @@ module "irsa" {
   create_kubernetes_namespace = false
   kubernetes_service_account  = local.service_account_name
   irsa_iam_policies           = [aws_iam_policy.aws_node_termination_handler_irsa.arn]
-  context                     = var.context
+  addon_context               = var.addon_context
 }

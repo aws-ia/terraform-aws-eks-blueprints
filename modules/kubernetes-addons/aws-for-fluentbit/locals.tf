@@ -57,7 +57,7 @@ locals {
   )
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
-    aws_region           = var.context.aws_region.name,
+    aws_region           = var.addon_context.aws_region_name,
     log_group_name       = aws_cloudwatch_log_group.aws_for_fluent_bit.name,
     service_account_name = local.service_account_name
   })]

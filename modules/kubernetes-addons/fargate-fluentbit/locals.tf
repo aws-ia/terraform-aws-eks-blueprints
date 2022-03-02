@@ -8,7 +8,7 @@ locals {
 [OUTPUT]
   Name cloudwatch_logs
   Match *
-  region ${var.context.aws_region.id}
+  region ${var.addon_context.aws_region_id}
   log_group_name ${local.cwlog_group}
   log_stream_prefix ${local.cwlog_stream_prefix}
   auto_create_group true

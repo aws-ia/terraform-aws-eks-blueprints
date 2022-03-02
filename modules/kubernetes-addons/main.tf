@@ -23,8 +23,7 @@ module "aws_vpc_cni" {
   source         = "./aws-vpc-cni"
   add_on_config  = var.amazon_eks_vpc_cni_config
   eks_cluster_id = var.eks_cluster_id
-  common_tags    = var.tags
-  context        = local.irsa_context
+  addon_context  = local.addon_context
 }
 
 module "aws_coredns" {
@@ -33,7 +32,6 @@ module "aws_coredns" {
   add_on_config  = var.amazon_eks_coredns_config
   eks_cluster_id = var.eks_cluster_id
   common_tags    = var.tags
-  # context = local.irsa_context
 }
 
 module "aws_kube_proxy" {
@@ -42,7 +40,6 @@ module "aws_kube_proxy" {
   add_on_config  = var.amazon_eks_kube_proxy_config
   eks_cluster_id = var.eks_cluster_id
   common_tags    = var.tags
-  # context = local.irsa_context
 }
 
 module "aws_ebs_csi_driver" {
@@ -50,8 +47,7 @@ module "aws_ebs_csi_driver" {
   source         = "./aws-ebs-csi-driver"
   add_on_config  = var.amazon_eks_aws_ebs_csi_driver_config
   eks_cluster_id = var.eks_cluster_id
-  common_tags    = var.tags
-  context        = local.irsa_context
+  addon_context  = local.addon_context
 }
 
 #-----------------Kubernetes Add-ons----------------------
@@ -62,7 +58,6 @@ module "agones" {
   helm_config                  = var.agones_helm_config
   eks_worker_security_group_id = var.eks_worker_security_group_id
   manage_via_gitops            = var.argocd_manage_add_ons
-  # context = local.irsa_context
 }
 
 module "argocd" {
@@ -73,7 +68,7 @@ module "argocd" {
   applications               = var.argocd_applications
   admin_password_secret_name = var.argocd_admin_password_secret_name
   add_on_config              = { for k, v in local.argocd_add_on_config : k => v if v != null }
-  context                    = local.irsa_context
+  addon_context              = local.addon_context
 }
 
 module "argo_rollouts" {
@@ -82,9 +77,8 @@ module "argo_rollouts" {
   eks_cluster_id                = var.eks_cluster_id
   helm_config                   = var.argo_rollouts_helm_config
   irsa_iam_permissions_boundary = var.argo_rollouts_irsa_permissions_boundary
-  tags                          = var.tags
   manage_via_gitops             = var.argocd_manage_add_ons
-  context                       = local.irsa_context
+  addon_context                 = local.addon_context
 }
 
 module "aws_for_fluent_bit" {
@@ -96,9 +90,8 @@ module "aws_for_fluent_bit" {
   cw_log_group_name        = var.aws_for_fluentbit_cw_log_group_name
   cw_log_group_retention   = var.aws_for_fluentbit_cw_log_group_retention
   cw_log_group_kms_key_arn = var.aws_for_fluentbit_cw_log_group_kms_key_arn
-  tags                     = var.tags
   manage_via_gitops        = var.argocd_manage_add_ons
-  context                  = local.irsa_context
+  addon_context            = local.addon_context
 }
 
 module "aws_load_balancer_controller" {
@@ -107,20 +100,17 @@ module "aws_load_balancer_controller" {
   helm_config                   = var.aws_load_balancer_controller_helm_config
   eks_cluster_id                = var.eks_cluster_id
   irsa_iam_permissions_boundary = var.aws_load_balancer_controller_irsa_permissions_boundary
-  tags                          = var.tags
   manage_via_gitops             = var.argocd_manage_add_ons
-  context                       = local.irsa_context
+  addon_context                 = local.addon_context
 }
 
 module "aws_node_termination_handler" {
   count  = var.enable_aws_node_termination_handler && length(var.auto_scaling_group_names) > 0 ? 1 : 0
   source = "./aws-node-termination-handler"
-
   eks_cluster_id          = var.eks_cluster_id
   helm_config             = var.aws_node_termination_handler_helm_config
   autoscaling_group_names = var.auto_scaling_group_names
-  tags                    = var.tags
-  context                 = local.irsa_context
+  addon_context           = local.addon_context
 }
 
 module "cert_manager" {
@@ -128,7 +118,6 @@ module "cert_manager" {
   source            = "./cert-manager"
   helm_config       = var.cert_manager_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  # context = local.irsa_context
 }
 
 module "cluster_autoscaler" {
@@ -136,9 +125,8 @@ module "cluster_autoscaler" {
   source            = "./cluster-autoscaler"
   helm_config       = var.cluster_autoscaler_helm_config
   eks_cluster_id    = var.eks_cluster_id
-  tags              = var.tags
   manage_via_gitops = var.argocd_manage_add_ons
-  context           = local.irsa_context
+  addon_context     = local.addon_context
 }
 
 module "crossplane" {
@@ -148,7 +136,7 @@ module "crossplane" {
   eks_cluster_id          = var.eks_cluster_id
   manage_via_gitops       = var.argocd_manage_add_ons
   crossplane_provider_aws = var.crossplane_provider_aws
-  context                 = local.irsa_context
+  addon_context           = local.addon_context
 }
 
 module "fargate_fluentbit" {
@@ -156,7 +144,7 @@ module "fargate_fluentbit" {
   source         = "./fargate-fluentbit"
   eks_cluster_id = var.eks_cluster_id
   addon_config   = var.fargate_fluentbit_addon_config
-  context        = local.irsa_context
+  addon_context  = local.addon_context
 }
 
 module "ingress_nginx" {
@@ -167,7 +155,7 @@ module "ingress_nginx" {
   eks_cluster_id                = var.eks_cluster_id
   irsa_policies                 = var.nginx_irsa_policies
   irsa_iam_permissions_boundary = var.nginx_ingress_controller_irsa_permissions_boundary
-  context                       = local.irsa_context
+  addon_context                 = local.addon_context
 }
 
 module "karpenter" {
@@ -177,9 +165,8 @@ module "karpenter" {
   eks_cluster_id            = var.eks_cluster_id
   irsa_policies             = var.karpenter_irsa_policies
   node_iam_instance_profile = var.karpenter_node_iam_instance_profile
-  tags                      = var.tags
   manage_via_gitops         = var.argocd_manage_add_ons
-  context                   = local.irsa_context
+  addon_context             = local.addon_context
 }
 
 module "keda" {
@@ -189,9 +176,8 @@ module "keda" {
   eks_cluster_id    = var.eks_cluster_id
   create_irsa       = var.keda_create_irsa
   irsa_policies     = var.keda_irsa_policies
-  tags              = var.tags
   manage_via_gitops = var.argocd_manage_add_ons
-  context           = local.irsa_context
+  addon_context     = local.addon_context
 }
 
 module "metrics_server" {
@@ -199,7 +185,6 @@ module "metrics_server" {
   source            = "./metrics-server"
   helm_config       = var.metrics_server_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  # context = local.irsa_context
 }
 
 module "prometheus" {
@@ -211,8 +196,7 @@ module "prometheus" {
   enable_amazon_prometheus             = var.enable_amazon_prometheus
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
   manage_via_gitops                    = var.argocd_manage_add_ons
-  tags                                 = var.tags
-  context                              = local.irsa_context
+  addon_context                        = local.addon_context
 }
 
 module "spark_k8s_operator" {
@@ -220,7 +204,6 @@ module "spark_k8s_operator" {
   source            = "./spark-k8s-operator"
   helm_config       = var.spark_k8s_operator_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  # context = local.irsa_context
 }
 
 module "traefik" {
@@ -228,7 +211,6 @@ module "traefik" {
   source            = "./traefik"
   helm_config       = var.traefik_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  # context = local.irsa_context
 }
 
 module "vpa" {
@@ -236,7 +218,6 @@ module "vpa" {
   source            = "./vpa"
   helm_config       = var.vpa_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  # context = local.irsa_context
 }
 
 module "yunikorn" {
@@ -244,7 +225,6 @@ module "yunikorn" {
   source            = "./yunikorn"
   helm_config       = var.yunikorn_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  # context = local.irsa_context
 }
 
 module "kube_state_metrics" {
@@ -266,7 +246,6 @@ module "kubernetes_dashboard" {
   helm_config               = var.kubernetes_dashboard_helm_config
   irsa_policies             = var.kubernetes_dashboard_irsa_policies
   irsa_permissions_boundary = var.kubernetes_dashboard_irsa_permissions_boundary
-  tags                      = var.tags
   manage_via_gitops         = var.argocd_manage_add_ons
-  context                   = local.irsa_context
+  addon_context             = local.addon_context
 }
