@@ -23,7 +23,7 @@ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 Initialize a working directory with configuration files
 
 ```shell script
-cd examples/eks-cluster-with-new-vpc-and-efs/
+cd examples/aws-efs-csi-driver/
 terraform init
 ```
 
@@ -112,7 +112,7 @@ Confirm that the data is written to the volume
 The following command destroys the resources created by `terraform apply`
 
 ```shell script
-cd examples/eks-cluster-with-new-vpc-and-efs/
+cd examples/aws-efs-csi-driver/
 terraform destroy -auto-approve
 ```
 

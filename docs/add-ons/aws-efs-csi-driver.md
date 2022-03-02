@@ -4,7 +4,7 @@ This add-on deploys the [AWS EFS CSI driver](https://docs.aws.amazon.com/eks/lat
 
 ## Usage
 
-The [AWS EFS CSI driver](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/kubernetes-addons/aws-efs-csi-driver) can be deployed by enabling the add-on via the following. Check out the full [example](../../examples/eks-cluster-with-new-vpc-and-efs/main.tf) to deploy an EKS Cluster with EFS backing the dynamic provisioning of persistent volumes.
+The [AWS EFS CSI driver](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/kubernetes-addons/aws-efs-csi-driver) can be deployed by enabling the add-on via the following. Check out the full [example](../../examples/aws-efs-csi-driver/main.tf) to deploy an EKS Cluster with EFS backing the dynamic provisioning of persistent volumes.
 
 ```hcl
   enable_aws_efs_csi_driver = true
