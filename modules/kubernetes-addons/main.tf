@@ -211,10 +211,14 @@ module "traefik" {
 }
 
 module "vpa" {
-  count             = var.enable_vpa ? 1 : 0
-  source            = "./vpa"
-  helm_config       = var.vpa_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                     = var.enable_vpa ? 1 : 0
+  source                    = "./vpa"
+  eks_cluster_id            = var.eks_cluster_id
+  helm_config               = var.vpa_helm_config
+  irsa_policies             = var.vpa_irsa_policies
+  irsa_permissions_boundary = var.vpa_irsa_permissions_boundary
+  tags                      = var.tags
+  manage_via_gitops         = var.argocd_manage_add_ons
 }
 
 module "yunikorn" {

@@ -1,6 +1,6 @@
 # Default values for vertical-pod-autoscaler.
 serviceAccount:
-  name: ${vpa_sa_name}
+  name: ${sa-name}
 
 recommender:
   image:
