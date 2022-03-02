@@ -81,6 +81,15 @@ module "argo_rollouts" {
   addon_context                 = local.addon_context
 }
 
+module "aws_efs_csi_driver" {
+  count             = var.enable_aws_efs_csi_driver ? 1 : 0
+  source            = "./aws-efs-csi-driver"
+  helm_config       = var.aws_efs_csi_driver_helm_config
+  eks_cluster_id    = var.eks_cluster_id
+  tags              = var.tags
+  manage_via_gitops = var.argocd_manage_add_ons
+}
+
 module "aws_for_fluent_bit" {
   count                    = var.enable_aws_for_fluentbit ? 1 : 0
   source                   = "./aws-for-fluentbit"
@@ -130,13 +139,17 @@ module "cluster_autoscaler" {
 }
 
 module "crossplane" {
-  count                   = var.enable_crossplane ? 1 : 0
-  source                  = "./crossplane"
-  helm_config             = var.crossplane_helm_config
-  eks_cluster_id          = var.eks_cluster_id
-  manage_via_gitops       = var.argocd_manage_add_ons
-  crossplane_provider_aws = var.crossplane_provider_aws
-  addon_context           = local.addon_context
+  count             = var.enable_crossplane ? 1 : 0
+  source            = "./crossplane"
+  helm_config       = var.crossplane_helm_config
+  eks_cluster_id    = var.eks_cluster_id
+  manage_via_gitops = var.argocd_manage_add_ons
+  aws_provider      = var.crossplane_aws_provider
+  jet_aws_provider  = var.crossplane_jet_aws_provider
+  account_id        = data.aws_caller_identity.current.account_id
+  aws_partition     = data.aws_partition.current.id
+  tags              = var.tags
+  addon_context     = local.addon_context
 }
 
 module "fargate_fluentbit" {
@@ -221,10 +234,14 @@ module "vpa" {
 }
 
 module "yunikorn" {
-  count             = var.enable_yunikorn ? 1 : 0
-  source            = "./yunikorn"
-  helm_config       = var.yunikorn_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
+  count                     = var.enable_yunikorn ? 1 : 0
+  source                    = "./yunikorn"
+  eks_cluster_id            = var.eks_cluster_id
+  helm_config               = var.yunikorn_helm_config
+  irsa_policies             = var.yunikorn_irsa_policies
+  irsa_permissions_boundary = var.yunikorn_irsa_permissions_boundary
+  tags                      = var.tags
+  manage_via_gitops         = var.argocd_manage_add_ons
 }
 
 module "kube_state_metrics" {

@@ -102,14 +102,30 @@ variable "crossplane_helm_config" {
   description = "Crossplane Helm Chart config"
 }
 
-variable "crossplane_provider_aws" {
+variable "crossplane_aws_provider" {
   description = "AWS Provider config for Crossplane"
   type = object({
+    enable                   = bool
     provider_aws_version     = string
     additional_irsa_policies = list(string)
   })
   default = {
-    provider_aws_version     = "v0.23.0"
+    enable                   = false
+    provider_aws_version     = "v0.24.1"
+    additional_irsa_policies = []
+  }
+}
+
+variable "crossplane_jet_aws_provider" {
+  description = "AWS Provider Jet AWS config for Crossplane"
+  type = object({
+    enable                   = bool
+    provider_aws_version     = string
+    additional_irsa_policies = list(string)
+  })
+  default = {
+    enable                   = false
+    provider_aws_version     = "v0.24.1"
     additional_irsa_policies = []
   }
 }
@@ -189,6 +205,19 @@ variable "agones_helm_config" {
   type        = any
   default     = {}
   description = "Agones GameServer Helm Chart config"
+}
+
+#-----------AWS EFS CSI DRIVER ADDON-------------
+variable "enable_aws_efs_csi_driver" {
+  type        = bool
+  default     = false
+  description = "Enable AWS EFS CSI driver add-on"
+}
+
+variable "aws_efs_csi_driver_helm_config" {
+  type        = any
+  description = "AWS EFS CSI driver Helm Chart config"
+  default     = {}
 }
 
 #-----------AWS LB Ingress Controller-------------
@@ -425,8 +454,20 @@ variable "enable_yunikorn" {
 
 variable "yunikorn_helm_config" {
   type        = any
-  default     = {}
-  description = "YuniKorn K8s scheduler Helm Chart config"
+  default     = null
+  description = "Yunikorn Helm Chart config"
+}
+
+variable "yunikorn_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for Yunikorn IRSA"
+}
+
+variable "yunikorn_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
 #-----------Argo Rollouts ADDON-------------

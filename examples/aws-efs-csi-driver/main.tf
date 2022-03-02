@@ -14,10 +14,6 @@ terraform {
       source  = "hashicorp/helm"
       version = ">= 2.4.1"
     }
-    kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.13.1"
-    }
   }
 
   backend "local" {
@@ -59,14 +55,6 @@ provider "helm" {
   }
 }
 
-provider "kubectl" {
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
-  load_config_file       = false
-  apply_retry_count      = 5
-}
-
 locals {
   tenant             = "aws001"  # AWS account name or unique id for tenant
   environment        = "preprod" # Environment area eg., preprod or prod
@@ -106,6 +94,7 @@ module "aws_vpc" {
     "kubernetes.io/role/internal-elb"             = "1"
   }
 }
+
 #---------------------------------------------------------------
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
@@ -122,6 +111,7 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS CONTROL PLANE VARIABLES
+  create_eks         = true
   kubernetes_version = local.kubernetes_version
 
   # EKS MANAGED NODE GROUPS
@@ -133,31 +123,78 @@ module "aws-eks-accelerator-for-terraform" {
       subnet_ids      = module.aws_vpc.private_subnets
     }
   }
+
+  # FARGATE
+  fargate_profiles = {
+    default = {
+      fargate_profile_name = "default"
+      fargate_profile_namespaces = [
+        {
+          namespace = "default"
+          k8s_labels = {
+            Environment = "preprod"
+            Zone        = "dev"
+            env         = "fargate"
+          }
+      }]
+      subnet_ids = module.aws_vpc.private_subnets
+      additional_tags = {
+        ExtraTag = "Fargate"
+      }
+    },
+  }
 }
 
+#---------------------------------------------
+# Deploy Kubernetes Add-ons with sub module
+#---------------------------------------------
 module "kubernetes-addons" {
   source         = "../../modules/kubernetes-addons"
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
-  # Refer to docs/add-ons/crossplane.md for advanced configuration
-  enable_crossplane = true
+  # EKS Managed Add-ons
+  enable_amazon_eks_vpc_cni    = true
+  enable_amazon_eks_coredns    = true
+  enable_amazon_eks_kube_proxy = true
 
-  # You can choose to install either of crossplane_aws_provider or crossplane_jet_aws_provider to work with AWS
-  # Creates ProviderConfig -> aws-provider
-  crossplane_aws_provider = {
-    enable               = true
-    provider_aws_version = "v0.24.1"
-    # NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
-    # This example config uses AmazonS3FullAccess for demo purpose only, but you should select a policy with the minimum permissions required to provision your resources.
-    additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
-  }
+  # K8s Add-ons
+  enable_aws_load_balancer_controller = true
+  enable_metrics_server               = true
+  enable_cluster_autoscaler           = true
+  enable_aws_efs_csi_driver           = true
 
-  # Creates ProviderConfig -> jet-aws-provider
-  crossplane_jet_aws_provider = {
-    enable               = true
-    provider_aws_version = "v0.4.1"
-    # NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
-    # This example config uses AmazonS3FullAccess for demo purpose only, but you should select a policy with the minimum permissions required to provision your resources.
-    additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
+  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
+}
+
+#--------------
+# Deploy EFS
+#--------------
+resource "aws_efs_file_system" "efs" {
+  creation_token = "efs"
+  encrypted      = true
+}
+
+resource "aws_efs_mount_target" "efs_mt" {
+  count           = length(module.aws_vpc.private_subnets)
+  file_system_id  = aws_efs_file_system.efs.id
+  subnet_id       = module.aws_vpc.private_subnets[count.index]
+  security_groups = [aws_security_group.efs_sg.id]
+}
+
+resource "aws_security_group" "efs_sg" {
+  name        = "efs-sg"
+  description = "Allow inbound NFS traffic from private subnets of the VPC"
+  vpc_id      = module.aws_vpc.vpc_id
+
+  ingress {
+    cidr_blocks = module.aws_vpc.private_subnets_cidr_blocks
+    from_port   = 2049
+    to_port     = 2049
+    protocol    = "tcp"
   }
+}
+
+output "efs_file_system_id" {
+  description = "ID of the EFS file system to use for creating a storage class"
+  value       = aws_efs_file_system.efs.id
 }

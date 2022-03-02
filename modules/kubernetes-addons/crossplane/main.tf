@@ -18,49 +18,106 @@ module "helm_addon" {
   depends_on = [kubernetes_namespace_v1.crossplane]
 }
 
-resource "kubectl_manifest" "controller_config" {
-  yaml_body = templatefile("${path.module}/aws-provider/controller-config.yaml", {
-    iam-role-arn = "arn:${var.addon_context.aws_partition_partition}:iam::${var.addon_context.aws_caller_identity_account_id}:role/${var.eks_cluster_id}-provider-aws--irsa"
+#--------------------------------------
+# AWS Provider
+#--------------------------------------
+resource "kubectl_manifest" "aws_controller_config" {
+  count = var.aws_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/aws-provider/aws-controller-config.yaml", {
+    iam-role-arn = "arn:${var.addon_context.aws_partition_partition}:iam::${var.addon_context.aws_caller_identity_account_id}:role/${var.eks_cluster_id}-${local.aws_provider_sa}-irsa"
   })
   depends_on = [module.helm_addon]
 }
 
 resource "kubectl_manifest" "aws_provider" {
-  yaml_body = templatefile("${path.module}/aws-provider/provider-aws.yaml", {
-    provider-aws-version = var.crossplane_provider_aws.provider_aws_version
+  count = var.aws_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/aws-provider/aws-provider.yaml", {
+    provider-aws-version = var.aws_provider.provider_aws_version
+    aws-provider-name    = local.aws_provider_sa
   })
-  depends_on = [kubectl_manifest.controller_config]
+  wait       = true
+  depends_on = [kubectl_manifest.aws_controller_config]
 }
 
 module "aws_provider_irsa" {
+  count                             = var.aws_provider.enable == true ? 1 : 0
   source                            = "../../../modules/irsa"
   eks_cluster_id                    = var.eks_cluster_id
   create_kubernetes_namespace       = false
   create_kubernetes_service_account = false
   kubernetes_namespace              = local.namespace
-  kubernetes_service_account        = "provider-aws-*"
-  irsa_iam_policies                 = concat([aws_iam_policy.aws_provider.arn], var.crossplane_provider_aws.additional_irsa_policies)
+  kubernetes_service_account        = "${local.aws_provider_sa}-*"
+  irsa_iam_policies                 = concat([aws_iam_policy.aws_provider[0].arn], var.aws_provider.additional_irsa_policies)
+  tags                              = var.tags
   addon_context                     = var.addon_context
 
   depends_on = [kubectl_manifest.aws_provider]
 }
 
 resource "aws_iam_policy" "aws_provider" {
+  count       = var.aws_provider.enable == true ? 1 : 0
   description = "Crossplane AWS Provider IAM policy"
-  name        = "${var.eks_cluster_id}-aws-provider-irsa"
+  name        = "${var.eks_cluster_id}-${local.aws_provider_sa}-irsa"
   policy      = data.aws_iam_policy_document.s3_policy.json
   tags        = var.addon_context.tags
 }
 
-# Wait for the AWS Provider CRDs to be fully created before initiating aws_provider_config deployment
-resource "time_sleep" "wait_30_seconds" {
-  depends_on = [kubectl_manifest.aws_provider]
-
-  create_duration = "30s"
-}
-
 resource "kubectl_manifest" "aws_provider_config" {
+  count     = var.aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-provider-config.yaml", {})
 
-  depends_on = [kubectl_manifest.aws_provider, time_sleep.wait_30_seconds]
+  depends_on = [kubectl_manifest.aws_provider]
+}
+
+#--------------------------------------
+# Terrajet AWS Provider
+#--------------------------------------
+resource "kubectl_manifest" "jet_aws_controller_config" {
+  count = var.jet_aws_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/aws-provider/jet-aws-controller-config.yaml", {
+    iam-role-arn = "arn:${local.aws_current_partition}:iam::${local.aws_current_account_id}:role/${var.eks_cluster_id}-${local.jet_aws_provider_sa}-irsa"
+  })
+
+  depends_on = [module.helm_addon]
+}
+
+resource "kubectl_manifest" "jet_aws_provider" {
+  count = var.jet_aws_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/aws-provider/jet-aws-provider.yaml", {
+    provider-aws-version = var.jet_aws_provider.provider_aws_version
+    aws-provider-name    = local.jet_aws_provider_sa
+  })
+  wait = true
+
+  depends_on = [kubectl_manifest.jet_aws_controller_config]
+}
+
+module "jet_aws_provider_irsa" {
+  count = var.jet_aws_provider.enable == true ? 1 : 0
+
+  source                            = "../../../modules/irsa"
+  eks_cluster_id                    = var.eks_cluster_id
+  create_kubernetes_namespace       = false
+  create_kubernetes_service_account = false
+  kubernetes_namespace              = local.namespace
+  kubernetes_service_account        = "${local.jet_aws_provider_sa}-*"
+  irsa_iam_policies                 = concat([aws_iam_policy.jet_aws_provider[0].arn], var.jet_aws_provider.additional_irsa_policies)
+  tags                              = var.tags
+
+  depends_on = [kubectl_manifest.jet_aws_provider]
+}
+
+resource "aws_iam_policy" "jet_aws_provider" {
+  count       = var.jet_aws_provider.enable == true ? 1 : 0
+  description = "Crossplane Jet AWS Provider IAM policy"
+  name        = "${var.eks_cluster_id}-${local.jet_aws_provider_sa}-irsa"
+  policy      = data.aws_iam_policy_document.s3_policy.json
+  tags        = var.tags
+}
+
+resource "kubectl_manifest" "jet_aws_provider_config" {
+  count     = var.jet_aws_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/aws-provider/jet-aws-provider-config.yaml", {})
+
+  depends_on = [kubectl_manifest.jet_aws_provider]
 }
