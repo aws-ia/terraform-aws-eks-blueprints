@@ -697,3 +697,61 @@ variable "aws_privateca_issuer_irsa_policies" {
   default     = []
   description = "IAM policy ARNs for AWS ACM PCA IRSA"
 }
+
+#-----------Argo Rollouts ADDON-------------
+variable "enable_argo_rollouts" {
+  type        = bool
+  default     = false
+  description = "Enable Argo Rollouts add-on"
+}
+
+variable "argo_rollouts_helm_config" {
+  type        = any
+  default     = null
+  description = "Argo Rollouts Helm Chart config"
+}
+
+variable "argo_rollouts_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}
+
+variable "argo_rollouts_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for Argo Rollouts IRSA"
+}
+
+#-----------Kubernetes Dashboard ADDON-------------
+variable "enable_kubernetes_dashboard" {
+  type        = bool
+  default     = false
+  description = "Enable Kubernetes Dashboard add-on"
+}
+
+variable "kubernetes_dashboard_helm_config" {
+  type        = any
+  default     = null
+  description = "Kubernetes Dashboard Helm Chart config"
+}
+
+variable "kubernetes_dashboard_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for Kubernetes Dashboard IRSA"
+}
+
+variable "kubernetes_dashboard_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}
+
+#-----------BOSS JMX-------------
+variable "enable_jmx_dashboards" {
+  type        = bool
+  default     = false
+  description = "Enable metrics for JMX workloads and automatic Grafana Dashboards"
+}
+variable "amazon_prometheus_remote_write_url" {}

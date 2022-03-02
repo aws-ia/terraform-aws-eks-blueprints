@@ -16,25 +16,42 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/*
 data "template_file" "amp_values" {
   template = "${file("${path.module}/values.yaml")}"
   vars = {
-    amazon_promtheus_remote_write_url = var.amazon_promtheus_remote_write_url
+    amazon_prometheus_remote_write_url = var.amazon_prometheus_remote_write_url
     region = data.aws_region.current.name
   }
 }
+*/
 
 resource "helm_release" "prometheus" {
-  count                      = var.manage_via_gitops ? 0 : 1
+  count = var.manage_via_gitops ? 0 : 1
 
-  values = [
-    data.template_file.amp_values.rendered
-  ]
+  name      = local.helm_config["name"]
+  chart     = "${path.module}/otel-config"
+  namespace = local.helm_config["namespace"]
+  timeout   = local.helm_config["timeout"]
+
+  values = local.helm_config["values"]
+
+  postrender {
+    binary_path = local.helm_config["postrender"]
+  }
+
+  dynamic "set" {
+    iterator = each_item
+    for_each = var.amazon_prometheus_remote_write_url != null ? distinct(concat(local.amp_config_values, local.helm_config["set"])) : local.helm_config["set"]
+
+    content {
+      name  = each_item.value.name
+      value = each_item.value.value
+    }
+  }
 
   depends_on = [kubernetes_namespace_v1.prometheus]
 }
-
-
 
 resource "kubernetes_namespace_v1" "prometheus" {
   metadata {
@@ -46,7 +63,7 @@ resource "kubernetes_namespace_v1" "prometheus" {
 }
 
 module "irsa_amp_ingest" {
-  count                       = var.enable_amazon_prometheus ? 1 : 0
+  count                       = var.manage_via_gitops ? 0 : 1
   source                      = "../../../modules/irsa"
   eks_cluster_id              = var.eks_cluster_id
   kubernetes_namespace        = local.helm_config["namespace"]
@@ -59,7 +76,7 @@ module "irsa_amp_ingest" {
 }
 
 module "irsa_amp_query" {
-  count                       = var.enable_amazon_prometheus ? 1 : 0
+  count                       = var.manage_via_gitops ? 0 : 1
   source                      = "../../../modules/irsa"
   eks_cluster_id              = var.eks_cluster_id
   kubernetes_namespace        = local.helm_config["namespace"]
@@ -72,7 +89,7 @@ module "irsa_amp_query" {
 }
 
 resource "aws_iam_policy" "ingest" {
-  count       = var.enable_amazon_prometheus ? 1 : 0
+  count       = var.manage_via_gitops ? 0 : 1
   name        = format("%s-%s", "amp-ingest", var.eks_cluster_id)
   description = "Set up the permission policy that grants ingest (remote write) permissions for AMP workspace"
   path        = var.iam_role_path
@@ -81,7 +98,7 @@ resource "aws_iam_policy" "ingest" {
 }
 
 resource "aws_iam_policy" "query" {
-  count       = var.enable_amazon_prometheus ? 1 : 0
+  count       = var.manage_via_gitops ? 0 : 1
   name        = format("%s-%s", "amp-query", var.eks_cluster_id)
   description = "Set up the permission policy that grants query permissions for AMP workspace"
   path        = var.iam_role_path

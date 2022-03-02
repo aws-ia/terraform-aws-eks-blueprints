@@ -33,7 +33,12 @@ variable "enable_amazon_prometheus" {
   description = "Enable AWS Managed Prometheus service"
 }
 
-variable "amazon_promtheus_remote_write_url" {
+variable "amazon_prometheus_remote_write_url" {
+  type        = string
+  default     = null
+  description = "Amazon Managed Prometheus Workspace Endpoint"
+}
+variable "amazon_prometheus_workspace_endpoint" {
   type        = string
   default     = null
   description = "Amazon Managed Prometheus Workspace Endpoint"
