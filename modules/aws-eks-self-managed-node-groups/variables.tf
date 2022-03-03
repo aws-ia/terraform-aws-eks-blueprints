@@ -19,11 +19,11 @@ variable "context" {
     kubernetes_version = string
     # VPC Config
     vpc_id             = string
-    private_subnet_ids = string
-    public_subnet_ids  = string
+    private_subnet_ids = list(string)
+    public_subnet_ids  = list(string)
     # Security Groups
     worker_security_group_id             = string
-    worker_additional_security_group_ids = string
+    worker_additional_security_group_ids = list(string)
     cluster_security_group_id            = string
     cluster_primary_security_group_id    = string
     # Http config

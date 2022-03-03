@@ -3,37 +3,37 @@
 #-------------------------------
 output "eks_cluster_id" {
   description = "Kubernetes Cluster Name"
-  value       = var.create_eks ? local.context.eks_cluster_id : "EKS Cluster not enabled"
+  value       = var.create_eks ? module.aws_eks.cluster_id : "EKS Cluster not enabled"
 }
 
 output "eks_oidc_issuer_url" {
   description = "The URL on the EKS cluster OIDC Issuer"
-  value       = var.create_eks ? split("//", local.context.cluster_oidc_issuer_url)[1] : "EKS Cluster not enabled"
+  value       = var.create_eks ? split("//", module.aws_eks.cluster_oidc_issuer_url)[1] : "EKS Cluster not enabled"
 }
 
 output "eks_oidc_provider_arn" {
   description = "The ARN of the OIDC Provider if `enable_irsa = true`."
-  value       = var.create_eks ? local.context.oidc_provider_arn : "EKS Cluster not enabled"
+  value       = var.create_eks ? module.aws_eks.oidc_provider_arn : "EKS Cluster not enabled"
 }
 
 output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = var.create_eks ? "aws eks --region ${local.context.aws_region_name} update-kubeconfig --name ${local.context.eks_cluster_id}" : "EKS Cluster not enabled"
+  value       = var.create_eks ? "aws eks --region ${local.context.aws_region_name} update-kubeconfig --name ${module.aws_eks.cluster_id}" : "EKS Cluster not enabled"
 }
 
 output "cluster_security_group_id" {
   description = "EKS Control Plane Security Group ID"
-  value       = local.context.cluster_security_group_id
+  value       = module.aws_eks.cluster_security_group_id
 }
 
 output "cluster_primary_security_group_id" {
   description = "EKS Cluster Security group ID"
-  value       = local.context.cluster_primary_security_group_id
+  value       = module.aws_eks.cluster_primary_security_group_id
 }
 
 output "worker_security_group_id" {
   description = "EKS Worker Security group ID created by EKS module"
-  value       = local.context.worker_security_group_id
+  value       = module.aws_eks.worker_security_group_id
 }
 
 #-------------------------------

@@ -2,15 +2,6 @@
 locals {
 
   context = {
-    eks_cluster_id          = module.aws_eks.cluster_id
-    cluster_ca_base64       = module.aws_eks.cluster_certificate_authority_data
-    cluster_endpoint        = module.aws_eks.cluster_endpoint
-    cluster_oidc_issuer_url = module.aws_eks.cluster_oidc_issuer_url
-    oidc_provider_arn       = module.aws_eks.oidc_provider_arn
-    # Security Groups
-    worker_security_group_id          = module.aws_eks.worker_security_group_id
-    cluster_security_group_id         = module.aws_eks.cluster_security_group_id
-    cluster_primary_security_group_id = module.aws_eks.cluster_primary_security_group_id
     # Data resources
     aws_region_name = data.aws_region.current.name
     # aws_caller_identity
@@ -19,24 +10,23 @@ locals {
     # aws_partition
     aws_partition_id         = data.aws_partition.current.id
     aws_partition_dns_suffix = data.aws_partition.current.dns_suffix
-
   }
 
   node_group_context = {
     # EKS Cluster Config
-    eks_cluster_id     = local.context.eks_cluster_id
-    cluster_ca_base64  = local.context.cluster_ca_base64
-    cluster_endpoint   = local.context.cluster_endpoint
+    eks_cluster_id     = module.aws_eks.cluster_id
+    cluster_ca_base64  = module.aws_eks.cluster_certificate_authority_data
+    cluster_endpoint   = module.aws_eks.cluster_endpoint
     kubernetes_version = var.kubernetes_version
     # VPC Config
     vpc_id             = var.vpc_id
     private_subnet_ids = var.private_subnet_ids
     public_subnet_ids  = var.public_subnet_ids
     # Security Groups
-    worker_security_group_id             = local.context.worker_security_group_id
+    worker_security_group_id             = module.aws_eks.worker_security_group_id
+    cluster_security_group_id            = module.aws_eks.cluster_security_group_id
+    cluster_primary_security_group_id    = module.aws_eks.cluster_primary_security_group_id
     worker_additional_security_group_ids = var.worker_additional_security_group_ids
-    cluster_security_group_id            = local.context.cluster_security_group_id
-    cluster_primary_security_group_id    = local.context.cluster_primary_security_group_id
     # Http config
     http_endpoint               = var.http_endpoint
     http_tokens                 = var.http_tokens
@@ -49,7 +39,7 @@ locals {
   }
 
   fargate_context = {
-    eks_cluster_id   = local.context.eks_cluster_id
+    eks_cluster_id   = module.aws_eks.cluster_id
     aws_partition_id = local.context.aws_partition_id
     tags             = module.eks_tags.tags
   }

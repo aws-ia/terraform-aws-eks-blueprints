@@ -6,12 +6,12 @@ data "aws_region" "current" {}
 
 data "aws_eks_cluster" "cluster" {
   count = var.create_eks ? 1 : 0
-  name  = local.context.eks_cluster_id
+  name  = module.aws_eks.cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
   count = var.create_eks ? 1 : 0
-  name  = local.context.eks_cluster_id
+  name  = module.aws_eks.cluster_id
 }
 
 data "aws_availability_zones" "available" {
