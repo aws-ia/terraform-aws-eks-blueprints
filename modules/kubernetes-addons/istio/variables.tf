@@ -16,6 +16,18 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+variable "distribution" {
+  type        = string
+  default     = "TID"
+  description = "Istio distribution"
+}
+
+variable "distribution_version" {
+  type        = string
+  default     = ""
+  description = "Istio version"
+}
+
 variable "install_base" {
   type        = bool
   default     = false

@@ -486,6 +486,18 @@ variable "enable_istio" {
   description = "Enable Istio add-on"
 }
 
+variable "istio_distribution" {
+  type        = string
+  default     = "TID"
+  description = "Istio distribution"
+}
+
+variable "istio_version" {
+  type        = string
+  default     = ""
+  description = "Istio version"
+}
+
 variable "istio_install_base" {
   type        = bool
   default     = true

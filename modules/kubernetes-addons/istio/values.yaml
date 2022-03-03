@@ -1,3 +1,0 @@
-global:
-  hub: containers.istio.tetratelabs.com
-  tag: ${version}-tetratefips-v0 
