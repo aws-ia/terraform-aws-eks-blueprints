@@ -1,49 +1,37 @@
-
 locals {
+  name                 = "traefik"
+  service_account_name = "traefik-sa"
+
   default_helm_config = {
-    name                       = "traefik"
-    chart                      = "traefik"
-    repository                 = "https://helm.traefik.io/traefik"
-    version                    = "10.14.1"
-    namespace                  = "kube-system"
-    timeout                    = "1200"
-    create_namespace           = false
-    values                     = null
-    set                        = []
-    set_sensitive              = null
-    lint                       = false
-    verify                     = false
-    keyring                    = ""
-    repository_key_file        = ""
-    repository_cert_file       = ""
-    repository_ca_file         = ""
-    repository_username        = ""
-    repository_password        = ""
-    disable_webhooks           = false
-    reuse_values               = false
-    reset_values               = false
-    force_update               = false
-    recreate_pods              = false
-    cleanup_on_fail            = false
-    max_history                = 0
-    atomic                     = false
-    skip_crds                  = false
-    render_subchart_notes      = true
-    disable_openapi_validation = false
-    wait                       = true
-    wait_for_jobs              = false
-    dependency_update          = false
-    replace                    = false
-    description                = "The Traefik HelmChart is focused on Traefik deployment configuration"
-    postrender                 = ""
+    name        = local.name
+    chart       = local.name
+    repository  = "https://helm.traefik.io/traefik"
+    version     = "10.14.1"
+    namespace   = local.name
+    description = "The Traefik HelmChart is focused on Traefik deployment configuration"
+    values      = local.default_helm_values
+    timeout     = "1200"
   }
+
+  default_helm_values = [templatefile("${path.module}/values.yaml", {
+    sa-name = local.service_account_name
+  })]
 
   helm_config = merge(
     local.default_helm_config,
     var.helm_config
   )
 
+  irsa_config = {
+    kubernetes_namespace              = local.helm_config["namespace"]
+    kubernetes_service_account        = local.service_account_name
+    create_kubernetes_namespace       = true
+    create_kubernetes_service_account = true
+    eks_cluster_id                    = var.eks_cluster_id
+  }
+
   argocd_gitops_config = {
-    enable = true
+    enable             = true
+    serviceAccountName = local.service_account_name
   }
 }
