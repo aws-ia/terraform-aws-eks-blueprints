@@ -23,21 +23,13 @@ data "aws_iam_policy_document" "irsa_with_oidc" {
 
     principals {
       type        = "Federated"
-      identifiers = [local.eks_oidc_provider_arn]
+      identifiers = [var.addon_context.eks_oidc_provider_arn]
     }
 
     condition {
       test     = "StringLike"
-      variable = "${local.eks_oidc_issuer_url}:sub"
+      variable = "${var.addon_context.eks_oidc_issuer_url}:sub"
       values   = ["system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}"]
     }
   }
 }
-
-data "aws_eks_cluster" "eks_cluster" {
-  name = var.eks_cluster_id
-}
-
-data "aws_partition" "current" {}
-
-data "aws_caller_identity" "current" {}
