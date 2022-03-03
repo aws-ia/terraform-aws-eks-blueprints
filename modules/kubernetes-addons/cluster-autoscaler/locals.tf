@@ -58,13 +58,13 @@ locals {
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
     aws_region           = var.addon_context.aws_region_name,
-    eks_cluster_id       = var.eks_cluster_id
+    eks_cluster_id       = var.addon_context.eks_cluster_id
     service_account_name = local.service_account_name
   })]
 
   argocd_gitops_config = {
     enable             = true
-    clusterName        = var.eks_cluster_id
+    clusterName        = var.addon_context.eks_cluster_id
     serviceAccountName = local.service_account_name
   }
 }

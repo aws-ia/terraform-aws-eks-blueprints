@@ -81,7 +81,6 @@ resource "helm_release" "keda" {
 module "irsa" {
   count                      = var.create_irsa ? 1 : 0
   source                     = "../../../modules/irsa"
-  eks_cluster_id             = var.eks_cluster_id
   kubernetes_namespace       = local.namespace
   kubernetes_service_account = local.service_account_name
   irsa_iam_policies          = concat([aws_iam_policy.keda_irsa[0].arn], var.irsa_policies)
@@ -92,7 +91,7 @@ resource "aws_iam_policy" "keda_irsa" {
   count = var.create_irsa ? 1 : 0
 
   description = "KEDA IAM role policy for SQS and CloudWatch"
-  name        = "${var.eks_cluster_id}-${local.helm_config["name"]}-irsa"
+  name        = "${var.addon_context.eks_cluster_id}-${local.helm_config["name"]}-irsa"
   path        = var.iam_role_path
   policy      = data.aws_iam_policy_document.keda_irsa.json
   tags        = var.addon_context.tags

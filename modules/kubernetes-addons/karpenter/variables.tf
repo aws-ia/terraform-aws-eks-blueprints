@@ -4,11 +4,6 @@ variable "helm_config" {
   default     = {}
 }
 
-variable "eks_cluster_id" {
-  type        = string
-  description = "EKS cluster Id"
-}
-
 variable "irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
@@ -34,6 +29,7 @@ variable "addon_context" {
     aws_eks_cluster_endpoint       = string
     aws_partition_id               = string
     aws_region_name                = string
+    eks_cluster_id                 = string
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
     tags                           = map(string)

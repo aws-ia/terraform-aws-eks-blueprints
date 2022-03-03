@@ -22,20 +22,10 @@ variable "helm_config" {
   default     = {}
 }
 
-variable "eks_cluster_id" {
-  type        = string
-  description = "EKS cluster Id"
-}
-
 variable "manage_via_gitops" {
   type        = bool
   default     = false
   description = "Determines if the add-on should be managed via GitOps."
-}
-
-variable "tags" {
-  type        = map(string)
-  description = "Common Tags for AWS resources"
 }
 
 variable "irsa_policies" {
@@ -57,6 +47,7 @@ variable "addon_context" {
     aws_eks_cluster_endpoint       = string
     aws_partition_id               = string
     aws_region_name                = string
+    eks_cluster_id                 = string
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
     tags                           = map(string)

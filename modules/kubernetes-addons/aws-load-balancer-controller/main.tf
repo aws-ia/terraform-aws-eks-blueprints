@@ -79,7 +79,7 @@ resource "helm_release" "lb_ingress" {
 }
 
 resource "aws_iam_policy" "aws_load_balancer_controller" {
-  name        = "${var.eks_cluster_id}-lb-controller-policy"
+  name        = "${var.addon_context.eks_cluster_id}-lb-controller-policy"
   description = "Allows lb controller to manage ALB and NLB"
   policy      = data.aws_iam_policy_document.aws_lb.json
   tags        = var.addon_context.tags
@@ -89,7 +89,6 @@ module "irsa_addon" {
   source                            = "../../../modules/irsa"
   create_kubernetes_namespace       = false
   create_kubernetes_service_account = true
-  eks_cluster_id                    = var.eks_cluster_id
   kubernetes_namespace              = local.helm_config["namespace"]
   kubernetes_service_account        = local.service_account_name
   irsa_iam_policies                 = [aws_iam_policy.aws_load_balancer_controller.arn]

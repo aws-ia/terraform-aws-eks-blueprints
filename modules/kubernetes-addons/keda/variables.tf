@@ -22,11 +22,6 @@ variable "helm_config" {
   description = "Keda Event-based autoscaler for workloads on Kubernetes Helm chart config"
 }
 
-variable "eks_cluster_id" {
-  type        = string
-  description = "EKS Cluster Id"
-}
-
 variable "iam_role_path" {
   type        = string
   default     = "/"
@@ -56,6 +51,7 @@ variable "addon_context" {
     aws_eks_cluster_endpoint       = string
     aws_partition_id               = string
     aws_region_name                = string
+    eks_cluster_id                 = string
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
     tags                           = map(string)

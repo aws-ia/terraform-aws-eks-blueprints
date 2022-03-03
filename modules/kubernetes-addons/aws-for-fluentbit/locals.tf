@@ -1,5 +1,5 @@
 locals {
-  log_group_name       = var.cw_log_group_name == null ? "/${var.eks_cluster_id}/worker-fluentbit-logs" : var.cw_log_group_name
+  log_group_name       = var.cw_log_group_name == null ? "/${var.addon_context.eks_cluster_id}/worker-fluentbit-logs" : var.cw_log_group_name
   service_account_name = "aws-for-fluent-bit-sa"
 
   override_set_values = [

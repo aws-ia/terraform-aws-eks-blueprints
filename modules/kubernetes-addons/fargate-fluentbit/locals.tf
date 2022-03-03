@@ -1,6 +1,6 @@
 locals {
 
-  cwlog_group         = "/${var.eks_cluster_id}/fargate-fluentbit-logs"
+  cwlog_group         = "/${var.addon_context.eks_cluster_id}/fargate-fluentbit-logs"
   cwlog_stream_prefix = "fargate-logs-"
 
   default_config = {

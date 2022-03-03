@@ -34,11 +34,6 @@ variable "admin_password_secret_name" {
   description = "Name for a secret stored in AWS Secrets Manager that contains the admin password for ArgoCD."
 }
 
-variable "eks_cluster_id" {
-  type        = string
-  description = "Name for the EKS Cluster"
-}
-
 variable "add_on_config" {
   type        = any
   default     = {}
@@ -52,6 +47,7 @@ variable "addon_context" {
     aws_eks_cluster_endpoint       = string
     aws_partition_id               = string
     aws_region_name                = string
+    eks_cluster_id                 = string
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
     tags                           = map(string)
