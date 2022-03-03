@@ -110,6 +110,6 @@ locals {
 
   # Private Endpoint Configuration
   cluster_create_endpoint_private_access_sg_rule = var.cluster_endpoint_private_access && var.cluster_create_endpoint_private_access_sg_rule
-  cluster_endpoint_private_access_cidrs          = local.cluster_create_endpoint_private_access_sg_rule && length(cluster_endpoint_private_access_cidrs) > 0 ? var.cluster_endpoint_private_access_cidrs : null
-  cluster_endpoint_private_access_sg             = local.cluster_create_endpoint_private_access_sg_rule && length(cluster_endpoint_private_access_sg) > 0 ? var.cluster_endpoint_private_access_sg : null
+  cluster_endpoint_private_access_cidrs          = local.cluster_create_endpoint_private_access_sg_rule && length(var.cluster_endpoint_private_access_cidrs) > 0 ? var.cluster_endpoint_private_access_cidrs : null
+  cluster_endpoint_private_access_sg             = local.cluster_create_endpoint_private_access_sg_rule && length(var.cluster_endpoint_private_access_sg) > 0 ? var.cluster_endpoint_private_access_sg : null
 }
