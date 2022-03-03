@@ -28,7 +28,6 @@ locals {
     aws_caller_identity_arn        = data.aws_caller_identity.current.arn
     aws_eks_cluster_endpoint       = data.aws_eks_cluster.eks_cluster.endpoint
     aws_partition_partition        = data.aws_partition.current.partition
-    aws_region_id                  = data.aws_region.current.id
     aws_region_name                = data.aws_region.current.name
     eks_oidc_issuer_url            = local.eks_oidc_issuer_url
     eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.eks_oidc_issuer_url}"
