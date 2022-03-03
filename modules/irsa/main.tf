@@ -32,7 +32,7 @@ resource "kubernetes_service_account_v1" "irsa" {
   metadata {
     name        = var.kubernetes_service_account
     namespace   = var.kubernetes_namespace
-    annotations = { "eks.amazonaws.com/role-arn" : aws_iam_role.irsa.arn }
+    annotations = { "eks.amazonaws.com/role-arn" : aws_iam_role.irsa[0].arn }
     labels = {
       "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
     }
