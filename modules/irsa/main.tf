@@ -44,7 +44,7 @@ resource "kubernetes_service_account_v1" "irsa" {
 resource "aws_iam_role" "irsa" {
   count = var.irsa_iam_policies != null ? 1 : 0
 
-  name                  = format("%s-%s-%s", var.eks_cluster_id, trim(var.kubernetes_service_account, "-*"), "irsa")
+  name                  = format("%s-%s-%s", var.addon_context.eks_cluster_id, trim(var.kubernetes_service_account, "-*"), "irsa")
   description           = "AWS IAM Role for the Kubernetes service account ${var.kubernetes_service_account}."
   assume_role_policy    = join("", data.aws_iam_policy_document.irsa_with_oidc.*.json)
   path                  = var.iam_role_path
@@ -53,10 +53,10 @@ resource "aws_iam_role" "irsa" {
 
   tags = merge(
     {
-      "Name"                         = format("%s-%s-%s", var.eks_cluster_id, trim(var.kubernetes_service_account, "-*"), "irsa"),
+      "Name"                         = format("%s-%s-%s", var.addon_context.eks_cluster_id, trim(var.kubernetes_service_account, "-*"), "irsa"),
       "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
     },
-    var.tags
+    var.addon_context.tags
   )
 }
 

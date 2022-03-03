@@ -61,17 +61,16 @@ resource "helm_release" "cluster_autoscaler" {
 
 module "irsa" {
   source                            = "../../../modules/irsa"
-  eks_cluster_id                    = var.eks_cluster_id
   create_kubernetes_namespace       = false
   create_kubernetes_service_account = true
   kubernetes_namespace              = local.namespace
   kubernetes_service_account        = local.service_account_name
   irsa_iam_policies                 = [aws_iam_policy.cluster_autoscaler.arn]
-  tags                              = var.tags
+  addon_context                     = var.addon_context
 }
 
 resource "aws_iam_policy" "cluster_autoscaler" {
   description = "Cluster Autoscaler IAM policy"
-  name        = "${var.eks_cluster_id}-${local.helm_config["name"]}-irsa"
+  name        = "${var.addon_context.eks_cluster_id}-${local.helm_config["name"]}-irsa"
   policy      = data.aws_iam_policy_document.cluster_autoscaler.json
 }
