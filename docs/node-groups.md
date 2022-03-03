@@ -171,7 +171,7 @@ It is important to configure the KMS Key policy correctly in order to allow Auto
 
 ```hcl
   ...
-    worker_kms_key_arn = "arn:aws:kms:us-west-2:111111111111:key/e76c7b02-5044-4922-a636-eb1cc7e81659"
+    worker_kms_key_arn = "<kms_key_arn>"
 
     self_managed_node_groups = {
   ...
