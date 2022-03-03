@@ -19,31 +19,31 @@
 #-----------------AWS Managed EKS Add-ons----------------------
 
 module "aws_vpc_cni" {
-  count          = var.enable_amazon_eks_vpc_cni ? 1 : 0
-  source         = "./aws-vpc-cni"
-  add_on_config  = var.amazon_eks_vpc_cni_config
-  addon_context  = local.addon_context
+  count         = var.enable_amazon_eks_vpc_cni ? 1 : 0
+  source        = "./aws-vpc-cni"
+  add_on_config = var.amazon_eks_vpc_cni_config
+  addon_context = local.addon_context
 }
 
 module "aws_coredns" {
-  count          = var.enable_amazon_eks_coredns ? 1 : 0
-  source         = "./aws-coredns"
-  add_on_config  = var.amazon_eks_coredns_config
-  addon_context  = local.addon_context
+  count         = var.enable_amazon_eks_coredns ? 1 : 0
+  source        = "./aws-coredns"
+  add_on_config = var.amazon_eks_coredns_config
+  addon_context = local.addon_context
 }
 
 module "aws_kube_proxy" {
-  count          = var.enable_amazon_eks_kube_proxy ? 1 : 0
-  source         = "./aws-kube-proxy"
-  add_on_config  = var.amazon_eks_kube_proxy_config
-  addon_context  = local.addon_context
+  count         = var.enable_amazon_eks_kube_proxy ? 1 : 0
+  source        = "./aws-kube-proxy"
+  add_on_config = var.amazon_eks_kube_proxy_config
+  addon_context = local.addon_context
 }
 
 module "aws_ebs_csi_driver" {
-  count          = var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
-  source         = "./aws-ebs-csi-driver"
-  add_on_config  = var.amazon_eks_aws_ebs_csi_driver_config
-  addon_context  = local.addon_context
+  count         = var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
+  source        = "./aws-ebs-csi-driver"
+  add_on_config = var.amazon_eks_aws_ebs_csi_driver_config
+  addon_context = local.addon_context
 }
 
 #-----------------Kubernetes Add-ons----------------------
@@ -140,10 +140,10 @@ module "crossplane" {
 }
 
 module "fargate_fluentbit" {
-  count          = var.enable_fargate_fluentbit ? 1 : 0
-  source         = "./fargate-fluentbit"
-  addon_config   = var.fargate_fluentbit_addon_config
-  addon_context  = local.addon_context
+  count         = var.enable_fargate_fluentbit ? 1 : 0
+  source        = "./fargate-fluentbit"
+  addon_config  = var.fargate_fluentbit_addon_config
+  addon_context = local.addon_context
 }
 
 module "ingress_nginx" {
@@ -184,9 +184,9 @@ module "metrics_server" {
 }
 
 module "prometheus" {
-  count          = var.enable_prometheus ? 1 : 0
-  source         = "./prometheus"
-  helm_config    = var.prometheus_helm_config
+  count       = var.enable_prometheus ? 1 : 0
+  source      = "./prometheus"
+  helm_config = var.prometheus_helm_config
   #AWS Managed Prometheus Workspace
   enable_amazon_prometheus             = var.enable_amazon_prometheus
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
