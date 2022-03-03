@@ -16,18 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "eks_cluster_id" {
-  type        = string
-  description = "EKS cluster Id"
-}
-
-variable "addon_config" {
-  type        = any
-  description = "Fargate fluentbit configuration"
-  default     = {}
-}
-
-variable "region" {
-  type        = string
-  description = "AWS region"
+output "argocd_gitops_config" {
+  description = "Configuration used for managing the add-on with ArgoCD"
+  value       = var.manage_via_gitops ? local.argocd_gitops_config : null
 }

@@ -235,7 +235,7 @@ module "aws-eks-accelerator-for-terraform" {
 
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
 
-      k8s_taints = {}
+      k8s_taints = []
       k8s_labels = {
         Environment = "preprod"
         Zone        = "dev"
@@ -334,7 +334,6 @@ module "aws-eks-accelerator-for-terraform" {
 
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
 
-      k8s_taints = []
       k8s_labels = {
         Environment = "preprod"
         Zone        = "dev"
@@ -372,8 +371,6 @@ module "aws-eks-accelerator-for-terraform" {
 
 
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-
-      k8s_taints = []
 
       k8s_labels = {
         Environment = "preprod"

@@ -2,8 +2,8 @@
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
-  name: provider-aws
+  name: ${aws-provider-name}
 spec:
   package: crossplane/provider-aws:${provider-aws-version}
   controllerConfigRef:
-    name: aws-config
+    name: aws-controller-config

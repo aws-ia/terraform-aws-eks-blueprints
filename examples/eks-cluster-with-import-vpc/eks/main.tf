@@ -1,3 +1,26 @@
+terraform {
+  required_version = ">= 1.0.1"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 3.66.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.6.1"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = ">= 2.4.1"
+    }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.13.1"
+    }
+  }
+}
+
 provider "aws" {
   region = var.region
 }
@@ -17,6 +40,14 @@ provider "helm" {
     token                  = data.aws_eks_cluster_auth.cluster.token
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   }
+}
+
+provider "kubectl" {
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+  load_config_file       = false
+  apply_retry_count      = 5
 }
 
 data "aws_eks_cluster" "cluster" {
@@ -71,7 +102,7 @@ module "aws-eks-accelerator-for-terraform" {
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["m5.large"]
+      instance_types  = ["m5.xlarge"]
       subnet_ids      = local.private_subnet_ids
     }
   }
@@ -100,6 +131,8 @@ module "kubernetes-addons" {
   enable_argocd                       = true
   enable_fargate_fluentbit            = false
   enable_argo_rollouts                = true
+  enable_kubernetes_dashboard         = true
+  enable_yunikorn                     = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }

@@ -5,7 +5,6 @@ locals {
     fargate_profile_namespaces = []
     create_iam_role            = true
     k8s_labels                 = {}
-    k8s_taints                 = []
     additional_tags            = {}
     subnet_ids                 = []
   }

@@ -1,12 +1,12 @@
 variable "helm_config" {
   type        = any
-  description = "Helm provider config for Yunikorn"
+  description = "Helm provider config for the Kubernetes Dashboard"
   default     = {}
 }
 
 variable "eks_cluster_id" {
   type        = string
-  description = "EKS Cluster Id"
+  description = "EKS cluster Id"
 }
 
 variable "manage_via_gitops" {

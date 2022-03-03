@@ -16,18 +16,36 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+variable "helm_config" {
+  type        = any
+  description = "Helm provider config for the aws_efs_csi_driver."
+  default     = {}
+}
+
 variable "eks_cluster_id" {
   type        = string
   description = "EKS cluster Id"
 }
 
-variable "addon_config" {
-  type        = any
-  description = "Fargate fluentbit configuration"
-  default     = {}
+variable "manage_via_gitops" {
+  type        = bool
+  default     = false
+  description = "Determines if the add-on should be managed via GitOps."
 }
 
-variable "region" {
+variable "tags" {
+  type        = map(string)
+  description = "Common Tags for AWS resources"
+}
+
+variable "irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
+
+variable "irsa_iam_permissions_boundary" {
   type        = string
-  description = "AWS region"
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }

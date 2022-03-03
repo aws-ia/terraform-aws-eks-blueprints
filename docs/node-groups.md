@@ -20,7 +20,7 @@ The below example demonstrates the minimum configuration required to deploy a ma
     }
 ```
 
-The below example demonstrates advanced configuration options for a manged node group.
+The below example demonstrates advanced configuration options for a managed node group.
 
 ```hcl
     managed_node_groups = {
@@ -49,6 +49,8 @@ The below example demonstrates advanced configuration options for a manged node 
         # 4> Node Group network configuration
         subnet_ids     = []                          # Mandatory - # Define private/public subnets list with comma separated ["subnet1","subnet2","subnet3"]
         k8s_taints     = []
+        # optionally, configure a taint on the node group:
+        # k8s_taints = [{key= "purpose", value="execution", "effect"="NO_SCHEDULE"}]
         k8s_labels     = {
           Environment = "preprod"
           Zone        = "dev"
