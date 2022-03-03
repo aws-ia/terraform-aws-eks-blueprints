@@ -24,7 +24,7 @@ module "helm_addon" {
 resource "kubectl_manifest" "aws_controller_config" {
   count = var.aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-controller-config.yaml", {
-    iam-role-arn = "arn:${var.addon_context.aws_partition_partition}:iam::${var.addon_context.aws_caller_identity_account_id}:role/${var.eks_cluster_id}-${local.aws_provider_sa}-irsa"
+    iam-role-arn = "arn:${var.addon_context.aws_partition_id}:iam::${var.addon_context.aws_caller_identity_account_id}:role/${var.eks_cluster_id}-${local.aws_provider_sa}-irsa"
   })
   depends_on = [module.helm_addon]
 }
