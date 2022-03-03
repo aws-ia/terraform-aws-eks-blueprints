@@ -207,6 +207,19 @@ variable "agones_helm_config" {
   description = "Agones GameServer Helm Chart config"
 }
 
+#-----------AWS EFS CSI DRIVER ADDON-------------
+variable "enable_aws_efs_csi_driver" {
+  type        = bool
+  default     = false
+  description = "Enable AWS EFS CSI driver add-on"
+}
+
+variable "aws_efs_csi_driver_helm_config" {
+  type        = any
+  description = "AWS EFS CSI driver Helm Chart config"
+  default     = {}
+}
+
 #-----------AWS LB Ingress Controller-------------
 variable "enable_aws_load_balancer_controller" {
   type        = bool
@@ -419,17 +432,17 @@ variable "keda_irsa_policies" {
   default     = []
 }
 
-#-----------Vertical Pod Autoscaler(VPA) ADDON-------------
+#------Vertical Pod Autoscaler(VPA) ADDON--------
 variable "enable_vpa" {
   type        = bool
   default     = false
-  description = "Enable Kubernetes Vertical Pod Autoscaler add-on"
+  description = "Enable Vertical Pod Autoscaler add-on"
 }
 
 variable "vpa_helm_config" {
   type        = any
-  default     = {}
-  description = "Vertical Pod Autoscaler Helm Chart config"
+  default     = null
+  description = "VPA Helm Chart config"
 }
 
 #-----------Apache YuniKorn ADDON-------------

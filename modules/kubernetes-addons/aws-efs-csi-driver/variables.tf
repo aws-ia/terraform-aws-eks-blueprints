@@ -16,48 +16,31 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-variable "kubernetes_namespace" {
-  description = "Kubernetes Namespace name"
-  type        = string
-}
-
-variable "create_kubernetes_namespace" {
-  description = "Should the module create the namespace"
-  type        = bool
-  default     = true
-}
-
-variable "create_kubernetes_service_account" {
-  description = "Should the module create the Service Account"
-  type        = bool
-  default     = true
-}
-
-variable "kubernetes_service_account" {
-  description = "Kubernetes Service Account Name"
-  type        = string
+variable "helm_config" {
+  type        = any
+  description = "Helm provider config for the aws_efs_csi_driver."
+  default     = {}
 }
 
 variable "eks_cluster_id" {
   type        = string
-  description = "EKS Cluster Id"
+  description = "EKS cluster Id"
 }
 
-variable "iam_role_path" {
-  type        = string
-  default     = "/"
-  description = "IAM Role path"
+variable "manage_via_gitops" {
+  type        = bool
+  default     = false
+  description = "Determines if the add-on should be managed via GitOps."
 }
 
 variable "tags" {
   type        = map(string)
-  description = "Common tags for AWS resources"
-  default     = null
+  description = "Common Tags for AWS resources"
 }
 
-variable "irsa_iam_policies" {
+variable "irsa_policies" {
   type        = list(string)
-  description = "IAM Policies for IRSA IAM role"
+  description = "Additional IAM policies for a IAM role for service accounts"
   default     = []
 }
 
