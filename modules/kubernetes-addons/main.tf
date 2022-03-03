@@ -220,6 +220,7 @@ module "spark_k8s_operator" {
 module "traefik" {
   count             = var.enable_traefik ? 1 : 0
   source            = "./traefik"
+  eks_cluster_id    = var.eks_cluster_id
   helm_config       = var.traefik_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
 }
