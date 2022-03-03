@@ -23,6 +23,15 @@ module "base" {
   helm_config = local.base_helm_config
 }
 
+module "cni" {
+  count  = var.manage_via_gitops ? 0 : var.install_cni ? 1 : 0
+  source = "./chart"
+
+  helm_config = local.cni_helm_config
+
+  depends_on = [module.base]
+}
+
 module "istiod" {
   count  = var.manage_via_gitops ? 0 : var.install_istiod ? 1 : 0
   source = "./chart"

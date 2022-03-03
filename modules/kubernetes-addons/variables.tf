@@ -492,6 +492,12 @@ variable "istio_install_base" {
   description = "Install Istio `base` Helm Chart"
 }
 
+variable "istio_install_cni" {
+  type        = bool
+  default     = true
+  description = "Install Istio `cni` Helm Chart"
+}
+
 variable "istio_install_istiod" {
   type        = bool
   default     = true
@@ -504,16 +510,16 @@ variable "istio_install_gateway" {
   description = "Install Istio `gateway` Helm Chart"
 }
 
-variable "istio_install_cni" {
-  type        = bool
-  default     = false
-  description = "Install Istio `cni` Helm Chart"
-}
-
 variable "istio_base_helm_config" {
   type        = any
   default     = {}
   description = "Istio `base` Helm Chart config"
+}
+
+variable "istio_cni_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `cni` Helm Chart config"
 }
 
 variable "istio_istiod_helm_config" {
@@ -528,8 +534,3 @@ variable "istio_gateway_helm_config" {
   description = "Istio `gateway` Helm Chart config"
 }
 
-variable "istio_cni_helm_config" {
-  type        = any
-  default     = {}
-  description = "Istio `cni` Helm Chart config"
-}

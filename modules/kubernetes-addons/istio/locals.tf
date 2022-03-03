@@ -27,7 +27,7 @@ locals {
     namespace                  = "istio-system"
     timeout                    = "1200"
     create_namespace           = true
-    description                = "Tetrate Istio Distro - Simple, safe enterprise-grade Istio distro"
+    description                = "Tetrate Istio Distribution - Simple, safe enterprise-grade Istio distribution"
     lint                       = false
     wait                       = true
     wait_for_jobs              = false
@@ -67,10 +67,16 @@ locals {
     values = local.default_helm_values
   }
 
+  cni_default_helm_config = {
+    name  = "istio-cni"
+    chart = "cni"
+    values = local.default_helm_values
+  }
+
   istiod_default_helm_config = {
     name   = "istio-istiod"
     chart  = "istiod"
-    values = local.default_helm_values
+    values = concat(local.default_helm_values, [yamlencode({"istio_cni": {"enabled": var.install_cni}})])
   }
 
   gateway_default_helm_config = {
@@ -83,6 +89,12 @@ locals {
     local.default_helm_config,
     local.base_default_helm_config,
     var.base_helm_config
+  )
+
+  cni_helm_config = merge(
+    local.default_helm_config,
+    local.cni_default_helm_config,
+    var.cni_helm_config
   )
 
   istiod_helm_config = merge(

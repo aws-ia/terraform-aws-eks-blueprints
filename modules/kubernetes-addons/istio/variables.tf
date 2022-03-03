@@ -22,6 +22,12 @@ variable "install_base" {
   description = "Install Istio `base` Helm Chart"
 }
 
+variable "install_cni" {
+  type        = bool
+  default     = false
+  description = "Install Istio `cni` Helm Chart"
+}
+
 variable "install_istiod" {
   type        = bool
   default     = false
@@ -34,34 +40,28 @@ variable "install_gateway" {
   description = "Install Istio `gateway` Helm Chart"
 }
 
-variable "install_cni" {
-  type        = bool
-  default     = false
-  description = "Install Istio `cni` Helm Chart"
-}
-
 variable "base_helm_config" {
   type        = any
   default     = {}
-  description = "Istio Helm Configuration: `base`"
-}
-
-variable "istiod_helm_config" {
-  type        = any
-  default     = {}
-  description = "Istio Helm Configuration: `istiod`"
-}
-
-variable "gateway_helm_config" {
-  type        = any
-  default     = {}
-  description = "Istio Helm Configuration: `gateway`"
+  description = "Istio `base` Helm Chart Configuration"
 }
 
 variable "cni_helm_config" {
   type        = any
   default     = {}
-  description = "Istio Helm Configuration: `cni`"
+  description = "Istio `cni` Helm Chart Configuration"
+}
+
+variable "istiod_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `istiod` Helm Chart Configuration"
+}
+
+variable "gateway_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `gateway` Helm Chart Configuration"
 }
 
 variable "manage_via_gitops" {
