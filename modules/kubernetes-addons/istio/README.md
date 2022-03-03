@@ -33,6 +33,7 @@ No providers.
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_base"></a> [base](#module\_base) | ./chart | n/a |
+| <a name="module_cni"></a> [cni](#module\_cni) | ./chart | n/a |
 | <a name="module_gateway"></a> [gateway](#module\_gateway) | ./chart | n/a |
 | <a name="module_istiod"></a> [istiod](#module\_istiod) | ./chart | n/a |
 
@@ -44,14 +45,16 @@ No resources.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_base_helm_config"></a> [base\_helm\_config](#input\_base\_helm\_config) | Istio Helm Configuration: `base` | `any` | `{}` | no |
-| <a name="input_cni_helm_config"></a> [cni\_helm\_config](#input\_cni\_helm\_config) | Istio Helm Configuration: `cni` | `any` | `{}` | no |
-| <a name="input_gateway_helm_config"></a> [gateway\_helm\_config](#input\_gateway\_helm\_config) | Istio Helm Configuration: `gateway` | `any` | `{}` | no |
+| <a name="input_base_helm_config"></a> [base\_helm\_config](#input\_base\_helm\_config) | Istio `base` Helm Chart Configuration | `any` | `{}` | no |
+| <a name="input_cni_helm_config"></a> [cni\_helm\_config](#input\_cni\_helm\_config) | Istio `cni` Helm Chart Configuration | `any` | `{}` | no |
+| <a name="input_distribution"></a> [distribution](#input\_distribution) | Istio distribution | `string` | `"TID"` | no |
+| <a name="input_distribution_version"></a> [distribution\_version](#input\_distribution\_version) | Istio version | `string` | `""` | no |
+| <a name="input_gateway_helm_config"></a> [gateway\_helm\_config](#input\_gateway\_helm\_config) | Istio `gateway` Helm Chart Configuration | `any` | `{}` | no |
 | <a name="input_install_base"></a> [install\_base](#input\_install\_base) | Install Istio `base` Helm Chart | `bool` | `false` | no |
 | <a name="input_install_cni"></a> [install\_cni](#input\_install\_cni) | Install Istio `cni` Helm Chart | `bool` | `false` | no |
 | <a name="input_install_gateway"></a> [install\_gateway](#input\_install\_gateway) | Install Istio `gateway` Helm Chart | `bool` | `false` | no |
 | <a name="input_install_istiod"></a> [install\_istiod](#input\_install\_istiod) | Install Istio `istiod` Helm Chart | `bool` | `false` | no |
-| <a name="input_istiod_helm_config"></a> [istiod\_helm\_config](#input\_istiod\_helm\_config) | Istio Helm Configuration: `istiod` | `any` | `{}` | no |
+| <a name="input_istiod_helm_config"></a> [istiod\_helm\_config](#input\_istiod\_helm\_config) | Istio `istiod` Helm Chart Configuration | `any` | `{}` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
 
 ## Outputs

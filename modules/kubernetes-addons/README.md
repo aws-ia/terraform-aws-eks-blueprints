@@ -130,12 +130,14 @@ No resources.
 | <a name="input_ingress_nginx_helm_config"></a> [ingress\_nginx\_helm\_config](#input\_ingress\_nginx\_helm\_config) | Ingress Nginx Helm Chart config | `any` | `{}` | no |
 | <a name="input_istio_base_helm_config"></a> [istio\_base\_helm\_config](#input\_istio\_base\_helm\_config) | Istio `base` Helm Chart config | `any` | `{}` | no |
 | <a name="input_istio_cni_helm_config"></a> [istio\_cni\_helm\_config](#input\_istio\_cni\_helm\_config) | Istio `cni` Helm Chart config | `any` | `{}` | no |
+| <a name="input_istio_distribution"></a> [istio\_distribution](#input\_istio\_distribution) | Istio distribution | `string` | `"TID"` | no |
 | <a name="input_istio_gateway_helm_config"></a> [istio\_gateway\_helm\_config](#input\_istio\_gateway\_helm\_config) | Istio `gateway` Helm Chart config | `any` | `{}` | no |
 | <a name="input_istio_install_base"></a> [istio\_install\_base](#input\_istio\_install\_base) | Install Istio `base` Helm Chart | `bool` | `true` | no |
-| <a name="input_istio_install_cni"></a> [istio\_install\_cni](#input\_istio\_install\_cni) | Install Istio `cni` Helm Chart | `bool` | `false` | no |
+| <a name="input_istio_install_cni"></a> [istio\_install\_cni](#input\_istio\_install\_cni) | Install Istio `cni` Helm Chart | `bool` | `true` | no |
 | <a name="input_istio_install_gateway"></a> [istio\_install\_gateway](#input\_istio\_install\_gateway) | Install Istio `gateway` Helm Chart | `bool` | `true` | no |
 | <a name="input_istio_install_istiod"></a> [istio\_install\_istiod](#input\_istio\_install\_istiod) | Install Istio `istiod` Helm Chart | `bool` | `true` | no |
 | <a name="input_istio_istiod_helm_config"></a> [istio\_istiod\_helm\_config](#input\_istio\_istiod\_helm\_config) | Istio `istiod` Helm Chart config | `any` | `{}` | no |
+| <a name="input_istio_version"></a> [istio\_version](#input\_istio\_version) | Istio version | `string` | `""` | no |
 | <a name="input_karpenter_helm_config"></a> [karpenter\_helm\_config](#input\_karpenter\_helm\_config) | Karpenter autoscaler add-on config | `any` | `{}` | no |
 | <a name="input_karpenter_irsa_policies"></a> [karpenter\_irsa\_policies](#input\_karpenter\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
 | <a name="input_karpenter_node_iam_instance_profile"></a> [karpenter\_node\_iam\_instance\_profile](#input\_karpenter\_node\_iam\_instance\_profile) | Karpenter Node IAM Instance profile id | `string` | `""` | no |
