@@ -92,7 +92,7 @@ module "aws_managed_prometheus" {
   source = "./modules/aws-managed-prometheus"
 
   amazon_prometheus_workspace_alias = var.amazon_prometheus_workspace_alias
-  eks_cluster_id                    = module.aws_eks.cluster_id
+  eks_cluster_id                    = local.context.eks_cluster_id
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -106,7 +106,7 @@ module "emr_on_eks" {
   }
 
   emr_on_eks_teams = each.value
-  eks_cluster_id   = module.aws_eks.cluster_id
+  eks_cluster_id   = local.context.eks_cluster_id
   tags             = var.tags
 
   depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
@@ -141,7 +141,7 @@ module "aws_eks_teams" {
   environment       = var.environment
   tenant            = var.tenant
   zone              = var.zone
-  eks_cluster_id    = module.aws_eks.cluster_id
+  eks_cluster_id    = local.context.eks_cluster_id
   tags              = module.eks_tags.tags
 
   depends_on = [module.aws_eks]
