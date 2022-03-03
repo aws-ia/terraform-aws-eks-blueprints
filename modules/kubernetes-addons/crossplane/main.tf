@@ -55,7 +55,7 @@ module "aws_provider_irsa" {
 resource "aws_iam_policy" "aws_provider" {
   count       = var.aws_provider.enable == true ? 1 : 0
   description = "Crossplane AWS Provider IAM policy"
-  name        = "${var.eks_cluster_id}-${local.aws_provider_sa}-irsa"
+  name_prefix = "${var.eks_cluster_id}-${local.aws_provider_sa}-irsa"
   policy      = data.aws_iam_policy_document.s3_policy.json
   tags        = var.tags
 }
@@ -108,7 +108,7 @@ module "jet_aws_provider_irsa" {
 resource "aws_iam_policy" "jet_aws_provider" {
   count       = var.jet_aws_provider.enable == true ? 1 : 0
   description = "Crossplane Jet AWS Provider IAM policy"
-  name        = "${var.eks_cluster_id}-${local.jet_aws_provider_sa}-irsa"
+  name_prefix = "${var.eks_cluster_id}-${local.jet_aws_provider_sa}-irsa"
   policy      = data.aws_iam_policy_document.s3_policy.json
   tags        = var.tags
 }

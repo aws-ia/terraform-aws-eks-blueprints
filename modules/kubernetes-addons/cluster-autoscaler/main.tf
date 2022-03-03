@@ -72,6 +72,6 @@ module "irsa" {
 
 resource "aws_iam_policy" "cluster_autoscaler" {
   description = "Cluster Autoscaler IAM policy"
-  name        = "${var.eks_cluster_id}-${local.helm_config["name"]}-irsa"
+  name_prefix = "${var.eks_cluster_id}-${local.helm_config["name"]}-irsa"
   policy      = data.aws_iam_policy_document.cluster_autoscaler.json
 }

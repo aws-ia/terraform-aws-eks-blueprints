@@ -213,7 +213,7 @@ resource "aws_iam_service_linked_role" "opensearch" {
 }
 
 resource "aws_iam_policy" "fluentbit-opensearch-access" {
-  name        = "fluentbit-opensearch-access"
+  name_prefix = "fluentbit-opensearch-access"
   description = "IAM policy to allow Fluentbit access to OpenSearch"
   policy      = data.aws_iam_policy_document.fluentbit-opensearch-access.json
 }

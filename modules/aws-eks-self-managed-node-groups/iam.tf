@@ -1,5 +1,5 @@
 resource "aws_iam_role" "self_managed_ng" {
-  name                  = "${var.eks_cluster_id}-${local.self_managed_node_group["node_group_name"]}"
+  name_prefix           = "${var.eks_cluster_id}-${local.self_managed_node_group["node_group_name"]}"
   assume_role_policy    = data.aws_iam_policy_document.self_managed_ng_assume_role_policy.json
   path                  = var.path
   force_detach_policies = true
@@ -27,7 +27,7 @@ resource "aws_iam_role_policy_attachment" "self_managed_ng" {
 # Windows nodes only need read-only access to EC2
 resource "aws_iam_policy" "eks_windows_cni" {
   count       = local.enable_windows_support ? 1 : 0
-  name        = "${var.eks_cluster_id}-${local.self_managed_node_group["node_group_name"]}-cni-policy"
+  name_prefix = "${var.eks_cluster_id}-${local.self_managed_node_group["node_group_name"]}-cni-policy"
   description = "EKS Windows CNI policy"
   path        = var.path
   policy      = data.aws_iam_policy_document.eks_windows_cni.json

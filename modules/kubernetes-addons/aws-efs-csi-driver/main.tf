@@ -25,7 +25,7 @@ module "helm_addon" {
 }
 
 resource "aws_iam_policy" "aws_efs_csi_driver" {
-  name        = "${var.eks_cluster_id}-efs-csi-policy"
+  name_prefix = "${var.eks_cluster_id}-efs-csi-policy"
   description = "IAM Policy for AWS EFS CSI Driver"
   policy      = data.aws_iam_policy_document.aws_efs_csi_driver.json
   tags        = var.tags

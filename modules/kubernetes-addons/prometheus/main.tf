@@ -116,7 +116,7 @@ module "irsa_amp_query" {
 
 resource "aws_iam_policy" "ingest" {
   count       = var.enable_amazon_prometheus ? 1 : 0
-  name        = format("%s-%s", "amp-ingest", var.eks_cluster_id)
+  name_prefix = format("%s-%s", "amp-ingest", var.eks_cluster_id)
   description = "Set up the permission policy that grants ingest (remote write) permissions for AMP workspace"
   path        = var.iam_role_path
   policy      = data.aws_iam_policy_document.ingest.json
@@ -125,7 +125,7 @@ resource "aws_iam_policy" "ingest" {
 
 resource "aws_iam_policy" "query" {
   count       = var.enable_amazon_prometheus ? 1 : 0
-  name        = format("%s-%s", "amp-query", var.eks_cluster_id)
+  name_prefix = format("%s-%s", "amp-query", var.eks_cluster_id)
   description = "Set up the permission policy that grants query permissions for AMP workspace"
   path        = var.iam_role_path
   policy      = data.aws_iam_policy_document.query.json

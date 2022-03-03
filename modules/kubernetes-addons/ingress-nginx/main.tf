@@ -25,7 +25,7 @@ module "helm_addon" {
 }
 
 resource "aws_iam_policy" "this" {
-  name        = "${var.eks_cluster_id}-${local.service_account_name}-policy"
+  name_prefix = "${var.eks_cluster_id}-${local.service_account_name}-policy"
   path        = "/"
   description = "A generic AWS IAM policy for the ingress nginx irsa."
   policy      = data.aws_iam_policy_document.this.json
