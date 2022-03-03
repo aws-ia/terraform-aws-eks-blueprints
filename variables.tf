@@ -107,10 +107,39 @@ variable "cluster_endpoint_private_access" {
   description = "Indicates whether or not the EKS private API server endpoint is enabled. Default to EKS resource and it is false"
 }
 
+variable "cluster_endpoint_private_access_cidrs" {
+  type        = bool
+  default     = ["0.0.0.0/0"]
+  description = "List of CIDR blocks which can access the Amazon EKS private API server endpoint"
+}
+
+variable "cluster_create_endpoint_private_access_sg_rule" {
+  type        = bool
+  default     = false
+  description = "Whether to create security group rules for the access to the Amazon EKS private API server endpoint"
+}
+
+variable "cluster_endpoint_private_access_sg" {
+  type        = list(string)
+  description = "List of security group IDs which can access the Amazon EKS private API server endpoint"
+}
+
+variable "cluster_create_endpoint_private_access_sg_rule" {
+  type        = bool
+  default     = false
+  description = "Whether to create security group rules for the access to the Amazon EKS private API server endpoint"
+}
+
 variable "cluster_endpoint_public_access" {
   type        = bool
   default     = true
   description = "Indicates whether or not the EKS public API server endpoint is enabled. Default to EKS resource and it is true"
+}
+
+variable "cluster_endpoint_public_access_cidrs" {
+  type        = bool
+  default     = ["0.0.0.0/0"]
+  description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint"
 }
 
 variable "cluster_log_retention_in_days" {
