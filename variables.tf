@@ -161,25 +161,6 @@ variable "worker_additional_security_group_ids" {
   default     = []
 }
 
-variable "http_endpoint" {
-  type        = string
-  default     = "enabled"
-  description = "Whether the Instance Metadata Service (IMDS) is available. Supported values: enabled, disabled"
-}
-
-variable "http_tokens" {
-  type        = string
-  default     = "required"
-  description = "If enabled, will use Instance Metadata Service Version 2 (IMDSv2). Supported values: optional, required."
-}
-
-# Hop limit should be between 2 and 64 for IMDSv2 instance metadata services
-variable "http_put_response_hop_limit" {
-  type        = number
-  default     = 2
-  description = "HTTP PUT response hop limit for instance metadata requests. Supported values: 1-64."
-}
-
 #-------------------------------
 # Fargate
 #-------------------------------

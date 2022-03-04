@@ -10,6 +10,10 @@ locals {
     # aws_partition
     aws_partition_id         = data.aws_partition.current.id
     aws_partition_dns_suffix = data.aws_partition.current.dns_suffix
+    # http details
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 2 # Hop limit should be between 2 and 64 for IMDSv2 instance metadata services
   }
 
   node_group_context = {
@@ -28,9 +32,9 @@ locals {
     cluster_primary_security_group_id    = module.aws_eks.cluster_primary_security_group_id
     worker_additional_security_group_ids = var.worker_additional_security_group_ids
     # Http config
-    http_endpoint               = var.http_endpoint
-    http_tokens                 = var.http_tokens
-    http_put_response_hop_limit = var.http_put_response_hop_limit
+    http_endpoint               = local.context.http_endpoint
+    http_tokens                 = local.context.http_tokens
+    http_put_response_hop_limit = local.context.http_put_response_hop_limit
     # Data sources
     aws_partition_dns_suffix = local.context.aws_partition_dns_suffix
     aws_partition_id         = local.context.aws_partition_id
