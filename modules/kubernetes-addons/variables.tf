@@ -545,4 +545,3 @@ variable "istio_gateway_helm_config" {
   default     = {}
   description = "Istio `gateway` Helm Chart config"
 }
-
