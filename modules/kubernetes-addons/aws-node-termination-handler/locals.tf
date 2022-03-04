@@ -40,9 +40,8 @@ locals {
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = false
     create_kubernetes_service_account = true
-    iam_role_path                     = "/"
-    tags                              = var.addon_context.tags
-    irsa_iam_policies                 = [aws_iam_policy.aws_node_termination_handler_irsa.arn]
+    irsa_iam_policies                 = concat([aws_iam_policy.aws_node_termination_handler_irsa.arn], var.irsa_policies)
+    irsa_iam_permissions_boundary     = var.irsa_permissions_boundary
   }
 
   event_rules = [
