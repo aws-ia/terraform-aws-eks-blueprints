@@ -4,11 +4,6 @@ variable "helm_config" {
   default     = {}
 }
 
-variable "eks_cluster_id" {
-  type        = string
-  description = "EKS Cluster Id"
-}
-
 variable "manage_via_gitops" {
   type        = bool
   default     = false
