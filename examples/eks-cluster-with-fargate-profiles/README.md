@@ -66,7 +66,7 @@ This following command used to update the `kubeconfig` in your local machine whe
 
     $ kubectl get pods -n kube-system
 
-######PS: CoreDNS requires additional setup if customers use only Fargate
+PS: CoreDNS requires additional setup if customers use only Fargate
 ## How to Destroy
 The following command destroys the resources created by `terraform apply`
 
