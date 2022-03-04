@@ -54,6 +54,7 @@ module "agones" {
   helm_config                  = var.agones_helm_config
   eks_worker_security_group_id = var.eks_worker_security_group_id
   manage_via_gitops            = var.argocd_manage_add_ons
+  addon_context                = local.addon_context
 }
 
 module "argocd" {
