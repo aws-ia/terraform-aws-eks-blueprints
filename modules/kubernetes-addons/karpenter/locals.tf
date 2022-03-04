@@ -1,7 +1,7 @@
 locals {
   namespace            = "karpenter"
   service_account_name = "karpenter"
-  eks_cluster_endpoint = data.aws_eks_cluster.eks.endpoint
+  eks_cluster_endpoint = var.addon_context.aws_eks_cluster_endpoint
 
   karpenter_set_values = [{
     name  = "serviceAccount.name"
@@ -13,7 +13,7 @@ locals {
     },
     {
       name  = "controller.clusterName"
-      value = var.eks_cluster_id
+      value = var.addon_context.eks_cluster_id
     },
     {
       name  = "controller.clusterEndpoint"
@@ -69,7 +69,7 @@ locals {
   )
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
-    eks_cluster_id            = var.eks_cluster_id,
+    eks_cluster_id            = var.addon_context.eks_cluster_id,
     eks_cluster_endpoint      = local.eks_cluster_endpoint,
     service_account_name      = local.service_account_name,
     node_iam_instance_profile = var.node_iam_instance_profile,
@@ -79,7 +79,7 @@ locals {
   argocd_gitops_config = {
     enable                    = true
     serviceAccountName        = local.service_account_name
-    controllerClusterName     = var.eks_cluster_id
+    controllerClusterName     = var.addon_context.eks_cluster_id
     controllerClusterEndpoint = local.eks_cluster_endpoint
     awsDefaultInstanceProfile = var.node_iam_instance_profile
   }

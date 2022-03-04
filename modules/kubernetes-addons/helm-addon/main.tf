@@ -61,12 +61,11 @@ resource "helm_release" "addon" {
 module "irsa" {
   count                             = var.irsa_config != null ? 1 : 0
   source                            = "../../irsa"
-  eks_cluster_id                    = var.irsa_config.eks_cluster_id
   create_kubernetes_namespace       = try(var.irsa_config.create_kubernetes_namespace, true)
   create_kubernetes_service_account = try(var.irsa_config.create_kubernetes_service_account, true)
   kubernetes_namespace              = var.irsa_config.kubernetes_namespace
   kubernetes_service_account        = var.irsa_config.kubernetes_service_account
   irsa_iam_policies                 = var.irsa_config.irsa_iam_policies
   irsa_iam_permissions_boundary     = try(var.irsa_config.irsa_iam_permissions_boundary, "")
-  tags                              = var.irsa_config.tags
+  addon_context                     = var.addon_context
 }

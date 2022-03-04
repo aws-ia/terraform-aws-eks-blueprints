@@ -61,16 +61,15 @@ resource "helm_release" "karpenter" {
 }
 
 resource "aws_iam_policy" "karpenter" {
-  name        = "${var.eks_cluster_id}-karpenter"
+  name        = "${var.addon_context.eks_cluster_id}-karpenter"
   description = "IAM Policy for Karpenter"
   policy      = data.aws_iam_policy_document.karpenter.json
 }
 
 module "irsa_addon" {
   source                     = "../../../modules/irsa"
-  eks_cluster_id             = var.eks_cluster_id
   kubernetes_namespace       = local.namespace
   kubernetes_service_account = local.service_account_name
   irsa_iam_policies          = concat([aws_iam_policy.karpenter.arn], var.irsa_policies)
-  tags                       = var.tags
+  addon_context              = var.addon_context
 }
