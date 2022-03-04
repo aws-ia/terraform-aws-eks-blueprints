@@ -40,6 +40,7 @@ locals {
     irsa_iam_policies                 = concat([aws_iam_policy.keda_irsa[0].arn], var.irsa_policies)
     irsa_iam_permissions_boundary     = var.irsa_permissions_boundary
     eks_cluster_id                    = var.addon_context.eks_cluster_id
+    iam_role_path                     = var.iam_role_path
   }
 
   argocd_gitops_config = {
