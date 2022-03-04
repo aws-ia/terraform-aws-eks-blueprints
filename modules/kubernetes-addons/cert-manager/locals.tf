@@ -1,55 +1,46 @@
 
 locals {
-  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
+  name                 = "cert-manager"
+  service_account_name = "${local.name}-sa"
 
   default_helm_config = {
-    name                       = "cert-manager"
-    chart                      = "cert-manager"
-    repository                 = "https://charts.jetstack.io"
-    version                    = "v1.6.1"
-    namespace                  = "kube-system"
-    timeout                    = "600"
-    create_namespace           = false
-    set                        = []
-    set_sensitive              = null
-    lint                       = false
-    values                     = local.default_helm_values
-    wait                       = true
-    wait_for_jobs              = false
-    description                = "Cert Manager Helm chart deployment configuration"
-    verify                     = false
-    keyring                    = ""
-    repository_key_file        = ""
-    repository_cert_file       = ""
-    repository_ca_file         = ""
-    repository_username        = ""
-    repository_password        = ""
-    disable_webhooks           = false
-    reuse_values               = false
-    reset_values               = false
-    force_update               = false
-    recreate_pods              = false
-    cleanup_on_fail            = false
-    max_history                = 0
-    atomic                     = false
-    skip_crds                  = false
-    render_subchart_notes      = true
-    disable_openapi_validation = false
-    dependency_update          = false
-    replace                    = false
-    postrender                 = ""
-
-    # Install a CA issuer with a helper chart
-    # See ./cert-manager-ca/templates/ca.yaml
-    install_default_ca = var.manage_via_gitops ? false : true
+    name        = local.name
+    chart       = local.name
+    repository  = "https://charts.jetstack.io"
+    version     = "v1.7.1"
+    namespace   = local.name
+    description = "Argo Rollouts AddOn Helm Chart"
+    values      = local.default_helm_values
+    timeout     = "600"
   }
+
+  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
   helm_config = merge(
     local.default_helm_config,
     var.helm_config
   )
 
+  set_values = [
+    {
+      name  = "serviceAccount.name"
+      value = local.service_account_name
+    },
+    {
+      name  = "serviceAccount.create"
+      value = false
+    }
+  ]
+
+  irsa_config = {
+    kubernetes_namespace              = local.helm_config["namespace"]
+    kubernetes_service_account        = local.service_account_name
+    create_kubernetes_namespace       = true
+    create_kubernetes_service_account = true
+  }
+
   argocd_gitops_config = {
-    enable = true
+    enable             = true
+    serviceAccountName = local.service_account_name
   }
 }
