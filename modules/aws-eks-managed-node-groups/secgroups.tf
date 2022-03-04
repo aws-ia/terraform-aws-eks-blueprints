@@ -2,9 +2,9 @@
 resource "aws_security_group" "managed_ng" {
   count = local.managed_node_group["create_worker_security_group"] == true ? 1 : 0
 
-  name        = "${var.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
-  description = "Security group for all nodes in the ${var.eks_cluster_id} cluster - Fully managed node groups"
-  vpc_id      = var.vpc_id
+  name        = "${var.context.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
+  description = "Security group for all nodes in the ${var.context.eks_cluster_id} cluster - Fully managed node groups"
+  vpc_id      = var.context.vpc_id
 
   egress {
     from_port   = 0
@@ -41,7 +41,7 @@ resource "aws_security_group_rule" "worker_ingress_from_control_plane_https" {
   to_port                  = 443
   protocol                 = "tcp"
   security_group_id        = aws_security_group.managed_ng[0].id
-  source_security_group_id = var.cluster_security_group_id
+  source_security_group_id = var.context.cluster_security_group_id
 }
 
 resource "aws_security_group_rule" "workers_ingress_control_plane_sgr" {
@@ -53,7 +53,7 @@ resource "aws_security_group_rule" "workers_ingress_control_plane_sgr" {
   to_port                  = 65535
   protocol                 = "tcp"
   security_group_id        = aws_security_group.managed_ng[0].id
-  source_security_group_id = var.cluster_security_group_id
+  source_security_group_id = var.context.cluster_security_group_id
 }
 
 resource "aws_security_group_rule" "control_plane_ingress_from_worker_https" {
@@ -64,7 +64,7 @@ resource "aws_security_group_rule" "control_plane_ingress_from_worker_https" {
   from_port                = 443
   to_port                  = 443
   protocol                 = "tcp"
-  security_group_id        = var.cluster_security_group_id
+  security_group_id        = var.context.cluster_security_group_id
   source_security_group_id = aws_security_group.managed_ng[0].id
 }
 
@@ -76,7 +76,7 @@ resource "aws_security_group_rule" "control_plane_egress_to_worker_sgr" {
   from_port                = 1025
   to_port                  = 65535
   protocol                 = "tcp"
-  security_group_id        = var.cluster_security_group_id
+  security_group_id        = var.context.cluster_security_group_id
   source_security_group_id = aws_security_group.managed_ng[0].id
 }
 
@@ -88,7 +88,7 @@ resource "aws_security_group_rule" "control_plane_egress_to_worker_https" {
   from_port                = 443
   to_port                  = 443
   protocol                 = "tcp"
-  security_group_id        = var.cluster_security_group_id
+  security_group_id        = var.context.cluster_security_group_id
   source_security_group_id = aws_security_group.managed_ng[0].id
 
 }
@@ -104,7 +104,7 @@ resource "aws_security_group_rule" "workers_ingress_cluster_primary_sgr" {
   to_port                  = 65535
   protocol                 = "all"
   security_group_id        = aws_security_group.managed_ng[0].id
-  source_security_group_id = var.cluster_primary_security_group_id
+  source_security_group_id = var.context.cluster_primary_security_group_id
 }
 
 resource "aws_security_group_rule" "cluster_primary_sg_ingress_worker_sgr" {
@@ -115,6 +115,6 @@ resource "aws_security_group_rule" "cluster_primary_sg_ingress_worker_sgr" {
   from_port                = 0
   to_port                  = 65535
   protocol                 = "all"
-  security_group_id        = var.cluster_primary_security_group_id
+  security_group_id        = var.context.cluster_primary_security_group_id
   source_security_group_id = aws_security_group.managed_ng[0].id
 }

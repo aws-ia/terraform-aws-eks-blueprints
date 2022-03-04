@@ -14,8 +14,9 @@ locals {
   )
 
   fargate_tags = merge(
-    { "kubernetes.io/cluster/${var.eks_cluster_id}" = "owned" },
-  { "k8s.io/cluster/${var.eks_cluster_id}" = "owned" })
+    { "kubernetes.io/cluster/${var.context.eks_cluster_id}" = "owned" },
+  { "k8s.io/cluster/${var.context.eks_cluster_id}" = "owned" })
 
+  policy_arn = "arn:${var.context.aws_partition_id}:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
 
 }

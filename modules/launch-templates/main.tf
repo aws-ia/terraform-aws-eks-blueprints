@@ -62,7 +62,7 @@ resource "aws_launch_template" "this" {
     for_each = each.value.network_interfaces
     content {
       associate_public_ip_address = try(network_interfaces.value.public_ip, false)
-      security_groups             = try(length(each.value.network_interfaces.security_groups), 0) == 0 ? null : network_interfaces.value.security_groups
+      security_groups             = try(length(network_interfaces.value.security_groups), 0) == 0 ? null : network_interfaces.value.security_groups
     }
   }
 
