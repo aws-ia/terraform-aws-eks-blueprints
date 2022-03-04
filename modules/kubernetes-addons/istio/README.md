@@ -32,10 +32,10 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_base"></a> [base](#module\_base) | ./chart | n/a |
-| <a name="module_cni"></a> [cni](#module\_cni) | ./chart | n/a |
-| <a name="module_gateway"></a> [gateway](#module\_gateway) | ./chart | n/a |
-| <a name="module_istiod"></a> [istiod](#module\_istiod) | ./chart | n/a |
+| <a name="module_base"></a> [base](#module\_base) | ../helm-addon | n/a |
+| <a name="module_cni"></a> [cni](#module\_cni) | ../helm-addon | n/a |
+| <a name="module_gateway"></a> [gateway](#module\_gateway) | ../helm-addon | n/a |
+| <a name="module_istiod"></a> [istiod](#module\_istiod) | ../helm-addon | n/a |
 
 ## Resources
 
