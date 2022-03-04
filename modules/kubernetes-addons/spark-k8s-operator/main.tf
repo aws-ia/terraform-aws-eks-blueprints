@@ -6,7 +6,7 @@ module "helm_addon" {
   addon_context     = var.addon_context
   depends_on = [
     module.spark-irsa,
-    spark-operator-irsa
+    module.spark-operator-irsa
   ]
 }
 
