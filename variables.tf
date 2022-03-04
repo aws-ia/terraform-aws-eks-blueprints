@@ -173,9 +173,10 @@ variable "http_tokens" {
   description = "If enabled, will use Instance Metadata Service Version 2 (IMDSv2). Supported values: optional, required."
 }
 
+# Hop limit should be between 2 and 64 for IMDSv2 instance metadata services
 variable "http_put_response_hop_limit" {
   type        = number
-  default     = 1
+  default     = 2
   description = "HTTP PUT response hop limit for instance metadata requests. Supported values: 1-64."
 }
 
