@@ -27,6 +27,12 @@ variable "irsa_permissions_boundary" {
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
+variable "iam_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM role path"
+}
+
 variable "addon_context" {
   type = object({
     aws_caller_identity_account_id = string

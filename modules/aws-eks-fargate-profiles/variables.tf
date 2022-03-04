@@ -4,19 +4,17 @@ variable "fargate_profile" {
   default     = {}
 }
 
-variable "eks_cluster_id" {
-  description = "EKS Cluster name"
-  type        = string
-}
-
-variable "tags" {
-  description = "A map of tags to add to all resources"
-  type        = map(string)
-  default     = {}
-}
-
 variable "path" {
   type        = string
   default     = "/"
   description = "IAM resource path, e.g. /dev/"
+}
+
+variable "context" {
+  type = object({
+    eks_cluster_id   = string
+    aws_partition_id = string
+    tags             = map(string)
+  })
+  description = "Input configuration for Fargate"
 }

@@ -15,7 +15,7 @@ output "self_managed_iam_role_name" {
 
 output "self_managed_sec_group_id" {
   description = "Self managed group security group id/ids"
-  value       = var.worker_security_group_id == "" ? aws_security_group.self_managed_ng[*].id : [var.worker_security_group_id]
+  value       = var.context.worker_security_group_id == "" ? aws_security_group.self_managed_ng[*].id : [var.context.worker_security_group_id]
 }
 
 output "self_managed_asg_names" {

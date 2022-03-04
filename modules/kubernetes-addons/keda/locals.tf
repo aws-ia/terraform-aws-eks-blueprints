@@ -33,12 +33,13 @@ locals {
   ]
 
   irsa_config = {
-    kubernetes_namespace              = local.namespace
+    kubernetes_namespace              = local.name
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = true
     create_kubernetes_service_account = true
     irsa_iam_policies                 = concat([aws_iam_policy.keda_irsa[0].arn], var.irsa_policies)
     irsa_iam_permissions_boundary     = var.irsa_permissions_boundary
+    eks_cluster_id                    = var.addon_context.eks_cluster_id
   }
 
   argocd_gitops_config = {

@@ -1,22 +1,3 @@
-
-/*
- * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * SPDX-License-Identifier: MIT-0
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the Software
- * without restriction, including without limitation the rights to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 # ---------------------------------------------------------------------------------------------------------------------
 # MANAGED NODE GROUPS
 # ---------------------------------------------------------------------------------------------------------------------
@@ -29,20 +10,7 @@ module "aws_eks_managed_node_groups" {
   }
 
   managed_ng = each.value
-
-  eks_cluster_id    = module.aws_eks.cluster_id
-  cluster_ca_base64 = module.aws_eks.cluster_certificate_authority_data
-  cluster_endpoint  = module.aws_eks.cluster_endpoint
-
-  vpc_id             = var.vpc_id
-  private_subnet_ids = var.private_subnet_ids
-  public_subnet_ids  = var.public_subnet_ids
-
-  worker_security_group_id             = module.aws_eks.worker_security_group_id
-  worker_additional_security_group_ids = var.worker_additional_security_group_ids
-  cluster_security_group_id            = module.aws_eks.cluster_security_group_id
-  cluster_primary_security_group_id    = module.aws_eks.cluster_primary_security_group_id
-  tags                                 = module.eks_tags.tags
+  context    = local.node_group_context
 
   depends_on = [kubernetes_config_map.aws_auth]
 }
@@ -59,21 +27,7 @@ module "aws_eks_self_managed_node_groups" {
   }
 
   self_managed_ng = each.value
-
-  eks_cluster_id     = module.aws_eks.cluster_id
-  cluster_endpoint   = module.aws_eks.cluster_endpoint
-  cluster_ca_base64  = module.aws_eks.cluster_certificate_authority_data
-  kubernetes_version = var.kubernetes_version
-
-  vpc_id             = var.vpc_id
-  private_subnet_ids = var.private_subnet_ids
-  public_subnet_ids  = var.public_subnet_ids
-
-  worker_security_group_id             = module.aws_eks.worker_security_group_id
-  worker_additional_security_group_ids = var.worker_additional_security_group_ids
-  cluster_security_group_id            = module.aws_eks.cluster_security_group_id
-  cluster_primary_security_group_id    = module.aws_eks.cluster_primary_security_group_id
-  tags                                 = module.eks_tags.tags
+  context         = local.node_group_context
 
   depends_on = [kubernetes_config_map.aws_auth]
 }
@@ -88,8 +42,7 @@ module "aws_eks_fargate_profiles" {
   for_each = { for k, v in var.fargate_profiles : k => v if length(var.fargate_profiles) > 0 }
 
   fargate_profile = each.value
-  eks_cluster_id  = module.aws_eks.cluster_id
-  tags            = module.eks_tags.tags
+  context         = local.fargate_context
 
   depends_on = [kubernetes_config_map.aws_auth]
 }

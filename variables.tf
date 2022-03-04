@@ -1,22 +1,6 @@
-/*
- * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * SPDX-License-Identifier: MIT-0
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the Software
- * without restriction, including without limitation the rights to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
-#  CLUSTER LABELS
+#-------------------------------
+# EKS Cluster Labels
+#-------------------------------
 variable "org" {
   type        = string
   description = "tenant, which could be your organization name, e.g. aws'"
@@ -53,7 +37,9 @@ variable "terraform_version" {
   description = "Terraform version"
 }
 
+#-------------------------------
 # VPC Config for EKS Cluster
+#-------------------------------
 variable "vpc_id" {
   type        = string
   description = "VPC Id"
@@ -70,7 +56,9 @@ variable "public_subnet_ids" {
   default     = []
 }
 
-# EKS CONTROL PLANE
+#-------------------------------
+# EKS module variables (terraform-aws-modules/eks/aws)
+#-------------------------------
 variable "create_eks" {
   type        = bool
   default     = true
@@ -137,19 +125,15 @@ variable "cluster_log_retention_period" {
   description = "Number of days to retain cluster logs"
 }
 
-variable "worker_additional_security_group_ids" {
-  description = "A list of additional security group ids to attach to worker instances"
-  type        = list(string)
-  default     = []
-}
-
 variable "worker_create_security_group" {
   description = "Whether to create a security group for the workers or attach the workers to `worker_security_group_id`."
   type        = bool
   default     = true
 }
 
-# EKS WORKER NODES
+#-------------------------------
+# Node Groups
+#-------------------------------
 variable "managed_node_groups" {
   description = "Managed node groups configuration"
   type        = any
@@ -162,20 +146,33 @@ variable "self_managed_node_groups" {
   default     = {}
 }
 
-variable "fargate_profiles" {
-  description = "Fargate profile configuration"
-  type        = any
-  default     = {}
-}
-
-# EKS WINDOWS SUPPORT
 variable "enable_windows_support" {
   description = "Enable Windows support"
   type        = bool
   default     = false
 }
 
-# CONFIGMAP AWS-AUTH
+#-------------------------------
+# Worker Additional Variables
+#-------------------------------
+variable "worker_additional_security_group_ids" {
+  description = "A list of additional security group ids to attach to worker instances"
+  type        = list(string)
+  default     = []
+}
+
+#-------------------------------
+# Fargate
+#-------------------------------
+variable "fargate_profiles" {
+  description = "Fargate profile configuration"
+  type        = any
+  default     = {}
+}
+
+#-------------------------------
+# aws-auth Config Map
+#-------------------------------
 variable "map_accounts" {
   description = "Additional AWS account numbers to add to the aws-auth ConfigMap"
   type        = list(string)
@@ -208,7 +205,9 @@ variable "aws_auth_additional_labels" {
   type        = map(string)
 }
 
-#-----------Amazon Managed Prometheus-------------
+#-------------------------------
+# Amazon Managed Prometheus
+#-------------------------------
 variable "enable_amazon_prometheus" {
   type        = bool
   default     = false
@@ -221,7 +220,9 @@ variable "amazon_prometheus_workspace_alias" {
   description = "AWS Managed Prometheus WorkSpace Name"
 }
 
-#-----------Amazon EMR on EKS-------------
+#-------------------------------
+# Amazon EMR on EKS
+#-------------------------------
 variable "enable_emr_on_eks" {
   type        = bool
   default     = false
@@ -234,7 +235,9 @@ variable "emr_on_eks_teams" {
   default     = {}
 }
 
-#-----------TEAMS-------------
+#-------------------------------
+# TEAMS (Soft Multi-tenancy)
+#-------------------------------
 variable "application_teams" {
   description = "Map of maps of Application Teams to create"
   type        = any
