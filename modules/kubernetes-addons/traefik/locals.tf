@@ -27,7 +27,6 @@ locals {
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = true
     create_kubernetes_service_account = true
-    eks_cluster_id                    = var.addon_context.eks_cluster_id
   }
 
   argocd_gitops_config = {
