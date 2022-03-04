@@ -60,8 +60,13 @@ module "aws_eks" {
   vpc_id  = var.vpc_id
   subnets = var.private_subnet_ids
 
-  cluster_endpoint_private_access = var.cluster_endpoint_private_access
-  cluster_endpoint_public_access  = var.cluster_endpoint_public_access
+  cluster_endpoint_private_access                = var.cluster_endpoint_private_access
+  cluster_create_endpoint_private_access_sg_rule = local.cluster_create_endpoint_private_access_sg_rule
+  cluster_endpoint_private_access_cidrs          = local.cluster_endpoint_private_access_cidrs
+  cluster_endpoint_private_access_sg             = local.cluster_endpoint_private_access_sg
+
+  cluster_endpoint_public_access       = var.cluster_endpoint_public_access
+  cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
 
   worker_create_security_group  = var.worker_create_security_group
   cluster_log_retention_in_days = var.cluster_log_retention_in_days
