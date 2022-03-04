@@ -24,6 +24,17 @@ locals {
     service_account_name = local.service_account_name
   })]
 
+  set_values = [
+    {
+      name  = "serviceAccount.name"
+      value = local.service_account_name
+    },
+    {
+      name  = "serviceAccount.create"
+      value = false
+    }
+  ]
+  
   argocd_gitops_config = {
     enable             = true
     serviceAccountName = local.service_account_name
