@@ -60,8 +60,13 @@ module "aws_eks" {
   vpc_id  = var.vpc_id
   subnets = var.private_subnet_ids
 
-  cluster_endpoint_private_access = var.cluster_endpoint_private_access
-  cluster_endpoint_public_access  = var.cluster_endpoint_public_access
+  cluster_endpoint_private_access                = var.cluster_endpoint_private_access
+  cluster_create_endpoint_private_access_sg_rule = local.cluster_create_endpoint_private_access_sg_rule
+  cluster_endpoint_private_access_cidrs          = local.cluster_endpoint_private_access_cidrs
+  cluster_endpoint_private_access_sg             = local.cluster_endpoint_private_access_sg
+
+  cluster_endpoint_public_access       = var.cluster_endpoint_public_access
+  cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
 
   worker_create_security_group  = var.worker_create_security_group
   cluster_log_retention_in_days = var.cluster_log_retention_in_days
@@ -109,7 +114,7 @@ module "emr_on_eks" {
   eks_cluster_id   = module.aws_eks.cluster_id
   tags             = var.tags
 
-  depends_on = [module.aws_eks, kubernetes_config_map.aws_auth]
+  depends_on = [kubernetes_config_map.aws_auth]
 }
 
 resource "kubernetes_config_map" "amazon_vpc_cni" {
@@ -124,7 +129,7 @@ resource "kubernetes_config_map" "amazon_vpc_cni" {
   }
 
   depends_on = [
-    module.aws_eks,
+    module.aws_eks.cluster_id,
     data.http.eks_cluster_readiness[0]
   ]
 }
@@ -143,6 +148,4 @@ module "aws_eks_teams" {
   zone              = var.zone
   eks_cluster_id    = module.aws_eks.cluster_id
   tags              = module.eks_tags.tags
-
-  depends_on = [module.aws_eks]
 }

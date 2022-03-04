@@ -1,5 +1,6 @@
 serviceAccount:
-  name: ${keda-sa-name}
+  create: false
+  name: ${sa-name}
 
 resources:
   limits:

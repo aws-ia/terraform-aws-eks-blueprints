@@ -456,6 +456,12 @@ variable "keda_irsa_policies" {
   default     = []
 }
 
+variable "keda_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}
+
 #------Vertical Pod Autoscaler(VPA) ADDON--------
 variable "enable_vpa" {
   type        = bool
