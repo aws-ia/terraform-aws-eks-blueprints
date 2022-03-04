@@ -1,7 +1,7 @@
 locals {
   name                 = "cluster-autoscaler"
   service_account_name = "${local.name}-sa"
-	
+
   default_helm_config = {
     name        = local.name
     chart       = local.name
@@ -13,7 +13,7 @@ locals {
     timeout     = "1200"
   }
 
-	default_helm_values = [templatefile("${path.module}/values.yaml", {
+  default_helm_values = [templatefile("${path.module}/values.yaml", {
     aws_region           = var.addon_context.aws_region_name,
     eks_cluster_id       = var.addon_context.eks_cluster_id
     service_account_name = local.service_account_name
@@ -24,7 +24,7 @@ locals {
     var.helm_config
   )
 
-	set_values = [
+  set_values = [
     {
       name  = "rbac.serviceAccount.create"
       value = "false"
@@ -36,15 +36,11 @@ locals {
   ]
 
   irsa_config = {
-    kubernetes_namespace              = local.name
-    kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = true
+		kubernetes_namespace              = local.name
     create_kubernetes_service_account = true
-    iam_role_path                     = "/"
-    tags                              = var.addon_context.tags
-    eks_cluster_id                    = var.addon_context.eks_cluster_id
-    irsa_iam_policies                 = []
-    irsa_iam_permissions_boundary     = var.irsa_iam_permissions_boundary
+		kubernetes_service_account        = local.service_account_name
+    irsa_iam_policies                 = [aws_iam_policy.cluster_autoscaler.arn]
   }
 
   argocd_gitops_config = {
