@@ -213,6 +213,7 @@ module "vpa" {
   source            = "./vpa"
   helm_config       = var.vpa_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "yunikorn" {
@@ -229,13 +230,12 @@ module "yunikorn" {
 module "kube_state_metrics" {
   count                     = var.enable_kube_state_metrics ? 1 : 0
   source                    = "askulkarni2/kube-state-metrics-addon/eksblueprints"
-  version                   = "0.0.2"
-  eks_cluster_id            = var.eks_cluster_id
+  version                   = "0.0.4"
   helm_config               = var.kube_state_metrics_helm_config
   irsa_policies             = var.kube_state_metrics_irsa_policies
   irsa_permissions_boundary = var.kube_state_metrics_irsa_permissions_boundary
-  tags                      = var.tags
   manage_via_gitops         = var.argocd_manage_add_ons
+  addon_context             = local.addon_context
 }
 
 module "kubernetes_dashboard" {

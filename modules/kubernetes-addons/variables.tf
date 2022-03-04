@@ -432,17 +432,17 @@ variable "keda_irsa_policies" {
   default     = []
 }
 
-#-----------Vertical Pod Autoscaler(VPA) ADDON-------------
+#------Vertical Pod Autoscaler(VPA) ADDON--------
 variable "enable_vpa" {
   type        = bool
   default     = false
-  description = "Enable Kubernetes Vertical Pod Autoscaler add-on"
+  description = "Enable Vertical Pod Autoscaler add-on"
 }
 
 variable "vpa_helm_config" {
   type        = any
-  default     = {}
-  description = "Vertical Pod Autoscaler Helm Chart config"
+  default     = null
+  description = "VPA Helm Chart config"
 }
 
 #-----------Apache YuniKorn ADDON-------------

@@ -47,6 +47,7 @@ variable "iam_role_path" {
 variable "irsa_iam_policies" {
   type        = list(string)
   description = "IAM Policies for IRSA IAM role"
+  default     = []
 }
 
 variable "irsa_iam_permissions_boundary" {
