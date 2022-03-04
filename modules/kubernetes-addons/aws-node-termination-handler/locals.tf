@@ -24,6 +24,17 @@ locals {
     nth-sa-name = local.service_account_name
   })]
 
+  set_values = [
+    {
+      name  = "serviceAccount.name"
+      value = local.service_account_name
+    },
+    {
+      name  = "serviceAccount.create"
+      value = false
+    }
+  ]
+
   irsa_config = {
     kubernetes_namespace              = local.namespace
     kubernetes_service_account        = local.service_account_name

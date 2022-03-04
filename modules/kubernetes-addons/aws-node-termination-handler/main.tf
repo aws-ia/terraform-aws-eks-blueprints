@@ -3,6 +3,7 @@ module "helm_addon" {
   helm_config   = local.helm_config
   irsa_config   = local.irsa_config
   addon_context = var.addon_context
+  set_values    = local.set_values
 }
 
 resource "aws_autoscaling_lifecycle_hook" "aws_node_termination_handler_hook" {
