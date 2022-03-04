@@ -194,7 +194,7 @@ module "prometheus" {
   addon_context                        = local.addon_context
 }
 
-module "spark-k8s-operator" {
+module "spark_k8s_operator" {
   count             = var.enable_spark_k8s_operator ? 1 : 0
   source            = "./spark-k8s-operator"
   helm_config       = var.spark_k8s_operator_helm_config
