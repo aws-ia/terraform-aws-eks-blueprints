@@ -231,7 +231,6 @@ module "yunikorn" {
   addon_context             = local.addon_context
 }
 
-#TODO once source is updated and aligned with addon_context changes, pass addon_context and remove eks_cluster_id & tags
 module "kube_state_metrics" {
   count                     = var.enable_kube_state_metrics ? 1 : 0
   source                    = "askulkarni2/kube-state-metrics-addon/eksblueprints"
