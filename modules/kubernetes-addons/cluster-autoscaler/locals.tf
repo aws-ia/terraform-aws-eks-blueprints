@@ -37,9 +37,9 @@ locals {
 
   irsa_config = {
     create_kubernetes_namespace       = true
-		kubernetes_namespace              = local.name
+    kubernetes_namespace              = local.name
     create_kubernetes_service_account = true
-		kubernetes_service_account        = local.service_account_name
+    kubernetes_service_account        = local.service_account_name
     irsa_iam_policies                 = [aws_iam_policy.cluster_autoscaler.arn]
   }
 
