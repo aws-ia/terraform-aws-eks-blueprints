@@ -195,7 +195,7 @@ module "prometheus" {
 }
 
 module "spark-k8s-operator" {
-  count             = var.enable_vpa ? 1 : 0
+  count             = var.enable_spark_k8s_operator ? 1 : 0
   source            = "./spark-k8s-operator"
   helm_config       = var.spark_k8s_operator_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
