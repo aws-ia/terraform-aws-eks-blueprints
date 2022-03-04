@@ -106,11 +106,13 @@ module "aws_load_balancer_controller" {
 }
 
 module "aws_node_termination_handler" {
-  count                   = var.enable_aws_node_termination_handler && length(var.auto_scaling_group_names) > 0 ? 1 : 0
-  source                  = "./aws-node-termination-handler"
-  helm_config             = var.aws_node_termination_handler_helm_config
-  autoscaling_group_names = var.auto_scaling_group_names
-  addon_context           = local.addon_context
+  count                     = var.enable_aws_node_termination_handler && length(var.auto_scaling_group_names) > 0 ? 1 : 0
+  source                    = "./aws-node-termination-handler"
+  helm_config               = var.aws_node_termination_handler_helm_config
+  irsa_policies             = var.node_termination_handler_irsa_policies
+  irsa_permissions_boundary = var.node_termination_handler_irsa_permissions_boundary
+  autoscaling_group_names   = var.auto_scaling_group_names
+  addon_context             = local.addon_context
 }
 
 module "cert_manager" {
