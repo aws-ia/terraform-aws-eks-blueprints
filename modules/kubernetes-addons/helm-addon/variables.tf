@@ -27,14 +27,29 @@ variable "manage_via_gitops" {
 variable "irsa_config" {
   type = object({
     kubernetes_namespace              = string
-    create_kubernetes_namespace       = bool
+    create_kubernetes_namespace       = optional(bool)
     kubernetes_service_account        = string
-    create_kubernetes_service_account = bool
+    create_kubernetes_service_account = optional(bool)
     eks_cluster_id                    = string
-    iam_role_path                     = string
-    tags                              = map(string)
-    irsa_iam_policies                 = list(string)
-    irsa_iam_permissions_boundary     = string
+    iam_role_path                     = optional(string)
+    tags                              = optional(map(string))
+    irsa_iam_policies                 = optional(list(string))
+    irsa_iam_permissions_boundary     = optional(string)
   })
   description = "Input configuration for IRSA module"
+}
+
+variable "addon_context" {
+  type = object({
+    aws_caller_identity_account_id = string
+    aws_caller_identity_arn        = string
+    aws_eks_cluster_endpoint       = string
+    aws_partition_id               = string
+    aws_region_name                = string
+    eks_cluster_id                 = string
+    eks_oidc_issuer_url            = string
+    eks_oidc_provider_arn          = string
+    tags                           = map(string)
+  })
+  description = "Input configuration for the addon"
 }
