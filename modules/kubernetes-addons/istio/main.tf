@@ -38,7 +38,7 @@ module "istiod" {
 
   helm_config = local.istiod_helm_config
 
-  depends_on = [module.base]
+  depends_on = [module.cni]
 }
 
 module "gateway" {
