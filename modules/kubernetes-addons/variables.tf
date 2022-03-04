@@ -277,6 +277,30 @@ variable "spark_k8s_operator_helm_config" {
   default     = {}
 }
 
+variable "spark_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts for Spark App"
+  default     = []
+}
+
+variable "spark_irsa_permissions_boundary" {
+  type        = string
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary for Spark App"
+  default     = ""
+}
+
+variable "spark_operator_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts for Spark Operator"
+  default     = []
+}
+
+variable "spark_operator_irsa_permissions_boundary" {
+  type        = string
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary for Spark Operator"
+  default     = ""
+}
+
 #-----------AWS FOR FLUENT BIT-------------
 variable "enable_aws_for_fluentbit" {
   type        = bool

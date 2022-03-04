@@ -1,6 +1,7 @@
 locals {
-  name                 = "spark-operator"
-  service_account_name = "spark-operator-sa"
+  name                                = "spark-operator"
+  spark_service_account_name          = "spark-sa"
+  spark_operator_service_account_name = "spark-operator-sa"
 
   default_helm_config = {
     name        = local.name
@@ -14,7 +15,8 @@ locals {
   }
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
-    sa-name = local.service_account_name
+    spark-sa-name          = local.spark_service_account_name
+    spark-operator-sa-name = local.spark_operator_service_account_name
   })]
 
   helm_config = merge(
@@ -22,16 +24,30 @@ locals {
     var.helm_config
   )
 
-  irsa_config = {
-    kubernetes_namespace              = local.helm_config["namespace"]
-    kubernetes_service_account        = local.service_account_name
-    create_kubernetes_namespace       = true
-    create_kubernetes_service_account = true
-    eks_cluster_id                    = var.addon_context.eks_cluster_id
-  }
+  set_values = [
+    {
+      name  = "serviceAccounts.spark.name"
+      value = local.spark_service_account_name
+    },
+    {
+      name  = "serviceAccounts.spark.create"
+      value = false
+    },
+    {
+      name  = "serviceAccounts.sparkoperator.name"
+      value = local.spark_operator_service_account_name
+    },
+    {
+      name  = "serviceAccounts.sparkoperator.create"
+      value = false
+    }
+  ]
 
   argocd_gitops_config = {
-    enable             = true
-    serviceAccountName = local.service_account_name
+    enable = true
+    serviceAccountNames = {
+      sparkServiceAccount         = local.spark_service_account_name
+      sparkOperatorServiceAccount = local.spark_operator_service_account_name
+    }
   }
 }

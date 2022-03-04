@@ -195,11 +195,15 @@ module "prometheus" {
 }
 
 module "spark_k8s_operator" {
-  count             = var.enable_spark_k8s_operator ? 1 : 0
-  source            = "./spark-k8s-operator"
-  helm_config       = var.spark_k8s_operator_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = local.addon_context
+  count                                        = var.enable_spark_k8s_operator ? 1 : 0
+  source                                       = "./spark-k8s-operator"
+  helm_config                                  = var.spark_k8s_operator_helm_config
+  manage_via_gitops                            = var.argocd_manage_add_ons
+  spark_irsa_policies                          = var.spark_irsa_policies
+  spark_irsa_iam_permissions_boundary          = var.spark_irsa_permissions_boundary
+  spark_operator_irsa_policies                 = var.spark_operator_irsa_policies
+  spark_operator_irsa_iam_permissions_boundary = var.spark_operator_irsa_permissions_boundary
+  addon_context                                = local.addon_context
 }
 
 module "traefik" {
