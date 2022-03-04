@@ -10,6 +10,11 @@ variable "manage_via_gitops" {
   description = "Determines if the add-on should be managed via GitOps"
 }
 
+variable "create_irsa" {
+  type        = bool
+  description = "Indicates if the add-on should create a IAM role + service account"
+}
+
 variable "irsa_policies" {
   type        = list(string)
   default     = []

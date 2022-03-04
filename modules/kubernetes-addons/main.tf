@@ -167,13 +167,14 @@ module "karpenter" {
 }
 
 module "keda" {
-  count             = var.enable_keda ? 1 : 0
-  source            = "./keda"
-  helm_config       = var.keda_helm_config
-  create_irsa       = var.keda_create_irsa
-  irsa_policies     = var.keda_irsa_policies
-  manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = local.addon_context
+  count                     = var.enable_keda ? 1 : 0
+  source                    = "./keda"
+  helm_config               = var.keda_helm_config
+  create_irsa               = var.keda_create_irsa
+  irsa_policies             = var.keda_irsa_policies
+  irsa_permissions_boundary = var.keda_irsa_permissions_boundary
+  manage_via_gitops         = var.argocd_manage_add_ons
+  addon_context             = local.addon_context
 }
 
 module "metrics_server" {
