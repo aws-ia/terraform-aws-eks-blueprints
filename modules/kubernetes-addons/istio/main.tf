@@ -17,35 +17,39 @@
  */
 
 module "base" {
-  count  = var.manage_via_gitops ? 0 : var.install_base ? 1 : 0
-  source = "./chart"
-
-  helm_config = local.base_helm_config
+  count             = var.install_base ? 1 : 0
+  source            = "../helm-addon"
+  manage_via_gitops = var.manage_via_gitops
+  helm_config       = local.base_helm_config
+  irsa_config       = null
 }
 
 module "cni" {
-  count  = var.manage_via_gitops ? 0 : var.install_cni ? 1 : 0
-  source = "./chart"
-
-  helm_config = local.cni_helm_config
+  count             = var.install_cni ? 1 : 0
+  source            = "../helm-addon"
+  manage_via_gitops = var.manage_via_gitops
+  helm_config       = local.cni_helm_config
+  irsa_config       = null
 
   depends_on = [module.base]
 }
 
 module "istiod" {
-  count  = var.manage_via_gitops ? 0 : var.install_istiod ? 1 : 0
-  source = "./chart"
-
-  helm_config = local.istiod_helm_config
+  count             = var.install_istiod ? 1 : 0
+  source            = "../helm-addon"
+  manage_via_gitops = var.manage_via_gitops
+  helm_config       = local.istiod_helm_config
+  irsa_config       = null
 
   depends_on = [module.cni]
 }
 
 module "gateway" {
-  count  = var.manage_via_gitops ? 0 : var.install_gateway ? 1 : 0
-  source = "./chart"
-
-  helm_config = local.gateway_helm_config
+  count             = var.install_gateway ? 1 : 0
+  source            = "../helm-addon"
+  manage_via_gitops = var.manage_via_gitops
+  helm_config       = local.gateway_helm_config
+  irsa_config       = null
 
   depends_on = [module.istiod]
 }
