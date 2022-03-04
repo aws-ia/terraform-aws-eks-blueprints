@@ -33,7 +33,7 @@ locals {
   ]
 
   irsa_config = {
-    kubernetes_namespace              = local.name
+    kubernetes_namespace              = local.helm_config["namespace"]
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = true
     create_kubernetes_service_account = true
@@ -41,6 +41,7 @@ locals {
     irsa_iam_permissions_boundary     = var.irsa_permissions_boundary
     eks_cluster_id                    = var.addon_context.eks_cluster_id
     iam_role_path                     = var.iam_role_path
+    eks_cluster_id                    = var.addon_context.eks_cluster_id
   }
 
   argocd_gitops_config = {
