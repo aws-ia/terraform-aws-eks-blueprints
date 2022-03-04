@@ -166,8 +166,9 @@ module "kubernetes-addons" {
     name       = "prometheus"                                         # (Required) Release name.
     repository = "https://prometheus-community.github.io/helm-charts" # (Optional) Repository URL where to locate the requested chart.
     chart      = "prometheus"                                         # (Required) Chart name to be installed.
-    version    = "15.3.0"                                             # (Optional) Specify the exact chart version to install.
-    namespace  = "prometheus"                                         # (Optional) The namespace to install the release into.
+    version    = "15.3.0"
+    # (Optional) Specify the exact chart version to install.
+    namespace = "prometheus" # (Optional) The namespace to install the release into.
     values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
       operating_system = "linux"
     })]
