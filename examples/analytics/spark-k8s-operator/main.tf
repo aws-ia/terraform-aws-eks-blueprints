@@ -147,8 +147,8 @@ module "kubernetes-addons" {
     name             = "spark-operator"
     chart            = "spark-operator"
     repository       = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
-    version          = "1.1.15"
-    namespace        = "spark-k8s-operator"
+    version          = "1.1.19"
+    namespace        = "spark-operator"
     timeout          = "300"
     create_namespace = true
     values           = [templatefile("${path.module}/helm_values/spark-k8s-operator-values.yaml", {})]

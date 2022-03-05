@@ -10,30 +10,6 @@ variable "manage_via_gitops" {
   description = "Determines if the add-on should be managed via GitOps"
 }
 
-variable "spark_irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM Policy ARN list for any IRSA policies for Spark App"
-}
-
-variable "spark_irsa_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary for Spark App"
-}
-
-variable "spark_operator_irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM Policy ARN list for any IRSA policies for Spark Operator"
-}
-
-variable "spark_operator_irsa_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary Spark Operator"
-}
-
 variable "addon_context" {
   type = object({
     aws_caller_identity_account_id = string

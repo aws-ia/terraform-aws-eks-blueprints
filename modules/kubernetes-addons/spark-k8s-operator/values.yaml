@@ -1,7 +1,0 @@
-serviceAccounts:
-  spark:
-    create: false
-    name: ${spark-sa-name}
-  sparkoperator:
-    create: false
-    name: ${spark-operator-sa-name}
