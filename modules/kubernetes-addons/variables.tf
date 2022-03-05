@@ -407,6 +407,18 @@ variable "aws_node_termination_handler_helm_config" {
   default     = {}
 }
 
+variable "node_termination_handler_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
+
+variable "node_termination_handler_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}
+
 #-----------KARPENTER ADDON-------------
 variable "enable_karpenter" {
   type        = bool

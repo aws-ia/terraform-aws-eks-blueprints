@@ -1,6 +1,5 @@
 # Default values for vertical-pod-autoscaler.
 serviceAccount:
-  create: false
   name: ${sa-name}
 
 recommender:

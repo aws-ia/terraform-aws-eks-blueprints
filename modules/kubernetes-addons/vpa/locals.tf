@@ -1,6 +1,6 @@
 locals {
   name                 = "vpa"
-  service_account_name = "vpa-sa"
+  service_account_name = "vpa"
 
   default_helm_config = {
     name        = local.name
@@ -26,19 +26,8 @@ locals {
     {
       name  = "serviceAccount.name"
       value = local.service_account_name
-    },
-    {
-      name  = "serviceAccount.create"
-      value = false
     }
   ]
-
-  irsa_config = {
-    kubernetes_namespace              = local.helm_config["namespace"]
-    kubernetes_service_account        = local.service_account_name
-    create_kubernetes_namespace       = true
-    create_kubernetes_service_account = true
-  }
 
   argocd_gitops_config = {
     enable             = true
