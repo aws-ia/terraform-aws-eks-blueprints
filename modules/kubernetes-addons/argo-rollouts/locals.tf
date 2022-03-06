@@ -8,7 +8,7 @@ locals {
     version     = "2.9.1"
     namespace   = local.name
     description = "Argo Rollouts AddOn Helm Chart"
-    values      = null
+    values      = []
     timeout     = "1200"
   }
 

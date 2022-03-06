@@ -71,7 +71,6 @@ module "argo_rollouts" {
   count                         = var.enable_argo_rollouts ? 1 : 0
   source                        = "./argo-rollouts"
   helm_config                   = var.argo_rollouts_helm_config
-  irsa_iam_permissions_boundary = var.argo_rollouts_irsa_permissions_boundary
   manage_via_gitops             = var.argocd_manage_add_ons
   addon_context                 = local.addon_context
 }
