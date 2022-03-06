@@ -10,20 +10,20 @@ locals {
     }
   ] : []
 
-  name = "argo-cd"
+  name      = "argo-cd"
   namespace = "argocd"
 
   default_helm_config = {
-    name                       = local.name
-    chart                      = local.name
-    repository                 = "https://argoproj.github.io/argo-helm"
-    version                    = "3.33.3"
-    namespace                  = local.namespace
-    timeout                    = "1200"
-    create_namespace           = true
-    set_sensitive              = local.default_helm_set_sensitive
-    values                     = local.default_helm_values
-    description                = "The argocd HelmChart Ingress Controller deployment configuration"
+    name             = local.name
+    chart            = local.name
+    repository       = "https://argoproj.github.io/argo-helm"
+    version          = "3.33.3"
+    namespace        = local.namespace
+    timeout          = "1200"
+    create_namespace = true
+    set_sensitive    = local.default_helm_set_sensitive
+    values           = local.default_helm_values
+    description      = "The argocd HelmChart Ingress Controller deployment configuration"
   }
 
   helm_config = merge(

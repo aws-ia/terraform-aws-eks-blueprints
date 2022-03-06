@@ -1,5 +1,5 @@
 locals {
-  name                 = "metrics-server"
+  name = "metrics-server"
 
   default_helm_config = {
     name        = local.name
@@ -18,6 +18,6 @@ locals {
   )
 
   argocd_gitops_config = {
-    enable             = true
+    enable = true
   }
 }

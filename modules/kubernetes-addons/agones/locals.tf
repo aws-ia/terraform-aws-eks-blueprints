@@ -1,7 +1,7 @@
 
 locals {
-  name                = "agones"
-  namespace           = "agones-system"
+  name      = "agones"
+  namespace = "agones-system"
 
   default_helm_config = {
     name               = local.name

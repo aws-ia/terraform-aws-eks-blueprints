@@ -68,11 +68,11 @@ module "argocd" {
 }
 
 module "argo_rollouts" {
-  count                         = var.enable_argo_rollouts ? 1 : 0
-  source                        = "./argo-rollouts"
-  helm_config                   = var.argo_rollouts_helm_config
-  manage_via_gitops             = var.argocd_manage_add_ons
-  addon_context                 = local.addon_context
+  count             = var.enable_argo_rollouts ? 1 : 0
+  source            = "./argo-rollouts"
+  helm_config       = var.argo_rollouts_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "aws_efs_csi_driver" {

@@ -1,5 +1,5 @@
 locals {
-  name            = "karpenter"
+  name                 = "karpenter"
   service_account_name = "karpenter"
   eks_cluster_endpoint = var.addon_context.aws_eks_cluster_endpoint
 
@@ -26,15 +26,15 @@ locals {
   ]
 
   default_helm_config = {
-    name                       = local.name
-    chart                      = local.name
-    repository                 = "https://charts.karpenter.sh"
-    version                    = "0.6.3"
-    namespace                  = local.name
-    timeout                    = "300"
-    values                     = local.default_helm_values
-    set                        = []
-    description                = "karpenter Helm Chart for Node Autoscaling"
+    name        = local.name
+    chart       = local.name
+    repository  = "https://charts.karpenter.sh"
+    version     = "0.6.3"
+    namespace   = local.name
+    timeout     = "300"
+    values      = local.default_helm_values
+    set         = []
+    description = "karpenter Helm Chart for Node Autoscaling"
   }
 
   helm_config = merge(
