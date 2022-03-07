@@ -13,7 +13,7 @@ Ensure that you have installed the following tools on your machine.
 3. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 4. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
-Note :Currently Amazon Prometheus is supported only in selected regions. Please see this [userguide](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html)
+_Note: Currently Amazon Prometheus supported only in selected regions. Please see this [userguide](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html) for supported regions._
 
 ## Step1: Deploy EKS Clusters with EMR on EKS feature
 
@@ -46,7 +46,37 @@ terraform apply
 
 Enter `yes` to apply.
 
-## Step2: Create EMR Virtual Cluster for EKS
+## Step3:  Verify the resources
+
+Let’s verify the resources created by Step 4.
+
+Verify the Amazon EKS Cluster and Amazon Managed service for Prometheus
+
+```shell script
+aws eks describe-cluster --name aws001-preprod-test-eks
+
+aws amp list-workspaces --alias amp-ws-aws001-preprod-test-eks
+```
+
+```shell script
+Verify EMR on EKS Namespaces emr-data-team-a and emr-data-team-b and Pod status for Prometheus, Vertical Pod Autoscaler, Metrics Server and Cluster Autoscaler.
+
+aws eks --region <ENTER_YOUR_REGION> update-kubeconfig --name aws001-preprod-test-eks # Creates k8s config file to authenticate with EKS Cluster
+
+kubectl get nodes # Output shows the EKS Managed Node group nodes
+
+kubectl get ns | grep emr-data-team # Output shows emr-data-team-a and emr-data-team-b namespaces for data teams
+
+kubectl get pods --namespace=prometheus # Output shows Prometheus server and Node exporter pods
+
+kubectl get pods --namespace=vpa  # Output shows Vertical Pod Autoscaler pods
+
+kubectl get pods --namespace=kube-system | grep  metrics-server # Output shows Metric Server pod
+
+kubectl get pods --namespace=kube-system | grep  cluster-autoscaler # Output shows Cluster Autoscaler pod
+```
+
+## Step4: Create EMR Virtual Cluster for EKS
 
 We are using AWS CLI to create EMR on EKS Clusters. You can leverage Terraform Module once the [EMR on EKS TF provider](https://github.com/hashicorp/terraform-provider-aws/pull/20003) is available.
 
@@ -69,7 +99,7 @@ cd examples/analytics/emr-on-eks/examples/
 ./create_emr_virtual_cluster_for_eks.sh
 ```
 
-## Step3: Execute Spark job on EMR Virtual Cluster
+## Step5: Execute Spark job on EMR Virtual Cluster
 
 Execute the Spark job using the below shell script.
 
@@ -83,9 +113,13 @@ cd examples/analytics/emr-on-eks/examples/spark-execute/
 ./5-spark-job-with-AMP-AMG.sh aws001-preprod-test-eks-emr-data-team-a <ENTER_S3_BUCKET_NAME>
 ```
 
-Verify the job is running in EMR under Virtual Clusters. Also, query JOB resource in EKS Cluster.
+Verify the job execution
 
-## Step4: Cleanup
+```shell script
+kubectl get pods --namespace=emr-data-team-a -w
+```
+
+## Step5: Cleanup
 
 ### Delete EMR Virtual Cluster for EKS
 
@@ -134,10 +168,11 @@ Specifically, you can use persistent volume claims if the jobs require large shu
 
       spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.options.claimName=OnDemand
       spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.options.storageClass=gp
-      spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.options.sizeLimit=500Gipwd
+      spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.options.sizeLimit=500Gi
 
       spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.mount.path=/data
       spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.mount.readOnly=false
+
 ## Debugging
 
 ##### Issue1: Error: local-exec provisioner error
@@ -174,9 +209,9 @@ This is fixed in version 2.0.54.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | github.com/aws-samples/aws-eks-accelerator-for-terraform | n/a |
+| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | ../../.. | n/a |
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
-| <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons | n/a |
+| <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | ../../../modules/kubernetes-addons | n/a |
 
 ## Resources
 

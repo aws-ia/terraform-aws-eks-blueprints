@@ -22,7 +22,7 @@ Add-ons that don't leverage helm but require to install arbitrary Kubernetes man
 
 ### Public Add-ons
 
-The life-cycle of a public add-on should be decoupled from the life-cycle of the core framework repository. When decoupled, extensions can be released at any arbitrary cadence specific to the extension, enabling better agility when it comes to new features or bug fixes. The owner of such public add-on is ultimately responsible for the quality and maintenance of the add-on. 
+The life-cycle of a public add-on should be decoupled from the life-cycle of the core framework repository. When decoupled, extensions can be released at any arbitrary cadence specific to the extension, enabling better agility when it comes to new features or bug fixes. The owner of such public add-on is ultimately responsible for the quality and maintenance of the add-on.
 
 In order to enable this model the following workflow outline steps required to create and release a public add-on:
 

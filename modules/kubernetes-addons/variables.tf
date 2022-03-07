@@ -102,14 +102,30 @@ variable "crossplane_helm_config" {
   description = "Crossplane Helm Chart config"
 }
 
-variable "crossplane_provider_aws" {
+variable "crossplane_aws_provider" {
   description = "AWS Provider config for Crossplane"
   type = object({
+    enable                   = bool
     provider_aws_version     = string
     additional_irsa_policies = list(string)
   })
   default = {
-    provider_aws_version     = "v0.23.0"
+    enable                   = false
+    provider_aws_version     = "v0.24.1"
+    additional_irsa_policies = []
+  }
+}
+
+variable "crossplane_jet_aws_provider" {
+  description = "AWS Provider Jet AWS config for Crossplane"
+  type = object({
+    enable                   = bool
+    provider_aws_version     = string
+    additional_irsa_policies = list(string)
+  })
+  default = {
+    enable                   = false
+    provider_aws_version     = "v0.24.1"
     additional_irsa_policies = []
   }
 }
@@ -191,6 +207,19 @@ variable "agones_helm_config" {
   description = "Agones GameServer Helm Chart config"
 }
 
+#-----------AWS EFS CSI DRIVER ADDON-------------
+variable "enable_aws_efs_csi_driver" {
+  type        = bool
+  default     = false
+  description = "Enable AWS EFS CSI driver add-on"
+}
+
+variable "aws_efs_csi_driver_helm_config" {
+  type        = any
+  description = "AWS EFS CSI driver Helm Chart config"
+  default     = {}
+}
+
 #-----------AWS LB Ingress Controller-------------
 variable "enable_aws_load_balancer_controller" {
   type        = bool
@@ -233,6 +262,73 @@ variable "nginx_ingress_controller_irsa_permissions_boundary" {
   type        = string
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"
   default     = ""
+}
+
+#-----------ISTIO-------------
+variable "enable_istio" {
+  type        = bool
+  default     = false
+  description = "Enable Istio add-on"
+}
+
+variable "istio_distribution" {
+  type        = string
+  default     = "TID"
+  description = "Istio distribution"
+}
+
+variable "istio_version" {
+  type        = string
+  default     = ""
+  description = "Istio version"
+}
+
+variable "istio_install_base" {
+  type        = bool
+  default     = true
+  description = "Install Istio `base` Helm Chart"
+}
+
+variable "istio_install_cni" {
+  type        = bool
+  default     = true
+  description = "Install Istio `cni` Helm Chart"
+}
+
+variable "istio_install_istiod" {
+  type        = bool
+  default     = true
+  description = "Install Istio `istiod` Helm Chart"
+}
+
+variable "istio_install_gateway" {
+  type        = bool
+  default     = true
+  description = "Install Istio `gateway` Helm Chart"
+}
+
+variable "istio_base_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `base` Helm Chart config"
+}
+
+variable "istio_cni_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `cni` Helm Chart config"
+}
+
+variable "istio_istiod_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `istiod` Helm Chart config"
+}
+
+variable "istio_gateway_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `gateway` Helm Chart config"
 }
 
 #-----------SPARK K8S OPERATOR-------------
@@ -354,6 +450,18 @@ variable "aws_node_termination_handler_helm_config" {
   default     = {}
 }
 
+variable "node_termination_handler_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
+
+variable "node_termination_handler_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}
+
 #-----------KARPENTER ADDON-------------
 variable "enable_karpenter" {
   type        = bool
@@ -403,17 +511,23 @@ variable "keda_irsa_policies" {
   default     = []
 }
 
-#-----------Vertical Pod Autoscaler(VPA) ADDON-------------
+variable "keda_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+}
+
+#------Vertical Pod Autoscaler(VPA) ADDON--------
 variable "enable_vpa" {
   type        = bool
   default     = false
-  description = "Enable Kubernetes Vertical Pod Autoscaler add-on"
+  description = "Enable Vertical Pod Autoscaler add-on"
 }
 
 variable "vpa_helm_config" {
   type        = any
-  default     = {}
-  description = "Vertical Pod Autoscaler Helm Chart config"
+  default     = null
+  description = "VPA Helm Chart config"
 }
 
 #-----------Apache YuniKorn ADDON-------------
@@ -425,8 +539,20 @@ variable "enable_yunikorn" {
 
 variable "yunikorn_helm_config" {
   type        = any
-  default     = {}
-  description = "YuniKorn K8s scheduler Helm Chart config"
+  default     = null
+  description = "Yunikorn Helm Chart config"
+}
+
+variable "yunikorn_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for Yunikorn IRSA"
+}
+
+variable "yunikorn_irsa_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
 #-----------Argo Rollouts ADDON-------------
@@ -479,69 +605,27 @@ variable "kube_state_metrics_irsa_permissions_boundary" {
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
-#-----------ISTIO-------------
-variable "enable_istio" {
+#-----------Kubernetes Dashboard ADDON-------------
+variable "enable_kubernetes_dashboard" {
   type        = bool
   default     = false
-  description = "Enable Istio add-on"
+  description = "Enable Kubernetes Dashboard add-on"
 }
 
-variable "istio_distribution" {
-  type        = string
-  default     = "TID"
-  description = "Istio distribution"
+variable "kubernetes_dashboard_helm_config" {
+  type        = any
+  default     = null
+  description = "Kubernetes Dashboard Helm Chart config"
 }
 
-variable "istio_version" {
+variable "kubernetes_dashboard_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for Kubernetes Dashboard IRSA"
+}
+
+variable "kubernetes_dashboard_irsa_permissions_boundary" {
   type        = string
   default     = ""
-  description = "Istio version"
-}
-
-variable "istio_install_base" {
-  type        = bool
-  default     = true
-  description = "Install Istio `base` Helm Chart"
-}
-
-variable "istio_install_cni" {
-  type        = bool
-  default     = true
-  description = "Install Istio `cni` Helm Chart"
-}
-
-variable "istio_install_istiod" {
-  type        = bool
-  default     = true
-  description = "Install Istio `istiod` Helm Chart"
-}
-
-variable "istio_install_gateway" {
-  type        = bool
-  default     = true
-  description = "Install Istio `gateway` Helm Chart"
-}
-
-variable "istio_base_helm_config" {
-  type        = any
-  default     = {}
-  description = "Istio `base` Helm Chart config"
-}
-
-variable "istio_cni_helm_config" {
-  type        = any
-  default     = {}
-  description = "Istio `cni` Helm Chart config"
-}
-
-variable "istio_istiod_helm_config" {
-  type        = any
-  default     = {}
-  description = "Istio `istiod` Helm Chart config"
-}
-
-variable "istio_gateway_helm_config" {
-  type        = any
-  default     = {}
-  description = "Istio `gateway` Helm Chart config"
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }

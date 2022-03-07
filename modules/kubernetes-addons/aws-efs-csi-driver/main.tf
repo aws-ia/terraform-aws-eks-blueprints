@@ -16,28 +16,18 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-# Assume role policy for your service account
-data "aws_iam_policy_document" "irsa_with_oidc" {
-  statement {
-    actions = ["sts:AssumeRoleWithWebIdentity"]
-
-    principals {
-      type        = "Federated"
-      identifiers = [local.eks_oidc_provider_arn]
-    }
-
-    condition {
-      test     = "StringLike"
-      variable = "${local.eks_oidc_issuer_url}:sub"
-      values   = ["system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}"]
-    }
-  }
+module "helm_addon" {
+  source            = "../helm-addon"
+  manage_via_gitops = var.manage_via_gitops
+  set_values        = local.set_values
+  helm_config       = local.helm_config
+  irsa_config       = local.irsa_config
+  addon_context     = var.addon_context
 }
 
-data "aws_eks_cluster" "eks_cluster" {
-  name = var.eks_cluster_id
+resource "aws_iam_policy" "aws_efs_csi_driver" {
+  name        = "${var.addon_context.eks_cluster_id}-efs-csi-policy"
+  description = "IAM Policy for AWS EFS CSI Driver"
+  policy      = data.aws_iam_policy_document.aws_efs_csi_driver.json
+  tags        = var.addon_context.tags
 }
-
-data "aws_partition" "current" {}
-
-data "aws_caller_identity" "current" {}

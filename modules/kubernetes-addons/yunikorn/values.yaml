@@ -1,5 +1,5 @@
 global:
-  serviceAccount: ${yunikorn_sa_name}
+  serviceAccount: ${sa-name}
 
 operatorPlugins: general,spark-k8s-operator
 

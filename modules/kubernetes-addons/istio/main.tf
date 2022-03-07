@@ -22,6 +22,7 @@ module "base" {
   manage_via_gitops = var.manage_via_gitops
   helm_config       = local.base_helm_config
   irsa_config       = null
+  addon_context     = var.addon_context
 }
 
 module "cni" {
@@ -30,6 +31,7 @@ module "cni" {
   manage_via_gitops = var.manage_via_gitops
   helm_config       = local.cni_helm_config
   irsa_config       = null
+  addon_context     = var.addon_context
 
   depends_on = [module.base]
 }
@@ -40,6 +42,7 @@ module "istiod" {
   manage_via_gitops = var.manage_via_gitops
   helm_config       = local.istiod_helm_config
   irsa_config       = null
+  addon_context     = var.addon_context
 
   depends_on = [module.cni]
 }
@@ -50,6 +53,7 @@ module "gateway" {
   manage_via_gitops = var.manage_via_gitops
   helm_config       = local.gateway_helm_config
   irsa_config       = null
+  addon_context     = var.addon_context
 
   depends_on = [module.istiod]
 }

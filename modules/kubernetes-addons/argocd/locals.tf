@@ -63,8 +63,8 @@ locals {
   }
 
   global_application_values = {
-    region      = data.aws_region.current.id
-    account     = data.aws_caller_identity.current.account_id
-    clusterName = var.eks_cluster_id
+    region      = var.addon_context.aws_region_name
+    account     = var.addon_context.aws_caller_identity_account_id
+    clusterName = var.addon_context.eks_cluster_id
   }
 }
