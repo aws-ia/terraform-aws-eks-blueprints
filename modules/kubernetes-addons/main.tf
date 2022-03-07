@@ -233,18 +233,6 @@ module "yunikorn" {
   addon_context             = local.addon_context
 }
 
-#TODO once source is updated and aligned with addon_context changes, pass addon_context and remove eks_cluster_id & tags
-module "kube_state_metrics" {
-  count                     = var.enable_kube_state_metrics ? 1 : 0
-  source                    = "askulkarni2/kube-state-metrics-addon/eksblueprints"
-  version                   = "0.0.4"
-  helm_config               = var.kube_state_metrics_helm_config
-  irsa_policies             = var.kube_state_metrics_irsa_policies
-  irsa_permissions_boundary = var.kube_state_metrics_irsa_permissions_boundary
-  manage_via_gitops         = var.argocd_manage_add_ons
-  addon_context             = local.addon_context
-}
-
 module "kubernetes_dashboard" {
   count                     = var.enable_kubernetes_dashboard ? 1 : 0
   source                    = "./kubernetes-dashboard"
