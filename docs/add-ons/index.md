@@ -16,6 +16,7 @@ The framework currently provides support for the following add-ons:
 | [cert-manager](../add-ons/cert-manager.md) | Deploys cert-manager into an EKS cluster. |
 | [Cluster Autoscaler](../add-ons/cluster-autoscaler.md) | Deploys the standard cluster autoscaler into an EKS cluster. |
 | [Fargate Fluent Bit](../add-ons/fargate-fluent-bit.md) | Adds Fluent Bit support for EKS Fargate |
+| [Istio](../add-ons/istio.md) | Deploys Istio into an EKS cluster. |
 | [Karpenter](../add-ons/karpenter.md) | Deploys Karpenter into an EKS cluster. |
 | [Keda](../add-ons/keda.md) | Deploys Keda into an EKS cluster. |
 | [Metrics Server](../add-ons/metrics-server.md) | Deploys the Kubernetes Metrics Server into an EKS cluster. |

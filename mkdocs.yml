@@ -26,6 +26,7 @@ nav:
       - cert-manager: "add-ons/cert-manager.md"
       - Cluster Autoscaler: "add-ons/cluster-autoscaler.md"
       - Fargate Fluent Bit: "add-ons/fargate-fluent-bit.md"
+      - Istio: "add-ons/istio.md"
       - Karpenter: "add-ons/karpenter.md"
       - KEDA: "add-ons/keda.md"
       - Metrics Server: "add-ons/metrics-server.md"

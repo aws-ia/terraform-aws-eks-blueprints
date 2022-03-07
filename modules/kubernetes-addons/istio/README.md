@@ -1,7 +1,8 @@
 # Istio Helm Chart
 
 ## What is Tetrate Istio Distro
-[TID](https://istio.tetratelabs.io/) is simple, safe enterprise-grade Istio distro.
+
+[Tetrate Istio Distro](https://istio.tetratelabs.io/) is simple, safe enterprise-grade Istio distro.
 
 <!--- BEGIN_TF_DOCS --->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.

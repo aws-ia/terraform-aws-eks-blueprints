@@ -1,0 +1,84 @@
+# Istio
+
+[Tetrate Istio Distro](https://istio.tetratelabs.io/) is simple, safe enterprise-grade Istio distro.
+
+## Usage
+
+This step deploys the [Tetrate Istio Distro](https://istio.tetratelabs.io/) with default Helm Chart config
+
+```hcl
+  enable_istio = true
+```
+
+Alternatively, you can override the helm values by using the code snippet below
+
+```hcl
+  enable_istio = true
+
+  # Optional fine-grained configuration
+
+  istio_distribution    = "TID"    # (default, Tetrate Istio Distro)
+  istio_version         = "1.12.2"
+  istio_install_base    = "true"   # (default, Istio `base` Helm Chart)
+  istio_install_cni     = "true"   # (default, Istio `cni` Helm Chart)
+  istio_install_istiod  = "true"   # (default, Istio `istiod` Helm Chart)
+  istio_install_gateway = "true"   # (default, Istio `gateway` Helm Chart)
+
+  # Istio `base` Helm Chart config
+  istio_base_helm_config = {
+    name = "istio-base"            # (default) Release name.
+    repository = "https://istio-release.storage.googleapis.com/charts" # (default) Repository URL where to locate the requested chart.
+    chart   = "base"               # (default) Chart name to be installed.
+    version = "1.12.2"             # (default) The exact chart version to install.
+    values  = []
+  }
+
+  # Istio `cni` Helm Chart config
+  istio_cni_helm_config = {
+    name = "istio-cni"             # (default) Release name.
+    repository = "https://istio-release.storage.googleapis.com/charts" # (default) Repository URL where to locate the requested chart.
+    chart   = "cni"                # (default) Chart name to be installed.
+    version = "1.12.2"             # (default) The exact chart version to install.
+    values  = [yamlencode({
+      "global" : {
+        "hub" : "containers.istio.tetratelabs.com",
+        "tag" : "1.12.2-tetratefips-v0",
+      }
+    })]
+  }
+
+  # Istio `istiod` Helm Chart config
+  istio_istiod_helm_config = {
+    name = "istio-istiod"          # (default) Release name.
+    repository = "https://istio-release.storage.googleapis.com/charts" # (default) Repository URL where to locate the requested chart.
+    chart   = "istiod"             # (default) Chart name to be installed.
+    version = "1.12.2"             # (default) The exact chart version to install.
+    values  = [yamlencode({
+      "global" : {
+        "hub" : "containers.istio.tetratelabs.com",
+        "tag" : "1.12.2-tetratefips-v0",
+      }
+    })]
+  }
+
+  # Istio `gateway` Helm Chart config
+  istio_gateway_helm_config = {
+    name = "istio-ingress"         # (default) Release name.
+    repository = "https://istio-release.storage.googleapis.com/charts" # (default) Repository URL where to locate the requested chart.
+    chart   = "gateway"            # (default) Chart name to be installed.
+    version = "1.12.2"             # (default) The exact chart version to install.
+    values  = []
+  }
+```
+
+### GitOps Configuration
+
+The following properties are made available for use when managing the add-on via GitOps
+
+```hcl
+istio = {
+  enable = true
+}
+```
+
+GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/ssp-eks-add-ons/blob/main/chart/values.yaml)
