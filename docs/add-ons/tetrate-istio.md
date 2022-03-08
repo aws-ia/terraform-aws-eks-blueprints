@@ -1,31 +1,33 @@
-# Istio
+# Tetrate Istio Distro
 
 [Tetrate Istio Distro](https://istio.tetratelabs.io/) is simple, safe enterprise-grade Istio distro.
+
+This add-on is implemented as an external add-on. For detailed documentation and usage of the add-on please refer to the add-on [repository](https://github.com/tetratelabs/terraform-eksblueprints-tetrate-istio-addon).
 
 ## Usage
 
 This step deploys the [Tetrate Istio Distro](https://istio.tetratelabs.io/) with default Helm Chart config
 
 ```hcl
-  enable_istio = true
+  enable_tetrate_istio = true
 ```
 
 Alternatively, you can override the helm values by using the code snippet below
 
 ```hcl
-  enable_istio = true
+  enable_tetrate_istio = true
 
   # Optional fine-grained configuration
 
-  istio_distribution    = "TID"    # (default, Tetrate Istio Distro)
-  istio_version         = "1.12.2"
-  istio_install_base    = "true"   # (default, Istio `base` Helm Chart)
-  istio_install_cni     = "true"   # (default, Istio `cni` Helm Chart)
-  istio_install_istiod  = "true"   # (default, Istio `istiod` Helm Chart)
-  istio_install_gateway = "true"   # (default, Istio `gateway` Helm Chart)
+  tetrate_istio_distribution    = "TID"    # (default, Tetrate Istio Distro)
+  tetrate_istio_version         = "1.12.2"
+  tetrate_istio_install_base    = "true"   # (default, Istio `base` Helm Chart)
+  tetrate_istio_install_cni     = "true"   # (default, Istio `cni` Helm Chart)
+  tetrate_istio_install_istiod  = "true"   # (default, Istio `istiod` Helm Chart)
+  tetrate_istio_install_gateway = "true"   # (default, Istio `gateway` Helm Chart)
 
   # Istio `base` Helm Chart config
-  istio_base_helm_config = {
+  tetrate_istio_base_helm_config = {
     name = "istio-base"            # (default) Release name.
     repository = "https://istio-release.storage.googleapis.com/charts" # (default) Repository URL where to locate the requested chart.
     chart   = "base"               # (default) Chart name to be installed.
@@ -34,7 +36,7 @@ Alternatively, you can override the helm values by using the code snippet below
   }
 
   # Istio `cni` Helm Chart config
-  istio_cni_helm_config = {
+  tetrate_istio_cni_helm_config = {
     name = "istio-cni"             # (default) Release name.
     repository = "https://istio-release.storage.googleapis.com/charts" # (default) Repository URL where to locate the requested chart.
     chart   = "cni"                # (default) Chart name to be installed.
@@ -48,7 +50,7 @@ Alternatively, you can override the helm values by using the code snippet below
   }
 
   # Istio `istiod` Helm Chart config
-  istio_istiod_helm_config = {
+  tetrate_istio_istiod_helm_config = {
     name = "istio-istiod"          # (default) Release name.
     repository = "https://istio-release.storage.googleapis.com/charts" # (default) Repository URL where to locate the requested chart.
     chart   = "istiod"             # (default) Chart name to be installed.
@@ -62,7 +64,7 @@ Alternatively, you can override the helm values by using the code snippet below
   }
 
   # Istio `gateway` Helm Chart config
-  istio_gateway_helm_config = {
+  tetrate_istio_gateway_helm_config = {
     name = "istio-ingress"         # (default) Release name.
     repository = "https://istio-release.storage.googleapis.com/charts" # (default) Repository URL where to locate the requested chart.
     chart   = "gateway"            # (default) Chart name to be installed.
@@ -76,7 +78,7 @@ Alternatively, you can override the helm values by using the code snippet below
 The following properties are made available for use when managing the add-on via GitOps
 
 ```hcl
-istio = {
+tetrateIstio = {
   enable = true
 }
 ```
