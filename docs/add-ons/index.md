@@ -17,13 +17,13 @@ The framework currently provides support for the following add-ons:
 | [cert-manager](../add-ons/cert-manager.md) | Deploys cert-manager into an EKS cluster. |
 | [Cluster Autoscaler](../add-ons/cluster-autoscaler.md) | Deploys the standard cluster autoscaler into an EKS cluster. |
 | [Fargate Fluent Bit](../add-ons/fargate-fluent-bit.md) | Adds Fluent Bit support for EKS Fargate |
-| [Tetrate Istio](../add-ons/tetrate-istio.md) | Deploys Tetrate Istio Distro into an EKS cluster. |
 | [Karpenter](../add-ons/karpenter.md) | Deploys Karpenter into an EKS cluster. |
 | [Keda](../add-ons/keda.md) | Deploys Keda into an EKS cluster. |
 | [Metrics Server](../add-ons/metrics-server.md) | Deploys the Kubernetes Metrics Server into an EKS cluster. |
 | [Nginx](../add-ons/nginx.md) | Deploys the NGINX Ingress Controller into an EKS cluster. |
 | [Prometheus](../add-ons/prometheus.md) | Deploys Prometheus into an EKS cluster. |
 | [Spark K8S Operator](../add-ons/spark-on-k8s-operator.md) | Deploys the Kubernetes Operator for Apache Spark into an EKS cluster. |
+| [Tetrate Istio](../add-ons/tetrate-istio.md) | Deploys Tetrate Istio Distro into an EKS cluster. |
 | [Traefik](../add-ons/traefik.md) | Deploys Traefik Proxy into an EKS cluster.
 | [VPA](../add-ons/vpa.md) | Deploys the Vertical Pod Autoscaler into an EKS cluster. |
 | [YuniKorn](../add-ons/yunikorn.md) | Deploys Apache YuniKorn into an EKS cluster. |
