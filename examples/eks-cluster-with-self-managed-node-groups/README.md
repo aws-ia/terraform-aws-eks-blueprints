@@ -1,8 +1,8 @@
 # EKS Cluster with Self-managed Node Group
-This example deploys a new EKS Cluster with a self-managed node group into a new VPC.
+This example deploys a new EKS Cluster with a [self-managed node group](https://docs.aws.amazon.com/eks/latest/userguide/worker.html) into a new VPC.
  - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
  - Creates an Internet gateway for the Public Subnets and a NAT Gateway for the Private Subnets
- - Creates an EKS Cluster Control plane with Self-managed node group
+ - Creates an EKS Cluster Control plane with a self-managed node group
 
 ## How to Deploy
 ### Prerequisites:
@@ -60,6 +60,10 @@ This following command used to update the `kubeconfig` in your local machine whe
 #### Step7: List all the pods running in `kube-system` namespace
 
     $ kubectl get pods -n kube-system
+
+#### Step8: List the auto scaling group created for the self-managed node group
+
+    $ aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names aws001-preprod-dev-eks-self-managed-ondemand
 
 ## How to Destroy
 The following command destroys the resources created by `terraform apply`
