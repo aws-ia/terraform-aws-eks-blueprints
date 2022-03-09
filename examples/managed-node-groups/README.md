@@ -1,5 +1,5 @@
 # EKS Cluster with Managed Node Group
-This example deploys a new EKS Cluster with a self-managed node group into a new VPC.
+This example deploys a new EKS Cluster with a Managed node group into a new VPC.
  - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
  - Creates an Internet gateway for the Public Subnets and a NAT Gateway for the Private Subnets
  - Creates an EKS Cluster Control plane with Managed node groups
