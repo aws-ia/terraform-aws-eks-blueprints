@@ -16,18 +16,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/*
-data "template_file" "amp_values" {
-  template = "${file("${path.module}/values.yaml")}"
-  vars = {
-    amazon_prometheus_remote_write_url = var.amazon_prometheus_remote_write_url
-    region = data.aws_region.current.name
-  }
-}
-*/
-
 resource "helm_release" "prometheus" {
-  count = var.manage_via_gitops ? 0 : 1
+  count = (var.otel_config.amazon_prometheus_remote_write_url == null) ? 0 : 1
 
   name      = local.helm_config["name"]
   chart     = "${path.module}/otel-config"
@@ -63,7 +53,8 @@ resource "kubernetes_namespace_v1" "prometheus" {
 }
 
 module "irsa_amp_ingest" {
-  count                       = var.manage_via_gitops ? 0 : 1
+  count = (var.otel_config.amazon_prometheus_remote_write_url == null) ? 0 : 1
+
   source                      = "../../../modules/irsa"
   eks_cluster_id              = var.eks_cluster_id
   kubernetes_namespace        = local.helm_config["namespace"]
@@ -76,7 +67,8 @@ module "irsa_amp_ingest" {
 }
 
 module "irsa_amp_query" {
-  count                       = var.manage_via_gitops ? 0 : 1
+  count = (var.otel_config.amazon_prometheus_remote_write_url == null) ? 0 : 1
+
   source                      = "../../../modules/irsa"
   eks_cluster_id              = var.eks_cluster_id
   kubernetes_namespace        = local.helm_config["namespace"]
@@ -89,7 +81,8 @@ module "irsa_amp_query" {
 }
 
 resource "aws_iam_policy" "ingest" {
-  count       = var.manage_via_gitops ? 0 : 1
+  count = (var.otel_config.amazon_prometheus_remote_write_url == null) ? 0 : 1
+
   name        = format("%s-%s", "amp-ingest", var.eks_cluster_id)
   description = "Set up the permission policy that grants ingest (remote write) permissions for AMP workspace"
   path        = var.iam_role_path
@@ -98,7 +91,8 @@ resource "aws_iam_policy" "ingest" {
 }
 
 resource "aws_iam_policy" "query" {
-  count       = var.manage_via_gitops ? 0 : 1
+  count = (var.otel_config.amazon_prometheus_remote_write_url == null) ? 0 : 1
+
   name        = format("%s-%s", "amp-query", var.eks_cluster_id)
   description = "Set up the permission policy that grants query permissions for AMP workspace"
   path        = var.iam_role_path

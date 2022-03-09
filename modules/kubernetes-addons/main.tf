@@ -293,10 +293,8 @@ module "aws_privateca_issuer" {
 }
 
 module "otel_jmx" {
-  count          = var.enable_jmx_dashboards ? 1 : 0
+  count          = var.enable_otel_operator_jmx ? 1 : 0
   eks_cluster_id = var.eks_cluster_id
   source         = "./aws-opentelemetry-eks-jmx"
-  # helm_config = var.otel_jmx_helm_config
-  manage_via_gitops                  = var.argocd_manage_add_ons
-  amazon_prometheus_remote_write_url = var.amazon_prometheus_remote_write_url
+  otel_config    = var.otel_operator_jmx_config
 }
