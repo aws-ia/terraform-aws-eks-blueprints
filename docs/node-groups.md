@@ -188,7 +188,7 @@ The example below demonstrates the minimum configuration required to deploy a Se
   }
 ```
 
-In clusters where Windows support is enabled, workloads should have explicit node assignments configured using `nodeSelector` or `affinity`, as described in the Kubernetes document [Assigning Pods to Nodes](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/). 
+In clusters where Windows support is enabled, workloads should have explicit node assignments configured using `nodeSelector` or `affinity`, as described in the Kubernetes document [Assigning Pods to Nodes](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/).
 For example, if you are enabling the `metrics-server` Kubernetes add-on (Helm chart), use the following configuration to ensure its pods are assigned to Linux nodes. See the [EKS Cluster with Windows Support example](../examples/windows-node-groups/) for full Terraform configuration and workload deployment samples.
 
 ```hcl

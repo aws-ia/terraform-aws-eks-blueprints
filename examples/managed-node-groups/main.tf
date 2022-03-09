@@ -65,9 +65,9 @@ data "aws_eks_cluster_auth" "cluster" {
 # Local Variables
 #------------------------------------------------------------------------
 locals {
-  tenant                  = "aws001"  # AWS account name or unique id for tenant
-  environment             = "preprod" # Environment area eg., preprod or prod
-  zone                    = "test"    # Environment with in one sub_tenant or business unit
+  tenant                  = "aws001"      # AWS account name or unique id for tenant
+  environment             = "preprod"     # Environment area eg., preprod or prod
+  zone                    = "test"        # Environment with in one sub_tenant or business unit
   count_availability_zone = (length(data.aws_availability_zones.available.names) <= 3) ? length(data.aws_availability_zones.available.zone_ids) : 3
   kubernetes_version      = "1.21"
 
@@ -141,7 +141,7 @@ module "aws-eks-accelerator-for-terraform" {
     #---------------------------------------------------------#
     mg_5 = {
       # 1> Node Group configuration - Part1
-      node_group_name        = "mg5" # Max 40 characters for node group name
+      node_group_name        = "mg5"              # Max 40 characters for node group name
 
       # Launch template configuration
       create_launch_template = true               # false will use the default launch template
@@ -158,9 +158,9 @@ module "aws-eks-accelerator-for-terraform" {
             systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
         EOT
 
-      post_userdata           = ""    # Optional
-      kubelet_extra_args      = ""    # Optional
-      bootstrap_extra_args    = ""    # Optional
+      post_userdata           = ""                # Optional
+      kubelet_extra_args      = ""                # Optional
+      bootstrap_extra_args    = ""                # Optional
 
       # 2> Node Group scaling configuration
       desired_size    = 2
@@ -169,17 +169,17 @@ module "aws-eks-accelerator-for-terraform" {
       max_unavailable = 1 # or percentage = 20
 
       # 3> Node Group compute configuration
-      ami_type       = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
-      release_version = ""          # Enter AMI release version to deploy the latest AMI released by AWS
-      capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
-      instance_types = ["m5.large"] # List of instances used only for SPOT type
+      ami_type       = "AL2_x86_64"               # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
+      release_version = ""                        # Enter AMI release version to deploy the latest AMI released by AWS
+      capacity_type  = "ON_DEMAND"                # ON_DEMAND or SPOT
+      instance_types = ["m5.large"]               # List of instances used only for SPOT type
       disk_size      = 50
 
       # 4> Node Group network configuration
-      subnet_type     = "private"       # public or private - Default to Private
-      subnet_ids  = []   # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+      subnet_type     = "private"                 # public or private - Default to Private
+      subnet_ids  = []                            # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
 
-      additional_iam_policies = [] # Attach additional IAM policies to the IAM role attached to this worker group
+      additional_iam_policies = []                # Attach additional IAM policies to the IAM role attached to this worker group
 
       # SSH ACCESS Optional   - Use SSM instead
       remote_access           = false
@@ -198,7 +198,7 @@ module "aws-eks-accelerator-for-terraform" {
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-      create_worker_security_group = false  # Creates a new sec group for this worker group
+      create_worker_security_group = false        # Creates a new sec group for this worker group
     },
     #---------------------------------------------------------#
     # SPOT Worker Group
@@ -206,9 +206,9 @@ module "aws-eks-accelerator-for-terraform" {
     spot_m5 = {
       # 1> Node Group configuration - Part1
       node_group_name        = "spot-m5"
-      create_launch_template = true              # false will use the default launch template
-      launch_template_os        = "amazonlinux2eks" # amazonlinux2eks  or bottlerocket
-      public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+      create_launch_template = true                 # false will use the default launch template
+      launch_template_os     = "amazonlinux2eks"    # amazonlinux2eks  or bottlerocket
+      public_ip              = false                # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
       pre_userdata           = <<-EOT
                  yum install -y amazon-ssm-agent
                  systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
@@ -219,7 +219,7 @@ module "aws-eks-accelerator-for-terraform" {
       min_size     = 2
 
       # Node Group update configuration. Set the maximum number or percentage of unavailable nodes to be tolerated during the node group version update.
-      max_unavailable = 1 # or percentage = 20
+      max_unavailable = 1                           # or percentage = 20
 
       # Node Group compute configuration
       ami_type       = "AL2_x86_64"
@@ -228,7 +228,7 @@ module "aws-eks-accelerator-for-terraform" {
       disk_size      = 50
 
       # Node Group network configuration
-      subnet_ids  = []   # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+      subnet_ids  = []                             # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
 
       k8s_taints = []
 
@@ -250,7 +250,7 @@ module "aws-eks-accelerator-for-terraform" {
     #---------------------------------------------------------#
     gpu = {
       # 1> Node Group configuration - Part1
-      node_group_name        = "gpu-mg5" # Max 40 characters for node group name
+      node_group_name        = "gpu-mg5"          # Max 40 characters for node group name
       create_launch_template = true               # false will use the default launch template
       launch_template_os     = "amazonlinux2eks"  # amazonlinux2eks or bottlerocket
       public_ip              = false              # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
@@ -262,16 +262,16 @@ module "aws-eks-accelerator-for-terraform" {
       desired_size    = 2
       max_size        = 2
       min_size        = 2
-      max_unavailable = 1 # or percentage = 20
+      max_unavailable = 1                         # or percentage = 20
 
       # 3> Node Group compute configuration
-      ami_type       = "AL2_x86_64_GPU" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
-      capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
-      instance_types = ["m5.large"] # List of instances used only for SPOT type
+      ami_type       = "AL2_x86_64_GPU"           # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
+      capacity_type  = "ON_DEMAND"                # ON_DEMAND or SPOT
+      instance_types = ["m5.large"]               # List of instances used only for SPOT type
       disk_size      = 50
 
       # 4> Node Group network configuration
-      subnet_ids  = []   # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+      subnet_ids  = []                            # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
 
       k8s_taints = []
 
@@ -292,7 +292,7 @@ module "aws-eks-accelerator-for-terraform" {
     #---------------------------------------------------------#
     arm = {
       # 1> Node Group configuration - Part1
-      node_group_name        = "arm-mg5" # Max 40 characters for node group name
+      node_group_name        = "arm-mg5"          # Max 40 characters for node group name
       create_launch_template = true               # false will use the default launch template
       launch_template_os     = "amazonlinux2eks"  # amazonlinux2eks or bottlerocket
       public_ip              = false              # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
@@ -307,13 +307,13 @@ module "aws-eks-accelerator-for-terraform" {
       max_unavailable = 1 # or percentage = 20
 
       # 3> Node Group compute configuration
-      ami_type       = "AL2_ARM_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_X86_64
-      capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
-      instance_types = ["m5.large"] # List of instances used only for SPOT type
+      ami_type       = "AL2_ARM_64"               # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_X86_64
+      capacity_type  = "ON_DEMAND"                # ON_DEMAND or SPOT
+      instance_types = ["m5.large"]               # List of instances used only for SPOT type
       disk_size      = 50
 
       # 4> Node Group network configuration
-      subnet_ids  = []   # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+      subnet_ids  = []                            # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
 
       k8s_taints = []
 
@@ -346,16 +346,16 @@ module "aws-eks-accelerator-for-terraform" {
       desired_size    = 2
       max_size        = 2
       min_size        = 2
-      max_unavailable = 1 # or percentage = 20
+      max_unavailable = 1                         # or percentage = 20
 
       # 3> Node Group compute configuration
-      ami_type       = "BOTTLEROCKET_ARM_64"  # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_X86_64
-      capacity_type  = "ON_DEMAND"            # ON_DEMAND or SPOT
-      instance_types = ["m5.large"]           # List of instances used only for SPOT type
+      ami_type       = "BOTTLEROCKET_ARM_64"      # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_X86_64
+      capacity_type  = "ON_DEMAND"                # ON_DEMAND or SPOT
+      instance_types = ["m5.large"]               # List of instances used only for SPOT type
       disk_size      = 50
 
       # 4> Node Group network configuration
-      subnet_ids  = []   # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+      subnet_ids  = []                            # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
 
       k8s_taints = []
 
@@ -391,13 +391,13 @@ module "aws-eks-accelerator-for-terraform" {
       max_unavailable = 1 # or percentage = 20
 
       # 3> Node Group compute configuration
-      ami_type       = "BOTTLEROCKET_X86_64"  # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_X86_64
-      capacity_type  = "ON_DEMAND"            # ON_DEMAND or SPOT
-      instance_types = ["m5.large"]           # List of instances used only for SPOT type
+      ami_type       = "BOTTLEROCKET_X86_64"      # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_X86_64
+      capacity_type  = "ON_DEMAND"                # ON_DEMAND or SPOT
+      instance_types = ["m5.large"]               # List of instances used only for SPOT type
       disk_size      = 50
 
       # 4> Node Group network configuration
-      subnet_ids  = []   # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+      subnet_ids  = []                            # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
 
       k8s_taints = []
 
@@ -414,13 +414,13 @@ module "aws-eks-accelerator-for-terraform" {
       create_worker_security_group = false
     },
     #---------------------------------------------------------#
-    # CUSTOM AMIb Worker Group
+    # CUSTOM AMI Worker Group
     #---------------------------------------------------------#
     custom_ami_m5 = {
       node_group_name        = "custom-ami-m5"
-      create_launch_template = true           # false will use the default launch template
-      launch_template_os        = "bottlerocket" # amazonlinux2eks  or bottlerocket
-      public_ip              = false          # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+      create_launch_template = true                   # false will use the default launch template
+      launch_template_os     = "bottlerocket"         # amazonlinux2eks  or bottlerocket
+      public_ip              = false                  # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
       pre_userdata           = ""
 
       desired_size    = 3
@@ -429,13 +429,13 @@ module "aws-eks-accelerator-for-terraform" {
       max_unavailable = 1
 
       ami_type       = "CUSTOM"
-      capacity_type  = "ON_DEMAND" # ON_DEMAND or SPOT
+      capacity_type  = "ON_DEMAND"                    # ON_DEMAND or SPOT
       instance_types = ["m5.large"]
       disk_size      = 50
       custom_ami_id  = "ami-044b114caf98ce8c5"
 
       # 4> Node Group network configuration
-      subnet_ids  = []   # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+      subnet_ids  = []                               # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
 
       k8s_taints = []
       k8s_labels = {
