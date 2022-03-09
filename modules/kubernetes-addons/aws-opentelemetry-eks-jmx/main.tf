@@ -18,7 +18,7 @@
 
 resource "helm_release" "prometheus" {
   count = 1
-
+  
   name      = local.helm_config["name"]
   chart     = "${path.module}/otel-config"
   namespace = local.helm_config["namespace"]

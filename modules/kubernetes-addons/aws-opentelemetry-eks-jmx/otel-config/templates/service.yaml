@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: adot-collector
+  namespace: opentelemetry-operator-system
+  labels:
+    app: aws-adot
+    component: adot-collector
+spec:
+  ports:
+  - name: metrics # Default endpoint for querying metrics.
+    port: 8888
+  selector:
+    component: adot-collector
+  type: NodePort
