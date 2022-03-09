@@ -89,6 +89,12 @@ variable "cluster_autoscaler_helm_config" {
   description = "Cluster Autoscaler Helm Chart config"
 }
 
+variable "cluster_autoscaler_irsa_permissions_boundary" {
+  type        = string
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+  default     = ""
+}
+
 #-----------Crossplane ADDON-------------
 variable "enable_crossplane" {
   type        = bool

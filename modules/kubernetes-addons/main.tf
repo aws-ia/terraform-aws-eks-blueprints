@@ -123,11 +123,12 @@ module "cert_manager" {
 }
 
 module "cluster_autoscaler" {
-  count             = var.enable_cluster_autoscaler ? 1 : 0
-  source            = "./cluster-autoscaler"
-  helm_config       = var.cluster_autoscaler_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = local.addon_context
+  count                         = var.enable_cluster_autoscaler ? 1 : 0
+  source                        = "./cluster-autoscaler"
+  helm_config                   = var.cluster_autoscaler_helm_config
+  manage_via_gitops             = var.argocd_manage_add_ons
+  irsa_iam_permissions_boundary = var.cluster_autoscaler_irsa_permissions_boundary
+  addon_context                 = local.addon_context
 }
 
 module "crossplane" {
