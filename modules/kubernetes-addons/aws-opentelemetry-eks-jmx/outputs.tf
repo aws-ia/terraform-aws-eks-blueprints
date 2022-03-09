@@ -15,8 +15,3 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-output "argocd_gitops_config" {
-  description = "Configuration used for managing the add-on with ArgoCD"
-  value       = var.manage_via_gitops ? local.argocd_gitops_config : null
-}

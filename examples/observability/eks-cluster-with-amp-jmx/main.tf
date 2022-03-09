@@ -36,7 +36,7 @@ locals {
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
-  terraform_version = "Terraform v1.1.4"
+  terraform_version = "Terraform v1.1.7"
 
   # Sample workload managed by ArgoCD. For generating metrics and logs
   workload_application = {
@@ -146,7 +146,6 @@ resource "grafana_data_source" "prometheus" {
 #---------------------------------------------------------------
 # Configure JMX default Grafana dashboards
 #---------------------------------------------------------------
-
 resource "grafana_folder" "jmx_dashboards" {
   title = "JMX Dashboards"
 
