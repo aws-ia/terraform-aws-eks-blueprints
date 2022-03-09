@@ -9,7 +9,7 @@ locals {
     description                = "ADOT helm Chart deployment configuration"
     lint                       = false
     values                     = local.default_helm_values
-    values = []
+    values                     = []
     wait                       = true
     wait_for_jobs              = false
     verify                     = false
@@ -43,33 +43,27 @@ locals {
   )
 
   default_helm_values = [templatefile("${path.module}/otel-config/values.yaml", {
-    amp_url = "${var.amazon_prometheus_remote_write_url}api/v1/remote_write",
-    region = data.aws_region.current.id
+    amp_url = "${var.otel_config.amazon_prometheus_remote_write_url}api/v1/remote_write",
+    region  = var.otel_config.amazon_prometheus_region
   })]
 
+  /*
   amazon_prometheus_workspace_url          = var.amazon_prometheus_workspace_endpoint != null ? "${var.amazon_prometheus_workspace_endpoint}api/v1/remote_write" : ""
-  amazon_prometheus_ingest_iam_role_arn    = var.enable_amazon_prometheus ? module.irsa_amp_ingest[0].irsa_iam_role_arn : ""
+  */
   amazon_prometheus_ingest_service_account = "amp-ingest"
+  amazon_prometheus_ingest_iam_role_arn    = (var.amazon_prometheus_remote_write_url != null) ? module.irsa_amp_ingest[0].irsa_iam_role_arn : ""
 
+  /*
   amp_config_values = [
     {
       name  = "ampurl"
-      value = "${var.amazon_prometheus_remote_write_url}api/v1/remote_write"
+      value = local.amp_url["amp_url"]
     },
     {
       name  = "region"
-      value = data.aws_region.current.id
+      value = local.amp_url["region"]
     },
   ]
+  */
 
-  amp_gitops_config = var.enable_amazon_prometheus ? {
-    roleArn            = local.amazon_prometheus_ingest_iam_role_arn
-    ampWorkspaceUrl    = local.amazon_prometheus_workspace_url
-    serviceAccountName = local.amazon_prometheus_ingest_service_account
-  } : {}
-
-  argocd_gitops_config = merge(
-    { enable = true },
-    local.amp_gitops_config
-  )
 }

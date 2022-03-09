@@ -17,7 +17,8 @@
  */
 
 resource "helm_release" "prometheus" {
-  count = (var.otel_config.amazon_prometheus_remote_write_url == null) ? 0 : 1
+  //count = (var.otel_config.amazon_prometheus_remote_write_url == null) ? 0 : 1
+  count = 0
 
   name      = local.helm_config["name"]
   chart     = "${path.module}/otel-config"
