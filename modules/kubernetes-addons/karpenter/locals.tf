@@ -29,7 +29,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://charts.karpenter.sh"
-    version     = "0.6.3"
+    version     = "0.6.5"
     namespace   = local.name
     timeout     = "300"
     values      = local.default_helm_values
@@ -47,11 +47,8 @@ locals {
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = true
     create_kubernetes_service_account = true
-    iam_role_path                     = "/"
-    eks_cluster_id                    = var.addon_context.eks_cluster_id
     irsa_iam_policies                 = concat([aws_iam_policy.karpenter.arn], var.irsa_policies)
     irsa_iam_permissions_boundary     = var.irsa_iam_permissions_boundary
-    tags                              = var.addon_context.tags
   }
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
