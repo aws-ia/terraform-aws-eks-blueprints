@@ -1,8 +1,11 @@
-# EKS Cluster with Self-managed Node Group
-This example deploys a new EKS Cluster with a [self-managed node group](https://docs.aws.amazon.com/eks/latest/userguide/worker.html) into a new VPC.
- - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
+# EKS Cluster with Amazon EKS Managed Add-ons
+
+This example deploys a new EKS Cluster into a new VPC with EKS managed Add-ons
+
+ - Creates a new VPC, 3 Private Subnets and 3 Public Subnets
  - Creates an Internet gateway for the Public Subnets and a NAT Gateway for the Private Subnets
- - Creates an EKS Cluster Control plane with a self-managed node group
+ - Creates an EKS Cluster Control plane with public endpoint with one managed node group
+ - Creates EKS managed Addons (`vpc-cni`, `coredns`, `kube-proxy`, `aws-ebs-csi-driver`)
 
 ## How to Deploy
 ### Prerequisites:
@@ -22,7 +25,7 @@ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 Initialize a working directory with configuration files
 
 ```shell script
-cd examples/eks-cluster-with-self-managed-node-groups/
+cd examples/eks-managed-addons/
 terraform init
 ```
 
@@ -61,15 +64,11 @@ This following command used to update the `kubeconfig` in your local machine whe
 
     $ kubectl get pods -n kube-system
 
-#### Step8: List the auto scaling group created for the self-managed node group
-
-    $ aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names aws001-preprod-dev-eks-self-managed-ondemand
-
 ## How to Destroy
 The following command destroys the resources created by `terraform apply`
 
 ```shell script
-cd examples/eks-cluster-with-self-managed-node-groups
+cd examples/eks-managed-addons
 terraform destroy --auto-approve
 ```
 
@@ -95,6 +94,7 @@ terraform destroy --auto-approve
 |------|--------|---------|
 | <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | ../.. | n/a |
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
+| <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | ../../modules/kubernetes-addons | n/a |
 
 ## Resources
 
