@@ -11,4 +11,5 @@ resource "aws_iam_policy" "cluster_autoscaler" {
   description = "Cluster Autoscaler IAM policy"
   name        = "${var.addon_context.eks_cluster_id}-${local.helm_config["name"]}-irsa"
   policy      = data.aws_iam_policy_document.cluster_autoscaler.json
+  tags        = var.addon_context.tags
 }
