@@ -153,7 +153,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_node_termination_handler_irsa_permissions_boundary"></a> [node\_termination\_handler\_irsa\_permissions\_boundary](#input\_node\_termination\_handler\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary | `string` | `""` | no |
 | <a name="input_node_termination_handler_irsa_policies"></a> [node\_termination\_handler\_irsa\_policies](#input\_node\_termination\_handler\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
 | <a name="input_prometheus_helm_config"></a> [prometheus\_helm\_config](#input\_prometheus\_helm\_config) | Community Prometheus Helm Chart config | `any` | `{}` | no |
+| <a name="input_spark_irsa_permissions_boundary"></a> [spark\_irsa\_permissions\_boundary](#input\_spark\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary for Spark App | `string` | `""` | no |
+| <a name="input_spark_irsa_policies"></a> [spark\_irsa\_policies](#input\_spark\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts for Spark App | `list(string)` | `[]` | no |
 | <a name="input_spark_k8s_operator_helm_config"></a> [spark\_k8s\_operator\_helm\_config](#input\_spark\_k8s\_operator\_helm\_config) | Spark on K8s Operator Helm Chart config | `any` | `{}` | no |
+| <a name="input_spark_operator_irsa_permissions_boundary"></a> [spark\_operator\_irsa\_permissions\_boundary](#input\_spark\_operator\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary for Spark Operator | `string` | `""` | no |
+| <a name="input_spark_operator_irsa_policies"></a> [spark\_operator\_irsa\_policies](#input\_spark\_operator\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts for Spark Operator | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `map('BusinessUnit`,`XYZ`) | `map(string)` | `{}` | no |
 | <a name="input_traefik_helm_config"></a> [traefik\_helm\_config](#input\_traefik\_helm\_config) | Traefik Helm Chart config | `any` | `{}` | no |
 | <a name="input_vpa_helm_config"></a> [vpa\_helm\_config](#input\_vpa\_helm\_config) | VPA Helm Chart config | `any` | `null` | no |

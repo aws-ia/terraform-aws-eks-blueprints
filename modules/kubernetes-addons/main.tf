@@ -204,6 +204,7 @@ module "spark_k8s_operator" {
   source            = "./spark-k8s-operator"
   helm_config       = var.spark_k8s_operator_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "traefik" {
