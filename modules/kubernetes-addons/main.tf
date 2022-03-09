@@ -68,12 +68,11 @@ module "argocd" {
 }
 
 module "argo_rollouts" {
-  count                         = var.enable_argo_rollouts ? 1 : 0
-  source                        = "./argo-rollouts"
-  helm_config                   = var.argo_rollouts_helm_config
-  irsa_iam_permissions_boundary = var.argo_rollouts_irsa_permissions_boundary
-  manage_via_gitops             = var.argocd_manage_add_ons
-  addon_context                 = local.addon_context
+  count             = var.enable_argo_rollouts ? 1 : 0
+  source            = "./argo-rollouts"
+  helm_config       = var.argo_rollouts_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "aws_efs_csi_driver" {
@@ -124,11 +123,12 @@ module "cert_manager" {
 }
 
 module "cluster_autoscaler" {
-  count             = var.enable_cluster_autoscaler ? 1 : 0
-  source            = "./cluster-autoscaler"
-  helm_config       = var.cluster_autoscaler_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = local.addon_context
+  count                         = var.enable_cluster_autoscaler ? 1 : 0
+  source                        = "./cluster-autoscaler"
+  helm_config                   = var.cluster_autoscaler_helm_config
+  manage_via_gitops             = var.argocd_manage_add_ons
+  irsa_iam_permissions_boundary = var.cluster_autoscaler_irsa_permissions_boundary
+  addon_context                 = local.addon_context
 }
 
 module "crossplane" {
@@ -174,7 +174,6 @@ module "keda" {
   count                     = var.enable_keda ? 1 : 0
   source                    = "./keda"
   helm_config               = var.keda_helm_config
-  create_irsa               = var.keda_create_irsa
   irsa_policies             = var.keda_irsa_policies
   irsa_permissions_boundary = var.keda_irsa_permissions_boundary
   manage_via_gitops         = var.argocd_manage_add_ons
@@ -201,11 +200,10 @@ module "prometheus" {
 }
 
 module "spark_k8s_operator" {
-  count                                    = var.enable_spark_k8s_operator ? 1 : 0
-  source                                   = "./spark-k8s-operator"
-  helm_config                              = var.spark_k8s_operator_helm_config
-  manage_via_gitops                        = var.argocd_manage_add_ons
-  addon_context                            = local.addon_context
+  count             = var.enable_spark_k8s_operator ? 1 : 0
+  source            = "./spark-k8s-operator"
+  helm_config       = var.spark_k8s_operator_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
 }
 
 module "traefik" {
@@ -230,17 +228,6 @@ module "yunikorn" {
   helm_config               = var.yunikorn_helm_config
   irsa_policies             = var.yunikorn_irsa_policies
   irsa_permissions_boundary = var.yunikorn_irsa_permissions_boundary
-  manage_via_gitops         = var.argocd_manage_add_ons
-  addon_context             = local.addon_context
-}
-
-module "kube_state_metrics" {
-  count                     = var.enable_kube_state_metrics ? 1 : 0
-  source                    = "askulkarni2/kube-state-metrics-addon/eksblueprints"
-  version                   = "0.0.4"
-  helm_config               = var.kube_state_metrics_helm_config
-  irsa_policies             = var.kube_state_metrics_irsa_policies
-  irsa_permissions_boundary = var.kube_state_metrics_irsa_permissions_boundary
   manage_via_gitops         = var.argocd_manage_add_ons
   addon_context             = local.addon_context
 }

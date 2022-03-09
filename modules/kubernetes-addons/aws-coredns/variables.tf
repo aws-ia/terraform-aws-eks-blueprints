@@ -4,12 +4,6 @@ variable "add_on_config" {
   default     = {}
 }
 
-variable "iam_role_path" {
-  type        = string
-  default     = "/"
-  description = "IAM role path"
-}
-
 variable "addon_context" {
   type = object({
     aws_caller_identity_account_id = string

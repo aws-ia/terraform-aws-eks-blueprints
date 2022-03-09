@@ -17,7 +17,7 @@ locals {
     yunikorn                  = var.enable_yunikorn ? module.yunikorn[0].argocd_gitops_config : null
     argoRollouts              = var.enable_argo_rollouts ? module.argo_rollouts[0].argocd_gitops_config : null
     crossplane                = var.enable_crossplane ? module.crossplane[0].argocd_gitops_config : null
-    kubeStateMetrics          = var.enable_kube_state_metrics ? module.kube_state_metrics[0].argocd_gitops_config : null
+    karpenter                 = var.enable_karpenter ? module.karpenter[0].argocd_gitops_config : null
     kubernetesDashboard       = var.enable_kubernetes_dashboard ? module.kubernetes_dashboard[0].argocd_gitops_config : null
   }
 
