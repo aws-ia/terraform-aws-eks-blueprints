@@ -24,7 +24,7 @@ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 to initialize a working directory with configuration files
 
 ```bash
-cd examples/eks-cluster-with-windows-support
+cd examples/windows-node-groups
 terraform init
 ```
 
@@ -59,7 +59,7 @@ When Windows support is enabled in the cluster, it is necessary to use one of th
 
 #### Sample Windows deployment
 ```bash
-cd examples/eks-cluster-with-windows-support
+cd examples/windows-node-groups
 
 # Sample Windows deployment
 kubectl apply -f ./k8s/windows-iis-aspnet.yaml
@@ -89,7 +89,7 @@ kubectl apply -f ./k8s/linux-nginx.yaml
 ## Cleanup
 
 ```bash
-cd examples/eks-cluster-with-windows-support
+cd examples/windows-node-groups
 
 # If you deployed sample Windows & Linux workloads from Step6
 kubectl delete svc,deploy -n windows --all
