@@ -114,14 +114,18 @@ module "kubernetes-addons" {
   source         = "../../../modules/kubernetes-addons"
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
-  #K8s Add-ons
-  enable_metrics_server     = true
-  enable_cluster_autoscaler = true
-  enable_argocd             = false
 
   # OTEL JMX use cases
-  enable_jmx_dashboards = true
-  amazon_prometheus_remote_write_url = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
+  enable_otel_operator_jmx = true
+
+  otel_operator_jmx_config = {
+    amazon_prometheus_remote_write_url = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
+    # Override this if you want to send metrics data to a workspace in a different region
+    amazon_prometheus_region = data.aws_region.current.name
+
+    // config map: ports, region, customer managed amp
+  }
+
 }
 
 #---------------------------------------------------------------
@@ -143,7 +147,6 @@ resource "grafana_data_source" "prometheus" {
 # Configure JMX default Grafana dashboards
 #---------------------------------------------------------------
 
-
 resource "grafana_folder" "jmx_dashboards" {
   title = "JMX Dashboards"
 
@@ -151,8 +154,6 @@ resource "grafana_folder" "jmx_dashboards" {
 }
 
 resource "grafana_dashboard" "jmx_dashboards" {
-  folder = grafana_folder.jmx_dashboards.id
+  folder      = grafana_folder.jmx_dashboards.id
   config_json = file("files/dashboard.json")
-
-  
 }

@@ -568,10 +568,21 @@ variable "kubernetes_dashboard_irsa_permissions_boundary" {
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
-#-----------BOSS JMX-------------
-variable "enable_jmx_dashboards" {
+#-----------OpenTelemetry patterns-------------
+variable "enable_otel_operator_jmx" {
   type        = bool
   default     = false
   description = "Enable metrics for JMX workloads and automatic Grafana Dashboards"
 }
-variable "amazon_prometheus_remote_write_url" {}
+
+variable "otel_operator_jmx_config" {
+  type = object({
+    amazon_prometheus_remote_write_url : string,
+    amazon_prometheus_region : string
+  })
+
+  default = {
+    amazon_prometheus_remote_write_url = null
+    amazon_prometheus_region           = null
+  }
+}

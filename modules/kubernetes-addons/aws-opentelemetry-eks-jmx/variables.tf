@@ -56,8 +56,14 @@ variable "tags" {
   description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }
 
-variable "manage_via_gitops" {
-  type        = bool
-  default     = false
-  description = "Determines if the add-on should be managed via GitOps."
+variable "otel_config" {
+  type = object({
+    amazon_prometheus_remote_write_url : string,
+    amazon_prometheus_region : string
+  })
+
+  default = {
+    amazon_prometheus_remote_write_url = null
+    amazon_prometheus_region           = null
+  }
 }
