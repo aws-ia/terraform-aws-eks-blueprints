@@ -19,19 +19,19 @@ locals {
     block_device_mappings = [
       {
         device_name = "/dev/xvda"
-        volume_type = "gp2"
+        volume_type = "gp3"
         volume_size = 50
       }
     ]
 
     # AUTOSCALING
-    max_size                             = "3"
-    min_size                             = "1"
-    subnet_ids                           = []
-    additional_tags                      = {}
-    create_worker_security_group         = false
-    worker_additional_security_group_ids = [] # Will use this when create_worker_security_group = true
-    additional_iam_policies              = []
+    max_size                     = "3"
+    min_size                     = "1"
+    subnet_type                  = "private"
+    subnet_ids                   = []
+    additional_tags              = {}
+    create_worker_security_group = false
+    additional_iam_policies      = []
   }
 
   self_managed_node_group = merge(
@@ -42,16 +42,16 @@ locals {
   enable_windows_support = local.self_managed_node_group["launch_template_os"] == "windows"
 
   predefined_ami_names = {
-    amazonlinux2eks = "amazon-eks-node-${var.kubernetes_version}-*"
-    bottlerocket    = "bottlerocket-aws-k8s-${var.kubernetes_version}-x86_64-*"
-    windows         = "Windows_Server-2019-English-Core-EKS_Optimized-${var.kubernetes_version}-*"
+    amazonlinux2eks = "amazon-eks-node-${var.context.kubernetes_version}-*"
+    bottlerocket    = "bottlerocket-aws-k8s-${var.context.kubernetes_version}-x86_64-*"
+    windows         = "Windows_Server-2019-English-Core-EKS_Optimized-${var.context.kubernetes_version}-*"
   }
   predefined_ami_types  = keys(local.predefined_ami_names)
   default_custom_ami_id = contains(local.predefined_ami_types, local.self_managed_node_group["launch_template_os"]) ? data.aws_ami.predefined[local.self_managed_node_group["launch_template_os"]].id : ""
   custom_ami_id         = local.self_managed_node_group["custom_ami_id"] == "" ? local.default_custom_ami_id : local.self_managed_node_group["custom_ami_id"]
 
   policy_arn_prefix = "arn:aws:iam::aws:policy"
-  ec2_principal     = "ec2.${data.aws_partition.current.dns_suffix}"
+  ec2_principal     = "ec2.${var.context.aws_partition_dns_suffix}"
 
   # EKS Worker Managed Policies
   eks_worker_policies = toset(concat([
@@ -63,12 +63,12 @@ locals {
   ]))
 
   common_tags = merge(
-    var.tags,
+    var.context.tags,
     local.self_managed_node_group["additional_tags"],
     {
-      Name                                              = "${local.self_managed_node_group["node_group_name"]}-${var.eks_cluster_id}"
-      "k8s.io/cluster-autoscaler/${var.eks_cluster_id}" = "owned"
-      "k8s.io/cluster-autoscaler/enabled"               = "TRUE"
-      "kubernetes.io/cluster/${var.eks_cluster_id}"     = "owned"
+      Name                                                      = "${local.self_managed_node_group["node_group_name"]}-${var.context.eks_cluster_id}"
+      "k8s.io/cluster-autoscaler/${var.context.eks_cluster_id}" = "owned"
+      "k8s.io/cluster-autoscaler/enabled"                       = "TRUE"
+      "kubernetes.io/cluster/${var.context.eks_cluster_id}"     = "owned"
   })
 }

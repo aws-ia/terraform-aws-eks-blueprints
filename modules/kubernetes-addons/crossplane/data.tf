@@ -1,7 +1,3 @@
-data "aws_caller_identity" "current" {}
-
-data "aws_partition" "current" {}
-
 data "aws_iam_policy_document" "s3_policy" {
   statement {
     sid       = "VisualEditor0"

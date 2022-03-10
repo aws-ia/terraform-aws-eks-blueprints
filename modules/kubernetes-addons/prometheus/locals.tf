@@ -3,7 +3,7 @@ locals {
     name                       = "prometheus"
     chart                      = "prometheus"
     repository                 = "https://prometheus-community.github.io/helm-charts"
-    version                    = "14.6.0"
+    version                    = "15.3.0"
     namespace                  = "prometheus"
     timeout                    = "1200"
     create_namespace           = false
@@ -69,7 +69,7 @@ locals {
     },
     {
       name  = "server.remoteWrite[0].sigv4.region"
-      value = data.aws_region.current.id
+      value = var.addon_context.aws_region_name
     }
   ] : []
 

@@ -9,6 +9,7 @@ The framework currently provides support for the following add-ons:
 | [Agones](../add-ons/agones.md) | Deploys Agones into an EKS cluster. |
 | [Amazon EKS Add-ons](../add-ons/managed-add-ons.md) | Enables Amazon EKS add-ons. |
 | [ArgoCD](../add-ons/argocd.md) | Deploys ArgoCD into an EKS cluster. |
+| [AWS EFS CSI driver](../add-ons/aws-efs-csi-driver.md) | Deploys the AWS EFS CSI driver into an EKS cluster. |
 | [AWS for Fluent Bit](../add-ons/aws-for-fluent-bit.md) | Deploys Fluent Bit into an EKS cluster. |
 | [AWS Load Balancer Controller](../add-ons/aws-load-balancer-controller.md) | Deploys the AWS Load Balancer Controller into an EKS cluster. |
 | [AWS Distro for Open Telemetry](../add-ons/aws-open-telemetry.md) | Deploys the AWS Open Telemetry Collector into an EKS cluster. |
@@ -25,6 +26,8 @@ The framework currently provides support for the following add-ons:
 | [Traefik](../add-ons/traefik.md) | Deploys Traefik Proxy into an EKS cluster.
 | [VPA](../add-ons/vpa.md) | Deploys the Vertical Pod Autoscaler into an EKS cluster. |
 | [YuniKorn](../add-ons/yunikorn.md) | Deploys Apache YuniKorn into an EKS cluster. |
+| [Kube State Metrics](../add-ons/kube-state-metrics.md) | Deploys Kube State Metrics into an EKS cluster. |
+| [Kubernetes Dashboard](../add-ons/kubernetes-dashboard.md) | Deploys Kubernetes Dashboard into an EKS cluster. |
 
 ## Add-on Management
 
@@ -70,7 +73,7 @@ metrics_server_helm_config = {
 	name           = "metrics-server"
 	repository     = "https://kubernetes-sigs.github.io/metrics-server/"
 	chart          = "metrics-server"
-	version        = "3.5.0"
+	version        = "3.8.1"
 	namespace      = "kube-system"
 	timeout        = "1200"
 

@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ .Values.name }}
-  namespace: "argocd"
+  namespace: {{ .Values.namespace }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -15,7 +15,7 @@ spec:
       values: {{ toYaml .Values.source.helm.values | toString | indent 6 }}
   destination:
     server: {{ .Values.destination.server }}
-    namespace: "argocd"
+    namespace: {{ .Values.namespace }}
   syncPolicy:
     automated:
       allowEmpty: false

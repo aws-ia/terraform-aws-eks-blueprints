@@ -1,4 +1,6 @@
 #!/bin/bash
+
+# 5-spark-job-with-AMP-AMG.sh
 # INPUT VARIABLES
 EMR_VIRTUAL_CLUSTER_ID=$1  # EMR Cluster ID e.g., aws001-preprod-test-eks-emr-data-team-a
 S3_BUCKET=$2               # This script requires s3 bucket as input parameter e.g., s3://<bucket-name>
@@ -30,7 +32,7 @@ if [[ $VIRTUAL_CLUSTER_ID != "" ]]; then
         "entryPointArguments": ["'"$SPARK_JOB_S3_PATH"'/input/taxi-trip-data/",
           "'"$SPARK_JOB_S3_PATH"'/output/taxi-trip-data/"
         ],
-        "sparkSubmitParameters": "--conf spark.executor.instances=2 --conf spark.executor.memory=2G --conf spark.executor.cores=2 --conf spark.driver.cores=1 --conf spark.metrics.conf.*.sink.prometheusServlet.class=org.apache.spark.metrics.sink.PrometheusServlet --conf spark.metrics.conf.*.sink.prometheusServlet.path=/metrics/prometheus --conf master.sink.prometheusServlet.path=/metrics/master/prometheus --conf applications.sink.prometheusServlet.path=/metrics/applications/prometheus --conf spark.ui.prometheus.enabled=true --conf spark.executor.processTreeMetrics.enabled=true --conf spark.kubernetes.driver.annotation.prometheus.io/scrape=true --conf spark.kubernetes.driver.annotation.prometheus.io/path=/metrics/executors/prometheus/ --conf spark.kubernetes.driver.annotation.prometheus.io/port=4040 --conf spark.kubernetes.driver.service.annotation.prometheus.io/scrape=true --conf spark.kubernetes.driver.service.annotation.prometheus.io/path=/metrics/executors/prometheus/ --conf spark.kubernetes.driver.service.annotation.prometheus.io/port=4040"
+        "sparkSubmitParameters": "--conf spark.executor.instances=2 --conf spark.executor.memory=2G --conf spark.executor.cores=2 --conf spark.driver.cores=1"
       }
    }' \
     --configuration-overrides '{
@@ -39,7 +41,19 @@ if [[ $VIRTUAL_CLUSTER_ID != "" ]]; then
             "classification": "spark-defaults",
             "properties": {
               "spark.driver.memory":"2G",
-              "spark.kubernetes.executor.podNamePrefix":"taxidata-executor"
+              "spark.kubernetes.executor.podNamePrefix":"taxidata-executor",
+              "spark.ui.prometheus.enabled":"true",
+              "spark.executor.processTreeMetrics.enabled":"true",
+              "spark.kubernetes.driver.annotation.prometheus.io/scrape":"true",
+              "spark.kubernetes.driver.annotation.prometheus.io/path":"/metrics/executors/prometheus/",
+              "spark.kubernetes.driver.annotation.prometheus.io/port":"4040",
+              "spark.kubernetes.driver.service.annotation.prometheus.io/scrape":"true",
+              "spark.kubernetes.driver.service.annotation.prometheus.io/path":"/metrics/driver/prometheus/",
+              "spark.kubernetes.driver.service.annotation.prometheus.io/port":"4040",
+              "spark.metrics.conf.*.sink.prometheusServlet.class":"org.apache.spark.metrics.sink.PrometheusServlet",
+              "spark.metrics.conf.*.sink.prometheusServlet.path":"/metrics/driver/prometheus/",
+              "spark.metrics.conf.master.sink.prometheusServlet.path":"/metrics/master/prometheus/",
+              "spark.metrics.conf.applications.sink.prometheusServlet.path":"/metrics/applications/prometheus/"
             }
           }
         ],

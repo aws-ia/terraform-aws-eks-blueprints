@@ -8,11 +8,11 @@ Step1: Get the latest docker image from this link
 
 Step2: Download the docker image to your local Mac/Laptop
 
-        $ docker pull quay.io/prometheus/prometheus:v2.26.0
-        $ docker pull quay.io/prometheus/alertmanager:v0.21.0
+        $ docker pull quay.io/prometheus/prometheus:v2.31.1
+        $ docker pull quay.io/prometheus/alertmanager:v0.23.0
         $ docker pull jimmidyson/configmap-reload:v0.5.0
-        $ docker pull quay.io/prometheus/node-exporter:v1.1.2
-        $ docker pull prom/pushgateway:v1.3.1
+        $ docker pull quay.io/prometheus/node-exporter:v1.3.0
+        $ docker pull prom/pushgateway:v1.4.2
 
 
 Step3: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
@@ -29,13 +29,13 @@ Repeat the above steps for other 4 images
 
 Step5: After the build completes, tag your image so, you can push the image to this repository:
 
-        $ docker tag quay.io/prometheus/prometheus:v2.26.0 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/quay.io/prometheus/prometheus:v2.26.0
+        $ docker tag quay.io/prometheus/prometheus:v2.31.1 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/quay.io/prometheus/prometheus:v2.31.1
 
 Repeat the above steps for other 4 images
 
 Step6: Run the following command to push this image to your newly created AWS repository:
 
-        $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/quay.io/prometheus/prometheus:v2.26.0
+        $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/quay.io/prometheus/prometheus:v2.31.1
 
 Repeat the above steps for other 4 images
 
@@ -99,13 +99,12 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_addon_context"></a> [addon\_context](#input\_addon\_context) | Input configuration for the addon | <pre>object({<br>    aws_caller_identity_account_id = string<br>    aws_caller_identity_arn        = string<br>    aws_eks_cluster_endpoint       = string<br>    aws_partition_id               = string<br>    aws_region_name                = string<br>    eks_cluster_id                 = string<br>    eks_oidc_issuer_url            = string<br>    eks_oidc_provider_arn          = string<br>    tags                           = map(string)<br>  })</pre> | n/a | yes |
 | <a name="input_amazon_prometheus_workspace_endpoint"></a> [amazon\_prometheus\_workspace\_endpoint](#input\_amazon\_prometheus\_workspace\_endpoint) | Amazon Managed Prometheus Workspace Endpoint | `string` | `null` | no |
-| <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS Cluster Id | `string` | n/a | yes |
 | <a name="input_enable_amazon_prometheus"></a> [enable\_amazon\_prometheus](#input\_enable\_amazon\_prometheus) | Enable AWS Managed Prometheus service | `bool` | `false` | no |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | Helm Config for Prometheus | `any` | `{}` | no |
 | <a name="input_iam_role_path"></a> [iam\_role\_path](#input\_iam\_role\_path) | IAM role path | `string` | `"/"` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `map('BusinessUnit`,`XYZ`) | `map(string)` | `{}` | no |
 
 ## Outputs
 

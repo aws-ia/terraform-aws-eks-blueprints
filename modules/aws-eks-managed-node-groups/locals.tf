@@ -6,7 +6,9 @@ locals {
     capacity_type   = "ON_DEMAND"  # ON_DEMAND, SPOT
     ami_type        = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
     custom_ami_id   = ""
+    subnet_type     = "private"
     subnet_ids      = []
+    release_version = ""
 
     desired_size    = "3"
     max_size        = "3"
@@ -14,7 +16,7 @@ locals {
     max_unavailable = "1"
 
     disk_size = 50
-    disk_type = "gp2"
+    disk_type = "gp3"
 
     enable_monitoring = true
     eni_delete        = true
@@ -24,8 +26,7 @@ locals {
     k8s_taints      = []
     additional_tags = {}
 
-    create_worker_security_group         = false
-    worker_additional_security_group_ids = [] # Will use this when create_worker_security_group = true
+    create_worker_security_group = false
 
     # LAUNCH TEMPLATES
     create_launch_template  = false
@@ -48,13 +49,13 @@ locals {
     var.managed_ng
   )
 
-  policy_arn_prefix = "arn:aws:iam::aws:policy"
-  ec2_principal     = "ec2.${data.aws_partition.current.dns_suffix}"
+  policy_arn_prefix = "arn:${var.context.aws_partition_id}:iam::aws:policy"
+  ec2_principal     = "ec2.${var.context.aws_partition_dns_suffix}"
 
   userdata_params = {
-    eks_cluster_id       = var.eks_cluster_id
-    cluster_ca_base64    = var.cluster_ca_base64
-    cluster_endpoint     = var.cluster_endpoint
+    eks_cluster_id       = var.context.eks_cluster_id
+    cluster_ca_base64    = var.context.cluster_ca_base64
+    cluster_endpoint     = var.context.cluster_endpoint
     bootstrap_extra_args = local.managed_node_group["bootstrap_extra_args"]
     pre_userdata         = local.managed_node_group["pre_userdata"]
     post_userdata        = local.managed_node_group["post_userdata"]
@@ -74,14 +75,14 @@ locals {
   ))
 
   common_tags = merge(
-    var.tags,
+    var.context.tags,
     local.managed_node_group["additional_tags"],
     {
-      Name = "${var.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
+      Name = "${var.context.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
     },
     {
-      "kubernetes.io/cluster/${var.eks_cluster_id}"     = "owned"
-      "k8s.io/cluster-autoscaler/${var.eks_cluster_id}" = "owned"
-      "k8s.io/cluster-autoscaler/enabled"               = "TRUE"
+      "kubernetes.io/cluster/${var.context.eks_cluster_id}"     = "owned"
+      "k8s.io/cluster-autoscaler/${var.context.eks_cluster_id}" = "owned"
+      "k8s.io/cluster-autoscaler/enabled"                       = "TRUE"
   })
 }

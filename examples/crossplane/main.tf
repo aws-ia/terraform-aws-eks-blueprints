@@ -122,7 +122,6 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS CONTROL PLANE VARIABLES
-  create_eks         = true
   kubernetes_version = local.kubernetes_version
 
   # EKS MANAGED NODE GROUPS
@@ -143,9 +142,22 @@ module "kubernetes-addons" {
   # Refer to docs/add-ons/crossplane.md for advanced configuration
   enable_crossplane = true
 
-  # Optional config to deploy specific version of AWS Provider and attach additional IAM policies to manage AWS resources using Crossplane
-  crossplane_provider_aws = {
-    provider_aws_version     = "v0.23.0"
+  # You can choose to install either of crossplane_aws_provider or crossplane_jet_aws_provider to work with AWS
+  # Creates ProviderConfig -> aws-provider
+  crossplane_aws_provider = {
+    enable               = true
+    provider_aws_version = "v0.24.1"
+    # NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
+    # This example config uses AmazonS3FullAccess for demo purpose only, but you should select a policy with the minimum permissions required to provision your resources.
+    additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
+  }
+
+  # Creates ProviderConfig -> jet-aws-provider
+  crossplane_jet_aws_provider = {
+    enable               = true
+    provider_aws_version = "v0.4.1"
+    # NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
+    # This example config uses AmazonS3FullAccess for demo purpose only, but you should select a policy with the minimum permissions required to provision your resources.
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
   }
 }

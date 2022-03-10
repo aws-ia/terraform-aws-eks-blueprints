@@ -22,11 +22,6 @@ variable "helm_config" {
   description = "Helm Config for Prometheus"
 }
 
-variable "eks_cluster_id" {
-  type        = string
-  description = "EKS Cluster Id"
-}
-
 variable "enable_amazon_prometheus" {
   type        = bool
   default     = false
@@ -45,14 +40,23 @@ variable "iam_role_path" {
   description = "IAM role path"
 }
 
-variable "tags" {
-  type        = map(string)
-  default     = {}
-  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
-}
-
 variable "manage_via_gitops" {
   type        = bool
   default     = false
   description = "Determines if the add-on should be managed via GitOps."
+}
+
+variable "addon_context" {
+  type = object({
+    aws_caller_identity_account_id = string
+    aws_caller_identity_arn        = string
+    aws_eks_cluster_endpoint       = string
+    aws_partition_id               = string
+    aws_region_name                = string
+    eks_cluster_id                 = string
+    eks_oidc_issuer_url            = string
+    eks_oidc_provider_arn          = string
+    tags                           = map(string)
+  })
+  description = "Input configuration for the addon"
 }

@@ -20,7 +20,7 @@ The below example demonstrates the minimum configuration required to deploy a ma
     }
 ```
 
-The below example demonstrates advanced configuration options for a manged node group.
+The below example demonstrates advanced configuration options for a managed node group.
 
 ```hcl
     managed_node_groups = {
@@ -49,6 +49,8 @@ The below example demonstrates advanced configuration options for a manged node 
         # 4> Node Group network configuration
         subnet_ids     = []                          # Mandatory - # Define private/public subnets list with comma separated ["subnet1","subnet2","subnet3"]
         k8s_taints     = []
+        # optionally, configure a taint on the node group:
+        # k8s_taints = [{key= "purpose", value="execution", "effect"="NO_SCHEDULE"}]
         k8s_labels     = {
           Environment = "preprod"
           Zone        = "dev"
@@ -99,7 +101,7 @@ The below example demonstrates advanced configuration options for a self-managed
           block_device_mapping = [
             {
               device_name = "/dev/xvda" # mount point to /
-              volume_type = "gp2"
+              volume_type = "gp3"
               volume_size = 20
             },
             {
@@ -165,4 +167,38 @@ The example below demonstrates how you can customize a Fargate profile for your 
         }
       }
     }
+```
+
+### Windows Self-Managed Node Groups
+
+The example below demonstrates the minimum configuration required to deploy a Self-managed node group of Windows nodes. Refer to the [AWS EKS user guide](https://docs.aws.amazon.com/eks/latest/userguide/windows-support.html) for more information about Windows support in EKS.
+
+```hcl
+  # SELF-MANAGED NODE GROUP with Windows support
+  enable_windows_support = true
+
+  self_managed_node_groups = {
+    ng_od_windows = {
+      node_group_name    = "ng-od-windows"
+      launch_template_os = "windows"
+      instance_type      = "m5n.large"
+      subnet_ids         = module.aws_vpc.private_subnets
+      min_size           = "2"
+    }
+  }
+```
+
+In clusters where Windows support is enabled, workloads should have explicit node assignments configured using `nodeSelector` or `affinity`, as described in the Kubernetes document [Assigning Pods to Nodes](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/).
+For example, if you are enabling the `metrics-server` Kubernetes add-on (Helm chart), use the following configuration to ensure its pods are assigned to Linux nodes. See the [EKS Cluster with Windows Support example](../examples/windows-node-groups/) for full Terraform configuration and workload deployment samples.
+
+```hcl
+  enable_metrics_server = true
+  metrics_server_helm_config = {
+    set = [
+      {
+        name  = "nodeSelector.kubernetes\\.io/os"
+        value = "linux"
+      }
+    ]
+  }
 ```

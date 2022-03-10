@@ -6,7 +6,7 @@ Other than handling Kubernetes ingress objects, this ingress controller can faci
 
 ## Usage
 
-[Nginx Ingress Controller](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/kubernetes-addons/ingress-nginx) can be deployed by enabling the add-on via the following.
+Nginx Ingress Controller can be deployed by enabling the add-on via the following. Check out the full [example](examples/ingress-controllers/nginx/main.tf) to deploy the EKS Cluster with Nginx Ingress Controller.
 
 ```hcl
 enable_ingress_nginx = true
@@ -20,16 +20,32 @@ NAME                                                              READY   STATUS
 ssp-addon-ingress-nginx-78b8567p4q6   1/1     Running   0          4d10h
 ```
 
-Note that the ingress controller is deployed in the `kube-system` namespace.
+Note that the ingress controller is deployed in the `nginx` namespace.
+
+You can optionally customize the Helm chart that deploys `nginx` via the following configuration.
+
+```hcl
+  enable_ingress_nginx = true
+
+  # Optional  ingress_nginx_helm_config
+  ingress_nginx_helm_config = {
+    repository  = "https://kubernetes.github.io/ingress-nginx"
+    version     = "4.0.17"
+    values      = [file("${path.module}/values.yaml")]
+  }
+
+  nginx_irsa_policies = [] # Optional to add additional policies to IRSA
+```
 
 ### GitOps Configuration
 
-The following properties are made available for use when managing the add-on via GitOps
+The following properties are made available for use when managing the add-on via GitOps.
 
-```
-ingressNginx = {
-  enable       = true
-  logGroupName = "<log_group_name>"
-  logGroupArn  = "<log_group_arn>"
-}
+Refer to [locals.tf](modules/kubernetes-addons/nginx/locals.tf) for latest config. GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/ssp-eks-add-ons/blob/main/chart/values.yaml)
+
+``` hcl
+argocd_gitops_config = {
+    enable             = true
+    serviceAccountName = local.service_account_name
+  }
 ```
