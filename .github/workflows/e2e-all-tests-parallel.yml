@@ -29,7 +29,6 @@ jobs:
             examples/aws-efs-csi-driver,
             examples/ci-cd,
             examples/crossplane,
-            examples/eks-cluster-with-argocd,
             examples/eks-cluster-with-new-vpc,
             examples/eks-managed-addons,
             examples/fargate-profiles,
