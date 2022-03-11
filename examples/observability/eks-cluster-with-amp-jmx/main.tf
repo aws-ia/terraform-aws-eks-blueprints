@@ -116,9 +116,9 @@ module "kubernetes-addons" {
 
 
   # OTEL JMX use cases
-  enable_otel_operator_jmx = true
+  enable_otel_operator_jmx             = true
   amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
-  
+
   # Override this if you want to send metrics data to a workspace in a different region
   amazon_prometheus_workspace_region = data.aws_region.current.name
 

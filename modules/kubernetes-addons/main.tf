@@ -293,11 +293,11 @@ module "aws_privateca_issuer" {
 }
 
 module "otel_jmx" {
-  count          = var.enable_otel_operator_jmx ? 1 : 0
-  source         = "./aws-opentelemetry-eks-jmx"
-  eks_cluster_id = var.eks_cluster_id
-  helm_config    = var.otel_operator_jmx_helm_config
+  count                                = var.enable_otel_operator_jmx ? 1 : 0
+  source                               = "./aws-opentelemetry-eks-jmx"
+  eks_cluster_id                       = var.eks_cluster_id
+  helm_config                          = var.otel_operator_jmx_helm_config
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
-  amazon_prometheus_workspace_region = var.amazon_prometheus_workspace_region
-  addon_context  = local.addon_context
+  amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
+  addon_context                        = local.addon_context
 }
