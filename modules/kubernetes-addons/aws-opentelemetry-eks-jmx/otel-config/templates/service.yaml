@@ -8,8 +8,8 @@ metadata:
     component: adot-collector
 spec:
   ports:
-  - name: metrics # Default endpoint for querying metrics.
-    port: 8888
+  - name: metrics
+    port: {{ .Values.prometheusMetricsPort }}
   selector:
     component: adot-collector
   type: NodePort
