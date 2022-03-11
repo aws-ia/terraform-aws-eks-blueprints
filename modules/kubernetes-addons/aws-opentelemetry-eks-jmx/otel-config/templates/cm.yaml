@@ -12,13 +12,13 @@ data:
       prometheus:
         config:
           global:
-            scrape_interval: 15s
-            scrape_timeout: 10s
+            scrape_interval: {{ .Values.scrapeInterval }}
+            scrape_timeout: {{ .Values.scrapeTimeout }}
 
           scrape_configs:
             - job_name: 'kubernetes-pod-jmx'
-              sample_limit: 10000
-              metrics_path: /metrics
+              sample_limit: {{ .Values.scrapeSampleLimit }}
+              metrics_path: /{{ .Values.prometheusMetricsEndpoint }}
               kubernetes_sd_configs:
                 - role: pod
               relabel_configs:

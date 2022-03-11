@@ -149,6 +149,12 @@ variable "amazon_prometheus_workspace_endpoint" {
   description = "AWS Managed Prometheus WorkSpace Endpoint"
 }
 
+variable "amazon_prometheus_workspace_region" {
+  type        = string
+  default     = null
+  description = "AWS Managed Prometheus WorkSpace Region"
+}
+
 variable "amazon_prometheus_ingest_iam_role_arn" {
   type        = string
   default     = null
@@ -575,14 +581,8 @@ variable "enable_otel_operator_jmx" {
   description = "Enable metrics for JMX workloads and automatic Grafana Dashboards"
 }
 
-variable "otel_operator_jmx_config" {
-  type = object({
-    amazon_prometheus_remote_write_url : string,
-    amazon_prometheus_region : string
-  })
-
-  default = {
-    amazon_prometheus_remote_write_url = null
-    amazon_prometheus_region           = null
-  }
+variable "otel_operator_jmx_helm_config" {
+  type = any
+  default = null
+  description = "OpenTelemtry Helm Chart config"
 }

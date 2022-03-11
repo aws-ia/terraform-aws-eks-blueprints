@@ -16,5 +16,5 @@ rules:
     resources:
     - ingresses
     verbs: ["get", "list", "watch"]
-  - nonResourceURLs: ["/metrics"]
+  - nonResourceURLs: ["/{{ .Values.prometheusMetricsEndpoint }}"]
     verbs: ["get"]
