@@ -18,6 +18,7 @@ jobs:
       id-token: write
       contents: read
     strategy:
+      fail-fast: false
       matrix:
         tf_working_dir:
           [
