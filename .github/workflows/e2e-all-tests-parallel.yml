@@ -34,7 +34,7 @@ jobs:
             examples/fargate-profiles,
             examples/fully-private-eks-cluster,
             examples/game-tech/agones-game-controller,
-            examples/ingress-controllers/nginx
+            examples/ingress-controllers/nginx,
             examples/karpenter,
             examples/managed-node-groups,
             examples/multi-tenancy-with-teams,
