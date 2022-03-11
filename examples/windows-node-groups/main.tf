@@ -23,7 +23,7 @@ terraform {
 
 data "aws_region" "current" {
   # Change this per your need
-  name = "us-east-1"
+  name = "us-west-2"
 }
 
 data "aws_availability_zones" "available" {
@@ -33,7 +33,7 @@ data "aws_availability_zones" "available" {
   # https://aws.amazon.com/premiumsupport/knowledge-center/eks-cluster-creation-errors/
   filter {
     name   = "zone-name"
-    values = ["us-east-1a", "us-east-1b", "us-east-1c"]
+    values = ["us-west-2a", "us-west-2b", "us-west-2c"]
   }
 }
 
