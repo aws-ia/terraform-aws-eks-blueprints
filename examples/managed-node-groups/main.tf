@@ -307,7 +307,7 @@ module "aws-eks-accelerator-for-terraform" {
       max_unavailable = 1 # or percentage = 20
 
       # 3> Node Group compute configuration
-      ami_type       = "AL2_ARM_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_X86_64
+      ami_type       = "AL2_ARM_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
       capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
       instance_types = ["m5.large"] # List of instances used only for SPOT type
       disk_size      = 50
@@ -349,7 +349,7 @@ module "aws-eks-accelerator-for-terraform" {
       max_unavailable = 1 # or percentage = 20
 
       # 3> Node Group compute configuration
-      ami_type       = "BOTTLEROCKET_ARM_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_X86_64
+      ami_type       = "BOTTLEROCKET_ARM_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
       capacity_type  = "ON_DEMAND"           # ON_DEMAND or SPOT
       instance_types = ["m5.large"]          # List of instances used only for SPOT type
       disk_size      = 50
