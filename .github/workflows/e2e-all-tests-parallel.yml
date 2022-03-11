@@ -1,4 +1,4 @@
-name: e2e-test
+name: e2e-all-examples-parallel
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   deploy:
-    name: Run e2e test
+    name: E2E Example
     runs-on: ubuntu-latest
 
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
@@ -89,25 +89,3 @@ jobs:
         working-directory: ${{ matrix.tf_working_dir }}
         run: terraform plan -no-color
         continue-on-error: false
-
-      # - name: Terraform Apply
-      #   id: apply
-      #   working-directory: ${{ matrix.tf_working_dir }}
-      #   run: terraform apply -var-file base.tfvars -no-color -input=false -auto-approve
-      #   continue-on-error: false
-
-      # - name: Terraform Destroy
-      #   if: github.event.inputs.TFDestroy == 'true' && (steps.apply.outcome == 'success' || steps.apply.outcome == 'failure')
-      #   id: destroy
-      #   working-directory: ${{ matrix.tf_working_dir }}
-      #   run: terraform destroy -var-file base.tfvars -no-color -auto-approve
-      #   continue-on-error: false
-
-      # - name: Fail if TF apply failed
-      #   if: steps.apply.outcome == 'failure'
-      #   id: fail-if-tf-apply-failed
-      #   run: |
-      #     echo "Terraform Apply step failed...Please check the logs of the Terraform Apply step."
-      #     echo "Failing the job to avoid false positives."
-      #     exit 1
-      #   continue-on-error: false
