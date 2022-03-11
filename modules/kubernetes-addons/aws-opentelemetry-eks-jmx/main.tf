@@ -18,7 +18,7 @@
 
 resource "helm_release" "prometheus" {
   count = 1
-  
+
   name      = local.helm_config["name"]
   chart     = "${path.module}/otel-config"
   namespace = local.helm_config["namespace"]
@@ -60,20 +60,20 @@ module "irsa_amp_ingest" {
   create_kubernetes_namespace = false
   kubernetes_service_account  = local.amazon_prometheus_ingest_service_account
   irsa_iam_policies           = [aws_iam_policy.ingest[0].arn]
-  addon_context     = var.addon_context
+  addon_context               = var.addon_context
 
   depends_on = [kubernetes_namespace_v1.prometheus]
 }
 
 module "irsa_amp_query" {
-count = 1
+  count = 1
 
   source                      = "../../../modules/irsa"
   kubernetes_namespace        = local.helm_config["namespace"]
   create_kubernetes_namespace = false
   kubernetes_service_account  = "amp-query"
   irsa_iam_policies           = [aws_iam_policy.query[0].arn]
-  addon_context     = var.addon_context
+  addon_context               = var.addon_context
 
   depends_on = [kubernetes_namespace_v1.prometheus]
 }

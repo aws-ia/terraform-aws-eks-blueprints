@@ -1,24 +1,24 @@
 locals {
   default_helm_config = {
-    name                       = "opentelemetry"
-    chart                      = "${path.module}/otel-config"
-    version                    = "0.1.0"
-    namespace                  = "opentelemetry-operator-system"
-    timeout                    = "300"
-    create_namespace           = true
-    description                = "ADOT helm Chart deployment configuration"
-    lint                       = false
-    values                     = []
-    set                        = []
-    set_sensitive              = null
-    postrender                 = ""
+    name             = "opentelemetry"
+    chart            = "${path.module}/otel-config"
+    version          = "0.1.0"
+    namespace        = "opentelemetry-operator-system"
+    timeout          = "300"
+    create_namespace = true
+    description      = "ADOT helm Chart deployment configuration"
+    lint             = false
+    values           = []
+    set              = []
+    set_sensitive    = null
+    postrender       = ""
   }
-  
+
   helm_config = merge(
     local.default_helm_config,
     var.helm_config
   )
-  
+
 
   amazon_prometheus_ingest_service_account = "amp-ingest"
   amazon_prometheus_ingest_iam_role_arn    = (var.amazon_prometheus_workspace_endpoint != null) ? module.irsa_amp_ingest[0].irsa_iam_role_arn : ""
@@ -33,23 +33,23 @@ locals {
       value = var.amazon_prometheus_workspace_region
     },
     {
-      name = "prometheusMetricsEndpoint"
+      name  = "prometheusMetricsEndpoint"
       value = "metrics"
     },
     {
-      name = "prometheusMetricsPort"
+      name  = "prometheusMetricsPort"
       value = 8888
     },
     {
-      name = "scrapeInterval"
+      name  = "scrapeInterval"
       value = "15s"
     },
     {
-      name = "scrapeTimeout"
+      name  = "scrapeTimeout"
       value = "10s"
     },
     {
-      name = "scrapeSampleLimit"
+      name  = "scrapeSampleLimit"
       value = 1000
     }
   ]

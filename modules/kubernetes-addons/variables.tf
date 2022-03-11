@@ -582,7 +582,7 @@ variable "enable_otel_operator_jmx" {
 }
 
 variable "otel_operator_jmx_helm_config" {
-  type = any
-  default = null
+  type        = any
+  default     = null
   description = "OpenTelemtry Helm Chart config"
 }
