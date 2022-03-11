@@ -122,9 +122,9 @@ terraform destroy -auto-approve
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git | v3.2.1 |
+| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | ../.. | n/a |
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
-| <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git//modules/kubernetes-addons | v3.2.1 |
+| <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | ../../modules/kubernetes-addons | n/a |
 
 ## Resources
 
