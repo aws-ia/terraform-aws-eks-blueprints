@@ -22,7 +22,6 @@ jobs:
       matrix:
         tf_working_dir:
           [
-            examples/advanced/k8s_addons,
             examples/analytics/emr-on-eks,
             examples/analytics/spark-k8s-operator,
             examples/argocd,
@@ -37,7 +36,6 @@ jobs:
             examples/karpenter,
             examples/managed-node-groups,
             examples/multi-tenancy-with-teams,
-            examples/observability/eks-cluster-with-amp-amg-opensearch,
             examples/self-managed-node-groups,
             examples/windows-node-groups
           ]
