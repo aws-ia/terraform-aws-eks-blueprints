@@ -389,7 +389,7 @@ module "kubernetes-addons" {
 [OUTPUT]
   Name cloudwatch_logs
   Match *
-  region eu-west-1
+  region ${data.aws_region.current.name}
   log_group_name /${local.eks_cluster_id}/fargate-fluentbit-logs
   log_stream_prefix "fargate-logs-"
   auto_create_group true
