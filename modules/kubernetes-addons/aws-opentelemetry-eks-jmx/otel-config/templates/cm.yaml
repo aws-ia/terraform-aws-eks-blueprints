@@ -45,7 +45,7 @@ data:
               metric_relabel_configs:
                 - source_labels: [ __name__ ]
                   regex: 'jvm_gc_collection_seconds.*'
-                  action: keep
+                  action: drop
     exporters:
       awsprometheusremotewrite:
         endpoint: {{ .Values.ampurl }}
