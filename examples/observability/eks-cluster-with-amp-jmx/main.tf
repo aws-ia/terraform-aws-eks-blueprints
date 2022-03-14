@@ -143,7 +143,7 @@ resource "grafana_data_source" "prometheus" {
 # Configure JMX default Grafana dashboards
 #---------------------------------------------------------------
 resource "grafana_folder" "jmx_dashboards" {
-  title = "JMX Dashboards"
+  title = "Observability"
 
   depends_on = [module.kubernetes-addons]
 }
