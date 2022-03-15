@@ -42,7 +42,7 @@ locals {
     serviceAccountName = local.service_account_name
   }
 
-    irsa_config = {
+  irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = true
