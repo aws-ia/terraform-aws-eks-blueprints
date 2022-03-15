@@ -1,7 +1,7 @@
 locals {
-  name                 = "ingress-nginx"
-  namespace            = "nginx"
-  
+  name      = "ingress-nginx"
+  namespace = "nginx"
+
   default_helm_config = {
     name             = local.name
     chart            = local.name
@@ -23,6 +23,6 @@ locals {
   )
 
   argocd_gitops_config = {
-    enable             = true
+    enable = true
   }
 }

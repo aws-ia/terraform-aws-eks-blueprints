@@ -1,13 +1,13 @@
 locals {
   name = "prometheus"
   default_helm_config = {
-    name                       = local.name
-    chart                      = local.name
-    repository                 = "https://prometheus-community.github.io/helm-charts"
-    version                    = "15.3.0"
-    namespace                  = "prometheus"
-    timeout                    = "1200"
-    description                = "Prometheus helm Chart deployment configuration"
+    name        = local.name
+    chart       = local.name
+    repository  = "https://prometheus-community.github.io/helm-charts"
+    version     = "15.3.0"
+    namespace   = "prometheus"
+    timeout     = "1200"
+    description = "Prometheus helm Chart deployment configuration"
   }
 
   helm_config = merge(
