@@ -1,8 +1,9 @@
 locals {
+  name                 = "aws-for-fluent-bit"
   log_group_name       = var.cw_log_group_name == null ? "/${var.addon_context.eks_cluster_id}/worker-fluentbit-logs" : var.cw_log_group_name
-  service_account_name = "aws-for-fluent-bit-sa"
+  service_account_name = "${local.name}-sa"
 
-  override_set_values = [
+  set_values = [
     {
       name  = "serviceAccount.name"
       value = local.service_account_name
@@ -14,41 +15,13 @@ locals {
   ]
 
   default_helm_config = {
-    name                       = "aws-for-fluent-bit"
-    chart                      = "aws-for-fluent-bit"
-    repository                 = "https://aws.github.io/eks-charts"
-    version                    = "0.1.11"
-    namespace                  = "logging"
-    timeout                    = "300"
-    create_namespace           = false
-    values                     = local.default_helm_values
-    set                        = []
-    set_sensitive              = null
-    lint                       = true
-    wait                       = true
-    wait_for_jobs              = false
-    description                = "aws-for-fluentbit Helm Chart deployment configuration"
-    verify                     = false
-    keyring                    = ""
-    repository_key_file        = ""
-    repository_cert_file       = ""
-    repository_ca_file         = ""
-    repository_username        = ""
-    repository_password        = ""
-    disable_webhooks           = false
-    reuse_values               = false
-    reset_values               = false
-    force_update               = false
-    recreate_pods              = false
-    cleanup_on_fail            = false
-    max_history                = 0
-    atomic                     = false
-    skip_crds                  = false
-    render_subchart_notes      = true
-    disable_openapi_validation = false
-    dependency_update          = false
-    replace                    = false
-    postrender                 = ""
+    name        = local.name
+    chart       = local.name
+    repository  = "https://aws.github.io/eks-charts"
+    version     = "0.1.11"
+    namespace   = "logging"
+    values      = local.default_helm_values
+    description = "aws-for-fluentbit Helm Chart deployment configuration"
   }
 
   helm_config = merge(
@@ -66,5 +39,15 @@ locals {
     enable             = true
     logGroupName       = aws_cloudwatch_log_group.aws_for_fluent_bit.name
     serviceAccountName = local.service_account_name
+  }
+
+  irsa_config = {
+    kubernetes_namespace              = local.helm_config["namespace"]
+    kubernetes_service_account        = local.service_account_name
+    create_kubernetes_namespace       = true
+    create_kubernetes_service_account = true
+    irsa_iam_policies                 = concat([aws_iam_policy.aws_for_fluent_bit.arn], var.irsa_policies)
+    irsa_iam_permissions_boundary     = var.irsa_permissions_boundary
+    eks_cluster_id                    = var.addon_context.eks_cluster_id
   }
 }
