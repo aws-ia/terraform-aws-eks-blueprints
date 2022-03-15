@@ -20,7 +20,6 @@ locals {
     repository  = "https://aws.github.io/eks-charts"
     version     = "0.1.11"
     namespace   = "logging"
-    timeout     = "1200"
     values      = local.default_helm_values
     description = "aws-for-fluentbit Helm Chart deployment configuration"
   }
