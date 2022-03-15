@@ -6,7 +6,7 @@ module "helm_addon" {
   irsa_config       = null
   addon_context     = var.addon_context
 
-  depends_on = [irsa_amp_ingest, irsa_amp_query]
+  depends_on = [module.irsa_amp_ingest, module.irsa_amp_query]
 }
 
 module "irsa_amp_ingest" {
@@ -37,7 +37,6 @@ resource "aws_iam_policy" "ingest" {
   count       = var.enable_amazon_prometheus ? 1 : 0
   name        = format("%s-%s", "amp-ingest", var.addon_context.eks_cluster_id)
   description = "Set up the permission policy that grants ingest (remote write) permissions for AMP workspace"
-  path        = var.iam_role_path
   policy      = data.aws_iam_policy_document.ingest.json
   tags        = var.addon_context.tags
 }
@@ -46,7 +45,6 @@ resource "aws_iam_policy" "query" {
   count       = var.enable_amazon_prometheus ? 1 : 0
   name        = format("%s-%s", "amp-query", var.addon_context.eks_cluster_id)
   description = "Set up the permission policy that grants query permissions for AMP workspace"
-  path        = var.iam_role_path
   policy      = data.aws_iam_policy_document.query.json
   tags        = var.addon_context.tags
 }

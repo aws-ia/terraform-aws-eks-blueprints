@@ -1,12 +1,14 @@
 locals {
   name                 = "kubernetes-dashboard"
   service_account_name = "eks-admin"
+  namespace            = "kube-system"
+
   default_helm_config = {
     name        = local.name
     chart       = local.name
     repository  = "https://kubernetes.github.io/dashboard/"
     version     = "5.2.0"
-    namespace   = local.name
+    namespace   = local.namespace
     description = "Kubernetes Dashboard Helm Chart"
     values      = local.default_helm_values
     timeout     = "1200"

@@ -427,6 +427,12 @@ variable "karpenter_helm_config" {
   description = "Karpenter autoscaler add-on config"
 }
 
+variable "karpenter_irsa_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM role path"
+}
+
 variable "karpenter_irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
