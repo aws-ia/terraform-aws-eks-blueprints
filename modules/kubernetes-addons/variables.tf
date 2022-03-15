@@ -89,6 +89,12 @@ variable "cluster_autoscaler_helm_config" {
   description = "Cluster Autoscaler Helm Chart config"
 }
 
+variable "cluster_autoscaler_irsa_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM role path"
+}
+
 variable "cluster_autoscaler_irsa_permissions_boundary" {
   type        = string
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"
@@ -149,16 +155,16 @@ variable "amazon_prometheus_workspace_endpoint" {
   description = "AWS Managed Prometheus WorkSpace Endpoint"
 }
 
-variable "amazon_prometheus_ingest_iam_role_arn" {
+variable "amazon_prometheus_irsa_role_path" {
   type        = string
-  default     = null
-  description = "AWS Managed Prometheus WorkSpaceSpace IAM role ARN"
+  default     = "/"
+  description = "IAM role path"
 }
 
-variable "amazon_prometheus_ingest_service_account" {
+variable "amazon_prometheus_irsa_permissions_boundary" {
   type        = string
-  default     = null
-  description = "AWS Managed Prometheus Ingest Service Account"
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+  default     = ""
 }
 
 #-----------PROMETHEUS-------------
@@ -239,6 +245,12 @@ variable "aws_load_balancer_controller_helm_config" {
   default     = {}
 }
 
+variable "aws_load_balancer_controller_irsa_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM role path"
+}
+
 variable "aws_load_balancer_controller_irsa_permissions_boundary" {
   type        = string
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"
@@ -258,18 +270,6 @@ variable "ingress_nginx_helm_config" {
   default     = {}
 }
 
-variable "nginx_irsa_policies" {
-  type        = list(string)
-  description = "Additional IAM policies for a IAM role for service accounts"
-  default     = []
-}
-
-variable "nginx_ingress_controller_irsa_permissions_boundary" {
-  type        = string
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
-  default     = ""
-}
-
 #-----------SPARK K8S OPERATOR-------------
 variable "enable_spark_k8s_operator" {
   type        = bool
@@ -281,30 +281,6 @@ variable "spark_k8s_operator_helm_config" {
   description = "Spark on K8s Operator Helm Chart config"
   type        = any
   default     = {}
-}
-
-variable "spark_irsa_policies" {
-  type        = list(string)
-  description = "Additional IAM policies for a IAM role for service accounts for Spark App"
-  default     = []
-}
-
-variable "spark_irsa_permissions_boundary" {
-  type        = string
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary for Spark App"
-  default     = ""
-}
-
-variable "spark_operator_irsa_policies" {
-  type        = list(string)
-  description = "Additional IAM policies for a IAM role for service accounts for Spark Operator"
-  default     = []
-}
-
-variable "spark_operator_irsa_permissions_boundary" {
-  type        = string
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary for Spark Operator"
-  default     = ""
 }
 
 #-----------AWS FOR FLUENT BIT-------------
@@ -413,13 +389,19 @@ variable "aws_node_termination_handler_helm_config" {
   default     = {}
 }
 
-variable "node_termination_handler_irsa_policies" {
+variable "aws_node_termination_handler_irsa_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM role path"
+}
+
+variable "aws_node_termination_handler_irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
   default     = []
 }
 
-variable "node_termination_handler_irsa_permissions_boundary" {
+variable "aws_node_termination_handler_irsa_permissions_boundary" {
   type        = string
   default     = ""
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"
@@ -462,10 +444,10 @@ variable "keda_helm_config" {
   description = "KEDA Event-based autoscaler add-on config"
 }
 
-variable "keda_create_irsa" {
-  type        = bool
-  description = "Indicates if the add-on should create a IAM role + service account"
-  default     = true
+variable "keda_irsa_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM role path"
 }
 
 variable "keda_irsa_policies" {
@@ -506,6 +488,11 @@ variable "yunikorn_helm_config" {
   description = "Yunikorn Helm Chart config"
 }
 
+variable "yunikorn_irsa_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM role path"
+}
 variable "yunikorn_irsa_policies" {
   type        = list(string)
   default     = []
@@ -531,18 +518,6 @@ variable "argo_rollouts_helm_config" {
   description = "Argo Rollouts Helm Chart config"
 }
 
-variable "argo_rollouts_irsa_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
-}
-
-variable "argo_rollouts_irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM policy ARNs for Argo Rollouts IRSA"
-}
-
 #-----------Kubernetes Dashboard ADDON-------------
 variable "enable_kubernetes_dashboard" {
   type        = bool
@@ -554,16 +529,4 @@ variable "kubernetes_dashboard_helm_config" {
   type        = any
   default     = null
   description = "Kubernetes Dashboard Helm Chart config"
-}
-
-variable "kubernetes_dashboard_irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM policy ARNs for Kubernetes Dashboard IRSA"
-}
-
-variable "kubernetes_dashboard_irsa_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }

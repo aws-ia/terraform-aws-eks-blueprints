@@ -81,6 +81,7 @@ module "aws_load_balancer_controller" {
   count                         = var.enable_aws_load_balancer_controller ? 1 : 0
   source                        = "./aws-load-balancer-controller"
   helm_config                   = var.aws_load_balancer_controller_helm_config
+  irsa_role_path                = var.aws_load_balancer_controller_irsa_role_path
   irsa_iam_permissions_boundary = var.aws_load_balancer_controller_irsa_permissions_boundary
   manage_via_gitops             = var.argocd_manage_add_ons
   addon_context                 = local.addon_context
@@ -90,8 +91,9 @@ module "aws_node_termination_handler" {
   count                     = var.enable_aws_node_termination_handler && length(var.auto_scaling_group_names) > 0 ? 1 : 0
   source                    = "./aws-node-termination-handler"
   helm_config               = var.aws_node_termination_handler_helm_config
-  irsa_policies             = var.node_termination_handler_irsa_policies
-  irsa_permissions_boundary = var.node_termination_handler_irsa_permissions_boundary
+  irsa_role_path            = var.aws_node_termination_handler_irsa_role_path
+  irsa_policies             = var.aws_node_termination_handler_irsa_policies
+  irsa_permissions_boundary = var.aws_node_termination_handler_irsa_permissions_boundary
   autoscaling_group_names   = var.auto_scaling_group_names
   addon_context             = local.addon_context
 }
@@ -109,6 +111,7 @@ module "cluster_autoscaler" {
   source                        = "./cluster-autoscaler"
   helm_config                   = var.cluster_autoscaler_helm_config
   manage_via_gitops             = var.argocd_manage_add_ons
+  irsa_role_path                = var.cluster_autoscaler_irsa_role_path
   irsa_iam_permissions_boundary = var.cluster_autoscaler_irsa_permissions_boundary
   addon_context                 = local.addon_context
 }
@@ -133,19 +136,18 @@ module "fargate_fluentbit" {
 }
 
 module "ingress_nginx" {
-  count                         = var.enable_ingress_nginx ? 1 : 0
-  source                        = "./ingress-nginx"
-  helm_config                   = var.ingress_nginx_helm_config
-  manage_via_gitops             = var.argocd_manage_add_ons
-  irsa_policies                 = var.nginx_irsa_policies
-  irsa_iam_permissions_boundary = var.nginx_ingress_controller_irsa_permissions_boundary
-  addon_context                 = local.addon_context
+  count             = var.enable_ingress_nginx ? 1 : 0
+  source            = "./ingress-nginx"
+  helm_config       = var.ingress_nginx_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "karpenter" {
   count                     = var.enable_karpenter ? 1 : 0
   source                    = "./karpenter"
   helm_config               = var.karpenter_helm_config
+  irsa_role_path            = var.karpenter_irsa_role_path
   irsa_policies             = var.karpenter_irsa_policies
   node_iam_instance_profile = var.karpenter_node_iam_instance_profile
   manage_via_gitops         = var.argocd_manage_add_ons
@@ -156,6 +158,7 @@ module "keda" {
   count                     = var.enable_keda ? 1 : 0
   source                    = "./keda"
   helm_config               = var.keda_helm_config
+  irsa_role_path            = var.keda_irsa_role_path
   irsa_policies             = var.keda_irsa_policies
   irsa_permissions_boundary = var.keda_irsa_permissions_boundary
   manage_via_gitops         = var.argocd_manage_add_ons
@@ -178,6 +181,8 @@ module "prometheus" {
   enable_amazon_prometheus             = var.enable_amazon_prometheus
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
   manage_via_gitops                    = var.argocd_manage_add_ons
+  irsa_role_path                       = var.amazon_prometheus_irsa_role_path
+  irsa_permissions_boundary            = var.amazon_prometheus_irsa_permissions_boundary
   addon_context                        = local.addon_context
 }
 
@@ -209,6 +214,7 @@ module "yunikorn" {
   count                     = var.enable_yunikorn ? 1 : 0
   source                    = "./yunikorn"
   helm_config               = var.yunikorn_helm_config
+  irsa_role_path            = var.yunikorn_irsa_role_path
   irsa_policies             = var.yunikorn_irsa_policies
   irsa_permissions_boundary = var.yunikorn_irsa_permissions_boundary
   manage_via_gitops         = var.argocd_manage_add_ons
@@ -216,11 +222,9 @@ module "yunikorn" {
 }
 
 module "kubernetes_dashboard" {
-  count                     = var.enable_kubernetes_dashboard ? 1 : 0
-  source                    = "./kubernetes-dashboard"
-  helm_config               = var.kubernetes_dashboard_helm_config
-  irsa_policies             = var.kubernetes_dashboard_irsa_policies
-  irsa_permissions_boundary = var.kubernetes_dashboard_irsa_permissions_boundary
-  manage_via_gitops         = var.argocd_manage_add_ons
-  addon_context             = local.addon_context
+  count             = var.enable_kubernetes_dashboard ? 1 : 0
+  source            = "./kubernetes-dashboard"
+  helm_config       = var.kubernetes_dashboard_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }

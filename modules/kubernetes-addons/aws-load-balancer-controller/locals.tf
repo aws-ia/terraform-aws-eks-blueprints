@@ -45,7 +45,7 @@ locals {
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = false
     create_kubernetes_service_account = true
-    iam_role_path                     = "/"
+    iam_role_path                     = var.irsa_role_path
     irsa_iam_policies                 = [aws_iam_policy.aws_load_balancer_controller.arn]
     irsa_iam_permissions_boundary     = var.irsa_iam_permissions_boundary
   }

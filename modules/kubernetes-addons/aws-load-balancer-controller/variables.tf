@@ -10,6 +10,12 @@ variable "manage_via_gitops" {
   description = "Determines if the add-on should be managed via GitOps."
 }
 
+variable "irsa_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM role path"
+}
+
 variable "irsa_iam_permissions_boundary" {
   type        = string
   default     = ""

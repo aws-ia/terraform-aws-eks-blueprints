@@ -40,6 +40,7 @@ locals {
     kubernetes_namespace              = "kube-system"
     create_kubernetes_service_account = true
     kubernetes_service_account        = local.service_account_name
+    iam_role_path                     = var.irsa_role_path
     irsa_iam_policies                 = [aws_iam_policy.cluster_autoscaler.arn]
     irsa_iam_permissions_boundary     = var.irsa_iam_permissions_boundary
   }

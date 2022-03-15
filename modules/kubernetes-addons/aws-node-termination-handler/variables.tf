@@ -24,6 +24,12 @@ variable "addon_context" {
   description = "Input configuration for the addon"
 }
 
+variable "irsa_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM role path"
+}
+
 variable "irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"

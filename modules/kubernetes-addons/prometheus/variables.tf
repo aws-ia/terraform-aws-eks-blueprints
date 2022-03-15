@@ -16,10 +16,16 @@ variable "amazon_prometheus_workspace_endpoint" {
   description = "Amazon Managed Prometheus Workspace Endpoint"
 }
 
-variable "iam_role_path" {
+variable "irsa_role_path" {
   type        = string
   default     = "/"
   description = "IAM role path"
+}
+
+variable "irsa_permissions_boundary" {
+  type        = string
+  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
+  default     = ""
 }
 
 variable "manage_via_gitops" {
