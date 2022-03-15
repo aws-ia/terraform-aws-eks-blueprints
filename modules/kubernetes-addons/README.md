@@ -1,20 +1,4 @@
 <!--- BEGIN_TF_DOCS --->
-Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-SPDX-License-Identifier: MIT-0
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this
-software and associated documentation files (the "Software"), to deal in the Software
-without restriction, including without limitation the rights to use, copy, modify,
-merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 ## Requirements
 
 | Name | Version |
@@ -80,12 +64,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_amazon_eks_coredns_config"></a> [amazon\_eks\_coredns\_config](#input\_amazon\_eks\_coredns\_config) | ConfigMap for Amazon CoreDNS EKS add-on | `any` | `{}` | no |
 | <a name="input_amazon_eks_kube_proxy_config"></a> [amazon\_eks\_kube\_proxy\_config](#input\_amazon\_eks\_kube\_proxy\_config) | ConfigMap for Amazon EKS Kube-Proxy add-on | `any` | `{}` | no |
 | <a name="input_amazon_eks_vpc_cni_config"></a> [amazon\_eks\_vpc\_cni\_config](#input\_amazon\_eks\_vpc\_cni\_config) | ConfigMap of Amazon EKS VPC CNI add-on | `any` | `{}` | no |
-| <a name="input_amazon_prometheus_ingest_iam_role_arn"></a> [amazon\_prometheus\_ingest\_iam\_role\_arn](#input\_amazon\_prometheus\_ingest\_iam\_role\_arn) | AWS Managed Prometheus WorkSpaceSpace IAM role ARN | `string` | `null` | no |
-| <a name="input_amazon_prometheus_ingest_service_account"></a> [amazon\_prometheus\_ingest\_service\_account](#input\_amazon\_prometheus\_ingest\_service\_account) | AWS Managed Prometheus Ingest Service Account | `string` | `null` | no |
+| <a name="input_amazon_prometheus_irsa_permissions_boundary"></a> [amazon\_prometheus\_irsa\_permissions\_boundary](#input\_amazon\_prometheus\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary | `string` | `""` | no |
+| <a name="input_amazon_prometheus_irsa_role_path"></a> [amazon\_prometheus\_irsa\_role\_path](#input\_amazon\_prometheus\_irsa\_role\_path) | IAM role path | `string` | `"/"` | no |
 | <a name="input_amazon_prometheus_workspace_endpoint"></a> [amazon\_prometheus\_workspace\_endpoint](#input\_amazon\_prometheus\_workspace\_endpoint) | AWS Managed Prometheus WorkSpace Endpoint | `string` | `null` | no |
 | <a name="input_argo_rollouts_helm_config"></a> [argo\_rollouts\_helm\_config](#input\_argo\_rollouts\_helm\_config) | Argo Rollouts Helm Chart config | `any` | `null` | no |
-| <a name="input_argo_rollouts_irsa_permissions_boundary"></a> [argo\_rollouts\_irsa\_permissions\_boundary](#input\_argo\_rollouts\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary | `string` | `""` | no |
-| <a name="input_argo_rollouts_irsa_policies"></a> [argo\_rollouts\_irsa\_policies](#input\_argo\_rollouts\_irsa\_policies) | IAM policy ARNs for Argo Rollouts IRSA | `list(string)` | `[]` | no |
 | <a name="input_argocd_admin_password_secret_name"></a> [argocd\_admin\_password\_secret\_name](#input\_argocd\_admin\_password\_secret\_name) | Name for a secret stored in AWS Secrets Manager that contains the admin password. | `string` | `""` | no |
 | <a name="input_argocd_applications"></a> [argocd\_applications](#input\_argocd\_applications) | Argo CD Applications config to bootstrap the cluster | `any` | `{}` | no |
 | <a name="input_argocd_helm_config"></a> [argocd\_helm\_config](#input\_argocd\_helm\_config) | Argo CD Kubernetes add-on config | `any` | `{}` | no |
@@ -97,12 +79,18 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_aws_for_fluentbit_cw_log_group_retention"></a> [aws\_for\_fluentbit\_cw\_log\_group\_retention](#input\_aws\_for\_fluentbit\_cw\_log\_group\_retention) | FluentBit CloudWatch Log group retention period | `number` | `90` | no |
 | <a name="input_aws_for_fluentbit_helm_config"></a> [aws\_for\_fluentbit\_helm\_config](#input\_aws\_for\_fluentbit\_helm\_config) | AWS for FluentBit Helm Chart config | `any` | `{}` | no |
 | <a name="input_aws_for_fluentbit_irsa_policies"></a> [aws\_for\_fluentbit\_irsa\_policies](#input\_aws\_for\_fluentbit\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
+| <a name="input_aws_for_fluentbit_irsa_role_path"></a> [aws\_for\_fluentbit\_irsa\_role\_path](#input\_aws\_for\_fluentbit\_irsa\_role\_path) | IAM role path | `string` | `"/"` | no |
 | <a name="input_aws_load_balancer_controller_helm_config"></a> [aws\_load\_balancer\_controller\_helm\_config](#input\_aws\_load\_balancer\_controller\_helm\_config) | AWS Load Balancer Controller Helm Chart config | `any` | `{}` | no |
 | <a name="input_aws_load_balancer_controller_irsa_permissions_boundary"></a> [aws\_load\_balancer\_controller\_irsa\_permissions\_boundary](#input\_aws\_load\_balancer\_controller\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary | `string` | `""` | no |
+| <a name="input_aws_load_balancer_controller_irsa_role_path"></a> [aws\_load\_balancer\_controller\_irsa\_role\_path](#input\_aws\_load\_balancer\_controller\_irsa\_role\_path) | IAM role path | `string` | `"/"` | no |
 | <a name="input_aws_node_termination_handler_helm_config"></a> [aws\_node\_termination\_handler\_helm\_config](#input\_aws\_node\_termination\_handler\_helm\_config) | AWS Node Termination Handler Helm Chart config | `any` | `{}` | no |
+| <a name="input_aws_node_termination_handler_irsa_permissions_boundary"></a> [aws\_node\_termination\_handler\_irsa\_permissions\_boundary](#input\_aws\_node\_termination\_handler\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary | `string` | `""` | no |
+| <a name="input_aws_node_termination_handler_irsa_policies"></a> [aws\_node\_termination\_handler\_irsa\_policies](#input\_aws\_node\_termination\_handler\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
+| <a name="input_aws_node_termination_handler_irsa_role_path"></a> [aws\_node\_termination\_handler\_irsa\_role\_path](#input\_aws\_node\_termination\_handler\_irsa\_role\_path) | IAM role path | `string` | `"/"` | no |
 | <a name="input_cert_manager_helm_config"></a> [cert\_manager\_helm\_config](#input\_cert\_manager\_helm\_config) | Cert Manager Helm Chart config | `any` | `{}` | no |
 | <a name="input_cluster_autoscaler_helm_config"></a> [cluster\_autoscaler\_helm\_config](#input\_cluster\_autoscaler\_helm\_config) | Cluster Autoscaler Helm Chart config | `any` | `{}` | no |
 | <a name="input_cluster_autoscaler_irsa_permissions_boundary"></a> [cluster\_autoscaler\_irsa\_permissions\_boundary](#input\_cluster\_autoscaler\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary | `string` | `""` | no |
+| <a name="input_cluster_autoscaler_irsa_role_path"></a> [cluster\_autoscaler\_irsa\_role\_path](#input\_cluster\_autoscaler\_irsa\_role\_path) | IAM role path | `string` | `"/"` | no |
 | <a name="input_crossplane_aws_provider"></a> [crossplane\_aws\_provider](#input\_crossplane\_aws\_provider) | AWS Provider config for Crossplane | <pre>object({<br>    enable                   = bool<br>    provider_aws_version     = string<br>    additional_irsa_policies = list(string)<br>  })</pre> | <pre>{<br>  "additional_irsa_policies": [],<br>  "enable": false,<br>  "provider_aws_version": "v0.24.1"<br>}</pre> | no |
 | <a name="input_crossplane_helm_config"></a> [crossplane\_helm\_config](#input\_crossplane\_helm\_config) | Crossplane Helm Chart config | `any` | `null` | no |
 | <a name="input_crossplane_jet_aws_provider"></a> [crossplane\_jet\_aws\_provider](#input\_crossplane\_jet\_aws\_provider) | AWS Provider Jet AWS config for Crossplane | <pre>object({<br>    enable                   = bool<br>    provider_aws_version     = string<br>    additional_irsa_policies = list(string)<br>  })</pre> | <pre>{<br>  "additional_irsa_policies": [],<br>  "enable": false,<br>  "provider_aws_version": "v0.24.1"<br>}</pre> | no |
@@ -139,31 +127,22 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_karpenter_helm_config"></a> [karpenter\_helm\_config](#input\_karpenter\_helm\_config) | Karpenter autoscaler add-on config | `any` | `{}` | no |
 | <a name="input_karpenter_irsa_policies"></a> [karpenter\_irsa\_policies](#input\_karpenter\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
 | <a name="input_karpenter_node_iam_instance_profile"></a> [karpenter\_node\_iam\_instance\_profile](#input\_karpenter\_node\_iam\_instance\_profile) | Karpenter Node IAM Instance profile id | `string` | `""` | no |
-| <a name="input_keda_create_irsa"></a> [keda\_create\_irsa](#input\_keda\_create\_irsa) | Indicates if the add-on should create a IAM role + service account | `bool` | `true` | no |
 | <a name="input_keda_helm_config"></a> [keda\_helm\_config](#input\_keda\_helm\_config) | KEDA Event-based autoscaler add-on config | `any` | `{}` | no |
 | <a name="input_keda_irsa_permissions_boundary"></a> [keda\_irsa\_permissions\_boundary](#input\_keda\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary | `string` | `""` | no |
 | <a name="input_keda_irsa_policies"></a> [keda\_irsa\_policies](#input\_keda\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
+| <a name="input_keda_irsa_role_path"></a> [keda\_irsa\_role\_path](#input\_keda\_irsa\_role\_path) | IAM role path | `string` | `"/"` | no |
 | <a name="input_kubernetes_dashboard_helm_config"></a> [kubernetes\_dashboard\_helm\_config](#input\_kubernetes\_dashboard\_helm\_config) | Kubernetes Dashboard Helm Chart config | `any` | `null` | no |
-| <a name="input_kubernetes_dashboard_irsa_permissions_boundary"></a> [kubernetes\_dashboard\_irsa\_permissions\_boundary](#input\_kubernetes\_dashboard\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary | `string` | `""` | no |
-| <a name="input_kubernetes_dashboard_irsa_policies"></a> [kubernetes\_dashboard\_irsa\_policies](#input\_kubernetes\_dashboard\_irsa\_policies) | IAM policy ARNs for Kubernetes Dashboard IRSA | `list(string)` | `[]` | no |
 | <a name="input_metrics_server_helm_config"></a> [metrics\_server\_helm\_config](#input\_metrics\_server\_helm\_config) | Metrics Server Helm Chart config | `any` | `{}` | no |
-| <a name="input_nginx_ingress_controller_irsa_permissions_boundary"></a> [nginx\_ingress\_controller\_irsa\_permissions\_boundary](#input\_nginx\_ingress\_controller\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary | `string` | `""` | no |
-| <a name="input_nginx_irsa_policies"></a> [nginx\_irsa\_policies](#input\_nginx\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
 | <a name="input_node_groups_iam_role_arn"></a> [node\_groups\_iam\_role\_arn](#input\_node\_groups\_iam\_role\_arn) | Node Groups IAM role ARNs | `list(string)` | `[]` | no |
-| <a name="input_node_termination_handler_irsa_permissions_boundary"></a> [node\_termination\_handler\_irsa\_permissions\_boundary](#input\_node\_termination\_handler\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary | `string` | `""` | no |
-| <a name="input_node_termination_handler_irsa_policies"></a> [node\_termination\_handler\_irsa\_policies](#input\_node\_termination\_handler\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
 | <a name="input_prometheus_helm_config"></a> [prometheus\_helm\_config](#input\_prometheus\_helm\_config) | Community Prometheus Helm Chart config | `any` | `{}` | no |
-| <a name="input_spark_irsa_permissions_boundary"></a> [spark\_irsa\_permissions\_boundary](#input\_spark\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary for Spark App | `string` | `""` | no |
-| <a name="input_spark_irsa_policies"></a> [spark\_irsa\_policies](#input\_spark\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts for Spark App | `list(string)` | `[]` | no |
 | <a name="input_spark_k8s_operator_helm_config"></a> [spark\_k8s\_operator\_helm\_config](#input\_spark\_k8s\_operator\_helm\_config) | Spark on K8s Operator Helm Chart config | `any` | `{}` | no |
-| <a name="input_spark_operator_irsa_permissions_boundary"></a> [spark\_operator\_irsa\_permissions\_boundary](#input\_spark\_operator\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary for Spark Operator | `string` | `""` | no |
-| <a name="input_spark_operator_irsa_policies"></a> [spark\_operator\_irsa\_policies](#input\_spark\_operator\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts for Spark Operator | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `map('BusinessUnit`,`XYZ`) | `map(string)` | `{}` | no |
 | <a name="input_traefik_helm_config"></a> [traefik\_helm\_config](#input\_traefik\_helm\_config) | Traefik Helm Chart config | `any` | `{}` | no |
 | <a name="input_vpa_helm_config"></a> [vpa\_helm\_config](#input\_vpa\_helm\_config) | VPA Helm Chart config | `any` | `null` | no |
 | <a name="input_yunikorn_helm_config"></a> [yunikorn\_helm\_config](#input\_yunikorn\_helm\_config) | Yunikorn Helm Chart config | `any` | `null` | no |
 | <a name="input_yunikorn_irsa_permissions_boundary"></a> [yunikorn\_irsa\_permissions\_boundary](#input\_yunikorn\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary | `string` | `""` | no |
 | <a name="input_yunikorn_irsa_policies"></a> [yunikorn\_irsa\_policies](#input\_yunikorn\_irsa\_policies) | IAM policy ARNs for Yunikorn IRSA | `list(string)` | `[]` | no |
+| <a name="input_yunikorn_irsa_role_path"></a> [yunikorn\_irsa\_role\_path](#input\_yunikorn\_irsa\_role\_path) | IAM role path | `string` | `"/"` | no |
 
 ## Outputs
 

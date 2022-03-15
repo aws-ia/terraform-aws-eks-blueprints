@@ -45,6 +45,7 @@ No requirements.
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | AWS Node Termination Handler Helm Chart Configuration | `any` | `{}` | no |
 | <a name="input_irsa_permissions_boundary"></a> [irsa\_permissions\_boundary](#input\_irsa\_permissions\_boundary) | IAM Policy ARN for IRSA IAM role permissions boundary | `string` | `""` | no |
 | <a name="input_irsa_policies"></a> [irsa\_policies](#input\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
+| <a name="input_irsa_role_path"></a> [irsa\_role\_path](#input\_irsa\_role\_path) | IAM role path | `string` | `"/"` | no |
 
 ## Outputs
 
