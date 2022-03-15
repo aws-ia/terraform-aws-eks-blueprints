@@ -296,6 +296,12 @@ variable "aws_for_fluentbit_helm_config" {
   default     = {}
 }
 
+variable "aws_for_fluentbit_irsa_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM role path"
+}
+
 variable "aws_for_fluentbit_irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
@@ -319,6 +325,7 @@ variable "aws_for_fluentbit_cw_log_group_kms_key_arn" {
   description = "FluentBit CloudWatch Log group KMS Key"
   default     = null
 }
+
 #-----------FARGATE FLUENT BIT-------------
 variable "enable_fargate_fluentbit" {
   type        = bool
@@ -431,6 +438,7 @@ variable "karpenter_node_iam_instance_profile" {
   default     = ""
   type        = string
 }
+
 #-----------KEDA ADDON-------------
 variable "enable_keda" {
   type        = bool
