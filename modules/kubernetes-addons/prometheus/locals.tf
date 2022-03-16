@@ -44,7 +44,7 @@ locals {
       name  = "server.remoteWrite[0].sigv4.region"
       value = var.addon_context.aws_region_name
     }
-  ] : null
+  ] : []
 
   amp_gitops_config = var.enable_amazon_prometheus ? {
     roleArn            = local.amazon_prometheus_ingest_iam_role_arn
