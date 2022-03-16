@@ -1,7 +1,7 @@
 locals {
   name                 = "kubernetes-dashboard"
   service_account_name = "eks-admin"
-  namespace            = "kube-system"
+  namespace            = local.name
 
   default_helm_config = {
     name        = local.name
@@ -35,7 +35,7 @@ locals {
   ]
 
   irsa_config = {
-    kubernetes_namespace              = local.namespace
+    kubernetes_namespace              = local.helm_config["namespace"]
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = true
     create_kubernetes_service_account = true
