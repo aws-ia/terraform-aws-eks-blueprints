@@ -46,16 +46,6 @@ locals {
     }
   ] : []
 
-  irsa_config = {
-    kubernetes_namespace          = local.helm_config["namespace"]
-    create_kubernetes_namespace   = true
-    kubernetes_service_account    = var.enable_amazon_prometheus ? local.amazon_prometheus_ingest_service_account : null
-    iam_role_path                 = var.enable_amazon_prometheus ? var.irsa_role_path : null
-    irsa_iam_policies             = var.enable_amazon_prometheus ? [aws_iam_policy.ingest[0].arn] : null
-    irsa_iam_permissions_boundary = var.enable_amazon_prometheus ? var.irsa_permissions_boundary : null
-    addon_context                 = var.addon_context
-  }
-
   amp_gitops_config = var.enable_amazon_prometheus ? {
     roleArn            = local.amazon_prometheus_ingest_iam_role_arn
     ampWorkspaceUrl    = local.amazon_prometheus_workspace_url

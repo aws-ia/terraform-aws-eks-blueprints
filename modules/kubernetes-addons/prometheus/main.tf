@@ -3,8 +3,33 @@ module "helm_addon" {
   manage_via_gitops = var.manage_via_gitops
   helm_config       = local.helm_config
   set_values        = local.amp_config_values
-  irsa_config       = local.irsa_config
+  irsa_config       = null
   addon_context     = var.addon_context
+
+  depends_on = [kubernetes_namespace_v1.prometheus]
+}
+
+resource "kubernetes_namespace_v1" "prometheus" {
+  metadata {
+    name = local.helm_config["namespace"]
+    labels = {
+      "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
+    }
+  }
+}
+
+module "irsa_amp_ingest" {
+  count                         = var.enable_amazon_prometheus ? 1 : 0
+  source                        = "../../../modules/irsa"
+  kubernetes_namespace          = local.helm_config["namespace"]
+  create_kubernetes_namespace   = false
+  kubernetes_service_account    = local.amazon_prometheus_ingest_service_account
+  iam_role_path                 = var.irsa_role_path
+  irsa_iam_policies             = [aws_iam_policy.ingest[0].arn]
+  irsa_iam_permissions_boundary = var.irsa_permissions_boundary
+  addon_context                 = var.addon_context
+
+  depends_on = [kubernetes_namespace_v1.prometheus]
 }
 
 resource "aws_iam_policy" "ingest" {
