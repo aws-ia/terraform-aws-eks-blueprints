@@ -22,7 +22,6 @@ locals {
   amazon_prometheus_workspace_url          = var.amazon_prometheus_workspace_endpoint != null ? "${var.amazon_prometheus_workspace_endpoint}api/v1/remote_write" : ""
   amazon_prometheus_ingest_iam_role_arn    = var.enable_amazon_prometheus ? module.irsa_amp_ingest[0].irsa_iam_role_arn : ""
   amazon_prometheus_ingest_service_account = "amp-ingest"
-  amazon_prometheus_query_service_account  = "amp-query"
 
   amp_config_values = var.enable_amazon_prometheus ? [
     {
@@ -46,6 +45,16 @@ locals {
       value = var.addon_context.aws_region_name
     }
   ] : []
+
+  irsa_config = {
+    kubernetes_namespace          = local.helm_config["namespace"]
+    create_kubernetes_namespace   = true
+    kubernetes_service_account    = var.enable_amazon_prometheus ? local.amazon_prometheus_ingest_service_account : null
+    iam_role_path                 = var.enable_amazon_prometheus ? var.irsa_role_path : null
+    irsa_iam_policies             = var.enable_amazon_prometheus ? [aws_iam_policy.ingest[0].arn] : null
+    irsa_iam_permissions_boundary = var.enable_amazon_prometheus ? var.irsa_permissions_boundary : null
+    addon_context                 = var.addon_context
+  }
 
   amp_gitops_config = var.enable_amazon_prometheus ? {
     roleArn            = local.amazon_prometheus_ingest_iam_role_arn
