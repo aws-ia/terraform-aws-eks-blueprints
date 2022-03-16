@@ -26,11 +26,13 @@ module "irsa_amp_query" {
   source                        = "../../../modules/irsa"
   kubernetes_namespace          = local.helm_config["namespace"]
   create_kubernetes_namespace   = false
-  kubernetes_service_account    = "amp-query"
+  kubernetes_service_account    = local.amazon_prometheus_query_service_account
   iam_role_path                 = var.irsa_role_path
   irsa_iam_policies             = [aws_iam_policy.query[0].arn]
   irsa_iam_permissions_boundary = var.irsa_permissions_boundary
   addon_context                 = var.addon_context
+
+  depends_on = [module.irsa_amp_ingest]
 }
 
 resource "aws_iam_policy" "ingest" {

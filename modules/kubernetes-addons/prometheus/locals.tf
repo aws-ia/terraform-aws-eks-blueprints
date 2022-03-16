@@ -5,7 +5,7 @@ locals {
     chart       = local.name
     repository  = "https://prometheus-community.github.io/helm-charts"
     version     = "15.3.0"
-    namespace   = "prometheus"
+    namespace   = local.name
     timeout     = "1200"
     description = "Prometheus helm Chart deployment configuration"
   }
@@ -22,6 +22,7 @@ locals {
   amazon_prometheus_workspace_url          = var.amazon_prometheus_workspace_endpoint != null ? "${var.amazon_prometheus_workspace_endpoint}api/v1/remote_write" : ""
   amazon_prometheus_ingest_iam_role_arn    = var.enable_amazon_prometheus ? module.irsa_amp_ingest[0].irsa_iam_role_arn : ""
   amazon_prometheus_ingest_service_account = "amp-ingest"
+  amazon_prometheus_query_service_account  = "amp-query"
 
   amp_config_values = var.enable_amazon_prometheus ? [
     {
