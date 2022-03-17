@@ -61,7 +61,7 @@ locals {
   zone           = var.zone
   eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
-  kubernetes_version = "1.21"
+  cluster_version = "1.21"
   terraform_version  = "Terraform v1.0.1"
 
   vpc_id             = var.vpc_id
@@ -85,7 +85,7 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = local.private_subnet_ids
 
   # EKS CONTROL PLANE VARIABLES
-  kubernetes_version = local.kubernetes_version
+  cluster_version = local.cluster_version
 
   # EKS MANAGED NODE GROUPS
   # EKS MANAGED NODE GROUPS

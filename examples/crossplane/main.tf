@@ -71,7 +71,7 @@ locals {
   tenant             = "aws001"  # AWS account name or unique id for tenant
   environment        = "preprod" # Environment area eg., preprod or prod
   zone               = "dev"     # Environment with in one sub_tenant or business unit
-  kubernetes_version = "1.21"
+  cluster_version = "1.21"
 
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
@@ -122,7 +122,7 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS CONTROL PLANE VARIABLES
-  kubernetes_version = local.kubernetes_version
+  cluster_version = local.cluster_version
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
