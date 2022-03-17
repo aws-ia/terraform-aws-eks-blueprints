@@ -7,10 +7,10 @@ variable "self_managed_ng" {
 variable "context" {
   type = object({
     # EKS Cluster Config
-    eks_cluster_id     = string
-    cluster_ca_base64  = string
-    cluster_endpoint   = string
-    cluster_version = string
+    eks_cluster_id    = string
+    cluster_ca_base64 = string
+    cluster_endpoint  = string
+    cluster_version   = string
     # VPC Config
     vpc_id             = string
     private_subnet_ids = list(string)

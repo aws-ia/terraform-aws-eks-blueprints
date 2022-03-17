@@ -30,10 +30,10 @@ locals {
 
   node_group_context = {
     # EKS Cluster Config
-    eks_cluster_id     = local.eks_cluster_id
-    cluster_ca_base64  = local.cluster_ca_base64
-    cluster_endpoint   = local.cluster_endpoint
-    cluster_version    = var.cluster_version
+    eks_cluster_id    = local.eks_cluster_id
+    cluster_ca_base64 = local.cluster_ca_base64
+    cluster_endpoint  = local.cluster_endpoint
+    cluster_version   = var.cluster_version
     # VPC Config
     vpc_id             = local.vpc_id
     private_subnet_ids = local.private_subnet_ids
