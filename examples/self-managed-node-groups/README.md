@@ -1,25 +1,17 @@
-# EKS Cluster Deployment with the nginx add-on enabled
-
-This example deploys the following Basic EKS Cluster with VPC. In AWS we use a Network load balancer (NLB) to expose the NGINX Ingress controller behind a Service of _Type=LoadBalancer_.
-
-- Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
-- Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
-- Creates EKS Cluster Control plane with managed nodes
-- Creates the nginx controller resources; such as an internet facing AWS Network Load Balancer, AWS IAM role and policy
-  for the nginx service account, etc.
+# EKS Cluster with Self-managed Node Group
+This example deploys a new EKS Cluster with a [self-managed node group](https://docs.aws.amazon.com/eks/latest/userguide/worker.html) into a new VPC.
+ - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
+ - Creates an Internet gateway for the Public Subnets and a NAT Gateway for the Private Subnets
+ - Creates an EKS Cluster Control plane with a self-managed node group
 
 ## How to Deploy
-
-### Prerequisites
-
+### Prerequisites:
 Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
-
 1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-2. [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
-3. [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+3. [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
+4. [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
 ### Deployment Steps
-
 #### Step1: Clone the repo using the command below
 
 ```shell script
@@ -27,16 +19,14 @@ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 ```
 
 #### Step2: Run Terraform INIT
-
 Initialize a working directory with configuration files
 
 ```shell script
-cd examples/ingress-controllers/nginx
+cd examples/self-managed-node-groups/
 terraform init
 ```
 
 #### Step3: Run Terraform PLAN
-
 Verify the resources created by this execution
 
 ```shell script
@@ -45,7 +35,6 @@ terraform plan
 ```
 
 #### Step4: Finally, Terraform APPLY
-
 to create resources
 
 ```shell script
@@ -55,7 +44,6 @@ terraform apply
 Enter `yes` to apply
 
 ### Configure `kubectl` and test cluster
-
 EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster.
 This following command used to update the `kubeconfig` in your local machine where you run kubectl commands to interact with your EKS Cluster.
 
@@ -63,28 +51,25 @@ This following command used to update the `kubeconfig` in your local machine whe
 
 `~/.kube/config` file gets updated with cluster details and certificate from the below command
 
-``` shell
-    aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
-```
+    $ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 
 #### Step6: List all the worker nodes by running the command below
 
-``` shell
-    kubectl get nodes
-```
+    $ kubectl get nodes
 
-#### Step7: List all the pods running in `nginx` namespace
+#### Step7: List all the pods running in `kube-system` namespace
 
-``` shell
-    kubectl get pods -n nginx
-```
+    $ kubectl get pods -n kube-system
+
+#### Step8: List the auto scaling group created for the self-managed node group
+
+    $ aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names aws001-preprod-dev-eks-self-managed-ondemand
 
 ## How to Destroy
-
 The following command destroys the resources created by `terraform apply`
 
 ```shell script
-cd examples/ingress-controllers/nginx
+cd examples/self-managed-node-groups
 terraform destroy --auto-approve
 ```
 
@@ -108,9 +93,8 @@ terraform destroy --auto-approve
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | ../../.. | n/a |
+| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | ../.. | n/a |
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
-| <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | ../../../modules/kubernetes-addons | n/a |
 
 ## Resources
 
@@ -127,12 +111,6 @@ No inputs.
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_configure_kubectl"></a> [configure\_kubectl](#output\_configure\_kubectl) | Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
+No outputs.
 
 <!--- END_TF_DOCS --->
-
-## Learn more
-
-Read this blog, [Using a Network Load Balancer with the NGINX Ingress Controller on Amazon EKS](https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/).

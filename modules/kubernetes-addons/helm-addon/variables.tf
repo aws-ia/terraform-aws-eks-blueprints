@@ -35,6 +35,7 @@ variable "irsa_config" {
     irsa_iam_permissions_boundary     = optional(string)
   })
   description = "Input configuration for IRSA module"
+  default     = null
 }
 
 variable "addon_context" {

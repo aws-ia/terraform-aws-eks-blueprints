@@ -4,6 +4,18 @@ module "helm_addon" {
   helm_config       = local.helm_config
   irsa_config       = null
   addon_context     = var.addon_context
+
+  depends_on = [kubernetes_namespace_v1.this]
+}
+
+resource "kubernetes_namespace_v1" "this" {
+  metadata {
+    name = local.helm_config["namespace"]
+
+    labels = {
+      "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
+    }
+  }
 }
 
 resource "aws_security_group_rule" "agones_sg_ingress_rule" {
