@@ -210,7 +210,7 @@ module "spark_k8s_operator" {
 module "tetrate_istio" {
   count                = var.enable_tetrate_istio ? 1 : 0
   source               = "tetratelabs/tetrate-istio-addon/eksblueprints"
-  version              = "0.0.4"
+  version              = "0.0.6"
   distribution         = var.tetrate_istio_distribution
   distribution_version = var.tetrate_istio_version
   install_base         = var.tetrate_istio_install_base
