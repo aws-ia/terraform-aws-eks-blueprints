@@ -4,6 +4,10 @@
 
 This add-on is implemented as an external add-on. For detailed documentation and usage of the add-on please refer to the add-on [repository](https://github.com/tetratelabs/terraform-eksblueprints-tetrate-istio-addon).
 
+## Example
+
+Checkout the full [example](../../examples/tetrate-istio/README.md).
+
 ## Usage
 
 This step deploys the [Tetrate Istio Distro](https://istio.tetratelabs.io/) with default Helm Chart config
