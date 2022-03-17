@@ -4,12 +4,6 @@ variable "self_managed_ng" {
   default     = {}
 }
 
-variable "path" {
-  type        = string
-  default     = "/"
-  description = "IAM resource path, e.g. /dev/"
-}
-
 variable "context" {
   type = object({
     # EKS Cluster Config
@@ -22,10 +16,7 @@ variable "context" {
     private_subnet_ids = list(string)
     public_subnet_ids  = list(string)
     # Security Groups
-    worker_security_group_id             = string
-    worker_additional_security_group_ids = list(string)
-    cluster_security_group_id            = string
-    cluster_primary_security_group_id    = string
+    worker_security_group_ids = list(string)
     # Http config
     http_endpoint               = string
     http_tokens                 = string
@@ -33,6 +24,9 @@ variable "context" {
     # Data sources
     aws_partition_dns_suffix = string
     aws_partition_id         = string
+
+    iam_role_path = string
+    iam_role_permissions_boundary = string
     # Tags
     tags = map(string)
   })

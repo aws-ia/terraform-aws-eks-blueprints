@@ -56,7 +56,7 @@ provider "helm" {
 }
 
 locals {
-  tenant             = "aws001"  # AWS account name or unique id for tenant
+  tenant             = "ipv6"  # AWS account name or unique id for tenant
   environment        = "preprod" # Environment area eg., preprod or prod
   zone               = "dev"     # Environment with in one sub_tenant or business unit
   count_availability_zone = (length(data.aws_availability_zones.available.names) <= 2) ? length(data.aws_availability_zones.available.zone_ids) : 2
@@ -71,11 +71,18 @@ locals {
 
 module "aws_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "v3.2.0"
+  version = "v3.13.0"
 
   name = local.vpc_name
   cidr = local.vpc_cidr
   azs  = data.aws_availability_zones.available.names
+
+  enable_ipv6 = true
+  assign_ipv6_address_on_creation = true   # Assign IPv6 address on subnet, must be disabled to change IPv6 CIDRs. This is the IPv6 equivalent of map_public_ip_on_launch
+  private_subnet_assign_ipv6_address_on_creation = true # Assign IPv6 address on private subnet, must be disabled to change IPv6 CIDRs. This is the IPv6 equivalent of map_public_ip_on_launch
+
+  public_subnet_ipv6_prefixes   = [0, 1] # Assigns IPv6 private subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list
+  private_subnet_ipv6_prefixes  = [2, 3] # Assigns IPv6 public subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list
 
   public_subnets  = [for k, v in slice(data.aws_availability_zones.available.names, 0, local.count_availability_zone) : cidrsubnet(local.vpc_cidr, 8, k)]
   private_subnets = [for k, v in slice(data.aws_availability_zones.available.names, 0, local.count_availability_zone) : cidrsubnet(local.vpc_cidr, 8, k + 10)]
@@ -110,19 +117,21 @@ module "aws-eks-accelerator-for-terraform" {
   vpc_id             = module.aws_vpc.vpc_id
   private_subnet_ids = module.aws_vpc.private_subnets
 
+  # IPV6
+  cluster_ip_family = "ipv6"
+
   # EKS CONTROL PLANE VARIABLES
   cluster_version = local.cluster_version
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     mg_4 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m4.large"]
+      node_group_name = "mng-ondemand"
+      instance_types  = ["m5.large"]
       min_size        = "2"
       subnet_ids      = module.aws_vpc.private_subnets
     }
   }
-
 }
 
 module "kubernetes-addons" {
@@ -130,14 +139,13 @@ module "kubernetes-addons" {
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
   # EKS Managed Add-ons
+  enable_ipv6 = true
   enable_amazon_eks_vpc_cni    = true
   enable_amazon_eks_coredns    = true
   enable_amazon_eks_kube_proxy = true
 
   #K8s Add-ons
   enable_aws_load_balancer_controller = true
-  enable_metrics_server               = true
-  enable_cluster_autoscaler           = true
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
 }

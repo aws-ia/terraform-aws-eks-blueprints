@@ -4,6 +4,12 @@ variable "add_on_config" {
   default     = {}
 }
 
+variable "enable_ipv6" {
+  description = "Enable IPV6 CNI policy"
+  type        = any
+  default     = false
+}
+
 variable "addon_context" {
   type = object({
     aws_caller_identity_account_id = string

@@ -23,8 +23,8 @@ data "aws_iam_policy_document" "aws-ebs-csi-driver" {
     effect = "Allow"
 
     resources = [
-      "arn:aws:ec2:*:*:volume/*",
-      "arn:aws:ec2:*:*:snapshot/*",
+      "arn:${var.addon_context.aws_partition_id}:ec2:*:*:volume/*",
+      "arn:${var.addon_context.aws_partition_id}:ec2:*:*:snapshot/*",
     ]
 
     actions = ["ec2:CreateTags"]
@@ -45,8 +45,8 @@ data "aws_iam_policy_document" "aws-ebs-csi-driver" {
     effect = "Allow"
 
     resources = [
-      "arn:aws:ec2:*:*:volume/*",
-      "arn:aws:ec2:*:*:snapshot/*",
+      "arn:${var.addon_context.aws_partition_id}:ec2:*:*:volume/*",
+      "arn:${var.addon_context.aws_partition_id}:ec2:*:*:snapshot/*",
     ]
 
     actions = ["ec2:DeleteTags"]

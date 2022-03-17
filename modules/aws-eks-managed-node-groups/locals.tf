@@ -2,6 +2,7 @@
 locals {
   default_managed_ng = {
     node_group_name = "m4_on_demand" # Max node group length is 40 characters; including the node_group_name_prefix random id it's 63
+    enable_node_group_prefix = true
     instance_types  = ["m4.large"]
     capacity_type   = "ON_DEMAND"  # ON_DEMAND, SPOT
     ami_type        = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
@@ -25,8 +26,6 @@ locals {
     k8s_labels      = {}
     k8s_taints      = []
     additional_tags = {}
-
-    create_worker_security_group = false
 
     # LAUNCH TEMPLATES
     create_launch_template  = false

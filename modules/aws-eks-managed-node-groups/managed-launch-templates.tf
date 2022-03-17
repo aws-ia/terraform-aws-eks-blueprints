@@ -40,7 +40,7 @@ resource "aws_launch_template" "managed_node_groups" {
 
   network_interfaces {
     associate_public_ip_address = local.managed_node_group["public_ip"]
-    security_groups             = local.managed_node_group["create_worker_security_group"] == true ? compact(flatten([[aws_security_group.managed_ng[0].id], var.context.worker_additional_security_group_ids])) : compact(flatten([[var.context.worker_security_group_id], var.context.worker_additional_security_group_ids]))
+    security_groups             = var.context.worker_security_group_ids
   }
 
   lifecycle {

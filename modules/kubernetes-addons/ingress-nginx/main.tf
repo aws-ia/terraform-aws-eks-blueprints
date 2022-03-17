@@ -17,7 +17,7 @@ resource "aws_iam_policy" "this" {
   tags = merge(
     {
       "Name"                         = "${var.addon_context.eks_cluster_id}-${local.service_account_name}-irsa-policy",
-      "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
+      "app.kubernetes.io/managed-by" = "terraform-eks-blueprints"
     },
     var.tags
   )

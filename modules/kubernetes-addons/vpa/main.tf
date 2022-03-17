@@ -14,7 +14,7 @@ resource "kubernetes_namespace_v1" "vpa" {
     name = local.helm_config["namespace"]
 
     labels = {
-      "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
+      "app.kubernetes.io/managed-by" = "terraform-eks-blueprints"
     }
   }
 }

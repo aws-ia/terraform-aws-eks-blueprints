@@ -28,6 +28,12 @@ variable "tags" {
 }
 
 #-----------EKS MANAGED ADD-ONS------------
+variable "enable_ipv6" {
+  description = "Enable Ipv6 network. Attaches new VPC CNI policy to the IRSA role"
+  default = false
+  type = bool
+}
+
 variable "amazon_eks_vpc_cni_config" {
   description = "ConfigMap of Amazon EKS VPC CNI add-on"
   type        = any

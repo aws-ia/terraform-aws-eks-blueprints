@@ -1,4 +1,3 @@
-
 locals {
 
   context = {
@@ -16,39 +15,54 @@ locals {
     http_put_response_hop_limit = 2 # Hop limit should be between 2 and 64 for IMDSv2 instance metadata services
   }
 
+  eks_cluster_id     = module.aws_eks.cluster_id
+  cluster_ca_base64 = module.aws_eks.cluster_certificate_authority_data
+  cluster_endpoint = module.aws_eks.cluster_endpoint
+  vpc_id             = var.vpc_id
+  private_subnet_ids = var.private_subnet_ids
+  public_subnet_ids  = var.public_subnet_ids
+  tags = module.eks_tags.tags
+  enable_ipv6 = var.cluster_ip_family == "ipv6" ? true : false
+
+  enable_workers = length(var.self_managed_node_groups) > 0 || length(var.managed_node_groups) > 0 ? 1 : 0
+  cluster_security_group_id            = module.aws_eks.cluster_security_group_id
+  cluster_primary_security_group_id    = module.aws_eks.cluster_primary_security_group_id
+  worker_security_group_ids = local.enable_workers == 1 ? compact(flatten([[module.aws_eks.node_security_group_id], var.worker_additional_security_group_ids])) : []
+
   node_group_context = {
     # EKS Cluster Config
-    eks_cluster_id     = module.aws_eks.cluster_id
-    cluster_ca_base64  = module.aws_eks.cluster_certificate_authority_data
-    cluster_endpoint   = module.aws_eks.cluster_endpoint
-    kubernetes_version = var.kubernetes_version
+    eks_cluster_id     = local.eks_cluster_id
+    cluster_ca_base64  = local.cluster_ca_base64
+    cluster_endpoint   = local.cluster_endpoint
+    kubernetes_version = var.cluster_version
     # VPC Config
-    vpc_id             = var.vpc_id
-    private_subnet_ids = var.private_subnet_ids
-    public_subnet_ids  = var.public_subnet_ids
-    # Security Groups
-    worker_security_group_id             = module.aws_eks.worker_security_group_id
-    cluster_security_group_id            = module.aws_eks.cluster_security_group_id
-    cluster_primary_security_group_id    = module.aws_eks.cluster_primary_security_group_id
-    worker_additional_security_group_ids = var.worker_additional_security_group_ids
+    vpc_id             = local.vpc_id
+    private_subnet_ids = local.private_subnet_ids
+    public_subnet_ids  = local.public_subnet_ids
+
+    # Worker Security Group
+    worker_security_group_ids = local.worker_security_group_ids
+
     # Http config
     http_endpoint               = local.context.http_endpoint
     http_tokens                 = local.context.http_tokens
     http_put_response_hop_limit = local.context.http_put_response_hop_limit
+
     # Data sources
     aws_partition_dns_suffix = local.context.aws_partition_dns_suffix
     aws_partition_id         = local.context.aws_partition_id
-    # Tags
-    tags = module.eks_tags.tags
+
+    iam_role_path            = var.iam_role_path
+    iam_role_permissions_boundary = var.iam_role_permissions_boundary
+
+    tags = local.tags
   }
 
   fargate_context = {
-    eks_cluster_id   = module.aws_eks.cluster_id
+    eks_cluster_id   = local.eks_cluster_id
     aws_partition_id = local.context.aws_partition_id
-    tags             = module.eks_tags.tags
+    tags = local.tags
   }
-
-  tags = tomap({ "created-by" = var.terraform_version })
 
   ecr_image_repo_url = "${local.context.aws_caller_identity_account_id}.dkr.ecr.${local.context.aws_region_name}.amazonaws.com"
 
@@ -138,8 +152,4 @@ locals {
 
   cluster_iam_role_name = "${module.eks_tags.tags.name}-cluster-role"
 
-  # Private Endpoint Configuration
-  cluster_create_endpoint_private_access_sg_rule = var.cluster_endpoint_private_access && var.cluster_create_endpoint_private_access_sg_rule
-  cluster_endpoint_private_access_cidrs          = local.cluster_create_endpoint_private_access_sg_rule && length(var.cluster_endpoint_private_access_cidrs) > 0 ? var.cluster_endpoint_private_access_cidrs : null
-  cluster_endpoint_private_access_sg             = local.cluster_create_endpoint_private_access_sg_rule && length(var.cluster_endpoint_private_access_sg) > 0 ? var.cluster_endpoint_private_access_sg : null
 }

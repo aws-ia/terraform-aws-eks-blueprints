@@ -1,6 +1,6 @@
 # Getting Started
 
-This getting started guide will help you deploy your first EKS environment using the `terraform-ssp-amazon-eks` module.
+This getting started guide will help you deploy your first EKS environment using the `terraform-eks-blueprints` module.
 
 ## Prerequisites:
 

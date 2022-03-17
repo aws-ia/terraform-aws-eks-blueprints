@@ -19,6 +19,14 @@ module "irsa_addon" {
   create_kubernetes_service_account = false
   kubernetes_namespace              = local.add_on_config["namespace"]
   kubernetes_service_account        = local.add_on_config["service_account"]
-  irsa_iam_policies                 = concat(["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"], local.add_on_config["additional_iam_policies"])
+  irsa_iam_policies                 = local.irsa_iam_policies
   addon_context                     = var.addon_context
+}
+
+resource "aws_iam_policy" "cni_ipv6_policy" {
+  count = var.enable_ipv6 ? 1 : 0
+  name        = "${var.addon_context.eks_cluster_id}-AmazonEKS_CNI_IPv6_Policy"
+  description = "IAM policy for EKS CNI to assign IPV6 addresses"
+  policy      = data.aws_iam_policy_document.ipv6_policy.json
+  tags = var.addon_context.tags
 }

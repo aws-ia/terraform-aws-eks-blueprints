@@ -1,7 +1,7 @@
 resource "aws_iam_role" "managed_ng" {
   name                  = "${var.context.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
   assume_role_policy    = data.aws_iam_policy_document.managed_ng_assume_role_policy.json
-  path                  = var.path
+  path                  = var.context.iam_role_path
   force_detach_policies = true
   tags                  = var.context.tags
 }
@@ -10,7 +10,7 @@ resource "aws_iam_instance_profile" "managed_ng" {
   name = "${var.context.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
   role = aws_iam_role.managed_ng.name
 
-  path = var.path
+  path = var.context.iam_role_path
   tags = var.context.tags
 
   lifecycle {

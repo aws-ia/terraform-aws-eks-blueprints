@@ -30,7 +30,6 @@ locals {
     subnet_type                  = "private"
     subnet_ids                   = []
     additional_tags              = {}
-    create_worker_security_group = false
     additional_iam_policies      = []
   }
 
@@ -40,6 +39,7 @@ locals {
   )
 
   enable_windows_support = local.self_managed_node_group["launch_template_os"] == "windows"
+  enable_ipv6 = try(var.context.cluster_ip_family, "") == "ipv6"
 
   predefined_ami_names = {
     amazonlinux2eks = "amazon-eks-node-${var.context.kubernetes_version}-*"
