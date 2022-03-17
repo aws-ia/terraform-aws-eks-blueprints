@@ -4,7 +4,7 @@ This example deploys VPC, Subnets and EKS Cluster with IPv6 networking enabled
  - Creates a new sample VPC with IPv6, 2 Private Subnets and 2 Public Subnets
  - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
  - Creates EKS Cluster Control plane with one managed node group
- 
+
 Checkout EKS the documentation for more details about [IPv6](https://docs.aws.amazon.com/eks/latest/userguide/cni-ipv6.html)
 
 ## How to Deploy
@@ -69,7 +69,7 @@ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 kubectl get pods -n kube-system  -o wide  
 ```
 Output
-                              
+
         NAME                                           READY   STATUS    RESTARTS   AGE    IP                                      NODE                                        NOMINATED NODE   READINESS GATES
         aws-load-balancer-controller-bd6cb6fcc-4r8hw   1/1     Running   0          10m    2a05:d018:434:7702:2e8a::               ip-10-0-10-23.eu-west-1.compute.internal    <none>           <none>
         aws-load-balancer-controller-bd6cb6fcc-z7m8p   1/1     Running   0          10m    2a05:d018:434:7703:6b5d::1              ip-10-0-11-186.eu-west-1.compute.internal   <none>           <none>

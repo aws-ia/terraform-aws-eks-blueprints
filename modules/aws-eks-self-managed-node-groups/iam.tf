@@ -10,7 +10,7 @@ resource "aws_iam_instance_profile" "self_managed_ng" {
   name = "${var.context.eks_cluster_id}-${local.self_managed_node_group["node_group_name"]}"
   role = aws_iam_role.self_managed_ng.name
 
-  path                  = var.context.iam_role_path
+  path = var.context.iam_role_path
   tags = var.context.tags
 
   lifecycle {

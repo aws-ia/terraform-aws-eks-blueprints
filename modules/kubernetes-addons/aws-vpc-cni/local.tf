@@ -15,7 +15,7 @@ locals {
     var.add_on_config
   )
 
-  cni_ipv6_policy = var.enable_ipv6 ? [aws_iam_policy.cni_ipv6_policy[0].arn]: []
+  cni_ipv6_policy = var.enable_ipv6 ? [aws_iam_policy.cni_ipv6_policy[0].arn] : []
 
   irsa_iam_policies = concat(
     ["arn:${var.addon_context.aws_partition_id}:iam::aws:policy/AmazonEKS_CNI_Policy"],

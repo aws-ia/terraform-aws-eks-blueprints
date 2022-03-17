@@ -26,7 +26,7 @@ variable "context" {
     aws_partition_dns_suffix = string
     aws_partition_id         = string
     #IAM
-    iam_role_path = string
+    iam_role_path                 = string
     iam_role_permissions_boundary = string
     # Tags
     tags = map(string)

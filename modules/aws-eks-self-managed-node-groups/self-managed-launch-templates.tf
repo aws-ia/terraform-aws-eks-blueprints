@@ -25,7 +25,7 @@ module "launch_template_self_managed_ng" {
 
       network_interfaces = [
         {
-          public_ip = local.self_managed_node_group["public_ip"]
+          public_ip       = local.self_managed_node_group["public_ip"]
           security_groups = var.context.worker_security_group_ids
         }
       ]

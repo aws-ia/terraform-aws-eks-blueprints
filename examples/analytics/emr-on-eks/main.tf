@@ -57,7 +57,7 @@ locals {
   environment             = "preprod" # Environment area eg., preprod or prod
   zone                    = "test"    # Environment with in one sub_tenant or business unit
   count_availability_zone = (length(data.aws_availability_zones.available.names) <= 3) ? length(data.aws_availability_zones.available.zone_ids) : 3
-  cluster_version      = "1.21"
+  cluster_version         = "1.21"
 
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])

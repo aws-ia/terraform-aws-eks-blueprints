@@ -25,12 +25,12 @@ locals {
     ]
 
     # AUTOSCALING
-    max_size                     = "3"
-    min_size                     = "1"
-    subnet_type                  = "private"
-    subnet_ids                   = []
-    additional_tags              = {}
-    additional_iam_policies      = []
+    max_size                = "3"
+    min_size                = "1"
+    subnet_type             = "private"
+    subnet_ids              = []
+    additional_tags         = {}
+    additional_iam_policies = []
   }
 
   self_managed_node_group = merge(
@@ -39,7 +39,7 @@ locals {
   )
 
   enable_windows_support = local.self_managed_node_group["launch_template_os"] == "windows"
-  enable_ipv6 = try(var.context.cluster_ip_family, "") == "ipv6"
+  enable_ipv6            = try(var.context.cluster_ip_family, "") == "ipv6"
 
   predefined_ami_names = {
     amazonlinux2eks = "amazon-eks-node-${var.context.kubernetes_version}-*"

@@ -16,18 +16,17 @@ locals {
   }
 
   eks_cluster_id     = module.aws_eks.cluster_id
-  cluster_ca_base64 = module.aws_eks.cluster_certificate_authority_data
-  cluster_endpoint = module.aws_eks.cluster_endpoint
+  cluster_ca_base64  = module.aws_eks.cluster_certificate_authority_data
+  cluster_endpoint   = module.aws_eks.cluster_endpoint
   vpc_id             = var.vpc_id
   private_subnet_ids = var.private_subnet_ids
   public_subnet_ids  = var.public_subnet_ids
-  tags = module.eks_tags.tags
-  enable_ipv6 = var.cluster_ip_family == "ipv6" ? true : false
+  tags               = module.eks_tags.tags
 
-  enable_workers = length(var.self_managed_node_groups) > 0 || length(var.managed_node_groups) > 0 ? 1 : 0
-  cluster_security_group_id            = module.aws_eks.cluster_security_group_id
-  cluster_primary_security_group_id    = module.aws_eks.cluster_primary_security_group_id
-  worker_security_group_ids = local.enable_workers == 1 ? compact(flatten([[module.aws_eks.node_security_group_id], var.worker_additional_security_group_ids])) : []
+  enable_workers                    = length(var.self_managed_node_groups) > 0 || length(var.managed_node_groups) > 0 ? 1 : 0
+  cluster_security_group_id         = module.aws_eks.cluster_security_group_id
+  cluster_primary_security_group_id = module.aws_eks.cluster_primary_security_group_id
+  worker_security_group_ids         = local.enable_workers == 1 ? compact(flatten([[module.aws_eks.node_security_group_id], var.worker_additional_security_group_ids])) : []
 
   node_group_context = {
     # EKS Cluster Config
@@ -52,7 +51,7 @@ locals {
     aws_partition_dns_suffix = local.context.aws_partition_dns_suffix
     aws_partition_id         = local.context.aws_partition_id
 
-    iam_role_path            = var.iam_role_path
+    iam_role_path                 = var.iam_role_path
     iam_role_permissions_boundary = var.iam_role_permissions_boundary
 
     tags = local.tags
@@ -61,7 +60,7 @@ locals {
   fargate_context = {
     eks_cluster_id   = local.eks_cluster_id
     aws_partition_id = local.context.aws_partition_id
-    tags = local.tags
+    tags             = local.tags
   }
 
   ecr_image_repo_url = "${local.context.aws_caller_identity_account_id}.dkr.ecr.${local.context.aws_region_name}.amazonaws.com"

@@ -24,9 +24,9 @@ module "irsa_addon" {
 }
 
 resource "aws_iam_policy" "cni_ipv6_policy" {
-  count = var.enable_ipv6 ? 1 : 0
+  count       = var.enable_ipv6 ? 1 : 0
   name        = "${var.addon_context.eks_cluster_id}-AmazonEKS_CNI_IPv6_Policy"
   description = "IAM policy for EKS CNI to assign IPV6 addresses"
   policy      = data.aws_iam_policy_document.ipv6_policy.json
-  tags = var.addon_context.tags
+  tags        = var.addon_context.tags
 }
