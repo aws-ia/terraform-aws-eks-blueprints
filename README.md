@@ -31,7 +31,7 @@ module "eks-ssp" {
     source = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
 
     # EKS CLUSTER
-    kubernetes_version        = "1.21"
+    cluster_version        = "1.21"
     vpc_id                    = "<vpcid>"                                      # Enter VPC ID
     private_subnet_ids        = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]     # Enter Private Subnet IDs
 
@@ -204,7 +204,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 | <a name="input_enable_windows_support"></a> [enable\_windows\_support](#input\_enable\_windows\_support) | Enable Windows support | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment area, e.g. prod or preprod | `string` | `"preprod"` | no |
 | <a name="input_fargate_profiles"></a> [fargate\_profiles](#input\_fargate\_profiles) | Fargate profile configuration | `any` | `{}` | no |
-| <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | Desired kubernetes version. If you do not specify a value, the latest available version is used | `string` | `"1.21"` | no |
+| <a name="input_cluster_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | Desired kubernetes version. If you do not specify a value, the latest available version is used | `string` | `"1.21"` | no |
 | <a name="input_managed_node_groups"></a> [managed\_node\_groups](#input\_managed\_node\_groups) | Managed node groups configuration | `any` | `{}` | no |
 | <a name="input_map_accounts"></a> [map\_accounts](#input\_map\_accounts) | Additional AWS account numbers to add to the aws-auth ConfigMap | `list(string)` | `[]` | no |
 | <a name="input_map_roles"></a> [map\_roles](#input\_map\_roles) | Additional IAM roles to add to the aws-auth ConfigMap | <pre>list(object({<br>    rolearn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |

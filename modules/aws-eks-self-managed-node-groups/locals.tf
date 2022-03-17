@@ -42,9 +42,9 @@ locals {
   enable_ipv6            = try(var.context.cluster_ip_family, "") == "ipv6"
 
   predefined_ami_names = {
-    amazonlinux2eks = "amazon-eks-node-${var.context.kubernetes_version}-*"
-    bottlerocket    = "bottlerocket-aws-k8s-${var.context.kubernetes_version}-x86_64-*"
-    windows         = "Windows_Server-2019-English-Core-EKS_Optimized-${var.context.kubernetes_version}-*"
+    amazonlinux2eks = "amazon-eks-node-${var.context.cluster_version}-*"
+    bottlerocket    = "bottlerocket-aws-k8s-${var.context.cluster_version}-x86_64-*"
+    windows         = "Windows_Server-2019-English-Core-EKS_Optimized-${var.context.cluster_version}-*"
   }
   predefined_ami_types  = keys(local.predefined_ami_names)
   default_custom_ami_id = contains(local.predefined_ami_types, local.self_managed_node_group["launch_template_os"]) ? data.aws_ami.predefined[local.self_managed_node_group["launch_template_os"]].id : ""

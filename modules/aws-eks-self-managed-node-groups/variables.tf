@@ -10,7 +10,7 @@ variable "context" {
     eks_cluster_id     = string
     cluster_ca_base64  = string
     cluster_endpoint   = string
-    kubernetes_version = string
+    cluster_version = string
     # VPC Config
     vpc_id             = string
     private_subnet_ids = list(string)
