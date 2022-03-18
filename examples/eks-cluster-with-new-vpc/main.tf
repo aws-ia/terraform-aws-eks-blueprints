@@ -122,26 +122,7 @@ module "aws-eks-accelerator-for-terraform" {
       subnet_ids      = module.aws_vpc.private_subnets
     }
   }
-
-  # FARGATE
-  fargate_profiles = {
-    default = {
-      fargate_profile_name = "default"
-      fargate_profile_namespaces = [
-        {
-          namespace = "default"
-          k8s_labels = {
-            Environment = "preprod"
-            Zone        = "dev"
-            env         = "fargate"
-          }
-      }]
-      subnet_ids = module.aws_vpc.private_subnets
-      additional_tags = {
-        ExtraTag = "Fargate"
-      }
-    },
-  }
+  depends_on = [module.aws_vpc]
 }
 
 module "kubernetes-addons" {
