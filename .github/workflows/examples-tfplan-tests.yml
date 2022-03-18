@@ -38,7 +38,7 @@ jobs:
             examples/node-groups/windows-node-groups,
             examples/node-groups/fargate-profiles,
             examples/node-groups/managed-node-groups-tfvars,
-            examples/kubernetes-addons
+            examples/complete-kubernetes-addons
           ]
 
     steps:
