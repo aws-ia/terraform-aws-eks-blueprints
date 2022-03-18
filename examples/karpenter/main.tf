@@ -150,7 +150,7 @@ module "karpenter-launch-templates" {
       ami                    = "ami-0adc757be1e4e11a1"
       launch_template_prefix = "karpenter"
       iam_instance_profile   = module.aws-eks-accelerator-for-terraform.self_managed_node_group_iam_instance_profile_id[0]
-      vpc_security_group_ids = [module.aws-eks-accelerator-for-terraform.worker_security_group_id]
+      vpc_security_group_ids = [module.aws-eks-accelerator-for-terraform.worker_node_security_group_id]
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
@@ -164,7 +164,7 @@ module "karpenter-launch-templates" {
       launch_template_os     = "bottlerocket"
       launch_template_prefix = "bottle"
       iam_instance_profile   = module.aws-eks-accelerator-for-terraform.self_managed_node_group_iam_instance_profile_id[0]
-      vpc_security_group_ids = [module.aws-eks-accelerator-for-terraform.worker_security_group_id]
+      vpc_security_group_ids = [module.aws-eks-accelerator-for-terraform.worker_node_security_group_id]
       block_device_mappings = [
         {
           device_name = "/dev/xvda"

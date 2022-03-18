@@ -159,7 +159,7 @@ module "aws-eks-accelerator-for-terraform" {
 module "kubernetes-addons" {
   source                       = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
   eks_cluster_id               = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-  eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_security_group_id
+  eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_node_security_group_id
 
   #K8s Add-ons
   enable_metrics_server     = true
