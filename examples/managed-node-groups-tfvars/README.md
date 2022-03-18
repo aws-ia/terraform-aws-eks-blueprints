@@ -105,7 +105,7 @@ terraform destroy --auto-approve
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.66.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.4.0 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.6.1 |
 
@@ -113,15 +113,14 @@ terraform destroy --auto-approve
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.66.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.4.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | ../../ | n/a |
-| <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
-| <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | ../../modules/kubernetes-addons | n/a |
+| <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.12.0 |
 
 ## Resources
 
@@ -134,7 +133,13 @@ terraform destroy --auto-approve
 
 ## Inputs
 
-No inputs.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_environment"></a> [environment](#input\_environment) | Environment area, e.g. prod or preprod | `string` | `"preprod"` | no |
+| <a name="input_managed_node_groups"></a> [managed\_node\_groups](#input\_managed\_node\_groups) | A map of Managed node group(s) | `any` | n/a | yes |
+| <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | `"aws"` | no |
+| <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | VPC CIDR | `string` | n/a | yes |
+| <a name="input_zone"></a> [zone](#input\_zone) | zone, e.g. dev or qa or load or ops etc... | `string` | `"dev"` | no |
 
 ## Outputs
 
