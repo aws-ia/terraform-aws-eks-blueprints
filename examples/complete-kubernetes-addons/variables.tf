@@ -20,17 +20,15 @@ variable "zone" {
 variable "vpc_id" {
   type        = string
   description = "VPC id"
-  default     = ""
 }
 
 variable "private_subnet_ids" {
   description = "list of private subnets Id's for the Worker nodes"
   type        = list(string)
-  default     = []
 }
 
 variable "public_subnet_ids" {
   description = "list of public subnets Id's for the Worker nodes"
   type        = list(string)
-  default     = []
+  default = []
 }
