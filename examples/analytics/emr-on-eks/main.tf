@@ -53,15 +53,16 @@ data "aws_eks_cluster_auth" "cluster" {
 }
 
 locals {
-  tenant                  = "aws001"  # AWS account name or unique id for tenant
-  environment             = "preprod" # Environment area eg., preprod or prod
-  zone                    = "test"    # Environment with in one sub_tenant or business unit
-  count_availability_zone = (length(data.aws_availability_zones.available.names) <= 3) ? length(data.aws_availability_zones.available.zone_ids) : 3
-  kubernetes_version      = "1.21"
+  tenant             = "aws001"  # AWS account name or unique id for tenant
+  environment        = "preprod" # Environment area eg., preprod or prod
+  zone               = "test"    # Environment with in one sub_tenant or business unit
+  kubernetes_version = "1.21"
 
-  vpc_cidr     = "10.0.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  vpc_cidr                = "10.0.0.0/16"
+  vpc_name                = join("-", [local.tenant, local.environment, local.zone, "vpc"])
+  count_availability_zone = (length(data.aws_availability_zones.available.names) <= 3) ? length(data.aws_availability_zones.available.zone_ids) : 3
+  azs                     = slice(data.aws_availability_zones.available.names, 0, local.count_availability_zone)
+  cluster_name            = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.0.1"
 }
@@ -72,10 +73,10 @@ module "aws_vpc" {
 
   name = local.vpc_name
   cidr = local.vpc_cidr
-  azs  = slice(data.aws_availability_zones.available.names, 0, 3)
+  azs  = local.azs
 
-  public_subnets  = [for k, v in slice(data.aws_availability_zones.available.names, 0, local.count_availability_zone) : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in slice(data.aws_availability_zones.available.names, 0, local.count_availability_zone) : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
   enable_nat_gateway   = true
   create_igw           = true

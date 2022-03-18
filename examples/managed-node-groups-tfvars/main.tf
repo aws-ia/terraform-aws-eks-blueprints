@@ -51,6 +51,7 @@ provider "helm" {
 #------------------------------------------------------------------------
 locals {
   count_availability_zone = (length(data.aws_availability_zones.available.names) <= 3) ? length(data.aws_availability_zones.available.zone_ids) : 3
+  azs                     = slice(data.aws_availability_zones.available.names, 0, local.count_availability_zone)
   vpc_name                = join("-", [var.tenant, var.environment, var.zone, "vpc"])
   cluster_name            = join("-", [var.tenant, var.environment, var.zone, "eks"])
 }

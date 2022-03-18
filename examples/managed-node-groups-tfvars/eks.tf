@@ -7,10 +7,10 @@ module "aws_vpc" {
 
   name = local.vpc_name
   cidr = var.vpc_cidr
-  azs  = slice(data.aws_availability_zones.available.names, 0, 3)
+  azs  = local.azs
 
-  public_subnets  = [for k, v in slice(data.aws_availability_zones.available.names, 0, local.count_availability_zone) : cidrsubnet(var.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in slice(data.aws_availability_zones.available.names, 0, local.count_availability_zone) : cidrsubnet(var.vpc_cidr, 8, k + 10)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k + 10)]
 
   enable_nat_gateway   = true
   enable_dns_hostnames = true
