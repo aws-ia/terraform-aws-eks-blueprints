@@ -6,7 +6,7 @@ This add-on is implemented as an external add-on. For detailed documentation and
 
 ## Example
 
-Checkout the full [example](../../examples/tetrate-istio/README.md).
+Checkout the full [example](https://github.com/tetratelabs/terraform-eksblueprints-tetrate-istio-addon/tree/main/blueprints/getting-started).
 
 ## Usage
 
