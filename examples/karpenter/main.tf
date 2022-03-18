@@ -71,7 +71,7 @@ locals {
   tenant      = "aws001"  # AWS account name or unique id for tenant
   environment = "preprod" # Environment area eg., preprod or prod
   zone        = "dev"     # Environment with in one sub_tenant or business unit
-  azs         = data.aws_availability_zones.available.names
+  azs         = slice(data.aws_availability_zones.available.names, 0, 3)
 
   kubernetes_version = "1.21"
 
@@ -91,8 +91,8 @@ module "aws_vpc" {
   cidr = local.vpc_cidr
   azs  = local.azs
 
-  public_subnets  = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
   enable_nat_gateway   = true
   create_igw           = true
