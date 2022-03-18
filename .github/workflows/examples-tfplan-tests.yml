@@ -28,16 +28,17 @@ jobs:
             examples/aws-efs-csi-driver,
             examples/crossplane,
             examples/eks-cluster-with-new-vpc,
-            examples/eks-managed-addons,
-            examples/fargate-profiles,
             examples/fully-private-eks-cluster,
             examples/game-tech/agones-game-controller,
             examples/ingress-controllers/nginx,
             examples/karpenter,
-            examples/managed-node-groups,
             examples/multi-tenancy-with-teams,
-            examples/self-managed-node-groups,
-            examples/windows-node-groups
+            examples/node-groups/managed-node-groups,
+            examples/node-groups/self-managed-node-groups,
+            examples/node-groups/windows-node-groups,
+            examples/node-groups/fargate-profiles,
+            examples/node-groups/managed-node-groups-tfvars,
+            examples/kubernetes-addons
           ]
 
     steps:

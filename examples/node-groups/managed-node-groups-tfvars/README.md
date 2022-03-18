@@ -31,7 +31,7 @@ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 Initialize a working directory with configuration files
 
 ```shell script
-cd examples/managed-node-groups-tfvars/
+cd examples/node-groups/managed-node-groups-tfvars/
 terraform init
 ```
 
@@ -93,7 +93,7 @@ kubectl get pods -n kube-system
 The following command destroys the resources created by `terraform apply`
 
 ```shell script
-cd examples/managed-node-groups-tfvars
+cd examples/node-groups/managed-node-groups-tfvars
 terraform destroy --auto-approve
 ```
 
