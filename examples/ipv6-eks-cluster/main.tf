@@ -59,7 +59,7 @@ locals {
   tenant                  = "ipv6"    # AWS account name or unique id for tenant
   environment             = "preprod" # Environment area eg., preprod or prod
   zone                    = "dev"     # Environment with in one sub_tenant or business unit
-  count_availability_zone = (length(data.aws_availability_zones.available.names) <= 2) ? length(data.aws_availability_zones.available.zone_ids) : 2
+  count_availability_zone = (length(data.aws_availability_zones.available.names) <= 3) ? length(data.aws_availability_zones.available.zone_ids) : 3
   cluster_version         = "1.21"
 
   vpc_cidr     = "10.0.0.0/16"
@@ -81,8 +81,8 @@ module "aws_vpc" {
   assign_ipv6_address_on_creation                = true # Assign IPv6 address on subnet, must be disabled to change IPv6 CIDRs. This is the IPv6 equivalent of map_public_ip_on_launch
   private_subnet_assign_ipv6_address_on_creation = true # Assign IPv6 address on private subnet, must be disabled to change IPv6 CIDRs. This is the IPv6 equivalent of map_public_ip_on_launch
 
-  public_subnet_ipv6_prefixes  = [0, 1] # Assigns IPv6 private subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list
-  private_subnet_ipv6_prefixes = [2, 3] # Assigns IPv6 public subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list
+  public_subnet_ipv6_prefixes  = [0, 1, 2] # Assigns IPv6 private subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list
+  private_subnet_ipv6_prefixes = [3, 4, 5] # Assigns IPv6 public subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list
 
   public_subnets  = [for k, v in slice(data.aws_availability_zones.available.names, 0, local.count_availability_zone) : cidrsubnet(local.vpc_cidr, 8, k)]
   private_subnets = [for k, v in slice(data.aws_availability_zones.available.names, 0, local.count_availability_zone) : cidrsubnet(local.vpc_cidr, 8, k + 10)]

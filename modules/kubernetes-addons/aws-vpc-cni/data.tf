@@ -1,4 +1,5 @@
 data "aws_iam_policy_document" "ipv6_policy" {
+  count       = var.enable_ipv6 ? 1 : 0
   statement {
     sid = "IpV6"
     actions = [

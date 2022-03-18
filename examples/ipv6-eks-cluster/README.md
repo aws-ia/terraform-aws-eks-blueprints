@@ -1,7 +1,7 @@
 # IPv6 EKS Cluster
 
 This example deploys VPC, Subnets and EKS Cluster with IPv6 networking enabled
- - Creates a new sample VPC with IPv6, 2 Private Subnets and 2 Public Subnets
+ - Creates a new sample VPC with IPv6, 3 Private Subnets and 3 Public Subnets
  - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
  - Creates EKS Cluster Control plane with one managed node group
 

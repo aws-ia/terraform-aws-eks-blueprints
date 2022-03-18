@@ -1,4 +1,3 @@
-
 locals {
   default_add_on_config = {
     addon_name               = "vpc-cni"
@@ -22,5 +21,4 @@ locals {
     local.cni_ipv6_policy,
     local.add_on_config["additional_iam_policies"]
   )
-
 }
