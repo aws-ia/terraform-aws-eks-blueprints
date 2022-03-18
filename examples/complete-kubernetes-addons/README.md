@@ -1,11 +1,5 @@
-# EKS Cluster with Amazon EKS Managed Add-ons
-
-This example deploys a new EKS Cluster into a new VPC with EKS managed Add-ons
-
- - Creates a new VPC, 3 Private Subnets and 3 Public Subnets
- - Creates an Internet gateway for the Public Subnets and a NAT Gateway for the Private Subnets
- - Creates an EKS Cluster Control plane with public endpoint with one managed node group
- - Creates EKS managed Addons (`vpc-cni`, `coredns`, `kube-proxy`, `aws-ebs-csi-driver`)
+# Complete example with Kubernetes add-ons
+This example deploys a new EKS Cluster with all node groups and add-ons with advanced configuration
 
 ## How to Deploy
 ### Prerequisites:
@@ -13,6 +7,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 3. [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
 4. [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+
 
 ### Deployment Steps
 #### Step1: Clone the repo using the command below
@@ -25,7 +20,7 @@ git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
 Initialize a working directory with configuration files
 
 ```shell script
-cd examples/eks-managed-addons/
+cd examples/complete-kubernetes-addons/
 terraform init
 ```
 
@@ -68,7 +63,7 @@ This following command used to update the `kubeconfig` in your local machine whe
 The following command destroys the resources created by `terraform apply`
 
 ```shell script
-cd examples/eks-managed-addons
+cd examples/complete-kubernetes-addons
 terraform destroy --auto-approve
 ```
 
