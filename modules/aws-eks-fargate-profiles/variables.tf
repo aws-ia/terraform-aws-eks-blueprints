@@ -4,17 +4,14 @@ variable "fargate_profile" {
   default     = {}
 }
 
-variable "path" {
-  type        = string
-  default     = "/"
-  description = "IAM resource path, e.g. /dev/"
-}
-
 variable "context" {
   type = object({
     eks_cluster_id   = string
     aws_partition_id = string
-    tags             = map(string)
+    #IAM
+    iam_role_path                 = string
+    iam_role_permissions_boundary = string
+    tags                          = map(string)
   })
   description = "Input configuration for Fargate"
 }

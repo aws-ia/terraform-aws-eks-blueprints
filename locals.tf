@@ -58,9 +58,11 @@ locals {
   }
 
   fargate_context = {
-    eks_cluster_id   = local.eks_cluster_id
-    aws_partition_id = local.context.aws_partition_id
-    tags             = local.tags
+    eks_cluster_id                = local.eks_cluster_id
+    aws_partition_id              = local.context.aws_partition_id
+    iam_role_path                 = var.iam_role_path
+    iam_role_permissions_boundary = var.iam_role_permissions_boundary
+    tags                          = local.tags
   }
 
   ecr_image_repo_url = "${local.context.aws_caller_identity_account_id}.dkr.ecr.${local.context.aws_region_name}.amazonaws.com"

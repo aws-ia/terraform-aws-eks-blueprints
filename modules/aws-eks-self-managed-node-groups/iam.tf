@@ -1,7 +1,9 @@
 resource "aws_iam_role" "self_managed_ng" {
   name                  = "${var.context.eks_cluster_id}-${local.self_managed_node_group["node_group_name"]}"
+  description           = "EKS Self Managed Node group IAM Role"
   assume_role_policy    = data.aws_iam_policy_document.self_managed_ng_assume_role_policy.json
   path                  = var.context.iam_role_path
+  permissions_boundary  = var.context.iam_role_permissions_boundary
   force_detach_policies = true
   tags                  = var.context.tags
 }
