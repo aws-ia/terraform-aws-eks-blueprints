@@ -39,7 +39,6 @@ locals {
   )
 
   enable_windows_support = local.self_managed_node_group["launch_template_os"] == "windows"
-  enable_ipv6            = try(var.context.cluster_ip_family, "") == "ipv6"
 
   predefined_ami_names = {
     amazonlinux2eks = "amazon-eks-node-${var.context.cluster_version}-*"
