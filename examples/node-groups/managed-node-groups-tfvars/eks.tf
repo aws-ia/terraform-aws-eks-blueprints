@@ -31,8 +31,7 @@ module "aws_vpc" {
 # AWS EKS Accelerator Module
 #------------------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  # source = "github.com/aws-samples/aws-eks-accelerator-for-terraform?ref=v3.5.0"
-  source = "../../"
+  source = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
 
   # EKS Cluster VPC and Subnet mandatory config
   vpc_id             = module.aws_vpc.vpc_id

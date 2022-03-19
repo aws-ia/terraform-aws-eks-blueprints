@@ -93,12 +93,12 @@ module "aws_eks" {
 
   # CLUSTER ENCRYPTION
   attach_cluster_encryption_policy = false
-  cluster_encryption_config = [
+  cluster_encryption_config = length(var.cluster_encryption_config) == 0 ? [
     {
       provider_key_arn = try(module.kms[0].key_arn, var.cluster_kms_key_arn)
       resources        = ["secrets"]
     }
-  ]
+  ] : var.cluster_encryption_config
 
   cluster_identity_providers = var.cluster_identity_providers
 
