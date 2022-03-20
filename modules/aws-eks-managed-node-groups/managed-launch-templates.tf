@@ -23,7 +23,6 @@ resource "aws_launch_template" "managed_node_groups" {
   ebs_optimized = true
 
   image_id = local.managed_node_group["custom_ami_id"] == "" ? "" : local.managed_node_group["custom_ami_id"]
-  # key_name = local.remote_access_enabled ? var.ec2_ssh_key : null
 
   monitoring {
     enabled = true

@@ -2,7 +2,7 @@ resource "aws_eks_node_group" "managed_ng" {
 
   cluster_name           = var.context.eks_cluster_id
   node_group_name        = local.managed_node_group["enable_node_group_prefix"] == false ? local.managed_node_group["node_group_name"] : null
-  node_group_name_prefix = local.managed_node_group["enable_node_group_prefix"] == true ? local.managed_node_group["node_group_name"] : null
+  node_group_name_prefix = local.managed_node_group["enable_node_group_prefix"] == true ? format("%s-", local.managed_node_group["node_group_name"]) : null
 
   node_role_arn   = aws_iam_role.managed_ng.arn
   subnet_ids      = length(local.managed_node_group["subnet_ids"]) == 0 ? (local.managed_node_group["subnet_type"] == "public" ? var.context.public_subnet_ids : var.context.private_subnet_ids) : local.managed_node_group["subnet_ids"]
@@ -56,10 +56,13 @@ resource "aws_eks_node_group" "managed_ng" {
 
   tags = local.common_tags
 
-  timeouts {
-    create = "2h"
-    update = "2h"
-    delete = "2h"
+  dynamic "timeouts" {
+    for_each = local.managed_node_group["timeouts"]
+    content {
+      create = timeouts.value["create"]
+      update = timeouts.value["update"]
+      delete = timeouts.value["delete"]
+    }
   }
 
   depends_on = [

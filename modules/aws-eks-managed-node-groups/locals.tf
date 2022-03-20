@@ -11,8 +11,8 @@ locals {
     subnet_ids               = []
     release_version          = ""
 
-    desired_size    = "3"
-    max_size        = "3"
+    desired_size    = "1"
+    max_size        = "1"
     min_size        = "1"
     max_unavailable = "1"
 
@@ -42,7 +42,14 @@ locals {
     ec2_ssh_key             = ""
     ssh_security_group_id   = ""
     additional_iam_policies = []
+
+    timeouts = [{
+      create = "30m"
+      update = "2h"
+    delete = "30m" }]
+
   }
+
   managed_node_group = merge(
     local.default_managed_ng,
     var.managed_ng
