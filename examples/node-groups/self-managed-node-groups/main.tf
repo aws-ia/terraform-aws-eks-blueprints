@@ -125,7 +125,6 @@ module "aws-eks-accelerator-for-terraform" {
             systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
         EOT
 
-      pre_userdata         = "" # Optional config
       post_userdata        = "" # Optional config
       kubelet_extra_args   = "" # Optional config
       bootstrap_extra_args = "" # Optional config
@@ -171,7 +170,6 @@ module "aws-eks-accelerator-for-terraform" {
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-      create_worker_security_group = false # Creates a dedicated sec group for this Node Group
     },
   } # END OF SELF MANAGED NODE GROUPS
 }

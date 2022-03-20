@@ -105,8 +105,6 @@ This module allows you to create ON-DEMAND, SPOT and BOTTLEROCKET(with custom am
         Name        = "spot"
         subnet_type = "private"
       }
-
-      create_worker_security_group = false
     },
 
     #---------------------------------------------------------#

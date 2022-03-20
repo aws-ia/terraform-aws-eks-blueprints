@@ -26,8 +26,8 @@ resource "aws_eks_node_group" "managed_ng" {
 
   dynamic "launch_template" {
     for_each = local.managed_node_group["create_launch_template"] == true ? [{
-      id      = aws_launch_template.managed_node_groups.id
-      version = aws_launch_template.managed_node_groups.default_version
+      id      = aws_launch_template.managed_node_groups[0].id
+      version = aws_launch_template.managed_node_groups[0].default_version
     }] : []
     content {
       id      = launch_template.value["id"]

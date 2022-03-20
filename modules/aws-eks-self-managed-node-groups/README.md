@@ -56,7 +56,6 @@ This module allows you to create on-demand or spot self managed Linux or Windows
         subnet_type = "private"
       }
       subnet_ids  = []                              # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-      create_worker_security_group = false          # Creates a dedicated sec group for this Node Group
     },
     /*
     spot_m5 = {
@@ -91,7 +90,6 @@ This module allows you to create on-demand or spot self managed Linux or Windows
         Name        = "spot"
         subnet_type = "private"
       }
-      create_worker_security_group = false
     },
 
     brkt_m5 = {
@@ -152,7 +150,6 @@ This module allows you to create on-demand or spot self managed Linux or Windows
         subnet_type = "private"
       }
       subnet_ids  = []        # Define your private/public subnets list with comma seprated subnet_ids  = ['subnet1','subnet2','subnet3']
-      create_worker_security_group = false # Creates a dedicated sec group for this Node Group
     }
   */
   } # END OF SELF MANAGED NODE GROUPS

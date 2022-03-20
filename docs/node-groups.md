@@ -61,7 +61,6 @@ The below example demonstrates advanced configuration options for a managed node
           Name        = "m4-on-demand"
           subnet_type = "private"
         }
-        create_worker_security_group = false     # Uses default Worker security group(worker_security_group_id) if false
       }
     }
 ```
@@ -130,7 +129,6 @@ The below example demonstrates advanced configuration options for a self-managed
             Name        = "m5x-on-demand"
             subnet_type = "private"
           }
-          create_worker_security_group = false
           additional_iam_policies = []
         },
     }
