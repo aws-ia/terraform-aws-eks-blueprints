@@ -1,4 +1,3 @@
-
 output "managed_nodegroups" {
   description = "EKS Managed node group id"
   value       = aws_eks_node_group.managed_ng[*].id

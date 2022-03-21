@@ -1,4 +1,3 @@
-
 resource "aws_security_group" "managed_ng" {
   count = local.managed_node_group["create_worker_security_group"] == true ? 1 : 0
 

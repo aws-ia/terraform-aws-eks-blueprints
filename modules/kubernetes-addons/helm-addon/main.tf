@@ -65,6 +65,7 @@ module "irsa" {
   create_kubernetes_service_account = try(var.irsa_config.create_kubernetes_service_account, true)
   kubernetes_namespace              = var.irsa_config.kubernetes_namespace
   kubernetes_service_account        = var.irsa_config.kubernetes_service_account
+  iam_role_path                     = var.irsa_config.iam_role_path
   irsa_iam_policies                 = var.irsa_config.irsa_iam_policies
   irsa_iam_permissions_boundary     = try(var.irsa_config.irsa_iam_permissions_boundary, "")
   addon_context                     = var.addon_context

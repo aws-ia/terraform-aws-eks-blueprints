@@ -1,4 +1,3 @@
-
 locals {
   default_fargate_profiles = {
     fargate_profile_name       = ""
