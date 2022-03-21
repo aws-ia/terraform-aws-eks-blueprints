@@ -29,13 +29,13 @@ variable "tags" {
 
 variable "irsa_iam_role_path" {
   type        = string
-  default     = null
+  default     = "/"
   description = "IAM role path for IRSA roles"
 }
 
 variable "irsa_iam_permissions_boundary" {
   type        = string
-  default     = null
+  default     = ""
   description = "IAM permissions boundary for IRSA roles"
 }
 
