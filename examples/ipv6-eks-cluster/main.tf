@@ -129,6 +129,8 @@ module "aws-eks-accelerator-for-terraform" {
       node_group_name = "mng-ondemand"
       instance_types  = ["m5.large"]
       min_size        = "2"
+      desired_size    = "2"
+      max_size        = "10"
       subnet_ids      = module.aws_vpc.private_subnets
     }
   }
