@@ -1,7 +1,7 @@
 locals {
   name                 = "kubernetes-dashboard"
   service_account_name = "eks-admin"
-  namespace            = local.name
+  namespace            = "kube-system"
 
   default_helm_config = {
     name        = local.name
