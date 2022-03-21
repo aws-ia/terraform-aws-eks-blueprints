@@ -16,7 +16,7 @@ variable "admin_password_secret_name" {
   description = "Name for a secret stored in AWS Secrets Manager that contains the admin password for ArgoCD."
 }
 
-variable "add_on_config" {
+variable "addon_config" {
   type        = any
   default     = {}
   description = "Configuration for managing add-ons via ArgoCD"
