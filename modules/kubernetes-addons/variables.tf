@@ -193,6 +193,73 @@ variable "metrics_server_helm_config" {
   description = "Metrics Server Helm Chart config"
 }
 
+#-----------TETRATE ISTIO-------------
+variable "enable_tetrate_istio" {
+  type        = bool
+  default     = false
+  description = "Enable Tetrate Istio add-on"
+}
+
+variable "tetrate_istio_distribution" {
+  type        = string
+  default     = "TID"
+  description = "Istio distribution"
+}
+
+variable "tetrate_istio_version" {
+  type        = string
+  default     = ""
+  description = "Istio version"
+}
+
+variable "tetrate_istio_install_base" {
+  type        = bool
+  default     = true
+  description = "Install Istio `base` Helm Chart"
+}
+
+variable "tetrate_istio_install_cni" {
+  type        = bool
+  default     = true
+  description = "Install Istio `cni` Helm Chart"
+}
+
+variable "tetrate_istio_install_istiod" {
+  type        = bool
+  default     = true
+  description = "Install Istio `istiod` Helm Chart"
+}
+
+variable "tetrate_istio_install_gateway" {
+  type        = bool
+  default     = true
+  description = "Install Istio `gateway` Helm Chart"
+}
+
+variable "tetrate_istio_base_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `base` Helm Chart config"
+}
+
+variable "tetrate_istio_cni_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `cni` Helm Chart config"
+}
+
+variable "tetrate_istio_istiod_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `istiod` Helm Chart config"
+}
+
+variable "tetrate_istio_gateway_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `gateway` Helm Chart config"
+}
+
 #-----------TRAEFIK-------------
 variable "enable_traefik" {
   type        = bool

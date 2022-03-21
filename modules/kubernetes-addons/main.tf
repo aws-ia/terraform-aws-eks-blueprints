@@ -195,6 +195,24 @@ module "spark_k8s_operator" {
   addon_context     = local.addon_context
 }
 
+module "tetrate_istio" {
+  count                = var.enable_tetrate_istio ? 1 : 0
+  source               = "tetratelabs/tetrate-istio-addon/eksblueprints"
+  version              = "0.0.6"
+  distribution         = var.tetrate_istio_distribution
+  distribution_version = var.tetrate_istio_version
+  install_base         = var.tetrate_istio_install_base
+  install_cni          = var.tetrate_istio_install_cni
+  install_istiod       = var.tetrate_istio_install_istiod
+  install_gateway      = var.tetrate_istio_install_gateway
+  base_helm_config     = var.tetrate_istio_base_helm_config
+  cni_helm_config      = var.tetrate_istio_cni_helm_config
+  istiod_helm_config   = var.tetrate_istio_istiod_helm_config
+  gateway_helm_config  = var.tetrate_istio_gateway_helm_config
+  manage_via_gitops    = var.argocd_manage_add_ons
+  addon_context        = local.addon_context
+}
+
 module "traefik" {
   count             = var.enable_traefik ? 1 : 0
   source            = "./traefik"
