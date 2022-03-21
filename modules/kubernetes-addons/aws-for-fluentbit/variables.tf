@@ -28,22 +28,10 @@ variable "manage_via_gitops" {
   description = "Determines if the add-on should be managed via GitOps."
 }
 
-variable "irsa_role_path" {
-  type        = string
-  default     = "/"
-  description = "IAM role path"
-}
-
 variable "irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
   default     = []
-}
-
-variable "irsa_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
 variable "addon_context" {
@@ -57,6 +45,8 @@ variable "addon_context" {
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
     tags                           = map(string)
+    irsa_iam_role_path             = optional(string)
+    irsa_iam_permissions_boundary  = optional(string)
   })
   description = "Input configuration for the addon"
 }

@@ -19,15 +19,13 @@ resource "kubernetes_namespace_v1" "prometheus" {
 }
 
 module "irsa_amp_ingest" {
-  count                         = var.enable_amazon_prometheus ? 1 : 0
-  source                        = "../../../modules/irsa"
-  kubernetes_namespace          = local.helm_config["namespace"]
-  create_kubernetes_namespace   = false
-  kubernetes_service_account    = local.amazon_prometheus_ingest_service_account
-  iam_role_path                 = var.irsa_role_path
-  irsa_iam_policies             = [aws_iam_policy.ingest[0].arn]
-  irsa_iam_permissions_boundary = var.irsa_permissions_boundary
-  addon_context                 = var.addon_context
+  count                       = var.enable_amazon_prometheus ? 1 : 0
+  source                      = "../../../modules/irsa"
+  kubernetes_namespace        = local.helm_config["namespace"]
+  create_kubernetes_namespace = false
+  kubernetes_service_account  = local.amazon_prometheus_ingest_service_account
+  irsa_iam_policies           = [aws_iam_policy.ingest[0].arn]
+  addon_context               = var.addon_context
 
   depends_on = [kubernetes_namespace_v1.prometheus]
 }

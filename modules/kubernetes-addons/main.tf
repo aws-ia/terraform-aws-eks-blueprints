@@ -69,7 +69,6 @@ module "aws_for_fluent_bit" {
   count                    = var.enable_aws_for_fluentbit ? 1 : 0
   source                   = "./aws-for-fluentbit"
   helm_config              = var.aws_for_fluentbit_helm_config
-  irsa_role_path           = var.aws_for_fluentbit_irsa_role_path
   irsa_policies            = var.aws_for_fluentbit_irsa_policies
   cw_log_group_name        = var.aws_for_fluentbit_cw_log_group_name
   cw_log_group_retention   = var.aws_for_fluentbit_cw_log_group_retention
@@ -82,8 +81,6 @@ module "aws_load_balancer_controller" {
   count                         = var.enable_aws_load_balancer_controller ? 1 : 0
   source                        = "./aws-load-balancer-controller"
   helm_config                   = var.aws_load_balancer_controller_helm_config
-  irsa_role_path                = var.aws_load_balancer_controller_irsa_role_path
-  irsa_iam_permissions_boundary = var.aws_load_balancer_controller_irsa_permissions_boundary
   manage_via_gitops             = var.argocd_manage_add_ons
   addon_context                 = local.addon_context
 }
@@ -92,9 +89,7 @@ module "aws_node_termination_handler" {
   count                     = var.enable_aws_node_termination_handler && length(var.auto_scaling_group_names) > 0 ? 1 : 0
   source                    = "./aws-node-termination-handler"
   helm_config               = var.aws_node_termination_handler_helm_config
-  irsa_role_path            = var.aws_node_termination_handler_irsa_role_path
   irsa_policies             = var.aws_node_termination_handler_irsa_policies
-  irsa_permissions_boundary = var.aws_node_termination_handler_irsa_permissions_boundary
   autoscaling_group_names   = var.auto_scaling_group_names
   addon_context             = local.addon_context
 }
@@ -112,8 +107,6 @@ module "cluster_autoscaler" {
   source                        = "./cluster-autoscaler"
   helm_config                   = var.cluster_autoscaler_helm_config
   manage_via_gitops             = var.argocd_manage_add_ons
-  irsa_role_path                = var.cluster_autoscaler_irsa_role_path
-  irsa_iam_permissions_boundary = var.cluster_autoscaler_irsa_permissions_boundary
   addon_context                 = local.addon_context
 }
 
@@ -148,7 +141,6 @@ module "karpenter" {
   count                     = var.enable_karpenter ? 1 : 0
   source                    = "./karpenter"
   helm_config               = var.karpenter_helm_config
-  irsa_role_path            = var.karpenter_irsa_role_path
   irsa_policies             = var.karpenter_irsa_policies
   node_iam_instance_profile = var.karpenter_node_iam_instance_profile
   manage_via_gitops         = var.argocd_manage_add_ons
@@ -159,9 +151,7 @@ module "keda" {
   count                     = var.enable_keda ? 1 : 0
   source                    = "./keda"
   helm_config               = var.keda_helm_config
-  irsa_role_path            = var.keda_irsa_role_path
   irsa_policies             = var.keda_irsa_policies
-  irsa_permissions_boundary = var.keda_irsa_permissions_boundary
   manage_via_gitops         = var.argocd_manage_add_ons
   addon_context             = local.addon_context
 }
@@ -182,8 +172,6 @@ module "prometheus" {
   enable_amazon_prometheus             = var.enable_amazon_prometheus
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
   manage_via_gitops                    = var.argocd_manage_add_ons
-  irsa_role_path                       = var.amazon_prometheus_irsa_role_path
-  irsa_permissions_boundary            = var.amazon_prometheus_irsa_permissions_boundary
   addon_context                        = local.addon_context
 }
 
@@ -233,9 +221,7 @@ module "yunikorn" {
   count                     = var.enable_yunikorn ? 1 : 0
   source                    = "./yunikorn"
   helm_config               = var.yunikorn_helm_config
-  irsa_role_path            = var.yunikorn_irsa_role_path
   irsa_policies             = var.yunikorn_irsa_policies
-  irsa_permissions_boundary = var.yunikorn_irsa_permissions_boundary
   manage_via_gitops         = var.argocd_manage_add_ons
   addon_context             = local.addon_context
 }

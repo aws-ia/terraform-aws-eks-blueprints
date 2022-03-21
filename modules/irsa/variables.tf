@@ -20,22 +20,10 @@ variable "kubernetes_service_account" {
   type        = string
 }
 
-variable "iam_role_path" {
-  type        = string
-  default     = "/"
-  description = "IAM Role path"
-}
-
 variable "irsa_iam_policies" {
   type        = list(string)
   description = "IAM Policies for IRSA IAM role"
   default     = []
-}
-
-variable "irsa_iam_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
 variable "addon_context" {
@@ -49,6 +37,8 @@ variable "addon_context" {
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
     tags                           = map(string)
+    irsa_iam_role_path             = optional(string)
+    irsa_iam_permissions_boundary  = optional(string)
   })
   description = "Input configuration for the addon"
 }

@@ -16,17 +16,6 @@ variable "amazon_prometheus_workspace_endpoint" {
   description = "Amazon Managed Prometheus Workspace Endpoint"
 }
 
-variable "irsa_role_path" {
-  type        = string
-  default     = "/"
-  description = "IAM role path"
-}
-
-variable "irsa_permissions_boundary" {
-  type        = string
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
-  default     = ""
-}
 
 variable "manage_via_gitops" {
   type        = bool
@@ -45,6 +34,8 @@ variable "addon_context" {
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
     tags                           = map(string)
+    irsa_iam_role_path             = optional(string)
+    irsa_iam_permissions_boundary  = optional(string)
   })
   description = "Input configuration for the addon"
 }

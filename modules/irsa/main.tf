@@ -45,9 +45,9 @@ resource "aws_iam_role" "irsa" {
       }
     ]
   })
-  path                  = var.iam_role_path
+  path                  = var.addon_context.irsa_iam_role_path
   force_detach_policies = true
-  permissions_boundary  = var.irsa_iam_permissions_boundary
+  permissions_boundary  = var.addon_context.irsa_iam_permissions_boundary
 
   tags = merge(
     {

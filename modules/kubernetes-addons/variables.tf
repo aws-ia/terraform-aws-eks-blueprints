@@ -27,6 +27,18 @@ variable "tags" {
   description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }
 
+variable "irsa_iam_role_path" {
+  type        = string
+  default     = null
+  description = "IAM role path for IRSA roles"
+}
+
+variable "irsa_iam_permissions_boundary" {
+  type        = string
+  default     = null
+  description = "IAM permissions boundary for IRSA roles"
+}
+
 #-----------EKS MANAGED ADD-ONS------------
 variable "amazon_eks_vpc_cni_config" {
   description = "ConfigMap of Amazon EKS VPC CNI add-on"
@@ -89,18 +101,6 @@ variable "cluster_autoscaler_helm_config" {
   description = "Cluster Autoscaler Helm Chart config"
 }
 
-variable "cluster_autoscaler_irsa_role_path" {
-  type        = string
-  default     = "/"
-  description = "IAM role path"
-}
-
-variable "cluster_autoscaler_irsa_permissions_boundary" {
-  type        = string
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
-  default     = ""
-}
-
 #-----------Crossplane ADDON-------------
 variable "enable_crossplane" {
   type        = bool
@@ -153,18 +153,6 @@ variable "amazon_prometheus_workspace_endpoint" {
   type        = string
   default     = null
   description = "AWS Managed Prometheus WorkSpace Endpoint"
-}
-
-variable "amazon_prometheus_irsa_role_path" {
-  type        = string
-  default     = "/"
-  description = "IAM role path"
-}
-
-variable "amazon_prometheus_irsa_permissions_boundary" {
-  type        = string
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
-  default     = ""
 }
 
 #-----------PROMETHEUS-------------
@@ -312,18 +300,6 @@ variable "aws_load_balancer_controller_helm_config" {
   default     = {}
 }
 
-variable "aws_load_balancer_controller_irsa_role_path" {
-  type        = string
-  default     = "/"
-  description = "IAM role path"
-}
-
-variable "aws_load_balancer_controller_irsa_permissions_boundary" {
-  type        = string
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
-  default     = ""
-}
-
 #-----------NGINX-------------
 variable "enable_ingress_nginx" {
   type        = bool
@@ -361,12 +337,6 @@ variable "aws_for_fluentbit_helm_config" {
   type        = any
   description = "AWS for FluentBit Helm Chart config"
   default     = {}
-}
-
-variable "aws_for_fluentbit_irsa_role_path" {
-  type        = string
-  default     = "/"
-  description = "IAM role path"
 }
 
 variable "aws_for_fluentbit_irsa_policies" {
@@ -463,22 +433,10 @@ variable "aws_node_termination_handler_helm_config" {
   default     = {}
 }
 
-variable "aws_node_termination_handler_irsa_role_path" {
-  type        = string
-  default     = "/"
-  description = "IAM role path"
-}
-
 variable "aws_node_termination_handler_irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
   default     = []
-}
-
-variable "aws_node_termination_handler_irsa_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
 #-----------KARPENTER ADDON-------------
@@ -492,12 +450,6 @@ variable "karpenter_helm_config" {
   type        = any
   default     = {}
   description = "Karpenter autoscaler add-on config"
-}
-
-variable "karpenter_irsa_role_path" {
-  type        = string
-  default     = "/"
-  description = "IAM role path"
 }
 
 variable "karpenter_irsa_policies" {
@@ -525,22 +477,10 @@ variable "keda_helm_config" {
   description = "KEDA Event-based autoscaler add-on config"
 }
 
-variable "keda_irsa_role_path" {
-  type        = string
-  default     = "/"
-  description = "IAM role path"
-}
-
 variable "keda_irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
   default     = []
-}
-
-variable "keda_irsa_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
 #------Vertical Pod Autoscaler(VPA) ADDON--------
@@ -569,21 +509,10 @@ variable "yunikorn_helm_config" {
   description = "Yunikorn Helm Chart config"
 }
 
-variable "yunikorn_irsa_role_path" {
-  type        = string
-  default     = "/"
-  description = "IAM role path"
-}
 variable "yunikorn_irsa_policies" {
   type        = list(string)
   default     = []
   description = "IAM policy ARNs for Yunikorn IRSA"
-}
-
-variable "yunikorn_irsa_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
 #-----------Argo Rollouts ADDON-------------

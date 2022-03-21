@@ -34,5 +34,7 @@ locals {
     eks_oidc_issuer_url            = local.eks_oidc_issuer_url
     eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.eks_oidc_issuer_url}"
     tags                           = var.tags
+    irsa_iam_role_path             = var.irsa_iam_role_path
+    irsa_iam_permissions_boundary  = var.irsa_iam_permissions_boundary
   }
 }
