@@ -32,6 +32,7 @@ nav:
       - Nginx: "add-ons/nginx.md"
       - Prometheus: "add-ons/prometheus.md"
       - Spark K8S Operator: "add-ons/spark-on-k8s-operator.md"
+      - Tetrate Istio: "add-ons/tetrate-istio.md"
       - Traefik: "add-ons/traefik.md"
       - VPA: "add-ons/vpa.md"
       - YuniKorn: "add-ons/yunikorn.md"

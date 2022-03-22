@@ -23,6 +23,7 @@ The framework currently provides support for the following add-ons:
 | [Nginx](../add-ons/nginx.md) | Deploys the NGINX Ingress Controller into an EKS cluster. |
 | [Prometheus](../add-ons/prometheus.md) | Deploys Prometheus into an EKS cluster. |
 | [Spark K8S Operator](../add-ons/spark-on-k8s-operator.md) | Deploys the Kubernetes Operator for Apache Spark into an EKS cluster. |
+| [Tetrate Istio](../add-ons/tetrate-istio.md) | Deploys Tetrate Istio Distro into an EKS cluster. |
 | [Traefik](../add-ons/traefik.md) | Deploys Traefik Proxy into an EKS cluster.
 | [VPA](../add-ons/vpa.md) | Deploys the Vertical Pod Autoscaler into an EKS cluster. |
 | [YuniKorn](../add-ons/yunikorn.md) | Deploys Apache YuniKorn into an EKS cluster. |
