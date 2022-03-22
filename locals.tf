@@ -48,7 +48,12 @@ locals {
     tags             = module.eks_tags.tags
   }
 
-  tags = tomap({ "created-by" = var.terraform_version })
+  tags = merge(
+    var.tags,
+    {
+      "created-by" = var.terraform_version
+    },
+  )    
 
   ecr_image_repo_url = "${local.context.aws_caller_identity_account_id}.dkr.ecr.${local.context.aws_region_name}.amazonaws.com"
 
