@@ -46,7 +46,8 @@ locals {
     timeouts = [{
       create = "30m"
       update = "2h"
-    delete = "30m" }]
+      delete = "30m"
+    }]
 
   }
 
