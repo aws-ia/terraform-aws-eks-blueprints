@@ -1,4 +1,3 @@
-
 resource "aws_launch_template" "managed_node_groups" {
   name                   = "${var.context.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
   description            = "Launch Template for EKS Managed Node Groups"

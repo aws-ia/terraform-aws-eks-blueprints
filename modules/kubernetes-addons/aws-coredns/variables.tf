@@ -1,4 +1,4 @@
-variable "add_on_config" {
+variable "addon_config" {
   description = "Amazon EKS Managed CoreDNS Add-on config"
   type        = any
   default     = {}

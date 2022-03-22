@@ -1,4 +1,3 @@
-
 locals {
   default_managed_ng = {
     node_group_name = "m4_on_demand" # Max node group length is 40 characters; including the node_group_name_prefix random id it's 63

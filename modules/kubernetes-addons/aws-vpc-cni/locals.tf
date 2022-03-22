@@ -1,6 +1,6 @@
 
 locals {
-  default_add_on_config = {
+  default_addon_config = {
     addon_name               = "vpc-cni"
     addon_version            = "v1.10.1-eksbuild.1"
     service_account          = "aws-node"
@@ -10,8 +10,9 @@ locals {
     service_account_role_arn = ""
     tags                     = {}
   }
-  add_on_config = merge(
-    local.default_add_on_config,
-    var.add_on_config
+
+  addon_config = merge(
+    local.default_addon_config,
+    var.addon_config
   )
 }

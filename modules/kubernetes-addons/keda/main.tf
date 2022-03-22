@@ -10,7 +10,7 @@ module "helm_addon" {
 resource "aws_iam_policy" "keda_irsa" {
   description = "KEDA IAM role policy for SQS and CloudWatch"
   name        = "${var.addon_context.eks_cluster_id}-${local.helm_config["name"]}-irsa"
-  path        = var.iam_role_path
+  path        = var.addon_context.irsa_iam_role_path
   policy      = data.aws_iam_policy_document.keda_irsa.json
   tags        = var.addon_context.tags
 }
