@@ -547,6 +547,12 @@ variable "keda_irsa_permissions_boundary" {
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
+#-----------HashiCorp Vault-------------
+variable "enable_vault" {
+  type        = bool
+  default     = false
+  description = "Enable HashiCorp Vault add-on"
+}
 #------Vertical Pod Autoscaler(VPA) ADDON--------
 variable "enable_vpa" {
   type        = bool
