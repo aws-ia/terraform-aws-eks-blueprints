@@ -56,11 +56,10 @@ provider "helm" {
 }
 
 locals {
-  tenant                  = "ipv6"    # AWS account name or unique id for tenant
-  environment             = "preprod" # Environment area eg., preprod or prod
-  zone                    = "dev"     # Environment with in one sub_tenant or business unit
-  count_availability_zone = (length(data.aws_availability_zones.available.names) <= 3) ? length(data.aws_availability_zones.available.zone_ids) : 3
-  cluster_version         = "1.21"
+  tenant          = "ipv6"    # AWS account name or unique id for tenant
+  environment     = "preprod" # Environment area eg., preprod or prod
+  zone            = "dev"     # Environment with in one sub_tenant or business unit
+  cluster_version = "1.21"
 
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
@@ -140,9 +139,9 @@ module "aws-eks-accelerator-for-terraform" {
 module "kubernetes-addons" {
   source         = "../../modules/kubernetes-addons"
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  enable_ipv6    = true # Enable Ipv6 network. Attaches new VPC CNI policy to the IRSA role
 
   # EKS Managed Add-ons
-  enable_ipv6                  = true
   enable_amazon_eks_vpc_cni    = true
   enable_amazon_eks_coredns    = true
   enable_amazon_eks_kube_proxy = true

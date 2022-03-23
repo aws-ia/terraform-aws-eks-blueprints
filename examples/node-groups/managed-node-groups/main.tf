@@ -113,7 +113,7 @@ module "aws_vpc" {
 # AWS EKS Accelerator Module
 #------------------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  source = "../../"
+  source = "../../.."
 
   tenant            = local.tenant
   environment       = local.environment
@@ -459,7 +459,7 @@ module "aws-eks-accelerator-for-terraform" {
 # Kubernetes Add-on Module
 #------------------------------------------------------------------------
 module "kubernetes-addons" {
-  source = "../../modules/kubernetes-addons"
+  source = "../../../modules/kubernetes-addons"
 
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
