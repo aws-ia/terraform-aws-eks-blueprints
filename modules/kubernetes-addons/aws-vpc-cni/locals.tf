@@ -20,6 +20,6 @@ locals {
   irsa_iam_policies = concat(
     ["arn:${var.addon_context.aws_partition_id}:iam::aws:policy/AmazonEKS_CNI_Policy"],
     local.cni_ipv6_policy,
-    local.add_on_config["additional_iam_policies"]
+    local.addon_config["additional_iam_policies"]
   )
 }
