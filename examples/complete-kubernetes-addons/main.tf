@@ -60,7 +60,7 @@ locals {
   zone           = var.zone
   eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
-  kubernetes_version = "1.21"
+  cluster_version = "1.21"
   terraform_version  = "Terraform v1.1.7"
 
   vpc_id             = var.vpc_id
