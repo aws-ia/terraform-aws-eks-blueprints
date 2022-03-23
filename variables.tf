@@ -33,7 +33,7 @@ variable "tags" {
 
 variable "terraform_version" {
   type        = string
-  default     = "Terraform"
+  default     = "Terraform v1.1.7"
   description = "Terraform version"
 }
 

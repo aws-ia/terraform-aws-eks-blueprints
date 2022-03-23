@@ -76,7 +76,7 @@ locals {
   zone        = var.zone
 
   kubernetes_version = var.kubernetes_version
-  terraform_version  = "Terraform v1.0.1"
+  terraform_version  = "Terraform v1.1.7"
 
   vpc_id             = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
   private_subnet_ids = data.terraform_remote_state.vpc_s3_backend.outputs.private_subnets
