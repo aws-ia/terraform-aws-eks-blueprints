@@ -73,7 +73,7 @@ locals {
   zone        = "dev"     # Environment with in one sub_tenant or business unit
   azs         = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  kubernetes_version = "1.21"
+  cluster_version = "1.21"
 
   vpc_cidr        = "10.0.0.0/16"
   vpc_name        = join("-", [local.tenant, local.environment, local.zone, "vpc"])
@@ -125,7 +125,7 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS CONTROL PLANE VARIABLES
-  kubernetes_version = local.kubernetes_version
+  cluster_version = local.cluster_version
 
   # Self-managed Node Group
   # Karpenter requires one node to get up and running
@@ -150,7 +150,7 @@ module "karpenter-launch-templates" {
       ami                    = "ami-0adc757be1e4e11a1"
       launch_template_prefix = "karpenter"
       iam_instance_profile   = module.aws-eks-accelerator-for-terraform.self_managed_node_group_iam_instance_profile_id[0]
-      vpc_security_group_ids = [module.aws-eks-accelerator-for-terraform.worker_security_group_id]
+      vpc_security_group_ids = [module.aws-eks-accelerator-for-terraform.worker_node_security_group_id]
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
@@ -164,7 +164,7 @@ module "karpenter-launch-templates" {
       launch_template_os     = "bottlerocket"
       launch_template_prefix = "bottle"
       iam_instance_profile   = module.aws-eks-accelerator-for-terraform.self_managed_node_group_iam_instance_profile_id[0]
-      vpc_security_group_ids = [module.aws-eks-accelerator-for-terraform.worker_security_group_id]
+      vpc_security_group_ids = [module.aws-eks-accelerator-for-terraform.worker_node_security_group_id]
       block_device_mappings = [
         {
           device_name = "/dev/xvda"

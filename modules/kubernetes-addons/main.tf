@@ -5,6 +5,7 @@ module "aws_vpc_cni" {
   source        = "./aws-vpc-cni"
   addon_config  = var.amazon_eks_vpc_cni_config
   addon_context = local.addon_context
+  enable_ipv6   = var.enable_ipv6
 }
 
 module "aws_coredns" {

@@ -8,7 +8,7 @@ module "helm_addon" {
 }
 
 resource "aws_iam_policy" "aws_load_balancer_controller" {
-  name        = "${var.addon_context.eks_cluster_id}-lb-controller-irsa"
+  name        = "${var.addon_context.eks_cluster_id}-lb-irsa"
   description = "Allows lb controller to manage ALB and NLB"
   policy      = data.aws_iam_policy_document.aws_lb.json
   tags        = var.addon_context.tags

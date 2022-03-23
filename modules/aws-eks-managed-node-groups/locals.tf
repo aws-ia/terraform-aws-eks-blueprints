@@ -1,13 +1,14 @@
 locals {
   default_managed_ng = {
-    node_group_name = "m4_on_demand" # Max node group length is 40 characters; including the node_group_name_prefix random id it's 63
-    instance_types  = ["m4.large"]
-    capacity_type   = "ON_DEMAND"  # ON_DEMAND, SPOT
-    ami_type        = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
-    custom_ami_id   = ""
-    subnet_type     = "private"
-    subnet_ids      = []
-    release_version = ""
+    node_group_name          = "m5_on_demand" # Max node group length is 40 characters; including the node_group_name_prefix random id it's 63
+    enable_node_group_prefix = true
+    instance_types           = ["m5.large"]
+    capacity_type            = "ON_DEMAND"  # ON_DEMAND, SPOT
+    ami_type                 = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
+    custom_ami_id            = ""
+    subnet_type              = "private"
+    subnet_ids               = []
+    release_version          = ""
 
     desired_size    = "3"
     max_size        = "3"
@@ -25,8 +26,6 @@ locals {
     k8s_taints      = []
     additional_tags = {}
 
-    create_worker_security_group = false
-
     # LAUNCH TEMPLATES
     create_launch_template  = false
     launch_template_os      = "amazonlinux2eks" # amazonlinux2eks/bottlerocket # Used to identify the launch template
@@ -42,7 +41,15 @@ locals {
     ec2_ssh_key             = ""
     ssh_security_group_id   = ""
     additional_iam_policies = []
+
+    timeouts = [{
+      create = "30m"
+      update = "2h"
+      delete = "30m"
+    }]
+
   }
+
   managed_node_group = merge(
     local.default_managed_ng,
     var.managed_ng

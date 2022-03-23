@@ -13,7 +13,7 @@ variable "zone" {
   description = "Environment with in one sub_tenant or business unit"
 }
 
-variable "kubernetes_version" {
+variable "cluster_version" {
   type = string
 }
 
