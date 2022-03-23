@@ -1,4 +1,3 @@
-
 variable "addon_config" {
   type        = any
   description = "Fargate fluentbit configuration"

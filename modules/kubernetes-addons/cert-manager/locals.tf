@@ -1,4 +1,3 @@
-
 locals {
   name                 = "cert-manager"
   service_account_name = "${local.name}-sa"

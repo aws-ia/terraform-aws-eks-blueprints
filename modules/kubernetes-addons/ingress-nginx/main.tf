@@ -2,23 +2,19 @@
 module "helm_addon" {
   source            = "../helm-addon"
   manage_via_gitops = var.manage_via_gitops
-  set_values        = local.set_values
   helm_config       = local.helm_config
-  irsa_config       = local.irsa_config
+  irsa_config       = null
   addon_context     = var.addon_context
+
+  depends_on = [kubernetes_namespace_v1.this]
 }
 
-resource "aws_iam_policy" "this" {
-  name        = "${var.addon_context.eks_cluster_id}-${local.service_account_name}-policy"
-  path        = "/"
-  description = "A generic AWS IAM policy for the ingress nginx irsa."
-  policy      = data.aws_iam_policy_document.this.json
+resource "kubernetes_namespace_v1" "this" {
+  metadata {
+    name = local.helm_config["namespace"]
 
-  tags = merge(
-    {
-      "Name"                         = "${var.addon_context.eks_cluster_id}-${local.service_account_name}-irsa-policy",
+    labels = {
       "app.kubernetes.io/managed-by" = "terraform-eks-blueprints"
-    },
-    var.tags
-  )
+    }
+  }
 }

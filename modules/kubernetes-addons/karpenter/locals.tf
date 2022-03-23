@@ -48,7 +48,6 @@ locals {
     create_kubernetes_namespace       = true
     create_kubernetes_service_account = true
     irsa_iam_policies                 = concat([aws_iam_policy.karpenter.arn], var.irsa_policies)
-    irsa_iam_permissions_boundary     = var.irsa_iam_permissions_boundary
   }
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {

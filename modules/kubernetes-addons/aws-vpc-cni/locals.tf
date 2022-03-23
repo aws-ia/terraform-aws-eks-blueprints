@@ -1,5 +1,5 @@
 locals {
-  default_add_on_config = {
+  default_addon_config = {
     addon_name               = "vpc-cni"
     addon_version            = "v1.10.2-eksbuild.1"
     service_account          = "aws-node"
@@ -9,9 +9,10 @@ locals {
     service_account_role_arn = ""
     tags                     = {}
   }
-  add_on_config = merge(
-    local.default_add_on_config,
-    var.add_on_config
+
+  addon_config = merge(
+    local.default_addon_config,
+    var.addon_config
   )
 
   cni_ipv6_policy = var.enable_ipv6 ? [aws_iam_policy.cni_ipv6_policy[0].arn] : []

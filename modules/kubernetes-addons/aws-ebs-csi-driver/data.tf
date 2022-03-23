@@ -1,4 +1,4 @@
-data "aws_iam_policy_document" "aws-ebs-csi-driver" {
+data "aws_iam_policy_document" "aws_ebs_csi_driver" {
   statement {
     sid       = ""
     effect    = "Allow"

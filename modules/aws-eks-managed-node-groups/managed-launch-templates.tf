@@ -1,4 +1,3 @@
-
 resource "aws_launch_template" "managed_node_groups" {
   count = local.managed_node_group["create_launch_template"] == true ? 1 : 0
 
