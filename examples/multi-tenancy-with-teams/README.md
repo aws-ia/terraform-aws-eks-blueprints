@@ -112,6 +112,7 @@ No inputs.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_configure_kubectl"></a> [configure\_kubectl](#output\_configure\_kubectl) | Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
 | <a name="output_ssp_output"></a> [ssp\_output](#output\_ssp\_output) | SSP module outputs |
 
 <!--- END_TF_DOCS --->
