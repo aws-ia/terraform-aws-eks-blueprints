@@ -148,6 +148,7 @@ module "aws-eks-accelerator-for-terraform" {
       #   "arn:aws:iam::<ACCOUNT_ID>:role/<ROLE_NAME>"
       # ]
       users = [
+        "arn:aws:iam::461262401546:role/Admin"
       ]
     }
   }
