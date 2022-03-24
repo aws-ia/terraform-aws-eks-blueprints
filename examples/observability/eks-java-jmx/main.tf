@@ -44,8 +44,6 @@ locals {
     repo_url           = "https://github.com/aws-samples/ssp-eks-workloads.git"
     add_on_application = false
   }
-
-  aws_iam_instance_profile_name = "bastion_host_profile"
 }
 
 #---------------------------------------------------------------
@@ -94,7 +92,6 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS Control Plane Variables
-  create_eks         = true
   kubernetes_version = local.kubernetes_version
 
   managed_node_groups = {
