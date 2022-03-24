@@ -176,7 +176,7 @@ tomcat-traffic-generator          1/1     Running             0          11s
 
 Log back into your Managed Grafana Workspace and navigate to the dashboard side panel, click on `Observability` Folder and open the `Sample Java/JMX Dashboard for Kubernetes` Dashboard.
 
-![Grafana example dashboards](/assets/example-dashboard.png)
+<img width="1468" alt="java-dashboard" src="https://user-images.githubusercontent.com/10175027/159924937-51514e4e-3442-40a2-a921-950d69f372b4.png">
 
 
 ## Cleanup
