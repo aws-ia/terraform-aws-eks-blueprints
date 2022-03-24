@@ -100,9 +100,22 @@ application.
 
 - Check that OpenTelemetry Collector is running successfully inside EKS:
 
-  ```
-  kubectl get pods -n opentelemetry-operator-system
-  ```
+```
+kubectl get pods -n opentelemetry-operator-system
+
+NAMESPACE                       NAME                              READY   STATUS    RESTARTS   AGE
+kube-system                     aws-node-lftbf                    1/1     Running   0          2m
+kube-system                     aws-node-qljbf                    1/1     Running   0          2m
+kube-system                     aws-node-z5vfm                    1/1     Running   0          2m
+kube-system                     coredns-7cc879f8db-jqbmx          1/1     Running   0          7m
+kube-system                     coredns-7cc879f8db-x4frt          1/1     Running   0          7m
+kube-system                     kube-proxy-4kxzk                  1/1     Running   0          2m
+kube-system                     kube-proxy-ggfdn                  1/1     Running   0          2m
+kube-system                     kube-proxy-wl48k                  1/1     Running   0          2m
+opentelemetry-operator-system   adot-collector-qpgww              1/1     Running   0          1m
+opentelemetry-operator-system   adot-collector-wcl5z              1/1     Running   0          1m
+opentelemetry-operator-system   adot-collector-zsbtc              1/1     Running   0          1m
+```
 
 - Open your Managed Grafana Workspace, head to the configuration page and and verify that Amazon Managed Prometheus was added as a default data source, test its connectivity.
 
@@ -124,8 +137,9 @@ aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --
 
 ```
 aws ecr create-repository --repository-name prometheus-sample-tomcat-jmx \
-  --image-scanning-configuration scanOnPush=true \
-  --region $AWS_REGION
+ --image-scanning-configuration scanOnPush=true \
+ --region $AWS_REGION
+
 ```
 
 - 4. Build Docker image and push to ECR.
@@ -143,7 +157,7 @@ curl https://raw.githubusercontent.com/aws-observability/aws-otel-test-framework
 sed -i .bak "s/{{aws_account_id}}/$AWS_ACCOUNT_ID/g" metrics-sample.yaml
 sed -i .bak "s/{{region}}/$AWS_REGION/g" metrics-sample.yaml
 sed -i .bak "s/{{namespace}}/$SAMPLE_TRAFFIC_NAMESPACE/g" metrics-sample.yaml
-rm -f *.bak
+rm -f \*.bak
 kubectl apply -f metrics-sample.yaml
 ```
 
@@ -151,11 +165,19 @@ Verify that the sample application is running:
 
 ```
 kubectl get pods -n $SAMPLE_TRAFFIC_NAMESPACE
+
+NAME                              READY   STATUS              RESTARTS   AGE
+tomcat-bad-traffic-generator      1/1     Running             0          11s
+tomcat-example-7958666589-2q755   0/1     ContainerCreating   0          11s
+tomcat-traffic-generator          1/1     Running             0          11s
 ```
 
 #### Vizualize the Application's dashboard
 
 Log back into your Managed Grafana Workspace and navigate to the dashboard side panel, click on `Observability` Folder and open the `Sample Java/JMX Dashboard for Kubernetes` Dashboard.
+
+![Grafana example dashboards](/assets/example-dashboard.png)
+
 
 ## Cleanup
 
@@ -169,10 +191,8 @@ Log back into your Managed Grafana Workspace and navigate to the dashboard side 
 - You can explore the OpenTelemtry Collector logs by running the following command:
 
 ```
-
 kubectl get pods -n opentelemetry-operator-system
 kubectl logs -f -n opentelemetry-operator-system adot-collector-xxxx
-
 ```
 
 <!--- BEGIN_TF_DOCS --->
@@ -225,3 +245,4 @@ kubectl logs -f -n opentelemetry-operator-system adot-collector-xxxx
 No outputs.
 
 <!--- END_TF_DOCS --->
+```
