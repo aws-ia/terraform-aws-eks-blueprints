@@ -1,6 +1,6 @@
 locals {
   # Configuration for managing add-ons via ArgoCD.
-  argocd_add_on_config = {
+  argocd_addon_config = {
     agones                    = var.enable_agones ? module.agones[0].argocd_gitops_config : null
     awsEfsCsiDriver           = var.enable_aws_efs_csi_driver ? module.aws_efs_csi_driver[0].argocd_gitops_config : null
     awsForFluentBit           = var.enable_aws_for_fluentbit ? module.aws_for_fluent_bit[0].argocd_gitops_config : null
@@ -12,6 +12,7 @@ locals {
     metricsServer             = var.enable_metrics_server ? module.metrics_server[0].argocd_gitops_config : null
     prometheus                = var.enable_prometheus ? module.prometheus[0].argocd_gitops_config : null
     sparkOperator             = var.enable_spark_k8s_operator ? module.spark_k8s_operator[0].argocd_gitops_config : null
+    tetrateIstio              = var.enable_tetrate_istio ? module.tetrate_istio[0].argocd_gitops_config : null
     traefik                   = var.enable_traefik ? module.traefik[0].argocd_gitops_config : null
     vpa                       = var.enable_vpa ? module.vpa[0].argocd_gitops_config : null
     yunikorn                  = var.enable_yunikorn ? module.yunikorn[0].argocd_gitops_config : null
@@ -33,5 +34,7 @@ locals {
     eks_oidc_issuer_url            = local.eks_oidc_issuer_url
     eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.eks_oidc_issuer_url}"
     tags                           = var.tags
+    irsa_iam_role_path             = var.irsa_iam_role_path
+    irsa_iam_permissions_boundary  = var.irsa_iam_permissions_boundary
   }
 }

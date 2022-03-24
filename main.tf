@@ -1,21 +1,3 @@
-/*
- * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * SPDX-License-Identifier: MIT-0
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the Software
- * without restriction, including without limitation the rights to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 # ---------------------------------------------------------------------------------------------------------------------
 # LABELING EKS RESOURCES
 # ---------------------------------------------------------------------------------------------------------------------
@@ -25,7 +7,7 @@ module "eks_tags" {
   environment = var.environment
   zone        = var.zone
   resource    = "eks"
-  tags        = local.tags
+  tags        = merge(var.tags, { "created-by" = var.terraform_version })
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -47,46 +29,61 @@ module "kms" {
 # ---------------------------------------------------------------------------------------------------------------------
 module "aws_eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "v17.20.0"
+  version = "v18.10.0"
+  create  = var.create_eks
 
-  create_eks      = var.create_eks
-  manage_aws_auth = false
+  cluster_name     = var.cluster_name == "" ? module.eks_tags.id : var.cluster_name
+  cluster_version  = var.cluster_version
+  cluster_timeouts = var.cluster_timeouts
 
-  cluster_name          = var.cluster_name == "" ? module.eks_tags.id : var.cluster_name
-  cluster_version       = var.kubernetes_version
-  cluster_iam_role_name = local.cluster_iam_role_name
+  # IAM Role
+  iam_role_use_name_prefix      = false
+  iam_role_name                 = local.cluster_iam_role_name
+  iam_role_path                 = var.iam_role_path
+  iam_role_permissions_boundary = var.iam_role_permissions_boundary
+  iam_role_additional_policies  = var.iam_role_additional_policies
 
-  # NETWORK CONFIG
-  vpc_id  = var.vpc_id
-  subnets = var.private_subnet_ids
-
-  cluster_endpoint_private_access                = var.cluster_endpoint_private_access
-  cluster_create_endpoint_private_access_sg_rule = local.cluster_create_endpoint_private_access_sg_rule
-  cluster_endpoint_private_access_cidrs          = local.cluster_endpoint_private_access_cidrs
-  cluster_endpoint_private_access_sg             = local.cluster_endpoint_private_access_sg
-
+  # EKS Cluster VPC Config
+  subnet_ids                           = var.private_subnet_ids
+  cluster_endpoint_private_access      = var.cluster_endpoint_private_access
   cluster_endpoint_public_access       = var.cluster_endpoint_public_access
   cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
 
-  worker_create_security_group  = var.worker_create_security_group
-  cluster_log_retention_in_days = var.cluster_log_retention_in_days
+  # Kubernetes Network Config
+  cluster_ip_family         = var.cluster_ip_family
+  cluster_service_ipv4_cidr = var.cluster_service_ipv4_cidr
+
+  # Cluster Security Group
+  create_cluster_security_group           = true
+  create_node_security_group              = true
+  vpc_id                                  = var.vpc_id
+  cluster_additional_security_group_ids   = var.cluster_additional_security_group_ids
+  cluster_security_group_additional_rules = var.cluster_security_group_additional_rules
 
   # IRSA
-  enable_irsa = var.enable_irsa
+  enable_irsa              = var.enable_irsa # no change
+  openid_connect_audiences = var.openid_connect_audiences
+  custom_oidc_thumbprints  = var.custom_oidc_thumbprints
 
   # TAGS
   tags = module.eks_tags.tags
 
   # CLUSTER LOGGING
-  cluster_enabled_log_types = var.cluster_enabled_log_types
+  cluster_enabled_log_types              = var.cluster_enabled_log_types # no change
+  cloudwatch_log_group_retention_in_days = var.cloudwatch_log_group_retention_in_days
+  cloudwatch_log_group_kms_key_id        = var.cloudwatch_log_group_kms_key_id
 
   # CLUSTER ENCRYPTION
-  cluster_encryption_config = [
+  attach_cluster_encryption_policy = false
+  cluster_encryption_config = length(var.cluster_encryption_config) == 0 ? [
     {
       provider_key_arn = try(module.kms[0].key_arn, var.cluster_kms_key_arn)
       resources        = ["secrets"]
     }
-  ]
+  ] : var.cluster_encryption_config
+
+  cluster_identity_providers = var.cluster_identity_providers
+
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

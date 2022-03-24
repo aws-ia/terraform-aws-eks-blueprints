@@ -8,3 +8,5 @@ metadata:
 spec:
   podSecurityContext:
     fsGroup: 2000
+  args:
+    - --debug

@@ -12,7 +12,7 @@ resource "kubernetes_namespace_v1" "this" {
     name = local.helm_config["namespace"]
 
     labels = {
-      "app.kubernetes.io/managed-by" = "terraform-ssp-amazon-eks"
+      "app.kubernetes.io/managed-by" = "terraform-eks-blueprints"
     }
   }
 }
@@ -65,7 +65,7 @@ resource "helm_release" "argocd_application" {
       { repo_url = each.value.repo_url },
       each.value.values,
       local.global_application_values,
-      each.value.add_on_application ? var.add_on_config : {}
+      each.value.add_on_application ? var.addon_config : {}
     ))
   }
 

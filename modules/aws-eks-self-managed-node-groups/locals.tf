@@ -25,13 +25,12 @@ locals {
     ]
 
     # AUTOSCALING
-    max_size                     = "3"
-    min_size                     = "1"
-    subnet_type                  = "private"
-    subnet_ids                   = []
-    additional_tags              = {}
-    create_worker_security_group = false
-    additional_iam_policies      = []
+    max_size                = "3"
+    min_size                = "1"
+    subnet_type             = "private"
+    subnet_ids              = []
+    additional_tags         = {}
+    additional_iam_policies = []
   }
 
   self_managed_node_group = merge(
@@ -42,9 +41,9 @@ locals {
   enable_windows_support = local.self_managed_node_group["launch_template_os"] == "windows"
 
   predefined_ami_names = {
-    amazonlinux2eks = "amazon-eks-node-${var.context.kubernetes_version}-*"
-    bottlerocket    = "bottlerocket-aws-k8s-${var.context.kubernetes_version}-x86_64-*"
-    windows         = "Windows_Server-2019-English-Core-EKS_Optimized-${var.context.kubernetes_version}-*"
+    amazonlinux2eks = "amazon-eks-node-${var.context.cluster_version}-*"
+    bottlerocket    = "bottlerocket-aws-k8s-${var.context.cluster_version}-x86_64-*"
+    windows         = "Windows_Server-2019-English-Core-EKS_Optimized-${var.context.cluster_version}-*"
   }
   predefined_ami_types  = keys(local.predefined_ami_names)
   default_custom_ami_id = contains(local.predefined_ami_types, local.self_managed_node_group["launch_template_os"]) ? data.aws_ami.predefined[local.self_managed_node_group["launch_template_os"]].id : ""

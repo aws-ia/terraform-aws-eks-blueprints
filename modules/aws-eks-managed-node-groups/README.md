@@ -105,8 +105,6 @@ This module allows you to create ON-DEMAND, SPOT and BOTTLEROCKET(with custom am
         Name        = "spot"
         subnet_type = "private"
       }
-
-      create_worker_security_group = false
     },
 
     #---------------------------------------------------------#
@@ -176,25 +174,19 @@ No modules.
 | [aws_iam_instance_profile.managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_role.managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.managed_ng_AmazonEC2ContainerRegistryReadOnly](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.managed_ng_AmazonEKSWorkerNodePolicy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.managed_ng_AmazonEKS_CNI_Policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.managed_ng_AmazonSSMManagedInstanceCore](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_launch_template.managed_node_groups](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template) | resource |
-| [aws_security_group.managed_ng](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
-| [aws_security_group_rule.cluster_primary_sg_ingress_worker_sgr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.control_plane_egress_to_worker_https](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.control_plane_egress_to_worker_sgr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.control_plane_ingress_from_worker_https](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.worker_ingress_from_control_plane_https](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.worker_to_worker_sgr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.workers_ingress_cluster_primary_sgr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.workers_ingress_control_plane_sgr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_iam_policy_document.managed_ng_assume_role_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_context"></a> [context](#input\_context) | Input configuration for the Node groups | <pre>object({<br>    # EKS Cluster Config<br>    eks_cluster_id     = string<br>    cluster_ca_base64  = string<br>    cluster_endpoint   = string<br>    kubernetes_version = string<br>    # VPC Config<br>    vpc_id             = string<br>    private_subnet_ids = list(string)<br>    public_subnet_ids  = list(string)<br>    # Security Groups<br>    worker_security_group_id             = string<br>    worker_additional_security_group_ids = list(string)<br>    cluster_security_group_id            = string<br>    cluster_primary_security_group_id    = string<br>    # Http config<br>    http_endpoint               = string<br>    http_tokens                 = string<br>    http_put_response_hop_limit = number<br>    # Data sources<br>    aws_partition_dns_suffix = string<br>    aws_partition_id         = string<br>    # Tags<br>    tags = map(string)<br>  })</pre> | n/a | yes |
+| <a name="input_context"></a> [context](#input\_context) | Input configuration for the Node groups | <pre>object({<br>    # EKS Cluster Config<br>    eks_cluster_id    = string<br>    cluster_ca_base64 = string<br>    cluster_endpoint  = string<br>    cluster_version   = string<br>    # VPC Config<br>    vpc_id             = string<br>    private_subnet_ids = list(string)<br>    public_subnet_ids  = list(string)<br>    # Security Groups<br>    worker_security_group_ids = list(string)<br><br>    # Http config<br>    http_endpoint               = string<br>    http_tokens                 = string<br>    http_put_response_hop_limit = number<br>    # Data sources<br>    aws_partition_dns_suffix = string<br>    aws_partition_id         = string<br>    #IAM<br>    iam_role_path                 = string<br>    iam_role_permissions_boundary = string<br>    # Tags<br>    tags = map(string)<br>  })</pre> | n/a | yes |
 | <a name="input_managed_ng"></a> [managed\_ng](#input\_managed\_ng) | Map of maps of `eks_node_groups` to create | `any` | `{}` | no |
-| <a name="input_path"></a> [path](#input\_path) | IAM resource path, e.g. /dev/ | `string` | `"/"` | no |
 
 ## Outputs
 
@@ -207,7 +199,6 @@ No modules.
 | <a name="output_managed_nodegroup_launch_template_arn"></a> [managed\_nodegroup\_launch\_template\_arn](#output\_managed\_nodegroup\_launch\_template\_arn) | Launch Template ARN for EKS Managed Node Group |
 | <a name="output_managed_nodegroup_launch_template_id"></a> [managed\_nodegroup\_launch\_template\_id](#output\_managed\_nodegroup\_launch\_template\_id) | Launch Template ID for EKS Managed Node Group |
 | <a name="output_managed_nodegroup_launch_template_latest_version"></a> [managed\_nodegroup\_launch\_template\_latest\_version](#output\_managed\_nodegroup\_launch\_template\_latest\_version) | Launch Template version for EKS Managed Node Group |
-| <a name="output_managed_nodegroup_sec_group_id"></a> [managed\_nodegroup\_sec\_group\_id](#output\_managed\_nodegroup\_sec\_group\_id) | Security group ID for Managed node group |
 | <a name="output_managed_nodegroups"></a> [managed\_nodegroups](#output\_managed\_nodegroups) | EKS Managed node group id |
 
 <!--- END_TF_DOCS --->

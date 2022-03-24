@@ -75,8 +75,8 @@ locals {
   environment = var.environment
   zone        = var.zone
 
-  kubernetes_version = var.kubernetes_version
-  terraform_version  = "Terraform v1.0.1"
+  cluster_version   = var.cluster_version
+  terraform_version = "Terraform v1.0.1"
 
   vpc_id             = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
   private_subnet_ids = data.terraform_remote_state.vpc_s3_backend.outputs.private_subnets
@@ -96,7 +96,7 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = local.private_subnet_ids
 
   # EKS CONTROL PLANE VARIABLES
-  kubernetes_version = local.kubernetes_version
+  cluster_version = local.cluster_version
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
@@ -112,7 +112,7 @@ module "kubernetes-addons" {
   source = "../../../modules/kubernetes-addons"
 
   eks_cluster_id               = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-  eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_security_group_id
+  eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_node_security_group_id
 
   # EKS Managed Add-ons
   enable_amazon_eks_vpc_cni            = true

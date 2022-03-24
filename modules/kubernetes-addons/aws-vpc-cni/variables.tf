@@ -1,7 +1,13 @@
-variable "add_on_config" {
+variable "addon_config" {
   description = "Amazon EKS Managed Add-on"
   type        = any
   default     = {}
+}
+
+variable "enable_ipv6" {
+  description = "Enable IPV6 CNI policy"
+  type        = any
+  default     = false
 }
 
 variable "addon_context" {
@@ -15,6 +21,8 @@ variable "addon_context" {
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
     tags                           = map(string)
+    irsa_iam_role_path             = string
+    irsa_iam_permissions_boundary  = string
   })
   description = "Input configuration for the addon"
 }

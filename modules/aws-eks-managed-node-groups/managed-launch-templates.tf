@@ -1,5 +1,6 @@
-
 resource "aws_launch_template" "managed_node_groups" {
+  count = local.managed_node_group["create_launch_template"] == true ? 1 : 0
+
   name                   = "${var.context.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
   description            = "Launch Template for EKS Managed Node Groups"
   update_default_version = true
@@ -21,7 +22,6 @@ resource "aws_launch_template" "managed_node_groups" {
   ebs_optimized = true
 
   image_id = local.managed_node_group["custom_ami_id"] == "" ? "" : local.managed_node_group["custom_ami_id"]
-  # key_name = local.remote_access_enabled ? var.ec2_ssh_key : null
 
   monitoring {
     enabled = true
@@ -40,7 +40,7 @@ resource "aws_launch_template" "managed_node_groups" {
 
   network_interfaces {
     associate_public_ip_address = local.managed_node_group["public_ip"]
-    security_groups             = local.managed_node_group["create_worker_security_group"] == true ? compact(flatten([[aws_security_group.managed_ng[0].id], var.context.worker_additional_security_group_ids])) : compact(flatten([[var.context.worker_security_group_id], var.context.worker_additional_security_group_ids]))
+    security_groups             = var.context.worker_security_group_ids
   }
 
   lifecycle {
@@ -50,6 +50,9 @@ resource "aws_launch_template" "managed_node_groups" {
   depends_on = [
     aws_iam_role.managed_ng,
     aws_iam_instance_profile.managed_ng,
+    aws_iam_role_policy_attachment.managed_ng_AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.managed_ng_AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.managed_ng_AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.managed_ng
   ]
 }

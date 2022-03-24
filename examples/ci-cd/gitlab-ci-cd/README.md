@@ -25,7 +25,7 @@ git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git
 
 ## Step 4: Update variables in input.tfvars file  
    1. Update tenant,environment,zone as per your requirement
-   2. Update kubernetes_version to any version > "1.20"
+   2. Update cluster_version to any version > "1.20"
    3. Update CIDR of your VPC, vpc_cidcr = "10.2.0.0/16"
 
 
@@ -88,8 +88,8 @@ Manually trigger the `tf-destroy` stage in the GitLab Ci/CD pipeline to destroy 
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | n/a | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment area eg., preprod or prod | `string` | n/a | yes |
-| <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | n/a | `string` | n/a | yes |
 | <a name="input_tenant"></a> [tenant](#input\_tenant) | AWS account name or unique id for tenant | `string` | n/a | yes |
 | <a name="input_terraform_version"></a> [terraform\_version](#input\_terraform\_version) | n/a | `string` | n/a | yes |
 | <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | n/a | `string` | n/a | yes |
