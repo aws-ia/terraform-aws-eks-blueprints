@@ -122,7 +122,6 @@ module "aws-eks-accelerator-for-terraform" {
       subnet_ids      = module.aws_vpc.private_subnets
     }
   }
-  depends_on = [module.aws_vpc]
 }
 
 module "kubernetes-addons" {
