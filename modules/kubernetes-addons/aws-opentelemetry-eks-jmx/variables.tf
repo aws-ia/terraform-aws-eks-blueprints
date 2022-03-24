@@ -4,11 +4,6 @@ variable "helm_config" {
   description = "Helm Config for Prometheus"
 }
 
-variable "eks_cluster_id" {
-  type        = string
-  description = "EKS Cluster Id"
-}
-
 variable "iam_role_path" {
   type        = string
   default     = "/"
@@ -40,4 +35,9 @@ variable "addon_context" {
     tags                           = map(string)
   })
   description = "Input configuration for the addon"
+}
+variable "manage_via_gitops" {
+  type        = bool
+  default     = false
+  description = "Determines if the add-on should be managed via GitOps."
 }
