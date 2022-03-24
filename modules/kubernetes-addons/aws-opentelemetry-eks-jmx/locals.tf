@@ -1,10 +1,11 @@
 locals {
   default_helm_config = {
     name             = "opentelemetry"
+    repository       = null
     chart            = "${path.module}/otel-config"
     version          = "0.1.0"
     namespace        = "opentelemetry-operator-system"
-    timeout          = "300"
+    timeout          = "1200"
     create_namespace = true
     description      = "ADOT helm Chart deployment configuration"
     lint             = false
@@ -53,5 +54,16 @@ locals {
       value = 1000
     }
   ]
+
+  amp_gitops_config = {
+    roleArn            = module.irsa_amp_ingest[0].irsa_iam_role_arn
+    ampWorkspaceUrl    = var.amazon_prometheus_workspace_endpoint
+    serviceAccountName = local.amazon_prometheus_ingest_service_account
+  }
+
+  argocd_gitops_config = merge(
+    { enable = true },
+    local.amp_gitops_config
+  )
 
 }
