@@ -1,5 +1,5 @@
 #-------------------------------
-# EKS CLuster Module Outputs
+# EKS Cluster Module Outputs
 #-------------------------------
 output "eks_cluster_id" {
   description = "Kubernetes Cluster Name"
@@ -131,7 +131,7 @@ output "emr_on_eks_role_id" {
 # Teams(Soft Multi-tenancy) Outputs
 #-------------------------------
 output "teams" {
-  description = "Outputs from EKS Fargate profiles groups "
+  description = "Outputs from EKS teams"
   value       = var.create_eks && (length(var.platform_teams) > 0 || length(var.application_teams) > 0) ? module.aws_eks_teams.* : []
 }
 
