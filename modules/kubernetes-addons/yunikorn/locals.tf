@@ -4,7 +4,7 @@ locals {
   default_helm_config = {
     name        = local.name
     chart       = local.name
-    repository  = "https://apache.github.io/incubator-yunikorn-release"
+    repository  = "https://apache.github.io/yunikorn-release"
     version     = "0.12.2"
     namespace   = local.name
     description = "Apache YuniKorn (Incubating) is a light-weight, universal resource scheduler for container orchestrator systems"
