@@ -159,10 +159,10 @@ module "kubernetes-addons" {
   #---------------------------------------
   enable_yunikorn = true
   yunikorn_helm_config = {
-    name       = "yunikorn"                                            # (Required) Release name.
-    repository = "https://apache.github.io/incubator-yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "yunikorn"                                            # (Required) Chart name to be installed.
-    version    = "0.12.2"                                              # (Optional) Specify the exact chart version to install.
+    name       = "yunikorn"                                  # (Required) Release name.
+    repository = "https://apache.github.io/yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
+    chart      = "yunikorn"                                  # (Required) Chart name to be installed.
+    version    = "0.12.2"                                    # (Optional) Specify the exact chart version to install.
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
 
