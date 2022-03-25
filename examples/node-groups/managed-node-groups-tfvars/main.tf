@@ -55,3 +55,8 @@ locals {
   vpc_name                = join("-", [var.tenant, var.environment, var.zone, "vpc"])
   cluster_name            = join("-", [var.tenant, var.environment, var.zone, "eks"])
 }
+
+output "configure_kubectl" {
+  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
+  value       = module.aws-eks-accelerator-for-terraform.configure_kubectl
+}
