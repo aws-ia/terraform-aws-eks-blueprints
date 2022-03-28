@@ -1,9 +1,8 @@
-
 locals {
   default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
   # Admin Password
-  default_helm_set_sensitive = var.admin_password_secret_name != "" ? [
+  set_sensitive = var.admin_password_secret_name != "" ? [
     {
       name  = "configs.secret.argocdServerAdminPassword"
       value = data.aws_secretsmanager_secret_version.admin_password_version[0].secret_string
@@ -21,9 +20,8 @@ locals {
     namespace        = local.namespace
     timeout          = "1200"
     create_namespace = true
-    set_sensitive    = local.default_helm_set_sensitive
     values           = local.default_helm_values
-    description      = "The argocd HelmChart Ingress Controller deployment configuration"
+    description      = "The ArgoCD Helm Chart deployment configuration"
   }
 
   helm_config = merge(
