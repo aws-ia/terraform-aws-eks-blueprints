@@ -375,7 +375,7 @@ module "aws-eks-accelerator-for-terraform" {
     #---------------------------------------------------------#
     # Bottlerocket instance type Worker Group
     #---------------------------------------------------------#
-    bottlerocket_arm = {
+    bottlerocket_x86 = {
       # 1> Node Group configuration - Part1
       node_group_name        = "btl-x86"      # Max 40 characters for node group name
       create_launch_template = true           # false will use the default launch template
