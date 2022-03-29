@@ -12,7 +12,7 @@ locals {
     # http details
     http_endpoint               = "enabled"
     http_tokens                 = "required"
-    http_put_response_hop_limit = 2 # Hop limit should be between 2 and 64 for IMDSv2 instance metadata services
+    http_put_response_hop_limit = 1
   }
 
   eks_cluster_id     = module.aws_eks.cluster_id
