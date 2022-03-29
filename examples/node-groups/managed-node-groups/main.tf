@@ -398,7 +398,7 @@ module "aws-eks-accelerator-for-terraform" {
       disk_size      = 50
 
       # 4> Node Group network configuration
-      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
 
       k8s_taints = []
 
