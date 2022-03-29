@@ -1,51 +1,27 @@
-
 locals {
   default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
   # Admin Password
-  default_helm_set_sensitive = var.admin_password_secret_name != "" ? [
+  set_sensitive = var.admin_password_secret_name != "" ? [
     {
       name  = "configs.secret.argocdServerAdminPassword"
       value = data.aws_secretsmanager_secret_version.admin_password_version[0].secret_string
     }
   ] : []
 
+  name      = "argo-cd"
+  namespace = "argocd"
+
   default_helm_config = {
-    name                       = "argo-cd"
-    chart                      = "argo-cd"
-    repository                 = "https://argoproj.github.io/argo-helm"
-    version                    = "3.33.3"
-    namespace                  = "argocd"
-    timeout                    = "1200"
-    create_namespace           = true
-    set                        = []
-    set_sensitive              = local.default_helm_set_sensitive
-    values                     = local.default_helm_values
-    lint                       = false
-    verify                     = false
-    keyring                    = ""
-    repository_key_file        = ""
-    repository_cert_file       = ""
-    repository_ca_file         = ""
-    repository_username        = ""
-    repository_password        = ""
-    disable_webhooks           = false
-    reuse_values               = false
-    reset_values               = false
-    force_update               = false
-    recreate_pods              = false
-    cleanup_on_fail            = false
-    max_history                = 0
-    atomic                     = false
-    skip_crds                  = false
-    render_subchart_notes      = true
-    disable_openapi_validation = false
-    wait                       = true
-    wait_for_jobs              = false
-    dependency_update          = false
-    replace                    = false
-    description                = "The argocd HelmChart Ingress Controller deployment configuration"
-    postrender                 = ""
+    name             = local.name
+    chart            = local.name
+    repository       = "https://argoproj.github.io/argo-helm"
+    version          = "3.33.3"
+    namespace        = local.namespace
+    timeout          = "1200"
+    create_namespace = true
+    values           = local.default_helm_values
+    description      = "The ArgoCD Helm Chart deployment configuration"
   }
 
   helm_config = merge(
@@ -54,7 +30,7 @@ locals {
   )
 
   default_argocd_application = {
-    namespace          = "argocd"
+    namespace          = local.helm_config["namespace"]
     target_revision    = "HEAD"
     destination        = "https://kubernetes.default.svc"
     project            = "default"

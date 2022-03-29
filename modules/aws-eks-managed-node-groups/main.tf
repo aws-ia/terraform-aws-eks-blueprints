@@ -1,9 +1,12 @@
 resource "aws_eks_node_group" "managed_ng" {
+
   cluster_name           = var.context.eks_cluster_id
-  node_group_name_prefix = local.managed_node_group["node_group_name"]
-  node_role_arn          = aws_iam_role.managed_ng.arn
-  subnet_ids             = length(local.managed_node_group["subnet_ids"]) == 0 ? (local.managed_node_group["subnet_type"] == "public" ? var.context.public_subnet_ids : var.context.private_subnet_ids) : local.managed_node_group["subnet_ids"]
-  release_version        = try(local.managed_node_group["release_version"], "") == "" ? null : local.managed_node_group["release_version"]
+  node_group_name        = local.managed_node_group["enable_node_group_prefix"] == false ? local.managed_node_group["node_group_name"] : null
+  node_group_name_prefix = local.managed_node_group["enable_node_group_prefix"] == true ? format("%s-", local.managed_node_group["node_group_name"]) : null
+
+  node_role_arn   = aws_iam_role.managed_ng.arn
+  subnet_ids      = length(local.managed_node_group["subnet_ids"]) == 0 ? (local.managed_node_group["subnet_type"] == "public" ? var.context.public_subnet_ids : var.context.private_subnet_ids) : local.managed_node_group["subnet_ids"]
+  release_version = try(local.managed_node_group["release_version"], "") == "" ? null : local.managed_node_group["release_version"]
 
   ami_type       = local.managed_node_group["ami_type"] != "" ? local.managed_node_group["ami_type"] : null
   capacity_type  = local.managed_node_group["capacity_type"]
@@ -23,8 +26,8 @@ resource "aws_eks_node_group" "managed_ng" {
 
   dynamic "launch_template" {
     for_each = local.managed_node_group["create_launch_template"] == true ? [{
-      id      = aws_launch_template.managed_node_groups.id
-      version = aws_launch_template.managed_node_groups.default_version
+      id      = aws_launch_template.managed_node_groups[0].id
+      version = aws_launch_template.managed_node_groups[0].default_version
     }] : []
     content {
       id      = launch_template.value["id"]
@@ -53,15 +56,21 @@ resource "aws_eks_node_group" "managed_ng" {
 
   tags = local.common_tags
 
-  timeouts {
-    create = "2h"
-    update = "2h"
-    delete = "2h"
+  dynamic "timeouts" {
+    for_each = local.managed_node_group["timeouts"]
+    content {
+      create = timeouts.value["create"]
+      update = timeouts.value["update"]
+      delete = timeouts.value["delete"]
+    }
   }
 
   depends_on = [
     aws_iam_role.managed_ng,
     aws_iam_instance_profile.managed_ng,
+    aws_iam_role_policy_attachment.managed_ng_AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.managed_ng_AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.managed_ng_AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.managed_ng
   ]
 

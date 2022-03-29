@@ -12,5 +12,6 @@ resource "kubectl_manifest" "sa_config" {
     sa-name   = local.service_account_name
     namespace = local.helm_config["namespace"]
   })
+
   depends_on = [module.helm_addon]
 }

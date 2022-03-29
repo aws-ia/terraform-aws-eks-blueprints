@@ -160,6 +160,7 @@ No inputs.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_configure_kubectl"></a> [configure\_kubectl](#output\_configure\_kubectl) | Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
 | <a name="output_efs_file_system_id"></a> [efs\_file\_system\_id](#output\_efs\_file\_system\_id) | ID of the EFS file system to use for creating a storage class |
 
 <!--- END_TF_DOCS --->

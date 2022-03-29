@@ -1,6 +1,6 @@
 # Core Concepts
 
-This document provides a high level overview of the Core Concepts that are embedded in the `terraform-ssp-amazon-eks` framework. For the purposes of this document, we will assume the reader is familiar with Git, Docker, Kubernetes and AWS.
+This document provides a high level overview of the Core Concepts that are embedded in the `terraform-eks-blueprints` framework. For the purposes of this document, we will assume the reader is familiar with Git, Docker, Kubernetes and AWS.
 
 | Concept       | Description                                                           |
 |---------------|-----------------------------------------------------------------------|
@@ -12,7 +12,7 @@ This document provides a high level overview of the Core Concepts that are embed
 
 ## Cluster
 
-A `cluster` is simply an EKS cluster. The `terraform-ssp-amazon-eks` framework provides for customizing the compute options you leverage with your `clusters`. The framework currently supports `EC2`, `Fargate` and `BottleRocket` instances. It also supports managed and self-managed node groups. To specify the type of compute you want to use for your `cluster`, you use the `managed_node_groups`, `self_managed_nodegroups`, or `fargate_profiles` variables.
+A `cluster` is simply an EKS cluster. The `terraform-eks-blueprints` framework provides for customizing the compute options you leverage with your `clusters`. The framework currently supports `EC2`, `Fargate` and `BottleRocket` instances. It also supports managed and self-managed node groups. To specify the type of compute you want to use for your `cluster`, you use the `managed_node_groups`, `self_managed_nodegroups`, or `fargate_profiles` variables.
 
 See our [Node Groups](../node-groups) documentation page for detailed information.
 
@@ -22,7 +22,7 @@ See our [Node Groups](../node-groups) documentation page for detailed informatio
 
 For example, the `metrics-server` add-on only deploys the Kubernetes manifests that are needed to run the Kubernetes Metrics Server. By contrast, the `aws-load-balancer-controller` add-on deploys both Kubernetes YAML, in addition to creating resources via AWS APIs that are needed to support the AWS Load Balancer Controller functionality.
 
-The `terraform-ssp-amazon-eks` framework allows you to manage your add-ons directly via Terraform (by leveraging the Terraform Helm provider) or via GitOps with ArgoCD. See our [`Add-ons`](../add-ons) documentation page for detailed information.
+The `terraform-eks-blueprints` framework allows you to manage your add-ons directly via Terraform (by leveraging the Terraform Helm provider) or via GitOps with ArgoCD. See our [`Add-ons`](../add-ons) documentation page for detailed information.
 
 ## Team
 

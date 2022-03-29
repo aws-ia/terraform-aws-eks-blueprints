@@ -7,7 +7,7 @@ resource "kubernetes_config_map" "aws_auth" {
     labels = merge(
       {
         "app.kubernetes.io/managed-by" = "Terraform"
-        "terraform.io/module"          = "terraform-ssp-amazon-eks"
+        "terraform.io/module"          = "terraform-eks-blueprints"
       },
       var.aws_auth_additional_labels
     )

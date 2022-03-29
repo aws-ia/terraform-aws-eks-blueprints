@@ -40,10 +40,11 @@ locals {
   environment = "preprod" # Environment area eg., preprod or prod
   zone        = "spark"   # Environment with in one sub_tenant or business unit
 
-  kubernetes_version = "1.21"
+  cluster_version = "1.21"
 
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
+  azs          = slice(data.aws_availability_zones.available.names, 0, 3)
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.0.1"
@@ -55,10 +56,10 @@ module "aws_vpc" {
 
   name = local.vpc_name
   cidr = local.vpc_cidr
-  azs  = data.aws_availability_zones.available.names
+  azs  = local.azs
 
-  public_subnets  = [for k, v in slice(data.aws_availability_zones.available.names, 0, 3) : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in slice(data.aws_availability_zones.available.names, 0, 3) : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
   enable_nat_gateway   = true
   create_igw           = true
@@ -92,7 +93,7 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS CONTROL PLANE VARIABLES
-  kubernetes_version = local.kubernetes_version
+  cluster_version = local.cluster_version
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
@@ -147,8 +148,8 @@ module "kubernetes-addons" {
     name             = "spark-operator"
     chart            = "spark-operator"
     repository       = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
-    version          = "1.1.15"
-    namespace        = "spark-k8s-operator"
+    version          = "1.1.19"
+    namespace        = "spark-operator"
     timeout          = "300"
     create_namespace = true
     values           = [templatefile("${path.module}/helm_values/spark-k8s-operator-values.yaml", {})]
@@ -158,12 +159,17 @@ module "kubernetes-addons" {
   #---------------------------------------
   enable_yunikorn = true
   yunikorn_helm_config = {
-    name       = "yunikorn"                                            # (Required) Release name.
-    repository = "https://apache.github.io/incubator-yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "yunikorn"                                            # (Required) Chart name to be installed.
-    version    = "0.12.2"                                              # (Optional) Specify the exact chart version to install.
+    name       = "yunikorn"                                  # (Required) Release name.
+    repository = "https://apache.github.io/yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
+    chart      = "yunikorn"                                  # (Required) Chart name to be installed.
+    version    = "0.12.2"                                    # (Optional) Specify the exact chart version to install.
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
+}
+
+output "configure_kubectl" {
+  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
+  value       = module.aws-eks-accelerator-for-terraform.configure_kubectl
 }

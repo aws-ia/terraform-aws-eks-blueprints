@@ -56,13 +56,14 @@ provider "helm" {
 }
 
 locals {
-  tenant             = "aws001"  # AWS account name or unique id for tenant
-  environment        = "preprod" # Environment area eg., preprod or prod
-  zone               = "dev"     # Environment with in one sub_tenant or business unit
-  kubernetes_version = "1.21"
+  tenant          = "aws001"  # AWS account name or unique id for tenant
+  environment     = "preprod" # Environment area eg., preprod or prod
+  zone            = "dev"     # Environment with in one sub_tenant or business unit
+  cluster_version = "1.21"
 
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
+  azs          = slice(data.aws_availability_zones.available.names, 0, 3)
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.0.1"
@@ -74,10 +75,10 @@ module "aws_vpc" {
 
   name = local.vpc_name
   cidr = local.vpc_cidr
-  azs  = data.aws_availability_zones.available.names
+  azs  = local.azs
 
-  public_subnets  = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
   enable_nat_gateway   = true
   create_igw           = true
@@ -111,8 +112,7 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS CONTROL PLANE VARIABLES
-  create_eks         = true
-  kubernetes_version = local.kubernetes_version
+  cluster_version = local.cluster_version
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
@@ -197,4 +197,9 @@ resource "aws_security_group" "efs_sg" {
 output "efs_file_system_id" {
   description = "ID of the EFS file system to use for creating a storage class"
   value       = aws_efs_file_system.efs.id
+}
+
+output "configure_kubectl" {
+  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
+  value       = module.aws-eks-accelerator-for-terraform.configure_kubectl
 }
