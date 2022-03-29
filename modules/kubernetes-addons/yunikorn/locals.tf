@@ -4,7 +4,7 @@ locals {
   default_helm_config = {
     name        = local.name
     chart       = local.name
-    repository  = "https://apache.github.io/incubator-yunikorn-release"
+    repository  = "https://apache.github.io/yunikorn-release"
     version     = "0.12.2"
     namespace   = local.name
     description = "Apache YuniKorn (Incubating) is a light-weight, universal resource scheduler for container orchestrator systems"
@@ -27,7 +27,6 @@ locals {
     create_kubernetes_namespace       = true
     create_kubernetes_service_account = true
     irsa_iam_policies                 = var.irsa_policies
-    irsa_iam_permissions_boundary     = var.irsa_permissions_boundary
   }
 
   argocd_gitops_config = {

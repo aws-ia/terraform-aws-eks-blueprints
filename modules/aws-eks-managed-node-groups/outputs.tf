@@ -1,4 +1,3 @@
-
 output "managed_nodegroups" {
   description = "EKS Managed node group id"
   value       = aws_eks_node_group.managed_ng[*].id
@@ -37,9 +36,4 @@ output "managed_nodegroup_launch_template_arn" {
 output "managed_nodegroup_launch_template_latest_version" {
   description = "Launch Template version for EKS Managed Node Group"
   value       = aws_launch_template.managed_node_groups[*].default_version
-}
-
-output "managed_nodegroup_sec_group_id" {
-  description = "Security group ID for Managed node group"
-  value       = var.context.worker_security_group_id == "" ? aws_security_group.managed_ng[*].id : [var.context.worker_security_group_id]
 }

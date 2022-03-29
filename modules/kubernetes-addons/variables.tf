@@ -27,7 +27,25 @@ variable "tags" {
   description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }
 
+variable "irsa_iam_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM role path for IRSA roles"
+}
+
+variable "irsa_iam_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM permissions boundary for IRSA roles"
+}
+
 #-----------EKS MANAGED ADD-ONS------------
+variable "enable_ipv6" {
+  description = "Enable Ipv6 network. Attaches new VPC CNI policy to the IRSA role"
+  default     = false
+  type        = bool
+}
+
 variable "amazon_eks_vpc_cni_config" {
   description = "ConfigMap of Amazon EKS VPC CNI add-on"
   type        = any
@@ -143,18 +161,6 @@ variable "amazon_prometheus_workspace_endpoint" {
   description = "AWS Managed Prometheus WorkSpace Endpoint"
 }
 
-variable "amazon_prometheus_ingest_iam_role_arn" {
-  type        = string
-  default     = null
-  description = "AWS Managed Prometheus WorkSpaceSpace IAM role ARN"
-}
-
-variable "amazon_prometheus_ingest_service_account" {
-  type        = string
-  default     = null
-  description = "AWS Managed Prometheus Ingest Service Account"
-}
-
 #-----------PROMETHEUS-------------
 variable "enable_prometheus" {
   description = "Enable Community Prometheus add-on"
@@ -179,6 +185,73 @@ variable "metrics_server_helm_config" {
   type        = any
   default     = {}
   description = "Metrics Server Helm Chart config"
+}
+
+#-----------TETRATE ISTIO-------------
+variable "enable_tetrate_istio" {
+  type        = bool
+  default     = false
+  description = "Enable Tetrate Istio add-on"
+}
+
+variable "tetrate_istio_distribution" {
+  type        = string
+  default     = "TID"
+  description = "Istio distribution"
+}
+
+variable "tetrate_istio_version" {
+  type        = string
+  default     = ""
+  description = "Istio version"
+}
+
+variable "tetrate_istio_install_base" {
+  type        = bool
+  default     = true
+  description = "Install Istio `base` Helm Chart"
+}
+
+variable "tetrate_istio_install_cni" {
+  type        = bool
+  default     = true
+  description = "Install Istio `cni` Helm Chart"
+}
+
+variable "tetrate_istio_install_istiod" {
+  type        = bool
+  default     = true
+  description = "Install Istio `istiod` Helm Chart"
+}
+
+variable "tetrate_istio_install_gateway" {
+  type        = bool
+  default     = true
+  description = "Install Istio `gateway` Helm Chart"
+}
+
+variable "tetrate_istio_base_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `base` Helm Chart config"
+}
+
+variable "tetrate_istio_cni_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `cni` Helm Chart config"
+}
+
+variable "tetrate_istio_istiod_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `istiod` Helm Chart config"
+}
+
+variable "tetrate_istio_gateway_helm_config" {
+  type        = any
+  default     = {}
+  description = "Istio `gateway` Helm Chart config"
 }
 
 #-----------TRAEFIK-------------
@@ -233,12 +306,6 @@ variable "aws_load_balancer_controller_helm_config" {
   default     = {}
 }
 
-variable "aws_load_balancer_controller_irsa_permissions_boundary" {
-  type        = string
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
-  default     = ""
-}
-
 #-----------NGINX-------------
 variable "enable_ingress_nginx" {
   type        = bool
@@ -250,18 +317,6 @@ variable "ingress_nginx_helm_config" {
   description = "Ingress Nginx Helm Chart config"
   type        = any
   default     = {}
-}
-
-variable "nginx_irsa_policies" {
-  type        = list(string)
-  description = "Additional IAM policies for a IAM role for service accounts"
-  default     = []
-}
-
-variable "nginx_ingress_controller_irsa_permissions_boundary" {
-  type        = string
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
-  default     = ""
 }
 
 #-----------SPARK K8S OPERATOR-------------
@@ -313,6 +368,7 @@ variable "aws_for_fluentbit_cw_log_group_kms_key_arn" {
   description = "FluentBit CloudWatch Log group KMS Key"
   default     = null
 }
+
 #-----------FARGATE FLUENT BIT-------------
 variable "enable_fargate_fluentbit" {
   type        = bool
@@ -383,6 +439,12 @@ variable "aws_node_termination_handler_helm_config" {
   default     = {}
 }
 
+variable "aws_node_termination_handler_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
+
 #-----------KARPENTER ADDON-------------
 variable "enable_karpenter" {
   type        = bool
@@ -407,6 +469,7 @@ variable "karpenter_node_iam_instance_profile" {
   default     = ""
   type        = string
 }
+
 #-----------KEDA ADDON-------------
 variable "enable_keda" {
   type        = bool
@@ -420,22 +483,10 @@ variable "keda_helm_config" {
   description = "KEDA Event-based autoscaler add-on config"
 }
 
-variable "keda_create_irsa" {
-  type        = bool
-  description = "Indicates if the add-on should create a IAM role + service account"
-  default     = true
-}
-
 variable "keda_irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
   default     = []
-}
-
-variable "keda_irsa_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
 #------Vertical Pod Autoscaler(VPA) ADDON--------
@@ -470,12 +521,6 @@ variable "yunikorn_irsa_policies" {
   description = "IAM policy ARNs for Yunikorn IRSA"
 }
 
-variable "yunikorn_irsa_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
-}
-
 #-----------Argo Rollouts ADDON-------------
 variable "enable_argo_rollouts" {
   type        = bool
@@ -489,43 +534,6 @@ variable "argo_rollouts_helm_config" {
   description = "Argo Rollouts Helm Chart config"
 }
 
-variable "argo_rollouts_irsa_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
-}
-
-variable "argo_rollouts_irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM policy ARNs for Argo Rollouts IRSA"
-}
-
-#-----------Kube State Metrics ADDON-------------
-variable "enable_kube_state_metrics" {
-  type        = bool
-  default     = false
-  description = "Enable Kube State Metrics add-on"
-}
-
-variable "kube_state_metrics_helm_config" {
-  type        = any
-  default     = null
-  description = "Kube State Metrics Helm Chart config"
-}
-
-variable "kube_state_metrics_irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM policy ARNs for Kube State Metrics IRSA"
-}
-
-variable "kube_state_metrics_irsa_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
-}
-
 #-----------Kubernetes Dashboard ADDON-------------
 variable "enable_kubernetes_dashboard" {
   type        = bool
@@ -537,16 +545,4 @@ variable "kubernetes_dashboard_helm_config" {
   type        = any
   default     = null
   description = "Kubernetes Dashboard Helm Chart config"
-}
-
-variable "kubernetes_dashboard_irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM policy ARNs for Kubernetes Dashboard IRSA"
-}
-
-variable "kubernetes_dashboard_irsa_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }

@@ -48,7 +48,7 @@ resource "helm_release" "addon" {
 
   dynamic "set_sensitive" {
     iterator = each_item
-    for_each = try(var.helm_config["set_sensitive"], null) != null ? distinct(concat(var.set_sensitive_values, var.helm_config["set_sensitive"])) : var.set_sensitive_values
+    for_each = try(var.helm_config["set_sensitive"], null) != null ? concat(var.helm_config["set_sensitive"], var.set_sensitive_values) : var.set_sensitive_values
 
     content {
       name  = each_item.value.name
@@ -66,6 +66,5 @@ module "irsa" {
   kubernetes_namespace              = var.irsa_config.kubernetes_namespace
   kubernetes_service_account        = var.irsa_config.kubernetes_service_account
   irsa_iam_policies                 = var.irsa_config.irsa_iam_policies
-  irsa_iam_permissions_boundary     = try(var.irsa_config.irsa_iam_permissions_boundary, "")
   addon_context                     = var.addon_context
 }

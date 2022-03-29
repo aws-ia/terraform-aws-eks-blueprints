@@ -1,4 +1,3 @@
-
 locals {
   default_emr_on_eks_teams = {
     emr_on_eks_namespace     = "emr-on-eks-spark"

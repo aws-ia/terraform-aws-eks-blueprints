@@ -48,7 +48,6 @@ locals {
     iam_role_path                     = "/"
     eks_cluster_id                    = var.addon_context.eks_cluster_id
     irsa_iam_policies                 = concat([aws_iam_policy.aws_efs_csi_driver.arn], var.irsa_policies)
-    irsa_iam_permissions_boundary     = var.irsa_iam_permissions_boundary
     tags                              = var.addon_context.tags
   }
 

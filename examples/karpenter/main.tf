@@ -71,9 +71,9 @@ locals {
   tenant      = "aws001"  # AWS account name or unique id for tenant
   environment = "preprod" # Environment area eg., preprod or prod
   zone        = "dev"     # Environment with in one sub_tenant or business unit
-  azs         = data.aws_availability_zones.available.names
+  azs         = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  kubernetes_version = "1.21"
+  cluster_version = "1.21"
 
   vpc_cidr        = "10.0.0.0/16"
   vpc_name        = join("-", [local.tenant, local.environment, local.zone, "vpc"])
@@ -91,8 +91,8 @@ module "aws_vpc" {
   cidr = local.vpc_cidr
   azs  = local.azs
 
-  public_subnets  = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
   enable_nat_gateway   = true
   create_igw           = true
@@ -125,7 +125,7 @@ module "aws-eks-accelerator-for-terraform" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS CONTROL PLANE VARIABLES
-  kubernetes_version = local.kubernetes_version
+  cluster_version = local.cluster_version
 
   # Self-managed Node Group
   # Karpenter requires one node to get up and running
@@ -150,7 +150,7 @@ module "karpenter-launch-templates" {
       ami                    = "ami-0adc757be1e4e11a1"
       launch_template_prefix = "karpenter"
       iam_instance_profile   = module.aws-eks-accelerator-for-terraform.self_managed_node_group_iam_instance_profile_id[0]
-      vpc_security_group_ids = [module.aws-eks-accelerator-for-terraform.worker_security_group_id]
+      vpc_security_group_ids = [module.aws-eks-accelerator-for-terraform.worker_node_security_group_id]
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
@@ -164,7 +164,7 @@ module "karpenter-launch-templates" {
       launch_template_os     = "bottlerocket"
       launch_template_prefix = "bottle"
       iam_instance_profile   = module.aws-eks-accelerator-for-terraform.self_managed_node_group_iam_instance_profile_id[0]
-      vpc_security_group_ids = [module.aws-eks-accelerator-for-terraform.worker_security_group_id]
+      vpc_security_group_ids = [module.aws-eks-accelerator-for-terraform.worker_node_security_group_id]
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
@@ -207,4 +207,9 @@ resource "kubectl_manifest" "karpenter_provisioner" {
   yaml_body = each.value
 
   depends_on = [module.kubernetes-addons]
+}
+
+output "configure_kubectl" {
+  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
+  value       = module.aws-eks-accelerator-for-terraform.configure_kubectl
 }

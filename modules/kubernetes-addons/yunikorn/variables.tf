@@ -16,12 +16,6 @@ variable "irsa_policies" {
   description = "IAM Policy ARN list for any IRSA policies"
 }
 
-variable "irsa_permissions_boundary" {
-  type        = string
-  default     = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
-}
-
 variable "addon_context" {
   type = object({
     aws_caller_identity_account_id = string
@@ -33,6 +27,8 @@ variable "addon_context" {
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
     tags                           = map(string)
+    irsa_iam_role_path             = string
+    irsa_iam_permissions_boundary  = string
   })
   description = "Input configuration for the addon"
 }

@@ -116,17 +116,19 @@ In the above code tree,
 
 If your add-on can be deployed via helm chart, we recommend the use of the [helm-addon](../modules/kubernetes-addons/helm-addon) as shown below.
 
+**Note**: Use the latest published module in the source version.
+
 > main.tf
 ```hcl
 module "helm_addon" {
-  source               = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons/helm-addon"
+  source               = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons/helm-addon?ref=v3.5.0"
   manage_via_gitops    = var.manage_via_gitops
 
   ### The following values are defined in locals.tf
   set_values           = local.set_values
   set_sensitive_values = local.set_sensitive_values
   helm_config          = local.helm_config
-  irsa_config          = local.irsa_config
+  addon_context        = var.addon_context
 }
 ```
 
@@ -141,11 +143,8 @@ module "kube_state_metrics" {
   count                     = var.enable_kube_state_metrics ? 1 : 0
   source                    = "askulkarni2/kube-state-metrics-addon/eksblueprints"
   version                   = "0.0.2"
-  eks_cluster_id            = var.eks_cluster_id
   helm_config               = var.kube_state_metrics_helm_config
-  irsa_policies             = var.kube_state_metrics_irsa_policies
-  irsa_permissions_boundary = var.kube_state_metrics_irsa_permissions_boundary
-  tags                      = var.tags
+  addon_context             = local.addon_context
   manage_via_gitops         = var.argocd_manage_add_ons
 }
 ```
@@ -164,18 +163,6 @@ variable "kube_state_metrics_helm_config" {
   type        = any
   default     = {}
   description = "Kube State Metrics Helm Chart config"
-}
-
-variable "kube_state_metrics_irsa_permissions_boundary" {
-  type = string
-  default = ""
-  description = "IAM Policy ARN for IRSA IAM role permissions boundary"
-}
-
-variable "kube_state_metrics_irsa_policies" {
-  type = list(string)
-  default = []
-  description = "IAM policy ARNs for Kube State Metrics IRSA"
 }
 ```
 

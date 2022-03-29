@@ -1,48 +1,31 @@
-/*
- * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * SPDX-License-Identifier: MIT-0
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the Software
- * without restriction, including without limitation the rights to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 #-----------------AWS Managed EKS Add-ons----------------------
 
 module "aws_vpc_cni" {
   count         = var.enable_amazon_eks_vpc_cni ? 1 : 0
   source        = "./aws-vpc-cni"
-  add_on_config = var.amazon_eks_vpc_cni_config
+  addon_config  = var.amazon_eks_vpc_cni_config
   addon_context = local.addon_context
+  enable_ipv6   = var.enable_ipv6
 }
 
 module "aws_coredns" {
   count         = var.enable_amazon_eks_coredns ? 1 : 0
   source        = "./aws-coredns"
-  add_on_config = var.amazon_eks_coredns_config
+  addon_config  = var.amazon_eks_coredns_config
   addon_context = local.addon_context
 }
 
 module "aws_kube_proxy" {
   count         = var.enable_amazon_eks_kube_proxy ? 1 : 0
   source        = "./aws-kube-proxy"
-  add_on_config = var.amazon_eks_kube_proxy_config
+  addon_config  = var.amazon_eks_kube_proxy_config
   addon_context = local.addon_context
 }
 
 module "aws_ebs_csi_driver" {
   count         = var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
   source        = "./aws-ebs-csi-driver"
-  add_on_config = var.amazon_eks_aws_ebs_csi_driver_config
+  addon_config  = var.amazon_eks_aws_ebs_csi_driver_config
   addon_context = local.addon_context
 }
 
@@ -54,6 +37,7 @@ module "agones" {
   helm_config                  = var.agones_helm_config
   eks_worker_security_group_id = var.eks_worker_security_group_id
   manage_via_gitops            = var.argocd_manage_add_ons
+  addon_context                = local.addon_context
 }
 
 module "argocd" {
@@ -62,17 +46,16 @@ module "argocd" {
   helm_config                = var.argocd_helm_config
   applications               = var.argocd_applications
   admin_password_secret_name = var.argocd_admin_password_secret_name
-  add_on_config              = { for k, v in local.argocd_add_on_config : k => v if v != null }
+  addon_config               = { for k, v in local.argocd_addon_config : k => v if v != null }
   addon_context              = local.addon_context
 }
 
 module "argo_rollouts" {
-  count                         = var.enable_argo_rollouts ? 1 : 0
-  source                        = "./argo-rollouts"
-  helm_config                   = var.argo_rollouts_helm_config
-  irsa_iam_permissions_boundary = var.argo_rollouts_irsa_permissions_boundary
-  manage_via_gitops             = var.argocd_manage_add_ons
-  addon_context                 = local.addon_context
+  count             = var.enable_argo_rollouts ? 1 : 0
+  source            = "./argo-rollouts"
+  helm_config       = var.argo_rollouts_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "aws_efs_csi_driver" {
@@ -96,18 +79,18 @@ module "aws_for_fluent_bit" {
 }
 
 module "aws_load_balancer_controller" {
-  count                         = var.enable_aws_load_balancer_controller ? 1 : 0
-  source                        = "./aws-load-balancer-controller"
-  helm_config                   = var.aws_load_balancer_controller_helm_config
-  irsa_iam_permissions_boundary = var.aws_load_balancer_controller_irsa_permissions_boundary
-  manage_via_gitops             = var.argocd_manage_add_ons
-  addon_context                 = local.addon_context
+  count             = var.enable_aws_load_balancer_controller ? 1 : 0
+  source            = "./aws-load-balancer-controller"
+  helm_config       = var.aws_load_balancer_controller_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "aws_node_termination_handler" {
   count                   = var.enable_aws_node_termination_handler && length(var.auto_scaling_group_names) > 0 ? 1 : 0
   source                  = "./aws-node-termination-handler"
   helm_config             = var.aws_node_termination_handler_helm_config
+  irsa_policies           = var.aws_node_termination_handler_irsa_policies
   autoscaling_group_names = var.auto_scaling_group_names
   addon_context           = local.addon_context
 }
@@ -117,6 +100,7 @@ module "cert_manager" {
   source            = "./cert-manager"
   helm_config       = var.cert_manager_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "cluster_autoscaler" {
@@ -147,13 +131,11 @@ module "fargate_fluentbit" {
 }
 
 module "ingress_nginx" {
-  count                         = var.enable_ingress_nginx ? 1 : 0
-  source                        = "./ingress-nginx"
-  helm_config                   = var.ingress_nginx_helm_config
-  manage_via_gitops             = var.argocd_manage_add_ons
-  irsa_policies                 = var.nginx_irsa_policies
-  irsa_iam_permissions_boundary = var.nginx_ingress_controller_irsa_permissions_boundary
-  addon_context                 = local.addon_context
+  count             = var.enable_ingress_nginx ? 1 : 0
+  source            = "./ingress-nginx"
+  helm_config       = var.ingress_nginx_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "karpenter" {
@@ -167,14 +149,12 @@ module "karpenter" {
 }
 
 module "keda" {
-  count                     = var.enable_keda ? 1 : 0
-  source                    = "./keda"
-  helm_config               = var.keda_helm_config
-  create_irsa               = var.keda_create_irsa
-  irsa_policies             = var.keda_irsa_policies
-  irsa_permissions_boundary = var.keda_irsa_permissions_boundary
-  manage_via_gitops         = var.argocd_manage_add_ons
-  addon_context             = local.addon_context
+  count             = var.enable_keda ? 1 : 0
+  source            = "./keda"
+  helm_config       = var.keda_helm_config
+  irsa_policies     = var.keda_irsa_policies
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "metrics_server" {
@@ -201,6 +181,25 @@ module "spark_k8s_operator" {
   source            = "./spark-k8s-operator"
   helm_config       = var.spark_k8s_operator_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "tetrate_istio" {
+  count                = var.enable_tetrate_istio ? 1 : 0
+  source               = "tetratelabs/tetrate-istio-addon/eksblueprints"
+  version              = "0.0.6"
+  distribution         = var.tetrate_istio_distribution
+  distribution_version = var.tetrate_istio_version
+  install_base         = var.tetrate_istio_install_base
+  install_cni          = var.tetrate_istio_install_cni
+  install_istiod       = var.tetrate_istio_install_istiod
+  install_gateway      = var.tetrate_istio_install_gateway
+  base_helm_config     = var.tetrate_istio_base_helm_config
+  cni_helm_config      = var.tetrate_istio_cni_helm_config
+  istiod_helm_config   = var.tetrate_istio_istiod_helm_config
+  gateway_helm_config  = var.tetrate_istio_gateway_helm_config
+  manage_via_gitops    = var.argocd_manage_add_ons
+  addon_context        = local.addon_context
 }
 
 module "traefik" {
@@ -220,33 +219,18 @@ module "vpa" {
 }
 
 module "yunikorn" {
-  count                     = var.enable_yunikorn ? 1 : 0
-  source                    = "./yunikorn"
-  helm_config               = var.yunikorn_helm_config
-  irsa_policies             = var.yunikorn_irsa_policies
-  irsa_permissions_boundary = var.yunikorn_irsa_permissions_boundary
-  manage_via_gitops         = var.argocd_manage_add_ons
-  addon_context             = local.addon_context
-}
-
-#TODO once source is updated and aligned with addon_context changes, pass addon_context and remove eks_cluster_id & tags
-module "kube_state_metrics" {
-  count                     = var.enable_kube_state_metrics ? 1 : 0
-  source                    = "askulkarni2/kube-state-metrics-addon/eksblueprints"
-  version                   = "0.0.4"
-  helm_config               = var.kube_state_metrics_helm_config
-  irsa_policies             = var.kube_state_metrics_irsa_policies
-  irsa_permissions_boundary = var.kube_state_metrics_irsa_permissions_boundary
-  manage_via_gitops         = var.argocd_manage_add_ons
-  addon_context             = local.addon_context
+  count             = var.enable_yunikorn ? 1 : 0
+  source            = "./yunikorn"
+  helm_config       = var.yunikorn_helm_config
+  irsa_policies     = var.yunikorn_irsa_policies
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "kubernetes_dashboard" {
-  count                     = var.enable_kubernetes_dashboard ? 1 : 0
-  source                    = "./kubernetes-dashboard"
-  helm_config               = var.kubernetes_dashboard_helm_config
-  irsa_policies             = var.kubernetes_dashboard_irsa_policies
-  irsa_permissions_boundary = var.kubernetes_dashboard_irsa_permissions_boundary
-  manage_via_gitops         = var.argocd_manage_add_ons
-  addon_context             = local.addon_context
+  count             = var.enable_kubernetes_dashboard ? 1 : 0
+  source            = "./kubernetes-dashboard"
+  helm_config       = var.kubernetes_dashboard_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
