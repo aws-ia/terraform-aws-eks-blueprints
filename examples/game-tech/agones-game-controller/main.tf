@@ -177,7 +177,7 @@ module "kubernetes-addons" {
     chart      = "agones"
     repository = "https://agones.dev/chart/stable"
     version    = "1.21.0"
-    namespace  = "agones-system" # Agones recommends to install in it's own namespace such as `agones-system` as shown here. You can specify any namespace here other than `kube-system`
+    namespace  = "agones-system" # Agones recommends to install in it's own namespace such as `agones-system` as shown here. You can specify any namespace other than `kube-system`
     values = [templatefile("${path.module}/helm_values/agones-values.yaml", {
       expose_udp            = true
       gameserver_namespaces = "{${join(",", ["default", "xbox-gameservers", "xbox-gameservers"])}}"
