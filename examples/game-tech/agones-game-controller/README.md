@@ -67,9 +67,9 @@ This following command used to update the `kubeconfig` in your local machine whe
 
     $ kubectl get nodes
 
-#### Step7: List all the pods running in `kube-system` namespace
+#### Step7: List all the pods running in `agones-system` namespace
 
-    $ kubectl get pods -n kube-system
+    $ kubectl get pods -n agones-system
 
 ## Step8: Install K9s
 This step is to install K9s client tool to interact with EKS Cluster
