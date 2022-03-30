@@ -1,10 +1,10 @@
+# TODO - different name since if its not going to run on PRs
 name: pr-test
 
 on:
-  pull_request:
-    branches: [ main ]
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
     terraform:
