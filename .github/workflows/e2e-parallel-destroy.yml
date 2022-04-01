@@ -92,9 +92,9 @@ jobs:
 
           if [ -z "$MATRIX_DEPLOYMENT_ORDER" ]
           then
-                DEPLOYMENT_ORDER=${{env.DEFAULT_DEPLOY_ORDER}}
+            DEPLOYMENT_ORDER=${{env.DEFAULT_DEPLOY_ORDER}}
           else
-                DEPLOYMENT_ORDER=$MATRIX_DEPLOYMENT_ORDER
+            DEPLOYMENT_ORDER=$MATRIX_DEPLOYMENT_ORDER
           fi
           echo "DEPLOYMENT_ORDER=$DEPLOYMENT_ORDER" >> $GITHUB_ENV
         continue-on-error: false
