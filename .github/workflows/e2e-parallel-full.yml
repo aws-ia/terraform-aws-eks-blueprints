@@ -29,7 +29,13 @@ jobs:
             tenant_name: "spark"
           # This is example that we can use test from deploy folder, see logic in the pre setup step
           # - example_path: deploy/e2e/vpc
-          #   tenant_name: "argo"
+          #   tenant_name: "vpc"
+          - example_path: examples/multi-tenancy-with-teams
+            tenant_name: "teams"
+          - example_path: examples/gitops/argocd
+            tenant_name: "argo"
+          - example_path: examples/crossplane
+            tenant_name: "crossplane"
           - example_path: examples/aws-efs-csi-driver
             tenant_name: "efs"
           - example_path: examples/eks-cluster-with-new-vpc
