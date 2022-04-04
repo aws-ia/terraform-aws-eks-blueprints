@@ -137,7 +137,7 @@ jobs:
           IFS=',' read -r -a array <<< "${{ env.DEPLOYMENT_ORDER }}"
           for element in "${array[@]}"
           do
-            terraform apply -target="$element" -var-file base.tfvars -no-color -input=false -auto-approve
+            terraform destroy -target="$element" -var-file base.tfvars -no-color -input=false -auto-approve
           done | tac
           terraform destroy -var-file base.tfvars -no-color -input=false -auto-approve
         continue-on-error: false
