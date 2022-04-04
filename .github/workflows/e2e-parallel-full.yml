@@ -75,15 +75,10 @@ jobs:
             cp -R ${{ matrix.example_path }}/* deploy/e2e/gh-e2e-test/
           else 
             echo "Running pre-setup for ${{ matrix.example_path }}"
-            mkdir -p deploy/e2e/gh-e2e-test
             cp -R deploy/e2e/gh-e2e-template/* deploy/e2e/gh-e2e-test/
             sed -i "s!REPLACE_ME!${{ matrix.tenant_name }}!g" deploy/e2e/gh-e2e-test/base.tfvars
             sed -i "s!TF_STATE_PATH!${{ matrix.example_path }}!g" deploy/e2e/gh-e2e-test/backend.conf
             sed -i "s!EXAMPLE_PATH!${{ matrix.example_path }}!g" deploy/e2e/gh-e2e-test/main.tf
-            cat deploy/e2e/gh-e2e-test/base.tfvars
-            cat deploy/e2e/gh-e2e-test/backend.conf
-            cat deploy/e2e/gh-e2e-test/main.tf
-            tree -a 
           fi
         continue-on-error: false
 
