@@ -1,0 +1,65 @@
+version: 0.2
+
+env:
+  variables:
+    TF_VERSION: "1.1.6"
+    ENVIRONMENT: "dev"
+    SKIPVALIDATIONFAILURE: "Y"
+    ENABLE_TFVALIDATE: "Y"
+    ENABLE_TFFORMAT: "Y"
+    ENABLE_TFCHECKOV: "Y"
+    ENABLE_TFSEC: "Y"
+    EXAMPLE_DIR: "examples/eks-cluster-with-new-vpc"
+    TFSEC_VERSION: "v1.5.0"
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.9
+      golang: 1.14
+    commands:
+      - "curl -s -qL -o terraform.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip"
+      - "unzip -o terraform.zip"
+      - mv terraform /bin
+      - rm terraform.zip
+      - yum update -y
+      - yum install -y curl jq awscli
+      - pip3 install checkov
+      - yum install -y golang
+      #- go install github.com/aquasecurity/tfsec/cmd/tfsec@latest
+      - wget -q -O tfsec https://github.com/aquasecurity/tfsec/releases/download/${TFSEC_VERSION}/tfsec-linux-amd64
+      - chmod +x ./tfsec
+      - mv ./tfsec /usr/local/bin/tfsec
+      - ls
+      - aws sts get-caller-identity
+      #- cd ./examples/ci-cd/aws-code-pipeline/scripts
+      #- "/bin/bash tf_ssp_validation.sh ${ENVIRONMENT}"
+  pre_build:
+    commands:
+      - echo "Nothing to do in the pre_build  for now"
+  build:
+    commands:
+      - cd $CODEBUILD_SRC_DIR
+      - cd examples/eks-cluster-with-new-vpc
+      - "echo ## TERRAFORM INIT : Initialize the Terraform Workspace"
+      - "terraform init"
+      - "echo ## VALIDATION : Starting ..."
+      - mkdir -p reports
+      - "/bin/bash ${CODEBUILD_SRC_DIR}/scripts/tf_ssp_validation.sh ${SKIPVALIDATIONFAILURE} ${ENABLE_TFVALIDATE} ${ENABLE_TFFORMAT} ${ENABLE_TFCHECKOV} ${ENABLE_TFSEC}"
+      - cp checkov.xml ./reports/checkov.xml
+      - cp tfsec-junit.xml ./reports/tfsec-junit.xml
+  post_build:
+    commands:
+      - echo "Nothing to do in the post_build  for now"
+artifacts:
+  files:
+    - '**/*'
+reports:
+  checkov-reports:
+    files:
+      - "examples/eks-cluster-with-new-vpc/reports/checkov.xml"
+    file-format: "JUNITXML"
+  tfsec-reports:
+    files:
+      - "examples/eks-cluster-with-new-vpc/reports/tfsec-junit.xml"
+    file-format: "JUNITXML"

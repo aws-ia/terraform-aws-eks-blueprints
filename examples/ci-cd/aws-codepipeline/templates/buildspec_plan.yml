@@ -1,0 +1,29 @@
+version: 0.2
+
+env:
+  variables:
+    TF_VERSION: "1.1.6"
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.9
+    commands:
+      - "curl -s -qL -o terraform.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip"
+      - "unzip -o terraform.zip"
+      - mv terraform /bin
+      - rm terraform.zip
+  pre_build:
+    commands:
+      - echo "Nothing to do in the pre_build  for now"
+  build:
+    commands:
+      - cd $CODEBUILD_SRC_DIR
+      - cd examples/eks-cluster-with-new-vpc
+      - "echo ## TERRAFORM INIT : Initialize the Terraform Workspace"
+      - "terraform init"
+      - "echo ## TERRAFORM PLAN : Generate the Terraform Plan"
+      - "terraform plan -out tfapply"
+  post_build:
+    commands:
+      - echo "Nothing to do in the post_build  for now"
