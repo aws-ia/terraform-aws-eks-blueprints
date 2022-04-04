@@ -173,13 +173,11 @@ module "kubernetes-addons" {
   enable_agones = true
   # Optional  agones_helm_chart
   agones_helm_config = {
-    name               = "agones"
-    chart              = "agones"
-    repository         = "https://agones.dev/chart/stable"
-    version            = "1.15.0"
-    namespace          = "kube-system"
-    gameserver_minport = 7000 # required for sec group changes to worker nodes
-    gameserver_maxport = 8000 # required for sec group changes to worker nodes
+    name       = "agones"
+    chart      = "agones"
+    repository = "https://agones.dev/chart/stable"
+    version    = "1.21.0"
+    namespace  = "agones-system" # Agones recommends to install in it's own namespace such as `agones-system` as shown here. You can specify any namespace other than `kube-system`
     values = [templatefile("${path.module}/helm_values/agones-values.yaml", {
       expose_udp            = true
       gameserver_namespaces = "{${join(",", ["default", "xbox-gameservers", "xbox-gameservers"])}}"
