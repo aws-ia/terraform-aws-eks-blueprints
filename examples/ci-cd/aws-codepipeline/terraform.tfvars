@@ -1,0 +1,11 @@
+project_name = "terraform-test"
+namespace = "AWS"
+ENVIRONMENT = "dev"
+account_id = "xxxxxx"
+source_repo_name = "terraform-repo"
+source_repo_branch = "main"
+create_new_repo = false
+build_spec_file_path_validate = "./templates/buildspec_validate.yml"
+build_spec_file_path_plan = "./templates/buildspec_plan.yml"
+build_spec_file_path_apply = "./templates/buildspec_apply.yml"
+build_spec_file_path_destroy = "./templates/buildspec_destroy.yml"
