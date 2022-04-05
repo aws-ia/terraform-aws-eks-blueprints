@@ -16,24 +16,6 @@ module "helm_addon" {
   addon_context     = var.addon_context
 }
 
-
-resource "helm_release" "velero" {
-  count     = var.manage_via_gitops ? 0 : 1
-  name      = "velero"
-  chart     = "${path.module}/velero"
-  version   = "0.2.0"
-  namespace = local.helm_config["namespace"]
-
-  depends_on = [
-    module.helm_addon, 
-    aws_s3_bucket.s3, 
-    aws_s3_bucket_server_side_encryption_configuration.encryption,
-    aws_iam_policy.velero_policy
-  ]
-
-}
-
-
 resource "aws_s3_bucket" "s3" {
    bucket = "velero-backup-bucket"
   
