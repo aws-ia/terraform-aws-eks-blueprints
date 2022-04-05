@@ -26,3 +26,8 @@ variable "addon_context" {
   })
   description = "Input configuration for the addon"
 }
+
+variable "default_ecr_uri" {
+  type = string
+  description = "Amazon Container Image Registry URI. This is the default image repository and changes based on the region which the cluster resides."
+}
