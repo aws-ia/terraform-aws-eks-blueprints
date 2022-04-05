@@ -134,10 +134,11 @@ jobs:
         id: destroy
         working-directory: deploy/e2e/gh-e2e-test
         run: |
-          IFS=',' read -r -a array <<< "${{ env.DEPLOYMENT_ORDER }}"
+          reverse_array=$(echo ${{ env.DEPLOYMENT_ORDER }}  | awk -F, '{for (i=NF; i>0; --i) printf "%s%s", (i<NF ? "," : ""), $i; printf "\n"}')
+          IFS=',' read -r -a array <<< "$reverse_array"
           for element in "${array[@]}"
           do
             terraform destroy -target="$element" -var-file base.tfvars -no-color -input=false -auto-approve
-          done | tac
+          done
           terraform destroy -var-file base.tfvars -no-color -input=false -auto-approve
         continue-on-error: false
