@@ -546,3 +546,16 @@ variable "kubernetes_dashboard_helm_config" {
   default     = null
   description = "Kubernetes Dashboard Helm Chart config"
 }
+
+#-----------Kubernetes Velero ADDON-------------
+variable "enable_velero" {
+  type        = bool
+  default     = false
+  description = "Enable Kubernetes Dashboard add-on"
+}
+
+variable "kubernetes_velero_helm_config" {
+  type        = any
+  default     = null
+  description = "Kubernetes Velero Helm Chart config"
+}

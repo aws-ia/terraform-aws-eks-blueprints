@@ -234,3 +234,12 @@ module "kubernetes_dashboard" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
+
+module "velero" {
+  count             = var.enable_velero ? 1 : 0
+  source            = "./velero"
+  helm_config       = var.kubernetes_velero_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
