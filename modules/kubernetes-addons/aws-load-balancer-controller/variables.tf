@@ -28,6 +28,6 @@ variable "addon_context" {
 }
 
 variable "default_ecr_uri" {
-  type = string
+  type        = string
   description = "Amazon Container Image Registry URI. This is the default image repository and changes based on the region which the cluster resides."
 }
