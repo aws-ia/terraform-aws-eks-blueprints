@@ -1,3 +1,6 @@
+# Velero add on 
+
+
 # kube-state-metrics-addon
 
 This [EKS Blueprints](https://github.com/aws-samples/aws-eks-accelerator-for-terraform) add-on demonstrates how a partner or customer can extend the framework by creating their own Helm addon that gets provisioned by the EKS Blueprints framework. We use the [kube-state-metrics](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics) to demonstrate the functionality.
