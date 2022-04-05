@@ -6,13 +6,11 @@ locals {
     version          = "0.1.0"
     namespace        = "opentelemetry-operator-system"
     timeout          = "1200"
-    create_namespace = true
     description      = "ADOT helm Chart deployment configuration"
     lint             = false
     values           = []
     set              = []
     set_sensitive    = null
-    postrender       = ""
   }
 
   helm_config = merge(
@@ -22,7 +20,7 @@ locals {
 
 
   amazon_prometheus_ingest_service_account = "amp-ingest"
-  amazon_prometheus_ingest_iam_role_arn    = (var.amazon_prometheus_workspace_endpoint != null) ? module.irsa_amp_ingest[0].irsa_iam_role_arn : ""
+  amazon_prometheus_ingest_iam_role_arn    = (var.amazon_prometheus_workspace_endpoint != null) ? module.irsa_amp_ingest.irsa_iam_role_arn : ""
 
   otel_config_values = [
     {
@@ -56,7 +54,7 @@ locals {
   ]
 
   amp_gitops_config = {
-    roleArn            = module.irsa_amp_ingest[0].irsa_iam_role_arn
+    roleArn            = module.irsa_amp_ingest.irsa_iam_role_arn
     ampWorkspaceUrl    = var.amazon_prometheus_workspace_endpoint
     serviceAccountName = local.amazon_prometheus_ingest_service_account
   }

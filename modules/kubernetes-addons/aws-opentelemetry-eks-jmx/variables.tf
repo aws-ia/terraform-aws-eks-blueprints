@@ -4,12 +4,6 @@ variable "helm_config" {
   description = "Helm Config for Prometheus"
 }
 
-variable "iam_role_path" {
-  type        = string
-  default     = "/"
-  description = "IAM role path"
-}
-
 variable "amazon_prometheus_workspace_endpoint" {
   type        = string
   default     = null
@@ -33,6 +27,7 @@ variable "addon_context" {
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
     irsa_iam_permissions_boundary  = string
+    irsa_iam_role_path             = string
     tags                           = map(string)
   })
   description = "Input configuration for the addon"

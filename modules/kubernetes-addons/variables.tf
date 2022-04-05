@@ -167,12 +167,6 @@ variable "amazon_prometheus_workspace_region" {
   description = "AWS Managed Prometheus WorkSpace Region"
 }
 
-variable "amazon_prometheus_ingest_iam_role_arn" {
-  type        = string
-  default     = null
-  description = "AWS Managed Prometheus WorkSpaceSpace IAM role ARN"
-}
-
 variable "amazon_prometheus_ingest_service_account" {
   type        = string
   default     = null
