@@ -14,9 +14,12 @@ agones:
     install: true
     cleanupOnDelete: true
   serviceaccount:
-    controller: agones-controller
-    sdk: agones-sdk
-    allocator: agones-allocator
+    controller::
+      name: agones-controller
+    sdk:
+      name: agones-sdk
+    allocator:
+      name: agones-allocator
   createPriorityClass: true
   priorityClassName: agones-system
   controller:
