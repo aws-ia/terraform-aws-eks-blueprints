@@ -1,139 +1,45 @@
-# Fully Private EKS Cluster with VPC and Endpoints deployment
+# Fully Private EKS Cluster with VPC and VPC Endpoints deployment
 
 This example deploys a fully private EKS Cluster into a new VPC.
  - Creates a new VPC and 3 Private Subnets
  - VPC Endpoints for various services and S3 VPC Endpoint gateway
- - Creates EKS Cluster Control plane with one Managed node group
-    - EKS Cluster API endpoint that can be set to public and private, and then into private only.
+ - Creates EKS Cluster Control plane with a private endpoint and with one Managed node group
 
 Please see this [document](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html) for more details on configuring fully private EKS Clusters
 
+Here is the high level design of the solution. The solution has been split into 3 different TerraForm stacks for simplicity.
+1. VPC
+2. EKS
+3. ADD-ONS
+
+![High Level Design](./images/EKS_private_cluster.jpg)
+
 ## How to Deploy
 ### Prerequisites:
-Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
-1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-3. [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
-4. [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
-### Deployment Steps
-#### Step1: Clone the repo using the command below
 
-```shell script
-git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
-```
+### Environment Set up.
 
-#### Step2: Run Terraform INIT
-Initialize a working directory with configuration files
+Pre-requisites
+1. This examples assumes that you have a default VPC in your AWS account.
+2. An EC2 instance running in the default VPC that is running Jekins OR having the pre-requisite tools mentioned below. For simplicity this EC2 instance is running in the public VPC.
 
-```shell script
-cd examples/fully-private-eks-cluster/
-terraform init
-```
+    2.1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 
-#### Step3: Run Terraform PLAN
-Verify the resources created by this execution
+    2.2. [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
 
-```shell script
-export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
-terraform plan
-```
+    2.3. [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
-#### Step4: Terraform APPLY
-to create resources
+3. You can SSH into the EC2 instance to run Terraform commands OR access the Jenkins server running on this EC2 instance. Please note that setting up Jenkins on the EC2 instance is out of scope from this example.
+4. Deploy the individual stacks from each of the sub folders. i.e.
 
-```shell script
-terraform apply
-```
+    4.1 VPC
 
-Enter `yes` to apply
+    4.2 EKS
 
-### Configure `kubectl` and test cluster
-EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster.
-This following command used to update the `kubeconfig` in your local machine where you run kubectl commands to interact with your EKS Cluster.
+    4.3 Add-ons
 
-#### Step5: Run `update-kubeconfig` command
 
-`~/.kube/config` file gets updated with cluster details and certificate from the below command
-
-    $ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
-
-#### Step6: List all the worker nodes by running the command below
-
-    $ kubectl get nodes
-
-#### Step7: List all the pods running in `kube-system` namespace
-
-    $ kubectl get pods -n kube-system
-
-### Setting up private only API endpoint and accessing the cluster
-
-- To set the API endpoint to private only, on the `main.tf` file under the SSP module:
-    - Set `eks_cluster_api_endpoint_public = false`
-    - Set `eks_cluster_api_endpoint_private = true`
-
-- To access the private cluster, you need to access it from a machine that can access the VPC and the private subnets. Few ways to do this are:
-    - Create a bastion host in the VPC and then access the cluster from the bastion host
-    - Create a cloud9 instance in the VPC and then access the cluster from the cloud9 instance
-These examples assume you do not have any other network infrastructure in place (e.g. direct connect(DX), VPN etc.).
-
-Learn more about private EKS clusters [here](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html)
-
-## How to Destroy
-The following command destroys the resources created by `terraform apply`
-
-```shell script
-cd examples/fully-private-eks-cluster
-terraform destroy --auto-approve
-```
-
-<!--- BEGIN_TF_DOCS --->
-## Requirements
-
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.66.0 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.6.1 |
-
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.66.0 |
-
-## Modules
-
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | ../.. | n/a |
-| <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
-| <a name="module_vpc_endpoint_gateway"></a> [vpc\_endpoint\_gateway](#module\_vpc\_endpoint\_gateway) | terraform-aws-modules/vpc/aws//modules/vpc-endpoints | v3.2.0 |
-| <a name="module_vpc_endpoints"></a> [vpc\_endpoints](#module\_vpc\_endpoints) | terraform-aws-modules/vpc/aws//modules/vpc-endpoints | v3.2.0 |
-
-## Resources
-
-| Name | Type |
-|------|------|
-| [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
-| [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
-| [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
-| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
-| [aws_security_group.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/security_group) | data source |
-
-## Inputs
-
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Kubernetes Version | `string` | `"1.21"` | no |
-| <a name="input_environment"></a> [environment](#input\_environment) | Environment area, e.g. prod or preprod | `string` | `"preprod"` | no |
-| <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | `"aws001"` | no |
-| <a name="input_zone"></a> [zone](#input\_zone) | zone, e.g. dev or qa or load or ops etc... | `string` | `"dev"` | no |
-
-## Outputs
-
-| Name | Description |
-|------|-------------|
-| <a name="output_configure_kubectl"></a> [configure\_kubectl](#output\_configure\_kubectl) | Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
+Please refer to the README.MD in the individual sub folders for the deployment instructions.
 
 <!--- END_TF_DOCS --->
