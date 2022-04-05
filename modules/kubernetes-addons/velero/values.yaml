@@ -299,7 +299,7 @@ rbac:
 serviceAccount:
   server:
     create: false
-    name: ${service_account_name}
+    name: 
     annotations:
     labels:
 
