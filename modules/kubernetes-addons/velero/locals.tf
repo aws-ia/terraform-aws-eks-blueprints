@@ -8,7 +8,7 @@ locals {
     repository  = "https://vmware-tanzu.github.io/helm-charts/"
     version     = "2.23.6"
     namespace   = local.name
-    description = "Kube State Metrics AddOn Helm Chart"
+    description = "Velero AddOn Helm Chart"
     values      = local.default_helm_values
   }
 
@@ -43,7 +43,7 @@ locals {
     iam_role_path                     = "/"
     tags                              = var.addon_context.tags
     eks_cluster_id                    = var.addon_context.eks_cluster_id
-    irsa_iam_policies                 = var.irsa_policies
+    irsa_iam_policies                 = concat([aws_iam_policy.velero_policy.arn], var.irsa_policies)
     irsa_iam_permissions_boundary     = var.irsa_permissions_boundary
   }
 

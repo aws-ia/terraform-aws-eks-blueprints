@@ -52,12 +52,12 @@ dnsPolicy: ClusterFirst
 # Init containers to add to the Velero deployment's pod spec. At least one plugin provider image is required.
 # If the value is a string then it is evaluated as a template.
 initContainers:
-  # - name: velero-plugin-for-csi
-  #   image: velero/velero-plugin-for-csi:v0.2.0
-  #   imagePullPolicy: IfNotPresent
-  #   volumeMounts:
-  #     - mountPath: /target
-  #       name: plugins
+   - name: velero-plugin-for-aws
+     image: velero/velero-plugin-for-aws:v1.2.0
+     imagePullPolicy: IfNotPresent
+     volumeMounts:
+       - mountPath: /target
+         name: plugins
   # - name: velero-plugin-for-aws
   #   image: velero/velero-plugin-for-aws:v1.4.1
   #   imagePullPolicy: IfNotPresent
@@ -183,7 +183,7 @@ cleanUpCRDs: false
 ##
 configuration:
   # Cloud provider being used (e.g. aws, azure, gcp).
-  provider:
+  provider: aws
 
   # Parameters for the `default` BackupStorageLocation. See
   # https://velero.io/docs/v1.6/api-types/backupstoragelocation/
@@ -195,7 +195,7 @@ configuration:
     # `configuration.provider` will be used instead.
     provider:
     # bucket is the name of the bucket to store backups in. Required.
-    bucket:
+    bucket: velero-backup-bucket
     # caCert defines a base64 encoded CA bundle to use when verifying TLS connections to the provider. Optional.
     caCert:
     # prefix is the directory under which all Velero data should be stored within the bucket. Optional.
@@ -298,8 +298,8 @@ rbac:
 # Information about the Kubernetes service account Velero uses.
 serviceAccount:
   server:
-    create: true
-    name:
+    create: false
+    name: ${service_account_name}
     annotations:
     labels:
 

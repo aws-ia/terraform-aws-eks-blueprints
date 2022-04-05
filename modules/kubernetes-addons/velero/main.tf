@@ -19,12 +19,18 @@ module "helm_addon" {
 
 resource "helm_release" "velero" {
   count     = var.manage_via_gitops ? 0 : 1
-  name      = "cert-manager-ca"
-  chart     = "${path.module}/cert-manager-ca"
+  name      = "velero"
+  chart     = "${path.module}/velero"
   version   = "0.2.0"
   namespace = local.helm_config["namespace"]
 
-  depends_on = [module.helm_addon]
+  depends_on = [
+    module.helm_addon, 
+    aws_s3_bucket.s3, 
+    aws_s3_bucket_server_side_encryption_configuration.encryption,
+    aws_iam_policy.velero_policy
+  ]
+
 }
 
 
@@ -32,7 +38,6 @@ resource "aws_s3_bucket" "s3" {
    bucket = "velero-backup-bucket"
   
 }
-
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
   bucket = aws_s3_bucket.s3.bucket
@@ -47,7 +52,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
 
 
 resource "aws_iam_policy" "velero_policy" {
-  name        = "Velore-AmazonEKS_Policy"
+  name        = "Velero-AmazonEKS_Policy"
   description = "IAM policy for Velero to create backups of EKS cluster"
   policy      = data.aws_iam_policy_document.velero_policy.json
   tags        = var.addon_context.tags
