@@ -9,7 +9,7 @@ env:
     ENABLE_TFFORMAT: "Y"
     ENABLE_TFCHECKOV: "Y"
     ENABLE_TFSEC: "Y"
-    EXAMPLE_DIR: "examples/eks-cluster-with-new-vpc"
+    EXAMPLE_DIR: "../."
     TFSEC_VERSION: "v1.5.0"
 
 phases:
