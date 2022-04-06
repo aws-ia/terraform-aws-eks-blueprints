@@ -24,6 +24,6 @@ data "aws_iam_policy_document" "velero_policy" {
         "s3:ListMultipartUploadParts",
         "s3:ListBucket"
   ]
-    resources = ["arn:aws:s3:::velero-backup-bucket/*"]
+    resources = ["arn:aws:s3:::suratrip-velero-backup-bucket/*"]
   }
 }
