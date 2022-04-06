@@ -71,7 +71,7 @@ jobs:
           then
             echo "Skipping pre-setup for ${{ matrix.example_path }}"
             cp -R ${{ matrix.example_path }}/* deploy/e2e/gh-e2e-test/
-          else 
+          else
             echo "Running pre-setup for ${{ matrix.example_path }}"
             cp -R deploy/e2e/gh-e2e-template/* deploy/e2e/gh-e2e-test/
             sed -i "s!REPLACE_ME!${{ matrix.tenant_name }}!g" deploy/e2e/gh-e2e-test/base.tfvars
