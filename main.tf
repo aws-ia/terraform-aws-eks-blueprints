@@ -29,7 +29,7 @@ module "kms" {
 # ---------------------------------------------------------------------------------------------------------------------
 module "aws_eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "v18.10.0"
+  version = "v18.17.0"
   create  = var.create_eks
 
   cluster_name     = var.cluster_name == "" ? module.eks_tags.id : var.cluster_name
@@ -69,6 +69,7 @@ module "aws_eks" {
   tags = module.eks_tags.tags
 
   # CLUSTER LOGGING
+  create_cloudwatch_log_group            = var.create_cloudwatch_log_group
   cluster_enabled_log_types              = var.cluster_enabled_log_types # no change
   cloudwatch_log_group_retention_in_days = var.cloudwatch_log_group_retention_in_days
   cloudwatch_log_group_kms_key_id        = var.cloudwatch_log_group_kms_key_id
