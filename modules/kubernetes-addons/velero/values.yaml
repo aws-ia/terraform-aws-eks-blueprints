@@ -299,7 +299,7 @@ rbac:
 serviceAccount:
   server:
     create: false
-    name: 
+    name: velero
     annotations:
     labels:
 
