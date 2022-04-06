@@ -27,10 +27,6 @@ locals {
     {
       name  = "serviceAccount.name"
       value = local.service_account_name
-    },
-    {
-      name  = "serviceAccount.create"
-      value = false
     }
   ]
 
