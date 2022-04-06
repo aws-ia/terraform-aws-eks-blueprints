@@ -5,8 +5,8 @@
 # Details of the container image to use in the Velero deployment & daemonset (if
 # enabling restic). Required.
 image:
-  repository: velero/velero
-  tag: v1.8.1
+  repository: 
+  tag:
   # Digest value example: sha256:d238835e151cec91c6a811fe3a89a66d3231d9f64d09e5f3c49552672d271f38.
   # If used, it will take precedence over the image.tag.
   # digest:
