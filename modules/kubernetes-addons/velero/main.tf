@@ -14,10 +14,14 @@ module "helm_addon" {
   helm_config       = local.helm_config
   irsa_config       = local.irsa_config
   addon_context     = var.addon_context
+   depends_on = [
+    aws_s3_bucket.s3, 
+  ]
 }
 
+
 resource "aws_s3_bucket" "s3" {
-   bucket = "velero-backup-bucket"
+   bucket = "suratrip-velero-backup-bucket"
   
 }
 

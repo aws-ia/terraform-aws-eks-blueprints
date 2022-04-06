@@ -195,7 +195,7 @@ configuration:
     # `configuration.provider` will be used instead.
     provider:
     # bucket is the name of the bucket to store backups in. Required.
-    bucket: velero-backup-bucket
+    bucket: suratrip-velero-backup-bucket
     # caCert defines a base64 encoded CA bundle to use when verifying TLS connections to the provider. Optional.
     caCert:
     # prefix is the directory under which all Velero data should be stored within the bucket. Optional.
