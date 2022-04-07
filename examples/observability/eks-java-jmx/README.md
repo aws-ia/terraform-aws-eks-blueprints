@@ -128,7 +128,7 @@ In this section we will reuse an example from the AWS OpenTelemetry collector [r
 - 2. Authenticate to Amazon ECR
 
 ```
-export AWS_ACCOUNT_ID={aws_account_id}
+export AWS_ACCOUNT_ID=`aws sts get-caller-identity --query Account --output text`
 export AWS_REGION={region}
 aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 ```
