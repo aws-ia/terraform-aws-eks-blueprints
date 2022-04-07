@@ -142,6 +142,11 @@ module "eks-blueprints" {
 
   platform_teams = {
     admin = {
+      ## Users Example:
+      # users = [
+      #   "arn:aws:iam::<ACCOUNT_ID>:user/<USERNAME>",
+      #   "arn:aws:iam::<ACCOUNT_ID>:role/<ROLE_NAME>"
+      # ]
       users = var.teams.admin_users
     }
   }
@@ -169,7 +174,12 @@ module "eks-blueprints" {
       }
       ## Manifests Example:
       manifests_dir = "./manifests-team-red"
-      users         = var.teams.team_red_users
+      ## Users Example:
+      # users = [
+      #   "arn:aws:iam::<ACCOUNT_ID>:user/<USERNAME>",
+      #   "arn:aws:iam::<ACCOUNT_ID>:role/<ROLE_NAME>"
+      # ]
+      users = var.teams.team_red_users
     }
 
     team-blue = {
@@ -188,7 +198,12 @@ module "eks-blueprints" {
       }
       ## Manifests Example:
       manifests_dir = "./manifests-team-blue"
-      users         = var.teams.team_blue_users
+      ## Users Example:
+      # users = [
+      #   "arn:aws:iam::<ACCOUNT_ID>:user/<USERNAME>",
+      #   "arn:aws:iam::<ACCOUNT_ID>:role/<ROLE_NAME>"
+      # ]
+      users = var.teams.team_blue_users
     }
   }
 }
