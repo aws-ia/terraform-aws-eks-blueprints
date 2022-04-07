@@ -2,6 +2,7 @@
 
 resource "aws_iam_role" "codepipeline_role" {
   name               = "${var.project_name}-codepipeline-role"
+  tags               = var.tags
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -29,107 +30,68 @@ EOF
 resource "aws_iam_policy" "codepipeline_policy" {
   name        = "${var.project_name}-codepipeline-policy"
   description = "Policy to allow codepipeline to execute"
+  tags        = var.tags
   policy      = <<EOF
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": "iam:PassRole",
-            "Resource": "*",
-            "Condition": {
-                "StringEquals": {
-                    "iam:PassedToService": "eks.amazonaws.com"
-                }
-            }
-        },
-        {
-            "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-                "ecr:GetAuthorizationToken"
-          ],
-            "Effect": "Allow",
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "iam:List*",
-                "iam:Tag*",
-                "iam:RemoveRoleFromInstanceProfile",
-                "iam:CreateRole",
-                "iam:AttachRolePolicy",
-                "iam:PutRolePolicy",
-                "autoscaling:*",
-                "iam:AddRoleToInstanceProfile",
-                "codebuild:BatchGetBuilds",
-                "iam:DetachRolePolicy",
-                "iam:ListAttachedRolePolicies",
-                "iam:DeleteOpenIDConnectProvider",
-                "codecommit:UpdatePullRequestApprovalState",
-                "iam:GetRole",
-                "codecommit:PostCommentForPullRequest",
-                "iam:Untag*",
-                "iam:DeleteRole",
-                "cloudformation:*",
-                "codecommit:GetUploadArchiveStatus",
-                "ec2:*",
-                "codecommit:List*",
-                "codebuild:StartBuild",
-                "iam:GetOpenIDConnectProvider",
-                "codecommit:Describe*",
-                "eks:*",
-                "iam:GetRolePolicy",
-                "codebuild:BatchPutTestCases",
-                "iam:CreateInstanceProfile",
-                "codecommit:Get*",
-                "iam:TagRole",
-                "codecommit:BatchGet*",
-                "iam:ListInstanceProfilesForRole",
-                "codebuild:CreateReport",
-                "iam:PassRole",
-                "iam:Get*",
-                "codebuild:UpdateReport",
-                "iam:DeleteRolePolicy",
-                "iam:DeleteInstanceProfile",
-                "codecommit:UploadArchive",
-                "iam:GetInstanceProfile",
-                "codecommit:GitPull",
-                "iam:ListInstanceProfiles",
-                "codecommit:CancelUploadArchive",
-                "iam:CreateOpenIDConnectProvider",
-                "iam:CreatePolicy",
-                "codebuild:CreateReportGroup",
-                "codecommit:EvaluatePullRequestApprovalRules",
-                "codecommit:GetBranch",
-                "ssm:*",
-                "codecommit:BatchDescribe*",
-                "iam:*",
-                "lambda:*",
-                "ec2:*",
-                "codecommit:*"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:GetObject",
-                "s3:GetObjectVersion",
-                "s3:GetBucketVersioning",
-                "s3:PutObjectAcl",
-                "s3:PutObject"
-            ],
-            "Resource": "*"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect":"Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:GetBucketVersioning",
+        "s3:PutObjectAcl",
+        "s3:PutObject"
+      ],
+      "Resource": ["arn:${data.aws_partition.current.partition}:s3:::*"]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+         "codecommit:GitPull",
+         "codecommit:GitPush",
+         "codecommit:GetBranch",
+         "codecommit:CreateCommit",
+         "codecommit:ListRepositories",
+         "codecommit:BatchGetCommits",
+         "codecommit:BatchGetRepositories",
+         "codecommit:GetCommit",
+         "codecommit:GetRepository",
+         "codecommit:GetUploadArchiveStatus",
+         "codecommit:ListBranches",
+         "codecommit:UploadArchive"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codebuild:BatchGetBuilds",
+        "codebuild:StartBuild",
+        "codebuild:CreateReportGroup",
+        "codebuild:CreateReport",
+        "codebuild:BatchGetProjects"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*"
+    }
+  ]
 }
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "codepipeline-attach" {
-  role       = aws_iam_role.codepipeline_role.name
-  policy_arn = aws_iam_policy.codepipeline_policy.arn
+resource "aws_accessanalyzer_analyzer" "codepipeline_analyzer" {
+
+  analyzer_name = "${var.project_name}-iam-analyzer"
+  type          = "ACCOUNT"
+  tags          = var.tags
 }

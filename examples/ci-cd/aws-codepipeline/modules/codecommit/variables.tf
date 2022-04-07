@@ -9,7 +9,12 @@ variable "source_repository_name" {
   description = "Name of the Source CodeCommit repository"
 }
 
-variable "source_repository_tags" {
+variable "tags" {
   type        = map(any)
   description = "Tags to be attached to the source CodeCommit repository"
+}
+
+variable "kms_key_arn" {
+  description = "Name of the project to be prefixed to create the s3 bucket"
+  type        = string
 }

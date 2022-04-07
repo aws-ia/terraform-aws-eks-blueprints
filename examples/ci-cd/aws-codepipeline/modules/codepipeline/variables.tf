@@ -1,13 +1,3 @@
-variable "account_id" {
-  description = "Name of the account to be used"
-  default     = ""
-}
-
-variable "namespace" {
-  description = "namespace, which could be your organiation name, e.g. amazon"
-  default     = "AWS"
-}
-
 variable "project_name" {
   description = "Unique name for this project"
   type        = string
@@ -29,38 +19,22 @@ variable "s3_bucket_name" {
 }
 
 variable "codepipeline_role_arn" {
-  description = "ARN of the previously created codepipeline role"
+  description = "ARN of the codepipeline IAM role"
   type        = string
   default     = ""
 }
 
-variable "codebuild_validate_project_arn" {
-  description = "CodeBuild arn of the Validate project"
+variable "kms_key_arn" {
+  description = "ARN of KMS key for encryption"
   type        = string
-}
-
-variable "codebuild_plan_project_arn" {
-  description = "CodeBuild arn of the Plan project"
-  type        = string
-}
-
-variable "codebuild_apply_project_arn" {
-  description = "CodeBuild arn of the Apply project"
-  type        = string
-}
-
-variable "codebuild_destroy_project_arn" {
-  description = "CodeBuild arn of the Destroy project"
-  type        = string
-}
-
-variable "post_validation_status" {
-  description = "Whether to update the validation status in Pull Request. Default is always set to true."
-  type        = bool
-  default     = true
 }
 
 variable "tags" {
   description = "Tags to be attached to the CodePipeline"
   type        = map(any)
+}
+
+variable "stages" {
+  description = "List of Map containing information about the stages of the CodePipeline"
+  type        = list(map(any))
 }

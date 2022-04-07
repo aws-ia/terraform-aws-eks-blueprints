@@ -8,30 +8,19 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket = "arj-giga-bucket"
-    key    = "states/pipeline.tfstate"
-    region = "us-east-2"
-  }
-}
-
-# Module for Consistent Tagging
-module "resource-label" {
-  source    = "aws-ia/label/aws"
-  version   = "0.0.4"
-  name      = var.project_name
-  namespace = var.namespace
-  env       = var.ENVIRONMENT
-  account   = var.account_id
-
 }
 
 #Module for creating a new S3 bucket for storing pipeline artifacts
 module "s3_artifacts_bucket" {
-  source = "./modules/s3"
-
+  source       = "./modules/s3"
   project_name = var.project_name
-  tags         = { name="arj" }
+  kms_key_arn  = module.codepipeline_kms.arn
+  tags = {
+    Project_Name = var.project_name
+    Environment  = var.environment
+    Account_ID   = local.account_id
+    Region       = local.region
+  }
 }
 
 # Resources
@@ -42,98 +31,82 @@ module "codecommit_infrastructure_source_repo" {
 
   create_new_repo        = var.create_new_repo
   source_repository_name = var.source_repo_name
-  source_repository_tags = { name="arj" }
+  kms_key_arn            = module.codepipeline_kms.arn
+  tags = {
+    Project_Name = var.project_name
+    Environment  = var.environment
+    Account_ID   = local.account_id
+    Region       = local.region
+  }
 
 }
 
 # Module for Infrastructure Validation - CodeBuild
-module "codebuild_terraform_validate" {
+module "codebuild_terraform" {
   depends_on = [
     module.codecommit_infrastructure_source_repo
   ]
   source = "./modules/codebuild"
 
-  project_name           = var.project_name
-  build_spec_file_path   = var.build_spec_file_path_validate
-  code_build_name        = "Validate"
-  role_arn = module.codepipeline-iam-role.role_arn
-  s3_bucket_name         = module.s3_artifacts_bucket.bucket
-  tags                   = { name="arj" }
+  project_name                        = var.project_name
+  code_build_name                     = "Validate"
+  role_arn                            = module.codepipeline_iam_role.role_arn
+  s3_bucket_name                      = module.s3_artifacts_bucket.bucket
+  build_projects                      = var.build_projects
+  build_project_source                = var.build_project_source
+  builder_compute_type                = var.builder_compute_type
+  builder_image                       = var.builder_image
+  builder_image_pull_credentials_type = var.builder_image_pull_credentials_type
+  builder_type                        = var.builder_type
+  kms_key_arn                         = module.codepipeline_kms.arn
+  tags = {
+    Project_Name = var.project_name
+    Environment  = var.environment
+    Account_ID   = local.account_id
+    Region       = local.region
+  }
+}
+
+module "codepipeline_kms" {
+  source = "./modules/kms"
+  tags = {
+    Project_Name = var.project_name
+    Environment  = var.environment
+    Account_ID   = local.account_id
+    Region       = local.region
+  }
 
 }
 
-# Module for Infrastructure Plan - CodeBuild
-module "codebuild_terraform_plan" {
-  depends_on = [
-    module.codebuild_terraform_validate
-  ]
-  source = "./modules/codebuild"
-
-  project_name           = var.project_name
-  build_spec_file_path   = var.build_spec_file_path_plan
-  code_build_name        = "Plan"
-  role_arn = module.codepipeline-iam-role.role_arn
-  s3_bucket_name         = module.s3_artifacts_bucket.bucket
-  tags                   = { name="arj" }
-
-}
-
-# Module for Infrastructure Apply - CodeBuild
-module "codebuild_terraform_apply" {
-  depends_on = [
-    module.codebuild_terraform_plan
-  ]
-  source = "./modules/codebuild"
-
-  project_name           = var.project_name
-  build_spec_file_path   = var.build_spec_file_path_apply
-  code_build_name        = "Apply"
-  role_arn = module.codepipeline-iam-role.role_arn
-  s3_bucket_name         = module.s3_artifacts_bucket.bucket
-  tags                   = { name="arj" }
-
-}
-
-# Module for Infrastructure Destroy - CodeBuild
-module "codebuild_terraform_destroy" {
-  depends_on = [
-    module.codebuild_terraform_apply
-  ]
-  source = "./modules/codebuild"
-
-  project_name           = var.project_name
-  build_spec_file_path   = var.build_spec_file_path_destroy
-  code_build_name        = "Destroy"
-  role_arn = module.codepipeline-iam-role.role_arn
-  s3_bucket_name         = module.s3_artifacts_bucket.bucket
-  tags                   = { name="arj" }
-
-}
-module "codepipeline-iam-role"{
-  source = "./modules/iam-role"
-  project_name           = var.project_name
+module "codepipeline_iam_role" {
+  source       = "./modules/iam-role"
+  project_name = var.project_name
+  tags = {
+    Project_Name = var.project_name
+    Environment  = var.environment
+    Account_ID   = local.account_id
+    Region       = local.region
+  }
 }
 # Module for Infrastructure Validate, Plan, Apply and Destroy - CodePipeline
-module "codepipeline_terraform_validate_plan_apply_destroy" {
+module "codepipeline_terraform" {
   depends_on = [
-    module.codebuild_terraform_validate,
-    module.codebuild_terraform_plan,
-    module.codebuild_terraform_apply,
-    module.codebuild_terraform_destroy,
+    module.codebuild_terraform,
     module.s3_artifacts_bucket
   ]
   source = "./modules/codepipeline"
 
-  account_id                     = var.account_id
-  namespace                      = var.namespace
-  project_name                   = var.project_name
-  source_repo_name               = var.source_repo_name
-  source_repo_branch             = var.source_repo_branch
-  s3_bucket_name                 = module.s3_artifacts_bucket.bucket
-  codepipeline_role_arn = module.codepipeline-iam-role.role_arn
-  codebuild_validate_project_arn = module.codebuild_terraform_validate.arn
-  codebuild_plan_project_arn     = module.codebuild_terraform_plan.arn
-  codebuild_apply_project_arn    = module.codebuild_terraform_apply.arn
-  codebuild_destroy_project_arn  = module.codebuild_terraform_destroy.arn
-  tags                           = { name="arj" }
+  project_name          = var.project_name
+  source_repo_name      = var.source_repo_name
+  source_repo_branch    = var.source_repo_branch
+  s3_bucket_name        = module.s3_artifacts_bucket.bucket
+  codepipeline_role_arn = module.codepipeline_iam_role.role_arn
+  stages                = var.stage_input
+  kms_key_arn           = module.codepipeline_kms.arn
+  tags = {
+    Project_Name = var.project_name
+    Environment  = var.environment
+    Account_ID   = local.account_id
+    Region       = local.region
+  }
 }

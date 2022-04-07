@@ -1,20 +1,4 @@
-variable "aws_profile" {
-  description = "Profile to be used to connect to the target AWS account"
-  type        = string
-  default     = "default"
-}
 
-variable "account_id" {
-  description = "Name of the account to be used"
-  type        = string
-  default     = "xxxxx"
-}
-
-variable "namespace" {
-  description = "namespace, which could be your organization name, e.g. amazon"
-  type        = string
-  default     = "AWS"
-}
 
 variable "project_name" {
   description = "Unique name for this project"
@@ -37,32 +21,47 @@ variable "source_repo_branch" {
   type        = string
 }
 
-variable "ENVIRONMENT" {
+variable "environment" {
   description = "Environment in which the script is run. Eg: dev, prod, etc"
   type        = string
 }
 
-
-variable "build_spec_file_path_validate" {
-  description = "Relative path to the Validate and Plan build spec file"
-  type        = string
-  default     = "./templates/buildspec_validate.yml"
+variable "stage_input" {
+  description = "Tags to be attached to the CodePipeline"
+  type        = list(map(any))
 }
 
-variable "build_spec_file_path_plan" {
-  description = "Relative path to the Apply and Destroy build spec file"
-  type        = string
-  default     = "./templates/buildspec_plan.yml"
+variable "build_projects" {
+  description = "Tags to be attached to the CodePipeline"
+  type        = list(string)
 }
 
-variable "build_spec_file_path_apply" {
+variable "builder_compute_type" {
   description = "Relative path to the Apply and Destroy build spec file"
   type        = string
-  default     = "./templates/buildspec_apply.yml"
+  default     = "BUILD_GENERAL1_SMALL"
 }
 
-variable "build_spec_file_path_destroy" {
-  description = "Relative path to the Apply and Destroy build spec file"
+variable "builder_image" {
+  description = "aws/codebuild/standard:4.0"
   type        = string
-  default     = "./templates/buildspec_destroy.yml"
+  default     = "aws/codebuild/standard:4.0"
+}
+
+variable "builder_type" {
+  description = "aws/codebuild/standard:4.0"
+  type        = string
+  default     = "LINUX_CONTAINER"
+}
+
+variable "builder_image_pull_credentials_type" {
+  description = "aws/codebuild/standard:4.0"
+  type        = string
+  default     = "CODEBUILD"
+}
+
+variable "build_project_source" {
+  description = "aws/codebuild/standard:4.0"
+  type        = string
+  default     = "CODEPIPELINE"
 }
