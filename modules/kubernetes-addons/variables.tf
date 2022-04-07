@@ -249,6 +249,12 @@ variable "amazon_prometheus_workspace_endpoint" {
   description = "AWS Managed Prometheus WorkSpace Endpoint"
 }
 
+variable "amazon_prometheus_workspace_region" {
+  type        = string
+  default     = null
+  description = "AWS Managed Prometheus WorkSpace Region"
+}
+
 #-----------PROMETHEUS-------------
 variable "enable_prometheus" {
   description = "Enable Community Prometheus add-on"
@@ -752,11 +758,5 @@ variable "kubernetes_dashboard_irsa_permissions_boundary" {
 variable "enable_otel_operator_jmx" {
   type        = bool
   default     = false
-  description = "Enable metrics for JMX workloads and automatic Grafana Dashboards"
-}
-
-variable "otel_operator_jmx_helm_config" {
-  type        = any
-  default     = null
-  description = "OpenTelemtry Helm Chart config"
+  description = "Enable metrics for JMX workloads, automatic Managed Grafana Dashboards and AMP alerts"
 }

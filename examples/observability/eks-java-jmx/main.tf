@@ -111,41 +111,11 @@ module "kubernetes-addons" {
   source         = "../../../modules/kubernetes-addons"
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
-
   # OTEL JMX use cases
-  enable_otel_operator_jmx             = true
+  enable_aws_observability_pattern_jmx = true
   amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
 
   # Override this if you want to send metrics data to a workspace in a different region
   amazon_prometheus_workspace_region = data.aws_region.current.name
 
-}
-
-#---------------------------------------------------------------
-# Configure AMP as a Grafana Data Source
-#---------------------------------------------------------------
-resource "grafana_data_source" "prometheus" {
-  type       = "prometheus"
-  name       = "amp"
-  is_default = true
-  url        = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
-  json_data {
-    http_method     = "POST"
-    sigv4_auth      = true
-    sigv4_auth_type = "workspace-iam-role"
-    sigv4_region    = data.aws_region.current.name
-  }
-}
-#---------------------------------------------------------------
-# Configure JMX default Grafana dashboards
-#---------------------------------------------------------------
-resource "grafana_folder" "jmx_dashboards" {
-  title = "Observability"
-
-  depends_on = [module.kubernetes-addons]
-}
-
-resource "grafana_dashboard" "jmx_dashboards" {
-  folder      = grafana_folder.jmx_dashboards.id
-  config_json = file("files/dashboard.json")
 }

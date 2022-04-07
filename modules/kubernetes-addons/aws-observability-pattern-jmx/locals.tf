@@ -1,16 +1,16 @@
 locals {
   default_helm_config = {
-    name             = "opentelemetry"
-    repository       = null
-    chart            = "${path.module}/otel-config"
-    version          = "0.1.0"
-    namespace        = "opentelemetry-operator-system"
-    timeout          = "1200"
-    description      = "ADOT helm Chart deployment configuration"
-    lint             = false
-    values           = []
-    set              = []
-    set_sensitive    = null
+    name          = "adot-collector"
+    repository    = null
+    chart         = "${path.module}/otel-config"
+    version       = "0.1.0"
+    namespace     = "opentelemetry-operator-system"
+    timeout       = "1200"
+    description   = "ADOT helm Chart deployment configuration"
+    lint          = false
+    values        = []
+    set           = []
+    set_sensitive = null
   }
 
   helm_config = merge(
