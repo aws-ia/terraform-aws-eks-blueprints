@@ -162,11 +162,19 @@ module "aws-eks-accelerator-for-terraform" {
   # Allow Worker nodes egress to talk to Cluster API for Karpenter service
   node_security_group_additional_rules = {
     egress_nodes_karpenter_port = {
-      description                   = "Node groups to cluster API"
+      description                   = "Node groups to cluster API for Karpenter"
       protocol                      = "tcp"
       from_port                     = 8443
       to_port                       = 8443
       type                          = "egress"
+      source_cluster_security_group = true
+    }
+    ingress_nodes_karpenter_port = {
+      description                   = "Cluster API to Nodegroup for Karpenter"
+      protocol                      = "tcp"
+      from_port                     = 8443
+      to_port                       = 8443
+      type                          = "ingress"
       source_cluster_security_group = true
     }
   }
