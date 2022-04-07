@@ -1,12 +1,10 @@
 name: e2e-all-examples-parallel
 
 on:
+  pull_request:
+    branches:
+      - main  
   workflow_dispatch:
-    inputs:
-      TFDestroy:
-        description: "Destroy TF Automatically (false/true) - Default: true"
-        required: true
-        default: "true"
 
 jobs:
   deploy:
