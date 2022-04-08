@@ -11,7 +11,7 @@ module "helm_addon" {
 resource "kubernetes_namespace_v1" "this" {
 
   count = local.helm_config["namespace"] == "kube-system" ? 0 : 1
-  
+
   metadata {
     name = local.helm_config["namespace"]
 
