@@ -14,8 +14,8 @@ locals {
   }
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
-    aws_region           = var.addon_context.aws_region_name
-    zone_filter_ids      = local.zone_filter_ids
+    aws_region      = var.addon_context.aws_region_name
+    zone_filter_ids = local.zone_filter_ids
   })]
 
   helm_config = merge(
