@@ -54,14 +54,19 @@ This following command used to update the `kubeconfig` in your local machine whe
 
     $ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 
-#### Step6: List all the worker nodes by running the command below
+#### Step6: Create a simple pod with respective match labels.
+
+    $ kubectl run test-pod --image=nginx --labels="Zone=dev,Environment=preprod,env=fargate"
+
+#### Step7: List all the nodes by running the command below and verify the fargate nodes
 
     $ kubectl get nodes
 
-#### Step7: List all the pods running in `kube-system` namespace
+#### Step8: List all the pods running in `kube-system` namespace
 
     $ kubectl get pods -n kube-system
 
+Note : CoreDNS requires [additional setup](https://docs.aws.amazon.com/eks/latest/userguide/fargate-getting-started.html) if customers use only Fargate
 ## How to Destroy
 The following command destroys the resources created by `terraform apply`
 

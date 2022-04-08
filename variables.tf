@@ -165,6 +165,12 @@ variable "cluster_service_ipv4_cidr" {
 #-------------------------------
 # EKS Cluster CloudWatch Logging
 #-------------------------------
+variable "create_cloudwatch_log_group" {
+  description = "Determines whether a log group is created by this module for the cluster logs. If not, AWS will automatically create one if logging is enabled"
+  type        = bool
+  default     = false
+}
+
 variable "cluster_enabled_log_types" {
   type        = list(string)
   default     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]

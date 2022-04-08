@@ -38,6 +38,13 @@ resource "kubectl_manifest" "aws_provider" {
   depends_on = [kubectl_manifest.aws_controller_config]
 }
 
+# Wait for the AWS Provider CRDs to be fully created before initiating aws_provider_config deployment
+resource "time_sleep" "wait_30_seconds" {
+  depends_on = [kubectl_manifest.aws_provider]
+
+  create_duration = "30s"
+}
+
 module "aws_provider_irsa" {
   count                             = var.aws_provider.enable == true ? 1 : 0
   source                            = "../../../modules/irsa"
@@ -63,7 +70,7 @@ resource "kubectl_manifest" "aws_provider_config" {
   count     = var.aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-provider-config.yaml", {})
 
-  depends_on = [kubectl_manifest.aws_provider]
+  depends_on = [kubectl_manifest.aws_provider, time_sleep.wait_30_seconds]
 }
 
 #--------------------------------------
