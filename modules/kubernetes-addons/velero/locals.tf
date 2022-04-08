@@ -1,6 +1,7 @@
 locals {
   name                 = "velero"
   service_account_name = local.name
+  s3bucketname = "eks-terraform-velero-add-on-bucket"
 
   default_helm_config = {
     name        = local.name
@@ -13,7 +14,8 @@ locals {
   }
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
-    sa-name = local.service_account_name
+    velero-sa-name = local.service_account_name
+    s3-bucket-name = local.s3bucketname
   })]
 
   helm_config = merge(
