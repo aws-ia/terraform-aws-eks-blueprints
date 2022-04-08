@@ -21,7 +21,7 @@ module "helm_addon" {
 
 
 resource "aws_s3_bucket" "s3" {
-   bucket = "suratrip-velero-backup-bucket"
+   bucket = local.s3bucketname
   
 }
 
