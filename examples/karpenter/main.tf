@@ -147,18 +147,6 @@ module "aws-eks-accelerator-for-terraform" {
   # EKS CONTROL PLANE VARIABLES
   cluster_version = local.cluster_version
 
-  # Extend cluster security group rule to allow Karpenter service to communicate with Cluster API
-  cluster_security_group_additional_rules = {
-    ingress_nodes_karpenter_port = {
-      description                = "From node 8443 for Karpenter"
-      protocol                   = "tcp"
-      from_port                  = 8443
-      to_port                    = 8443
-      type                       = "ingress"
-      source_node_security_group = true
-    }
-  }
-
   # Allow Worker nodes egress to talk to Cluster API for Karpenter service
   node_security_group_additional_rules = {
     egress_nodes_karpenter_port = {
