@@ -28,7 +28,7 @@ jobs:
             tenant_name: "emr-eks"
           - example_path: examples/analytics/spark-k8s-operator
             tenant_name: "spark"
-          - example_path: examples/argocd
+          - example_path: examples/gitops/argocd
             tenant_name: "argo"
           - example_path: examples/aws-efs-csi-driver
             tenant_name: "efs"
