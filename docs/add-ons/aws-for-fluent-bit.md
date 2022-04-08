@@ -8,7 +8,7 @@ AWS provides a Fluent Bit image with plugins for both CloudWatch Logs and Kinesi
 
 ### Usage
 
-[aws-for-fluent-bit](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/kubernetes-addons/aws-for-fluentbit) can be deployed by enabling the add-on via the following.
+[aws-for-fluent-bit](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/aws-for-fluentbit) can be deployed by enabling the add-on via the following.
 
 This add-on is configured to stream the worker node logs to CloudWatch Logs by default. It can further be configured to stream the logs to additional destinations like Kinesis Data Firehose, Kinesis Data Streams and Amazon OpenSearch Service by passing the custom `values.yaml`.
 See this [Helm Chart](https://github.com/aws/eks-charts/tree/master/stable/aws-for-fluent-bit) for more details.

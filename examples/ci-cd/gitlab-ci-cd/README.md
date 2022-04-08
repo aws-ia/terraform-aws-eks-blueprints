@@ -8,7 +8,7 @@ This shows an example of how to automate the build and deployment of an IaC code
 ### Step 1: Clone this repo
 
 ```
-git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git
+git@github.com:aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 ## Step 2: Create a new git repo in your GitLab group and copy files from examples/advanced/gitlab-ci-cd folder to the root of your new GitLab repo
@@ -72,7 +72,7 @@ Manually trigger the `tf-destroy` stage in the GitLab Ci/CD pipeline to destroy 
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | github.com/aws-samples/aws-eks-accelerator-for-terraform | n/a |
+| <a name="module_eks-blueprints"></a> [eks-blueprints](#module\_eks-blueprints) | github.com/aws-ia/terraform-aws-eks-blueprints | n/a |
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | 3.11.3 |
 
 ## Resources

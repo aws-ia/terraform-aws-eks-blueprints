@@ -26,11 +26,11 @@ data "aws_region" "current" {}
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks-blueprints.eks_cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks-blueprints.eks_cluster_id
 }
 
 provider "aws" {
@@ -182,9 +182,9 @@ module "vpc_endpoints" {
   }
 }
 #---------------------------------------------------------------
-# Example to consume aws-eks-accelerator-for-terraform module
+# Example to consume eks-blueprints module
 #---------------------------------------------------------------
-module "aws-eks-accelerator-for-terraform" {
+module "eks-blueprints" {
   source = "../.."
 
   tenant            = local.tenant
@@ -220,5 +220,5 @@ module "aws-eks-accelerator-for-terraform" {
 
 output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.aws-eks-accelerator-for-terraform.configure_kubectl
+  value       = module.eks-blueprints.configure_kubectl
 }

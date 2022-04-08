@@ -29,7 +29,7 @@ For information on Route53 Hosted Zones, [see Route53 documentation](https://doc
 #### Step1: Clone the repo
 
 ```shell script
-git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 #### Step2: Terraform INIT

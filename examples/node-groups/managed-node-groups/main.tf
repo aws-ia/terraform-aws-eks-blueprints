@@ -54,11 +54,11 @@ data "aws_region" "current" {}
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks-blueprints.eks_cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks-blueprints.eks_cluster_id
 }
 
 #------------------------------------------------------------------------
@@ -110,9 +110,9 @@ module "aws_vpc" {
 }
 
 #------------------------------------------------------------------------
-# AWS EKS Accelerator Module
+# AWS EKS Blueprints Module
 #------------------------------------------------------------------------
-module "aws-eks-accelerator-for-terraform" {
+module "eks-blueprints" {
   source = "../../.."
 
   tenant            = local.tenant
@@ -461,7 +461,7 @@ module "aws-eks-accelerator-for-terraform" {
 module "kubernetes-addons" {
   source = "../../../modules/kubernetes-addons"
 
-  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_cluster_id = module.eks-blueprints.eks_cluster_id
 
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
@@ -470,5 +470,5 @@ module "kubernetes-addons" {
 
 output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.aws-eks-accelerator-for-terraform.configure_kubectl
+  value       = module.eks-blueprints.configure_kubectl
 }

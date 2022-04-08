@@ -82,7 +82,7 @@ module "aws_vpc" {
 #---------------------------------------------------------------
 # Provision EKS and Helm Charts
 #---------------------------------------------------------------
-module "aws-eks-accelerator-for-terraform" {
+module "eks-blueprints" {
   source = "../../.."
 
   tenant            = local.tenant
@@ -112,7 +112,7 @@ module "aws-eks-accelerator-for-terraform" {
 
 module "kubernetes-addons" {
   source         = "../../../modules/kubernetes-addons"
-  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_cluster_id = module.eks-blueprints.eks_cluster_id
 
   #K8s Add-ons
   enable_metrics_server     = true
@@ -135,10 +135,10 @@ module "kubernetes-addons" {
   # Prometheus and Amazon Managed Prometheus integration
   enable_prometheus                    = true
   enable_amazon_prometheus             = true
-  amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = module.eks-blueprints.amazon_prometheus_workspace_endpoint
 
   depends_on = [
-    module.aws-eks-accelerator-for-terraform.managed_node_groups,
+    module.eks-blueprints.managed_node_groups,
     module.aws_vpc
   ]
 }
@@ -150,7 +150,7 @@ resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
   name       = "amp"
   is_default = true
-  url        = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
+  url        = module.eks-blueprints.amazon_prometheus_workspace_endpoint
   json_data {
     http_method     = "POST"
     sigv4_auth      = true

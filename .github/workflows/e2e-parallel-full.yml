@@ -8,7 +8,7 @@ on:
         required: true
         default: "true"
 env:
-  DEFAULT_DEPLOY_ORDER: "module.e2e-test.module.aws_vpc,module.e2e-test.module.aws-eks-accelerator-for-terraform,module.e2e-test.module.kubernetes-addons"
+  DEFAULT_DEPLOY_ORDER: "module.e2e-test.module.aws_vpc,module.e2e-test.module.eks-blueprints,module.e2e-test.module.kubernetes-addons"
 
 jobs:
   deploy:
@@ -47,7 +47,7 @@ jobs:
                 "module.e2e-test.module.aws_vpc",
                 "module.e2e-test.module.vpc_endpoint_gateway",
                 "module.e2e-test.module.vpc_endpoints",
-                "module.e2e-test.module.aws-eks-accelerator-for-terraform",
+                "module.e2e-test.module.eks-blueprints",
               ]
           - example_path: examples/game-tech/agones-game-controller
             tenant_name: "agones"

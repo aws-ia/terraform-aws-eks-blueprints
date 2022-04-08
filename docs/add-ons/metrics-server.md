@@ -6,7 +6,7 @@ Metrics Server is a scalable, efficient source of container resource metrics for
 
 ## Usage
 
-[Metrics Server](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/kubernetes-addons/metrics-server) can be deployed by enabling the add-on via the following.
+[Metrics Server](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/metrics-server) can be deployed by enabling the add-on via the following.
 
 ```hcl
 enable_metrics_server = true

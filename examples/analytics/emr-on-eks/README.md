@@ -20,7 +20,7 @@ _Note: Currently Amazon Prometheus supported only in selected regions. Please se
 Clone the repository
 
 ```
-git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 Navigate into one of the example directories and run `terraform init`
@@ -178,8 +178,8 @@ Specifically, you can use persistent volume claims if the jobs require large shu
 ##### Issue1: Error: local-exec provisioner error
 ```shell script
 Error: local-exec provisioner error \
-with module.aws-eks-accelerator-for-terraform.module.emr_on_eks["data_team_b"].null_resource.update_trust_policy,\
- on .terraform/modules/aws-eks-accelerator-for-terraform/modules/emr-on-eks/main.tf line 105, in resource "null_resource" \
+with module.eks-blueprints.module.emr_on_eks["data_team_b"].null_resource.update_trust_policy,\
+ on .terraform/modules/eks-blueprints/modules/emr-on-eks/main.tf line 105, in resource "null_resource" \
  "update_trust_policy":│ 105: provisioner "local-exec" {│ │ Error running command 'set -e│ │ aws emr-containers update-role-trust-policy \
  │ --cluster-name aws001-preprod-test-eks \│ --namespace emr-data-team-b \│ --role-name aws001-preprod-test-eks-emr-eks-data-team-b
 ```
@@ -209,7 +209,7 @@ This is fixed in version 2.0.54.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | ../../.. | n/a |
+| <a name="module_eks-blueprints"></a> [eks-blueprints](#module\_eks-blueprints) | ../../.. | n/a |
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
 | <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | ../../../modules/kubernetes-addons | n/a |
 

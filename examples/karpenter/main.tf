@@ -30,11 +30,11 @@ data "aws_region" "current" {}
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks-blueprints.eks_cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks-blueprints.eks_cluster_id
 }
 
 data "aws_ami" "amazonlinux2eks" {
@@ -130,9 +130,9 @@ module "aws_vpc" {
   }
 }
 #---------------------------------------------------------------
-# Example to consume aws-eks-accelerator-for-terraform module
+# Example to consume eks-blueprints module
 #---------------------------------------------------------------
-module "aws-eks-accelerator-for-terraform" {
+module "eks-blueprints" {
   source = "../.."
 
   tenant            = local.tenant
@@ -175,15 +175,15 @@ module "aws-eks-accelerator-for-terraform" {
 # Launch template outputs will be used in Karpenter Provisioners yaml files. Checkout this examples/karpenter/provisioners/default_provisioner_with_launch_templates.yaml
 module "karpenter-launch-templates" {
   source         = "../../modules/launch-templates"
-  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_cluster_id = module.eks-blueprints.eks_cluster_id
   tags           = { Name = "karpenter" }
 
   launch_template_config = {
     linux = {
       ami                    = data.aws_ami.amazonlinux2eks.id
       launch_template_prefix = "karpenter"
-      iam_instance_profile   = module.aws-eks-accelerator-for-terraform.self_managed_node_group_iam_instance_profile_id[0]
-      vpc_security_group_ids = [module.aws-eks-accelerator-for-terraform.worker_node_security_group_id]
+      iam_instance_profile   = module.eks-blueprints.self_managed_node_group_iam_instance_profile_id[0]
+      vpc_security_group_ids = [module.eks-blueprints.worker_node_security_group_id]
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
@@ -196,8 +196,8 @@ module "karpenter-launch-templates" {
       ami                    = data.aws_ami.bottlerocket.id
       launch_template_os     = "bottlerocket"
       launch_template_prefix = "bottle"
-      iam_instance_profile   = module.aws-eks-accelerator-for-terraform.self_managed_node_group_iam_instance_profile_id[0]
-      vpc_security_group_ids = [module.aws-eks-accelerator-for-terraform.worker_node_security_group_id]
+      iam_instance_profile   = module.eks-blueprints.self_managed_node_group_iam_instance_profile_id[0]
+      vpc_security_group_ids = [module.eks-blueprints.worker_node_security_group_id]
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
@@ -212,12 +212,12 @@ module "karpenter-launch-templates" {
 module "kubernetes-addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_cluster_id = module.eks-blueprints.eks_cluster_id
 
   # Deploys Karpenter add-on
   enable_karpenter = true
 
-  depends_on = [module.aws-eks-accelerator-for-terraform.self_managed_node_groups]
+  depends_on = [module.eks-blueprints.self_managed_node_groups]
 }
 
 # Deploying default provisioner for Karpenter autoscaler
@@ -244,5 +244,5 @@ resource "kubectl_manifest" "karpenter_provisioner" {
 
 output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.aws-eks-accelerator-for-terraform.configure_kubectl
+  value       = module.eks-blueprints.configure_kubectl
 }
