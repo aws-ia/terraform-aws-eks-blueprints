@@ -152,5 +152,4 @@ locals {
   ] : []
 
   cluster_iam_role_name = "${module.eks_tags.tags.name}-cluster-role"
-
 }

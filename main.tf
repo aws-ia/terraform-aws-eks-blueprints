@@ -88,7 +88,6 @@ module "aws_eks" {
   ] : var.cluster_encryption_config
 
   cluster_identity_providers = var.cluster_identity_providers
-
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

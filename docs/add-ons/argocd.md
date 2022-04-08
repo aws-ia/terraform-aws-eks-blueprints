@@ -45,7 +45,7 @@ argocd_helm_config = {
 
 The framework provides an approach to bootstrapping workloads and/or additional add-ons by leveraging the ArgoCD [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern.
 
-The following code example demonstrates how you can supply information for a repository in order to bootstrap multiple workloads in a new EKS cluster. The example leverages a [sample App of Apps repository](https://github.com/aws-samples/ssp-eks-workloads.git) that ships with the EKS SSP solution.
+The following code example demonstrates how you can supply information for a repository in order to bootstrap multiple workloads in a new EKS cluster. The example leverages a [sample App of Apps repository](https://github.com/aws-samples/eks-blueprints-workloads.git).
 
 ```hcl
 argocd_applications = {
@@ -127,7 +127,7 @@ argocd_helm_config = {
 argocd_applications = {
   workloads = {
     path                = "envs/dev"
-    repo_url            = "https://github.com/aws-samples/ssp-eks-workloads.git"
+    repo_url            = "https://github.com/aws-samples/eks-blueprints-workloads.git"
     values              = {}
   }
   addons = {
