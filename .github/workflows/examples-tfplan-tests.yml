@@ -24,7 +24,7 @@ jobs:
           [
             examples/analytics/emr-on-eks,
             examples/analytics/spark-k8s-operator,
-            examples/argocd,
+            examples/gitops/argocd,
             examples/aws-efs-csi-driver,
             examples/crossplane,
             examples/eks-cluster-with-external-dns,

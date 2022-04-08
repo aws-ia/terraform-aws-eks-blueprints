@@ -30,11 +30,11 @@ data "aws_region" "current" {}
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks-blueprints.eks_cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks-blueprints.eks_cluster_id
 }
 
 provider "aws" {
@@ -110,9 +110,9 @@ module "aws_vpc" {
 }
 
 #---------------------------------------------------------------
-# Example to consume aws-eks-accelerator-for-terraform module with Teams (Application and Platform)
+# Example to consume eks-blueprints module with Teams (Application and Platform)
 #---------------------------------------------------------------
-module "aws-eks-accelerator-for-terraform" {
+module "eks-blueprints" {
   source = "../.."
 
   tenant            = local.tenant
@@ -128,7 +128,7 @@ module "aws-eks-accelerator-for-terraform" {
   cluster_version = local.cluster_version
 
   tags = {
-    "SSP-TF-Teams" = "true"
+    "EKS-Blueprints-TF-Teams" = "true"
   }
 
   # EKS MANAGED NODE GROUPS

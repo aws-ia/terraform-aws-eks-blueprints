@@ -20,7 +20,7 @@ Ensure that you have installed the following tools on your machine.
 Clone the repository
 
 ```
-git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 Navigate into one of the example directories and run `terraform init`
@@ -83,9 +83,9 @@ No requirements.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | ../../.. | n/a |
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
-| <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | ../../../modules/kubernetes-addons | n/a |
+| <a name="module_eks-blueprints"></a> [eks-blueprints](#module\_eks-blueprints) | ../../.. | n/a |
+| <a name="module_eks-blueprints-kubernetes-addons"></a> [eks-blueprints-kubernetes-addons](#module\_eks-blueprints-kubernetes-addons) | ../../../modules/kubernetes-addons | n/a |
 
 ## Resources
 

@@ -29,7 +29,7 @@ For information on Route53 Hosted Zones, [see Route53 documentation](https://doc
 #### Step1: Clone the repo
 
 ```shell script
-git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 #### Step2: Terraform INIT
@@ -119,8 +119,8 @@ terraform destroy --auto-approve
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | 3.2.0 |
+| <a name="module_eks-blueprints-kubernetes-addons"></a> [eks-blueprints-kubernetes-addons](#module\_eks-blueprints-kubernetes-addons) | ../../modules/kubernetes-addons | n/a |
 | <a name="module_eks_cluster"></a> [eks\_cluster](#module\_eks\_cluster) | ../.. | n/a |
-| <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | ../../modules/kubernetes-addons | n/a |
 
 ## Resources
 
