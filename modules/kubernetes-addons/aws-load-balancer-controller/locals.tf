@@ -22,7 +22,7 @@ locals {
     aws_region           = var.addon_context.aws_region_name,
     eks_cluster_id       = var.addon_context.eks_cluster_id,
     service_account_name = local.service_account_name,
-    ecr_uri         = var.default_ecr_uri
+    ecr_uri              = var.default_ecr_uri
   })]
 
   set_values = [
