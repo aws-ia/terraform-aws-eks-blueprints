@@ -239,7 +239,7 @@ resource "kubectl_manifest" "karpenter_provisioner" {
   for_each  = toset(data.kubectl_path_documents.karpenter_provisioners.documents)
   yaml_body = each.value
 
-  depends_on = [module.kubernetes-addons]
+  depends_on = [module.eks-blueprints-kubernetes-addons]
 }
 
 output "configure_kubectl" {
