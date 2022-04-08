@@ -21,17 +21,3 @@ variable "zone" {
   description = "zone, e.g. dev or qa or load or ops etc..."
   default     = "dev"
 }
-
-variable "teams" {
-  description = "Team configuration for the blueprint."
-  type = object({
-    admin_users     = list(string)
-    team_red_users  = list(string)
-    team_blue_users = list(string)
-  })
-  default = {
-    admin_users     = []
-    team_blue_users = []
-    team_red_users  = []
-  }
-}
