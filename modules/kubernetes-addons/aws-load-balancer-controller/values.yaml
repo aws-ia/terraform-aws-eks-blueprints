@@ -4,4 +4,8 @@ serviceAccount:
   create: false
   name: ${service_account_name}
 image:
+<<<<<<< HEAD
   repository: ${ecr_uri}/amazon/aws-load-balancer-controller
+=======
+  repository: ${ecr_registry}/amazon/aws-load-balancer-controller
+>>>>>>> b3ddecc0f21f3fe35712426dbbebff73737669bf
