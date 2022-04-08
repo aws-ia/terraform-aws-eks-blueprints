@@ -70,7 +70,7 @@ resource "helm_release" "argocd_application" {
     ))
   }
 
-  # Desintation Config.
+  # Destination Config.
   set {
     name  = "destination.server"
     value = each.value.destination
