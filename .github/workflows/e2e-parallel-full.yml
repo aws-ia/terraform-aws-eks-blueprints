@@ -8,7 +8,7 @@ on:
         required: true
         default: "true"
 env:
-  DEFAULT_DEPLOY_ORDER: "module.e2e-test.module.aws_vpc,module.e2e-test.module.eks-blueprints,module.e2e-test.module.kubernetes-addons"
+  DEFAULT_DEPLOY_ORDER: "module.e2e-test.module.aws_vpc,module.e2e-test.module.eks-blueprints,module.e2e-test.module.eks-blueprints-kubernetes-addons"
 
 jobs:
   deploy:

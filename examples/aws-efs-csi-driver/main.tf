@@ -148,7 +148,7 @@ module "eks-blueprints" {
 #---------------------------------------------
 # Deploy Kubernetes Add-ons with sub module
 #---------------------------------------------
-module "kubernetes-addons" {
+module "eks-blueprints-kubernetes-addons" {
   source         = "../../modules/kubernetes-addons"
   eks_cluster_id = module.eks-blueprints.eks_cluster_id
 

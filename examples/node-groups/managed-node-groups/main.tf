@@ -458,7 +458,7 @@ module "eks-blueprints" {
 #------------------------------------------------------------------------
 # Kubernetes Add-on Module
 #------------------------------------------------------------------------
-module "kubernetes-addons" {
+module "eks-blueprints-kubernetes-addons" {
   source = "../../../modules/kubernetes-addons"
 
   eks_cluster_id = module.eks-blueprints.eks_cluster_id
