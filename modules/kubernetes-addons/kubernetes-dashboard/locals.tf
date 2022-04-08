@@ -19,6 +19,8 @@ locals {
     var.helm_config
   )
 
+  default_helm_values = []
+
   set_values = [
     {
       name  = "serviceAccount.name"
