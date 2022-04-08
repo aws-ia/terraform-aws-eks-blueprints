@@ -6,7 +6,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://aws.github.io/eks-charts"
-    version     = "1.3.1"
+    version     = "1.3.2"
     namespace   = "kube-system"
     timeout     = "1200"
     values      = local.default_helm_values
@@ -19,9 +19,8 @@ locals {
   )
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
-    aws_region           = var.addon_context.aws_region_name,
-    eks_cluster_id       = var.addon_context.eks_cluster_id,
-    service_account_name = local.service_account_name
+    aws_region     = var.addon_context.aws_region_name,
+    eks_cluster_id = var.addon_context.eks_cluster_id,
   })]
 
   set_values = [
