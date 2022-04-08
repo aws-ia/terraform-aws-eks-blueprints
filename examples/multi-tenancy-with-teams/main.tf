@@ -29,6 +29,8 @@ data "aws_region" "current" {}
 
 data "aws_availability_zones" "available" {}
 
+data "aws_caller_identity" "current" {}
+
 data "aws_eks_cluster" "cluster" {
   name = module.eks-blueprints.eks_cluster_id
 }
@@ -109,9 +111,10 @@ module "aws_vpc" {
 
 }
 
-#---------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Example to consume eks-blueprints module with Teams (Application and Platform)
-#---------------------------------------------------------------
+#-------------------------------------------------------------------------------
+
 module "eks-blueprints" {
   source = "../.."
 
@@ -127,10 +130,6 @@ module "eks-blueprints" {
   # EKS CONTROL PLANE VARIABLES
   cluster_version = local.cluster_version
 
-  tags = {
-    "EKS-Blueprints-TF-Teams" = "true"
-  }
-
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     mg_4 = {
@@ -142,12 +141,7 @@ module "eks-blueprints" {
 
   platform_teams = {
     admin = {
-      ## Users Example:
-      # users = [
-      #   "arn:aws:iam::<ACCOUNT_ID>:user/<USERNAME>",
-      #   "arn:aws:iam::<ACCOUNT_ID>:role/<ROLE_NAME>"
-      # ]
-      users = var.teams.admin_users
+      users = [data.aws_caller_identity.current.arn]
     }
   }
 
@@ -174,12 +168,7 @@ module "eks-blueprints" {
       }
       ## Manifests Example:
       manifests_dir = "./manifests-team-red"
-      ## Users Example:
-      # users = [
-      #   "arn:aws:iam::<ACCOUNT_ID>:user/<USERNAME>",
-      #   "arn:aws:iam::<ACCOUNT_ID>:role/<ROLE_NAME>"
-      # ]
-      users = var.teams.team_red_users
+      users         = [data.aws_caller_identity.current.arn]
     }
 
     team-blue = {
@@ -198,12 +187,7 @@ module "eks-blueprints" {
       }
       ## Manifests Example:
       manifests_dir = "./manifests-team-blue"
-      ## Users Example:
-      # users = [
-      #   "arn:aws:iam::<ACCOUNT_ID>:user/<USERNAME>",
-      #   "arn:aws:iam::<ACCOUNT_ID>:role/<ROLE_NAME>"
-      # ]
-      users = var.teams.team_blue_users
+      users         = [data.aws_caller_identity.current.arn]
     }
   }
 }
