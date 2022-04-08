@@ -25,8 +25,8 @@ data "aws_iam_policy_document" "velero_policy" {
         "s3:ListBucket"
   ]
     resources = [
-      "arn:aws:s3:::suratrip-velero-backup-bucket/*", 
-      "arn:aws:s3:::suratrip-velero-backup-bucket"
+      "arn:aws:s3:::${local.s3bucketname}/*", 
+      "arn:aws:s3:::${local.s3bucketname}"
     ]
   }
 }
