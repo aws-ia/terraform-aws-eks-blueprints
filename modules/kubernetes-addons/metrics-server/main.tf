@@ -5,7 +5,7 @@ module "helm_addon" {
   irsa_config       = null
   addon_context     = var.addon_context
 
-  depends_on = [kubernetes_namespace_v1[0].this]
+  depends_on = [kubernetes_namespace_v1.this]
 }
 
 resource "kubernetes_namespace_v1" "this" {
