@@ -72,8 +72,8 @@ Manually trigger the `tf-destroy` stage in the GitLab Ci/CD pipeline to destroy 
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eks-blueprints"></a> [eks-blueprints](#module\_eks-blueprints) | github.com/aws-ia/terraform-aws-eks-blueprints | n/a |
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | 3.11.3 |
+| <a name="module_eks-blueprints"></a> [eks-blueprints](#module\_eks-blueprints) | github.com/aws-ia/terraform-aws-eks-blueprints | n/a |
 
 ## Resources
 

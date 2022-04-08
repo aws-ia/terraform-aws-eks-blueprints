@@ -105,8 +105,8 @@ terraform destroy
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eks-blueprints"></a> [eks-blueprints](#module\_eks-blueprints) | ../.. | n/a |
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
+| <a name="module_eks-blueprints"></a> [eks-blueprints](#module\_eks-blueprints) | ../.. | n/a |
 | <a name="module_karpenter-launch-templates"></a> [karpenter-launch-templates](#module\_karpenter-launch-templates) | ../../modules/launch-templates | n/a |
 | <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | ../../modules/kubernetes-addons | n/a |
 
