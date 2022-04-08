@@ -260,6 +260,19 @@ variable "enable_windows_support" {
 #-------------------------------
 # Worker Additional Variables
 #-------------------------------
+
+variable "create_node_security_group" {
+  description = "Determines whether to create a security group for the node groups or use the existing `node_security_group_id`"
+  type        = bool
+  default     = true
+}
+#rules added by
+variable "node_security_group_additional_rules" {
+  description = "List of additional security group rules to add to the node security group created. Set `source_cluster_security_group = true` inside rules to set the `cluster_security_group` as source"
+  type        = any
+  default     = {}
+}
+
 variable "worker_additional_security_group_ids" {
   description = "A list of additional security group ids to attach to worker instances"
   type        = list(string)

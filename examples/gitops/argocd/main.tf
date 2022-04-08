@@ -85,7 +85,7 @@ locals {
 
   workload_application = {
     path               = "envs/dev"
-    repo_url           = "https://github.com/aws-samples/ssp-eks-workloads.git"
+    repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
     add_on_application = false
   }
 }

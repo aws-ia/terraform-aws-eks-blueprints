@@ -3,6 +3,12 @@ variable "eks_cluster_id" {
   type        = string
 }
 
+variable "eks_cluster_domain" {
+  description = "The domain for the EKS cluster."
+  default     = ""
+  type        = string
+}
+
 variable "eks_worker_security_group_id" {
   description = "EKS Worker Security group Id created by EKS module"
   default     = ""
@@ -146,6 +152,25 @@ variable "crossplane_jet_aws_provider" {
     provider_aws_version     = "v0.24.1"
     additional_irsa_policies = []
   }
+}
+
+#-----------External DNS ADDON-------------
+variable "enable_external_dns" {
+  type        = bool
+  default     = false
+  description = "External DNS add-on."
+}
+
+variable "external_dns_helm_config" {
+  type        = any
+  default     = {}
+  description = "External DNS Helm Chart config"
+}
+
+variable "external_dns_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
 }
 
 #-----------Amazon Managed Service for Prometheus-------------
@@ -395,6 +420,19 @@ variable "cert_manager_helm_config" {
   default     = {}
 }
 
+#-----------Argo Rollouts ADDON-------------
+variable "enable_argo_rollouts" {
+  type        = bool
+  default     = false
+  description = "Enable Argo Rollouts add-on"
+}
+
+variable "argo_rollouts_helm_config" {
+  type        = any
+  default     = null
+  description = "Argo Rollouts Helm Chart config"
+}
+
 #-----------ARGOCD ADDON-------------
 variable "enable_argocd" {
   type        = bool
@@ -489,6 +527,25 @@ variable "keda_irsa_policies" {
   default     = []
 }
 
+#-----------Kubernetes Dashboard ADDON-------------
+variable "enable_kubernetes_dashboard" {
+  type        = bool
+  default     = false
+  description = "Enable Kubernetes Dashboard add-on"
+}
+
+variable "kubernetes_dashboard_helm_config" {
+  type        = any
+  default     = null
+  description = "Kubernetes Dashboard Helm Chart config"
+}
+
+variable "kubernetes_dashboard_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for Kubernetes Dashboard IRSA"
+}
+
 #------Vertical Pod Autoscaler(VPA) ADDON--------
 variable "enable_vpa" {
   type        = bool
@@ -512,37 +569,11 @@ variable "enable_yunikorn" {
 variable "yunikorn_helm_config" {
   type        = any
   default     = null
-  description = "Yunikorn Helm Chart config"
+  description = "YuniKorn Helm Chart config"
 }
 
 variable "yunikorn_irsa_policies" {
   type        = list(string)
   default     = []
   description = "IAM policy ARNs for Yunikorn IRSA"
-}
-
-#-----------Argo Rollouts ADDON-------------
-variable "enable_argo_rollouts" {
-  type        = bool
-  default     = false
-  description = "Enable Argo Rollouts add-on"
-}
-
-variable "argo_rollouts_helm_config" {
-  type        = any
-  default     = null
-  description = "Argo Rollouts Helm Chart config"
-}
-
-#-----------Kubernetes Dashboard ADDON-------------
-variable "enable_kubernetes_dashboard" {
-  type        = bool
-  default     = false
-  description = "Enable Kubernetes Dashboard add-on"
-}
-
-variable "kubernetes_dashboard_helm_config" {
-  type        = any
-  default     = null
-  description = "Kubernetes Dashboard Helm Chart config"
 }
