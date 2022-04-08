@@ -56,11 +56,11 @@ provider "helm" {
 }
 
 locals {
-  tenant      = "aws001"  # AWS account name or unique id for tenant
-  environment = "preprod" # Environment area eg., preprod or prod
-  zone        = "dev"     # Environment with in one sub_tenant or business unit
+  tenant      = var.tenant      # AWS account name or unique id for tenant
+  environment = var.environment # Environment area eg., preprod or prod
+  zone        = var.zone        # Environment with in one sub_tenant or business unit
 
-  cluster_version = "1.21"
+  cluster_version = var.cluster_version
 
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
@@ -173,13 +173,11 @@ module "kubernetes-addons" {
   enable_agones = true
   # Optional  agones_helm_chart
   agones_helm_config = {
-    name               = "agones"
-    chart              = "agones"
-    repository         = "https://agones.dev/chart/stable"
-    version            = "1.15.0"
-    namespace          = "kube-system"
-    gameserver_minport = 7000 # required for sec group changes to worker nodes
-    gameserver_maxport = 8000 # required for sec group changes to worker nodes
+    name       = "agones"
+    chart      = "agones"
+    repository = "https://agones.dev/chart/stable"
+    version    = "1.21.0"
+    namespace  = "agones-system" # Agones recommends to install in it's own namespace such as `agones-system` as shown here. You can specify any namespace other than `kube-system`
     values = [templatefile("${path.module}/helm_values/agones-values.yaml", {
       expose_udp            = true
       gameserver_namespaces = "{${join(",", ["default", "xbox-gameservers", "xbox-gameservers"])}}"
@@ -189,4 +187,9 @@ module "kubernetes-addons" {
   }
 
   depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
+}
+
+output "configure_kubectl" {
+  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
+  value       = module.aws-eks-accelerator-for-terraform.configure_kubectl
 }

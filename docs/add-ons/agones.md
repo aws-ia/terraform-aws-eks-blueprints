@@ -20,12 +20,12 @@ You can optionally customize the Helm chart that deploys `Agones` via the follow
   enable_agones = true
   # Optional  agones_helm_config
   agones_helm_config = {
-    name                       = "aws-load-balancer-controller"
-    chart                      = "aws-load-balancer-controller"
-    repository                 = "https://aws.github.io/eks-charts"
-    version                    = "1.3.1"
-    namespace                  = "kube-system"
-    values = [templatefile("${path.module}/values.yaml", {
+    name                       = "agones"
+    chart                      = "agones"
+    repository                 = "https://agones.dev/chart/stable"
+    version                    = "1.21.0"
+    namespace                  = "agones-system" # Agones recommends to install in it's own namespace such as `agones-system` as shown here. You can specify any namespace other than `kube-system`
+    values = [templatefile("${path.module}/helm_values/agones-values.yaml", {
       expose_udp            = true
       gameserver_namespaces = "{${join(",", ["default", "xbox-gameservers", "xbox-gameservers"])}}"
       gameserver_minport    = 7000
