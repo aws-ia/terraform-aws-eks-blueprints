@@ -45,6 +45,7 @@ locals {
     bottlerocket    = "bottlerocket-aws-k8s-${var.context.cluster_version}-x86_64-*"
     windows         = "Windows_Server-2019-English-Core-EKS_Optimized-${var.context.cluster_version}-*"
   }
+
   predefined_ami_types  = keys(local.predefined_ami_names)
   default_custom_ami_id = contains(local.predefined_ami_types, local.self_managed_node_group["launch_template_os"]) ? data.aws_ami.predefined[local.self_managed_node_group["launch_template_os"]].id : ""
   custom_ami_id         = local.self_managed_node_group["custom_ami_id"] == "" ? local.default_custom_ami_id : local.self_managed_node_group["custom_ami_id"]
