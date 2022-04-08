@@ -147,7 +147,7 @@ module "aws-eks-accelerator-for-terraform" {
   # EKS CONTROL PLANE VARIABLES
   cluster_version = local.cluster_version
 
-  # Allow Worker nodes egress to talk to Cluster API for Karpenter service
+  # Allow Ingress rule for Worker node groups from Cluster Sec group for Karpenter
   node_security_group_additional_rules = {
     ingress_nodes_karpenter_port = {
       description                   = "Cluster API to Nodegroup for Karpenter"
