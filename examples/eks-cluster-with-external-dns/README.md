@@ -119,8 +119,8 @@ terraform destroy --auto-approve
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | 3.2.0 |
-| <a name="module_eks_cluster"></a> [eks\_cluster](#module\_eks\_cluster) | ../.. | n/a |
 | <a name="module_eks-blueprints-kubernetes-addons"></a> [eks-blueprints-kubernetes-addons](#module\_eks-blueprints-kubernetes-addons) | ../../modules/kubernetes-addons | n/a |
+| <a name="module_eks_cluster"></a> [eks\_cluster](#module\_eks\_cluster) | ../.. | n/a |
 
 ## Resources
 
