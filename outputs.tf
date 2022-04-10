@@ -26,6 +26,12 @@ output "configure_kubectl" {
   value       = try("aws eks --region ${local.context.aws_region_name} update-kubeconfig --name ${module.aws_eks.cluster_id}", "EKS Cluster not enabled")
 }
 
+output "eks_cluster_status" {
+  description = "Amazon EKS Cluster Name"
+  value       = try(module.aws_eks.cluster_status, "EKS Cluster not enabled")
+}
+
+
 #-------------------------------
 # Cluster Security Group
 #-------------------------------
@@ -97,19 +103,39 @@ output "managed_node_groups" {
   value       = var.create_eks && length(var.managed_node_groups) > 0 ? module.aws_eks_managed_node_groups.* : []
 }
 
+output "managed_node_groups_id" {
+  description = "EKS Managed node groups id"
+  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in keys(var.managed_node_groups) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_id) }) : []
+}
+
+output "managed_node_groups_status" {
+  description = "EKS Managed node groups status"
+  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in keys(var.managed_node_groups) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_status) }) : []
+}
+
+output "managed_node_group_arn" {
+  description = "Managed node group arn"
+  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in keys(var.managed_node_groups) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_arn) }) : []
+}
+
+output "managed_node_group_iam_role_names" {
+  description = "IAM role names of managed node groups"
+  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in keys(var.managed_node_groups) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_role_name) }) : []
+}
+
 output "managed_node_group_iam_role_arns" {
   description = "IAM role arn's of managed node groups"
-  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_role_name) }) : []
+  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in keys(var.managed_node_groups) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_role_arn) }) : []
 }
 
 output "managed_node_group_iam_instance_profile_id" {
   description = "IAM instance profile id of managed node groups"
-  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_instance_profile_id) }) : []
+  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in keys(var.managed_node_groups) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_instance_profile_id) }) : []
 }
 
 output "managed_node_group_iam_instance_profile_arns" {
   description = "IAM instance profile arn's of managed node groups"
-  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.managed_node_groups)) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_instance_profile_arn) }) : []
+  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in keys(var.managed_node_groups) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_instance_profile_arn) }) : []
 }
 
 output "managed_node_group_aws_auth_config_map" {

@@ -1,3 +1,9 @@
+variable "region" {
+  type        = string
+  description = "AWS Region"
+  default     = "eu-west-1"
+}
+
 variable "cluster_version" {
   type        = string
   description = "Kubernetes Version"
@@ -7,7 +13,7 @@ variable "cluster_version" {
 variable "tenant" {
   type        = string
   description = "Account Name or unique account unique id e.g., apps or management or aws007"
-  default     = "aws001"
+  default     = "aws"
 }
 
 variable "environment" {
@@ -20,4 +26,10 @@ variable "zone" {
   type        = string
   description = "zone, e.g. dev or qa or load or ops etc..."
   default     = "dev"
+}
+
+variable "cluster_name" {
+  type        = string
+  description = "Cluster name"
+  default     = "aws-preprod-dev-eks"
 }

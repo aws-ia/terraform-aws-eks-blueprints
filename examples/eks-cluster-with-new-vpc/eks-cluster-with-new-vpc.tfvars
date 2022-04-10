@@ -1,0 +1,6 @@
+tenant          = "aws"
+environment     = "preprod"
+zone            = "dev"
+region          = "eu-west-1"
+cluster_version = "1.21"
+cluster_name    = "aws-preprod-dev-eks"
