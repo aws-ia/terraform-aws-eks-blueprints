@@ -21,7 +21,7 @@ module "helm_addon" {
 
 
 resource "aws_s3_bucket" "s3" {
-   bucket_prefix = local.s3bucketname
+   bucket_prefix = local.s3bucketprefix
   
 }
 
