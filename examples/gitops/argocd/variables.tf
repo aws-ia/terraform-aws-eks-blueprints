@@ -18,12 +18,12 @@ variable "environment" {
 
 variable "zone" {
   type        = string
-  description = "zone, e.g. dev or qa or load or ops etc..."
+  description = "Zone, e.g. dev or qa or load or ops etc..."
   default     = "dev"
 }
 
 variable "region" {
   type        = string
-  description = "region in which to deploy the cluster"
+  description = "Region in which to deploy the cluster"
   default     = "us-west-2"
 }
