@@ -3,7 +3,7 @@ name: e2e-all-examples-parallel
 on:
   pull_request:
     branches:
-      - main  
+      - main
   workflow_dispatch:
 
 jobs:
