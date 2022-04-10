@@ -1,6 +1,7 @@
 variable "region" {
   type        = string
   description = "AWS Region"
+  default = ""
 }
 
 variable "cluster_version" {

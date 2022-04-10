@@ -31,8 +31,10 @@ data "aws_eks_cluster_auth" "cluster" {
   name = module.eks_blueprints.eks_cluster_id
 }
 
+data "aws_region" "current" {}
+
 provider "aws" {
-  region = var.region
+  region = var.region == "" ? data.aws_region.current.id : var.region
   alias  = "default"
 }
 

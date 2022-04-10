@@ -46,6 +46,6 @@ output "configure_kubectl" {
 
 # Region used for Terratest
 output "region" {
-  value       = data.aws_region.current.id
+  value       = var.region == "" ? data.aws_region.current.id : var.region
   description = "AWS region"
 }
