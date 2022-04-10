@@ -1,7 +1,7 @@
 locals {
   name                 = "velero"
   service_account_name = local.name
-  s3bucketname = "eks-terraform-velero-add-on-bucket"
+  s3bucketname = aws_s3_bucket.s3.id
 
   default_helm_config = {
     name        = local.name
