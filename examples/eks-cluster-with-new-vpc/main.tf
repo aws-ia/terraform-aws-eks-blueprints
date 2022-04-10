@@ -21,8 +21,6 @@ terraform {
   }
 }
 
-data "aws_region" "current" {}
-
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
@@ -34,7 +32,7 @@ data "aws_eks_cluster_auth" "cluster" {
 }
 
 provider "aws" {
-  region = data.aws_region.current.id
+  region = var.region
   alias  = "default"
 }
 
@@ -134,9 +132,9 @@ module "kubernetes_addons" {
   enable_amazon_eks_kube_proxy = true
 
   #K8s Add-ons
-#  enable_aws_load_balancer_controller = true
-#  enable_metrics_server               = true
-#  enable_cluster_autoscaler           = true
+  #  enable_aws_load_balancer_controller = true
+  #  enable_metrics_server               = true
+  #  enable_cluster_autoscaler           = true
 
   depends_on = [module.eks_blueprints.managed_node_groups]
 }
