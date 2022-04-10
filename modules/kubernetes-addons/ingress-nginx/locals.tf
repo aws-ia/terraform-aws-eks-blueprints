@@ -1,12 +1,13 @@
 locals {
   name = "ingress-nginx"
+  namespace = "nginx"
 
   default_helm_config = {
     name             = local.name
     chart            = local.name
     repository       = "https://kubernetes.github.io/ingress-nginx"
     version          = "4.0.17"
-    namespace        = local.name
+    namespace        = local.namespace
     create_namespace = false
     values           = local.default_helm_values
     set              = []
