@@ -1,3 +1,4 @@
+//go:build e2e
 // +build e2e
 
 package src
@@ -10,8 +11,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	core "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"log"
-	"os"
 	"strings"
 	"testing"
 )
@@ -20,22 +19,37 @@ var (
 	//Test Driven tests Inputs https://github.com/golang/go/wiki/TableDrivenTests
 	testCases = []struct {
 		name   string
+		region string
+		eks_cluster string
 		values map[string]string
 	}{
 		{
 			"eks-cluster-with-new-vpc",
-			map[string]string{"rootFolder": "../..", "exampleFolderPath": "examples/eks-cluster-with-new-vpc"},
+			"us-west-2",
+			"aws-terra-test-eks",
+			map[string]string{
+				"rootFolder": "../..",
+				"exampleFolderPath": "examples/eks-cluster-with-new-vpc"},
 		},
 	}
-	//S3BackendConfig = map[string]string{"bucketName": "", "s3Prefix": "terratest/examples/", "awsRegion" :"eu-west-1"}
-	destroyModules = []string{"module.kubernetes_addons", "module.eks_blueprints", "module.aws_vpc"}
+	/* Commented for future use
+	S3BackendConfig = map[string]string{
+		"bucketName": "terraform-ssp-github-actions-state",
+		"s3Prefix": "terratest/examples/",
+		"awsRegion" : "us-west-2"}*/
+
+	destroyModules = []string{
+		"module.kubernetes_addons",
+		"module.eks_blueprints",
+		"module.aws_vpc",
+		"full_destroy"}
 
 	/*Update the expected Output variables and values*/
 	outputParameters = [...]Outputs{
 		{"vpc_cidr", "10.0.0.0/16", "equal"},
 		{"vpc_private_subnet_cidr", "[10.0.10.0/24 10.0.11.0/24 10.0.12.0/24]", "equal"},
 		{"vpc_public_subnet_cidr", "[10.0.0.0/24 10.0.1.0/24 10.0.2.0/24]", "equal"},
-		{"eks_cluster_id", "aws-preprod-dev-eks", "equal"},
+		{"eks_cluster_id", "aws-terra-test-eks", "equal"},
 		{"eks_managed_nodegroup_status", "[ACTIVE]", "equal"},
 	}
 
@@ -58,7 +72,6 @@ var (
 
 	/*Update the expected K8s Services names and the namespace*/
 	expectedServices = [...]Services{
-		{"aws-load-balancer-controller", "kube-system", "ClusterIP"},
 		{"cluster-autoscaler-aws-cluster-autoscaler", "kube-system", "ClusterIP"},
 		{"kube-dns", "kube-system", "ClusterIP"},
 		{"kubernetes", "default", "ClusterIP"},
@@ -98,41 +111,45 @@ func TestEksBlueprintsE2E(t *testing.T) {
 			/*This allows running multiple tests in parallel against the same terraform module*/
 			tempExampleFolder := test_structure.CopyTerraformFolderToTemp(t, testCase.values["rootFolder"], testCase.values["exampleFolderPath"])
 			//Uncomment for debugging the test code
-			os.Setenv("SKIP_destroy", "true")
+			//os.Setenv("SKIP_destroy", "true")
 
 			inputTfOptions := &terraform.Options{
 				/*The path to where our Terraform code is located*/
 				TerraformDir: tempExampleFolder,
 				VarFiles:     []string{testCase.name + ".tfvars"}, // The var file paths to pass to Terraform commands using -var-file option.
 				//BackendConfig: map[string]interface{}{
-				//	"bucket": S3BackendConfig.bucketName,
-				//	"key":    S3BackendConfig.s3Prefix+testCase.name+"/",
-				//	"region": S3BackendConfig.awsRegion,
+				//	"bucket": S3BackendConfig["bucketName"],
+				//	"key":    S3BackendConfig["s3Prefix"]+testCase.name,
+				//	"region": S3BackendConfig["awsRegion"],
 				//},
 				NoColor: true,
 			}
 
 			terratestOptions := GetTerraformOptions(t, inputTfOptions)
-			/* At the end of the test, run `terraform destroy` to clean up any resources that were created */
-			//TODO Ensure Destroy runs without Target to ensure cleanup done for all no module resources
-			defer test_structure.RunTestStage(t, "destroy", func() {
-				for _, s := range destroyModules {
-					destroyTfOptions := &terraform.Options{
-						/*The path to where our Terraform code is located*/
-						TerraformDir: tempExampleFolder,
-						VarFiles:     []string{testCase.name + ".tfvars"},
-						//BackendConfig: map[string]interface{}{
-						//	"bucket": S3BackendConfig.bucketName,
-						//	"key":    S3BackendConfig.s3Prefix+testCase.name+"/",
-						//	"region": S3BackendConfig.awsRegion,
-						//},
-						Targets: []string{s},
-						NoColor: true,
-					}
-					terraformOptions := GetTerraformOptions(t, destroyTfOptions)
-					terraform.Destroy(t, terraformOptions)
-				}
 
+			/* At the end of the test, run `terraform destroy` to clean up any resources that were created */
+			defer test_structure.RunTestStage(t, "destroy", func() {
+				for _, target := range destroyModules {
+					if target != "full_destroy" {
+						destroyTFOptions := &terraform.Options{
+							/*The path to where our Terraform code is located*/
+							TerraformDir: tempExampleFolder,
+							VarFiles:     []string{testCase.name + ".tfvars"}, // The var file paths to pass to Terraform commands using -var-file option.
+							//BackendConfig: map[string]interface{}{
+							//	"bucket": S3BackendConfig["bucketName"],
+							//	"key":    S3BackendConfig["s3Prefix"]+testCase.name,
+							//	"region": S3BackendConfig["awsRegion"],
+							//},
+							Targets:      []string{target},
+							NoColor:      true,
+						}
+						terraformOptions := GetTerraformOptions(t, destroyTFOptions)
+						terraform.Destroy(t, terraformOptions)
+					} else {
+						terraformOptions := GetTerraformOptions(t, inputTfOptions)
+						terraform.Destroy(t, terraformOptions)
+					}
+				}
 			})
 
 			// Run Init and Apply
@@ -189,7 +206,6 @@ func TestEksBlueprintsE2E(t *testing.T) {
 
 func GetTerraformOptions(t *testing.T, inputTFOptions *terraform.Options) *terraform.Options {
 	return terraform.WithDefaultRetryableErrors(t, inputTFOptions)
-
 }
 
 func EksAddonValidation(t *testing.T, eksClusterName string, awsRegion string) {
@@ -198,14 +214,14 @@ func EksAddonValidation(t *testing.T, eksClusterName string, awsRegion string) {
 	/****************************************************************************/
 	result, err := EksDescribeCluster(awsRegion, eksClusterName)
 	if err != nil {
-		log.Fatalf("Error describing EKS Cluster: %v", err)
+		t.Errorf("Error describing EKS Cluster: %v", err)
 	}
 	/****************************************************************************/
 	/*K8s ClientSet
 	/****************************************************************************/
 	k8sclient, err := GetKubernetesClient(result.Cluster)
 	if err != nil {
-		log.Fatalf("Error creating Kubernees clientset: %v", err)
+		t.Errorf("Error creating Kubernees clientset: %v", err)
 	}
 
 	/****************************************************************************/
@@ -220,7 +236,7 @@ func EksAddonValidation(t *testing.T, eksClusterName string, awsRegion string) {
 	/****************************************************************************/
 	nodes, err := k8sclient.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
-		log.Fatalf("Error getting EKS nodes: %v", err)
+		t.Errorf("Error getting EKS nodes: %v", err)
 	}
 	t.Run("MATCH_TOTAL_EKS_WORKER_NODES", func(t *testing.T) {
 		assert.Equal(t, expectedEKSWorkerNodes, len(nodes.Items))

@@ -1,6 +1,5 @@
 tenant          = "aws"
-environment     = "terratest"
-zone            = "dev"
+environment     = "terra"
+zone            = "test"
 region          = "us-west-2"
 cluster_version = "1.21"
-cluster_name    = "aws-terratest-dev-eks"

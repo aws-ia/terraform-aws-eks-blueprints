@@ -31,10 +31,8 @@ data "aws_eks_cluster_auth" "cluster" {
   name = module.eks_blueprints.eks_cluster_id
 }
 
-data "aws_region" "current" {}
-
 provider "aws" {
-  region = var.region == "" ? data.aws_region.current.id : var.region
+  region = var.region
   alias  = "default"
 }
 
@@ -117,7 +115,7 @@ module "eks_blueprints" {
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["m4.large"]
+      instance_types  = ["m5.large"]
       min_size        = "2"
       subnet_ids      = module.aws_vpc.private_subnets
     }
@@ -134,9 +132,9 @@ module "kubernetes_addons" {
   enable_amazon_eks_kube_proxy = true
 
   #K8s Add-ons
-  #  enable_aws_load_balancer_controller = true
-  #  enable_metrics_server               = true
-  #  enable_cluster_autoscaler           = true
+  enable_aws_load_balancer_controller = true
+  enable_metrics_server               = true
+  enable_cluster_autoscaler           = true
 
   depends_on = [module.eks_blueprints.managed_node_groups]
 }

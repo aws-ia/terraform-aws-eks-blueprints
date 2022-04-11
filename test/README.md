@@ -25,7 +25,7 @@ go mod tidy -go=1.17
 ```shell
 cd src
 
-go get -v -t -d && go mod tidy
+go get -v -t -d && go mod tidy -compat=1.17
 
 go test -v -timeout 60m -tags=e2e
 ```

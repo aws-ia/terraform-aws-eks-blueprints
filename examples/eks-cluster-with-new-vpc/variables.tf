@@ -1,7 +1,6 @@
 variable "region" {
   type        = string
   description = "AWS Region"
-  default = ""
 }
 
 variable "cluster_version" {
@@ -26,10 +25,4 @@ variable "zone" {
   type        = string
   description = "zone, e.g. dev or qa or load or ops etc..."
   default     = "dev"
-}
-
-variable "cluster_name" {
-  type        = string
-  description = "Cluster name"
-  default     = "aws-preprod-dev-eks"
 }
