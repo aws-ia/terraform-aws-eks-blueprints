@@ -23,11 +23,7 @@ variable "addon_context" {
     tags                           = map(string)
     irsa_iam_role_path             = string
     irsa_iam_permissions_boundary  = string
+    default_repository             = string
   })
-  description = "Input configuration for the addon"
-}
-
-variable "default_ecr_uri" {
-  type        = string
-  description = "Amazon Container Image Registry URI. This is the default image repository and changes based on the region which the cluster resides."
+  description = "Input configuration for the addon."
 }
