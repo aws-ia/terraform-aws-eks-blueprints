@@ -140,6 +140,5 @@ module "eks-blueprints-kubernetes-addons" {
 
   ingress_nginx_helm_config = {
     version = "4.0.17"
-    values  = [templatefile("${path.module}/values.yaml", {})]
   }
 }
