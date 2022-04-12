@@ -1,6 +1,5 @@
 locals {
-  name                 = "vpa"
-  service_account_name = "vpa"
+  name = "vpa"
 
   default_helm_config = {
     name        = local.name
@@ -13,24 +12,14 @@ locals {
     timeout     = "1200"
   }
 
-  default_helm_values = [templatefile("${path.module}/values.yaml", {
-    sa-name = local.service_account_name
-  })]
+  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
   helm_config = merge(
     local.default_helm_config,
     var.helm_config
   )
 
-  set_values = [
-    {
-      name  = "serviceAccount.name"
-      value = local.service_account_name
-    }
-  ]
-
   argocd_gitops_config = {
-    enable             = true
-    serviceAccountName = local.service_account_name
+    enable = true
   }
 }

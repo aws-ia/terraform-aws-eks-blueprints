@@ -1,6 +1,6 @@
 # Kubernetes Addons Module
 
-The [`kubernetes-addons`](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/kubernetes-addons) module within this framework allows you to configure the add-ons you would like deployed into you EKS cluster with simple **true/false** flags.
+The [`kubernetes-addons`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons) module within this framework allows you to configure the add-ons you would like deployed into you EKS cluster with simple **true/false** flags.
 
 The framework currently provides support for the following add-ons:
 
@@ -16,6 +16,7 @@ The framework currently provides support for the following add-ons:
 | [AWS Node Termination Handler](../add-ons/aws-node-termination-handler.md) | Deploys the AWS Node Termination Handler into an EKS cluster. |
 | [cert-manager](../add-ons/cert-manager.md) | Deploys cert-manager into an EKS cluster. |
 | [Cluster Autoscaler](../add-ons/cluster-autoscaler.md) | Deploys the standard cluster autoscaler into an EKS cluster. |
+| [ExternalDNS](../add-ons/external-dns.md) | Deploys External DNS into an EKS cluster. |
 | [Fargate Fluent Bit](../add-ons/fargate-fluent-bit.md) | Adds Fluent Bit support for EKS Fargate |
 | [Karpenter](../add-ons/karpenter.md) | Deploys Karpenter into an EKS cluster. |
 | [Keda](../add-ons/keda.md) | Deploys Keda into an EKS cluster. |
@@ -47,8 +48,8 @@ The default method for managing add-on configuration is via Terraform. By defaul
 In order to deploy an add-on with default configuration, simply enable the add-on via Terraform properties.
 
 ```hcl
-module "eks-ssp-kubernetes-addons" {
-    source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
+module "eks-blueprints-kubernetes-addons" {
+    source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
 
     cluster_id                    = <EKS-CLUSTER-ID>
 

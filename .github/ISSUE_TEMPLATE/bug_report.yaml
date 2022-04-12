@@ -18,14 +18,14 @@ body:
   - type: checkboxes
     id: terms
     attributes:
-      label: Welcome to Amazon SSP EKS Accelerator!
+      label: Welcome to Amazon EKS Blueprints!
       options:
-        - label: Yes, I've searched similar issues on [GitHub](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/issues) and didn't find any.
+        - label: Yes, I've searched similar issues on [GitHub](https://github.com/aws-ia/terraform-aws-eks-blueprints/issues) and didn't find any.
           required: true
 
   - type: input
     attributes:
-      label: Amazon EKS Accelerator Release version
+      label: Amazon EKS Blueprints Release version
       description: |
         `latest` is not considered as a valid version.
         Enter release number!

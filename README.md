@@ -1,16 +1,16 @@
-# Amazon EKS SSP for Terraform
+# Amazon EKS Blueprints for Terraform
 
-![GitHub](https://img.shields.io/github/license/aws-samples/aws-eks-accelerator-for-terraform)
-[![e2e-test](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/e2e-test.yml)
-[![terrascan](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/terrascan.yml/badge.svg)](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/terrascan.yml)
-[![tfsec](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/tfsec-analysis.yml/badge.svg)](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/tfsec-analysis.yml)
-[![kics-security-scan](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/kics-security-scan.yml/badge.svg)](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/actions/workflows/kics-security-scan.yml)
+![GitHub](https://img.shields.io/github/license/aws-ia/terraform-aws-eks-blueprints)
+[![e2e-test](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-test.yml)
+[![terrascan](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/terrascan.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/terrascan.yml)
+[![tfsec](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/tfsec-analysis.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/tfsec-analysis.yml)
+[![kics-security-scan](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/kics-security-scan.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/kics-security-scan.yml)
 
-> **Note**: EKS SSP for Terraform is in active development and should be considered a **pre-production** framework. Backwards incompatible Terraform changes are possible in future releases and support is best-effort by the EKS SSP community.
+> **Note**: EKS Blueprints for Terraform is in active development and should be considered a **pre-production** framework. Backwards incompatible Terraform changes are possible in future releases and support is best-effort by the EKS Blueprints community.
 
-Welcome to the Amazon EKS Shared Services Platform (SSP) for Terraform.
+Welcome to the Amazon EKS Blueprints for Terraform.
 
-This repository contains the source code for a Terraform framework that aims to accelerate the delivery of a batteries-included, multi-tenant container platform on top of Amazon EKS. This framework can be used by AWS customers, partners, and internal AWS teams to implement the foundational structure of a SSP according to AWS best practices and recommendations.
+This repository contains the source code for a Terraform framework that aims to accelerate the delivery of a batteries-included, multi-tenant container platform on top of Amazon EKS. This framework can be used by AWS customers, partners, and internal AWS teams to implement the foundational structure of an EKS Blueprint according to AWS best practices and recommendations.
 
 This project leverages the community [terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks) modules for deploying EKS Clusters.
 
@@ -27,8 +27,8 @@ To view examples for how you can leverage this framework, see the [examples](./e
 The below demonstrates how you can leverage this framework to deploy an EKS cluster, a managed node group, and various Kubernetes add-ons.
 
 ```hcl
-module "eks-ssp" {
-    source = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
+module "eks-blueprints" {
+    source = "github.com/aws-ia/terraform-aws-eks-blueprints"
 
     # EKS CLUSTER
     cluster_version        = "1.21"
@@ -48,10 +48,10 @@ module "eks-ssp" {
 #--------------------------------------------
 # Deploy Kubernetes Add-ons with sub module
 #--------------------------------------------
-module "eks-ssp-kubernetes-addons" {
-    source = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
+module "eks-blueprints-kubernetes-addons" {
+    source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
 
-    eks_cluster_id                        = module.eks-ssp.eks_cluster_id
+    eks_cluster_id                        = module.eks-blueprints.eks_cluster_id
 
     # EKS Addons
     enable_amazon_eks_vpc_cni             = true
@@ -67,7 +67,7 @@ module "eks-ssp-kubernetes-addons" {
     enable_argocd                         = true
     enable_ingress_nginx                  = true
 
-    depends_on = [module.eks-ssp.managed_node_groups]
+    depends_on = [module.eks-blueprints.managed_node_groups]
 }
 ```
 
@@ -94,7 +94,7 @@ This included Amazon Managed Prometheus and EMR with EKS etc.
 For complete documentation on deploying external services, please visit our submodules documentation.
 
 ## Motivation
-The Amazon EKS SSP for Terraform allows customers to easily configure and deploy a multi-tenant, enterprise-ready container platform on top of EKS.
+The Amazon EKS Blueprints for Terraform allows customers to easily configure and deploy a multi-tenant, enterprise-ready container platform on top of EKS.
 With a large number of design choices, deploying production-grade container platform can take a significant amount of time, involve integrating a wide range or AWS services and open source tools, and require deep understand of AWS and Kubernetes concepts.
 This solution handles integrating EKS with popular open source and partner tools, in addition to AWS services, in order to allow customers to deploy a cohesive container platform that can be offered as a service to application teams.
 It provides out-of-the-box support for common operational tasks such as auto-scaling workloads, collecting logs and metrics from both clusters and running applications, managing ingress and egress, configuring network policy, managing secrets, deploying workloads via GitOps, and more.
@@ -106,7 +106,7 @@ For architectural details, step-by-step instructions, and customization options,
 
 To post feedback, submit feature ideas, or report bugs, use the Issues section of this GitHub repo.
 
-To submit code for this Quick Start, see the AWS Quick Start [Contributor's guide](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/blob/main/CONTRIBUTING.md).
+To submit code for this Quick Start, see the AWS Quick Start [Contributor's guide](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/CONTRIBUTING.md).
 
 ---
 <!--- BEGIN_TF_DOCS --->
@@ -187,6 +187,7 @@ To submit code for this Quick Start, see the AWS Quick Start [Contributor's guid
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Kubernetes `<major>.<minor>` version to use for the EKS cluster (i.e.: `1.21`) | `string` | `"1.21"` | no |
 | <a name="input_create_cloudwatch_log_group"></a> [create\_cloudwatch\_log\_group](#input\_create\_cloudwatch\_log\_group) | Determines whether a log group is created by this module for the cluster logs. If not, AWS will automatically create one if logging is enabled | `bool` | `false` | no |
 | <a name="input_create_eks"></a> [create\_eks](#input\_create\_eks) | Create EKS cluster | `bool` | `true` | no |
+| <a name="input_create_node_security_group"></a> [create\_node\_security\_group](#input\_create\_node\_security\_group) | Determines whether to create a security group for the node groups or use the existing `node_security_group_id` | `bool` | `true` | no |
 | <a name="input_custom_oidc_thumbprints"></a> [custom\_oidc\_thumbprints](#input\_custom\_oidc\_thumbprints) | Additional list of server certificate thumbprints for the OpenID Connect (OIDC) identity provider's server certificate(s) | `list(string)` | `[]` | no |
 | <a name="input_emr_on_eks_teams"></a> [emr\_on\_eks\_teams](#input\_emr\_on\_eks\_teams) | EMR on EKS Teams config | `any` | `{}` | no |
 | <a name="input_enable_amazon_prometheus"></a> [enable\_amazon\_prometheus](#input\_enable\_amazon\_prometheus) | Enable AWS Managed Prometheus service | `bool` | `false` | no |
@@ -202,6 +203,7 @@ To submit code for this Quick Start, see the AWS Quick Start [Contributor's guid
 | <a name="input_map_accounts"></a> [map\_accounts](#input\_map\_accounts) | Additional AWS account numbers to add to the aws-auth ConfigMap | `list(string)` | `[]` | no |
 | <a name="input_map_roles"></a> [map\_roles](#input\_map\_roles) | Additional IAM roles to add to the aws-auth ConfigMap | <pre>list(object({<br>    rolearn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_map_users"></a> [map\_users](#input\_map\_users) | Additional IAM users to add to the aws-auth ConfigMap | <pre>list(object({<br>    userarn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
+| <a name="input_node_security_group_additional_rules"></a> [node\_security\_group\_additional\_rules](#input\_node\_security\_group\_additional\_rules) | List of additional security group rules to add to the node security group created. Set `source_cluster_security_group = true` inside rules to set the `cluster_security_group` as source | `any` | `{}` | no |
 | <a name="input_openid_connect_audiences"></a> [openid\_connect\_audiences](#input\_openid\_connect\_audiences) | List of OpenID Connect audience client IDs to add to the IRSA provider | `list(string)` | `[]` | no |
 | <a name="input_org"></a> [org](#input\_org) | tenant, which could be your organization name, e.g. aws' | `string` | `""` | no |
 | <a name="input_platform_teams"></a> [platform\_teams](#input\_platform\_teams) | Map of maps of platform teams to create | `any` | `{}` | no |

@@ -8,12 +8,11 @@ locals {
     repository  = "https://charts.jetstack.io"
     version     = "v1.7.1"
     namespace   = local.name
-    description = "Argo Rollouts AddOn Helm Chart"
+    description = "Cert Manager Add-on"
     values      = local.default_helm_values
-    timeout     = "600"
   }
 
-  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
+  default_helm_values = []
 
   helm_config = merge(
     local.default_helm_config,

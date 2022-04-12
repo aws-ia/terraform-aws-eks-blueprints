@@ -112,15 +112,24 @@ module "cluster_autoscaler" {
 }
 
 module "crossplane" {
-  count             = var.enable_crossplane ? 1 : 0
-  source            = "./crossplane"
-  helm_config       = var.crossplane_helm_config
+  count            = var.enable_crossplane ? 1 : 0
+  source           = "./crossplane"
+  helm_config      = var.crossplane_helm_config
+  aws_provider     = var.crossplane_aws_provider
+  jet_aws_provider = var.crossplane_jet_aws_provider
+  account_id       = data.aws_caller_identity.current.account_id
+  aws_partition    = data.aws_partition.current.id
+  addon_context    = local.addon_context
+}
+
+module "external_dns" {
+  count             = var.enable_external_dns ? 1 : 0
+  source            = "./external-dns"
+  helm_config       = var.external_dns_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  aws_provider      = var.crossplane_aws_provider
-  jet_aws_provider  = var.crossplane_jet_aws_provider
-  account_id        = data.aws_caller_identity.current.account_id
-  aws_partition     = data.aws_partition.current.id
+  irsa_policies     = var.external_dns_irsa_policies
   addon_context     = local.addon_context
+  domain_name       = var.eks_cluster_domain
 }
 
 module "fargate_fluentbit" {
@@ -157,6 +166,14 @@ module "keda" {
   addon_context     = local.addon_context
 }
 
+module "kubernetes_dashboard" {
+  count             = var.enable_kubernetes_dashboard ? 1 : 0
+  source            = "./kubernetes-dashboard"
+  helm_config       = var.kubernetes_dashboard_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "metrics_server" {
   count             = var.enable_metrics_server ? 1 : 0
   source            = "./metrics-server"
@@ -187,7 +204,7 @@ module "spark_k8s_operator" {
 module "tetrate_istio" {
   count                = var.enable_tetrate_istio ? 1 : 0
   source               = "tetratelabs/tetrate-istio-addon/eksblueprints"
-  version              = "0.0.6"
+  version              = "0.0.7"
   distribution         = var.tetrate_istio_distribution
   distribution_version = var.tetrate_istio_version
   install_base         = var.tetrate_istio_install_base
@@ -223,14 +240,6 @@ module "yunikorn" {
   source            = "./yunikorn"
   helm_config       = var.yunikorn_helm_config
   irsa_policies     = var.yunikorn_irsa_policies
-  manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = local.addon_context
-}
-
-module "kubernetes_dashboard" {
-  count             = var.enable_kubernetes_dashboard ? 1 : 0
-  source            = "./kubernetes-dashboard"
-  helm_config       = var.kubernetes_dashboard_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }

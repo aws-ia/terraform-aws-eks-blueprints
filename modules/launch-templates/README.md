@@ -6,8 +6,8 @@ This example shows how to consume the `launch-templates` module. See this full [
 
 ```hcl
 module "launch_templates" {
-  source                         = "aws-samples/aws-eks-accelerator-for-terraform//modules/launch-templates"
-  tags                           = { Name = "terraform-ssp-eks"}
+  source                         = "aws-ia/terraform-aws-eks-blueprints//modules/launch-templates"
+  tags                           = { Name = "eks-blueprints"}
   eks_cluster_id                 = "<Enter EKS CLuster ID>"
 
   launch_template_config = {

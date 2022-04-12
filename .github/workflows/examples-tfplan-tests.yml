@@ -1,12 +1,10 @@
 name: e2e-all-examples-parallel
 
 on:
+  pull_request:
+    branches:
+      - main  
   workflow_dispatch:
-    inputs:
-      TFDestroy:
-        description: "Destroy TF Automatically (false/true) - Default: true"
-        required: true
-        default: "true"
 
 jobs:
   deploy:
@@ -24,9 +22,10 @@ jobs:
           [
             examples/analytics/emr-on-eks,
             examples/analytics/spark-k8s-operator,
-            examples/argocd,
+            examples/gitops/argocd,
             examples/aws-efs-csi-driver,
             examples/crossplane,
+            examples/eks-cluster-with-external-dns,
             examples/eks-cluster-with-new-vpc,
             examples/fully-private-eks-cluster,
             examples/game-tech/agones-game-controller,

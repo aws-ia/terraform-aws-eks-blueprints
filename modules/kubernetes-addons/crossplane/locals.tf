@@ -24,8 +24,4 @@ locals {
   jet_aws_provider_sa    = "jet-aws-provider"
   aws_current_account_id = var.account_id
   aws_current_partition  = var.aws_partition
-
-  argocd_gitops_config = {
-    enable = true
-  }
 }
