@@ -13,6 +13,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"strings"
 	"testing"
+	internal "github.com/aws-ia/terraform-aws-eks-blueprints/aws"
 )
 
 var (
@@ -125,7 +126,7 @@ func TestEksBlueprintsE2E(t *testing.T) {
 				NoColor: true,
 			}
 
-			terratestOptions := GetTerraformOptions(t, inputTfOptions)
+			terratestOptions := getTerraformOptions(t, inputTfOptions)
 
 			/* At the end of the test, run `terraform destroy` to clean up any resources that were created */
 			defer test_structure.RunTestStage(t, "destroy", func() {
@@ -143,10 +144,10 @@ func TestEksBlueprintsE2E(t *testing.T) {
 							Targets:      []string{target},
 							NoColor:      true,
 						}
-						terraformOptions := GetTerraformOptions(t, destroyTFOptions)
+						terraformOptions := getTerraformOptions(t, destroyTFOptions)
 						terraform.Destroy(t, terraformOptions)
 					} else {
-						terraformOptions := GetTerraformOptions(t, inputTfOptions)
+						terraformOptions := getTerraformOptions(t, inputTfOptions)
 						terraform.Destroy(t, terraformOptions)
 					}
 				}
@@ -196,7 +197,7 @@ func TestEksBlueprintsE2E(t *testing.T) {
 					terraformOptions := test_structure.LoadTerraformOptions(t, tempExampleFolder)
 					eksClusterName := terraform.Output(t, terraformOptions, "eks_cluster_id")
 					awsRegion := terraform.Output(t, terraformOptions, "region")
-					EksAddonValidation(t, eksClusterName, awsRegion)
+					eksAddonValidation(t, eksClusterName, awsRegion)
 				})
 			})
 		})
@@ -204,22 +205,22 @@ func TestEksBlueprintsE2E(t *testing.T) {
 
 }
 
-func GetTerraformOptions(t *testing.T, inputTFOptions *terraform.Options) *terraform.Options {
+func getTerraformOptions(t *testing.T, inputTFOptions *terraform.Options) *terraform.Options {
 	return terraform.WithDefaultRetryableErrors(t, inputTFOptions)
 }
 
-func EksAddonValidation(t *testing.T, eksClusterName string, awsRegion string) {
+func eksAddonValidation(t *testing.T, eksClusterName string, awsRegion string) {
 	/****************************************************************************/
 	/*EKS Cluster Result
 	/****************************************************************************/
-	result, err := EksDescribeCluster(awsRegion, eksClusterName)
+	result, err := internal.EksDescribeCluster(awsRegion, eksClusterName)
 	if err != nil {
 		t.Errorf("Error describing EKS Cluster: %v", err)
 	}
 	/****************************************************************************/
 	/*K8s ClientSet
 	/****************************************************************************/
-	k8sclient, err := GetKubernetesClient(result.Cluster)
+	k8sclient, err := internal.GetKubernetesClient(result.Cluster)
 	if err != nil {
 		t.Errorf("Error creating Kubernees clientset: %v", err)
 	}
@@ -247,7 +248,7 @@ func EksAddonValidation(t *testing.T, eksClusterName string, awsRegion string) {
 	/****************************************************************************/
 	t.Run("EKS_DEPLOYMENTS_VALIDATION", func(t *testing.T) {
 		for _, dep := range expectedDeployments {
-			deployment, err := GetDeployment(k8sclient, dep.Name, dep.Namespace)
+			deployment, err := internal.GetDeployment(k8sclient, dep.Name, dep.Namespace)
 			if err != nil {
 				assert.Fail(t, "DEPLOYMENT: %s | NAMESPACE: %s | Error: %s", dep.Name, dep.Namespace, err)
 			} else {
@@ -274,7 +275,7 @@ func EksAddonValidation(t *testing.T, eksClusterName string, awsRegion string) {
 	/****************************************************************************/
 	t.Run("EKS_DAEMONSETS_VALIDATION", func(t *testing.T) {
 		for _, daemon := range expectedDaemonSets {
-			daemonset, err := GetDaemonSet(k8sclient, daemon.Name, daemon.Namespace)
+			daemonset, err := internal.GetDaemonSet(k8sclient, daemon.Name, daemon.Namespace)
 			if err != nil {
 				assert.Fail(t, "DaemonSet: %s | NAMESPACE: %s| Error: %s", daemon.Name, daemon.Namespace, err)
 			} else {
@@ -304,7 +305,7 @@ func EksAddonValidation(t *testing.T, eksClusterName string, awsRegion string) {
 	/****************************************************************************/
 	t.Run("EKS_SERVICES_VALIDATION", func(t *testing.T) {
 		for _, service := range expectedServices {
-			services, err := GetServices(k8sclient, service.Name, service.Namespace)
+			services, err := internal.GetServices(k8sclient, service.Name, service.Namespace)
 			if err != nil {
 				assert.Fail(t, "SERVICE NAME: %s | NAMESPACE: %s| Error: %s", service.Name, service.Namespace, err)
 			} else {

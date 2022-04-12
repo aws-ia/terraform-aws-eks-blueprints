@@ -3,14 +3,15 @@ module github.com/aws-ia/terraform-aws-eks-blueprints
 go 1.17
 
 require (
-	github.com/aws/aws-sdk-go v1.43.36
+	github.com/aws-ia/terraform-aws-eks-blueprints/aws v1.0.0
+	github.com/aws/aws-sdk-go v1.43.37
 	github.com/gruntwork-io/terratest v0.40.6
 	github.com/stretchr/testify v1.7.1
 	k8s.io/api v0.23.5
 	k8s.io/apimachinery v0.23.5
-	k8s.io/client-go v0.23.5
-	sigs.k8s.io/aws-iam-authenticator v0.5.7
 )
+
+replace github.com/aws-ia/terraform-aws-eks-blueprints/aws => ./aws
 
 require (
 	cloud.google.com/go v0.83.0 // indirect
@@ -92,9 +93,11 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	k8s.io/client-go v0.23.5 // indirect
 	k8s.io/klog/v2 v2.30.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20211115234752-e816edb12b65 // indirect
 	k8s.io/utils v0.0.0-20211116205334-6203023598ed // indirect
+	sigs.k8s.io/aws-iam-authenticator v0.5.7 // indirect
 	sigs.k8s.io/json v0.0.0-20211020170558-c049b76a60c6 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.1 // indirect
 	sigs.k8s.io/yaml v1.2.0 // indirect

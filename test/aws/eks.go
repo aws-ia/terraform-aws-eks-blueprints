@@ -1,4 +1,4 @@
-package src
+package aws
 
 import (
 	"context"
@@ -17,7 +17,7 @@ import (
 	"sigs.k8s.io/aws-iam-authenticator/pkg/token"
 )
 
-func listDeploymentItems(k8sclient *kubernetes.Clientset, namespace string) (*apps.DeploymentList, error) {
+func ListDeploymentItems(k8sclient *kubernetes.Clientset, namespace string) (*apps.DeploymentList, error) {
 	deployments, err := k8sclient.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		log.Fatalf("Error listing the deployments: %v", err)
@@ -45,7 +45,7 @@ func GetDaemonSet(k8sclient *kubernetes.Clientset, DaemonSetName string, namespa
 	return DaemonSet, nil
 }
 
-func GetServices(k8sclient *kubernetes.Clientset, ServiceName string, namespace string) (*core.Service, error){
+func GetServices(k8sclient *kubernetes.Clientset, ServiceName string, namespace string) (*core.Service, error) {
 	service, err := k8sclient.CoreV1().Services(namespace).Get(context.TODO(), ServiceName, metav1.GetOptions{})
 	if err != nil {
 		log.Printf("Error getting the Services: %v", err)
@@ -55,8 +55,7 @@ func GetServices(k8sclient *kubernetes.Clientset, ServiceName string, namespace 
 }
 
 func EksDescribeCluster(region string, clusterName string) (*eks.DescribeClusterOutput, error) {
-	svc := newEksSession(region)
-	//svc := eks.New(session.New(&aws.Config{Region: &region}))
+	svc := NewEksSession(region)
 	input := &eks.DescribeClusterInput{
 		Name: aws.String(clusterName),
 	}
@@ -83,7 +82,7 @@ func EksDescribeCluster(region string, clusterName string) (*eks.DescribeCluster
 	return result, err
 }
 
-func newEksSession(region string) *eks.EKS {
+func NewEksSession(region string) *eks.EKS {
 	mySession := session.Must(session.NewSession(&aws.Config{
 		Region: aws.String(region),
 	}))

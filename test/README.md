@@ -1,10 +1,11 @@
 # Terratest for EKS Blueprints
 
 ## Configure and run Terratest
+The following steps can be used to configure Go lang and run Terratests locally(Mac/Windows machine)).
 
 ### Step1: Install
 
-golang (for macos you can use brew)
+[golang](https://go.dev/doc/install) (for macos you can use brew)
 
 ### Step2: Change directory into the test folder.
 
