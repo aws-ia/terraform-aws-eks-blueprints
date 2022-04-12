@@ -186,7 +186,7 @@ module "metrics_server" {
 module "ondat" {
   count             = var.enable_ondat ? 1 : 0
   source            = "ondat/ondat-addon/eksblueprints"
-  version           = "0.0.2"
+  version           = "0.0.3"
   helm_config       = var.ondat_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
