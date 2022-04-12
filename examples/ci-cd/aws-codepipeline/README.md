@@ -41,13 +41,13 @@ git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git
 ```
 Note: If you don't have git installed, [install git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
-#### Step 2: Copy the templates folder to the AWS CodeCommit sourcecode repository which contains the terraform code to be deployed.
+#### Step 3: Copy the templates folder to the AWS CodeCommit sourcecode repository which contains the terraform code to be deployed.
     cd examples/ci-cd/aws-codepipeline
     cp -r templates $YOUR_CODECOMMIT_REPO_ROOT
 
-#### Step 3: Update the variables in the template files with appropriate values and push the same.
+#### Step 4: Update the variables in the template files with appropriate values and push the same.
 
-#### Step 3: Trigger the pipeline created in the Installation step.
+#### Step 5: Trigger the pipeline created in the Installation step.
 
 
 
