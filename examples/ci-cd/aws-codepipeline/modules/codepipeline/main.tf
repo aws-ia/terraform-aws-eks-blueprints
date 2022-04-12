@@ -21,7 +21,7 @@ resource "aws_codepipeline" "terraform_pipeline" {
     action {
       name             = "Download-Source"
       category         = "Source"
-      owner            = var.namespace
+      owner            = "AWS"
       version          = "1"
       provider         = "CodeCommit"
       namespace        = "SourceVariables"

@@ -49,7 +49,6 @@ module "codebuild_terraform" {
   source = "./modules/codebuild"
 
   project_name                        = var.project_name
-  code_build_name                     = "Validate"
   role_arn                            = module.codepipeline_iam_role.role_arn
   s3_bucket_name                      = module.s3_artifacts_bucket.bucket
   build_projects                      = var.build_projects
