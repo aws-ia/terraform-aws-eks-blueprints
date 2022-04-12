@@ -18,7 +18,7 @@ Note: If you don't have git installed, [install git](https://git-scm.com/book/en
 - If you are planning to use an existing terraform CodeCommit repository, then update the variable create_new_repo as false and provide the name of your existing repo under the variable source_repo_name
 - If you are planning to create new terraform CodeCommit repository, then update the variable create_new_repo as true and provide the name of your new repo under the variable source_repo_name
 
-#### Step 3: Update backend.conf as required
+#### Step 3: Update remote backend configuration as required
 
 #### Step 4: Configure the AWS Command Line Interface (AWS CLI) where this IaC is being executed. For more information, see [Configuring the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html).
 
