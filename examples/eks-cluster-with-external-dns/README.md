@@ -1,6 +1,6 @@
 # EKS Cluster with External DNS
 
-This example demonstrates how to leverage External DNS, in concert with Ingress Nginx and AWS Load Balancer Controller. It demonstrates how you can easily provision multiple services with secure, custom domains which sit behind a single load balancer. 
+This example demonstrates how to leverage External DNS, in concert with Ingress Nginx and AWS Load Balancer Controller. It demonstrates how you can easily provision multiple services with secure, custom domains which sit behind a single load balancer.
 
 The pattern deploys the sample workloads that reside in the [EKS Blueprints Workloads repo](https://github.com/aws-samples/eks-blueprints-workloads) via ArgoCD. The [configuration for `team-riker`](https://github.com/aws-samples/eks-blueprints-workloads/tree/main/teams/team-riker/dev/templates) will deploy an Ingress resource which contains configuration for both path-based routing and the custom hostname for the `team-riker` service. Once the pattern is deployed, you will be able to reach the `team-riker` sample workload via a custom domain you supply.
 
@@ -8,21 +8,21 @@ The pattern deploys the sample workloads that reside in the [EKS Blueprints Work
 
 ### Prerequisites:
 
-#### Tools 
+#### Tools
 
 Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
 1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 3. [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
 4. [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
-#### AWS Resources 
+#### AWS Resources
 
 This example requires the following AWS resources:
 
-* A Route53 Hosted Zone for a domain that you own. 
-* A SSL/TLS certificate for your domain stored in AWS Certificate Manager (ACM). 
- 
-For information on Route53 Hosted Zones, [see Route53 documentation](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html). For instructions on requesting a SSL/TLS certificate for your domain, see [ACM docs](https://docs.aws.amazon.com/acm/latest/userguide/gs.html). 
+* A Route53 Hosted Zone for a domain that you own.
+* A SSL/TLS certificate for your domain stored in AWS Certificate Manager (ACM).
+
+For information on Route53 Hosted Zones, [see Route53 documentation](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html). For instructions on requesting a SSL/TLS certificate for your domain, see [ACM docs](https://docs.aws.amazon.com/acm/latest/userguide/gs.html).
 
 ### Deployment Steps
 
@@ -43,7 +43,7 @@ terraform init
 
 #### Step3: Replace placeholder values in terraform.tfvars
 
-Both values in `terraform.tfvars` must be updated. 
+Both values in `terraform.tfvars` must be updated.
 
 * `eks_cluster_domain` - the domain for your cluster. Value is used to look up a Route53 Hosted Zone that you own. DNS records created by `ExternalDNS` will be created in this Hosted Zone.
 * `acm_certificate_domain` - the domain for a certificate in ACM that will be leveraged by `Ingress Nginx`. Value is used to look up an ACM certificate that will be used to terminate HTTPS connections. This value should likely be a wildcard cert for your `eks_cluster_domain`.  
