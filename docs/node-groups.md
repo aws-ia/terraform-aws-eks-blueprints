@@ -1,6 +1,6 @@
 # Node Groups
 
-The framework uses dedicated sub modules for creating [AWS Managed Node Groups](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/aws-eks-managed-node-groups), [Self-managed Node groups](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/aws-eks-self-managed-node-groups) and [Fargate profiles](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/aws-eks-fargate-profiles). These modules provide flexibility to add or remove managed/self-managed node groups/fargate profiles by simply adding/removing map of values to input config. See [example](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/examples/eks-cluster-with-new-vpc).
+The framework uses dedicated sub modules for creating [AWS Managed Node Groups](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/aws-eks-managed-node-groups), [Self-managed Node groups](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/aws-eks-self-managed-node-groups) and [Fargate profiles](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/aws-eks-fargate-profiles). These modules provide flexibility to add or remove managed/self-managed node groups/fargate profiles by simply adding/removing map of values to input config. See [example](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/eks-cluster-with-new-vpc).
 
 The `aws-auth` ConfigMap handled by this module allow your nodes to join your cluster, and you also use this ConfigMap to add RBAC access to IAM users and roles.
 Each Node Group can have dedicated IAM role, Launch template and Security Group to improve the security.
@@ -12,11 +12,11 @@ The below example demonstrates the minimum configuration required to deploy a ma
 ```hcl
     # EKS MANAGED NODE GROUPS
     managed_node_groups = {
-        mg_4 = {
-            node_group_name = "managed-ondemand"
-            instance_types  = ["m4.large"]
-            subnet_ids      = [] # Mandatory Public or Private Subnet IDs
-        }
+      mg_4 = {
+        node_group_name = "managed-ondemand"
+        instance_types  = ["m4.large"]
+        subnet_ids      = [] # Mandatory Public or Private Subnet IDs
+      }
     }
 ```
 
@@ -26,14 +26,14 @@ The below example demonstrates advanced configuration options for a managed node
     managed_node_groups = {
       mg_m4 = {
         # 1> Node Group configuration
-        node_group_name             = "managed-ondemand"
-        create_launch_template      = true              # false will use the default launch template
-        launch_template_os          = "amazonlinux2eks" # amazonlinux2eks or windows or bottlerocket
-        public_ip                   = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
-        pre_userdata                = <<-EOT
-                yum install -y amazon-ssm-agent
-                systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
-            EOT
+        node_group_name        = "managed-ondemand"
+        create_launch_template = true              # false will use the default launch template
+        launch_template_os     = "amazonlinux2eks" # amazonlinux2eks or windows or bottlerocket
+        public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+        pre_userdata           = <<-EOT
+                    yum install -y amazon-ssm-agent
+                    systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
+                EOT
         # 2> Node Group scaling configuration
         desired_size    = 3
         max_size        = 3
@@ -41,17 +41,17 @@ The below example demonstrates advanced configuration options for a managed node
         max_unavailable = 1 # or percentage = 20
 
         # 3> Node Group compute configuration
-        ami_type       = "AL2_x86_64"             # Amazon Linux 2(AL2_x86_64), AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
-        capacity_type  = "ON_DEMAND"              # ON_DEMAND or SPOT
-        instance_types = ["m4.large"]             # List of instances used only for SPOT type
+        ami_type       = "AL2_x86_64" # Amazon Linux 2(AL2_x86_64), AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
+        capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
+        instance_types = ["m4.large"] # List of instances used only for SPOT type
         disk_size      = 50
 
         # 4> Node Group network configuration
-        subnet_ids     = []                          # Mandatory - # Define private/public subnets list with comma separated ["subnet1","subnet2","subnet3"]
-        k8s_taints     = []
+        subnet_ids = [] # Mandatory - # Define private/public subnets list with comma separated ["subnet1","subnet2","subnet3"]
+        k8s_taints = []
         # optionally, configure a taint on the node group:
         # k8s_taints = [{key= "purpose", value="execution", "effect"="NO_SCHEDULE"}]
-        k8s_labels     = {
+        k8s_labels = {
           Environment = "preprod"
           Zone        = "dev"
           WorkerType  = "ON_DEMAND"
@@ -84,62 +84,63 @@ The below example demonstrates advanced configuration options for a self-managed
 
 ```hcl
     self_managed_node_groups = {
-        self_mg_4 = {
-          node_group_name       = "self-managed-ondemand"
-          instance_type         = "m5.large"
-          custom_ami_id         = "ami-0dfaa019a300f219c"        # Bring your own custom AMI generated by Packer/ImageBuilder/Puppet etc.
-          capacity_type         = ""                             # Optional Use this only for SPOT capacity as capacity_type = "spot"
-          launch_template_os    = "amazonlinux2eks"              # amazonlinux2eks  or bottlerocket or windows
-          pre_userdata          = <<-EOT
-                yum install -y amazon-ssm-agent \
-                systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
-            EOT
-          post_userdata         = ""
-          kubelet_extra_args    = ""
-          bootstrap_extra_args  = ""
-          block_device_mapping = [
-            {
-              device_name = "/dev/xvda" # mount point to /
-              volume_type = "gp3"
-              volume_size = 20
-            },
-            {
-              device_name = "/dev/xvdf" # mount point to /local1 (it could be local2, depending upon the disks are attached during boot)
-              volume_type = "gp3"
-              volume_size = 50
-              iops        = 3000
-              throughput  = 125
-            },
-            {
-              device_name = "/dev/xvdg" # mount point to /local2 (it could be local1, depending upon the disks are attached during boot)
-              volume_type = "gp3"
-              volume_size = 100
-              iops        = 3000
-              throughput  = 125
-            }
-          ]
-          enable_monitoring     = false
-          public_ip             = false                           # Enable only for public subnets  
-          # AUTOSCALING
-          max_size              = "3"
-          min_size              = "1"
-          subnet_ids            = []                              # Mandatory Public or Private Subnet IDs
-          additional_tags       = {
-            ExtraTag    = "m5x-on-demand"
-            Name        = "m5x-on-demand"
-            subnet_type = "private"
+      self_mg_4 = {
+        node_group_name      = "self-managed-ondemand"
+        instance_type        = "m5.large"
+        custom_ami_id        = "ami-0dfaa019a300f219c" # Bring your own custom AMI generated by Packer/ImageBuilder/Puppet etc.
+        capacity_type        = ""                      # Optional Use this only for SPOT capacity as capacity_type = "spot"
+        launch_template_os   = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or windows
+        pre_userdata         = <<-EOT
+            yum install -y amazon-ssm-agent \
+            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
+        EOT
+        post_userdata        = ""
+        kubelet_extra_args   = ""
+        bootstrap_extra_args = ""
+        block_device_mapping = [
+          {
+            device_name = "/dev/xvda" # mount point to /
+            volume_type = "gp3"
+            volume_size = 20
+          },
+          {
+            device_name = "/dev/xvdf" # mount point to /local1 (it could be local2, depending upon the disks are attached during boot)
+            volume_type = "gp3"
+            volume_size = 50
+            iops        = 3000
+            throughput  = 125
+          },
+          {
+            device_name = "/dev/xvdg" # mount point to /local2 (it could be local1, depending upon the disks are attached during boot)
+            volume_type = "gp3"
+            volume_size = 100
+            iops        = 3000
+            throughput  = 125
           }
-          additional_iam_policies = []
-        },
+        ]
+        enable_monitoring = false
+        public_ip         = false # Enable only for public subnets
+        # AUTOSCALING
+        max_size   = "3"
+        min_size   = "1"
+        subnet_ids = [] # Mandatory Public or Private Subnet IDs
+        additional_tags = {
+          ExtraTag    = "m5x-on-demand"
+          Name        = "m5x-on-demand"
+          subnet_type = "private"
+        }
+        additional_iam_policies = []
+      },
     }
 ```
 
 With the previous described example at `block_device_mapping`, in case you choose an instance that has local NVMe storage, you will achieve the three specified EBS disks plus all local NVMe disks that instance brings. For example, for an `m5d.large` you will end up with the following mount points: `/` for device named `/dev/xvda`, `/local1` for device named `/dev/xvdf`, `/local2` for device named `/dev/xvdg`, and `/local3` for instance storage (in such case a disk with 70GB).
 
 Check the following references as you may desire:
-*  [Amazon EBS and NVMe on Linux instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nvme-ebs-volumes.html).
-*  [AWS NVMe drivers for Windows instances](https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/aws-nvme-drivers.html)
-*  [EC2 Instance Update – M5 Instances with Local NVMe Storage (M5d)](https://aws.amazon.com/blogs/aws/ec2-instance-update-m5-instances-with-local-nvme-storage-m5d/)
+
+- [Amazon EBS and NVMe on Linux instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nvme-ebs-volumes.html).
+- [AWS NVMe drivers for Windows instances](https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/aws-nvme-drivers.html)
+- [EC2 Instance Update – M5 Instances with Local NVMe Storage (M5d)](https://aws.amazon.com/blogs/aws/ec2-instance-update-m5-instances-with-local-nvme-storage-m5d/)
 
 ### Fargate Profile
 

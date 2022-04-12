@@ -51,7 +51,7 @@ The following code example demonstrates how you can supply information for a rep
 argocd_applications = {
   addons = {
     path                = "chart"
-    repo_url            = "https://github.com/aws-samples/ssp-eks-add-ons.git"
+    repo_url            = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
     add_on_application  = true # Indicates the root add-on application.
   }
 }
@@ -63,7 +63,7 @@ A common operational pattern for EKS customers is to leverage Infrastructure as 
 
 To indicate that ArgoCD should responsible for managing cluster add-ons (applying add-on Helm charts to a cluster), you can set the `argocd_manage_add_ons` property to true. When this flag is set, the framework will still provision all AWS resources necessary to support add-on functionality, but it will not apply Helm charts directly via the Terraform Helm provider.
 
-Next, identify which ArgoCD Application will serve as the add-on configuration repository by setting the `add_on_application` flag to true. When this flag is set, the framework will aggregate AWS resource values that are needed for each add-on into an object. It will then pass that object to ArgoCD via the values map of the Application resource. [See here](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/blob/main/modules/kubernetes-addons/locals.tf#L4) for the values object that gets passed to the ArgoCD add-ons Application.
+Next, identify which ArgoCD Application will serve as the add-on configuration repository by setting the `add_on_application` flag to true. When this flag is set, the framework will aggregate AWS resource values that are needed for each add-on into an object. It will then pass that object to ArgoCD via the values map of the Application resource. [See here](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/locals.tf#L4) for the values object that gets passed to the ArgoCD add-ons Application.
 
 Sample configuration can be found below:
 
@@ -73,7 +73,7 @@ argocd_manage_add_ons   = true
 argocd_applications     = {
   addons = {
     path                = "chart"
-    repo_url            = "https://github.com/aws-samples/ssp-eks-add-ons.git"
+    repo_url            = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
     add_on_application  = true # Indicates the root add-on application.
   }
 }
@@ -96,7 +96,7 @@ argocd_manage_add_ons   = true
 argocd_applications     = {
   addons = {
     path                = "chart"
-    repo_url            = "git@github.com:aws-samples/ssp-eks-add-ons.git"
+    repo_url            = "git@github.com:aws-samples/eks-blueprints-add-ons.git"
     project             = "default"
     add_on_application  = true              # Indicates the root add-on application.
     ssh_key_secret_name = "github-ssh-key"  # Needed for private repos
@@ -132,7 +132,7 @@ argocd_applications = {
   }
   addons = {
     path                = "chart"
-    repo_url            = "git@github.com:aws-samples/ssp-eks-add-ons.git"
+    repo_url            = "git@github.com:aws-samples/eks-blueprints-add-ons.git"
     add_on_application  = true              # Indicates the root add-on application.
     ssh_key_secret_name = "github-ssh-key"  # Needed for private repos
     values              = {}

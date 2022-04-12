@@ -1,6 +1,6 @@
-site_name: Amazon EKS Accelerator for Terraform
-repo_name: "aws-samples/aws-eks-accelerator-for-terraform"
-repo_url: "https://github.com/aws-samples/aws-eks-accelerator-for-terraform"
+site_name: Amazon EKS Blueprints for Terraform
+repo_name: "aws-ia/terraform-aws-eks-blueprints"
+repo_url: "https://github.com/aws-ia/terraform-aws-eks-blueprints"
 docs_dir: "docs"
 theme:
   name: material

@@ -112,15 +112,14 @@ module "cluster_autoscaler" {
 }
 
 module "crossplane" {
-  count             = var.enable_crossplane ? 1 : 0
-  source            = "./crossplane"
-  helm_config       = var.crossplane_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
-  aws_provider      = var.crossplane_aws_provider
-  jet_aws_provider  = var.crossplane_jet_aws_provider
-  account_id        = data.aws_caller_identity.current.account_id
-  aws_partition     = data.aws_partition.current.id
-  addon_context     = local.addon_context
+  count            = var.enable_crossplane ? 1 : 0
+  source           = "./crossplane"
+  helm_config      = var.crossplane_helm_config
+  aws_provider     = var.crossplane_aws_provider
+  jet_aws_provider = var.crossplane_jet_aws_provider
+  account_id       = data.aws_caller_identity.current.account_id
+  aws_partition    = data.aws_partition.current.id
+  addon_context    = local.addon_context
 }
 
 module "external_dns" {
@@ -222,7 +221,7 @@ module "spark_k8s_operator" {
 module "tetrate_istio" {
   count                = var.enable_tetrate_istio ? 1 : 0
   source               = "tetratelabs/tetrate-istio-addon/eksblueprints"
-  version              = "0.0.6"
+  version              = "0.0.7"
   distribution         = var.tetrate_istio_distribution
   distribution_version = var.tetrate_istio_version
   install_base         = var.tetrate_istio_install_base

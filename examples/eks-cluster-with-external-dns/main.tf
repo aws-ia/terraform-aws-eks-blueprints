@@ -139,7 +139,7 @@ module "eks_cluster" {
   }
 }
 
-module "kubernetes-addons" {
+module "eks-blueprints-kubernetes-addons" {
   source = "../../modules/kubernetes-addons"
 
   #---------------------------------------------------------------

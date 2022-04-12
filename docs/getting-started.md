@@ -7,23 +7,23 @@ This getting started guide will help you deploy your first EKS environment using
 Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
 
 1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-3. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
-4. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
+3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
 ## Deployment Steps
 
-The following steps will walk you through the deployment of an example [DEV cluster](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/blob/main/examples/eks-cluster-with-new-vpc/main.tf) configuration.
+The following steps will walk you through the deployment of an example [DEV cluster](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/eks-cluster-with-new-vpc/main.tf) configuration.
 This configuration will deploy a private EKS cluster with public and private subnets.
 One managed node group and a Fargate profile for the default namespace will be placed in private subnets. The ALB created by the AWS LB Ingress controller will be placed in Public subnets. The example will also deploy the following Kubernetes add-ons
 
-✅  AWS LB Ingress Controller\
-✅  Metrics Server\
-✅  Cluster Autoscaler
+✅ AWS LB Ingress Controller\
+✅ Metrics Server\
+✅ Cluster Autoscaler
 
 ### Clone the repo
 
 ```shell script
-git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 ### Run Terraform INIT

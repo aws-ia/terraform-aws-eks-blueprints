@@ -9,7 +9,7 @@ on:
         default: "true"
 
 env:
-  DEFAULT_DEPLOY_ORDER: "module.e2e-test.module.aws_vpc,module.e2e-test.module.aws-eks-accelerator-for-terraform,module.e2e-test.module.kubernetes-addons"
+  DEFAULT_DEPLOY_ORDER: "module.e2e-test.module.aws_vpc,module.e2e-test.module.eks-blueprints,module.e2e-test.module.eks-blueprints-kubernetes-addons"
 
 jobs:
   deploy:
@@ -28,7 +28,7 @@ jobs:
             tenant_name: "emr-eks"
           - example_path: examples/analytics/spark-k8s-operator
             tenant_name: "spark"
-          - example_path: examples/argocd
+          - example_path: examples/gitops/argocd
             tenant_name: "argo"
           - example_path: examples/aws-efs-csi-driver
             tenant_name: "efs"
@@ -43,7 +43,7 @@ jobs:
                 "module.e2e-test.module.aws_vpc",
                 "module.e2e-test.module.vpc_endpoint_gateway",
                 "module.e2e-test.module.vpc_endpoints",
-                "module.e2e-test.module.aws-eks-accelerator-for-terraform",
+                "module.e2e-test.module.eks-blueprints",
               ]
           - example_path: examples/game-tech/agones-game-controller
             tenant_name: "agones"
