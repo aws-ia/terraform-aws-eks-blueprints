@@ -1,3 +1,56 @@
+# AWS CodePipeline CI/CD example
+This pattern demonstrates setting up AWS CodePipeline, AWS CodeBuild projects and other requirements using terraform IaC which shows an example of how to automate the validation, plan, approval based apply and destroy of terraform code.
+S3 or any other Remote backends used for Terraform state management which allows multiple engineers to work together to develop the infrastructure
+The created pipeline enforces validation (tflint, tfsec and checkov scans) for the code.
+
+## Installation
+
+#### Step 1: Clone this repository.
+
+```
+git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git
+```
+Note: If you don't have git installed, [install git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+
+
+#### Step 2: Update the variables in terraform.tfvars based on your requirement. Make sure you ae updating the variables project_name, environment, source_repo_name, source_repo_branch, create_new_repo, stage_input and build_projects.
+
+- If you are planning to use an existing terraform CodeCommit repository, then update the variable create_new_repo as false and provide the name of your existing repo under the variable source_repo_name
+- If you are planning to create new terraform CodeCommit repository, then update the variable create_new_repo as true and provide the name of your new repo under the variable source_repo_name
+
+#### Step 3: Update backend.conf as required
+
+#### Step 4: Configure the AWS Command Line Interface (AWS CLI) where this IaC is being executed. For more information, see [Configuring the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html).
+
+#### Step 5: Initialize the directory. Run terraform init
+
+#### Step 6: Start a Terraform run using the command terraform apply
+
+Note: Sample terraform.tfvars and backend.conf are available in the examples directory
+
+##Pre-Requisites
+
+#### Step 1: You would get source_repo_clone_url_http as an output of the installation step. Clone the repository to your local.
+
+git clone <source_repo_clone_url_http>
+
+#### Step 2: Clone this repository.
+
+```
+git@github.com:aws-samples/aws-eks-accelerator-for-terraform.git
+```
+Note: If you don't have git installed, [install git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+
+#### Step 2: Copy the templates folder to the AWS CodeCommit sourcecode repository which contains the terraform code to be deployed.
+    cd examples/ci-cd/aws-codepipeline
+    cp -r templates $YOUR_CODECOMMIT_REPO_ROOT
+
+#### Step 3: Update the variables in the template files with appropriate values and push the same.
+
+#### Step 3: Trigger the pipeline created in the Installation step.
+
+
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
