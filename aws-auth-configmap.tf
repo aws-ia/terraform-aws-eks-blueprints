@@ -1,3 +1,4 @@
+x
 resource "kubernetes_config_map" "aws_auth" {
   count = var.create_eks ? 1 : 0
 
