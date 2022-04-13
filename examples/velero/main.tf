@@ -18,7 +18,7 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = ">= 1.13.1"
     }
-  }pwe
+  }
 
   backend "local" {
     path = "local_tf_state/terraform-main.tfstate"
