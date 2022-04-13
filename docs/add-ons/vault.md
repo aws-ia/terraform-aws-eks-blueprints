@@ -16,11 +16,22 @@ This step deploys the [HashiCorp Vault](https://www.vaultproject.io) with defaul
   enable_vault = true
 ```
 
-Alternatively, you can override the helm values by using the code snippet below
+Alternatively, you can override the helm values by using the code snippet below:
 
 ```hcl
   enable_vault = true
+
+  vault_helm_config = {
+    name       = "vault"                                          # (Required) Release name.
+    chart      = "vault"                                          # (Required) Chart name to be installed.
+    repository = "https://helm.releases.hashicorp.com"            # (Optional) Repository URL where to locate the requested chart.
+    version    = "v0.19.0"                                        # (Optional) Specify the exact chart version to install.
+
+    ...
+  }
 ```
+
+The above snippet does not contain _all_ available options that can be set as part of `vault_helm_config`. For a complete listing, see The [`hashicorp-vault-eks-blueprints-addon` repository](https://github.com/hashicorp/hashicorp-vault-eks-blueprints-addon/blob/main/locals.tf).
 
 ### GitOps Configuration
 
