@@ -18,7 +18,7 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = ">= 1.13.1"
     }
-  }
+  }pwe
 
   backend "local" {
     path = "local_tf_state/terraform-main.tfstate"
@@ -61,7 +61,7 @@ provider "helm" {
 
 provider "kubectl" {
   host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  cluster_ca_certificate = base64decode(data.awkus_eks_cluster.cluster.certificate_authority.0.data)
   token                  = data.aws_eks_cluster_auth.cluster.token
   load_config_file       = false
   apply_retry_count      = 10
@@ -128,7 +128,6 @@ module "aws-eks-accelerator-for-terraform" {
   cluster_version = local.cluster_version
 
   # Self-managed Node Group
-  # Karpenter requires one node to get up and running
   self_managed_node_groups = {
     self_mg_4 = {
       node_group_name    = local.node_group_name
@@ -141,9 +140,8 @@ module "aws-eks-accelerator-for-terraform" {
 
 module "kubernetes-addons" {
   source = "../../modules/kubernetes-addons"
-  enable_karpenter = true
+  enable_velero= true
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-
   depends_on = [module.aws-eks-accelerator-for-terraform.self_managed_node_groups]
 }
 
