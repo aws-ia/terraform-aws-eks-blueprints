@@ -39,7 +39,7 @@ No resources.
 | <a name="input_irsa_policies"></a> [irsa\_policies](#input\_irsa\_policies) | IAM policy ARNs for Velero IRSA | `list(string)` | `[]` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
 
-## Outputs
+## Outputsg
 
 | Name | Description |
 |------|-------------|
