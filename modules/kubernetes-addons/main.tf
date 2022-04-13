@@ -234,8 +234,9 @@ module "traefik" {
 }
 
 module "vault" {
-  source  = "hashicorp/hashicorp-vault-eks-blueprints-addon/aws"
   count = var.enable_vault ? 1 : 0
+
+  source  = "hashicorp/hashicorp-vault-eks-addon/aws"
   helm_config       = var.vault_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
