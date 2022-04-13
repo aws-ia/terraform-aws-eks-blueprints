@@ -136,7 +136,7 @@ NOTE: Make sure you delete all the deployments which clean up the nodes spun up 
 Ensure no nodes are running created by Karpenter before running the `Terraform Destroy`. Otherwise, EKS Cluster will be cleaned up however this may leave some nodes running in EC2.
 
 ```shell script
-cd examples/eks-cluster-with-karpenter
+cd examples/velero
 terraform destroy
 ```
 
