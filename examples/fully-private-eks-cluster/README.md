@@ -7,12 +7,12 @@ This example deploys a fully private EKS Cluster into a new VPC.
 
 Please see this [document](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html) for more details on configuring fully private EKS Clusters
 
-Here is the high level design of the solution. The solution has been split into 3 different TerraForm stacks for simplicity.
+Here is the high level design of the solution. The solution has been split into 3 different Terraform stacks for simplicity.
 1. VPC
 2. EKS
 3. ADD-ONS
 
-![High Level Design](./images/EKS_private_cluster.jpg)
+![High Level Design](../../images/EKS_private_cluster.jpg)
 
 ## How to Deploy
 ### Prerequisites:

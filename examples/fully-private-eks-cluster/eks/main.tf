@@ -59,29 +59,6 @@ provider "helm" {
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   }
 }
-
-data "aws_region" "current" {}
-
-data "aws_availability_zones" "available" {}
-data "aws_eks_cluster" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-}
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-}
-
-#---------------------------------------------------------------
-# Terraform VPC remote state import from S3
-#---------------------------------------------------------------
-data "terraform_remote_state" "vpc_s3_backend" {
-  backend = "s3"
-  config = {
-    bucket = var.tf_state_vpc_s3_bucket
-    key    = var.tf_state_vpc_s3_key
-    region = var.region
-  }
-}
-
 locals {
   tenant      = var.tenant
   environment = var.environment
@@ -95,7 +72,6 @@ locals {
   public_subnet_ids  = data.terraform_remote_state.vpc_s3_backend.outputs.public_subnets
 
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
-
 }
 
 module "aws-eks-accelerator-for-terraform" {
@@ -115,7 +91,7 @@ module "aws-eks-accelerator-for-terraform" {
   cluster_security_group_additional_rules = var.cluster_security_group_additional_rules
 
   # EKS CONTROL PLANE VARIABLES
-  cluster_version  = var.cluster_version
+  cluster_version = var.cluster_version
 
   cluster_endpoint_public_access  = false
   cluster_endpoint_private_access = true

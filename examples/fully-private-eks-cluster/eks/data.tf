@@ -16,9 +16,24 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-output "cluster_id" {
-  description = "The ID of the EKS Cluster"
-  value       = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+data "aws_region" "current" {}
+
+data "aws_availability_zones" "available" {}
+data "aws_eks_cluster" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+}
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 }
 
-
+#---------------------------------------------------------------
+# Terraform VPC remote state import from S3
+#---------------------------------------------------------------
+data "terraform_remote_state" "vpc_s3_backend" {
+  backend = "s3"
+  config = {
+    bucket = var.tf_state_vpc_s3_bucket
+    key    = var.tf_state_vpc_s3_key
+    region = var.region
+  }
+}

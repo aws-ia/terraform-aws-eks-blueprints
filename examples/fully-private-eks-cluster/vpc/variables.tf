@@ -25,25 +25,25 @@ variable "kubernetes_version" {
 variable "region" {
   type        = string
   description = "AWS region"
-  default = "us-west-2"
+  default     = "us-west-2"
 }
 
 variable "tenant" {
   type        = string
   description = "Account Name or unique account unique id e.g., apps or management or aws007"
-  default = "aws001"
+  default     = "aws001"
 }
 
 variable "environment" {
   type        = string
   description = "Environment area, e.g. prod or preprod "
-  default = "preprod"
+  default     = "preprod"
 }
 
 variable "zone" {
   type        = string
   description = "zone, e.g. dev or qa or load or ops etc..."
-  default = "dev"
+  default     = "dev"
 }
 
 variable "default_vpc_ipv4_cidr" {

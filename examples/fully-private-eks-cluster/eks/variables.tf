@@ -67,7 +67,6 @@ variable "cluster_security_group_additional_rules" {
   default     = {}
 }
 
-
 variable "terraform_version" {
   type        = string
   default     = "Terraform"

@@ -74,11 +74,11 @@ module "aws_vpc" {
       from_port   = 0
       to_port     = 0
       cidr_blocks = local.vpc_cidr
-  },{
+      }, {
       protocol    = -1
       from_port   = 0
       to_port     = 0
-      cidr_blocks = var.default_vpc_ipv4_cidr  # Allow ingress from the default VPC CIDR range so the bastion host/Jenkins server can access the EKS private endpoint.
+      cidr_blocks = var.default_vpc_ipv4_cidr # Allow ingress from the default VPC CIDR range so the bastion host/Jenkins server can access the EKS private endpoint.
   }]
   default_security_group_egress = [
     {
@@ -115,13 +115,12 @@ data "aws_security_group" "default" {
 }
 
 module "vpc_endpoints" {
-  source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "v3.2.0"
-  create  = true
-  vpc_id  = module.aws_vpc.vpc_id
-  security_group_ids = [
-  data.aws_security_group.default.id]
-  subnet_ids = module.aws_vpc.private_subnets
+  source             = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
+  version            = "v3.2.0"
+  create             = true
+  vpc_id             = module.aws_vpc.vpc_id
+  security_group_ids = [data.aws_security_group.default.id]
+  subnet_ids         = module.aws_vpc.private_subnets
 
   endpoints = {
     ssm = {
