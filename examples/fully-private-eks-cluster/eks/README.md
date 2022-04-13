@@ -9,10 +9,11 @@ Please see this [document](https://docs.aws.amazon.com/eks/latest/userguide/priv
 
 ### Prerequisites:
 We will deploy the EKS cluster from the bastion host/Jenkins server that is running on the default VPC.
-Ensure that you have installed the following tools in the bastion host/Jenkins server before start working with this module and run Terraform Plan and Apply
-1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-3. [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
-4. [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+1. Ensure that you have installed the following tools in the bastion host/Jenkins server before start working with this module and run Terraform Plan and Apply
+  1.1 [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+  1.2 [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
+  1.3 [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+2. Ensure that the default VPC is connected to the EKS VPC using VPC Peering and the Route tables are updated to allow network traffic from the bastion-host/EC2 instance running in the default VPC to the EKS VPC. This is required to ensure that we can provision a private EKS cluster.
 
 ### Deployment Steps
 #### Step1: Clone the repo using the command below
