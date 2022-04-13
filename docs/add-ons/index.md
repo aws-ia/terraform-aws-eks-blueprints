@@ -1,6 +1,6 @@
 # Kubernetes Addons Module
 
-The [`kubernetes-addons`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons) module within this framework allows you to configure the add-ons you would like deployed into you EKS cluster with simple **true/false** flags.
+The [`kubernetes-addons`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons) module within EKS Blueprints allows you to configure the add-ons you would like deployed into you EKS cluster with simple **true/false** flags.
 
 The framework currently provides support for the following add-ons:
 
@@ -20,6 +20,8 @@ The framework currently provides support for the following add-ons:
 | [Fargate Fluent Bit](../add-ons/fargate-fluent-bit.md) | Adds Fluent Bit support for EKS Fargate |
 | [Karpenter](../add-ons/karpenter.md) | Deploys Karpenter into an EKS cluster. |
 | [Keda](../add-ons/keda.md) | Deploys Keda into an EKS cluster. |
+| [Kube State Metrics](../add-ons/kube-state-metrics.md) | Deploys Kube State Metrics into an EKS cluster. |
+| [Kubernetes Dashboard](../add-ons/kubernetes-dashboard.md) | Deploys Kubernetes Dashboard into an EKS cluster. |
 | [Metrics Server](../add-ons/metrics-server.md) | Deploys the Kubernetes Metrics Server into an EKS cluster. |
 | [Nginx](../add-ons/nginx.md) | Deploys the NGINX Ingress Controller into an EKS cluster. |
 | [Prometheus](../add-ons/prometheus.md) | Deploys Prometheus into an EKS cluster. |
@@ -28,8 +30,6 @@ The framework currently provides support for the following add-ons:
 | [Traefik](../add-ons/traefik.md) | Deploys Traefik Proxy into an EKS cluster.
 | [VPA](../add-ons/vpa.md) | Deploys the Vertical Pod Autoscaler into an EKS cluster. |
 | [YuniKorn](../add-ons/yunikorn.md) | Deploys Apache YuniKorn into an EKS cluster. |
-| [Kube State Metrics](../add-ons/kube-state-metrics.md) | Deploys Kube State Metrics into an EKS cluster. |
-| [Kubernetes Dashboard](../add-ons/kubernetes-dashboard.md) | Deploys Kubernetes Dashboard into an EKS cluster. |
 
 ## Add-on Management
 
@@ -49,40 +49,42 @@ In order to deploy an add-on with default configuration, simply enable the add-o
 
 ```hcl
 module "eks-blueprints-kubernetes-addons" {
-    source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
 
-    cluster_id                    = <EKS-CLUSTER-ID>
+  cluster_id                    = <EKS-CLUSTER-ID>
 
-    # EKS Addons
-    enable_amazon_eks_vpc_cni             = true
-    enable_amazon_eks_coredns             = true
-    enable_amazon_eks_kube_proxy          = true
-    enable_amazon_eks_aws_ebs_csi_driver  = true
+  # EKS Addons
+  
+  enable_amazon_eks_aws_ebs_csi_driver  = true
+  enable_amazon_eks_coredns             = true
+  enable_amazon_eks_kube_proxy          = true
+  enable_amazon_eks_vpc_cni             = true
 
-    #K8s Add-ons
-    enable_aws_load_balancer_controller  = true
-    enable_metrics_server                = true
-    enable_cluster_autoscaler            = true
-    enable_aws_for_fluentbit             = true
-    enable_argocd                        = true
+  #K8s Add-ons
+  enable_argocd                        = true
+  enable_aws_for_fluentbit             = true
+  enable_aws_load_balancer_controller  = true
+  enable_cluster_autoscaler            = true
+  enable_metrics_server                = true
 }
 ```
 
 To customize the behavior of the Helm charts that are ultimately deployed, you can supply custom Helm configuration. The following demonstrates how you can supply this configuration, including a dedicated `values.yaml` file.
 
 ```hcl
+enable_metrics_server      = true
 metrics_server_helm_config = {
-	name           = "metrics-server"
-	repository     = "https://kubernetes-sigs.github.io/metrics-server/"
-	chart          = "metrics-server"
-	version        = "3.8.1"
-	namespace      = "kube-system"
-	timeout        = "1200"
+  name           = "metrics-server"
+  repository     = "https://kubernetes-sigs.github.io/metrics-server/"
+  chart          = "metrics-server"
+  version        = "3.8.1"
+  namespace      = "kube-system"
+  timeout        = "1200"
 
-	# (Optional) Example to pass values.yaml from your local repo
-	values         = [templatefile("${path.module}/values.yaml", {
-			operating_system = "linux"
-	})]
+  # (Optional) Example to pass values.yaml from your local repo
+  values = [templatefile("${path.module}/values.yaml", {
+   operating_system = "linux"
+  })]
 }
 ```
 

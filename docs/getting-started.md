@@ -1,10 +1,10 @@
 # Getting Started
 
-This getting started guide will help you deploy your first EKS environment using the `terraform-eks-blueprints` module.
+This getting started guide will help you deploy your first EKS environment using EKS Blueprints.
 
 ## Prerequisites:
 
-Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
+Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module.
 
 1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
@@ -12,70 +12,138 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 ## Deployment Steps
 
-The following steps will walk you through the deployment of an example [DEV cluster](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/eks-cluster-with-new-vpc/main.tf) configuration.
-This configuration will deploy a private EKS cluster with public and private subnets.
-One managed node group and a Fargate profile for the default namespace will be placed in private subnets. The ALB created by the AWS LB Ingress controller will be placed in Public subnets. The example will also deploy the following Kubernetes add-ons
+The following steps will walk you through the deployment of an [example blueprint](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/eks-cluster-with-new-vpc/main.tf). This example will deploy a new VPC, a private EKS cluster with public and private subnets, and one managed node group that will be placed in the private subnets. The example will also deploy the following add-ons into the EKS cluster:
 
-✅ AWS LB Ingress Controller\
-✅ Metrics Server\
-✅ Cluster Autoscaler
+✅  AWS Load Balancer Controller  
+✅  Cluster Autoscaler  
+✅  CoreDNS  
+✅  kube-proxy  
+✅  Metrics Server  
+✅  vpc-cni  
 
 ### Clone the repo
 
-```shell script
+```
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
-### Run Terraform INIT
+### Terraform INIT
 
-CD into the sample directory.
+CD into the example directory:
 
-```shell script
+```
 cd examples/eks-cluster-with-new-vpc/
 ```
 
-Initialize the working directory with configuration files.
+Initialize the working directory with the following:
 
-```shell script
+```
 terraform init
 ```
 
-### Run Terraform PLAN
+### Terraform PLAN
 
-Verify the resources that will be created by this execution.
+Verify the resources that will be created by this execution:
 
-```shell script
+```
 terraform plan
 ```
 
-### Finally, Terraform APPLY
+### Terraform APPLY
 
-Deploy your EKS environment.
+We will leverage Terraform's [target](https://learn.hashicorp.com/tutorials/terraform/resource-targeting?in=terraform/cli) functionality to deploy a VPC, an EKS Cluster, and Kubernetes add-ons in separate steps. 
 
-```shell script
-terraform apply
-```
-
-### Configure kubectl and test cluster
-
-Details for your EKS Cluster can be extracted from terraform output or from AWS Console to get the name of cluster.
-
-This following command used to update the `kubeconfig` in your local machine where you run `kubectl` commands to interact with your EKS Cluster.
+**Deploy the VPC**. This step will take roughly 3 minutes to complete. 
 
 ```
-$ aws eks --region <region> update-kubeconfig --name <cluster-name>
+terraform apply -target="module.aws_vpc"
+```
+
+**Deploy the EKS cluster**. This step will take roughly 14 minutes to complete.
+
+```
+terraform apply -target="module.eks_blueprints"
+```
+
+**Deploy the add-ons**. This step will take rough 5 minutes to complete.
+
+```
+terraform apply -target="module.eks_blueprints_kubernetes_addons"
+```
+
+## Configure kubectl
+
+Terraform output will display a command in your consolde that you can use to bootstrap your local `kubeconfig`. 
+
+```
+configure_kubectl = "aws eks --region <region> update-kubeconfig --name <cluster-name>"
+```
+
+Run the command in your terminal.
+
+```
+aws eks --region <region> update-kubeconfig --name <cluster-name>
 ```
 
 ## Validation
 
-### List all the worker nodes by running the command below
+### List worker nodes
 
 ```
-$ kubectl get nodes
+kubectl get nodes
 ```
 
-### List all the pods running in kube-system namespace
+You should see output similar to the following:
 
 ```
-$ kubectl get pods -n kube-system
+NAME                                        STATUS   ROLES    AGE     VERSION
+ip-10-0-10-161.us-west-2.compute.internal   Ready    <none>   4h18m   v1.21.5-eks-9017834
+ip-10-0-11-171.us-west-2.compute.internal   Ready    <none>   4h18m   v1.21.5-eks-9017834
+ip-10-0-12-48.us-west-2.compute.internal    Ready    <none>   4h18m   v1.21.5-eks-9017834
+```
+
+### List pods
+
+```
+kubectl get pods -n kube-system
+```
+
+You should see output similar to the following:
+
+```
+NAME                                                        READY   STATUS    RESTARTS   AGE
+aws-load-balancer-controller-954746b57-k9lhc                1/1     Running   1          15m
+aws-load-balancer-controller-954746b57-q5gh4                1/1     Running   1          15m
+aws-node-jlnkd                                              1/1     Running   1          15m
+aws-node-k86pv                                              1/1     Running   0          12m
+aws-node-kjcdg                                              1/1     Running   1          14m
+cluster-autoscaler-aws-cluster-autoscaler-5d4446b58-d6frd   1/1     Running   1          15m
+coredns-85d5b4454c-jksbw                                    1/1     Running   1          24m
+coredns-85d5b4454c-x7wwd                                    1/1     Running   1          24m
+kube-proxy-92slm                                            1/1     Running   1          18m
+kube-proxy-bz5kb                                            1/1     Running   1          18m
+kube-proxy-zl7cj                                            1/1     Running   1          18m
+metrics-server-694d47d564-hzd8h                             1/1     Running   1          15m
+```
+
+## Cleanup 
+
+To clean up your environment, destroy the Terraform modules in reverse order.
+
+Destroy the add-ons. 
+
+```
+terraform destroy -target="module.eks_blueprints_kubernetes_addons"
+```
+
+Destroy the EKS cluster. 
+
+```
+terraform apply -target="module.eks_blueprints"
+```
+
+Destroy the VPC.
+
+```
+terraform apply -target="module.aws_vpc"
 ```

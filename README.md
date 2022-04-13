@@ -5,107 +5,104 @@
 [![tfsec](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/tfsec-analysis.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/tfsec-analysis.yml)
 [![kics-security-scan](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/kics-security-scan.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/kics-security-scan.yml)
 
-> **Note**: EKS Blueprints for Terraform is in active development and should be considered a **pre-production** framework. Backwards incompatible Terraform changes are possible in future releases and support is best-effort by the EKS Blueprints community.
+Welcome to Amazon EKS Blueprints for Terraform!
 
-Welcome to the Amazon EKS Blueprints for Terraform.
-
-This repository contains the source code for a Terraform framework that aims to accelerate the delivery of a batteries-included, multi-tenant container platform on top of Amazon EKS. This framework can be used by AWS customers, partners, and internal AWS teams to implement the foundational structure of an EKS Blueprint according to AWS best practices and recommendations.
+This repository contains a collection of Terraform modules that aim to make it easier and faster for customers to adopt [Amazon EKS](https://aws.amazon.com/eks/). It can be used by AWS customers, partners, and internal AWS teams to configure and manage complete EKS clusters that are fully bootstrapped with the operational software that is needed to deploy and operate workloads. 
 
 This project leverages the community [terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks) modules for deploying EKS Clusters.
 
 ## Getting Started
-The easiest way to get started with this framework is to follow our [Getting Started guide](./docs/getting-started.md).
+
+The easiest way to get started with EKS Blueprints is to follow our [Getting Started guide](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/).
 
 ## Documentation
-For complete project documentation, please visit our [documentation directory](./docs).
 
-## Patterns
-To view examples for how you can leverage this framework, see the [examples](./examples) directory.
+For complete project documentation, please visit our [documentation site](https://aws-ia.github.io/terraform-aws-eks-blueprints/).
 
-## Usage Example
-The below demonstrates how you can leverage this framework to deploy an EKS cluster, a managed node group, and various Kubernetes add-ons.
+## Examples
+
+To view examples for how you can leverage EKS Blueprints, please see the [examples](./examples) directory.
+
+## Usage
+
+The below demonstrates how you can leverage EKS Blueprints to deploy an EKS cluster, a managed node group, and various Kubernetes add-ons.
 
 ```hcl
-module "eks-blueprints" {
-    source = "github.com/aws-ia/terraform-aws-eks-blueprints"
+module "eks_blueprints" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints"
 
-    # EKS CLUSTER
-    cluster_version        = "1.21"
-    vpc_id                    = "<vpcid>"                                      # Enter VPC ID
-    private_subnet_ids        = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]     # Enter Private Subnet IDs
+  # EKS CLUSTER
+  cluster_version           = "1.21"
+  vpc_id                    = "<vpcid>"                                      # Enter VPC ID
+  private_subnet_ids        = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]     # Enter Private Subnet IDs
 
   # EKS MANAGED NODE GROUPS
-    managed_node_groups = {
-      mg_m4l = {
-        node_group_name = "managed-ondemand"
-        instance_types  = ["m4.large"]
-        subnet_ids      = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]
-      }
+  managed_node_groups = {
+    mg_m4l = {
+      node_group_name = "managed-ondemand"
+      instance_types  = ["m4.large"]
+      subnet_ids      = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]
     }
+  }
 }
 
-#--------------------------------------------
-# Deploy Kubernetes Add-ons with sub module
-#--------------------------------------------
-module "eks-blueprints-kubernetes-addons" {
-    source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
+module "eks_blueprints_kubernetes_addons" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
 
-    eks_cluster_id                        = module.eks-blueprints.eks_cluster_id
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
-    # EKS Addons
-    enable_amazon_eks_vpc_cni             = true
-    enable_amazon_eks_coredns             = true
-    enable_amazon_eks_kube_proxy          = true
-    enable_amazon_eks_aws_ebs_csi_driver  = true
+  # EKS Addons
+  enable_amazon_eks_vpc_cni             = true
+  enable_amazon_eks_coredns             = true
+  enable_amazon_eks_kube_proxy          = true
+  enable_amazon_eks_aws_ebs_csi_driver  = true
 
-    #K8s Add-ons
-    enable_aws_load_balancer_controller   = true
-    enable_metrics_server                 = true
-    enable_cluster_autoscaler             = true
-    enable_aws_for_fluentbit              = true
-    enable_argocd                         = true
-    enable_ingress_nginx                  = true
-
-    depends_on = [module.eks-blueprints.managed_node_groups]
+  #K8s Add-ons
+  enable_argocd                         = true
+  enable_aws_for_fluentbit              = true
+  enable_aws_load_balancer_controller   = true
+  enable_cluster_autoscaler             = true
+  enable_ingress_nginx                  = true
+  enable_metrics_server                 = true
 }
 ```
 
 The code above will provision the following:
 
-✅  A new EKS Cluster with a managed node group.\
-✅  Amazon EKS add-ons `vpc-cni`, `CoreDNS`, `kube-proxy`, and `aws-ebs-csi-driver`.\
-✅  `Cluster Autoscaler` and `Metrics Server` for scaling your workloads.\
-✅  `Fluent Bit` for routing logs.\
-✅  `AWS Load Balancer Controller` for distributing traffic.\
-✅  `Argocd` for declarative GitOps CD for Kubernetes.\
-✅  `Nginx` for managing ingress.
+✅  A new EKS Cluster with a managed node group.  
+✅  Amazon EKS add-ons `vpc-cni`, `CoreDNS`, `kube-proxy`, and `aws-ebs-csi-driver`.  
+✅  `Cluster Autoscaler` and `Metrics Server` for scaling your workloads.  
+✅  `Fluent Bit` for routing logs.  
+✅  `AWS Load Balancer Controller` for distributing traffic.  
+✅  `Argocd` for declarative GitOps CD for Kubernetes.  
+✅  `Nginx` for managing ingress.  
 
 ## Add-ons
-This framework provides out of the box support for a wide range of popular Kubernetes add-ons.
-By default, the [Terraform Helm provider](https://github.com/hashicorp/terraform-provider-helm) is used to deploy add-ons with publicly available [Helm Charts](https://artifacthub.io/).
-The framework provides support for leveraging self-hosted Helm Chart as well.
+
+EKS Blueprints makes it easy to provision a wide range of popular Kubernetes add-ons into an EKS cluster. By default, the [Terraform Helm provider](https://github.com/hashicorp/terraform-provider-helm) is used to deploy add-ons with publicly available [Helm Charts](https://artifacthub.io/).EKS Blueprints provides support for leveraging self-hosted Helm Chart as well.
 
 For complete documentation on deploying add-ons, please visit our [add-on documentation](./docs/add-ons/index.md)
 
 ## Submodules
+
 The root module calls into several submodules which provides support for deploying and integrating a number of external AWS services that can be used in concert with Amazon EKS.
-This included Amazon Managed Prometheus and EMR with EKS etc.
-For complete documentation on deploying external services, please visit our submodules documentation.
+This includes Amazon Managed Prometheus and EMR on EKS. For complete documentation on deploying external services, please visit our [submodules documentation](./docs/modules/index.md).
 
 ## Motivation
-The Amazon EKS Blueprints for Terraform allows customers to easily configure and deploy a multi-tenant, enterprise-ready container platform on top of EKS.
-With a large number of design choices, deploying production-grade container platform can take a significant amount of time, involve integrating a wide range or AWS services and open source tools, and require deep understand of AWS and Kubernetes concepts.
-This solution handles integrating EKS with popular open source and partner tools, in addition to AWS services, in order to allow customers to deploy a cohesive container platform that can be offered as a service to application teams.
-It provides out-of-the-box support for common operational tasks such as auto-scaling workloads, collecting logs and metrics from both clusters and running applications, managing ingress and egress, configuring network policy, managing secrets, deploying workloads via GitOps, and more.
-Customers can leverage the solution to deploy a container platform and start onboarding workloads in days, rather than months.
 
-## Feedback
+Kubernetes is a powerful and extensible container orchestration technology that allows you to deploy and manage containerized applications at scale. The extensible nature of Kubernetes also allows you to use a wide range of popular open-source tools, commonly referred to as add-ons, in Kubernetes clusters. With such a large number of tooling and design choices available however, building a tailored EKS cluster that meets your application’s specific needs can take a significant amount of time. It involves integrating a wide range of open-source tools and AWS services and requires deep expertise in AWS and Kubernetes. 
 
-For architectural details, step-by-step instructions, and customization options, see our official documentation site.
+AWS customers have asked for examples that demonstrate how to integrate the landscape of Kubernetes tools and make it easy for them to provision complete, opinionated EKS clusters that meet specific application requirements. Customers can use EKS Blueprints to configure and deploy purpose built EKS clusters, and start onboarding workloads in days, rather than months.
 
-To post feedback, submit feature ideas, or report bugs, use the Issues section of this GitHub repo.
+## Support & Feedback
 
-To submit code for this Quick Start, see the AWS Quick Start [Contributor's guide](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/CONTRIBUTING.md).
+EKS Blueprints for Terraform is maintained by AWS Solution Architects. It is not part of an AWS service and support is provided best-effort by the EKS Blueprints community. 
+
+To post feedback, submit feature ideas, or report bugs, please use the [Issues section](https://github.com/aws-ia/terraform-aws-eks-blueprints/issues) of this GitHub repo.
+
+For architectural details, step-by-step instructions, and customization options, see our [documentation site](https://aws-ia.github.io/terraform-aws-eks-blueprints/).
+
+If you are interested in contributing to EKS Blueprints, see the [Contribution guide](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/CONTRIBUTING.md).
 
 ---
 <!--- BEGIN_TF_DOCS --->
