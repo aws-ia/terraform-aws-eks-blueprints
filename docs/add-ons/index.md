@@ -1,6 +1,6 @@
 # Kubernetes Addons Module
 
-The [`kubernetes-addons`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons) module within EKS Blueprints allows you to configure the add-ons you would like deployed into you EKS cluster with simple **true/false** flags.
+The [`kubernetes-addons`](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/) module within EKS Blueprints allows you to configure the add-ons you would like deployed into you EKS cluster with simple **true/false** flags.
 
 The framework currently provides support for the following add-ons:
 

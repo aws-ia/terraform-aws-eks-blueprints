@@ -21,7 +21,7 @@ For complete project documentation, please visit our [documentation site](https:
 
 ## Examples
 
-To view examples for how you can leverage EKS Blueprints, please see the [examples](./examples) directory.
+To view examples for how you can leverage EKS Blueprints, please see the [examples](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples) directory.
 
 ## Usage
 
@@ -81,12 +81,12 @@ The code above will provision the following:
 
 EKS Blueprints makes it easy to provision a wide range of popular Kubernetes add-ons into an EKS cluster. By default, the [Terraform Helm provider](https://github.com/hashicorp/terraform-provider-helm) is used to deploy add-ons with publicly available [Helm Charts](https://artifacthub.io/).EKS Blueprints provides support for leveraging self-hosted Helm Chart as well.
 
-For complete documentation on deploying add-ons, please visit our [add-on documentation](./docs/add-ons/index.md)
+For complete documentation on deploying add-ons, please visit our [add-on documentation](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/)
 
 ## Submodules
 
 The root module calls into several submodules which provides support for deploying and integrating a number of external AWS services that can be used in concert with Amazon EKS.
-This includes Amazon Managed Prometheus and EMR on EKS. For complete documentation on deploying external services, please visit our [submodules documentation](./docs/modules/index.md).
+This includes Amazon Managed Prometheus and EMR on EKS. For complete documentation on deploying external services, please visit our [submodules documentation](https://aws-ia.github.io/terraform-aws-eks-blueprints/modules/).
 
 ## Motivation
 

@@ -14,7 +14,7 @@ This document provides a high level overview of the Core Concepts that are embed
 
 A `cluster` is simply an EKS cluster. EKS Blueprints provides for customizing the compute options you leverage with your `clusters`. The framework currently supports `EC2`, `Fargate` and `BottleRocket` instances. It also supports managed and self-managed node groups. To specify the type of compute you want to use for your `cluster`, you use the `managed_node_groups`, `self_managed_nodegroups`, or `fargate_profiles` variables.
 
-See our [Node Groups](./node-groups) documentation and our [Node Group example directory](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/feature/doc-updates-readme-getting-started/examples/node-groups) for detailed information.
+See our [Node Groups](https://aws-ia.github.io/terraform-aws-eks-blueprints/node-groups/) documentation and our [Node Group example directory](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/feature/doc-updates-readme-getting-started/examples/node-groups) for detailed information.
 
 ## Add-on
 
@@ -22,7 +22,7 @@ See our [Node Groups](./node-groups) documentation and our [Node Group example d
 
 For example, the `metrics-server` add-on only deploys the Kubernetes manifests that are needed to run the Kubernetes Metrics Server. By contrast, the `aws-load-balancer-controller` add-on deploys both Kubernetes YAML, in addition to creating resources via AWS APIs that are needed to support the AWS Load Balancer Controller functionality.
 
-EKS Blueprints allows you to manage your add-ons directly via Terraform (by leveraging the Terraform Helm provider) or via GitOps with ArgoCD. See our [`Add-ons`](./add-ons) documentation page for detailed information.
+EKS Blueprints allows you to manage your add-ons directly via Terraform (by leveraging the Terraform Helm provider) or via GitOps with ArgoCD. See our [`Add-ons`](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/) documentation page for detailed information.
 
 ## Team
 
@@ -34,4 +34,4 @@ See our [`Teams`](./teams) documentation page for detailed information.
 
 `Applications` represent the actual workloads that run within a Kubernetes cluster. The framework leverages a GitOps approach for deploying applications onto clusters.
 
-See our [`Applications](./add-ons/argocd.md#boostrapping) documentation for detailed information.
+See our [`Applications](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/argocd/#boostrapping) documentation for detailed information.

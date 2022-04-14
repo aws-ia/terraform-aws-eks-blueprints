@@ -4,7 +4,7 @@ This getting started guide will help you deploy your first EKS environment using
 
 ## Prerequisites:
 
-Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module.
+First, ensure that you have installed the following tools locally.
 
 1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
