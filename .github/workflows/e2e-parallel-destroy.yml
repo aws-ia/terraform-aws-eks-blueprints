@@ -49,6 +49,14 @@ jobs:
             tenant_name: "agones"
           - example_path: examples/ingress-controllers/nginx
             tenant_name: "nginx"
+            deployment_order:
+              [
+                "module.e2e-test.module.aws_vpc",
+                "module.e2e-test.module.eks-blueprints",
+                "module.e2e-test.module.eks-blueprints-kubernetes-addons",
+                "module.e2e-test.module.aws_load_balancer_controller",
+                "module.e2e-test.module.ingress_nginx",
+              ]
           - example_path: examples/karpenter
             tenant_name: "karpenter"
           - example_path: examples/node-groups/managed-node-groups
