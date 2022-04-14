@@ -5,6 +5,7 @@ package src
 
 import (
 	"context"
+	internal "github.com/aws-ia/terraform-aws-eks-blueprints/aws"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	test_structure "github.com/gruntwork-io/terratest/modules/test-structure"
@@ -13,23 +14,22 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"strings"
 	"testing"
-	internal "github.com/aws-ia/terraform-aws-eks-blueprints/aws"
 )
 
 var (
 	//Test Driven tests Inputs https://github.com/golang/go/wiki/TableDrivenTests
 	testCases = []struct {
-		name   string
-		region string
+		name        string
+		region      string
 		eks_cluster string
-		values map[string]string
+		values      map[string]string
 	}{
 		{
 			"eks-cluster-with-new-vpc",
 			"us-west-2",
 			"aws-terra-test-eks",
 			map[string]string{
-				"rootFolder": "../..",
+				"rootFolder":        "../..",
 				"exampleFolderPath": "examples/eks-cluster-with-new-vpc"},
 		},
 	}
@@ -43,7 +43,8 @@ var (
 		"module.kubernetes_addons",
 		"module.eks_blueprints",
 		"module.aws_vpc",
-		"full_destroy"}
+		"full_destroy",
+	}
 
 	/*Update the expected Output variables and values*/
 	outputParameters = [...]Outputs{
@@ -141,8 +142,8 @@ func TestEksBlueprintsE2E(t *testing.T) {
 							//	"key":    S3BackendConfig["s3Prefix"]+testCase.name,
 							//	"region": S3BackendConfig["awsRegion"],
 							//},
-							Targets:      []string{target},
-							NoColor:      true,
+							Targets: []string{target},
+							NoColor: true,
 						}
 						terraformOptions := getTerraformOptions(t, destroyTFOptions)
 						terraform.Destroy(t, terraformOptions)

@@ -1,4 +1,4 @@
-name: e2e-test
+name: e2e-terratest
 
 on:
   workflow_dispatch:
