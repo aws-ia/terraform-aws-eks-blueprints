@@ -1,12 +1,13 @@
 # EKS Cluster Deployment with the nginx add-on enabled
 
-This example deploys the following Basic EKS Cluster with VPC. In AWS we use a Network load balancer (NLB) to expose the NGINX Ingress controller behind a Service of _Type=LoadBalancer_.
+This example deploys the following Basic EKS Cluster with VPC. In AWS we use a Network load balancer (NLB) to expose the NGINX Ingress controller behind a Service of _Type=LoadBalancer_ leveraging AWS Load Balancer Controller (LBC).
 
 - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
 - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
 - Creates EKS Cluster Control plane with managed nodes
 - Creates the nginx controller resources; such as an internet facing AWS Network Load Balancer, AWS IAM role and policy
   for the nginx service account, etc.
+  - Nginx controller service is using the LBC annotations to manage the NLB.
 
 ## How to Deploy
 
@@ -49,10 +50,14 @@ terraform plan
 to create resources
 
 ```shell script
-terraform apply
+terraform apply -target="module.aws_vpc"
+terraform apply -target="module.module.eks-blueprints"
+terraform apply -target="module.module.eks-blueprints-kubernetes-addons"
+terraform apply -target="module.module.aws_load_balancer_controller" 
+terraform apply -target="module.module.ingress_nginx" 
 ```
 
-Enter `yes` to apply
+Enter `yes` for each apply
 
 ### Configure `kubectl` and test cluster
 
@@ -85,7 +90,11 @@ The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/ingress-controllers/nginx
-terraform destroy --auto-approve
+terraform apply -target="module.module.ingress_nginx" -auto-approve
+terraform apply -target="module.module.aws_load_balancer_controller" -auto-approve
+terraform apply -target="module.module.eks-blueprints-kubernetes-addons" -auto-approve
+terraform apply -target="module.module.eks-blueprints" -auto-approve
+terraform apply -target="module.aws_vpc" -auto-approve
 ```
 
 <!--- BEGIN_TF_DOCS --->
@@ -140,4 +149,4 @@ terraform destroy --auto-approve
 
 ## Learn more
 
-Read this blog, [Using a Network Load Balancer with the NGINX Ingress Controller on Amazon EKS](https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/).
+Read more about using NLB to expose the NGINX ingress controller using AWS Load Balancer Controller [here](https://kubernetes.github.io/ingress-nginx/deploy/#aws).
