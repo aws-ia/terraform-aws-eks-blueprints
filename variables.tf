@@ -134,7 +134,7 @@ variable "cluster_kms_key_deletion_window_in_days" {
   description = "The waiting period, specified in number of days (7 - 30). After the waiting period ends, AWS KMS deletes the KMS key"
 }
 
-variable "cluster_kms_additional_admin_arns" {
+variable "cluster_kms_key_additional_admin_arns" {
   type = list(string)
   description = "A list of additional IAM ARNs that should have FULL access (kms:*) in the KMS key policy."
   default = []
