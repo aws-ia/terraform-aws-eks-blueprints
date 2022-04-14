@@ -1,6 +1,5 @@
 # Amazon EKS Blueprints for Terraform
 
-![GitHub](https://img.shields.io/github/license/aws-ia/terraform-aws-eks-blueprints)
 [![e2e-test](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-test.yml)
 [![terrascan](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/terrascan.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/terrascan.yml)
 [![tfsec](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/tfsec-analysis.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/tfsec-analysis.yml)
