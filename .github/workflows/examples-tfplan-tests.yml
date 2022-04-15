@@ -25,7 +25,6 @@ jobs:
             examples/gitops/argocd,
             examples/aws-efs-csi-driver,
             examples/crossplane,
-            examples/eks-cluster-with-external-dns,
             examples/eks-cluster-with-new-vpc,
             examples/fully-private-eks-cluster,
             examples/game-tech/agones-game-controller,
