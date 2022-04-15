@@ -67,7 +67,7 @@ The below example demonstrates advanced configuration options for a managed node
 
 The below example demonstrates advanced configuration options using Spot/GPU instances/ARM instances/Bottlerocket and custom AMIs managed node groups.
 
-```
+```hcl
     #---------------------------------------------------------#
     # SPOT Worker Group
     #---------------------------------------------------------#
@@ -79,7 +79,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
       pre_userdata           = <<-EOT
                  yum install -y amazon-ssm-agent
-                 systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
+                 systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
              EOT
       # Node Group scaling configuration
       desired_size = 2
@@ -125,7 +125,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
       pre_userdata           = <<-EOT
             yum install -y amazon-ssm-agent
-            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
+            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
         EOT
       # 2> Node Group scaling configuration
       desired_size    = 2
@@ -168,7 +168,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
       pre_userdata           = <<-EOT
             yum install -y amazon-ssm-agent
-            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
+            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
         EOT
       # 2> Node Group scaling configuration
       desired_size    = 2
@@ -209,10 +209,6 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       create_launch_template = true           # false will use the default launch template
       launch_template_os     = "bottlerocket" # amazonlinux2eks or bottlerocket
       public_ip              = false          # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
-      pre_userdata           = <<-EOT
-            yum install -y amazon-ssm-agent
-            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
-        EOT
       # 2> Node Group scaling configuration
       desired_size    = 2
       max_size        = 2
@@ -252,10 +248,6 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       create_launch_template = true           # false will use the default launch template
       launch_template_os     = "bottlerocket" # amazonlinux2eks or bottlerocket
       public_ip              = false          # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
-      pre_userdata           = <<-EOT
-            yum install -y amazon-ssm-agent
-            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
-        EOT
       # 2> Node Group scaling configuration
       desired_size    = 2
       max_size        = 2
