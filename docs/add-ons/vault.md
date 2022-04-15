@@ -32,13 +32,3 @@ Alternatively, you can override the Helm Values by setting the `vault_helm_confi
 ```
 
 This snippet does not contain _all_ available options that can be set as part of `vault_helm_config`. For the complete listing, see the [`hashicorp-vault-eks-blueprints-addon` repository](https://github.com/hashicorp/hashicorp-vault-eks-blueprints-addon/blob/main/locals.tf).
-
-### GitOps Configuration
-
-The following properties are made available for use when managing the add-on via GitOps
-
-```hcl
-vault = {
-  enable = true
-}
-```
