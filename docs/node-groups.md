@@ -5,6 +5,45 @@ The framework uses dedicated sub modules for creating [AWS Managed Node Groups](
 The `aws-auth` ConfigMap handled by this module allow your nodes to join your cluster, and you also use this ConfigMap to add RBAC access to IAM users and roles.
 Each Node Group can have dedicated IAM role, Launch template and Security Group to improve the security.
 
+## Additional IAM Roles, Users and Accounts
+Access to EKS cluster using AWS IAM entities is enabled by the [AWS IAM Authenticator](https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html) for Kubernetes, which runs on the Amazon EKS control plane. 
+The authenticator gets its configuration information from the `aws-auth` [ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/).
+
+The following config grants additional AWS IAM users or roles the ability to interact with your cluster. However, the best practice is to leverage [soft-multitenancy](https://aws.github.io/aws-eks-best-practices/security/docs/multitenancy/) with the help of [Teams](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/teams.md) module. Teams feature helps to manage users with dedicated namespaces, RBAC, IAM roles and register users with `aws-auth` to provide access to the EKS Cluster.
+
+The below example demonstrates adding additional IAM Roles, IAM Users and Accounts using EKS Blueprints module
+
+```hcl
+module "eks_blueprints" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints"
+
+  # EKS CLUSTER
+  cluster_version    = "1.21"                                         # EKS Cluster Version  
+  vpc_id             = "<vpcid>"                                      # Enter VPC ID
+  private_subnet_ids = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]     # Enter Private Subnet IDs
+  
+  # List of map_roles
+  map_roles          = [
+    {
+      rolearn  = "arn:aws:iam::<aws-account-id>:role/<role-name>"     # The ARN of the IAM role
+      username = "ops-role"                                           # The user name within Kubernetes to map to the IAM role
+      groups   = ["system:masters"]                                   # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
+    }
+  ]
+  
+  # List of map_users
+  map_users = [
+    {
+      userarn  = "arn:aws:iam::<aws-account-id>:user/<username>"      # The ARN of the IAM user to add.
+      username = "opsuser"                                            # The user name within Kubernetes to map to the IAM role
+      groups   = ["system:masters"]                                   # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
+    }
+  ]
+
+  map_accounts = ["123456789", "9876543321"]                          # List of AWS account ids
+}
+```
+
 ## Managed Node Groups
 
 The below example demonstrates the minimum configuration required to deploy a managed node group.
@@ -20,7 +59,7 @@ The below example demonstrates the minimum configuration required to deploy a ma
     }
 ```
 
-The below example demonstrates advanced configuration options for a managed node group.
+The below example demonstrates advanced configuration options for a managed node group with launch templates.
 
 ```hcl
     managed_node_groups = {
@@ -32,7 +71,7 @@ The below example demonstrates advanced configuration options for a managed node
         public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
         pre_userdata           = <<-EOT
                     yum install -y amazon-ssm-agent
-                    systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
+                    systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
                 EOT
         # 2> Node Group scaling configuration
         desired_size    = 3
@@ -48,9 +87,10 @@ The below example demonstrates advanced configuration options for a managed node
 
         # 4> Node Group network configuration
         subnet_ids = [] # Mandatory - # Define private/public subnets list with comma separated ["subnet1","subnet2","subnet3"]
-        k8s_taints = []
+
         # optionally, configure a taint on the node group:
-        # k8s_taints = [{key= "purpose", value="execution", "effect"="NO_SCHEDULE"}]
+        k8s_taints = [{key= "purpose", value="execution", "effect"="NO_SCHEDULE"}]
+        
         k8s_labels = {
           Environment = "preprod"
           Zone        = "dev"
@@ -134,7 +174,9 @@ The below example demonstrates advanced configuration options for a self-managed
     }
 ```
 
-With the previous described example at `block_device_mapping`, in case you choose an instance that has local NVMe storage, you will achieve the three specified EBS disks plus all local NVMe disks that instance brings. For example, for an `m5d.large` you will end up with the following mount points: `/` for device named `/dev/xvda`, `/local1` for device named `/dev/xvdf`, `/local2` for device named `/dev/xvdg`, and `/local3` for instance storage (in such case a disk with 70GB).
+With the previous described example at `block_device_mapping`, in case you choose an instance that has local NVMe storage, you will achieve the three specified EBS disks plus all local NVMe disks that instance brings. 
+
+For example, for an `m5d.large` you will end up with the following mount points: `/` for device named `/dev/xvda`, `/local1` for device named `/dev/xvdf`, `/local2` for device named `/dev/xvdg`, and `/local3` for instance storage (in such case a disk with 70GB).
 
 Check the following references as you may desire:
 

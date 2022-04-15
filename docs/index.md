@@ -16,10 +16,14 @@ This solution handles integrating EKS with popular open source and partner tools
 
 Customers can use this solution to easily architect and deploy a multi-tenant blueprint built on EKS. Specifically, customers can leverage the eks-blueprints module to:
 
-✅ Deploy Well-Architected EKS clusters across any number of accounts and regions.\
-✅ Manage cluster configuration, including add-ons that run in each cluster, from a single Git repository.\
-✅ Define teams, namespaces, and their associated access permissions for your clusters.\
-✅ Create Continuous Delivery (CD) pipelines that are responsible for deploying your infrastructure.\
+✅ Deploy Well-Architected EKS clusters across any number of accounts and regions.
+
+✅ Manage cluster configuration, including add-ons that run in each cluster, from a single Git repository.
+
+✅ Define teams, namespaces, and their associated access permissions for your clusters.
+
+✅ Create Continuous Delivery (CD) pipelines that are responsible for deploying your infrastructure.
+
 ✅ Leverage GitOps-based workflows for onboarding and managing workloads for your teams.
 
 ## Examples
