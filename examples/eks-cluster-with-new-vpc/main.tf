@@ -21,20 +21,18 @@ terraform {
   }
 }
 
-data "aws_region" "current" {}
-
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
-  name = module.eks-blueprints.eks_cluster_id
+  name = module.eks_blueprints.eks_cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks-blueprints.eks_cluster_id
+  name = module.eks_blueprints.eks_cluster_id
 }
 
 provider "aws" {
-  region = data.aws_region.current.id
+  region = var.region
   alias  = "default"
 }
 
@@ -98,7 +96,7 @@ module "aws_vpc" {
 #---------------------------------------------------------------
 # Example to consume eks-blueprints module
 #---------------------------------------------------------------
-module "eks-blueprints" {
+module "eks_blueprints" {
   source = "../.."
 
   tenant            = local.tenant
@@ -117,16 +115,16 @@ module "eks-blueprints" {
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["m4.large"]
+      instance_types  = ["m5.large"]
       min_size        = "2"
       subnet_ids      = module.aws_vpc.private_subnets
     }
   }
 }
 
-module "eks-blueprints-kubernetes-addons" {
+module "kubernetes_addons" {
   source         = "../../modules/kubernetes-addons"
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   # EKS Managed Add-ons
   enable_amazon_eks_vpc_cni    = true
@@ -138,10 +136,5 @@ module "eks-blueprints-kubernetes-addons" {
   enable_metrics_server               = true
   enable_cluster_autoscaler           = true
 
-  depends_on = [module.eks-blueprints.managed_node_groups]
-}
-
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.eks-blueprints.configure_kubectl
+  depends_on = [module.eks_blueprints.managed_node_groups]
 }

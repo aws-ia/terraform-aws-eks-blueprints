@@ -61,7 +61,7 @@ module "aws_eks" {
   cluster_security_group_additional_rules = var.cluster_security_group_additional_rules
 
   # Worker Node Security Group
-  create_node_security_group           = true
+  create_node_security_group           = var.create_node_security_group
   node_security_group_additional_rules = var.node_security_group_additional_rules
 
   # IRSA

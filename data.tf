@@ -9,15 +9,6 @@ data "aws_eks_cluster" "cluster" {
   name  = module.aws_eks.cluster_id
 }
 
-data "aws_eks_cluster_auth" "cluster" {
-  count = var.create_eks ? 1 : 0
-  name  = module.aws_eks.cluster_id
-}
-
-data "aws_availability_zones" "available" {
-  state = "available"
-}
-
 data "http" "eks_cluster_readiness" {
   count = var.create_eks ? 1 : 0
 
@@ -31,7 +22,6 @@ data "aws_iam_session_context" "current" {
 }
 
 data "aws_iam_policy_document" "eks_key" {
-
   statement {
     sid    = "Allow access for all principals in the account that are authorized"
     effect = "Allow"
