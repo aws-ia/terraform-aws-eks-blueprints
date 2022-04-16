@@ -53,8 +53,8 @@ to create resources
 terraform apply -target="module.aws_vpc"
 terraform apply -target="module.eks-blueprints"
 terraform apply -target="module.eks-blueprints-kubernetes-addons"
-terraform apply -target="module.aws_load_balancer_controller" 
-terraform apply -target="module.ingress_nginx" 
+terraform apply -target="module.aws_load_balancer_controller"
+terraform apply -target="module.ingress_nginx"
 ```
 
 Enter `yes` for each apply

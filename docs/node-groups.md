@@ -6,7 +6,7 @@ The `aws-auth` ConfigMap handled by this module allow your nodes to join your cl
 Each Node Group can have dedicated IAM role, Launch template and Security Group to improve the security.
 
 ## Additional IAM Roles, Users and Accounts
-Access to EKS cluster using AWS IAM entities is enabled by the [AWS IAM Authenticator](https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html) for Kubernetes, which runs on the Amazon EKS control plane. 
+Access to EKS cluster using AWS IAM entities is enabled by the [AWS IAM Authenticator](https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html) for Kubernetes, which runs on the Amazon EKS control plane.
 The authenticator gets its configuration information from the `aws-auth` [ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/).
 
 The following config grants additional AWS IAM users or roles the ability to interact with your cluster. However, the best practice is to leverage [soft-multitenancy](https://aws.github.io/aws-eks-best-practices/security/docs/multitenancy/) with the help of [Teams](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/teams.md) module. Teams feature helps to manage users with dedicated namespaces, RBAC, IAM roles and register users with `aws-auth` to provide access to the EKS Cluster.
@@ -21,7 +21,7 @@ module "eks_blueprints" {
   cluster_version    = "1.21"                                         # EKS Cluster Version  
   vpc_id             = "<vpcid>"                                      # Enter VPC ID
   private_subnet_ids = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]     # Enter Private Subnet IDs
-  
+
   # List of map_roles
   map_roles          = [
     {
@@ -30,7 +30,7 @@ module "eks_blueprints" {
       groups   = ["system:masters"]                                   # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
     }
   ]
-  
+
   # List of map_users
   map_users = [
     {
@@ -90,7 +90,7 @@ The below example demonstrates advanced configuration options for a managed node
 
         # optionally, configure a taint on the node group:
         k8s_taints = [{key= "purpose", value="execution", "effect"="NO_SCHEDULE"}]
-        
+
         k8s_labels = {
           Environment = "preprod"
           Zone        = "dev"
@@ -196,7 +196,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       }
       create_worker_security_group = false
     },
-    
+
     #---------------------------------------------------------#
     # ARM instance type Worker Group
     #---------------------------------------------------------#
@@ -427,7 +427,7 @@ The below example demonstrates advanced configuration options for a self-managed
     }
 ```
 
-With the previous described example at `block_device_mapping`, in case you choose an instance that has local NVMe storage, you will achieve the three specified EBS disks plus all local NVMe disks that instance brings. 
+With the previous described example at `block_device_mapping`, in case you choose an instance that has local NVMe storage, you will achieve the three specified EBS disks plus all local NVMe disks that instance brings.
 
 For example, for an `m5d.large` you will end up with the following mount points: `/` for device named `/dev/xvda`, `/local1` for device named `/dev/xvdf`, `/local2` for device named `/dev/xvdg`, and `/local3` for instance storage (in such case a disk with 70GB).
 
