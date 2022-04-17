@@ -154,6 +154,69 @@ variable "crossplane_jet_aws_provider" {
   }
 }
 
+#-----------ONDAT ADDON-------------
+variable "enable_ondat" {
+  type        = bool
+  default     = false
+  description = "Enable Ondat add-on"
+}
+
+variable "ondat_helm_config" {
+  type        = any
+  default     = {}
+  description = "Ondat Helm Chart config"
+}
+
+variable "ondat_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for Ondat IRSA"
+}
+
+variable "ondat_create_cluster" {
+  type        = bool
+  default     = true
+  description = "Create cluster resources"
+}
+
+variable "ondat_etcd_endpoints" {
+  type        = list(string)
+  default     = []
+  description = "List of etcd endpoints for Ondat"
+}
+
+variable "ondat_etcd_ca" {
+  type        = string
+  default     = null
+  description = "CA content for Ondat etcd"
+}
+
+variable "ondat_etcd_cert" {
+  type        = string
+  default     = null
+  description = "Certificate content for Ondat etcd"
+}
+
+variable "ondat_etcd_key" {
+  type        = string
+  default     = null
+  sensitive   = true
+  description = "Private key content for Ondat etcd"
+}
+
+variable "ondat_admin_username" {
+  type        = string
+  default     = "storageos"
+  description = "Username for Ondat admin user"
+}
+
+variable "ondat_admin_password" {
+  type        = string
+  default     = "storageos"
+  sensitive   = true
+  description = "Password for Ondat admin user"
+}
+
 #-----------External DNS ADDON-------------
 variable "enable_external_dns" {
   type        = bool
