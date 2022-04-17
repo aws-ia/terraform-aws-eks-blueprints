@@ -242,6 +242,6 @@ module "velero" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
   irsa_policies     = var.velero_irsa_policies
-  s3bucketname      = var.velero_backup_bucket
+  velero_backup_bucket = var.velero_backup_bucket
 }
 
