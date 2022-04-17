@@ -135,9 +135,9 @@ variable "cluster_kms_key_deletion_window_in_days" {
 }
 
 variable "cluster_kms_key_additional_admin_arns" {
-  type = list(string)
+  type        = list(string)
   description = "A list of additional IAM ARNs that should have FULL access (kms:*) in the KMS key policy."
-  default = []
+  default     = []
 }
 
 variable "cluster_encryption_config" {
