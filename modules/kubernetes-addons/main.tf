@@ -227,6 +227,18 @@ module "traefik" {
   addon_context     = local.addon_context
 }
 
+module "vault" {
+  count = var.enable_vault ? 1 : 0
+
+  # See https://registry.terraform.io/modules/hashicorp/hashicorp-vault-eks-addon/aws/
+  source  = "hashicorp/hashicorp-vault-eks-addon/aws"
+  version = "0.9.0"
+
+  helm_config       = var.vault_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "vpa" {
   count             = var.enable_vpa ? 1 : 0
   source            = "./vpa"

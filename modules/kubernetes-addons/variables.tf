@@ -546,6 +546,19 @@ variable "kubernetes_dashboard_irsa_policies" {
   description = "IAM policy ARNs for Kubernetes Dashboard IRSA"
 }
 
+#-----------HashiCorp Vault-------------
+variable "enable_vault" {
+  type        = bool
+  default     = false
+  description = "Enable HashiCorp Vault add-on"
+}
+
+variable "vault_helm_config" {
+  type        = any
+  default     = null
+  description = "HashiCorp Vault Helm Chart config"
+}
+
 #------Vertical Pod Autoscaler(VPA) ADDON--------
 variable "enable_vpa" {
   type        = bool
