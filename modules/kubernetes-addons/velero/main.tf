@@ -16,13 +16,13 @@ module "helm_addon" {
 
 
 resource "aws_s3_bucket" "s3" {
-  count = var.velero_backup_bucket != "" ? 0 : 1
+  count         = var.velero_backup_bucket != "" ? 0 : 1
   bucket_prefix = local.s3bucketprefix
 
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
-  count = var.velero_backup_bucket != "" ? 0 : 1
+  count  = var.velero_backup_bucket != "" ? 0 : 1
   bucket = aws_s3_bucket.s3[0].bucket
   rule {
     apply_server_side_encryption_by_default {
