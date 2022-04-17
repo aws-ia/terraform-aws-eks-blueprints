@@ -559,3 +559,16 @@ variable "kubernetes_velero_helm_config" {
   default     = null
   description = "Kubernetes Velero Helm Chart config"
 }
+
+variable "velero_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for velero IRSA"
+}
+
+variable "velero_backup_bucket" {
+  type        = string
+  default     = ""
+  description = "Bucket name for velero bucket"
+}
+

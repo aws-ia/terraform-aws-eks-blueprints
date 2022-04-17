@@ -1,8 +1,3 @@
-####
-# Add your custom resources here...
-# such as IRSA policy statement
-####
-
 # Invokes the generic helm-addon module which is a convenience module
 # EKS Blueprints framework provides to create helm based addons easily
 
@@ -14,23 +9,24 @@ module "helm_addon" {
   helm_config       = local.helm_config
   irsa_config       = local.irsa_config
   addon_context     = var.addon_context
-   depends_on = [
-    aws_s3_bucket.s3, 
+  depends_on = [
+    aws_s3_bucket.s3,
   ]
 }
 
 
 resource "aws_s3_bucket" "s3" {
-   bucket_prefix = local.s3bucketprefix
-  
+  count = var.velero_backup_bucket != "" ? 0 : 1
+  bucket_prefix = local.s3bucketprefix
+
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
+  count = var.velero_backup_bucket != "" ? 0 : 1
   bucket = aws_s3_bucket.s3.bucket
-
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "AES256"
+      sse_algorithm = "AES256"
     }
   }
 }

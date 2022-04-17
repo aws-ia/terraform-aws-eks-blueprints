@@ -22,6 +22,12 @@ variable "irsa_policies" {
   description = "IAM policy ARNs for Kube State Metrics IRSA"
 }
 
+variable "velero_backup_bucket" {
+  type        = string
+  default     = ""
+  description = "Bucket name for velero bucket"
+}
+
 variable "addon_context" {
   type = object({
     aws_caller_identity_account_id = string

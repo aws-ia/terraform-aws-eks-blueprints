@@ -139,10 +139,10 @@ module "aws-eks-accelerator-for-terraform" {
 }
 
 module "kubernetes-addons" {
-  source = "../../modules/kubernetes-addons"
-  enable_velero= true
+  source         = "../../modules/kubernetes-addons"
+  enable_velero  = true
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-  depends_on = [module.aws-eks-accelerator-for-terraform.self_managed_node_groups]
+  depends_on     = [module.aws-eks-accelerator-for-terraform.self_managed_node_groups]
 }
 
 output "configure_kubectl" {

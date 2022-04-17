@@ -1,8 +1,8 @@
 locals {
   name                 = "velero"
   service_account_name = local.name
-  s3bucketprefix = "eks-tf-velero-backup"
-  s3bucketname = aws_s3_bucket.s3.id
+  s3bucketprefix       = "eks-tf-velero-backup"
+  s3bucketname         = var.velero_backup_bucket != "" ? var.velero_backup_bucket : aws_s3_bucket.s3.id
 
   default_helm_config = {
     name        = local.name
@@ -30,6 +30,10 @@ locals {
     {
       name  = "serviceAccount.name"
       value = local.service_account_name
+    },
+    {
+      name  = "serviceAccount.server.create"
+      value = false
     }
   ]
 

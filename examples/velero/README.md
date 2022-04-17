@@ -22,7 +22,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 #### Step1: Clone the repo using the command below
 
 ```shell script
-git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 #### Step2: Run Terraform INIT
@@ -89,8 +89,6 @@ velero backup-location get
 
 NAME      PROVIDER   BUCKET/PREFIX                                    PHASE     LAST VALIDATED   ACCESS MODE   DEFAULT
 default   aws        eks-tf-velero-backup20220410090713882000000001   Unknown   Unknown          ReadWrite  
-
-
 ```
 
 ## Example of backup and restore for a namespace running nginx
@@ -100,7 +98,6 @@ Create a new namespace and run nginx using below commands
 ```
 kubectl create namespace backupdemo
 kubectl run nginx --image=nginx -n backupdemo
-
 ```
 
 Create backup of this namespace using velero 
@@ -108,7 +105,6 @@ Create backup of this namespace using velero
 ```
 velero backup create backup1 --include-namespaces backupdemo
 velero backup describe backup1
-
 ```
 
 Delete the namespace
@@ -188,4 +184,4 @@ No inputs.
 |------|-------------|
 | <a name="output_configure_kubectl"></a> [configure\_kubectl](#output\_configure\_kubectl) | Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
 
-<!--- END_TF_DOCS --->
+<!--- END_TF_DOCS --->git
