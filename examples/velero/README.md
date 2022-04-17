@@ -132,7 +132,7 @@ NOTE: Make sure you delete all the deployments which clean up the nodes spun up 
 Ensure no nodes are running created by Karpenter before running the `Terraform Destroy`. Otherwise, EKS Cluster will be cleaned up however this may leave some nodes running in EC2.
 
 ```shell script
-cd examples/eks-cluster-with-karpenter
+cd examples/velero
 terraform destroy
 ```
 
@@ -160,19 +160,16 @@ terraform destroy
 |------|--------|---------|
 | <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | ../.. | n/a |
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
-| <a name="module_karpenter-launch-templates"></a> [karpenter-launch-templates](#module\_karpenter-launch-templates) | ../../modules/launch-templates | n/a |
 | <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | ../../modules/kubernetes-addons | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [kubectl_manifest.karpenter_provisioner](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/manifest) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
 | [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
 | [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
-| [kubectl_path_documents.karpenter_provisioners](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/data-sources/path_documents) | data source |
 
 ## Inputs
 
@@ -184,4 +181,8 @@ No inputs.
 |------|-------------|
 | <a name="output_configure_kubectl"></a> [configure\_kubectl](#output\_configure\_kubectl) | Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
 
+<<<<<<< HEAD
 <!--- END_TF_DOCS --->git
+=======
+<!--- END_TF_DOCS --->
+>>>>>>> 5103b628934e283dd7c5c3c24a608f21b87d7494
