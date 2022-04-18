@@ -29,12 +29,6 @@ data "aws_eks_cluster_auth" "cluster" {
   name = module.eks-blueprints.eks_cluster_id
 }
 
-terraform {
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
-  }
-}
-
 locals {
   tenant      = var.tenant      # AWS account name or unique id for tenant
   environment = var.environment # Environment area eg., preprod or prod
