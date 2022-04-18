@@ -21,8 +21,6 @@ terraform {
   }
 }
 
-data "aws_region" "current" {}
-
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
@@ -34,8 +32,7 @@ data "aws_eks_cluster_auth" "cluster" {
 }
 
 provider "aws" {
-  region = data.aws_region.current.id
-  alias  = "default"
+  region = local.region
 }
 
 provider "kubernetes" {
@@ -60,6 +57,7 @@ locals {
   environment     = "preprod" # Environment area eg., preprod or prod
   zone            = "dev"     # Environment with in one sub_tenant or business unit
   cluster_version = "1.21"
+  region          = "us-west-2"
 
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])

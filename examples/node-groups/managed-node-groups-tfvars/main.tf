@@ -27,7 +27,9 @@ terraform {
 #------------------------------------------------------------------------
 # Terraform Providers
 #------------------------------------------------------------------------
-provider "aws" {}
+provider "aws" {
+  region = local.region
+}
 
 provider "kubernetes" {
   experiments {
@@ -54,6 +56,7 @@ locals {
   azs                     = slice(data.aws_availability_zones.available.names, 0, local.count_availability_zone)
   vpc_name                = join("-", [var.tenant, var.environment, var.zone, "vpc"])
   cluster_name            = join("-", [var.tenant, var.environment, var.zone, "eks"])
+  region                  = "us-west-2"
 }
 
 output "configure_kubectl" {

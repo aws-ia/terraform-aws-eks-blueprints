@@ -20,8 +20,6 @@ terraform {
   }
 }
 
-data "aws_region" "current" {}
-
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
@@ -33,8 +31,7 @@ data "aws_eks_cluster_auth" "cluster" {
 }
 
 provider "aws" {
-  region = data.aws_region.current.id
-  alias  = "default"
+  region = local.region
 }
 
 provider "kubernetes" {
@@ -55,9 +52,11 @@ provider "helm" {
 }
 
 locals {
-  tenant         = var.tenant
-  environment    = var.environment
-  zone           = var.zone
+  tenant      = var.tenant
+  environment = var.environment
+  zone        = var.zone
+  region      = "us-west-2"
+
   eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   cluster_version   = "1.21"
@@ -352,7 +351,7 @@ module "eks-blueprints-kubernetes-addons" {
     aws_for_fluentbit_cwlog_retention_in_days = 90
     create_namespace                          = true
     values = [templatefile("${path.module}/helm_values/aws-for-fluentbit-values.yaml", {
-      region                          = data.aws_region.current.name,
+      region                          = local.region
       aws_for_fluent_bit_cw_log_group = "/${local.eks_cluster_id}/worker-fluentbit-logs"
     })]
     set = [
@@ -387,7 +386,7 @@ module "eks-blueprints-kubernetes-addons" {
 [OUTPUT]
   Name cloudwatch_logs
   Match *
-  region ${data.aws_region.current.name}
+  region ${local.region}
   log_group_name /${local.eks_cluster_id}/fargate-fluentbit-logs
   log_stream_prefix "fargate-logs-"
   auto_create_group true

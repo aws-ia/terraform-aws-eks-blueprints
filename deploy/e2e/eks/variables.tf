@@ -4,11 +4,6 @@ variable "cluster_version" {
   default     = "1.21"
 }
 
-variable "region" {
-  type        = string
-  description = "AWS region"
-}
-
 variable "tf_state_vpc_s3_bucket" {
   type        = string
   description = "Terraform state S3 Bucket Name"

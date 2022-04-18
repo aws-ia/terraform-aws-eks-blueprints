@@ -21,7 +21,9 @@ terraform {
   }
 }
 
-provider "aws" {}
+provider "aws" {
+  region = local.region
+}
 
 provider "kubernetes" {
   experiments {
@@ -40,8 +42,6 @@ provider "helm" {
   }
 }
 
-data "aws_region" "current" {}
-
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
@@ -57,6 +57,7 @@ locals {
   environment     = var.environment # Environment area eg., preprod or prod
   zone            = var.zone        # Environment with in one sub_tenant or business unit
   cluster_version = var.cluster_version
+  region          = "us-west-2"
 
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])

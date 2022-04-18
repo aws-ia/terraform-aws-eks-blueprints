@@ -13,6 +13,9 @@ repos:
     rev: v1.68.1
     hooks:
       - id: terraform_fmt
-      - id: terraform_validate
+      # - id: terraform_validate
       - id: terraform_tflint
+      - id: terraform_docs
+        args:
+          - '--args=--lockfile=false'
 default_stages: [commit, push]

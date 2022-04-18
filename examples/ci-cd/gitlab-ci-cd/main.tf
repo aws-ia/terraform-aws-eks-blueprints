@@ -26,8 +26,7 @@ terraform {
 }
 
 provider "aws" {
-  region = data.aws_region.current.id
-  alias  = "default"
+  region = local.region
 }
 
 provider "gitlab" {
@@ -48,8 +47,6 @@ provider "helm" {
   }
 }
 
-data "aws_region" "current" {}
-
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
@@ -63,6 +60,7 @@ data "aws_eks_cluster_auth" "cluster" {
 locals {
   vpc_name     = join("-", [var.tenant, var.environment, var.zone, "vpc"])
   cluster_name = join("-", [var.tenant, var.environment, var.zone, "eks"])
+  region       = "us-west-2"
 }
 
 module "aws_vpc" {

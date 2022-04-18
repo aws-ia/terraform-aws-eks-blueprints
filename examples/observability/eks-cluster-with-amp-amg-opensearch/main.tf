@@ -26,10 +26,10 @@ terraform {
 }
 
 locals {
-  tenant      = "aws001"        # AWS account name or unique id for tenant
-  environment = "preprod"       # Environment area eg., preprod or prod
-  zone        = "observability" # Environment within one sub_tenant or business unit
-
+  tenant          = "aws001"        # AWS account name or unique id for tenant
+  environment     = "preprod"       # Environment area eg., preprod or prod
+  zone            = "observability" # Environment within one sub_tenant or business unit
+  region          = "us-west-2"
   cluster_version = "1.21"
 
   vpc_cidr     = "10.0.0.0/16"
@@ -127,7 +127,7 @@ module "eks-blueprints-kubernetes-addons" {
   aws_for_fluentbit_irsa_policies = [aws_iam_policy.fluentbit-opensearch-access.arn]
   aws_for_fluentbit_helm_config = {
     values = [templatefile("${path.module}/helm_values/aws-for-fluentbit-values.yaml", {
-      aws_region = data.aws_region.current.name,
+      aws_region = local.region
       host       = aws_elasticsearch_domain.opensearch.endpoint
     })]
   }
@@ -155,7 +155,7 @@ resource "grafana_data_source" "prometheus" {
     http_method     = "POST"
     sigv4_auth      = true
     sigv4_auth_type = "workspace-iam-role"
-    sigv4_region    = data.aws_region.current.name
+    sigv4_region    = local.region
   }
 }
 

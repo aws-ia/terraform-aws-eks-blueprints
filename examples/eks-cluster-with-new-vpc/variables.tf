@@ -1,9 +1,3 @@
-variable "region" {
-  type        = string
-  description = "AWS Region"
-  default     = "us-west-2"
-}
-
 variable "cluster_version" {
   type        = string
   description = "Kubernetes Version"

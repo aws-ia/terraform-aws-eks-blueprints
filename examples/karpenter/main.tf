@@ -25,8 +25,6 @@ terraform {
   }
 }
 
-data "aws_region" "current" {}
-
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
@@ -56,8 +54,7 @@ data "aws_ami" "bottlerocket" {
 }
 
 provider "aws" {
-  region = data.aws_region.current.id
-  alias  = "default"
+  region = local.region
 }
 
 provider "kubernetes" {
@@ -89,6 +86,7 @@ locals {
   tenant      = var.tenant      # AWS account name or unique id for tenant
   environment = var.environment # Environment area eg., preprod or prod
   zone        = var.zone        # Environment with in one sub_tenant or business unit
+  region      = "us-west-2"
   azs         = slice(data.aws_availability_zones.available.names, 0, 3)
 
   cluster_version = var.cluster_version
