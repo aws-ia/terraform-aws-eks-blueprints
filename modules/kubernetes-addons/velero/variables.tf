@@ -1,6 +1,6 @@
 variable "helm_config" {
   type        = any
-  description = "Helm provider config for the kube-state-metrics"
+  description = "Helm provider config for velero"
   default     = {}
 }
 
@@ -13,7 +13,7 @@ variable "manage_via_gitops" {
 variable "irsa_policies" {
   type        = list(string)
   default     = []
-  description = "IAM policy ARNs for Kube State Metrics IRSA"
+  description = "IAM policy ARNs for Velero IRSA"
 }
 
 variable "velero_backup_bucket" {

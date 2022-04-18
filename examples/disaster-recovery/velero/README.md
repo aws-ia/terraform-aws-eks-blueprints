@@ -29,7 +29,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 to initialize a working directory with configuration files
 
 ```shell script
-cd examples/velero/
+cd examples/disaster-recovery/velero/
 terraform init
 ```
 
@@ -200,8 +200,5 @@ No inputs.
 |------|-------------|
 | <a name="output_configure_kubectl"></a> [configure\_kubectl](#output\_configure\_kubectl) | Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
 
-<<<<<<< HEAD
-<!--- END_TF_DOCS --->git
-=======
 <!--- END_TF_DOCS --->
->>>>>>> 5103b628934e283dd7c5c3c24a608f21b87d7494
+<!--- END_TF_DOCS --->
