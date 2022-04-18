@@ -113,7 +113,7 @@ module "aws_vpc" {
 # Example to consume aws-eks-accelerator-for-terraform module
 #---------------------------------------------------------------
 module "aws-eks-accelerator-for-terraform" {
-  source = "../.."
+  source = "../../.."
 
   tenant            = local.tenant
   environment       = local.environment
@@ -139,7 +139,7 @@ module "aws-eks-accelerator-for-terraform" {
 }
 
 module "kubernetes-addons" {
-  source         = "../../modules/kubernetes-addons"
+  source         = "../../../modules/kubernetes-addons"
   enable_velero  = true
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
   depends_on     = [module.aws-eks-accelerator-for-terraform.self_managed_node_groups]
