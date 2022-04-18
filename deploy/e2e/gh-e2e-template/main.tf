@@ -12,5 +12,4 @@ module "e2e-test" {
   tenant      = var.tenant
   environment = var.environment
   zone        = var.zone
-
 }

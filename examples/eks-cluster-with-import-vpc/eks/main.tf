@@ -76,7 +76,6 @@ locals {
   zone        = var.zone
   region      = "us-west-2"
 
-  cluster_version   = var.cluster_version
   terraform_version = "Terraform v1.0.1"
 
   vpc_id             = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
@@ -97,7 +96,7 @@ module "eks-blueprints" {
   private_subnet_ids = local.private_subnet_ids
 
   # EKS CONTROL PLANE VARIABLES
-  cluster_version = local.cluster_version
+  cluster_version = "1.22"
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {

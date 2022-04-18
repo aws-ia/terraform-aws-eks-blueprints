@@ -89,14 +89,14 @@ locals {
   region      = "us-west-2"
   azs         = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  cluster_version = var.cluster_version
+  cluster_version = "1.22"
 
   vpc_cidr        = "10.0.0.0/16"
   vpc_name        = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   cluster_name    = join("-", [local.tenant, local.environment, local.zone, "eks"])
   node_group_name = "self-ondemand"
-  amazonlinux2eks = "amazon-eks-node-${var.cluster_version}-*"
-  bottlerocket    = "bottlerocket-aws-k8s-${var.cluster_version}-x86_64-*"
+  amazonlinux2eks = "amazon-eks-node-${local.cluster_version}-*"
+  bottlerocket    = "bottlerocket-aws-k8s-${local.cluster_version}-x86_64-*"
 
   terraform_version = "Terraform v1.0.1"
 }

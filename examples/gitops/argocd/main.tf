@@ -58,8 +58,6 @@ locals {
   zone        = var.zone        # Environment with in one sub_tenant or business unit
   region      = "us-west-2"
 
-  cluster_version = var.cluster_version
-
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   azs          = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -136,7 +134,7 @@ module "eks-blueprints" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS CONTROL PLANE VARIABLES
-  cluster_version = local.cluster_version
+  cluster_version = "1.22"
 
   # Managed Node Group
   managed_node_groups = {
