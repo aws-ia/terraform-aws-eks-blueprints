@@ -22,7 +22,7 @@ terraform {
 }
 
 provider "aws" {
-  region = var.region
+  region = local.region
 }
 
 provider "kubernetes" {
@@ -66,7 +66,7 @@ data "terraform_remote_state" "vpc_s3_backend" {
   config = {
     bucket = var.tf_state_vpc_s3_bucket
     key    = var.tf_state_vpc_s3_key
-    region = var.region
+    region = local.region
   }
 }
 
@@ -74,6 +74,7 @@ locals {
   tenant      = var.tenant
   environment = var.environment
   zone        = var.zone
+  region      = "us-west-2"
 
   cluster_version   = var.cluster_version
   terraform_version = "Terraform v1.0.1"

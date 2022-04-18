@@ -1,5 +1,5 @@
 provider "aws" {
-  region = var.region
+  region = local.region
 }
 
 data "aws_availability_zones" "available" {}
@@ -8,6 +8,7 @@ locals {
   tenant      = var.tenant
   environment = var.environment
   zone        = var.zone
+  region      = "us-west-2"
 
   vpc_cidr       = var.vpc_cidr
   vpc_name       = join("-", [local.tenant, local.environment, local.zone, "vpc"])

@@ -4,11 +4,6 @@ variable "cluster_version" {
   default     = "1.21"
 }
 
-variable "region" {
-  type        = string
-  description = "AWS region"
-}
-
 variable "tenant" {
   type        = string
   description = "Account Name or unique account unique id e.g., apps or management or aws007"
