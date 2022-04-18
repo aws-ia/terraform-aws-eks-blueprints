@@ -26,11 +26,10 @@ terraform {
 }
 
 locals {
-  tenant          = "aws001"        # AWS account name or unique id for tenant
-  environment     = "preprod"       # Environment area eg., preprod or prod
-  zone            = "observability" # Environment within one sub_tenant or business unit
-  region          = "us-west-2"
-  cluster_version = "1.21"
+  tenant      = "aws001"        # AWS account name or unique id for tenant
+  environment = "preprod"       # Environment area eg., preprod or prod
+  zone        = "observability" # Environment within one sub_tenant or business unit
+  region      = "us-west-2"
 
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
@@ -95,7 +94,7 @@ module "eks-blueprints" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS Control Plane Variables
-  cluster_version = local.cluster_version
+  cluster_version = "1.22"
 
   managed_node_groups = {
     mg_4 = {

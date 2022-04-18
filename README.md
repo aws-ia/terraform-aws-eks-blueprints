@@ -32,7 +32,7 @@ module "eks_blueprints" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.0.2"
 
   # EKS CLUSTER
-  cluster_version           = "1.21"
+  cluster_version           = "1.22"
   vpc_id                    = "<vpcid>"                                      # Enter VPC ID
   private_subnet_ids        = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]     # Enter Private Subnet IDs
 

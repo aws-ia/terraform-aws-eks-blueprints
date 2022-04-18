@@ -74,11 +74,10 @@ data "aws_ami" "amazonlinux2eks" {
 # Local Variables
 #------------------------------------------------------------------------
 locals {
-  tenant          = var.tenant      # AWS account name or unique id for tenant
-  environment     = var.environment # Environment area eg., preprod or prod
-  zone            = var.zone        # Evironment with in one sub_tenant or business unit
-  region          = "us-west-2"
-  cluster_version = var.cluster_version
+  tenant      = var.tenant      # AWS account name or unique id for tenant
+  environment = var.environment # Environment area eg., preprod or prod
+  zone        = var.zone        # Evironment with in one sub_tenant or business unit
+  region      = "us-west-2"
 
   vpc_cidr                = "10.0.0.0/16"
   vpc_name                = join("-", [local.tenant, local.environment, local.zone, "vpc"])
@@ -139,7 +138,7 @@ module "eks-blueprints" {
   worker_additional_security_group_ids = [] # Optional
 
   # EKS CONTROL PLANE VARIABLES
-  cluster_version = local.cluster_version
+  cluster_version = "1.22"
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {

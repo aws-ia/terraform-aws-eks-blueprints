@@ -59,7 +59,6 @@ locals {
 
   eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
-  cluster_version   = "1.21"
   terraform_version = "Terraform v1.0.1"
 
   vpc_id             = var.vpc_id
@@ -83,7 +82,7 @@ module "eks-blueprints" {
   private_subnet_ids = local.private_subnet_ids
 
   # EKS CONTROL PLANE VARIABLES
-  cluster_version = local.cluster_version
+  cluster_version = "1.22"
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {

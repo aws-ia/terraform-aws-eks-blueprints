@@ -1,9 +1,3 @@
-variable "cluster_version" {
-  type        = string
-  description = "Kubernetes Version"
-  default     = "1.21"
-}
-
 variable "tf_state_vpc_s3_bucket" {
   type        = string
   description = "Terraform state S3 Bucket Name"
