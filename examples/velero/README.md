@@ -104,7 +104,26 @@ Create backup of this namespace using velero
 
 ```
 velero backup create backup1 --include-namespaces backupdemo
+
+Backup request "backup1" submitted successfully.
+Run `velero backup describe backup1` or `velero backup logs backup1` for more details.
+```
+Describe the backup to check the backup status 
+
+```
 velero backup describe backup1
+
+Name:     backup1
+
+Namespace:  velero
+Labels:    velero.io/storage-location=default
+Annotations: velero.io/source-cluster-k8s-gitversion=v1.21.9-eks-0d102a7
+       velero.io/source-cluster-k8s-major-version=1
+       velero.io/source-cluster-k8s-minor-version=21+
+Phase: Completed
+Errors:  0
+Warnings: 0
+
 ```
 
 Delete the namespace
