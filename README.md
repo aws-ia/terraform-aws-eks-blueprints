@@ -69,12 +69,12 @@ module "eks_blueprints_kubernetes_addons" {
 
 The code above will provision the following:
 
-✅  A new EKS Cluster with a managed node group.  
-✅  Amazon EKS add-ons `vpc-cni`, `CoreDNS`, `kube-proxy`, and `aws-ebs-csi-driver`.  
-✅  `Cluster Autoscaler` and `Metrics Server` for scaling your workloads.  
-✅  `Fluent Bit` for routing logs.  
-✅  `AWS Load Balancer Controller` for distributing traffic.  
-✅  `Argocd` for declarative GitOps CD for Kubernetes.  
+✅  A new EKS Cluster with a managed node group.
+✅  Amazon EKS add-ons `vpc-cni`, `CoreDNS`, `kube-proxy`, and `aws-ebs-csi-driver`.
+✅  `Cluster Autoscaler` and `Metrics Server` for scaling your workloads.
+✅  `Fluent Bit` for routing logs.
+✅  `AWS Load Balancer Controller` for distributing traffic.
+✅  `Argocd` for declarative GitOps CD for Kubernetes.
 ✅  `Prometheus` for observability.
 
 ## Add-ons
@@ -258,4 +258,4 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 
 ## License
 
-This library is licensed under the MIT-0 License. See the LICENSE file.
+Apache-2.0 Licensed. See [LICENSE](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/LICENSE).
