@@ -30,7 +30,7 @@ module "aws_vpc" {
 #------------------------------------------------------------------------
 # AWS EKS Blueprints Module
 #------------------------------------------------------------------------
-module "eks-blueprints" {
+module "eks_blueprints" {
   source = "../../.."
 
   # EKS Cluster VPC and Subnet mandatory config
