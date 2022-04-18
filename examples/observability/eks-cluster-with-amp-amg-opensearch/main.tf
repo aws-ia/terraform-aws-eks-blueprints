@@ -1,3 +1,54 @@
+provider "aws" {
+  region = local.region
+}
+
+provider "kubernetes" {
+  host                   = module.eks_blueprints.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1alpha1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.cluster_id]
+  }
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = module.eks_blueprints.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
+
+    exec {
+      api_version = "client.authentication.k8s.io/v1alpha1"
+      command     = "aws"
+      # This requires the awscli to be installed locally where Terraform is executed
+      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.cluster_id]
+    }
+  }
+}
+
+provider "kubectl" {
+  apply_retry_count      = 10
+  host                   = module.eks_blueprints.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
+  load_config_file       = false
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1alpha1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.cluster_id]
+  }
+}
+
+provider "grafana" {
+  url  = var.grafana_endpoint
+  auth = var.grafana_api_key
+}
+
+data "aws_availability_zones" "available" {}
+
 locals {
   tenant      = "aws001"        # AWS account name or unique id for tenant
   environment = "preprod"       # Environment area eg., preprod or prod
@@ -54,7 +105,7 @@ module "aws_vpc" {
 #---------------------------------------------------------------
 # Provision EKS and Helm Charts
 #---------------------------------------------------------------
-module "eks-blueprints" {
+module "eks_blueprints" {
   source = "../../.."
 
   tenant            = local.tenant
@@ -82,7 +133,7 @@ module "eks-blueprints" {
   enable_amazon_prometheus = true
 }
 
-module "eks-blueprints-kubernetes-addons" {
+module "eks_blueprints_kubernetes_addons" {
   source         = "../../../modules/kubernetes-addons"
   eks_cluster_id = module.eks-blueprints.eks_cluster_id
 
