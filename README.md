@@ -29,7 +29,7 @@ The below demonstrates how you can leverage EKS Blueprints to deploy an EKS clus
 
 ```hcl
 module "eks_blueprints" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.0.2"
 
   # EKS CLUSTER
   cluster_version           = "1.21"
@@ -38,32 +38,32 @@ module "eks_blueprints" {
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
-    mg_m4l = {
+    mg_m5 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["m4.large"]
+      instance_types  = ["m5.large"]
       subnet_ids      = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]
     }
   }
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.0.2"
 
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   # EKS Addons
-  enable_amazon_eks_vpc_cni             = true
-  enable_amazon_eks_coredns             = true
-  enable_amazon_eks_kube_proxy          = true
-  enable_amazon_eks_aws_ebs_csi_driver  = true
+  enable_amazon_eks_vpc_cni            = true
+  enable_amazon_eks_coredns            = true
+  enable_amazon_eks_kube_proxy         = true
+  enable_amazon_eks_aws_ebs_csi_driver = true
 
   #K8s Add-ons
-  enable_argocd                         = true
-  enable_aws_for_fluentbit              = true
-  enable_aws_load_balancer_controller   = true
-  enable_cluster_autoscaler             = true
-  enable_ingress_nginx                  = true
-  enable_metrics_server                 = true
+  enable_argocd                       = true
+  enable_aws_for_fluentbit            = true
+  enable_aws_load_balancer_controller = true
+  enable_cluster_autoscaler           = true
+  enable_metrics_server               = true
+  enable_prometheus                   = true
 }
 ```
 
@@ -75,7 +75,7 @@ The code above will provision the following:
 ✅  `Fluent Bit` for routing logs.  
 ✅  `AWS Load Balancer Controller` for distributing traffic.  
 ✅  `Argocd` for declarative GitOps CD for Kubernetes.  
-✅  `Nginx` for managing ingress.  
+✅  `Prometheus` for observability.
 
 ## Add-ons
 
