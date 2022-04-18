@@ -94,7 +94,7 @@ module "aws_vpc" {
   }
 }
 #---------------------------------------------------------------
-# Example to consume eks-blueprints module
+# Example to consume eks_blueprints module
 #---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../.."
@@ -122,7 +122,7 @@ module "eks_blueprints" {
   }
 }
 
-module "kubernetes_addons" {
+module "eks_blueprints_kubernetes_addons" {
   source         = "../../modules/kubernetes-addons"
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
