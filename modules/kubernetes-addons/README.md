@@ -143,7 +143,7 @@
 | <a name="input_tetrate_istio_version"></a> [tetrate\_istio\_version](#input\_tetrate\_istio\_version) | Istio version | `string` | `""` | no |
 | <a name="input_traefik_helm_config"></a> [traefik\_helm\_config](#input\_traefik\_helm\_config) | Traefik Helm Chart config | `any` | `{}` | no |
 | <a name="input_vpa_helm_config"></a> [vpa\_helm\_config](#input\_vpa\_helm\_config) | VPA Helm Chart config | `any` | `null` | no |
-| <a name="enable_velero"></a> [enable\_velero](#input\enable\_velero) | Installs helm on the cluster. | `bool` | `false` | no |
+| <a name="enable_velero"></a> [enable\_velero](#input\enable\_velero) | Enable velero add-on | `bool` | `false` | no |
 | <a name="velero_backup_bucket"></a> [velero\_backup\_bucket](#input\velero\_backup\_bucket) | Provide an existing bucket for storing backups. | `string` | `""` | no |
 | <a name="input_yunikorn_helm_config"></a> [yunikorn\_helm\_config](#input\_yunikorn\_helm\_config) | Yunikorn Helm Chart config | `any` | `null` | no |
 | <a name="input_yunikorn_irsa_policies"></a> [yunikorn\_irsa\_policies](#input\_yunikorn\_irsa\_policies) | IAM policy ARNs for Yunikorn IRSA | `list(string)` | `[]` | no |
