@@ -47,7 +47,6 @@ locals {
     tags                              = var.addon_context.tags
     eks_cluster_id                    = var.addon_context.eks_cluster_id
     irsa_iam_policies                 = concat([aws_iam_policy.velero_policy.arn], var.irsa_policies)
-    irsa_iam_permissions_boundary     = var.addon_context.irsa_permissions_boundary
   }
 
   # If you would like customers to be able to use GitOps via ArgoCD

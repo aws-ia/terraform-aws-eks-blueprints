@@ -9,3 +9,16 @@ serviceAccount:
     name: ${velero-sa-name}
     annotations:
     labels:
+image:
+  repository: velero/velero
+  tag: v1.4.2
+  pullPolicy: IfNotPresent
+  imagePullSecrets: []
+  
+initContainers:
+   - name: velero-plugin-for-aws
+     image: velero/velero-plugin-for-aws:v1.2.0
+     imagePullPolicy: IfNotPresent
+     volumeMounts:
+       - mountPath: /target
+         name: plugins
