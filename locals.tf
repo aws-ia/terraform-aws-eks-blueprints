@@ -63,8 +63,6 @@ locals {
     tags                          = local.tags
   }
 
-  ecr_image_repo_url = "${local.context.aws_caller_identity_account_id}.dkr.ecr.${local.context.aws_region_name}.amazonaws.com"
-
   # Managed node IAM Roles for aws-auth
   managed_node_group_aws_auth_config_map = length(var.managed_node_groups) > 0 == true ? [
     for key, node in var.managed_node_groups : {
