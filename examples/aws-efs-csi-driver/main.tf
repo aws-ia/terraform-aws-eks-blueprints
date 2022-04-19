@@ -72,7 +72,7 @@ module "aws_vpc" {
 }
 
 #---------------------------------------------------------------
-# Example to consume eks-blueprints module
+# Example to consume eks_blueprints module
 #---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../.."
@@ -116,7 +116,7 @@ module "eks_blueprints" {
       additional_tags = {
         ExtraTag = "Fargate"
       }
-    },
+    }
   }
 }
 
@@ -125,7 +125,7 @@ module "eks_blueprints" {
 #---------------------------------------------
 module "eks_blueprints_kubernetes_addons" {
   source         = "../../modules/kubernetes-addons"
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   # EKS Managed Add-ons
   enable_amazon_eks_vpc_cni    = true
@@ -138,7 +138,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_cluster_autoscaler           = true
   enable_aws_efs_csi_driver           = true
 
-  depends_on = [module.eks-blueprints.managed_node_groups]
+  depends_on = [module.eks_blueprints.managed_node_groups]
 }
 
 #--------------
@@ -167,14 +167,4 @@ resource "aws_security_group" "efs_sg" {
     to_port     = 2049
     protocol    = "tcp"
   }
-}
-
-output "efs_file_system_id" {
-  description = "ID of the EFS file system to use for creating a storage class"
-  value       = aws_efs_file_system.efs.id
-}
-
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.eks-blueprints.configure_kubectl
 }

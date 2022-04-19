@@ -85,7 +85,7 @@ module "aws_vpc" {
   }
 }
 #---------------------------------------------------------------
-# Example to consume eks-blueprints module
+# Example to consume eks_blueprints module
 #---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../.."
@@ -115,7 +115,7 @@ module "eks_blueprints" {
 
 module "eks_blueprints_kubernetes_addons" {
   source         = "../../modules/kubernetes-addons"
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   # Refer to docs/add-ons/crossplane.md for advanced configuration
   enable_crossplane = true
@@ -138,9 +138,4 @@ module "eks_blueprints_kubernetes_addons" {
     # This example config uses AmazonS3FullAccess for demo purpose only, but you should select a policy with the minimum permissions required to provision your resources.
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
   }
-}
-
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.eks-blueprints.configure_kubectl
 }

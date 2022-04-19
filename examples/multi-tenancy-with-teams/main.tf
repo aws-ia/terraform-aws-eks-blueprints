@@ -86,7 +86,7 @@ module "aws_vpc" {
 }
 
 #-------------------------------------------------------------------------------
-# Example to consume eks-blueprints module with Teams (Application and Platform)
+# Example to consume eks_blueprints module with Teams (Application and Platform)
 #-------------------------------------------------------------------------------
 
 module "eks_blueprints" {

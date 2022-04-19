@@ -108,7 +108,7 @@ module "aws_vpc" {
   }
 }
 #---------------------------------------------------------------
-# Example to consume eks-blueprints module
+# Example to consume eks_blueprints module
 #---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../.."
@@ -153,15 +153,15 @@ module "eks_blueprints" {
 # Launch template outputs will be used in Karpenter Provisioners yaml files. Checkout this examples/karpenter/provisioners/default_provisioner_with_launch_templates.yaml
 module "karpenter-launch-templates" {
   source         = "../../modules/launch-templates"
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
   tags           = { Name = "karpenter" }
 
   launch_template_config = {
     linux = {
       ami                    = data.aws_ami.amazonlinux2eks.id
       launch_template_prefix = "karpenter"
-      iam_instance_profile   = module.eks-blueprints.self_managed_node_group_iam_instance_profile_id[0]
-      vpc_security_group_ids = [module.eks-blueprints.worker_node_security_group_id]
+      iam_instance_profile   = module.eks_blueprints.self_managed_node_group_iam_instance_profile_id[0]
+      vpc_security_group_ids = [module.eks_blueprints.worker_node_security_group_id]
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
@@ -174,8 +174,8 @@ module "karpenter-launch-templates" {
       ami                    = data.aws_ami.bottlerocket.id
       launch_template_os     = "bottlerocket"
       launch_template_prefix = "bottle"
-      iam_instance_profile   = module.eks-blueprints.self_managed_node_group_iam_instance_profile_id[0]
-      vpc_security_group_ids = [module.eks-blueprints.worker_node_security_group_id]
+      iam_instance_profile   = module.eks_blueprints.self_managed_node_group_iam_instance_profile_id[0]
+      vpc_security_group_ids = [module.eks_blueprints.worker_node_security_group_id]
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
@@ -190,12 +190,12 @@ module "karpenter-launch-templates" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   # Deploys Karpenter add-on
   enable_karpenter = true
 
-  depends_on = [module.eks-blueprints.self_managed_node_groups]
+  depends_on = [module.eks_blueprints.self_managed_node_groups]
 }
 
 # Deploying default provisioner for Karpenter autoscaler
@@ -217,10 +217,5 @@ resource "kubectl_manifest" "karpenter_provisioner" {
   for_each  = toset(data.kubectl_path_documents.karpenter_provisioners.documents)
   yaml_body = each.value
 
-  depends_on = [module.eks-blueprints-kubernetes-addons]
-}
-
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.eks-blueprints.configure_kubectl
+  depends_on = [module.eks_blueprints-kubernetes-addons]
 }
