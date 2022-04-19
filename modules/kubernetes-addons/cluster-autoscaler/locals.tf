@@ -36,7 +36,7 @@ locals {
 
   irsa_config = {
     create_kubernetes_namespace       = false
-    kubernetes_namespace              = local.helm_config["namespace"]
+    kubernetes_namespace              = "kube-system"
     create_kubernetes_service_account = true
     kubernetes_service_account        = local.service_account_name
     irsa_iam_policies                 = [aws_iam_policy.cluster_autoscaler.arn]

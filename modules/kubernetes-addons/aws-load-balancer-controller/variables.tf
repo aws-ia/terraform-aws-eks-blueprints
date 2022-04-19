@@ -27,9 +27,3 @@ variable "addon_context" {
   })
   description = "Input configuration for the addon."
 }
-
-variable "irsa_config" {
-  type        = any
-  description = "IRSA config for the aws_load_balancer_controller. "
-  default     = {}
-}
