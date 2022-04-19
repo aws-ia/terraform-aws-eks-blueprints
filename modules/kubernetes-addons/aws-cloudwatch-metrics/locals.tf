@@ -3,17 +3,6 @@ locals {
   namespace            = "amazon-cloudwatch"
   service_account_name = "cloudwatch-agent"
 
-  set_values = [
-    {
-      name  = "serviceAccount.name"
-      value = local.service_account_name
-    },
-    {
-      name  = "serviceAccount.create"
-      value = false
-    }
-  ]
-
   default_helm_config = {
     name        = local.name
     chart       = local.name
@@ -33,10 +22,16 @@ locals {
     eks_cluster_id = var.addon_context.eks_cluster_id
   })]
 
-  argocd_gitops_config = {
-    enable             = true
-    serviceAccountName = local.service_account_name
-  }
+  set_values = [
+    {
+      name  = "serviceAccount.name"
+      value = local.service_account_name
+    },
+    {
+      name  = "serviceAccount.create"
+      value = false
+    }
+  ]
 
   irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
@@ -44,5 +39,10 @@ locals {
     create_kubernetes_namespace       = true
     create_kubernetes_service_account = true
     irsa_iam_policies                 = concat(["arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"], var.irsa_policies)
+  }
+
+  argocd_gitops_config = {
+    enable             = true
+    serviceAccountName = local.service_account_name
   }
 }
