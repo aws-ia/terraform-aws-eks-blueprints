@@ -1,0 +1,3 @@
+# https://github.com/markdownlint/markdownlint/blob/master/docs/RULES.md#rules
+MD013:
+  line_length: 120
