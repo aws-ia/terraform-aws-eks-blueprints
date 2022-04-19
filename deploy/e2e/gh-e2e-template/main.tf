@@ -6,7 +6,7 @@ terraform {
   backend "s3" {}
 }
 
-module "e2e-test" {
+module "e2e_test" {
   source = "../../../EXAMPLE_PATH"
 
   tenant      = var.tenant

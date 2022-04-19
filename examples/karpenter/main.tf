@@ -151,7 +151,7 @@ module "eks_blueprints" {
 
 # Creates Launch templates for Karpenter
 # Launch template outputs will be used in Karpenter Provisioners yaml files. Checkout this examples/karpenter/provisioners/default_provisioner_with_launch_templates.yaml
-module "karpenter-launch-templates" {
+module "karpenter_launch_templates" {
   source         = "../../modules/launch-templates"
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
   tags           = { Name = "karpenter" }

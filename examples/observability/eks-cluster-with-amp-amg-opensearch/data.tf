@@ -1,4 +1,4 @@
-data "aws_iam_policy_document" "fluentbit-opensearch-access" {
+data "aws_iam_policy_document" "fluentbit_opensearch_access" {
   statement {
     sid       = "OpenSearchAccess"
     effect    = "Allow"
@@ -27,8 +27,4 @@ data "aws_ami" "amazon_linux_2" {
     name   = "name"
     values = ["amzn2-ami-hvm*"]
   }
-}
-
-data "aws_elasticsearch_domain" "opensearch" {
-  domain_name = aws_elasticsearch_domain.opensearch.domain_name
 }

@@ -36,7 +36,7 @@ data "terraform_remote_state" "vpc_s3_backend" {
   }
 }
 
-module "eks-cluster-with-import-vpc" {
+module "eks_cluster_with_import_vpc" {
   source = "../../examples/complete-kubernetes-addons"
 
   tenant      = "aws"

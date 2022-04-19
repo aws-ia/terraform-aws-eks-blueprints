@@ -18,6 +18,14 @@ terraform {
       source  = "grafana/grafana"
       version = ">= 1.13.3"
     }
+    tls = {
+      source  = "hashicorp/helm"
+      version = ">= 3.0"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = ">= 2.1"
+    }
   }
 
   backend "local" {

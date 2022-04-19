@@ -40,8 +40,6 @@ locals {
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   azs          = slice(data.aws_availability_zones.available.names, 0, 3)
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
-
-  terraform_version = "Terraform v1.0.1"
 }
 
 module "aws_vpc" {

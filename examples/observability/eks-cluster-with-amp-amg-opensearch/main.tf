@@ -28,20 +28,6 @@ provider "helm" {
   }
 }
 
-provider "kubectl" {
-  apply_retry_count      = 10
-  host                   = module.eks_blueprints.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
-  load_config_file       = false
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.cluster_id]
-  }
-}
-
 provider "grafana" {
   url  = var.grafana_endpoint
   auth = var.grafana_api_key
@@ -68,8 +54,6 @@ locals {
     repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
     add_on_application = false
   }
-
-  aws_iam_instance_profile_name = "bastion_host_profile"
 }
 
 #---------------------------------------------------------------
@@ -147,7 +131,7 @@ module "eks_blueprints_kubernetes_addons" {
 
   # Fluentbit
   enable_aws_for_fluentbit        = true
-  aws_for_fluentbit_irsa_policies = [aws_iam_policy.fluentbit-opensearch-access.arn]
+  aws_for_fluentbit_irsa_policies = [aws_iam_policy.fluentbit_opensearch_access.arn]
   aws_for_fluentbit_helm_config = {
     values = [templatefile("${path.module}/helm_values/aws-for-fluentbit-values.yaml", {
       aws_region = local.region
@@ -236,10 +220,10 @@ resource "aws_iam_service_linked_role" "opensearch" {
   aws_service_name = "es.amazonaws.com"
 }
 
-resource "aws_iam_policy" "fluentbit-opensearch-access" {
-  name        = "fluentbit-opensearch-access"
+resource "aws_iam_policy" "fluentbit_opensearch_access" {
+  name        = "fluentbit_opensearch_access"
   description = "IAM policy to allow Fluentbit access to OpenSearch"
-  policy      = data.aws_iam_policy_document.fluentbit-opensearch-access.json
+  policy      = data.aws_iam_policy_document.fluentbit_opensearch_access.json
 }
 
 resource "aws_elasticsearch_domain_policy" "opensearch_access_policy" {
