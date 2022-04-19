@@ -147,6 +147,7 @@ jobs:
           for element in "${array[@]}"
           do
             terraform destroy -target="$element" -var-file base.tfvars -no-color -input=false -auto-approve
+            sleep 45
           done
           terraform destroy -var-file base.tfvars -no-color -input=false -auto-approve
         continue-on-error: false

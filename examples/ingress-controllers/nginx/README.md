@@ -53,8 +53,8 @@ to create resources
 terraform apply -target="module.aws_vpc"
 terraform apply -target="module.eks-blueprints"
 terraform apply -target="module.eks-blueprints-kubernetes-addons"
-terraform apply -target="module.aws_load_balancer_controller" 
-terraform apply -target="module.ingress_nginx" 
+terraform apply -target="module.aws_load_balancer_controller"
+terraform apply -target="module.ingress_nginx"
 ```
 
 Enter `yes` for each apply
@@ -117,11 +117,9 @@ terraform apply -target="module.aws_vpc" -auto-approve
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws_load_balancer_controller"></a> [aws\_load\_balancer\_controller](#module\_aws\_load\_balancer\_controller) | ../../../modules/kubernetes-addons | n/a |
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
 | <a name="module_eks-blueprints"></a> [eks-blueprints](#module\_eks-blueprints) | ../../.. | n/a |
 | <a name="module_eks-blueprints-kubernetes-addons"></a> [eks-blueprints-kubernetes-addons](#module\_eks-blueprints-kubernetes-addons) | ../../../modules/kubernetes-addons | n/a |
-| <a name="module_ingress_nginx"></a> [ingress\_nginx](#module\_ingress\_nginx) | ../../../modules/kubernetes-addons | n/a |
 
 ## Resources
 
