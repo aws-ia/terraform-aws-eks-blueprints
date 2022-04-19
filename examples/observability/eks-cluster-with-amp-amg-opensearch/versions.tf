@@ -19,7 +19,7 @@ terraform {
       version = ">= 1.13.3"
     }
     tls = {
-      source  = "hashicorp/helm"
+      source  = "hashicorp/tls"
       version = ">= 3.0"
     }
     local = {

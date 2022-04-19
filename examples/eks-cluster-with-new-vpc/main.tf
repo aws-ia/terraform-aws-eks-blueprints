@@ -3,27 +3,27 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
 
   exec {
     api_version = "client.authentication.k8s.io/v1alpha1"
     command     = "aws"
     # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.cluster_id]
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
   }
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
+    host                   = module.eks_blueprints.eks_cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
 
     exec {
       api_version = "client.authentication.k8s.io/v1alpha1"
       command     = "aws"
       # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.cluster_id]
+      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
     }
   }
 }
@@ -74,10 +74,9 @@ module "aws_vpc" {
 module "eks_blueprints" {
   source = "../.."
 
-  tenant            = local.tenant
-  environment       = local.environment
-  zone              = local.zone
-  terraform_version = local.terraform_version
+  tenant      = local.tenant
+  environment = local.environment
+  zone        = local.zone
 
   # EKS Cluster VPC and Subnet mandatory config
   vpc_id             = module.aws_vpc.vpc_id
