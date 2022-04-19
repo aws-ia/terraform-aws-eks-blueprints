@@ -28,8 +28,6 @@ provider "helm" {
   }
 }
 
-data "aws_availability_zones" "available" {}
-
 locals {
   tenant      = var.tenant
   environment = var.environment
@@ -42,7 +40,6 @@ locals {
 
   vpc_id             = var.vpc_id
   private_subnet_ids = var.private_subnet_ids
-  public_subnet_ids  = var.public_subnet_ids
 }
 
 #---------------------------------------------------------------

@@ -6,7 +6,7 @@ terraform {
   backend "s3" {}
 }
 
-module "eks-cluster-with-import-vpc" {
+module "eks_cluster_with_import_vpc" {
   source = "../../../examples/eks-cluster-with-import-vpc/eks"
 
   tenant      = var.tenant

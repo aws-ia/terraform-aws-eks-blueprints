@@ -42,8 +42,6 @@ provider "kubectl" {
   }
 }
 
-data "aws_availability_zones" "available" {}
-
 #---------------------------------------------------------------
 # Terraform VPC remote state import from S3
 #---------------------------------------------------------------
@@ -66,7 +64,6 @@ locals {
 
   vpc_id             = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
   private_subnet_ids = data.terraform_remote_state.vpc_s3_backend.outputs.private_subnets
-  public_subnet_ids  = data.terraform_remote_state.vpc_s3_backend.outputs.public_subnets
 }
 
 module "eks_blueprints" {

@@ -15,7 +15,8 @@ output "opensearch_vpc_endpoint" {
 }
 
 output "bastion_host_public_ip" {
-  value = aws_instance.bastion_host.public_ip
+  description = "Public IP address of the bastion host"
+  value       = aws_instance.bastion_host.public_ip
 }
 
 output "configure_kubectl" {

@@ -35,10 +35,6 @@ data "aws_acm_certificate" "issued" {
   statuses = ["ISSUED"]
 }
 
-data "aws_route53_zone" "selected" {
-  name = var.eks_cluster_domain
-}
-
 locals {
   tenant      = "aws001"  # AWS account name or unique id for tenant
   environment = "preprod" # Environment area eg., preprod or prod

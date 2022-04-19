@@ -26,9 +26,3 @@ variable "private_subnet_ids" {
   description = "list of private subnets Id's for the Worker nodes"
   type        = list(string)
 }
-
-variable "public_subnet_ids" {
-  description = "list of public subnets Id's for the Worker nodes"
-  type        = list(string)
-  default     = []
-}
