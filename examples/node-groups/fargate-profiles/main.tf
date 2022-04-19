@@ -72,7 +72,7 @@ module "eks_blueprints" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS CONTROL PLANE VARIABLES
-  cluster_version = "1.22"
+  cluster_version = "1.21"
   #---------------------------------------------------------#
   # FARGATE PROFILES
   #---------------------------------------------------------#

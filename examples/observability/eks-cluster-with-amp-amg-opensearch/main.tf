@@ -102,7 +102,7 @@ module "eks_blueprints" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS Control Plane Variables
-  cluster_version = "1.22"
+  cluster_version = "1.21"
 
   managed_node_groups = {
     mg_4 = {

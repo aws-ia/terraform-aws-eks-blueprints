@@ -107,7 +107,7 @@ module "eks_blueprints" {
   worker_additional_security_group_ids = [] # Optional
 
   # EKS CONTROL PLANE VARIABLES
-  cluster_version = "1.22"
+  cluster_version = "1.21"
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {

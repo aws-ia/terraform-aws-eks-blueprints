@@ -24,7 +24,7 @@ This table shows the supported plugin versions for each EKS Kubernetes version
  1. Change the version in Terraform to desired version under `base.tfvars`. See the example below
 
     ```hcl-terraform
-    cluster_version      = "1.22"
+    cluster_version      = "1.21"
     ```
 
 2. Apply the changes to the cluster with Terraform. This step will upgrade the Control Plane and Data Plane to the newer version, and it will roughly take 35 mins to 1 hour

@@ -165,7 +165,7 @@ module "eks_blueprints" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS CONTROL PLANE VARIABLES
-  cluster_version = "1.22"
+  cluster_version = "1.21"
 
   # Step 1. Set cluster API endpoint both private and public
   cluster_endpoint_public_access  = true
