@@ -96,7 +96,7 @@ module "eks_blueprints" {
   cluster_ip_family = "ipv6"
 
   # EKS CONTROL PLANE VARIABLES
-  cluster_version = "1.22"
+  cluster_version = "1.21"
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {

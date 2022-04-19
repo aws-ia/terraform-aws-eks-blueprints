@@ -69,7 +69,7 @@ locals {
   region      = "us-west-2"
   azs         = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  cluster_version = "1.22"
+  cluster_version = "1.21"
 
   vpc_cidr        = "10.0.0.0/16"
   vpc_name        = join("-", [local.tenant, local.environment, local.zone, "vpc"])

@@ -79,7 +79,7 @@ module "eks_blueprints" {
   private_subnet_ids = local.private_subnet_ids
 
   # EKS CONTROL PLANE VARIABLES
-  cluster_version = "1.22"
+  cluster_version = "1.21"
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
