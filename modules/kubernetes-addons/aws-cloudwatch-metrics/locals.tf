@@ -29,7 +29,9 @@ locals {
     var.helm_config
   )
 
-  default_helm_values = []
+  default_helm_values = [templatefile("${path.module}/values.yaml", {
+    eks_cluster_id = var.addon_context.eks_cluster_id
+  })]
 
   argocd_gitops_config = {
     enable             = true
