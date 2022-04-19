@@ -9,7 +9,7 @@ Container Insights collects data as performance log events using embedded metric
 [aws-cloudwatch-metrics](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/aws-cloudwatch-metrics) can be deployed by enabling the add-on via the following.
 
 ```hcl
-enable_aws_for_fluentbit = true
+enable_aws_cloudwatch_metrics = true
 ```
 
 You can optionally customize the Helm chart that deploys `aws_cloudwatch_metrics` via the following configuration.
