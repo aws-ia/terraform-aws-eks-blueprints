@@ -14,7 +14,7 @@ You can use EKS Blueprints to easily bootstrap an EKS cluster with Amazon EKS ad
 
 ## Examples
 
-To view a library of examples for how you can leverage the terraform-eks-blueprints, please see our [examples](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples).
+To view a library of examples for how you can leverage `terraform-aws-eks-blueprints`, please see our [examples](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples).
 
 ## Motivation
 

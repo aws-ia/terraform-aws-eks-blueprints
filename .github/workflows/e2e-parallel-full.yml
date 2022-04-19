@@ -8,7 +8,7 @@ on:
         required: true
         default: "true"
 env:
-  DEFAULT_DEPLOY_ORDER: "module.e2e-test.module.aws_vpc,module.e2e-test.module.eks-blueprints,module.e2e-test.module.eks-blueprints-kubernetes-addons"
+  DEFAULT_DEPLOY_ORDER: "module.e2e_test.module.aws_vpc,module.e2e_test.module.eks_blueprints,module.e2e_test.module.eks_blueprints_kubernetes_addons"
 
 jobs:
   deploy:
@@ -44,10 +44,10 @@ jobs:
             tenant_name: "private"
             deployment_order:
               [
-                "module.e2e-test.module.aws_vpc",
-                "module.e2e-test.module.vpc_endpoint_gateway",
-                "module.e2e-test.module.vpc_endpoints",
-                "module.e2e-test.module.eks-blueprints",
+                "module.e2e_test.module.aws_vpc",
+                "module.e2e_test.module.vpc_endpoint_gateway",
+                "module.e2e_test.module.vpc_endpoints",
+                "module.e2e_test.module.eks_blueprints",
               ]
           - example_path: examples/game-tech/agones-game-controller
             tenant_name: "agones"
@@ -55,11 +55,11 @@ jobs:
             tenant_name: "nginx"
             deployment_order:
               [
-                "module.e2e-test.module.aws_vpc",
-                "module.e2e-test.module.eks-blueprints",
-                "module.e2e-test.module.eks-blueprints-kubernetes-addons",
-                "module.e2e-test.module.aws_load_balancer_controller",
-                "module.e2e-test.module.ingress_nginx",
+                "module.e2e_test.module.aws_vpc",
+                "module.e2e_test.module.eks_blueprints",
+                "module.e2e_test.module.eks_blueprints_kubernetes_addons",
+                "module.e2e_test.module.aws_load_balancer_controller",
+                "module.e2e_test.module.ingress_nginx",
               ]
           - example_path: examples/karpenter
             tenant_name: "karpenter"
