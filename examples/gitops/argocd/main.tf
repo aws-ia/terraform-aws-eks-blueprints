@@ -96,7 +96,7 @@ module "aws_vpc" {
 }
 
 #---------------------------------------------------------------
-# Example to consume eks-blueprints module
+# Example to consume eks_blueprints module
 #---------------------------------------------------------------
 
 module "eks_blueprints" {
@@ -131,7 +131,7 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../modules/kubernetes-addons"
 
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   #---------------------------------------------------------------
   # ARGO CD ADD-ON
@@ -162,5 +162,5 @@ module "eks_blueprints_kubernetes_addons" {
   enable_yunikorn                     = true
   enable_argo_rollouts                = true
 
-  depends_on = [module.eks-blueprints.managed_node_groups]
+  depends_on = [module.eks_blueprints.managed_node_groups]
 }

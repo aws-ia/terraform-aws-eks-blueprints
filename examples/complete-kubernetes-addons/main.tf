@@ -46,7 +46,7 @@ locals {
 }
 
 #---------------------------------------------------------------
-# Example to consume eks-blueprints module
+# Example to consume eks_blueprints module
 #---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../.."
@@ -122,9 +122,9 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id               = module.eks-blueprints.eks_cluster_id
-  eks_worker_security_group_id = module.eks-blueprints.worker_node_security_group_id
-  auto_scaling_group_names     = module.eks-blueprints.self_managed_node_group_autoscaling_groups
+  eks_cluster_id               = module.eks_blueprints.eks_cluster_id
+  eks_worker_security_group_id = module.eks_blueprints.worker_node_security_group_id
+  auto_scaling_group_names     = module.eks_blueprints.self_managed_node_group_autoscaling_groups
 
   # EKS Addons
   enable_amazon_eks_vpc_cni = true # default is false
@@ -266,7 +266,7 @@ module "eks_blueprints_kubernetes_addons" {
   #---------------------------------------
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
   enable_amazon_prometheus             = true
-  amazon_prometheus_workspace_endpoint = module.eks-blueprints.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
 
   enable_prometheus = true
   # Optional Map value
@@ -441,10 +441,5 @@ module "eks_blueprints_kubernetes_addons" {
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
 
-  depends_on = [module.eks-blueprints.managed_node_groups]
-}
-
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.eks-blueprints.configure_kubectl
+  depends_on = [module.eks_blueprints.managed_node_groups]
 }

@@ -72,7 +72,7 @@ module "aws_vpc" {
 }
 
 #---------------------------------------------------------------
-# Example to consume eks-blueprints module
+# Example to consume eks_blueprints module
 #---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../../.."
@@ -98,9 +98,4 @@ module "eks_blueprints" {
       max_size        = "10"
     }
   }
-}
-
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.eks-blueprints.configure_kubectl
 }

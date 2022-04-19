@@ -71,7 +71,7 @@ module "aws_vpc" {
   }
 }
 #---------------------------------------------------------------
-# Example to consume eks-blueprints module
+# Example to consume eks_blueprints module
 #---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../../.."
@@ -101,7 +101,7 @@ module "eks_blueprints" {
 
 module "eks_blueprints_kubernetes_addons" {
   source         = "../../../modules/kubernetes-addons"
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   # EKS Managed Add-ons
   enable_amazon_eks_coredns    = true

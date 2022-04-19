@@ -72,7 +72,7 @@ module "aws_vpc" {
 }
 
 #---------------------------------------------------------------
-# Example to consume eks-blueprints module
+# Example to consume eks_blueprints module
 #---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../../.."
@@ -135,8 +135,8 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../..//modules/kubernetes-addons"
 
-  eks_cluster_id               = module.eks-blueprints.eks_cluster_id
-  eks_worker_security_group_id = module.eks-blueprints.worker_node_security_group_id
+  eks_cluster_id               = module.eks_blueprints.eks_cluster_id
+  eks_worker_security_group_id = module.eks_blueprints.worker_node_security_group_id
 
   #K8s Add-ons
   enable_metrics_server     = true
@@ -162,10 +162,5 @@ module "eks_blueprints_kubernetes_addons" {
     })]
   }
 
-  depends_on = [module.eks-blueprints.managed_node_groups]
-}
-
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.eks-blueprints.configure_kubectl
+  depends_on = [module.eks_blueprints.managed_node_groups]
 }

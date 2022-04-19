@@ -132,7 +132,7 @@ module "eks_blueprints_kubernetes_addons" {
   argocd_applications = {
     workloads = {
       path     = "envs/dev"
-      repo_url = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+      repo_url = "https://github.com/aws-samples/eks_blueprints-workloads.git"
       values = {
         spec = {
           ingress = {
@@ -166,9 +166,4 @@ module "eks_blueprints_kubernetes_addons" {
     module.aws_vpc,
     module.eks_cluster.managed_node_groups
   ]
-}
-
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.eks_cluster.configure_kubectl
 }

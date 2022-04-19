@@ -273,14 +273,9 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../modules/kubernetes-addons"
 
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
 
-}
-
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.eks-blueprints.configure_kubectl
 }

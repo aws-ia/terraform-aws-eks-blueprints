@@ -43,5 +43,4 @@ module "aws_vpc" {
     "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
     "kubernetes.io/role/internal-elb"               = "1"
   }
-
 }
