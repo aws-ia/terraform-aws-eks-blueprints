@@ -2,10 +2,6 @@ provider "aws" {
   region = "us-west-2"
 }
 
-terraform {
-  backend "s3" {}
-}
-
 module "e2e_test" {
   source = "../../../EXAMPLE_PATH"
 

@@ -16,7 +16,7 @@ S3_BUCKET='s3://<enter-your-bucket-name>'                   # Create your own s3
 CW_LOG_GROUP="/emr-on-eks-logs/${EMR_VIRTUAL_CLUSTER_NAME}/${EMR_ON_EKS_NAMESPACE}" # Create CW Log group if not exist
 SPARK_JOB_S3_PATH="${S3_BUCKET}/${EMR_VIRTUAL_CLUSTER_NAME}/${EMR_ON_EKS_NAMESPACE}/${JOB_NAME}"
 
-# Step1: COPY POD TEMPLATES TO S3 Bucket
+# Step 1: COPY POD TEMPLATES TO S3 Bucket
 aws s3 sync ./spark-scripts/ "${SPARK_JOB_S3_PATH}/"
 
 # FIND ROLE ARN and EMR VIRTUAL CLUSTER ID

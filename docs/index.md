@@ -6,7 +6,7 @@ Welcome to Amazon EKS Blueprints for Terraform!
 
 This repository contains a collection of Terraform modules that aim to make it easier and faster for customers to adopt [Amazon EKS](https://aws.amazon.com/eks/).
 
-## WHat is EKS Blueprints
+## What is EKS Blueprints
 
 EKS Blueprints helps you compose complete EKS clusters that are fully bootstrapped with the operational software that is needed to deploy and operate workloads. With EKS Blueprints, you describe the configuration for the desired state of your EKS environment, such as the control plane, worker nodes, and Kubernetes add-ons, as an IaC blueprint. Once a blueprint is configured, you can use it to stamp out consistent environments across multiple AWS accounts and Regions using continuous deployment automation.
 
@@ -26,8 +26,8 @@ AWS customers have asked for examples that demonstrate how to integrate the land
 
 Customers can use this solution to easily architect and deploy complete, opinionated EKS clusters. Specifically, customers can leverage the eks-blueprints module to:
 
-✅ Deploy Well-Architected EKS clusters across any number of accounts and regions.  
-✅ Manage cluster configuration, including add-ons that run in each cluster, from a single Git repository.  
-✅ Define teams, namespaces, and their associated access permissions for your clusters.  
-✅ Leverage GitOps-based workflows for onboarding and managing workloads for your teams.  
-✅ Create Continuous Delivery (CD) pipelines that are responsible for deploying your infrastructure.  
+✅ Deploy Well-Architected EKS clusters across any number of accounts and regions.
+✅ Manage cluster configuration, including add-ons that run in each cluster, from a single Git repository.
+✅ Define teams, namespaces, and their associated access permissions for your clusters.
+✅ Leverage GitOps-based workflows for onboarding and managing workloads for your teams.
+✅ Create Continuous Delivery (CD) pipelines that are responsible for deploying your infrastructure.

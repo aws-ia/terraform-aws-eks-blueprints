@@ -635,9 +635,3 @@ variable "yunikorn_helm_config" {
   default     = null
   description = "YuniKorn Helm Chart config"
 }
-
-variable "yunikorn_irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM policy ARNs for Yunikorn IRSA"
-}

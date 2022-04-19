@@ -3,27 +3,27 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
 
   exec {
     api_version = "client.authentication.k8s.io/v1alpha1"
     command     = "aws"
     # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.cluster_id]
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
   }
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
+    host                   = module.eks_blueprints.eks_cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
 
     exec {
       api_version = "client.authentication.k8s.io/v1alpha1"
       command     = "aws"
       # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.cluster_id]
+      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
     }
   }
 }
@@ -84,7 +84,7 @@ module "aws_vpc" {
 # Example to consume eks_cluster module
 #---------------------------------------------------------------
 
-module "eks_cluster" {
+module "eks_blueprints" {
   source = "../.."
 
   tenant            = local.tenant
@@ -117,7 +117,7 @@ module "eks_blueprints_kubernetes_addons" {
   # Globals
   #---------------------------------------------------------------
 
-  eks_cluster_id     = module.eks_cluster.eks_cluster_id
+  eks_cluster_id     = module.eks_blueprints.eks_cluster_id
   eks_cluster_domain = var.eks_cluster_domain
 
   #---------------------------------------------------------------
@@ -160,6 +160,6 @@ module "eks_blueprints_kubernetes_addons" {
 
   depends_on = [
     module.aws_vpc,
-    module.eks_cluster.managed_node_groups
+    module.eks_blueprints.managed_node_groups
   ]
 }
