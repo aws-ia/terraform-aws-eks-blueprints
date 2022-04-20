@@ -43,8 +43,8 @@ locals {
   }
 
   argocd_gitops_config = {
-    enable            = true
-    zoneFilterIds     = local.zone_filter_ids
-    serviceAccontName = local.service_account_name
+    enable             = true
+    zoneFilterIds      = local.zone_filter_ids
+    serviceAccountName = local.service_account_name
   }
 }
