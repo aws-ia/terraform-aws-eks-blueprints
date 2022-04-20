@@ -70,6 +70,7 @@ var (
 	expectedDaemonSets = [...]DaemonSet{
 		{"aws-node", "kube-system"},
 		{"kube-proxy", "kube-system"},
+		{"aws-cloudwatch-metrics", "amazon-cloudwatch"},
 	}
 
 	/*Update the expected K8s Services names and the namespace*/
