@@ -265,14 +265,69 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#finally-terraform-apply" class="md-nav__link">
-    Finally, Terraform APPLY
+  <a href="#terraform-init" class="md-nav__link">
+    Terraform INIT
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#terraform-plan" class="md-nav__link">
+    Terraform PLAN
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#terraform-apply" class="md-nav__link">
+    Terraform APPLY
   </a>
   
 </li>
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-kubectl" class="md-nav__link">
+    Configure kubectl
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    Validation
+  </a>
+  
+    <nav class="md-nav" aria-label="Validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#list-worker-nodes" class="md-nav__link">
+    List worker nodes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-pods" class="md-nav__link">
+    List pods
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanup" class="md-nav__link">
+    Cleanup
+  </a>
   
 </li>
       
@@ -803,14 +858,69 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#finally-terraform-apply" class="md-nav__link">
-    Finally, Terraform APPLY
+  <a href="#terraform-init" class="md-nav__link">
+    Terraform INIT
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#terraform-plan" class="md-nav__link">
+    Terraform PLAN
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#terraform-apply" class="md-nav__link">
+    Terraform APPLY
   </a>
   
 </li>
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-kubectl" class="md-nav__link">
+    Configure kubectl
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    Validation
+  </a>
+  
+    <nav class="md-nav" aria-label="Validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#list-worker-nodes" class="md-nav__link">
+    List worker nodes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-pods" class="md-nav__link">
+    List pods
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanup" class="md-nav__link">
+    Cleanup
+  </a>
   
 </li>
       
@@ -832,60 +942,93 @@
                 
                 
                 <h1 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h1>
-<p>This getting started guide will help you deploy your first EKS environment using the <code>terraform-eks-blueprints</code> module.</p>
+<p>This getting started guide will help you deploy your first EKS environment using EKS Blueprints.</p>
 <h2 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<p>Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply</p>
+<p>First, ensure that you have installed the following tools locally.</p>
 <ol>
 <li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
 <li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
 <li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
 </ol>
 <h2 id="deployment-steps">Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permanent link">&para;</a></h2>
-<p>The following steps will walk you through the deployment of an example <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/eks-cluster-with-new-vpc/main.tf">DEV cluster</a> configuration.
-This configuration will deploy a private EKS cluster with public and private subnets.
-One managed node group and a Fargate profile for the default namespace will be placed in private subnets. The ALB created by the AWS LB Ingress controller will be placed in Public subnets. The example will also deploy the following Kubernetes add-ons</p>
-<p>✅ AWS LB Ingress Controller\
-✅ Metrics Server\
-✅ Cluster Autoscaler</p>
+<p>The following steps will walk you through the deployment of an <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/eks-cluster-with-new-vpc/main.tf">example blueprint</a>. This example will deploy a new VPC, a private EKS cluster with public and private subnets, and one managed node group that will be placed in the private subnets. The example will also deploy the following add-ons into the EKS cluster:</p>
+<p>✅  AWS Load Balancer Controller<br />
+✅  Cluster Autoscaler<br />
+✅  CoreDNS<br />
+✅  kube-proxy<br />
+✅  Metrics Server<br />
+✅  vpc-cni  </p>
 <h3 id="clone-the-repo">Clone the repo<a class="headerlink" href="#clone-the-repo" title="Permanent link">&para;</a></h3>
-<p>```shell script
-git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
-<div class="highlight"><pre><span></span><code>### Run Terraform INIT
-
-CD into the sample directory.
-
-```shell script
-cd examples/eks-cluster-with-new-vpc/
-</code></pre></div></p>
-<p>Initialize the working directory with configuration files.</p>
-<p>```shell script
-terraform init
-<div class="highlight"><pre><span></span><code>### Run Terraform PLAN
-
-Verify the resources that will be created by this execution.
-
-```shell script
-terraform plan
-</code></pre></div></p>
-<h3 id="finally-terraform-apply">Finally, Terraform APPLY<a class="headerlink" href="#finally-terraform-apply" title="Permanent link">&para;</a></h3>
-<p>Deploy your EKS environment.</p>
-<p><code>shell script
-terraform apply
-<div class="highlight"><pre><span></span><code>### Configure kubectl and test cluster
-
-Details for your EKS Cluster can be extracted from terraform output or from AWS Console to get the name of cluster.
-
-This following command used to update the `kubeconfig` in your local machine where you run `kubectl` commands to interact with your EKS Cluster.
+<div class="highlight"><pre><span></span><code>git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 </code></pre></div>
-$ aws eks --region &lt;region&gt; update-kubeconfig --name &lt;cluster-name&gt;
-<div class="highlight"><pre><span></span><code>## Validation
-
-### List all the worker nodes by running the command below
+<h3 id="terraform-init">Terraform INIT<a class="headerlink" href="#terraform-init" title="Permanent link">&para;</a></h3>
+<p>CD into the example directory:</p>
+<div class="highlight"><pre><span></span><code>cd examples/eks-cluster-with-new-vpc/
 </code></pre></div>
-$ kubectl get nodes
-<div class="highlight"><pre><span></span><code>### List all the pods running in kube-system namespace
+<p>Initialize the working directory with the following:</p>
+<div class="highlight"><pre><span></span><code>terraform init
 </code></pre></div>
-$ kubectl get pods -n kube-system</code></p>
+<h3 id="terraform-plan">Terraform PLAN<a class="headerlink" href="#terraform-plan" title="Permanent link">&para;</a></h3>
+<p>Verify the resources that will be created by this execution:</p>
+<div class="highlight"><pre><span></span><code>terraform plan
+</code></pre></div>
+<h3 id="terraform-apply">Terraform APPLY<a class="headerlink" href="#terraform-apply" title="Permanent link">&para;</a></h3>
+<p>We will leverage Terraform's <a href="https://learn.hashicorp.com/tutorials/terraform/resource-targeting?in=terraform/cli">target</a> functionality to deploy a VPC, an EKS Cluster, and Kubernetes add-ons in separate steps. </p>
+<p><strong>Deploy the VPC</strong>. This step will take roughly 3 minutes to complete. </p>
+<div class="highlight"><pre><span></span><code>terraform apply -target=&quot;module.aws_vpc&quot;
+</code></pre></div>
+<p><strong>Deploy the EKS cluster</strong>. This step will take roughly 14 minutes to complete.</p>
+<div class="highlight"><pre><span></span><code>terraform apply -target=&quot;module.eks_blueprints&quot;
+</code></pre></div>
+<p><strong>Deploy the add-ons</strong>. This step will take rough 5 minutes to complete.</p>
+<div class="highlight"><pre><span></span><code>terraform apply -target=&quot;module.eks_blueprints_kubernetes_addons&quot;
+</code></pre></div>
+<h2 id="configure-kubectl">Configure kubectl<a class="headerlink" href="#configure-kubectl" title="Permanent link">&para;</a></h2>
+<p>Terraform output will display a command in your consolde that you can use to bootstrap your local <code>kubeconfig</code>. </p>
+<div class="highlight"><pre><span></span><code>configure_kubectl = &quot;aws eks --region &lt;region&gt; update-kubeconfig --name &lt;cluster-name&gt;&quot;
+</code></pre></div>
+<p>Run the command in your terminal.</p>
+<div class="highlight"><pre><span></span><code>aws eks --region &lt;region&gt; update-kubeconfig --name &lt;cluster-name&gt;
+</code></pre></div>
+<h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h2>
+<h3 id="list-worker-nodes">List worker nodes<a class="headerlink" href="#list-worker-nodes" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>kubectl get nodes
+</code></pre></div>
+<p>You should see output similar to the following:</p>
+<div class="highlight"><pre><span></span><code>NAME                                        STATUS   ROLES    AGE     VERSION
+ip-10-0-10-161.us-west-2.compute.internal   Ready    &lt;none&gt;   4h18m   v1.21.5-eks-9017834
+ip-10-0-11-171.us-west-2.compute.internal   Ready    &lt;none&gt;   4h18m   v1.21.5-eks-9017834
+ip-10-0-12-48.us-west-2.compute.internal    Ready    &lt;none&gt;   4h18m   v1.21.5-eks-9017834
+</code></pre></div>
+<h3 id="list-pods">List pods<a class="headerlink" href="#list-pods" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>kubectl get pods -n kube-system
+</code></pre></div>
+<p>You should see output similar to the following:</p>
+<div class="highlight"><pre><span></span><code>NAME                                                        READY   STATUS    RESTARTS   AGE
+aws-load-balancer-controller-954746b57-k9lhc                1/1     Running   1          15m
+aws-load-balancer-controller-954746b57-q5gh4                1/1     Running   1          15m
+aws-node-jlnkd                                              1/1     Running   1          15m
+aws-node-k86pv                                              1/1     Running   0          12m
+aws-node-kjcdg                                              1/1     Running   1          14m
+cluster-autoscaler-aws-cluster-autoscaler-5d4446b58-d6frd   1/1     Running   1          15m
+coredns-85d5b4454c-jksbw                                    1/1     Running   1          24m
+coredns-85d5b4454c-x7wwd                                    1/1     Running   1          24m
+kube-proxy-92slm                                            1/1     Running   1          18m
+kube-proxy-bz5kb                                            1/1     Running   1          18m
+kube-proxy-zl7cj                                            1/1     Running   1          18m
+metrics-server-694d47d564-hzd8h                             1/1     Running   1          15m
+</code></pre></div>
+<h2 id="cleanup">Cleanup<a class="headerlink" href="#cleanup" title="Permanent link">&para;</a></h2>
+<p>To clean up your environment, destroy the Terraform modules in reverse order.</p>
+<p>Destroy the add-ons. </p>
+<div class="highlight"><pre><span></span><code>terraform destroy -target=&quot;module.eks_blueprints_kubernetes_addons&quot;
+</code></pre></div>
+<p>Destroy the EKS cluster. </p>
+<div class="highlight"><pre><span></span><code>terraform apply -target=&quot;module.eks_blueprints&quot;
+</code></pre></div>
+<p>Destroy the VPC.</p>
+<div class="highlight"><pre><span></span><code>terraform apply -target=&quot;module.aws_vpc&quot;
+</code></pre></div>
                 
               
               

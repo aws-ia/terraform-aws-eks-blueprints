@@ -885,17 +885,16 @@
                 
                 <h1 id="teams">Teams<a class="headerlink" href="#teams" title="Permanent link">&para;</a></h1>
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
-<p>The <code>eks-blueprints</code> framework provides support for onboarding and managing teams and easily configuring cluster access. We currently support two <code>Team</code> types: <code>application_teams</code> and <code>platform_teams</code>.
-<code>Application Teams</code> represent teams managing workloads running in cluster namespaces and <code>Platform Teams</code> represents platform administrators who have admin access (masters group) to clusters.</p>
+<p>EKS Blueprints provides support for onboarding and managing teams and easily configuring cluster access. We currently support two <code>Team</code> types: <code>application_teams</code> and <code>platform_teams</code>.</p>
+<p><code>Application Teams</code> represent teams managing workloads running in cluster namespaces and <code>Platform Teams</code> represents platform administrators who have admin access (masters group) to clusters.</p>
 <p>You can reference the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/aws-eks-teams">aws-eks-teams</a> module to create your own team implementations.</p>
 <h3 id="applicationteam">ApplicationTeam<a class="headerlink" href="#applicationteam" title="Permanent link">&para;</a></h3>
-<p>To create an <code>application_team</code> for your cluster, you will need to supply a team name, with the options to pass map of labels, map of resource quotas, existing IAM entities (user/roles), and a directory where you may optionally place any policy definitions and generic manifests for the team.
-These manifests will be applied by the platform and will be outside of the team control</p>
+<p>To create an <code>application_team</code> for your cluster, you will need to supply a team name, with the options to pass map of labels, map of resource quotas, existing IAM entities (user/roles), and a directory where you may optionally place any policy definitions and generic manifests for the team. These manifests will be applied by EKS Blueprints and will be outside of the team control.</p>
 <p><strong>NOTE:</strong> When the manifests are applied, namespaces are not checked. Therefore, you are responsible for namespace settings in the yaml files.</p>
 <blockquote>
-<p>As of today (2020-05-01), resource <code>kubernetes_manifest</code> can only be used (<code>terraform plan/apply...</code>) only after the cluster has been created and the cluster API can be accessed. Read <a href="https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest#before-you-use-this-resource">"Before you use this resource"</a> section for more information.
-To overcome this limitation, you can add/enable <code>manifests_dir</code> after you applied and created the cluster first. We are working on a better solution for this.</p>
+<p>As of today (2020-05-01), resource <code>kubernetes_manifest</code> can only be used (<code>terraform plan/apply...</code>) only after the cluster has been created and the cluster API can be accessed. Read <a href="https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest#before-you-use-this-resource">"Before you use this resource"</a> section for more information. </p>
 </blockquote>
+<p>To overcome this limitation, you can add/enable <code>manifests_dir</code> after you applied and created the cluster first. We are working on a better solution for this.</p>
 <h4 id="application-team-example">Application Team Example<a class="headerlink" href="#application-team-example" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code>  # EKS Application Teams
 
@@ -949,14 +948,14 @@ To overcome this limitation, you can add/enable <code>manifests_dir</code> after
     }
   }
 </code></pre></div>
-<p>The <code>application_teams</code> will do the following for every provided team:</p>
+<p>EKS Blueprints will do the following for every provided team:</p>
 <ul>
 <li>Create a namespace</li>
 <li>Register quotas</li>
 <li>Register IAM users for cross-account access</li>
 <li>Create a shared role for cluster access. Alternatively, an existing role can be supplied.</li>
-<li>Register provided users/role in the <code>aws-auth</code> configmap for <code>kubectl</code> and console access to the cluster and namespace.</li>
-<li>(Optionally) read all additional manifests (e.g., network policies, OPA policies, others) stored in a provided directory, and applies them.</li>
+<li>Register provided users/roles in the <code>aws-auth</code> configmap for <code>kubectl</code> and console access to the cluster and namespace.</li>
+<li>(Optionally) read all additional manifests (e.g., network policies, OPA policies, others) stored in a provided directory, and apply them.</li>
 </ul>
 <h3 id="platformteam">PlatformTeam<a class="headerlink" href="#platformteam" title="Permanent link">&para;</a></h3>
 <p>To create an <code>Platform Team</code> for your cluster, simply use <code>platform_teams</code>. You will need to supply a team name and and all users/roles.</p>
@@ -972,8 +971,8 @@ To overcome this limitation, you can add/enable <code>manifests_dir</code> after
 </code></pre></div>
 <p><code>Platform Team</code> does the following:</p>
 <ul>
-<li>Registers IAM users for admin access to the cluster (<code>kubectl</code> and console)</li>
-<li>Registers an existing role (or create a new role) for cluster access with trust relationship with the provided/created role</li>
+<li>Registers IAM users for admin access to the cluster (<code>kubectl</code> and console).</li>
+<li>Registers an existing role (or create a new role) for cluster access with trust relationship with the provided/created role.</li>
 </ul>
 <h2 id="cluster-access-kubectl">Cluster Access (<code>kubectl</code>)<a class="headerlink" href="#cluster-access-kubectl" title="Permanent link">&para;</a></h2>
 <p>The output will contain the IAM roles for every application(<code>application_teams_iam_role_arn</code>) or platform team(<code>platform_teams_iam_role_arn</code>).</p>

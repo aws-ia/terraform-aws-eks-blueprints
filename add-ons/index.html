@@ -846,7 +846,7 @@
                 
                 
                 <h1 id="kubernetes-addons-module">Kubernetes Addons Module<a class="headerlink" href="#kubernetes-addons-module" title="Permanent link">&para;</a></h1>
-<p>The <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons"><code>kubernetes-addons</code></a> module within this framework allows you to configure the add-ons you would like deployed into you EKS cluster with simple <strong>true/false</strong> flags.</p>
+<p>The <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/"><code>kubernetes-addons</code></a> module within EKS Blueprints allows you to configure the add-ons you would like deployed into you EKS cluster with simple <strong>true/false</strong> flags.</p>
 <p>The framework currently provides support for the following add-ons:</p>
 <table>
 <thead>
@@ -857,31 +857,27 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="agones/">Agones</a></td>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/agones.md">Agones</a></td>
 <td>Deploys Agones into an EKS cluster.</td>
 </tr>
 <tr>
-<td><a href="managed-add-ons/">Amazon EKS Add-ons</a></td>
-<td>Enables Amazon EKS add-ons.</td>
-</tr>
-<tr>
-<td><a href="argocd/">ArgoCD</a></td>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/argocd.md">ArgoCD</a></td>
 <td>Deploys ArgoCD into an EKS cluster.</td>
 </tr>
 <tr>
-<td><a href="aws-efs-csi-driver/">AWS EFS CSI driver</a></td>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/aws-efs-csi-driver.md">AWS EFS CSI driver</a></td>
 <td>Deploys the AWS EFS CSI driver into an EKS cluster.</td>
 </tr>
 <tr>
-<td><a href="aws-for-fluent-bit/">AWS for Fluent Bit</a></td>
+<td><a href=".https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/aws-for-fluent-bit.md">AWS for Fluent Bit</a></td>
 <td>Deploys Fluent Bit into an EKS cluster.</td>
 </tr>
 <tr>
-<td><a href="aws-load-balancer-controller/">AWS Load Balancer Controller</a></td>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/aws-load-balancer-controller.md">AWS Load Balancer Controller</a></td>
 <td>Deploys the AWS Load Balancer Controller into an EKS cluster.</td>
 </tr>
 <tr>
-<td><a href="../add-ons/aws-open-telemetry.md">AWS Distro for Open Telemetry</a></td>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/aws-node-termination-handler.md">AWS Distro for Open Telemetry</a></td>
 <td>Deploys the AWS Open Telemetry Collector into an EKS cluster.</td>
 </tr>
 <tr>
@@ -889,68 +885,76 @@
 <td>Deploys the AWS Node Termination Handler into an EKS cluster.</td>
 </tr>
 <tr>
-<td><a href="cert-manager/">cert-manager</a></td>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/cert-manager.md">cert-manager</a></td>
 <td>Deploys cert-manager into an EKS cluster.</td>
 </tr>
 <tr>
-<td><a href="cluster-autoscaler/">Cluster Autoscaler</a></td>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/cluster-autoscaler.md">Cluster Autoscaler</a></td>
 <td>Deploys the standard cluster autoscaler into an EKS cluster.</td>
 </tr>
 <tr>
-<td><a href="external-dns/">ExternalDNS</a></td>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/crossplane.md">Crossplane</a></td>
+<td>Deploys Crossplane into an EKS cluster.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/external-dns.md">ExternalDNS</a></td>
 <td>Deploys External DNS into an EKS cluster.</td>
 </tr>
 <tr>
-<td><a href="fargate-fluent-bit/">Fargate Fluent Bit</a></td>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/fargate-fluent-bit.md">Fargate Fluent Bit</a></td>
 <td>Adds Fluent Bit support for EKS Fargate</td>
 </tr>
 <tr>
-<td><a href="karpenter/">Karpenter</a></td>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/karpenter.md">Karpenter</a></td>
 <td>Deploys Karpenter into an EKS cluster.</td>
 </tr>
 <tr>
-<td><a href="keda/">Keda</a></td>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/keda.md">Keda</a></td>
 <td>Deploys Keda into an EKS cluster.</td>
 </tr>
 <tr>
-<td><a href="metrics-server/">Metrics Server</a></td>
-<td>Deploys the Kubernetes Metrics Server into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="nginx/">Nginx</a></td>
-<td>Deploys the NGINX Ingress Controller into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="prometheus/">Prometheus</a></td>
-<td>Deploys Prometheus into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="spark-on-k8s-operator/">Spark K8S Operator</a></td>
-<td>Deploys the Kubernetes Operator for Apache Spark into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="tetrate-istio/">Tetrate Istio</a></td>
-<td>Deploys Tetrate Istio Distro into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="traefik/">Traefik</a></td>
-<td>Deploys Traefik Proxy into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="vpa/">VPA</a></td>
-<td>Deploys the Vertical Pod Autoscaler into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="yunikorn/">YuniKorn</a></td>
-<td>Deploys Apache YuniKorn into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="kube-state-metrics/">Kube State Metrics</a></td>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/kube-state-metrics.md">Kube State Metrics</a></td>
 <td>Deploys Kube State Metrics into an EKS cluster.</td>
 </tr>
 <tr>
-<td><a href="kubernetes-dashboard/">Kubernetes Dashboard</a></td>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/kubernetes-dashboard.md">Kubernetes Dashboard</a></td>
 <td>Deploys Kubernetes Dashboard into an EKS cluster.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/metrics-server.md">Metrics Server</a></td>
+<td>Deploys the Kubernetes Metrics Server into an EKS cluster.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/nginx.md">Ingress Nginx</a></td>
+<td>Deploys the NGINX Ingress Controller into an EKS cluster.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/prometheus.md">Prometheus</a></td>
+<td>Deploys Prometheus into an EKS cluster.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/spark-on-k8s-operator.md">Spark K8S Operator</a></td>
+<td>Deploys the Kubernetes Operator for Apache Spark into an EKS cluster.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/tetrate-istio.md">Tetrate Istio</a></td>
+<td>Deploys Tetrate Istio Distro into an EKS cluster.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/traefik.md">Traefik</a></td>
+<td>Deploys Traefik Proxy into an EKS cluster.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/vault.md">HashiCorp Vault</a></td>
+<td>Deploys HashiCorp Vault into an EKS cluster.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/vpa.md">VPA</a></td>
+<td>Deploys the Vertical Pod Autoscaler into an EKS cluster.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/yunikorn.md">YuniKorn</a></td>
+<td>Deploys Apache YuniKorn into an EKS cluster.</td>
 </tr>
 </tbody>
 </table>
@@ -967,38 +971,40 @@
 <li>Deploy a Helm chart into your EKS cluster by leveraging the Terraform Helm provider.</li>
 </ol>
 <p>In order to deploy an add-on with default configuration, simply enable the add-on via Terraform properties.</p>
-<div class="highlight"><pre><span></span><code>module &quot;eks-blueprints-kubernetes-addons&quot; {
-    source = &quot;github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons&quot;
+<div class="highlight"><pre><span></span><code>module &quot;eks_blueprints_kubernetes_addons&quot; {
+  source = &quot;github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons&quot;
 
-    cluster_id                    = &lt;EKS-CLUSTER-ID&gt;
+  cluster_id                    = &lt;EKS-CLUSTER-ID&gt;
 
-    # EKS Addons
-    enable_amazon_eks_vpc_cni             = true
-    enable_amazon_eks_coredns             = true
-    enable_amazon_eks_kube_proxy          = true
-    enable_amazon_eks_aws_ebs_csi_driver  = true
+  # EKS Addons
 
-    #K8s Add-ons
-    enable_aws_load_balancer_controller  = true
-    enable_metrics_server                = true
-    enable_cluster_autoscaler            = true
-    enable_aws_for_fluentbit             = true
-    enable_argocd                        = true
+  enable_amazon_eks_aws_ebs_csi_driver  = true
+  enable_amazon_eks_coredns             = true
+  enable_amazon_eks_kube_proxy          = true
+  enable_amazon_eks_vpc_cni             = true
+
+  #K8s Add-ons
+  enable_argocd                        = true
+  enable_aws_for_fluentbit             = true
+  enable_aws_load_balancer_controller  = true
+  enable_cluster_autoscaler            = true
+  enable_metrics_server                = true
 }
 </code></pre></div>
 <p>To customize the behavior of the Helm charts that are ultimately deployed, you can supply custom Helm configuration. The following demonstrates how you can supply this configuration, including a dedicated <code>values.yaml</code> file.</p>
-<div class="highlight"><pre><span></span><code>metrics_server_helm_config = {
-    name           = &quot;metrics-server&quot;
-    repository     = &quot;https://kubernetes-sigs.github.io/metrics-server/&quot;
-    chart          = &quot;metrics-server&quot;
-    version        = &quot;3.8.1&quot;
-    namespace      = &quot;kube-system&quot;
-    timeout        = &quot;1200&quot;
+<div class="highlight"><pre><span></span><code>enable_metrics_server      = true
+metrics_server_helm_config = {
+  name           = &quot;metrics-server&quot;
+  repository     = &quot;https://kubernetes-sigs.github.io/metrics-server/&quot;
+  chart          = &quot;metrics-server&quot;
+  version        = &quot;3.8.1&quot;
+  namespace      = &quot;kube-system&quot;
+  timeout        = &quot;1200&quot;
 
-    # (Optional) Example to pass values.yaml from your local repo
-    values         = [templatefile(&quot;${path.module}/values.yaml&quot;, {
-            operating_system = &quot;linux&quot;
-    })]
+  # (Optional) Example to pass values.yaml from your local repo
+  values = [templatefile(&quot;${path.module}/values.yaml&quot;, {
+   operating_system = &quot;linux&quot;
+  })]
 }
 </code></pre></div>
 <p>Each add-on module is configured to fetch Helm Charts from Open Source, public Helm repositories and Docker images from Docker Hub/Public ECR repositories. This requires outbound Internet connection from your EKS Cluster.</p>

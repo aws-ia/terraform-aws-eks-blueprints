@@ -273,6 +273,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#additional-iam-roles-users-and-accounts" class="md-nav__link">
+    Additional IAM Roles, Users and Accounts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#managed-node-groups" class="md-nav__link">
     Managed Node Groups
   </a>
@@ -781,6 +788,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#additional-iam-roles-users-and-accounts" class="md-nav__link">
+    Additional IAM Roles, Users and Accounts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#managed-node-groups" class="md-nav__link">
     Managed Node Groups
   </a>
@@ -835,6 +849,40 @@
 <p>The framework uses dedicated sub modules for creating <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/aws-eks-managed-node-groups">AWS Managed Node Groups</a>, <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/aws-eks-self-managed-node-groups">Self-managed Node groups</a> and <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/aws-eks-fargate-profiles">Fargate profiles</a>. These modules provide flexibility to add or remove managed/self-managed node groups/fargate profiles by simply adding/removing map of values to input config. See <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/eks-cluster-with-new-vpc">example</a>.</p>
 <p>The <code>aws-auth</code> ConfigMap handled by this module allow your nodes to join your cluster, and you also use this ConfigMap to add RBAC access to IAM users and roles.
 Each Node Group can have dedicated IAM role, Launch template and Security Group to improve the security.</p>
+<h2 id="additional-iam-roles-users-and-accounts">Additional IAM Roles, Users and Accounts<a class="headerlink" href="#additional-iam-roles-users-and-accounts" title="Permanent link">&para;</a></h2>
+<p>Access to EKS cluster using AWS IAM entities is enabled by the <a href="https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html">AWS IAM Authenticator</a> for Kubernetes, which runs on the Amazon EKS control plane.
+The authenticator gets its configuration information from the <code>aws-auth</code> <a href="https://kubernetes.io/docs/concepts/configuration/configmap/">ConfigMap</a>.</p>
+<p>The following config grants additional AWS IAM users or roles the ability to interact with your cluster. However, the best practice is to leverage <a href="https://aws.github.io/aws-eks-best-practices/security/docs/multitenancy/">soft-multitenancy</a> with the help of <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/teams.md">Teams</a> module. Teams feature helps to manage users with dedicated namespaces, RBAC, IAM roles and register users with <code>aws-auth</code> to provide access to the EKS Cluster.</p>
+<p>The below example demonstrates adding additional IAM Roles, IAM Users and Accounts using EKS Blueprints module</p>
+<div class="highlight"><pre><span></span><code>module &quot;eks_blueprints&quot; {
+  source = &quot;github.com/aws-ia/terraform-aws-eks-blueprints&quot;
+
+  # EKS CLUSTER
+  cluster_version    = &quot;1.21&quot;                                         # EKS Cluster Version  
+  vpc_id             = &quot;&lt;vpcid&gt;&quot;                                      # Enter VPC ID
+  private_subnet_ids = [&quot;&lt;subnet-a&gt;&quot;, &quot;&lt;subnet-b&gt;&quot;, &quot;&lt;subnet-c&gt;&quot;]     # Enter Private Subnet IDs
+
+  # List of map_roles
+  map_roles          = [
+    {
+      rolearn  = &quot;arn:aws:iam::&lt;aws-account-id&gt;:role/&lt;role-name&gt;&quot;     # The ARN of the IAM role
+      username = &quot;ops-role&quot;                                           # The user name within Kubernetes to map to the IAM role
+      groups   = [&quot;system:masters&quot;]                                   # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
+    }
+  ]
+
+  # List of map_users
+  map_users = [
+    {
+      userarn  = &quot;arn:aws:iam::&lt;aws-account-id&gt;:user/&lt;username&gt;&quot;      # The ARN of the IAM user to add.
+      username = &quot;opsuser&quot;                                            # The user name within Kubernetes to map to the IAM role
+      groups   = [&quot;system:masters&quot;]                                   # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
+    }
+  ]
+
+  map_accounts = [&quot;123456789&quot;, &quot;9876543321&quot;]                          # List of AWS account ids
+}
+</code></pre></div>
 <h2 id="managed-node-groups">Managed Node Groups<a class="headerlink" href="#managed-node-groups" title="Permanent link">&para;</a></h2>
 <p>The below example demonstrates the minimum configuration required to deploy a managed node group.</p>
 <div class="highlight"><pre><span></span><code>    # EKS MANAGED NODE GROUPS
@@ -846,7 +894,7 @@ Each Node Group can have dedicated IAM role, Launch template and Security Group 
       }
     }
 </code></pre></div>
-<p>The below example demonstrates advanced configuration options for a managed node group.</p>
+<p>The below example demonstrates advanced configuration options for a managed node group with launch templates.</p>
 <div class="highlight"><pre><span></span><code>    managed_node_groups = {
       mg_m4 = {
         # 1&gt; Node Group configuration
@@ -856,7 +904,7 @@ Each Node Group can have dedicated IAM role, Launch template and Security Group 
         public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
         pre_userdata           = &lt;&lt;-EOT
                     yum install -y amazon-ssm-agent
-                    systemctl enable amazon-ssm-agent &amp;&amp; systemctl start amazon-ssm-agent&quot;
+                    systemctl enable amazon-ssm-agent &amp;&amp; systemctl start amazon-ssm-agent
                 EOT
         # 2&gt; Node Group scaling configuration
         desired_size    = 3
@@ -872,9 +920,10 @@ Each Node Group can have dedicated IAM role, Launch template and Security Group 
 
         # 4&gt; Node Group network configuration
         subnet_ids = [] # Mandatory - # Define private/public subnets list with comma separated [&quot;subnet1&quot;,&quot;subnet2&quot;,&quot;subnet3&quot;]
-        k8s_taints = []
+
         # optionally, configure a taint on the node group:
-        # k8s_taints = [{key= &quot;purpose&quot;, value=&quot;execution&quot;, &quot;effect&quot;=&quot;NO_SCHEDULE&quot;}]
+        k8s_taints = [{key= &quot;purpose&quot;, value=&quot;execution&quot;, &quot;effect&quot;=&quot;NO_SCHEDULE&quot;}]
+
         k8s_labels = {
           Environment = &quot;preprod&quot;
           Zone        = &quot;dev&quot;
@@ -886,6 +935,256 @@ Each Node Group can have dedicated IAM role, Launch template and Security Group 
           subnet_type = &quot;private&quot;
         }
       }
+    }
+</code></pre></div>
+<p>The below example demonstrates advanced configuration options using Spot/GPU instances/ARM instances/Bottlerocket and custom AMIs managed node groups.</p>
+<div class="highlight"><pre><span></span><code>    #---------------------------------------------------------#
+    # SPOT Worker Group
+    #---------------------------------------------------------#
+    spot_m5 = {
+      # 1&gt; Node Group configuration - Part1
+      node_group_name        = &quot;spot-m5&quot;
+      create_launch_template = true              # false will use the default launch template
+      launch_template_os     = &quot;amazonlinux2eks&quot; # amazonlinux2eks  or bottlerocket
+      public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+      pre_userdata           = &lt;&lt;-EOT
+                 yum install -y amazon-ssm-agent
+                 systemctl enable amazon-ssm-agent &amp;&amp; systemctl start amazon-ssm-agent
+             EOT
+      # Node Group scaling configuration
+      desired_size = 2
+      max_size     = 2
+      min_size     = 2
+
+      # Node Group update configuration. Set the maximum number or percentage of unavailable nodes to be tolerated during the node group version update.
+      max_unavailable = 1 # or percentage = 20
+
+      # Node Group compute configuration
+      ami_type       = &quot;AL2_x86_64&quot;
+      capacity_type  = &quot;SPOT&quot;
+      instance_types = [&quot;t3.medium&quot;, &quot;t3a.medium&quot;]
+      disk_size      = 50
+
+      # Node Group network configuration
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+
+      k8s_taints = []
+
+      k8s_labels = {
+        Environment = &quot;preprod&quot;
+        Zone        = &quot;dev&quot;
+        WorkerType  = &quot;SPOT&quot;
+      }
+      additional_tags = {
+        ExtraTag    = &quot;spot_nodes&quot;
+        Name        = &quot;spot&quot;
+        subnet_type = &quot;private&quot;
+      }
+
+      create_worker_security_group = false
+    },
+
+    #---------------------------------------------------------#
+    # GPU instance type Worker Group
+    #---------------------------------------------------------#
+    gpu = {
+      # 1&gt; Node Group configuration - Part1
+      node_group_name        = &quot;gpu-mg5&quot;         # Max 40 characters for node group name
+      create_launch_template = true              # false will use the default launch template
+      launch_template_os     = &quot;amazonlinux2eks&quot; # amazonlinux2eks or bottlerocket
+      public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+      pre_userdata           = &lt;&lt;-EOT
+            yum install -y amazon-ssm-agent
+            systemctl enable amazon-ssm-agent &amp;&amp; systemctl start amazon-ssm-agent
+        EOT
+      # 2&gt; Node Group scaling configuration
+      desired_size    = 2
+      max_size        = 2
+      min_size        = 2
+      max_unavailable = 1 # or percentage = 20
+
+      # 3&gt; Node Group compute configuration
+      ami_type       = &quot;AL2_x86_64_GPU&quot; # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
+      capacity_type  = &quot;ON_DEMAND&quot;      # ON_DEMAND or SPOT
+      instance_types = [&quot;m5.large&quot;]     # List of instances used only for SPOT type
+      disk_size      = 50
+
+      # 4&gt; Node Group network configuration
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+
+      k8s_taints = []
+
+      k8s_labels = {
+        Environment = &quot;preprod&quot;
+        Zone        = &quot;dev&quot;
+        WorkerType  = &quot;ON_DEMAND&quot;
+      }
+      additional_tags = {
+        ExtraTag    = &quot;m5x-on-demand&quot;
+        Name        = &quot;m5x-on-demand&quot;
+        subnet_type = &quot;private&quot;
+      }
+      create_worker_security_group = false
+    },
+
+    #---------------------------------------------------------#
+    # ARM instance type Worker Group
+    #---------------------------------------------------------#
+    arm = {
+      # 1&gt; Node Group configuration - Part1
+      node_group_name        = &quot;arm-mg5&quot;         # Max 40 characters for node group name
+      create_launch_template = true              # false will use the default launch template
+      launch_template_os     = &quot;amazonlinux2eks&quot; # amazonlinux2eks or bottlerocket
+      public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+      pre_userdata           = &lt;&lt;-EOT
+            yum install -y amazon-ssm-agent
+            systemctl enable amazon-ssm-agent &amp;&amp; systemctl start amazon-ssm-agent
+        EOT
+      # 2&gt; Node Group scaling configuration
+      desired_size    = 2
+      max_size        = 2
+      min_size        = 2
+      max_unavailable = 1 # or percentage = 20
+
+      # 3&gt; Node Group compute configuration
+      ami_type       = &quot;AL2_ARM_64&quot; # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
+      capacity_type  = &quot;ON_DEMAND&quot;  # ON_DEMAND or SPOT
+      instance_types = [&quot;m5.large&quot;] # List of instances used only for SPOT type
+      disk_size      = 50
+
+      # 4&gt; Node Group network configuration
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+
+      k8s_taints = []
+
+      k8s_labels = {
+        Environment = &quot;preprod&quot;
+        Zone        = &quot;dev&quot;
+        WorkerType  = &quot;ON_DEMAND&quot;
+      }
+      additional_tags = {
+        ExtraTag    = &quot;m5x-on-demand&quot;
+        Name        = &quot;m5x-on-demand&quot;
+        subnet_type = &quot;private&quot;
+      }
+      create_worker_security_group = false
+    },
+
+    #---------------------------------------------------------#
+    # Bottlerocket ARM instance type Worker Group
+    #---------------------------------------------------------#
+    bottlerocket_arm = {
+      # 1&gt; Node Group configuration - Part1
+      node_group_name        = &quot;btl-arm&quot;      # Max 40 characters for node group name
+      create_launch_template = true           # false will use the default launch template
+      launch_template_os     = &quot;bottlerocket&quot; # amazonlinux2eks or bottlerocket
+      public_ip              = false          # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+      # 2&gt; Node Group scaling configuration
+      desired_size    = 2
+      max_size        = 2
+      min_size        = 2
+      max_unavailable = 1 # or percentage = 20
+
+      # 3&gt; Node Group compute configuration
+      ami_type       = &quot;BOTTLEROCKET_ARM_64&quot; # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
+      capacity_type  = &quot;ON_DEMAND&quot;           # ON_DEMAND or SPOT
+      instance_types = [&quot;m5.large&quot;]          # List of instances used only for SPOT type
+      disk_size      = 50
+
+      # 4&gt; Node Group network configuration
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+
+      k8s_taints = []
+
+      k8s_labels = {
+        Environment = &quot;preprod&quot;
+        Zone        = &quot;dev&quot;
+        WorkerType  = &quot;ON_DEMAND&quot;
+      }
+      additional_tags = {
+        ExtraTag    = &quot;m5x-on-demand&quot;
+        Name        = &quot;m5x-on-demand&quot;
+        subnet_type = &quot;private&quot;
+      }
+      create_worker_security_group = false
+    },
+
+    #---------------------------------------------------------#
+    # Bottlerocket instance type Worker Group
+    #---------------------------------------------------------#
+    bottlerocket_arm = {
+      # 1&gt; Node Group configuration - Part1
+      node_group_name        = &quot;btl-x86&quot;      # Max 40 characters for node group name
+      create_launch_template = true           # false will use the default launch template
+      launch_template_os     = &quot;bottlerocket&quot; # amazonlinux2eks or bottlerocket
+      public_ip              = false          # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+      # 2&gt; Node Group scaling configuration
+      desired_size    = 2
+      max_size        = 2
+      min_size        = 2
+      max_unavailable = 1 # or percentage = 20
+
+      # 3&gt; Node Group compute configuration
+      ami_type       = &quot;BOTTLEROCKET_x86_64&quot; # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
+      capacity_type  = &quot;ON_DEMAND&quot;           # ON_DEMAND or SPOT
+      instance_types = [&quot;m5.large&quot;]          # List of instances used only for SPOT type
+      disk_size      = 50
+
+      # 4&gt; Node Group network configuration
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+
+      k8s_taints = []
+
+      k8s_labels = {
+        Environment = &quot;preprod&quot;
+        Zone        = &quot;dev&quot;
+        WorkerType  = &quot;ON_DEMAND&quot;
+      }
+      additional_tags = {
+        ExtraTag    = &quot;m5x-on-demand&quot;
+        Name        = &quot;m5x-on-demand&quot;
+        subnet_type = &quot;private&quot;
+      }
+      create_worker_security_group = false
+    },
+
+    #---------------------------------------------------------#
+    # CUSTOM AMI Worker Group
+    #---------------------------------------------------------#
+    custom_ami_m5 = {
+      node_group_name        = &quot;custom-ami-m5&quot;
+      create_launch_template = true           # false will use the default launch template
+      launch_template_os     = &quot;bottlerocket&quot; # amazonlinux2eks  or bottlerocket
+      public_ip              = false          # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+      pre_userdata           = &quot;&quot;
+
+      desired_size    = 3
+      max_size        = 3
+      min_size        = 3
+      max_unavailable = 1
+
+      ami_type       = &quot;CUSTOM&quot;
+      capacity_type  = &quot;ON_DEMAND&quot; # ON_DEMAND or SPOT
+      instance_types = [&quot;m5.large&quot;]
+      disk_size      = 50
+      custom_ami_id  = &quot;ami-044b114caf98ce8c5&quot;
+
+      # 4&gt; Node Group network configuration
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+
+      k8s_taints = []
+      k8s_labels = {
+        Environment = &quot;preprod&quot;
+        Zone        = &quot;dev&quot;
+        OS          = &quot;bottlerocket&quot;
+        WorkerType  = &quot;ON_DEMAND_BOTTLEROCKET&quot;
+      }
+      additional_tags = {
+        ExtraTag = &quot;bottlerocket&quot;
+        Name     = &quot;bottlerocket&quot;
+      }
+      #security_group ID
+      create_worker_security_group = true
     }
 </code></pre></div>
 <h2 id="self-managed-node-groups">Self-managed Node Groups<a class="headerlink" href="#self-managed-node-groups" title="Permanent link">&para;</a></h2>
@@ -950,7 +1249,8 @@ Each Node Group can have dedicated IAM role, Launch template and Security Group 
       },
     }
 </code></pre></div>
-<p>With the previous described example at <code>block_device_mapping</code>, in case you choose an instance that has local NVMe storage, you will achieve the three specified EBS disks plus all local NVMe disks that instance brings. For example, for an <code>m5d.large</code> you will end up with the following mount points: <code>/</code> for device named <code>/dev/xvda</code>, <code>/local1</code> for device named <code>/dev/xvdf</code>, <code>/local2</code> for device named <code>/dev/xvdg</code>, and <code>/local3</code> for instance storage (in such case a disk with 70GB).</p>
+<p>With the previous described example at <code>block_device_mapping</code>, in case you choose an instance that has local NVMe storage, you will achieve the three specified EBS disks plus all local NVMe disks that instance brings.</p>
+<p>For example, for an <code>m5d.large</code> you will end up with the following mount points: <code>/</code> for device named <code>/dev/xvda</code>, <code>/local1</code> for device named <code>/dev/xvdf</code>, <code>/local2</code> for device named <code>/dev/xvdg</code>, and <code>/local3</code> for instance storage (in such case a disk with 70GB).</p>
 <p>Check the following references as you may desire:</p>
 <ul>
 <li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nvme-ebs-volumes.html">Amazon EBS and NVMe on Linux instances</a>.</li>
