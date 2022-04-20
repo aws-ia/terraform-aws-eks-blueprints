@@ -31,10 +31,10 @@ data "aws_availability_zones" "available" {
   # Specify AZs to avoid EKS cluster creation error due to reduced capacity in an AZ.
   # Change the AZ names per capacity available in the region you selected.
   # https://aws.amazon.com/premiumsupport/knowledge-center/eks-cluster-creation-errors/
-  filter {
-    name   = "zone-name"
-    values = ["us-west-2a", "us-west-2b", "us-west-2c"]
-  }
+  # filter {
+  #   name   = "zone-name"
+  #   values = ["us-west-2a", "us-west-2b", "us-west-2c"]
+  # }
 }
 
 data "aws_eks_cluster" "cluster" {
