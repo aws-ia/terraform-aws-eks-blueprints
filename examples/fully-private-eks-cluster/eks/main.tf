@@ -74,7 +74,7 @@ locals {
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 }
 
-module "aws-eks-accelerator-for-terraform" {
+module "eks-blueprints" {
   source = "../../.."
 
   tenant            = local.tenant
