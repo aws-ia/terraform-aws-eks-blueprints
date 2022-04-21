@@ -213,7 +213,6 @@ kubectl logs -f -n opentelemetry-operator-system adot-collector-xxxx
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.73.0 |
-| <a name="provider_grafana"></a> [grafana](#provider\_grafana) | >= 1.13.3 |
 
 ## Modules
 
@@ -227,9 +226,6 @@ kubectl logs -f -n opentelemetry-operator-system adot-collector-xxxx
 
 | Name | Type |
 |------|------|
-| [grafana_dashboard.jmx_dashboards](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
-| [grafana_data_source.prometheus](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
-| [grafana_folder.jmx_dashboards](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
 | [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
 | [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
