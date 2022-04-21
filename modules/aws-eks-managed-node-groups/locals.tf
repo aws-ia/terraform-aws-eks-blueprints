@@ -5,7 +5,6 @@ locals {
     instance_types           = ["m5.large"]
     capacity_type            = "ON_DEMAND"  # ON_DEMAND, SPOT
     ami_type                 = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
-    custom_ami_id            = ""
     subnet_type              = "private"
     subnet_ids               = []
     release_version          = ""
@@ -15,33 +14,36 @@ locals {
     max_size        = "3"
     min_size        = "1"
     max_unavailable = "1"
-    disk_size       = 50
-
-    enable_monitoring = true
-    eni_delete        = true
-    public_ip         = false
+    disk_size       = 50 # disk_size will be ignored when using Launch Templates
 
     k8s_labels      = {}
     k8s_taints      = []
     additional_tags = {}
 
-    # LAUNCH TEMPLATES
-    create_launch_template  = false
-    launch_template_os      = "amazonlinux2eks" # amazonlinux2eks/bottlerocket # Used to identify the launch template
-    pre_userdata            = ""
-    post_userdata           = ""
-    kubelet_extra_args      = ""
-    bootstrap_extra_args    = ""
-    launch_template_id      = null
-    launch_template_version = "$Latest"
-
-    # SSH ACCESS
     remote_access           = false
     ec2_ssh_key             = ""
     ssh_security_group_id   = ""
     additional_iam_policies = []
 
-    # EBS Block Device config
+    timeouts = [{
+      create = "30m"
+      update = "2h"
+      delete = "30m"
+    }]
+
+    # The following defaults used only when you enable Launch Templates e.g., create_launch_template=true
+    # LAUNCH TEMPLATES
+    custom_ami_id           = ""
+    create_launch_template  = false
+    enable_monitoring       = true
+    launch_template_os      = "amazonlinux2eks" # amazonlinux2eks/bottlerocket # Used to identify the launch template
+    pre_userdata            = ""
+    post_userdata           = ""
+    kubelet_extra_args      = ""
+    bootstrap_extra_args    = ""
+    public_ip               = false
+
+    # EBS Block Device config only used with Launch Templates
     block_device_mappings = [{
       device_name           = "/dev/xvda"
       volume_type           = "gp3" # The volume type. Can be standard, gp2, gp3, io1, io2, sc1 or st1 (Default: gp3).
@@ -52,13 +54,6 @@ locals {
       iops                  = 3000
       throughput            = 125
     }]
-
-    timeouts = [{
-      create = "30m"
-      update = "2h"
-      delete = "30m"
-    }]
-
   }
 
   managed_node_group = merge(

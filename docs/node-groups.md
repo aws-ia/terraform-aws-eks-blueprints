@@ -54,7 +54,8 @@ The below example demonstrates the minimum configuration required to deploy a ma
       mg_4 = {
         node_group_name = "managed-ondemand"
         instance_types  = ["m4.large"]
-        subnet_ids      = [] # Mandatory Public or Private Subnet IDs
+        subnet_ids      = []  # Mandatory Public or Private Subnet IDs
+        disk_size       = 100 # disk_size will be ignored when using Launch Templates
       }
     }
 ```
@@ -71,7 +72,6 @@ The below example demonstrates advanced configuration options for a managed node
         launch_template_os     = "amazonlinux2eks" # amazonlinux2eks or windows or bottlerocket
         public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
         enable_monitoring      = true
-        eni_delete             = true
         pre_userdata           = <<-EOT
                     yum install -y amazon-ssm-agent
                     systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
@@ -186,7 +186,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
         Name        = "spot"
         subnet_type = "private"
       }
-    },
+    }
 
     #---------------------------------------------------------#
     # GPU instance type Worker Group
@@ -234,7 +234,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-    },
+    }
 
     #---------------------------------------------------------#
     # ARM instance type Worker Group
@@ -281,7 +281,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-    },
+    }
 
     #---------------------------------------------------------#
     # Bottlerocket ARM instance type Worker Group
@@ -320,7 +320,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-    },
+    }
 
     #---------------------------------------------------------#
     # Bottlerocket instance type Worker Group
@@ -365,7 +365,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-    },
+    }
 
     #---------------------------------------------------------#
     # Managed Node groups with Launch templates using CUSTOM AMI with ContainerD runtime

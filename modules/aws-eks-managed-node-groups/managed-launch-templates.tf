@@ -30,7 +30,7 @@ resource "aws_launch_template" "managed_node_groups" {
   image_id = local.managed_node_group["custom_ami_id"]
 
   monitoring {
-    enabled = true
+    enabled = local.managed_node_group["enable_monitoring"]
   }
 
   metadata_options {

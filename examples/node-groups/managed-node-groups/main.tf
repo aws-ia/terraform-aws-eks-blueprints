@@ -186,6 +186,7 @@ module "eks-blueprints" {
       node_group_name = "mg5"
       instance_types  = ["m5.large"]
       min_size        = "2"
+      disk_size       = 100 # Disk size is used only with Managed Node Groups without Launch Templates
     },
     # Managed Node groups with Launch templates using AMI TYPE
     mng_lt = {

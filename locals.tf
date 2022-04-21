@@ -22,8 +22,6 @@ locals {
   private_subnet_ids = var.private_subnet_ids
   public_subnet_ids  = var.public_subnet_ids
   tags               = module.eks_tags.tags
-  service_ipv6_cidr  = var.cluster_service_ipv6_cidr
-  service_ipv4_cidr  = var.cluster_service_ipv4_cidr
 
   enable_workers            = length(var.self_managed_node_groups) > 0 || length(var.managed_node_groups) > 0 ? true : false
   worker_security_group_ids = local.enable_workers ? compact(flatten([[module.aws_eks.node_security_group_id], var.worker_additional_security_group_ids])) : []
@@ -55,8 +53,8 @@ locals {
     iam_role_permissions_boundary = var.iam_role_permissions_boundary
 
     # Service IPv4/IPv6 CIDR range
-    service_ipv6_cidr = local.service_ipv6_cidr
-    service_ipv4_cidr = local.service_ipv4_cidr
+    service_ipv6_cidr = var.cluster_service_ipv6_cidr
+    service_ipv4_cidr = var.cluster_service_ipv4_cidr
 
     tags = local.tags
   }
