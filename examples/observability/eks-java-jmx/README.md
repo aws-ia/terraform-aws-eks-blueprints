@@ -101,7 +101,7 @@ application.
 - Check that OpenTelemetry Collector is running successfully inside EKS:
 
 ```
-kubectl get pods -n opentelemetry-operator-system
+kubectl get pods -A
 
 NAMESPACE                       NAME                                                         READY   STATUS    RESTARTS   AGE
 cert-manager                    cert-manager-7989877dff-jxk57                                1/1     Running   0          160m
