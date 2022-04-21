@@ -9,7 +9,7 @@ on:
         default: "true"
 
 env:
-  DEFAULT_DEPLOY_ORDER: "module.e2e-test.module.aws_vpc,module.e2e-test.module.aws-eks-accelerator-for-terraform,module.e2e-test.module.kubernetes-addons"
+  DEFAULT_DEPLOY_ORDER: "module.e2e-test.module.aws_vpc,module.e2e-test.module.eks-blueprints,module.e2e-test.module.eks-blueprints-kubernetes-addons"
 
 jobs:
   deploy:
@@ -28,7 +28,7 @@ jobs:
             tenant_name: "emr-eks"
           - example_path: examples/analytics/spark-k8s-operator
             tenant_name: "spark"
-          - example_path: examples/argocd
+          - example_path: examples/gitops/argocd
             tenant_name: "argo"
           - example_path: examples/aws-efs-csi-driver
             tenant_name: "efs"
@@ -43,12 +43,20 @@ jobs:
                 "module.e2e-test.module.aws_vpc",
                 "module.e2e-test.module.vpc_endpoint_gateway",
                 "module.e2e-test.module.vpc_endpoints",
-                "module.e2e-test.module.aws-eks-accelerator-for-terraform",
+                "module.e2e-test.module.eks-blueprints",
               ]
           - example_path: examples/game-tech/agones-game-controller
             tenant_name: "agones"
           - example_path: examples/ingress-controllers/nginx
             tenant_name: "nginx"
+            deployment_order:
+              [
+                "module.e2e-test.module.aws_vpc",
+                "module.e2e-test.module.eks-blueprints",
+                "module.e2e-test.module.eks-blueprints-kubernetes-addons",
+                "module.e2e-test.module.aws_load_balancer_controller",
+                "module.e2e-test.module.ingress_nginx",
+              ]
           - example_path: examples/karpenter
             tenant_name: "karpenter"
           - example_path: examples/node-groups/managed-node-groups
@@ -71,7 +79,7 @@ jobs:
           then
             echo "Skipping pre-setup for ${{ matrix.example_path }}"
             cp -R ${{ matrix.example_path }}/* deploy/e2e/gh-e2e-test/
-          else 
+          else
             echo "Running pre-setup for ${{ matrix.example_path }}"
             cp -R deploy/e2e/gh-e2e-template/* deploy/e2e/gh-e2e-test/
             sed -i "s!REPLACE_ME!${{ matrix.tenant_name }}!g" deploy/e2e/gh-e2e-test/base.tfvars
@@ -139,6 +147,7 @@ jobs:
           for element in "${array[@]}"
           do
             terraform destroy -target="$element" -var-file base.tfvars -no-color -input=false -auto-approve
+            sleep 45
           done
           terraform destroy -var-file base.tfvars -no-color -input=false -auto-approve
         continue-on-error: false

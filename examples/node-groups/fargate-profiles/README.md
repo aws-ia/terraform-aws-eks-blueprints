@@ -16,7 +16,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 #### Step1: Clone the repo using the command below
 
 ```shell script
-git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 #### Step2: Run Terraform INIT
@@ -54,14 +54,19 @@ This following command used to update the `kubeconfig` in your local machine whe
 
     $ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 
-#### Step6: List all the worker nodes by running the command below
+#### Step6: Create a simple pod with respective match labels.
+
+    $ kubectl run test-pod --image=nginx --labels="Zone=dev,Environment=preprod,env=fargate"
+
+#### Step7: List all the nodes by running the command below and verify the fargate nodes
 
     $ kubectl get nodes
 
-#### Step7: List all the pods running in `kube-system` namespace
+#### Step8: List all the pods running in `kube-system` namespace
 
     $ kubectl get pods -n kube-system
 
+Note : CoreDNS requires [additional setup](https://docs.aws.amazon.com/eks/latest/userguide/fargate-getting-started.html) if customers use only Fargate
 ## How to Destroy
 The following command destroys the resources created by `terraform apply`
 
@@ -90,8 +95,8 @@ terraform destroy --auto-approve
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | ../../.. | n/a |
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
+| <a name="module_eks-blueprints"></a> [eks-blueprints](#module\_eks-blueprints) | ../../.. | n/a |
 
 ## Resources
 

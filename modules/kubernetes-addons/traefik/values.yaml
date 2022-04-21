@@ -1,2 +1,0 @@
-serviceAccount:
-  name: ${sa-name}

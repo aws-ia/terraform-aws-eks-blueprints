@@ -9,9 +9,12 @@ cloudWatch:
 
 firehose:
   enabled: false
+  region: ${aws_region}
 
 kinesis:
   enabled: false
+  region: ${aws_region}
 
 elasticsearch:
   enabled: false
+  region: ${aws_region}

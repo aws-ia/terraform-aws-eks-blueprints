@@ -25,7 +25,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 #### Step1: Clone the repo using the command below
 
 ```shell script
-git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 #### Step2: Run Terraform INIT
@@ -80,7 +80,7 @@ Just type k9s after the installation and then you will see the output like this
 
          k9s
 
-![Alt Text](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/blob/9c6f8ea3e710f7b0137be07835653a2bf4f9fdfe/images/k9s-agones-cluster.png "K9s")
+![Alt Text](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/9c6f8ea3e710f7b0137be07835653a2bf4f9fdfe/images/k9s-agones-cluster.png "K9s")
 
 ## Step9: Add EKS Workshop IAM role as EKS Cluster Administrator
 
@@ -113,7 +113,7 @@ Output looks like below
 
 Output looks like below
 
-    TeamRole:~/environment/aws-eks-accelerator-for-terraform (main) $ echo -n "UDP test - Hello Workshop" | nc -u 34.243.345.22 7902
+    TeamRole:~/environment/eks-blueprints (main) $ echo -n "UDP test - Hello Workshop" | nc -u 34.243.345.22 7902
     Hello Workshop
     ACK: Hello Workshop
     EXIT
@@ -157,9 +157,9 @@ terraform destroy --auto-approve
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | ../../.. | n/a |
 | <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
-| <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons | n/a |
+| <a name="module_eks-blueprints"></a> [eks-blueprints](#module\_eks-blueprints) | ../../.. | n/a |
+| <a name="module_eks-blueprints-kubernetes-addons"></a> [eks-blueprints-kubernetes-addons](#module\_eks-blueprints-kubernetes-addons) | github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons | n/a |
 
 ## Resources
 

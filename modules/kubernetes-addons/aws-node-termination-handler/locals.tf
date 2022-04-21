@@ -20,9 +20,7 @@ locals {
     var.helm_config
   )
 
-  default_helm_values = [templatefile("${path.module}/values.yaml", {
-    nth-sa-name = local.service_account_name
-  })]
+  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
   set_values = [
     {

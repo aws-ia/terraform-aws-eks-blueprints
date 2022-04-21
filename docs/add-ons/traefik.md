@@ -6,7 +6,7 @@ For complete project documentation, please visit the [Traefik documentation site
 
 ## Usage
 
-[Traefik](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/tree/main/modules/kubernetes-addons/traefik) can be deployed by enabling the add-on via the following.
+[Traefik](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/traefik) can be deployed by enabling the add-on via the following.
 
 ```hcl
 enable_traefik = true
@@ -26,7 +26,7 @@ Now open the browser from your machine and enter the below URL to access Traefik
 http://127.0.0.1:9000/dashboard/
 ```
 
-![alt text](https://github.com/aws-samples/aws-eks-accelerator-for-terraform/blob/a8ceac6c977a3ccbcb95ef7fb21fff0daf0b7081/images/traefik_web_ui.png "Traefik Dashboard")
+![alt text](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/a8ceac6c977a3ccbcb95ef7fb21fff0daf0b7081/images/traefik_web_ui.png "Traefik Dashboard")
 
 #### AWS Service annotations for Traefik Ingress Controller
 

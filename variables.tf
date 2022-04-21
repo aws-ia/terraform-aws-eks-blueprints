@@ -134,6 +134,12 @@ variable "cluster_kms_key_deletion_window_in_days" {
   description = "The waiting period, specified in number of days (7 - 30). After the waiting period ends, AWS KMS deletes the KMS key"
 }
 
+variable "cluster_kms_key_additional_admin_arns" {
+  type        = list(string)
+  description = "A list of additional IAM ARNs that should have FULL access (kms:*) in the KMS key policy."
+  default     = []
+}
+
 variable "cluster_encryption_config" {
   description = "Configuration block with encryption configuration for the cluster"
   type = list(object({
@@ -165,6 +171,12 @@ variable "cluster_service_ipv4_cidr" {
 #-------------------------------
 # EKS Cluster CloudWatch Logging
 #-------------------------------
+variable "create_cloudwatch_log_group" {
+  description = "Determines whether a log group is created by this module for the cluster logs. If not, AWS will automatically create one if logging is enabled"
+  type        = bool
+  default     = false
+}
+
 variable "cluster_enabled_log_types" {
   type        = list(string)
   default     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
@@ -254,6 +266,19 @@ variable "enable_windows_support" {
 #-------------------------------
 # Worker Additional Variables
 #-------------------------------
+
+variable "create_node_security_group" {
+  description = "Determines whether to create a security group for the node groups or use the existing `node_security_group_id`"
+  type        = bool
+  default     = true
+}
+#rules added by
+variable "node_security_group_additional_rules" {
+  description = "List of additional security group rules to add to the node security group created. Set `source_cluster_security_group = true` inside rules to set the `cluster_security_group` as source"
+  type        = any
+  default     = {}
+}
+
 variable "worker_additional_security_group_ids" {
   description = "A list of additional security group ids to attach to worker instances"
   type        = list(string)

@@ -1,6 +1,6 @@
 # The purpose of this file is to demonstrate how to use GitLab CICD template to automate build and deployent of Terraform IaC
 #
-# This is a opinionated template which also demonstrates the best practise to implement gitops with Terraform IaC
+# This is a opinionated template which also demonstrates the best practice to implement gitops with Terraform IaC
 image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
 variables:
   TF_ROOT: ${CI_PROJECT_DIR}
