@@ -168,6 +168,12 @@ variable "cluster_service_ipv4_cidr" {
   default     = null
 }
 
+variable "cluster_service_ipv6_cidr" {
+  description = "The IPV6 Service CIDR block to assign Kubernetes service IP addresses"
+  type        = string
+  default     = null
+}
+
 #-------------------------------
 # EKS Cluster CloudWatch Logging
 #-------------------------------

@@ -7,21 +7,29 @@ resource "aws_launch_template" "managed_node_groups" {
 
   user_data = local.userdata_base64
 
-  block_device_mappings {
-    device_name = "/dev/xvda"
+  dynamic "block_device_mappings" {
+    for_each = local.managed_node_group["block_device_mappings"]
 
-    ebs {
-      volume_size           = local.managed_node_group["disk_size"]
-      volume_type           = local.managed_node_group["disk_type"]
-      delete_on_termination = true
-      encrypted             = true
-      # kms_key_id            = ""
+    content {
+      device_name = try(block_device_mappings.value.device_name, null)
+
+      ebs {
+        delete_on_termination = try(block_device_mappings.value.delete_on_termination, true)
+        encrypted             = try(block_device_mappings.value.encrypted, true)
+        kms_key_id            = try(block_device_mappings.value.kms_key_id, null)
+        volume_size           = try(block_device_mappings.value.volume_size, null)
+        volume_type           = try(block_device_mappings.value.volume_type, null)
+        iops                  = try(block_device_mappings.value.iops, null)
+        throughput            = try(block_device_mappings.value.throughput, null)
+        //        iops                  = block_device_mappings.value.volume_type == "gp3" || block_device_mappings.value.volume_type == "io1" || block_device_mappings.value.volume_type == "io2" ? try(block_device_mappings.value.iops, 3000) : null
+        //        throughput            = block_device_mappings.value.volume_type == "gp3" ? try(block_device_mappings.value.throughput, 125) : null
+      }
     }
   }
 
   ebs_optimized = true
 
-  image_id = local.managed_node_group["custom_ami_id"] == "" ? "" : local.managed_node_group["custom_ami_id"]
+  image_id = local.managed_node_group["custom_ami_id"]
 
   monitoring {
     enabled = true

@@ -9,14 +9,13 @@ locals {
     subnet_type              = "private"
     subnet_ids               = []
     release_version          = ""
+    force_update_version     = null
 
     desired_size    = "3"
     max_size        = "3"
     min_size        = "1"
     max_unavailable = "1"
-
-    disk_size = 50
-    disk_type = "gp3"
+    disk_size       = 50
 
     enable_monitoring = true
     eni_delete        = true
@@ -42,6 +41,18 @@ locals {
     ssh_security_group_id   = ""
     additional_iam_policies = []
 
+    # EBS Block Device config
+    block_device_mappings = [{
+      device_name           = "/dev/xvda"
+      volume_type           = "gp3" # The volume type. Can be standard, gp2, gp3, io1, io2, sc1 or st1 (Default: gp3).
+      volume_size           = "100"
+      delete_on_termination = true
+      encrypted             = true
+      kms_key_id            = ""
+      iops                  = 3000
+      throughput            = 125
+    }]
+
     timeouts = [{
       create = "30m"
       update = "2h"
@@ -62,10 +73,13 @@ locals {
     eks_cluster_id       = var.context.eks_cluster_id
     cluster_ca_base64    = var.context.cluster_ca_base64
     cluster_endpoint     = var.context.cluster_endpoint
-    bootstrap_extra_args = local.managed_node_group["bootstrap_extra_args"]
-    pre_userdata         = local.managed_node_group["pre_userdata"]
-    post_userdata        = local.managed_node_group["post_userdata"]
-    kubelet_extra_args   = local.managed_node_group["kubelet_extra_args"]
+    custom_ami_id        = local.managed_node_group["custom_ami_id"]
+    pre_userdata         = local.managed_node_group["pre_userdata"]         # Applied to all launch templates
+    bootstrap_extra_args = local.managed_node_group["bootstrap_extra_args"] # used only when custom_ami_id specified e.g., bootstrap_extra_args="--use-max-pods false --container-runtime containerd"
+    post_userdata        = local.managed_node_group["post_userdata"]        # used only when custom_ami_id specified
+    kubelet_extra_args   = local.managed_node_group["kubelet_extra_args"]   # used only when custom_ami_id specified e.g., kubelet_extra_args="--node-labels=arch=x86,WorkerType=SPOT --max-pods=50 --register-with-taints=spot=true:NoSchedule"  # Equivalent to k8s_labels used in managed node groups
+    service_ipv6_cidr    = var.context.service_ipv6_cidr == null ? "" : var.context.service_ipv6_cidr
+    service_ipv4_cidr    = var.context.service_ipv4_cidr == null ? "" : var.context.service_ipv4_cidr
   }
 
   userdata_base64 = base64encode(
