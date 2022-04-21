@@ -1,7 +1,7 @@
 tenant      = "aws001"
 environment = "preprod"
 zone        = "test"
-region      = "us-east-1"
+region      = "us-west-2"
 
 cluster_version = "1.21"
 

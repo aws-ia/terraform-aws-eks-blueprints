@@ -25,6 +25,7 @@ variable "kubernetes_version" {
 variable "region" {
   type        = string
   description = "AWS region"
+  default     = "us-west-2"
 }
 
 variable "tenant" {
