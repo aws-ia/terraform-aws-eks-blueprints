@@ -21,8 +21,6 @@ resource "aws_launch_template" "managed_node_groups" {
         volume_type           = try(block_device_mappings.value.volume_type, null)
         iops                  = try(block_device_mappings.value.iops, null)
         throughput            = try(block_device_mappings.value.throughput, null)
-        //        iops                  = block_device_mappings.value.volume_type == "gp3" || block_device_mappings.value.volume_type == "io1" || block_device_mappings.value.volume_type == "io2" ? try(block_device_mappings.value.iops, 3000) : null
-        //        throughput            = block_device_mappings.value.volume_type == "gp3" ? try(block_device_mappings.value.throughput, 125) : null
       }
     }
   }
