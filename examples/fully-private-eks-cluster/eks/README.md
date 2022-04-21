@@ -19,7 +19,7 @@ We will deploy the EKS cluster from the bastion host/Jenkins server that is runn
 #### Step1: Clone the repo using the command below
 
 ```shell script
-git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 #### Step2: Review and update the base.tfvars
@@ -39,7 +39,14 @@ cluster_security_group_additional_rules = {
   }
 ```
 
-#### Step3: Run Terraform INIT
+#### Step3: Review and updatethe backend.conf
+
+Review backend.conf and update the values for the S3 bucket.
+
+```shell script
+bucket = "<Update the bucket name here>"
+```
+#### Step4: Run Terraform INIT
 Initialize a working directory with configuration files
 
 ```shell script
@@ -47,7 +54,7 @@ cd examples/fully-private-eks-cluster/eks
 terraform init -backend-config backend.conf
 ```
 
-#### Step4: Run Terraform PLAN
+#### Step5: Run Terraform PLAN
 Verify the resources created by this execution
 
 ```shell script
@@ -55,7 +62,7 @@ export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
 terraform plan -var-file base.tfvars
 ```
 
-#### Step5: Terraform APPLY
+#### Step6: Terraform APPLY
 to create resources
 
 ```shell script
@@ -67,17 +74,17 @@ Enter `yes` to apply
 EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster.
 This following command used to update the `kubeconfig` in your local machine where you run kubectl commands to interact with your EKS Cluster.
 
-#### Step6: Run `update-kubeconfig` command
+#### Step7: Run `update-kubeconfig` command
 
 `~/.kube/config` file gets updated with cluster details and certificate from the below command
 
     $ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 
-#### Step7: List all the worker nodes by running the command below
+#### Step8: List all the worker nodes by running the command below
 
     $ kubectl get nodes
 
-#### Step8: List all the pods running in `kube-system` namespace
+#### Step9: List all the pods running in `kube-system` namespace
 
     $ kubectl get pods -n kube-system
 

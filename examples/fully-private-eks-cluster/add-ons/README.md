@@ -17,10 +17,23 @@ Ensure that you have installed the following tools in the bastion host/Jenkins s
 #### Step1: Clone the repo using the command below
 
 ```shell script
-git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
-#### Step2: Run Terraform INIT
+#### Step2: Review and update the base.tfvars
+Review base.tfvars and update the values for the variable "eks_cluster_id". 
+```shell script
+eks_cluster_id = "aws001-preprod-test-eks"
+```
+
+#### Step3: Review and updatethe backend.conf
+
+Review backend.conf and update the values for the S3 bucket.
+
+```shell script
+bucket = "<Update the bucket name here>"
+```
+#### Step4: Run Terraform INIT
 Initialize a working directory with configuration files
 
 ```shell script
@@ -28,7 +41,7 @@ cd examples/fully-private-eks-cluster/add-ons
 terraform init -backend-config backend.conf
 ```
 
-#### Step3: Run Terraform PLAN
+#### Step5: Run Terraform PLAN
 Verify the resources created by this execution
 
 ```shell script
@@ -36,7 +49,7 @@ export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
 terraform plan -var-file base.tfvars
 ```
 
-#### Step4: Terraform APPLY
+#### Step6: Terraform APPLY
 to create resources
 
 ```shell script

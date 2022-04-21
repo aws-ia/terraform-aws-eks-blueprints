@@ -15,7 +15,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 #### Step1: Clone the repo using the command below
 
 ```shell script
-git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+git clone git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 #### Step2: Review and update the base.tfvars
@@ -24,15 +24,25 @@ Review base.tfvars and update the values for the variable "default_vpc_ipv4_cidr
 default_vpc_ipv4_cidr = "172.31.0.0/16"
 ```
 
-#### Step2: Run Terraform INIT
+#### Step3: Create a S3 bucket for terraform state management
+Create a new S3 bucket for the Terraform state. We will use this S3 bucket to manage the terraform state across all the stacks in this example.
+
+Review backend.conf and update the values for the bucket created in the previous step.
+
+```shell script
+bucket = "<Update the bucket name here>"
+```
+
+#### Step4: Run Terraform INIT
 Initialize a working directory with configuration files
+
 
 ```shell script
 cd examples/fully-private-eks-cluster/vpc
 terraform init -backend-config backend.conf
 ```
 
-#### Step3: Run Terraform PLAN
+#### Step5: Run Terraform PLAN
 Verify the resources created by this execution
 
 ```shell script
@@ -40,7 +50,7 @@ export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
 terraform plan -var-file base.tfvars
 ```
 
-#### Step4: Terraform APPLY
+#### Step6: Terraform APPLY
 to create resources
 
 ```shell script
