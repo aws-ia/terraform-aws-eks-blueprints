@@ -136,6 +136,18 @@ module "eks-blueprints-kubernetes-addons" {
   #K8s Add-ons
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
+}
+
+module "aws_load_balancer_controller" {
+  source         = "../../../modules/kubernetes-addons"
+  eks_cluster_id = module.eks-blueprints.eks_cluster_id
+
+  enable_aws_load_balancer_controller = true
+}
+
+module "ingress_nginx" {
+  source         = "../../../modules/kubernetes-addons"
+  eks_cluster_id = module.eks-blueprints.eks_cluster_id
 
   enable_ingress_nginx = true
   ingress_nginx_helm_config = {

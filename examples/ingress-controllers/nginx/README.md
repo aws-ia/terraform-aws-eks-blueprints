@@ -90,11 +90,11 @@ The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/ingress-controllers/nginx
-terraform apply -target="module.module.ingress_nginx" -auto-approve
-terraform apply -target="module.module.aws_load_balancer_controller" -auto-approve
-terraform apply -target="module.module.eks-blueprints-kubernetes-addons" -auto-approve
-terraform apply -target="module.module.eks-blueprints" -auto-approve
-terraform apply -target="module.aws_vpc" -auto-approve
+terraform destroy -target="module.module.ingress_nginx" -auto-approve
+terraform destroy -target="module.module.aws_load_balancer_controller" -auto-approve
+terraform destroy -target="module.module.eks-blueprints-kubernetes-addons" -auto-approve
+terraform destroy -target="module.module.eks-blueprints" -auto-approve
+terraform destroy -target="module.aws_vpc" -auto-approve
 ```
 
 <!--- BEGIN_TF_DOCS --->
