@@ -33,15 +33,15 @@ locals {
 
     # The following defaults used only when you enable Launch Templates e.g., create_launch_template=true
     # LAUNCH TEMPLATES
-    custom_ami_id           = ""
-    create_launch_template  = false
-    enable_monitoring       = true
-    launch_template_os      = "amazonlinux2eks" # amazonlinux2eks/bottlerocket # Used to identify the launch template
-    pre_userdata            = ""
-    post_userdata           = ""
-    kubelet_extra_args      = ""
-    bootstrap_extra_args    = ""
-    public_ip               = false
+    custom_ami_id          = ""
+    create_launch_template = false
+    enable_monitoring      = true
+    launch_template_os     = "amazonlinux2eks" # amazonlinux2eks/bottlerocket # Used to identify the launch template
+    pre_userdata           = ""
+    post_userdata          = ""
+    kubelet_extra_args     = ""
+    bootstrap_extra_args   = ""
+    public_ip              = false
 
     # EBS Block Device config only used with Launch Templates
     block_device_mappings = [{
