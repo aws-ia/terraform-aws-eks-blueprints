@@ -139,11 +139,11 @@ terraform destroy -target="module.eks_blueprints_kubernetes_addons"
 Destroy the EKS cluster. 
 
 ```
-terraform apply -target="module.eks_blueprints"
+terraform destroy -target="module.eks_blueprints"
 ```
 
 Destroy the VPC.
 
 ```
-terraform apply -target="module.aws_vpc"
+terraform destroy -target="module.aws_vpc"
 ```
