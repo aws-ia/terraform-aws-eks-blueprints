@@ -73,7 +73,7 @@ terraform apply -target="module.eks_blueprints_kubernetes_addons"
 
 ## Configure kubectl
 
-Terraform output will display a command in your console that you can use to bootstrap your local `kubeconfig`. 
+Terraform output will display a command in your console that you can use to bootstrap your local `kubeconfig`.
 
 ```
 configure_kubectl = "aws eks --region <region> update-kubeconfig --name <cluster-name>"
