@@ -1,7 +1,7 @@
 # Fully Private EKS Cluster with VPC and VPC Endpoints deployment
 
 This example deploys a fully private EKS Cluster into a new VPC.
- - Creates a new VPC and 3 Private Subnets
+ - Creates a new VPC and 3 Public and Private Subnets
  - VPC Endpoints for various services and S3 VPC Endpoint gateway
  - Creates EKS Cluster Control plane with a private endpoint and with one Managed node group
 
