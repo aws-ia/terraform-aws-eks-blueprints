@@ -80,6 +80,7 @@ terraform destroy -var-file base.tfvars -auto-approve
 
 
 
+
 <!--- BEGIN_TF_DOCS --->
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: MIT-0

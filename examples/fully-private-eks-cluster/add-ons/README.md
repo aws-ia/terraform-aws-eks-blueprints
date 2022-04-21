@@ -7,7 +7,7 @@ This example deploys the following :
  
 
 ### Prerequisites:
-We will deploy the EKS cluster from the bastion host/Jenkins server that is running on the default VPC.
+We will deploy the add-ons from the bastion host/Jenkins server that is running on the default VPC.
 Ensure that you have installed the following tools in the bastion host/Jenkins server before start working with this module and run Terraform Plan and Apply
 1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 3. [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
