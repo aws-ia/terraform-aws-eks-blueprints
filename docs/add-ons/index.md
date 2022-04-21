@@ -10,9 +10,9 @@ The framework currently provides support for the following add-ons:
 | [ArgoCD](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/argocd.md) | Deploys ArgoCD into an EKS cluster. |
 | [AWS EFS CSI driver](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/aws-efs-csi-driver.md) | Deploys the AWS EFS CSI driver into an EKS cluster. |
 | [AWS for Fluent Bit](.https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/aws-for-fluent-bit.md) | Deploys Fluent Bit into an EKS cluster. |
+| [AWS CloudWatch Metrics](.https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/aws-cloudwatch-metrics.md) | Deploys AWS CloudWatch Metrics Agent into an EKS cluster. |
 | [AWS Load Balancer Controller](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/aws-load-balancer-controller.md) | Deploys the AWS Load Balancer Controller into an EKS cluster. |
-| [AWS Distro for Open Telemetry](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/aws-node-termination-handler.md) | Deploys the AWS Open Telemetry Collector into an EKS cluster. |
-| [AWS Node Termination Handler](../add-ons/aws-node-termination-handler.md) | Deploys the AWS Node Termination Handler into an EKS cluster. |
+| [AWS Node Termination Handler](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/aws-node-termination-handler.md) | Deploys the AWS Node Termination Handler into an EKS cluster. |
 | [cert-manager](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/cert-manager.md) | Deploys cert-manager into an EKS cluster. |
 | [Cluster Autoscaler](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/cluster-autoscaler.md) | Deploys the standard cluster autoscaler into an EKS cluster. |
 | [Crossplane](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/crossplane.md) | Deploys Crossplane into an EKS cluster. |
