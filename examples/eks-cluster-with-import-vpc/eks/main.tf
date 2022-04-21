@@ -167,6 +167,7 @@ module "eks-blueprints-kubernetes-addons" {
   enable_prometheus                   = true
   enable_ingress_nginx                = true
   enable_aws_for_fluentbit            = true
+  enable_aws_cloudwatch_metrics       = true
   enable_argocd                       = true
   enable_fargate_fluentbit            = false
   enable_argo_rollouts                = true

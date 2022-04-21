@@ -457,6 +457,25 @@ variable "aws_for_fluentbit_cw_log_group_kms_key_arn" {
   default     = null
 }
 
+#-----------AWS CloudWatch Metrics-------------
+variable "enable_aws_cloudwatch_metrics" {
+  type        = bool
+  default     = false
+  description = "Enable AWS CloudWatch Metrics add-on for Container Insights"
+}
+
+variable "aws_cloudwatch_metrics_helm_config" {
+  type        = any
+  description = "AWS CloudWatch Metrics Helm Chart config"
+  default     = {}
+}
+
+variable "aws_cloudwatch_metrics_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
+
 #-----------FARGATE FLUENT BIT-------------
 variable "enable_fargate_fluentbit" {
   type        = bool

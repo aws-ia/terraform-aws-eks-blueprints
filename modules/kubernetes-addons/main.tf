@@ -78,6 +78,15 @@ module "aws_for_fluent_bit" {
   addon_context            = local.addon_context
 }
 
+module "aws_cloudwatch_metrics" {
+  count             = var.enable_aws_cloudwatch_metrics ? 1 : 0
+  source            = "./aws-cloudwatch-metrics"
+  helm_config       = var.aws_cloudwatch_metrics_helm_config
+  irsa_policies     = var.aws_cloudwatch_metrics_irsa_policies
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "aws_load_balancer_controller" {
   count             = var.enable_aws_load_balancer_controller ? 1 : 0
   source            = "./aws-load-balancer-controller"
