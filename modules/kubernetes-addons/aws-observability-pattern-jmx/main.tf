@@ -93,4 +93,3 @@ resource "grafana_dashboard" "jmx_dashboards" {
 
 
 ## TODO- AMP alert rules
-

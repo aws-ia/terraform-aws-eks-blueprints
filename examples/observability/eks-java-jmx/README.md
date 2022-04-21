@@ -243,4 +243,3 @@ kubectl logs -f -n opentelemetry-operator-system adot-collector-xxxx
 No outputs.
 
 <!--- END_TF_DOCS --->
-
