@@ -22,11 +22,11 @@ data "aws_region" "current" {}
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks-blueprints.eks_cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks-blueprints.eks_cluster_id
 }
 
 terraform {
@@ -36,11 +36,11 @@ terraform {
 }
 
 locals {
-  tenant      = "aws001"  # AWS account name or unique id for tenant
-  environment = "preprod" # Environment area eg., preprod or prod
-  zone        = "spark"   # Environment with in one sub_tenant or business unit
+  tenant      = var.tenant      # AWS account name or unique id for tenant
+  environment = var.environment # Environment area eg., preprod or prod
+  zone        = var.zone        # Environment with in one sub_tenant or business unit
 
-  cluster_version = "1.21"
+  cluster_version = var.cluster_version
 
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
@@ -78,9 +78,9 @@ module "aws_vpc" {
 
 }
 #---------------------------------------------------------------
-# Example to consume aws-eks-accelerator-for-terraform module
+# Example to consume eks-blueprints module
 #---------------------------------------------------------------
-module "aws-eks-accelerator-for-terraform" {
+module "eks-blueprints" {
   source = "../../.."
 
   tenant            = local.tenant
@@ -109,9 +109,9 @@ module "aws-eks-accelerator-for-terraform" {
   enable_amazon_prometheus = true
 }
 
-module "kubernetes-addons" {
+module "eks-blueprints-kubernetes-addons" {
   source         = "../../../modules/kubernetes-addons"
-  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_cluster_id = module.eks-blueprints.eks_cluster_id
 
   #K8s Add-ons
   enable_metrics_server     = true
@@ -122,7 +122,7 @@ module "kubernetes-addons" {
   #---------------------------------------
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
   enable_amazon_prometheus             = true
-  amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = module.eks-blueprints.amazon_prometheus_workspace_endpoint
 
   #---------------------------------------
   # COMMUNITY PROMETHEUS ENABLE
@@ -159,12 +159,17 @@ module "kubernetes-addons" {
   #---------------------------------------
   enable_yunikorn = true
   yunikorn_helm_config = {
-    name       = "yunikorn"                                            # (Required) Release name.
-    repository = "https://apache.github.io/incubator-yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "yunikorn"                                            # (Required) Chart name to be installed.
-    version    = "0.12.2"                                              # (Optional) Specify the exact chart version to install.
+    name       = "yunikorn"                                  # (Required) Release name.
+    repository = "https://apache.github.io/yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
+    chart      = "yunikorn"                                  # (Required) Chart name to be installed.
+    version    = "0.12.2"                                    # (Optional) Specify the exact chart version to install.
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
 
-  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
+  depends_on = [module.eks-blueprints.managed_node_groups]
+}
+
+output "configure_kubectl" {
+  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
+  value       = module.eks-blueprints.configure_kubectl
 }

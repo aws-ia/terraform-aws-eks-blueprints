@@ -28,9 +28,9 @@ module "aws_vpc" {
 }
 
 #------------------------------------------------------------------------
-# AWS EKS Accelerator Module
+# AWS EKS Blueprints Module
 #------------------------------------------------------------------------
-module "aws-eks-accelerator-for-terraform" {
+module "eks-blueprints" {
   source = "../../.."
 
   # EKS Cluster VPC and Subnet mandatory config

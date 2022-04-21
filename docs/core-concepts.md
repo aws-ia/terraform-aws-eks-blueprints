@@ -1,20 +1,20 @@
 # Core Concepts
 
-This document provides a high level overview of the Core Concepts that are embedded in the `terraform-eks-blueprints` framework. For the purposes of this document, we will assume the reader is familiar with Git, Docker, Kubernetes and AWS.
+This document provides a high level overview of the Core Concepts that are embedded in EKS Blueprints. For the purposes of this document, we will assume the reader is familiar with Git, Docker, Kubernetes and AWS.
 
-| Concept       | Description                                                           |
-|---------------|-----------------------------------------------------------------------|
-| [Cluster](#cluster) | An Amazon EKS Cluster and associated worker groups. |
-| [Add-on](#add-on) | Operational software that provides key functionality to support your Kubernetes applications. |
-| [Team](#team) | A logical grouping of IAM identities that have access to Kubernetes resources. |
-| [Pipeline](#pipeline) | Continuous Delivery pipelines for deploying `clusters` and `add-ons`. |
-| [Application](#application) | An application that runs within an EKS Cluster. |
+| Concept                     | Description                                                                                   |
+| --------------------------- | --------------------------------------------------------------------------------------------- |
+| [Cluster](#cluster)         | An Amazon EKS Cluster and associated worker groups.                                           |
+| [Add-on](#add-on)           | Operational software that provides key functionality to support your Kubernetes applications. |
+| [Team](#team)               | A logical grouping of IAM identities that have access to Kubernetes resources.                |
+| [Pipeline](#pipeline)       | Continuous Delivery pipelines for deploying `clusters` and `add-ons`.                         |
+| [Application](#application) | An application that runs within an EKS Cluster.                                               |
 
 ## Cluster
 
-A `cluster` is simply an EKS cluster. The `terraform-eks-blueprints` framework provides for customizing the compute options you leverage with your `clusters`. The framework currently supports `EC2`, `Fargate` and `BottleRocket` instances. It also supports managed and self-managed node groups. To specify the type of compute you want to use for your `cluster`, you use the `managed_node_groups`, `self_managed_nodegroups`, or `fargate_profiles` variables.
+A `cluster` is simply an EKS cluster. EKS Blueprints provides for customizing the compute options you leverage with your `clusters`. The framework currently supports `EC2`, `Fargate` and `BottleRocket` instances. It also supports managed and self-managed node groups. To specify the type of compute you want to use for your `cluster`, you use the `managed_node_groups`, `self_managed_nodegroups`, or `fargate_profiles` variables.
 
-See our [Node Groups](../node-groups) documentation page for detailed information.
+See our [Node Groups](https://aws-ia.github.io/terraform-aws-eks-blueprints/node-groups/) documentation and our [Node Group example directory](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/feature/doc-updates-readme-getting-started/examples/node-groups) for detailed information.
 
 ## Add-on
 
@@ -22,26 +22,16 @@ See our [Node Groups](../node-groups) documentation page for detailed informatio
 
 For example, the `metrics-server` add-on only deploys the Kubernetes manifests that are needed to run the Kubernetes Metrics Server. By contrast, the `aws-load-balancer-controller` add-on deploys both Kubernetes YAML, in addition to creating resources via AWS APIs that are needed to support the AWS Load Balancer Controller functionality.
 
-The `terraform-eks-blueprints` framework allows you to manage your add-ons directly via Terraform (by leveraging the Terraform Helm provider) or via GitOps with ArgoCD. See our [`Add-ons`](../add-ons) documentation page for detailed information.
+EKS Blueprints allows you to manage your add-ons directly via Terraform (by leveraging the Terraform Helm provider) or via GitOps with ArgoCD. See our [`Add-ons`](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/) documentation page for detailed information.
 
 ## Team
 
-**Team Support is currently under development**
+`Teams` allow you to configure the logical grouping of users that have access to your EKS clusters, in addition to the access permissions they are granted. EKS Blueprints currently supports two types of `teams`: `application-team` and `platform-team`. `application-team` members are granted access to specific namespaces. `platform-team` members are granted administrative access to your clusters.
 
-`Teams` allow you to configure the logical grouping of users that have access to your EKS clusters, in addition to the access permissions they are granted. This framework currently supports two types of `teams`: `application-team` and `platform-team`. `application-team` members are granted access to specific namespaces. `platform-team` members are granted administrative access to your clusters.
-
-See our [`Teams`](../teams) documentation page for detailed information.
-
-## Pipeline
-
-**Pipeline support is currently under development**
-
-`Pipelines` allow you to configure `Continuous Delivery` (CD) pipelines for your EKS environments that are directly integrated with your Git provider.
-
-See our [`Pipelines`](../pipelines) documentation page for detailed information.
+See our [`Teams`](./teams) documentation page for detailed information.
 
 ## Application
 
 `Applications` represent the actual workloads that run within a Kubernetes cluster. The framework leverages a GitOps approach for deploying applications onto clusters.
 
-See our [`Applications](../applications) documentation for detailed information.
+See our [`Applications](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/argocd/#boostrapping) documentation for detailed information.

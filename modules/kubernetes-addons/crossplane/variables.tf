@@ -4,12 +4,6 @@ variable "helm_config" {
   default     = {}
 }
 
-variable "manage_via_gitops" {
-  type        = bool
-  default     = false
-  description = "Determines if the add-on should be managed via GitOps."
-}
-
 variable "aws_provider" {
   description = "AWS Provider config for Crossplane"
   type = object({

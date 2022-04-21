@@ -30,11 +30,11 @@ data "aws_region" "current" {}
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks-blueprints.eks_cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks-blueprints.eks_cluster_id
 }
 
 provider "aws" {
@@ -64,14 +64,14 @@ provider "kubectl" {
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   token                  = data.aws_eks_cluster_auth.cluster.token
   load_config_file       = false
-  apply_retry_count      = 5
+  apply_retry_count      = 30
 }
 
 locals {
-  tenant          = "aws001"  # AWS account name or unique id for tenant
-  environment     = "preprod" # Environment area eg., preprod or prod
-  zone            = "dev"     # Environment with in one sub_tenant or business unit
-  cluster_version = "1.21"
+  tenant          = var.tenant      # AWS account name or unique id for tenant
+  environment     = var.environment # Environment area eg., preprod or prod
+  zone            = var.zone        # Environment with in one sub_tenant or business unit
+  cluster_version = var.cluster_version
 
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
@@ -108,9 +108,9 @@ module "aws_vpc" {
   }
 }
 #---------------------------------------------------------------
-# Example to consume aws-eks-accelerator-for-terraform module
+# Example to consume eks-blueprints module
 #---------------------------------------------------------------
-module "aws-eks-accelerator-for-terraform" {
+module "eks-blueprints" {
   source = "../.."
 
   tenant            = local.tenant
@@ -136,9 +136,9 @@ module "aws-eks-accelerator-for-terraform" {
   }
 }
 
-module "kubernetes-addons" {
+module "eks-blueprints-kubernetes-addons" {
   source         = "../../modules/kubernetes-addons"
-  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_cluster_id = module.eks-blueprints.eks_cluster_id
 
   # Refer to docs/add-ons/crossplane.md for advanced configuration
   enable_crossplane = true
@@ -161,4 +161,9 @@ module "kubernetes-addons" {
     # This example config uses AmazonS3FullAccess for demo purpose only, but you should select a policy with the minimum permissions required to provision your resources.
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
   }
+}
+
+output "configure_kubectl" {
+  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
+  value       = module.eks-blueprints.configure_kubectl
 }

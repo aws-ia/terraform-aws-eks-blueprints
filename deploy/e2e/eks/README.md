@@ -1,8 +1,8 @@
 ## How to deploy the example
 
-    git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+    git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 
-    cd ~/aws-eks-accelerator-for-terraform/deploy/e2e/eks
+    cd ~/eks-blueprints/deploy/e2e/eks
 
     terraform init -backend-config backend.conf -reconfigure
 

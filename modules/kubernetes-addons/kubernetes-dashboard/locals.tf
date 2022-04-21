@@ -14,14 +14,12 @@ locals {
     timeout     = "1200"
   }
 
-  default_helm_values = [templatefile("${path.module}/values.yaml", {
-    sa-name = local.service_account_name
-  })]
-
   helm_config = merge(
     local.default_helm_config,
     var.helm_config
   )
+
+  default_helm_values = []
 
   set_values = [
     {

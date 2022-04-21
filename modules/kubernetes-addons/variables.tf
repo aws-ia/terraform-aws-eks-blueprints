@@ -3,6 +3,12 @@ variable "eks_cluster_id" {
   type        = string
 }
 
+variable "eks_cluster_domain" {
+  description = "The domain for the EKS cluster."
+  default     = ""
+  type        = string
+}
+
 variable "eks_worker_security_group_id" {
   description = "EKS Worker Security group Id created by EKS module"
   default     = ""
@@ -146,6 +152,88 @@ variable "crossplane_jet_aws_provider" {
     provider_aws_version     = "v0.24.1"
     additional_irsa_policies = []
   }
+}
+
+#-----------ONDAT ADDON-------------
+variable "enable_ondat" {
+  type        = bool
+  default     = false
+  description = "Enable Ondat add-on"
+}
+
+variable "ondat_helm_config" {
+  type        = any
+  default     = {}
+  description = "Ondat Helm Chart config"
+}
+
+variable "ondat_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for Ondat IRSA"
+}
+
+variable "ondat_create_cluster" {
+  type        = bool
+  default     = true
+  description = "Create cluster resources"
+}
+
+variable "ondat_etcd_endpoints" {
+  type        = list(string)
+  default     = []
+  description = "List of etcd endpoints for Ondat"
+}
+
+variable "ondat_etcd_ca" {
+  type        = string
+  default     = null
+  description = "CA content for Ondat etcd"
+}
+
+variable "ondat_etcd_cert" {
+  type        = string
+  default     = null
+  description = "Certificate content for Ondat etcd"
+}
+
+variable "ondat_etcd_key" {
+  type        = string
+  default     = null
+  sensitive   = true
+  description = "Private key content for Ondat etcd"
+}
+
+variable "ondat_admin_username" {
+  type        = string
+  default     = "storageos"
+  description = "Username for Ondat admin user"
+}
+
+variable "ondat_admin_password" {
+  type        = string
+  default     = "storageos"
+  sensitive   = true
+  description = "Password for Ondat admin user"
+}
+
+#-----------External DNS ADDON-------------
+variable "enable_external_dns" {
+  type        = bool
+  default     = false
+  description = "External DNS add-on."
+}
+
+variable "external_dns_helm_config" {
+  type        = any
+  default     = {}
+  description = "External DNS Helm Chart config"
+}
+
+variable "external_dns_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
 }
 
 #-----------Amazon Managed Service for Prometheus-------------
@@ -381,6 +469,25 @@ variable "aws_for_fluentbit_cw_log_group_kms_key_arn" {
   default     = null
 }
 
+#-----------AWS CloudWatch Metrics-------------
+variable "enable_aws_cloudwatch_metrics" {
+  type        = bool
+  default     = false
+  description = "Enable AWS CloudWatch Metrics add-on for Container Insights"
+}
+
+variable "aws_cloudwatch_metrics_helm_config" {
+  type        = any
+  description = "AWS CloudWatch Metrics Helm Chart config"
+  default     = {}
+}
+
+variable "aws_cloudwatch_metrics_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
+
 #-----------FARGATE FLUENT BIT-------------
 variable "enable_fargate_fluentbit" {
   type        = bool
@@ -405,6 +512,19 @@ variable "cert_manager_helm_config" {
   type        = any
   description = "Cert Manager Helm Chart config"
   default     = {}
+}
+
+#-----------Argo Rollouts ADDON-------------
+variable "enable_argo_rollouts" {
+  type        = bool
+  default     = false
+  description = "Enable Argo Rollouts add-on"
+}
+
+variable "argo_rollouts_helm_config" {
+  type        = any
+  default     = null
+  description = "Argo Rollouts Helm Chart config"
 }
 
 #-----------ARGOCD ADDON-------------
@@ -501,6 +621,38 @@ variable "keda_irsa_policies" {
   default     = []
 }
 
+#-----------Kubernetes Dashboard ADDON-------------
+variable "enable_kubernetes_dashboard" {
+  type        = bool
+  default     = false
+  description = "Enable Kubernetes Dashboard add-on"
+}
+
+variable "kubernetes_dashboard_helm_config" {
+  type        = any
+  default     = null
+  description = "Kubernetes Dashboard Helm Chart config"
+}
+
+variable "kubernetes_dashboard_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for Kubernetes Dashboard IRSA"
+}
+
+#-----------HashiCorp Vault-------------
+variable "enable_vault" {
+  type        = bool
+  default     = false
+  description = "Enable HashiCorp Vault add-on"
+}
+
+variable "vault_helm_config" {
+  type        = any
+  default     = null
+  description = "HashiCorp Vault Helm Chart config"
+}
+
 #------Vertical Pod Autoscaler(VPA) ADDON--------
 variable "enable_vpa" {
   type        = bool
@@ -524,39 +676,13 @@ variable "enable_yunikorn" {
 variable "yunikorn_helm_config" {
   type        = any
   default     = null
-  description = "Yunikorn Helm Chart config"
+  description = "YuniKorn Helm Chart config"
 }
 
 variable "yunikorn_irsa_policies" {
   type        = list(string)
   default     = []
   description = "IAM policy ARNs for Yunikorn IRSA"
-}
-
-#-----------Argo Rollouts ADDON-------------
-variable "enable_argo_rollouts" {
-  type        = bool
-  default     = false
-  description = "Enable Argo Rollouts add-on"
-}
-
-variable "argo_rollouts_helm_config" {
-  type        = any
-  default     = null
-  description = "Argo Rollouts Helm Chart config"
-}
-
-#-----------Kubernetes Dashboard ADDON-------------
-variable "enable_kubernetes_dashboard" {
-  type        = bool
-  default     = false
-  description = "Enable Kubernetes Dashboard add-on"
-}
-
-variable "kubernetes_dashboard_helm_config" {
-  type        = any
-  default     = null
-  description = "Kubernetes Dashboard Helm Chart config"
 }
 
 #-----------OpenTelemetry patterns-------------

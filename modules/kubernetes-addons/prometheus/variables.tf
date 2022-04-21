@@ -16,7 +16,6 @@ variable "amazon_prometheus_workspace_endpoint" {
   description = "Amazon Managed Prometheus Workspace Endpoint"
 }
 
-
 variable "manage_via_gitops" {
   type        = bool
   default     = false

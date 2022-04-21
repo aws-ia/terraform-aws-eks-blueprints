@@ -26,11 +26,11 @@ data "aws_region" "current" {}
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks-blueprints.eks_cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks-blueprints.eks_cluster_id
 }
 
 provider "aws" {
@@ -56,10 +56,10 @@ provider "helm" {
 }
 
 locals {
-  tenant          = "aws001"  # AWS account name or unique id for tenant
-  environment     = "preprod" # Environment area eg., preprod or prod
-  zone            = "dev"     # Environment with in one sub_tenant or business unit
-  cluster_version = "1.21"
+  tenant          = var.tenant      # AWS account name or unique id for tenant
+  environment     = var.environment # Environment area eg., preprod or prod
+  zone            = var.zone        # Environment with in one sub_tenant or business unit
+  cluster_version = var.cluster_version
 
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
@@ -96,9 +96,9 @@ module "aws_vpc" {
   }
 }
 #---------------------------------------------------------------
-# Example to consume aws-eks-accelerator-for-terraform module
+# Example to consume eks-blueprints module
 #---------------------------------------------------------------
-module "aws-eks-accelerator-for-terraform" {
+module "eks-blueprints" {
   source = "../../.."
 
   tenant            = local.tenant
@@ -124,9 +124,9 @@ module "aws-eks-accelerator-for-terraform" {
   }
 }
 
-module "kubernetes-addons" {
+module "eks-blueprints-kubernetes-addons" {
   source         = "../../../modules/kubernetes-addons"
-  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_cluster_id = module.eks-blueprints.eks_cluster_id
 
   # EKS Managed Add-ons
   enable_amazon_eks_vpc_cni    = true
@@ -136,9 +136,10 @@ module "kubernetes-addons" {
   #K8s Add-ons
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
-  enable_ingress_nginx      = true
 
+  enable_ingress_nginx = true
   ingress_nginx_helm_config = {
     version = "4.0.17"
+    values  = [templatefile("${path.module}/nginx_values.yaml", {})]
   }
 }

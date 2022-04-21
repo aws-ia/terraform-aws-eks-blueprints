@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The `ssp-amazon-eks` framework provides support for onboarding and managing teams and easily configuring cluster access. We currently support two "`Team`" types: `application_teams` and `platform_teams`.
+The `eks-blueprints` framework provides support for onboarding and managing teams and easily configuring cluster access. We currently support two "`Team`" types: `application_teams` and `platform_teams`.
 `Application Teams` represent teams managing workloads running in cluster namespaces and `Platform Teams` represents platform administrators who have admin access (masters group) to clusters.
 
 ### ApplicationTeam
@@ -172,7 +172,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_application_teams_configure_kubectl"></a> [application\_teams\_configure\_kubectl](#output\_application\_teams\_configure\_kubectl) | Configure kubectl for each Application Teams: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
 | <a name="output_application_teams_iam_role_arn"></a> [application\_teams\_iam\_role\_arn](#output\_application\_teams\_iam\_role\_arn) | IAM role ARN for Teams |
+| <a name="output_platform_teams_configure_kubectl"></a> [platform\_teams\_configure\_kubectl](#output\_platform\_teams\_configure\_kubectl) | Configure kubectl for each Platform Team: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
 | <a name="output_platform_teams_iam_role_arn"></a> [platform\_teams\_iam\_role\_arn](#output\_platform\_teams\_iam\_role\_arn) | IAM role ARN for Platform Teams |
 | <a name="output_team_sa_irsa_iam_role_arn"></a> [team\_sa\_irsa\_iam\_role\_arn](#output\_team\_sa\_irsa\_iam\_role\_arn) | IAM role ARN for Teams EKS Service Account (IRSA) |
 
