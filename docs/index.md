@@ -6,7 +6,7 @@ Welcome to Amazon EKS Blueprints for Terraform!
 
 This repository contains a collection of Terraform modules that aim to make it easier and faster for customers to adopt [Amazon EKS](https://aws.amazon.com/eks/).
 
-## WHat is EKS Blueprints
+## What is EKS Blueprints
 
 EKS Blueprints helps you compose complete EKS clusters that are fully bootstrapped with the operational software that is needed to deploy and operate workloads. With EKS Blueprints, you describe the configuration for the desired state of your EKS environment, such as the control plane, worker nodes, and Kubernetes add-ons, as an IaC blueprint. Once a blueprint is configured, you can use it to stamp out consistent environments across multiple AWS accounts and Regions using continuous deployment automation.
 
