@@ -14,6 +14,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"strings"
 	"testing"
+	"time"
 )
 
 var (
@@ -148,6 +149,7 @@ func TestEksBlueprintsE2E(t *testing.T) {
 						}
 						terraformOptions := getTerraformOptions(t, destroyTFOptions)
 						terraform.Destroy(t, terraformOptions)
+						time.Sleep(2 * time.Minute) // Workaround for cleaning up dangling ENIs
 					} else {
 						terraformOptions := getTerraformOptions(t, inputTfOptions)
 						terraform.Destroy(t, terraformOptions)
