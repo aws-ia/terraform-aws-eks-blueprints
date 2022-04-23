@@ -33,6 +33,9 @@ variable "launch_template_config" {
     http_tokens                 = optional(string)
     http_put_response_hop_limit = optional(number)
 
+    service_ipv6_cidr = optional(string)
+    service_ipv4_cidr = optional(string)
+
     monitoring = optional(bool)
   }))
   description = "Launch template configuration"
