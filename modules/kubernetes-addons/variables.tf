@@ -113,6 +113,25 @@ variable "cluster_autoscaler_helm_config" {
   description = "Cluster Autoscaler Helm Chart config"
 }
 
+#-----------AWS Appmesh-------------
+variable "enable_appmesh" {
+  type        = bool
+  default     = false
+  description = "Enable AppMesh add-on"
+}
+
+variable "appmesh_helm_config" {
+  type        = any
+  default     = {}
+  description = "AppMesh Helm Chart config"
+}
+
+variable "appmesh_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
+
 #-----------Crossplane ADDON-------------
 variable "enable_crossplane" {
   type        = bool

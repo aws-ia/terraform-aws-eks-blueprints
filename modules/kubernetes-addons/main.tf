@@ -95,6 +95,14 @@ module "aws_node_termination_handler" {
   addon_context           = local.addon_context
 }
 
+module "aws_app_mesh" {
+  count                   = var.enable_appmesh  ? 1 : 0
+  source                  = "./aws-app-mesh"
+  helm_config             = var.appmesh_helm_config
+  irsa_policies           = var.appmesh_irsa_policies
+  addon_context           = local.addon_context
+}
+
 module "cert_manager" {
   count             = var.enable_cert_manager ? 1 : 0
   source            = "./cert-manager"

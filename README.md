@@ -65,6 +65,7 @@ module "eks-blueprints-kubernetes-addons" {
     enable_aws_for_fluentbit              = true
     enable_argocd                         = true
     enable_ingress_nginx                  = true
+    enable_appmesh                        = true
 
     depends_on = [module.eks-blueprints.managed_node_groups]
 }
@@ -79,6 +80,7 @@ The code above will provision the following:
 ✅  `AWS Load Balancer Controller` for distributing traffic.\
 ✅  `Argocd` for declarative GitOps CD for Kubernetes.\
 ✅  `Nginx` for managing ingress.
+✅  `AppMesh Controller` for Managed Mesh from AWS.
 
 ## Add-ons
 This framework provides out of the box support for a wide range of popular Kubernetes add-ons.
