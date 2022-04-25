@@ -185,7 +185,7 @@ module "iam_role_service_account" {
     tags                           = {}
   }
   kubernetes_namespace  = var.application
-  kubernetes_service_account  = var.application
+  kubernetes_service_account  = "${var.application}-sa"
   irsa_iam_policies = [aws_iam_policy.this.arn]
 
   depends_on = [module.eks-blueprints]
@@ -211,6 +211,55 @@ resource "kubernetes_manifest" "csi_secrets_store_crd" {
     }
   }
   depends_on = [module.iam_role_service_account]
+}
+
+#---------------------------------------------------------------
+# Sample Kubernetes Pod to mount the Secrets as CSI Volume
+#---------------------------------------------------------------
+
+resource "kubernetes_manifest" "sample_nginx" {
+  manifest = {
+    apiVersion = "v1"
+    kind  = "Pod"
+    metadata  = {
+      name = "${var.application}-secrets-pod-sample"
+      namespace = var.application
+    }
+    spec = {
+      serviceAccountName = "${var.application}-sa"
+      volumes = [
+        {
+          name = "${var.application}-secrets-volume"
+          csi = {
+            driver = "secrets-store.csi.k8s.io"
+            readOnly = true
+            volumeAttributes = {
+              secretProviderClass: "${var.application}-secrets"
+            }
+          }
+        }
+      ]
+      containers = [
+        {
+          name = "${var.application}-deployment"
+          image = "nginx"
+          ports = [
+            {
+              containerPort = 80
+            }
+          ]
+          volumeMounts = [
+            {
+              name = "${var.application}-secrets-volume"
+              mountPath = "/mnt/secrets-store"
+              readOnly = true
+            }
+          ]
+        }
+      ]
+    }
+  }
+  depends_on = [kubernetes_manifest.csi_secrets_store_crd,module.iam_role_service_account]
 }
 
 output "configure_kubectl" {

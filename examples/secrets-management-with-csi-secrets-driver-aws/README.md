@@ -67,15 +67,16 @@ This following command used to update the `kubeconfig` in your local machine whe
 
     $ kubectl get SecretProviderClass -n <application>
 
-#### Step7: List all the pods running in `kube-system` namespace
+#### Step7: Exec in the Pod to view the secrets getting mounted successfully
 
-    $ kubectl get pods -n kube-system
+    $ kubectl exec -it -n nginx pod/nginx-secrets-pod-sample bash
+    $ ls -ltr /mnt/secrets-store
 
 ## How to Destroy
 The following command destroys the resources created by `terraform apply`
 
 ```shell script
-cd examples/eks-cluster-with-new-vpc
+cd secrets-management-with-csi-secrets-driver-aws
 terraform destroy --auto-approve
 ```
 
