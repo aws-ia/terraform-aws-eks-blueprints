@@ -5,12 +5,12 @@
 module "aws_eks_managed_node_groups" {
   source = "./modules/aws-eks-managed-node-groups"
 
-  for_each = { for key, value in var.managed_node_groups : key => value
-    if length(var.managed_node_groups) > 0
-  }
+  for_each = var.managed_node_groups
 
   managed_ng = each.value
   context    = local.node_group_context
+
+  cluster_version = var.cluster_version
 
   depends_on = [kubernetes_config_map.aws_auth]
 }
@@ -22,9 +22,7 @@ module "aws_eks_managed_node_groups" {
 module "aws_eks_self_managed_node_groups" {
   source = "./modules/aws-eks-self-managed-node-groups"
 
-  for_each = { for key, value in var.self_managed_node_groups : key => value
-    if length(var.self_managed_node_groups) > 0
-  }
+  for_each = var.self_managed_node_groups
 
   self_managed_ng = each.value
   context         = local.node_group_context
@@ -39,7 +37,7 @@ module "aws_eks_self_managed_node_groups" {
 module "aws_eks_fargate_profiles" {
   source = "./modules/aws-eks-fargate-profiles"
 
-  for_each = { for k, v in var.fargate_profiles : k => v if length(var.fargate_profiles) > 0 }
+  for_each = var.fargate_profiles
 
   fargate_profile = each.value
   context         = local.fargate_context
