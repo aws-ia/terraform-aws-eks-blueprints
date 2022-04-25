@@ -154,6 +154,69 @@ variable "crossplane_jet_aws_provider" {
   }
 }
 
+#-----------ONDAT ADDON-------------
+variable "enable_ondat" {
+  type        = bool
+  default     = false
+  description = "Enable Ondat add-on"
+}
+
+variable "ondat_helm_config" {
+  type        = any
+  default     = {}
+  description = "Ondat Helm Chart config"
+}
+
+variable "ondat_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for Ondat IRSA"
+}
+
+variable "ondat_create_cluster" {
+  type        = bool
+  default     = true
+  description = "Create cluster resources"
+}
+
+variable "ondat_etcd_endpoints" {
+  type        = list(string)
+  default     = []
+  description = "List of etcd endpoints for Ondat"
+}
+
+variable "ondat_etcd_ca" {
+  type        = string
+  default     = null
+  description = "CA content for Ondat etcd"
+}
+
+variable "ondat_etcd_cert" {
+  type        = string
+  default     = null
+  description = "Certificate content for Ondat etcd"
+}
+
+variable "ondat_etcd_key" {
+  type        = string
+  default     = null
+  sensitive   = true
+  description = "Private key content for Ondat etcd"
+}
+
+variable "ondat_admin_username" {
+  type        = string
+  default     = "storageos"
+  description = "Username for Ondat admin user"
+}
+
+variable "ondat_admin_password" {
+  type        = string
+  default     = "storageos"
+  sensitive   = true
+  description = "Password for Ondat admin user"
+}
+
 #-----------External DNS ADDON-------------
 variable "enable_external_dns" {
   type        = bool
@@ -394,6 +457,25 @@ variable "aws_for_fluentbit_cw_log_group_kms_key_arn" {
   default     = null
 }
 
+#-----------AWS CloudWatch Metrics-------------
+variable "enable_aws_cloudwatch_metrics" {
+  type        = bool
+  default     = false
+  description = "Enable AWS CloudWatch Metrics add-on for Container Insights"
+}
+
+variable "aws_cloudwatch_metrics_helm_config" {
+  type        = any
+  description = "AWS CloudWatch Metrics Helm Chart config"
+  default     = {}
+}
+
+variable "aws_cloudwatch_metrics_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
+
 #-----------FARGATE FLUENT BIT-------------
 variable "enable_fargate_fluentbit" {
   type        = bool
@@ -544,6 +626,19 @@ variable "kubernetes_dashboard_irsa_policies" {
   type        = list(string)
   default     = []
   description = "IAM policy ARNs for Kubernetes Dashboard IRSA"
+}
+
+#-----------HashiCorp Vault-------------
+variable "enable_vault" {
+  type        = bool
+  default     = false
+  description = "Enable HashiCorp Vault add-on"
+}
+
+variable "vault_helm_config" {
+  type        = any
+  default     = null
+  description = "HashiCorp Vault Helm Chart config"
 }
 
 #------Vertical Pod Autoscaler(VPA) ADDON--------

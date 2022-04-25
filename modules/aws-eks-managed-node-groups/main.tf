@@ -6,12 +6,13 @@ resource "aws_eks_node_group" "managed_ng" {
 
   node_role_arn   = aws_iam_role.managed_ng.arn
   subnet_ids      = length(local.managed_node_group["subnet_ids"]) == 0 ? (local.managed_node_group["subnet_type"] == "public" ? var.context.public_subnet_ids : var.context.private_subnet_ids) : local.managed_node_group["subnet_ids"]
-  release_version = try(local.managed_node_group["release_version"], "") == "" ? null : local.managed_node_group["release_version"]
+  release_version = try(local.managed_node_group["release_version"], "") == "" || local.managed_node_group["custom_ami_id"] != "" ? null : local.managed_node_group["release_version"]
 
-  ami_type       = local.managed_node_group["ami_type"] != "" ? local.managed_node_group["ami_type"] : null
-  capacity_type  = local.managed_node_group["capacity_type"]
-  disk_size      = local.managed_node_group["create_launch_template"] == true ? null : local.managed_node_group["disk_size"]
-  instance_types = local.managed_node_group["instance_types"]
+  ami_type             = local.managed_node_group["custom_ami_id"] != "" ? null : local.managed_node_group["ami_type"]
+  capacity_type        = local.managed_node_group["capacity_type"]
+  disk_size            = local.managed_node_group["create_launch_template"] == true ? null : local.managed_node_group["disk_size"]
+  instance_types       = local.managed_node_group["instance_types"]
+  force_update_version = local.managed_node_group["force_update_version"]
 
   scaling_config {
     desired_size = local.managed_node_group["desired_size"]

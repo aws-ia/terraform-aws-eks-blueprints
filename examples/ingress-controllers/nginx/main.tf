@@ -150,7 +150,6 @@ module "ingress_nginx" {
   eks_cluster_id = module.eks-blueprints.eks_cluster_id
 
   enable_ingress_nginx = true
-
   ingress_nginx_helm_config = {
     version = "4.0.17"
     values  = [templatefile("${path.module}/nginx_values.yaml", {})]

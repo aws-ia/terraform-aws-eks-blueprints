@@ -10,15 +10,18 @@ locals {
     ingressNginx              = var.enable_ingress_nginx ? module.ingress_nginx[0].argocd_gitops_config : null
     keda                      = var.enable_keda ? module.keda[0].argocd_gitops_config : null
     metricsServer             = var.enable_metrics_server ? module.metrics_server[0].argocd_gitops_config : null
+    ondat                     = var.enable_ondat ? module.ondat[0].argocd_gitops_config : null
     prometheus                = var.enable_prometheus ? module.prometheus[0].argocd_gitops_config : null
     sparkOperator             = var.enable_spark_k8s_operator ? module.spark_k8s_operator[0].argocd_gitops_config : null
     tetrateIstio              = var.enable_tetrate_istio ? module.tetrate_istio[0].argocd_gitops_config : null
     traefik                   = var.enable_traefik ? module.traefik[0].argocd_gitops_config : null
+    vault                     = var.enable_vault ? module.vault[0].argocd_gitops_config : null
     vpa                       = var.enable_vpa ? module.vpa[0].argocd_gitops_config : null
     yunikorn                  = var.enable_yunikorn ? module.yunikorn[0].argocd_gitops_config : null
     argoRollouts              = var.enable_argo_rollouts ? module.argo_rollouts[0].argocd_gitops_config : null
     karpenter                 = var.enable_karpenter ? module.karpenter[0].argocd_gitops_config : null
     kubernetesDashboard       = var.enable_kubernetes_dashboard ? module.kubernetes_dashboard[0].argocd_gitops_config : null
+    awsCloudWatchMetrics      = var.enable_aws_cloudwatch_metrics ? module.aws_cloudwatch_metrics[0].argocd_gitops_config : null
   }
 
   eks_oidc_issuer_url = replace(data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer, "https://", "")

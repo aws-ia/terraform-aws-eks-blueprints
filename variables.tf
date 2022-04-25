@@ -134,6 +134,12 @@ variable "cluster_kms_key_deletion_window_in_days" {
   description = "The waiting period, specified in number of days (7 - 30). After the waiting period ends, AWS KMS deletes the KMS key"
 }
 
+variable "cluster_kms_key_additional_admin_arns" {
+  type        = list(string)
+  description = "A list of additional IAM ARNs that should have FULL access (kms:*) in the KMS key policy."
+  default     = []
+}
+
 variable "cluster_encryption_config" {
   description = "Configuration block with encryption configuration for the cluster"
   type = list(object({
@@ -158,6 +164,12 @@ variable "cluster_ip_family" {
 
 variable "cluster_service_ipv4_cidr" {
   description = "The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks"
+  type        = string
+  default     = null
+}
+
+variable "cluster_service_ipv6_cidr" {
+  description = "The IPV6 Service CIDR block to assign Kubernetes service IP addresses"
   type        = string
   default     = null
 }

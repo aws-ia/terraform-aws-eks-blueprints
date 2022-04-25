@@ -78,6 +78,15 @@ module "aws_for_fluent_bit" {
   addon_context            = local.addon_context
 }
 
+module "aws_cloudwatch_metrics" {
+  count             = var.enable_aws_cloudwatch_metrics ? 1 : 0
+  source            = "./aws-cloudwatch-metrics"
+  helm_config       = var.aws_cloudwatch_metrics_helm_config
+  irsa_policies     = var.aws_cloudwatch_metrics_irsa_policies
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "aws_load_balancer_controller" {
   count             = var.enable_aws_load_balancer_controller ? 1 : 0
   source            = "./aws-load-balancer-controller"
@@ -182,6 +191,23 @@ module "metrics_server" {
   addon_context     = local.addon_context
 }
 
+module "ondat" {
+  count             = var.enable_ondat ? 1 : 0
+  source            = "ondat/ondat-addon/eksblueprints"
+  version           = "0.0.4"
+  helm_config       = var.ondat_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+  irsa_policies     = var.ondat_irsa_policies
+  create_cluster    = var.ondat_create_cluster
+  etcd_endpoints    = var.ondat_etcd_endpoints
+  etcd_ca           = var.ondat_etcd_ca
+  etcd_cert         = var.ondat_etcd_cert
+  etcd_key          = var.ondat_etcd_key
+  admin_username    = var.ondat_admin_username
+  admin_password    = var.ondat_admin_password
+}
+
 module "prometheus" {
   count       = var.enable_prometheus ? 1 : 0
   source      = "./prometheus"
@@ -223,6 +249,18 @@ module "traefik" {
   count             = var.enable_traefik ? 1 : 0
   source            = "./traefik"
   helm_config       = var.traefik_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "vault" {
+  count = var.enable_vault ? 1 : 0
+
+  # See https://registry.terraform.io/modules/hashicorp/hashicorp-vault-eks-addon/aws/
+  source  = "hashicorp/hashicorp-vault-eks-addon/aws"
+  version = "0.9.0"
+
+  helm_config       = var.vault_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }

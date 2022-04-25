@@ -1,5 +1,5 @@
 resource "kubernetes_namespace_v1" "irsa" {
-  count = var.create_kubernetes_namespace ? 1 : 0
+  count = var.create_kubernetes_namespace && var.kubernetes_namespace != "kube-system" ? 1 : 0
   metadata {
     name = var.kubernetes_namespace
 

@@ -87,7 +87,6 @@ module "eks-blueprints" {
   cluster_version = local.cluster_version
 
   # EKS MANAGED NODE GROUPS
-  # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
