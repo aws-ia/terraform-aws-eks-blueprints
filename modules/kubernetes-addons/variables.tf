@@ -577,3 +577,22 @@ variable "yunikorn_irsa_policies" {
   default     = []
   description = "IAM policy ARNs for Yunikorn IRSA"
 }
+
+#-----------AWS CSI Secrets Store Provider-------------
+variable "enable_csi_secrets_store_provider_aws" {
+  type        = bool
+  default     = false
+  description = "Enable AWS CSI Secrets Store Provider"
+}
+
+variable "csi_secrets_store_provider_aws_helm_config" {
+  type        = any
+  default     = null
+  description = "CSI Secrets Store Provider AWS Helm Configurations"
+}
+
+# variable "csi_secrets_store_provider_aws_secrets_config" {
+#   type        = any
+#   default     = {}
+#   description = "CSI Secrets Store Provider Secrets Configurations"
+# }

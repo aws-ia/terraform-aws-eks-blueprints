@@ -1,0 +1,34 @@
+variable "cluster_version" {
+  type        = string
+  description = "Kubernetes Version"
+  default     = "1.21"
+}
+
+variable "tenant" {
+  type        = string
+  description = "Account Name or unique account unique id e.g., apps or management or aws007"
+  default     = "sm001"
+}
+
+variable "environment" {
+  type        = string
+  default     = "preprod"
+  description = "Environment area, e.g. prod or preprod "
+}
+
+variable "zone" {
+  type        = string
+  description = "zone, e.g. dev or qa or load or ops etc..."
+  default     = "dev"
+}
+
+# variable "aws_secrets_manager_object_arn" {
+#   type        = string
+#   description = "ARN of the secret stored in AWS Secrets Manager"
+# }
+
+variable "application" {
+  type        = string
+  description = "Name of the application"
+  default     = "nginx"
+}
