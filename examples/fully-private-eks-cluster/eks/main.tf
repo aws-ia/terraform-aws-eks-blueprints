@@ -35,7 +35,13 @@ terraform {
 
   }
 
-  backend "s3" {}
+  # backend "s3" {}
+  backend "remote" {
+    organization = "skdemo"
+    workspaces {
+      name = "aws-eks-accelerator-for-terraform-1"
+    }
+  }
 
 }
 provider "aws" {
