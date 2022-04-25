@@ -135,7 +135,6 @@ module "eks-blueprints-kubernetes-addons" {
 
   #K8s Add-ons
   enable_csi_secrets_store_provider_aws = true
-  # csi_secrets_store_provider_aws_secrets_config = templatefile("${path.module}/secretconfig.yaml", {})
 
   depends_on = [module.eks-blueprints.managed_node_groups]
 }
@@ -154,7 +153,7 @@ data "aws_eks_cluster" "eks_cluster" {
 #---------------------------------------------------------------
 locals {
  secretconfig = templatefile("${path.module}/secretconfig.yaml", {})
- all_secret_arn = [for alarms in yamldecode(local.secretconfig): alarms["objectName"] ]
+ all_secret_arn = [for objects in yamldecode(local.secretconfig): objects["objectName"] ]
 }
 
 #---------------------------------------------------------------
