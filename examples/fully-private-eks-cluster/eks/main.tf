@@ -65,7 +65,7 @@ provider "helm" {
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   }
 }
-locals {
+locals = {
   tenant      = var.tenant
   environment = var.environment
   zone        = var.zone
