@@ -1,13 +1,13 @@
 locals {
-  name                 = "csi-secrets-store-provider-aws"
+  name                 = "secrets-store-csi-driver"
 
   default_helm_config = {
     name        = local.name
     chart       = local.name
-    repository  = "https://aws.github.io/eks-charts"
-    version     = "0.0.2"
+    repository  = "https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts"
+    version     = "1.1.2"
     namespace   = local.name
-    description = "A Helm chart to install the Secrets Store CSI Driver and the AWS Key Management Service Provider inside a Kubernetes cluster."
+    description = "A Helm chart to install the Secrets Store CSI Driver "
     values      = local.default_helm_values
     timeout     = "1200"
   }
@@ -21,8 +21,12 @@ locals {
 
   set_values = [
     {
-      name  = "secrets-store-csi-driver.install"
-      value = "false"
+      name  = "enableSecretRotation"
+      value = "true"
+    },
+    {
+      name  = "syncSecret.enabled"
+      value = "true"
     }
   ]
 

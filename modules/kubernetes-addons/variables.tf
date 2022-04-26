@@ -686,8 +686,15 @@ variable "csi_secrets_store_provider_aws_helm_config" {
   description = "CSI Secrets Store Provider AWS Helm Configurations"
 }
 
-# variable "csi_secrets_store_provider_aws_secrets_config" {
-#   type        = any
-#   default     = {}
-#   description = "CSI Secrets Store Provider Secrets Configurations"
-# }
+#-----------CSI Secrets Store Provider-------------
+variable "enable_secrets_store_csi_driver" {
+  type        = bool
+  default     = false
+  description = "Enable CSI Secrets Store Provider"
+}
+
+variable "secrets_store_csi_driver_helm_config" {
+  type        = any
+  default     = null
+  description = "CSI Secrets Store Provider Helm Configurations"
+}

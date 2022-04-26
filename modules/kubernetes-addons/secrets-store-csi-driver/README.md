@@ -1,19 +1,23 @@
-# CSI Secrets Store Provider Helm Chart
+# Secrets Store CSI Driver Helm Chart
 
 # Introduction
 
-AWS Secrets Manager and Config Provider for Secret Store CSI Driver allows you to get secret contents stored in AWS Key Management Service instance and use the Secrets Store CSI driver interface to mount them into Kubernetes pods.
+Secrets Store CSI Driver for Kubernetes secrets - Integrates secrets stores with Kubernetes via a [Container Storage Interface (CSI)](https://kubernetes-csi.github.io/docs/) volume.
+
+The Secrets Store CSI Driver `secrets-store.csi.k8s.io` allows Kubernetes to mount multiple secrets, keys, and certs stored in enterprise-grade external secrets stores into their pods as a volume. Once the Volume is attached, the data in it is mounted into the container’s file system.
+
+For more details, refer [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/)
 
 # Helm Chart
 
 ### Instructions to use the Helm Chart
 
-See the [csi-secrets-store-provider-aws](https://github.com/aws/eks-charts/tree/master/stable/csi-secrets-store-provider-aws).
+See the [secrets-store-csi-driver](https://secrets-store-csi-driver.sigs.k8s.io/getting-started/installation.html).
 
 <!--- BEGIN_TF_DOCS --->
 ## Requirements
 
-[Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/getting-started/installation.html) to be provisioned.
+No requirements.
 
 ## Providers
 
@@ -31,7 +35,7 @@ See the [csi-secrets-store-provider-aws](https://github.com/aws/eks-charts/tree/
 
 | Name | Type |
 |------|------|
-| [kubernetes_namespace.csi_secrets_store_provider_aws](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
+| [kubernetes_namespace.secrets_store_csi_driver](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
 
 ## Inputs
 

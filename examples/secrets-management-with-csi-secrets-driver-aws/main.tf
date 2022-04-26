@@ -134,6 +134,7 @@ module "eks-blueprints-kubernetes-addons" {
   enable_amazon_eks_kube_proxy = true
 
   #K8s Add-ons
+  enable_secrets_store_csi_driver = true
   enable_csi_secrets_store_provider_aws = true
 
   depends_on = [module.eks-blueprints.managed_node_groups]

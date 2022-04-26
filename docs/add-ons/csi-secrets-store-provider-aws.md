@@ -4,8 +4,9 @@ AWS Secrets Manager and Config Provider for Secret Store CSI Driver allows you t
 
 ## Usage
 
-csi-secrets-store-provider-aws can be deployed by enabling the add-on via the following.
+csi-secrets-store-provider-aws can be deployed by enabling the add-ons via the following.
 
 ```hcl
+enable_secrets_store_csi_driver = true
 enable_csi_secrets_store_provider_aws = true
 ```
