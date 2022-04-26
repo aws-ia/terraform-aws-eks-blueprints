@@ -6,7 +6,7 @@ region      = "us-west-2"
 cluster_version = "1.21"
 
 tf_state_vpc_s3_bucket = "terraform-ssp-github-actions-state-dla"
-tf_state_vpc_s3_key    = "private/vpc/terraform-main.tfstate"
+tf_state_vpc_s3_key    = "e2e/vpc/terraform-main.tfstate"
 
 cluster_security_group_additional_rules = {
   ingress_from_jenkins_host = {
