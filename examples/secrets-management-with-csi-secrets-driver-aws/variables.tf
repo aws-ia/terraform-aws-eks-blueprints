@@ -22,11 +22,6 @@ variable "zone" {
   default     = "dev"
 }
 
-# variable "aws_secrets_manager_object_arn" {
-#   type        = string
-#   description = "ARN of the secret stored in AWS Secrets Manager"
-# }
-
 variable "application" {
   type        = string
   description = "Name of the application"
