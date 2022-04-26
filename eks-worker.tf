@@ -10,8 +10,6 @@ module "aws_eks_managed_node_groups" {
   managed_ng = each.value
   context    = local.node_group_context
 
-  cluster_version = var.cluster_version
-
   depends_on = [kubernetes_config_map.aws_auth]
 }
 
