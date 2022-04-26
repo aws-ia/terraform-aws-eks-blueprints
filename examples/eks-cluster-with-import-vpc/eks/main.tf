@@ -115,7 +115,6 @@ module "eks-blueprints-kubernetes-addons" {
   eks_worker_security_group_id = module.eks-blueprints.worker_node_security_group_id
 
   # EKS Managed Add-ons
-  enable_amazon_eks_vpc_cni            = true
   enable_amazon_eks_coredns            = true
   enable_amazon_eks_kube_proxy         = true
   enable_amazon_eks_aws_ebs_csi_driver = true

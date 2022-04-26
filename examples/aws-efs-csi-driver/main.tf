@@ -153,7 +153,6 @@ module "eks-blueprints-kubernetes-addons" {
   eks_cluster_id = module.eks-blueprints.eks_cluster_id
 
   # EKS Managed Add-ons
-  enable_amazon_eks_vpc_cni    = true
   enable_amazon_eks_coredns    = true
   enable_amazon_eks_kube_proxy = true
 
