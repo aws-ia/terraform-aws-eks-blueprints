@@ -16,8 +16,15 @@ terraform {
     }
   }
 
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
+  # backend "local" {
+  #   path = "local_tf_state/terraform-main.tfstate"
+  # }
+
+    cloud {
+    organization = "skdemo"
+    workspaces {
+      name = "aws-eks-accelerator-for-terraform-1"
+    }
   }
 }
 
