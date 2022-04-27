@@ -1,0 +1,24 @@
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: default
+spec:
+  labels:
+    eks.amazonaws.com/capacityType: "SPOT"
+  requirements:
+    - key: "topology.kubernetes.io/zone"
+      operator: In
+      values: [${azs}]
+    - key: "karpenter.sh/capacity-type"
+      operator: In
+      values: ["spot"]
+  limits:
+    resources:
+      cpu: 1000
+  provider:
+    instanceProfile: ${iam-instance-profile-id}
+    subnetSelector:
+      Name: "*private*"
+    securityGroupSelector:
+      kubernetes.io/cluster/${eks-cluster-id}: 'owned'
+  ttlSecondsAfterEmpty: 120
