@@ -114,14 +114,14 @@ module "eks_blueprints_kubernetes_addons" {
 
 module "aws_load_balancer_controller" {
   source         = "../../../modules/kubernetes-addons"
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   enable_aws_load_balancer_controller = true
 }
 
 module "ingress_nginx" {
   source         = "../../../modules/kubernetes-addons"
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   enable_ingress_nginx = true
   ingress_nginx_helm_config = {

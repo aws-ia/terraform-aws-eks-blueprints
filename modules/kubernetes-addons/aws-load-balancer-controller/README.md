@@ -4,8 +4,8 @@
 
 AWS Load Balancer Controller is a controller to help manage Elastic Load Balancers for a Kubernetes cluster.
 
-* It satisfies Kubernetes Ingress resources by provisioning Application Load Balancers.
-* It satisfies Kubernetes Service resources by provisioning Network Load Balancers.
+- It satisfies Kubernetes Ingress resources by provisioning Application Load Balancers.
+- It satisfies Kubernetes Service resources by provisioning Network Load Balancers.
 
 # Helm Chart
 
@@ -18,7 +18,6 @@ Add Helm repo for LB Ingress Controller
     https://github.com/aws/eks-charts/blob/master/stable/aws-load-balancer-controller/values.yaml
 
     https://artifacthub.io/packages/helm/aws/aws-load-balancer-controller
-
 
 # Docker Image for LB ingress controller
 
@@ -52,21 +51,23 @@ Step 6: Run the following command to push this image to your newly created AWS r
 
         $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-load-balancer-controller:v2.2.1
 
-
 #### AWS Service annotations for LB Ingress Controller
+
 Here is the link to get the AWS ELB [service annotations](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/service/annotations/) for LB Ingress controller
 
-
-<!--- BEGIN_TF_DOCS --->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
 
 ## Modules
 
@@ -96,5 +97,4 @@ No requirements.
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
 | <a name="output_ingress_name"></a> [ingress\_name](#output\_ingress\_name) | AWS LoadBalancer Controller Ingress Name |
 | <a name="output_ingress_namespace"></a> [ingress\_namespace](#output\_ingress\_namespace) | AWS LoadBalancer Controller Ingress Namespace |
-
-<!--- END_TF_DOCS --->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

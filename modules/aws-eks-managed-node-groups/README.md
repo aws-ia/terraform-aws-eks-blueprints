@@ -6,22 +6,26 @@ Amazon EKS Managed Node Groups lets you create, update, scale, and terminate wor
 
 This module allows you to create ON-DEMAND, SPOT and BOTTLEROCKET(with custom ami) managed nodegroups. You can instantiate the module once with map of node group values to create multiple node groups.
 
-*NOTE*:
- - You can't create managed nodes in an AWS Region where you have AWS Outposts, AWS Wavelength, or AWS Local Zones enabled.
- - You can create self-managed nodes in an AWS Region where you have AWS Outposts, AWS Wavelength, or AWS Local Zones enabled
+_NOTE_:
 
-Checkout the usage docs for Managed Node groups [examples](https://aws-ia.github.io/terraform-aws-eks-blueprints/node-groups/)  
+- You can't create managed nodes in an AWS Region where you have AWS Outposts, AWS Wavelength, or AWS Local Zones enabled.
+- You can create self-managed nodes in an AWS Region where you have AWS Outposts, AWS Wavelength, or AWS Local Zones enabled
 
-<!--- BEGIN_TF_DOCS --->
+Checkout the usage docs for Managed Node groups [examples](https://aws-ia.github.io/terraform-aws-eks-blueprints/node-groups/)
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
 
 ## Modules
 
@@ -63,5 +67,4 @@ No modules.
 | <a name="output_managed_nodegroup_launch_template_id"></a> [managed\_nodegroup\_launch\_template\_id](#output\_managed\_nodegroup\_launch\_template\_id) | Launch Template ID for EKS Managed Node Group |
 | <a name="output_managed_nodegroup_launch_template_latest_version"></a> [managed\_nodegroup\_launch\_template\_latest\_version](#output\_managed\_nodegroup\_launch\_template\_latest\_version) | Launch Template version for EKS Managed Node Group |
 | <a name="output_managed_nodegroup_status"></a> [managed\_nodegroup\_status](#output\_managed\_nodegroup\_status) | EKS Managed Node Group status |
-
-<!--- END_TF_DOCS --->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

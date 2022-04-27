@@ -1,6 +1,6 @@
 # Prometheus Helm Chart
 
-###### Instructions to upload Prometheus Docker image to AWS ECR
+## Instructions to upload Prometheus Docker image to AWS ECR
 
 Step 1: Get the latest docker image from this link
 
@@ -13,7 +13,6 @@ Step 2: Download the docker image to your local Mac/Laptop
         $ docker pull jimmidyson/configmap-reload:v0.5.0
         $ docker pull quay.io/prometheus/node-exporter:v1.3.0
         $ docker pull prom/pushgateway:v1.4.2
-
 
 Step 3: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
 
@@ -39,24 +38,21 @@ Step 6: Run the following command to push this image to your newly created AWS r
 
 Repeat the above steps for other 4 images
 
-### Instructions to download Helm Charts
-
-Helm Chart
-
-    https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus/values.yaml
-
-
-<!--- BEGIN_TF_DOCS --->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
 
 ## Modules
 
@@ -91,5 +87,4 @@ No requirements.
 | Name | Description |
 |------|-------------|
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
-
-<!--- END_TF_DOCS --->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

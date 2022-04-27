@@ -32,10 +32,12 @@ data "aws_availability_zones" "available" {}
 
 data "aws_ami" "amazonlinux2eks" {
   most_recent = true
+
   filter {
     name   = "name"
-    values = [local.amazonlinux2eks]
+    values = ["amazon-eks-node-${local.cluster_version}-*"]
   }
+
   owners = ["amazon"]
 }
 
@@ -53,7 +55,7 @@ locals {
   count_availability_zone = (length(data.aws_availability_zones.available.names) <= 3) ? length(data.aws_availability_zones.available.zone_ids) : 3
   azs                     = slice(data.aws_availability_zones.available.names, 0, local.count_availability_zone)
   cluster_name            = join("-", [local.tenant, local.environment, local.zone, "eks"])
-  amazonlinux2eks         = "amazon-eks-node-${var.cluster_version}-*"
+  cluster_version         = "1.21"
 
   terraform_version = "Terraform v1.0.1"
 }
@@ -107,7 +109,7 @@ module "eks_blueprints" {
   worker_additional_security_group_ids = [] # Optional
 
   # EKS CONTROL PLANE VARIABLES
-  cluster_version = "1.21"
+  cluster_version = local.cluster_version
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
