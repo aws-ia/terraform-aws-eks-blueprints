@@ -4,8 +4,8 @@ data "aws_iam_policy_document" "secrets_management_policy" {
     effect    = "Allow"
     resources = local.all_secret_arn
     actions = [
-        "secretsmanager:GetSecretValue",
-        "secretsmanager:DescribeSecret"
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret"
     ]
   }
 } 

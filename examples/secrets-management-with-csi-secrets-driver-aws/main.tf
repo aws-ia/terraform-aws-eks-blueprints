@@ -134,7 +134,7 @@ module "eks-blueprints-kubernetes-addons" {
   enable_amazon_eks_kube_proxy = true
 
   #K8s Add-ons
-  enable_secrets_store_csi_driver = true
+  enable_secrets_store_csi_driver       = true
   enable_csi_secrets_store_provider_aws = true
 
   depends_on = [module.eks-blueprints.managed_node_groups]
@@ -153,8 +153,8 @@ data "aws_eks_cluster" "eks_cluster" {
 # Parsing the config file to local and also extracting the ARNs of Secret Object
 #---------------------------------------------------------------
 locals {
- secretconfig = templatefile("${path.module}/secretconfig.yaml", {})
- all_secret_arn = [for objects in yamldecode(local.secretconfig): objects["objectName"] ]
+  secretconfig   = templatefile("${path.module}/secretconfig.yaml", {})
+  all_secret_arn = [for objects in yamldecode(local.secretconfig) : objects["objectName"]]
 }
 
 #---------------------------------------------------------------
@@ -172,8 +172,8 @@ resource "aws_iam_policy" "this" {
 #---------------------------------------------------------------
 
 module "iam_role_service_account" {
-  source                = "../../modules/irsa"
-  addon_context         = {
+  source = "../../modules/irsa"
+  addon_context = {
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
     aws_caller_identity_arn        = data.aws_caller_identity.current.arn
     aws_eks_cluster_endpoint       = data.aws_eks_cluster.eks_cluster.endpoint
@@ -184,9 +184,9 @@ module "iam_role_service_account" {
     eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${module.eks-blueprints.eks_oidc_issuer_url}"
     tags                           = {}
   }
-  kubernetes_namespace  = var.application
-  kubernetes_service_account  = "${var.application}-sa"
-  irsa_iam_policies = [aws_iam_policy.this.arn]
+  kubernetes_namespace       = var.application
+  kubernetes_service_account = "${var.application}-sa"
+  irsa_iam_policies          = [aws_iam_policy.this.arn]
 
   depends_on = [module.eks-blueprints]
 }
@@ -198,13 +198,13 @@ module "iam_role_service_account" {
 resource "kubernetes_manifest" "csi_secrets_store_crd" {
   manifest = {
     apiVersion = "secrets-store.csi.x-k8s.io/v1alpha1"
-    kind  = "SecretProviderClass"
-    metadata  = {
-      name = "${var.application}-secrets"
+    kind       = "SecretProviderClass"
+    metadata = {
+      name      = "${var.application}-secrets"
       namespace = var.application
     }
     spec = {
-      provider: "aws"
+      provider : "aws"
       parameters = {
         objects = local.secretconfig
       }
@@ -220,9 +220,9 @@ resource "kubernetes_manifest" "csi_secrets_store_crd" {
 resource "kubernetes_manifest" "sample_nginx" {
   manifest = {
     apiVersion = "v1"
-    kind  = "Pod"
-    metadata  = {
-      name = "${var.application}-secrets-pod-sample"
+    kind       = "Pod"
+    metadata = {
+      name      = "${var.application}-secrets-pod-sample"
       namespace = var.application
     }
     spec = {
@@ -231,17 +231,17 @@ resource "kubernetes_manifest" "sample_nginx" {
         {
           name = "${var.application}-secrets-volume"
           csi = {
-            driver = "secrets-store.csi.k8s.io"
+            driver   = "secrets-store.csi.k8s.io"
             readOnly = true
             volumeAttributes = {
-              secretProviderClass: "${var.application}-secrets"
+              secretProviderClass : "${var.application}-secrets"
             }
           }
         }
       ]
       containers = [
         {
-          name = "${var.application}-deployment"
+          name  = "${var.application}-deployment"
           image = "nginx"
           ports = [
             {
@@ -250,16 +250,16 @@ resource "kubernetes_manifest" "sample_nginx" {
           ]
           volumeMounts = [
             {
-              name = "${var.application}-secrets-volume"
+              name      = "${var.application}-secrets-volume"
               mountPath = "/mnt/secrets-store"
-              readOnly = true
+              readOnly  = true
             }
           ]
         }
       ]
     }
   }
-  depends_on = [kubernetes_manifest.csi_secrets_store_crd,module.iam_role_service_account]
+  depends_on = [kubernetes_manifest.csi_secrets_store_crd, module.iam_role_service_account]
 }
 
 output "configure_kubectl" {

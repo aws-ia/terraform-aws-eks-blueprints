@@ -1,5 +1,5 @@
 locals {
-  name                 = "secrets-store-csi-driver"
+  name = "secrets-store-csi-driver"
 
   default_helm_config = {
     name        = local.name
@@ -29,6 +29,6 @@ locals {
   ]
 
   argocd_gitops_config = {
-    enable             = true
+    enable = true
   }
 }

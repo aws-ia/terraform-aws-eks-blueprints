@@ -1,5 +1,5 @@
 locals {
-  name                 = "csi-secrets-store-provider-aws"
+  name = "csi-secrets-store-provider-aws"
 
   default_helm_config = {
     name        = local.name
@@ -25,6 +25,6 @@ locals {
   ]
 
   argocd_gitops_config = {
-    enable             = true
+    enable = true
   }
 }
