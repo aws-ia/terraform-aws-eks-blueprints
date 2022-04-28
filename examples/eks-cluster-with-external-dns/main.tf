@@ -72,7 +72,7 @@ provider "helm" {
 }
 
 locals {
-  tenant          = "aws002"  # AWS account name or unique id for tenant
+  tenant          = "aws001"  # AWS account name or unique id for tenant
   environment     = "preprod" # Environment area eg., preprod or prod
   zone            = "dev"     # Environment with in one sub_tenant or business unit
   cluster_version = "1.21"

@@ -7,7 +7,7 @@ variable "cluster_version" {
 variable "tenant" {
   type        = string
   description = "Account Name or unique account unique id e.g., apps or management or aws007"
-  default     = "aws002"
+  default     = "aws001"
 }
 
 variable "environment" {
