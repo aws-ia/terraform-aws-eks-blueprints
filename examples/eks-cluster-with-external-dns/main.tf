@@ -20,11 +20,11 @@ terraform {
   #   path = "local_tf_state/terraform-main.tfstate"
   # }
 
-    # cloud {
-    # organization = "skdemo"
-    # workspaces {
-    #   name = "aws-eks-accelerator-for-terraform-1"
-    # }
+  # cloud {
+  # organization = "skdemo"
+  # workspaces {
+  #   name = "aws-eks-accelerator-for-terraform-1"
+  # }
   #}
 }
 
