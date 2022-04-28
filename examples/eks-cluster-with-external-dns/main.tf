@@ -20,15 +20,15 @@ terraform {
   #   path = "local_tf_state/terraform-main.tfstate"
   # }
 
-    cloud {
-    organization = "skdemo"
-    workspaces {
-      name = "aws-eks-accelerator-for-terraform-1"
-    }
-  }
+    # cloud {
+    # organization = "skdemo"
+    # workspaces {
+    #   name = "aws-eks-accelerator-for-terraform-1"
+    # }
+  #}
 }
 
-#data "aws_region" "current" {}
+data "aws_region" "current" {}
 
 data "aws_availability_zones" "available" {}
 
@@ -50,9 +50,8 @@ data "aws_route53_zone" "selected" {
 }
 
 provider "aws" {
-  #region = data.aws_region.current.id
-  region = "us-west-2"
-  #alias  = "default"
+  region = data.aws_region.current.id
+  alias  = "default"
 }
 
 provider "kubernetes" {
