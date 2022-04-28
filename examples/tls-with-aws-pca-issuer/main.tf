@@ -56,12 +56,12 @@ provider "helm" {
 }
 
 locals {
-  tenant            = var.tenant      # AWS account name or unique id for tenant
-  environment       = var.environment # Environment area eg., preprod or prod
-  zone              = var.zone        # Environment with in one sub_tenant or business unit
-  cluster_version   = var.cluster_version
-  certificate_name  = var.certificate_name
-  certificate_dns   = var.certificate_dns
+  tenant           = var.tenant      # AWS account name or unique id for tenant
+  environment      = var.environment # Environment area eg., preprod or prod
+  zone             = var.zone        # Environment with in one sub_tenant or business unit
+  cluster_version  = var.cluster_version
+  certificate_name = var.certificate_name
+  certificate_dns  = var.certificate_dns
 
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
@@ -127,8 +127,8 @@ module "eks-blueprints" {
 }
 
 module "eks-blueprints-kubernetes-addons" {
-  source         = "../../modules/kubernetes-addons"
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
+  source                  = "../../modules/kubernetes-addons"
+  eks_cluster_id          = module.eks-blueprints.eks_cluster_id
   aws_privateca_acmca_arn = aws_acmpca_certificate_authority.example.arn
 
   # EKS Managed Add-ons
@@ -137,8 +137,8 @@ module "eks-blueprints-kubernetes-addons" {
   enable_amazon_eks_kube_proxy = true
 
   #K8s Add-ons
-  enable_cert_manager                 = true
-  enable_aws_privateca_issuer         = true
+  enable_cert_manager         = true
+  enable_aws_privateca_issuer = true
 
   depends_on = [module.eks-blueprints.managed_node_groups]
 }
@@ -209,7 +209,7 @@ resource "kubernetes_manifest" "cluster-pca-issuer" {
 
     spec = {
       arn = aws_acmpca_certificate_authority.example.arn
-      region: data.aws_region.current.id
+      region : data.aws_region.current.id
     }
   }
   depends_on = [module.eks-blueprints-kubernetes-addons]
@@ -226,28 +226,28 @@ resource "kubernetes_manifest" "example_pca_certificate" {
     kind       = "Certificate"
 
     metadata = {
-      name = local.certificate_name
+      name      = local.certificate_name
       namespace = "default"
     }
 
     spec = {
       commonName = local.certificate_dns
-      duration = "2160h0m0s"
+      duration   = "2160h0m0s"
       issuerRef = {
-          group = "awspca.cert-manager.io"
-          kind = "AWSPCAClusterIssuer"
-          name: module.eks-blueprints.eks_cluster_id
+        group = "awspca.cert-manager.io"
+        kind  = "AWSPCAClusterIssuer"
+        name : module.eks-blueprints.eks_cluster_id
       }
       renewBefore = "360h0m0s"
-      secretName = join("-", [local.certificate_name, "clusterissuer"]) # This is the name with which the K8 Secret will be available
+      secretName  = join("-", [local.certificate_name, "clusterissuer"]) # This is the name with which the K8 Secret will be available
       usages = [
-          "server auth",
-          "client auth"
+        "server auth",
+        "client auth"
       ]
       privateKey = {
-          algorithm: "RSA"
-          size: 2048
-        }
+        algorithm : "RSA"
+        size : 2048
+      }
     }
   }
 
