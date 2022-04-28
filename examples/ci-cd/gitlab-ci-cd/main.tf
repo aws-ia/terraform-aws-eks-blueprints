@@ -94,7 +94,7 @@ module "aws_vpc" {
 # Example to consume eks-blueprints module
 #---------------------------------------------------------------
 module "eks-blueprints" {
-  source            = "github.com/aws-ia/terraform-aws-eks-blueprints"
+  source            = "../../.."
   tenant            = var.tenant
   environment       = var.environment
   zone              = var.zone

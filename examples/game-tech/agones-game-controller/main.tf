@@ -158,7 +158,7 @@ module "eks-blueprints" {
 }
 
 module "eks-blueprints-kubernetes-addons" {
-  source                       = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
+  source                       = "../../..//modules/kubernetes-addons"
   eks_cluster_id               = module.eks-blueprints.eks_cluster_id
   eks_worker_security_group_id = module.eks-blueprints.worker_node_security_group_id
 
