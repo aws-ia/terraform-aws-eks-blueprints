@@ -50,7 +50,8 @@ data "aws_route53_zone" "selected" {
 }
 
 provider "aws" {
-  region = data.aws_region.current.id
+  #region = data.aws_region.current.id
+  region = "us-west-2"
   alias  = "default"
 }
 
