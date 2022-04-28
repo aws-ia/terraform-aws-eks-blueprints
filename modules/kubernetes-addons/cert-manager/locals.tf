@@ -1,6 +1,6 @@
 locals {
   name                 = "cert-manager"
-  service_account_name = "${local.name}-sa"
+  service_account_name = "cert-manager" # AWS PrivateCA is expecting the service account name as `cert-manager`
 
   default_helm_config = {
     name        = local.name
@@ -12,7 +12,7 @@ locals {
     values      = local.default_helm_values
   }
 
-  default_helm_values = []
+  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
   helm_config = merge(
     local.default_helm_config,

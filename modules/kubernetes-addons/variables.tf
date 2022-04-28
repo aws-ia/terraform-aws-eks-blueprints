@@ -672,3 +672,28 @@ variable "yunikorn_irsa_policies" {
   default     = []
   description = "IAM policy ARNs for Yunikorn IRSA"
 }
+
+#-----------AWS PCA ISSUER-------------
+variable "enable_aws_privateca_issuer" {
+  type        = bool
+  default     = false
+  description = "Enable PCA Issuer"
+}
+
+variable "aws_privateca_issuer_helm_config" {
+  type        = any
+  description = "PCA Issuer Helm Chart config"
+  default     = {}
+}
+
+variable "aws_privateca_acmca_arn" {
+  type        = string
+  default     = ""
+  description = "ARN of AWS ACM PCA"
+}
+
+variable "aws_privateca_issuer_irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "IAM policy ARNs for AWS ACM PCA IRSA"
+}
