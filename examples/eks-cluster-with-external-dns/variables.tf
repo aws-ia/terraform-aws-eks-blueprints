@@ -32,3 +32,9 @@ variable "acm_certificate_domain" {
   type        = string
   description = "*.example.com"
 }
+
+variable "region" {
+  type        = string
+  description = "AWS region"
+  default     = "us-west-2"
+}
