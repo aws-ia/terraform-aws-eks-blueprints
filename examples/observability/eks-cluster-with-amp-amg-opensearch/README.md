@@ -6,13 +6,9 @@ Prometheus server collects these metrics and writes to remote Amazon Managed Pro
 
 AWS FluentBit Addon is configured to collect the container logs from EKS Cluster nodes and write to Amazon Open Search service.
 
----
-
 **NOTE**
 
 For the sake of simplicity in this example, we store sensitive information and credentials in `dev.tfvars`. This should not be done in a production environment. Instead, use an external secret store such as AWS Secrets Manager and use the [aws_secretsmanager_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret) data source to retrieve them.
-
----
 
 ## How to Deploy
 

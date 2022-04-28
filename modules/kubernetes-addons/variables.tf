@@ -655,12 +655,6 @@ variable "yunikorn_helm_config" {
   description = "YuniKorn Helm Chart config"
 }
 
-variable "yunikorn_irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM policy ARNs for Yunikorn IRSA"
-}
-
 #-----------AWS PCA ISSUER-------------
 variable "enable_aws_privateca_issuer" {
   type        = bool

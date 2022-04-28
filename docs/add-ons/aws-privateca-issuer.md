@@ -91,14 +91,14 @@ aws001-preprod-dev-eks-clusterissuer
 Name:         aws001-preprod-dev-eks-clusterissuer
 Namespace:    default
 Labels:       <none>
-Annotations:  cert-manager.io/alt-names: 
+Annotations:  cert-manager.io/alt-names:
               cert-manager.io/certificate-name: example
               cert-manager.io/common-name: example.com
-              cert-manager.io/ip-sans: 
+              cert-manager.io/ip-sans:
               cert-manager.io/issuer-group: awspca.cert-manager.io
               cert-manager.io/issuer-kind: AWSPCAClusterIssuer
               cert-manager.io/issuer-name: aws001-preprod-dev-eks
-              cert-manager.io/uri-sans: 
+              cert-manager.io/uri-sans:
 
 Type:  kubernetes.io/tls
 
