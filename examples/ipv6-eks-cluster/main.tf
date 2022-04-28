@@ -142,7 +142,6 @@ module "eks-blueprints-kubernetes-addons" {
   enable_ipv6    = true # Enable Ipv6 network. Attaches new VPC CNI policy to the IRSA role
 
   # EKS Managed Add-ons
-  enable_amazon_eks_vpc_cni    = true
   enable_amazon_eks_coredns    = true
   enable_amazon_eks_kube_proxy = true
 
