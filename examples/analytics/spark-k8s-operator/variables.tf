@@ -1,9 +1,3 @@
-variable "cluster_version" {
-  type        = string
-  description = "Kubernetes Version"
-  default     = "1.21"
-}
-
 variable "tenant" {
   type        = string
   description = "Account Name or unique account unique id e.g., apps or management or aws007"

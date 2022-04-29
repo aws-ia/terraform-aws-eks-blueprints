@@ -12,15 +12,3 @@ variable "zone" {
   type        = string
   description = "Environment with in one sub_tenant or business unit"
 }
-
-variable "cluster_version" {
-  type = string
-}
-
-variable "vpc_cidr" {
-  type = string
-}
-
-variable "terraform_version" {
-  type = string
-}

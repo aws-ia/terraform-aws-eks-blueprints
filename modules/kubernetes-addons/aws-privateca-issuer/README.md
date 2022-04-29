@@ -1,25 +1,26 @@
 # AWS PCA issuer Helm Chart
 
-# Introduction
+## Introduction
 
 AWS ACM Private CA is a module of the [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/) that can setup and manage private CAs. `cert-manager` is a Kubernetes add-on to automate the management and issuance of TLS certificates from various issuing sources. It will ensure certificates are valid and up to date periodically, and attempt to renew certificates at an appropriate time before expiry. The current module `aws-privateca-issuer` is a addon for `cert-manager` that issues certificates using AWS ACM PCA.
 
-# Helm Chart
-
-### Instructions to use the Helm Chart
+## Helm Chart
 
 See the [aws-pca-issuer documentation](https://cert-manager.github.io/aws-privateca-issuer/).
 
-<!--- BEGIN_TF_DOCS --->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
 
 ## Modules
 
@@ -49,5 +50,4 @@ No requirements.
 | Name | Description |
 |------|-------------|
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
-
-<!--- END_TF_DOCS --->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

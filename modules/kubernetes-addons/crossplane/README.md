@@ -1,14 +1,16 @@
 # Crossplane
+
 Crossplane is an open source Kubernetes add-on that enables platform teams to assemble infrastructure from multiple vendors, and expose higher level self-service APIs for application teams to consume, without having to write any code.
 
- - Crossplane is a control plane
- - Allow engineers to model their infrastructure as declarative configuration
- - Support managing a myriad of diverse infrastructure using "provider" plugins
- - It's an open source tool with strong communities
+- Crossplane is a control plane
+- Allow engineers to model their infrastructure as declarative configuration
+- Support managing a myriad of diverse infrastructure using "provider" plugins
+- It's an open source tool with strong communities
 
 Please find more details from [Crossplane](https://crossplane.io/)
 
 ## Usage
+
 Crossplane Add-on can be deployed as follows
 
 ```hcl
@@ -17,28 +19,30 @@ Crossplane Add-on can be deployed as follows
 
 This module allows you to deploy the following AWS providers for Crossplane. These providers disabled by default.
 
- - [AWS Provider](https://github.com/crossplane/provider-aws)
- - [Provider Jet AWS](https://github.com/crossplane-contrib/provider-jet-aws)
+- [AWS Provider](https://github.com/crossplane/provider-aws)
+- [Provider Jet AWS](https://github.com/crossplane-contrib/provider-jet-aws)
 
 Refer to [docs](../../../docs/add-ons/crossplane.md) on how to deploy AWS Providers.
 
-___
-<!--- BEGIN_TF_DOCS --->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | >= 1.13.1 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
+| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | >= 1.14 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
+| <a name="requirement_time"></a> [time](#requirement\_time) | >= 0.7 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | >= 1.13.1 |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
-| <a name="provider_time"></a> [time](#provider\_time) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
+| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | >= 1.14 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
+| <a name="provider_time"></a> [time](#provider\_time) | >= 0.7 |
 
 ## Modules
 
@@ -78,5 +82,4 @@ ___
 ## Outputs
 
 No outputs.
-
-<!--- END_TF_DOCS --->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -91,10 +91,10 @@ apps001-preprod-dev-eks-clusterissuer
 Name:         apps001-preprod-dev-eks-clusterissuer
 Namespace:    default
 Labels:       <none>
-Annotations:  cert-manager.io/alt-names: 
+Annotations:  cert-manager.io/alt-names:
               cert-manager.io/certificate-name: example
               cert-manager.io/common-name: example.com
-              cert-manager.io/ip-sans: 
+              cert-manager.io/ip-sans:
               cert-manager.io/issuer-group: awspca.cert-manager.io
               cert-manager.io/issuer-kind: AWSPCAClusterIssuer
               cert-manager.io/issuer-name: apps001-preprod-dev-eks
