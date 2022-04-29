@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    grafana = {
-      source  = "grafana/grafana"
-      version = ">= 1.13.3"
-    }
-  }
-}
-
 # Deploys ADOT Operator
 module "operator" {
   source            = "../aws-opentelemetry-operator"
@@ -48,12 +39,40 @@ module "irsa_amp_query" {
   depends_on = [module.operator]
 }
 
+data "aws_iam_policy_document" "ingest" {
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "aps:RemoteWrite",
+      "aps:GetSeries",
+      "aps:GetLabels",
+      "aps:GetMetricMetadata",
+    ]
+  }
+}
+
 resource "aws_iam_policy" "ingest" {
   name        = format("%s-%s", "amp-ingest", var.addon_context.eks_cluster_id)
   description = "Set up the permission policy that grants ingest (remote write) permissions for AMP workspace"
   path        = var.addon_context.irsa_iam_role_path
   policy      = data.aws_iam_policy_document.ingest.json
   tags        = var.addon_context.tags
+}
+
+data "aws_iam_policy_document" "query" {
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "aps:QueryMetrics",
+      "aps:GetSeries",
+      "aps:GetLabels",
+      "aps:GetMetricMetadata",
+    ]
+  }
 }
 
 resource "aws_iam_policy" "query" {
@@ -66,7 +85,6 @@ resource "aws_iam_policy" "query" {
 
 
 # Configure JMX default Grafana dashboards
-
 resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
   name       = "amp"
@@ -91,5 +109,4 @@ resource "grafana_dashboard" "jmx_dashboards" {
   config_json = file("${path.module}/dashboards/default.json")
 }
 
-
-## TODO- AMP alert rules
+# TODO- AMP alert rules

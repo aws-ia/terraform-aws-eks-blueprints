@@ -25,11 +25,48 @@ terraform {
   }
 }
 
+provider "aws" {
+  region = local.region
+}
+
+provider "kubernetes" {
+  experiments {
+    manifest_resource = true
+  }
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.cluster.endpoint
+    token                  = data.aws_eks_cluster_auth.cluster.token
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  }
+}
+
+provider "grafana" {
+  url  = var.grafana_endpoint
+  auth = var.grafana_api_key
+}
+
+data "aws_availability_zones" "available" {}
+
+data "aws_eks_cluster" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+}
+
 locals {
   tenant      = "aws001"        # AWS account name or unique id for tenant
   environment = "preprod"       # Environment area eg., preprod or prod
   zone        = "observability" # Environment within one sub_tenant or business unit
 
+  region          = "us-west-2"
   cluster_version = "1.21"
 
   vpc_cidr     = "10.0.0.0/16"
@@ -116,6 +153,6 @@ module "kubernetes-addons" {
   amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
 
   # Override this if you want to send metrics data to a workspace in a different region
-  amazon_prometheus_workspace_region = data.aws_region.current.name
+  amazon_prometheus_workspace_region = local.region
 
 }

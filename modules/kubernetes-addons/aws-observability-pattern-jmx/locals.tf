@@ -18,7 +18,6 @@ locals {
     var.helm_config
   )
 
-
   amazon_prometheus_ingest_service_account = "amp-ingest"
   amazon_prometheus_ingest_iam_role_arn    = (var.amazon_prometheus_workspace_endpoint != null) ? module.irsa_amp_ingest.irsa_iam_role_arn : ""
 
@@ -63,5 +62,4 @@ locals {
     { enable = true },
     local.amp_gitops_config
   )
-
 }
