@@ -1,5 +1,5 @@
 # TLS with AWS PCA Issuer
-This example deploys the following 
+This example deploys the following
 - Basic EKS Cluster with VPC
  - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
  - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
@@ -66,7 +66,7 @@ This following command used to update the `kubeconfig` in your local machine whe
     $ kubectl get pods -n aws-privateca-issuer
     $ kubectl get pods -n cert-manager
 
-#### Step8: View the `Certificate` status. It should be in 'Ready' state. 
+#### Step8: View the `Certificate` status. It should be in 'Ready' state.
 
     $ kubectl get Certificate
 

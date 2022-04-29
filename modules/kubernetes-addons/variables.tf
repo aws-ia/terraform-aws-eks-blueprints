@@ -754,8 +754,8 @@ variable "kubernetes_dashboard_irsa_permissions_boundary" {
   description = "IAM Policy ARN for IRSA IAM role permissions boundary"
 }
 
-#-----------OpenTelemetry patterns-------------
-variable "enable_otel_operator_jmx" {
+#-----------AWS Observability patterns-------------
+variable "enable_aws_observability_pattern_jmx" {
   type        = bool
   default     = false
   description = "Enable metrics for JMX workloads, automatic Managed Grafana Dashboards and AMP alerts"
