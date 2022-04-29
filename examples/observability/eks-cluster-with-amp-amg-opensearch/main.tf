@@ -26,7 +26,7 @@ terraform {
 }
 
 locals {
-  tenant      = "apps001"        # AWS account name or unique id for tenant
+  tenant      = "apps001"       # AWS account name or unique id for tenant
   environment = "preprod"       # Environment area eg., preprod or prod
   zone        = "observability" # Environment within one sub_tenant or business unit
 
