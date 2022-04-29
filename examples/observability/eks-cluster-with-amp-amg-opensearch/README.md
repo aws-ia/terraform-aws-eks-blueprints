@@ -59,7 +59,7 @@ terraform plan -var-file=dev.tfvars
  ```
 - Add the cluster to your kubeconfig:
 ```
-aws eks --region $AWS_REGION update-kubeconfig --name aws001-preprod-observability-eks
+aws eks --region $AWS_REGION update-kubeconfig --name apps001-preprod-observability-eks
 ```
 
 `terraform apply` will provision a new EKS cluster with Fluent Bit, Prometheus, and a sample workload. It will also provision Amazon Managed Prometheus to ingest metrics from Prometheus, an Amazon OpenSearch service domain for ingesting logs from Fluent Bit, and a bastion host so we can test OpenSearch.
@@ -115,7 +115,7 @@ ssh -i $PRIVATE_KEY_FILE ec2-user@$BASTION_HOST_IP -N -L "9200:${OS_VPC_ENDPOINT
 export BASTION_HOST_IP=$(terraform output -raw bastion_host_public_ip)
 export OS_DOMAIN_USER=$(terraform output -raw opensearch_user)
 export OS_DOMAIN_PASSWORD=$(terraform output -raw opensearch_pw)
-export FLUENTBIT_ROLE="arn:aws:iam::$(aws sts get-caller-identity | jq -r '.Account'):role/aws001-preprod-observability-eks-aws-for-fluent-bit-sa-irsa"
+export FLUENTBIT_ROLE="arn:aws:iam::$(aws sts get-caller-identity | jq -r '.Account'):role/apps001-preprod-observability-eks-aws-for-fluent-bit-sa-irsa"
 
 curl  --insecure -sS -u "${OS_DOMAIN_USER}:${OS_DOMAIN_PASSWORD}" \
     -X PATCH \

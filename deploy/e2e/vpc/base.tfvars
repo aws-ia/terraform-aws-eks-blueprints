@@ -1,4 +1,4 @@
-tenant      = "aws001"
+tenant      = "apps001"
 environment = "preprod"
 zone        = "test"
 region      = "us-west-2"

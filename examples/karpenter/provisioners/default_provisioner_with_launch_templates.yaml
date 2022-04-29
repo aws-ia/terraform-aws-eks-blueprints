@@ -20,7 +20,7 @@ spec:
     resources:
       cpu: 1000
   provider:
-    launchTemplate: "karpenter-aws001-preprod-dev-eks"     # Used by Karpenter Nodes
+    launchTemplate: "karpenter-apps001-preprod-dev-eks"     # Used by Karpenter Nodes
     subnetSelector:
       Name: "*private*"
     securityGroupSelector:

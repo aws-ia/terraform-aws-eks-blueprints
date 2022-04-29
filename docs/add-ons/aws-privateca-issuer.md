@@ -81,14 +81,14 @@ Now, you may run `kubectl get Certificate` to view the status of Certificate Req
 
 ```
 NAME      READY   SECRET                                 AGE
-example   True    aws001-preprod-dev-eks-clusterissuer   3h35m
+example   True    apps001-preprod-dev-eks-clusterissuer   3h35m
 ```
 
 If the status is `True`, that means, the `tls.crt`, `tls.key` and `ca.crt` will all be available in [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
 
 ```
-aws001-preprod-dev-eks-clusterissuer
-Name:         aws001-preprod-dev-eks-clusterissuer
+apps001-preprod-dev-eks-clusterissuer
+Name:         apps001-preprod-dev-eks-clusterissuer
 Namespace:    default
 Labels:       <none>
 Annotations:  cert-manager.io/alt-names: 
@@ -97,7 +97,7 @@ Annotations:  cert-manager.io/alt-names:
               cert-manager.io/ip-sans: 
               cert-manager.io/issuer-group: awspca.cert-manager.io
               cert-manager.io/issuer-kind: AWSPCAClusterIssuer
-              cert-manager.io/issuer-name: aws001-preprod-dev-eks
+              cert-manager.io/issuer-name: apps001-preprod-dev-eks
               cert-manager.io/uri-sans: 
 
 Type:  kubernetes.io/tls

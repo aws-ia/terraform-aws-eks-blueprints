@@ -50,9 +50,9 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
 
 ### Step5: Run `update-kubeconfig` command.
 
-`~/.kube/config` file gets updated with EKS cluster context from the below command. Replace the region name and EKS cluster name with your cluster's name. (If you did not change the `tenant`, `environment`, and `zone` values in this example, the EKS cluster name will be `aws001-preprod-dev-eks`.)
+`~/.kube/config` file gets updated with EKS cluster context from the below command. Replace the region name and EKS cluster name with your cluster's name. (If you did not change the `tenant`, `environment`, and `zone` values in this example, the EKS cluster name will be `apps001-preprod-dev-eks`.)
 
-    $ aws eks --region us-west-2 update-kubeconfig --name aws001-preprod-dev-eks
+    $ aws eks --region us-west-2 update-kubeconfig --name apps001-preprod-dev-eks
 
 ### Step6: (Optional) Deploy sample Windows and Linux workloads to verify support for both operating systems
 When Windows support is enabled in the cluster, it is necessary to use one of the ways to assign pods to specific nodes, such as `nodeSelector` or `affinity`. See the [K8s documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/) for more info. This example uses `nodeSelector`s to select nodes with appropriate OS for pods.
@@ -141,7 +141,7 @@ terraform destroy -auto-approve
 |------|-------------|------|---------|:--------:|
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Kubernetes Version | `string` | `"1.21"` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment area, e.g. prod or preprod | `string` | `"preprod"` | no |
-| <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | `"aws001"` | no |
+| <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | `"apps001"` | no |
 | <a name="input_zone"></a> [zone](#input\_zone) | zone, e.g. dev or qa or load or ops etc... | `string` | `"dev"` | no |
 
 ## Outputs

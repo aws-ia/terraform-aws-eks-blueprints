@@ -2,10 +2,10 @@
 
 # 5-spark-job-with-AMP-AMG.sh
 # INPUT VARIABLES
-EMR_VIRTUAL_CLUSTER_ID=$1  # EMR Cluster ID e.g., aws001-preprod-test-eks-emr-data-team-a
+EMR_VIRTUAL_CLUSTER_ID=$1  # EMR Cluster ID e.g., apps001-preprod-test-eks-emr-data-team-a
 S3_BUCKET=$2               # This script requires s3 bucket as input parameter e.g., s3://<bucket-name>
 
-EMR_ON_EKS_ROLE_ID="aws001-preprod-test-eks-emr-eks-data-team-a"       # Replace EMR IAM role with your ID
+EMR_ON_EKS_ROLE_ID="apps001-preprod-test-eks-emr-eks-data-team-a"       # Replace EMR IAM role with your ID
 EMR_ON_EKS_NAMESPACE='emr-data-team-a'                             # Replace namespace with your namespace
 JOB_NAME='taxidata'
 CW_LOG_GROUP="/emr-on-eks-logs/${EMR_VIRTUAL_CLUSTER_ID}/${EMR_ON_EKS_NAMESPACE}" # Create CW Log group if not exist

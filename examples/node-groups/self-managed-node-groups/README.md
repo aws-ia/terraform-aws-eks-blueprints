@@ -63,7 +63,7 @@ This following command used to update the `kubeconfig` in your local machine whe
 
 #### Step8: List the auto scaling group created for the self-managed node group
 
-    $ aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names aws001-preprod-dev-eks-self-managed-ondemand
+    $ aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names apps001-preprod-dev-eks-self-managed-ondemand
 
 ## How to Destroy
 The following command destroys the resources created by `terraform apply`
@@ -111,7 +111,7 @@ terraform destroy --auto-approve
 |------|-------------|------|---------|:--------:|
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Kubernetes Version | `string` | `"1.21"` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment area, e.g. prod or preprod | `string` | `"preprod"` | no |
-| <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | `"aws001"` | no |
+| <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | `"apps001"` | no |
 | <a name="input_zone"></a> [zone](#input\_zone) | zone, e.g. dev or qa or load or ops etc... | `string` | `"dev"` | no |
 
 ## Outputs

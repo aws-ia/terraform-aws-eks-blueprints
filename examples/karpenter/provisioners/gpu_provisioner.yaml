@@ -12,5 +12,5 @@ spec:
       value: true
       effect: “NoSchedule”
   provider:
-    instanceProfile: "aws001-preprod-dev-eks-self-managed-ondemand" # self-managed IAM Instance profile Name
+    instanceProfile: "apps001-preprod-dev-eks-self-managed-ondemand" # self-managed IAM Instance profile Name
   ttlSecondsAfterEmpty: 60

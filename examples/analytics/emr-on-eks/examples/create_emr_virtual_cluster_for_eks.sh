@@ -1,7 +1,7 @@
 #!/bin/bash
 
 EMR_VIRTUAL_CLUSTER_ID=$1                       # Expects Input parameter to delete EMR Virtual cluster id
-EKS_CLUSTER_ID='aws001-preprod-test-eks'        # Replace cluster id with your id
+EKS_CLUSTER_ID='apps001-preprod-test-eks'        # Replace cluster id with your id
 EMR_ON_EKS_NAMESPACE='emr-data-team-a'          # Replace namespace with your namespace
 
 export VIRTUAL_CLUSTER_ID=$(aws emr-containers list-virtual-clusters --query "virtualClusters[?name=='${EMR_VIRTUAL_CLUSTER_ID}' && state=='RUNNING'].id" --output text)

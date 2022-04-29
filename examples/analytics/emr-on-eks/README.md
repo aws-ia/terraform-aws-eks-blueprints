@@ -53,15 +53,15 @@ Let’s verify the resources created by Step 4.
 Verify the Amazon EKS Cluster and Amazon Managed service for Prometheus
 
 ```shell script
-aws eks describe-cluster --name aws001-preprod-test-eks
+aws eks describe-cluster --name apps001-preprod-test-eks
 
-aws amp list-workspaces --alias amp-ws-aws001-preprod-test-eks
+aws amp list-workspaces --alias amp-ws-apps001-preprod-test-eks
 ```
 
 ```shell script
 Verify EMR on EKS Namespaces emr-data-team-a and emr-data-team-b and Pod status for Prometheus, Vertical Pod Autoscaler, Metrics Server and Cluster Autoscaler.
 
-aws eks --region <ENTER_YOUR_REGION> update-kubeconfig --name aws001-preprod-test-eks # Creates k8s config file to authenticate with EKS Cluster
+aws eks --region <ENTER_YOUR_REGION> update-kubeconfig --name apps001-preprod-test-eks # Creates k8s config file to authenticate with EKS Cluster
 
 kubectl get nodes # Output shows the EKS Managed Node group nodes
 
@@ -89,7 +89,7 @@ Update the following variables.
 Extract the cluster_name as **EKS_CLUSTER_ID** from Terraform Outputs (**Step1**)
 **EMR_ON_EKS_NAMESPACE** is same as what you passed from **Step1**
 
-    EKS_CLUSTER_ID='aws001-preprod-test-eks'
+    EKS_CLUSTER_ID='apps001-preprod-test-eks'
     EMR_ON_EKS_NAMESPACE='emr-data-team-a'
 
 Execute the shell script to create virtual cluster
@@ -105,12 +105,12 @@ Execute the Spark job using the below shell script.
 
 This script requires two input parameters.
 
-    EMR_VIRTUAL_CLUSTER_ID=$1  # EMR Cluster ID e.g., aws001-preprod-test-eks-emr-data-team-a
+    EMR_VIRTUAL_CLUSTER_ID=$1  # EMR Cluster ID e.g., apps001-preprod-test-eks-emr-data-team-a
     S3_BUCKET=$2               # S3 bucket for storing the scripts and spark output data e.g., s3://<bucket-name>
 
 ```shell script
 cd examples/analytics/emr-on-eks/examples/spark-execute/
-./5-spark-job-with-AMP-AMG.sh aws001-preprod-test-eks-emr-data-team-a <ENTER_S3_BUCKET_NAME>
+./5-spark-job-with-AMP-AMG.sh apps001-preprod-test-eks-emr-data-team-a <ENTER_S3_BUCKET_NAME>
 ```
 
 Verify the job execution
@@ -181,7 +181,7 @@ Error: local-exec provisioner error \
 with module.eks-blueprints.module.emr_on_eks["data_team_b"].null_resource.update_trust_policy,\
  on .terraform/modules/eks-blueprints/modules/emr-on-eks/main.tf line 105, in resource "null_resource" \
  "update_trust_policy":│ 105: provisioner "local-exec" {│ │ Error running command 'set -e│ │ aws emr-containers update-role-trust-policy \
- │ --cluster-name aws001-preprod-test-eks \│ --namespace emr-data-team-b \│ --role-name aws001-preprod-test-eks-emr-eks-data-team-b
+ │ --cluster-name apps001-preprod-test-eks \│ --namespace emr-data-team-b \│ --role-name apps001-preprod-test-eks-emr-eks-data-team-b
 ```
 
 ##### Solution :  
@@ -228,7 +228,7 @@ This is fixed in version 2.0.54.
 |------|-------------|------|---------|:--------:|
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Kubernetes Version | `string` | `"1.21"` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment area, e.g. prod or preprod | `string` | `"preprod"` | no |
-| <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | `"aws001"` | no |
+| <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | `"apps001"` | no |
 | <a name="input_zone"></a> [zone](#input\_zone) | zone, e.g. dev or qa or load or ops etc... | `string` | `"test"` | no |
 
 ## Outputs
