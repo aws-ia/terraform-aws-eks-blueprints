@@ -19,8 +19,8 @@ spec:
   mode: cluster
   image: "3bittechs/spark-py:3.0.1@sha256:dc1225d8429351426f05ba2dca85054368ec35f110601059c20d5587a029860f"
   imagePullPolicy: IfNotPresent
-  mainApplicationFile: s3a://apps001-preprod-dev-eks-emr-on-eks-logs/apps001-preprod-test-eks-emr-data-team-a/emr-data-team-a/taxidata/scripts/sample-spark-taxi-trip.py
-  arguments: ['s3a://apps001-preprod-dev-eks-emr-on-eks-logs/apps001-preprod-test-eks-emr-data-team-a/emr-data-team-a/taxidata/input/taxi-trip-data/', 's3a://apps001-preprod-dev-eks-emr-on-eks-logs/apps001-preprod-test-eks-emr-data-team-a/emr-data-team-a/taxidata/output/sparkk8soperator/taxi-trip-data/']
+  mainApplicationFile: s3a://aws001-preprod-dev-eks-emr-on-eks-logs/aws001-preprod-test-eks-emr-data-team-a/emr-data-team-a/taxidata/scripts/sample-spark-taxi-trip.py
+  arguments: ['s3a://aws001-preprod-dev-eks-emr-on-eks-logs/aws001-preprod-test-eks-emr-data-team-a/emr-data-team-a/taxidata/input/taxi-trip-data/', 's3a://aws001-preprod-dev-eks-emr-on-eks-logs/aws001-preprod-test-eks-emr-data-team-a/emr-data-team-a/taxidata/output/sparkk8soperator/taxi-trip-data/']
   sparkVersion: "3.0.1"
   restartPolicy:
     type: Never
