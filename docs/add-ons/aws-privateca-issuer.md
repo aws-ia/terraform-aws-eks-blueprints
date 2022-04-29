@@ -98,7 +98,7 @@ Annotations:  cert-manager.io/alt-names:
               cert-manager.io/issuer-group: awspca.cert-manager.io
               cert-manager.io/issuer-kind: AWSPCAClusterIssuer
               cert-manager.io/issuer-name: apps001-preprod-dev-eks
-              cert-manager.io/uri-sans: 
+              cert-manager.io/uri-sans:
 
 Type:  kubernetes.io/tls
 
