@@ -1,36 +1,45 @@
-terraform {
-  required_version = ">= 1.0.1"
+provider "aws" {
+  region = local.region
+}
 
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 3.73.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.7.1"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.4.1"
-    }
-    grafana = {
-      source  = "grafana/grafana"
-      version = ">= 1.13.3"
-    }
-  }
+provider "kubernetes" {
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
 
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
+  exec {
+    api_version = "client.authentication.k8s.io/v1alpha1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
   }
 }
+
+provider "helm" {
+  kubernetes {
+    host                   = module.eks_blueprints.eks_cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+
+    exec {
+      api_version = "client.authentication.k8s.io/v1alpha1"
+      command     = "aws"
+      # This requires the awscli to be installed locally where Terraform is executed
+      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
+    }
+  }
+}
+
+provider "grafana" {
+  url  = var.grafana_endpoint
+  auth = var.grafana_api_key
+}
+
+data "aws_availability_zones" "available" {}
 
 locals {
   tenant      = "aws001"        # AWS account name or unique id for tenant
   environment = "preprod"       # Environment area eg., preprod or prod
   zone        = "observability" # Environment within one sub_tenant or business unit
-
-  cluster_version = "1.21"
+  region      = "us-west-2"
 
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
@@ -45,8 +54,6 @@ locals {
     repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
     add_on_application = false
   }
-
-  aws_iam_instance_profile_name = "bastion_host_profile"
 }
 
 #---------------------------------------------------------------
@@ -54,7 +61,7 @@ locals {
 #---------------------------------------------------------------
 module "aws_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "v3.11.3"
+  version = "~> 3.0"
 
   name = local.vpc_name
   cidr = local.vpc_cidr
@@ -82,7 +89,7 @@ module "aws_vpc" {
 #---------------------------------------------------------------
 # Provision EKS and Helm Charts
 #---------------------------------------------------------------
-module "eks-blueprints" {
+module "eks_blueprints" {
   source = "../../.."
 
   tenant            = local.tenant
@@ -95,7 +102,7 @@ module "eks-blueprints" {
   private_subnet_ids = module.aws_vpc.private_subnets
 
   # EKS Control Plane Variables
-  cluster_version = local.cluster_version
+  cluster_version = "1.21"
 
   managed_node_groups = {
     mg_4 = {
@@ -110,9 +117,9 @@ module "eks-blueprints" {
   enable_amazon_prometheus = true
 }
 
-module "eks-blueprints-kubernetes-addons" {
+module "eks_blueprints_kubernetes_addons" {
   source         = "../../../modules/kubernetes-addons"
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   #K8s Add-ons
   enable_metrics_server     = true
@@ -124,10 +131,10 @@ module "eks-blueprints-kubernetes-addons" {
 
   # Fluentbit
   enable_aws_for_fluentbit        = true
-  aws_for_fluentbit_irsa_policies = [aws_iam_policy.fluentbit-opensearch-access.arn]
+  aws_for_fluentbit_irsa_policies = [aws_iam_policy.fluentbit_opensearch_access.arn]
   aws_for_fluentbit_helm_config = {
     values = [templatefile("${path.module}/helm_values/aws-for-fluentbit-values.yaml", {
-      aws_region = data.aws_region.current.name,
+      aws_region = local.region
       host       = aws_elasticsearch_domain.opensearch.endpoint
     })]
   }
@@ -135,10 +142,10 @@ module "eks-blueprints-kubernetes-addons" {
   # Prometheus and Amazon Managed Prometheus integration
   enable_prometheus                    = true
   enable_amazon_prometheus             = true
-  amazon_prometheus_workspace_endpoint = module.eks-blueprints.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
 
   depends_on = [
-    module.eks-blueprints.managed_node_groups,
+    module.eks_blueprints.managed_node_groups,
     module.aws_vpc
   ]
 }
@@ -150,12 +157,13 @@ resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
   name       = "amp"
   is_default = true
-  url        = module.eks-blueprints.amazon_prometheus_workspace_endpoint
+  url        = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+
   json_data {
     http_method     = "POST"
     sigv4_auth      = true
     sigv4_auth_type = "workspace-iam-role"
-    sigv4_region    = data.aws_region.current.name
+    sigv4_region    = local.region
   }
 }
 
@@ -213,10 +221,10 @@ resource "aws_iam_service_linked_role" "opensearch" {
   aws_service_name = "es.amazonaws.com"
 }
 
-resource "aws_iam_policy" "fluentbit-opensearch-access" {
-  name        = "fluentbit-opensearch-access"
+resource "aws_iam_policy" "fluentbit_opensearch_access" {
+  name        = "fluentbit_opensearch_access"
   description = "IAM policy to allow Fluentbit access to OpenSearch"
-  policy      = data.aws_iam_policy_document.fluentbit-opensearch-access.json
+  policy      = data.aws_iam_policy_document.fluentbit_opensearch_access.json
 }
 
 resource "aws_elasticsearch_domain_policy" "opensearch_access_policy" {

@@ -1,5 +1,5 @@
 provider "aws" {
-  region = var.region
+  region = local.region
 }
 
 data "aws_availability_zones" "available" {}
@@ -8,18 +8,17 @@ locals {
   tenant      = var.tenant
   environment = var.environment
   zone        = var.zone
+  region      = "us-west-2"
 
   vpc_cidr       = var.vpc_cidr
   vpc_name       = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   azs            = slice(data.aws_availability_zones.available.names, 0, 3)
   eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
-
-  terraform_version = "Terraform v1.0.1"
 }
 
 module "aws_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "v3.2.0"
+  version = "~> 3.0"
 
   name = local.vpc_name
   cidr = local.vpc_cidr
@@ -42,5 +41,4 @@ module "aws_vpc" {
     "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
     "kubernetes.io/role/internal-elb"               = "1"
   }
-
 }

@@ -1,29 +1,32 @@
 variable "grafana_endpoint" {
-  type = string
+  description = "Grafana endpoint"
+  type        = string
 }
 
 variable "grafana_api_key" {
+  description = "Api key for authorizing the Grafana provider to make changes to Amazon Managed Grafana"
   type        = string
   sensitive   = true
-  description = "Api key for authorizing the Grafana provider to make changes to Amazon Managed Grafana"
 }
 
 variable "opensearch_dashboard_user" {
-  type = string
+  description = "OpenSearch dashboard user"
+  type        = string
 }
 
 variable "opensearch_dashboard_pw" {
-  type      = string
-  sensitive = true
+  description = "OpenSearch dashboard user password"
+  type        = string
+  sensitive   = true
 }
 
 variable "local_computer_ip" {
-  type        = string
   description = "IP Address of the computer you are running and testing this example from"
+  type        = string
 }
 
 variable "create_iam_service_linked_role" {
-  type        = bool
   description = "Whether to create the AWSServiceRoleForAmazonElasticsearchService role used by the OpenSearch service"
+  type        = bool
   default     = true
 }

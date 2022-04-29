@@ -10,24 +10,25 @@ Cert Manager adds certificates and certificate issuers as resource types in Kube
 
 See the [cert-manager documentation](https://cert-manager.io/docs/installation/helm/).
 
-
 # Docker Image for Cert Manager
 
 cert-manager docker image is available at this repo:
 
 https://quay.io/repository/jetstack/cert-manager-controller?tag=latest&tab=tags
 
-
-<!--- BEGIN_TF_DOCS --->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.4.1 |
 
 ## Modules
 
@@ -54,5 +55,4 @@ No requirements.
 | Name | Description |
 |------|-------------|
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
-
-<!--- END_TF_DOCS --->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

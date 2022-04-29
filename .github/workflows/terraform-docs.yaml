@@ -1,7 +1,7 @@
 name: terraform-docs
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
     types: [assigned, unassigned, opened, reopened, edited, synchronize]
 
@@ -30,4 +30,5 @@ jobs:
           find-dir: .
           output-file: README.md
           output-method: inject
-          git-push: "true"
+          git-push: 'true'
+          template: '<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->\n{{ .Content }}\n<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->'

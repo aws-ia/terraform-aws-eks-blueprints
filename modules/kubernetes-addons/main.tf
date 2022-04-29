@@ -277,7 +277,6 @@ module "yunikorn" {
   count             = var.enable_yunikorn ? 1 : 0
   source            = "./yunikorn"
   helm_config       = var.yunikorn_helm_config
-  irsa_policies     = var.yunikorn_irsa_policies
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }

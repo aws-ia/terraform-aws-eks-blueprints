@@ -10,12 +10,6 @@ variable "manage_via_gitops" {
   description = "Determines if the add-on should be managed via GitOps"
 }
 
-variable "irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM Policy ARN list for any IRSA policies"
-}
-
 variable "addon_context" {
   type = object({
     aws_caller_identity_account_id = string

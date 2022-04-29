@@ -1,77 +1,51 @@
-terraform {
-  required_version = ">= 1.0.1"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 3.66.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.6.1"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.4.1"
-    }
-  }
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
-  }
-}
-
-data "aws_region" "current" {}
-
-data "aws_availability_zones" "available" {}
-
-data "aws_eks_cluster" "cluster" {
-  name = module.eks-blueprints.eks_cluster_id
-}
-
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks-blueprints.eks_cluster_id
-}
-
 provider "aws" {
-  region = data.aws_region.current.id
-  alias  = "default"
+  region = local.region
 }
 
 provider "kubernetes" {
-  experiments {
-    manifest_resource = true
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1alpha1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
   }
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = data.aws_eks_cluster.cluster.endpoint
-    token                  = data.aws_eks_cluster_auth.cluster.token
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+    host                   = module.eks_blueprints.eks_cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+
+    exec {
+      api_version = "client.authentication.k8s.io/v1alpha1"
+      command     = "aws"
+      # This requires the awscli to be installed locally where Terraform is executed
+      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
+    }
   }
 }
 
 locals {
-  tenant         = var.tenant
-  environment    = var.environment
-  zone           = var.zone
+  tenant      = var.tenant
+  environment = var.environment
+  zone        = var.zone
+  region      = "us-west-2"
+
   eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
-  cluster_version   = "1.21"
   terraform_version = "Terraform v1.0.1"
 
   vpc_id             = var.vpc_id
   private_subnet_ids = var.private_subnet_ids
-  public_subnet_ids  = var.public_subnet_ids
 }
 
 #---------------------------------------------------------------
-# Example to consume eks-blueprints module
+# Example to consume eks_blueprints module
 #---------------------------------------------------------------
-module "eks-blueprints" {
+module "eks_blueprints" {
   source = "../.."
 
   tenant            = local.tenant
@@ -84,7 +58,7 @@ module "eks-blueprints" {
   private_subnet_ids = local.private_subnet_ids
 
   # EKS CONTROL PLANE VARIABLES
-  cluster_version = local.cluster_version
+  cluster_version = "1.21"
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
@@ -142,12 +116,12 @@ module "eks-blueprints" {
   }
 }
 
-module "eks-blueprints-kubernetes-addons" {
+module "eks_blueprints_kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id               = module.eks-blueprints.eks_cluster_id
-  eks_worker_security_group_id = module.eks-blueprints.worker_node_security_group_id
-  auto_scaling_group_names     = module.eks-blueprints.self_managed_node_group_autoscaling_groups
+  eks_cluster_id               = module.eks_blueprints.eks_cluster_id
+  eks_worker_security_group_id = module.eks_blueprints.worker_node_security_group_id
+  auto_scaling_group_names     = module.eks_blueprints.self_managed_node_group_autoscaling_groups
 
   # EKS Addons
   enable_amazon_eks_vpc_cni = true # default is false
@@ -289,7 +263,7 @@ module "eks-blueprints-kubernetes-addons" {
   #---------------------------------------
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
   enable_amazon_prometheus             = true
-  amazon_prometheus_workspace_endpoint = module.eks-blueprints.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
 
   enable_prometheus = true
   # Optional Map value
@@ -352,7 +326,7 @@ module "eks-blueprints-kubernetes-addons" {
     aws_for_fluentbit_cwlog_retention_in_days = 90
     create_namespace                          = true
     values = [templatefile("${path.module}/helm_values/aws-for-fluentbit-values.yaml", {
-      region                          = data.aws_region.current.name,
+      region                          = local.region
       aws_for_fluent_bit_cw_log_group = "/${local.eks_cluster_id}/worker-fluentbit-logs"
     })]
     set = [
@@ -387,7 +361,7 @@ module "eks-blueprints-kubernetes-addons" {
 [OUTPUT]
   Name cloudwatch_logs
   Match *
-  region ${data.aws_region.current.name}
+  region ${local.region}
   log_group_name /${local.eks_cluster_id}/fargate-fluentbit-logs
   log_stream_prefix "fargate-logs-"
   auto_create_group true
@@ -464,10 +438,5 @@ module "eks-blueprints-kubernetes-addons" {
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
 
-  depends_on = [module.eks-blueprints.managed_node_groups]
-}
-
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.eks-blueprints.configure_kubectl
+  depends_on = [module.eks_blueprints.managed_node_groups]
 }

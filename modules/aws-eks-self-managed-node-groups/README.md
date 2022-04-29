@@ -1,22 +1,26 @@
 # AWS Self-Managed Node Groups
 
 # Introduction
+
 Amazon EKS Self Managed Node Groups lets you create, update, scale, and terminate worker nodes for your EKS cluster. All Self managed nodes are provisioned as part of an Amazon EC2 Auto Scaling group that's managed for you by this module. Moreover, all resources including Amazon EC2 instances and Auto Scaling groups run within your AWS account.
 
 This module allows you to create on-demand or spot self managed Linux or Windows nodegroups. You can instantiate the module once with map of node group values to create multiple self managed node groups. By default, the module uses the latest available version of Amazon-provided EKS-optimized AMIs for Amazon Linux 2, Bottlerocket, or Windows 2019 Server Core operating systems. You can override the image via the custom_ami_id input variable.
 
-Checkout the usage docs for Self-managed Node groups [examples](https://aws-ia.github.io/terraform-aws-eks-blueprints/node-groups/)  
+Checkout the usage docs for Self-managed Node groups [examples](https://aws-ia.github.io/terraform-aws-eks-blueprints/node-groups/)
 
-<!--- BEGIN_TF_DOCS --->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
 
 ## Modules
 
@@ -58,5 +62,4 @@ No requirements.
 | <a name="output_self_managed_nodegroup_iam_instance_profile_id"></a> [self\_managed\_nodegroup\_iam\_instance\_profile\_id](#output\_self\_managed\_nodegroup\_iam\_instance\_profile\_id) | IAM Instance Profile ID for EKS Self Managed Node Group |
 | <a name="output_self_managed_nodegroup_iam_role_arns"></a> [self\_managed\_nodegroup\_iam\_role\_arns](#output\_self\_managed\_nodegroup\_iam\_role\_arns) | Self managed groups IAM role arns |
 | <a name="output_self_managed_nodegroup_name"></a> [self\_managed\_nodegroup\_name](#output\_self\_managed\_nodegroup\_name) | EKS Self Managed node group id |
-
-<!--- END_TF_DOCS --->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

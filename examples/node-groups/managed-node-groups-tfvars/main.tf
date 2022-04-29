@@ -1,50 +1,34 @@
-#------------------------------------------------------------------------
-# Terraform Provider Versions
-#------------------------------------------------------------------------
-terraform {
-  required_version = ">= 1.0.1"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 4.4.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.6.1"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.4.1"
-    }
-  }
-
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
-  }
+provider "aws" {
+  region = local.region
 }
 
-#------------------------------------------------------------------------
-# Terraform Providers
-#------------------------------------------------------------------------
-provider "aws" {}
-
 provider "kubernetes" {
-  experiments {
-    manifest_resource = true
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1alpha1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
   }
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = data.aws_eks_cluster.cluster.endpoint
-    token                  = data.aws_eks_cluster_auth.cluster.token
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+    host                   = module.eks_blueprints.eks_cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+
+    exec {
+      api_version = "client.authentication.k8s.io/v1alpha1"
+      command     = "aws"
+      # This requires the awscli to be installed locally where Terraform is executed
+      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
+    }
   }
 }
+
+data "aws_availability_zones" "available" {}
 
 #------------------------------------------------------------------------
 # Local Variables
@@ -54,9 +38,5 @@ locals {
   azs                     = slice(data.aws_availability_zones.available.names, 0, local.count_availability_zone)
   vpc_name                = join("-", [var.tenant, var.environment, var.zone, "vpc"])
   cluster_name            = join("-", [var.tenant, var.environment, var.zone, "eks"])
-}
-
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.eks-blueprints.configure_kubectl
+  region                  = "us-west-2"
 }
