@@ -35,18 +35,14 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Config Terraform plugin cache
-        run: |
-          echo 'plugin_cache_dir="$HOME/.terraform.d/plugin-cache"' >~/.terraformrc
-          mkdir --parents ~/.terraform.d/plugin-cache
+        run: mkdir --parents ${{ env.TERRAFORM_DOCS_VERSION }}
 
       - name: Cache Terraform
         uses: actions/cache@v3
         with:
-          path: |
-            ~/.terraform.d/plugin-cache
+          path: ${{ env.TERRAFORM_DOCS_VERSION }}
           key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
-          restore-keys: |
-            ${{ runner.os }}-terraform-
+          restore-keys: ${{ runner.os }}-terraform-
 
       - name: Terraform min/max versions
         id: minMax
@@ -82,18 +78,17 @@ jobs:
           repository: ${{github.event.pull_request.head.repo.full_name}}
 
       - name: Config Terraform plugin cache
-        run: |
-          echo 'plugin_cache_dir="$HOME/.terraform.d/plugin-cache"' >~/.terraformrc
-          mkdir --parents ~/.terraform.d/plugin-cache
+        run: mkdir --parents ${{ env.TERRAFORM_DOCS_VERSION }}
 
       - name: Cache Terraform
         uses: actions/cache@v3
         with:
-          path: |
-            ~/.terraform.d/plugin-cache
+          path: ${{ env.TERRAFORM_DOCS_VERSION }}
           key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
-          restore-keys: |
-            ${{ runner.os }}-terraform-
+          restore-keys: ${{ runner.os }}-terraform-
+
+      - name: Install tfsec
+        run: curl -L "$(curl -s https://api.github.com/repos/aquasecurity/tfsec/releases/latest | grep -o -E -m 1 "https://.+?tfsec-linux-amd64")" > tfsec && chmod +x tfsec && sudo mv tfsec /usr/bin/
 
       - name: Terraform min/max versions
         id: minMax
