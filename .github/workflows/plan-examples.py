@@ -1,15 +1,18 @@
 import json
 import glob
 import re
-import os
 
 
-def get_tfplan_examples():
+def get_examples():
     """
     Get all Terraform example root directories using their respective `versions.tf`;
     returning a string formatted json array of the example directories minus those that are excluded
     """
-    exclude = set(os.environ.get('EXCLUDE_EXAMPLES', '').split(','))
+    exclude = {
+        'examples/eks-cluster-with-external-dns',  # excluded since GitLab auth, backend, etc. required
+        'examples/ci-cd/gitlab-ci-cd',  # excluded until Rout53 is setup
+        'examples/observability/eks-cluster-with-amp-amg-opensearch',  # TODO - needs to be updated to run example
+    }
 
     projects = {
         x.replace('/versions.tf', '')
@@ -21,4 +24,4 @@ def get_tfplan_examples():
 
 
 if __name__ == '__main__':
-    get_tfplan_examples()
+    get_examples()

@@ -1,4 +1,4 @@
-name: e2e-all-examples-parallel
+name: plan-examples
 
 on:
   pull_request:
@@ -18,16 +18,12 @@ jobs:
 
       - name: Get Terraform directories for evaluation
         id: dirs
-        # examples/ci-cd/gitlab-ci-cd -> excluded since GitLab auth, backend, etc. required
-        # examples/eks-cluster-with-external-dns -> excluded until Rout53 is setup
-        # examples/observability/eks-cluster-with-amp-amg-opensearch -> TODO - needs to be updated to run example
         run: |
-          EXCLUDE_EXAMPLES='examples/eks-cluster-with-external-dns,examples/ci-cd/gitlab-ci-cd,examples/observability/eks-cluster-with-amp-amg-opensearch'
           DIRS=$(python3 .github/workflows/examples_tfplan.py)
           echo "::set-output name=directories::$DIRS"
 
-  deploy:
-    name: E2E Example
+  plan:
+    name: Plan examples
     needs: getExampleDirectories
     runs-on: ubuntu-latest
 
@@ -57,19 +53,10 @@ jobs:
         with:
           terraform_version: 1.0.0
 
-      - name: Terraform Fmt
-        id: fmt
-        run: terraform fmt -check -recursive -list -no-color
-
       - name: Terraform Init
         id: init
         run: terraform init -reconfigure
         working-directory: ${{ matrix.tf_working_dir }}
-
-      - name: Terraform Validate
-        id: validate
-        working-directory: ${{ matrix.tf_working_dir }}
-        run: terraform validate -no-color
 
       - name: Terraform Plan
         id: plan
