@@ -20,8 +20,9 @@ jobs:
         id: dirs
         # examples/ci-cd/gitlab-ci-cd -> excluded since GitLab auth, backend, etc. required
         # examples/eks-cluster-with-external-dns -> excluded until Rout53 is setup
+        # examples/observability/eks-cluster-with-amp-amg-opensearch -> TODO - needs to be updated to run example
         run: |
-          EXCLUDE_EXAMPLES='examples/eks-cluster-with-external-dns,examples/ci-cd/gitlab-ci-cd'
+          EXCLUDE_EXAMPLES='examples/eks-cluster-with-external-dns,examples/ci-cd/gitlab-ci-cd,examples/observability/eks-cluster-with-amp-amg-opensearch'
           DIRS=$(python3 .github/workflows/examples_tfplan.py)
           echo "::set-output name=directories::$DIRS"
 
