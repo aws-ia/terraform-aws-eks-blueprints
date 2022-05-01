@@ -18,8 +18,11 @@ jobs:
 
       - name: Get Terraform directories for evaluation
         id: dirs
+        # examples/ci-cd/gitlab-ci-cd -> excluded since GitLab auth, backend, etc. required
+        # examples/eks-cluster-with-external-dns -> excluded until Rout53 is setup
         run: |
-          DIRS=$(python -c "import json; import glob; import re; print(json.dumps([x.replace('/versions.tf', '') for x in glob.glob('examples/**/versions.tf', recursive=True) if not re.match(r'^.+/_', x)]))")
+          EXCLUDE_EXAMPLES='examples/eks-cluster-with-external-dns,examples/ci-cd/gitlab-ci-cd'
+          DIRS=$(python3 .github/workflows/examples_tfplan.py)
           echo "::set-output name=directories::$DIRS"
 
   deploy:
