@@ -50,7 +50,7 @@ terraform plan
 to create resources
 
 ```shell script
-terraform apply -target="module.aws_vpc"
+terraform apply -target="module.vpc"
 terraform apply -target="module.eks_blueprints"
 terraform apply -target="module.eks_blueprints_kubernetes_addons"
 terraform apply -target="module.aws_load_balancer_controller"
@@ -94,7 +94,7 @@ terraform destroy -target="module.module.ingress_nginx" -auto-approve
 terraform destroy -target="module.module.aws_load_balancer_controller" -auto-approve
 terraform destroy -target="module.module.eks-blueprints-kubernetes-addons" -auto-approve
 terraform destroy -target="module.module.eks-blueprints" -auto-approve
-terraform destroy -target="module.aws_vpc" -auto-approve
+terraform destroy -target="module.vpc" -auto-approve
 ```
 
 ## Learn more

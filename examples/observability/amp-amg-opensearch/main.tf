@@ -33,86 +33,49 @@ provider "grafana" {
   auth = var.grafana_api_key
 }
 
-data "aws_availability_zones" "available" {}
-
 locals {
-  tenant      = "aws001"        # AWS account name or unique id for tenant
-  environment = "preprod"       # Environment area eg., preprod or prod
-  zone        = "observability" # Environment within one sub_tenant or business unit
-  region      = "us-west-2"
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
-  vpc_cidr     = "10.0.0.0/16"
-  azs          = slice(data.aws_availability_zones.available.names, 0, 3)
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
-
-  terraform_version = "Terraform v1.1.4"
-}
-
-#---------------------------------------------------------------
-# Networking
-#---------------------------------------------------------------
-module "aws_vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
-
-  name = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  cidr = local.vpc_cidr
-  azs  = local.azs
-
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
-
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
-  enable_dns_hostnames = true
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "terraform-aws-eks-blueprints"
   }
 }
 
 #---------------------------------------------------------------
-# Provision EKS and Helm Charts
+# EKS Blueprints
 #---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../../.."
 
-  tenant            = local.tenant
-  environment       = local.environment
-  zone              = local.zone
-  terraform_version = local.terraform_version
-
-  # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = module.aws_vpc.private_subnets
-
-  # EKS Control Plane Variables
+  cluster_name    = local.name
   cluster_version = "1.21"
+
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
+
+  # Provisions a new Amazon Managed Service for Prometheus workspace
+  enable_amazon_prometheus = true
 
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
       instance_types  = ["m5.xlarge"]
       min_size        = 3
-      subnet_ids      = module.aws_vpc.private_subnets
+      subnet_ids      = module.vpc.private_subnets
     }
   }
 
-  # Provisions a new Amazon Managed Service for Prometheus workspace
-  enable_amazon_prometheus = true
+  tags = local.tags
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source         = "../../../modules/kubernetes-addons"
+  source = "../../../modules/kubernetes-addons"
+
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
-  #K8s Add-ons
+  # Add-ons
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
   enable_argocd             = true
@@ -124,7 +87,6 @@ module "eks_blueprints_kubernetes_addons" {
     }
   }
 
-  # Fluentbit
   enable_aws_for_fluentbit        = true
   aws_for_fluentbit_irsa_policies = [aws_iam_policy.fluentbit_opensearch_access.arn]
   aws_for_fluentbit_helm_config = {
@@ -134,14 +96,15 @@ module "eks_blueprints_kubernetes_addons" {
     })]
   }
 
-  # Prometheus and Amazon Managed Prometheus integration
   enable_prometheus                    = true
   enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
 
+  tags = local.tags
+
   depends_on = [
     module.eks_blueprints.managed_node_groups,
-    module.aws_vpc
+    module.vpc
   ]
 }
 
@@ -209,13 +172,15 @@ resource "aws_elasticsearch_domain" "opensearch" {
   }
 
   vpc_options {
-    subnet_ids         = module.aws_vpc.public_subnets
+    subnet_ids         = module.vpc.public_subnets
     security_group_ids = [aws_security_group.opensearch_access.id]
   }
 
   depends_on = [
     aws_iam_service_linked_role.opensearch
   ]
+
+  tags = local.tags
 }
 
 resource "aws_iam_service_linked_role" "opensearch" {
@@ -235,7 +200,7 @@ resource "aws_elasticsearch_domain_policy" "opensearch_access_policy" {
 }
 
 resource "aws_security_group" "opensearch_access" {
-  vpc_id      = module.aws_vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
   description = "OpenSearch access"
 
   ingress {
@@ -252,7 +217,7 @@ resource "aws_security_group" "opensearch_access" {
     to_port     = 443
     protocol    = "tcp"
 
-    cidr_blocks = [local.vpc_cidr]
+    cidr_blocks = [module.vpc.vpc_cidr_block]
   }
 
   egress {
@@ -262,4 +227,36 @@ resource "aws_security_group" "opensearch_access" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sgr
   }
+
+  tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Supporting Resources
+#---------------------------------------------------------------
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = local.name
+  cidr = "10.0.0.0/16"
+
+  azs             = ["${local.region}a", "${local.region}b", "${local.region}c"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/elb"              = "1"
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+  }
+
+  tags = local.tags
 }

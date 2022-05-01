@@ -41,6 +41,11 @@ output "eks_cluster_status" {
   value       = module.aws_eks.cluster_status
 }
 
+output "eks_cluster_version" {
+  description = "The Kubernetes version for the cluster"
+  value       = module.aws_eks.cluster_version
+}
+
 #-------------------------------
 # Cluster Security Group
 #-------------------------------

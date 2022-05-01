@@ -33,85 +33,46 @@ provider "grafana" {
   auth = var.grafana_api_key
 }
 
-data "aws_availability_zones" "available" {}
-
 locals {
-  tenant      = var.tenant      # AWS account name or unique id for tenant
-  environment = var.environment # Environment area eg., preprod or prod
-  zone        = var.zone        # Environment within one sub_tenant or business unit
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
-  region = "us-east-1"
-  azs    = slice(data.aws_availability_zones.available.names, 0, 3)
-
-  cluster_version = "1.21"
-  cluster_name    = join("-", [local.tenant, local.environment, local.zone, "eks"])
-
-  vpc_cidr = "10.0.0.0/16"
-  vpc_name = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-
-  terraform_version = "Terraform v1.1.7"
-}
-
-module "aws_vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
-
-  name = local.vpc_name
-  cidr = local.vpc_cidr
-  azs  = local.azs
-
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
-
-  enable_nat_gateway   = true
-  create_igw           = true
-  enable_dns_hostnames = true
-  single_nat_gateway   = true
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "terraform-aws-eks-blueprints"
   }
 }
 
 #---------------------------------------------------------------
-# Provision EKS and Helm Charts
+# EKS Blueprints
 #---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../../.."
 
-  tenant            = local.tenant
-  environment       = local.environment
-  zone              = local.zone
-  terraform_version = local.terraform_version
+  cluster_name    = local.name
+  cluster_version = "1.21"
 
-  # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = module.aws_vpc.private_subnets
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
 
-  # EKS Control Plane Variables
-  cluster_version = local.cluster_version
+  # Provisions a new Amazon Managed Service for Prometheus workspace
+  enable_amazon_prometheus = true
 
   managed_node_groups = {
     t3_l = {
       node_group_name = "managed-ondemand"
       instance_types  = ["t3.large"]
       min_size        = 2
-      subnet_ids      = module.aws_vpc.private_subnets
+      subnet_ids      = module.vpc.private_subnets
     }
   }
 
-  # Provisions a new Amazon Managed Service for Prometheus workspace
-  enable_amazon_prometheus = true
+  tags = local.tags
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source         = "../../../modules/kubernetes-addons"
+  source = "../../../modules/kubernetes-addons"
+
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   # OTEL JMX use cases
@@ -120,6 +81,8 @@ module "eks_blueprints_kubernetes_addons" {
   enable_adot_collector_haproxy        = true
   amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
   amazon_prometheus_workspace_region   = local.region
+
+  tags = local.tags
 }
 
 # Configure HAProxy default Grafana dashboards
@@ -143,4 +106,31 @@ resource "grafana_folder" "haproxy_dashboards" {
 resource "grafana_dashboard" "haproxy_dashboards" {
   folder      = grafana_folder.haproxy_dashboards.id
   config_json = file("${path.module}/dashboards/default.json")
+}
+
+#---------------------------------------------------------------
+# Supporting Resources
+#---------------------------------------------------------------
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = local.name
+  cidr = "10.0.0.0/16"
+
+  azs             = ["${local.region}a", "${local.region}b", "${local.region}c"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+
+  enable_dns_hostnames = true
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/elb"              = "1"
+  }
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/internal-elb"     = "1"
+  }
+
+  tags = local.tags
 }

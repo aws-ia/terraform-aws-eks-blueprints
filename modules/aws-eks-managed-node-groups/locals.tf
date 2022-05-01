@@ -10,10 +10,10 @@ locals {
     release_version          = ""
     force_update_version     = null
 
-    desired_size    = "3"
-    max_size        = "3"
-    min_size        = "1"
-    max_unavailable = "1"
+    desired_size    = 3
+    max_size        = 3
+    min_size        = 1
+    max_unavailable = 1
     disk_size       = 50 # disk_size will be ignored when using Launch Templates
 
     k8s_labels      = {}
