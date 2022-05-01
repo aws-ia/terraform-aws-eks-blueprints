@@ -50,7 +50,7 @@ terraform plan
 to create resources
 
 ```shell script
-terraform apply -target="module.aws_vpc"
+terraform apply -target="module.vpc"
 terraform apply -target="module.eks_blueprints"
 terraform apply -target="module.eks_blueprints_kubernetes_addons"
 terraform apply -target="module.aws_load_balancer_controller"
@@ -94,7 +94,7 @@ terraform destroy -target="module.module.ingress_nginx" -auto-approve
 terraform destroy -target="module.module.aws_load_balancer_controller" -auto-approve
 terraform destroy -target="module.module.eks-blueprints-kubernetes-addons" -auto-approve
 terraform destroy -target="module.module.eks-blueprints" -auto-approve
-terraform destroy -target="module.aws_vpc" -auto-approve
+terraform destroy -target="module.vpc" -auto-approve
 ```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -109,33 +109,23 @@ terraform destroy -target="module.aws_vpc" -auto-approve
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
+No providers.
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws_load_balancer_controller"></a> [aws\_load\_balancer\_controller](#module\_aws\_load\_balancer\_controller) | ../../../modules/kubernetes-addons | n/a |
-| <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | ~> 3.0 |
 | <a name="module_eks_blueprints"></a> [eks\_blueprints](#module\_eks\_blueprints) | ../../.. | n/a |
 | <a name="module_eks_blueprints_kubernetes_addons"></a> [eks\_blueprints\_kubernetes\_addons](#module\_eks\_blueprints\_kubernetes\_addons) | ../../../modules/kubernetes-addons | n/a |
-| <a name="module_ingress_nginx"></a> [ingress\_nginx](#module\_ingress\_nginx) | ../../../modules/kubernetes-addons | n/a |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 3.0 |
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
+No resources.
 
 ## Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_environment"></a> [environment](#input\_environment) | Environment area, e.g. prod or preprod | `string` | `"preprod"` | no |
-| <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | `"aws001"` | no |
-| <a name="input_zone"></a> [zone](#input\_zone) | zone, e.g. dev or qa or load or ops etc... | `string` | `"dev"` | no |
+No inputs.
 
 ## Outputs
 

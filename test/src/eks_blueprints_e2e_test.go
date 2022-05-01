@@ -43,7 +43,7 @@ var (
 	destroyModules = []string{
 		"module.kubernetes_addons",
 		"module.eks_blueprints",
-		"module.aws_vpc",
+		"module.vpc",
 		"full_destroy",
 	}
 

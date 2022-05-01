@@ -87,7 +87,7 @@ data "aws_iam_policy_document" "eks_key" {
       identifiers = concat(
         var.cluster_kms_key_additional_admin_arns,
         [
-          "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${local.cluster_iam_role_name}",
+          "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${var.cluster_name}",
           data.aws_iam_session_context.current.issuer_arn
         ]
       )
@@ -109,7 +109,7 @@ data "aws_iam_policy_document" "eks_key" {
     principals {
       type = "AWS"
       identifiers = [
-        "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${local.cluster_iam_role_name}"
+        "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${var.cluster_name}" # TODO - not required here
       ]
     }
   }
@@ -129,7 +129,7 @@ data "aws_iam_policy_document" "eks_key" {
     principals {
       type = "AWS"
       identifiers = [
-        "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${local.cluster_iam_role_name}"
+        "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${var.cluster_name}" # TODO - not required here
       ]
     }
 

@@ -14,51 +14,80 @@ provider "kubernetes" {
   }
 }
 
-data "aws_availability_zones" "available" {}
-
 locals {
-  tenant      = var.tenant      # AWS account name or unique id for tenant
-  environment = var.environment # Environment area eg., preprod or prod
-  zone        = var.zone        # Environment with in one sub_tenant or business unit
-  region      = "us-west-2"
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
-  vpc_cidr     = "10.0.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  azs          = slice(data.aws_availability_zones.available.names, 0, 3)
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
-
-  terraform_version = "Terraform v1.0.1"
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "terraform-aws-eks-blueprints"
+  }
 }
 
-module "aws_vpc" {
+#---------------------------------------------------------------
+# EKS Blueprints
+#---------------------------------------------------------------
+module "eks_blueprints" {
+  source = "../.."
+
+  cluster_name    = local.name
+  cluster_version = "1.21"
+
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
+
+  # Step 1. Set cluster API endpoint both private and public
+  cluster_endpoint_public_access  = true
+  cluster_endpoint_private_access = true
+
+  # Step 2. Change cluster endpoint to private only, comment out the above lines and uncomment the below lines.
+  # cluster_endpoint_public_access  = false
+  # cluster_endpoint_private_access = true
+
+  # EKS MANAGED NODE GROUPS
+  managed_node_groups = {
+    mg_4 = {
+      node_group_name = "managed-ondemand"
+      instance_types  = ["m5.large"]
+      subnet_ids      = module.vpc.private_subnets
+    }
+  }
+
+  tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Supporting Resources
+#---------------------------------------------------------------
+module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
 
-  name = local.vpc_name
-  cidr = local.vpc_cidr
-  azs  = local.azs
+  name = local.name
+  cidr = "10.0.0.0/16"
 
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+  azs             = ["${local.region}a", "${local.region}b", "${local.region}c"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
 
   enable_dns_hostnames = true
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/elb"              = "1"
   }
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/internal-elb"     = "1"
   }
   manage_default_security_group = true
 
-  default_security_group_name = "${local.vpc_name}-endpoint-secgrp"
+  default_security_group_name = "${local.name}-default"
   default_security_group_ingress = [
     {
       protocol    = -1
       from_port   = 0
       to_port     = 0
-      cidr_blocks = local.vpc_cidr
+      cidr_blocks = "10.0.0.0/16"
   }]
   default_security_group_egress = [
     {
@@ -67,50 +96,32 @@ module "aws_vpc" {
       protocol    = -1
       cidr_blocks = "0.0.0.0/0"
   }]
-}
 
-module "vpc_endpoint_gateway" {
-  source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "v3.2.0"
-
-  create = true
-  vpc_id = module.aws_vpc.vpc_id
-
-  endpoints = {
-    s3 = {
-      service      = "s3"
-      service_type = "Gateway"
-      route_table_ids = flatten([
-        module.aws_vpc.intra_route_table_ids,
-      module.aws_vpc.private_route_table_ids])
-      tags = { Name = "s3-vpc-Gateway" }
-    },
-  }
-}
-
-data "aws_security_group" "default" {
-  name   = "default"
-  vpc_id = module.aws_vpc.vpc_id
+  tags = local.tags
 }
 
 module "vpc_endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "v3.2.0"
-  create  = true
-  vpc_id  = module.aws_vpc.vpc_id
-  security_group_ids = [
-  data.aws_security_group.default.id]
-  subnet_ids = module.aws_vpc.private_subnets
+  version = "~> 3.0"
+
+  vpc_id             = module.vpc.vpc_id
+  subnet_ids         = module.vpc.private_subnets
+  security_group_ids = [module.vpc.default_security_group_id]
 
   endpoints = {
+    s3 = {
+      service         = "s3"
+      service_type    = "Gateway"
+      route_table_ids = module.vpc.private_route_table_ids
+    }
     ssm = {
       service             = "ssm"
       private_dns_enabled = true
-    },
+    }
     logs = {
       service             = "logs"
       private_dns_enabled = true
-    },
+    }
     autoscaling = {
       service             = "autoscaling"
       private_dns_enabled = true
@@ -144,43 +155,6 @@ module "vpc_endpoints" {
       private_dns_enabled = true
     }
   }
-  tags = {
-    Project  = "EKS"
-    Endpoint = "true"
-  }
-}
-#---------------------------------------------------------------
-# Example to consume eks_blueprints module
-#---------------------------------------------------------------
-module "eks_blueprints" {
-  source = "../.."
 
-  tenant            = local.tenant
-  environment       = local.environment
-  zone              = local.zone
-  terraform_version = local.terraform_version
-
-  # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = module.aws_vpc.private_subnets
-
-  # EKS CONTROL PLANE VARIABLES
-  cluster_version = "1.21"
-
-  # Step 1. Set cluster API endpoint both private and public
-  cluster_endpoint_public_access  = true
-  cluster_endpoint_private_access = true
-
-  # Step 2. Change cluster endpoint to private only, comment out the above lines and uncomment the below lines.
-  # cluster_endpoint_public_access  = false
-  # cluster_endpoint_private_access = true
-
-  # EKS MANAGED NODE GROUPS
-  managed_node_groups = {
-    mg_4 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m4.large"]
-      subnet_ids      = module.aws_vpc.private_subnets
-    }
-  }
+  tags = local.tags
 }

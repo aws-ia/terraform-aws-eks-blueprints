@@ -53,7 +53,7 @@ The below example demonstrates the minimum configuration required to deploy a ma
     managed_node_groups = {
       mg_4 = {
         node_group_name = "managed-ondemand"
-        instance_types  = ["m4.large"]
+        instance_types  = ["m5.large"]
         subnet_ids      = []  # Mandatory Public or Private Subnet IDs
         disk_size       = 100 # disk_size will be ignored when using Launch Templates
       }
@@ -161,7 +161,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       # Node Group compute configuration
       ami_type       = "AL2_x86_64"
       capacity_type  = "SPOT"
-      instance_types = ["t3.medium", "t3a.medium"]
+      instance_types = ["t3.large", "t3.xlarge"]
 
       block_device_mappings = [
         {
@@ -461,7 +461,7 @@ The below example demonstrates the minimum configuration required to deploy a Se
         self_mg_4 = {
           node_group_name    = "self-managed-ondemand"
           launch_template_os = "amazonlinux2eks"
-          subnet_ids         = module.aws_vpc.private_subnets
+          subnet_ids         = module.vpc.private_subnets
         }
     }
 ```
@@ -508,8 +508,8 @@ The below example demonstrates advanced configuration options for a self-managed
         public_ip         = false # Enable only for public subnets
 
         # AUTOSCALING
-        max_size   = "3"
-        min_size   = "1"
+        max_size   = 3
+        min_size   = 1
         subnet_ids = [] # Mandatory Public or Private Subnet IDs
         additional_tags = {
           ExtraTag    = "m5x-on-demand"
@@ -599,8 +599,8 @@ The example below demonstrates the minimum configuration required to deploy a Se
       node_group_name    = "ng-od-windows"
       launch_template_os = "windows"
       instance_type      = "m5n.large"
-      subnet_ids         = module.aws_vpc.private_subnets
-      min_size           = "2"
+      subnet_ids         = module.vpc.private_subnets
+      min_size           = 2
     }
   }
 ```

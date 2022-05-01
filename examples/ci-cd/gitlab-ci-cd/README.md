@@ -28,9 +28,8 @@ git@github.com:aws-ia/terraform-aws-eks-blueprints.git
 
 ## Step 4: Update variables in input.tfvars file
 
-1.  Update tenant,environment,zone as per your requirement
-2.  Update cluster_version to any version > "1.20"
-3.  Update CIDR of your VPC, vpc_cidcr = "10.2.0.0/16"
+1.  Update cluster_version to any version > "1.20"
+2.  Update CIDR of your VPC, vpc_cidcr = "10.2.0.0/16"
 
 ## Step 5: Commit changes and push to verify the pipeline
 
@@ -74,30 +73,22 @@ Manually trigger the `tf-destroy` stage in the GitLab Ci/CD pipeline to destroy 
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
+No providers.
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | ~> 3.0 |
 | <a name="module_eks_blueprints"></a> [eks\_blueprints](#module\_eks\_blueprints) | ../../.. | n/a |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 3.0 |
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
+No resources.
 
 ## Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_environment"></a> [environment](#input\_environment) | Environment area eg., preprod or prod | `string` | n/a | yes |
-| <a name="input_tenant"></a> [tenant](#input\_tenant) | AWS account name or unique id for tenant | `string` | n/a | yes |
-| <a name="input_zone"></a> [zone](#input\_zone) | Environment with in one sub\_tenant or business unit | `string` | n/a | yes |
+No inputs.
 
 ## Outputs
 

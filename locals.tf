@@ -21,7 +21,6 @@ locals {
   vpc_id             = var.vpc_id
   private_subnet_ids = var.private_subnet_ids
   public_subnet_ids  = var.public_subnet_ids
-  tags               = module.eks_tags.tags
 
   enable_workers            = length(var.self_managed_node_groups) > 0 || length(var.managed_node_groups) > 0 ? true : false
   worker_security_group_ids = local.enable_workers ? compact(flatten([[module.aws_eks.node_security_group_id], var.worker_additional_security_group_ids])) : []
@@ -56,7 +55,7 @@ locals {
     service_ipv6_cidr = var.cluster_service_ipv6_cidr
     service_ipv4_cidr = var.cluster_service_ipv4_cidr
 
-    tags = local.tags
+    tags = var.tags
   }
 
   fargate_context = {
@@ -64,7 +63,7 @@ locals {
     aws_partition_id              = local.context.aws_partition_id
     iam_role_path                 = var.iam_role_path
     iam_role_permissions_boundary = var.iam_role_permissions_boundary
-    tags                          = local.tags
+    tags                          = var.tags
   }
 
   # Managed node IAM Roles for aws-auth
@@ -127,13 +126,13 @@ locals {
   ] : []
 
   # Teams
-  role_prefix_name = format("%s-%s-%s", var.tenant, var.environment, var.zone)
-  partition        = local.context.aws_partition_id
-  account_id       = local.context.aws_caller_identity_account_id
+  partition  = local.context.aws_partition_id
+  account_id = local.context.aws_caller_identity_account_id
 
+  # TODO - move this into `aws-eks-teams` to avoid getting out of sync
   platform_teams_config_map = length(var.platform_teams) > 0 ? [
     for platform_team_name, platform_team_data in var.platform_teams : {
-      rolearn : "arn:${local.partition}:iam::${local.account_id}:role/${format("%s-%s-%s", local.role_prefix_name, "${platform_team_name}", "Access")}"
+      rolearn : "arn:${local.partition}:iam::${local.account_id}:role/${module.aws_eks.cluster_id}-${platform_team_name}-access"
       username : "${platform_team_name}"
       groups : [
         "system:masters"
@@ -141,15 +140,14 @@ locals {
     }
   ] : []
 
+  # TODO - move this into `aws-eks-teams` to avoid getting out of sync
   application_teams_config_map = length(var.application_teams) > 0 ? [
     for team_name, team_data in var.application_teams : {
-      rolearn : "arn:${local.partition}:iam::${local.account_id}:role/${format("%s-%s-%s", local.role_prefix_name, "${team_name}", "Access")}"
+      rolearn : "arn:${local.partition}:iam::${local.account_id}:role/${module.aws_eks.cluster_id}-${team_name}-access"
       username : "${team_name}"
       groups : [
         "${team_name}-group"
       ]
     }
   ] : []
-
-  cluster_iam_role_name = "${module.eks_tags.tags.name}-cluster-role"
 }

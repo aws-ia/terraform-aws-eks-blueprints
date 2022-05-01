@@ -25,8 +25,8 @@ locals {
     ]
 
     # AUTOSCALING
-    max_size                = "3"
-    min_size                = "1"
+    max_size                = 3
+    min_size                = 1
     subnet_type             = "private"
     subnet_ids              = []
     additional_tags         = {}

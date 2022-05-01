@@ -14,68 +14,28 @@ provider "kubernetes" {
   }
 }
 
-data "aws_availability_zones" "available" {}
-
 locals {
-  tenant      = "aws001"  # AWS account name or unique id for tenant
-  environment = "preprod" # Environment area eg., preprod or prod
-  zone        = "dev"     # Environment with in one sub_tenant or business unit
-  region      = "us-west-2"
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
-  vpc_cidr     = "10.0.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  azs          = slice(data.aws_availability_zones.available.names, 0, 3)
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
-
-  terraform_version = "Terraform v1.0.1"
-}
-
-module "aws_vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
-
-  name = local.vpc_name
-  cidr = local.vpc_cidr
-  azs  = local.azs
-
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
-
-  enable_nat_gateway   = true
-  create_igw           = true
-  enable_dns_hostnames = true
-  single_nat_gateway   = true
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "terraform-aws-eks-blueprints"
   }
 }
+
 #---------------------------------------------------------------
-# Example to consume eks_blueprints module
+# EKS Blueprints
 #---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../../.."
 
-  tenant            = local.tenant
-  environment       = local.environment
-  zone              = local.zone
-  terraform_version = local.terraform_version
-
-  # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = module.aws_vpc.private_subnets
-
-  # EKS CONTROL PLANE VARIABLES
+  cluster_name    = local.name
   cluster_version = "1.21"
-  #---------------------------------------------------------#
-  # FARGATE PROFILES
-  #---------------------------------------------------------#
+
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
+
   fargate_profiles = {
     default = {
       fargate_profile_name = "default"
@@ -88,11 +48,44 @@ module "eks_blueprints" {
         }
       }]
 
-      subnet_ids = module.aws_vpc.private_subnets
+      subnet_ids = module.vpc.private_subnets
 
       additional_tags = {
         ExtraTag = "Fargate"
       }
-    },
-  } # END OF FARGATE PROFILES
+    }
+  }
+
+  tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Supporting Resources
+#---------------------------------------------------------------
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = local.name
+  cidr = "10.0.0.0/16"
+
+  azs             = ["${local.region}a", "${local.region}b", "${local.region}c"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/elb"              = "1"
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/internal-elb"     = "1"
+  }
+
+  tags = local.tags
 }

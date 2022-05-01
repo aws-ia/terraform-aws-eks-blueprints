@@ -48,7 +48,8 @@ resource "kubernetes_resource_quota" "team_object_quota" {
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "team_access" {
   for_each = { for team_name, team_data in var.application_teams : team_name => team_data if lookup(team_data, "users", "") != "" }
-  name     = format("%s-%s-%s", local.role_prefix_name, "${each.key}", "Access")
+  name     = "${var.eks_cluster_id}-${each.key}-access"
+
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -133,7 +134,7 @@ resource "kubernetes_role_binding" "team" {
 
 resource "aws_iam_role" "team_sa_irsa" {
   for_each = var.application_teams
-  name     = format("%s-%s-%s", local.role_prefix_name, "${each.key}", "sa-role")
+  name     = "${var.eks_cluster_id}-${each.key}-sa-role"
   tags     = var.tags
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
@@ -186,8 +187,9 @@ resource "kubectl_manifest" "team" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_iam_role" "platform_team" {
-  for_each            = var.platform_teams
-  name                = format("%s-%s-%s", local.role_prefix_name, "${each.key}", "Access")
+  for_each = var.platform_teams
+
+  name                = "${var.eks_cluster_id}-${each.key}-access"
   tags                = var.tags
   managed_policy_arns = [aws_iam_policy.platform_team_eks_access[0].arn]
   assume_role_policy = jsonencode({
@@ -210,7 +212,7 @@ resource "aws_iam_role" "platform_team" {
 
 resource "aws_iam_policy" "platform_team_eks_access" {
   count       = length(var.platform_teams) > 0 ? 1 : 0
-  name        = format("%s-%s", local.role_prefix_name, "PlatformTeamEKSAccess")
+  name        = "${var.eks_cluster_id}-PlatformTeamEKSAccess"
   path        = "/"
   description = "Platform Team EKS Console Access"
   policy      = data.aws_iam_policy_document.platform_team_eks_access[0].json

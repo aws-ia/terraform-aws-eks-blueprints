@@ -28,101 +28,50 @@ provider "helm" {
   }
 }
 
-data "aws_availability_zones" "available" {}
-
 data "aws_acm_certificate" "issued" {
   domain   = var.acm_certificate_domain
   statuses = ["ISSUED"]
 }
 
 locals {
-  tenant      = "aws001"  # AWS account name or unique id for tenant
-  environment = "preprod" # Environment area eg., preprod or prod
-  zone        = "dev"     # Environment with in one sub_tenant or business unit
-  region      = "us-west-2"
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
-  vpc_cidr     = "10.0.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
-  azs          = slice(data.aws_availability_zones.available.names, 0, 3)
-
-  terraform_version = "Terraform v1.0.1"
-}
-
-#---------------------------------------------------------------
-# VPC
-#---------------------------------------------------------------
-
-module "aws_vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
-
-  name = local.vpc_name
-  cidr = local.vpc_cidr
-  azs  = local.azs
-
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
-
-  create_igw           = true
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
-  enable_dns_hostnames = true
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "terraform-aws-eks-blueprints"
   }
 }
 
 #---------------------------------------------------------------
-# Example to consume eks_cluster module
+# EKS Blueprints
 #---------------------------------------------------------------
-
 module "eks_blueprints" {
   source = "../.."
 
-  tenant            = local.tenant
-  environment       = local.environment
-  zone              = local.zone
-  terraform_version = local.terraform_version
-
-  # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = module.aws_vpc.private_subnets
-
-  # EKS CONTROL PLANE VARIABLES
+  cluster_name    = local.name
   cluster_version = "1.21"
 
-  # Managed Node Group
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
+
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["m4.large"]
-      min_size        = "2"
-      subnet_ids      = module.aws_vpc.private_subnets
+      instance_types  = ["m5.large"]
+      min_size        = 2
+      subnet_ids      = module.vpc.private_subnets
     }
   }
+
+  tags = local.tags
 }
 
 module "eks_blueprints_kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  #---------------------------------------------------------------
-  # Globals
-  #---------------------------------------------------------------
-
   eks_cluster_id     = module.eks_blueprints.eks_cluster_id
   eks_cluster_domain = var.eks_cluster_domain
-
-  #---------------------------------------------------------------
-  # ARGO CD ADD-ON
-  #---------------------------------------------------------------
 
   enable_argocd = true
   argocd_applications = {
@@ -139,10 +88,6 @@ module "eks_blueprints_kubernetes_addons" {
     }
   }
 
-  #---------------------------------------------------------------
-  # INGRESS NGINX ADD-ON
-  #---------------------------------------------------------------
-
   enable_ingress_nginx = true
   ingress_nginx_helm_config = {
     values = [templatefile("${path.module}/nginx-values.yaml", {
@@ -151,15 +96,42 @@ module "eks_blueprints_kubernetes_addons" {
     })]
   }
 
-  #---------------------------------------------------------------
-  # OTHER ADD-ONS
-  #---------------------------------------------------------------
-
   enable_aws_load_balancer_controller = true
   enable_external_dns                 = true
 
   depends_on = [
-    module.aws_vpc,
+    module.vpc,
     module.eks_blueprints.managed_node_groups
   ]
+}
+
+#---------------------------------------------------------------
+# Supporting Resources
+#---------------------------------------------------------------
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = local.name
+  cidr = "10.0.0.0/16"
+
+  azs             = ["${local.region}a", "${local.region}b", "${local.region}c"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/elb"              = "1"
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/internal-elb"     = "1"
+  }
+
+  tags = local.tags
 }

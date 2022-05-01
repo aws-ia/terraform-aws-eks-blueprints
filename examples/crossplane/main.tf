@@ -42,82 +42,45 @@ provider "kubectl" {
   }
 }
 
-data "aws_availability_zones" "available" {}
-
 locals {
-  tenant      = var.tenant      # AWS account name or unique id for tenant
-  environment = var.environment # Environment area eg., preprod or prod
-  zone        = var.zone        # Environment with in one sub_tenant or business unit
-  region      = "us-west-2"
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
-  vpc_cidr     = "10.0.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  azs          = slice(data.aws_availability_zones.available.names, 0, 3)
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
-
-  terraform_version = "Terraform v1.0.1"
-}
-
-module "aws_vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
-
-  name = local.vpc_name
-  cidr = local.vpc_cidr
-  azs  = local.azs
-
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
-
-  enable_nat_gateway   = true
-  create_igw           = true
-  enable_dns_hostnames = true
-  single_nat_gateway   = true
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "terraform-aws-eks-blueprints"
   }
 }
+
 #---------------------------------------------------------------
-# Example to consume eks_blueprints module
+# EKS Blueprints
 #---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../.."
 
-  tenant            = local.tenant
-  environment       = local.environment
-  zone              = local.zone
-  terraform_version = local.terraform_version
-
-  # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = module.aws_vpc.private_subnets
-
-  # EKS CONTROL PLANE VARIABLES
+  cluster_name    = local.name
   cluster_version = "1.21"
 
-  # EKS MANAGED NODE GROUPS
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
+
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["m4.large"]
-      min_size        = "2"
-      subnet_ids      = module.aws_vpc.private_subnets
+      instance_types  = ["m5.large"]
+      min_size        = 2
+      subnet_ids      = module.vpc.private_subnets
     }
   }
+
+  tags = local.tags
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source         = "../../modules/kubernetes-addons"
+  source = "../../modules/kubernetes-addons"
+
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
-  # Refer to docs/add-ons/crossplane.md for advanced configuration
   enable_crossplane = true
 
   # You can choose to install either of crossplane_aws_provider or crossplane_jet_aws_provider to work with AWS
@@ -138,4 +101,35 @@ module "eks_blueprints_kubernetes_addons" {
     # This example config uses AmazonS3FullAccess for demo purpose only, but you should select a policy with the minimum permissions required to provision your resources.
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
   }
+}
+
+#---------------------------------------------------------------
+# Supporting Resources
+#---------------------------------------------------------------
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = local.name
+  cidr = "10.0.0.0/16"
+
+  azs             = ["${local.region}a", "${local.region}b", "${local.region}c"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/elb"              = "1"
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/internal-elb"     = "1"
+  }
+
+  tags = local.tags
 }

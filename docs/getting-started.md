@@ -56,7 +56,7 @@ We will leverage Terraform's [target](https://learn.hashicorp.com/tutorials/terr
 **Deploy the VPC**. This step will take roughly 3 minutes to complete.
 
 ```
-terraform apply -target="module.aws_vpc"
+terraform apply -target="module.vpc"
 ```
 
 **Deploy the EKS cluster**. This step will take roughly 14 minutes to complete.
@@ -145,5 +145,5 @@ terraform destroy -target="module.eks_blueprints"
 Destroy the VPC.
 
 ```
-terraform destroy -target="module.aws_vpc"
+terraform destroy -target="module.vpc"
 ```

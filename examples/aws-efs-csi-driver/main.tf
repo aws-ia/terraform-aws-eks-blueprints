@@ -28,74 +28,35 @@ provider "helm" {
   }
 }
 
-data "aws_availability_zones" "available" {}
-
 locals {
-  tenant      = var.tenant      # AWS account name or unique id for tenant
-  environment = var.environment # Environment area eg., preprod or prod
-  zone        = var.zone        # Environment with in one sub_tenant or business unit
-  region      = "us-west-2"
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
-  vpc_cidr     = "10.0.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  azs          = slice(data.aws_availability_zones.available.names, 0, 3)
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
-
-  terraform_version = "Terraform v1.0.1"
-}
-
-module "aws_vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
-
-  name = local.vpc_name
-  cidr = local.vpc_cidr
-  azs  = local.azs
-
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
-
-  enable_nat_gateway   = true
-  create_igw           = true
-  enable_dns_hostnames = true
-  single_nat_gateway   = true
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "terraform-aws-eks-blueprints"
   }
 }
 
 #---------------------------------------------------------------
-# Example to consume eks_blueprints module
+# EKS Blueprints
 #---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../.."
 
-  tenant            = local.tenant
-  environment       = local.environment
-  zone              = local.zone
-  terraform_version = local.terraform_version
-
-  # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = module.aws_vpc.private_subnets
-
-  # EKS CONTROL PLANE VARIABLES
+  cluster_name    = local.name
   cluster_version = "1.21"
+
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["m4.large"]
-      min_size        = "2"
-      subnet_ids      = module.aws_vpc.private_subnets
+      instance_types  = ["m5.large"]
+      min_size        = 2
+      subnet_ids      = module.vpc.private_subnets
     }
   }
 
@@ -112,26 +73,26 @@ module "eks_blueprints" {
             env         = "fargate"
           }
       }]
-      subnet_ids = module.aws_vpc.private_subnets
+      subnet_ids = module.vpc.private_subnets
       additional_tags = {
         ExtraTag = "Fargate"
       }
     }
   }
+
+  tags = local.tags
 }
 
-#---------------------------------------------
-# Deploy Kubernetes Add-ons with sub module
-#---------------------------------------------
 module "eks_blueprints_kubernetes_addons" {
-  source         = "../../modules/kubernetes-addons"
+  source = "../../modules/kubernetes-addons"
+
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   # EKS Managed Add-ons
   enable_amazon_eks_coredns    = true
   enable_amazon_eks_kube_proxy = true
 
-  # K8s Add-ons
+  # Add-ons
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_cluster_autoscaler           = true
@@ -140,30 +101,63 @@ module "eks_blueprints_kubernetes_addons" {
   depends_on = [module.eks_blueprints.managed_node_groups]
 }
 
-#--------------
-# Deploy EFS
-#--------------
+#---------------------------------------------------------------
+# Supporting Resources
+#---------------------------------------------------------------
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = local.name
+  cidr = "10.0.0.0/16"
+
+  azs             = ["${local.region}a", "${local.region}b", "${local.region}c"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/elb"              = "1"
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/internal-elb"     = "1"
+  }
+
+  tags = local.tags
+}
+
 resource "aws_efs_file_system" "efs" {
   creation_token = "efs"
   encrypted      = true
+
+  tags = local.tags
 }
 
 resource "aws_efs_mount_target" "efs_mt" {
-  count           = length(module.aws_vpc.private_subnets)
+  count = length(module.vpc.private_subnets)
+
   file_system_id  = aws_efs_file_system.efs.id
-  subnet_id       = module.aws_vpc.private_subnets[count.index]
-  security_groups = [aws_security_group.efs_sg.id]
+  subnet_id       = module.vpc.private_subnets[count.index]
+  security_groups = [aws_security_group.efs.id]
 }
 
-resource "aws_security_group" "efs_sg" {
-  name        = "efs-sg"
+resource "aws_security_group" "efs" {
+  name        = "${local.name}-efs"
   description = "Allow inbound NFS traffic from private subnets of the VPC"
-  vpc_id      = module.aws_vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
 
   ingress {
-    cidr_blocks = module.aws_vpc.private_subnets_cidr_blocks
+    cidr_blocks = module.vpc.private_subnets_cidr_blocks
     from_port   = 2049
     to_port     = 2049
     protocol    = "tcp"
   }
+
+  tags = local.tags
 }

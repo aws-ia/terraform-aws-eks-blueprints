@@ -28,66 +28,27 @@ provider "helm" {
   }
 }
 
-data "aws_availability_zones" "available" {}
-
 locals {
-  tenant      = var.tenant      # AWS account name or unique id for tenant
-  environment = var.environment # Environment area eg., preprod or prod
-  zone        = var.zone        # Environment with in one sub_tenant or business unit
-  region      = "us-west-2"
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
-  vpc_cidr     = "10.0.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  azs          = slice(data.aws_availability_zones.available.names, 0, 3)
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
-
-  terraform_version = "Terraform v1.0.1"
-}
-
-module "aws_vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
-
-  name = local.vpc_name
-  cidr = local.vpc_cidr
-  azs  = local.azs
-
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
-
-  enable_nat_gateway   = true
-  create_igw           = true
-  enable_dns_hostnames = true
-  single_nat_gateway   = true
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "terraform-aws-eks-blueprints"
   }
 }
 
 #---------------------------------------------------------------
-# Example to consume eks_blueprints module
+# EKS Blueprints
 #---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../../.."
 
-  tenant            = local.tenant
-  environment       = local.environment
-  zone              = local.zone
-  terraform_version = local.terraform_version
-
-  # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = module.aws_vpc.private_subnets
-
-  # EKS CONTROL PLANE VARIABLES
+  cluster_name    = local.name
   cluster_version = "1.21"
+
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
 
   #----------------------------------------------------------------------------------------------------------#
   # Security groups used in this module created by the upstream modules terraform-aws-eks (https://github.com/terraform-aws-modules/terraform-aws-eks).
@@ -134,49 +95,41 @@ module "eks_blueprints" {
       node_group_name = "managed-ondemand"
       instance_types  = ["m5.xlarge"]
       min_size        = 3
-      subnet_ids      = module.aws_vpc.private_subnets
+      subnet_ids      = module.vpc.private_subnets
     }
   }
 
-  # Enable Amazon Prometheus - Creates a new Workspace id
   enable_amazon_prometheus = true
+
+  tags = local.tags
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source         = "../../../modules/kubernetes-addons"
+  source = "../../../modules/kubernetes-addons"
+
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
-  #K8s Add-ons
+  # Add-ons
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
 
-  #---------------------------------------
-  # PROMETHEUS and Amazon Prometheus Config
-  #---------------------------------------
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
   enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
 
-  #---------------------------------------
-  # COMMUNITY PROMETHEUS ENABLE
-  #---------------------------------------
   enable_prometheus = true
-  # Optional Map value
   prometheus_helm_config = {
-    name       = "prometheus"                                         # (Required) Release name.
-    repository = "https://prometheus-community.github.io/helm-charts" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "prometheus"                                         # (Required) Chart name to be installed.
-    version    = "15.3.0"                                             # (Optional) Specify the exact chart version to install.
-    namespace  = "prometheus"                                         # (Optional) The namespace to install the release into.
+    name       = "prometheus"
+    repository = "https://prometheus-community.github.io/helm-charts"
+    chart      = "prometheus"
+    version    = "15.3.0"
+    namespace  = "prometheus"
     values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
       operating_system = "linux"
     })]
   }
-  #---------------------------------------
-  # ENABLE SPARK on K8S OPERATOR
-  #---------------------------------------
+
   enable_spark_k8s_operator = true
-  # Optional Map value
   spark_k8s_operator_helm_config = {
     name             = "spark-operator"
     chart            = "spark-operator"
@@ -187,17 +140,46 @@ module "eks_blueprints_kubernetes_addons" {
     create_namespace = true
     values           = [templatefile("${path.module}/helm_values/spark-k8s-operator-values.yaml", {})]
   }
-  #---------------------------------------
-  # Apache YuniKorn K8s Spark Scheduler
-  #---------------------------------------
+
   enable_yunikorn = true
   yunikorn_helm_config = {
-    name       = "yunikorn"                                  # (Required) Release name.
-    repository = "https://apache.github.io/yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "yunikorn"                                  # (Required) Chart name to be installed.
-    version    = "0.12.2"                                    # (Optional) Specify the exact chart version to install.
+    name       = "yunikorn"
+    repository = "https://apache.github.io/yunikorn-release"
+    chart      = "yunikorn"
+    version    = "0.12.2"
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
 
   depends_on = [module.eks_blueprints.managed_node_groups]
+}
+
+#---------------------------------------------------------------
+# Supporting Resources
+#---------------------------------------------------------------
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = local.name
+  cidr = "10.0.0.0/16"
+
+  azs             = ["${local.region}a", "${local.region}b", "${local.region}c"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/elb"              = "1"
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/internal-elb"     = "1"
+  }
+
+  tags = local.tags
 }
