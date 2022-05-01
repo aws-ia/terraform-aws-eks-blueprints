@@ -2,29 +2,17 @@ provider "aws" {
   region = local.region
 }
 
-provider "kubernetes" {
+provider "kubectl" {
+  apply_retry_count      = 10
   host                   = module.eks_blueprints.eks_cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  load_config_file       = false
 
   exec {
     api_version = "client.authentication.k8s.io/v1alpha1"
     command     = "aws"
     # This requires the awscli to be installed locally where Terraform is executed
     args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-  }
-}
-
-provider "helm" {
-  kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-
-    exec {
-      api_version = "client.authentication.k8s.io/v1alpha1"
-      command     = "aws"
-      # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-    }
   }
 }
 
@@ -39,11 +27,7 @@ locals {
   cluster_version = "1.21"
   region          = "us-west-2"
 
-  certificate_name = var.certificate_name
-  certificate_dns  = var.certificate_dns
-
   vpc_cidr     = "10.0.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   azs          = slice(data.aws_availability_zones.available.names, 0, 3)
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
@@ -54,7 +38,7 @@ module "aws_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
 
-  name = local.vpc_name
+  name = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   cidr = local.vpc_cidr
   azs  = local.azs
 
@@ -124,34 +108,6 @@ module "eks_blueprints_kubernetes_addons" {
 }
 
 #-------------------------------
-#  This resource creates a AWS Certificate Manager Private Certificate Authority (ACM PCA)
-#-------------------------------
-
-resource "aws_acmpca_certificate_authority_certificate" "example" {
-  certificate_authority_arn = aws_acmpca_certificate_authority.example.arn
-
-  certificate       = aws_acmpca_certificate.example.certificate
-  certificate_chain = aws_acmpca_certificate.example.certificate_chain
-}
-
-#-------------------------------
-#  This resource sends the signing request to ACM PCA, so that it becomes active
-#-------------------------------
-
-resource "aws_acmpca_certificate" "example" {
-  certificate_authority_arn   = aws_acmpca_certificate_authority.example.arn
-  certificate_signing_request = aws_acmpca_certificate_authority.example.certificate_signing_request
-  signing_algorithm           = "SHA512WITHRSA"
-
-  template_arn = "arn:${data.aws_partition.current.partition}:acm-pca:::template/RootCACertificate/V1"
-
-  validity {
-    type  = "YEARS"
-    value = 10
-  }
-}
-
-#-------------------------------
 # Associates a certificate with an AWS Certificate Manager Private Certificate Authority (ACM PCA Certificate Authority).
 # An ACM PCA Certificate Authority is unable to issue certificates until it has a certificate associated with it.
 # A root level ACM PCA Certificate Authority is able to self-sign its own root certificate.
@@ -170,12 +126,33 @@ resource "aws_acmpca_certificate_authority" "example" {
   }
 }
 
+resource "aws_acmpca_certificate" "example" {
+  certificate_authority_arn   = aws_acmpca_certificate_authority.example.arn
+  certificate_signing_request = aws_acmpca_certificate_authority.example.certificate_signing_request
+  signing_algorithm           = "SHA512WITHRSA"
+
+  template_arn = "arn:${data.aws_partition.current.partition}:acm-pca:::template/RootCACertificate/V1"
+
+  validity {
+    type  = "YEARS"
+    value = 10
+  }
+}
+
+resource "aws_acmpca_certificate_authority_certificate" "example" {
+  certificate_authority_arn = aws_acmpca_certificate_authority.example.arn
+
+  certificate       = aws_acmpca_certificate.example.certificate
+  certificate_chain = aws_acmpca_certificate.example.certificate_chain
+}
+
 #-------------------------------
 #  This resource creates a CRD of AWSPCAClusterIssuer Kind, which then represents the ACM PCA in K8
 #-------------------------------
 
-resource "kubernetes_manifest" "cluster_pca_issuer" {
-  manifest = {
+# Using kubectl to workaround kubernetes provider issue https://github.com/hashicorp/terraform-provider-kubernetes/issues/1453
+resource "kubectl_manifest" "cluster_pca_issuer" {
+  yaml_body = yamlencode({
     apiVersion = "awspca.cert-manager.io/v1beta1"
     kind       = "AWSPCAClusterIssuer"
 
@@ -187,9 +164,7 @@ resource "kubernetes_manifest" "cluster_pca_issuer" {
       arn = aws_acmpca_certificate_authority.example.arn
       region : local.region
     }
-  }
-
-  depends_on = [module.eks_blueprints_kubernetes_addons]
+  })
 }
 
 #-------------------------------
@@ -197,18 +172,19 @@ resource "kubernetes_manifest" "cluster_pca_issuer" {
 # mounted as K8 secret
 #-------------------------------
 
-resource "kubernetes_manifest" "example_pca_certificate" {
-  manifest = {
+# Using kubectl to workaround kubernetes provider issue https://github.com/hashicorp/terraform-provider-kubernetes/issues/1453
+resource "kubectl_manifest" "example_pca_certificate" {
+  yaml_body = yamlencode({
     apiVersion = "cert-manager.io/v1"
     kind       = "Certificate"
 
     metadata = {
-      name      = local.certificate_name
+      name      = var.certificate_name
       namespace = "default"
     }
 
     spec = {
-      commonName = local.certificate_dns
+      commonName = var.certificate_dns
       duration   = "2160h0m0s"
       issuerRef = {
         group = "awspca.cert-manager.io"
@@ -216,7 +192,7 @@ resource "kubernetes_manifest" "example_pca_certificate" {
         name : module.eks_blueprints.eks_cluster_id
       }
       renewBefore = "360h0m0s"
-      secretName  = join("-", [local.certificate_name, "clusterissuer"]) # This is the name with which the K8 Secret will be available
+      secretName  = join("-", [var.certificate_name, "clusterissuer"]) # This is the name with which the K8 Secret will be available
       usages = [
         "server auth",
         "client auth"
@@ -226,10 +202,10 @@ resource "kubernetes_manifest" "example_pca_certificate" {
         size : 2048
       }
     }
-  }
+  })
 
   depends_on = [
     module.eks_blueprints_kubernetes_addons,
-    kubernetes_manifest.cluster_pca_issuer,
+    kubectl_manifest.cluster_pca_issuer,
   ]
 }
