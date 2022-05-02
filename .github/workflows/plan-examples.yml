@@ -10,6 +10,8 @@ jobs:
   getExampleDirectories:
     name: Get example directories
     runs-on: ubuntu-latest
+    # Skip running on forks since it won't have access to secrets
+    if: github.repository_owner == 'aws-ia'
     outputs:
       directories: ${{ steps.dirs.outputs.directories }}
     steps:
@@ -19,13 +21,15 @@ jobs:
       - name: Get Terraform directories for evaluation
         id: dirs
         run: |
-          DIRS=$(python3 .github/workflows/examples_tfplan.py)
+          DIRS=$(python3 .github/workflows/plan-examples.py)
           echo "::set-output name=directories::$DIRS"
 
   plan:
     name: Plan examples
     needs: getExampleDirectories
     runs-on: ubuntu-latest
+    # Skip running on forks since it won't have access to secrets
+    if: github.repository_owner == 'aws-ia'
 
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
