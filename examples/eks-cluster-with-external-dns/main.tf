@@ -193,6 +193,10 @@ module "eks-blueprints-kubernetes-addons" {
 
   enable_aws_load_balancer_controller = true
   enable_external_dns                 = true
+  enable_cert_manager                 = true
+  enable_metrics_server               = true
+  enable_prometheus                   = true
+  
 
   depends_on = [
     module.aws_vpc,
