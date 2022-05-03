@@ -111,11 +111,12 @@ module "eks_blueprints" {
   }
 }
 
-module "eks_blueprints_kubernetes_addons" { 
+module "eks_blueprints_kubernetes_addons" {
   source         = "../../../modules/kubernetes-addons"
-  enable_velero  = true
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
-  depends_on     = [module.eks_blueprints.managed_node_groups]
+
+  enable_velero = true
+  depends_on    = [module.eks_blueprints.managed_node_groups]
 }
 
 output "configure_kubectl" {
