@@ -2,13 +2,6 @@ configuration:
   provider: aws
   backupStorageLocation:
     bucket: ${s3-bucket-name}
-
-serviceAccount:
-  server:
-    create: false
-    name: ${velero-sa-name}
-    annotations:
-    labels:
 image:
   repository: velero/velero
   tag: v1.4.2

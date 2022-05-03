@@ -15,7 +15,6 @@ locals {
   }
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
-    velero-sa-name = local.service_account_name
     s3-bucket-name = local.s3bucketname
   })]
 
