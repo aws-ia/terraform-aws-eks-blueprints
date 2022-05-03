@@ -1,10 +1,5 @@
 # Amazon EKS Blueprints for Terraform
 
-[![e2e-test](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-test.yml)
-[![terrascan](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/terrascan.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/terrascan.yml)
-[![tfsec](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/tfsec-analysis.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/tfsec-analysis.yml)
-[![kics-security-scan](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/kics-security-scan.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/kics-security-scan.yml)
-
 Welcome to Amazon EKS Blueprints for Terraform!
 
 This repository contains a collection of Terraform modules that aim to make it easier and faster for customers to adopt [Amazon EKS](https://aws.amazon.com/eks/). It can be used by AWS customers, partners, and internal AWS teams to configure and manage complete EKS clusters that are fully bootstrapped with the operational software that is needed to deploy and operate workloads.

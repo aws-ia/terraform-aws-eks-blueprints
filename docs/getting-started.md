@@ -14,12 +14,12 @@ First, ensure that you have installed the following tools locally.
 
 The following steps will walk you through the deployment of an [example blueprint](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/eks-cluster-with-new-vpc/main.tf). This example will deploy a new VPC, a private EKS cluster with public and private subnets, and one managed node group that will be placed in the private subnets. The example will also deploy the following add-ons into the EKS cluster:
 
-✅ AWS Load Balancer Controller
-✅ Cluster Autoscaler
-✅ CoreDNS
-✅ kube-proxy
-✅ Metrics Server
-✅ vpc-cni
+- AWS Load Balancer Controller
+- Cluster Autoscaler
+- CoreDNS
+- kube-proxy
+- Metrics Server
+- vpc-cni
 
 ### Clone the repo
 
