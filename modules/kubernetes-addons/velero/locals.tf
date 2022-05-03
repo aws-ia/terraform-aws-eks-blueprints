@@ -27,7 +27,7 @@ locals {
   # even if its set to true in customer provided values.yaml
   set_values = [
     {
-      name  = "serviceAccount.name"
+      name  = "serviceAccount.server.name"
       value = local.service_account_name
     },
     {
