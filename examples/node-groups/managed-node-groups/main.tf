@@ -140,9 +140,9 @@ module "eks_blueprints" {
 
       # pre_userdata can be used in both cases where you provide custom_ami_id or ami_type
       pre_userdata = <<-EOT
-            yum install -y amazon-ssm-agent
-            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
-        EOT
+        yum install -y amazon-ssm-agent
+        systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
+      EOT
 
       # Taints can be applied through EKS API or through Bootstrap script using kubelet_extra_args
       # e.g., k8s_taints = [{key= "spot", value="true", "effect"="NO_SCHEDULE"}]
@@ -202,13 +202,13 @@ module "eks_blueprints" {
 
       # pre_userdata will be applied by using custom_ami_id or ami_type
       pre_userdata = <<-EOT
-            yum install -y amazon-ssm-agent
-            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
-        EOT
+        yum install -y amazon-ssm-agent
+        systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
+      EOT
 
       # post_userdata will be applied only by using custom_ami_id
       post_userdata = <<-EOT
-            echo "Bootstrap successfully completed! You can further apply config or install to run after bootstrap if needed"
+        echo "Bootstrap successfully completed! You can further apply config or install to run after bootstrap if needed"
       EOT
 
       # kubelet_extra_args used only when you pass custom_ami_id;

@@ -84,6 +84,7 @@ module "aws_vpc" {
     "kubernetes.io/role/internal-elb"             = "1"
   }
 }
+
 #---------------------------------------------------------------
 # Example to consume eks_blueprints module
 #---------------------------------------------------------------

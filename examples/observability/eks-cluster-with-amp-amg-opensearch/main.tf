@@ -42,18 +42,10 @@ locals {
   region      = "us-west-2"
 
   vpc_cidr     = "10.0.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   azs          = slice(data.aws_availability_zones.available.names, 0, 3)
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.1.4"
-
-  # Sample workload managed by ArgoCD. For generating metrics and logs
-  workload_application = {
-    path               = "envs/dev"
-    repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
-    add_on_application = false
-  }
 }
 
 #---------------------------------------------------------------
@@ -63,7 +55,7 @@ module "aws_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
 
-  name = local.vpc_name
+  name = join("-", [local.tenant, local.environment, local.zone, "vpc"])
   cidr = local.vpc_cidr
   azs  = local.azs
 
@@ -71,9 +63,8 @@ module "aws_vpc" {
   private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
   enable_nat_gateway   = true
-  create_igw           = true
-  enable_dns_hostnames = true
   single_nat_gateway   = true
+  enable_dns_hostnames = true
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
@@ -126,7 +117,11 @@ module "eks_blueprints_kubernetes_addons" {
   enable_cluster_autoscaler = true
   enable_argocd             = true
   argocd_applications = {
-    workloads = local.workload_application
+    workloads = {
+      path               = "envs/dev"
+      repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+      add_on_application = false
+    }
   }
 
   # Fluentbit
@@ -178,28 +173,34 @@ resource "aws_elasticsearch_domain" "opensearch" {
     instance_type          = "m4.large.elasticsearch"
     instance_count         = 3
     zone_awareness_enabled = true
+
     zone_awareness_config {
       availability_zone_count = 3
     }
   }
+
   node_to_node_encryption {
     enabled = true
   }
+
   domain_endpoint_options {
     enforce_https       = true
     tls_security_policy = "Policy-Min-TLS-1-2-2019-07"
   }
+
   encrypt_at_rest {
     enabled = true
   }
+
   ebs_options {
     ebs_enabled = true
-    volume_size = 10 # size in gb
+    volume_size = 10
   }
 
   advanced_security_options {
     enabled                        = true
     internal_user_database_enabled = true
+
     master_user_options {
       master_user_name     = var.opensearch_dashboard_user
       master_user_password = var.opensearch_dashboard_pw
@@ -242,6 +243,7 @@ resource "aws_security_group" "opensearch_access" {
     protocol    = "tcp"
     cidr_blocks = ["${var.local_computer_ip}/32"]
   }
+
   ingress {
     description = "host access to OpenSearch"
     from_port   = 443
@@ -249,6 +251,7 @@ resource "aws_security_group" "opensearch_access" {
     protocol    = "tcp"
     self        = true
   }
+
   ingress {
     description = "allow instances in the VPC (like EKS) to communicate with OpenSearch"
     from_port   = 443
@@ -257,6 +260,7 @@ resource "aws_security_group" "opensearch_access" {
 
     cidr_blocks = [local.vpc_cidr]
   }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -286,7 +290,7 @@ resource "local_file" "private_key_pem_file" {
 
 resource "aws_instance" "bastion_host" {
   ami                         = data.aws_ami.amazon_linux_2.id
-  instance_type               = "t2.micro"
+  instance_type               = "t3.micro"
   vpc_security_group_ids      = [aws_security_group.opensearch_access.id]
   subnet_id                   = module.aws_vpc.public_subnets[0]
   associate_public_ip_address = true
