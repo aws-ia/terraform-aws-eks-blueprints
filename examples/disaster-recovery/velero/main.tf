@@ -1,40 +1,13 @@
-terraform {
-  required_version = ">= 1.0.1"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 3.66.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.6.1"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.4.1"
-    }
-    kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.13.1"
-    }
-  }
-
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
-  }
-}
-
 data "aws_region" "current" {}
 
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks_blueprints.eks_cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks_blueprints.eks_cluster_id
 }
 
 provider "aws" {
@@ -68,9 +41,9 @@ provider "kubectl" {
 }
 
 locals {
-  tenant      = "aws001"  # AWS account name or unique id for tenant
-  environment = "preprod" # Environment area eg., preprod or prod
-  zone        = "dev"     # Environment with in one sub_tenant or business unit
+  tenant      = var.tenant      # AWS account name or unique id for tenant
+  environment = var.environment # Environment area eg., preprod or prod
+  zone        = var.zone        # Environment with in one sub_tenant or business unit
   azs         = slice(data.aws_availability_zones.available.names, 0, 3)
 
   cluster_version = "1.21"
@@ -110,9 +83,9 @@ module "aws_vpc" {
   }
 }
 #---------------------------------------------------------------
-# Example to consume aws-eks-accelerator-for-terraform module
+# Example to consume eks_blueprints module
 #---------------------------------------------------------------
-module "aws-eks-accelerator-for-terraform" {
+module "eks_blueprints" {
   source = "../../.."
 
   tenant            = local.tenant
@@ -127,9 +100,9 @@ module "aws-eks-accelerator-for-terraform" {
   # EKS CONTROL PLANE VARIABLES
   cluster_version = local.cluster_version
 
-  # Self-managed Node Group
-  self_managed_node_groups = {
-    self_mg_4 = {
+  # Managed Node Group
+  managed_node_groups = {
+    mg_4 = {
       node_group_name    = local.node_group_name
       launch_template_os = "amazonlinux2eks"
       max_size           = 1
@@ -138,14 +111,14 @@ module "aws-eks-accelerator-for-terraform" {
   }
 }
 
-module "kubernetes-addons" {
+module "eks_blueprints_kubernetes_addons" { 
   source         = "../../../modules/kubernetes-addons"
   enable_velero  = true
-  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-  depends_on     = [module.aws-eks-accelerator-for-terraform.self_managed_node_groups]
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
+  depends_on     = [module.eks_blueprints.managed_node_groups]
 }
 
 output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.aws-eks-accelerator-for-terraform.configure_kubectl
+  value       = module.eks_blueprints.configure_kubectl
 }

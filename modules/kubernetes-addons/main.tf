@@ -238,7 +238,7 @@ module "kubernetes_dashboard" {
 module "velero" {
   count                = var.enable_velero ? 1 : 0
   source               = "./velero"
-  helm_config          = var.kubernetes_velero_helm_config
+  helm_config          = var.velero_helm_config
   manage_via_gitops    = var.argocd_manage_add_ons
   addon_context        = local.addon_context
   irsa_policies        = var.velero_irsa_policies

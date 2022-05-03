@@ -554,7 +554,7 @@ variable "enable_velero" {
   description = "Enable Kubernetes Dashboard add-on"
 }
 
-variable "kubernetes_velero_helm_config" {
+variable "velero_helm_config" {
   type        = any
   default     = null
   description = "Kubernetes Velero Helm Chart config"
