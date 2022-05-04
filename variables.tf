@@ -335,6 +335,12 @@ variable "aws_auth_additional_labels" {
   type        = map(string)
 }
 
+variable "eks_readiness_timeout" {
+  description = "The maximum time (in seconds) to wait for EKS API server endpoint to become healthy"
+  type        = number
+  default     = "600"
+}
+
 #-------------------------------
 # Amazon Managed Prometheus
 #-------------------------------
