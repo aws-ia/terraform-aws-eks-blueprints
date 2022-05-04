@@ -65,6 +65,14 @@ locals {
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.0.1"
+
+  ca_expander          = "priority"
+  ca_priority_expander = <<-EOT
+    100:
+      - .*-spot-.*
+    10:
+      - .*
+  EOT
 }
 
 module "aws_vpc" {
@@ -113,26 +121,26 @@ module "eks_blueprints" {
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
-    ondemand_2vcpu = {
-      node_group_name = "mng-ondemand-2vcpu"
+    ondemand_2vcpu_8mem = {
+      node_group_name = "mng-ondemand-2vcpu-8mem"
       instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"]
       min_size        = "2"
       subnet_ids      = module.aws_vpc.private_subnets
     }
 
-    spot_2vcpu = {
-      node_group_name = "mng-spot-2vcpu"
+    spot_2vcpu_8mem = {
+      node_group_name = "mng-spot-2vcpu-8mem"
       capacity_type   = "SPOT"
       instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"]
-      min_size        = "2"
+      min_size        = "0"
       subnet_ids      = module.aws_vpc.private_subnets
     }
 
-    spot_4vcpu = {
-      node_group_name = "mng-spot-4vcpu"
+    spot_4vcpu_16mem = {
+      node_group_name = "mng-spot-4vcpu-16mem"
       capacity_type   = "SPOT"
       instance_types  = ["m5.xlarge", "m4.xlarge", "m6a.xlarge", "m5a.xlarge", "m5d.xlarge"]
-      min_size        = "2"
+      min_size        = "0"
       subnet_ids      = module.aws_vpc.private_subnets
     }
   }
@@ -150,7 +158,20 @@ module "eks_blueprints_kubernetes_addons" {
   #K8s Add-ons
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
-  enable_cluster_autoscaler           = true
+
+  enable_cluster_autoscaler = true
+  cluster_autoscaler_helm_config = {
+    set = [
+      {
+        name  = "extraArgs.expander"
+        value = local.ca_expander
+      },
+      {
+        name  = "expanderPriorities"
+        value = local.ca_priority_expander
+      }
+    ]
+  }
 
   depends_on = [module.eks_blueprints.managed_node_groups]
 }

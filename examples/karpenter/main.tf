@@ -161,7 +161,7 @@ module "eks-blueprints" {
   # Self-managed Node Group
   # Karpenter requires one node to get up and running
   self_managed_node_groups = {
-    self_mg_4 = {
+    self_mg = {
       node_group_name    = local.node_group_name
       launch_template_os = "amazonlinux2eks"
       max_size           = 1

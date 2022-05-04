@@ -53,7 +53,7 @@ resource "aws_eks_node_group" "managed_ng" {
     }
   }
 
-  labels = local.managed_node_group["k8s_labels"]
+  labels = local.k8s_labels
 
   tags = local.common_tags
 
