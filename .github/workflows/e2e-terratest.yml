@@ -1,6 +1,9 @@
 name: e2e-terratest
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:

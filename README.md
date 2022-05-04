@@ -1,9 +1,8 @@
 # Amazon EKS Blueprints for Terraform
 
-[![e2e-test](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-test.yml)
-[![terrascan](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/terrascan.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/terrascan.yml)
-[![tfsec](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/tfsec-analysis.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/tfsec-analysis.yml)
-[![kics-security-scan](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/kics-security-scan.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/kics-security-scan.yml)
+[![e2e-terratest](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-terratest.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-terratest.yml)
+[![plan-examples](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/plan-examples.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/plan-examples.yml)
+[![pre-commit](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/pre-commit.yaml)
 
 Welcome to Amazon EKS Blueprints for Terraform!
 
