@@ -10,6 +10,18 @@ variable "manage_via_gitops" {
   description = "Determines if the add-on should be managed via GitOps."
 }
 
+variable "irsa_policies" {
+  type        = list(string)
+  default     = []
+  description = "Additional IAM policies used for the add-on service account."
+}
+
+variable "domain_names" {
+  type        = list(string)
+  default     = []
+  description = "Domain names of the Route53 hosted zone to use with Cert Manager."
+}
+
 variable "addon_context" {
   type = object({
     aws_caller_identity_account_id = string
@@ -21,6 +33,7 @@ variable "addon_context" {
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
     tags                           = map(string)
+    irsa_iam_role_path             = string
   })
   description = "Input configuration for the addon"
 }

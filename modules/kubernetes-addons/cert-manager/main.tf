@@ -16,3 +16,10 @@ resource "helm_release" "cert_manager_ca" {
 
   depends_on = [module.helm_addon]
 }
+
+resource "aws_iam_policy" "cert_manager" {
+  description = "cert-manager IAM policy."
+  name        = "${var.addon_context.eks_cluster_id}-${local.helm_config["name"]}-irsa"
+  path        = var.addon_context.irsa_iam_role_path
+  policy      = data.aws_iam_policy_document.cert_manager_iam_policy_document.json
+}

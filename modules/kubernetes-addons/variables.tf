@@ -9,6 +9,12 @@ variable "eks_cluster_domain" {
   type        = string
 }
 
+variable "eks_cluster_domains" {
+  description = "The domains for the EKS cluster."
+  default     = []
+  type        = list(string)
+}
+
 variable "eks_worker_security_group_id" {
   description = "EKS Worker Security group Id created by EKS module"
   default     = ""
@@ -494,6 +500,12 @@ variable "cert_manager_helm_config" {
   type        = any
   description = "Cert Manager Helm Chart config"
   default     = {}
+}
+
+variable "cert_manager_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
 }
 
 #-----------Argo Rollouts ADDON-------------

@@ -109,7 +109,9 @@ module "cert_manager" {
   source            = "./cert-manager"
   helm_config       = var.cert_manager_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
+  irsa_policies     = var.cert_manager_irsa_policies
   addon_context     = local.addon_context
+  domain_names      = var.eks_cluster_domains
 }
 
 module "cluster_autoscaler" {
