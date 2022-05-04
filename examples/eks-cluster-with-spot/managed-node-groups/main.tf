@@ -134,6 +134,7 @@ module "eks_blueprints" {
       instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"]
       min_size        = "0"
       subnet_ids      = module.aws_vpc.private_subnets
+      k8s_taints      = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
     }
 
     spot_4vcpu_16mem = {
@@ -142,6 +143,7 @@ module "eks_blueprints" {
       instance_types  = ["m5.xlarge", "m4.xlarge", "m6a.xlarge", "m5a.xlarge", "m5d.xlarge"]
       min_size        = "0"
       subnet_ids      = module.aws_vpc.private_subnets
+      k8s_taints      = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
     }
   }
 }

@@ -137,6 +137,7 @@ module "eks_blueprints" {
       min_size           = "0"
       subnet_ids         = module.aws_vpc.private_subnets
       launch_template_os = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
+      k8s_taints         = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
     }
 
     spot_4vcpu_16mem = {
@@ -147,6 +148,7 @@ module "eks_blueprints" {
       min_size           = "0"
       subnet_ids         = module.aws_vpc.private_subnets
       launch_template_os = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
+      k8s_taints         = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
     }
   }
 }
