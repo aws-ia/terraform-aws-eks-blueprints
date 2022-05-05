@@ -22,6 +22,18 @@ variable "domain_names" {
   description = "Domain names of the Route53 hosted zone to use with Cert Manager."
 }
 
+variable "install_letsencrypt_issuers" {
+  type        = bool
+  default     = true
+  description = "Install Let's Encrypt Cluster Issuers."
+}
+
+variable "letsencrypt_email" {
+  type        = string
+  default     = ""
+  description = "Email address for expiration emails from Let's Encrypt."
+}
+
 variable "addon_context" {
   type = object({
     aws_caller_identity_account_id = string

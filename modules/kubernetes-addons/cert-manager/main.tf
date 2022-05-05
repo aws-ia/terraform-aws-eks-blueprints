@@ -17,6 +17,22 @@ resource "helm_release" "cert_manager_ca" {
   depends_on = [module.helm_addon]
 }
 
+resource "helm_release" "cert_manager_letsencrypt" {
+  count     = var.manage_via_gitops || !var.install_letsencrypt_issuers ? 0 : 1
+  name      = "cert-manager-letsencrypt"
+  chart     = "${path.module}/cert-manager-letsencrypt"
+  version   = "0.1.0"
+  namespace = local.helm_config["namespace"]
+
+  set {
+    name  = "email"
+    value = var.letsencrypt_email
+    type  = "string"
+  }
+
+  depends_on = [module.helm_addon]
+}
+
 resource "aws_iam_policy" "cert_manager" {
   description = "cert-manager IAM policy."
   name        = "${var.addon_context.eks_cluster_id}-${local.helm_config["name"]}-irsa"

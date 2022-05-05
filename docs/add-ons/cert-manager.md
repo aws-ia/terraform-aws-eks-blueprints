@@ -18,11 +18,26 @@ cert-manger can optionally leverage the `eks_cluster_domains` global property of
 eks_cluster_domains = [<cluster_domain>, <another_cluster_domain>]
 ```
 
+With this add-on self-signed CA and Let's Encrypt cluster issuers will be installed.
+
+You can disable Let's Encrypt cluster issuers with:
+
+```
+cert_manager_install_letsencrypt_issuers = false
+```
+
+You can set an email address for expiration emails with:
+
+```
+cert_manager_letsencrypt_email = "user@example.com"
+```
+
 ### GitOps Configuration
 
 The following properties are made available for use when managing the add-on via GitOps.
 
 ```
+
 certManager = {
   enable = true
 }

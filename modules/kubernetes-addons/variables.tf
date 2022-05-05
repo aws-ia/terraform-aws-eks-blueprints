@@ -508,6 +508,19 @@ variable "cert_manager_irsa_policies" {
   default     = []
 }
 
+variable "cert_manager_install_letsencrypt_issuers" {
+  type        = bool
+  default     = true
+  description = "Install Let's Encrypt Cluster Issuers."
+}
+
+variable "cert_manager_letsencrypt_email" {
+  type        = string
+  default     = ""
+  description = "Email address for expiration emails from Let's Encrypt."
+}
+
+
 #-----------Argo Rollouts ADDON-------------
 variable "enable_argo_rollouts" {
   type        = bool
