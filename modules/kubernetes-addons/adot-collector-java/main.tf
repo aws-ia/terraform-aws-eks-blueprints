@@ -7,7 +7,7 @@ module "helm_addon" {
   irsa_config       = null
   addon_context     = var.addon_context
 
-  depends_on = [kubernetes_namespace_v1.adot_collector_java]
+  depends_on = [kubernetes_namespace_v1.collector]
 }
 
 resource "kubernetes_namespace_v1" "collector" {

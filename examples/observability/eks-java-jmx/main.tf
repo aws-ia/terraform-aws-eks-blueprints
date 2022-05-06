@@ -35,11 +35,11 @@ data "aws_eks_cluster_auth" "cluster" {
 }
 
 locals {
-  tenant      = "aws001"        # AWS account name or unique id for tenant
-  environment = "preprod"       # Environment area eg., preprod or prod
-  zone        = "observability" # Environment within one sub_tenant or business unit
+  tenant      = var.tenant      # AWS account name or unique id for tenant
+  environment = var.environment # Environment area eg., preprod or prod
+  zone        = var.zone        # Environment within one sub_tenant or business unit
 
-  region          = "us-west-2"
+  region          = "us-east-1"
   cluster_version = "1.21"
 
   vpc_cidr     = "10.0.0.0/16"
@@ -116,11 +116,10 @@ module "eks_blueprints_kubernetes_addons" {
 
   # OTEL JMX use cases
   enable_cert_manager                  = true
-  enable_aws_observability_pattern_jmx = true
+  enable_opentelemetry_operator        = true
+  enable_adot_collector_java           = true
   amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
-
-  # Override this if you want to send metrics data to a workspace in a different region
-  amazon_prometheus_workspace_region = local.region
+  amazon_prometheus_workspace_region   = local.region
 }
 
 # Configure JMX default Grafana dashboards

@@ -1,6 +1,6 @@
 locals {
   default_helm_config = {
-    name        = "adot-collector"
+    name        = "adot-collector-java"
     repository  = null
     chart       = "${path.module}/otel-config"
     version     = "0.1.0"
