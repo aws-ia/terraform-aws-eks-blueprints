@@ -1,30 +1,3 @@
-terraform {
-  required_version = ">= 1.0.1"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 3.73.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.7.1"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.4.1"
-    }
-    grafana = {
-      source  = "grafana/grafana"
-      version = ">= 1.13.3"
-    }
-  }
-
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
-  }
-}
-
 provider "aws" {
   region = local.region
 }
@@ -74,13 +47,6 @@ locals {
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.1.7"
-
-  # Sample workload managed by ArgoCD. For generating metrics and logs
-  workload_application = {
-    path               = "envs/dev"
-    repo_url           = "https://github.com/aws-samples/ssp-eks-workloads.git"
-    add_on_application = false
-  }
 }
 
 #---------------------------------------------------------------
@@ -116,7 +82,7 @@ module "aws_vpc" {
 #---------------------------------------------------------------
 # Provision EKS and Helm Charts
 #---------------------------------------------------------------
-module "aws-eks-accelerator-for-terraform" {
+module "eks_blueprints" {
   source = "../../.."
 
   tenant            = local.tenant
@@ -144,15 +110,14 @@ module "aws-eks-accelerator-for-terraform" {
   enable_amazon_prometheus = true
 }
 
-module "kubernetes-addons" {
+module "eks_blueprints_kubernetes_addons" {
   source         = "../../../modules/kubernetes-addons"
-  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   # OTEL JMX use cases
   enable_aws_observability_pattern_jmx = true
-  amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
 
   # Override this if you want to send metrics data to a workspace in a different region
   amazon_prometheus_workspace_region = local.region
-
 }
