@@ -16,8 +16,8 @@ repos:
       - id: terraform_docs
         args:
           - '--args=--lockfile=false'
-      #- id: terraform_validate
-      #  exclude: deploy
+      - id: terraform_validate
+        exclude: deploy
       - id: terraform_tflint
         args:
           - '--args=--only=terraform_deprecated_interpolation'
