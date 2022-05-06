@@ -1,7 +1,6 @@
 locals {
   default_addon_config = {
     addon_name               = "vpc-cni"
-    addon_version            = "v1.10.2-eksbuild.1"
     service_account          = "aws-node"
     resolve_conflicts        = "OVERWRITE"
     namespace                = "kube-system"

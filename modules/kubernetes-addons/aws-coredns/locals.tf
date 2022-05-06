@@ -2,7 +2,6 @@
 locals {
   default_addon_config = {
     addon_name               = "coredns"
-    addon_version            = "v1.8.4-eksbuild.1"
     service_account          = "coredns"
     resolve_conflicts        = "OVERWRITE"
     namespace                = "kube-system"

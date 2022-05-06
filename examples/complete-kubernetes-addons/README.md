@@ -82,7 +82,7 @@ terraform destroy --auto-approve
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.9 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
 
@@ -90,7 +90,7 @@ terraform destroy --auto-approve
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.9 |
 
 ## Modules
 
@@ -105,6 +105,7 @@ terraform destroy --auto-approve
 | Name | Type |
 |------|------|
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
+| [aws_eks_addon_version.latest](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_addon_version) | data source |
 
 ## Inputs
 
