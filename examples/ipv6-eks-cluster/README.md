@@ -57,7 +57,7 @@ Enter `yes` to apply
 #### Step 5: Verify EC2 instances running with IPv6 support
 
 ```shell script
-aws ec2 describe-instances --filters "Name=tag:eks:cluster-name,Values=aws-preprod-cplane-eks" --query "Reservations[].Instances[? State.Name == 'running' ][].NetworkInterfaces[].Ipv6Addresses" --output table
+aws ec2 describe-instances --filters "Name=tag:eks:cluster-name,Values=ipv6-preprod-dev-eks" --query "Reservations[].Instances[? State.Name == 'running' ][].NetworkInterfaces[].Ipv6Addresses" --output table
 ```
 
 ### Configure `kubectl` and test cluster
