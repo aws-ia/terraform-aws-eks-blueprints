@@ -23,8 +23,9 @@ EKS managed add-ons can be enabled via the following.
     service_account          = "aws-node"
     resolve_conflicts        = "OVERWRITE"
     namespace                = "kube-system"
-    additional_iam_policies  = []
     service_account_role_arn = ""
+    preserve                 = true # This option makes the add-on a self-managed add-on, rather than an Amazon EKS add-on. There is no downtime for the add-on.
+    additional_iam_policies  = []
     tags                     = {}
   }
 
@@ -37,6 +38,7 @@ EKS managed add-ons can be enabled via the following.
     resolve_conflicts        = "OVERWRITE"
     namespace                = "kube-system"
     service_account_role_arn = ""
+    preserve                 = true # This option makes the add-on a self-managed add-on, rather than an Amazon EKS add-on. There is no downtime for the add-on.
     additional_iam_policies  = []
     tags                     = {}
   }
@@ -49,8 +51,9 @@ EKS managed add-ons can be enabled via the following.
     service_account          = "kube-proxy"
     resolve_conflicts        = "OVERWRITE"
     namespace                = "kube-system"
-    additional_iam_policies  = []
     service_account_role_arn = ""
+    preserve                 = true # This option makes the add-on a self-managed add-on, rather than an Amazon EKS add-on. There is no downtime for the add-on.
+    additional_iam_policies  = []
     tags                     = {}
   }
 
