@@ -115,6 +115,7 @@ module "eks_blueprints_kubernetes_addons" {
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   # OTEL JMX use cases
+  enable_cert_manager                  = true
   enable_aws_observability_pattern_jmx = true
   amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
 
