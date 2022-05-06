@@ -37,7 +37,7 @@ output "configure_kubectl" {
 }
 
 output "eks_cluster_status" {
-  description = "Amazon EKS Cluster Name"
+  description = "Amazon EKS Cluster Status"
   value       = module.aws_eks.cluster_status
 }
 
