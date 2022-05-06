@@ -1,9 +1,8 @@
 # Amazon EKS Blueprints for Terraform
 
-[![e2e-test](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-test.yml)
-[![terrascan](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/terrascan.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/terrascan.yml)
-[![tfsec](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/tfsec-analysis.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/tfsec-analysis.yml)
-[![kics-security-scan](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/kics-security-scan.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/kics-security-scan.yml)
+[![e2e-terratest](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-terratest.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-terratest.yml)
+[![plan-examples](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/plan-examples.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/plan-examples.yml)
+[![pre-commit](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/pre-commit.yaml)
 
 Welcome to Amazon EKS Blueprints for Terraform!
 
@@ -69,13 +68,13 @@ module "eks_blueprints_kubernetes_addons" {
 
 The code above will provision the following:
 
-✅  A new EKS Cluster with a managed node group.  
-✅  Amazon EKS add-ons `vpc-cni`, `CoreDNS`, `kube-proxy`, and `aws-ebs-csi-driver`.  
-✅  `Cluster Autoscaler` and `Metrics Server` for scaling your workloads.  
-✅  `Fluent Bit` for routing logs.  
-✅  `AWS Load Balancer Controller` for distributing traffic.  
-✅  `Argocd` for declarative GitOps CD for Kubernetes.  
-✅  `Prometheus` for observability.
+✅ A new EKS Cluster with a managed node group.
+✅ Amazon EKS add-ons `vpc-cni`, `CoreDNS`, `kube-proxy`, and `aws-ebs-csi-driver`.
+✅ `Cluster Autoscaler` and `Metrics Server` for scaling your workloads.
+✅ `Fluent Bit` for routing logs.
+✅ `AWS Load Balancer Controller` for distributing traffic.
+✅ `Argocd` for declarative GitOps CD for Kubernetes.
+✅ `Prometheus` for observability.
 
 ## Add-ons
 
@@ -105,27 +104,28 @@ For architectural details, step-by-step instructions, and customization options,
 If you are interested in contributing to EKS Blueprints, see the [Contribution guide](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/CONTRIBUTING.md).
 
 ---
-<!--- BEGIN_TF_DOCS --->
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.66.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
 | <a name="requirement_http"></a> [http](#requirement\_http) | 2.4.1 |
-| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | >= 1.7.0 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.7.1 |
-| <a name="requirement_local"></a> [local](#requirement\_local) | 2.1.0 |
-| <a name="requirement_null"></a> [null](#requirement\_null) | 3.1.0 |
+| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | >= 1.14 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
+| <a name="requirement_local"></a> [local](#requirement\_local) | >= 2.1 |
+| <a name="requirement_null"></a> [null](#requirement\_null) | >= 3.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.66.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
 | <a name="provider_http"></a> [http](#provider\_http) | 2.4.1 |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.7.1 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
 
 ## Modules
 
@@ -185,6 +185,7 @@ If you are interested in contributing to EKS Blueprints, see the [Contribution g
 | <a name="input_create_eks"></a> [create\_eks](#input\_create\_eks) | Create EKS cluster | `bool` | `true` | no |
 | <a name="input_create_node_security_group"></a> [create\_node\_security\_group](#input\_create\_node\_security\_group) | Determines whether to create a security group for the node groups or use the existing `node_security_group_id` | `bool` | `true` | no |
 | <a name="input_custom_oidc_thumbprints"></a> [custom\_oidc\_thumbprints](#input\_custom\_oidc\_thumbprints) | Additional list of server certificate thumbprints for the OpenID Connect (OIDC) identity provider's server certificate(s) | `list(string)` | `[]` | no |
+| <a name="input_eks_readiness_timeout"></a> [eks\_readiness\_timeout](#input\_eks\_readiness\_timeout) | The maximum time (in seconds) to wait for EKS API server endpoint to become healthy | `number` | `"600"` | no |
 | <a name="input_emr_on_eks_teams"></a> [emr\_on\_eks\_teams](#input\_emr\_on\_eks\_teams) | EMR on EKS Teams config | `any` | `{}` | no |
 | <a name="input_enable_amazon_prometheus"></a> [enable\_amazon\_prometheus](#input\_enable\_amazon\_prometheus) | Enable AWS Managed Prometheus service | `bool` | `false` | no |
 | <a name="input_enable_emr_on_eks"></a> [enable\_emr\_on\_eks](#input\_enable\_emr\_on\_eks) | Enable EMR on EKS | `bool` | `false` | no |
@@ -222,6 +223,8 @@ If you are interested in contributing to EKS Blueprints, see the [Contribution g
 | <a name="output_cluster_security_group_arn"></a> [cluster\_security\_group\_arn](#output\_cluster\_security\_group\_arn) | Amazon Resource Name (ARN) of the cluster security group |
 | <a name="output_cluster_security_group_id"></a> [cluster\_security\_group\_id](#output\_cluster\_security\_group\_id) | EKS Control Plane Security Group ID |
 | <a name="output_configure_kubectl"></a> [configure\_kubectl](#output\_configure\_kubectl) | Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
+| <a name="output_eks_cluster_certificate_authority_data"></a> [eks\_cluster\_certificate\_authority\_data](#output\_eks\_cluster\_certificate\_authority\_data) | Base64 encoded certificate data required to communicate with the cluster |
+| <a name="output_eks_cluster_endpoint"></a> [eks\_cluster\_endpoint](#output\_eks\_cluster\_endpoint) | Endpoint for your Kubernetes API server |
 | <a name="output_eks_cluster_id"></a> [eks\_cluster\_id](#output\_eks\_cluster\_id) | Amazon EKS Cluster Name |
 | <a name="output_eks_cluster_status"></a> [eks\_cluster\_status](#output\_eks\_cluster\_status) | Amazon EKS Cluster Name |
 | <a name="output_eks_oidc_issuer_url"></a> [eks\_oidc\_issuer\_url](#output\_eks\_oidc\_issuer\_url) | The URL on the EKS cluster OIDC Issuer |
@@ -250,8 +253,7 @@ If you are interested in contributing to EKS Blueprints, see the [Contribution g
 | <a name="output_windows_node_group_aws_auth_config_map"></a> [windows\_node\_group\_aws\_auth\_config\_map](#output\_windows\_node\_group\_aws\_auth\_config\_map) | Windows node groups AWS auth map |
 | <a name="output_worker_node_security_group_arn"></a> [worker\_node\_security\_group\_arn](#output\_worker\_node\_security\_group\_arn) | Amazon Resource Name (ARN) of the worker node shared security group |
 | <a name="output_worker_node_security_group_id"></a> [worker\_node\_security\_group\_id](#output\_worker\_node\_security\_group\_id) | ID of the worker node shared security group |
-
-<!--- END_TF_DOCS --->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Security
 
@@ -259,4 +261,4 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 
 ## License
 
-This library is licensed under the MIT-0 License. See the LICENSE file.
+Apache-2.0 Licensed. See [LICENSE](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/LICENSE).

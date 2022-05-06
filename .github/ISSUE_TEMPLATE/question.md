@@ -7,11 +7,11 @@ assignees: ''
 
 ---
 
-#### Please describe your quesiton here
+#### Please describe your question here
 <!-- Provide as much information as possible to explain your question -->
 
 
-#### Provide link to the example related to the quesiton
+#### Provide link to the example related to the question
 <!-- Please provide the link to the example related to this question from this repo -->
 
 

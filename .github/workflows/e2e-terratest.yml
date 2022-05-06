@@ -1,6 +1,9 @@
 name: e2e-terratest
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -32,7 +35,7 @@ jobs:
       - name: Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 1.0.11
+          terraform_version: 1.0.0
           terraform_wrapper: false
 
       - name: Setup Dependencies

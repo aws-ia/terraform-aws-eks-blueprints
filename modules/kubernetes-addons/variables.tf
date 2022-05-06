@@ -21,12 +21,6 @@ variable "auto_scaling_group_names" {
   type        = list(string)
 }
 
-variable "node_groups_iam_role_arn" {
-  type        = list(string)
-  default     = []
-  description = "Node Groups IAM role ARNs"
-}
-
 variable "tags" {
   type        = map(string)
   default     = {}
@@ -628,12 +622,6 @@ variable "kubernetes_dashboard_helm_config" {
   description = "Kubernetes Dashboard Helm Chart config"
 }
 
-variable "kubernetes_dashboard_irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM policy ARNs for Kubernetes Dashboard IRSA"
-}
-
 #-----------HashiCorp Vault-------------
 variable "enable_vault" {
   type        = bool
@@ -671,12 +659,6 @@ variable "yunikorn_helm_config" {
   type        = any
   default     = null
   description = "YuniKorn Helm Chart config"
-}
-
-variable "yunikorn_irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM policy ARNs for Yunikorn IRSA"
 }
 
 #-----------AWS PCA ISSUER-------------
