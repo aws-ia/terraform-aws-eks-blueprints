@@ -1,11 +1,4 @@
-# Deploys ADOT Operator
-module "operator" {
-  source            = "../aws-opentelemetry-operator"
-  addon_context     = var.addon_context
-  manage_via_gitops = var.manage_via_gitops
-}
-
-# Deploys JMX collector CDR
+# Deploys Java collector
 module "helm_addon" {
   source            = "../helm-addon"
   manage_via_gitops = var.manage_via_gitops
@@ -14,7 +7,16 @@ module "helm_addon" {
   irsa_config       = null
   addon_context     = var.addon_context
 
-  depends_on = [module.operator]
+  depends_on = [kubernetes_namespace_v1.adot_collector_java]
+}
+
+resource "kubernetes_namespace_v1" "collector" {
+  metadata {
+    name = local.helm_config["namespace"]
+    labels = {
+      "app.kubernetes.io/managed-by" = "terraform-aws-eks-blueprints"
+    }
+  }
 }
 
 module "irsa_amp_ingest" {
@@ -25,7 +27,7 @@ module "irsa_amp_ingest" {
   irsa_iam_policies           = [aws_iam_policy.ingest.arn]
   addon_context               = var.addon_context
 
-  depends_on = [module.operator]
+  depends_on = [kubernetes_namespace_v1.collector]
 }
 
 module "irsa_amp_query" {
@@ -36,21 +38,7 @@ module "irsa_amp_query" {
   irsa_iam_policies           = [aws_iam_policy.query.arn]
   addon_context               = var.addon_context
 
-  depends_on = [module.operator]
-}
-
-data "aws_iam_policy_document" "ingest" {
-  statement {
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "aps:RemoteWrite",
-      "aps:GetSeries",
-      "aps:GetLabels",
-      "aps:GetMetricMetadata",
-    ]
-  }
+  depends_on = [kubernetes_namespace_v1.collector]
 }
 
 resource "aws_iam_policy" "ingest" {
@@ -61,20 +49,6 @@ resource "aws_iam_policy" "ingest" {
   tags        = var.addon_context.tags
 }
 
-data "aws_iam_policy_document" "query" {
-  statement {
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "aps:QueryMetrics",
-      "aps:GetSeries",
-      "aps:GetLabels",
-      "aps:GetMetricMetadata",
-    ]
-  }
-}
-
 resource "aws_iam_policy" "query" {
   name        = format("%s-%s", "amp-query", var.addon_context.eks_cluster_id)
   description = "Set up the permission policy that grants query permissions for AMP workspace"
@@ -82,31 +56,3 @@ resource "aws_iam_policy" "query" {
   policy      = data.aws_iam_policy_document.query.json
   tags        = var.addon_context.tags
 }
-
-
-# Configure JMX default Grafana dashboards
-resource "grafana_data_source" "prometheus" {
-  type       = "prometheus"
-  name       = "amp"
-  is_default = true
-  url        = var.amazon_prometheus_workspace_endpoint
-  json_data {
-    http_method     = "POST"
-    sigv4_auth      = true
-    sigv4_auth_type = "workspace-iam-role"
-    sigv4_region    = var.amazon_prometheus_workspace_region
-  }
-}
-
-resource "grafana_folder" "jmx_dashboards" {
-  title = "Observability"
-
-  depends_on = [module.helm_addon]
-}
-
-resource "grafana_dashboard" "jmx_dashboards" {
-  folder      = grafana_folder.jmx_dashboards.id
-  config_json = file("${path.module}/dashboards/default.json")
-}
-
-# TODO- AMP alert rules

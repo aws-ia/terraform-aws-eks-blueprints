@@ -122,3 +122,31 @@ module "eks_blueprints_kubernetes_addons" {
   # Override this if you want to send metrics data to a workspace in a different region
   amazon_prometheus_workspace_region = local.region
 }
+
+# Configure JMX default Grafana dashboards
+resource "grafana_data_source" "prometheus" {
+  type       = "prometheus"
+  name       = "amp"
+  is_default = true
+  url        = var.amazon_prometheus_workspace_endpoint
+  json_data {
+    http_method     = "POST"
+    sigv4_auth      = true
+    sigv4_auth_type = "workspace-iam-role"
+    sigv4_region    = var.amazon_prometheus_workspace_region
+  }
+}
+
+resource "grafana_folder" "jmx_dashboards" {
+  title = "Observability"
+
+  depends_on = [module.helm_addon]
+}
+
+resource "grafana_dashboard" "jmx_dashboards" {
+  folder      = grafana_folder.jmx_dashboards.id
+  config_json = file("${path.module}/dashboards/default.json")
+}
+
+# TODO- AMP alert rules
+

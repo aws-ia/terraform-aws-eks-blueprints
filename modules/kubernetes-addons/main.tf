@@ -291,9 +291,17 @@ module "aws_privateca_issuer" {
   irsa_policies           = var.aws_privateca_issuer_irsa_policies
 }
 
-module "aws_observability_pattern_jmx" {
-  count                                = var.enable_aws_observability_pattern_jmx ? 1 : 0
-  source                               = "./aws-observability-pattern-jmx"
+module "opentelemetry_operator" {
+  count         = var.enable_opentelemetry_operator ? 1 : 0
+  source        = "./opentelemetry-operator"
+  helm_config   = var.opentelemetry_operator_helm_config
+  addon_context = local.addon_context
+}
+
+module "adot_collector_java" {
+  count                                = var.enable_adot_collector_java ? 1 : 0
+  source                               = "./adot-collector-java"
+  helm_config                          = var.adot_collector_java_helm_config
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
   amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
   addon_context                        = local.addon_context
