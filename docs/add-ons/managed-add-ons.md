@@ -71,7 +71,7 @@ Checkout this [doc](https://docs.aws.amazon.com/eks/latest/userguide/managing-vp
     addon_version            = "v1.4.0-eksbuild.preview"
     service_account          = "ebs-csi-controller-sa"
     resolve_conflicts        = "OVERWRITE"
-    namespace                = "kube-system"       
+    namespace                = "kube-system"
     additional_iam_policies  = []
     service_account_role_arn = ""
     tags                     = {}
