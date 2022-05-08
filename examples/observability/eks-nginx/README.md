@@ -1,8 +1,8 @@
-# Observability pattern for Java/JMX applications with Amazon EKS and Observability services
+# Observability pattern for Nginx applications with Amazon EKS and Observability services
 
 This example demonstrates how to use the Amazon EKS Blueprints for Terraform a
 new Amazon EKS Cluster with AWS Distro for OpenTelemetry (ADOT) configured to
-specifically monitor Java/JMX applications Prometheus metrics.
+specifically monitor Nginx applications Prometheus metrics.
 The ADOT collector deployed as a Kubernetes Operator, sends metrics to a
 provided Amazon Managed Prometheus workspace, to be visualize with
 Amazon Managed Grafana.
@@ -15,7 +15,7 @@ Amazon Managed Prometheus configured as a default data source on Managed Grafana
 **NOTE**
 
 For the sake of simplicity in this example, we store sensitive information and
-credentials in `dev.tfvars`. This should not be done in a production environment.
+credentials in `variables.tf`. This should not be done in a production environment.
 Instead, use an external secret store such as AWS Secrets Manager and use the
 [aws_secretsmanager_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret) data source to retrieve them.
 
@@ -154,7 +154,7 @@ docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/prometheus-sample-
 - 5. Install sample application
 
 ```
-export SAMPLE_TRAFFIC_NAMESPACE=javajmx-sample
+export SAMPLE_TRAFFIC_NAMESPACE=nginx-sample
 curl https://raw.githubusercontent.com/aws-observability/aws-otel-test-framework/terraform/sample-apps/jmx/examples/prometheus-metrics-sample.yaml > metrics-sample.yaml
 sed -i .bak "s/{{aws_account_id}}/$AWS_ACCOUNT_ID/g" metrics-sample.yaml
 sed -i .bak "s/{{region}}/$AWS_REGION/g" metrics-sample.yaml
