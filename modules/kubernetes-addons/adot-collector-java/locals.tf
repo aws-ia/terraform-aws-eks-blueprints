@@ -1,10 +1,13 @@
 locals {
+  name                           = "adot-collector"
+  adot_collector_service_account = "adot-collector"
+
   default_helm_config = {
-    name        = "adot-collector-java"
+    name        = local.name
     repository  = null
     chart       = "${path.module}/otel-config"
-    version     = "0.1.0"
-    namespace   = "opentelemetry-operator-system"
+    version     = "0.2.0"
+    namespace   = local.name
     timeout     = "1200"
     description = "ADOT helm Chart deployment configuration"
     lint        = false
@@ -15,9 +18,6 @@ locals {
     local.default_helm_config,
     var.helm_config
   )
-
-  amazon_prometheus_ingest_service_account = "amp-ingest"
-  amazon_prometheus_ingest_iam_role_arn    = (var.amazon_prometheus_workspace_endpoint != null) ? module.irsa_amp_ingest.irsa_iam_role_arn : ""
 
   otel_config_values = [
     {
@@ -49,4 +49,12 @@ locals {
       value = 1000
     }
   ]
+
+  adot_collector_irsa_config = {
+    kubernetes_namespace              = local.name
+    create_kubernetes_namespace       = false
+    kubernetes_service_account        = local.adot_collector_service_account
+    create_kubernetes_service_account = true
+    irsa_iam_policies                 = ["arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess"]
+  }
 }

@@ -2,11 +2,10 @@ apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
   name: adot
-  namespace: opentelemetry-operator-system
 spec:
   image: public.ecr.aws/aws-observability/aws-otel-collector:latest
   mode: deployment
-  serviceAccount: amp-ingest
+  serviceAccount: adot-collector
   config: |
     receivers:
       prometheus:

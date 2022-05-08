@@ -27,11 +27,11 @@ provider "grafana" {
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks_blueprints.eks_cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  name = module.eks_blueprints.eks_cluster_id
 }
 
 locals {
@@ -127,25 +127,20 @@ resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
   name       = "amp"
   is_default = true
-  url        = var.amazon_prometheus_workspace_endpoint
+  url        = module.eks_blueprints.amazon_prometheus_workspace_endpoint
   json_data {
     http_method     = "POST"
     sigv4_auth      = true
     sigv4_auth_type = "workspace-iam-role"
-    sigv4_region    = var.amazon_prometheus_workspace_region
+    sigv4_region    = local.region
   }
 }
 
 resource "grafana_folder" "jmx_dashboards" {
   title = "Observability"
-
-  depends_on = [module.helm_addon]
 }
 
 resource "grafana_dashboard" "jmx_dashboards" {
   folder      = grafana_folder.jmx_dashboards.id
   config_json = file("${path.module}/dashboards/default.json")
 }
-
-# TODO- AMP alert rules
-

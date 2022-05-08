@@ -700,8 +700,14 @@ variable "opentelemetry_operator_helm_config" {
 }
 
 #-----------AWS Observability patterns-------------
-variable "enable_aws_observability_pattern_jmx" {
+variable "enable_adot_collector_java" {
   type        = bool
   default     = false
-  description = "Enable metrics for JMX workloads, automatic Managed Grafana Dashboards and AMP alerts"
+  description = "Enable metrics for JMX workloads"
+}
+
+variable "adot_collector_java_helm_config" {
+  type        = any
+  default     = {}
+  description = "ADOT Collector Java Helm Chart config"
 }
