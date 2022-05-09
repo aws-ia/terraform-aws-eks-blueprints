@@ -1,6 +1,6 @@
 locals {
-  name                           = "adot-collector"
-  adot_collector_service_account = "adot-collector"
+  name                           = "adot-collector-java"
+  adot_collector_service_account = "adot-collector-java"
 
   default_helm_config = {
     name        = local.name
