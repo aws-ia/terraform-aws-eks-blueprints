@@ -243,6 +243,12 @@ variable "amazon_prometheus_workspace_endpoint" {
   description = "AWS Managed Prometheus WorkSpace Endpoint"
 }
 
+variable "amazon_prometheus_workspace_region" {
+  type        = string
+  default     = null
+  description = "AWS Managed Prometheus WorkSpace Region"
+}
+
 #-----------PROMETHEUS-------------
 variable "enable_prometheus" {
   description = "Enable Community Prometheus add-on"
@@ -678,4 +684,30 @@ variable "aws_privateca_issuer_irsa_policies" {
   type        = list(string)
   default     = []
   description = "IAM policy ARNs for AWS ACM PCA IRSA"
+}
+
+#-----------OPENTELEMETRY OPERATOR-------------
+variable "enable_opentelemetry_operator" {
+  type        = bool
+  default     = false
+  description = "Enable opentelemetry operator add-on"
+}
+
+variable "opentelemetry_operator_helm_config" {
+  type        = any
+  default     = {}
+  description = "Opentelemetry Operator Helm Chart config"
+}
+
+#-----------AWS Observability patterns-------------
+variable "enable_adot_collector_java" {
+  type        = bool
+  default     = false
+  description = "Enable metrics for JMX workloads"
+}
+
+variable "adot_collector_java_helm_config" {
+  type        = any
+  default     = {}
+  description = "ADOT Collector Java Helm Chart config"
 }
