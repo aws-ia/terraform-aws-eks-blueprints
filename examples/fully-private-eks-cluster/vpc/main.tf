@@ -47,18 +47,18 @@ module "aws_vpc" {
   cidr = local.vpc_cidr
   azs  = data.aws_availability_zones.available.names
 
-  public_subnets  = [for k, v in slice(data.aws_availability_zones.available.names, 0, 3) : cidrsubnet(local.vpc_cidr, 8, k)]
+  #public_subnets  = [for k, v in slice(data.aws_availability_zones.available.names, 0, 3) : cidrsubnet(local.vpc_cidr, 8, k)]
   private_subnets = [for k, v in slice(data.aws_availability_zones.available.names, 0, 3) : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
-  enable_nat_gateway   = true
-  create_igw           = true
+  # enable_nat_gateway   = true
+  # create_igw           = true
   enable_dns_hostnames = true
-  single_nat_gateway   = true
+  # single_nat_gateway   = true
 
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
-    "kubernetes.io/role/elb"                        = "1"
-  }
+  # public_subnet_tags = {
+  #   "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
+  #   "kubernetes.io/role/elb"                        = "1"
+  # }
 
   private_subnet_tags = {
     "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
