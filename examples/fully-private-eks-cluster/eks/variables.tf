@@ -19,7 +19,7 @@
 variable "cluster_version" {
   description = "Kubernetes `<major>.<minor>` version to use for the EKS cluster (i.e.: `1.21`)"
   type        = string
-  default     = "1.21"
+  default     = "1.22"
 }
 
 variable "region" {
