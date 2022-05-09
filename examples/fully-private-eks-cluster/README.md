@@ -28,14 +28,22 @@ Here is the high level design of the solution. The solution has been split into 
 
 ### Environment Set up.
 
-3. You can SSH into the EC2 instance to run Terraform commands OR access the Jenkins server running on this EC2 instance to run a jenkins pipeline that can run the below Terraform stack(s). Please note that setting up Jenkins on the EC2 instance is out of scope from this example.
+1. You can SSH into the EC2 instance to run Terraform commands OR access the Jenkins server running on this EC2 instance to run a jenkins pipeline that can run the below Terraform stack(s). Please note that setting up Jenkins on the EC2 instance is out of scope from this example.
 
-4. Deploy the individual stacks from each of the sub folders. i.e.
+2. Deploy the individual stacks from each of the sub folders. i.e.
 
-    4.1 VPC - Please refer to the [instructions](./vpc/README.md) to deploy a new VPC. 
+    2.1 VPC - Please refer to the [instructions](./vpc/README.md) to deploy a new VPC. 
 
-    4.2 EKS - Please refer to the [instructions](./eks/README.md) to deploy a private EKS cluster.
+    2.2 EKS - Please refer to the [instructions](./eks/README.md) to deploy a private EKS cluster.
 
-    4.3 Add-ons - Please refer to the [instructions](./add-ons/README.md) to deploy the add-ons to the private EKS cluster using GitOps.
+    2.3 Add-ons - Please refer to the [instructions](./add-ons/README.md) to deploy the add-ons to the private EKS cluster using GitOps.
+
+### Terraform Cloud Instructions
+
+1. If you are using Terraform Cloud to deploy the stack, please ensure you have the following Terraform environment variables set up to run the stack.
+    1.1 AWS_ACCESS_KEY_ID
+    1.2 AWS_REGION
+    1.3 AWS_SECRET_ACCESS_KEY
+    1.4 AWS_SESSION_TOKEN
 
 <!--- END_TF_DOCS --->
