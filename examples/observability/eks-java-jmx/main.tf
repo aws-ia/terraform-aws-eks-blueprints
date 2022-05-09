@@ -129,7 +129,7 @@ resource "grafana_data_source" "prometheus" {
   is_default = true
   url        = module.eks_blueprints.amazon_prometheus_workspace_endpoint
   json_data {
-    http_method     = "POST"
+    http_method     = "GET"
     sigv4_auth      = true
     sigv4_auth_type = "workspace-iam-role"
     sigv4_region    = local.region
