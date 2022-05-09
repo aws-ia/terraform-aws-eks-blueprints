@@ -29,11 +29,11 @@ data "aws_eks_cluster_auth" "cluster" {
 #---------------------------------------------------------------
 # Terraform VPC remote state import from S3
 #---------------------------------------------------------------
-data "terraform_remote_state" "vpc_s3_backend" {
-  backend = "s3"
-  config = {
-    bucket = var.tf_state_vpc_s3_bucket
-    key    = var.tf_state_vpc_s3_key
-    region = var.region
-  }
-}
+# data "terraform_remote_state" "vpc_s3_backend" {
+#   backend = "s3"
+#   config = {
+#     bucket = var.tf_state_vpc_s3_bucket
+#     key    = var.tf_state_vpc_s3_key
+#     region = var.region
+#   }
+# }

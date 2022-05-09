@@ -28,15 +28,15 @@ variable "region" {
   default     = "us-west-2"
 }
 
-variable "tf_state_vpc_s3_bucket" {
-  type        = string
-  description = "Terraform state S3 Bucket Name"
-}
+# variable "tf_state_vpc_s3_bucket" {
+#   type        = string
+#   description = "Terraform state S3 Bucket Name"
+# }
 
-variable "tf_state_vpc_s3_key" {
-  type        = string
-  description = "Terraform state S3 Key path"
-}
+# variable "tf_state_vpc_s3_key" {
+#   type        = string
+#   description = "Terraform state S3 Key path"
+# }
 
 variable "tenant" {
   type        = string
@@ -78,5 +78,16 @@ variable "create_eks" {
   type        = bool
   default     = true
   description = "Create EKS cluster"
+}
+
+variable "vpc_id" {
+  type        = string
+  description = "VPC ID where the EKS cluster will be deployed to"
+}
+
+variable "private_subnet_ids" {
+  description = "List of the private subnet IDs"
+  type        = list(string)
+  default     = []
 }
 

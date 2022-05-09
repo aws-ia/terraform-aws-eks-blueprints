@@ -41,7 +41,7 @@ terraform {
   cloud {
     organization = "skdemo"
     workspaces {
-      name = "private-eks-cluster"
+      name = "private-eks-cluster-eks"
     }
   }
 
@@ -77,7 +77,7 @@ locals {
 
   vpc_id             = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
   private_subnet_ids = data.terraform_remote_state.vpc_s3_backend.outputs.private_subnets
-  public_subnet_ids  = data.terraform_remote_state.vpc_s3_backend.outputs.public_subnets
+  # public_subnet_ids  = data.terraform_remote_state.vpc_s3_backend.outputs.public_subnets
 
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 }
