@@ -55,8 +55,15 @@ locals {
   # ARGOCD WORKLOAD APPLICATION
   #---------------------------------------------------------------
   workload_application = {
-    path               = "envs/dev"
-    repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+    path     = "envs/dev"
+    repo_url = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+    values = {
+      spec = {
+        ingress = {
+          host = var.eks_cluster_domain
+        }
+      }
+    }
     add_on_application = false
   }
 }
@@ -64,7 +71,8 @@ locals {
 module "kubernetes-addons" {
   source = "../../../modules/kubernetes-addons"
 
-  eks_cluster_id = var.eks_cluster_id
+  eks_cluster_id     = var.eks_cluster_id
+  eks_cluster_domain = var.eks_cluster_domain
 
   #---------------------------------------------------------------
   # ARGO CD ADD-ON
@@ -81,12 +89,49 @@ module "kubernetes-addons" {
   # ADD-ONS
   #---------------------------------------------------------------
 
-  enable_aws_load_balancer_controller = true
+  enable_aws_load_balancer_controller = false
   enable_cert_manager                 = true
   enable_cluster_autoscaler           = true
-  enable_karpenter                    = true
-  enable_keda                         = true
+  enable_karpenter                    = false
+  enable_keda                         = false
   enable_metrics_server               = true
   enable_vpa                          = true
+  enable_external_dns                 = true
+
+  enable_amazon_eks_aws_ebs_csi_driver = true
+  amazon_eks_aws_ebs_csi_driver_config = {
+    addon_name               = "aws-ebs-csi-driver"
+    addon_version            = "v1.4.0-eksbuild.preview"
+    service_account          = "ebs-csi-controller-sa"
+    resolve_conflicts        = "OVERWRITE"
+    namespace                = "kube-system"
+    additional_iam_policies  = []
+    service_account_role_arn = ""
+    tags                     = {}
+  }
+
+  # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
+  enable_amazon_prometheus             = true
+  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+
+  enable_prometheus = true
+  prometheus_helm_config = {
+    name       = "prometheus"
+    repository = "https://prometheus-community.github.io/helm-charts"
+    chart      = "prometheus"
+    version    = "15.3.0"
+    namespace  = "prometheus"
+    values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
+      operating_system = "linux"
+    })]
+  }
+
+  enable_ingress_nginx = true
+  ingress_nginx_helm_config = {
+    values = [templatefile("${path.module}/nginx-values.yaml", {
+      hostname     = var.eks_cluster_domain
+      ssl_cert_arn = data.aws_acm_certificate.issued.arn
+    })]
+  }
 }
 
