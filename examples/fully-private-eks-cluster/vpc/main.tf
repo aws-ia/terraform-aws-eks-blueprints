@@ -21,7 +21,15 @@ provider "aws" {
 }
 
 terraform {
-  backend "s3" {}
+  # backend "s3" {}
+
+
+  cloud {
+    organization = "skdemo"
+    workspaces {
+      name = "private-eks-cluster-vpc"
+    }
+  }
 }
 
 data "aws_availability_zones" "available" {}
@@ -48,7 +56,7 @@ module "aws_vpc" {
   azs  = data.aws_availability_zones.available.names
 
   #public_subnets  = [for k, v in slice(data.aws_availability_zones.available.names, 0, 3) : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in slice(data.aws_availability_zones.available.names, 0, 3) : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+  private_subnets = [for k, v in slice(data.aws_availability_zones.available.names, 0, 4) : cidrsubnet(local.vpc_cidr, 2, k )]
 
   # enable_nat_gateway   = true
   # create_igw           = true
