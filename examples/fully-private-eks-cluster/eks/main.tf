@@ -71,12 +71,14 @@ locals {
   tenant      = var.tenant
   environment = var.environment
   zone        = var.zone
+  vpc_id      = var.vpc_id
+  private_subnet_ids = var.private_subnet_ids
 
   kubernetes_version = var.cluster_version
   terraform_version  = "Terraform v1.0.1"
 
-  vpc_id             = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
-  private_subnet_ids = data.terraform_remote_state.vpc_s3_backend.outputs.private_subnets
+  # vpc_id             = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
+  # private_subnet_ids = data.terraform_remote_state.vpc_s3_backend.outputs.private_subnets
   # public_subnet_ids  = data.terraform_remote_state.vpc_s3_backend.outputs.public_subnets
 
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
