@@ -27,10 +27,6 @@ locals {
     {
       name  = "serviceAccount.create"
       value = false
-    },
-    {
-      name  = "installCRDs"
-      value = true
     }
   ]
 
