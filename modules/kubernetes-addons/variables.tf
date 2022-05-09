@@ -21,12 +21,6 @@ variable "auto_scaling_group_names" {
   type        = list(string)
 }
 
-variable "node_groups_iam_role_arn" {
-  type        = list(string)
-  default     = []
-  description = "Node Groups IAM role ARNs"
-}
-
 variable "tags" {
   type        = map(string)
   default     = {}
@@ -622,12 +616,6 @@ variable "kubernetes_dashboard_helm_config" {
   description = "Kubernetes Dashboard Helm Chart config"
 }
 
-variable "kubernetes_dashboard_irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM policy ARNs for Kubernetes Dashboard IRSA"
-}
-
 #-----------HashiCorp Vault-------------
 variable "enable_vault" {
   type        = bool
@@ -667,8 +655,27 @@ variable "yunikorn_helm_config" {
   description = "YuniKorn Helm Chart config"
 }
 
-variable "yunikorn_irsa_policies" {
+#-----------AWS PCA ISSUER-------------
+variable "enable_aws_privateca_issuer" {
+  type        = bool
+  default     = false
+  description = "Enable PCA Issuer"
+}
+
+variable "aws_privateca_issuer_helm_config" {
+  type        = any
+  description = "PCA Issuer Helm Chart config"
+  default     = {}
+}
+
+variable "aws_privateca_acmca_arn" {
+  type        = string
+  default     = ""
+  description = "ARN of AWS ACM PCA"
+}
+
+variable "aws_privateca_issuer_irsa_policies" {
   type        = list(string)
   default     = []
-  description = "IAM policy ARNs for Yunikorn IRSA"
+  description = "IAM policy ARNs for AWS ACM PCA IRSA"
 }

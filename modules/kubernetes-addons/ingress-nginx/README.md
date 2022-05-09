@@ -2,21 +2,22 @@
 
 ## Introduction
 
- Nginx Ingress Controller is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease.
- For more details [Ingress-Nginx can be found here](https://kubernetes.github.io/ingress-nginx/)
+Nginx Ingress Controller is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease.
+For more details [Ingress-Nginx can be found here](https://kubernetes.github.io/ingress-nginx/)
 
-### AWS Service annotations for Nginx Ingress Controller
-
-<!--- BEGIN_TF_DOCS --->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
 
 ## Modules
 
@@ -43,5 +44,4 @@ No requirements.
 | Name | Description |
 |------|-------------|
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
-
-<!--- END_TF_DOCS --->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

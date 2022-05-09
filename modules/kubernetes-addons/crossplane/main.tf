@@ -3,7 +3,7 @@ resource "kubernetes_namespace_v1" "crossplane" {
     name = local.namespace
 
     labels = {
-      "app.kubernetes.io/managed-by" = "terraform-eks-blueprints"
+      "app.kubernetes.io/managed-by" = "terraform-aws-eks-blueprints"
     }
   }
 }

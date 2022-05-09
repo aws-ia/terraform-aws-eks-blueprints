@@ -1,18 +1,12 @@
-variable "cluster_version" {
-  type        = string
-  description = "Kubernetes Version"
-  default     = "1.21"
-}
-
 variable "tenant" {
   type        = string
   description = "Account Name or unique account unique id e.g., apps or management or aws007"
-  default     = "aws001"
+  default     = "aws"
 }
 
 variable "environment" {
   type        = string
-  default     = "preprod"
+  default     = "managed"
   description = "Environment area, e.g. prod or preprod "
 }
 

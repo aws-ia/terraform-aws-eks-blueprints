@@ -9,7 +9,7 @@ set -ex
 # User-supplied pre userdata code
 ${pre_userdata}
 
-# Deal with extra new disks
+# Format and Mount NVMe Disks if available
 IDX=1
 DEVICES=$(lsblk -o NAME,TYPE -dsn | awk '/disk/ {print $1}')
 for DEV in $DEVICES
@@ -22,6 +22,16 @@ do
   IDX=$(($${IDX} + 1))
 done
 mount -a
+
+if [ ${service_ipv4_cidr} ];then
+echo "Setting custom IPV4 CIDR"
+export SERVICE_IPV4_CIDR=${service_ipv4_cidr}
+fi
+
+if [ ${service_ipv6_cidr} ];then
+echo "Setting custom IPV6 CIDR"
+export SERVICE_IPV6_CIDR=${service_ipv6_cidr}
+fi
 
 # Bootstrap and join the cluster
 /etc/eks/bootstrap.sh --b64-cluster-ca '${cluster_ca_base64}' --apiserver-endpoint '${cluster_endpoint}' ${bootstrap_extra_args} --kubelet-extra-args "${kubelet_extra_args}" '${eks_cluster_id}'

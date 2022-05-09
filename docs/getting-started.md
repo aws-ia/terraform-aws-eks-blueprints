@@ -14,12 +14,12 @@ First, ensure that you have installed the following tools locally.
 
 The following steps will walk you through the deployment of an [example blueprint](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/eks-cluster-with-new-vpc/main.tf). This example will deploy a new VPC, a private EKS cluster with public and private subnets, and one managed node group that will be placed in the private subnets. The example will also deploy the following add-ons into the EKS cluster:
 
-✅  AWS Load Balancer Controller  
-✅  Cluster Autoscaler  
-✅  CoreDNS  
-✅  kube-proxy  
-✅  Metrics Server  
-✅  vpc-cni  
+- AWS Load Balancer Controller
+- Cluster Autoscaler
+- CoreDNS
+- kube-proxy
+- Metrics Server
+- vpc-cni
 
 ### Clone the repo
 
@@ -51,9 +51,9 @@ terraform plan
 
 ### Terraform APPLY
 
-We will leverage Terraform's [target](https://learn.hashicorp.com/tutorials/terraform/resource-targeting?in=terraform/cli) functionality to deploy a VPC, an EKS Cluster, and Kubernetes add-ons in separate steps. 
+We will leverage Terraform's [target](https://learn.hashicorp.com/tutorials/terraform/resource-targeting?in=terraform/cli) functionality to deploy a VPC, an EKS Cluster, and Kubernetes add-ons in separate steps.
 
-**Deploy the VPC**. This step will take roughly 3 minutes to complete. 
+**Deploy the VPC**. This step will take roughly 3 minutes to complete.
 
 ```
 terraform apply -target="module.aws_vpc"
@@ -73,7 +73,7 @@ terraform apply -target="module.eks_blueprints_kubernetes_addons"
 
 ## Configure kubectl
 
-Terraform output will display a command in your console that you can use to bootstrap your local `kubeconfig`. 
+Terraform output will display a command in your console that you can use to bootstrap your local `kubeconfig`.
 
 ```
 configure_kubectl = "aws eks --region <region> update-kubeconfig --name <cluster-name>"
@@ -126,17 +126,17 @@ kube-proxy-zl7cj                                            1/1     Running   1 
 metrics-server-694d47d564-hzd8h                             1/1     Running   1          15m
 ```
 
-## Cleanup 
+## Cleanup
 
 To clean up your environment, destroy the Terraform modules in reverse order.
 
-Destroy the add-ons. 
+Destroy the add-ons.
 
 ```
 terraform destroy -target="module.eks_blueprints_kubernetes_addons"
 ```
 
-Destroy the EKS cluster. 
+Destroy the EKS cluster.
 
 ```
 terraform destroy -target="module.eks_blueprints"

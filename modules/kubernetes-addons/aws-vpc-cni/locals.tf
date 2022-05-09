@@ -7,6 +7,7 @@ locals {
     namespace                = "kube-system"
     additional_iam_policies  = []
     service_account_role_arn = ""
+    preserve                 = true
     tags                     = {}
   }
 

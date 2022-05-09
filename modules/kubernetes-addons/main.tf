@@ -277,7 +277,16 @@ module "yunikorn" {
   count             = var.enable_yunikorn ? 1 : 0
   source            = "./yunikorn"
   helm_config       = var.yunikorn_helm_config
-  irsa_policies     = var.yunikorn_irsa_policies
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+}
+
+module "aws_privateca_issuer" {
+  count                   = var.enable_aws_privateca_issuer ? 1 : 0
+  source                  = "./aws-privateca-issuer"
+  helm_config             = var.aws_privateca_issuer_helm_config
+  manage_via_gitops       = var.argocd_manage_add_ons
+  addon_context           = local.addon_context
+  aws_privateca_acmca_arn = var.aws_privateca_acmca_arn
+  irsa_policies           = var.aws_privateca_issuer_irsa_policies
 }

@@ -1,6 +1,7 @@
 # Fully Private EKS Cluster with VPC and VPC Endpoints deployment
 
 This example deploys a fully private EKS Cluster into a new VPC.
+<<<<<<< HEAD
  - Creates a new VPC and 3 Public and Private Subnets
  - VPC Endpoints for various services and S3 VPC Endpoint gateway
  - Creates EKS Cluster Control plane with a private endpoint and with one Managed node group
@@ -11,9 +12,13 @@ Here is the high level design of the solution. The solution has been split into 
 1. VPC
 2. EKS
 3. ADD-ONS
+=======
+
+>>>>>>> upstream/main
 
 ![High Level Design](../../images/EKS_private_cluster.jpg)
 
+<<<<<<< HEAD
 ## How to Deploy
 ### Prerequisites:
 1. This examples assumes that you have a default VPC in your AWS account.
@@ -21,25 +26,44 @@ Here is the high level design of the solution. The solution has been split into 
 3. The following tools are installed on the EC2 instance.
 
     3.1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+=======
+>>>>>>> upstream/ma
 
     3.2. [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
 
+<<<<<<< HEAD
     3.3. [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+=======
+
+>>>>>>> upstream/main
 
 ### Environment Set up.
 
+<<<<<<< HEAD
 1. You can SSH into the EC2 instance to run Terraform commands OR access the Jenkins server running on this EC2 instance to run a jenkins pipeline that can run the below Terraform stack(s). Please note that setting up Jenkins on the EC2 instance is out of scope from this example.
+=======
+
+>>>>>>> upstream/main
 
 2. Deploy the individual stacks from each of the sub folders. i.e.
 
+<<<<<<< HEAD
     2.1 VPC - Please refer to the [instructions](./vpc/README.md) to deploy a new VPC. 
+=======
+
+>>>>>>> upstream/main
 
     2.2 EKS - Please refer to the [instructions](./eks/README.md) to deploy a private EKS cluster.
 
+<<<<<<< HEAD
     2.3 Add-ons - Please refer to the [instructions](./add-ons/README.md) to deploy the add-ons to the private EKS cluster using GitOps.
+=======
+
+>>>>>>> upstream/main
 
 ### Terraform Cloud Instructions
 
+<<<<<<< HEAD
 1. If you are using Terraform Cloud to deploy the stack, please ensure you have the following Terraform environment variables set up to run the stack.
     1.1 AWS_ACCESS_KEY_ID
     1.2 AWS_REGION
@@ -47,3 +71,6 @@ Here is the high level design of the solution. The solution has been split into 
     1.4 AWS_SESSION_TOKEN
 
 <!--- END_TF_DOCS --->
+=======
+
+>>>>>>> upstream/main

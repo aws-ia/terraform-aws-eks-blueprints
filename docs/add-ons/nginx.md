@@ -20,7 +20,7 @@ NAME                                                              READY   STATUS
 eks-blueprints-addon-ingress-nginx-78b8567p4q6   1/1     Running   0          4d10h
 ```
 
-Note that the ingress controller is deployed in the `nginx` namespace.
+Note that the ingress controller is deployed in the `ingress-nginx` namespace.
 
 You can optionally customize the Helm chart that deploys `nginx` via the following configuration.
 
