@@ -38,12 +38,12 @@ terraform {
   # backend "s3" {}
 
   
-  # cloud {
-  #   organization = "skdemo"
-  #   workspaces {
-  #     name = "aws-eks-accelerator-for-terraform-1"
-  #   }
-  # }
+  cloud {
+    organization = "skdemo"
+    workspaces {
+      name = "private-eks-cluster"
+    }
+  }
 
 }
 provider "aws" {
