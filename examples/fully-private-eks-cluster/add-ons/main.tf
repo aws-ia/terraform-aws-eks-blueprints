@@ -16,7 +16,14 @@ terraform {
     }
   }
 
-  backend "s3" {}
+  # backend "s3" {}
+
+  cloud {
+    organization = "skdemo"
+    workspaces {
+      name = "private-eks-cluster-add-ons"
+    }
+  }
 
 }
 provider "aws" {
