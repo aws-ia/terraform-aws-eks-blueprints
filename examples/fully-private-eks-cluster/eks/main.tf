@@ -105,6 +105,7 @@ module "eks-blueprints" {
 
   cluster_endpoint_public_access  = false
   cluster_endpoint_private_access = true
+  enable_amazon_prometheus = true
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {

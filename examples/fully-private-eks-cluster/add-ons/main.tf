@@ -118,20 +118,20 @@ module "kubernetes-addons" {
   }
 
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
-  enable_amazon_prometheus             = true
-  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  enable_amazon_prometheus = true
+  # amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
 
-  enable_prometheus = true
-  prometheus_helm_config = {
-    name       = "prometheus"
-    repository = "https://prometheus-community.github.io/helm-charts"
-    chart      = "prometheus"
-    version    = "15.3.0"
-    namespace  = "prometheus"
-    values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
-      operating_system = "linux"
-    })]
-  }
+  # enable_prometheus = true
+  # prometheus_helm_config = {
+  #   name       = "prometheus"
+  #   repository = "https://prometheus-community.github.io/helm-charts"
+  #   chart      = "prometheus"
+  #   version    = "15.3.0"
+  #   namespace  = "prometheus"
+  #   values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
+  #     operating_system = "linux"
+  #   })]
+  # }
 
   enable_ingress_nginx = true
   ingress_nginx_helm_config = {
