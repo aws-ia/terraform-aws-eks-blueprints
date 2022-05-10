@@ -103,7 +103,7 @@ module "kubernetes-addons" {
   enable_keda                         = false
   enable_metrics_server               = true
   enable_vpa                          = true
-  enable_external_dns                 = true
+  enable_external_dns                 = false
 
   #enable_amazon_eks_aws_ebs_csi_driver = true
   # amazon_eks_aws_ebs_csi_driver_config = {
