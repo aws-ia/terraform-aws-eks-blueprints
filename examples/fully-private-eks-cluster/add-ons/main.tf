@@ -92,6 +92,10 @@ module "kubernetes-addons" {
     workloads = local.workload_application
   }
 
+  #---------------------------------------------------------------
+  # INGRESS NGINX ADD-ON
+  #---------------------------------------------------------------
+
   enable_ingress_nginx = true
   ingress_nginx_helm_config = {
     values = [templatefile("${path.module}/nginx-values.yaml", {
@@ -101,7 +105,7 @@ module "kubernetes-addons" {
   }
 
   #---------------------------------------------------------------
-  # ADD-ONS
+  # OTHER ADD-ONS
   #---------------------------------------------------------------
 
   enable_cert_manager   = true
@@ -115,35 +119,35 @@ module "kubernetes-addons" {
   enable_keda                         = false
   enable_aws_load_balancer_controller = false
 
-  #enable_amazon_eks_aws_ebs_csi_driver = true
-  # amazon_eks_aws_ebs_csi_driver_config = {
-  #   addon_name               = "aws-ebs-csi-driver"
-  #   addon_version            = "v1.4.0-eksbuild.preview"
-  #   service_account          = "ebs-csi-controller-sa"
-  #   resolve_conflicts        = "OVERWRITE"
-  #   namespace                = "kube-system"
-  #   additional_iam_policies  = []
-  #   service_account_role_arn = ""
-  #   tags                     = {}
-  # }
+  enable_amazon_eks_aws_ebs_csi_driver = true
+  amazon_eks_aws_ebs_csi_driver_config = {
+    addon_name               = "aws-ebs-csi-driver"
+    addon_version            = "v1.4.0-eksbuild.preview"
+    service_account          = "ebs-csi-controller-sa"
+    resolve_conflicts        = "OVERWRITE"
+    namespace                = "kube-system"
+    additional_iam_policies  = []
+    service_account_role_arn = ""
+    tags                     = {}
+  }
 
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
 
-  #enable_amazon_prometheus = true
+  enable_amazon_prometheus = true
 
-  # amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
 
-  # enable_prometheus = true
-  # prometheus_helm_config = {
-  #   name       = "prometheus"
-  #   repository = "https://prometheus-community.github.io/helm-charts"
-  #   chart      = "prometheus"
-  #   version    = "15.3.0"
-  #   namespace  = "prometheus"
-  #   values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
-  #     operating_system = "linux"
-  #   })]
-  # }
+  enable_prometheus = true
+  prometheus_helm_config = {
+    name       = "prometheus"
+    repository = "https://prometheus-community.github.io/helm-charts"
+    chart      = "prometheus"
+    version    = "15.3.0"
+    namespace  = "prometheus"
+    values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
+      operating_system = "linux"
+    })]
+  }
 
 
 }
