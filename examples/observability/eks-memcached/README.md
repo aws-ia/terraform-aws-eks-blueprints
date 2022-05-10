@@ -157,7 +157,7 @@ kubectl get pods -n memcached-sample
 
 Log back into your Managed Grafana Workspace and navigate to the dashboard side panel, click on `Observability` Folder and open the `Memcached for Kubernetes` Dashboard.
 
-<img width="1468" alt="java-dashboard" src="https://user-images.githubusercontent.com/10175027/159924937-51514e4e-3442-40a2-a921-950d69f372b4.png">
+<img width="1468" alt="Memcached-dashboard" src="https://github.com/awsdabra/amg-dashboard-examples/blob/d4275d2e0251963b8783dcc03fd475d6f8783cc7/memcached_grafana_dashboard.png">
 
 
 ## Cleanup
