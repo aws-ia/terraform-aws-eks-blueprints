@@ -113,6 +113,24 @@ module "eks-blueprints" {
       node_group_name = "managed-ondemand"
       instance_types  = ["m5.xlarge"]
       subnet_ids      = local.private_subnet_ids
+      #release_version = "1.21.5-20220309" 
     }
   }
+
+  # Bottle Rocket
+  #  managed_node_groups = {
+  #   mg_4 = {
+  #     node_group_name    = "managed-ondemand"
+  #     launch_template_os = "bottlerocket" # amazonlinux2eks or bottlerocket
+  #     instance_types     = ["m5.xlarge"]
+  #     subnet_ids         = local.private_subnet_ids
+  #     desired_size       = 3
+  #     min_size           = 3
+  #     max_size           = 5
+  #     max_unavailable    = 1
+  #     capacity_type      = "ON_DEMAND"
+  #     ami_type           = "BOTTLEROCKET_x86_64"
+  #     #release_version = "1.21.5-20220309"  
+  #   }
+  # }
 }
