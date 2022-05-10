@@ -17,3 +17,8 @@ variable "acm_certificate_domain" {
   type        = string
   description = "*.example.com"
 }
+
+variable "amazon_prometheus_workspace_endpoint" {
+  type        = string
+  description = "Amazon prometheus workspace endpoint"
+}

@@ -98,7 +98,7 @@ module "kubernetes-addons" {
 
   enable_ingress_nginx = true
   ingress_nginx_helm_config = {
-    values = [templatefile("${path.module}/nginx-values.yaml", {
+    values = [templatefile("${path.module}/helm_values/nginx-values.yaml", {
       hostname     = var.eks_cluster_domain
       ssl_cert_arn = data.aws_acm_certificate.issued.arn
     })]
@@ -135,7 +135,7 @@ module "kubernetes-addons" {
 
   enable_amazon_prometheus = true
 
-  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
 
   enable_prometheus = true
   prometheus_helm_config = {

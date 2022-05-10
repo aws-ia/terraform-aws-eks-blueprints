@@ -37,7 +37,7 @@ terraform {
 
   # backend "s3" {}
 
-  
+
   cloud {
     organization = "skdemo"
     workspaces {
@@ -68,10 +68,10 @@ provider "helm" {
   }
 }
 locals {
-  tenant      = var.tenant
-  environment = var.environment
-  zone        = var.zone
-  vpc_id      = var.vpc_id
+  tenant             = var.tenant
+  environment        = var.environment
+  zone               = var.zone
+  vpc_id             = var.vpc_id
   private_subnet_ids = var.private_subnet_ids
 
   kubernetes_version = var.cluster_version
@@ -105,7 +105,7 @@ module "eks-blueprints" {
 
   cluster_endpoint_public_access  = false
   cluster_endpoint_private_access = true
-  enable_amazon_prometheus = true
+  enable_amazon_prometheus        = true
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
