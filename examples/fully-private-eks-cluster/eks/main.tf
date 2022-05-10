@@ -41,7 +41,7 @@ terraform {
   cloud {
     organization = "skdemo"
     workspaces {
-      name = "private-eks-cluster-eks"
+      name = "private-eks-useast1"
     }
   }
 

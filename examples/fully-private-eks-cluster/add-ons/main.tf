@@ -21,7 +21,7 @@ terraform {
   cloud {
     organization = "skdemo"
     workspaces {
-      name = "private-eks-cluster-add-ons"
+      name = "private-addons-useast1"
     }
   }
 
@@ -64,13 +64,13 @@ locals {
   workload_application = {
     path     = "envs/dev"
     repo_url = "https://github.com/aws-samples/eks-blueprints-workloads.git"
-    # values = {
-    #   spec = {
-    #     ingress = {
-    #       host = var.eks_cluster_domain
-    #     }
-    #   }
-    # }
+    values = {
+      spec = {
+        ingress = {
+          host = var.eks_cluster_domain
+        }
+      }
+    }
     add_on_application = false
   }
 }
@@ -103,7 +103,7 @@ module "kubernetes-addons" {
   enable_keda                         = false
   enable_metrics_server               = true
   enable_vpa                          = true
-  enable_external_dns                 = false
+  enable_external_dns                 = true
 
   #enable_amazon_eks_aws_ebs_csi_driver = true
   # amazon_eks_aws_ebs_csi_driver_config = {
@@ -135,12 +135,12 @@ module "kubernetes-addons" {
   #   })]
   # }
 
-  # enable_ingress_nginx = true
-  # ingress_nginx_helm_config = {
-  #   values = [templatefile("${path.module}/nginx-values.yaml", {
-  #     hostname     = var.eks_cluster_domain
-  #     ssl_cert_arn = data.aws_acm_certificate.issued.arn
-  #   })]
-  # }
+  enable_ingress_nginx = true
+  ingress_nginx_helm_config = {
+    values = [templatefile("${path.module}/nginx-values.yaml", {
+      hostname     = var.eks_cluster_domain
+      ssl_cert_arn = data.aws_acm_certificate.issued.arn
+    })]
+  }
 }
 
