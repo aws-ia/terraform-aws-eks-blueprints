@@ -28,7 +28,7 @@ output "configure_kubectl" {
 
 output "amazon_prometheus_workspace_endpoint" {
   description = "Amazon prometheus workspace endpoint"
-  value       = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  value       = module.eks-blueprints.amazon_prometheus_workspace_endpoint
 }
 
 
