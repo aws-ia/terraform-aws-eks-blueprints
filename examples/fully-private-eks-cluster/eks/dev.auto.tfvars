@@ -22,3 +22,5 @@ cluster_security_group_additional_rules = {
     cidr_blocks = ["172.31.0.0/16"]
   }
 }
+
+tags = { "BusinessUnit" = "XYZ" } 

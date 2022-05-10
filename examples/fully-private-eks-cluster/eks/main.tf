@@ -133,4 +133,7 @@ module "eks-blueprints" {
   #     #release_version = "1.21.5-20220309"  
   #   }
   # }
+
+  //Custom Tags.
+  tags = var.tags
 }
