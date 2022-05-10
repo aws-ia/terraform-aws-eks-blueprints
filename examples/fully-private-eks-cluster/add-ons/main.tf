@@ -122,7 +122,7 @@ module "kubernetes-addons" {
   enable_amazon_eks_aws_ebs_csi_driver = true
   amazon_eks_aws_ebs_csi_driver_config = {
     addon_name               = "aws-ebs-csi-driver"
-    addon_version            = "v1.6.1"
+    addon_version            = "v1.6.0-eksbuild.1"
     service_account          = "ebs-csi-controller-sa"
     resolve_conflicts        = "OVERWRITE"
     namespace                = "kube-system"
