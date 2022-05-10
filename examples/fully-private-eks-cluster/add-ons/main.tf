@@ -118,7 +118,9 @@ module "kubernetes-addons" {
   # }
 
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
-  enable_amazon_prometheus = true
+  
+  #enable_amazon_prometheus = true
+  
   # amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
 
   # enable_prometheus = true
@@ -133,12 +135,12 @@ module "kubernetes-addons" {
   #   })]
   # }
 
-  enable_ingress_nginx = true
-  ingress_nginx_helm_config = {
-    values = [templatefile("${path.module}/nginx-values.yaml", {
-      hostname     = var.eks_cluster_domain
-      ssl_cert_arn = data.aws_acm_certificate.issued.arn
-    })]
-  }
+  # enable_ingress_nginx = true
+  # ingress_nginx_helm_config = {
+  #   values = [templatefile("${path.module}/nginx-values.yaml", {
+  #     hostname     = var.eks_cluster_domain
+  #     ssl_cert_arn = data.aws_acm_certificate.issued.arn
+  #   })]
+  # }
 }
 
