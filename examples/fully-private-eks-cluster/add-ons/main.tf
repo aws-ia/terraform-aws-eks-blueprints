@@ -105,7 +105,7 @@ module "kubernetes-addons" {
   enable_vpa                          = true
   enable_external_dns                 = true
 
-  enable_amazon_eks_aws_ebs_csi_driver = true
+  #enable_amazon_eks_aws_ebs_csi_driver = true
   # amazon_eks_aws_ebs_csi_driver_config = {
   #   addon_name               = "aws-ebs-csi-driver"
   #   addon_version            = "v1.4.0-eksbuild.preview"
