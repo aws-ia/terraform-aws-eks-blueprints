@@ -64,13 +64,13 @@ locals {
   workload_application = {
     path     = "envs/dev"
     repo_url = "https://github.com/aws-samples/eks-blueprints-workloads.git"
-    values = {
-      spec = {
-        ingress = {
-          host = var.eks_cluster_domain
-        }
-      }
-    }
+    # values = {
+    #   spec = {
+    #     ingress = {
+    #       host = var.eks_cluster_domain
+    #     }
+    #   }
+    # }
     add_on_application = false
   }
 }
@@ -98,7 +98,7 @@ module "kubernetes-addons" {
 
   enable_aws_load_balancer_controller = false
   enable_cert_manager                 = true
-  enable_cluster_autoscaler           = true
+  enable_cluster_autoscaler           = false
   enable_karpenter                    = false
   enable_keda                         = false
   enable_metrics_server               = true
