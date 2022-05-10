@@ -2,6 +2,7 @@
   "annotations": {
     "list": [
       {
+        "$$hashKey": "object:257",
         "builtIn": 1,
         "datasource": "-- Grafana --",
         "enable": true,
@@ -15,54 +16,56 @@
           "type": "dashboard"
         },
         "type": "dashboard"
-      },
-      {
-        "datasource": "amp",
-        "enable": true,
-        "expr": "sum(changes(nginx_ingress_controller_config_last_reload_successful_timestamp_seconds{instance!=\"unknown\",controller_class=~\"$controller_class\",namespace=~\"$namespace\"}[30s])) by (controller_class)",
-        "hide": false,
-        "iconColor": "rgba(255, 96, 96, 1)",
-        "limit": 100,
-        "name": "Config Reloads",
-        "showIn": 0,
-        "step": "30s",
-        "tagKeys": "controller_class",
-        "tags": [],
-        "titleFormat": "Config Reloaded",
-        "type": "tags"
       }
     ]
   },
-  "description": "Ingress-nginx supports a rich collection of prometheus metrics. If you have prometheus and grafana installed on your cluster then prometheus will already be scraping this data due to the scrape annotation on the deployment.",
+  "description": "HAProxy with Prometheus data",
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": 9614,
-  "graphTooltip": 0,
-  "id": 37,
-  "iteration": 1649712163506,
+  "gnetId": 12693,
+  "graphTooltip": 1,
+  "id": 38,
+  "iteration": 1652114764459,
   "links": [],
   "liveNow": false,
   "panels": [
     {
-      "cacheTimeout": null,
       "datasource": "amp",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "rgb(31, 120, 193)",
-            "mode": "fixed"
+            "mode": "palette-classic"
           },
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
+          "custom": {
+            "axisLabel": "- back / + front",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 50,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
-          ],
+          },
+          "links": [],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -76,68 +79,97 @@
               }
             ]
           },
-          "unit": "ops"
+          "unit": "short"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
-        "w": 7,
+        "h": 10,
+        "w": 12,
         "x": 0,
         "y": 0
       },
-      "id": 20,
-      "interval": null,
+      "id": 85,
       "links": [],
-      "maxDataPoints": 100,
       "options": {
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
+        "legend": {
           "calcs": [
-            "mean"
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
           ],
-          "fields": "",
-          "values": false
+          "displayMode": "table",
+          "placement": "bottom"
         },
-        "text": {},
-        "textMode": "auto"
+        "tooltip": {
+          "mode": "single"
+        }
       },
       "pluginVersion": "8.2.5",
       "targets": [
         {
-          "expr": "round(sum(irate(nginx_ingress_controller_requests{controller_pod=~\"$controller\",controller_class=~\"$controller_class\",namespace=~\"$namespace\"}[2m])), 0.001)",
-          "format": "time_series",
+          "exemplar": true,
+          "expr": "count(haproxy_frontend_status{instance=\"$host\"} == 1)",
+          "hide": false,
+          "interval": "$interval",
           "intervalFactor": 1,
+          "legendFormat": "Front Up",
           "refId": "A",
-          "step": 4
+          "step": 240
+        },
+        {
+          "expr": "count(haproxy_backend_status{instance=\"$host\"} ==1)",
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "Back Up",
+          "refId": "B",
+          "step": 240
         }
       ],
-      "title": "Controller Request Volume",
-      "type": "stat"
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "All Status Up/Down",
+      "type": "timeseries"
     },
     {
-      "cacheTimeout": null,
       "datasource": "amp",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "rgb(31, 120, 193)",
-            "mode": "fixed"
+            "mode": "palette-classic"
           },
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
+          "custom": {
+            "axisLabel": "- back / + front",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
-          ],
+          },
+          "links": [],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -151,127 +183,303 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "short"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 7,
+        "h": 10,
+        "w": 12,
+        "x": 12,
         "y": 0
       },
-      "id": 82,
-      "interval": null,
+      "id": 223,
       "links": [],
-      "maxDataPoints": 100,
       "options": {
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
+        "legend": {
           "calcs": [
-            "mean"
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
           ],
-          "fields": "",
-          "values": false
+          "displayMode": "table",
+          "placement": "bottom"
         },
-        "text": {},
-        "textMode": "auto"
+        "tooltip": {
+          "mode": "single"
+        }
       },
       "pluginVersion": "8.2.5",
       "targets": [
         {
-          "expr": "sum(avg_over_time(nginx_ingress_controller_nginx_process_connections{controller_pod=~\"$controller\",controller_class=~\"$controller_class\",controller_namespace=~\"$namespace\"}[2m]))",
-          "format": "time_series",
-          "instant": false,
+          "expr": "sum(haproxy_frontend_current_sessions{proxy=~\"$frontend\",instance=\"$host\"}) by (instance)",
+          "interval": "$interval",
           "intervalFactor": 1,
+          "legendFormat": "Front",
+          "metric": "",
+          "refId": "B",
+          "step": 240
+        },
+        {
+          "expr": "sum(haproxy_backend_current_sessions{proxy=~\"$frontend\",instance=\"$host\"}) by (instance)",
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "Back",
+          "metric": "",
           "refId": "A",
-          "step": 4
+          "step": 240
         }
       ],
-      "title": "Controller Connections",
-      "type": "stat"
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Current Active sessions",
+      "type": "timeseries"
     },
     {
-      "cacheTimeout": null,
       "datasource": "amp",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "rgb(31, 120, 193)",
-            "mode": "fixed"
+            "mode": "palette-classic"
           },
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
-          ],
+          },
+          "links": [],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(245, 54, 54, 0.9)",
+                "color": "green",
                 "value": null
               },
               {
-                "color": "rgba(237, 129, 40, 0.89)",
-                "value": 95
-              },
-              {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": 99
+                "color": "red",
+                "value": 80
               }
             ]
           },
-          "unit": "percentunit"
+          "unit": "short"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
-        "w": 9,
-        "x": 15,
-        "y": 0
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 10
       },
-      "id": 21,
-      "interval": null,
+      "id": 225,
       "links": [],
-      "maxDataPoints": 100,
       "options": {
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
+        "legend": {
           "calcs": [
-            "mean"
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
           ],
-          "fields": "",
-          "values": false
+          "displayMode": "table",
+          "placement": "bottom"
         },
-        "text": {},
-        "textMode": "auto"
+        "tooltip": {
+          "mode": "single"
+        }
       },
       "pluginVersion": "8.2.5",
       "targets": [
         {
-          "expr": "sum(rate(nginx_ingress_controller_requests{controller_pod=~\"$controller\",controller_class=~\"$controller_class\",namespace=~\"$namespace\",status!~\"[4-5].*\"}[2m])) / sum(rate(nginx_ingress_controller_requests{controller_pod=~\"$controller\",controller_class=~\"$controller_class\",namespace=~\"$namespace\"}[2m]))",
-          "format": "time_series",
+          "exemplar": true,
+          "expr": "sum(rate(haproxy_frontend_http_requests_total{proxy=~\"$frontend\",instance=\"$host\"}[$__rate_interval])) by (instance)",
+          "interval": "$interval",
           "intervalFactor": 1,
+          "legendFormat": "Requests",
+          "metric": "",
+          "refId": "B",
+          "step": 240
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(rate(haproxy_frontend_requests_denied_total{proxy=~\"$frontend\",instance=\"$host\"}[$__rate_interval])) by (instance)",
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "Requests Denied",
+          "metric": "",
           "refId": "A",
-          "step": 4
+          "step": 240
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(rate(haproxy_frontend_request_errors_total{proxy=~\"$frontend\",instance=\"$host\"}[$__rate_interval])) by (instance)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Requests Errors",
+          "refId": "C"
         }
       ],
-      "title": "Controller Success Rate (non-4|5xx responses)",
-      "type": "stat"
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Frontend - HTTP Request Total / Error / Denied",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "amp",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "- back / + front",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*Back.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#F2495C",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 10
+      },
+      "id": 79,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.5",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum(rate(haproxy_frontend_connections_total{proxy=~\"$frontend\",instance=\"$host\"}[$__rate_interval])) by (instance)",
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "Front",
+          "metric": "",
+          "refId": "A",
+          "step": 240
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(rate(haproxy_backend_connection_errors_total{proxy=~\"$backend\",instance=\"$host\"}[$__rate_interval])) by (instance)",
+          "hide": false,
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "Back errors",
+          "metric": "",
+          "refId": "C",
+          "step": 240
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(rate(haproxy_backend_connections_total{proxy=~\"$backend\",instance=\"$host\"}[$__rate_interval])) by (instance)",
+          "hide": false,
+          "interval": "$interval",
+          "legendFormat": "Back",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Total Number of connections",
+      "type": "timeseries"
     },
     {
       "aliasColors": {},
@@ -279,42 +487,42 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "amp",
-      "decimals": 2,
+      "description": "",
       "editable": true,
       "error": false,
-      "fill": 1,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 2,
       "fillGradient": 0,
       "grid": {},
       "gridPos": {
-        "h": 6,
-        "w": 7,
+        "h": 10,
+        "w": 12,
         "x": 0,
-        "y": 6
+        "y": 20
       },
-      "height": "200px",
       "hiddenSeries": false,
-      "id": 86,
-      "isNew": true,
+      "id": 83,
       "legend": {
         "alignAsTable": true,
         "avg": true,
-        "current": false,
-        "hideEmpty": false,
-        "hideZero": true,
-        "max": false,
-        "min": false,
+        "current": true,
+        "max": true,
+        "min": true,
         "rightSide": true,
         "show": true,
-        "sideWidth": 300,
-        "sort": "current",
-        "sortDesc": true,
         "total": false,
         "values": true
       },
       "lines": true,
-      "linewidth": 2,
+      "linewidth": 1,
       "links": [],
-      "nullPointMode": "connected",
+      "maxPerRow": 2,
+      "nullPointMode": "null",
       "options": {
         "alertThreshold": true
       },
@@ -323,261 +531,68 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "repeat": null,
-      "repeatDirection": "h",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:469",
+          "alias": "/.*Back.*/",
+          "transform": "negative-Y"
+        },
+        {
+          "$$hashKey": "object:470",
+          "alias": "/.*1.*/",
+          "color": "#6ED0E0"
+        },
+        {
+          "$$hashKey": "object:471",
+          "alias": "/.*2.*/",
+          "color": "#7EB26D"
+        },
+        {
+          "$$hashKey": "object:472",
+          "alias": "/.*3.*/",
+          "color": "#1F78C1"
+        },
+        {
+          "$$hashKey": "object:473",
+          "alias": "/.*4.*/",
+          "color": "#CCA300"
+        },
+        {
+          "$$hashKey": "object:474",
+          "alias": "/.*5.*/",
+          "color": "#890F02"
+        },
+        {
+          "$$hashKey": "object:475",
+          "alias": "/.*other.*/",
+          "color": "#806EB7"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "round(sum(irate(nginx_ingress_controller_requests{controller_pod=~\"$controller\",controller_class=~\"$controller_class\",controller_namespace=~\"$namespace\",ingress=~\"$ingress\"}[2m])) by (ingress), 0.001)",
-          "format": "time_series",
-          "hide": false,
-          "instant": false,
-          "interval": "",
+          "exemplar": true,
+          "expr": "sum(rate(haproxy_frontend_http_responses_total{proxy=~\"$frontend\",code=~\"$code\",instance=\"$host\"}[$__rate_interval])) by (code)",
+          "interval": "$interval",
           "intervalFactor": 1,
-          "legendFormat": "{{ ingress }}",
-          "metric": "network",
+          "legendFormat": "Front {{ code }}",
+          "metric": "",
           "refId": "A",
-          "step": 10
+          "step": 240
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Ingress Request Volume",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 2,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "reqps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {
-        "max - istio-proxy": "#890f02",
-        "max - master": "#bf1b00",
-        "max - prometheus": "#bf1b00"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "amp",
-      "decimals": 2,
-      "editable": false,
-      "error": false,
-      "fill": 0,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 7,
-        "y": 6
-      },
-      "hiddenSeries": false,
-      "id": 77,
-      "isNew": true,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": false,
-        "min": false,
-        "rightSide": false,
-        "show": false,
-        "sideWidth": 200,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "connected",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "8.2.5",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "avg(nginx_ingress_controller_nginx_process_resident_memory_bytes{controller_pod=~\"$controller\",controller_class=~\"$controller_class\",controller_namespace=~\"$namespace\"}) ",
-          "format": "time_series",
-          "instant": false,
-          "interval": "10s",
-          "intervalFactor": 1,
-          "legendFormat": "nginx",
-          "metric": "container_memory_usage:sort_desc",
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Average Memory Usage",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 2,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "bytes",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {
-        "max - istio-proxy": "#890f02",
-        "max - master": "#bf1b00"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "amp",
-      "decimals": 3,
-      "editable": false,
-      "error": false,
-      "fill": 0,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 9,
-        "x": 15,
-        "y": 6
-      },
-      "height": "",
-      "hiddenSeries": false,
-      "id": 79,
-      "isNew": true,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": false,
-        "min": false,
-        "rightSide": false,
-        "show": false,
-        "sort": null,
-        "sortDesc": null,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "connected",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "8.2.5",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "sum (rate (nginx_ingress_controller_nginx_process_cpu_seconds_total{controller_pod=~\"$controller\",controller_class=~\"$controller_class\",controller_namespace=~\"$namespace\"}[2m])) ",
-          "format": "time_series",
-          "interval": "10s",
-          "intervalFactor": 1,
-          "legendFormat": "nginx",
-          "metric": "container_cpu",
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "thresholds": [
-        {
-          "colorMode": "critical",
-          "fill": true,
-          "line": true,
-          "op": "gt"
-        }
-      ],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Average CPU Usage",
+      "title": "Frontend - HTTP Responses Rate per Service",
       "tooltip": {
         "msResolution": true,
         "shared": true,
         "sort": 2,
-        "value_type": "cumulative"
+        "value_type": "individual"
       },
       "type": "graph",
       "xaxis": {
@@ -589,20 +604,22 @@
       },
       "yaxes": [
         {
-          "format": "none",
-          "label": "cores",
+          "$$hashKey": "object:524",
+          "format": "short",
+          "label": "- back / + front",
           "logBase": 1,
           "max": null,
           "min": null,
           "show": true
         },
         {
+          "$$hashKey": "object:525",
           "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
-          "show": true
+          "min": 0,
+          "show": false
         }
       ],
       "yaxis": {
@@ -616,40 +633,42 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "amp",
-      "decimals": 2,
+      "description": "",
       "editable": true,
       "error": false,
-      "fill": 1,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 2,
       "fillGradient": 0,
       "grid": {},
       "gridPos": {
-        "h": 6,
-        "w": 11,
-        "x": 0,
-        "y": 12
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 20
       },
-      "height": "200px",
       "hiddenSeries": false,
-      "id": 32,
-      "isNew": true,
+      "id": 221,
       "legend": {
-        "alignAsTable": false,
+        "alignAsTable": true,
         "avg": true,
         "current": true,
-        "max": false,
-        "min": false,
-        "rightSide": false,
-        "show": false,
-        "sideWidth": 200,
-        "sort": "current",
-        "sortDesc": true,
+        "max": true,
+        "min": true,
+        "rightSide": true,
+        "show": true,
         "total": false,
         "values": true
       },
       "lines": true,
-      "linewidth": 2,
+      "linewidth": 1,
       "links": [],
-      "nullPointMode": "connected",
+      "maxPerRow": 2,
+      "nullPointMode": "null",
       "options": {
         "alertThreshold": true
       },
@@ -658,44 +677,68 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:469",
+          "alias": "/.*Back.*/",
+          "transform": "negative-Y"
+        },
+        {
+          "$$hashKey": "object:470",
+          "alias": "/.*1.*/",
+          "color": "#6ED0E0"
+        },
+        {
+          "$$hashKey": "object:471",
+          "alias": "/.*2.*/",
+          "color": "#7EB26D"
+        },
+        {
+          "$$hashKey": "object:472",
+          "alias": "/.*3.*/",
+          "color": "#1F78C1"
+        },
+        {
+          "$$hashKey": "object:473",
+          "alias": "/.*4.*/",
+          "color": "#CCA300"
+        },
+        {
+          "$$hashKey": "object:474",
+          "alias": "/.*5.*/",
+          "color": "#890F02"
+        },
+        {
+          "$$hashKey": "object:475",
+          "alias": "/.*other.*/",
+          "color": "#806EB7"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum (irate (nginx_ingress_controller_request_size_sum{controller_pod=~\"$controller\",controller_class=~\"$controller_class\",controller_namespace=~\"$namespace\"}[2m]))",
-          "format": "time_series",
-          "instant": false,
-          "interval": "10s",
+          "exemplar": true,
+          "expr": "sum(rate(haproxy_backend_http_responses_total{proxy=~\"$backend\",code=~\"$code\",instance=\"$host\"}[$__rate_interval])) by (code)",
+          "interval": "$interval",
           "intervalFactor": 1,
-          "legendFormat": "Received",
-          "metric": "network",
-          "refId": "A",
-          "step": 10
-        },
-        {
-          "expr": "- sum (irate (nginx_ingress_controller_response_size_sum{controller_pod=~\"$controller\",controller_class=~\"$controller_class\",controller_namespace=~\"$namespace\"}[2m]))",
-          "format": "time_series",
-          "hide": false,
-          "interval": "10s",
-          "intervalFactor": 1,
-          "legendFormat": "Sent",
-          "metric": "network",
+          "legendFormat": "Back {{ code }}",
+          "metric": "",
           "refId": "B",
-          "step": 10
+          "step": 240
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Network I/O pressure",
+      "title": "Backend - HTTP Responses Rate per Service",
       "tooltip": {
-        "msResolution": false,
+        "msResolution": true,
         "shared": true,
-        "sort": 0,
-        "value_type": "cumulative"
+        "sort": 2,
+        "value_type": "individual"
       },
       "type": "graph",
       "xaxis": {
@@ -707,19 +750,21 @@
       },
       "yaxes": [
         {
-          "format": "Bps",
-          "label": null,
+          "$$hashKey": "object:524",
+          "format": "short",
+          "label": "- back / + front",
           "logBase": 1,
           "max": null,
           "min": null,
           "show": true
         },
         {
-          "format": "Bps",
+          "$$hashKey": "object:525",
+          "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": 0,
           "show": false
         }
       ],
@@ -729,158 +774,253 @@
       }
     },
     {
-      "aliasColors": {
-        "max - istio-proxy": "#890f02",
-        "max - master": "#bf1b00",
-        "max - prometheus": "#bf1b00"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": "amp",
-      "decimals": 2,
-      "editable": false,
-      "error": false,
-      "fill": 0,
-      "fillGradient": 0,
-      "grid": {},
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "- out / + in",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bits"
+        },
+        "overrides": []
+      },
       "gridPos": {
-        "h": 6,
-        "w": 13,
-        "x": 11,
-        "y": 12
+        "h": 15,
+        "w": 12,
+        "x": 0,
+        "y": 30
       },
-      "hiddenSeries": false,
-      "id": 87,
-      "isNew": true,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "hideEmpty": true,
-        "hideZero": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sideWidth": 300,
-        "sort": "avg",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 2,
+      "id": 42,
       "links": [],
-      "nullPointMode": "connected",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
       },
-      "percentage": false,
       "pluginVersion": "8.2.5",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(nginx_ingress_controller_requests{controller_pod=~\"$controller\",controller_class=~\"$controller_class\",namespace=~\"$namespace\",ingress=~\"$ingress\",status!~\"[4-5].*\"}[2m])) by (ingress) / sum(rate(nginx_ingress_controller_requests{controller_pod=~\"$controller\",controller_class=~\"$controller_class\",namespace=~\"$namespace\",ingress=~\"$ingress\"}[2m])) by (ingress)",
-          "format": "time_series",
-          "instant": false,
-          "interval": "10s",
+          "expr": "rate(haproxy_frontend_bytes_in_total{proxy=~\"$frontend\",instance=\"$host\"}[$__rate_interval])*8",
+          "interval": "$interval",
           "intervalFactor": 1,
-          "legendFormat": "{{ ingress }}",
-          "metric": "container_memory_usage:sort_desc",
+          "legendFormat": "IN {{ proxy }}",
+          "metric": "",
           "refId": "A",
-          "step": 10
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Ingress Success Rate (non-4|5xx responses)",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 1,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "percentunit",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
+          "step": 240
         },
         {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
+          "expr": "rate(haproxy_frontend_bytes_out_total{proxy=~\"$frontend\",instance=\"$host\"}[$__rate_interval])*8",
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "OUT {{ proxy }}",
+          "refId": "B",
+          "step": 240
         }
       ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Front - Incoming / Outgoing bytes",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "amp",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "- out / + in",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bits"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 15,
+        "w": 12,
+        "x": 12,
+        "y": 30
+      },
+      "id": 1,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.5",
+      "targets": [
+        {
+          "expr": "rate(haproxy_backend_bytes_in_total{proxy=~\"$backend\",instance=\"$host\"}[$__rate_interval])*8",
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "IN {{ proxy }}",
+          "metric": "haproxy_backend_",
+          "refId": "A",
+          "step": 240
+        },
+        {
+          "expr": "rate(haproxy_backend_bytes_out_total{proxy=~\"$backend\",instance=\"$host\"}[$__rate_interval])*8",
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "OUT {{ proxy }}",
+          "refId": "B",
+          "step": 240
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Back - Incoming / Outgoing bytes",
+      "type": "timeseries"
     }
   ],
-  "refresh": "5s",
+  "refresh": false,
   "schemaVersion": 32,
   "style": "dark",
   "tags": [
-    "nginx"
+    "haproxy",
+    "servers"
   ],
   "templating": {
     "list": [
       {
-        "allValue": ".*",
+        "allValue": null,
         "current": {
-          "selected": true,
-          "text": "All",
-          "value": "$__all"
+          "selected": false,
+          "text": "10.0.11.56:9101",
+          "value": "10.0.11.56:9101"
         },
         "datasource": "amp",
         "definition": "",
         "description": null,
         "error": null,
         "hide": 0,
-        "includeAll": true,
-        "label": "Namespace",
+        "includeAll": false,
+        "label": "Host",
         "multi": false,
-        "name": "namespace",
+        "name": "host",
         "options": [],
         "query": {
-          "query": "label_values(nginx_ingress_controller_config_hash, controller_namespace)",
-          "refId": "amp-namespace-Variable-Query"
+          "query": "label_values(haproxy_process_nbproc,instance)",
+          "refId": "amp-host-Variable-Query"
         },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
+        "sort": 1,
+        "tagValuesQuery": null,
+        "tagsQuery": null,
         "type": "query",
         "useTags": false
       },
       {
-        "allValue": ".*",
+        "allValue": null,
         "current": {
           "selected": false,
           "text": "All",
@@ -892,25 +1032,25 @@
         "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": "Controller Class",
-        "multi": false,
-        "name": "controller_class",
+        "label": "Backend",
+        "multi": true,
+        "name": "backend",
         "options": [],
         "query": {
-          "query": "label_values(nginx_ingress_controller_config_hash{namespace=~\"$namespace\"}, controller_class) ",
-          "refId": "amp-controller_class-Variable-Query"
+          "query": "label_values(haproxy_backend_status{instance=\"$host\"}, proxy)",
+          "refId": "amp-backend-Variable-Query"
         },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
+        "sort": 1,
+        "tagValuesQuery": null,
+        "tagsQuery": null,
         "type": "query",
         "useTags": false
       },
       {
-        "allValue": ".*",
+        "allValue": null,
         "current": {
           "selected": false,
           "text": "All",
@@ -922,25 +1062,24 @@
         "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": "Controller",
-        "multi": false,
-        "name": "controller",
+        "label": "Frontend",
+        "multi": true,
+        "name": "frontend",
         "options": [],
         "query": {
-          "query": "label_values(nginx_ingress_controller_config_hash{namespace=~\"$namespace\",controller_class=~\"$controller_class\"}, controller_pod) ",
-          "refId": "amp-controller-Variable-Query"
+          "query": "label_values(haproxy_frontend_status{instance=\"$host\"}, proxy)",
+          "refId": "amp-frontend-Variable-Query"
         },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "sort": 1,
+        "tagValuesQuery": null,
+        "tagsQuery": null,
+        "type": "query"
       },
       {
-        "allValue": ".*",
+        "allValue": null,
         "current": {
           "selected": false,
           "text": "All",
@@ -952,27 +1091,113 @@
         "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": "Ingress",
-        "multi": false,
-        "name": "ingress",
+        "label": "Server",
+        "multi": true,
+        "name": "server",
         "options": [],
         "query": {
-          "query": "label_values(nginx_ingress_controller_requests{namespace=~\"$namespace\",controller_class=~\"$controller_class\",controller=~\"$controller\"}, ingress) ",
-          "refId": "amp-ingress-Variable-Query"
+          "query": "label_values(haproxy_server_status{instance=\"$host\"}, server)",
+          "refId": "amp-server-Variable-Query"
         },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 2,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
+        "sort": 1,
+        "tagValuesQuery": null,
+        "tagsQuery": null,
         "type": "query",
         "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "amp",
+        "definition": "",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "HTTP Code",
+        "multi": true,
+        "name": "code",
+        "options": [],
+        "query": {
+          "query": "label_values(haproxy_server_http_responses_total{instance=\"$host\"}, code)",
+          "refId": "amp-code-Variable-Query"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": null,
+        "tagsQuery": null,
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "auto": true,
+        "auto_count": 30,
+        "auto_min": "10s",
+        "current": {
+          "selected": false,
+          "text": "30s",
+          "value": "30s"
+        },
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "label": "Interval",
+        "name": "interval",
+        "options": [
+          {
+            "selected": false,
+            "text": "auto",
+            "value": "$__auto_interval_interval"
+          },
+          {
+            "selected": true,
+            "text": "30s",
+            "value": "30s"
+          },
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": false,
+            "text": "5m",
+            "value": "5m"
+          },
+          {
+            "selected": false,
+            "text": "1h",
+            "value": "1h"
+          },
+          {
+            "selected": false,
+            "text": "6h",
+            "value": "6h"
+          },
+          {
+            "selected": false,
+            "text": "1d",
+            "value": "1d"
+          }
+        ],
+        "query": "30s,1m,5m,1h,6h,1d",
+        "refresh": 2,
+        "skipUrlSync": false,
+        "type": "interval"
       }
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -980,7 +1205,7 @@
       "5s",
       "10s",
       "30s",
-      "2m",
+      "1m",
       "5m",
       "15m",
       "30m",
@@ -1001,7 +1226,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "NGINX Ingress controller - Draft",
-  "uid": "nginx",
-  "version": 5
+  "title": "Amazon EKS - Observability Accelerator - HAProxy Ingress",
+  "uid": "rEqu1u5ue",
+  "version": 29
 }

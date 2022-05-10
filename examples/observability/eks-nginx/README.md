@@ -123,60 +123,57 @@ opentelemetry-operator-system   opentelemetry-operator-controller-manager-68f5b4
 
 #### Deploy an Example Application
 
-In this section we will reuse an example from the AWS OpenTelemetry collector [repository](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/container-insights-eks-jmx.md). For convenience, the steps can be found below.
+In this section we will deploy sample application and extract metrics using  AWS OpenTelemetry collector 
 
-- 1. Clone [this repository](https://github.com/aws-observability/aws-otel-test-framework) and navigate to the `sample-apps/jmx/` directory.
-
-- 2. Authenticate to Amazon ECR
-
+- 1. Add the helm incubator repo:
 ```
-export AWS_ACCOUNT_ID=`aws sts get-caller-identity --query Account --output text`
-export AWS_REGION={region}
-aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-```
-
-- 3. Create an Amazon ECR repository
-
-```
-aws ecr create-repository --repository-name prometheus-sample-tomcat-jmx \
- --image-scanning-configuration scanOnPush=true \
- --region $AWS_REGION
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 
 ```
 
-- 4. Build Docker image and push to ECR.
+- 2. Enter the following command to create a new namespace:
+```
+kubectl create namespace nginx-ingress-sample
 
 ```
-docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/prometheus-sample-tomcat-jmx:latest .
-docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/prometheus-sample-tomcat-jmx:latest
+
+- 3. Enter the following commands to install HAProxy:
+```
+helm install my-nginx ingress-nginx/ingress-nginx \
+--namespace nginx-ingress-sample \
+--set controller.metrics.enabled=true \
+--set-string controller.metrics.service.annotations."prometheus\.io/port"="10254" \
+--set-string controller.metrics.service.annotations."prometheus\.io/scrape"="true"
+
 ```
 
-- 5. Install sample application
+- 4. Set an EXTERNAL-IP variable to the value of the EXTERNAL-IP column in the row of the NGINX ingress controller.
 
 ```
-export SAMPLE_TRAFFIC_NAMESPACE=nginx-sample
-curl https://raw.githubusercontent.com/aws-observability/aws-otel-test-framework/terraform/sample-apps/jmx/examples/prometheus-metrics-sample.yaml > metrics-sample.yaml
-sed -i .bak "s/{{aws_account_id}}/$AWS_ACCOUNT_ID/g" metrics-sample.yaml
-sed -i .bak "s/{{region}}/$AWS_REGION/g" metrics-sample.yaml
-sed -i .bak "s/{{namespace}}/$SAMPLE_TRAFFIC_NAMESPACE/g" metrics-sample.yaml
-rm -f \*.bak
-kubectl apply -f metrics-sample.yaml
-```
-
-Verify that the sample application is running:
+EXTERNAL_IP=your-nginx-controller-external-ip
 
 ```
-kubectl get pods -n $SAMPLE_TRAFFIC_NAMESPACE
 
-NAME                              READY   STATUS              RESTARTS   AGE
-tomcat-bad-traffic-generator      1/1     Running             0          11s
-tomcat-example-7958666589-2q755   0/1     ContainerCreating   0          11s
-tomcat-traffic-generator          1/1     Running             0          11s
+- 5. Start some sample NGINX traffic by entering the following command.
+```
+SAMPLE_TRAFFIC_NAMESPACE=nginx-sample-traffic
+curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/master/k8s-deployment-manifest-templates/deployment-mode/service/cwagent-prometheus/sample_traffic/nginx-traffic/nginx-traffic-sample.yaml | 
+sed "s/{{external_ip}}/$EXTERNAL_IP/g" | 
+sed "s/{{namespace}}/$SAMPLE_TRAFFIC_NAMESPACE/g" | 
+kubectl apply -f -
+
+```
+
+
+- 4. Verify if the application is running
+```
+kubectl get pods -n nginx-ingress-sample
+
 ```
 
 #### Vizualize the Application's dashboard
 
-Log back into your Managed Grafana Workspace and navigate to the dashboard side panel, click on `Observability` Folder and open the `Sample Java/JMX Dashboard for Kubernetes` Dashboard.
+Log back into your Managed Grafana Workspace and navigate to the dashboard side panel, click on `Observability` Folder and open the `HAProxy for Kubernetes` Dashboard.
 
 <img width="1468" alt="java-dashboard" src="https://user-images.githubusercontent.com/10175027/159924937-51514e4e-3442-40a2-a921-950d69f372b4.png">
 
