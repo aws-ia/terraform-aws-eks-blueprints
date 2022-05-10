@@ -1,8 +1,8 @@
 redis-ha:
-  enabled: true
+  enabled: false
 
 controller:
-  enableStatefulSet: true
+  enableStatefulSet: false
 
 server:
   autoscaling:

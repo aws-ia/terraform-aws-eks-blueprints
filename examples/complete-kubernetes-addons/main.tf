@@ -98,6 +98,45 @@ module "eks_blueprints" {
 
   cluster_version = local.cluster_version
 
+  #----------------------------------------------------------------------------------------------------------#
+  # Security groups used in this module created by the upstream modules terraform-aws-eks (https://github.com/terraform-aws-modules/terraform-aws-eks).
+  #   Upstream module implemented Security groups based on the best practices doc https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html.
+  #   So, by default the security groups are restrictive. Users needs to enable rules for specific ports required for App requirement or Add-ons
+  #   See the notes below for each rule used in these examples
+  #----------------------------------------------------------------------------------------------------------#
+  node_security_group_additional_rules = {
+    # Extend node-to-node security group rules. Recommended and required for the Add-ons
+    ingress_self_all = {
+      description = "Node to node all ports/protocols"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      self        = true
+    }
+    #Recommended outbound traffic for Node groups
+    egress_all = {
+      description      = "Node all egress"
+      protocol         = "-1"
+      from_port        = 0
+      to_port          = 0
+      type             = "egress"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+    }
+    # Allows Control Plane Nodes to talk to Worker nodes on all ports. Added this to simplify the example and further avoid issues with Add-ons communication with Control plane.
+    # This can be restricted further to specific port based on the requirement for each Add-on e.g., metrics-server 4443, spark-operator 8080, karpenter 8443 etc.
+    # Change this according to your security requirements if needed
+    ingress_cluster_to_node_all_traffic = {
+      description                   = "Cluster API to Nodegroup all traffic"
+      protocol                      = "-1"
+      from_port                     = 0
+      to_port                       = 0
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
+  }
+
   managed_node_groups = {
     mg_4 = {
       node_group_name      = "managed-ondemand"
@@ -138,19 +177,6 @@ module "eks_blueprints" {
 
   # AWS Managed Services
   enable_amazon_prometheus = true
-
-  enable_emr_on_eks = true
-  emr_on_eks_teams = {
-    data_team_a = {
-      emr_on_eks_namespace     = "emr-data-team-a"
-      emr_on_eks_iam_role_name = "emr-eks-data-team-a"
-    }
-
-    data_team_b = {
-      emr_on_eks_namespace     = "emr-data-team-b"
-      emr_on_eks_iam_role_name = "emr-eks-data-team-b"
-    }
-  }
 }
 
 data "aws_eks_addon_version" "latest" {
@@ -178,17 +204,20 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_amazon_eks_vpc_cni = true
   amazon_eks_vpc_cni_config = {
-    addon_version = data.aws_eks_addon_version.latest["vpc-cni"].version
+    addon_version     = data.aws_eks_addon_version.latest["vpc-cni"].version
+    resolve_conflicts = "OVERWRITE"
   }
 
   enable_amazon_eks_coredns = true
   amazon_eks_coredns_config = {
-    addon_version = data.aws_eks_addon_version.latest["coredns"].version
+    addon_version     = data.aws_eks_addon_version.latest["coredns"].version
+    resolve_conflicts = "OVERWRITE"
   }
 
   enable_amazon_eks_kube_proxy = true
   amazon_eks_kube_proxy_config = {
-    addon_version = data.aws_eks_addon_version.default["kube-proxy"].version
+    addon_version     = data.aws_eks_addon_version.default["kube-proxy"].version
+    resolve_conflicts = "OVERWRITE"
   }
 
   enable_amazon_eks_aws_ebs_csi_driver = true
@@ -206,7 +235,7 @@ module "eks_blueprints_kubernetes_addons" {
     name       = "aws-node-termination-handler"
     chart      = "aws-node-termination-handler"
     repository = "https://aws.github.io/eks-charts"
-    version    = "0.16.0"
+    version    = "0.18.2"
   }
 
   enable_traefik = true
@@ -229,7 +258,7 @@ module "eks_blueprints_kubernetes_addons" {
     name       = "metrics-server"
     chart      = "metrics-server"
     repository = "https://kubernetes-sigs.github.io/metrics-server/"
-    version    = "3.8.1"
+    version    = "3.8.2"
     values = [templatefile("${path.module}/helm_values/metrics-server-values.yaml", {
       operating_system = "linux"
     })]
@@ -246,20 +275,10 @@ module "eks_blueprints_kubernetes_addons" {
     })]
   }
 
-  # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
+  # Prometheus and Amazon Managed Prometheus integration
+  enable_prometheus                    = true
   enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
-
-  enable_prometheus = true
-  prometheus_helm_config = {
-    name       = "prometheus"
-    chart      = "prometheus"
-    repository = "https://prometheus-community.github.io/helm-charts"
-    version    = "15.3.0"
-    values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
-      operating_system = "linux"
-    })]
-  }
 
   enable_ingress_nginx = true
   ingress_nginx_helm_config = {
@@ -327,8 +346,8 @@ module "eks_blueprints_kubernetes_addons" {
       Match *
       Key_Name log
       Parser regex
-      Preserve_Key On
-      Reserve_Data On
+      Preserve_Key True
+      Reserve_Data True
     EOF
 
     parsers_conf = <<-EOF
