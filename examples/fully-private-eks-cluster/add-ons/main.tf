@@ -54,7 +54,7 @@ locals {
   #---------------------------------------------------------------
   addon_application = {
     path               = "chart"
-    repo_url           = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
+    repo_url           = "https://github.com/satveerkhurpa/eks-blueprints-add-ons"
     add_on_application = true
   }
 
@@ -112,12 +112,13 @@ module "kubernetes-addons" {
   enable_metrics_server = true
   enable_vpa            = true
   enable_external_dns   = true
+   enable_aws_load_balancer_controller = true
 
 
   enable_cluster_autoscaler           = false
   enable_karpenter                    = false
   enable_keda                         = false
-  enable_aws_load_balancer_controller = false
+ 
 
   enable_amazon_eks_aws_ebs_csi_driver = true
   amazon_eks_aws_ebs_csi_driver_config = {
