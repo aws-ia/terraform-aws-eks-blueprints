@@ -8,5 +8,5 @@ roleRef:
   name: otel-prometheus-role
 subjects:
   - kind: ServiceAccount
-    name: adot-collector
-    namespace: adot-collector
+    name: adot-collector-nginx
+    namespace: adot-collector-nginx
