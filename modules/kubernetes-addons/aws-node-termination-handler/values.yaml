@@ -1,2 +1,3 @@
 enableSqsTerminationDraining: true
 enablePrometheusServer: true
+queueURL: ${queueURL}

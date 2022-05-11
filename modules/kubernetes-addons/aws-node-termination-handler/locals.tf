@@ -20,7 +20,9 @@ locals {
     var.helm_config
   )
 
-  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
+  default_helm_values = [templatefile("${path.module}/values.yaml", {
+    queueURL = aws_sqs_queue.aws_node_termination_handler_queue.url
+  })]
 
   set_values = [
     {
