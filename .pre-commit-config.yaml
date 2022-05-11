@@ -35,3 +35,6 @@ repos:
           - '--args=--only=terraform_workspace_remote'
       - id: terraform_tfsec
         files: ^examples/ # only scan `examples/*` which are the implementation
+        args:
+          - --args=--config-file=__GIT_WORKING_DIR__/tfsec.yaml
+          - --args=--concise-output

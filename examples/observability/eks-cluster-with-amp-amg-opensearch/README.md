@@ -187,8 +187,6 @@ You must set up an index pattern before you can explore data in the OpenSearch D
 | <a name="requirement_grafana"></a> [grafana](#requirement\_grafana) | >= 1.13.3 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
-| <a name="requirement_local"></a> [local](#requirement\_local) | >= 2.1 |
-| <a name="requirement_tls"></a> [tls](#requirement\_tls) | >= 3.0 |
 
 ## Providers
 
@@ -196,8 +194,6 @@ You must set up an index pattern before you can explore data in the OpenSearch D
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
 | <a name="provider_grafana"></a> [grafana](#provider\_grafana) | >= 1.13.3 |
-| <a name="provider_local"></a> [local](#provider\_local) | >= 2.1 |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | >= 3.0 |
 
 ## Modules
 
@@ -215,12 +211,8 @@ You must set up an index pattern before you can explore data in the OpenSearch D
 | [aws_elasticsearch_domain_policy.opensearch_access_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain_policy) | resource |
 | [aws_iam_policy.fluentbit_opensearch_access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_service_linked_role.opensearch](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_service_linked_role) | resource |
-| [aws_instance.bastion_host](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
-| [aws_key_pair.bastion_host_key_pair](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair) | resource |
 | [aws_security_group.opensearch_access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [grafana_data_source.prometheus](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
-| [local_file.private_key_pem_file](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
-| [tls_private_key.bastion_host_private_key](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) | resource |
 | [aws_ami.amazon_linux_2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
 | [aws_iam_policy_document.fluentbit_opensearch_access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -233,7 +225,6 @@ You must set up an index pattern before you can explore data in the OpenSearch D
 | <a name="input_create_iam_service_linked_role"></a> [create\_iam\_service\_linked\_role](#input\_create\_iam\_service\_linked\_role) | Whether to create the AWSServiceRoleForAmazonElasticsearchService role used by the OpenSearch service | `bool` | `true` | no |
 | <a name="input_grafana_api_key"></a> [grafana\_api\_key](#input\_grafana\_api\_key) | Api key for authorizing the Grafana provider to make changes to Amazon Managed Grafana | `string` | n/a | yes |
 | <a name="input_grafana_endpoint"></a> [grafana\_endpoint](#input\_grafana\_endpoint) | Grafana endpoint | `string` | n/a | yes |
-| <a name="input_local_computer_ip"></a> [local\_computer\_ip](#input\_local\_computer\_ip) | IP Address of the computer you are running and testing this example from | `string` | n/a | yes |
 | <a name="input_opensearch_dashboard_pw"></a> [opensearch\_dashboard\_pw](#input\_opensearch\_dashboard\_pw) | OpenSearch dashboard user password | `string` | n/a | yes |
 | <a name="input_opensearch_dashboard_user"></a> [opensearch\_dashboard\_user](#input\_opensearch\_dashboard\_user) | OpenSearch dashboard user | `string` | n/a | yes |
 
@@ -241,7 +232,6 @@ You must set up an index pattern before you can explore data in the OpenSearch D
 
 | Name | Description |
 |------|-------------|
-| <a name="output_bastion_host_public_ip"></a> [bastion\_host\_public\_ip](#output\_bastion\_host\_public\_ip) | Public IP address of the bastion host |
 | <a name="output_configure_kubectl"></a> [configure\_kubectl](#output\_configure\_kubectl) | Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
 | <a name="output_opensearch_pw"></a> [opensearch\_pw](#output\_opensearch\_pw) | Amazon OpenSearch Service Domain password |
 | <a name="output_opensearch_user"></a> [opensearch\_user](#output\_opensearch\_user) | Amazon OpenSearch Service Domain username |
