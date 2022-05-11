@@ -1,6 +1,6 @@
-# Observability Patter for Nginx
+# Observability Pattern for Java/JMX
 
-This module provides an automated experience around Observability for Nginx workloads.
+This module provides an automated experience around Observability for Java/JMX workloads.
 It provides the following resources:
 
 - AWS Distro For OpenTelemetry Operator and Collector
