@@ -10,3 +10,4 @@ subjects:
   - kind: ServiceAccount
     name: adot-collector-haproxy
     namespace: adot-collector-haproxy
+    
