@@ -15,7 +15,7 @@ spec:
             scrape_timeout: {{ .Values.scrapeTimeout }}
 
           scrape_configs:
-            - job_name: 'kubernetes-pod-haproxy'
+            - job_name: 'kubernetes-pod-memcached'
               sample_limit: {{ .Values.scrapeSampleLimit }}
               metrics_path: /{{ .Values.prometheusMetricsEndpoint }}
               kubernetes_sd_configs:

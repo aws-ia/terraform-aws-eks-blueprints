@@ -117,7 +117,7 @@ module "eks_blueprints_kubernetes_addons" {
   # OTEL JMX use cases
   enable_cert_manager                  = true
   enable_opentelemetry_operator        = true
-  enable_adot_collector_haproxy        = true
+  enable_adot_collector_memchached        = true
   amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
   amazon_prometheus_workspace_region   = local.region
 }
@@ -136,11 +136,11 @@ resource "grafana_data_source" "prometheus" {
   }
 }
 
-resource "grafana_folder" "haproxy_dashboards" {
+resource "grafana_folder" "memchached_dashboards" {
   title = "Observability"
 }
 
-resource "grafana_dashboard" "haproxy_dashboards" {
-  folder      = grafana_folder.haproxy_dashboards.id
+resource "grafana_dashboard" "memchached_dashboards" {
+  folder      = grafana_folder.memchached_dashboards.id
   config_json = file("${path.module}/dashboards/default.json")
 }

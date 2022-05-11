@@ -1,8 +1,8 @@
-# Observability pattern for HAProxy applications with Amazon EKS and Observability services
+# Observability pattern for Memcached applications with Amazon EKS and Observability services
 
 This example demonstrates how to use the Amazon EKS Blueprints for Terraform a
 new Amazon EKS Cluster with AWS Distro for OpenTelemetry (ADOT) configured to
-specifically monitor HAProxy applications Prometheus metrics.
+specifically monitor Memcached applications Prometheus metrics.
 The ADOT collector deployed as a Kubernetes Operator, sends metrics to a
 provided Amazon Managed Prometheus workspace, to be visualize with
 Amazon Managed Grafana.
@@ -55,7 +55,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 - Initialize a working directory
 
 ```
-cd examples/observability/eks-haproxy
+cd examples/observability/eks-memcached
 terraform init
 ```
 
@@ -127,37 +127,37 @@ In this section we will deploy sample application and extract metrics using  AWS
 
 - 1. Add the helm incubator repo:
 ```
-helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
 ```
 
 - 2. Enter the following command to create a new namespace:
 ```
-kubectl create namespace haproxy-ingress-sample
+kubectl create namespace memcached-sample
+
 ```
 
-- 3. Enter the following commands to install HAProxy:
+- 3. Enter the following commands to install Memcached:
 ```
-helm install haproxy haproxy-ingress/haproxy-ingress \
---namespace haproxy-ingress-sample \
---set defaultBackend.enabled=true \
---set controller.stats.enabled=true \
---set controller.metrics.enabled=true \
---set-string controller.metrics.service.annotations."prometheus\.io/port"="9101" \
---set-string controller.metrics.service.annotations."prometheus\.io/scrape"="true"
+helm install my-memcached bitnami/memcached --namespace memcached-sample \
+--set metrics.enabled=true \
+--set-string serviceAnnotations.prometheus\\.io/port="9150" \
+--set-string serviceAnnotations.prometheus\\.io/scrape="true"
+
 ```
 
 
 - 4. Verify if the application is running
 ```
-kubectl get pods -n haproxy-ingress-sample
+kubectl get pods -n memcached-sample
 
 ```
 
 #### Vizualize the Application's dashboard
 
-Log back into your Managed Grafana Workspace and navigate to the dashboard side panel, click on `Observability` Folder and open the `HAProxy for Kubernetes` Dashboard.
+Log back into your Managed Grafana Workspace and navigate to the dashboard side panel, click on `Observability` Folder and open the `Memcached for Kubernetes` Dashboard.
 
-<img width="1468" alt="HAProxy-dashboard" src="https://github.com/awsdabra/amg-dashboard-examples/blob/d4275d2e0251963b8783dcc03fd475d6f8783cc7/haproxy_grafana_dashboard.png">
+<img width="1468" alt="java-dashboard" src="https://user-images.githubusercontent.com/10175027/159924937-51514e4e-3442-40a2-a921-950d69f372b4.png">
 
 
 ## Cleanup

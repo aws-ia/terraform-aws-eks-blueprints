@@ -1,6 +1,6 @@
-# Observability Patter for HAProxy
+# Observability Patter for Memcached
 
-This module provides an automated experience around Observability for HAProxy workloads.
+This module provides an automated experience around Observability for Memcached workloads.
 It provides the following resources:
 
 - AWS Distro For OpenTelemetry Operator and Collector

@@ -1,4 +1,4 @@
-# Deploys HAproxy collector
+# Deploys Nginx collector
 module "helm_addon" {
   source        = "../helm-addon"
   set_values    = local.otel_config_values
