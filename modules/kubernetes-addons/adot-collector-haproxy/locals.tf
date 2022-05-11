@@ -1,6 +1,6 @@
 locals {
-  name                           = "adot-collector"
-  adot_collector_service_account = "adot-collector"
+  name                           = "adot-collector-haproxy"
+  adot_collector_service_account = "adot-collector-haproxy"
 
   default_helm_config = {
     name        = local.name
