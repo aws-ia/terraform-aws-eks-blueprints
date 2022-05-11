@@ -1,6 +1,6 @@
 locals {
-  name                           = "adot-collector"
-  adot_collector_service_account = "adot-collector"
+  name                           = "adot-collector-nginx"
+  adot_collector_service_account = "adot-collector-nginx"
 
   default_helm_config = {
     name        = local.name
