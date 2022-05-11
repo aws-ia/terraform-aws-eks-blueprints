@@ -202,23 +202,24 @@ kubectl logs -f -n opentelemetry-operator-system adot-collector-xxxx
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.73.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
 | <a name="requirement_grafana"></a> [grafana](#requirement\_grafana) | >= 1.13.3 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.7.1 |
+| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | >= 1.14 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.73.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
 | <a name="provider_grafana"></a> [grafana](#provider\_grafana) | >= 1.13.3 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.11.3 |
+| <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | ~> 3.0 |
 | <a name="module_eks_blueprints"></a> [eks\_blueprints](#module\_eks\_blueprints) | ../../.. | n/a |
 | <a name="module_eks_blueprints_kubernetes_addons"></a> [eks\_blueprints\_kubernetes\_addons](#module\_eks\_blueprints\_kubernetes\_addons) | ../../../modules/kubernetes-addons | n/a |
 
@@ -230,8 +231,6 @@ kubectl logs -f -n opentelemetry-operator-system adot-collector-xxxx
 | [grafana_data_source.prometheus](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
 | [grafana_folder.jmx_dashboards](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/folder) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
-| [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
-| [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
 
 ## Inputs
 
