@@ -712,29 +712,6 @@ variable "adot_collector_java_helm_config" {
   description = "ADOT Collector Java Helm Chart config"
 }
 
-variable "enable_adot_collector_nginx" {
-  type        = bool
-  default     = false
-  description = "Enable metrics for Nginx workloads"
-}
-
-variable "adot_collector_nginx_helm_config" {
-  type        = any
-  default     = {}
-  description = "ADOT Collector Nginx Helm Chart config"
-}
-
-variable "enable_adot_collector_haproxy" {
-  type        = bool
-  default     = false
-  description = "Enable metrics for HAProxy workloads"
-}
-
-variable "adot_collector_haproxy_helm_config" {
-  type        = any
-  default     = {}
-  description = "ADOT Collector HAProxy Helm Chart config"
-}
 variable "enable_adot_collector_memcached" {
   type        = bool
   default     = false
