@@ -20,11 +20,6 @@ variable "opensearch_dashboard_pw" {
   sensitive   = true
 }
 
-variable "local_computer_ip" {
-  description = "IP Address of the computer you are running and testing this example from"
-  type        = string
-}
-
 variable "create_iam_service_linked_role" {
   description = "Whether to create the AWSServiceRoleForAmazonElasticsearchService role used by the OpenSearch service"
   type        = bool

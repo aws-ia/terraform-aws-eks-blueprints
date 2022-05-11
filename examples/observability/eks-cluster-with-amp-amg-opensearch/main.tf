@@ -165,6 +165,7 @@ resource "grafana_data_source" "prometheus" {
 #---------------------------------------------------------------
 # Provision OpenSearch and Allow Access
 #---------------------------------------------------------------
+#tfsec:ignore:aws-elastic-search-enable-domain-logging
 resource "aws_elasticsearch_domain" "opensearch" {
   domain_name           = "opensearch"
   elasticsearch_version = "OpenSearch_1.1"
@@ -234,15 +235,8 @@ resource "aws_elasticsearch_domain_policy" "opensearch_access_policy" {
 }
 
 resource "aws_security_group" "opensearch_access" {
-  vpc_id = module.aws_vpc.vpc_id
-
-  ingress {
-    description = "SSH from local computer to ec2 host"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["${var.local_computer_ip}/32"]
-  }
+  vpc_id      = module.aws_vpc.vpc_id
+  description = "OpenSearch access"
 
   ingress {
     description = "host access to OpenSearch"
@@ -262,38 +256,10 @@ resource "aws_security_group" "opensearch_access" {
   }
 
   egress {
+    description = "Allow all outbound access"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sgr
   }
-}
-
-#---------------------------------------------------------------
-# Provision resources for testing OpenSearch
-#---------------------------------------------------------------
-resource "tls_private_key" "bastion_host_private_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-resource "aws_key_pair" "bastion_host_key_pair" {
-  key_name   = "eks-observability-instance-key"
-  public_key = tls_private_key.bastion_host_private_key.public_key_openssh
-}
-
-resource "local_file" "private_key_pem_file" {
-  filename          = pathexpand("./bastion_host_private_key.pem")
-  file_permission   = "400"
-  sensitive_content = tls_private_key.bastion_host_private_key.private_key_pem
-}
-
-resource "aws_instance" "bastion_host" {
-  ami                         = data.aws_ami.amazon_linux_2.id
-  instance_type               = "t3.micro"
-  vpc_security_group_ids      = [aws_security_group.opensearch_access.id]
-  subnet_id                   = module.aws_vpc.public_subnets[0]
-  associate_public_ip_address = true
-  key_name                    = aws_key_pair.bastion_host_key_pair.key_name
-  monitoring                  = true
 }
