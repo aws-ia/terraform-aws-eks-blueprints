@@ -222,89 +222,10 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_amazon_eks_aws_ebs_csi_driver = true
 
-  enable_aws_load_balancer_controller = true
-  aws_load_balancer_controller_helm_config = {
-    name       = "aws-load-balancer-controller"
-    chart      = "aws-load-balancer-controller"
-    repository = "https://aws.github.io/eks-charts"
-    version    = "1.3.1"
-  }
-
-  enable_aws_node_termination_handler = true
-  aws_node_termination_handler_helm_config = {
-    name       = "aws-node-termination-handler"
-    chart      = "aws-node-termination-handler"
-    repository = "https://aws.github.io/eks-charts"
-    version    = "0.18.2"
-  }
-
-  enable_traefik = true
-  traefik_helm_config = {
-    name       = "traefik"
-    chart      = "traefik"
-    repository = "https://helm.traefik.io/traefik"
-    version    = "10.0.0"
-    set = [{
-      name  = "service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
-      value = "nlb"
-    }]
-    values = [templatefile("${path.module}/helm_values/traefik-values.yaml", {
-      operating_system = "linux"
-    })]
-  }
-
-  enable_metrics_server = true
-  metrics_server_helm_config = {
-    name       = "metrics-server"
-    chart      = "metrics-server"
-    repository = "https://kubernetes-sigs.github.io/metrics-server/"
-    version    = "3.8.2"
-    values = [templatefile("${path.module}/helm_values/metrics-server-values.yaml", {
-      operating_system = "linux"
-    })]
-  }
-
-  enable_cluster_autoscaler = true
-  cluster_autoscaler_helm_config = {
-    name       = "cluster-autoscaler"
-    chart      = "cluster-autoscaler"
-    repository = "https://kubernetes.github.io/autoscaler"
-    version    = "9.10.7"
-    values = [templatefile("${path.module}/helm_values/cluster-autoscaler-vaues.yaml", {
-      operating_system = "linux"
-    })]
-  }
-
   # Prometheus and Amazon Managed Prometheus integration
   enable_prometheus                    = true
   enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
-
-  enable_ingress_nginx = true
-  ingress_nginx_helm_config = {
-    name       = "ingress-nginx"
-    chart      = "ingress-nginx"
-    repository = "https://kubernetes.github.io/ingress-nginx"
-    version    = "3.33.0"
-    values     = [templatefile("${path.module}/helm_values/nginx_values.yaml", {})]
-  }
-
-  # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
-  enable_agones = true
-  agones_helm_config = {
-    name               = "agones"
-    chart              = "agones"
-    repository         = "https://agones.dev/chart/stable"
-    version            = "1.15.0"
-    gameserver_minport = 7000 # required for sec group changes to worker nodes
-    gameserver_maxport = 8000 # required for sec group changes to worker nodes
-    values = [templatefile("${path.module}/helm_values/agones-values.yaml", {
-      expose_udp            = true
-      gameserver_namespaces = "{${join(",", ["default", "xbox-gameservers", "xbox-gameservers"])}}"
-      gameserver_minport    = 7000
-      gameserver_maxport    = 8000
-    })]
-  }
 
   enable_aws_for_fluentbit = true
   aws_for_fluentbit_helm_config = {
@@ -360,37 +281,6 @@ module "eks_blueprints_kubernetes_addons" {
       Time_Keep On
       Decode_Field_As json message
     EOF
-  }
-
-  enable_argocd = true
-  argocd_helm_config = {
-    name             = "argo-cd"
-    chart            = "argo-cd"
-    repository       = "https://argoproj.github.io/argo-helm"
-    version          = "3.26.3"
-    namespace        = "argocd"
-    create_namespace = true
-    values           = [templatefile("${path.module}/helm_values/argocd-values.yaml", {})]
-  }
-
-  enable_keda = true
-  keda_helm_config = {
-    name       = "keda"
-    chart      = "keda"
-    repository = "https://kedacore.github.io/charts"
-    version    = "2.6.2"
-    namespace  = "keda"
-    values     = [templatefile("${path.module}/helm_values/keda-values.yaml", {})]
-  }
-
-  enable_vpa = true
-  vpa_helm_config = {
-    name       = "vpa"
-    chart      = "vpa"
-    repository = "https://charts.fairwinds.com/stable"
-    version    = "1.0.0"
-    namespace  = "vpa"
-    values     = [templatefile("${path.module}/helm_values/vpa-values.yaml", {})]
   }
 
   depends_on = [module.eks_blueprints.managed_node_groups]
