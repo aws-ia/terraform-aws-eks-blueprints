@@ -61,18 +61,18 @@ locals {
   #---------------------------------------------------------------
   # ARGOCD WORKLOAD APPLICATION
   #---------------------------------------------------------------
-  workload_application = {
-    path     = "envs/dev"
-    repo_url = "https://github.com/aws-samples/eks-blueprints-workloads.git"
-    values = {
-      spec = {
-        ingress = {
-          host = var.eks_cluster_domain
-        }
-      }
-    }
-    add_on_application = false
-  }
+  # workload_application = {
+  #   path     = "envs/dev"
+  #   repo_url = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+  #   values = {
+  #     spec = {
+  #       ingress = {
+  #         host = var.eks_cluster_domain
+  #       }
+  #     }
+  #   }
+  #   add_on_application = false
+  # }
 }
 
 module "kubernetes-addons" {
@@ -89,7 +89,7 @@ module "kubernetes-addons" {
   argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying Add-ons.
   argocd_applications = {
     addons    = local.addon_application
-    workloads = local.workload_application
+    #workloads = local.workload_application
   }
 
   #---------------------------------------------------------------
