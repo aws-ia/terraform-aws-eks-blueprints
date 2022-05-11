@@ -111,8 +111,8 @@ module "kubernetes-addons" {
   enable_cert_manager   = true
   enable_metrics_server = true
   enable_vpa            = true
-  # enable_external_dns   = true
-  enable_aws_load_balancer_controller = true
+  enable_external_dns   = true
+  #enable_aws_load_balancer_controller = false
   enable_cluster_autoscaler           = true
 
 
@@ -133,17 +133,17 @@ module "kubernetes-addons" {
   # enable_amazon_prometheus             = true
   # amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
 
-  enable_prometheus = true
-  prometheus_helm_config = {
-    name       = "prometheus"
-    repository = "https://prometheus-community.github.io/helm-charts"
-    chart      = "prometheus"
-    version    = "15.3.0"
-    namespace  = "prometheus"
-    values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
-      operating_system = "linux"
-    })]
-  }
+  # enable_prometheus = true
+  # prometheus_helm_config = {
+  #   name       = "prometheus"
+  #   repository = "https://prometheus-community.github.io/helm-charts"
+  #   chart      = "prometheus"
+  #   version    = "15.3.0"
+  #   namespace  = "prometheus"
+  #   values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
+  #     operating_system = "linux"
+  #   })]
+  # }
 
 
 }
