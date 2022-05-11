@@ -105,7 +105,7 @@ module "eks_blueprints" {
     mg_4 = {
       node_group_name    = local.node_group_name
       launch_template_os = "amazonlinux2eks"
-      max_size           = 1
+      max_size           = 5
       subnet_ids         = module.aws_vpc.private_subnets
     }
   }
