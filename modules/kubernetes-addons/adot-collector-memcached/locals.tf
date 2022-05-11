@@ -1,6 +1,6 @@
 locals {
-  name                           = "adot-collector"
-  adot_collector_service_account = "adot-collector"
+  name                           = "adot-collector-memcached"
+  adot_collector_service_account = "adot-collector-memcached"
 
   default_helm_config = {
     name        = local.name
