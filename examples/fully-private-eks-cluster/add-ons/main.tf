@@ -61,18 +61,18 @@ locals {
   #---------------------------------------------------------------
   # ARGOCD WORKLOAD APPLICATION
   #---------------------------------------------------------------
-  # workload_application = {
-  #   path     = "envs/dev"
-  #   repo_url = "https://github.com/aws-samples/eks-blueprints-workloads.git"
-  #   values = {
-  #     spec = {
-  #       ingress = {
-  #         host = var.eks_cluster_domain
-  #       }
-  #     }
-  #   }
-  #   add_on_application = false
-  # }
+  workload_application = {
+    path     = "envs/dev"
+    repo_url = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+    values = {
+      spec = {
+        ingress = {
+          host = var.eks_cluster_domain
+        }
+      }
+    }
+    add_on_application = false
+  }
 }
 
 module "kubernetes-addons" {
@@ -89,20 +89,20 @@ module "kubernetes-addons" {
   argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying Add-ons.
   argocd_applications = {
     addons    = local.addon_application
-    #workloads = local.workload_application
+    workloads = local.workload_application
   }
 
   #---------------------------------------------------------------
   # INGRESS NGINX ADD-ON
   #---------------------------------------------------------------
 
-  # enable_ingress_nginx = true
-  # ingress_nginx_helm_config = {
-  #   values = [templatefile("${path.module}/helm_values/nginx-values.yaml", {
-  #     hostname     = var.eks_cluster_domain
-  #     ssl_cert_arn = data.aws_acm_certificate.issued.arn
-  #   })]
-  # }
+  enable_ingress_nginx = true
+  ingress_nginx_helm_config = {
+    values = [templatefile("${path.module}/helm_values/nginx-values.yaml", {
+      hostname     = var.eks_cluster_domain
+      ssl_cert_arn = data.aws_acm_certificate.issued.arn
+    })]
+  }
 
   #---------------------------------------------------------------
   # OTHER ADD-ONS
@@ -130,9 +130,8 @@ module "kubernetes-addons" {
 
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
 
-  # enable_amazon_prometheus = true
-
-  # amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
+  enable_amazon_prometheus             = true
+  amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
 
   enable_prometheus = true
   prometheus_helm_config = {
