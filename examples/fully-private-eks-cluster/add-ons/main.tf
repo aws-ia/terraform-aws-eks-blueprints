@@ -130,9 +130,9 @@ module "kubernetes-addons" {
 
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
 
-  enable_amazon_prometheus = true
+  # enable_amazon_prometheus = true
 
-  amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
+  # amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
 
   enable_prometheus = true
   prometheus_helm_config = {
