@@ -78,12 +78,21 @@ module "aws_for_fluent_bit" {
   addon_context            = local.addon_context
 }
 
+module "aws_cloudwatch_metrics" {
+  count             = var.enable_aws_cloudwatch_metrics ? 1 : 0
+  source            = "./aws-cloudwatch-metrics"
+  helm_config       = var.aws_cloudwatch_metrics_helm_config
+  irsa_policies     = var.aws_cloudwatch_metrics_irsa_policies
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "aws_load_balancer_controller" {
   count             = var.enable_aws_load_balancer_controller ? 1 : 0
   source            = "./aws-load-balancer-controller"
   helm_config       = var.aws_load_balancer_controller_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = local.addon_context
+  addon_context     = merge(local.addon_context, { default_repository = local.amazon_container_image_registry_uris[data.aws_region.current.name] })
 }
 
 module "aws_node_termination_handler" {
@@ -112,15 +121,24 @@ module "cluster_autoscaler" {
 }
 
 module "crossplane" {
-  count             = var.enable_crossplane ? 1 : 0
-  source            = "./crossplane"
-  helm_config       = var.crossplane_helm_config
+  count            = var.enable_crossplane ? 1 : 0
+  source           = "./crossplane"
+  helm_config      = var.crossplane_helm_config
+  aws_provider     = var.crossplane_aws_provider
+  jet_aws_provider = var.crossplane_jet_aws_provider
+  account_id       = data.aws_caller_identity.current.account_id
+  aws_partition    = data.aws_partition.current.id
+  addon_context    = local.addon_context
+}
+
+module "external_dns" {
+  count             = var.enable_external_dns ? 1 : 0
+  source            = "./external-dns"
+  helm_config       = var.external_dns_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  aws_provider      = var.crossplane_aws_provider
-  jet_aws_provider  = var.crossplane_jet_aws_provider
-  account_id        = data.aws_caller_identity.current.account_id
-  aws_partition     = data.aws_partition.current.id
+  irsa_policies     = var.external_dns_irsa_policies
   addon_context     = local.addon_context
+  domain_name       = var.eks_cluster_domain
 }
 
 module "fargate_fluentbit" {
@@ -157,12 +175,37 @@ module "keda" {
   addon_context     = local.addon_context
 }
 
+module "kubernetes_dashboard" {
+  count             = var.enable_kubernetes_dashboard ? 1 : 0
+  source            = "./kubernetes-dashboard"
+  helm_config       = var.kubernetes_dashboard_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "metrics_server" {
   count             = var.enable_metrics_server ? 1 : 0
   source            = "./metrics-server"
   helm_config       = var.metrics_server_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+}
+
+module "ondat" {
+  count             = var.enable_ondat ? 1 : 0
+  source            = "ondat/ondat-addon/eksblueprints"
+  version           = "0.0.4"
+  helm_config       = var.ondat_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+  irsa_policies     = var.ondat_irsa_policies
+  create_cluster    = var.ondat_create_cluster
+  etcd_endpoints    = var.ondat_etcd_endpoints
+  etcd_ca           = var.ondat_etcd_ca
+  etcd_cert         = var.ondat_etcd_cert
+  etcd_key          = var.ondat_etcd_key
+  admin_username    = var.ondat_admin_username
+  admin_password    = var.ondat_admin_password
 }
 
 module "prometheus" {
@@ -187,7 +230,7 @@ module "spark_k8s_operator" {
 module "tetrate_istio" {
   count                = var.enable_tetrate_istio ? 1 : 0
   source               = "tetratelabs/tetrate-istio-addon/eksblueprints"
-  version              = "0.0.6"
+  version              = "0.0.7"
   distribution         = var.tetrate_istio_distribution
   distribution_version = var.tetrate_istio_version
   install_base         = var.tetrate_istio_install_base
@@ -210,6 +253,18 @@ module "traefik" {
   addon_context     = local.addon_context
 }
 
+module "vault" {
+  count = var.enable_vault ? 1 : 0
+
+  # See https://registry.terraform.io/modules/hashicorp/hashicorp-vault-eks-addon/aws/
+  source  = "hashicorp/hashicorp-vault-eks-addon/aws"
+  version = "0.9.0"
+
+  helm_config       = var.vault_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "vpa" {
   count             = var.enable_vpa ? 1 : 0
   source            = "./vpa"
@@ -222,17 +277,34 @@ module "yunikorn" {
   count             = var.enable_yunikorn ? 1 : 0
   source            = "./yunikorn"
   helm_config       = var.yunikorn_helm_config
-  irsa_policies     = var.yunikorn_irsa_policies
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
 
-module "kubernetes_dashboard" {
-  count             = var.enable_kubernetes_dashboard ? 1 : 0
-  source            = "./kubernetes-dashboard"
-  helm_config       = var.kubernetes_dashboard_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = local.addon_context
+module "aws_privateca_issuer" {
+  count                   = var.enable_aws_privateca_issuer ? 1 : 0
+  source                  = "./aws-privateca-issuer"
+  helm_config             = var.aws_privateca_issuer_helm_config
+  manage_via_gitops       = var.argocd_manage_add_ons
+  addon_context           = local.addon_context
+  aws_privateca_acmca_arn = var.aws_privateca_acmca_arn
+  irsa_policies           = var.aws_privateca_issuer_irsa_policies
+}
+
+module "opentelemetry_operator" {
+  count         = var.enable_opentelemetry_operator ? 1 : 0
+  source        = "./opentelemetry-operator"
+  helm_config   = var.opentelemetry_operator_helm_config
+  addon_context = local.addon_context
+}
+
+module "adot_collector_java" {
+  count                                = var.enable_adot_collector_java ? 1 : 0
+  source                               = "./adot-collector-java"
+  helm_config                          = var.adot_collector_java_helm_config
+  amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
+  addon_context                        = local.addon_context
 }
 
 module "velero" {

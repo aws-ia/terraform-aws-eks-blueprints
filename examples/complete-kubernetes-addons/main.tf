@@ -1,77 +1,78 @@
-terraform {
-  required_version = ">= 1.0.1"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 3.66.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.6.1"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.4.1"
-    }
-  }
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
-  }
-}
-
-data "aws_region" "current" {}
-
-data "aws_availability_zones" "available" {}
-
-data "aws_eks_cluster" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-}
-
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-}
-
 provider "aws" {
-  region = data.aws_region.current.id
-  alias  = "default"
+  region = local.region
 }
 
 provider "kubernetes" {
-  experiments {
-    manifest_resource = true
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1alpha1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
   }
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = data.aws_eks_cluster.cluster.endpoint
-    token                  = data.aws_eks_cluster_auth.cluster.token
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+    host                   = module.eks_blueprints.eks_cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+
+    exec {
+      api_version = "client.authentication.k8s.io/v1alpha1"
+      command     = "aws"
+      # This requires the awscli to be installed locally where Terraform is executed
+      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
+    }
   }
 }
 
+data "aws_availability_zones" "available" {}
+
 locals {
-  tenant         = var.tenant
-  environment    = var.environment
-  zone           = var.zone
-  eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  tenant      = var.tenant
+  environment = var.environment
+  zone        = var.zone
+  region      = "us-west-2"
 
-  cluster_version   = "1.21"
+  vpc_cidr     = "10.0.0.0/16"
+  azs          = slice(data.aws_availability_zones.available.names, 0, 3)
+  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
+
   terraform_version = "Terraform v1.0.1"
+}
 
-  vpc_id             = var.vpc_id
-  private_subnet_ids = var.private_subnet_ids
-  public_subnet_ids  = var.public_subnet_ids
+module "aws_vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = join("-", [local.tenant, local.environment, local.zone, "vpc"])
+  cidr = local.vpc_cidr
+  azs  = slice(data.aws_availability_zones.available.names, 0, 3)
+
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                      = "1"
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"             = "1"
+  }
 }
 
 #---------------------------------------------------------------
-# Example to consume aws-eks-accelerator-for-terraform module
+# Example to consume eks_blueprints module
 #---------------------------------------------------------------
-module "aws-eks-accelerator-for-terraform" {
+module "eks_blueprints" {
   source = "../.."
 
   tenant            = local.tenant
@@ -80,33 +81,29 @@ module "aws-eks-accelerator-for-terraform" {
   terraform_version = local.terraform_version
 
   # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = local.vpc_id
-  private_subnet_ids = local.private_subnet_ids
+  vpc_id             = module.aws_vpc.vpc_id
+  private_subnet_ids = module.aws_vpc.private_subnets
 
-  # EKS CONTROL PLANE VARIABLES
-  cluster_version = local.cluster_version
+  cluster_version = "1.21"
 
-  # EKS MANAGED NODE GROUPS
-  # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
       instance_types  = ["m5.large"]
-      subnet_ids      = local.private_subnet_ids
+      subnet_ids      = module.aws_vpc.private_subnets
     }
   }
 
-  # EKS SELF-MANAGED NODE GROUPS
   self_managed_node_groups = {
     self_mg_4 = {
       node_group_name    = "self-managed-ondemand"
       instance_types     = ["m4.large"]
       launch_template_os = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or windows
       custom_ami_id      = "ami-0dfaa019a300f219c" # Bring your own custom AMI generated by Packer/ImageBuilder/Puppet etc.
-      subnet_ids         = local.private_subnet_ids
+      subnet_ids         = module.aws_vpc.private_subnets
     }
   }
-  # Fargate profiles
+
   fargate_profiles = {
     default = {
       fargate_profile_name = "default"
@@ -119,7 +116,7 @@ module "aws-eks-accelerator-for-terraform" {
             env         = "fargate"
           }
       }]
-      subnet_ids = local.private_subnet_ids
+      subnet_ids = module.aws_vpc.private_subnets
       additional_tags = {
         ExtraTag = "Fargate"
       }
@@ -143,16 +140,14 @@ module "aws-eks-accelerator-for-terraform" {
   }
 }
 
-module "kubernetes-addons" {
+module "eks_blueprints_kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id               = module.aws-eks-accelerator-for-terraform.eks_cluster_id
-  eks_worker_security_group_id = module.aws-eks-accelerator-for-terraform.worker_node_security_group_id
-  auto_scaling_group_names     = module.aws-eks-accelerator-for-terraform.self_managed_node_group_autoscaling_groups
+  eks_cluster_id               = module.eks_blueprints.eks_cluster_id
+  eks_worker_security_group_id = module.eks_blueprints.worker_node_security_group_id
+  auto_scaling_group_names     = module.eks_blueprints.self_managed_node_group_autoscaling_groups
 
-  # EKS Addons
-  enable_amazon_eks_vpc_cni = true # default is false
-  #Optional
+  enable_amazon_eks_vpc_cni = true
   amazon_eks_vpc_cni_config = {
     addon_name               = "vpc-cni"
     addon_version            = "v1.10.1-eksbuild.1"
@@ -164,8 +159,7 @@ module "kubernetes-addons" {
     tags                     = {}
   }
 
-  enable_amazon_eks_coredns = true # default is false
-  #Optional
+  enable_amazon_eks_coredns = true
   amazon_eks_coredns_config = {
     addon_name               = "coredns"
     addon_version            = "v1.8.4-eksbuild.1"
@@ -177,8 +171,7 @@ module "kubernetes-addons" {
     tags                     = {}
   }
 
-  enable_amazon_eks_kube_proxy = true # default is false
-  #Optional
+  enable_amazon_eks_kube_proxy = true
   amazon_eks_kube_proxy_config = {
     addon_name               = "kube-proxy"
     addon_version            = "v1.21.2-eksbuild.2"
@@ -190,8 +183,7 @@ module "kubernetes-addons" {
     tags                     = {}
   }
 
-  enable_amazon_eks_aws_ebs_csi_driver = true # default is false
-  #Optional
+  enable_amazon_eks_aws_ebs_csi_driver = true
   amazon_eks_aws_ebs_csi_driver_config = {
     addon_name               = "aws-ebs-csi-driver"
     addon_version            = "v1.4.0-eksbuild.preview"
@@ -202,11 +194,8 @@ module "kubernetes-addons" {
     service_account_role_arn = ""
     tags                     = {}
   }
-  #---------------------------------------
-  # AWS LOAD BALANCER INGRESS CONTROLLER HELM ADDON
-  #---------------------------------------
+
   enable_aws_load_balancer_controller = true
-  # Optional
   aws_load_balancer_controller_helm_config = {
     name       = "aws-load-balancer-controller"
     chart      = "aws-load-balancer-controller"
@@ -214,11 +203,8 @@ module "kubernetes-addons" {
     version    = "1.3.1"
     namespace  = "kube-system"
   }
-  #---------------------------------------
-  # AWS NODE TERMINATION HANDLER HELM ADDON
-  #---------------------------------------
+
   enable_aws_node_termination_handler = true
-  # Optional
   aws_node_termination_handler_helm_config = {
     name       = "aws-node-termination-handler"
     chart      = "aws-node-termination-handler"
@@ -226,89 +212,70 @@ module "kubernetes-addons" {
     version    = "0.16.0"
     timeout    = "1200"
   }
-  #---------------------------------------
-  # TRAEFIK INGRESS CONTROLLER HELM ADDON
-  #---------------------------------------
+
   enable_traefik = true
-  # Optional Map value
   traefik_helm_config = {
-    name       = "traefik"                         # (Required) Release name.
-    repository = "https://helm.traefik.io/traefik" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "traefik"                         # (Required) Chart name to be installed.
-    version    = "10.0.0"                          # (Optional) Specify the exact chart version to install.
-    namespace  = "kube-system"                     # (Optional) The namespace to install the release into.
-    timeout    = "1200"                            # (Optional)
-    lint       = "true"                            # (Optional)
-    # (Optional) Example to show how to override values using SET
+    name       = "traefik"
+    repository = "https://helm.traefik.io/traefik"
+    chart      = "traefik"
+    version    = "10.0.0"
+    namespace  = "kube-system"
+    timeout    = "1200"
+    lint       = "true"
     set = [{
       name  = "service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
       value = "nlb"
     }]
-    # (Optional) Example to show how to pass metrics-server-values.yaml
     values = [templatefile("${path.module}/helm_values/traefik-values.yaml", {
       operating_system = "linux"
     })]
   }
-  #---------------------------------------
-  # METRICS SERVER HELM ADDON
-  #---------------------------------------
+
   enable_metrics_server = true
-  # Optional Map value
   metrics_server_helm_config = {
-    name       = "metrics-server"                                    # (Required) Release name.
-    repository = "https://kubernetes-sigs.github.io/metrics-server/" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "metrics-server"                                    # (Required) Chart name to be installed.
-    version    = "3.8.1"                                             # (Optional) Specify the exact chart version to install.
-    namespace  = "kube-system"                                       # (Optional) The namespace to install the release into.
-    timeout    = "1200"                                              # (Optional)
-    lint       = "true"                                              # (Optional)
-    # (Optional) Example to show how to pass metrics-server-values.yaml
+    name       = "metrics-server"
+    repository = "https://kubernetes-sigs.github.io/metrics-server/"
+    chart      = "metrics-server"
+    version    = "3.8.1"
+    namespace  = "kube-system"
+    timeout    = "1200"
+    lint       = "true"
     values = [templatefile("${path.module}/helm_values/metrics-server-values.yaml", {
       operating_system = "linux"
     })]
   }
-  #---------------------------------------
-  # CLUSTER AUTOSCALER HELM ADDON
-  #---------------------------------------
+
   enable_cluster_autoscaler = true
-  # Optional Map value
   cluster_autoscaler_helm_config = {
-    name       = "cluster-autoscaler"                      # (Required) Release name.
-    repository = "https://kubernetes.github.io/autoscaler" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "cluster-autoscaler"                      # (Required) Chart name to be installed.
-    version    = "9.10.7"                                  # (Optional) Specify the exact chart version to install.
-    namespace  = "kube-system"                             # (Optional) The namespace to install the release into.
-    timeout    = "1200"                                    # (Optional)
-    lint       = "true"                                    # (Optional)
-    # (Optional) Example to show how to pass metrics-server-values.yaml
+    name       = "cluster-autoscaler"
+    repository = "https://kubernetes.github.io/autoscaler"
+    chart      = "cluster-autoscaler"
+    version    = "9.10.7"
+    namespace  = "kube-system"
+    timeout    = "1200"
+    lint       = "true"
     values = [templatefile("${path.module}/helm_values/cluster-autoscaler-vaues.yaml", {
       operating_system = "linux"
     })]
   }
-  #---------------------------------------
-  # COMMUNITY PROMETHEUS ENABLE
-  #---------------------------------------
+
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
   enable_amazon_prometheus             = true
-  amazon_prometheus_workspace_endpoint = module.aws-eks-accelerator-for-terraform.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
 
   enable_prometheus = true
-  # Optional Map value
   prometheus_helm_config = {
-    name       = "prometheus"                                         # (Required) Release name.
-    repository = "https://prometheus-community.github.io/helm-charts" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "prometheus"                                         # (Required) Chart name to be installed.
-    version    = "15.3.0"                                             # (Optional) Specify the exact chart version to install.
-    namespace  = "prometheus"                                         # (Optional) The namespace to install the release into.
+    name       = "prometheus"
+    repository = "https://prometheus-community.github.io/helm-charts"
+    chart      = "prometheus"
+    version    = "15.3.0"
+    namespace  = "prometheus"
     values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
       operating_system = "linux"
     })]
   }
-  #---------------------------------------
-  # ENABLE NGINX
-  #---------------------------------------
+
   enable_ingress_nginx = true
-  # Optional ingress_nginx_helm_config
   ingress_nginx_helm_config = {
     name       = "ingress-nginx"
     chart      = "ingress-nginx"
@@ -317,12 +284,9 @@ module "kubernetes-addons" {
     namespace  = "kube-system"
     values     = [templatefile("${path.module}/helm_values/nginx_values.yaml", {})]
   }
-  #---------------------------------------
-  # ENABLE AGONES
-  #---------------------------------------
+
   # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
   enable_agones = true
-  # Optional  agones_helm_config
   agones_helm_config = {
     name               = "agones"
     chart              = "agones"
@@ -339,9 +303,6 @@ module "kubernetes-addons" {
     })]
   }
 
-  #---------------------------------------
-  # AWS-FOR-FLUENTBIT HELM ADDON
-  #---------------------------------------
   enable_aws_for_fluentbit = true
   aws_for_fluentbit_helm_config = {
     name                                      = "aws-for-fluent-bit"
@@ -349,12 +310,12 @@ module "kubernetes-addons" {
     repository                                = "https://aws.github.io/eks-charts"
     version                                   = "0.1.0"
     namespace                                 = "logging"
-    aws_for_fluent_bit_cw_log_group           = "/${local.eks_cluster_id}/worker-fluentbit-logs" # Optional
+    aws_for_fluent_bit_cw_log_group           = "/${module.eks_blueprints.eks_cluster_id}/worker-fluentbit-logs" # Optional
     aws_for_fluentbit_cwlog_retention_in_days = 90
     create_namespace                          = true
     values = [templatefile("${path.module}/helm_values/aws-for-fluentbit-values.yaml", {
-      region                          = data.aws_region.current.name,
-      aws_for_fluent_bit_cw_log_group = "/${local.eks_cluster_id}/worker-fluentbit-logs"
+      region                          = local.region
+      aws_for_fluent_bit_cw_log_group = "/${module.eks_blueprints.eks_cluster_id}/worker-fluentbit-logs"
     })]
     set = [
       {
@@ -363,11 +324,8 @@ module "kubernetes-addons" {
       }
     ]
   }
-  #---------------------------------------
-  # ENABLE SPARK on K8S OPERATOR
-  #---------------------------------------
+
   enable_spark_k8s_operator = true
-  # Optional Map value
   spark_k8s_operator_helm_config = {
     name             = "spark-operator"
     chart            = "spark-operator"
@@ -379,45 +337,41 @@ module "kubernetes-addons" {
     values           = [templatefile("${path.module}/helm_values/spark-k8s-operator-values.yaml", {})]
   }
 
-  #---------------------------------------
-  # FARGATE FLUENTBIT
-  #---------------------------------------
   enable_fargate_fluentbit = true
   fargate_fluentbit_addon_config = {
-    output_conf  = <<EOF
-[OUTPUT]
-  Name cloudwatch_logs
-  Match *
-  region ${data.aws_region.current.name}
-  log_group_name /${local.eks_cluster_id}/fargate-fluentbit-logs
-  log_stream_prefix "fargate-logs-"
-  auto_create_group true
+    output_conf = <<-EOF
+    [OUTPUT]
+      Name cloudwatch_logs
+      Match *
+      region ${local.region}
+      log_group_name /${module.eks_blueprints.eks_cluster_id}/fargate-fluentbit-logs
+      log_stream_prefix "fargate-logs-"
+      auto_create_group true
     EOF
-    filters_conf = <<EOF
-[FILTER]
-  Name parser
-  Match *
-  Key_Name log
-  Parser regex
-  Preserve_Key On
-  Reserve_Data On
+
+    filters_conf = <<-EOF
+    [FILTER]
+      Name parser
+      Match *
+      Key_Name log
+      Parser regex
+      Preserve_Key On
+      Reserve_Data On
     EOF
-    parsers_conf = <<EOF
-[PARSER]
-  Name regex
-  Format regex
-  Regex ^(?<time>[^ ]+) (?<stream>[^ ]+) (?<logtag>[^ ]+) (?<message>.+)$
-  Time_Key time
-  Time_Format %Y-%m-%dT%H:%M:%S.%L%z
-  Time_Keep On
-  Decode_Field_As json message
+
+    parsers_conf = <<-EOF
+    [PARSER]
+      Name regex
+      Format regex
+      Regex ^(?<time>[^ ]+) (?<stream>[^ ]+) (?<logtag>[^ ]+) (?<message>.+)$
+      Time_Key time
+      Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+      Time_Keep On
+      Decode_Field_As json message
     EOF
   }
-  #---------------------------------------
-  # ENABLE ARGOCD
-  #---------------------------------------
+
   enable_argocd = true
-  # Optional Map value
   argocd_helm_config = {
     name             = "argo-cd"
     chart            = "argo-cd"
@@ -428,47 +382,35 @@ module "kubernetes-addons" {
     create_namespace = true
     values           = [templatefile("${path.module}/helm_values/argocd-values.yaml", {})]
   }
-  #---------------------------------------
-  # KEDA ENABLE
-  #---------------------------------------
+
   enable_keda = true
-  # Optional Map value
   keda_helm_config = {
-    name       = "keda"                              # (Required) Release name.
-    repository = "https://kedacore.github.io/charts" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "keda"                              # (Required) Chart name to be installed.
-    version    = "2.6.2"                             # (Optional) Specify the exact chart version to install.
-    namespace  = "keda"                              # (Optional) The namespace to install the release into.
+    name       = "keda"
+    repository = "https://kedacore.github.io/charts"
+    chart      = "keda"
+    version    = "2.6.2"
+    namespace  = "keda"
     values     = [templatefile("${path.module}/helm_values/keda-values.yaml", {})]
   }
-  #---------------------------------------
-  # Vertical Pod Autoscaling
-  #---------------------------------------
+
   enable_vpa = true
   vpa_helm_config = {
-    name       = "vpa"                                 # (Required) Release name.
-    repository = "https://charts.fairwinds.com/stable" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "vpa"                                 # (Required) Chart name to be installed.
-    version    = "1.0.0"                               # (Optional) Specify the exact chart version to install.
-    namespace  = "vpa"                                 # (Optional) The namespace to install the release into.
+    name       = "vpa"
+    repository = "https://charts.fairwinds.com/stable"
+    chart      = "vpa"
+    version    = "1.0.0"
+    namespace  = "vpa"
     values     = [templatefile("${path.module}/helm_values/vpa-values.yaml", {})]
   }
-  #---------------------------------------
-  # Apache YuniKorn K8s Spark Scheduler
-  #---------------------------------------
+
   enable_yunikorn = true
   yunikorn_helm_config = {
-    name       = "yunikorn"                                  # (Required) Release name.
-    repository = "https://apache.github.io/yunikorn-release" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "yunikorn"                                  # (Required) Chart name to be installed.
-    version    = "0.12.2"                                    # (Optional) Specify the exact chart version to install.
+    name       = "yunikorn"
+    repository = "https://apache.github.io/yunikorn-release"
+    chart      = "yunikorn"
+    version    = "0.12.2"
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
 
-  depends_on = [module.aws-eks-accelerator-for-terraform.managed_node_groups]
-}
-
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.aws-eks-accelerator-for-terraform.configure_kubectl
+  depends_on = [module.eks_blueprints.managed_node_groups]
 }

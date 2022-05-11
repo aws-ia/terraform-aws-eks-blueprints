@@ -1,6 +1,3 @@
-global:
-  serviceAccount: ${sa-name}
-
 operatorPlugins: general,spark-k8s-operator
 
 service:

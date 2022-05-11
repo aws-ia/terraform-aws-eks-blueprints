@@ -4,6 +4,7 @@ resource "aws_eks_addon" "vpc_cni" {
   addon_version            = local.addon_config["addon_version"]
   resolve_conflicts        = local.addon_config["resolve_conflicts"]
   service_account_role_arn = local.addon_config["service_account_role_arn"] == "" ? module.irsa_addon.irsa_iam_role_arn : local.addon_config["service_account_role_arn"]
+  preserve                 = local.addon_config["preserve"]
   tags = merge(
     var.addon_context.tags, local.addon_config["tags"],
     { "eks_addon" = "vpc-cni" }

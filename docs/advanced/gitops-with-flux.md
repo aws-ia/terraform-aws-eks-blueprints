@@ -21,7 +21,7 @@ There're also a set of Kyverno cluster policies deployed to audit (test) or enfo
 
 ## Bootstrap your cluster with Flux
 
-The below instructions assume you have created a cluster with `aws-eks-accelerator-for-terraform` with no add-ons other than aws-load-balancer-controller. If you're installing additonal add-ons via terraform, the configuration may clash with the one on the sample repository. If you plan to leverage Flux, we recommend that you use Terraform to install and manage only add-ons that require additional AWS resources to be created (like IAM roles for Service accounts), and then use Flux to manage the rest.
+The below instructions assume you have created a cluster with `eks-blueprints` with no add-ons other than aws-load-balancer-controller. If you're installing additonal add-ons via terraform, the configuration may clash with the one on the sample repository. If you plan to leverage Flux, we recommend that you use Terraform to install and manage only add-ons that require additional AWS resources to be created (like IAM roles for Service accounts), and then use Flux to manage the rest.
 
 ### Prerequisites
 

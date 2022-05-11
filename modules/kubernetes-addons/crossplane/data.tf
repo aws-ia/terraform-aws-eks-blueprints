@@ -2,7 +2,7 @@ data "aws_iam_policy_document" "s3_policy" {
   statement {
     sid       = "VisualEditor0"
     effect    = "Allow"
-    resources = ["arn:aws:s3:::*"]
+    resources = ["arn:${var.addon_context.aws_partition_id}:s3:::*"]
 
     actions = [
       "s3:Get*",

@@ -21,6 +21,9 @@ module "launch_template_self_managed_ng" {
       http_tokens                 = var.context.http_tokens
       http_put_response_hop_limit = var.context.http_put_response_hop_limit
 
+      service_ipv6_cidr = var.context.service_ipv6_cidr
+      service_ipv4_cidr = var.context.service_ipv4_cidr
+
       block_device_mappings = local.self_managed_node_group["block_device_mappings"]
 
       network_interfaces = [

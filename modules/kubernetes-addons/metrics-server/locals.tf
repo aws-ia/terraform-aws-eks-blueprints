@@ -6,7 +6,7 @@ locals {
     chart       = local.name
     repository  = "https://kubernetes-sigs.github.io/metrics-server/"
     version     = "3.8.1"
-    namespace   = local.name
+    namespace   = "kube-system"
     description = "Metric server helm Chart deployment configuration"
     values      = []
     timeout     = "1200"

@@ -1,0 +1,71 @@
+name: plan-examples
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  getExampleDirectories:
+    name: Get example directories
+    runs-on: ubuntu-latest
+    # Skip running on forks since it won't have access to secrets
+    if: github.repository_owner == 'aws-ia'
+    outputs:
+      directories: ${{ steps.dirs.outputs.directories }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get Terraform directories for evaluation
+        id: dirs
+        run: |
+          DIRS=$(python3 .github/workflows/plan-examples.py)
+          echo "::set-output name=directories::$DIRS"
+
+  plan:
+    name: Plan examples
+    needs: getExampleDirectories
+    runs-on: ubuntu-latest
+    # Skip running on forks since it won't have access to secrets
+    if: github.repository_owner == 'aws-ia'
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        tf_working_dir: ${{ fromJson(needs.getExampleDirectories.outputs.directories) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials from Test account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          aws-region: us-west-2
+          role-duration-seconds: 3600
+          role-session-name: GithubActions-Session
+
+      - name: Terraform Job
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.0
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -reconfigure
+        working-directory: ${{ matrix.tf_working_dir }}
+
+      - name: Terraform Plan
+        id: plan
+        working-directory: ${{ matrix.tf_working_dir }}
+        run: terraform plan -no-color

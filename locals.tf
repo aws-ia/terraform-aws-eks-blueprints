@@ -23,10 +23,8 @@ locals {
   public_subnet_ids  = var.public_subnet_ids
   tags               = module.eks_tags.tags
 
-  enable_workers                    = length(var.self_managed_node_groups) > 0 || length(var.managed_node_groups) > 0 ? true : false
-  cluster_security_group_id         = module.aws_eks.cluster_security_group_id
-  cluster_primary_security_group_id = module.aws_eks.cluster_primary_security_group_id
-  worker_security_group_ids         = local.enable_workers ? compact(flatten([[module.aws_eks.node_security_group_id], var.worker_additional_security_group_ids])) : []
+  enable_workers            = length(var.self_managed_node_groups) > 0 || length(var.managed_node_groups) > 0 ? true : false
+  worker_security_group_ids = local.enable_workers ? compact(flatten([[module.aws_eks.node_security_group_id], var.worker_additional_security_group_ids])) : []
 
   node_group_context = {
     # EKS Cluster Config
@@ -54,6 +52,10 @@ locals {
     iam_role_path                 = var.iam_role_path
     iam_role_permissions_boundary = var.iam_role_permissions_boundary
 
+    # Service IPv4/IPv6 CIDR range
+    service_ipv6_cidr = var.cluster_service_ipv6_cidr
+    service_ipv4_cidr = var.cluster_service_ipv4_cidr
+
     tags = local.tags
   }
 
@@ -64,8 +66,6 @@ locals {
     iam_role_permissions_boundary = var.iam_role_permissions_boundary
     tags                          = local.tags
   }
-
-  ecr_image_repo_url = "${local.context.aws_caller_identity_account_id}.dkr.ecr.${local.context.aws_region_name}.amazonaws.com"
 
   # Managed node IAM Roles for aws-auth
   managed_node_group_aws_auth_config_map = length(var.managed_node_groups) > 0 == true ? [
@@ -152,5 +152,4 @@ locals {
   ] : []
 
   cluster_iam_role_name = "${module.eks_tags.tags.name}-cluster-role"
-
 }

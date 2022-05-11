@@ -1,12 +1,16 @@
 name: pre-commit
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
 
 env:
   TERRAFORM_DOCS_VERSION: v0.16.0
+  TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
 
 jobs:
   collectInputs:
@@ -32,6 +36,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Config Terraform plugin cache
+        run: mkdir --parents ${{ env.TERRAFORM_DOCS_VERSION }}
+
+      - name: Cache Terraform
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.TERRAFORM_DOCS_VERSION }}
+          key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
+          restore-keys: ${{ runner.os }}-terraform-
 
       - name: Terraform min/max versions
         id: minMax
@@ -65,6 +79,19 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{github.event.pull_request.head.repo.full_name}}
+
+      - name: Config Terraform plugin cache
+        run: mkdir --parents ${{ env.TERRAFORM_DOCS_VERSION }}
+
+      - name: Cache Terraform
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.TERRAFORM_DOCS_VERSION }}
+          key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
+          restore-keys: ${{ runner.os }}-terraform-
+
+      - name: Install tfsec
+        run: curl -L "$(curl -s https://api.github.com/repos/aquasecurity/tfsec/releases/latest | grep -o -E -m 1 "https://.+?tfsec-linux-amd64")" > tfsec && chmod +x tfsec && sudo mv tfsec /usr/bin/
 
       - name: Terraform min/max versions
         id: minMax

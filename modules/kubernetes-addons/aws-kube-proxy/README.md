@@ -1,17 +1,21 @@
 # kube-proxy
+
 [kube-proxy](https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html)
 Kube-proxy maintains network rules on each Amazon EC2 node. It enables network communication to your pods. Kube-proxy is not deployed to Fargate nodes
 
- <!--- BEGIN_TF_DOCS --->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
 
 ## Modules
 
@@ -33,5 +37,4 @@ No modules.
 ## Outputs
 
 No outputs.
-
-<!--- END_TF_DOCS --->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

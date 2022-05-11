@@ -1,3 +1,0 @@
-serviceAccount:
-  create: false
-  name: ${sa-name}

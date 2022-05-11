@@ -1,6 +1,6 @@
 locals {
   name                 = "cert-manager"
-  service_account_name = "${local.name}-sa"
+  service_account_name = "cert-manager" # AWS PrivateCA is expecting the service account name as `cert-manager`
 
   default_helm_config = {
     name        = local.name
@@ -8,9 +8,8 @@ locals {
     repository  = "https://charts.jetstack.io"
     version     = "v1.7.1"
     namespace   = local.name
-    description = "Argo Rollouts AddOn Helm Chart"
+    description = "Cert Manager Add-on"
     values      = local.default_helm_values
-    timeout     = "600"
   }
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {})]
@@ -34,7 +33,7 @@ locals {
   irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
     kubernetes_service_account        = local.service_account_name
-    create_kubernetes_namespace       = true
+    create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
     create_kubernetes_service_account = true
   }
 

@@ -10,18 +10,6 @@ locals {
     {
       name  = "serviceAccount.create"
       value = false
-    },
-    {
-      name  = "controller.clusterName"
-      value = var.addon_context.eks_cluster_id
-    },
-    {
-      name  = "controller.clusterEndpoint"
-      value = local.eks_cluster_endpoint
-    },
-    {
-      name  = "aws.defaultInstanceProfile"
-      value = var.node_iam_instance_profile
     }
   ]
 
@@ -53,7 +41,6 @@ locals {
   default_helm_values = [templatefile("${path.module}/values.yaml", {
     eks_cluster_id            = var.addon_context.eks_cluster_id,
     eks_cluster_endpoint      = local.eks_cluster_endpoint,
-    service_account_name      = local.service_account_name,
     node_iam_instance_profile = var.node_iam_instance_profile,
     operating_system          = "linux"
   })]
@@ -61,7 +48,6 @@ locals {
   argocd_gitops_config = {
     enable                    = true
     serviceAccountName        = local.service_account_name
-    controllerClusterName     = var.addon_context.eks_cluster_id
     controllerClusterEndpoint = local.eks_cluster_endpoint
     awsDefaultInstanceProfile = var.node_iam_instance_profile
   }

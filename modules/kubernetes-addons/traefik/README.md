@@ -2,17 +2,21 @@
 
 ## Introduction
 
- Traefik is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease. Fore more detials about [Traefik can be found here](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)
+Traefik is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease. Fore more detials about [Traefik can be found here](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)
 
-
-<!--- BEGIN_TF_DOCS --->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
 
 ## Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
 
 ## Modules
 
@@ -22,7 +26,9 @@ No providers.
 
 ## Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [kubernetes_namespace_v1.this](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace_v1) | resource |
 
 ## Inputs
 
@@ -37,5 +43,4 @@ No resources.
 | Name | Description |
 |------|-------------|
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
-
-<!--- END_TF_DOCS --->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -1,26 +1,29 @@
 # EMR on EKS
 
 This example deploys the following resources
- - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
- - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
- - Creates EKS Cluster Control plane with public endpoint (for demo purpose only) with one managed node group
- - Deploys Metrics server, Cluster Autoscaler, Prometheus and EMR on EKS Addon
- - Creates Amazon managed Prometheus and configures Prometheus addon to remote write metrics to AMP
+
+- Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
+- Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
+- Creates EKS Cluster Control plane with public endpoint (for demo purpose only) with one managed node group
+- Deploys Metrics server, Cluster Autoscaler, Prometheus and EMR on EKS Addon
+- Creates Amazon managed Prometheus and configures Prometheus addon to remote write metrics to AMP
 
 ## Prerequisites:
+
 Ensure that you have installed the following tools on your machine.
+
 1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-3. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
-4. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
+3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
 _Note: Currently Amazon Prometheus supported only in selected regions. Please see this [userguide](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html) for supported regions._
 
-## Step1: Deploy EKS Clusters with EMR on EKS feature
+## Step 1: Deploy EKS Clusters with EMR on EKS feature
 
 Clone the repository
 
 ```
-git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 Navigate into one of the example directories and run `terraform init`
@@ -33,9 +36,8 @@ terraform init
 Set AWS_REGION and Run Terraform plan to verify the resources created by this execution.
 
 ```
-export AWS_REGION="<enter-your-region>"  
+export AWS_REGION="<enter-your-region>"
 terraform plan
-
 ```
 
 Deploy the pattern
@@ -46,7 +48,7 @@ terraform apply
 
 Enter `yes` to apply.
 
-## Step3:  Verify the resources
+## Step 3: Verify the resources
 
 Let’s verify the resources created by Step 4.
 
@@ -76,7 +78,7 @@ kubectl get pods --namespace=kube-system | grep  metrics-server # Output shows M
 kubectl get pods --namespace=kube-system | grep  cluster-autoscaler # Output shows Cluster Autoscaler pod
 ```
 
-## Step4: Create EMR Virtual Cluster for EKS
+## Step 4: Create EMR Virtual Cluster for EKS
 
 We are using AWS CLI to create EMR on EKS Clusters. You can leverage Terraform Module once the [EMR on EKS TF provider](https://github.com/hashicorp/terraform-provider-aws/pull/20003) is available.
 
@@ -86,8 +88,8 @@ vi examples/analytics/emr-on-eks/examples/create_emr_virtual_cluster_for_eks.sh
 
 Update the following variables.
 
-Extract the cluster_name as **EKS_CLUSTER_ID** from Terraform Outputs (**Step1**)
-**EMR_ON_EKS_NAMESPACE** is same as what you passed from **Step1**
+Extract the cluster_name as **EKS_CLUSTER_ID** from Terraform Outputs (**Step 1**)
+**EMR_ON_EKS_NAMESPACE** is same as what you passed from **Step 1**
 
     EKS_CLUSTER_ID='aws001-preprod-test-eks'
     EMR_ON_EKS_NAMESPACE='emr-data-team-a'
@@ -99,7 +101,7 @@ cd examples/analytics/emr-on-eks/examples/
 ./create_emr_virtual_cluster_for_eks.sh
 ```
 
-## Step5: Execute Spark job on EMR Virtual Cluster
+## Step 5: Execute Spark job on EMR Virtual Cluster
 
 Execute the Spark job using the below shell script.
 
@@ -119,7 +121,7 @@ Verify the job execution
 kubectl get pods --namespace=emr-data-team-a -w
 ```
 
-## Step5: Cleanup
+## Step 5: Cleanup
 
 ### Delete EMR Virtual Cluster for EKS
 
@@ -131,6 +133,7 @@ cd examples/analytics/emr-on-eks/examples/
 ## Additional examples
 
 ### Node Placements example
+
 Add these to `applicationConfiguration`.`properties`
 
           "spark.kubernetes.node.selector.topology.kubernetes.io/zone":"<availability zone>",
@@ -140,7 +143,6 @@ Add these to `applicationConfiguration`.`properties`
 
 In this example we are connecting to mysql db, so mariadb-connector-java.jar needs to be passed with --jars option
 https://aws.github.io/aws-emr-containers-best-practices/metastore-integrations/docs/hive-metastore/
-
 
       "sparkSubmitJobDriver": {
       "entryPoint": "s3://<s3 prefix>/hivejdbc.py",
@@ -176,60 +178,62 @@ Specifically, you can use persistent volume claims if the jobs require large shu
 ## Debugging
 
 ##### Issue1: Error: local-exec provisioner error
+
 ```shell script
 Error: local-exec provisioner error \
-with module.aws-eks-accelerator-for-terraform.module.emr_on_eks["data_team_b"].null_resource.update_trust_policy,\
- on .terraform/modules/aws-eks-accelerator-for-terraform/modules/emr-on-eks/main.tf line 105, in resource "null_resource" \
+with module.eks-blueprints.module.emr_on_eks["data_team_b"].null_resource.update_trust_policy,\
+ on .terraform/modules/eks-blueprints/modules/emr-on-eks/main.tf line 105, in resource "null_resource" \
  "update_trust_policy":│ 105: provisioner "local-exec" {│ │ Error running command 'set -e│ │ aws emr-containers update-role-trust-policy \
  │ --cluster-name aws001-preprod-test-eks \│ --namespace emr-data-team-b \│ --role-name aws001-preprod-test-eks-emr-eks-data-team-b
 ```
 
-##### Solution :  
- - emr-containers not present in cli version 2.0.41 Python/3.7.4. For more [details](https://github.com/aws/aws-cli/issues/6162)
-This is fixed in version 2.0.54.
-- Action: aws cli version should be updated to 2.0.54 or later : Execute  `pip install --upgrade awscliv2 `
+##### Solution :
 
-<!--- BEGIN_TF_DOCS --->
+- emr-containers not present in cli version 2.0.41 Python/3.7.4. For more [details](https://github.com/aws/aws-cli/issues/6162)
+  This is fixed in version 2.0.54.
+- Action: aws cli version should be updated to 2.0.54 or later : Execute `pip install --upgrade awscliv2 `
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.66.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.6.1 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.66.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | ../../.. | n/a |
-| <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.2.0 |
-| <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | ../../../modules/kubernetes-addons | n/a |
+| <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | ~> 3.0 |
+| <a name="module_eks_blueprints"></a> [eks\_blueprints](#module\_eks\_blueprints) | ../../.. | n/a |
+| <a name="module_eks_blueprints_kubernetes_addons"></a> [eks\_blueprints\_kubernetes\_addons](#module\_eks\_blueprints\_kubernetes\_addons) | ../../../modules/kubernetes-addons | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
-| [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
-| [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
-| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
-No inputs.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_environment"></a> [environment](#input\_environment) | Environment area, e.g. prod or preprod | `string` | `"preprod"` | no |
+| <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | `"aws001"` | no |
+| <a name="input_zone"></a> [zone](#input\_zone) | zone, e.g. dev or qa or load or ops etc... | `string` | `"test"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
 | <a name="output_configure_kubectl"></a> [configure\_kubectl](#output\_configure\_kubectl) | Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
-
-<!--- END_TF_DOCS --->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
