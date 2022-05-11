@@ -123,7 +123,7 @@ opentelemetry-operator-system   opentelemetry-operator-controller-manager-68f5b4
 
 #### Deploy an Example Application
 
-In this section we will deploy sample application and extract metrics using  AWS OpenTelemetry collector 
+In this section we will deploy sample application and extract metrics using  AWS OpenTelemetry collector
 
 - 1. Add the helm incubator repo:
 ```
@@ -157,9 +157,9 @@ EXTERNAL_IP=your-nginx-controller-external-ip
 - 5. Start some sample NGINX traffic by entering the following command.
 ```
 SAMPLE_TRAFFIC_NAMESPACE=nginx-sample-traffic
-curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/master/k8s-deployment-manifest-templates/deployment-mode/service/cwagent-prometheus/sample_traffic/nginx-traffic/nginx-traffic-sample.yaml | 
-sed "s/{{external_ip}}/$EXTERNAL_IP/g" | 
-sed "s/{{namespace}}/$SAMPLE_TRAFFIC_NAMESPACE/g" | 
+curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/master/k8s-deployment-manifest-templates/deployment-mode/service/cwagent-prometheus/sample_traffic/nginx-traffic/nginx-traffic-sample.yaml |
+sed "s/{{external_ip}}/$EXTERNAL_IP/g" |
+sed "s/{{namespace}}/$SAMPLE_TRAFFIC_NAMESPACE/g" |
 kubectl apply -f -
 
 ```
