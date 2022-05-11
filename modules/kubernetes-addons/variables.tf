@@ -700,6 +700,7 @@ variable "opentelemetry_operator_helm_config" {
 }
 
 #-----------AWS Observability patterns-------------
+#-----------Java/Jmx Use case-------------
 variable "enable_adot_collector_java" {
   type        = bool
   default     = false
@@ -711,7 +712,7 @@ variable "adot_collector_java_helm_config" {
   default     = {}
   description = "ADOT Collector Java Helm Chart config"
 }
-
+#-----------Nginx Use case-------------
 variable "enable_adot_collector_nginx" {
   type        = bool
   default     = false
