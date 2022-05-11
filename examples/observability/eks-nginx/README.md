@@ -86,7 +86,7 @@ aws eks --region $AWS_REGION update-kubeconfig --name aws001-preprod-observabili
 
 **NOTE**
 
-This example deploy all the necessary components to start monitoring your Java-based
+This example deploy all the necessary components to start monitoring your Nginx
 applications. However, you can follow the steps below to build and deploy and example
 application.
 
