@@ -142,11 +142,12 @@ module "aws_eks_teams" {
   count  = length(var.application_teams) > 0 || length(var.platform_teams) > 0 ? 1 : 0
   source = "./modules/aws-eks-teams"
 
-  application_teams = var.application_teams
-  platform_teams    = var.platform_teams
-  environment       = var.environment
-  tenant            = var.tenant
-  zone              = var.zone
-  eks_cluster_id    = module.aws_eks.cluster_id
-  tags              = module.eks_tags.tags
+  application_teams               = var.application_teams
+  platform_teams                  = var.platform_teams
+  environment                     = var.environment
+  tenant                          = var.tenant
+  zone                            = var.zone
+  iam_role_permissions_boundary   = var.iam_role_permissions_boundary
+  eks_cluster_id                  = module.aws_eks.cluster_id
+  tags                            = module.eks_tags.tags
 }
