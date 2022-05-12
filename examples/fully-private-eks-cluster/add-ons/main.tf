@@ -97,13 +97,13 @@ module "kubernetes-addons" {
   # INGRESS NGINX ADD-ON
   #---------------------------------------------------------------
 
-  enable_ingress_nginx = true
-  ingress_nginx_helm_config = {
-    values = [templatefile("${path.module}/helm_values/nginx-values.yaml", {
-      hostname     = var.eks_cluster_domain
-      ssl_cert_arn = data.aws_acm_certificate.issued.arn
-    })]
-  }
+  # enable_ingress_nginx = true
+  # ingress_nginx_helm_config = {
+  #   values = [templatefile("${path.module}/helm_values/nginx-values.yaml", {
+  #     hostname     = var.eks_cluster_domain
+  #     ssl_cert_arn = data.aws_acm_certificate.issued.arn
+  #   })]
+  # }
 
   #---------------------------------------------------------------
   # OTHER ADD-ONS
@@ -112,7 +112,7 @@ module "kubernetes-addons" {
   enable_cert_manager   = true
   enable_metrics_server = true
   enable_vpa            = true
-  enable_external_dns   = true
+  #enable_external_dns   = true
   enable_cluster_autoscaler = true
 
 
