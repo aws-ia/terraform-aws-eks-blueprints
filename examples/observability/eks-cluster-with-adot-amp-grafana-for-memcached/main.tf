@@ -117,7 +117,7 @@ module "eks_blueprints_kubernetes_addons" {
   # OTEL JMX use cases
   enable_cert_manager                  = true
   enable_opentelemetry_operator        = true
-  enable_adot_collector_memchached     = true
+  enable_adot_collector_memcached      = true
   amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
   amazon_prometheus_workspace_region   = local.region
 }
