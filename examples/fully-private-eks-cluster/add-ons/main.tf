@@ -55,7 +55,7 @@ locals {
   addon_application = {
     path               = "chart"
     repo_url           = "https://github.com/aws-samples/eks-blueprints-add-ons"
-    target_revision = fix/yaml-error
+    target_revision = "fix/yaml-error"
     add_on_application = true
   }
 
