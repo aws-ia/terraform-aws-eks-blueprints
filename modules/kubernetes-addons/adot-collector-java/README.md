@@ -1,4 +1,4 @@
-# Observability Patter for Nginx
+# Observability Pattern for Nginx
 
 This module provides an automated experience around Observability for Nginx workloads.
 It provides the following resources:
