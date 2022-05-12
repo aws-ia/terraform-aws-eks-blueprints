@@ -54,7 +54,7 @@ locals {
   #---------------------------------------------------------------
   addon_application = {
     path               = "chart"
-    repo_url           = "https://github.com/satveerkhurpa/eks-blueprints-add-ons"
+    repo_url           = "https://github.com/aws-samples/eks-blueprints-add-ons"
     add_on_application = true
   }
 
