@@ -35,20 +35,12 @@ provider "grafana" {
 
 data "aws_availability_zones" "available" {}
 
-data "aws_eks_cluster" "cluster" {
-  name = module.eks_blueprints.eks_cluster_id
-}
-
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks_blueprints.eks_cluster_id
-}
-
 locals {
   tenant      = var.tenant      # AWS account name or unique id for tenant
   environment = var.environment # Environment area eg., preprod or prod
   zone        = var.zone        # Environment within one sub_tenant or business unit
 
-  region = "us-east-1"
+  region = "us-west-2"
   azs    = slice(data.aws_availability_zones.available.names, 0, 3)
 
   cluster_version = "1.21"
