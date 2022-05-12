@@ -307,6 +307,15 @@ module "adot_collector_java" {
   addon_context                        = local.addon_context
 }
 
+module "adot_collector_haproxy" {
+  count                                = var.enable_adot_collector_haproxy ? 1 : 0
+  source                               = "./adot-collector-haproxy"
+  helm_config                          = var.adot_collector_haproxy_helm_config
+  amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
+  addon_context                        = local.addon_context
+}
+
 module "adot_collector_memcached" {
   count                                = var.enable_adot_collector_memcached ? 1 : 0
   source                               = "./adot-collector-memcached"
