@@ -315,4 +315,3 @@ module "adot_collector_haproxy" {
   amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
   addon_context                        = local.addon_context
 }
-
