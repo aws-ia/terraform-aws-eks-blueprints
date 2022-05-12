@@ -55,7 +55,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 - Initialize a working directory
 
 ```
-cd examples/observability/eks-memcached
+cd examples/observability/eks-cluster-with-adot-amp-grafana-for-memcached
 terraform init
 ```
 
@@ -176,7 +176,7 @@ kubectl get pods -n opentelemetry-operator-system
 kubectl logs -f -n opentelemetry-operator-system adot-collector-xxxx
 ```
 
-<!--- BEGIN_TF_DOCS --->
+
 ## Requirements
 
 | Name | Version |
@@ -220,4 +220,4 @@ kubectl logs -f -n opentelemetry-operator-system adot-collector-xxxx
 
 No outputs.
 
-<!--- END_TF_DOCS --->
+
