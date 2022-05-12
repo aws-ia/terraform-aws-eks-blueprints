@@ -19,11 +19,12 @@ resource "kubernetes_namespace_v1" "this" {
 }
 
 resource "aws_security_group_rule" "agones_sg_ingress_rule" {
+  description       = "Allow UDP ingress from internet"
   type              = "ingress"
   from_port         = local.helm_config["gameserver_minport"]
   to_port           = local.helm_config["gameserver_maxport"]
   protocol          = "udp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  ipv6_cidr_blocks  = ["::/0"]
+  cidr_blocks       = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sgr
+  ipv6_cidr_blocks  = ["::/0"]      #tfsec:ignore:aws-vpc-no-public-ingress-sgr
   security_group_id = data.aws_security_group.eks_worker_group.id
 }

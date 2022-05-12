@@ -95,9 +95,9 @@ Manually trigger the `tf-destroy` stage in the GitLab Ci/CD pipeline to destroy 
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_environment"></a> [environment](#input\_environment) | Environment area eg., preprod or prod | `string` | n/a | yes |
-| <a name="input_tenant"></a> [tenant](#input\_tenant) | AWS account name or unique id for tenant | `string` | n/a | yes |
-| <a name="input_zone"></a> [zone](#input\_zone) | Environment with in one sub\_tenant or business unit | `string` | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | Environment area, e.g. prod or preprod | `string` | `"preprod"` | no |
+| <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | `"aws001"` | no |
+| <a name="input_zone"></a> [zone](#input\_zone) | zone, e.g. dev or qa or load or ops etc... | `string` | `"dev"` | no |
 
 ## Outputs
 

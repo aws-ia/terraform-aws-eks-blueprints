@@ -14,11 +14,6 @@ output "opensearch_vpc_endpoint" {
   value       = aws_elasticsearch_domain.opensearch.endpoint
 }
 
-output "bastion_host_public_ip" {
-  description = "Public IP address of the bastion host"
-  value       = aws_instance.bastion_host.public_ip
-}
-
 output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
   value       = module.eks_blueprints.configure_kubectl

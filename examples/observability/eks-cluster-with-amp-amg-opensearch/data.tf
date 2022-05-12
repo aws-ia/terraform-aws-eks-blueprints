@@ -18,13 +18,3 @@ data "aws_iam_policy_document" "opensearch_access_policy" {
     }
   }
 }
-
-data "aws_ami" "amazon_linux_2" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm*"]
-  }
-}
