@@ -1,8 +1,8 @@
-# Observability pattern for Memcached applications with Amazon EKS and Observability services
+# Observability pattern for Nginx applications with Amazon EKS and Observability services
 
 This example demonstrates how to use the Amazon EKS Blueprints for Terraform a
 new Amazon EKS Cluster with AWS Distro for OpenTelemetry (ADOT) configured to
-specifically monitor Memcached applications Prometheus metrics.
+specifically monitor Nginx applications Prometheus metrics.
 The ADOT collector deployed as a Kubernetes Operator, sends metrics to a
 provided Amazon Managed Prometheus workspace, to be visualize with
 Amazon Managed Grafana.
@@ -55,7 +55,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 - Initialize a working directory
 
 ```
-cd examples/observability/eks-cluster-with-adot-amp-grafana-for-memcached
+cd examples/observability/eks-cluster-with-adot-amp-grafana-for-nginx
 terraform init
 ```
 
@@ -86,7 +86,7 @@ aws eks --region $AWS_REGION update-kubeconfig --name aws001-preprod-observabili
 
 **NOTE**
 
-This example deploy all the necessary components to start monitoring your Memcached
+This example deploy all the necessary components to start monitoring your Nginx
 applications. However, you can follow the steps below to build and deploy and example
 application.
 
@@ -123,42 +123,63 @@ opentelemetry-operator-system   opentelemetry-operator-controller-manager-68f5b4
 
 #### Deploy an Example Application
 
-In this section we will deploy sample application and extract metrics using  AWS OpenTelemetry collector
+In this section we will deploy sample application and extract metrics using AWS OpenTelemetry collector
 
 - 1. Add the helm incubator repo:
+
 ```
-helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 
 ```
 
 - 2. Enter the following command to create a new namespace:
+
 ```
-kubectl create namespace memcached-sample
+kubectl create namespace nginx-ingress-sample
 
 ```
 
-- 3. Enter the following commands to install Memcached:
+- 3. Enter the following commands to install HAProxy:
+
 ```
-helm install my-memcached bitnami/memcached --namespace memcached-sample \
---set metrics.enabled=true \
---set-string serviceAnnotations.prometheus\\.io/port="9150" \
---set-string serviceAnnotations.prometheus\\.io/scrape="true"
+helm install my-nginx ingress-nginx/ingress-nginx \
+--namespace nginx-ingress-sample \
+--set controller.metrics.enabled=true \
+--set-string controller.metrics.service.annotations."prometheus\.io/port"="10254" \
+--set-string controller.metrics.service.annotations."prometheus\.io/scrape"="true"
 
 ```
 
+- 4. Set an EXTERNAL-IP variable to the value of the EXTERNAL-IP column in the row of the NGINX ingress controller.
+
+```
+EXTERNAL_IP=your-nginx-controller-external-ip
+
+```
+
+- 5. Start some sample NGINX traffic by entering the following command.
+
+```
+SAMPLE_TRAFFIC_NAMESPACE=nginx-sample-traffic
+curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/master/k8s-deployment-manifest-templates/deployment-mode/service/cwagent-prometheus/sample_traffic/nginx-traffic/nginx-traffic-sample.yaml |
+sed "s/{{external_ip}}/$EXTERNAL_IP/g" |
+sed "s/{{namespace}}/$SAMPLE_TRAFFIC_NAMESPACE/g" |
+kubectl apply -f -
+
+```
 
 - 4. Verify if the application is running
+
 ```
-kubectl get pods -n memcached-sample
+kubectl get pods -n nginx-ingress-sample
 
 ```
 
 #### Vizualize the Application's dashboard
 
-Log back into your Managed Grafana Workspace and navigate to the dashboard side panel, click on `Observability` Folder and open the `Memcached for Kubernetes` Dashboard.
+Log back into your Managed Grafana Workspace and navigate to the dashboard side panel, click on `Observability` Folder and open the `HAProxy for Kubernetes` Dashboard.
 
-<img width="1468" alt="java-dashboard" src="https://user-images.githubusercontent.com/10175027/159924937-51514e4e-3442-40a2-a921-950d69f372b4.png">
-
+<img width="1468" alt="Nginx-dashboard" src="https://github.com/awsdabra/amg-dashboard-examples/blob/d4275d2e0251963b8783dcc03fd475d6f8783cc7/nginx_grafana_dashboard.png">
 
 ## Cleanup
 
@@ -175,49 +196,3 @@ Log back into your Managed Grafana Workspace and navigate to the dashboard side 
 kubectl get pods -n opentelemetry-operator-system
 kubectl logs -f -n opentelemetry-operator-system adot-collector-xxxx
 ```
-
-
-## Requirements
-
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.73.0 |
-| <a name="requirement_grafana"></a> [grafana](#requirement\_grafana) | >= 1.13.3 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.7.1 |
-
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.73.0 |
-
-## Modules
-
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_aws-eks-accelerator-for-terraform"></a> [aws-eks-accelerator-for-terraform](#module\_aws-eks-accelerator-for-terraform) | ../../.. | n/a |
-| <a name="module_aws_vpc"></a> [aws\_vpc](#module\_aws\_vpc) | terraform-aws-modules/vpc/aws | v3.11.3 |
-| <a name="module_kubernetes-addons"></a> [kubernetes-addons](#module\_kubernetes-addons) | ../../../modules/kubernetes-addons | n/a |
-
-## Resources
-
-| Name | Type |
-|------|------|
-| [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
-| [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
-| [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
-
-## Inputs
-
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_grafana_api_key"></a> [grafana\_api\_key](#input\_grafana\_api\_key) | Api key for authorizing the Grafana provider to make changes to Amazon Managed Grafana | `string` | n/a | yes |
-| <a name="input_grafana_endpoint"></a> [grafana\_endpoint](#input\_grafana\_endpoint) | n/a | `string` | `"Grafana endpoint"` | no |
-
-## Outputs
-
-No outputs.
-
-

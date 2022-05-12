@@ -1,8 +1,8 @@
-# Observability pattern for Java/JMX applications with Amazon EKS and Observability services
+# Observability pattern for Memcached applications with Amazon EKS and Observability services
 
 This example demonstrates how to use the Amazon EKS Blueprints for Terraform a
 new Amazon EKS Cluster with AWS Distro for OpenTelemetry (ADOT) configured to
-specifically monitor Java/JMX applications Prometheus metrics.
+specifically monitor Memcached applications Prometheus metrics.
 The ADOT collector deployed as a Kubernetes Operator, sends metrics to a
 provided Amazon Managed Prometheus workspace, to be visualize with
 Amazon Managed Grafana.
@@ -15,7 +15,7 @@ Amazon Managed Prometheus configured as a default data source on Managed Grafana
 **NOTE**
 
 For the sake of simplicity in this example, we store sensitive information and
-credentials in `dev.tfvars`. This should not be done in a production environment.
+credentials in `variables.tf`. This should not be done in a production environment.
 Instead, use an external secret store such as AWS Secrets Manager and use the
 [aws_secretsmanager_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret) data source to retrieve them.
 
@@ -55,7 +55,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 - Initialize a working directory
 
 ```
-cd examples/observability/eks-java-jmx
+cd examples/observability/eks-cluster-with-adot-amp-grafana-for-memcached
 terraform init
 ```
 
@@ -86,7 +86,7 @@ aws eks --region $AWS_REGION update-kubeconfig --name aws001-preprod-observabili
 
 **NOTE**
 
-This example deploy all the necessary components to start monitoring your Java-based
+This example deploy all the necessary components to start monitoring your Memcached
 applications. However, you can follow the steps below to build and deploy and example
 application.
 
@@ -123,60 +123,42 @@ opentelemetry-operator-system   opentelemetry-operator-controller-manager-68f5b4
 
 #### Deploy an Example Application
 
-In this section we will reuse an example from the AWS OpenTelemetry collector [repository](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/container-insights-eks-jmx.md). For convenience, the steps can be found below.
+In this section we will deploy sample application and extract metrics using AWS OpenTelemetry collector
 
-- 1. Clone [this repository](https://github.com/aws-observability/aws-otel-test-framework) and navigate to the `sample-apps/jmx/` directory.
-
-- 2. Authenticate to Amazon ECR
+- 1. Add the helm incubator repo:
 
 ```
-export AWS_ACCOUNT_ID=`aws sts get-caller-identity --query Account --output text`
-export AWS_REGION={region}
-aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-```
-
-- 3. Create an Amazon ECR repository
-
-```
-aws ecr create-repository --repository-name prometheus-sample-tomcat-jmx \
- --image-scanning-configuration scanOnPush=true \
- --region $AWS_REGION
+helm repo add bitnami https://charts.bitnami.com/bitnami
 
 ```
 
-- 4. Build Docker image and push to ECR.
+- 2. Enter the following command to create a new namespace:
 
 ```
-docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/prometheus-sample-tomcat-jmx:latest .
-docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/prometheus-sample-tomcat-jmx:latest
-```
-
-- 5. Install sample application
+kubectl create namespace memcached-sample
 
 ```
-export SAMPLE_TRAFFIC_NAMESPACE=javajmx-sample
-curl https://raw.githubusercontent.com/aws-observability/aws-otel-test-framework/terraform/sample-apps/jmx/examples/prometheus-metrics-sample.yaml > metrics-sample.yaml
-sed -i .bak "s/{{aws_account_id}}/$AWS_ACCOUNT_ID/g" metrics-sample.yaml
-sed -i .bak "s/{{region}}/$AWS_REGION/g" metrics-sample.yaml
-sed -i .bak "s/{{namespace}}/$SAMPLE_TRAFFIC_NAMESPACE/g" metrics-sample.yaml
-rm -f \*.bak
-kubectl apply -f metrics-sample.yaml
-```
 
-Verify that the sample application is running:
+- 3. Enter the following commands to install Memcached:
 
 ```
-kubectl get pods -n $SAMPLE_TRAFFIC_NAMESPACE
+helm install my-memcached bitnami/memcached --namespace memcached-sample \
+--set metrics.enabled=true \
+--set-string serviceAnnotations.prometheus\\.io/port="9150" \
+--set-string serviceAnnotations.prometheus\\.io/scrape="true"
 
-NAME                              READY   STATUS              RESTARTS   AGE
-tomcat-bad-traffic-generator      1/1     Running             0          11s
-tomcat-example-7958666589-2q755   0/1     ContainerCreating   0          11s
-tomcat-traffic-generator          1/1     Running             0          11s
+```
+
+- 4. Verify if the application is running
+
+```
+kubectl get pods -n memcached-sample
+
 ```
 
 #### Vizualize the Application's dashboard
 
-Log back into your Managed Grafana Workspace and navigate to the dashboard side panel, click on `Observability` Folder and open the `Sample Java/JMX Dashboard for Kubernetes` Dashboard.
+Log back into your Managed Grafana Workspace and navigate to the dashboard side panel, click on `Observability` Folder and open the `Memcached for Kubernetes` Dashboard.
 
 <img width="1468" alt="java-dashboard" src="https://user-images.githubusercontent.com/10175027/159924937-51514e4e-3442-40a2-a921-950d69f372b4.png">
 

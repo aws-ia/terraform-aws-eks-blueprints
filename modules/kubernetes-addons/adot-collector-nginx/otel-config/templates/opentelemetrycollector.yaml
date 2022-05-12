@@ -5,7 +5,7 @@ metadata:
 spec:
   image: public.ecr.aws/aws-observability/aws-otel-collector:latest
   mode: deployment
-  serviceAccount: adot-collector-java
+  serviceAccount: adot-collector-nginx
   config: |
     receivers:
       prometheus:
@@ -15,7 +15,7 @@ spec:
             scrape_timeout: {{ .Values.scrapeTimeout }}
 
           scrape_configs:
-            - job_name: 'kubernetes-pod-jmx'
+            - job_name: 'kubernetes-pod-nginx'
               sample_limit: {{ .Values.scrapeSampleLimit }}
               metrics_path: /{{ .Values.prometheusMetricsEndpoint }}
               kubernetes_sd_configs:
