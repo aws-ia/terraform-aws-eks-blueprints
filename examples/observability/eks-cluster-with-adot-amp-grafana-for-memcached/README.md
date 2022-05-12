@@ -123,7 +123,7 @@ opentelemetry-operator-system   opentelemetry-operator-controller-manager-68f5b4
 
 #### Deploy an Example Application
 
-In this section we will deploy sample application and extract metrics using  AWS OpenTelemetry collector 
+In this section we will deploy sample application and extract metrics using  AWS OpenTelemetry collector
 
 - 1. Add the helm incubator repo:
 ```
