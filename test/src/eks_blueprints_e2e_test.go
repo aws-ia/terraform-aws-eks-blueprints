@@ -120,7 +120,7 @@ func TestEksBlueprintsE2E(t *testing.T) {
 			inputTfOptions := &terraform.Options{
 				/*The path to where our Terraform code is located*/
 				TerraformDir: tempExampleFolder,
-				VarFiles:     []string{testCase.name + ".tfvars"}, // The var file paths to pass to Terraform commands using -var-file option.
+				// VarFiles:     []string{testCase.name + ".tfvars"}, // The var file paths to pass to Terraform commands using -var-file option.
 				//BackendConfig: map[string]interface{}{
 				//	"bucket": S3BackendConfig["bucketName"],
 				//	"key":    S3BackendConfig["s3Prefix"]+testCase.name,
@@ -138,7 +138,7 @@ func TestEksBlueprintsE2E(t *testing.T) {
 						destroyTFOptions := &terraform.Options{
 							/*The path to where our Terraform code is located*/
 							TerraformDir: tempExampleFolder,
-							VarFiles:     []string{testCase.name + ".tfvars"}, // The var file paths to pass to Terraform commands using -var-file option.
+							// VarFiles:     []string{testCase.name + ".tfvars"}, // The var file paths to pass to Terraform commands using -var-file option.
 							//BackendConfig: map[string]interface{}{
 							//	"bucket": S3BackendConfig["bucketName"],
 							//	"key":    S3BackendConfig["s3Prefix"]+testCase.name,
