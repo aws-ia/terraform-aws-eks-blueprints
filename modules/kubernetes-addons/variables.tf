@@ -243,6 +243,12 @@ variable "amazon_prometheus_workspace_endpoint" {
   description = "AWS Managed Prometheus WorkSpace Endpoint"
 }
 
+variable "amazon_prometheus_workspace_region" {
+  type        = string
+  default     = null
+  description = "AWS Managed Prometheus WorkSpace Region"
+}
+
 #-----------PROMETHEUS-------------
 variable "enable_prometheus" {
   description = "Enable Community Prometheus add-on"
@@ -678,4 +684,68 @@ variable "aws_privateca_issuer_irsa_policies" {
   type        = list(string)
   default     = []
   description = "IAM policy ARNs for AWS ACM PCA IRSA"
+}
+
+#-----------OPENTELEMETRY OPERATOR-------------
+variable "enable_opentelemetry_operator" {
+  type        = bool
+  default     = false
+  description = "Enable opentelemetry operator add-on"
+}
+
+variable "opentelemetry_operator_helm_config" {
+  type        = any
+  default     = {}
+  description = "Opentelemetry Operator Helm Chart config"
+}
+
+#-----------AWS Observability patterns-------------
+#-----------Java/Jmx Use case-------------
+variable "enable_adot_collector_java" {
+  type        = bool
+  default     = false
+  description = "Enable metrics for JMX workloads"
+}
+
+variable "adot_collector_java_helm_config" {
+  type        = any
+  default     = {}
+  description = "ADOT Collector Java Helm Chart config"
+}
+
+variable "enable_adot_collector_haproxy" {
+  type        = bool
+  default     = false
+  description = "Enable metrics for HAProxy workloads"
+}
+
+variable "adot_collector_haproxy_helm_config" {
+  type        = any
+  default     = {}
+  description = "ADOT Collector HAProxy Helm Chart config"
+}
+
+variable "enable_adot_collector_memcached" {
+  type        = bool
+  default     = false
+  description = "Enable metrics for Memcached workloads"
+}
+
+variable "adot_collector_memcached_helm_config" {
+  type        = any
+  default     = {}
+  description = "ADOT Collector Memcached Helm Chart config"
+}
+
+#-----------Nginx Use case-------------
+variable "enable_adot_collector_nginx" {
+  type        = bool
+  default     = false
+  description = "Enable metrics for Nginx workloads"
+}
+
+variable "adot_collector_nginx_helm_config" {
+  type        = any
+  default     = {}
+  description = "ADOT Collector Nginx Helm Chart config"
 }

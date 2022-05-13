@@ -11,11 +11,11 @@ EKS currently provides support for the following managed add-ons.
 | [kube-proxy](https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html) | Enables network communication to your pods. |
 | [Amazon EBS CSI](https://docs.aws.amazon.com/eks/latest/userguide/managing-ebs-csi.html) | Manage the Amazon EBS CSI driver as an Amazon EKS add-on. |
 
-EKS managed add-ons can be enabled via the following. 
+EKS managed add-ons can be enabled via the following.
 
 Note: EKS managed Add-ons can be converted to self-managed add-on with `preserve` field.
-`preserve=true` option removes Amazon EKS management of any settings and the ability for Amazon EKS to notify you of updates and automatically update the Amazon EKS add-on after you initiate an update, but preserves the add-on's software on your cluster. 
-This option makes the add-on a self-managed add-on, rather than an Amazon EKS add-on. 
+`preserve=true` option removes Amazon EKS management of any settings and the ability for Amazon EKS to notify you of updates and automatically update the Amazon EKS add-on after you initiate an update, but preserves the add-on's software on your cluster.
+This option makes the add-on a self-managed add-on, rather than an Amazon EKS add-on.
 There is no downtime while deleting EKS managed Add-ons when `preserve=true`. This is a default option for `enable_amazon_eks_vpc_cni` , `enable_amazon_eks_coredns` and `enable_amazon_eks_kube_proxy`.
 
 Checkout this [doc](https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html#updating-vpc-cni-eks-add-on) for more details.
