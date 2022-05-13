@@ -3,7 +3,7 @@ environment = "prod"
 zone        = "test"
 region      = "us-east-1"
 
-cluster_version = "1.22"
+cluster_version = "1.21"
 
 
 vpc_id             = "vpc-035cc2ce7fb7fed9d"
