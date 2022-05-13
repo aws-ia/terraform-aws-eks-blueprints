@@ -1,8 +1,3 @@
-variable "queue_processor" {
-  description = "Enable Queue Processor mode, default is IMDS Processor"
-  default     = false
-  type        = bool
-}
 variable "helm_config" {
   description = "AWS Node Termination Handler Helm Chart Configuration"
   type        = any

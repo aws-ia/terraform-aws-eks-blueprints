@@ -1,17 +1,7 @@
-variable "queue_processor" {
-  description = "Enable Queue Processor mode, default is IMDS Processor"
-  default     = false
-  type        = bool
-}
 variable "helm_config" {
   description = "AWS Node Termination Handler Helm Chart Configuration"
   type        = any
   default     = {}
-}
-
-variable "autoscaling_group_names" {
-  description = "EKS Node Group ASG names"
-  type        = list(string)
 }
 
 variable "addon_context" {
@@ -29,10 +19,4 @@ variable "addon_context" {
     irsa_iam_permissions_boundary  = string
   })
   description = "Input configuration for the addon"
-}
-
-variable "irsa_policies" {
-  type        = list(string)
-  description = "Additional IAM policies for a IAM role for service accounts"
-  default     = []
 }

@@ -553,6 +553,12 @@ variable "enable_aws_node_termination_handler" {
   description = "Enable AWS Node Termination Handler add-on"
 }
 
+variable "aws_node_termination_handler_queue_processor" {
+  type        = bool
+  default     = false
+  description = "Enable Queue Processor mode, default is IMDS Processor"
+}
+
 variable "aws_node_termination_handler_helm_config" {
   type        = any
   description = "AWS Node Termination Handler Helm Chart config"

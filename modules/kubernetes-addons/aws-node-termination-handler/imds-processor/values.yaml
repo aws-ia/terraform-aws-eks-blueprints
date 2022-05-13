@@ -1,0 +1,3 @@
+enableSpotInterruptionDraining: true
+enableRebalanceMonitoring: true
+enableScheduledEventDraining: true
