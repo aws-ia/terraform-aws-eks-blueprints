@@ -12,10 +12,10 @@ cert-manger can be deployed by enabling the add-on via the following.
 enable_cert_manager = true
 ```
 
-cert-manger can optionally leverage the `eks_cluster_domains` global property of the `kubernetes_addon` submodule for DNS01 protocol. The value for this property should be a list of Route53 domains managed by your account. cert-manager is restricted to the zones from the list. If the provided domain is`"*"` then it means that cert-manager can use DNS01 protocol for any Route53 domain.
+cert-manger can optionally leverage the `cert_manager_domain_names` global property of the `kubernetes_addon` submodule for DNS01 protocol. The value for this property should be a list of Route53 domains managed by your account. cert-manager is restricted to the zones from the list.
 
 ```
-eks_cluster_domains = [<cluster_domain>, <another_cluster_domain>]
+cert_manager_domain_names = [<cluster_domain>, <another_cluster_domain>]
 ```
 
 With this add-on self-signed CA and Let's Encrypt cluster issuers will be installed.

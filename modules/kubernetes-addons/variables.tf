@@ -9,12 +9,6 @@ variable "eks_cluster_domain" {
   type        = string
 }
 
-variable "eks_cluster_domains" {
-  description = "The domains for the EKS cluster."
-  default     = []
-  type        = list(string)
-}
-
 variable "eks_worker_security_group_id" {
   description = "EKS Worker Security group Id created by EKS module"
   default     = ""
@@ -506,6 +500,12 @@ variable "cert_manager_irsa_policies" {
   type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
   default     = []
+}
+
+variable "cert_manager_domain_names" {
+  description = "Domain names of the Route53 hosted zone to use with cert-manager."
+  default     = []
+  type        = list(string)
 }
 
 variable "cert_manager_install_letsencrypt_issuers" {

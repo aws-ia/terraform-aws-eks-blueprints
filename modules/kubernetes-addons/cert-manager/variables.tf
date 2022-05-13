@@ -1,6 +1,6 @@
 variable "helm_config" {
   type        = any
-  description = "Cert Manager Helm chart configuration"
+  description = "cert-manager Helm chart configuration"
   default     = {}
 }
 
@@ -19,7 +19,7 @@ variable "irsa_policies" {
 variable "domain_names" {
   type        = list(string)
   default     = []
-  description = "Domain names of the Route53 hosted zone to use with Cert Manager."
+  description = "Domain names of the Route53 hosted zone to use with cert-manager."
 }
 
 variable "install_letsencrypt_issuers" {
