@@ -116,17 +116,17 @@ module "kubernetes-addons" {
   enable_cluster_autoscaler = true
 
 
-  enable_amazon_eks_aws_ebs_csi_driver = true
-  amazon_eks_aws_ebs_csi_driver_config = {
-    addon_name               = "aws-ebs-csi-driver"
-    addon_version            = "v1.6.0-eksbuild.1"
-    service_account          = "ebs-csi-controller-sa"
-    resolve_conflicts        = "OVERWRITE"
-    namespace                = "kube-system"
-    additional_iam_policies  = []
-    service_account_role_arn = ""
-    tags                     = {}
-  }
+  # enable_amazon_eks_aws_ebs_csi_driver = true
+  # amazon_eks_aws_ebs_csi_driver_config = {
+  #   addon_name               = "aws-ebs-csi-driver"
+  #   addon_version            = "v1.6.0-eksbuild.1"
+  #   service_account          = "ebs-csi-controller-sa"
+  #   resolve_conflicts        = "OVERWRITE"
+  #   namespace                = "kube-system"
+  #   additional_iam_policies  = []
+  #   service_account_role_arn = ""
+  #   tags                     = {}
+  # }
 
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
 
