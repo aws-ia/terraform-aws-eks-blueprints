@@ -5,7 +5,7 @@ metadata:
 spec:
   image: public.ecr.aws/aws-observability/aws-otel-collector:latest
   mode: deployment
-  serviceAccount: adot-collector
+  serviceAccount: adot-collector-java
   config: |
     receivers:
       prometheus:

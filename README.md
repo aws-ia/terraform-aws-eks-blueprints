@@ -68,13 +68,13 @@ module "eks_blueprints_kubernetes_addons" {
 
 The code above will provision the following:
 
-✅ A new EKS Cluster with a managed node group.
-✅ Amazon EKS add-ons `vpc-cni`, `CoreDNS`, `kube-proxy`, and `aws-ebs-csi-driver`.
-✅ `Cluster Autoscaler` and `Metrics Server` for scaling your workloads.
-✅ `Fluent Bit` for routing logs.
-✅ `AWS Load Balancer Controller` for distributing traffic.
-✅ `Argocd` for declarative GitOps CD for Kubernetes.
-✅ `Prometheus` for observability.
+- ✅ A new EKS Cluster with a managed node group.
+- ✅ Amazon EKS add-ons `vpc-cni`, `CoreDNS`, `kube-proxy`, and `aws-ebs-csi-driver`.
+- ✅ `Cluster Autoscaler` and `Metrics Server` for scaling your workloads.
+- ✅ `Fluent Bit` for routing logs.
+- ✅ `AWS Load Balancer Controller` for distributing traffic.
+- ✅ `Argocd` for declarative GitOps CD for Kubernetes.
+- ✅ `Prometheus` for observability.
 
 ## Add-ons
 
