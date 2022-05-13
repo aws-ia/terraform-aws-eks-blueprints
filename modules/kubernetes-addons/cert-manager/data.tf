@@ -1,5 +1,5 @@
 data "aws_route53_zone" "selected" {
-  for_each = contains(var.domain_names, "*") ? {} : { for domain in toset(var.domain_names) : domain => domain }
+  for_each = toset(var.domain_names)
 
   name = each.key
 }
@@ -13,7 +13,8 @@ data "aws_iam_policy_document" "cert_manager_iam_policy_document" {
   }
 
   dynamic "statement" {
-    for_each = contains(var.domain_names, "*") ? { "*" : "*" } : { for domain in toset(var.domain_names) : domain => data.aws_route53_zone.selected[domain].arn }
+    for_each = { for k, v in toset(var.domain_names) : k => data.aws_route53_zone.selected[k].arn }
+
     content {
       effect    = "Allow"
       resources = [statement.value]
