@@ -54,7 +54,7 @@ jobs:
                 'module.e2e_test.module.eks_blueprints',
                 'module.e2e_test.module.eks_blueprints_kubernetes_addons',
                 'module.e2e_test.module.eks_blueprints_kubernetes_addons.module.aws_load_balancer_controller[0]',
-                'module.e2e_test.module.module.eks_blueprints_kubernetes_addons.module.ingress_nginx[0]',
+                'module.e2e_test.module.eks_blueprints_kubernetes_addons.module.ingress_nginx[0]',
               ]
           - example_path: examples/karpenter
             tenant_name: 'karpenter'
