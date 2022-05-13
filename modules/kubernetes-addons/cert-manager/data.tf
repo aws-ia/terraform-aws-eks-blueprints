@@ -7,7 +7,7 @@ data "aws_route53_zone" "selected" {
 data "aws_iam_policy_document" "cert_manager_iam_policy_document" {
   statement {
     effect    = "Allow"
-    resources = ["*"]
+    resources = ["arn:aws:route53:::change/*"]
     actions   = ["route53:GetChange"]
   }
 
