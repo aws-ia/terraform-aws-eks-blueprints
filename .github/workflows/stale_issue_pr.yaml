@@ -31,5 +31,3 @@ jobs:
           stale-pr-message: |
             This PR has been automatically marked as stale because it has been open 30 days
             with no activity. Remove stale label or comment or this PR will be closed in 10 days
-      - name: Print outputs
-        run: echo ${{ join(steps.stale.outputs.*, ',') }}
