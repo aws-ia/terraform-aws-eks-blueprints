@@ -21,7 +21,7 @@ jobs:
           days-before-stale: 30
           stale-issue-label: stale
           stale-pr-label: stale
-          # Not stale if have this labels 
+          # Not stale if have this labels
           exempt-issue-labels: 'bug'
           exempt-pr-labels: 'bug'
           operations-per-run: 100
