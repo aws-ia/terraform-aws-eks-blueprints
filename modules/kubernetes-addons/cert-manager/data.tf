@@ -4,7 +4,6 @@ data "aws_route53_zone" "selected" {
   name = each.key
 }
 
-
 data "aws_iam_policy_document" "cert_manager_iam_policy_document" {
   statement {
     effect    = "Allow"
