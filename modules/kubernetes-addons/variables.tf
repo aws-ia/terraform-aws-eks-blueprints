@@ -520,7 +520,6 @@ variable "cert_manager_letsencrypt_email" {
   description = "Email address for expiration emails from Let's Encrypt."
 }
 
-
 #-----------Argo Rollouts ADDON-------------
 variable "enable_argo_rollouts" {
   type        = bool
