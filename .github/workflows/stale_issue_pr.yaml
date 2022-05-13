@@ -1,0 +1,27 @@
+name: 'Stale issue & PR handler'
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/stale@main
+        id: stale
+        with:
+          ascending: true
+          close-issue-message: 'Issue closed due to inactivity.'
+          close-pr-message: 'Pull request closed due to inactivity.'
+          days-before-close: 14
+          days-before-stale: 60
+          exempt-issue-labels: 'triage-pending,review-pending'
+          operations-per-run: 100
+          stale-issue-message: 'This issue is stale because it has been open 60 days with no activity. Remove stale label or comment or this will be closed in 14 days'
+          stale-pr-message: 'This pull request is stale because it has been open 60 days with no activity. Remove stale label or comment or this will be closed in 14 days'
+      - name: Print outputs
+        run: echo ${{ join(steps.stale.outputs.*, ',') }}
