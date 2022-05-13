@@ -1,26 +1,17 @@
 variable "tenant" {
   type        = string
-  description = "AWS account name or unique id for tenant"
+  description = "Account Name or unique account unique id e.g., apps or management or aws007"
+  default     = "aws001"
 }
 
 variable "environment" {
   type        = string
-  description = "Environment area eg., preprod or prod"
+  default     = "preprod"
+  description = "Environment area, e.g. prod or preprod "
 }
 
 variable "zone" {
   type        = string
-  description = "Environment with in one sub_tenant or business unit"
-}
-
-variable "cluster_version" {
-  type = string
-}
-
-variable "vpc_cidr" {
-  type = string
-}
-
-variable "terraform_version" {
-  type = string
+  description = "zone, e.g. dev or qa or load or ops etc..."
+  default     = "dev"
 }

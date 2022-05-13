@@ -1,15 +1,18 @@
 # AWS EFS CSI driver Helm Chart
 
-<!--- BEGIN_TF_DOCS --->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
 
 ## Modules
 
@@ -38,5 +41,4 @@ No requirements.
 | Name | Description |
 |------|-------------|
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
-
-<!--- END_TF_DOCS --->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

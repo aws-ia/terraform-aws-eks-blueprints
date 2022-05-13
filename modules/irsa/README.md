@@ -2,23 +2,35 @@
 
 This Terraform module creates the following resources
 
- 1. Kubernetes Namespace for Kubernetes Addon
- 2. Service Account for Kubernetes Addon
- 3. IAM Role for Service Account with OIDC assume role policy
- 4. Creates default policy required for Addon
- 5. Attaches the additional IAM policies provided by consumer module
+1.  Kubernetes Namespace for Kubernetes Addon
+2.  Service Account for Kubernetes Addon
+3.  IAM Role for Service Account with OIDC assume role policy
+4.  Creates default policy required for Addon
+5.  Attaches the additional IAM policies provided by consumer module
 
- <!--- BEGIN_TF_DOCS --->
+## Learn more
+
+## Blogs
+
+- [Introducing fine-grained IAM roles for service accounts](https://aws.amazon.com/blogs/opensource/introducing-fine-grained-iam-roles-service-accounts/)
+- [Cross account IAM roles for Kubernetes service accounts](https://aws.amazon.com/blogs/containers/cross-account-iam-roles-for-kubernetes-service-accounts/)
+- [Enabling cross-account access to Amazon EKS cluster resources](https://aws.amazon.com/blogs/containers/enabling-cross-account-access-to-amazon-eks-cluster-resources/)
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
 
 ## Modules
 
@@ -50,13 +62,4 @@ No modules.
 |------|-------------|
 | <a name="output_irsa_iam_role_arn"></a> [irsa\_iam\_role\_arn](#output\_irsa\_iam\_role\_arn) | IAM role ARN for your service account |
 | <a name="output_irsa_iam_role_name"></a> [irsa\_iam\_role\_name](#output\_irsa\_iam\_role\_name) | IAM role name for your service account |
-
-<!--- END_TF_DOCS --->
-
-## Learn more
-
-## Blogs
-
-* [Introducing fine-grained IAM roles for service accounts](https://aws.amazon.com/blogs/opensource/introducing-fine-grained-iam-roles-service-accounts/)
-* [Cross account IAM roles for Kubernetes service accounts](https://aws.amazon.com/blogs/containers/cross-account-iam-roles-for-kubernetes-service-accounts/)
-* [Enabling cross-account access to Amazon EKS cluster resources](https://aws.amazon.com/blogs/containers/enabling-cross-account-access-to-amazon-eks-cluster-resources/)
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

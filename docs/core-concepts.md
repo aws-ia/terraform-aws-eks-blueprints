@@ -34,4 +34,4 @@ See our [`Teams`](./teams) documentation page for detailed information.
 
 `Applications` represent the actual workloads that run within a Kubernetes cluster. The framework leverages a GitOps approach for deploying applications onto clusters.
 
-See our [`Applications](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/argocd/#boostrapping) documentation for detailed information.
+See our [`Applications`](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/argocd/#boostrapping) documentation for detailed information.

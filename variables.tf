@@ -168,6 +168,12 @@ variable "cluster_service_ipv4_cidr" {
   default     = null
 }
 
+variable "cluster_service_ipv6_cidr" {
+  description = "The IPV6 Service CIDR block to assign Kubernetes service IP addresses"
+  type        = string
+  default     = null
+}
+
 #-------------------------------
 # EKS Cluster CloudWatch Logging
 #-------------------------------
@@ -327,6 +333,12 @@ variable "aws_auth_additional_labels" {
   description = "Additional kubernetes labels applied on aws-auth ConfigMap"
   default     = {}
   type        = map(string)
+}
+
+variable "eks_readiness_timeout" {
+  description = "The maximum time (in seconds) to wait for EKS API server endpoint to become healthy"
+  type        = number
+  default     = "600"
 }
 
 #-------------------------------

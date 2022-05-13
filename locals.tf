@@ -52,6 +52,10 @@ locals {
     iam_role_path                 = var.iam_role_path
     iam_role_permissions_boundary = var.iam_role_permissions_boundary
 
+    # Service IPv4/IPv6 CIDR range
+    service_ipv6_cidr = var.cluster_service_ipv6_cidr
+    service_ipv4_cidr = var.cluster_service_ipv4_cidr
+
     tags = local.tags
   }
 

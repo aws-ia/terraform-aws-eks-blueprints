@@ -1,10 +1,10 @@
 resource "kubernetes_namespace_v1" "irsa" {
-  count = var.create_kubernetes_namespace ? 1 : 0
+  count = var.create_kubernetes_namespace && var.kubernetes_namespace != "kube-system" ? 1 : 0
   metadata {
     name = var.kubernetes_namespace
 
     labels = {
-      "app.kubernetes.io/managed-by" = "terraform-eks-blueprints"
+      "app.kubernetes.io/managed-by" = "terraform-aws-eks-blueprints"
     }
   }
 }
@@ -16,7 +16,7 @@ resource "kubernetes_service_account_v1" "irsa" {
     namespace   = var.kubernetes_namespace
     annotations = var.irsa_iam_policies != null ? { "eks.amazonaws.com/role-arn" : aws_iam_role.irsa[0].arn } : null
     labels = {
-      "app.kubernetes.io/managed-by" = "terraform-eks-blueprints"
+      "app.kubernetes.io/managed-by" = "terraform-aws-eks-blueprints"
     }
   }
 
@@ -52,7 +52,7 @@ resource "aws_iam_role" "irsa" {
   tags = merge(
     {
       "Name"                         = format("%s-%s-%s", var.addon_context.eks_cluster_id, trim(var.kubernetes_service_account, "-*"), "irsa"),
-      "app.kubernetes.io/managed-by" = "terraform-eks-blueprints"
+      "app.kubernetes.io/managed-by" = "terraform-aws-eks-blueprints"
     },
     var.addon_context.tags
   )

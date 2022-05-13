@@ -29,6 +29,7 @@ resource "aws_autoscaling_group_tag" "aws_node_termination_handler_tag" {
   }
 }
 
+#tfsec:ignore:aws-sqs-enable-queue-encryption
 resource "aws_sqs_queue" "aws_node_termination_handler_queue" {
   name_prefix               = "aws_node_termination_handler"
   message_retention_seconds = "300"
