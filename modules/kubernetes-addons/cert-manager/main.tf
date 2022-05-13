@@ -30,6 +30,12 @@ resource "helm_release" "cert_manager_letsencrypt" {
     type  = "string"
   }
 
+  set {
+    name  = "dnsZones"
+    value = "{${join(",", toset(var.domain_names))}}"
+    type  = "string"
+  }
+
   depends_on = [module.helm_addon]
 }
 
