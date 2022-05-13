@@ -53,9 +53,9 @@ locals {
   # ARGOCD ADD-ON APPLICATION
   #---------------------------------------------------------------
   addon_application = {
-    path               = "chart"
-    repo_url           = "https://github.com/aws-samples/eks-blueprints-add-ons"
-    target_revision = "fix/yaml-error"
+    path     = "chart"
+    repo_url = "https://github.com/aws-samples/eks-blueprints-add-ons"
+    #target_revision = "fix/yaml-error"
     add_on_application = true
   }
 
@@ -97,36 +97,36 @@ module "kubernetes-addons" {
   # INGRESS NGINX ADD-ON
   #---------------------------------------------------------------
 
-  # enable_ingress_nginx = true
-  # ingress_nginx_helm_config = {
-  #   values = [templatefile("${path.module}/helm_values/nginx-values.yaml", {
-  #     hostname     = var.eks_cluster_domain
-  #     ssl_cert_arn = data.aws_acm_certificate.issued.arn
-  #   })]
-  # }
+  enable_ingress_nginx = true
+  ingress_nginx_helm_config = {
+    values = [templatefile("${path.module}/helm_values/nginx-values.yaml", {
+      hostname     = var.eks_cluster_domain
+      ssl_cert_arn = data.aws_acm_certificate.issued.arn
+    })]
+  }
 
   #---------------------------------------------------------------
   # OTHER ADD-ONS
   #---------------------------------------------------------------
 
-  enable_cert_manager   = true
-  enable_metrics_server = true
-  enable_vpa            = true
-  #enable_external_dns   = true
+  enable_cert_manager       = true
+  enable_metrics_server     = true
+  enable_vpa                = true
+  enable_external_dns       = true
   enable_cluster_autoscaler = true
 
 
-  # enable_amazon_eks_aws_ebs_csi_driver = true
-  # amazon_eks_aws_ebs_csi_driver_config = {
-  #   addon_name               = "aws-ebs-csi-driver"
-  #   addon_version            = "v1.6.0-eksbuild.1"
-  #   service_account          = "ebs-csi-controller-sa"
-  #   resolve_conflicts        = "OVERWRITE"
-  #   namespace                = "kube-system"
-  #   additional_iam_policies  = []
-  #   service_account_role_arn = ""
-  #   tags                     = {}
-  # }
+  enable_amazon_eks_aws_ebs_csi_driver = true
+  amazon_eks_aws_ebs_csi_driver_config = {
+    addon_name               = "aws-ebs-csi-driver"
+    addon_version            = "v1.6.0-eksbuild.1"
+    service_account          = "ebs-csi-controller-sa"
+    resolve_conflicts        = "OVERWRITE"
+    namespace                = "kube-system"
+    additional_iam_policies  = []
+    service_account_role_arn = ""
+    tags                     = {}
+  }
 
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
 
