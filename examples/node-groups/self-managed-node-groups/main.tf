@@ -152,17 +152,34 @@ module "eks_blueprints" {
   } # END OF SELF MANAGED NODE GROUPS
 }
 
-resource "aws_iam_role" "managed_ng" {
+#---------------------------------------------------------------
+# Custom IAM roles for Node Groups
+#---------------------------------------------------------------
+data "aws_iam_policy_document" "self_managed_ng_assume_role_policy" {
+  statement {
+    sid = "EKSWorkerAssumeRole"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+    principals {
+      type        = "Service"
+      identifiers = [local.ec2_principal]
+    }
+  }
+}
+
+resource "aws_iam_role" "self_managed_ng" {
   name                  = "self-managed-node-role"
   description           = "EKS Managed Node group IAM Role"
-  assume_role_policy    = data.aws_iam_policy_document.managed_ng_assume_role_policy.json
+  assume_role_policy    = data.aws_iam_policy_document.self_managed_ng_assume_role_policy.json
   path                  = "/"
   force_detach_policies = true
 }
 
-resource "aws_iam_instance_profile" "managed_ng" {
+resource "aws_iam_instance_profile" "self_managed_ng" {
   name = "managed-node-instance-profile"
-  role = aws_iam_role.managed_ng.name
+  role = aws_iam_role.self_managed_ng.name
   path = "/"
 
   lifecycle {
@@ -172,20 +189,20 @@ resource "aws_iam_instance_profile" "managed_ng" {
 
 resource "aws_iam_role_policy_attachment" "managed_ng_AmazonEKSWorkerNodePolicy" {
   policy_arn = "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.managed_ng.name
+  role       = aws_iam_role.self_managed_ng.name
 }
 
 resource "aws_iam_role_policy_attachment" "managed_ng_AmazonEKS_CNI_Policy" {
   policy_arn = "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.managed_ng.name
+  role       = aws_iam_role.self_managed_ng.name
 }
 
 resource "aws_iam_role_policy_attachment" "managed_ng_AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.managed_ng.name
+  role       = aws_iam_role.self_managed_ng.name
 }
 
 resource "aws_iam_role_policy_attachment" "managed_ng_AmazonSSMManagedInstanceCore" {
   policy_arn = "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"
-  role       = aws_iam_role.managed_ng.name
+  role       = aws_iam_role.self_managed_ng.name
 }
