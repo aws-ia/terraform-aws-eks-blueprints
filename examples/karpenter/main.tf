@@ -206,6 +206,7 @@ data "kubectl_path_documents" "karpenter_provisioners" {
     azs                     = join(",", local.azs)
     iam-instance-profile-id = format("%s-%s", local.cluster_name, local.node_group_name)
     eks-cluster-id          = local.cluster_name
+    eks-vpc_name            = local.vpc_name
   }
 }
 
