@@ -15,7 +15,9 @@ locals {
     bootstrap_extra_args = ""
     enable_monitoring    = false
     public_ip            = false
+    iam_instance_profile_name = null
 
+    format_mount_nvme_disk = false
     block_device_mappings = [
       {
         device_name = "/dev/xvda"
@@ -38,6 +40,9 @@ locals {
     var.self_managed_ng
   )
 
+  create_iam_role_count = local.self_managed_node_group["iam_instance_profile_name"] == null ? 1 : 0
+  create_iam_role = local.create_iam_role_count == 1 ? true : false
+
   enable_windows_support = local.self_managed_node_group["launch_template_os"] == "windows"
 
   predefined_ami_names = {
@@ -54,13 +59,13 @@ locals {
   ec2_principal     = "ec2.${var.context.aws_partition_dns_suffix}"
 
   # EKS Worker Managed Policies
-  eks_worker_policies = toset(concat([
+  eks_worker_policies = local.create_iam_role ? toset(concat([
     "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy",
     "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy",
     "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly",
     "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"],
     local.self_managed_node_group["additional_iam_policies"
-  ]))
+  ])) : []
 
   common_tags = merge(
     var.context.tags,

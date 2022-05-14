@@ -7,29 +7,36 @@ locals {
     ami_type                 = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
     subnet_type              = "private"
     subnet_ids               = []
-    release_version          = ""
-    force_update_version     = null
+    iam_role_arn             = null
 
+    # Scaling Config
     desired_size    = "3"
     max_size        = "3"
     min_size        = "1"
-    max_unavailable = "1"
-    disk_size       = 50 # disk_size will be ignored when using Launch Templates
+
+    # Upgrade Config
+    update_config = [{
+      max_unavailable = 1
+      max_unavailable_percentage = null
+    }]
+
+    release_version          = ""
+    force_update_version     = null
 
     k8s_labels      = {}
     k8s_taints      = []
     additional_tags = {}
 
     remote_access           = false
-    ec2_ssh_key             = ""
-    ssh_security_group_id   = ""
+    ec2_ssh_key             = null
+    ssh_security_group_id   = null
     additional_iam_policies = []
 
     timeouts = [{
-      create = "30m"
-      update = "2h"
-      delete = "30m"
-    }]
+        create = "30m"
+        update = "2h"
+        delete = "30m"
+   }]
 
     # The following defaults used only when you enable Launch Templates e.g., create_launch_template=true
     # LAUNCH TEMPLATES
@@ -54,12 +61,17 @@ locals {
       iops                  = 3000
       throughput            = 125
     }]
+    format_mount_nvme_disk   = false
+
   }
 
   managed_node_group = merge(
     local.default_managed_ng,
     var.managed_ng
   )
+
+  create_iam_role_count = local.managed_node_group["iam_role_arn"] == null ? 1 : 0
+  create_iam_role = local.create_iam_role_count == 1 ? true : false
 
   policy_arn_prefix = "arn:${var.context.aws_partition_id}:iam::aws:policy"
   ec2_principal     = "ec2.${var.context.aws_partition_dns_suffix}"
@@ -75,15 +87,16 @@ locals {
     kubelet_extra_args   = local.managed_node_group["kubelet_extra_args"]   # used only when custom_ami_id specified e.g., kubelet_extra_args="--node-labels=arch=x86,WorkerType=SPOT --max-pods=50 --register-with-taints=spot=true:NoSchedule"  # Equivalent to k8s_labels used in managed node groups
     service_ipv6_cidr    = var.context.service_ipv6_cidr == null ? "" : var.context.service_ipv6_cidr
     service_ipv4_cidr    = var.context.service_ipv4_cidr == null ? "" : var.context.service_ipv4_cidr
+    format_mount_nvme_disk = local.managed_node_group["format_mount_nvme_disk"]
   }
 
   userdata_base64 = base64encode(
     templatefile("${path.module}/templates/userdata-${local.managed_node_group["launch_template_os"]}.tpl", local.userdata_params)
   )
 
-  eks_worker_policies = toset(concat(
+  eks_worker_policies = local.create_iam_role ? toset(concat(
     local.managed_node_group["additional_iam_policies"]
-  ))
+  )) : []
 
   common_tags = merge(
     var.context.tags,

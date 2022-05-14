@@ -24,6 +24,7 @@ variable "launch_template_config" {
       throughput            = optional(string)
     }))
 
+    format_mount_nvme_disk = optional(bool)
     pre_userdata         = optional(string)
     bootstrap_extra_args = optional(string)
     post_userdata        = optional(string)

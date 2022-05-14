@@ -41,6 +41,7 @@ locals {
 
     service_ipv6_cidr = ""
     service_ipv4_cidr = ""
+    format_mount_nvme_disk = false
 
     monitoring = true
   })

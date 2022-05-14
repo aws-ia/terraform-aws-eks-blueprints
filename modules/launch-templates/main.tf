@@ -20,6 +20,7 @@ resource "aws_launch_template" "this" {
       cluster_endpoint     = data.aws_eks_cluster.eks.endpoint
       service_ipv6_cidr    = try(each.value.service_ipv6_cidr, "")
       service_ipv4_cidr    = try(each.value.service_ipv4_cidr, "")
+      format_mount_nvme_disk = each.value.format_mount_nvme_disk
   }))
 
   dynamic "iam_instance_profile" {
