@@ -24,8 +24,8 @@ module "launch_template_self_managed_ng" {
       service_ipv6_cidr = var.context.service_ipv6_cidr
       service_ipv4_cidr = var.context.service_ipv4_cidr
 
-      block_device_mappings = local.self_managed_node_group["block_device_mappings"]
-      format_mount_nvme_disk       = local.self_managed_node_group["format_mount_nvme_disk"]
+      block_device_mappings  = local.self_managed_node_group["block_device_mappings"]
+      format_mount_nvme_disk = local.self_managed_node_group["format_mount_nvme_disk"]
 
       network_interfaces = [
         {

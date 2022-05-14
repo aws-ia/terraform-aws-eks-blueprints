@@ -25,10 +25,10 @@ variable "launch_template_config" {
     }))
 
     format_mount_nvme_disk = optional(bool)
-    pre_userdata         = optional(string)
-    bootstrap_extra_args = optional(string)
-    post_userdata        = optional(string)
-    kubelet_extra_args   = optional(string)
+    pre_userdata           = optional(string)
+    bootstrap_extra_args   = optional(string)
+    post_userdata          = optional(string)
+    kubelet_extra_args     = optional(string)
 
     http_endpoint               = optional(string)
     http_tokens                 = optional(string)

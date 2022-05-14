@@ -58,6 +58,8 @@ locals {
   cluster_version         = "1.21"
 
   terraform_version = "Terraform v1.0.1"
+  policy_arn_prefix = "arn:aws:iam::aws:policy"
+  ec2_principal     = "ec2.amazonaws.com"
 }
 
 #------------------------------------------------------------------------
@@ -111,6 +113,39 @@ module "eks_blueprints" {
   # EKS CONTROL PLANE VARIABLES
   cluster_version = local.cluster_version
 
+  node_security_group_additional_rules = {
+    # Extend node-to-node security group rules. Recommended and required for the Add-ons
+    ingress_self_all = {
+      description = "Node to node all ports/protocols"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      self        = true
+    }
+    #Recommended outbound traffic for Node groups
+    egress_all = {
+      description      = "Node all egress"
+      protocol         = "-1"
+      from_port        = 0
+      to_port          = 0
+      type             = "egress"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+    }
+    # Allows Control Plane Nodes to talk to Worker nodes on all ports. Added this to simplify the example and further avoid issues with Add-ons communication with Control plane.
+    # This can be restricted further to specific port based on the requirement for each Add-on e.g., metrics-server 4443, spark-operator 8080, karpenter 8443 etc.
+    # Change this according to your security requirements if needed
+    ingress_cluster_to_node_all_traffic = {
+      description                   = "Cluster API to Nodegroup all traffic"
+      protocol                      = "-1"
+      from_port                     = 0
+      to_port                       = 0
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
+  }
+
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     # Managed Node groups with minimum config
@@ -118,7 +153,11 @@ module "eks_blueprints" {
       node_group_name = "mg5"
       instance_types  = ["m5.large"]
       min_size        = "2"
+      iam_role_arn    = aws_iam_role.managed_ng.arn
       disk_size       = 100 # Disk size is used only with Managed Node Groups without Launch Templates
+      update_config = [{
+        max_unavailable_percentage = 30
+      }]
     },
     # Managed Node groups with Launch templates using AMI TYPE
     mng_lt = {
@@ -133,6 +172,8 @@ module "eks_blueprints" {
       # Launch template configuration
       create_launch_template = true              # false will use the default launch template
       launch_template_os     = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
+
+      format_mount_nvme_disk = true
 
       enable_monitoring = true
       eni_delete        = true
@@ -156,10 +197,9 @@ module "eks_blueprints" {
       }
 
       # Node Group scaling configuration
-      desired_size    = 2
-      max_size        = 2
-      min_size        = 2
-      max_unavailable = 1 # or percentage = 20
+      desired_size = 2
+      max_size     = 2
+      min_size     = 2
 
       block_device_mappings = [
         {
@@ -267,6 +307,7 @@ module "eks_blueprints" {
       }
     }
   }
+
 }
 
 #------------------------------------------------------------------------
@@ -280,4 +321,59 @@ module "eks_blueprints_kubernetes_addons" {
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
 
+}
+
+#---------------------------------------------------------------
+# Custom IAM roles for Node Groups
+#---------------------------------------------------------------
+data "aws_iam_policy_document" "managed_ng_assume_role_policy" {
+  statement {
+    sid = "EKSWorkerAssumeRole"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+    principals {
+      type        = "Service"
+      identifiers = [local.ec2_principal]
+    }
+  }
+}
+
+resource "aws_iam_role" "managed_ng" {
+  name                  = "managed-node-role"
+  description           = "EKS Managed Node group IAM Role"
+  assume_role_policy    = data.aws_iam_policy_document.managed_ng_assume_role_policy.json
+  path                  = "/"
+  force_detach_policies = true
+}
+
+resource "aws_iam_instance_profile" "managed_ng" {
+  name = "managed-node-instance-profile"
+  role = aws_iam_role.managed_ng.name
+  path = "/"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "managed_ng_AmazonEKSWorkerNodePolicy" {
+  policy_arn = "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy"
+  role       = aws_iam_role.managed_ng.name
+}
+
+resource "aws_iam_role_policy_attachment" "managed_ng_AmazonEKS_CNI_Policy" {
+  policy_arn = "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy"
+  role       = aws_iam_role.managed_ng.name
+}
+
+resource "aws_iam_role_policy_attachment" "managed_ng_AmazonEC2ContainerRegistryReadOnly" {
+  policy_arn = "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.managed_ng.name
+}
+
+resource "aws_iam_role_policy_attachment" "managed_ng_AmazonSSMManagedInstanceCore" {
+  policy_arn = "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"
+  role       = aws_iam_role.managed_ng.name
 }

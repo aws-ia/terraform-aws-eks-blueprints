@@ -39,7 +39,7 @@ module "aws_eks" {
 
   # IAM Role
   create_iam_role = var.create_iam_role
-  iam_role_arn = var.iam_role_arn
+  iam_role_arn    = var.iam_role_arn
 
   iam_role_use_name_prefix      = false
   iam_role_name                 = local.cluster_iam_role_name

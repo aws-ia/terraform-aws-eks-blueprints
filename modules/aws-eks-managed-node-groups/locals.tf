@@ -10,18 +10,18 @@ locals {
     iam_role_arn             = null
 
     # Scaling Config
-    desired_size    = "3"
-    max_size        = "3"
-    min_size        = "1"
+    desired_size = "3"
+    max_size     = "3"
+    min_size     = "1"
 
     # Upgrade Config
     update_config = [{
-      max_unavailable = 1
+      max_unavailable            = 1
       max_unavailable_percentage = null
     }]
 
-    release_version          = ""
-    force_update_version     = null
+    release_version      = ""
+    force_update_version = null
 
     k8s_labels      = {}
     k8s_taints      = []
@@ -33,10 +33,10 @@ locals {
     additional_iam_policies = []
 
     timeouts = [{
-        create = "30m"
-        update = "2h"
-        delete = "30m"
-   }]
+      create = "30m"
+      update = "2h"
+      delete = "30m"
+    }]
 
     # The following defaults used only when you enable Launch Templates e.g., create_launch_template=true
     # LAUNCH TEMPLATES
@@ -61,7 +61,7 @@ locals {
       iops                  = 3000
       throughput            = 125
     }]
-    format_mount_nvme_disk   = false
+    format_mount_nvme_disk = false
 
   }
 
@@ -71,22 +71,22 @@ locals {
   )
 
   create_iam_role_count = local.managed_node_group["iam_role_arn"] == null ? 1 : 0
-  create_iam_role = local.create_iam_role_count == 1 ? true : false
+  create_iam_role       = local.create_iam_role_count == 1 ? true : false
 
   policy_arn_prefix = "arn:${var.context.aws_partition_id}:iam::aws:policy"
   ec2_principal     = "ec2.${var.context.aws_partition_dns_suffix}"
 
   userdata_params = {
-    eks_cluster_id       = var.context.eks_cluster_id
-    cluster_ca_base64    = var.context.cluster_ca_base64
-    cluster_endpoint     = var.context.cluster_endpoint
-    custom_ami_id        = local.managed_node_group["custom_ami_id"]
-    pre_userdata         = local.managed_node_group["pre_userdata"]         # Applied to all launch templates
-    bootstrap_extra_args = local.managed_node_group["bootstrap_extra_args"] # used only when custom_ami_id specified e.g., bootstrap_extra_args="--use-max-pods false --container-runtime containerd"
-    post_userdata        = local.managed_node_group["post_userdata"]        # used only when custom_ami_id specified
-    kubelet_extra_args   = local.managed_node_group["kubelet_extra_args"]   # used only when custom_ami_id specified e.g., kubelet_extra_args="--node-labels=arch=x86,WorkerType=SPOT --max-pods=50 --register-with-taints=spot=true:NoSchedule"  # Equivalent to k8s_labels used in managed node groups
-    service_ipv6_cidr    = var.context.service_ipv6_cidr == null ? "" : var.context.service_ipv6_cidr
-    service_ipv4_cidr    = var.context.service_ipv4_cidr == null ? "" : var.context.service_ipv4_cidr
+    eks_cluster_id         = var.context.eks_cluster_id
+    cluster_ca_base64      = var.context.cluster_ca_base64
+    cluster_endpoint       = var.context.cluster_endpoint
+    custom_ami_id          = local.managed_node_group["custom_ami_id"]
+    pre_userdata           = local.managed_node_group["pre_userdata"]         # Applied to all launch templates
+    bootstrap_extra_args   = local.managed_node_group["bootstrap_extra_args"] # used only when custom_ami_id specified e.g., bootstrap_extra_args="--use-max-pods false --container-runtime containerd"
+    post_userdata          = local.managed_node_group["post_userdata"]        # used only when custom_ami_id specified
+    kubelet_extra_args     = local.managed_node_group["kubelet_extra_args"]   # used only when custom_ami_id specified e.g., kubelet_extra_args="--node-labels=arch=x86,WorkerType=SPOT --max-pods=50 --register-with-taints=spot=true:NoSchedule"  # Equivalent to k8s_labels used in managed node groups
+    service_ipv6_cidr      = var.context.service_ipv6_cidr == null ? "" : var.context.service_ipv6_cidr
+    service_ipv4_cidr      = var.context.service_ipv4_cidr == null ? "" : var.context.service_ipv4_cidr
     format_mount_nvme_disk = local.managed_node_group["format_mount_nvme_disk"]
   }
 
