@@ -41,7 +41,7 @@ var (
 		"awsRegion" : "us-west-2"}*/
 
 	destroyModules = []string{
-		"module.kubernetes_addons",
+		"module.eks_blueprints_kubernetes_addons",
 		"module.eks_blueprints",
 		"module.vpc",
 		"full_destroy",
