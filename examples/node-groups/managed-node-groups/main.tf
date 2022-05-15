@@ -276,10 +276,9 @@ module "eks_blueprints" {
       public_ip         = false # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates
 
       # Node Group scaling configuration
-      desired_size    = 2
-      max_size        = 2
-      min_size        = 2
-      max_unavailable = 1 # or percentage = 20
+      desired_size = 2
+      max_size     = 2
+      min_size     = 2
 
       block_device_mappings = [
         {
