@@ -22,8 +22,8 @@ jobs:
           stale-issue-label: stale
           stale-pr-label: stale
           # Not stale if have this labels
-          exempt-issue-labels: 'bug'
-          exempt-pr-labels: 'bug'
+          exempt-issue-labels: 'bug,enhancement'
+          exempt-pr-labels: 'bug,enhancement'
           operations-per-run: 100
           stale-issue-message: |
             This issue has been automatically marked as stale because it has been open 30 days
