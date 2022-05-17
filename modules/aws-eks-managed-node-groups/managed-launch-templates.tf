@@ -55,10 +55,6 @@ resource "aws_launch_template" "managed_node_groups" {
 
   depends_on = [
     aws_iam_role.managed_ng,
-    aws_iam_instance_profile.managed_ng,
-    aws_iam_role_policy_attachment.managed_ng_AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.managed_ng_AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.managed_ng_AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.managed_ng
   ]
 }

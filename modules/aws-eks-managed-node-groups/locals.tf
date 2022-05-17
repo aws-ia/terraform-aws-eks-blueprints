@@ -7,12 +7,16 @@ locals {
     ami_type                 = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
     subnet_type              = "private"
     subnet_ids               = []
-    iam_role_arn             = null
+
+    # IAM Roles for Nodegroup
+    create_iam_role          = true
+    iam_role_arn             = null  # iam_role_arn will be used if create_iam_role=false
 
     # Scaling Config
     desired_size = "3"
     max_size     = "3"
     min_size     = "1"
+    disk_size    = 50 # disk_size will be ignored when using Launch Templates
 
     # Upgrade Config
     update_config = [{
@@ -61,17 +65,14 @@ locals {
       iops                  = 3000
       throughput            = 125
     }]
-    format_mount_nvme_disk = false
 
+    format_mount_nvme_disk = false
   }
 
   managed_node_group = merge(
     local.default_managed_ng,
     var.managed_ng
   )
-
-  create_iam_role_count = local.managed_node_group["iam_role_arn"] == null ? 1 : 0
-  create_iam_role       = local.create_iam_role_count == 1 ? true : false
 
   policy_arn_prefix = "arn:${var.context.aws_partition_id}:iam::aws:policy"
   ec2_principal     = "ec2.${var.context.aws_partition_dns_suffix}"
@@ -94,9 +95,17 @@ locals {
     templatefile("${path.module}/templates/userdata-${local.managed_node_group["launch_template_os"]}.tpl", local.userdata_params)
   )
 
-  eks_worker_policies = local.create_iam_role ? toset(concat(
-    local.managed_node_group["additional_iam_policies"]
-  )) : []
+  eks_worker_policies = {for k,v in toset(concat([
+    "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy",
+    "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy",
+    "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly",
+    "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"],
+    local.managed_node_group["additional_iam_policies"
+    ])) : k => v if local.managed_node_group["create_iam_role"] }
+
+#  eks_worker_policies = local.managed_node_group["create_iam_role"] ? toset(concat(
+#    local.managed_node_group["additional_iam_policies"]
+#  )) : []
 
   common_tags = merge(
     var.context.tags,

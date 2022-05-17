@@ -1,5 +1,5 @@
 resource "aws_iam_role" "self_managed_ng" {
-  count = local.create_iam_role_count
+  count = local.self_managed_node_group["create_iam_role"] ? 1 : 0
 
   name                  = "${var.context.eks_cluster_id}-${local.self_managed_node_group["node_group_name"]}"
   description           = "EKS Self Managed Node group IAM Role"
@@ -11,7 +11,7 @@ resource "aws_iam_role" "self_managed_ng" {
 }
 
 resource "aws_iam_instance_profile" "self_managed_ng" {
-  count = local.create_iam_role_count
+  count = local.self_managed_node_group["create_iam_role"] ? 1 : 0
 
   name = "${var.context.eks_cluster_id}-${local.self_managed_node_group["node_group_name"]}"
   role = aws_iam_role.self_managed_ng[0].name
@@ -32,7 +32,7 @@ resource "aws_iam_role_policy_attachment" "self_managed_ng" {
 
 # Windows nodes only need read-only access to EC2
 resource "aws_iam_policy" "eks_windows_cni" {
-  count       = local.create_iam_role && local.enable_windows_support ? 1 : 0
+  count       = local.self_managed_node_group["create_iam_role"] && local.enable_windows_support ? 1 : 0
   name        = "${var.context.eks_cluster_id}-${local.self_managed_node_group["node_group_name"]}-cni-policy"
   description = "EKS Windows CNI policy"
   path        = var.context.iam_role_path
@@ -41,7 +41,7 @@ resource "aws_iam_policy" "eks_windows_cni" {
 }
 
 resource "aws_iam_role_policy_attachment" "eks_windows_cni" {
-  count      = local.create_iam_role && local.enable_windows_support ? 1 : 0
+  count      = local.self_managed_node_group["create_iam_role"] && local.enable_windows_support ? 1 : 0
   policy_arn = aws_iam_policy.eks_windows_cni[0].arn
   role       = aws_iam_role.self_managed_ng[0].name
 }
