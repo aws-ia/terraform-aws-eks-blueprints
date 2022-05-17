@@ -1,8 +1,6 @@
 terraform {
   required_version = ">= 1.0.0"
 
-  experiments = [module_variable_optional_attrs]
-
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -12,5 +10,17 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = ">= 2.10"
     }
+    helm = {
+      source  = "hashicorp/helm"
+      version = ">= 2.4.1"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = ">= 3.0"
+    }
+  }
+
+  backend "local" {
+    path = "local_tf_state/terraform-main.tfstate"
   }
 }

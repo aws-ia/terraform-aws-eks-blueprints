@@ -58,6 +58,18 @@ variable "amazon_eks_coredns_config" {
   default     = {}
 }
 
+variable "coredns_helm_config" {
+  description = "CoreDNS Helm chart config"
+  type        = any
+  default     = {}
+}
+
+variable "coredns_use_managed_addon" {
+  description = "Determines whether to use the EKS mangaed addon (default, `true`) or to provision as self-managed/custom addon using Helm chart (`false`)"
+  type        = bool
+  default     = true
+}
+
 variable "amazon_eks_kube_proxy_config" {
   description = "ConfigMap for Amazon EKS Kube-Proxy add-on"
   type        = any

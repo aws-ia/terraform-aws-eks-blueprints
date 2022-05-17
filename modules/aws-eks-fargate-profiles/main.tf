@@ -5,7 +5,7 @@ resource "aws_eks_fargate_profile" "eks_fargate" {
   subnet_ids             = local.fargate_profiles["subnet_ids"]
 
   tags = merge(var.context.tags,
-    local.fargate_profiles["additional_tags"],
+    try(local.fargate_profiles.additional_tags, {}),
     local.fargate_tags
   )
 
@@ -13,7 +13,7 @@ resource "aws_eks_fargate_profile" "eks_fargate" {
     for_each = toset(local.fargate_profiles["fargate_profile_namespaces"])
     content {
       namespace = selector.value.namespace
-      labels    = selector.value.k8s_labels
+      labels    = try(selector.value.k8s_labels, null)
     }
   }
 

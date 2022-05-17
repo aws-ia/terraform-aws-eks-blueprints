@@ -9,10 +9,12 @@ module "aws_vpc_cni" {
 }
 
 module "aws_coredns" {
-  count         = var.enable_amazon_eks_coredns ? 1 : 0
-  source        = "./aws-coredns"
-  addon_config  = var.amazon_eks_coredns_config
-  addon_context = local.addon_context
+  count             = var.enable_amazon_eks_coredns ? 1 : 0
+  source            = "./aws-coredns"
+  addon_config      = var.amazon_eks_coredns_config
+  addon_context     = local.addon_context
+  helm_config       = var.coredns_helm_config
+  use_managed_addon = var.coredns_use_managed_addon
 }
 
 module "aws_kube_proxy" {

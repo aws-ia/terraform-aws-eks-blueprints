@@ -5,6 +5,7 @@ variable "addon_config" {
 }
 
 variable "addon_context" {
+  description = "Input configuration for the addon"
   type = object({
     aws_caller_identity_account_id = string
     aws_caller_identity_arn        = string
@@ -16,5 +17,16 @@ variable "addon_context" {
     eks_oidc_provider_arn          = string
     tags                           = map(string)
   })
-  description = "Input configuration for the addon"
+}
+
+variable "helm_config" {
+  description = "Helm provider config for the aws_efs_csi_driver"
+  default     = {}
+  type        = any
+}
+
+variable "use_managed_addon" {
+  description = "Determines whether to use the EKS mangaed addon (default, `true`) or to provision as self-managed/custom addon using Helm chart (`false`)"
+  type        = bool
+  default     = true
 }
