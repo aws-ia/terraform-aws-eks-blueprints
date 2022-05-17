@@ -72,6 +72,7 @@ The below example demonstrates advanced configuration options for a managed node
         launch_template_os     = "amazonlinux2eks" # amazonlinux2eks or windows or bottlerocket
         public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
         enable_monitoring      = true
+        create_iam_role        = false # default is true; set to false to bring your own IAM Role with iam_role_arn option
         iam_role_arn           = "<ENTER-YOUR-IAM-ROLE>" # Node groups creates a new IAM role if `iam_role_arn` is not specified
         pre_userdata           = <<-EOT
                     yum install -y amazon-ssm-agent
@@ -168,7 +169,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       # Node Group compute configuration
       ami_type               = "AL2_x86_64"
       capacity_type          = "SPOT"
-      instance_types         = ["r5d.xlarge", "r5a.xlarge"]
+      instance_types         = ["r5d.xlarge", "r5.xlarge"]
       format_mount_nvme_disk = true # Ephemeral storage disks are formatted and mounted under `local1` folder
 
       block_device_mappings = [
@@ -491,6 +492,11 @@ The below example demonstrates advanced configuration options for a self-managed
             systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
         EOT
         post_userdata        = ""
+
+        create_iam_role = false # Changing `create_iam_role=false` to bring your own IAM Role
+        iam_role_arn              = "<ENTER_IAM_ROLE_ARN>" # custom IAM role for aws-auth mapping; used when create_iam_role = false
+        iam_instance_profile_name = "<ENTER_IAM_INSTANCE_PROFILE_NAME>" # IAM instance profile name for Launch templates; used when create_iam_role = false
+
         kubelet_extra_args   = "--node-labels=WorkerType=ON_DEMAND,noderole=spark --register-with-taints=test=true:NoSchedule --max-pods=20"
         bootstrap_extra_args = ""
         block_device_mapping = [

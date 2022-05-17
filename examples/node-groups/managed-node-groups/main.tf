@@ -153,7 +153,7 @@ module "eks_blueprints" {
       node_group_name = "mg5"
       instance_types  = ["m5.large"]
       min_size        = "2"
-      create_iam_role = false   # Changing `create_iam_role=false` to bring your own IAM Role
+      create_iam_role = false # Changing `create_iam_role=false` to bring your own IAM Role
       iam_role_arn    = aws_iam_role.managed_ng.arn
       disk_size       = 100 # Disk size is used only with Managed Node Groups without Launch Templates
       update_config = [{
@@ -165,11 +165,11 @@ module "eks_blueprints" {
       # Node Group configuration
       node_group_name = "mng_lt" # Max 40 characters for node group name
 
-      ami_type        = "AL2_x86_64" # Available options -> AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
-      release_version = ""           # Enter AMI release version to deploy the latest AMI released by AWS. Used only when you specify ami_type
-      capacity_type   = "ON_DEMAND"  # ON_DEMAND or SPOT
-      instance_types  = ["r5d.large"] # List of instances used only for SPOT type
-      format_mount_nvme_disk = true  # format and mount NVMe disks ; default to false
+      ami_type               = "AL2_x86_64"  # Available options -> AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
+      release_version        = ""            # Enter AMI release version to deploy the latest AMI released by AWS. Used only when you specify ami_type
+      capacity_type          = "ON_DEMAND"   # ON_DEMAND or SPOT
+      instance_types         = ["r5d.large"] # List of instances used only for SPOT type
+      format_mount_nvme_disk = true          # format and mount NVMe disks ; default to false
 
       # Launch template configuration
       create_launch_template = true              # false will use the default launch template
@@ -233,7 +233,7 @@ module "eks_blueprints" {
 
       # custom_ami_id is optional when you provide ami_type. Enter the Custom AMI id if you want to use your own custom AMI
       custom_ami_id  = data.aws_ami.amazonlinux2eks.id
-      capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
+      capacity_type  = "ON_DEMAND"   # ON_DEMAND or SPOT
       instance_types = ["r5d.large"] # List of instances used only for SPOT type
 
       # Launch template configuration
@@ -348,7 +348,7 @@ resource "aws_iam_role" "managed_ng" {
   managed_policy_arns = ["${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy",
     "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy",
     "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly",
-    "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"]
+  "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"]
 }
 
 resource "aws_iam_instance_profile" "managed_ng" {

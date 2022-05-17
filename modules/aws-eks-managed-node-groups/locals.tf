@@ -9,8 +9,8 @@ locals {
     subnet_ids               = []
 
     # IAM Roles for Nodegroup
-    create_iam_role          = true
-    iam_role_arn             = null  # iam_role_arn will be used if create_iam_role=false
+    create_iam_role = true
+    iam_role_arn    = null # iam_role_arn will be used if create_iam_role=false
 
     # Scaling Config
     desired_size = "3"
@@ -95,17 +95,17 @@ locals {
     templatefile("${path.module}/templates/userdata-${local.managed_node_group["launch_template_os"]}.tpl", local.userdata_params)
   )
 
-  eks_worker_policies = {for k,v in toset(concat([
+  eks_worker_policies = { for k, v in toset(concat([
     "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy",
     "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy",
     "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly",
     "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"],
     local.managed_node_group["additional_iam_policies"
-    ])) : k => v if local.managed_node_group["create_iam_role"] }
+  ])) : k => v if local.managed_node_group["create_iam_role"] }
 
-#  eks_worker_policies = local.managed_node_group["create_iam_role"] ? toset(concat(
-#    local.managed_node_group["additional_iam_policies"]
-#  )) : []
+  #  eks_worker_policies = local.managed_node_group["create_iam_role"] ? toset(concat(
+  #    local.managed_node_group["additional_iam_policies"]
+  #  )) : []
 
   common_tags = merge(
     var.context.tags,
