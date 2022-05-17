@@ -9,11 +9,27 @@ module "aws_vpc_cni" {
 }
 
 module "aws_coredns" {
-  count             = var.enable_amazon_eks_coredns ? 1 : 0
-  source            = "./aws-coredns"
-  addon_config      = var.amazon_eks_coredns_config
-  addon_context     = local.addon_context
-  helm_config       = var.coredns_helm_config
+  source = "./aws-coredns"
+
+  count = var.enable_amazon_eks_coredns ? 1 : 0
+
+  addon_context = local.addon_context
+  addon_config = merge(
+    {
+      kubernetes_version = data.aws_eks_cluster.eks_cluster.version
+    },
+    var.amazon_eks_coredns_config,
+  )
+  helm_config = merge(
+    {
+      kubernetes_version = data.aws_eks_cluster.eks_cluster.version
+    },
+    var.coredns_helm_config,
+    {
+      # Putting after because we don't want users to overwrite this - internal use only
+      image_registry = local.amazon_container_image_registry_uris[data.aws_region.current.name]
+    }
+  )
   use_managed_addon = var.coredns_use_managed_addon
 }
 

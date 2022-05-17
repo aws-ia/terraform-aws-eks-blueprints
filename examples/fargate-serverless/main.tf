@@ -29,10 +29,14 @@ provider "helm" {
 }
 
 data "aws_caller_identity" "current" {}
+data "aws_availability_zones" "available" {}
 
 locals {
   name   = basename(path.cwd)
   region = "us-west-2"
+
+  vpc_cidr = "10.0.0.0/16"
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   tags = {
     Blueprint  = local.name
@@ -103,22 +107,9 @@ module "eks_blueprints_kubernetes_addons" {
   enable_amazon_eks_coredns = true
   coredns_use_managed_addon = false
   coredns_helm_config = {
-    values = [
-      # The annotations are required to ensure the Fargate provisioner is used and not the EC2 provisioner
-      <<-EOT
-      image:
-        repository: 602401143452.dkr.ecr.${local.region}.amazonaws.com/eks/coredns
-        tag: ${data.aws_eks_addon_version.latest["coredns"].version}
-      deployment:
-        name: coredns
-        annotations:
-          eks.amazonaws.com/compute-type: fargate
-      service:
-        name: kube-dns
-        annotations:
-          eks.amazonaws.com/compute-type: fargate
-      EOT
-    ]
+    # Sets the correct annotations to ensure the Fargate provisioner is used and not the EC2 provisioner
+    compute_type       = "fargate"
+    kubernetes_version = module.eks_blueprints.eks_cluster_version
   }
 
   tags = local.tags
@@ -130,7 +121,7 @@ module "eks_blueprints_kubernetes_addons" {
 }
 
 data "aws_eks_addon_version" "latest" {
-  for_each = toset(["coredns", "kube-proxy", "vpc-cni"])
+  for_each = toset(["kube-proxy", "vpc-cni"])
 
   addon_name         = each.value
   kubernetes_version = module.eks_blueprints.eks_cluster_version
@@ -200,15 +191,23 @@ module "vpc" {
   version = "~> 3.0"
 
   name = local.name
-  cidr = "10.0.0.0/16"
+  cidr = local.vpc_cidr
 
-  azs             = ["${local.region}a", "${local.region}b", "${local.region}c"]
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+  azs             = local.azs
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_dns_hostnames = true
+
+  # Manage so we can name
+  manage_default_network_acl    = true
+  default_network_acl_tags      = { Name = "${local.name}-default" }
+  manage_default_route_table    = true
+  default_route_table_tags      = { Name = "${local.name}-default" }
+  manage_default_security_group = true
+  default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${local.name}" = "shared"

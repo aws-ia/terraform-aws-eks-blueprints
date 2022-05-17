@@ -9,8 +9,9 @@ To enable and modify the EKS managed addon for CoreDNS, you can reference the fo
 ```hcl
   enable_amazon_eks_coredns = true
   amazon_eks_coredns_config = {
-    addon_version     = "v1.8.7-eksbuild.1"
-    resolve_conflicts = "OVERWRITE"
+    most_recent        = true
+    kubernetes_version = "1.21"
+    resolve_conflicts  = "OVERWRITE"
     ...
   }
 ```
@@ -34,21 +35,8 @@ To provision the self managed addon for CoreDNS, you can reference the following
   enable_amazon_eks_coredns = true
   coredns_use_managed_addon = false
   coredns_helm_config = {
-    values = [
-      <<-EOT
-      image:
-        repository: 602401143452.dkr.ecr.${local.region}.amazonaws.com/eks/coredns
-        tag: v1.8.7-eksbuild.1
-      deployment:
-        name: coredns
-        annotations:
-          eks.amazonaws.com/compute-type: ec2
-      service:
-        name: kube-dns
-        annotations:
-          eks.amazonaws.com/compute-type: ec2
-      EOT
-    ]
+    compute_type       = "fargate"
+    kubernetes_version = "1.22"
   }
 ```
 
@@ -77,6 +65,7 @@ To provision the self managed addon for CoreDNS, you can reference the following
 | Name | Type |
 |------|------|
 | [aws_eks_addon.coredns](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_addon) | resource |
+| [aws_eks_addon_version.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_addon_version) | data source |
 
 ## Inputs
 
