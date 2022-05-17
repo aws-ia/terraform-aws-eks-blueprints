@@ -51,7 +51,7 @@ locals {
 
   tags = {
     Blueprint  = local.name
-    GithubRepo = "terraform-aws-eks-blueprints"
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 }
 
@@ -80,7 +80,7 @@ module "eks_blueprints" {
 
   # Karpenter requires one node to get up and running
   self_managed_node_groups = {
-    self_mg_4 = {
+    self_mg_5 = {
       node_group_name    = local.node_group_name
       launch_template_os = "amazonlinux2eks"
       max_size           = 1

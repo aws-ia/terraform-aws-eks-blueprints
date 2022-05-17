@@ -34,7 +34,7 @@ locals {
 
   tags = {
     Blueprint  = local.name
-    GithubRepo = "terraform-aws-eks-blueprints"
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 }
 
@@ -52,7 +52,7 @@ module "eks_blueprints" {
   private_subnet_ids = module.vpc.private_subnets
 
   managed_node_groups = {
-    mg_4 = {
+    mg_5 = {
       node_group_name = "mng-ondemand"
       instance_types  = ["m5.large"]
       min_size        = 2

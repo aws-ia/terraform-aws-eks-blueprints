@@ -20,7 +20,7 @@ locals {
 
   tags = {
     Blueprint  = local.name
-    GithubRepo = "terraform-aws-eks-blueprints"
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 }
 
@@ -37,7 +37,7 @@ module "eks_blueprints" {
   private_subnet_ids = module.vpc.private_subnets
 
   self_managed_node_groups = {
-    self_mg_4 = {
+    self_mg_5 = {
       node_group_name = "self-managed-ondemand" # Name is used to create a dedicated IAM role for each node group and adds to AWS-AUTH config map
 
       subnet_type            = "private"

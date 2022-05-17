@@ -34,7 +34,7 @@ locals {
 
   tags = {
     Blueprint  = local.name
-    GithubRepo = "terraform-aws-eks-blueprints"
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 }
 
@@ -92,7 +92,7 @@ module "eks_blueprints" {
   }
 
   managed_node_groups = {
-    mg_4 = {
+    mg_5 = {
       node_group_name      = "managed-ondemand"
       instance_types       = ["m5.large"]
       subnet_ids           = module.vpc.private_subnets
@@ -101,7 +101,7 @@ module "eks_blueprints" {
   }
 
   self_managed_node_groups = {
-    self_mg_4 = {
+    self_mg_5 = {
       node_group_name    = "self-managed-ondemand"
       instance_type      = "m5.large"
       launch_template_os = "amazonlinux2eks"   # amazonlinux2eks  or bottlerocket or windows
@@ -175,6 +175,67 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   enable_amazon_eks_aws_ebs_csi_driver = true
+
+  # Prometheus and Amazon Managed Prometheus integration
+  enable_prometheus                    = true
+  enable_amazon_prometheus             = true
+  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+
+  enable_aws_for_fluentbit = true
+  aws_for_fluentbit_helm_config = {
+    name                                      = "aws-for-fluent-bit"
+    chart                                     = "aws-for-fluent-bit"
+    repository                                = "https://aws.github.io/eks-charts"
+    version                                   = "0.1.16"
+    namespace                                 = "logging"
+    aws_for_fluent_bit_cw_log_group           = "/${module.eks_blueprints.eks_cluster_id}/worker-fluentbit-logs" # Optional
+    aws_for_fluentbit_cwlog_retention_in_days = 90
+    create_namespace                          = true
+    values = [templatefile("${path.module}/helm_values/aws-for-fluentbit-values.yaml", {
+      region                          = local.region
+      aws_for_fluent_bit_cw_log_group = "/${module.eks_blueprints.eks_cluster_id}/worker-fluentbit-logs"
+    })]
+    set = [
+      {
+        name  = "nodeSelector.kubernetes\\.io/os"
+        value = "linux"
+      }
+    ]
+  }
+
+  enable_fargate_fluentbit = true
+  fargate_fluentbit_addon_config = {
+    output_conf = <<-EOF
+    [OUTPUT]
+      Name cloudwatch_logs
+      Match *
+      region ${local.region}
+      log_group_name /${module.eks_blueprints.eks_cluster_id}/fargate-fluentbit-logs
+      log_stream_prefix "fargate-logs-"
+      auto_create_group true
+    EOF
+
+    filters_conf = <<-EOF
+    [FILTER]
+      Name parser
+      Match *
+      Key_Name log
+      Parser regex
+      Preserve_Key True
+      Reserve_Data True
+    EOF
+
+    parsers_conf = <<-EOF
+    [PARSER]
+      Name regex
+      Format regex
+      Regex ^(?<time>[^ ]+) (?<stream>[^ ]+) (?<logtag>[^ ]+) (?<message>.+)$
+      Time_Key time
+      Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+      Time_Keep On
+      Decode_Field_As json message
+    EOF
+  }
 
   tags = local.tags
 
