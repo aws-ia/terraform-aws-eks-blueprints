@@ -207,6 +207,7 @@ resource "aws_prometheus_rule_group_namespace" "haproxy" {
       description: "Too many HTTP requests with status 5xx (> 5%) on server {{ $labels.server }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
   EOF
 }
+
 #Configure AWS Managed Prometheus alert manager
 resource "aws_prometheus_alert_manager_definition" "haproxy" {
   workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
