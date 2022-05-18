@@ -146,35 +146,75 @@ resource "grafana_dashboard" "haproxy_dashboards" {
 }
 
 #Configure AWS Managed Prometheus rule groups
-resource "aws_prometheus_rule_group_namespace" "java_jmx" {
-  name         = "java_jmx_rules"
+resource "aws_prometheus_rule_group_namespace" "haproxy" {
+  name         = "haproxy_rules"
   workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
   data         = <<EOF
-groups:
-  - name: default-metric
+  groups:
+  - name: obsa-haproxy-down-alert
     rules:
-    - record: metric:recording_rule
-      expr: avg(rate(container_cpu_usage_seconds_total[5m]))
-  - name: default-alert
+    - alert: HA_proxy_down
+    expr: haproxy_up == 0
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: HAProxy down (instance {{ $labels.instance }})
+      description: "HAProxy down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+  - name: obsa-haproxy-http4xx-error-alert
     rules:
-    - alert: metric:alerting_rule
-      expr: jvm_memory_bytes_used{job="java", area="heap"} / jvm_memory_bytes_max * 100 > 80
-      for: 1m
-      labels:
-          severity: warning
-      annotations:
-          summary: "JVM heap warning"
-          description: "JVM heap of instance `{{$labels.instance}}` from application `{{$labels.application}}` is above 80% for one minute. (current=`{{$value}}%`)"
-EOF
+    - alert: Ha_proxy_High_Http4xx_ErrorRate_Backend
+    expr: sum by (backend) (rate(haproxy_server_http_responses_total{code="4xx"}[1m])) / sum by (backend) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: HAProxy high HTTP 4xx error rate backend (instance {{ $labels.instance }})
+      description: "Too many HTTP requests with status 4xx (> 5%) on backend {{ $labels.fqdn }}/{{ $labels.backend }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+  - name: obsa-haproxy-http4xx-error-alert
+    rules:
+    - alert: Ha_proxy_High_Http5xx_ErrorRate_Backend
+    expr: sum by (backend) (rate(haproxy_server_http_responses_total{code="5xx"}[1m])) / sum by (backend) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: HAProxy high HTTP 5xx error rate backend (instance {{ $labels.instance }})
+      description: "Too many HTTP requests with status 5xx (> 5%) on backend {{ $labels.fqdn }}/{{ $labels.backend }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+  - name: obsa-haproxy-Http4xx-ErrorRate-Server-alert
+    rules:
+    - alert: Ha_proxy_High_Http4xx_ErrorRate_Server
+    expr: sum by (server) (rate(haproxy_server_http_responses_total{code="4xx"}[1m])) / sum by (server) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: HAProxy high HTTP 4xx error rate server (instance {{ $labels.instance }})
+      description: "Too many HTTP requests with status 4xx (> 5%) on server {{ $labels.server }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+  - name: obsa-haproxy-Http5xx-ErrorRate-Server-alert
+    rules:
+    - alert: Ha_proxy_High_Http5xx_ErrorRate_Server
+    expr: sum by (server) (rate(haproxy_server_http_responses_total{code="5xx"}[1m])) / sum by (server) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: HAProxy high HTTP 5xx error rate server (instance {{ $labels.instance }})
+      description: "Too many HTTP requests with status 5xx (> 5%) on server {{ $labels.server }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+  EOF
 }
 #Configure AWS Managed Prometheus alert manager
-resource "aws_prometheus_alert_manager_definition" "java_jmx" {
+resource "aws_prometheus_alert_manager_definition" "haproxy" {
   workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
   definition   = <<EOF
-alertmanager_config: |
-  route:
-    receiver: 'default'
-  receivers:
-    - name: 'default'
-EOF
+  alertmanager_config: |
+    route:
+      receiver: 'default'
+    receivers:
+      - name: 'default'
+  EOF
 }
