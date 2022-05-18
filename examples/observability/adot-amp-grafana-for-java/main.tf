@@ -145,11 +145,11 @@ resource "grafana_dashboard" "jmx_dashboards" {
   config_json = file("${path.module}/dashboards/default.json")
 }
 
-#Configure AWS Managed Prometheus recording and alerting rules
 resource "aws_prometheus_rule_group_namespace" "java_jmx" {
   name         = "java_jmx_rules"
   workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
-  data         = <<EOF
+
+  data = <<-EOF
   groups:
     - name: default-metric
       rules:
@@ -168,10 +168,10 @@ resource "aws_prometheus_rule_group_namespace" "java_jmx" {
   EOF
 }
 
-#Configure AWS Managed Prometheus alert manager
 resource "aws_prometheus_alert_manager_definition" "java_jmx" {
   workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
-  definition   = <<EOF
+
+  definition = <<-EOF
   alertmanager_config: |
     route:
       receiver: 'default'

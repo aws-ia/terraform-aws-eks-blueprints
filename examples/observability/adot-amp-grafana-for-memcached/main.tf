@@ -145,29 +145,29 @@ resource "grafana_dashboard" "memchached_dashboards" {
   config_json = file("${path.module}/dashboards/default.json")
 }
 
-#Configure AWS Managed Prometheus rule groups
 resource "aws_prometheus_rule_group_namespace" "memcached" {
   name         = "memcached_rules"
   workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
-  data         = <<EOF
+
+  data = <<-EOF
   groups:
-  - name: obsa-memcached-down-alert
-    rules:
-    - alert: memcached-down
-    expr: memcached_up == 0
-    for: 0m
-    labels:
-      severity: critical
-    annotations:
-      summary: memcached down (instance {{ $labels.instance }})
-      description: "memcached instance is down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+    - name: obsa-memcached-down-alert
+      rules:
+      - alert: memcached-down
+      expr: memcached_up == 0
+      for: 0m
+      labels:
+        severity: critical
+      annotations:
+        summary: memcached down (instance {{ $labels.instance }})
+        description: "memcached instance is down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
   EOF
 }
 
-#Configure AWS Managed Prometheus alert manager
 resource "aws_prometheus_alert_manager_definition" "memcached" {
   workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
-  definition   = <<EOF
+
+  definition = <<-EOF
   alertmanager_config: |
     route:
       receiver: 'default'
