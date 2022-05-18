@@ -10,6 +10,7 @@ data "aws_iam_policy_document" "karpenter" {
       "ec2:RunInstances",
       "ec2:CreateTags",
       "iam:PassRole",
+      "ec2:DeleteLaunchTemplate",
       "ec2:DescribeLaunchTemplates",
       "ec2:DescribeInstances",
       "ec2:DescribeSecurityGroups",

@@ -502,6 +502,30 @@ variable "cert_manager_helm_config" {
   default     = {}
 }
 
+variable "cert_manager_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
+
+variable "cert_manager_domain_names" {
+  description = "Domain names of the Route53 hosted zone to use with cert-manager."
+  default     = []
+  type        = list(string)
+}
+
+variable "cert_manager_install_letsencrypt_issuers" {
+  type        = bool
+  default     = true
+  description = "Install Let's Encrypt Cluster Issuers."
+}
+
+variable "cert_manager_letsencrypt_email" {
+  type        = string
+  default     = ""
+  description = "Email address for expiration emails from Let's Encrypt."
+}
+
 #-----------Argo Rollouts ADDON-------------
 variable "enable_argo_rollouts" {
   type        = bool
