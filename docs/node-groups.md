@@ -572,6 +572,9 @@ The example below demonstrates how you can customize a Fargate profile for your 
     },
     multi = {
       fargate_profile_name = "multi-namespaces"
+      create_iam_role = false # Changing `create_iam_role=false` to bring your own IAM Role
+      iam_role_arn    = "<ENTER_YOUR_IAM_ROLE>" # custom IAM role for aws-auth mapping; used when `create_iam_role = false`
+      additional_iam_policies    = [] # additional IAM policies
       fargate_profile_namespaces = [{
         namespace = "default"
         k8s_labels = {
