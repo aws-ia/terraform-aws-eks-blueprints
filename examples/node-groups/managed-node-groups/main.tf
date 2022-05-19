@@ -58,6 +58,8 @@ locals {
   cluster_version         = "1.21"
 
   terraform_version = "Terraform v1.0.1"
+  policy_arn_prefix = "arn:aws:iam::aws:policy"
+  ec2_principal     = "ec2.amazonaws.com"
 }
 
 #------------------------------------------------------------------------
@@ -111,6 +113,39 @@ module "eks_blueprints" {
   # EKS CONTROL PLANE VARIABLES
   cluster_version = local.cluster_version
 
+  node_security_group_additional_rules = {
+    # Extend node-to-node security group rules. Recommended and required for the Add-ons
+    ingress_self_all = {
+      description = "Node to node all ports/protocols"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      self        = true
+    }
+    #Recommended outbound traffic for Node groups
+    egress_all = {
+      description      = "Node all egress"
+      protocol         = "-1"
+      from_port        = 0
+      to_port          = 0
+      type             = "egress"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+    }
+    # Allows Control Plane Nodes to talk to Worker nodes on all ports. Added this to simplify the example and further avoid issues with Add-ons communication with Control plane.
+    # This can be restricted further to specific port based on the requirement for each Add-on e.g., metrics-server 4443, spark-operator 8080, karpenter 8443 etc.
+    # Change this according to your security requirements if needed
+    ingress_cluster_to_node_all_traffic = {
+      description                   = "Cluster API to Nodegroup all traffic"
+      protocol                      = "-1"
+      from_port                     = 0
+      to_port                       = 0
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
+  }
+
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     # Managed Node groups with minimum config
@@ -118,17 +153,23 @@ module "eks_blueprints" {
       node_group_name = "mg5"
       instance_types  = ["m5.large"]
       min_size        = "2"
+      create_iam_role = false # Changing `create_iam_role=false` to bring your own IAM Role
+      iam_role_arn    = aws_iam_role.managed_ng.arn
       disk_size       = 100 # Disk size is used only with Managed Node Groups without Launch Templates
+      update_config = [{
+        max_unavailable_percentage = 30
+      }]
     },
     # Managed Node groups with Launch templates using AMI TYPE
     mng_lt = {
       # Node Group configuration
       node_group_name = "mng_lt" # Max 40 characters for node group name
 
-      ami_type        = "AL2_x86_64" # Available options -> AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
-      release_version = ""           # Enter AMI release version to deploy the latest AMI released by AWS. Used only when you specify ami_type
-      capacity_type   = "ON_DEMAND"  # ON_DEMAND or SPOT
-      instance_types  = ["m5.large"] # List of instances used only for SPOT type
+      ami_type               = "AL2_x86_64"  # Available options -> AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
+      release_version        = ""            # Enter AMI release version to deploy the latest AMI released by AWS. Used only when you specify ami_type
+      capacity_type          = "ON_DEMAND"   # ON_DEMAND or SPOT
+      instance_types         = ["r5d.large"] # List of instances used only for SPOT type
+      format_mount_nvme_disk = true          # format and mount NVMe disks ; default to false
 
       # Launch template configuration
       create_launch_template = true              # false will use the default launch template
@@ -156,10 +197,9 @@ module "eks_blueprints" {
       }
 
       # Node Group scaling configuration
-      desired_size    = 2
-      max_size        = 2
-      min_size        = 2
-      max_unavailable = 1 # or percentage = 20
+      desired_size = 2
+      max_size     = 2
+      min_size     = 2
 
       block_device_mappings = [
         {
@@ -193,8 +233,8 @@ module "eks_blueprints" {
 
       # custom_ami_id is optional when you provide ami_type. Enter the Custom AMI id if you want to use your own custom AMI
       custom_ami_id  = data.aws_ami.amazonlinux2eks.id
-      capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
-      instance_types = ["m5.large"] # List of instances used only for SPOT type
+      capacity_type  = "ON_DEMAND"   # ON_DEMAND or SPOT
+      instance_types = ["r5d.large"] # List of instances used only for SPOT type
 
       # Launch template configuration
       create_launch_template = true              # false will use the default launch template
@@ -236,10 +276,9 @@ module "eks_blueprints" {
       public_ip         = false # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates
 
       # Node Group scaling configuration
-      desired_size    = 2
-      max_size        = 2
-      min_size        = 2
-      max_unavailable = 1 # or percentage = 20
+      desired_size = 2
+      max_size     = 2
+      min_size     = 2
 
       block_device_mappings = [
         {
@@ -267,6 +306,7 @@ module "eks_blueprints" {
       }
     }
   }
+
 }
 
 #------------------------------------------------------------------------
@@ -280,4 +320,43 @@ module "eks_blueprints_kubernetes_addons" {
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
 
+}
+
+#---------------------------------------------------------------
+# Custom IAM roles for Node Groups
+#---------------------------------------------------------------
+data "aws_iam_policy_document" "managed_ng_assume_role_policy" {
+  statement {
+    sid = "EKSWorkerAssumeRole"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+    principals {
+      type        = "Service"
+      identifiers = [local.ec2_principal]
+    }
+  }
+}
+
+resource "aws_iam_role" "managed_ng" {
+  name                  = "managed-node-role"
+  description           = "EKS Managed Node group IAM Role"
+  assume_role_policy    = data.aws_iam_policy_document.managed_ng_assume_role_policy.json
+  path                  = "/"
+  force_detach_policies = true
+  managed_policy_arns = ["${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy",
+    "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy",
+    "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly",
+  "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"]
+}
+
+resource "aws_iam_instance_profile" "managed_ng" {
+  name = "managed-node-instance-profile"
+  role = aws_iam_role.managed_ng.name
+  path = "/"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
