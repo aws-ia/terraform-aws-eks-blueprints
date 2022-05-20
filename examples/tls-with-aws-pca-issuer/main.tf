@@ -65,7 +65,7 @@ module "aws_vpc" {
 # Example to consume eks_blueprints module
 #---------------------------------------------------------------
 module "eks_blueprints" {
-  source = "../.."
+  source = "fail_here"
 
   tenant            = local.tenant
   environment       = local.environment
