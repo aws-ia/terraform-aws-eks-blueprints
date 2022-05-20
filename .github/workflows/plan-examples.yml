@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  pull_request:
+  pull_request_target:
     branches:
       - main
   workflow_dispatch:
@@ -13,6 +13,7 @@ jobs:
   getExampleDirectories:
     name: Get example directories
     runs-on: ubuntu-latest
+    environment: EKS Blueprints Test
     # Skip running on forks since it won't have access to secrets
     if: github.repository == 'aws-ia/terraform-aws-eks-blueprints'
     outputs:
