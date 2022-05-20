@@ -5,7 +5,7 @@ resource "kubernetes_namespace" "team" {
   for_each = var.application_teams
   metadata {
     name   = each.key
-    labels = each.value["labels"]
+    labels = lookup(each.value, "labels", {})
   }
 }
 
@@ -13,33 +13,24 @@ resource "kubernetes_namespace" "team" {
 # Quotas
 # ---------------------------------------------------------------------------------------------------------------------
 resource "kubernetes_resource_quota" "team_compute_quota" {
-  for_each = var.application_teams
+  for_each = local.team_compute_hard_quotas
   metadata {
     name      = "compute-quota"
     namespace = kubernetes_namespace.team[each.key].metadata[0].name
   }
   spec {
-    hard = {
-      "requests.cpu"    = each.value["quota"]["requests.cpu"]
-      "requests.memory" = each.value["quota"]["requests.memory"]
-      "limits.cpu"      = each.value["quota"]["limits.cpu"]
-      "limits.memory"   = each.value["quota"]["limits.memory"]
-    }
+    hard = each.value
   }
 }
 
 resource "kubernetes_resource_quota" "team_object_quota" {
-  for_each = var.application_teams
+  for_each = local.team_object_hard_quotas
   metadata {
     name      = "object-quota"
     namespace = kubernetes_namespace.team[each.key].metadata[0].name
   }
   spec {
-    hard = {
-      "pods"     = each.value["quota"]["pods"]
-      "secrets"  = each.value["quota"]["secrets"]
-      "services" = each.value["quota"]["services"]
-    }
+    hard = each.value
   }
 }
 
