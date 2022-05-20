@@ -2,6 +2,7 @@ provider "aws" {
   region = local.region
 }
 
+
 provider "kubectl" {
   apply_retry_count      = 10
   host                   = module.eks_blueprints.eks_cluster_endpoint
