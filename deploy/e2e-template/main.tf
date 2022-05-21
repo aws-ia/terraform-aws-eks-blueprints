@@ -3,5 +3,5 @@ provider "aws" {
 }
 
 module "e2e_test" {
-  source = "../../../EXAMPLE_PATH"
+  source = "../../EXAMPLE_PATH"
 }

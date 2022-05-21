@@ -14,9 +14,14 @@ provider "kubernetes" {
   }
 }
 
+data "aws_availability_zones" "available" {}
+
 locals {
   name   = basename(path.cwd)
   region = "us-west-2"
+
+  vpc_cidr = "10.0.0.0/16"
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   tags = {
     Blueprint  = local.name
@@ -44,7 +49,6 @@ module "eks_blueprints" {
   # cluster_endpoint_public_access  = false
   # cluster_endpoint_private_access = true
 
-  # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     mg_5 = {
       node_group_name = "managed-ondemand"
@@ -66,18 +70,22 @@ module "vpc" {
   name = local.name
   cidr = "10.0.0.0/16"
 
-  azs             = ["${local.region}a", "${local.region}b", "${local.region}c"]
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  azs             = local.azs
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
   enable_dns_hostnames = true
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = "1"
+    "kubernetes.io/role/elb"              = 1
   }
+
   private_subnet_tags = {
     "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = "1"
+    "kubernetes.io/role/internal-elb"     = 1
   }
 
   tags = local.tags

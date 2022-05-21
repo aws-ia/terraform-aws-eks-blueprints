@@ -69,7 +69,7 @@ locals {
   # Managed node IAM Roles for aws-auth
   managed_node_group_aws_auth_config_map = length(var.managed_node_groups) > 0 == true ? [
     for key, node in var.managed_node_groups : {
-      rolearn : "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${module.aws_eks.cluster_id}-${node.node_group_name}"
+      rolearn : try(node.iam_role_arn, "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${module.aws_eks.cluster_id}-${node.node_group_name}")
       username : "system:node:{{EC2PrivateDNSName}}"
       groups : [
         "system:bootstrappers",
@@ -81,7 +81,7 @@ locals {
   # Self Managed node IAM Roles for aws-auth
   self_managed_node_group_aws_auth_config_map = length(var.self_managed_node_groups) > 0 ? [
     for key, node in var.self_managed_node_groups : {
-      rolearn : "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${module.aws_eks.cluster_id}-${node.node_group_name}"
+      rolearn : try(node.iam_role_arn, "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${module.aws_eks.cluster_id}-${node.node_group_name}")
       username : "system:node:{{EC2PrivateDNSName}}"
       groups : [
         "system:bootstrappers",
@@ -106,7 +106,7 @@ locals {
   # Fargate node IAM Roles for aws-auth
   fargate_profiles_aws_auth_config_map = length(var.fargate_profiles) > 0 ? [
     for key, node in var.fargate_profiles : {
-      rolearn : "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${module.aws_eks.cluster_id}-${node.fargate_profile_name}"
+      rolearn : try(node.iam_role_arn, "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${module.aws_eks.cluster_id}-${node.fargate_profile_name}")
       username : "system:node:{{SessionName}}"
       groups : [
         "system:bootstrappers",
@@ -150,4 +150,6 @@ locals {
       ]
     }
   ] : []
+
+  cluster_iam_role_name = var.iam_role_name == null ? "${var.cluster_name}-cluster-role" : var.iam_role_name
 }

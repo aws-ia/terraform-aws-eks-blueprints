@@ -25,8 +25,11 @@ module "aws_eks" {
   cluster_timeouts = var.cluster_timeouts
 
   # IAM Role
+  create_iam_role = var.create_iam_role
+  iam_role_arn    = var.iam_role_arn
+
   iam_role_use_name_prefix      = false
-  iam_role_name                 = var.cluster_name
+  iam_role_name                 = local.cluster_iam_role_name
   iam_role_path                 = var.iam_role_path
   iam_role_permissions_boundary = var.iam_role_permissions_boundary
   iam_role_additional_policies  = var.iam_role_additional_policies

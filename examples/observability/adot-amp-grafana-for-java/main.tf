@@ -33,9 +33,14 @@ provider "grafana" {
   auth = var.grafana_api_key
 }
 
+data "aws_availability_zones" "available" {}
+
 locals {
   name   = basename(path.cwd)
   region = "us-west-2"
+
+  vpc_cidr = "10.0.0.0/16"
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   tags = {
     Blueprint  = local.name
@@ -55,7 +60,6 @@ module "eks_blueprints" {
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
-  # Provisions a new Amazon Managed Service for Prometheus workspace
   enable_amazon_prometheus = true
 
   managed_node_groups = {
@@ -75,7 +79,6 @@ module "eks_blueprints_kubernetes_addons" {
 
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
-  # OTEL JMX use cases
   enable_cert_manager                  = true
   enable_opentelemetry_operator        = true
   enable_adot_collector_java           = true
@@ -85,7 +88,6 @@ module "eks_blueprints_kubernetes_addons" {
   tags = local.tags
 }
 
-# Configure JMX default Grafana dashboards
 resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
   name       = "amp"
@@ -154,18 +156,22 @@ module "vpc" {
   name = local.name
   cidr = "10.0.0.0/16"
 
-  azs             = ["${local.region}a", "${local.region}b", "${local.region}c"]
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  azs             = local.azs
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
   enable_dns_hostnames = true
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = "1"
+    "kubernetes.io/role/elb"              = 1
   }
+
   private_subnet_tags = {
     "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = "1"
+    "kubernetes.io/role/internal-elb"     = 1
   }
 
   tags = local.tags

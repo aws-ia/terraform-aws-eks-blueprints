@@ -28,9 +28,14 @@ provider "helm" {
   }
 }
 
+data "aws_availability_zones" "available" {}
+
 locals {
   name   = basename(path.cwd)
   region = "us-west-2"
+
+  vpc_cidr = "10.0.0.0/16"
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   tags = {
     Blueprint  = local.name
@@ -84,6 +89,7 @@ module "eks_blueprints_kubernetes_addons" {
   depends_on = [module.eks_blueprints.managed_node_groups]
 }
 
+
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
@@ -94,9 +100,9 @@ module "vpc" {
   name = local.name
   cidr = "10.0.0.0/16"
 
-  azs             = ["${local.region}a", "${local.region}b", "${local.region}c"]
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+  azs             = local.azs
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
   enable_ipv6                     = true
   assign_ipv6_address_on_creation = true
@@ -111,12 +117,12 @@ module "vpc" {
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = "1"
+    "kubernetes.io/role/elb"              = 1
   }
 
   private_subnet_tags = {
     "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = "1"
+    "kubernetes.io/role/internal-elb"     = 1
   }
 
   tags = local.tags

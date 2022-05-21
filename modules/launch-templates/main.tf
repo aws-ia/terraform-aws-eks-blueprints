@@ -11,15 +11,16 @@ resource "aws_launch_template" "this" {
 
   user_data = base64encode(templatefile("${path.module}/templates/userdata-${each.value.launch_template_os}.tpl",
     {
-      pre_userdata         = each.value.pre_userdata
-      post_userdata        = each.value.post_userdata
-      bootstrap_extra_args = each.value.bootstrap_extra_args
-      kubelet_extra_args   = each.value.kubelet_extra_args
-      eks_cluster_id       = var.eks_cluster_id
-      cluster_ca_base64    = data.aws_eks_cluster.eks.certificate_authority[0].data
-      cluster_endpoint     = data.aws_eks_cluster.eks.endpoint
-      service_ipv6_cidr    = try(each.value.service_ipv6_cidr, "")
-      service_ipv4_cidr    = try(each.value.service_ipv4_cidr, "")
+      pre_userdata           = each.value.pre_userdata
+      post_userdata          = each.value.post_userdata
+      bootstrap_extra_args   = each.value.bootstrap_extra_args
+      kubelet_extra_args     = each.value.kubelet_extra_args
+      eks_cluster_id         = var.eks_cluster_id
+      cluster_ca_base64      = data.aws_eks_cluster.eks.certificate_authority[0].data
+      cluster_endpoint       = data.aws_eks_cluster.eks.endpoint
+      service_ipv6_cidr      = try(each.value.service_ipv6_cidr, "")
+      service_ipv4_cidr      = try(each.value.service_ipv4_cidr, "")
+      format_mount_nvme_disk = each.value.format_mount_nvme_disk
   }))
 
   dynamic "iam_instance_profile" {

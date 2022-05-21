@@ -33,9 +33,14 @@ provider "grafana" {
   auth = var.grafana_api_key
 }
 
+data "aws_availability_zones" "available" {}
+
 locals {
   name   = basename(path.cwd)
   region = "us-west-2"
+
+  vpc_cidr = "10.0.0.0/16"
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   tags = {
     Blueprint  = local.name
@@ -55,7 +60,6 @@ module "eks_blueprints" {
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
-  # Provisions a new Amazon Managed Service for Prometheus workspace
   enable_amazon_prometheus = true
 
   managed_node_groups = {
@@ -75,7 +79,6 @@ module "eks_blueprints_kubernetes_addons" {
 
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
-  # OTEL JMX use cases
   enable_cert_manager                  = true
   enable_opentelemetry_operator        = true
   enable_adot_collector_haproxy        = true
@@ -85,12 +88,12 @@ module "eks_blueprints_kubernetes_addons" {
   tags = local.tags
 }
 
-# Configure HAProxy default Grafana dashboards
 resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
   name       = "amp"
   is_default = true
   url        = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+
   json_data {
     http_method     = "GET"
     sigv4_auth      = true
@@ -108,6 +111,81 @@ resource "grafana_dashboard" "haproxy_dashboards" {
   config_json = file("${path.module}/dashboards/default.json")
 }
 
+resource "aws_prometheus_rule_group_namespace" "haproxy" {
+  name         = "haproxy_rules"
+  workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
+
+  data = <<-EOF
+  groups:
+    - name: obsa-haproxy-down-alert
+      rules:
+      - alert: HA_proxy_down
+      expr: haproxy_up == 0
+      for: 0m
+      labels:
+        severity: critical
+      annotations:
+        summary: HAProxy down (instance {{ $labels.instance }})
+        description: "HAProxy down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - name: obsa-haproxy-http4xx-error-alert
+      rules:
+      - alert: Ha_proxy_High_Http4xx_ErrorRate_Backend
+      expr: sum by (backend) (rate(haproxy_server_http_responses_total{code="4xx"}[1m])) / sum by (backend) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: HAProxy high HTTP 4xx error rate backend (instance {{ $labels.instance }})
+        description: "Too many HTTP requests with status 4xx (> 5%) on backend {{ $labels.fqdn }}/{{ $labels.backend }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - name: obsa-haproxy-http4xx-error-alert
+      rules:
+      - alert: Ha_proxy_High_Http5xx_ErrorRate_Backend
+      expr: sum by (backend) (rate(haproxy_server_http_responses_total{code="5xx"}[1m])) / sum by (backend) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: HAProxy high HTTP 5xx error rate backend (instance {{ $labels.instance }})
+        description: "Too many HTTP requests with status 5xx (> 5%) on backend {{ $labels.fqdn }}/{{ $labels.backend }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - name: obsa-haproxy-Http4xx-ErrorRate-Server-alert
+      rules:
+      - alert: Ha_proxy_High_Http4xx_ErrorRate_Server
+      expr: sum by (server) (rate(haproxy_server_http_responses_total{code="4xx"}[1m])) / sum by (server) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: HAProxy high HTTP 4xx error rate server (instance {{ $labels.instance }})
+        description: "Too many HTTP requests with status 4xx (> 5%) on server {{ $labels.server }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - name: obsa-haproxy-Http5xx-ErrorRate-Server-alert
+      rules:
+      - alert: Ha_proxy_High_Http5xx_ErrorRate_Server
+      expr: sum by (server) (rate(haproxy_server_http_responses_total{code="5xx"}[1m])) / sum by (server) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: HAProxy high HTTP 5xx error rate server (instance {{ $labels.instance }})
+        description: "Too many HTTP requests with status 5xx (> 5%) on server {{ $labels.server }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+  EOF
+}
+
+resource "aws_prometheus_alert_manager_definition" "haproxy" {
+  workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
+
+  definition = <<-EOF
+  alertmanager_config: |
+    route:
+      receiver: 'default'
+    receivers:
+      - name: 'default'
+  EOF
+}
+
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
@@ -118,18 +196,22 @@ module "vpc" {
   name = local.name
   cidr = "10.0.0.0/16"
 
-  azs             = ["${local.region}a", "${local.region}b", "${local.region}c"]
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  azs             = local.azs
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
   enable_dns_hostnames = true
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = "1"
+    "kubernetes.io/role/elb"              = 1
   }
+
   private_subnet_tags = {
     "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = "1"
+    "kubernetes.io/role/internal-elb"     = 1
   }
 
   tags = local.tags
