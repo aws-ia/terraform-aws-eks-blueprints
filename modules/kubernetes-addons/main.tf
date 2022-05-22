@@ -105,11 +105,15 @@ module "aws_node_termination_handler" {
 }
 
 module "cert_manager" {
-  count             = var.enable_cert_manager ? 1 : 0
-  source            = "./cert-manager"
-  helm_config       = var.cert_manager_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = local.addon_context
+  count                       = var.enable_cert_manager ? 1 : 0
+  source                      = "./cert-manager"
+  helm_config                 = var.cert_manager_helm_config
+  manage_via_gitops           = var.argocd_manage_add_ons
+  irsa_policies               = var.cert_manager_irsa_policies
+  addon_context               = local.addon_context
+  domain_names                = var.cert_manager_domain_names
+  install_letsencrypt_issuers = var.cert_manager_install_letsencrypt_issuers
+  letsencrypt_email           = var.cert_manager_letsencrypt_email
 }
 
 module "cluster_autoscaler" {
@@ -291,6 +295,16 @@ module "aws_privateca_issuer" {
   irsa_policies           = var.aws_privateca_issuer_irsa_policies
 }
 
+module "velero" {
+  count                = var.enable_velero ? 1 : 0
+  source               = "./velero"
+  helm_config          = var.velero_helm_config
+  manage_via_gitops    = var.argocd_manage_add_ons
+  addon_context        = local.addon_context
+  irsa_policies        = var.velero_irsa_policies
+  velero_backup_bucket = var.velero_backup_bucket
+}
+
 module "opentelemetry_operator" {
   count         = var.enable_opentelemetry_operator ? 1 : 0
   source        = "./opentelemetry-operator"
@@ -307,13 +321,29 @@ module "adot_collector_java" {
   addon_context                        = local.addon_context
 }
 
-module "velero" {
-  count                = var.enable_velero ? 1 : 0
-  source               = "./velero"
-  helm_config          = var.velero_helm_config
-  manage_via_gitops    = var.argocd_manage_add_ons
-  addon_context        = local.addon_context
-  irsa_policies        = var.velero_irsa_policies
-  velero_backup_bucket = var.velero_backup_bucket
+module "adot_collector_haproxy" {
+  count                                = var.enable_adot_collector_haproxy ? 1 : 0
+  source                               = "./adot-collector-haproxy"
+  helm_config                          = var.adot_collector_haproxy_helm_config
+  amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
+  addon_context                        = local.addon_context
 }
 
+module "adot_collector_memcached" {
+  count                                = var.enable_adot_collector_memcached ? 1 : 0
+  source                               = "./adot-collector-memcached"
+  helm_config                          = var.adot_collector_memcached_helm_config
+  amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
+  addon_context                        = local.addon_context
+}
+
+module "adot_collector_nginx" {
+  count                                = var.enable_adot_collector_nginx ? 1 : 0
+  source                               = "./adot-collector-nginx"
+  helm_config                          = var.adot_collector_nginx_helm_config
+  amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
+  addon_context                        = local.addon_context
+}

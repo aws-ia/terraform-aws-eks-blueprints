@@ -2,8 +2,8 @@
 
 Velero is a tool to backup and restore your Kubernetes cluster resources and persistent volumes. Velero lets you :
 
-- Take backups of your cluster and restore in case of loss. 
-- Migrate cluster resources to other clusters. 
+- Take backups of your cluster and restore in case of loss.
+- Migrate cluster resources to other clusters.
 - Replicate your production cluster to development and testing clusters.
 
 For complete project documentation, please visit the [Velero documentation site](https://velero.io/docs/v1.7/).
@@ -24,7 +24,7 @@ Once the velero deployment is successful, run the following command from your a 
 $ kubectl get all -n velero
 ```
 
-Install the velero [CLI](https://velero.io/docs/v1.8/basic-install/#install-the-cli) on your local machine to start using velero for backup and restore. 
+Install the velero [CLI](https://velero.io/docs/v1.8/basic-install/#install-the-cli) on your local machine to start using velero for backup and restore.
 
 Once the velero CLI is installed run the following command to get the location of the S3 bucket that would store your backups
 
@@ -41,7 +41,7 @@ kubectl create namespace backupdemo
 kubectl run nginx --image=nginx -n backupdemo
 ```
 
-Create backup of this namespace using velero 
+Create backup of this namespace using velero
 
 ```
 velero backup create backup1 --include-namespaces backupdemo

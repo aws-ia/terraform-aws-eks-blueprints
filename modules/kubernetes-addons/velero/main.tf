@@ -38,4 +38,3 @@ resource "aws_iam_policy" "velero_policy" {
   policy      = data.aws_iam_policy_document.velero_policy.json
   tags        = var.addon_context.tags
 }
-

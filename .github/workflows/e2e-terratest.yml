@@ -8,6 +8,7 @@ on:
 
 jobs:
   test:
+    timeout-minutes: 60 # Wait for upto 60 mins before the next jobs runs
     name: Run E2E Terratest
     runs-on: ubuntu-latest
 
@@ -19,6 +20,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Block concurrent executions
+        uses: softprops/turnstyle@v1
+        with:
+          poll-interval-seconds: 180
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-go@v2
         with:

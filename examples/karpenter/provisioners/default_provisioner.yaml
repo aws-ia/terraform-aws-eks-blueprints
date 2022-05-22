@@ -16,7 +16,7 @@ spec:
   provider:
     instanceProfile: ${iam-instance-profile-id}
     subnetSelector:
-      Name: "*private*"
+      Name: "${eks-vpc_name}-private*"
     securityGroupSelector:
       kubernetes.io/cluster/${eks-cluster-id}: 'owned'
   ttlSecondsAfterEmpty: 120

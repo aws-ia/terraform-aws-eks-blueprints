@@ -16,6 +16,12 @@ locals {
     enable_monitoring    = false
     public_ip            = false
 
+    # IAM Roles for Nodegroup
+    create_iam_role           = true
+    iam_role_arn              = null # iam_role_arn will be used if create_iam_role=false
+    iam_instance_profile_name = null # iam_instance_profile_name for Launch templates; if create_iam_role=false
+
+    format_mount_nvme_disk = false
     block_device_mappings = [
       {
         device_name = "/dev/xvda"
@@ -53,14 +59,13 @@ locals {
   policy_arn_prefix = "arn:${var.context.aws_partition_id}:iam::aws:policy"
   ec2_principal     = "ec2.${var.context.aws_partition_dns_suffix}"
 
-  # EKS Worker Managed Policies
-  eks_worker_policies = toset(concat([
+  eks_worker_policies = { for k, v in toset(concat([
     "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy",
     "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy",
     "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly",
     "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"],
     local.self_managed_node_group["additional_iam_policies"
-  ]))
+  ])) : k => v if local.self_managed_node_group["create_iam_role"] }
 
   common_tags = merge(
     var.context.tags,

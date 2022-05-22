@@ -502,6 +502,30 @@ variable "cert_manager_helm_config" {
   default     = {}
 }
 
+variable "cert_manager_irsa_policies" {
+  type        = list(string)
+  description = "Additional IAM policies for a IAM role for service accounts"
+  default     = []
+}
+
+variable "cert_manager_domain_names" {
+  description = "Domain names of the Route53 hosted zone to use with cert-manager."
+  default     = []
+  type        = list(string)
+}
+
+variable "cert_manager_install_letsencrypt_issuers" {
+  type        = bool
+  default     = true
+  description = "Install Let's Encrypt Cluster Issuers."
+}
+
+variable "cert_manager_letsencrypt_email" {
+  type        = string
+  default     = ""
+  description = "Email address for expiration emails from Let's Encrypt."
+}
+
 #-----------Argo Rollouts ADDON-------------
 variable "enable_argo_rollouts" {
   type        = bool
@@ -699,7 +723,33 @@ variable "opentelemetry_operator_helm_config" {
   description = "Opentelemetry Operator Helm Chart config"
 }
 
+#-----------Kubernetes Velero ADDON-------------
+variable "enable_velero" {
+  description = "Enable Kubernetes Dashboard add-on"
+  type        = bool
+  default     = false
+}
+
+variable "velero_helm_config" {
+  description = "Kubernetes Velero Helm Chart config"
+  type        = any
+  default     = null
+}
+
+variable "velero_irsa_policies" {
+  description = "IAM policy ARNs for velero IRSA"
+  type        = list(string)
+  default     = []
+}
+
+variable "velero_backup_bucket" {
+  description = "Bucket name for velero bucket"
+  type        = string
+  default     = ""
+}
+
 #-----------AWS Observability patterns-------------
+#-----------Java/Jmx Use case-------------
 variable "enable_adot_collector_java" {
   type        = bool
   default     = false
@@ -712,28 +762,39 @@ variable "adot_collector_java_helm_config" {
   description = "ADOT Collector Java Helm Chart config"
 }
 
-#-----------Kubernetes Velero ADDON-------------
-variable "enable_velero" {
+variable "enable_adot_collector_haproxy" {
   type        = bool
   default     = false
-  description = "Enable Kubernetes Dashboard add-on"
+  description = "Enable metrics for HAProxy workloads"
 }
 
-variable "velero_helm_config" {
+variable "adot_collector_haproxy_helm_config" {
   type        = any
-  default     = null
-  description = "Kubernetes Velero Helm Chart config"
+  default     = {}
+  description = "ADOT Collector HAProxy Helm Chart config"
 }
 
-variable "velero_irsa_policies" {
-  type        = list(string)
-  default     = []
-  description = "IAM policy ARNs for velero IRSA"
+variable "enable_adot_collector_memcached" {
+  type        = bool
+  default     = false
+  description = "Enable metrics for Memcached workloads"
 }
 
-variable "velero_backup_bucket" {
-  type        = string
-  default     = ""
-  description = "Bucket name for velero bucket"
+variable "adot_collector_memcached_helm_config" {
+  type        = any
+  default     = {}
+  description = "ADOT Collector Memcached Helm Chart config"
 }
 
+#-----------Nginx Use case-------------
+variable "enable_adot_collector_nginx" {
+  type        = bool
+  default     = false
+  description = "Enable metrics for Nginx workloads"
+}
+
+variable "adot_collector_nginx_helm_config" {
+  type        = any
+  default     = {}
+  description = "ADOT Collector Nginx Helm Chart config"
+}

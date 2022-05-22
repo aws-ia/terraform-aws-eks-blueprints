@@ -1,0 +1,67 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: adot
+spec:
+  image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+  mode: deployment
+  serviceAccount: adot-collector-nginx
+  config: |
+    receivers:
+      prometheus:
+        config:
+          global:
+            scrape_interval: {{ .Values.scrapeInterval }}
+            scrape_timeout: {{ .Values.scrapeTimeout }}
+
+          scrape_configs:
+            - job_name: 'kubernetes-pod-nginx'
+              sample_limit: {{ .Values.scrapeSampleLimit }}
+              metrics_path: /{{ .Values.prometheusMetricsEndpoint }}
+              kubernetes_sd_configs:
+                - role: pod
+              relabel_configs:
+                - source_labels: [ __address__ ]
+                  action: keep
+                  regex: '.*:9404$'
+                - action: labelmap
+                  regex: __meta_kubernetes_pod_label_(.+)
+                - action: replace
+                  source_labels: [ __meta_kubernetes_namespace ]
+                  target_label: Namespace
+                - source_labels: [ __meta_kubernetes_pod_name ]
+                  action: replace
+                  target_label: pod_name
+                - action: replace
+                  source_labels: [ __meta_kubernetes_pod_container_name ]
+                  target_label: container_name
+                - action: replace
+                  source_labels: [ __meta_kubernetes_pod_controller_kind ]
+                  target_label: pod_controller_kind
+                - action: replace
+                  source_labels: [ __meta_kubernetes_pod_phase ]
+                  target_label: pod_controller_phase
+              metric_relabel_configs:
+                - source_labels: [ __name__ ]
+                  regex: 'jvm_gc_collection_seconds.*'
+                  action: drop
+    exporters:
+      awsprometheusremotewrite:
+        endpoint: {{ .Values.ampurl }}
+        aws_auth:
+          region: {{ .Values.region }}
+          service: "aps"
+      logging:
+        loglevel: info
+    extensions:
+      health_check:
+      pprof:
+        endpoint: :1888
+      zpages:
+        endpoint: :55679
+    service:
+      extensions: [pprof, zpages, health_check]
+      pipelines:
+        metrics:
+          receivers: [prometheus]
+          exporters: [logging, awsprometheusremotewrite]

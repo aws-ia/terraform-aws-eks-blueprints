@@ -2,8 +2,8 @@
 
 Velero is a tool to backup and restore your Kubernetes cluster resources and persistent volumes. Velero lets you :
 
-- Take backups of your cluster and restore in case of loss. 
-- Migrate cluster resources to other clusters. 
+- Take backups of your cluster and restore in case of loss.
+- Migrate cluster resources to other clusters.
 - Replicate your production cluster to development and testing clusters.
 
 For complete project documentation, please visit the [Velero documentation site](https://velero.io/docs/v1.7/).
@@ -100,7 +100,7 @@ kubectl create namespace backupdemo
 kubectl run nginx --image=nginx -n backupdemo
 ```
 
-Create backup of this namespace using velero 
+Create backup of this namespace using velero
 
 ```
 velero backup create backup1 --include-namespaces backupdemo
@@ -108,7 +108,7 @@ velero backup create backup1 --include-namespaces backupdemo
 Backup request "backup1" submitted successfully.
 Run `velero backup describe backup1` or `velero backup logs backup1` for more details.
 ```
-Describe the backup to check the backup status 
+Describe the backup to check the backup status
 
 ```
 velero backup describe backup1

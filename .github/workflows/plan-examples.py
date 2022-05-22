@@ -11,7 +11,7 @@ def get_examples():
     exclude = {
         'examples/eks-cluster-with-external-dns',  # excluded since GitLab auth, backend, etc. required
         'examples/ci-cd/gitlab-ci-cd',  # excluded until Rout53 is setup
-        'examples/observability/eks-cluster-with-amp-amg-opensearch',  # TODO - needs to be updated to run example
+        'examples/observability/amp-amg-opensearch',  # TODO - needs to be updated to run example
         'examples/observability/eks-java-jmx'  # TODO - needs to be updated to run example
     }
 

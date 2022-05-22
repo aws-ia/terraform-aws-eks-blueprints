@@ -34,9 +34,9 @@ resource "aws_launch_template" "managed_node_groups" {
   }
 
   metadata_options {
-    http_endpoint               = var.context.http_endpoint
-    http_tokens                 = var.context.http_tokens
-    http_put_response_hop_limit = var.context.http_put_response_hop_limit
+    http_endpoint               = try(var.context.http_endpoint, "enabled")
+    http_tokens                 = try(var.context.http_tokens, "required") #tfsec:ignore:aws-autoscaling-enforce-http-token-imds
+    http_put_response_hop_limit = try(var.context.http_put_response_hop_limit, 2)
   }
 
   tag_specifications {
@@ -55,10 +55,6 @@ resource "aws_launch_template" "managed_node_groups" {
 
   depends_on = [
     aws_iam_role.managed_ng,
-    aws_iam_instance_profile.managed_ng,
-    aws_iam_role_policy_attachment.managed_ng_AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.managed_ng_AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.managed_ng_AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.managed_ng
   ]
 }

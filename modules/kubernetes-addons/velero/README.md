@@ -1,4 +1,4 @@
-# Velero Add on 
+# Velero Add on
 
 Velero is a tool to backup and restore your Kubernetes cluster resources and persistent volumes. Velero lets you :
 
