@@ -1,28 +1,29 @@
 variable "helm_config" {
-  type        = any
   description = "Helm provider config for velero"
+  type        = any
   default     = {}
 }
 
 variable "manage_via_gitops" {
+  description = "Determines if the add-on should be managed via GitOps"
   type        = bool
   default     = false
-  description = "Determines if the add-on should be managed via GitOps."
 }
 
 variable "irsa_policies" {
+  description = "Additional IAM policy ARNs for Velero IRSA"
   type        = list(string)
   default     = []
-  description = "IAM policy ARNs for Velero IRSA"
 }
 
-variable "velero_backup_bucket" {
+variable "backup_s3_bucket" {
+  description = "Bucket name for velero bucket"
   type        = string
   default     = ""
-  description = "Bucket name for velero bucket"
 }
 
 variable "addon_context" {
+  description = "Input configuration for the addon"
   type = object({
     aws_caller_identity_account_id = string
     aws_caller_identity_arn        = string
@@ -36,5 +37,4 @@ variable "addon_context" {
     irsa_iam_permissions_boundary  = string
     tags                           = map(string)
   })
-  description = "Input configuration for the addon"
 }

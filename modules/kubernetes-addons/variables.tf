@@ -742,7 +742,7 @@ variable "velero_irsa_policies" {
   default     = []
 }
 
-variable "velero_backup_bucket" {
+variable "velero_backup_s3_bucket" {
   description = "Bucket name for velero bucket"
   type        = string
   default     = ""
