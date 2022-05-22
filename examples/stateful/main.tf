@@ -53,7 +53,7 @@ module "eks_blueprints" {
   environment = var.environment
   zone        = var.zone
 
-  cluster_name = local.name
+  cluster_name    = local.name
   cluster_version = "1.21"
 
   vpc_id             = module.vpc.vpc_id
@@ -118,6 +118,7 @@ resource "random_string" "random" {
   upper   = false
 }
 
+#tfsec:ignore:*
 module "velero_backup_s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "~> 3.0"
