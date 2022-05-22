@@ -11,6 +11,8 @@ on:
 env:
   DEFAULT_DEPLOY_ORDER: 'module.e2e_test.module.aws_vpc,module.e2e_test.module.eks_blueprints,module.e2e_test.module.eks_blueprints_kubernetes_addons'
 
+concurrency: e2e-parallel-destroy
+
 jobs:
   deploy:
     name: Run e2e test
