@@ -9,7 +9,7 @@ module "launch_template_self_managed_ng" {
       launch_template_prefix = local.self_managed_node_group["node_group_name"]
       instance_type          = local.self_managed_node_group["instance_type"]
       capacity_type          = local.self_managed_node_group["capacity_type"]
-      iam_instance_profile   = aws_iam_instance_profile.self_managed_ng.name
+      iam_instance_profile   = local.self_managed_node_group["iam_instance_profile_name"] == null ? aws_iam_instance_profile.self_managed_ng[0].name : local.self_managed_node_group["iam_instance_profile_name"]
 
       pre_userdata         = local.self_managed_node_group["pre_userdata"]
       bootstrap_extra_args = local.self_managed_node_group["bootstrap_extra_args"]
@@ -21,7 +21,11 @@ module "launch_template_self_managed_ng" {
       http_tokens                 = var.context.http_tokens
       http_put_response_hop_limit = var.context.http_put_response_hop_limit
 
-      block_device_mappings = local.self_managed_node_group["block_device_mappings"]
+      service_ipv6_cidr = var.context.service_ipv6_cidr
+      service_ipv4_cidr = var.context.service_ipv4_cidr
+
+      block_device_mappings  = local.self_managed_node_group["block_device_mappings"]
+      format_mount_nvme_disk = local.self_managed_node_group["format_mount_nvme_disk"]
 
       network_interfaces = [
         {

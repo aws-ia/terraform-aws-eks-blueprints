@@ -18,7 +18,7 @@ module "eks_blueprints" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints"
 
   # EKS CLUSTER
-  cluster_version    = "1.21"                                         # EKS Cluster Version  
+  cluster_version    = "1.21"                                         # EKS Cluster Version
   vpc_id             = "<vpcid>"                                      # Enter VPC ID
   private_subnet_ids = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]     # Enter Private Subnet IDs
 
@@ -51,10 +51,11 @@ The below example demonstrates the minimum configuration required to deploy a ma
 ```hcl
     # EKS MANAGED NODE GROUPS
     managed_node_groups = {
-      mg_4 = {
-        node_group_name = "managed-ondemand"
-        instance_types  = ["m4.large"]
-        subnet_ids      = [] # Mandatory Public or Private Subnet IDs
+      mng = {
+        node_group_name = "mng-ondemand"
+        instance_types  = ["m5.large"]
+        subnet_ids      = []  # Mandatory Public or Private Subnet IDs
+        disk_size       = 100 # disk_size will be ignored when using Launch Templates
       }
     }
 ```
@@ -63,34 +64,68 @@ The below example demonstrates advanced configuration options for a managed node
 
 ```hcl
     managed_node_groups = {
-      mg_m4 = {
-        # 1> Node Group configuration
-        node_group_name        = "managed-ondemand"
+      # Managed Node groups with Launch templates using AMI TYPE
+      mng_lt = {
+        # Node Group configuration
+        node_group_name        = "mng-lt"
         create_launch_template = true              # false will use the default launch template
         launch_template_os     = "amazonlinux2eks" # amazonlinux2eks or windows or bottlerocket
         public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+        enable_monitoring      = true
+        create_iam_role        = false # default is true; set to false to bring your own IAM Role with iam_role_arn option
+        iam_role_arn           = "<ENTER-YOUR-IAM-ROLE>" # Node groups creates a new IAM role if `iam_role_arn` is not specified
         pre_userdata           = <<-EOT
                     yum install -y amazon-ssm-agent
                     systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
                 EOT
-        # 2> Node Group scaling configuration
+        # Node Group scaling configuration
         desired_size    = 3
         max_size        = 3
         min_size        = 3
-        max_unavailable = 1 # or percentage = 20
 
-        # 3> Node Group compute configuration
-        ami_type       = "AL2_x86_64" # Amazon Linux 2(AL2_x86_64), AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
-        capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
-        instance_types = ["m4.large"] # List of instances used only for SPOT type
-        disk_size      = 50
+        # Node Group update configuration. Set the maximum number or percentage of unavailable nodes to be tolerated during the node group version update.
+        update_config   = [{
+          max_unavailable_percentage = 30
+        }]
 
-        # 4> Node Group network configuration
+        # Node Group compute configuration
+        ami_type        = "AL2_x86_64" # Amazon Linux 2(AL2_x86_64), AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
+        release_version = ""           # Enter AMI release version to deploy the latest AMI released by AWS. Used only when you specify ami_type
+        capacity_type   = "ON_DEMAND"  # ON_DEMAND or SPOT
+        instance_types  = ["m5.large"] # List of instances used only for SPOT type
+
+        block_device_mappings = [
+          {
+            device_name = "/dev/xvda"
+            volume_type = "gp3"
+            volume_size = 100
+          },
+          {
+            device_name           = "/dev/xvdf" # mount point to /local1 (it could be local2, depending upon the disks are attached during boot)
+            volume_type           = "gp3" # The volume type. Can be standard, gp2, gp3, io1, io2, sc1 or st1 (Default: gp3).
+            volume_size           = "100"
+            delete_on_termination = true
+            encrypted             = true
+            kms_key_id            = "" # Custom KMS Key can be used to encrypt the disk
+            iops                  = 3000
+            throughput            = 125
+          }
+        ]
+
+        # Node Group network configuration
         subnet_ids = [] # Mandatory - # Define private/public subnets list with comma separated ["subnet1","subnet2","subnet3"]
 
-        # optionally, configure a taint on the node group:
-        k8s_taints = [{key= "purpose", value="execution", "effect"="NO_SCHEDULE"}]
+        additional_iam_policies = [] # Attach additional IAM policies to the IAM role attached to this worker group
+        # SSH ACCESS Optional - Recommended to use SSM Session manager
+        remote_access         = false
+        ec2_ssh_key           = ""
+        ssh_security_group_id = ""
 
+        # Taints can be applied through EKS API or through Bootstrap script using kubelet_extra_args
+        # e.g., k8s_taints = [{key= "spot", value="true", "effect"="NO_SCHEDULE"}]
+        k8s_taints = [{key= "purpose", value="execution", effect="NO_SCHEDULE"}]
+
+        # Node Labels can be applied through EKS API or through Bootstrap script using kubelet_extra_args
         k8s_labels = {
           Environment = "preprod"
           Zone        = "dev"
@@ -112,7 +147,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
     # SPOT Worker Group
     #---------------------------------------------------------#
     spot_m5 = {
-      # 1> Node Group configuration - Part1
+      # 1> Node Group configuration
       node_group_name        = "spot-m5"
       create_launch_template = true              # false will use the default launch template
       launch_template_os     = "amazonlinux2eks" # amazonlinux2eks  or bottlerocket
@@ -127,16 +162,26 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       min_size     = 2
 
       # Node Group update configuration. Set the maximum number or percentage of unavailable nodes to be tolerated during the node group version update.
-      max_unavailable = 1 # or percentage = 20
+      update_config = [{
+        max_unavailable            = 1
+      }]
 
       # Node Group compute configuration
-      ami_type       = "AL2_x86_64"
-      capacity_type  = "SPOT"
-      instance_types = ["t3.medium", "t3a.medium"]
-      disk_size      = 50
+      ami_type               = "AL2_x86_64"
+      capacity_type          = "SPOT"
+      instance_types         = ["r5d.xlarge", "r5.xlarge"]
+      format_mount_nvme_disk = true # Ephemeral storage disks are formatted and mounted under `local1` folder
+
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp3"
+          volume_size = 100
+        }
+      ]
 
       # Node Group network configuration
-      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
 
       k8s_taints = []
 
@@ -150,9 +195,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
         Name        = "spot"
         subnet_type = "private"
       }
-
-      create_worker_security_group = false
-    },
+    }
 
     #---------------------------------------------------------#
     # GPU instance type Worker Group
@@ -177,7 +220,13 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       ami_type       = "AL2_x86_64_GPU" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
       capacity_type  = "ON_DEMAND"      # ON_DEMAND or SPOT
       instance_types = ["m5.large"]     # List of instances used only for SPOT type
-      disk_size      = 50
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+           volume_type = "gp3"
+           volume_size = 100
+        }
+      ]
 
       # 4> Node Group network configuration
       subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
@@ -194,8 +243,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-      create_worker_security_group = false
-    },
+    }
 
     #---------------------------------------------------------#
     # ARM instance type Worker Group
@@ -220,8 +268,13 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       ami_type       = "AL2_ARM_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
       capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
       instance_types = ["m5.large"] # List of instances used only for SPOT type
-      disk_size      = 50
-
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp3"
+          volume_size = 100
+        }
+      ]
       # 4> Node Group network configuration
       subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
 
@@ -237,14 +290,14 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-      create_worker_security_group = false
-    },
+    }
 
     #---------------------------------------------------------#
     # Bottlerocket ARM instance type Worker Group
     #---------------------------------------------------------#
+    # Checkout this doc https://github.com/bottlerocket-os/bottlerocket for configuring userdata for Launch Templates
     bottlerocket_arm = {
-      # 1> Node Group configuration - Part1
+      # 1> Node Group configuration
       node_group_name        = "btl-arm"      # Max 40 characters for node group name
       create_launch_template = true           # false will use the default launch template
       launch_template_os     = "bottlerocket" # amazonlinux2eks or bottlerocket
@@ -276,13 +329,13 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-      create_worker_security_group = false
-    },
+    }
 
     #---------------------------------------------------------#
     # Bottlerocket instance type Worker Group
     #---------------------------------------------------------#
-    bottlerocket_arm = {
+    # Checkout this doc https://github.com/bottlerocket-os/bottlerocket for configuring userdata for Launch Templates
+    bottlerocket_x86 = {
       # 1> Node Group configuration - Part1
       node_group_name        = "btl-x86"      # Max 40 characters for node group name
       create_launch_template = true           # false will use the default launch template
@@ -298,7 +351,13 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       ami_type       = "BOTTLEROCKET_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
       capacity_type  = "ON_DEMAND"           # ON_DEMAND or SPOT
       instance_types = ["m5.large"]          # List of instances used only for SPOT type
-      disk_size      = 50
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp3"
+          volume_size = 100
+        }
+      ]
 
       # 4> Node Group network configuration
       subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
@@ -315,46 +374,89 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-      create_worker_security_group = false
-    },
+    }
 
     #---------------------------------------------------------#
-    # CUSTOM AMI Worker Group
+    # Managed Node groups with Launch templates using CUSTOM AMI with ContainerD runtime
     #---------------------------------------------------------#
-    custom_ami_m5 = {
-      node_group_name        = "custom-ami-m5"
-      create_launch_template = true           # false will use the default launch template
-      launch_template_os     = "bottlerocket" # amazonlinux2eks  or bottlerocket
-      public_ip              = false          # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
-      pre_userdata           = ""
+    mng_custom_ami = {
+      # Node Group configuration
+      node_group_name = "mng_custom_ami" # Max 40 characters for node group name
 
-      desired_size    = 3
-      max_size        = 3
-      min_size        = 3
-      max_unavailable = 1
+      # custom_ami_id is optional when you provide ami_type. Enter the Custom AMI id if you want to use your own custom AMI
+      custom_ami_id  = data.aws_ami.amazonlinux2eks.id
+      capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
+      instance_types = ["m5.large"] # List of instances used only for SPOT type
 
-      ami_type       = "CUSTOM"
-      capacity_type  = "ON_DEMAND" # ON_DEMAND or SPOT
-      instance_types = ["m5.large"]
-      disk_size      = 50
-      custom_ami_id  = "ami-044b114caf98ce8c5"
+      # Launch template configuration
+      create_launch_template = true              # false will use the default launch template
+      launch_template_os     = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
 
-      # 4> Node Group network configuration
-      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+      # pre_userdata will be applied by using custom_ami_id or ami_type
+      pre_userdata = <<-EOT
+            yum install -y amazon-ssm-agent
+            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
+        EOT
 
+      # post_userdata will be applied only by using custom_ami_id
+      post_userdata = <<-EOT
+            echo "Bootstrap successfully completed! You can further apply config or install to run after bootstrap if needed"
+      EOT
+
+      # kubelet_extra_args used only when you pass custom_ami_id;
+      # --node-labels is used to apply Kubernetes Labels to Nodes
+      # --register-with-taints used to apply taints to Nodes
+      # e.g., kubelet_extra_args='--node-labels=WorkerType=SPOT,noderole=spark --register-with-taints=spot=true:NoSchedule --max-pods=58',
+      kubelet_extra_args = "--node-labels=WorkerType=SPOT,noderole=spark --register-with-taints=test=true:NoSchedule --max-pods=20"
+
+      # bootstrap_extra_args used only when you pass custom_ami_id. Allows you to change the Container Runtime for Nodes
+      # e.g., bootstrap_extra_args="--use-max-pods false --container-runtime containerd"
+      bootstrap_extra_args = "--use-max-pods false --container-runtime containerd"
+
+      # Taints can be applied through EKS API or through Bootstrap script using kubelet_extra_args
       k8s_taints = []
+
+      # Node Labels can be applied through EKS API or through Bootstrap script using kubelet_extra_args
       k8s_labels = {
         Environment = "preprod"
         Zone        = "dev"
-        OS          = "bottlerocket"
-        WorkerType  = "ON_DEMAND_BOTTLEROCKET"
+        Runtime     = "containerd"
       }
+
+      enable_monitoring = true
+      eni_delete        = true
+      public_ip         = false # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates
+
+      # Node Group scaling configuration
+      desired_size    = 2
+      max_size        = 2
+      min_size        = 2
+      max_unavailable = 1 # or percentage = 20
+
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp3"
+          volume_size = 150
+        }
+      ]
+
+      # Node Group network configuration
+      subnet_type = "private" # public or private - Default uses the private subnets used in control plane if you don't pass the "subnet_ids"
+      subnet_ids  = []        # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+
+      additional_iam_policies = [] # Attach additional IAM policies to the IAM role attached to this worker group
+
+      # SSH ACCESS Optional - Recommended to use SSM Session manager
+      remote_access         = false
+      ec2_ssh_key           = ""
+      ssh_security_group_id = ""
+
       additional_tags = {
-        ExtraTag = "bottlerocket"
-        Name     = "bottlerocket"
+        ExtraTag    = "mng-custom-ami"
+        Name        = "mng-custom-ami"
+        subnet_type = "private"
       }
-      #security_group ID
-      create_worker_security_group = true
     }
 ```
 
@@ -374,6 +476,8 @@ The below example demonstrates the minimum configuration required to deploy a Se
 ```
 
 The below example demonstrates advanced configuration options for a self-managed node group.
+ - `--node-labels` parameter is used to apply labels to Nodes for self-managed node groups. e.g., `kubelet_extra_args="--node-labels=WorkerType=SPOT,noderole=spark`
+ - `--register-with-taints` is used to apply taints to Nodes for self-managed node groups. e.g., `kubelet_extra_args='--register-with-taints=spot=true:NoSchedule --max-pods=58'`,
 
 ```hcl
     self_managed_node_groups = {
@@ -384,11 +488,16 @@ The below example demonstrates advanced configuration options for a self-managed
         capacity_type        = ""                      # Optional Use this only for SPOT capacity as capacity_type = "spot"
         launch_template_os   = "amazonlinux2eks"       # amazonlinux2eks  or bottlerocket or windows
         pre_userdata         = <<-EOT
-            yum install -y amazon-ssm-agent \
-            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent \
+            yum install -y amazon-ssm-agent
+            systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
         EOT
         post_userdata        = ""
-        kubelet_extra_args   = ""
+
+        create_iam_role = false # Changing `create_iam_role=false` to bring your own IAM Role
+        iam_role_arn              = "<ENTER_IAM_ROLE_ARN>" # custom IAM role for aws-auth mapping; used when create_iam_role = false
+        iam_instance_profile_name = "<ENTER_IAM_INSTANCE_PROFILE_NAME>" # IAM instance profile name for Launch templates; used when create_iam_role = false
+
+        kubelet_extra_args   = "--node-labels=WorkerType=ON_DEMAND,noderole=spark --register-with-taints=test=true:NoSchedule --max-pods=20"
         bootstrap_extra_args = ""
         block_device_mapping = [
           {
@@ -413,6 +522,7 @@ The below example demonstrates advanced configuration options for a self-managed
         ]
         enable_monitoring = false
         public_ip         = false # Enable only for public subnets
+
         # AUTOSCALING
         max_size   = "3"
         min_size   = "1"
@@ -442,25 +552,57 @@ Check the following references as you may desire:
 The example below demonstrates how you can customize a Fargate profile for your cluster.
 
 ```hcl
-    fargate_profiles = {
-      default = {
-        fargate_profile_name = "default"
-        fargate_profile_namespaces = [{
-          namespace = "default"
+  fargate_profiles = {
+    default = {
+      fargate_profile_name = "default"
+      fargate_profile_namespaces = [{
+        namespace = "default"
+        k8s_labels = {
+          Environment = "preprod"
+          Zone        = "dev"
+          env         = "fargate"
+        }
+      }]
+
+      subnet_ids = [] # Provide list of private subnets
+
+      additional_tags = {
+        ExtraTag = "Fargate"
+      }
+    },
+    multi = {
+      fargate_profile_name = "multi-namespaces"
+      create_iam_role = false # Changing `create_iam_role=false` to bring your own IAM Role
+      iam_role_arn    = "<ENTER_YOUR_IAM_ROLE>" # custom IAM role for aws-auth mapping; used when `create_iam_role = false`
+      additional_iam_policies    = [] # additional IAM policies
+      fargate_profile_namespaces = [{
+        namespace = "default"
+        k8s_labels = {
+          Environment = "preprod"
+          Zone        = "dev"
+          OS          = "Fargate"
+          WorkerType  = "FARGATE"
+          Namespace   = "default"
+        }
+        },
+        {
+          namespace = "sales"
           k8s_labels = {
             Environment = "preprod"
             Zone        = "dev"
-            env         = "fargate"
+            OS          = "Fargate"
+            WorkerType  = "FARGATE"
+            Namespace   = "default"
           }
-        }]
+      }]
 
-        subnet_ids = [] # Mandatory - # Define private subnets list with comma separated ["subnet1","subnet2","subnet3"]
+      subnet_ids = [] # Provide list of private subnets
 
-        additional_tags = {
-          ExtraTag = "Fargate"
-        }
+      additional_tags = {
+        ExtraTag = "Fargate"
       }
-    }
+    },
+  }
 ```
 
 ### Windows Self-Managed Node Groups

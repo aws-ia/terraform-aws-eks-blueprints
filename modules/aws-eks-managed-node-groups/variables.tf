@@ -30,6 +30,9 @@ variable "context" {
     iam_role_permissions_boundary = string
     # Tags
     tags = map(string)
+    # Service IPV4/IPV6 CIDR
+    service_ipv6_cidr = string
+    service_ipv4_cidr = string
   })
   description = "Input configuration for the Node groups"
 }

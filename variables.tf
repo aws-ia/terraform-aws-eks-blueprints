@@ -168,6 +168,12 @@ variable "cluster_service_ipv4_cidr" {
   default     = null
 }
 
+variable "cluster_service_ipv6_cidr" {
+  description = "The IPV6 Service CIDR block to assign Kubernetes service IP addresses"
+  type        = string
+  default     = null
+}
+
 #-------------------------------
 # EKS Cluster CloudWatch Logging
 #-------------------------------
@@ -198,6 +204,24 @@ variable "cloudwatch_log_group_kms_key_id" {
 #-------------------------------
 # EKS Cluster IAM role
 #-------------------------------
+
+variable "create_iam_role" {
+  description = "Determines whether a an IAM role is created or to use an existing IAM role"
+  type        = bool
+  default     = true
+}
+
+variable "iam_role_arn" {
+  description = "Existing IAM role ARN for the cluster. Required if `create_iam_role` is set to `false`"
+  type        = string
+  default     = null
+}
+
+variable "iam_role_name" {
+  description = "Name to use on IAM role created"
+  type        = string
+  default     = null
+}
 
 variable "iam_role_path" {
   description = "Cluster IAM role path"
@@ -327,6 +351,12 @@ variable "aws_auth_additional_labels" {
   description = "Additional kubernetes labels applied on aws-auth ConfigMap"
   default     = {}
   type        = map(string)
+}
+
+variable "eks_readiness_timeout" {
+  description = "The maximum time (in seconds) to wait for EKS API server endpoint to become healthy"
+  type        = number
+  default     = "600"
 }
 
 #-------------------------------

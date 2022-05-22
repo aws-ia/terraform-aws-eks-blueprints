@@ -35,3 +35,9 @@ variable "eks_cluster_id" {
   description = "EKS Cluster name"
   type        = string
 }
+
+variable "iam_role_permissions_boundary" {
+  description = "ARN of the policy that is used to set the permissions boundary for the IAM role"
+  type        = string
+  default     = null
+}

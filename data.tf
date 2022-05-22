@@ -12,9 +12,9 @@ data "aws_eks_cluster" "cluster" {
 data "http" "eks_cluster_readiness" {
   count = var.create_eks ? 1 : 0
 
-  url            = join("/", [data.aws_eks_cluster.cluster.0.endpoint, "healthz"])
-  ca_certificate = base64decode(data.aws_eks_cluster.cluster.0.certificate_authority.0.data)
-  timeout        = 300
+  url            = join("/", [data.aws_eks_cluster.cluster[0].endpoint, "healthz"])
+  ca_certificate = base64decode(data.aws_eks_cluster.cluster[0].certificate_authority[0].data)
+  timeout        = var.eks_readiness_timeout
 }
 
 data "aws_iam_session_context" "current" {

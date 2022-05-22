@@ -43,8 +43,8 @@ locals {
   }
 
   argocd_gitops_config = {
-    enable            = true
-    zoneFilterIds     = local.zone_filter_ids
-    serviceAccontName = local.service_account_name
+    enable             = true
+    zoneIdFilter       = data.aws_route53_zone.selected.zone_id
+    serviceAccountName = local.service_account_name
   }
 }
