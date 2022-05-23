@@ -140,7 +140,7 @@ module "eks_blueprints" {
 
   # Add karpenter.sh/discovery tag so that we can use this as securityGroupSelector in karpenter provisioner
   node_security_group_tags = {
-    "karpenter.sh/discovery" = local.cluster_name
+    "karpenter.sh/discovery/${local.cluster_name}" = local.cluster_name
   }
 
   # Self-managed Node Group
