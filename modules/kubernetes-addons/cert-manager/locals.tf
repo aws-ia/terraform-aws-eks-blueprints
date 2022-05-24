@@ -1,6 +1,6 @@
 locals {
   name                 = "cert-manager"
-  service_account_name = "${local.name}-sa"
+  service_account_name = "cert-manager" # AWS PrivateCA is expecting the service account name as `cert-manager`
 
   default_helm_config = {
     name        = local.name
@@ -12,7 +12,7 @@ locals {
     values      = local.default_helm_values
   }
 
-  default_helm_values = []
+  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
   helm_config = merge(
     local.default_helm_config,
@@ -35,6 +35,7 @@ locals {
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
     create_kubernetes_service_account = true
+    irsa_iam_policies                 = concat([aws_iam_policy.cert_manager.arn], var.irsa_policies)
   }
 
   argocd_gitops_config = {

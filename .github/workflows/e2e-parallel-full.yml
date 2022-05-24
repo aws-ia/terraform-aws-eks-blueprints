@@ -4,11 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       TFDestroy:
-        description: "Destroy TF Automatically (false/true) - Default: true"
+        description: 'Destroy TF Automatically (false/true) - Default: true'
         required: true
-        default: "true"
+        default: 'true'
 env:
-  DEFAULT_DEPLOY_ORDER: "module.e2e-test.module.aws_vpc,module.e2e-test.module.eks-blueprints,module.e2e-test.module.eks-blueprints-kubernetes-addons"
+  DEFAULT_DEPLOY_ORDER: 'module.e2e_test.module.aws_vpc,module.e2e_test.module.eks_blueprints,module.e2e_test.module.eks_blueprints_kubernetes_addons'
+
+concurrency: e2e-parallel-full
 
 jobs:
   deploy:
@@ -24,51 +26,48 @@ jobs:
       matrix:
         include:
           - example_path: examples/analytics/emr-on-eks
-            tenant_name: "emr-eks"
+            tenant_name: 'emr-eks'
           - example_path: examples/analytics/spark-k8s-operator
-            tenant_name: "spark"
-          # This is example that we can use test from deploy folder, see logic in the pre setup step
-          # - example_path: deploy/e2e/vpc
-          #   tenant_name: "vpc"
+            tenant_name: 'spark'
           - example_path: examples/multi-tenancy-with-teams
-            tenant_name: "teams"
+            tenant_name: 'teams'
           - example_path: examples/gitops/argocd
-            tenant_name: "argo"
+            tenant_name: 'argo'
           - example_path: examples/crossplane
-            tenant_name: "crossplane"
+            tenant_name: 'crossplane'
           - example_path: examples/aws-efs-csi-driver
-            tenant_name: "efs"
+            tenant_name: 'efs'
           - example_path: examples/eks-cluster-with-new-vpc
-            tenant_name: "new-vpc"
+            tenant_name: 'new-vpc'
           - example_path: examples/fully-private-eks-cluster
-            tenant_name: "private"
+            tenant_name: 'private'
             deployment_order:
               [
-                "module.e2e-test.module.aws_vpc",
-                "module.e2e-test.module.vpc_endpoint_gateway",
-                "module.e2e-test.module.vpc_endpoints",
-                "module.e2e-test.module.eks-blueprints",
+                'module.e2e_test.module.aws_vpc',
+                'module.e2e_test.module.vpc_endpoint_gateway',
+                'module.e2e_test.module.vpc_endpoints',
+                'module.e2e_test.module.eks_blueprints',
               ]
           - example_path: examples/game-tech/agones-game-controller
-            tenant_name: "agones"
+            tenant_name: 'agones'
           - example_path: examples/ingress-controllers/nginx
-            tenant_name: "nginx"
+            tenant_name: 'nginx'
             deployment_order:
               [
-                "module.e2e-test.module.aws_vpc",
-                "module.e2e-test.module.eks-blueprints",
-                "module.e2e-test.module.eks-blueprints-kubernetes-addons",
-                "module.e2e-test.module.aws_load_balancer_controller",
-                "module.e2e-test.module.ingress_nginx",
+                'module.e2e_test.module.aws_vpc',
+                'module.e2e_test.module.eks_blueprints',
+                'module.e2e_test.module.eks_blueprints_kubernetes_addons',
+                'module.e2e_test.module.aws_load_balancer_controller',
+                'module.e2e_test.module.ingress_nginx',
               ]
           - example_path: examples/karpenter
-            tenant_name: "karpenter"
+            tenant_name: 'karpenter'
           - example_path: examples/node-groups/managed-node-groups
-            tenant_name: "managed"
+            tenant_name: 'managed'
           - example_path: examples/node-groups/self-managed-node-groups
-            tenant_name: "self"
+            tenant_name: 'self'
           - example_path: examples/node-groups/windows-node-groups
-            tenant_name: "windows"
+            tenant_name: 'windows'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -76,19 +75,18 @@ jobs:
       - name: Pre Setup
         id: pre-setup
         run: |
-          mkdir -p deploy/e2e/gh-e2e-test
+          mkdir -p deploy/e2e-test
           if [[ ${{ matrix.example_path }} == deploy/* ]]
           then
             echo "Skipping pre-setup for ${{ matrix.example_path }}"
-            cp -R ${{ matrix.example_path }}/* deploy/e2e/gh-e2e-test/
+            cp -R ${{ matrix.example_path }}/* deploy/e2e-test/
           else
             echo "Running pre-setup for ${{ matrix.example_path }}"
-            cp -R deploy/e2e/gh-e2e-template/* deploy/e2e/gh-e2e-test/
-            sed -i "s!REPLACE_ME!${{ matrix.tenant_name }}!g" deploy/e2e/gh-e2e-test/base.tfvars
-            sed -i "s!TF_STATE_PATH!${{ matrix.example_path }}!g" deploy/e2e/gh-e2e-test/backend.conf
-            sed -i "s!EXAMPLE_PATH!${{ matrix.example_path }}!g" deploy/e2e/gh-e2e-test/main.tf
+            cp -R deploy/e2e-template/* deploy/e2e-test/
+            sed -i "s!REPLACE_ME!${{ matrix.tenant_name }}!g" deploy/e2e-test/base.tfvars
+            sed -i "s!TF_STATE_PATH!${{ matrix.example_path }}!g" deploy/e2e-test/backend.conf
+            sed -i "s!EXAMPLE_PATH!${{ matrix.example_path }}!g" deploy/e2e-test/main.tf
           fi
-        continue-on-error: false
 
       - name: Setup Deployment Order
         id: setup-deployment-order
@@ -102,7 +100,6 @@ jobs:
             DEPLOYMENT_ORDER=$MATRIX_DEPLOYMENT_ORDER
           fi
           echo "DEPLOYMENT_ORDER=$DEPLOYMENT_ORDER" >> $GITHUB_ENV
-        continue-on-error: false
 
       - name: Configure AWS credentials from Test account
         uses: aws-actions/configure-aws-credentials@v1
@@ -115,34 +112,30 @@ jobs:
       - name: Terraform Job
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 1.0.11
+          terraform_version: 1.0.0
 
       - name: Terraform Fmt
         id: fmt
         run: terraform fmt -check -recursive -list -no-color
-        continue-on-error: false
 
       - name: Terraform Init
         id: init
         run: terraform init  -backend-config backend.conf -reconfigure
-        working-directory: deploy/e2e/gh-e2e-test
-        continue-on-error: false
+        working-directory: deploy/e2e-test
 
       - name: Terraform Validate
         id: validate
-        working-directory: deploy/e2e/gh-e2e-test
+        working-directory: deploy/e2e-test
         run: terraform validate -no-color
-        continue-on-error: false
 
       - name: Terraform Plan
         id: plan
-        working-directory: deploy/e2e/gh-e2e-test
+        working-directory: deploy/e2e-test
         run: terraform plan -var-file base.tfvars -no-color
-        continue-on-error: false
 
       - name: Terraform Apply
         id: apply
-        working-directory: deploy/e2e/gh-e2e-test
+        working-directory: deploy/e2e-test
         run: |
           IFS=',' read -r -a array <<< "${{ env.DEPLOYMENT_ORDER }}"
           for element in "${array[@]}"
@@ -150,12 +143,11 @@ jobs:
             terraform apply -target="$element" -var-file base.tfvars -no-color -input=false -auto-approve
           done
           terraform apply -var-file base.tfvars -no-color -input=false -auto-approve
-        continue-on-error: false
 
       - name: Terraform Destroy
         if: github.event.inputs.TFDestroy == 'true' && (steps.apply.outcome == 'success' || steps.apply.outcome == 'failure')
         id: destroy
-        working-directory: deploy/e2e/gh-e2e-test
+        working-directory: deploy/e2e-test
         run: |
           reverse_array=$(echo ${{ env.DEPLOYMENT_ORDER }}  | awk -F, '{for (i=NF; i>0; --i) printf "%s%s", (i<NF ? "," : ""), $i; printf "\n"}')
           IFS=',' read -r -a array <<< "$reverse_array"
@@ -165,7 +157,6 @@ jobs:
             sleep 45
           done
           terraform destroy -var-file base.tfvars -no-color -input=false -auto-approve
-        continue-on-error: false
 
       - name: Fail if TF apply failed
         if: steps.apply.outcome == 'failure'
@@ -174,4 +165,3 @@ jobs:
           echo "Terraform Apply step failed...Please check the logs of the Terraform Apply step."
           echo "Failing the job to avoid false positives."
           exit 1
-        continue-on-error: false

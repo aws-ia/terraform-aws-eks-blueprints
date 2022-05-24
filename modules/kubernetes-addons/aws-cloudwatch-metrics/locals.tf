@@ -38,7 +38,7 @@ locals {
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = true
     create_kubernetes_service_account = true
-    irsa_iam_policies                 = concat(["arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"], var.irsa_policies)
+    irsa_iam_policies                 = concat(["arn:${var.addon_context.aws_partition_id}:iam::aws:policy/CloudWatchAgentServerPolicy"], var.irsa_policies)
   }
 
   argocd_gitops_config = {

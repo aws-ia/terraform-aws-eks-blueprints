@@ -9,7 +9,8 @@ set -ex
 # User-supplied pre userdata code
 ${pre_userdata}
 
-# Format and Mount NVMe Disks if available
+if [ ${format_mount_nvme_disk} = true ];then
+echo "Format and Mount NVMe Disks if available"
 IDX=1
 DEVICES=$(lsblk -o NAME,TYPE -dsn | awk '/disk/ {print $1}')
 for DEV in $DEVICES
@@ -22,6 +23,7 @@ do
   IDX=$(($${IDX} + 1))
 done
 mount -a
+fi
 
 if [ ${service_ipv4_cidr} ];then
 echo "Setting custom IPV4 CIDR"
