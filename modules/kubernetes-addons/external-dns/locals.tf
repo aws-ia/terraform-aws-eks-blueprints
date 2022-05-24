@@ -1,5 +1,5 @@
 locals {
-  name                 = "external-dns"
+  name                 = local.name
   service_account_name = "${local.name}-sa"
   zone_filter_ids      = jsonencode([data.aws_route53_zone.selected.zone_id])
 
