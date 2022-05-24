@@ -286,7 +286,7 @@ module "yunikorn" {
 }
 
 module "csi_secrets_store_provider_aws" {
-  count             = var.enable_csi_secrets_store_provider_aws ? 1 : 0
+  count             = var.enable_secrets_store_csi_driver_provider_aws ? 1 : 0
   source            = "./csi-secrets-store-provider-aws"
   helm_config       = var.csi_secrets_store_provider_aws_helm_config
   manage_via_gitops = var.argocd_manage_add_ons

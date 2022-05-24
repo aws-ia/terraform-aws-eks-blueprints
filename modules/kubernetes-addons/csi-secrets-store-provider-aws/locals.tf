@@ -17,13 +17,13 @@ locals {
     var.helm_config
   )
 
-  set_values = [
-    {
-      name  = "secrets-store-csi-driver.install"
-      value = "false"
-    }
-  ]
-
+  irsa_config = {
+    create_kubernetes_namespace       = true
+    kubernetes_namespace              = local.name
+    create_kubernetes_service_account = false
+    kubernetes_service_account        = local.name
+  }
+  
   argocd_gitops_config = {
     enable = true
   }
