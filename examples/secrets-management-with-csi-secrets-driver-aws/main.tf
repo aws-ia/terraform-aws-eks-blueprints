@@ -123,13 +123,47 @@ data "aws_eks_cluster" "eks_cluster" {
   name = module.eks_blueprints.eks_cluster_id
 }
 
-#---------------------------------------------------------------
-# Parsing the config file to local and also extracting the ARNs of Secret Object
-#---------------------------------------------------------------
-locals {
-  secretconfig   = templatefile("${path.module}/secretconfig.yaml", {})
-  all_secret_arn = [for objects in yamldecode(local.secretconfig) : objects["objectName"]]
+#-----------------------------------------------------------------
+# This generates a random secret and stores in AWS Secret Manager
+#-----------------------------------------------------------------
+
+
+resource "random_password" "password" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
 }
+
+resource "aws_secretsmanager_secret" "application_secret" {
+  recovery_window_in_days = 0
+}
+resource "aws_secretsmanager_secret_version" "sversion" {
+  secret_id = aws_secretsmanager_secret.application_secret.id
+  secret_string = <<EOF
+   {
+    "username": "adminaccount",
+    "password": "${random_password.password.result}"
+   }
+EOF
+}
+
+#------------------------------------------------------------------------------------
+# This creates a IAM Policy content limiting access to the secret in Secrets Manager
+#------------------------------------------------------------------------------------
+
+data "aws_iam_policy_document" "secrets_management_policy" {
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = [
+      aws_secretsmanager_secret_version.sversion.arn
+    ]
+    actions = [
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret"
+    ]
+  }
+} 
 
 #---------------------------------------------------------------
 # Creating IAM Policy to be attached to the IRSA Role
@@ -167,6 +201,7 @@ module "iam_role_service_account" {
 
 #---------------------------------------------------------------
 # Kubernetes CRD to create the "SecretProviderClass" to represent the Secrets Manager Secrets
+# Refer https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_csi_driver.html#integrating_csi_driver_SecretProviderClass for syntax
 #---------------------------------------------------------------
 
 resource "kubectl_manifest" "csi_secrets_store_crd" {
@@ -178,9 +213,11 @@ resource "kubectl_manifest" "csi_secrets_store_crd" {
       namespace = var.application
     }
     spec = {
-      provider : "aws"
+      provider = "aws"
       parameters = {
-        objects = local.secretconfig
+        objects = <<-EOT
+          - objectName : ${aws_secretsmanager_secret_version.sversion.arn}
+        EOT
       }
     }
   })
