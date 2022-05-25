@@ -84,7 +84,7 @@ resource "aws_eks_node_group" "managed_ng" {
 }
 
 resource "aws_autoscaling_group_tag" "cluster_autoscaler_tag" {
-  for_each = local.common_tags
+  for_each = local.asg_tags
 
   autoscaling_group_name = aws_eks_node_group.managed_ng.resources[0].autoscaling_groups[0].name
 
