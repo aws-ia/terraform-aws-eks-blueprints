@@ -213,9 +213,11 @@ module "eks-blueprints-kubernetes-addons" {
   source = "../../modules/kubernetes-addons"
 
   eks_cluster_id = module.eks-blueprints.eks_cluster_id
+  auto_scaling_group_names = module.eks-blueprints.self_managed_node_group_autoscaling_groups
 
   # Deploys Karpenter add-on
   enable_karpenter = true
+  enable_aws_node_termination_handler = true
 
   depends_on = [module.eks-blueprints.self_managed_node_groups]
 }

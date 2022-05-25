@@ -59,6 +59,16 @@ locals {
   cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
 
   terraform_version = "Terraform v1.0.1"
+
+  ca_expander          = "priority"
+  ca_priority_expander = <<-EOT
+    100:
+      - .*-spot-2vcpu-8mem.*
+    90:
+      - .*-spot-4vcpu-16mem.*
+    10:
+      - .*
+  EOT
 }
 
 module "aws_vpc" {
@@ -171,8 +181,60 @@ module "eks-blueprints" {
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-    },
+    }
+    # Self-Managed Node group with Launch templates using AMI TYPE and SPOT instances of 2 vCPUs and 8 Gib Memory
+    spot_2vcpu_8mem = {
+      node_group_name    = "smng-spot-2vcpu-8mem"
+      capacity_type      = "spot"
+      capacity_rebalance = true
+      instance_types     = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"]
+      min_size           = "0"
+      subnet_ids         = module.aws_vpc.private_subnets
+      launch_template_os = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
+      k8s_taints         = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
+    }
+    # Self-Managed Node group with Launch templates using AMI TYPE and SPOT instances of 4 vCPUs and 16 Gib Memory
+    spot_4vcpu_16mem = {
+      node_group_name    = "smng-spot-4vcpu-16mem"
+      capacity_type      = "spot"
+      capacity_rebalance = true
+      instance_types     = ["m5.xlarge", "m4.xlarge", "m6a.xlarge", "m5a.xlarge", "m5d.xlarge"]
+      min_size           = "0"
+      subnet_ids         = module.aws_vpc.private_subnets
+      launch_template_os = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
+      k8s_taints         = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
+    }
   } # END OF SELF MANAGED NODE GROUPS
+}
+
+module "eks_blueprints_kubernetes_addons" {
+  source                   = "../../../modules/kubernetes-addons"
+  eks_cluster_id           = module.eks_blueprints.eks_cluster_id
+  auto_scaling_group_names = module.eks_blueprints.self_managed_node_group_autoscaling_groups
+
+  # EKS Managed Add-ons
+  enable_amazon_eks_vpc_cni    = true
+  enable_amazon_eks_coredns    = true
+  enable_amazon_eks_kube_proxy = true
+
+  #K8s Add-ons
+  enable_aws_load_balancer_controller = true
+  enable_metrics_server               = true
+  enable_aws_node_termination_handler = true
+
+  enable_cluster_autoscaler = true
+  cluster_autoscaler_helm_config = {
+    set = [
+      {
+        name  = "extraArgs.expander"
+        value = local.ca_expander
+      },
+      {
+        name  = "expanderPriorities"
+        value = local.ca_priority_expander
+      }
+    ]
+  }
 }
 
 output "configure_kubectl" {

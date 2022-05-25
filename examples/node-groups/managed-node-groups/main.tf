@@ -87,6 +87,16 @@ locals {
   amazonlinux2eks         = "amazon-eks-node-${var.cluster_version}-*"
 
   terraform_version = "Terraform v1.0.1"
+
+  ca_expander          = "priority"
+  ca_priority_expander = <<-EOT
+    100:
+      - .*-spot-2vcpu-8mem.*
+    90:
+      - .*-spot-4vcpu-16mem.*
+    10:
+      - .*
+  EOT
 }
 
 #------------------------------------------------------------------------
@@ -295,6 +305,24 @@ module "eks-blueprints" {
         subnet_type = "private"
       }
     }
+    # Managed Node group with Launch templates using AMI TYPE and SPOT instances of 2 vCPUs and 8 Gib Memory
+    spot_2vcpu_8mem = {
+      node_group_name = "mng-spot-2vcpu-8mem"
+      capacity_type   = "SPOT"
+      instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"]
+      min_size        = "0"
+      subnet_ids      = module.aws_vpc.private_subnets
+      k8s_taints      = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
+    }
+    # Managed Node group with Launch templates using AMI TYPE and SPOT instances of 4 vCPUs and 16 Gib Memory
+    spot_4vcpu_16mem = {
+      node_group_name = "mng-spot-4vcpu-16mem"
+      capacity_type   = "SPOT"
+      instance_types  = ["m5.xlarge", "m4.xlarge", "m6a.xlarge", "m5a.xlarge", "m5d.xlarge"]
+      min_size        = "0"
+      subnet_ids      = module.aws_vpc.private_subnets
+      k8s_taints      = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
+    }
   }
 }
 
@@ -308,7 +336,18 @@ module "eks-blueprints-kubernetes-addons" {
 
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
-
+  cluster_autoscaler_helm_config = {
+    set = [
+      {
+        name  = "extraArgs.expander"
+        value = local.ca_expander
+      },
+      {
+        name  = "expanderPriorities"
+        value = local.ca_priority_expander
+      }
+    ]
+  }
 }
 
 output "configure_kubectl" {
