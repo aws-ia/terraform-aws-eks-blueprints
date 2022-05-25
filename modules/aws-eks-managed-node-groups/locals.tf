@@ -118,10 +118,10 @@ locals {
     var.context.tags,
     local.managed_node_group["additional_tags"],
     {
-      Name                                                                           = "${var.context.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"      
-      "kubernetes.io/cluster/${var.context.eks_cluster_id}"                          = "owned"
-      "k8s.io/cluster-autoscaler/${var.context.eks_cluster_id}"                      = "owned"
-      "k8s.io/cluster-autoscaler/enabled"                                            = "TRUE"
+      Name                                                      = "${var.context.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
+      "kubernetes.io/cluster/${var.context.eks_cluster_id}"     = "owned"
+      "k8s.io/cluster-autoscaler/${var.context.eks_cluster_id}" = "owned"
+      "k8s.io/cluster-autoscaler/enabled"                       = "TRUE"
   })
 
   asg_tags = merge(
