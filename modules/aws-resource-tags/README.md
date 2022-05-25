@@ -1,7 +1,9 @@
-<!--- BEGIN_TF_DOCS --->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
 
 ## Providers
 
@@ -32,5 +34,4 @@ No resources.
 |------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | aws resource id |
 | <a name="output_tags"></a> [tags](#output\_tags) | aws resource tags |
-
-<!--- END_TF_DOCS --->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

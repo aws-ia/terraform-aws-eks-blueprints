@@ -3,6 +3,8 @@ locals {
     fargate_profile_name       = ""
     fargate_profile_namespaces = []
     create_iam_role            = true
+    iam_role_arn               = null
+    additional_iam_policies    = []
     k8s_labels                 = {}
     additional_tags            = {}
     subnet_ids                 = []
@@ -16,6 +18,8 @@ locals {
     { "kubernetes.io/cluster/${var.context.eks_cluster_id}" = "owned" },
   { "k8s.io/cluster/${var.context.eks_cluster_id}" = "owned" })
 
-  policy_arn = "arn:${var.context.aws_partition_id}:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
+  fargate_policies = { for k, v in toset(concat([
+    "arn:${var.context.aws_partition_id}:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy", ],
+  local.fargate_profiles["additional_iam_policies"])) : k => v if local.fargate_profiles["create_iam_role"] }
 
 }

@@ -4,7 +4,7 @@ terraform {
   required_providers {
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = ">= 1.13.1"
+      version = ">= 1.14"
     }
   }
 }

@@ -1,6 +1,6 @@
-//-------------------------------------
-// Helm Add-on
-//-------------------------------------
+#-------------------------------------
+# Helm Add-on
+#-------------------------------------
 
 module "helm_addon" {
   source            = "../helm-addon"
@@ -11,9 +11,9 @@ module "helm_addon" {
   manage_via_gitops = var.manage_via_gitops
 }
 
-//------------------------------------
-// IAM Policy
-//------------------------------------
+#------------------------------------
+# IAM Policy
+#------------------------------------
 
 resource "aws_iam_policy" "external_dns" {
   description = "External DNS IAM policy."

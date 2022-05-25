@@ -105,11 +105,15 @@ module "aws_node_termination_handler" {
 }
 
 module "cert_manager" {
-  count             = var.enable_cert_manager ? 1 : 0
-  source            = "./cert-manager"
-  helm_config       = var.cert_manager_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = local.addon_context
+  count                       = var.enable_cert_manager ? 1 : 0
+  source                      = "./cert-manager"
+  helm_config                 = var.cert_manager_helm_config
+  manage_via_gitops           = var.argocd_manage_add_ons
+  irsa_policies               = var.cert_manager_irsa_policies
+  addon_context               = local.addon_context
+  domain_names                = var.cert_manager_domain_names
+  install_letsencrypt_issuers = var.cert_manager_install_letsencrypt_issuers
+  letsencrypt_email           = var.cert_manager_letsencrypt_email
 }
 
 module "cluster_autoscaler" {
@@ -277,7 +281,59 @@ module "yunikorn" {
   count             = var.enable_yunikorn ? 1 : 0
   source            = "./yunikorn"
   helm_config       = var.yunikorn_helm_config
-  irsa_policies     = var.yunikorn_irsa_policies
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+}
+
+module "aws_privateca_issuer" {
+  count                   = var.enable_aws_privateca_issuer ? 1 : 0
+  source                  = "./aws-privateca-issuer"
+  helm_config             = var.aws_privateca_issuer_helm_config
+  manage_via_gitops       = var.argocd_manage_add_ons
+  addon_context           = local.addon_context
+  aws_privateca_acmca_arn = var.aws_privateca_acmca_arn
+  irsa_policies           = var.aws_privateca_issuer_irsa_policies
+}
+
+module "opentelemetry_operator" {
+  count         = var.enable_opentelemetry_operator ? 1 : 0
+  source        = "./opentelemetry-operator"
+  helm_config   = var.opentelemetry_operator_helm_config
+  addon_context = local.addon_context
+}
+
+module "adot_collector_java" {
+  count                                = var.enable_adot_collector_java ? 1 : 0
+  source                               = "./adot-collector-java"
+  helm_config                          = var.adot_collector_java_helm_config
+  amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
+  addon_context                        = local.addon_context
+}
+
+module "adot_collector_haproxy" {
+  count                                = var.enable_adot_collector_haproxy ? 1 : 0
+  source                               = "./adot-collector-haproxy"
+  helm_config                          = var.adot_collector_haproxy_helm_config
+  amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
+  addon_context                        = local.addon_context
+}
+
+module "adot_collector_memcached" {
+  count                                = var.enable_adot_collector_memcached ? 1 : 0
+  source                               = "./adot-collector-memcached"
+  helm_config                          = var.adot_collector_memcached_helm_config
+  amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
+  addon_context                        = local.addon_context
+}
+
+module "adot_collector_nginx" {
+  count                                = var.enable_adot_collector_nginx ? 1 : 0
+  source                               = "./adot-collector-nginx"
+  helm_config                          = var.adot_collector_nginx_helm_config
+  amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
+  addon_context                        = local.addon_context
 }
