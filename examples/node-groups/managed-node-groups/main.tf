@@ -58,7 +58,7 @@ locals {
   cluster_version         = "1.21"
 
   terraform_version = "Terraform v1.0.1"
-  
+
   ca_expander          = "priority"
   ca_priority_expander = <<-EOT
     100:

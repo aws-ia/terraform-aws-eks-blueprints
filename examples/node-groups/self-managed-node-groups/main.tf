@@ -191,7 +191,7 @@ module "eks_blueprints" {
     }
   } # END OF SELF MANAGED NODE GROUPS
 }
-      
+
 module "eks_blueprints_kubernetes_addons" {
   source                   = "../../../modules/kubernetes-addons"
   eks_cluster_id           = module.eks_blueprints.eks_cluster_id
