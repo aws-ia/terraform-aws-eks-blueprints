@@ -49,10 +49,12 @@ module "aws_eks" {
   vpc_id                                  = var.vpc_id
   cluster_additional_security_group_ids   = var.cluster_additional_security_group_ids
   cluster_security_group_additional_rules = var.cluster_security_group_additional_rules
+  cluster_security_group_tags             = var.cluster_security_group_tags
 
   # Worker Node Security Group
   create_node_security_group           = var.create_node_security_group
   node_security_group_additional_rules = var.node_security_group_additional_rules
+  node_security_group_tags             = var.node_security_group_tags
 
   # IRSA
   enable_irsa              = var.enable_irsa # no change
