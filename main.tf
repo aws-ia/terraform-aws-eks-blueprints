@@ -2,6 +2,7 @@
 # LABELING EKS RESOURCES test
 # ---------------------------------------------------------------------------------------------------------------------
 module "eks_tags" {
+  
   source      = "./modules/aws-resource-tags"
   org         = var.org
   tenant      = var.tenant
