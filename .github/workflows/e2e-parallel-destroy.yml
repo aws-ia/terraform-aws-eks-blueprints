@@ -9,7 +9,7 @@ on:
         default: 'true'
 
 env:
-  DEFAULT_DEPLOY_ORDER: 'module.e2e_test.module.vpc,module.e2e_test.module.eks_blueprints,module.e2e_test.module.eks_blueprints_kubernetes_addons'
+  DEFAULT_DEPLOY_ORDER: 'module.vpc,module.vpc_endpoints,module.eks_blueprints,module.eks_blueprints_kubernetes_addons'
 
 concurrency: e2e-parallel-destroy
 
@@ -33,21 +33,15 @@ jobs:
           - example_path: examples/crossplane
           - example_path: examples/eks-cluster-with-new-vpc
           - example_path: examples/fully-private-eks-cluster
-            deployment_order:
-              [
-                'module.e2e_test.module.vpc',
-                'module.e2e_test.module.vpc_endpoints',
-                'module.e2e_test.module.eks_blueprints',
-              ]
           - example_path: examples/game-tech/agones-game-controller
           - example_path: examples/ingress-controllers/nginx
             deployment_order:
               [
-                'module.e2e_test.module.vpc',
-                'module.e2e_test.module.eks_blueprints',
-                'module.e2e_test.module.eks_blueprints_kubernetes_addons',
-                'module.e2e_test.module.eks_blueprints_kubernetes_addons.module.aws_load_balancer_controller[0]',
-                'module.e2e_test.module.eks_blueprints_kubernetes_addons.module.ingress_nginx[0]',
+                'module.vpc',
+                'module.eks_blueprints',
+                'module.eks_blueprints_kubernetes_addons',
+                'module.eks_blueprints_kubernetes_addons.module.aws_load_balancer_controller[0]',
+                'module.eks_blueprints_kubernetes_addons.module.ingress_nginx[0]',
               ]
           - example_path: examples/karpenter
           - example_path: examples/node-groups/managed-node-groups
@@ -58,20 +52,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Pre Setup
-        id: pre-setup
-        run: |
-          mkdir -p deploy/e2e-test
-          if [[ ${{ matrix.example_path }} == deploy/* ]]
-          then
-            echo "Skipping pre-setup for ${{ matrix.example_path }}"
-            cp -R ${{ matrix.example_path }}/* deploy/e2e-test/
-          else
-            echo "Running pre-setup for ${{ matrix.example_path }}"
-            cp -R deploy/e2e-template/* deploy/e2e-test/
-            sed -i "s!TF_STATE_PATH!${{ matrix.example_path }}!g" deploy/e2e-test/backend.conf
-            sed -i "s!EXAMPLE_PATH!${{ matrix.example_path }}!g" deploy/e2e-test/main.tf
-          fi
+      - name: Setup backend
+        # Un-comments remote backend for use in workflow
+        run: sed -i "s/# //g" ${{ matrix.example_path }}/versions.tf
 
       - name: Setup Deployment Order
         id: setup-deployment-order
@@ -100,13 +83,11 @@ jobs:
           terraform_version: 1.0.0
 
       - name: Terraform Init
-        id: init
-        run: terraform init  -backend-config backend.conf -reconfigure
-        working-directory: deploy/e2e-test
+        run: terraform init
+        working-directory: ${{ matrix.example_path }}
 
       - name: Terraform Destroy
-        id: destroy
-        working-directory: deploy/e2e-test
+        working-directory: ${{ matrix.example_path }}
         run: |
           reverse_array=$(echo ${{ env.DEPLOYMENT_ORDER }}  | awk -F, '{for (i=NF; i>0; --i) printf "%s%s", (i<NF ? "," : ""), $i; printf "\n"}')
           IFS=',' read -r -a array <<< "$reverse_array"

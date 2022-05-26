@@ -8,7 +8,7 @@ on:
         required: true
         default: 'true'
 env:
-  DEFAULT_DEPLOY_ORDER: 'module.e2e_test.module.vpc,module.e2e_test.module.eks_blueprints,module.e2e_test.module.eks_blueprints_kubernetes_addons'
+  DEFAULT_DEPLOY_ORDER: 'module.vpc,module.vpc_endpoints,module.eks_blueprints'
 
 concurrency: e2e-parallel-full
 
@@ -33,20 +33,8 @@ jobs:
           - example_path: examples/aws-efs-csi-driver
           - example_path: examples/eks-cluster-with-new-vpc
           - example_path: examples/fully-private-eks-cluster
-            deployment_order:
-              [
-                'module.e2e_test.module.vpc',
-                'module.e2e_test.module.vpc_endpoints',
-                'module.e2e_test.module.eks_blueprints',
-              ]
           - example_path: examples/game-tech/agones-game-controller
           - example_path: examples/ingress-controllers/nginx
-            deployment_order:
-              [
-                'module.e2e_test.module.vpc',
-                'module.e2e_test.module.eks_blueprints',
-                'module.e2e_test.module.eks_blueprints_kubernetes_addons',
-              ]
           - example_path: examples/karpenter
           - example_path: examples/node-groups/managed-node-groups
           - example_path: examples/node-groups/self-managed-node-groups
@@ -55,20 +43,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Pre Setup
-        id: pre-setup
-        run: |
-          mkdir -p deploy/e2e-test
-          if [[ ${{ matrix.example_path }} == deploy/* ]]
-          then
-            echo "Skipping pre-setup for ${{ matrix.example_path }}"
-            cp -R ${{ matrix.example_path }}/* deploy/e2e-test/
-          else
-            echo "Running pre-setup for ${{ matrix.example_path }}"
-            cp -R deploy/e2e-template/* deploy/e2e-test/
-            sed -i "s!TF_STATE_PATH!${{ matrix.example_path }}!g" deploy/e2e-test/backend.conf
-            sed -i "s!EXAMPLE_PATH!${{ matrix.example_path }}!g" deploy/e2e-test/main.tf
-          fi
+      - name: Setup backend
+        # Un-comments remote backend for use in workflow
+        run: sed -i "s/# //g" ${{ matrix.example_path }}/versions.tf
 
       - name: Setup Deployment Order
         id: setup-deployment-order
@@ -96,24 +73,9 @@ jobs:
         with:
           terraform_version: 1.0.0
 
-      - name: Terraform Fmt
-        id: fmt
-        run: terraform fmt -check -recursive -list -no-color
-
       - name: Terraform Init
-        id: init
-        run: terraform init  -backend-config backend.conf -reconfigure
-        working-directory: deploy/e2e-test
-
-      - name: Terraform Validate
-        id: validate
-        working-directory: deploy/e2e-test
-        run: terraform validate -no-color
-
-      - name: Terraform Plan
-        id: plan
-        working-directory: deploy/e2e-test
-        run: terraform plan -no-color
+        run: terraform init
+        working-directory: ${{ matrix.example_path }}
 
       - name: Terraform Apply
         id: apply
@@ -128,7 +90,6 @@ jobs:
 
       - name: Terraform Destroy
         if: github.event.inputs.TFDestroy == 'true' && (steps.apply.outcome == 'success' || steps.apply.outcome == 'failure')
-        id: destroy
         working-directory: deploy/e2e-test
         run: |
           reverse_array=$(echo ${{ env.DEPLOYMENT_ORDER }}  | awk -F, '{for (i=NF; i>0; --i) printf "%s%s", (i<NF ? "," : ""), $i; printf "\n"}')
@@ -142,7 +103,6 @@ jobs:
 
       - name: Fail if TF apply failed
         if: steps.apply.outcome == 'failure'
-        id: fail-if-tf-apply-failed
         run: |
           echo "Terraform Apply step failed...Please check the logs of the Terraform Apply step."
           echo "Failing the job to avoid false positives."
