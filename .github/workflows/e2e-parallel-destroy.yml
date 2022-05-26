@@ -8,9 +8,6 @@ on:
         required: true
         default: 'true'
 
-env:
-  DEFAULT_DEPLOY_ORDER: 'module.vpc,module.vpc_endpoints,module.eks_blueprints,module.eks_blueprints_kubernetes_addons'
-
 concurrency: e2e-parallel-destroy
 
 jobs:
@@ -28,24 +25,18 @@ jobs:
         include:
           - example_path: examples/analytics/emr-on-eks
           - example_path: examples/analytics/spark-k8s-operator
-          - example_path: examples/gitops/argocd
           - example_path: examples/aws-efs-csi-driver
           - example_path: examples/crossplane
           - example_path: examples/eks-cluster-with-new-vpc
           - example_path: examples/fully-private-eks-cluster
           - example_path: examples/game-tech/agones-game-controller
-          - example_path: examples/ingress-controllers/nginx
-            deployment_order:
-              [
-                'module.vpc',
-                'module.eks_blueprints',
-                'module.eks_blueprints_kubernetes_addons',
-                'module.eks_blueprints_kubernetes_addons.module.aws_load_balancer_controller[0]',
-                'module.eks_blueprints_kubernetes_addons.module.ingress_nginx[0]',
-              ]
+          - example_path: examples/gitops/argocd
+          # - example_path: examples/ingress-controllers/nginx # ignoring due to https://github.com/kubernetes-sigs/aws-load-balancer-controller/issues/1629
+          - example_path: examples/ipv6-eks-cluster
           - example_path: examples/karpenter
-          - example_path: examples/node-groups/managed-node-groups
           - example_path: examples/multi-tenancy-with-teams
+          - example_path: examples/node-groups/fargate-profiles
+          - example_path: examples/node-groups/managed-node-groups
           - example_path: examples/node-groups/self-managed-node-groups
           - example_path: examples/node-groups/windows-node-groups
     steps:
@@ -53,23 +44,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup backend
-        # Un-comments remote backend for use in workflow
+        # Un-comment remote backend for use in workflow
         run: sed -i "s/# //g" ${{ matrix.example_path }}/versions.tf
 
-      - name: Setup Deployment Order
-        id: setup-deployment-order
-        run: |
-          export MATRIX_DEPLOYMENT_ORDER=${{join(matrix.deployment_order,',') }}
-
-          if [ -z "$MATRIX_DEPLOYMENT_ORDER" ]
-          then
-            DEPLOYMENT_ORDER=${{env.DEFAULT_DEPLOY_ORDER}}
-          else
-            DEPLOYMENT_ORDER=$MATRIX_DEPLOYMENT_ORDER
-          fi
-          echo "DEPLOYMENT_ORDER=$DEPLOYMENT_ORDER" >> $GITHUB_ENV
-
-      - name: Configure AWS credentials from Test account
+      - name: Auth AWS
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
@@ -77,23 +55,15 @@ jobs:
           role-duration-seconds: 3600
           role-session-name: GithubActions-Session
 
-      - name: Terraform Job
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.0.0
 
-      - name: Terraform Init
-        run: terraform init
-        working-directory: ${{ matrix.example_path }}
-
       - name: Terraform Destroy
         working-directory: ${{ matrix.example_path }}
         run: |
-          reverse_array=$(echo ${{ env.DEPLOYMENT_ORDER }}  | awk -F, '{for (i=NF; i>0; --i) printf "%s%s", (i<NF ? "," : ""), $i; printf "\n"}')
-          IFS=',' read -r -a array <<< "$reverse_array"
-          for element in "${array[@]}"
-          do
-            terraform destroy -target="$element" -no-color -input=false -auto-approve
-            sleep 45
-          done
+          terraform init -upgrade=true
+          terraform destroy -target=module.eks_blueprints_kubernetes_addons  -no-color -input=false -auto-approve
+          terraform destroy -target=module.eks_blueprints  -no-color -input=false -auto-approve
           terraform destroy -no-color -input=false -auto-approve

@@ -91,19 +91,17 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   # Add-ons
-  enable_aws_for_fluentbit            = true
-  enable_aws_load_balancer_controller = true
-  enable_cert_manager                 = true
-  enable_cluster_autoscaler           = true
-  enable_ingress_nginx                = true
-  enable_karpenter                    = true
-  enable_keda                         = true
-  enable_metrics_server               = true
-  enable_prometheus                   = true
-  enable_traefik                      = true
-  enable_vpa                          = true
-  enable_yunikorn                     = true
-  enable_argo_rollouts                = true
+  enable_aws_for_fluentbit  = true
+  enable_cert_manager       = true
+  enable_cluster_autoscaler = true
+  enable_karpenter          = true
+  enable_keda               = true
+  enable_metrics_server     = true
+  enable_prometheus         = true
+  enable_traefik            = true
+  enable_vpa                = true
+  enable_yunikorn           = true
+  enable_argo_rollouts      = true
 
   tags = local.tags
 
@@ -127,6 +125,14 @@ module "vpc" {
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_dns_hostnames = true
+
+  # Manage so we can name
+  manage_default_network_acl    = true
+  default_network_acl_tags      = { Name = "${local.name}-default" }
+  manage_default_route_table    = true
+  default_route_table_tags      = { Name = "${local.name}-default" }
+  manage_default_security_group = true
+  default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${local.name}" = "shared"

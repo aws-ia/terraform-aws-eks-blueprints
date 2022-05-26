@@ -89,7 +89,6 @@ module "eks_blueprints_kubernetes_addons" {
   depends_on = [module.eks_blueprints.managed_node_groups]
 }
 
-
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
@@ -114,6 +113,14 @@ module "vpc" {
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_dns_hostnames = true
+
+  # Manage so we can name
+  manage_default_network_acl    = true
+  default_network_acl_tags      = { Name = "${local.name}-default" }
+  manage_default_route_table    = true
+  default_route_table_tags      = { Name = "${local.name}-default" }
+  manage_default_security_group = true
+  default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${local.name}" = "shared"
