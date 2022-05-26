@@ -18,10 +18,11 @@ locals {
     repository       = "https://argoproj.github.io/argo-helm"
     version          = "3.33.3"
     namespace        = local.namespace
-    timeout          = "1200"
+    timeout          = 1200
     create_namespace = true
     values           = local.default_helm_values
     description      = "The ArgoCD Helm Chart deployment configuration"
+    wait             = false
   }
 
   helm_config = merge(
