@@ -161,6 +161,4 @@ module "eks_blueprints_kubernetes_addons" {
       gameserver_maxport    = 8000
     })]
   }
-
-  depends_on = [module.eks_blueprints.managed_node_groups]
 }

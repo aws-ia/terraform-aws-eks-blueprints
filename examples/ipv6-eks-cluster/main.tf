@@ -123,6 +123,4 @@ module "eks_blueprints_kubernetes_addons" {
 
   #K8s Add-ons
   enable_aws_load_balancer_controller = true
-
-  depends_on = [module.eks_blueprints.managed_node_groups]
 }

@@ -48,10 +48,18 @@ terraform plan
 
 #### Step 4: Finally, Terraform APPLY
 
-to create resources
+Deploy VPC, EKS cluster with Node groups and Kubernetes Add-ons with `--target` option
 
-```shell script
-terraform apply
+```sh
+terraform apply -target="module.aws_vpc" 
+terraform apply -target="module.eks_blueprints"
+terraform apply -target="module.eks_blueprints_kubernetes_addons"
+```
+
+Finally, run the below command for additional resources that are  not in the above modules
+
+```sh
+terraform apply 
 ```
 
 Enter `yes` to apply
@@ -80,11 +88,20 @@ This following command used to update the `kubeconfig` in your local machine whe
 
     $ kubectl get Certificate
 
-## How to Destroy
+## Cleanup
 
-The following command destroys the resources created by `terraform apply`
+To clean up your environment, destroy the Terraform modules in reverse order.
 
-```shell script
-cd examples/tls-with-aws-pca-issuer
-terraform destroy --auto-approve
+Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
+
+```sh
+terraform destroy -target="module.eks_blueprints_kubernetes_addons"
+terraform destroy -target="module.eks_blueprints"
+terraform destroy -target="module.aws_vpc"
+```
+
+Finally, destroy any additional resources that are not in the above modules
+
+```sh
+terraform destroy 
 ```

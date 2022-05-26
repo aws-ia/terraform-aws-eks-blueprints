@@ -157,9 +157,4 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_aws_load_balancer_controller = true
   enable_external_dns                 = true
-
-  depends_on = [
-    module.aws_vpc,
-    module.eks_blueprints.managed_node_groups
-  ]
 }

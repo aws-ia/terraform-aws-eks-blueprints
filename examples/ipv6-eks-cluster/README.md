@@ -46,10 +46,18 @@ terraform plan
 
 #### Step 4: Finally, Terraform APPLY
 
-to create resources
+Deploy VPC, EKS cluster with Node groups and Kubernetes Add-ons with `--target` option
 
-```shell script
-terraform apply
+```sh
+terraform apply -target="module.aws_vpc" 
+terraform apply -target="module.eks_blueprints"
+terraform apply -target="module.eks_blueprints_kubernetes_addons"
+```
+
+Finally run the below command for additional resources that are  not in the above modules
+
+```sh
+terraform apply 
 ```
 
 Enter `yes` to apply
@@ -91,11 +99,21 @@ Output
         kube-proxy-k992g                               1/1     Running   0          3h1m   2a05:d018:434:7702:3784:d6b:fc0d:e156   ip-10-0-10-23.eu-west-1.compute.internal    <none>           <none>
         kube-proxy-nzfrq                               1/1     Running   0          3h1m   2a05:d018:434:7703:b3eb:2aa:aa4a:c838   ip-10-0-11-186.eu-west-1.compute.internal   <none>           <none>
 
-## How to Destroy
 
-The following command destroys the resources created by `terraform apply`
+## Cleanup
 
-```shell script
-cd examples/eks-cluster-with-new-vpc
-terraform destroy --auto-approve
+To clean up your environment, destroy the Terraform modules in reverse order.
+
+Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
+
+```sh
+terraform destroy -target="module.eks_blueprints_kubernetes_addons"
+terraform destroy -target="module.eks_blueprints"
+terraform destroy -target="module.aws_vpc"
+```
+
+Finally, destroy any additional resources that are not in the above modules
+
+```sh
+terraform destroy 
 ```

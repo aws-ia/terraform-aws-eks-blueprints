@@ -198,6 +198,4 @@ module "eks_blueprints_kubernetes_addons" {
     version    = "0.12.2"                                    # (Optional) Specify the exact chart version to install.
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
-
-  depends_on = [module.eks_blueprints.managed_node_groups]
 }

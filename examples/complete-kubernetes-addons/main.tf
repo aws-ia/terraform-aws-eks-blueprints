@@ -282,6 +282,4 @@ module "eks_blueprints_kubernetes_addons" {
       Decode_Field_As json message
     EOF
   }
-
-  depends_on = [module.eks_blueprints.managed_node_groups]
 }

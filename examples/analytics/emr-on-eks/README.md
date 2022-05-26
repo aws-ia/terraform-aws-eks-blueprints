@@ -22,31 +22,39 @@ _Note: Currently Amazon Prometheus supported only in selected regions. Please se
 
 Clone the repository
 
-```
+```sh
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 Navigate into one of the example directories and run `terraform init`
 
-```
+```sh
 cd examples/analytics/emr-on-eks
 terraform init
 ```
 
 Set AWS_REGION and Run Terraform plan to verify the resources created by this execution.
 
-```
+```sh
 export AWS_REGION="<enter-your-region>"
 terraform plan
 ```
 
-Deploy the pattern
+**Deploy the pattern**
 
-```
-terraform apply
+Deploy VPC, EKS cluster with Node groups and Kubernetes Add-ons with `--target` option
+
+```sh
+terraform apply -target="module.aws_vpc" 
+terraform apply -target="module.eks_blueprints"
+terraform apply -target="module.eks_blueprints_kubernetes_addons"
 ```
 
-Enter `yes` to apply.
+Finally run the below command for additional resources that are  not in the above modules
+
+```sh
+terraform apply 
+```
 
 ## Step 3: Verify the resources
 
@@ -54,13 +62,13 @@ Let’s verify the resources created by Step 4.
 
 Verify the Amazon EKS Cluster and Amazon Managed service for Prometheus
 
-```shell script
+```sh
 aws eks describe-cluster --name aws001-preprod-test-eks
 
 aws amp list-workspaces --alias amp-ws-aws001-preprod-test-eks
 ```
 
-```shell script
+```sh
 Verify EMR on EKS Namespaces emr-data-team-a and emr-data-team-b and Pod status for Prometheus, Vertical Pod Autoscaler, Metrics Server and Cluster Autoscaler.
 
 aws eks --region <ENTER_YOUR_REGION> update-kubeconfig --name aws001-preprod-test-eks # Creates k8s config file to authenticate with EKS Cluster
@@ -128,6 +136,22 @@ kubectl get pods --namespace=emr-data-team-a -w
 ```shell script
 cd examples/analytics/emr-on-eks/examples/
 ./delete_emr_virtual_cluster_for_eks.sh
+```
+
+To clean up your environment, destroy the Terraform modules in reverse order.
+
+Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
+
+```sh
+terraform destroy -target="module.eks_blueprints_kubernetes_addons"
+terraform destroy -target="module.eks_blueprints"
+terraform destroy -target="module.aws_vpc"
+```
+
+Finally, destroy any additional resources that are not in the above modules
+
+```sh
+terraform destroy 
 ```
 
 ## Additional examples

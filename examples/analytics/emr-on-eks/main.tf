@@ -164,6 +164,4 @@ module "eks_blueprints_kubernetes_addons" {
     namespace  = "vpa"                                 # (Optional) The namespace to install the release into.
     values     = [templatefile("${path.module}/helm_values/vpa-values.yaml", {})]
   }
-
-  depends_on = [module.eks_blueprints.managed_node_groups]
 }

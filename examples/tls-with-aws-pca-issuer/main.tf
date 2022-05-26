@@ -103,8 +103,6 @@ module "eks_blueprints_kubernetes_addons" {
   #K8s Add-ons
   enable_cert_manager         = true
   enable_aws_privateca_issuer = true
-
-  depends_on = [module.eks_blueprints.managed_node_groups]
 }
 
 #-------------------------------

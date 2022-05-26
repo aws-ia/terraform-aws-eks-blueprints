@@ -49,13 +49,19 @@ terraform plan
 
 #### Step 4: Finally, Terraform APPLY
 
-to create resources
+Deploy VPC, EKS cluster with Node groups and Kubernetes Add-ons with `--target` option
 
-```shell script
-terraform apply
+```sh
+terraform apply -target="module.aws_vpc" 
+terraform apply -target="module.eks_blueprints"
+terraform apply -target="module.eks_blueprints_kubernetes_addons"
 ```
 
-Enter `yes` to apply
+Finally run the below command for additional resources that are  not in the above modules
+
+```sh
+terraform apply 
+```
 
 ### Configure kubectl and test cluster
 
@@ -87,7 +93,19 @@ You should see one Self-managed node up and running
 NOTE: Make sure you delete all the deployments which clean up the nodes spun up by Karpenter Autoscaler
 Ensure no nodes are running created by Karpenter before running the `Terraform Destroy`. Otherwise, EKS Cluster will be cleaned up however this may leave some nodes running in EC2.
 
-```shell script
-cd examples/eks-cluster-with-karpenter
-terraform destroy
+
+To clean up your environment, destroy the Terraform modules in reverse order.
+
+Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
+
+```sh
+terraform destroy -target="module.eks_blueprints_kubernetes_addons"
+terraform destroy -target="module.eks_blueprints"
+terraform destroy -target="module.aws_vpc"
+```
+
+Finally, destroy any additional resources that are not in the above modules
+
+```sh
+terraform destroy 
 ```

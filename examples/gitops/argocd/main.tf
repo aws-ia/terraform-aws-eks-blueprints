@@ -161,6 +161,4 @@ module "eks_blueprints_kubernetes_addons" {
   enable_vpa                          = true
   enable_yunikorn                     = true
   enable_argo_rollouts                = true
-
-  depends_on = [module.eks_blueprints.managed_node_groups]
 }

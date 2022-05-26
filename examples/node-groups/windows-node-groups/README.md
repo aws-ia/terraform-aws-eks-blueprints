@@ -47,10 +47,18 @@ If you want to use a region other than `us-west-2`, update the `aws_region` name
 
 ### Step 4: Run `terraform apply`
 
-to create resources
+Deploy VPC, EKS cluster with Node groups and Kubernetes Add-ons with `--target` option
 
-```bash
-terraform apply -auto-approve
+```sh
+terraform apply -target="module.aws_vpc" 
+terraform apply -target="module.eks_blueprints"
+terraform apply -target="module.eks_blueprints_kubernetes_addons"
+```
+
+Finally, run the below command for additional resources that are  not in the above modules
+
+```sh
+terraform apply 
 ```
 
 ## Configure kubectl and test cluster
@@ -101,15 +109,24 @@ kubectl apply -f ./k8s/linux-nginx.yaml
 
 ## Cleanup
 
-```bash
+```sh
 cd examples/node-groups/windows-node-groups
 
 # If you deployed sample Windows & Linux workloads from Step 6
 kubectl delete svc,deploy -n windows --all
 kubectl delete svc,deploy -n linux --all
+```
 
-# Destroy all resources
-terraform destroy -auto-approve
+```sh
+terraform destroy -target="module.eks_blueprints_kubernetes_addons"
+terraform destroy -target="module.eks_blueprints"
+terraform destroy -target="module.aws_vpc"
+```
+
+Finally, destroy any additional resources that are not in the above modules
+
+```sh
+terraform destroy 
 ```
 
 ## See also
