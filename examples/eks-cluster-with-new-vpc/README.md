@@ -47,7 +47,7 @@ terraform plan
 Deploy VPC, EKS cluster with Node groups and Kubernetes Add-ons with `--target` option
 
 ```sh
-terraform apply -target="module.aws_vpc" 
+terraform apply -target="module.aws_vpc"
 terraform apply -target="module.eks_blueprints"
 terraform apply -target="module.eks_blueprints_kubernetes_addons"
 ```
@@ -55,7 +55,7 @@ terraform apply -target="module.eks_blueprints_kubernetes_addons"
 Finally run the below command for additional resources that are  not in the above modules
 
 ```sh
-terraform apply 
+terraform apply
 ```
 
 ### Configure `kubectl` and test cluster
@@ -92,5 +92,5 @@ terraform destroy -target="module.aws_vpc"
 Finally, destroy any additional resources that are not in the above modules
 
 ```sh
-terraform destroy 
+terraform destroy
 ```
