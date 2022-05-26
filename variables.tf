@@ -98,6 +98,12 @@ variable "cluster_security_group_additional_rules" {
   type        = any
   default     = {}
 }
+
+variable "cluster_security_group_tags" {
+  description = "A map of additional tags to add to the cluster security group created"
+  type        = map(string)
+  default     = {}
+}
 #-------------------------------
 # EKS Cluster VPC Config
 #-------------------------------
@@ -300,6 +306,12 @@ variable "create_node_security_group" {
 variable "node_security_group_additional_rules" {
   description = "List of additional security group rules to add to the node security group created. Set `source_cluster_security_group = true` inside rules to set the `cluster_security_group` as source"
   type        = any
+  default     = {}
+}
+
+variable "node_security_group_tags" {
+  description = "A map of additional tags to add to the node security group created"
+  type        = map(string)
   default     = {}
 }
 
