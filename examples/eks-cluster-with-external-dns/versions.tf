@@ -16,7 +16,10 @@ terraform {
     }
   }
 
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
-  }
+  # ##  Used for end-to-end testing on project; update to suit your needs
+  # backend "s3" {
+  #   bucket = "terraform-ssp-github-actions-state"
+  #   region = "us-west-2"
+  #   key    = "e2e/eks-cluster-with-external-dns/terraform.tfstate"
+  # }
 }

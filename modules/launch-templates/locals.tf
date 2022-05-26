@@ -22,7 +22,7 @@ locals {
     block_device_mappings = {
       device_name           = "/dev/xvda"
       volume_type           = "gp3" # The volume type. Can be standard, gp2, gp3, io1, io2, sc1 or st1 (Default: gp3).
-      volume_size           = "200"
+      volume_size           = 200
       delete_on_termination = true
       encrypted             = true
       kms_key_id            = ""

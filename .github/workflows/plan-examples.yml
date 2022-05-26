@@ -14,12 +14,14 @@ jobs:
   getExampleDirectories:
     name: Get example directories
     runs-on: ubuntu-latest
+    # Do not remove environment setup without considering changes to pull_request_target and checkout of PR, as it may lead to checks running automatically against malicious code in PRs.
     environment: EKS Blueprints Test
     # Skip running on forks since it won't have access to secrets
     if: github.repository == 'aws-ia/terraform-aws-eks-blueprints'
     outputs:
       directories: ${{ steps.dirs.outputs.directories }}
     steps:
+      # Be careful not to change this to explicit checkout from PR ref/code, as below we run a python code that may change from the PR code.
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -46,7 +48,14 @@ jobs:
         tf_working_dir: ${{ fromJson(needs.getExampleDirectories.outputs.directories) }}
 
     steps:
-      - name: Checkout
+      - name: checkout-merge
+        if: "contains(github.event_name, 'pull_request')"
+        uses: actions/checkout@v2
+        with:
+          ref: refs/pull/${{github.event.pull_request.number}}/merge
+
+      - name: checkout
+        if: "!contains(github.event_name, 'pull_request')"
         uses: actions/checkout@v2
 
       - name: Configure AWS credentials from Test account
