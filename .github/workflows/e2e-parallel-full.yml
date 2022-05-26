@@ -79,7 +79,7 @@ jobs:
 
       - name: Terraform Apply
         id: apply
-        working-directory: deploy/e2e-test
+        working-directory: ${{ matrix.example_path }}
         run: |
           IFS=',' read -r -a array <<< "${{ env.DEPLOYMENT_ORDER }}"
           for element in "${array[@]}"
@@ -90,7 +90,7 @@ jobs:
 
       - name: Terraform Destroy
         if: github.event.inputs.TFDestroy == 'true' && (steps.apply.outcome == 'success' || steps.apply.outcome == 'failure')
-        working-directory: deploy/e2e-test
+        working-directory: ${{ matrix.example_path }}
         run: |
           reverse_array=$(echo ${{ env.DEPLOYMENT_ORDER }}  | awk -F, '{for (i=NF; i>0; --i) printf "%s%s", (i<NF ? "," : ""), $i; printf "\n"}')
           IFS=',' read -r -a array <<< "$reverse_array"
