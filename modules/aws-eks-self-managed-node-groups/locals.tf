@@ -86,11 +86,11 @@ locals {
     local.self_managed_node_group["additional_tags"],
     {
       Name                                                             = "${local.self_managed_node_group["node_group_name"]}-${var.context.eks_cluster_id}"
-      "kubernetes.io/cluster/eks-blue-prints"                          = "TRUE"
       "kubernetes.io/cluster/${var.context.eks_cluster_id}"            = "owned"
       "k8s.io/cluster-autoscaler/${var.context.eks_cluster_id}"        = "owned"
       "k8s.io/cluster-autoscaler/enabled"                              = "TRUE"
       "k8s.io/cluster-autoscaler/node-template/label/eks/capacityType" = local.self_managed_node_group["capacity_type"]
       "k8s.io/cluster-autoscaler/node-template/label/eks/nodegroup"    = local.self_managed_node_group["node_group_name"]
+      "managed-by"                                                     = "terraform-aws-eks-blueprints"
   })
 }

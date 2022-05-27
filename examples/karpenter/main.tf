@@ -197,8 +197,6 @@ module "eks_blueprints_kubernetes_addons" {
   # Deploys Karpenter add-on
   enable_karpenter                    = true
   enable_aws_node_termination_handler = true
-
-  depends_on = [module.eks_blueprints.self_managed_node_groups]
 }
 
 # Deploying default provisioner for Karpenter autoscaler

@@ -83,6 +83,8 @@ resource "aws_eks_node_group" "managed_ng" {
 
 }
 
+// NOTE: Tags need to replicated manually to the ASGs as per this issue: https://github.com/aws/containers-roadmap/issues/608
+// We won't need to have this resource when managed node groups in EKS replicate tags to ASGs
 resource "aws_autoscaling_group_tag" "cluster_autoscaler_tag" {
   for_each = local.asg_tags
 

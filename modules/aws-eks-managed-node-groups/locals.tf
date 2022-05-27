@@ -122,11 +122,14 @@ locals {
       "kubernetes.io/cluster/${var.context.eks_cluster_id}"     = "owned"
       "k8s.io/cluster-autoscaler/${var.context.eks_cluster_id}" = "owned"
       "k8s.io/cluster-autoscaler/enabled"                       = "TRUE"
+      "managed-by"                                              = "terraform-aws-eks-blueprints"
   })
 
+  # NOTE: To support node groups to scale down to zero nodes, 
+  // cluster autoscaler needs to more details to identify which nodes to scale-down.
+  // Here's the open issue and recommendations in GitHub: https://github.com/aws/containers-roadmap/issues/724
   asg_tags = merge(
     {
-      "kubernetes.io/cluster/eks-blue-prints"                                        = "TRUE"
       "k8s.io/cluster-autoscaler/node-template/label/eks.amazonaws.com/capacityType" = local.managed_node_group["capacity_type"]
       "k8s.io/cluster-autoscaler/node-template/label/eks/node_group_name"            = local.managed_node_group["node_group_name"]
   })

@@ -20,7 +20,7 @@ locals {
   tenant      = var.tenant      # AWS account name or unique id for tenant
   environment = var.environment # Environment area eg., preprod or prod
   zone        = var.zone        # Environment with in one sub_tenant or business unit
-  region      = "us-west-2"
+  region      = "eu-west-1"
 
   vpc_cidr     = "10.0.0.0/16"
   vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
