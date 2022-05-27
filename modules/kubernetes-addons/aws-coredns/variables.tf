@@ -1,9 +1,3 @@
-variable "addon_config" {
-  description = "Amazon EKS Managed CoreDNS Add-on config"
-  type        = any
-  default     = {}
-}
-
 variable "addon_context" {
   description = "Input configuration for the addon"
   type = object({
@@ -19,14 +13,26 @@ variable "addon_context" {
   })
 }
 
+variable "enable_amazon_eks_coredns" {
+  description = "Enable Amazon EKS CoreDNS add-on"
+  type        = bool
+  default     = false
+}
+
+variable "addon_config" {
+  description = "Amazon EKS Managed CoreDNS Add-on config"
+  type        = any
+  default     = {}
+}
+
+variable "enable_self_managed_coredns" {
+  description = "Enable self-managed CoreDNS add-on"
+  type        = bool
+  default     = false
+}
+
 variable "helm_config" {
   description = "Helm provider config for the aws_efs_csi_driver"
   default     = {}
   type        = any
-}
-
-variable "use_self_managed_addon" {
-  description = "Determines whether to provision as self-managed/custom addon using Helm chart (`true`) or use the Amazon EKS addon (default, `false`)"
-  type        = bool
-  default     = false
 }

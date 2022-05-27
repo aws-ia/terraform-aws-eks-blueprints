@@ -14,12 +14,18 @@ module "aws_coredns" {
   count = var.enable_amazon_eks_coredns || var.enable_self_managed_coredns ? 1 : 0
 
   addon_context = local.addon_context
+
+  # Amazon EKS CoreDNS addon
+  enable_amazon_eks_coredns = var.enable_amazon_eks_coredns
   addon_config = merge(
     {
       kubernetes_version = data.aws_eks_cluster.eks_cluster.version
     },
     var.amazon_eks_coredns_config,
   )
+
+  # Self-managed CoreDNS addon via Helm chart
+  enable_self_managed_coredns = var.enable_self_managed_coredns
   helm_config = merge(
     {
       kubernetes_version = data.aws_eks_cluster.eks_cluster.version
@@ -30,9 +36,6 @@ module "aws_coredns" {
       image_registry = local.amazon_container_image_registry_uris[data.aws_region.current.name]
     }
   )
-
-  # Collapses to one sub-module variable and prevents enabling both managed and self-managed at same time
-  use_self_managed_addon = var.enable_self_managed_coredns
 }
 
 module "aws_kube_proxy" {
