@@ -52,22 +52,28 @@ variable "amazon_eks_vpc_cni_config" {
   default     = {}
 }
 
-variable "amazon_eks_coredns_config" {
-  description = "ConfigMap for Amazon CoreDNS EKS add-on"
-  type        = any
-  default     = {}
-}
-
-variable "coredns_helm_config" {
-  description = "CoreDNS Helm chart config"
-  type        = any
-  default     = {}
-}
-
-variable "coredns_use_managed_addon" {
-  description = "Determines whether to use the EKS mangaed addon (default, `true`) or to provision as self-managed/custom addon using Helm chart (`false`)"
+variable "enable_amazon_eks_coredns" {
+  description = "Enable Amazon EKS CoreDNS add-on"
   type        = bool
-  default     = true
+  default     = false
+}
+
+variable "amazon_eks_coredns_config" {
+  description = "Configuration for Amazon CoreDNS EKS add-on"
+  type        = any
+  default     = {}
+}
+
+variable "enable_self_managed_coredns" {
+  description = "Enable self-managed CoreDNS add-on"
+  type        = bool
+  default     = false
+}
+
+variable "self_managed_coredns_helm_config" {
+  description = "Self-managed CoreDNS Helm chart config"
+  type        = any
+  default     = {}
 }
 
 variable "amazon_eks_kube_proxy_config" {
@@ -86,12 +92,6 @@ variable "enable_amazon_eks_vpc_cni" {
   type        = bool
   default     = false
   description = "Enable VPC CNI add-on"
-}
-
-variable "enable_amazon_eks_coredns" {
-  type        = bool
-  default     = false
-  description = "Enable CoreDNS add-on"
 }
 
 variable "enable_amazon_eks_kube_proxy" {

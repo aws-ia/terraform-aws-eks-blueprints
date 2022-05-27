@@ -25,8 +25,8 @@ variable "helm_config" {
   type        = any
 }
 
-variable "use_managed_addon" {
-  description = "Determines whether to use the EKS mangaed addon (default, `true`) or to provision as self-managed/custom addon using Helm chart (`false`)"
+variable "use_self_managed_addon" {
+  description = "Determines whether to provision as self-managed/custom addon using Helm chart (`true`) or use the Amazon EKS addon (default, `false`)"
   type        = bool
-  default     = true
+  default     = false
 }

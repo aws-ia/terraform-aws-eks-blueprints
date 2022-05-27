@@ -104,9 +104,8 @@ module "eks_blueprints_kubernetes_addons" {
     resolve_conflicts = "OVERWRITE"
   }
 
-  enable_amazon_eks_coredns = true
-  coredns_use_managed_addon = false
-  coredns_helm_config = {
+  enable_self_managed_coredns = true
+  self_managed_coredns_helm_config = {
     # Sets the correct annotations to ensure the Fargate provisioner is used and not the EC2 provisioner
     compute_type       = "fargate"
     kubernetes_version = module.eks_blueprints.eks_cluster_version

@@ -10,7 +10,7 @@ data "aws_eks_addon_version" "this" {
 }
 
 resource "aws_eks_addon" "coredns" {
-  count = var.use_managed_addon ? 1 : 0
+  count = var.use_self_managed_addon ? 0 : 1
 
   cluster_name             = var.addon_context.eks_cluster_id
   addon_name               = local.name
@@ -27,7 +27,7 @@ resource "aws_eks_addon" "coredns" {
 
 module "helm_addon" {
   source = "../helm-addon"
-  count  = var.use_managed_addon ? 0 : 1
+  count  = var.use_self_managed_addon ? 1 : 0
 
   helm_config = merge({
     name        = local.name
