@@ -51,9 +51,9 @@ The below example demonstrates the minimum configuration required to deploy a ma
 ```hcl
     # EKS MANAGED NODE GROUPS
     managed_node_groups = {
-      mg_4 = {
-        node_group_name = "managed-ondemand"
-        instance_types  = ["m4.large"]
+      mng = {
+        node_group_name = "mng-ondemand"
+        instance_types  = ["m5.large"]
         subnet_ids      = []  # Mandatory Public or Private Subnet IDs
         disk_size       = 100 # disk_size will be ignored when using Launch Templates
       }
@@ -72,6 +72,8 @@ The below example demonstrates advanced configuration options for a managed node
         launch_template_os     = "amazonlinux2eks" # amazonlinux2eks or windows or bottlerocket
         public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
         enable_monitoring      = true
+        create_iam_role        = false # default is true; set to false to bring your own IAM Role with iam_role_arn option
+        iam_role_arn           = "<ENTER-YOUR-IAM-ROLE>" # Node groups creates a new IAM role if `iam_role_arn` is not specified
         pre_userdata           = <<-EOT
                     yum install -y amazon-ssm-agent
                     systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
@@ -80,7 +82,11 @@ The below example demonstrates advanced configuration options for a managed node
         desired_size    = 3
         max_size        = 3
         min_size        = 3
-        max_unavailable = 1 # or percentage = 20
+
+        # Node Group update configuration. Set the maximum number or percentage of unavailable nodes to be tolerated during the node group version update.
+        update_config   = [{
+          max_unavailable_percentage = 30
+        }]
 
         # Node Group compute configuration
         ami_type        = "AL2_x86_64" # Amazon Linux 2(AL2_x86_64), AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
@@ -97,7 +103,7 @@ The below example demonstrates advanced configuration options for a managed node
           {
             device_name           = "/dev/xvdf" # mount point to /local1 (it could be local2, depending upon the disks are attached during boot)
             volume_type           = "gp3" # The volume type. Can be standard, gp2, gp3, io1, io2, sc1 or st1 (Default: gp3).
-            volume_size           = "100"
+            volume_size           = 100
             delete_on_termination = true
             encrypted             = true
             kms_key_id            = "" # Custom KMS Key can be used to encrypt the disk
@@ -156,12 +162,15 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       min_size     = 2
 
       # Node Group update configuration. Set the maximum number or percentage of unavailable nodes to be tolerated during the node group version update.
-      max_unavailable = 1 # or percentage = 20
+      update_config = [{
+        max_unavailable            = 1
+      }]
 
       # Node Group compute configuration
-      ami_type       = "AL2_x86_64"
-      capacity_type  = "SPOT"
-      instance_types = ["t3.medium", "t3a.medium"]
+      ami_type               = "AL2_x86_64"
+      capacity_type          = "SPOT"
+      instance_types         = ["r5d.xlarge", "r5.xlarge"]
+      format_mount_nvme_disk = true # Ephemeral storage disks are formatted and mounted under `local1` folder
 
       block_device_mappings = [
         {
@@ -326,7 +335,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
     # Bottlerocket instance type Worker Group
     #---------------------------------------------------------#
     # Checkout this doc https://github.com/bottlerocket-os/bottlerocket for configuring userdata for Launch Templates
-    bottlerocket_arm = {
+    bottlerocket_x86 = {
       # 1> Node Group configuration - Part1
       node_group_name        = "btl-x86"      # Max 40 characters for node group name
       create_launch_template = true           # false will use the default launch template
@@ -458,19 +467,21 @@ The below example demonstrates the minimum configuration required to deploy a Se
 ```hcl
     # EKS SELF MANAGED NODE GROUPS
     self_managed_node_groups = {
-        self_mg_4 = {
+        self_mg_5 = {
           node_group_name    = "self-managed-ondemand"
           launch_template_os = "amazonlinux2eks"
-          subnet_ids         = module.aws_vpc.private_subnets
+          subnet_ids         = module.vpc.private_subnets
         }
     }
 ```
 
 The below example demonstrates advanced configuration options for a self-managed node group.
+ - `--node-labels` parameter is used to apply labels to Nodes for self-managed node groups. e.g., `kubelet_extra_args="--node-labels=WorkerType=SPOT,noderole=spark`
+ - `--register-with-taints` is used to apply taints to Nodes for self-managed node groups. e.g., `kubelet_extra_args='--register-with-taints=spot=true:NoSchedule --max-pods=58'`,
 
 ```hcl
     self_managed_node_groups = {
-      self_mg_4 = {
+      self_mg_5 = {
         node_group_name      = "self-managed-ondemand"
         instance_type        = "m5.large"
         custom_ami_id        = "ami-0dfaa019a300f219c" # Bring your own custom AMI generated by Packer/ImageBuilder/Puppet etc.
@@ -481,7 +492,12 @@ The below example demonstrates advanced configuration options for a self-managed
             systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
         EOT
         post_userdata        = ""
-        kubelet_extra_args   = ""
+
+        create_iam_role = false # Changing `create_iam_role=false` to bring your own IAM Role
+        iam_role_arn              = "<ENTER_IAM_ROLE_ARN>" # custom IAM role for aws-auth mapping; used when create_iam_role = false
+        iam_instance_profile_name = "<ENTER_IAM_INSTANCE_PROFILE_NAME>" # IAM instance profile name for Launch templates; used when create_iam_role = false
+
+        kubelet_extra_args   = "--node-labels=WorkerType=ON_DEMAND,noderole=spark --register-with-taints=test=true:NoSchedule --max-pods=20"
         bootstrap_extra_args = ""
         block_device_mapping = [
           {
@@ -508,8 +524,8 @@ The below example demonstrates advanced configuration options for a self-managed
         public_ip         = false # Enable only for public subnets
 
         # AUTOSCALING
-        max_size   = "3"
-        min_size   = "1"
+        max_size   = 3
+        min_size   = 1
         subnet_ids = [] # Mandatory Public or Private Subnet IDs
         additional_tags = {
           ExtraTag    = "m5x-on-demand"
@@ -556,6 +572,9 @@ The example below demonstrates how you can customize a Fargate profile for your 
     },
     multi = {
       fargate_profile_name = "multi-namespaces"
+      create_iam_role = false # Changing `create_iam_role=false` to bring your own IAM Role
+      iam_role_arn    = "<ENTER_YOUR_IAM_ROLE>" # custom IAM role for aws-auth mapping; used when `create_iam_role = false`
+      additional_iam_policies    = [] # additional IAM policies
       fargate_profile_namespaces = [{
         namespace = "default"
         k8s_labels = {
@@ -599,8 +618,8 @@ The example below demonstrates the minimum configuration required to deploy a Se
       node_group_name    = "ng-od-windows"
       launch_template_os = "windows"
       instance_type      = "m5n.large"
-      subnet_ids         = module.aws_vpc.private_subnets
-      min_size           = "2"
+      subnet_ids         = module.vpc.private_subnets
+      min_size           = 2
     }
   }
 ```

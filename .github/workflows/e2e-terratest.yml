@@ -6,6 +6,8 @@ on:
       - main
   workflow_dispatch:
 
+concurrency: e2e-terratest
+
 jobs:
   test:
     name: Run E2E Terratest
