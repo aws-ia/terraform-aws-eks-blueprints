@@ -1,28 +1,15 @@
 # ---------------------------------------------------------------------------------------------------------------------
-# LABELING EKS RESOURCES
-# ---------------------------------------------------------------------------------------------------------------------
-module "eks_tags" {
-  source      = "./modules/aws-resource-tags"
-  org         = var.org
-  tenant      = var.tenant
-  environment = var.environment
-  zone        = var.zone
-  resource    = "eks"
-  tags        = merge(var.tags, { "created-by" = var.terraform_version })
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
 # CLUSTER KMS KEY
 # ---------------------------------------------------------------------------------------------------------------------
 module "kms" {
   count  = var.create_eks && var.cluster_kms_key_arn == null ? 1 : 0
   source = "./modules/aws-kms"
 
-  alias                   = "alias/${module.eks_tags.id}"
-  description             = "${module.eks_tags.id} EKS cluster secret encryption key"
+  alias                   = "alias/${var.cluster_name}"
+  description             = "${var.cluster_name} EKS cluster secret encryption key"
   policy                  = data.aws_iam_policy_document.eks_key.json
   deletion_window_in_days = var.cluster_kms_key_deletion_window_in_days
-  tags                    = module.eks_tags.tags
+  tags                    = var.tags
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -33,11 +20,14 @@ module "aws_eks" {
   version = "v18.17.0"
   create  = var.create_eks
 
-  cluster_name     = var.cluster_name == "" ? module.eks_tags.id : var.cluster_name
+  cluster_name     = var.cluster_name
   cluster_version  = var.cluster_version
   cluster_timeouts = var.cluster_timeouts
 
   # IAM Role
+  create_iam_role = var.create_iam_role
+  iam_role_arn    = var.iam_role_arn
+
   iam_role_use_name_prefix      = false
   iam_role_name                 = local.cluster_iam_role_name
   iam_role_path                 = var.iam_role_path
@@ -59,10 +49,12 @@ module "aws_eks" {
   vpc_id                                  = var.vpc_id
   cluster_additional_security_group_ids   = var.cluster_additional_security_group_ids
   cluster_security_group_additional_rules = var.cluster_security_group_additional_rules
+  cluster_security_group_tags             = var.cluster_security_group_tags
 
   # Worker Node Security Group
   create_node_security_group           = var.create_node_security_group
   node_security_group_additional_rules = var.node_security_group_additional_rules
+  node_security_group_tags             = var.node_security_group_tags
 
   # IRSA
   enable_irsa              = var.enable_irsa # no change
@@ -70,7 +62,7 @@ module "aws_eks" {
   custom_oidc_thumbprints  = var.custom_oidc_thumbprints
 
   # TAGS
-  tags = module.eks_tags.tags
+  tags = var.tags
 
   # CLUSTER LOGGING
   create_cloudwatch_log_group            = var.create_cloudwatch_log_group
@@ -144,10 +136,7 @@ module "aws_eks_teams" {
 
   application_teams             = var.application_teams
   platform_teams                = var.platform_teams
-  environment                   = var.environment
-  tenant                        = var.tenant
-  zone                          = var.zone
   iam_role_permissions_boundary = var.iam_role_permissions_boundary
   eks_cluster_id                = module.aws_eks.cluster_id
-  tags                          = module.eks_tags.tags
+  tags                          = var.tags
 }

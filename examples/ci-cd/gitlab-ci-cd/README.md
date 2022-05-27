@@ -28,9 +28,8 @@ git@github.com:aws-ia/terraform-aws-eks-blueprints.git
 
 ## Step 4: Update variables in input.tfvars file
 
-1.  Update tenant,environment,zone as per your requirement
-2.  Update cluster_version to any version > "1.20"
-3.  Update CIDR of your VPC, vpc_cidcr = "10.2.0.0/16"
+1.  Update cluster_version to any version > "1.20"
+2.  Update CIDR of your VPC, vpc_cidcr = "10.2.0.0/16"
 
 ## Step 5: Commit changes and push to verify the pipeline
 

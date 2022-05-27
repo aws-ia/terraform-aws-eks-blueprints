@@ -41,6 +41,11 @@ output "eks_cluster_status" {
   value       = module.aws_eks.cluster_status
 }
 
+output "eks_cluster_version" {
+  description = "The Kubernetes version for the cluster"
+  value       = module.aws_eks.cluster_version
+}
+
 #-------------------------------
 # Cluster Security Group
 #-------------------------------
@@ -198,4 +203,9 @@ output "teams" {
 output "amazon_prometheus_workspace_endpoint" {
   description = "Amazon Managed Prometheus Workspace Endpoint"
   value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_workspace_endpoint : null
+}
+
+output "amazon_prometheus_workspace_id" {
+  description = "Amazon Managed Prometheus Workspace ID"
+  value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_workspace_id : null
 }

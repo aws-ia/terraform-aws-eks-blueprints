@@ -22,7 +22,7 @@ spec:
   provider:
     launchTemplate: "karpenter-aws001-preprod-dev-eks"     # Used by Karpenter Nodes
     subnetSelector:
-      Name: "*private*"
+      Name: "${eks-vpc_name}-private*"
     securityGroupSelector:
       kubernetes.io/cluster/aws-dev-spark-eks: owned
   ttlSecondsAfterEmpty: 120
