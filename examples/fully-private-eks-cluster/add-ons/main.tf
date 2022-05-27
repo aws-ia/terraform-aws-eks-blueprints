@@ -114,6 +114,7 @@ module "kubernetes-addons" {
   enable_vpa                = true
   enable_external_dns       = true
   enable_cluster_autoscaler = true
+  enable_keda               = true
 
 
   enable_amazon_eks_aws_ebs_csi_driver = true
