@@ -28,8 +28,6 @@ provider "helm" {
   }
 }
 
-data "aws_availability_zones" "available" {}
-
 data "aws_ami" "amazonlinux2eks" {
   most_recent = true
 
@@ -41,23 +39,22 @@ data "aws_ami" "amazonlinux2eks" {
   owners = ["amazon"]
 }
 
-#------------------------------------------------------------------------
-# Local Variables
-#------------------------------------------------------------------------
+
+data "aws_availability_zones" "available" {}
+
 locals {
-  tenant      = var.tenant      # AWS account name or unique id for tenant
-  environment = var.environment # Environment area eg., preprod or prod
-  zone        = var.zone        # Evironment with in one sub_tenant or business unit
-  region      = "us-west-2"
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
-  vpc_cidr                = "10.0.0.0/16"
-  vpc_name                = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  count_availability_zone = (length(data.aws_availability_zones.available.names) <= 3) ? length(data.aws_availability_zones.available.zone_ids) : 3
-  azs                     = slice(data.aws_availability_zones.available.names, 0, local.count_availability_zone)
-  cluster_name            = join("-", [local.tenant, local.environment, local.zone, "eks"])
-  cluster_version         = "1.21"
+  cluster_version = "1.21"
 
-  terraform_version = "Terraform v1.0.1"
+  vpc_cidr = "10.0.0.0/16"
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
+  }
 
   ca_expander          = "priority"
   ca_priority_expander = <<-EOT
@@ -68,61 +65,19 @@ locals {
     10:
       - .*
   EOT
-
-  policy_arn_prefix = "arn:aws:iam::aws:policy"
-  ec2_principal     = "ec2.amazonaws.com"
 }
 
-#------------------------------------------------------------------------
-# AWS VPC Module
-#------------------------------------------------------------------------
-module "aws_vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
-
-  name = local.vpc_name
-  cidr = local.vpc_cidr
-  azs  = local.azs
-
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
-
-  enable_nat_gateway   = true
-  create_igw           = true
-  enable_dns_hostnames = true
-  single_nat_gateway   = true
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
-  }
-}
-
-#------------------------------------------------------------------------
-# AWS EKS Blueprints Module
-#------------------------------------------------------------------------
+#---------------------------------------------------------------
+# EKS Blueprints
+#---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../../.."
 
-  tenant            = local.tenant
-  environment       = local.environment
-  zone              = local.zone
-  terraform_version = local.terraform_version
-
-  # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = module.aws_vpc.private_subnets
-
-  # Attach additional security group ids to Worker Security group ID
-  worker_additional_security_group_ids = [] # Optional
-
-  # EKS CONTROL PLANE VARIABLES
+  cluster_name    = local.name
   cluster_version = local.cluster_version
+
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
 
   node_security_group_additional_rules = {
     # Extend node-to-node security group rules. Recommended and required for the Add-ons
@@ -134,7 +89,7 @@ module "eks_blueprints" {
       type        = "ingress"
       self        = true
     }
-    #Recommended outbound traffic for Node groups
+    # Recommended outbound traffic for Node groups
     egress_all = {
       description      = "Node all egress"
       protocol         = "-1"
@@ -157,13 +112,12 @@ module "eks_blueprints" {
     }
   }
 
-  # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     # Managed Node groups with minimum config
     mg5 = {
       node_group_name = "mg5"
       instance_types  = ["m5.large"]
-      min_size        = "2"
+      min_size        = 2
       create_iam_role = false # Changing `create_iam_role=false` to bring your own IAM Role
       iam_role_arn    = aws_iam_role.managed_ng.arn
       disk_size       = 100 # Disk size is used only with Managed Node Groups without Launch Templates
@@ -336,11 +290,104 @@ module "eks_blueprints" {
     }
   }
 
+  tags = local.tags
 }
 
-#------------------------------------------------------------------------
-# Kubernetes Add-on Module
-#------------------------------------------------------------------------
+module "eks_blueprints_kubernetes_addons" {
+  source = "../../../modules/kubernetes-addons"
+
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
+
+  enable_metrics_server     = true
+  enable_cluster_autoscaler = true
+
+  tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Supporting Resources
+#---------------------------------------------------------------
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = local.name
+  cidr = local.vpc_cidr
+
+  azs             = local.azs
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  # Manage so we can name
+  manage_default_network_acl    = true
+  default_network_acl_tags      = { Name = "${local.name}-default" }
+  manage_default_route_table    = true
+  default_route_table_tags      = { Name = "${local.name}-default" }
+  manage_default_security_group = true
+  default_security_group_tags   = { Name = "${local.name}-default" }
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/elb"              = 1
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/internal-elb"     = 1
+  }
+
+  tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Custom IAM roles for Node Groups
+#---------------------------------------------------------------
+data "aws_iam_policy_document" "managed_ng_assume_role_policy" {
+  statement {
+    sid = "EKSWorkerAssumeRole"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "managed_ng" {
+  name                  = "managed-node-role"
+  description           = "EKS Managed Node group IAM Role"
+  assume_role_policy    = data.aws_iam_policy_document.managed_ng_assume_role_policy.json
+  path                  = "/"
+  force_detach_policies = true
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+    "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  ]
+
+  tags = local.tags
+}
+
+resource "aws_iam_instance_profile" "managed_ng" {
+  name = "managed-node-instance-profile"
+  role = aws_iam_role.managed_ng.name
+  path = "/"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tags = local.tags
+}
+
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../modules/kubernetes-addons"
 
@@ -360,43 +407,6 @@ module "eks_blueprints_kubernetes_addons" {
       }
     ]
   }
-}
 
-#---------------------------------------------------------------
-# Custom IAM roles for Node Groups
-#---------------------------------------------------------------
-data "aws_iam_policy_document" "managed_ng_assume_role_policy" {
-  statement {
-    sid = "EKSWorkerAssumeRole"
-
-    actions = [
-      "sts:AssumeRole",
-    ]
-    principals {
-      type        = "Service"
-      identifiers = [local.ec2_principal]
-    }
-  }
-}
-
-resource "aws_iam_role" "managed_ng" {
-  name                  = "managed-node-role"
-  description           = "EKS Managed Node group IAM Role"
-  assume_role_policy    = data.aws_iam_policy_document.managed_ng_assume_role_policy.json
-  path                  = "/"
-  force_detach_policies = true
-  managed_policy_arns = ["${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy",
-    "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy",
-    "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly",
-  "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"]
-}
-
-resource "aws_iam_instance_profile" "managed_ng" {
-  name = "managed-node-instance-profile"
-  role = aws_iam_role.managed_ng.name
-  path = "/"
-
-  lifecycle {
-    create_before_destroy = true
-  }
+  tags = local.tags
 }
