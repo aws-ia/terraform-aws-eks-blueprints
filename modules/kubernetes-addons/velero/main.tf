@@ -87,12 +87,12 @@ data "aws_iam_policy_document" "velero" {
       "s3:ListMultipartUploadParts",
     ]
 
-    resources = ["arn:aws:s3:::${var.backup_s3_bucket}/*"]
+    resources = ["arn:${var.addon_context.aws_partition_id}:s3:::${var.backup_s3_bucket}/*"]
   }
 
   statement {
     actions   = ["s3:ListBucket"]
-    resources = ["arn:aws:s3:::${var.backup_s3_bucket}"]
+    resources = ["arn:${var.addon_context.aws_partition_id}:s3:::${var.backup_s3_bucket}"]
   }
 }
 
