@@ -104,7 +104,7 @@ module "aws_node_termination_handler" {
   addon_context           = local.addon_context
 }
 
-module "aws_app_mesh" {
+module "appmesh-controller" {
   count                   = var.enable_appmesh_controller  ? 1 : 0
   source                  = "./appmesh-controller"
   helm_config             = var.appmesh_helm_config

@@ -1,7 +1,7 @@
 locals {
   namespace            = "appmesh-system"
   name                 = "appmesh-controller"
-  service_account_name = "${local.name}-sa"
+  service_account_name = local.name
   aws_region_name      = data.aws_region.current.name
 
   default_helm_config = {
