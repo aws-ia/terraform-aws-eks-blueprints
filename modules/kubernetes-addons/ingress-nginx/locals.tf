@@ -11,6 +11,7 @@ locals {
     values           = local.default_helm_values
     set              = []
     description      = "The NGINX HelmChart Ingress Controller deployment configuration"
+    wait             = false
   }
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {})]

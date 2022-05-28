@@ -50,11 +50,9 @@ terraform plan
 to create resources
 
 ```shell script
-terraform apply -target="module.aws_vpc"
+terraform apply -target="module.vpc"
 terraform apply -target="module.eks_blueprints"
-terraform apply -target="module.eks_blueprints_kubernetes_addons"
-terraform apply -target="module.aws_load_balancer_controller"
-terraform apply -target="module.ingress_nginx"
+terraform apply
 ```
 
 Enter `yes` for each apply
@@ -90,11 +88,11 @@ The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/ingress-controllers/nginx
-terraform destroy -target="module.module.ingress_nginx" -auto-approve
-terraform destroy -target="module.module.aws_load_balancer_controller" -auto-approve
-terraform destroy -target="module.module.eks-blueprints-kubernetes-addons" -auto-approve
-terraform destroy -target="module.module.eks-blueprints" -auto-approve
-terraform destroy -target="module.aws_vpc" -auto-approve
+terraform destroy -target="module.eks_blueprints_kubernetes_addons.module.ingress_nginx[0]" -auto-approve
+terraform destroy -target="module.eks_blueprints_kubernetes_addons.module.aws_load_balancer_controller[0]" -auto-approve
+terraform destroy -target="module.eks-blueprints-kubernetes-addons" -auto-approve
+terraform destroy -target="module.eks-blueprints" -auto-approve
+terraform destroy -auto-approve
 ```
 
 ## Learn more

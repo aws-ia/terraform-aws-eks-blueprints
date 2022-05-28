@@ -59,9 +59,9 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
 
 ### Step 5: Run `update-kubeconfig` command.
 
-`~/.kube/config` file gets updated with EKS cluster context from the below command. Replace the region name and EKS cluster name with your cluster's name. (If you did not change the `tenant`, `environment`, and `zone` values in this example, the EKS cluster name will be `aws001-preprod-dev-eks`.)
+`~/.kube/config` file gets updated with EKS cluster context from the below command. Replace the region name and EKS cluster name with your cluster's name.
 
-    $ aws eks --region us-west-2 update-kubeconfig --name aws001-preprod-dev-eks
+    $ aws eks --region us-west-2 update-kubeconfig --name <cluster-name>
 
 ### Step 6: (Optional) Deploy sample Windows and Linux workloads to verify support for both operating systems
 
