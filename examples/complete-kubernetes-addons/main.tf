@@ -243,7 +243,6 @@ module "eks_blueprints_kubernetes_addons" {
 
   tags = local.tags
 
-  depends_on = [module.eks_blueprints.managed_node_groups]
 }
 
 #---------------------------------------------------------------
