@@ -77,7 +77,10 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../modules/kubernetes-addons"
 
-  eks_cluster_id = module.eks_blueprints.eks_cluster_id
+  eks_cluster_id           = module.eks_blueprints.eks_cluster_id
+  aws_eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
+  eks_oidc_issuer_url      = module.eks_blueprints.eks_oidc_issuer_url
+  eks_cluster_version      = module.eks_blueprints.eks_cluster_version
 
   enable_cert_manager                  = true
   enable_opentelemetry_operator        = true
