@@ -37,7 +37,7 @@ data "aws_availability_zones" "available" {}
 
 locals {
   name   = basename(path.cwd)
-  region = "us-west-2"
+  region = "us-east-1"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -106,7 +106,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_cert_manager                 = true
   enable_metrics_server               = true
   enable_prometheus                   = true
-  
+
 
   tags = local.tags
 
