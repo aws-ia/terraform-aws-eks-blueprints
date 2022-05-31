@@ -104,9 +104,11 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id = module.eks_blueprints.eks_cluster_id
+  eks_cluster_id           = module.eks_blueprints.eks_cluster_id
+  auto_scaling_group_names = module.eks_blueprints.self_managed_node_group_autoscaling_groups
 
-  enable_karpenter = true
+  enable_karpenter                    = true
+  enable_aws_node_termination_handler = true
 
   tags = local.tags
 
@@ -234,15 +236,4 @@ data "aws_ami" "bottlerocket" {
     name   = "name"
     values = ["bottlerocket-aws-k8s-${module.eks_blueprints.eks_cluster_version}-x86_64-*"]
   }
-}
-
-module "eks_blueprints_kubernetes_addons" {
-  source = "../../modules/kubernetes-addons"
-
-  eks_cluster_id           = module.eks_blueprints.eks_cluster_id
-  auto_scaling_group_names = module.eks_blueprints.self_managed_node_group_autoscaling_groups
-
-  # Deploys Karpenter add-on
-  enable_karpenter                    = true
-  enable_aws_node_termination_handler = true
 }

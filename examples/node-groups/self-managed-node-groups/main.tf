@@ -130,23 +130,25 @@ module "eks_blueprints" {
         subnet_type = "private"
       }
     }
+    
     spot_2vcpu_8mem = {
       node_group_name    = "smng-spot-2vcpu-8mem"
       capacity_type      = "spot"
       capacity_rebalance = true
       instance_types     = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"]
-      min_size           = "0"
-      subnet_ids         = module.aws_vpc.private_subnets
+      min_size           = 0
+      subnet_ids         = module.vpc.private_subnets
       launch_template_os = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
       k8s_taints         = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
     }
+
     spot_4vcpu_16mem = {
       node_group_name    = "smng-spot-4vcpu-16mem"
       capacity_type      = "spot"
       capacity_rebalance = true
       instance_types     = ["m5.xlarge", "m4.xlarge", "m6a.xlarge", "m5a.xlarge", "m5d.xlarge"]
-      min_size           = "0"
-      subnet_ids         = module.aws_vpc.private_subnets
+      min_size           = 0
+      subnet_ids         = module.vpc.private_subnets
       launch_template_os = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
       k8s_taints         = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
     }

@@ -275,18 +275,26 @@ module "eks_blueprints" {
       node_group_name = "mng-spot-2vcpu-8mem"
       capacity_type   = "SPOT"
       instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"]
-      min_size        = "0"
-      subnet_ids      = module.aws_vpc.private_subnets
-      k8s_taints      = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
+      min_size        = 0
+
+      # Node Group network configuration
+      subnet_type = "private" # public or private - Default uses the private subnets used in control plane if you don't pass the "subnet_ids"
+      subnet_ids  = []        # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+
+      k8s_taints = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
     }
     # Managed Node group with Launch templates using AMI TYPE and SPOT instances of 4 vCPUs and 16 Gib Memory
     spot_4vcpu_16mem = {
       node_group_name = "mng-spot-4vcpu-16mem"
       capacity_type   = "SPOT"
       instance_types  = ["m5.xlarge", "m4.xlarge", "m6a.xlarge", "m5a.xlarge", "m5d.xlarge"]
-      min_size        = "0"
-      subnet_ids      = module.aws_vpc.private_subnets
-      k8s_taints      = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
+      min_size        = 0
+
+      # Node Group network configuration
+      subnet_type = "private" # public or private - Default uses the private subnets used in control plane if you don't pass the "subnet_ids"
+      subnet_ids  = []        # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+
+      k8s_taints = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
     }
   }
 
@@ -300,6 +308,18 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
+  cluster_autoscaler_helm_config = {
+    set = [
+      {
+        name  = "extraArgs.expander"
+        value = local.ca_expander
+      },
+      {
+        name  = "expanderPriorities"
+        value = local.ca_priority_expander
+      }
+    ]
+  }
 
   tags = local.tags
 }
@@ -383,29 +403,6 @@ resource "aws_iam_instance_profile" "managed_ng" {
 
   lifecycle {
     create_before_destroy = true
-  }
-
-  tags = local.tags
-}
-
-module "eks_blueprints_kubernetes_addons" {
-  source = "../../../modules/kubernetes-addons"
-
-  eks_cluster_id = module.eks_blueprints.eks_cluster_id
-
-  enable_metrics_server     = true
-  enable_cluster_autoscaler = true
-  cluster_autoscaler_helm_config = {
-    set = [
-      {
-        name  = "extraArgs.expander"
-        value = local.ca_expander
-      },
-      {
-        name  = "expanderPriorities"
-        value = local.ca_priority_expander
-      }
-    ]
   }
 
   tags = local.tags
