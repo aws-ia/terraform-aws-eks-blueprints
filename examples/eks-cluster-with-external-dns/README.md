@@ -64,22 +64,14 @@ terraform plan
 ```
 
 #### Step 4: Terraform APPLY
-Deploy VPC, EKS cluster with Node groups and Kubernetes Add-ons with `--target` option
 
-```sh
-terraform apply -target="module.aws_vpc"
-terraform apply -target="module.eks_blueprints"
-terraform apply -target="module.eks_blueprints_kubernetes_addons"
-```
-
-Finally run the below command for additional resources that are  not in the above modules
+**Deploy the pattern**
 
 ```sh
 terraform apply
 ```
 
-
-Enter `yes` to apply
+Enter `yes` to apply.
 
 #### Step 5: Update local kubeconfig
 

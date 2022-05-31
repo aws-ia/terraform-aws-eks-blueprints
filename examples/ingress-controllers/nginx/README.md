@@ -47,15 +47,13 @@ terraform plan
 
 #### Step 4: Finally, Terraform APPLY
 
-to create resources
+**Deploy the pattern**
 
-```shell script
-terraform apply -target="module.vpc"
-terraform apply -target="module.eks_blueprints"
+```sh
 terraform apply
 ```
 
-Enter `yes` for each apply
+Enter `yes` to apply.
 
 ### Configure `kubectl` and test cluster
 

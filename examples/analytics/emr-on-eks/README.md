@@ -40,19 +40,11 @@ terraform plan
 
 **Deploy the pattern**
 
-Deploy VPC, EKS cluster with Node groups and Kubernetes Add-ons with `--target` option
-
-```sh
-terraform apply -target="module.aws_vpc"
-terraform apply -target="module.eks_blueprints"
-terraform apply -target="module.eks_blueprints_kubernetes_addons"
-```
-
-Finally run the below command for additional resources that are  not in the above modules
-
 ```sh
 terraform apply
 ```
+
+Enter `yes` to apply.
 
 ## Step 3: Verify the resources
 
