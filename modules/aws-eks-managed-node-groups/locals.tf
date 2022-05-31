@@ -124,7 +124,7 @@ locals {
       "k8s.io/cluster-autoscaler/enabled"                       = "TRUE"
   })
 
-  # NOTE: To support node groups to scale down to zero nodes, 
+  // NOTE: To support node groups to scale down to zero nodes, 
   // cluster autoscaler needs to more details to identify which nodes to scale-down.
   // Here's the open issue and recommendations in GitHub: https://github.com/aws/containers-roadmap/issues/724
   asg_tags = merge(
