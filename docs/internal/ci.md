@@ -1,6 +1,6 @@
 # E2E tests
 
-We use GitHub Actions to run an end-to-end tests to verify all PRs. The GitHub Actions used are a combination of `aws-actions/configure-aws-credentials` and `hashicorp/setup-terraform@v1`. See the complete action definition [here](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/.github/workflows/e2e-test.yml).
+We use GitHub Actions to run an end-to-end tests to verify all PRs. The GitHub Actions used are a combination of `aws-actions/configure-aws-credentials` and `hashicorp/setup-terraform@v1`. See the complete action definition [here](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/.github/workflows/e2e-terratest.yml).
 
 ## Setup
 
