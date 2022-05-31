@@ -113,7 +113,7 @@ module "eks-blueprints" {
       node_group_name = "managed-ondemand"
       instance_types  = ["m5.xlarge"]
       subnet_ids      = local.private_subnet_ids
-      #release_version = "1.21.5-20220309" 
+      release_version = "1.22.6-20220523" 
     }
   }
 
