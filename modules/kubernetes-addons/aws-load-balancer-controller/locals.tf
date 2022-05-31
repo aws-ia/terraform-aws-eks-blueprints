@@ -21,7 +21,7 @@ locals {
   default_helm_values = [templatefile("${path.module}/values.yaml", {
     aws_region     = var.addon_context.aws_region_name,
     eks_cluster_id = var.addon_context.eks_cluster_id,
-    repository     = "${var.addon_context.default_repository}/aws-load-balancer-controller"
+    repository     = "${var.addon_context.default_repository}/amazon/aws-load-balancer-controller"
   })]
 
   set_values = [
