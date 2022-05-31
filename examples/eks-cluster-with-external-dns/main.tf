@@ -107,6 +107,8 @@ module "eks_blueprints_kubernetes_addons" {
   enable_cert_manager                 = true
   enable_metrics_server               = true
   enable_prometheus                   = true
+  enable_keda                         = true
+  
 
 
   tags = local.tags
