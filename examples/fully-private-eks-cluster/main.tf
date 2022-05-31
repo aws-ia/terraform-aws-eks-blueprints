@@ -44,9 +44,6 @@ module "eks_blueprints" {
   # Step 1. Set cluster API endpoint both private and public
   cluster_endpoint_public_access  = true
   cluster_endpoint_private_access = true
-  aws_eks_cluster_endpoint        = module.eks_blueprints.eks_cluster_endpoint
-  eks_oidc_issuer_url             = module.eks_blueprints.eks_oidc_issuer_url
-  eks_cluster_version             = module.eks_blueprints.eks_cluster_version
 
   # Step 2. Change cluster endpoint to private only, comment out the above lines and uncomment the below lines.
   # cluster_endpoint_public_access  = false
