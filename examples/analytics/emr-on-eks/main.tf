@@ -28,6 +28,34 @@ provider "helm" {
   }
 }
 
+data "aws_iam_policy_document" "emr_on_eks" {
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = ["arn:${data.aws_partition.current.partition}:s3:::*"]
+
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:ListBucket",
+      "s3:DeleteObject",
+      "s3:DeleteObjectVersion"
+    ]
+  }
+
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*"]
+
+    actions = [
+      "logs:PutLogEvents",
+      "logs:CreateLogStream",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+    ]
+  }
+}
 data "aws_availability_zones" "available" {}
 
 locals {
@@ -76,16 +104,17 @@ module "eks_blueprints" {
   #---------------------------------------
   enable_emr_on_eks = true
   emr_on_eks_teams = {
-    data_team_a = {
-      emr_on_eks_namespace     = "emr-data-team-a"
-      emr_on_eks_iam_role_name = "emr-eks-data-team-a"
+    emr-team-a = {
+      namespace               = "emr-data-team-a"
+      job_execution_role      = "emr-eks-data-team-a"
+      additional_iam_policies = [aws_iam_policy.emr_on_eks.arn]
     }
-    data_team_b = {
-      emr_on_eks_namespace     = "emr-data-team-b"
-      emr_on_eks_iam_role_name = "emr-eks-data-team-b"
+    emr-team-b = {
+      namespace               = "emr-data-team-b"
+      job_execution_role      = "emr-eks-data-team-b"
+      additional_iam_policies = [aws_iam_policy.emr_on_eks.arn]
     }
   }
-
   tags = local.tags
 }
 
@@ -165,4 +194,49 @@ module "vpc" {
   }
 
   tags = local.tags
+}
+
+data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_partition" "current" {}
+
+#---------------------------------------------------------------
+# Example IAM policies for EMR job execution
+#---------------------------------------------------------------
+data "aws_iam_policy_document" "emr_on_eks" {
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = ["arn:${data.aws_partition.current.partition}:s3:::*"]
+
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:ListBucket",
+      "s3:DeleteObject",
+      "s3:DeleteObjectVersion"
+    ]
+  }
+
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*"]
+
+    actions = [
+      "logs:PutLogEvents",
+      "logs:CreateLogStream",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "emr_on_eks" {
+  name        = format("%s-%s", local.name, "emr-job-iam-policies")
+  description = "IAM policy for EMR on EKS Job execution"
+  path        = "/"
+  policy      = data.aws_iam_policy_document.emr_on_eks.json
 }
