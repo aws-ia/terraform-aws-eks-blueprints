@@ -130,7 +130,7 @@ module "eks_blueprints" {
         subnet_type = "private"
       }
     }
-    
+
     spot_2vcpu_8mem = {
       node_group_name    = "smng-spot-2vcpu-8mem"
       capacity_type      = "spot"
