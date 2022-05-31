@@ -87,6 +87,8 @@ locals {
 module "eks-blueprints" {
   source = "../../.."
 
+  cluster_name    = local.cluster_name
+
   # EKS Cluster VPC and Subnets
   vpc_id             = local.vpc_id
   private_subnet_ids = local.private_subnet_ids
