@@ -73,14 +73,6 @@ locals {
     local.self_managed_node_group["additional_iam_policies"
   ])) : k => v if local.self_managed_node_group["create_iam_role"] }
 
-  k8s_labels = merge(
-    local.self_managed_node_group["k8s_labels"],
-    {
-      "eks/capacityType"    = local.self_managed_node_group["capacity_type"],
-      "eks/node_group_name" = local.self_managed_node_group["node_group_name"]
-    }
-  )
-
   common_tags = merge(
     var.context.tags,
     local.self_managed_node_group["additional_tags"],
