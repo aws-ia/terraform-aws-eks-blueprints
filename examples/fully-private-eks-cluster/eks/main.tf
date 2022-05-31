@@ -87,11 +87,6 @@ locals {
 module "eks-blueprints" {
   source = "../../.."
 
-  tenant            = local.tenant
-  environment       = local.environment
-  zone              = local.zone
-  terraform_version = local.terraform_version
-
   # EKS Cluster VPC and Subnets
   vpc_id             = local.vpc_id
   private_subnet_ids = local.private_subnet_ids
