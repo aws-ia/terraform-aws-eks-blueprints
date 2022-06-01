@@ -44,7 +44,7 @@ variable "eks_oidc_provider" {
   description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
 }
 
-variable "aws_eks_cluster_endpoint" {
+variable "eks_cluster_endpoint" {
   type        = string
   description = "Endpoint for your Kubernetes API server"
 }
