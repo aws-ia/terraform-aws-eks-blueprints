@@ -56,7 +56,7 @@ module "eks_blueprints" {
   source = "../.."
 
   cluster_name    = local.name
-  cluster_version = "1.21"
+  cluster_version = "1.22"
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
@@ -67,6 +67,7 @@ module "eks_blueprints" {
       instance_types  = ["m5.large"]
       min_size        = 2
       subnet_ids      = module.vpc.private_subnets
+      release_version = "1.22.6-20220523" 
     }
   }
 
@@ -108,7 +109,6 @@ module "eks_blueprints_kubernetes_addons" {
   enable_metrics_server               = true
   enable_prometheus                   = true
   enable_keda                         = true
-  
 
 
   tags = local.tags
