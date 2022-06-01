@@ -1,12 +1,5 @@
 locals {
 
-  tags = merge(
-    {
-      "terraform.io/module" = "terraform-aws-eks-blueprints"
-    },
-    var.tags
-  )
-
   context = {
     # Data resources
     aws_region_name = data.aws_region.current.name
@@ -62,7 +55,7 @@ locals {
     service_ipv6_cidr = var.cluster_service_ipv6_cidr
     service_ipv4_cidr = var.cluster_service_ipv4_cidr
 
-    tags = local.tags
+    tags = var.tags
   }
 
   fargate_context = {
@@ -70,7 +63,7 @@ locals {
     aws_partition_id              = local.context.aws_partition_id
     iam_role_path                 = var.iam_role_path
     iam_role_permissions_boundary = var.iam_role_permissions_boundary
-    tags                          = local.tags
+    tags                          = var.tags
   }
 
   # Managed node IAM Roles for aws-auth

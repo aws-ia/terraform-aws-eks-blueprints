@@ -9,7 +9,7 @@ module "kms" {
   description             = "${var.cluster_name} EKS cluster secret encryption key"
   policy                  = data.aws_iam_policy_document.eks_key.json
   deletion_window_in_days = var.cluster_kms_key_deletion_window_in_days
-  tags                    = local.tags
+  tags                    = var.tags
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ module "aws_eks" {
   custom_oidc_thumbprints  = var.custom_oidc_thumbprints
 
   # TAGS
-  tags = local.tags
+  tags = var.tags
 
   # CLUSTER LOGGING
   create_cloudwatch_log_group            = var.create_cloudwatch_log_group
@@ -92,7 +92,7 @@ module "aws_managed_prometheus" {
   amazon_prometheus_workspace_alias = var.amazon_prometheus_workspace_alias
 
   eks_cluster_id = module.aws_eks.cluster_id
-  tags           = local.tags
+  tags           = var.tags
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ module "emr_on_eks" {
   emr_on_eks_teams              = each.value
   eks_cluster_id                = module.aws_eks.cluster_id
   iam_role_permissions_boundary = var.iam_role_permissions_boundary
-  tags                          = local.tags
+  tags                          = var.tags
 
   depends_on = [kubernetes_config_map.aws_auth]
 }
@@ -141,5 +141,5 @@ module "aws_eks_teams" {
   platform_teams                = var.platform_teams
   iam_role_permissions_boundary = var.iam_role_permissions_boundary
   eks_cluster_id                = module.aws_eks.cluster_id
-  tags                          = local.tags
+  tags                          = var.tags
 }
