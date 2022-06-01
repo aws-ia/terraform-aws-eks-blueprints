@@ -30,11 +30,6 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
       variable = "autoscaling:ResourceTag/k8s.io/cluster-autoscaler/${var.addon_context.eks_cluster_id}"
       values   = ["owned"]
     }
-    condition {
-      test     = "StringEquals"
-      variable = "autoscaling:ResourceTag/k8s.io/cluster-autoscaler/enabled"
-      values   = ["true"]
-    }
   }
 
 }
