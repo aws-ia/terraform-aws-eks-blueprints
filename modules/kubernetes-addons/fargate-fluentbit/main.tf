@@ -7,8 +7,7 @@ resource "kubernetes_namespace" "aws_observability" {
     name = "aws-observability"
 
     labels = {
-      aws-observability              = "enabled"
-      "app.kubernetes.io/managed-by" = "terraform-aws-eks-blueprints"
+      aws-observability = "enabled"
     }
   }
 }

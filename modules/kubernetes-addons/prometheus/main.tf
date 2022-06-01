@@ -12,9 +12,6 @@ module "helm_addon" {
 resource "kubernetes_namespace_v1" "prometheus" {
   metadata {
     name = local.helm_config["namespace"]
-    labels = {
-      "app.kubernetes.io/managed-by" = "terraform-aws-eks-blueprints"
-    }
   }
 }
 
