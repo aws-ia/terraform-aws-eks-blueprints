@@ -39,7 +39,7 @@ variable "irsa_iam_permissions_boundary" {
   description = "IAM permissions boundary for IRSA roles"
 }
 
-variable "eks_oidc_issuer_url" {
+variable "eks_oidc_provider" {
   type        = string
   description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
 }
