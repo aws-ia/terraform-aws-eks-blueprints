@@ -279,6 +279,12 @@ variable "external_dns_irsa_policies" {
   default     = []
 }
 
+variable "external_dns_private_zone" {
+  type        = bool
+  description = "Determines if referenced Route53 zone is private."
+  default     = false
+}
+
 #-----------Amazon Managed Service for Prometheus-------------
 variable "enable_amazon_prometheus" {
   description = "Enable AWS Managed Prometheus service"
