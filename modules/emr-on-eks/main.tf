@@ -90,7 +90,7 @@ resource "aws_iam_role" "emr_on_eks_execution" {
 }
 
 resource "aws_iam_role_policy_attachment" "custom" {
-  count = local.emr_on_eks_team["additional_iam_policies"] != [] ? length(local.emr_on_eks_team["additional_iam_policies"]) : 0
+  count = length(local.emr_on_eks_team["additional_iam_policies"])
 
   role       = aws_iam_role.emr_on_eks_execution.name
   policy_arn = local.emr_on_eks_team["additional_iam_policies"][count.index]
