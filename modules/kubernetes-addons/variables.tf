@@ -39,6 +39,21 @@ variable "irsa_iam_permissions_boundary" {
   description = "IAM permissions boundary for IRSA roles"
 }
 
+variable "eks_oidc_provider" {
+  type        = string
+  description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
+}
+
+variable "eks_cluster_endpoint" {
+  type        = string
+  description = "Endpoint for your Kubernetes API server"
+}
+
+variable "eks_cluster_version" {
+  type        = string
+  description = "The Kubernetes version for the cluster"
+}
+
 #-----------EKS MANAGED ADD-ONS------------
 variable "enable_ipv6" {
   description = "Enable Ipv6 network. Attaches new VPC CNI policy to the IRSA role"
@@ -52,8 +67,26 @@ variable "amazon_eks_vpc_cni_config" {
   default     = {}
 }
 
+variable "enable_amazon_eks_coredns" {
+  description = "Enable Amazon EKS CoreDNS add-on"
+  type        = bool
+  default     = false
+}
+
 variable "amazon_eks_coredns_config" {
-  description = "ConfigMap for Amazon CoreDNS EKS add-on"
+  description = "Configuration for Amazon CoreDNS EKS add-on"
+  type        = any
+  default     = {}
+}
+
+variable "enable_self_managed_coredns" {
+  description = "Enable self-managed CoreDNS add-on"
+  type        = bool
+  default     = false
+}
+
+variable "self_managed_coredns_helm_config" {
+  description = "Self-managed CoreDNS Helm chart config"
   type        = any
   default     = {}
 }
@@ -74,12 +107,6 @@ variable "enable_amazon_eks_vpc_cni" {
   type        = bool
   default     = false
   description = "Enable VPC CNI add-on"
-}
-
-variable "enable_amazon_eks_coredns" {
-  type        = bool
-  default     = false
-  description = "Enable CoreDNS add-on"
 }
 
 variable "enable_amazon_eks_kube_proxy" {
