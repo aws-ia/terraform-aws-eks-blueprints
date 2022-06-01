@@ -10,7 +10,7 @@ on:
 
 env:
   TERRAFORM_DOCS_VERSION: v0.16.0
-  TFSEC_VERSION: v1.22
+  TFSEC_VERSION: v1.22.0
   TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
 
 jobs:
@@ -87,7 +87,7 @@ jobs:
       - name: Cache Terraform
         uses: actions/cache@v3
         with:
-          path: ${{ env.TERRAFORM_DOCS_VERSION }}
+          path: ${{ env.TF_PLUGIN_CACHE_DIR }}
           key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
           restore-keys: ${{ runner.os }}-terraform-
 
