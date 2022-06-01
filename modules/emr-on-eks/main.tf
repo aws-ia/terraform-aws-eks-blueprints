@@ -1,14 +1,15 @@
 resource "kubernetes_namespace" "spark" {
   metadata {
     annotations = {
-      name = local.emr_on_eks_team["emr_on_eks_namespace"]
+      name = local.emr_on_eks_team["namespace"]
     }
 
     labels = {
-      job-type = "spark"
+      job-type                       = "spark"
+      "app.kubernetes.io/managed-by" = "terraform-aws-eks-blueprints"
     }
 
-    name = local.emr_on_eks_team["emr_on_eks_namespace"]
+    name = local.emr_on_eks_team["namespace"]
   }
 }
 
@@ -80,23 +81,19 @@ resource "kubernetes_role_binding" "emr_containers" {
 }
 
 resource "aws_iam_role" "emr_on_eks_execution" {
-  name                  = format("%s-%s", var.eks_cluster_id, local.emr_on_eks_team["emr_on_eks_iam_role_name"])
+  name                  = format("%s-%s", var.eks_cluster_id, local.emr_on_eks_team["job_execution_role"])
   assume_role_policy    = data.aws_iam_policy_document.emr_assume_role.json
   force_detach_policies = true
   path                  = var.iam_role_path
+  permissions_boundary  = var.iam_role_permissions_boundary
   tags                  = var.tags
 }
 
-resource "aws_iam_policy" "emr_on_eks_execution" {
-  name        = format("%s-%s", var.eks_cluster_id, local.emr_on_eks_team["emr_on_eks_iam_role_name"])
-  description = "IAM policy for EMR on EKS Job execution"
-  path        = var.iam_role_path
-  policy      = data.aws_iam_policy_document.emr_on_eks.json
-}
+resource "aws_iam_role_policy_attachment" "custom" {
+  count = length(local.emr_on_eks_team["additional_iam_policies"])
 
-resource "aws_iam_role_policy_attachment" "emr_on_eks_execution" {
   role       = aws_iam_role.emr_on_eks_execution.name
-  policy_arn = aws_iam_policy.emr_on_eks_execution.arn
+  policy_arn = local.emr_on_eks_team["additional_iam_policies"][count.index]
 }
 
 # TODO Replace this resource once the provider is available for aws emr-containers

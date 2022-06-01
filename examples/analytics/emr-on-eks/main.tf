@@ -64,8 +64,6 @@ module "eks_blueprints" {
     }
   }
 
-  enable_amazon_prometheus = true
-
   #---------------------------------------
   # ENABLE EMR ON EKS
   # 1. Creates namespace
@@ -76,30 +74,34 @@ module "eks_blueprints" {
   #---------------------------------------
   enable_emr_on_eks = true
   emr_on_eks_teams = {
-    data_team_a = {
-      emr_on_eks_namespace     = "emr-data-team-a"
-      emr_on_eks_iam_role_name = "emr-eks-data-team-a"
+    emr-team-a = {
+      namespace               = "emr-data-team-a"
+      job_execution_role      = "emr-eks-data-team-a"
+      additional_iam_policies = [aws_iam_policy.emr_on_eks.arn]
     }
-    data_team_b = {
-      emr_on_eks_namespace     = "emr-data-team-b"
-      emr_on_eks_iam_role_name = "emr-eks-data-team-b"
+    emr-team-b = {
+      namespace               = "emr-data-team-b"
+      job_execution_role      = "emr-eks-data-team-b"
+      additional_iam_policies = [aws_iam_policy.emr_on_eks.arn]
     }
   }
-
   tags = local.tags
 }
 
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../modules/kubernetes-addons"
 
-  eks_cluster_id = module.eks_blueprints.eks_cluster_id
+  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
+  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
+  eks_oidc_provider    = module.eks_blueprints.oidc_provider
+  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
   # Add-ons
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
 
   enable_amazon_prometheus             = true
-  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = aws_prometheus_workspace.amp.prometheus_endpoint
 
   enable_prometheus = true
   prometheus_helm_config = {
@@ -131,6 +133,7 @@ module "eks_blueprints_kubernetes_addons" {
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
@@ -163,6 +166,60 @@ module "vpc" {
     "kubernetes.io/cluster/${local.name}" = "shared"
     "kubernetes.io/role/internal-elb"     = 1
   }
+
+  tags = local.tags
+}
+
+data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_partition" "current" {}
+
+#---------------------------------------------------------------
+# Example IAM policies for EMR job execution
+#---------------------------------------------------------------
+data "aws_iam_policy_document" "emr_on_eks" {
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = ["arn:${data.aws_partition.current.partition}:s3:::*"]
+
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:ListBucket",
+      "s3:DeleteObject",
+      "s3:DeleteObjectVersion"
+    ]
+  }
+
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*"]
+
+    actions = [
+      "logs:PutLogEvents",
+      "logs:CreateLogStream",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "emr_on_eks" {
+  name        = format("%s-%s", local.name, "emr-job-iam-policies")
+  description = "IAM policy for EMR on EKS Job execution"
+  path        = "/"
+  policy      = data.aws_iam_policy_document.emr_on_eks.json
+}
+
+#---------------------------------------------------------------
+# Amazon Prometheus Workspace
+#---------------------------------------------------------------
+resource "aws_prometheus_workspace" "amp" {
+  alias = format("%s-%s", "amp-ws", local.name)
 
   tags = local.tags
 }

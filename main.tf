@@ -90,7 +90,9 @@ module "aws_managed_prometheus" {
   source = "./modules/aws-managed-prometheus"
 
   amazon_prometheus_workspace_alias = var.amazon_prometheus_workspace_alias
-  eks_cluster_id                    = module.aws_eks.cluster_id
+
+  eks_cluster_id = module.aws_eks.cluster_id
+  tags           = var.tags
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -103,9 +105,10 @@ module "emr_on_eks" {
     if var.enable_emr_on_eks && length(var.emr_on_eks_teams) > 0
   }
 
-  emr_on_eks_teams = each.value
-  eks_cluster_id   = module.aws_eks.cluster_id
-  tags             = var.tags
+  emr_on_eks_teams              = each.value
+  eks_cluster_id                = module.aws_eks.cluster_id
+  iam_role_permissions_boundary = var.iam_role_permissions_boundary
+  tags                          = var.tags
 
   depends_on = [kubernetes_config_map.aws_auth]
 }
