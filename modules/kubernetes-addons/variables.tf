@@ -39,6 +39,21 @@ variable "irsa_iam_permissions_boundary" {
   description = "IAM permissions boundary for IRSA roles"
 }
 
+variable "eks_oidc_provider" {
+  type        = string
+  description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
+}
+
+variable "eks_cluster_endpoint" {
+  type        = string
+  description = "Endpoint for your Kubernetes API server"
+}
+
+variable "eks_cluster_version" {
+  type        = string
+  description = "The Kubernetes version for the cluster"
+}
+
 #-----------EKS MANAGED ADD-ONS------------
 variable "enable_ipv6" {
   description = "Enable Ipv6 network. Attaches new VPC CNI policy to the IRSA role"

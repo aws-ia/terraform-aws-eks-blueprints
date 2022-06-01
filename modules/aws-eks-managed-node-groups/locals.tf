@@ -103,10 +103,6 @@ locals {
     local.managed_node_group["additional_iam_policies"
   ])) : k => v if local.managed_node_group["create_iam_role"] }
 
-  #  eks_worker_policies = local.managed_node_group["create_iam_role"] ? toset(concat(
-  #    local.managed_node_group["additional_iam_policies"]
-  #  )) : []
-
   common_tags = merge(
     var.context.tags,
     local.managed_node_group["additional_tags"],
