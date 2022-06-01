@@ -49,7 +49,8 @@ locals {
 module "eks_blueprints" {
   source = "../.."
 
-  cluster_name    = local.name
+  #                 var.cluster_name is for Terratest
+  cluster_name    = coalesce(var.cluster_name, local.name)
   cluster_version = "1.21"
 
   vpc_id             = module.vpc.vpc_id
