@@ -353,18 +353,6 @@ variable "amazon_prometheus_workspace_alias" {
   description = "AWS Managed Prometheus WorkSpace Name"
 }
 
-variable "amazon_prometheus_rule_group_data" {
-  type        = string
-  default     = null
-  description = "Manages an Amazon Managed Service for Prometheus (AMP) Rule Group Namespace"
-}
-
-variable "amazon_prometheus_alert_manager_definition" {
-  type        = string
-  default     = null
-  description = "Manages an Amazon Managed Service for Prometheus (AMP) Alert Manager Definition"
-}
-
 #-------------------------------
 # Amazon EMR on EKS
 #-------------------------------

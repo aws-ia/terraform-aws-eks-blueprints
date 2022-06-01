@@ -100,7 +100,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_cluster_autoscaler = true
 
   enable_amazon_prometheus             = true
-  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = aws_prometheus_workspace.amp_workspace.prometheus_endpoint
 
   enable_prometheus = true
   prometheus_helm_config = {
@@ -132,6 +132,7 @@ module "eks_blueprints_kubernetes_addons" {
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
@@ -211,4 +212,13 @@ resource "aws_iam_policy" "emr_on_eks" {
   description = "IAM policy for EMR on EKS Job execution"
   path        = "/"
   policy      = data.aws_iam_policy_document.emr_on_eks.json
+}
+
+#---------------------------------------------------------------
+# Amazon Prometheus Workspace
+#---------------------------------------------------------------
+resource "aws_prometheus_workspace" "amp_workspace" {
+  alias = format("%s-%s", "amp-ws", local.name)
+
+  tags = local.tags
 }

@@ -22,16 +22,12 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_prometheus_alert_manager_definition.alerts](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/prometheus_alert_manager_definition) | resource |
-| [aws_prometheus_rule_group_namespace.rules](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/prometheus_rule_group_namespace) | resource |
 | [aws_prometheus_workspace.amp_workspace](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/prometheus_workspace) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_amazon_prometheus_alert_manager_definition"></a> [amazon\_prometheus\_alert\_manager\_definition](#input\_amazon\_prometheus\_alert\_manager\_definition) | Manages an Amazon Managed Service for Prometheus (AMP) Alert Manager Definition | `string` | `null` | no |
-| <a name="input_amazon_prometheus_rule_group_data"></a> [amazon\_prometheus\_rule\_group\_data](#input\_amazon\_prometheus\_rule\_group\_data) | Manages an Amazon Managed Service for Prometheus (AMP) Rule Group Namespace | `string` | `null` | no |
 | <a name="input_amazon_prometheus_workspace_alias"></a> [amazon\_prometheus\_workspace\_alias](#input\_amazon\_prometheus\_workspace\_alias) | AWS Managed Prometheus WorkSpace Name | `string` | `null` | no |
 | <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS Cluster ID | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to assign to the object. | `map(string)` | n/a | yes |
