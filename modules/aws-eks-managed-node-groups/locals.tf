@@ -13,9 +13,9 @@ locals {
     iam_role_arn    = null # iam_role_arn will be used if create_iam_role=false
 
     # Scaling Config
-    desired_size = "3"
-    max_size     = "3"
-    min_size     = "1"
+    desired_size = 3
+    max_size     = 3
+    min_size     = 1
     disk_size    = 50 # disk_size will be ignored when using Launch Templates
 
     # Upgrade Config
@@ -58,7 +58,7 @@ locals {
     block_device_mappings = [{
       device_name           = "/dev/xvda"
       volume_type           = "gp3" # The volume type. Can be standard, gp2, gp3, io1, io2, sc1 or st1 (Default: gp3).
-      volume_size           = "100"
+      volume_size           = 100
       delete_on_termination = true
       encrypted             = true
       kms_key_id            = ""
@@ -102,10 +102,6 @@ locals {
     "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"],
     local.managed_node_group["additional_iam_policies"
   ])) : k => v if local.managed_node_group["create_iam_role"] }
-
-  #  eks_worker_policies = local.managed_node_group["create_iam_role"] ? toset(concat(
-  #    local.managed_node_group["additional_iam_policies"]
-  #  )) : []
 
   common_tags = merge(
     var.context.tags,

@@ -14,9 +14,9 @@ terraform {
       source  = "hashicorp/helm"
       version = ">= 2.4.1"
     }
-    grafana = {
-      source  = "grafana/grafana"
-      version = ">= 1.13.3"
+    null = {
+      source  = "hashicorp/null"
+      version = ">= 3.0"
     }
   }
 
@@ -24,6 +24,6 @@ terraform {
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"
   #   region = "us-west-2"
-  #   key    = "e2e/amp-amg-opensearch/terraform.tfstate"
+  #   key    = "e2e/fargate-serverless/terraform.tfstate"
   # }
 }

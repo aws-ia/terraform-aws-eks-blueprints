@@ -6,5 +6,6 @@ variable "eks_cluster_domain" {
 
 variable "acm_certificate_domain" {
   type        = string
-  description = "*.example.com"
+  description = "Route53 certificate domain"
+  default     = "*.example.com"
 }

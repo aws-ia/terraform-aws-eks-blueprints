@@ -2,8 +2,6 @@
 
 This example deploys the following resources
 
-- Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
-- Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
 - Creates EKS Cluster Control plane with public endpoint (for demo purpose only) with one managed node group
 - Deploys Metrics server, Cluster Autoscaler, Prometheus and EMR on EKS Addon
 - Creates Amazon managed Prometheus and configures Prometheus addon to remote write metrics to AMP

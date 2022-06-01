@@ -1,40 +1,7 @@
-#-------------------------------
-# EKS Cluster Labels
-#-------------------------------
-variable "org" {
-  type        = string
-  description = "tenant, which could be your organization name, e.g. aws'"
-  default     = ""
-}
-
-variable "tenant" {
-  type        = string
-  description = "Account name or unique account id e.g., apps or management or aws007"
-  default     = "aws"
-}
-
-variable "environment" {
-  type        = string
-  default     = "preprod"
-  description = "Environment area, e.g. prod or preprod "
-}
-
-variable "zone" {
-  type        = string
-  description = "zone, e.g. dev or qa or load or ops etc..."
-  default     = "dev"
-}
-
 variable "tags" {
   type        = map(string)
   default     = {}
   description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
-}
-
-variable "terraform_version" {
-  type        = string
-  default     = "Terraform"
-  description = "Terraform version"
 }
 
 #-------------------------------
@@ -98,6 +65,13 @@ variable "cluster_security_group_additional_rules" {
   type        = any
   default     = {}
 }
+
+variable "cluster_security_group_tags" {
+  description = "A map of additional tags to add to the cluster security group created"
+  type        = map(string)
+  default     = {}
+}
+
 #-------------------------------
 # EKS Cluster VPC Config
 #-------------------------------
@@ -148,6 +122,7 @@ variable "cluster_encryption_config" {
   }))
   default = []
 }
+
 #-------------------------------
 # EKS Cluster Kubernetes Network Config
 #-------------------------------
@@ -240,7 +215,6 @@ variable "iam_role_additional_policies" {
   type        = list(string)
   default     = []
 }
-#-------------------------------
 
 variable "enable_irsa" {
   description = "Determines whether to create an OpenID Connect Provider for EKS to enable IRSA"
@@ -290,16 +264,21 @@ variable "enable_windows_support" {
 #-------------------------------
 # Worker Additional Variables
 #-------------------------------
-
 variable "create_node_security_group" {
   description = "Determines whether to create a security group for the node groups or use the existing `node_security_group_id`"
   type        = bool
   default     = true
 }
-#rules added by
+
 variable "node_security_group_additional_rules" {
   description = "List of additional security group rules to add to the node security group created. Set `source_cluster_security_group = true` inside rules to set the `cluster_security_group` as source"
   type        = any
+  default     = {}
+}
+
+variable "node_security_group_tags" {
+  description = "A map of additional tags to add to the node security group created"
+  type        = map(string)
   default     = {}
 }
 

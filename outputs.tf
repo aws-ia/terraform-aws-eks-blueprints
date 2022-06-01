@@ -41,6 +41,11 @@ output "eks_cluster_status" {
   value       = module.aws_eks.cluster_status
 }
 
+output "eks_cluster_version" {
+  description = "The Kubernetes version for the cluster"
+  value       = module.aws_eks.cluster_version
+}
+
 #-------------------------------
 # Cluster Security Group
 #-------------------------------
@@ -158,7 +163,7 @@ output "managed_node_group_aws_auth_config_map" {
 #-------------------------------
 output "fargate_profiles" {
   description = "Outputs from EKS Fargate profiles groups "
-  value       = var.create_eks && length(var.fargate_profiles) > 0 ? module.aws_eks_fargate_profiles.* : []
+  value       = module.aws_eks_fargate_profiles
 }
 
 output "fargate_profiles_iam_role_arns" {
@@ -168,7 +173,7 @@ output "fargate_profiles_iam_role_arns" {
 
 output "fargate_profiles_aws_auth_config_map" {
   description = "Fargate profiles AWS auth map"
-  value       = local.fargate_profiles_aws_auth_config_map.*
+  value       = local.fargate_profiles_aws_auth_config_map
 }
 
 #-------------------------------
