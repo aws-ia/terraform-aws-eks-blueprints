@@ -21,7 +21,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 #### Step 1: Clone the repo using the command below
 
-```shell script
+```sh
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
@@ -29,7 +29,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 
 Initialize a working directory with configuration files
 
-```shell script
+```sh
 cd examples/aws-efs-csi-driver/
 terraform init
 ```
@@ -38,20 +38,20 @@ terraform init
 
 Verify the resources created by this execution
 
-```shell script
+```sh
 export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
 terraform plan
 ```
 
 #### Step 4: Finally, Terraform APPLY
 
-To create resources
+**Deploy the pattern**
 
-```shell script
+```sh
 terraform apply
 ```
 
-Enter `yes` to apply
+Enter `yes` to apply.
 
 ### Configure `kubectl` and test cluster
 
@@ -118,11 +118,20 @@ Confirm that the data is written to the volume
     Wed Feb 23 13:37:44 UTC 2022
     Wed Feb 23 13:37:49 UTC 2022
 
-## How to Destroy
+## Cleanup
 
-The following command destroys the resources created by `terraform apply`
+To clean up your environment, destroy the Terraform modules in reverse order.
 
-```shell script
-cd examples/aws-efs-csi-driver/
+Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
+
+```sh
+terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
+terraform destroy -target="module.eks_blueprints" -auto-approve
+terraform destroy -target="module.aws_vpc" -auto-approve
+```
+
+Finally, destroy any additional resources that are not in the above modules
+
+```sh
 terraform destroy -auto-approve
 ```

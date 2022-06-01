@@ -12,7 +12,7 @@ Sometimes kubernetes namespace `keda-ns` created by this helm chart failed to de
 
 Workaround is to run the following command manually to clean up the namespace and rerun the `terraform apply`
 
-```shell script
+```sh
 kubectl delete apiservice v1beta1.external.metrics.k8s.io
 ```
 
