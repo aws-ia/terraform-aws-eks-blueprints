@@ -23,7 +23,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 #### Step 1: Clone the repo using the command below
 
-```shell script
+```sh
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
@@ -31,7 +31,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 
 Initialize a working directory with configuration files
 
-```shell script
+```sh
 cd examples/fully-private-eks-cluster/
 terraform init
 ```
@@ -40,7 +40,7 @@ terraform init
 
 Verify the resources created by this execution
 
-```shell script
+```sh
 export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
 terraform plan
 ```
@@ -49,7 +49,7 @@ terraform plan
 
 to create resources
 
-```shell script
+```sh
 terraform apply
 ```
 
@@ -90,7 +90,7 @@ Learn more about private EKS clusters [here](https://docs.aws.amazon.com/eks/lat
 
 The following command destroys the resources created by `terraform apply`
 
-```shell script
+```sh
 cd examples/fully-private-eks-cluster
 terraform destroy --auto-approve
 ```

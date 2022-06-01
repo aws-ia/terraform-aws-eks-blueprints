@@ -21,7 +21,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 ### Step 1: Clone the repo using the command below
 
-```bash
+```sh
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
@@ -29,7 +29,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 
 to initialize a working directory with configuration files
 
-```bash
+```sh
 cd examples/node-groups/windows-node-groups
 terraform init
 ```
@@ -38,7 +38,7 @@ terraform init
 
 to verify the resources created by this execution
 
-```bash
+```sh
 export AWS_REGION=us-west-2   # Select your own region
 terraform plan
 ```
@@ -71,7 +71,7 @@ When Windows support is enabled in the cluster, it is necessary to use one of th
 
 #### Sample Windows deployment
 
-```bash
+```sh
 cd examples/node-groups/windows-node-groups
 
 # Sample Windows deployment
@@ -96,7 +96,7 @@ kubectl get svc -n windows -o jsonpath="{.items[0].status.loadBalancer.ingress[0
 
 #### Sample Linux deployment
 
-```bash
+```sh
 # Sample Linux deployment
 kubectl apply -f ./k8s/linux-nginx.yaml
 ```
@@ -112,15 +112,15 @@ kubectl delete svc,deploy -n linux --all
 ```
 
 ```sh
-terraform destroy -target="module.eks_blueprints_kubernetes_addons"
-terraform destroy -target="module.eks_blueprints"
-terraform destroy -target="module.aws_vpc"
+terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
+terraform destroy -target="module.eks_blueprints" -auto-approve
+terraform destroy -target="module.aws_vpc" -auto-approve
 ```
 
 Finally, destroy any additional resources that are not in the above modules
 
 ```sh
-terraform destroy
+terraform destroy -auto-approve
 ```
 
 ## See also

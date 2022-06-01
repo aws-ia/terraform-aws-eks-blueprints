@@ -14,7 +14,7 @@ enable_ingress_nginx = true
 
 To validate that installation is successful run the following command:
 
-```bash
+```sh
 $ kubectl get po -n kube-system
 NAME                                                              READY   STATUS    RESTARTS   AGE
 eks-blueprints-addon-ingress-nginx-78b8567p4q6   1/1     Running   0          4d10h

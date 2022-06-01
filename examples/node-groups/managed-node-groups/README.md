@@ -20,7 +20,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 #### Step 1: Clone the repo using the command below
 
-```shell script
+```sh
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
@@ -28,7 +28,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 
 Initialize a working directory with configuration files
 
-```shell script
+```sh
 cd examples/node-groups/managed-node-groups/
 terraform init
 ```
@@ -37,7 +37,7 @@ terraform init
 
 Verify the resources created by this execution
 
-```shell script
+```sh
 export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
 terraform plan
 ```
@@ -78,13 +78,13 @@ To clean up your environment, destroy the Terraform modules in reverse order.
 Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
 
 ```sh
-terraform destroy -target="module.eks_blueprints_kubernetes_addons"
-terraform destroy -target="module.eks_blueprints"
-terraform destroy -target="module.aws_vpc"
+terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
+terraform destroy -target="module.eks_blueprints" -auto-approve
+terraform destroy -target="module.aws_vpc" -auto-approve
 ```
 
 Finally, destroy any additional resources that are not in the above modules
 
 ```sh
-terraform destroy
+terraform destroy -auto-approve
 ```
