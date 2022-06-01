@@ -64,8 +64,6 @@ module "eks_blueprints" {
     }
   }
 
-  enable_amazon_prometheus = true
-
   #---------------------------------------
   # ENABLE EMR ON EKS
   # 1. Creates namespace
@@ -100,7 +98,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_cluster_autoscaler = true
 
   enable_amazon_prometheus             = true
-  amazon_prometheus_workspace_endpoint = aws_prometheus_workspace.amp_workspace.prometheus_endpoint
+  amazon_prometheus_workspace_endpoint = aws_prometheus_workspace.amp.prometheus_endpoint
 
   enable_prometheus = true
   prometheus_helm_config = {
@@ -217,7 +215,7 @@ resource "aws_iam_policy" "emr_on_eks" {
 #---------------------------------------------------------------
 # Amazon Prometheus Workspace
 #---------------------------------------------------------------
-resource "aws_prometheus_workspace" "amp_workspace" {
+resource "aws_prometheus_workspace" "amp" {
   alias = format("%s-%s", "amp-ws", local.name)
 
   tags = local.tags
