@@ -51,7 +51,7 @@ module "helm_addon" {
   ]
 
   irsa_config = {
-    create_kubernetes_namespace       = true
+    create_kubernetes_namespace       = try(var.helm_config["create_namespace"], true)
     kubernetes_namespace              = local.namespace
     create_kubernetes_service_account = true
     kubernetes_service_account        = try(var.helm_config.service_account, local.name)
