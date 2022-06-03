@@ -4,7 +4,13 @@ resource "kubernetes_config_map" "aws_auth" {
   metadata {
     name      = "aws-auth"
     namespace = "kube-system"
-    labels    = var.aws_auth_additional_labels
+    labels = merge(
+      {
+        "app.kubernetes.io/managed-by" = "terraform-aws-eks-blueprints"
+        "app.kubernetes.io/created-by" = "terraform-aws-eks-blueprints"
+      },
+      var.aws_auth_additional_labels
+    )
   }
 
   data = {
