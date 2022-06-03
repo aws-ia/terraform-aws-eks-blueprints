@@ -109,7 +109,7 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-  enable_karpenter = true
+  enable_karpenter                    = true
   enable_aws_node_termination_handler = true
 
   tags = local.tags
