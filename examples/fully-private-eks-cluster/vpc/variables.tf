@@ -28,24 +28,11 @@ variable "region" {
   default     = "us-east-1"
 }
 
-variable "tenant" {
+variable "vpc_cidr" {
+  description = "The CIDR block for the VPC that will be created."
   type        = string
-  description = "Account Name or unique account unique id e.g., apps or management or aws007"
-  default     = "aws002"
+  default     = "10.0.0.0/16"
 }
-
-variable "environment" {
-  type        = string
-  description = "Environment area, e.g. prod or preprod "
-  default     = "prod"
-}
-
-variable "zone" {
-  type        = string
-  description = "zone, e.g. dev or qa or load or ops etc..."
-  default     = "dev"
-}
-
 variable "default_vpc_ipv4_cidr" {
   description = "The CIDR block of the default VPC that hosts the bastion host or jenkins server."
   type        = string
