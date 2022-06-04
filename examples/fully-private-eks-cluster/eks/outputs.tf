@@ -1,6 +1,6 @@
 output "cluster_id" {
   description = "The ID of the EKS Cluster"
-  value       = module.eks-blueprints.eks_cluster_id
+  value       = module.eks_blueprints.eks_cluster_id
 }
 
 output "configure_kubectl" {
