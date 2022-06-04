@@ -1,7 +1,7 @@
 region             = "us-west-2"
 cluster_version    = "1.22"
-vpc_id             = "vpc-060bda806b25adcdb"
-private_subnet_ids = ["subnet-02a5f125ff267a180", "subnet-0dc515bc09af2b3ba", "subnet-0ae99c4c014c33251"]
+vpc_id             = "vpc-045cde3975b801469"
+private_subnet_ids = ["subnet-03a21a869766169d5", "subnet-0899effaed018015c", "subnet-085209c3a039361b1"]
 cluster_security_group_additional_rules = {
   ingress_from_jenkins_host = {
     description = "Ingress from Jenkins/Bastion Host"
