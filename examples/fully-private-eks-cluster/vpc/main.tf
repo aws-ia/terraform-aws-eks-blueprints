@@ -64,7 +64,7 @@ module "aws_vpc" {
 
   tags = local.tags
 
-  default_security_group_name = "${local.vpc_name}-endpoint-secgrp"
+  default_security_group_name = "${local.name}-endpoint-secgrp"
   default_security_group_ingress = [
     {
       protocol    = -1
@@ -93,13 +93,13 @@ module "vpc_endpoints_sg" {
 
   name        = "${local.name}-vpc-endpoints"
   description = "Security group for VPC endpoint access"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = module.aws_vpc.vpc_id
 
   ingress_with_cidr_blocks = [
     {
       rule        = "https-443-tcp"
       description = "VPC CIDR HTTPS"
-      cidr_blocks = join(",", module.vpc.private_subnets_cidr_blocks)
+      cidr_blocks = join(",", module.aws_vpc.private_subnets_cidr_blocks)
     },
   ]
 
@@ -118,14 +118,14 @@ module "vpc_endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "~> 3.0"
 
-  vpc_id             = module.vpc.vpc_id
+  vpc_id             = module.aws_vpc.vpc_id
   security_group_ids = [module.vpc_endpoints_sg.security_group_id]
 
   endpoints = merge({
     s3 = {
       service         = "s3"
       service_type    = "Gateway"
-      route_table_ids = module.vpc.private_route_table_ids
+      route_table_ids = module.aws_vpc.private_route_table_ids
       tags = {
         Name = "${local.name}-s3"
       }
@@ -135,7 +135,7 @@ module "vpc_endpoints" {
       replace(service, ".", "_") =>
       {
         service             = service
-        subnet_ids          = module.vpc.private_subnets
+        subnet_ids          = module.aws_vpc.private_subnets
         private_dns_enabled = true
         tags                = { Name = "${local.name}-${service}" }
       }
