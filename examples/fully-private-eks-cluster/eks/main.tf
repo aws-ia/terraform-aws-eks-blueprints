@@ -25,7 +25,7 @@ locals {
   }
 }
 
-module "eks-blueprints" {
+module "eks_blueprints" {
   source = "../../.."
 
   cluster_name = local.name
