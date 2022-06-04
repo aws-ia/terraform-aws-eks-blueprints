@@ -22,7 +22,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 #### Step 1: Clone the repo using the command below
 
-```shell script
+```sh
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
@@ -30,7 +30,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 
 to initialize a working directory with configuration files
 
-```shell script
+```sh
 cd examples/multi-tenancy-with-teams/
 terraform init
 ```
@@ -39,7 +39,7 @@ terraform init
 
 to verify the resources created by this execution
 
-```shell script
+```sh
 export AWS_REGION=<enter-your-region>   # Select your own region
 terraform plan
 ```
@@ -48,7 +48,7 @@ terraform plan
 
 to create resources
 
-```shell script
+```sh
 terraform apply
 ```
 
@@ -74,7 +74,7 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
 
 ## How to Destroy
 
-```shell script
+```sh
 cd examples/multi-tenancy-with-teams
-terraform destroy
+terraform destroy -auto-approve
 ```
