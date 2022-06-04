@@ -41,11 +41,14 @@ locals {
   }
 }
 
-module "kubernetes-addons" {
+module "eks_blueprints_kubernetes_addons" {
   source = "../../../modules/kubernetes-addons"
 
-  eks_cluster_id     = var.eks_cluster_id
-  eks_cluster_domain = var.eks_cluster_domain
+  eks_cluster_id       = var.eks_cluster_id
+  eks_cluster_endpoint = data.aws_eks_cluster.cluster.endpoint
+  eks_oidc_provider    = data.aws_eks_cluster.cluster.identity.oidc.issuer
+  eks_cluster_version  = data.aws_eks_cluster.cluster.version
+
 
   #---------------------------------------------------------------
   # ARGO CD ADD-ON
