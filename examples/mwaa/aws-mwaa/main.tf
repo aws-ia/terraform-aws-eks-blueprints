@@ -12,14 +12,14 @@ resource "aws_mwaa_environment" "mwaa" {
 
   airflow_configuration_options = {
     # DAG timeout and log level
-    "core.dagbag_import_timeout"      = var.airflow_configuration_options["dag_timeout"]
-    "core.default_task_retries"       = var.airflow_configuration_options["core.default_task_retries"]
-    "core.check_slas"                 = var.airflow_configuration_options["core.check_slas"]
-    "core.dag_concurrency"            = var.airflow_configuration_options["core.dag_concurrency"]
-    "core.dag_file_processor_timeout" = var.airflow_configuration_options["core.dag_file_processor_timeout"]
-    "core.dagbag_import_timeout"      = var.airflow_configuration_options["core.dagbag_import_timeout"]
-    "core.max_active_runs_per_dag"    = var.airflow_configuration_options["core.max_active_runs_per_dag"]
-    "core.parallelism"                = var.airflow_configuration_options["core.parallelism"]
+    "core.dagbag_import_timeout"        = var.airflow_configuration_options["dag_timeout"]
+    "core.default_task_retries"         = var.airflow_configuration_options["core.default_task_retries"]
+    "core.check_slas"                   = var.airflow_configuration_options["core.check_slas"]
+    "core.dag_concurrency"              = var.airflow_configuration_options["core.dag_concurrency"]
+    "core.dag_file_processor_timeout"   = var.airflow_configuration_options["core.dag_file_processor_timeout"]
+    "core.dagbag_import_timeout"        = var.airflow_configuration_options["core.dagbag_import_timeout"]
+    "core.max_active_runs_per_dag"      = var.airflow_configuration_options["core.max_active_runs_per_dag"]
+    "core.parallelism"                  = var.airflow_configuration_options["core.parallelism"]
     "celery.worker_autoscale"           = var.airflow_configuration_options["celery.worker_autoscale"]
     "scheduler.processor_poll_interval" = var.airflow_configuration_options["scheduler.processor_poll_interval"]
 

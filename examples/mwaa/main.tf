@@ -199,7 +199,7 @@ module "eks_blueprints_kubernetes_addons" {
 #------------------------------------------------------------------------
 
 module "mwaa" {
-  source                        = "../../modules/aws-mwaa"
+  source                        = "./aws-mwaa"
   environment_name              = local.environment_name
   airflow_version               = local.airflow_version
   environment_class             = local.environment_class
@@ -213,7 +213,7 @@ module "mwaa" {
   vpc_id                        = module.aws_vpc.vpc_id
   private_subnet_ids            = [module.aws_vpc.private_subnets[0], module.aws_vpc.private_subnets[1]]
   webserver_access_mode         = local.webserver_access_mode
-  vpn_cidr = local.vpn_cidr
+  vpn_cidr                      = local.vpn_cidr
 }
 
 #------------------------------------------------------------------------
@@ -250,9 +250,33 @@ resource "kubernetes_namespace" "mwaa" {
 # Create Role
 #------------------------------------------------------------------------
 
-resource "null_resource" "create-role" {
-  provisioner "local-exec" {
-    command = "export KUBECONFIG=./dags/kube_config.yaml | kubectl apply -f ./roles.yaml -n mwaa"
+resource "kubernetes_role" "mwaa_role" {
+  metadata {
+    name      = "mwaa-role"
+    namespace = "mwaa"
+  }
+
+  rule {
+    api_groups = ["", "apps", "batch", "extensions"]
+    resources  = ["jobs", "pods", "pods/attach", "pods/exec", "pods/log", "pods/portforward", "secrets", "services"]
+    verbs      = ["create", "delete", "describe", "get", "list", "patch", "update"]
+  }
+}
+
+resource "kubernetes_role_binding" "mwaa_role_binding" {
+  metadata {
+    name      = "mwaa-role-binding"
+    namespace = "mwaa"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "Role"
+    name      = "mwaa-role"
+  }
+  subject {
+    kind      = "User"
+    name      = "mwaa-service"
+    api_group = "rbac.authorization.k8s.io"
   }
 }
 

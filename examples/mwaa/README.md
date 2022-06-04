@@ -5,9 +5,28 @@ The example demonstrates how to use Amazon Managed Workflows for Apache Airflow 
 This example was originated from the steps provided on MWAA documentation on the link below:
 [mwaa-eks-example](https://docs.aws.amazon.com/mwaa/latest/userguide/mwaa-eks-example.html)
 
+The example will create the following resources:
+ - Install VPC Module
+ - Install EKS Blueprint Module
+ - Install Kubernetes Addons Module
+ - Install aws-mwaa Module
+ - Create Kubeconfig locally on dags folder
+ - Create an IAM OIDC provider for the EKS cluster
+ - Create MWAA namespace
+ - Create mwaa role and role-binding on EKS
+ - Add MWAA Service IAM Role on kubeconfig
+ - Sync Dags folder to the MWAA S3 Bucket
+ - Sync python requirements.txt file to the MWAA S3 Bucket
+
+The module aws-mwaa included on this example will create the following resources:
+ - MWAA Environment
+ - MWAA Service IAM Role and IAM Policy
+ - MWAA S3 Bucket(To Store Dags, Plugins, Requirements.txt file,etc)
+ - MWAA Security Group
+
 ### Considerations
 
-1. If you used a specific profile when you ran Terraform commands to create the kubeconfig(Line 225) you need to remove the env: section added to the dags/kube_config.yaml file so that it works correctly with Amazon MWAA. To do so, delete the following from the file and then save it:
+1. If you used a specific profile when you ran Terraform commands to create the kubeconfig(Line 223 of main.tf) you need to remove the env: section added to the dags/kube_config.yaml file so that it works correctly with Amazon MWAA. To do so, delete the following from the file and then save it:
 
 env:
 - name: AWS_PROFILE
