@@ -45,7 +45,7 @@ module "aws_vpc" {
   cidr = local.vpc_cidr
   azs  = local.azs
 
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 2, k)]
 
   enable_dns_hostnames = true
 
