@@ -1,100 +1,40 @@
-/*
- * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * SPDX-License-Identifier: MIT-0
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the Software
- * without restriction, including without limitation the rights to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
-terraform {
-  required_version = ">= 1.0.1"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 3.66.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.6.1"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.4.1"
-    }
-
-  }
-
-  # backend "s3" {}
-
-
-  cloud {
-    organization = "skdemo"
-    workspaces {
-      name = "private-eks-useast1"
-    }
-  }
-
-}
 provider "aws" {
   region = var.region
   alias  = "default"
 }
 
 provider "kubernetes" {
-  experiments {
-    manifest_resource = true
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1alpha1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
   }
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
-provider "helm" {
-  kubernetes {
-    host                   = data.aws_eks_cluster.cluster.endpoint
-    token                  = data.aws_eks_cluster_auth.cluster.token
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  }
-}
 locals {
-  tenant             = var.tenant
-  environment        = var.environment
-  zone               = var.zone
+  name               = basename(path.cwd)
   vpc_id             = var.vpc_id
   private_subnet_ids = var.private_subnet_ids
-
-  kubernetes_version = var.cluster_version
-  terraform_version  = "Terraform v1.0.1"
-
-  # vpc_id             = data.terraform_remote_state.vpc_s3_backend.outputs.vpc_id
-  # private_subnet_ids = data.terraform_remote_state.vpc_s3_backend.outputs.private_subnets
-  # public_subnet_ids  = data.terraform_remote_state.vpc_s3_backend.outputs.public_subnets
-
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
+  }
 }
 
 module "eks-blueprints" {
   source = "../../.."
 
-  cluster_name    = local.cluster_name
+  cluster_name = local.name
 
   # EKS Cluster VPC and Subnets
   vpc_id             = local.vpc_id
   private_subnet_ids = local.private_subnet_ids
 
   # Cluster Security Group
-  cluster_additional_security_group_ids   = var.cluster_additional_security_group_ids
   cluster_security_group_additional_rules = var.cluster_security_group_additional_rules
 
   # EKS CONTROL PLANE VARIABLES
@@ -102,35 +42,16 @@ module "eks-blueprints" {
 
   cluster_endpoint_public_access  = false
   cluster_endpoint_private_access = true
-  enable_amazon_prometheus        = true
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
-    mg_4 = {
+    mg_5 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["m5.xlarge"]
-      subnet_ids      = local.private_subnet_ids
-      release_version = "1.22.6-20220523" 
+      instance_types  = ["m5.large"]
+      subnet_ids      = module.vpc.private_subnets
     }
   }
 
-  # Bottle Rocket
-  #  managed_node_groups = {
-  #   mg_4 = {
-  #     node_group_name    = "managed-ondemand"
-  #     launch_template_os = "bottlerocket" # amazonlinux2eks or bottlerocket
-  #     instance_types     = ["m5.xlarge"]
-  #     subnet_ids         = local.private_subnet_ids
-  #     desired_size       = 3
-  #     min_size           = 3
-  #     max_size           = 5
-  #     max_unavailable    = 1
-  #     capacity_type      = "ON_DEMAND"
-  #     ami_type           = "BOTTLEROCKET_x86_64"
-  #     #release_version = "1.21.5-20220309"  
-  #   }
-  # }
-
   //Custom Tags.
-  tags = var.tags
+  tags = local.tags
 }

@@ -21,7 +21,7 @@ terraform {
   cloud {
     organization = "skdemo"
     workspaces {
-      name = "private-vpc-uswest2"
+      name = "private-eks-uswest2"
     }
   }
 
