@@ -64,9 +64,9 @@ module "eks_blueprints_kubernetes_addons" {
   #---------------------------------------------------------------
   # OTHER ADD-ONS
   #---------------------------------------------------------------
-  enable_cert_manager       = true
-  enable_metrics_server     = true
-  enable_vpa                = true
-  enable_cluster_autoscaler = true
+  enable_cert_manager       = false
+  enable_metrics_server     = false
+  enable_vpa                = false
+  enable_cluster_autoscaler = false
 }
 
