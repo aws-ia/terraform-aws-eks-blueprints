@@ -1,31 +1,3 @@
-terraform {
-  required_version = ">= 1.0.1"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 3.66.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.7.1"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.4.1"
-    }
-  }
-
-  # backend "s3" {}
-
-  cloud {
-    organization = "skdemo"
-    workspaces {
-      name = "private-addons-useast1"
-    }
-  }
-
-}
 provider "aws" {
   region = var.region
   alias  = "default"
@@ -63,15 +35,8 @@ locals {
   # ARGOCD WORKLOAD APPLICATION
   #---------------------------------------------------------------
   workload_application = {
-    path     = "envs/dev"
-    repo_url = "https://github.com/aws-samples/eks-blueprints-workloads.git"
-    values = {
-      spec = {
-        ingress = {
-          host = var.eks_cluster_domain
-        }
-      }
-    }
+    path               = "envs/dev"
+    repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
     add_on_application = false
   }
 }
@@ -94,56 +59,11 @@ module "kubernetes-addons" {
   }
 
   #---------------------------------------------------------------
-  # INGRESS NGINX ADD-ON
-  #---------------------------------------------------------------
-
-  enable_ingress_nginx = true
-  ingress_nginx_helm_config = {
-    values = [templatefile("${path.module}/helm_values/nginx-values.yaml", {
-      hostname     = var.eks_cluster_domain
-      ssl_cert_arn = data.aws_acm_certificate.issued.arn
-    })]
-  }
-
-  #---------------------------------------------------------------
   # OTHER ADD-ONS
   #---------------------------------------------------------------
-
   enable_cert_manager       = true
   enable_metrics_server     = true
   enable_vpa                = true
-  enable_external_dns       = true
   enable_cluster_autoscaler = true
-  enable_keda               = true
-
-
-  enable_amazon_eks_aws_ebs_csi_driver = true
-  amazon_eks_aws_ebs_csi_driver_config = {
-    addon_name               = "aws-ebs-csi-driver"
-    addon_version            = "v1.6.1-eksbuild.1"
-    service_account          = "ebs-csi-controller-sa"
-    resolve_conflicts        = "OVERWRITE"
-    namespace                = "kube-system"
-    additional_iam_policies  = []
-    service_account_role_arn = ""
-    tags                     = {}
-  }
-
-  # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
-
-  enable_amazon_prometheus             = true
-  amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
-
-  enable_prometheus = true
-  # prometheus_helm_config = {
-  #   name       = "prometheus"
-  #   repository = "https://prometheus-community.github.io/helm-charts"
-  #   chart      = "prometheus"
-  #   version    = "15.3.0"
-  #   namespace  = "prometheus"
-  #   values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
-  #     operating_system = "linux"
-  #   })]
-  # }
 }
 

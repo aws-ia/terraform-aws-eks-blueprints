@@ -7,8 +7,3 @@ data "aws_eks_cluster" "cluster" {
 data "aws_eks_cluster_auth" "cluster" {
   name = var.eks_cluster_id
 }
-
-data "aws_acm_certificate" "issued" {
-  domain   = var.acm_certificate_domain
-  statuses = ["ISSUED"]
-}
