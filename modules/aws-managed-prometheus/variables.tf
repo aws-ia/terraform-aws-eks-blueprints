@@ -8,3 +8,8 @@ variable "amazon_prometheus_workspace_alias" {
   default     = null
   description = "AWS Managed Prometheus WorkSpace Name"
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to assign to the object."
+}

@@ -36,7 +36,7 @@ You'll also need the following:
 
 Fork the [aws-samples/flux-eks-gitops-config](https://github.com/aws-samples/flux-eks-gitops-config) repository on your personal GitHub account and export your GitHub access token, username and repo name:
 
-```bash
+```sh
   export GITHUB_TOKEN=<your-token>
   export GITHUB_USER=<your-username>
   export GITHUB_REPO=<repository-name>
@@ -44,7 +44,7 @@ Fork the [aws-samples/flux-eks-gitops-config](https://github.com/aws-samples/flu
 
 Define whether you want to bootstrap your cluster with the `TEST` or the `PRODUCTION` configuration:
 
-```bash
+```sh
   # TEST configuration
   export CLUSTER_ENVIRONMENT=test
 
@@ -54,13 +54,13 @@ Define whether you want to bootstrap your cluster with the `TEST` or the `PRODUC
 
 Verify that your stagging cluster satisfies the prerequisites with:
 
-```bash
+```sh
   flux check --pre
 ```
 
 You can now bootstrap your cluster with Flux CLI.
 
-```bash
+```sh
   flux bootstrap github --owner=${GITHUB_USER} --repository=${GITHUB_REPO} --branch=main --path=clusters/${CLUSTER_ENVIRONMENT} --personal
 ```
 
@@ -68,20 +68,20 @@ The bootstrap command commits the manifests for the Flux components in `clusters
 
 Confirm that Flux has finished applying the configuration to your cluster (it will take 3 or 4 minutes to sync everything):
 
-```bash
+```sh
   $ flux get kustomization
   NAME                READY MESSAGE                                                           REVISION                                        SUSPENDED
-  apps                True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False  
-  calico-installation True  Applied revision: master/00a2f33ea55f2018819434175c09c8bd8f20741a master/00a2f33ea55f2018819434175c09c8bd8f20741a False  
-  calico-operator     True  Applied revision: master/00a2f33ea55f2018819434175c09c8bd8f20741a master/00a2f33ea55f2018819434175c09c8bd8f20741a False  
-  config              True  Applied revision: main/8fd33f531df71002f2da7bc9619ee75281a9ead0   main/8fd33f531df71002f2da7bc9619ee75281a9ead0   False  
-  flux-system         True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False  
+  apps                True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False
+  calico-installation True  Applied revision: master/00a2f33ea55f2018819434175c09c8bd8f20741a master/00a2f33ea55f2018819434175c09c8bd8f20741a False
+  calico-operator     True  Applied revision: master/00a2f33ea55f2018819434175c09c8bd8f20741a master/00a2f33ea55f2018819434175c09c8bd8f20741a False
+  config              True  Applied revision: main/8fd33f531df71002f2da7bc9619ee75281a9ead0   main/8fd33f531df71002f2da7bc9619ee75281a9ead0   False
+  flux-system         True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False
   infrastructure      True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False
 ```
 
 Get the URL for the nginx ingress controller that has been deployed in your cluster (you will see two ingresses, since Flagger will create a canary ingress):
 
-```bash
+```sh
    $ kubectl get ingress -n podinfo
    NAME             CLASS   HOSTS          ADDRESS                               PORTS   AGE
    podinfo          nginx   podinfo.test   k8s-xxxxxx.elb.us-west-2.amazonaws.com   80      23h
@@ -90,7 +90,7 @@ Get the URL for the nginx ingress controller that has been deployed in your clus
 
 Confirm that podinfo can be correctly accessed via ingress:
 
-```bash
+```sh
   $ curl -H "Host: podinfo.test" k8s-xxxxxx.elb.us-west-2.amazonaws.com
   {
   "hostname": "podinfo-primary-65584c8f4f-d7v4t",
