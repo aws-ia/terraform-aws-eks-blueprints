@@ -6,7 +6,7 @@ locals {
     chart       = local.name
     repository  = "https://kubernetes.github.io/dashboard/"
     version     = "5.4.1"
-    namespace   = "kube-system"
+    namespace   = local.name
     description = "Kubernetes Dashboard Helm Chart"
     values      = []
     timeout     = "1200"
