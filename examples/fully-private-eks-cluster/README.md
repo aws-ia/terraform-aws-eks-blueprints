@@ -10,7 +10,6 @@ Please see this [document](https://docs.aws.amazon.com/eks/latest/userguide/priv
 Here is the high level design of the solution. The solution has been split into 3 different Terraform stacks for simplicity.
 1. VPC
 2. EKS
-3. ADD-ONS
 
 ![High Level Design](../../images/EKS_private_cluster.jpg)
 
@@ -35,7 +34,5 @@ Here is the high level design of the solution. The solution has been split into 
     4.1 VPC - Please refer to the [instructions](./vpc/README.md) to deploy a new VPC. 
 
     4.2 EKS - Please refer to the [instructions](./eks/README.md) to deploy a private EKS cluster.
-
-    4.3 Add-ons - Please refer to the [instructions](./add-ons/README.md) to deploy the add-ons to the private EKS cluster using GitOps.
 
 <!--- END_TF_DOCS --->
