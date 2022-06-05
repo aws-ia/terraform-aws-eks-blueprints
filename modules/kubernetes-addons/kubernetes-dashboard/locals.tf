@@ -18,6 +18,6 @@ locals {
   )
 
   argocd_gitops_config = {
-    enable             = true
+    enable = true
   }
 }
