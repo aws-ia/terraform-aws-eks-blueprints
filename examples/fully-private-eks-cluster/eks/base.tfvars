@@ -1,13 +1,7 @@
-tenant      = "aws001"
-environment = "preprod"
-zone        = "test"
-region      = "us-west-2"
-
-cluster_version = "1.21"
-
-tf_state_vpc_s3_bucket = "terraform-ssp-github-actions-state-dla"
-tf_state_vpc_s3_key    = "private/vpc/terraform-main.tfstate"
-
+region             = "us-west-2"
+cluster_version    = "1.22"
+vpc_id             = "vpc-045cde3975b801469"
+private_subnet_ids = ["subnet-03a21a869766169d5", "subnet-0899effaed018015c", "subnet-085209c3a039361b1"]
 cluster_security_group_additional_rules = {
   ingress_from_jenkins_host = {
     description = "Ingress from Jenkins/Bastion Host"

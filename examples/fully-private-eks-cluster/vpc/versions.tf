@@ -16,10 +16,19 @@ terraform {
     }
   }
 
+
+  #State managed via Terraform Cloud
+  cloud {
+    organization = "skdemo"
+    workspaces {
+      name = "private-vpc-uswest2"
+    }
+  }
+
   # ##  Used for end-to-end testing on project; update to suit your needs
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"
   #   region = "us-west-2"
-  #   key    = "e2e/eks-cluster-with-external-dns/terraform.tfstate"
+  #   key    = "e2e/fully-private-eks-cluster/terraform.tfstate"
   # }
 }

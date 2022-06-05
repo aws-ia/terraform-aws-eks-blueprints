@@ -1,73 +1,52 @@
-/*
- * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * SPDX-License-Identifier: MIT-0
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the Software
- * without restriction, including without limitation the rights to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 provider "aws" {
   region = var.region
-}
-
-terraform {
-  backend "s3" {}
+  alias  = "default"
 }
 
 data "aws_availability_zones" "available" {}
 
 locals {
-  tenant      = var.tenant
-  environment = var.environment
-  zone        = var.zone
-  region      = var.region
+  name   = basename(path.cwd)
+  region = var.region
 
-  vpc_cidr       = "10.0.0.0/16"
-  vpc_name       = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  eks_cluster_id = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  vpc_cidr = var.vpc_cidr
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  terraform_version = "Terraform v1.0.1"
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
+  }
+
 }
 
 module "aws_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "v3.2.0"
+  version = "~> 3.0"
 
-  name = local.vpc_name
+  name = local.name
   cidr = local.vpc_cidr
-  azs  = data.aws_availability_zones.available.names
+  azs  = local.azs
 
-  public_subnets  = [for k, v in slice(data.aws_availability_zones.available.names, 0, 3) : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in slice(data.aws_availability_zones.available.names, 0, 3) : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 2, k)]
 
-  enable_nat_gateway   = true
-  create_igw           = true
   enable_dns_hostnames = true
-  single_nat_gateway   = true
 
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
-    "kubernetes.io/role/elb"                        = "1"
-  }
+  # Manage so we can name
+  manage_default_network_acl    = true
+  default_network_acl_tags      = { Name = "${local.name}-default" }
+  manage_default_route_table    = true
+  default_route_table_tags      = { Name = "${local.name}-default" }
+  manage_default_security_group = true
+  default_security_group_tags   = { Name = "${local.name}-default" }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.eks_cluster_id}" = "shared"
-    "kubernetes.io/role/internal-elb"               = "1"
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/internal-elb"     = 1
   }
 
-  manage_default_security_group = true
+  tags = local.tags
 
-  default_security_group_name = "${local.vpc_name}-endpoint-secgrp"
+  default_security_group_name = "${local.name}-endpoint-secgrp"
   default_security_group_ingress = [
     {
       protocol    = -1
@@ -90,82 +69,59 @@ module "aws_vpc" {
 
 }
 
-module "vpc_endpoint_gateway" {
-  source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "v3.2.0"
+module "vpc_endpoints_sg" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "~> 4.0"
 
-  create = true
-  vpc_id = module.aws_vpc.vpc_id
+  name        = "${local.name}-vpc-endpoints"
+  description = "Security group for VPC endpoint access"
+  vpc_id      = module.aws_vpc.vpc_id
 
-  endpoints = {
-    s3 = {
-      service      = "s3"
-      service_type = "Gateway"
-      route_table_ids = flatten([
-        module.aws_vpc.intra_route_table_ids,
-      module.aws_vpc.private_route_table_ids])
-      tags = { Name = "s3-vpc-Gateway" }
+  ingress_with_cidr_blocks = [
+    {
+      rule        = "https-443-tcp"
+      description = "VPC CIDR HTTPS"
+      cidr_blocks = join(",", module.aws_vpc.private_subnets_cidr_blocks)
     },
-  }
-}
+  ]
 
-data "aws_security_group" "default" {
-  name   = "default"
-  vpc_id = module.aws_vpc.vpc_id
+  egress_with_cidr_blocks = [
+    {
+      rule        = "https-443-tcp"
+      description = "All egress HTTPS"
+      cidr_blocks = "0.0.0.0/0"
+    },
+  ]
+
+  tags = local.tags
 }
 
 module "vpc_endpoints" {
-  source             = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version            = "v3.2.0"
-  create             = true
-  vpc_id             = module.aws_vpc.vpc_id
-  security_group_ids = [data.aws_security_group.default.id]
-  subnet_ids         = module.aws_vpc.private_subnets
+  source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
+  version = "~> 3.0"
 
-  endpoints = {
-    ssm = {
-      service             = "ssm"
-      private_dns_enabled = true
-    },
-    logs = {
-      service             = "logs"
-      private_dns_enabled = true
-    },
-    autoscaling = {
-      service             = "autoscaling"
-      private_dns_enabled = true
-    },
-    sts = {
-      service             = "sts"
-      private_dns_enabled = true
-    },
-    elasticloadbalancing = {
-      service             = "elasticloadbalancing"
-      private_dns_enabled = true
-    },
-    ec2 = {
-      service             = "ec2"
-      private_dns_enabled = true
-    },
-    ec2messages = {
-      service             = "ec2messages"
-      private_dns_enabled = true
-    },
-    ecr_api = {
-      service             = "ecr.api"
-      private_dns_enabled = true
-    },
-    ecr_dkr = {
-      service             = "ecr.dkr"
-      private_dns_enabled = true
-    },
-    kms = {
-      service             = "kms"
-      private_dns_enabled = true
+  vpc_id             = module.aws_vpc.vpc_id
+  security_group_ids = [module.vpc_endpoints_sg.security_group_id]
+
+  endpoints = merge({
+    s3 = {
+      service         = "s3"
+      service_type    = "Gateway"
+      route_table_ids = module.aws_vpc.private_route_table_ids
+      tags = {
+        Name = "${local.name}-s3"
+      }
     }
-  }
-  tags = {
-    Project  = "EKS"
-    Endpoint = "true"
-  }
+    },
+    { for service in toset(["autoscaling", "ecr.api", "ecr.dkr", "ec2", "ec2messages", "elasticloadbalancing", "sts", "kms", "logs", "ssm", "ssmmessages"]) :
+      replace(service, ".", "_") =>
+      {
+        service             = service
+        subnet_ids          = module.aws_vpc.private_subnets
+        private_dns_enabled = true
+        tags                = { Name = "${local.name}-${service}" }
+      }
+  })
+
+  tags = local.tags
 }
