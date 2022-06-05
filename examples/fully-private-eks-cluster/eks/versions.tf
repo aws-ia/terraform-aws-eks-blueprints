@@ -16,15 +16,6 @@ terraform {
     }
   }
 
-
-  #State managed via Terraform Cloud
-  cloud {
-    organization = "skdemo"
-    workspaces {
-      name = "private-eks-uswest2"
-    }
-  }
-
   # ##  Used for end-to-end testing on project; update to suit your needs
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"

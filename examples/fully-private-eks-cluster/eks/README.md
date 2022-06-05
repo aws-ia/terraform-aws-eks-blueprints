@@ -39,23 +39,15 @@ cluster_security_group_additional_rules = {
     }
   }
 ```
-
-#### Step3: Review and updatethe backend.conf
-
-Review backend.conf and update the values for the S3 bucket.
-
-```shell script
-bucket = "<Update the bucket name here>"
-```
-#### Step4: Run Terraform INIT
+#### Step3: Run Terraform INIT
 Initialize a working directory with configuration files
 
 ```shell script
 cd examples/fully-private-eks-cluster/eks
-terraform init -backend-config backend.conf
+terraform init 
 ```
 
-#### Step5: Run Terraform PLAN
+#### Step4: Run Terraform PLAN
 Verify the resources created by this execution
 
 ```shell script
@@ -63,7 +55,7 @@ export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
 terraform plan -var-file base.tfvars
 ```
 
-#### Step6: Terraform APPLY
+#### Step5: Terraform APPLY
 to create resources
 
 ```shell script
@@ -75,17 +67,17 @@ Enter `yes` to apply
 EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster.
 This following command used to update the `kubeconfig` in your local machine where you run kubectl commands to interact with your EKS Cluster.
 
-#### Step7: Run `update-kubeconfig` command
+#### Step6: Run `update-kubeconfig` command
 
 `~/.kube/config` file gets updated with cluster details and certificate from the below command
 
     $ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 
-#### Step8: List all the worker nodes by running the command below
+#### Step7: List all the worker nodes by running the command below
 
     $ kubectl get nodes
 
-#### Step9: List all the pods running in `kube-system` namespace
+#### Step8: List all the pods running in `kube-system` namespace
 
     $ kubectl get pods -n kube-system
 
@@ -99,57 +91,3 @@ cd examples/fully-private-eks-cluster/vpc
 terraform destroy -var-file base.tfvars -auto-approve  
 ``` 
 
-
-
-<!--- BEGIN_TF_DOCS --->
-Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-SPDX-License-Identifier: MIT-0
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this
-software and associated documentation files (the "Software"), to deal in the Software
-without restriction, including without limitation the rights to use, copy, modify,
-merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-## Requirements
-
-No requirements.
-
-## Providers
-
-No providers.
-
-## Modules
-
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_eks-cluster-with-import-vpc"></a> [eks-cluster-with-import-vpc](#module\_eks-cluster-with-import-vpc) | ../../../examples/eks-cluster-with-import-vpc/eks | n/a |
-
-## Resources
-
-No resources.
-
-## Inputs
-
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_environment"></a> [environment](#input\_environment) | Environment area, e.g. prod or preprod | `string` | n/a | yes |
-| <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | Kubernetes Version | `string` | `"1.21"` | no |
-| <a name="input_region"></a> [region](#input\_region) | AWS region | `string` | n/a | yes |
-| <a name="input_tenant"></a> [tenant](#input\_tenant) | Account Name or unique account unique id e.g., apps or management or aws007 | `string` | n/a | yes |
-| <a name="input_tf_state_vpc_s3_bucket"></a> [tf\_state\_vpc\_s3\_bucket](#input\_tf\_state\_vpc\_s3\_bucket) | Terraform state S3 Bucket Name | `string` | n/a | yes |
-| <a name="input_tf_state_vpc_s3_key"></a> [tf\_state\_vpc\_s3\_key](#input\_tf\_state\_vpc\_s3\_key) | Terraform state S3 Key path | `string` | n/a | yes |
-| <a name="input_zone"></a> [zone](#input\_zone) | zone, e.g. dev or qa or load or ops etc... | `string` | n/a | yes |
-
-## Outputs
-
-No outputs.
-
-<!--- END_TF_DOCS --->
