@@ -11,7 +11,7 @@ locals {
     namespace   = local.namespace
     description = "Kubernetes Dashboard Helm Chart"
     values      = local.default_helm_values
-    timeout     = "1200"
+    timeout     = "300"
   }
 
   helm_config = merge(
@@ -35,7 +35,7 @@ locals {
   irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
     kubernetes_service_account        = local.service_account_name
-    create_kubernetes_namespace       = false
+    create_kubernetes_namespace       = true
     create_kubernetes_service_account = true
   }
 

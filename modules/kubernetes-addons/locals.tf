@@ -34,6 +34,7 @@ locals {
     aws_partition_id               = data.aws_partition.current.partition
     aws_region_name                = data.aws_region.current.name
     eks_cluster_id                 = var.eks_cluster_id
+    eks_cluster_version            = var.eks_cluster_version
     eks_oidc_issuer_url            = local.eks_oidc_issuer_url
     eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.eks_oidc_issuer_url}"
     tags                           = var.tags

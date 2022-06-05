@@ -7,10 +7,12 @@ module "helm_addon" {
   addon_context     = var.addon_context
 }
 
+#
 resource "kubectl_manifest" "sa_config" {
   yaml_body = templatefile("${path.module}/manifests/eks-admin-service-account.yaml", {
-    sa-name   = local.service_account_name
-    namespace = local.helm_config["namespace"]
+    sa-name     = local.service_account_name
+    namespace   = local.helm_config["namespace"]
+    api-version = var.addon_context.eks_cluster_version > "1.21" ? "rbac.authorization.k8s.io/v1" : "rbac.authorization.k8s.io/v1beta1"
   })
 
   depends_on = [module.helm_addon]
