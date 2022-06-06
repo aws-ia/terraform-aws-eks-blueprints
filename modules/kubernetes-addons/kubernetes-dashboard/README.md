@@ -12,13 +12,13 @@ This add-on bootstraps the Kubernetes Dashboard on the EKS cluster using a [helm
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | >= 1.14 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | >= 1.14 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
 
 ## Modules
 
@@ -30,7 +30,7 @@ This add-on bootstraps the Kubernetes Dashboard on the EKS cluster using a [helm
 
 | Name | Type |
 |------|------|
-| [kubectl_manifest.sa_config](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/manifest) | resource |
+| [kubernetes_namespace_v1.this](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace_v1) | resource |
 
 ## Inputs
 
