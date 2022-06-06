@@ -9,10 +9,8 @@ def get_examples():
     returning a string formatted json array of the example directories minus those that are excluded
     """
     exclude = {
-        'examples/eks-cluster-with-external-dns',  # excluded since GitLab auth, backend, etc. required
-        'examples/ci-cd/gitlab-ci-cd',  # excluded until Rout53 is setup
-        'examples/observability/amp-amg-opensearch',  # TODO - needs to be updated to run example
-        'examples/observability/eks-java-jmx'  # TODO - needs to be updated to run example
+        'examples/eks-cluster-with-external-dns',  # excluded until Rout53 is setup
+        'examples/ci-cd/gitlab-ci-cd',  # excluded since GitLab auth, backend, etc. required
     }
 
     projects = {
