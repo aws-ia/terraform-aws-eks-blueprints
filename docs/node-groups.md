@@ -92,7 +92,7 @@ The below example demonstrates advanced configuration options for a managed node
         ami_type        = "AL2_x86_64" # Amazon Linux 2(AL2_x86_64), AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
         release_version = ""           # Enter AMI release version to deploy the latest AMI released by AWS. Used only when you specify ami_type
         capacity_type   = "ON_DEMAND"  # ON_DEMAND or SPOT
-        instance_types  = ["m5.large"] # List of instances used only for SPOT type
+        instance_types  = ["m5.large"] # List of instances to get capacity from multipe pools
 
         block_device_mappings = [
           {
@@ -140,63 +140,9 @@ The below example demonstrates advanced configuration options for a managed node
     }
 ```
 
-The below example demonstrates advanced configuration options using Spot/GPU instances/ARM instances/Bottlerocket and custom AMIs managed node groups.
+The below example demonstrates advanced configuration options using GPU instances/ARM instances/Bottlerocket and custom AMIs managed node groups.
 
 ```hcl
-    #---------------------------------------------------------#
-    # SPOT Worker Group
-    #---------------------------------------------------------#
-    spot_m5 = {
-      # 1> Node Group configuration
-      node_group_name        = "spot-m5"
-      create_launch_template = true              # false will use the default launch template
-      launch_template_os     = "amazonlinux2eks" # amazonlinux2eks  or bottlerocket
-      public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
-      pre_userdata           = <<-EOT
-                 yum install -y amazon-ssm-agent
-                 systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
-             EOT
-      # Node Group scaling configuration
-      desired_size = 2
-      max_size     = 2
-      min_size     = 2
-
-      # Node Group update configuration. Set the maximum number or percentage of unavailable nodes to be tolerated during the node group version update.
-      update_config = [{
-        max_unavailable            = 1
-      }]
-
-      # Node Group compute configuration
-      ami_type               = "AL2_x86_64"
-      capacity_type          = "SPOT"
-      instance_types         = ["r5d.xlarge", "r5.xlarge"]
-      format_mount_nvme_disk = true # Ephemeral storage disks are formatted and mounted under `local1` folder
-
-      block_device_mappings = [
-        {
-          device_name = "/dev/xvda"
-          volume_type = "gp3"
-          volume_size = 100
-        }
-      ]
-
-      # Node Group network configuration
-      subnet_ids = [] # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
-
-      k8s_taints = []
-
-      k8s_labels = {
-        Environment = "preprod"
-        Zone        = "dev"
-        WorkerType  = "SPOT"
-      }
-      additional_tags = {
-        ExtraTag    = "spot_nodes"
-        Name        = "spot"
-        subnet_type = "private"
-      }
-    }
-
     #---------------------------------------------------------#
     # GPU instance type Worker Group
     #---------------------------------------------------------#
@@ -219,7 +165,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       # 3> Node Group compute configuration
       ami_type       = "AL2_x86_64_GPU" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
       capacity_type  = "ON_DEMAND"      # ON_DEMAND or SPOT
-      instance_types = ["m5.large"]     # List of instances used only for SPOT type
+      instance_types = ["m5.large"]     # List of instances to get capacity from multipe pools
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
@@ -267,7 +213,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       # 3> Node Group compute configuration
       ami_type       = "AL2_ARM_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
       capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
-      instance_types = ["m5.large"] # List of instances used only for SPOT type
+      instance_types = ["m5.large"] # List of instances to get capacity from multipe pools
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
@@ -311,7 +257,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       # 3> Node Group compute configuration
       ami_type       = "BOTTLEROCKET_ARM_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
       capacity_type  = "ON_DEMAND"           # ON_DEMAND or SPOT
-      instance_types = ["m5.large"]          # List of instances used only for SPOT type
+      instance_types = ["m5.large"]          # List of instances to get capacity from multipe pools
       disk_size      = 50
 
       # 4> Node Group network configuration
@@ -350,7 +296,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       # 3> Node Group compute configuration
       ami_type       = "BOTTLEROCKET_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
       capacity_type  = "ON_DEMAND"           # ON_DEMAND or SPOT
-      instance_types = ["m5.large"]          # List of instances used only for SPOT type
+      instance_types = ["m5.large"]          # List of instances to get capacity from multipe pools
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
@@ -386,7 +332,7 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       # custom_ami_id is optional when you provide ami_type. Enter the Custom AMI id if you want to use your own custom AMI
       custom_ami_id  = data.aws_ami.amazonlinux2eks.id
       capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
-      instance_types = ["m5.large"] # List of instances used only for SPOT type
+      instance_types = ["m5.large"] # List of instances to get capacity from multipe pools
 
       # Launch template configuration
       create_launch_template = true              # false will use the default launch template
@@ -406,8 +352,8 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
       # kubelet_extra_args used only when you pass custom_ami_id;
       # --node-labels is used to apply Kubernetes Labels to Nodes
       # --register-with-taints used to apply taints to Nodes
-      # e.g., kubelet_extra_args='--node-labels=WorkerType=SPOT,noderole=spark --register-with-taints=spot=true:NoSchedule --max-pods=58',
-      kubelet_extra_args = "--node-labels=WorkerType=SPOT,noderole=spark --register-with-taints=test=true:NoSchedule --max-pods=20"
+      # e.g., kubelet_extra_args='--node-labels=WorkerType=ON_DEMAND,noderole=spark --register-with-taints=ON_DEMAND=true:NoSchedule --max-pods=58',
+      kubelet_extra_args = "--node-labels=WorkerType=ON_DEMAND,noderole=spark --register-with-taints=test=true:NoSchedule --max-pods=20"
 
       # bootstrap_extra_args used only when you pass custom_ami_id. Allows you to change the Container Runtime for Nodes
       # e.g., bootstrap_extra_args="--use-max-pods false --container-runtime containerd"
@@ -458,6 +404,83 @@ The below example demonstrates advanced configuration options using Spot/GPU ins
         subnet_type = "private"
       }
     }
+```
+
+### Managed Node Groups with EC2 Spot Instances
+
+We recommend you to use managed-node groups (MNG) when using EC2 Spot instances. MNG creates the ASG for you following the Spot best practices:
+
+* Configure the [capacity_rebalance](https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-capacity-rebalancing.html) feature to `true`
+* Manage the rebalance notification notice by launching a new instance proactively when there's an instance with a high-risk of being interrupted. This is instance is [cordoned](https://jamesdefabia.github.io/docs/user-guide/kubectl/kubectl_cordon/) automatically so no new pods are scheduled there.
+* Use [capacity-optimized](https://aws.amazon.com/about-aws/whats-new/2019/08/new-capacity-optimized-allocation-strategy-for-provisioning-amazon-ec2-spot-instances/) allocation strategy to launch an instance from the [pool](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html#spot-features) with more spare capacity
+* Manage the instance interruption notice by draining the pods automatically to other nodes in the cluster.
+
+The below example demonstrates the minimum configuration required to deploy a managed node group using EC2 Spot instances. Notice how we're including more than one instance type for diversification purposes. Diversification is key, is how you'll get access to more spare capacity in EC2. You can use the [Amazon EC2 Instance Selector CLI](https://github.com/aws/amazon-ec2-instance-selector) to get a list of instances that match your workload.
+
+```hcl
+    # EKS MANAGED NODE GROUPS WITH SPOT INSTANCES
+    spot_2vcpu_8mem = {
+      node_group_name = "mng-spot-2vcpu-8mem"
+      capacity_type   = "SPOT"
+      instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
+      subnet_ids      = []  # Mandatory Public or Private Subnet IDs
+      disk_size       = 100 # disk_size will be ignored when using Launch Templates  
+      k8s_taints      = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }] // Avoid scheduling stateful workloads in SPOT nodes
+    }
+```
+
+The below example demonstrates advanced configuration options for a managed node group with a custom launch templates. This is important if you decide to add the ability to scale-down to zero nodes. Cluster autoscaler needs to be able to identify which nodes to scale-down, and you do it by adding custom tags.
+
+```hcl
+    # EKS MANAGED NODE GROUPS WITH SPOT INSTANCES
+    spot_2vcpu_8mem = {
+      node_group_name = "mng-spot-2vcpu-8mem"
+      capacity_type   = "SPOT"
+      instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"] // Instances with same specs for memory and CPU
+
+      # Node Group network configuration
+      subnet_type = "private" # public or private - Default uses the private subnets used in control plane if you don't pass the "subnet_ids"
+      subnet_ids  = []        # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+
+      k8s_taints = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }] // Avoid scheduling stateful workloads in SPOT nodes
+
+      min_size = 0 // Scale-down to zero nodes when no workloads are running, useful for pre-production environments
+
+      # Launch template configuration
+      create_launch_template = true              # false will use the default launch template
+      launch_template_os     = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
+
+      # This is so cluster autoscaler can identify which node (using ASGs tags) to scale-down to zero nodes
+      additional_tags = {
+        "k8s.io/cluster-autoscaler/node-template/label/eks.amazonaws.com/capacityType" = "SPOT"
+        "k8s.io/cluster-autoscaler/node-template/label/eks/node_group_name"            = "mng-spot-2vcpu-8mem"
+      }
+    }
+```
+
+Cluser autoscaler has the ability to set priorities on which node groups to scale by using the `priority` expander. To configure it, you need to add the following configuration in the `eks_blueprints_kubernetes_addons` block, like this:
+
+```hcl
+  enable_cluster_autoscaler = true
+  cluster_autoscaler_helm_config = {
+    set = [
+      {
+        name  = "extraArgs.expander"
+        value = "priority"
+      },
+      {
+        name  = "expanderPriorities"
+        value = <<-EOT
+                  100:
+                    - .*-spot-2vcpu-8mem.*
+                  90:
+                    - .*-spot-4vcpu-16mem.*
+                  10:
+                    - .*
+                EOT
+      }
+    ]
+  }
 ```
 
 ## Self-managed Node Groups
@@ -546,6 +569,61 @@ Check the following references as you may desire:
 - [Amazon EBS and NVMe on Linux instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nvme-ebs-volumes.html).
 - [AWS NVMe drivers for Windows instances](https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/aws-nvme-drivers.html)
 - [EC2 Instance Update – M5 Instances with Local NVMe Storage (M5d)](https://aws.amazon.com/blogs/aws/ec2-instance-update-m5-instances-with-local-nvme-storage-m5d/)
+
+### Self-Managed Node Groups with EC2 Spot Instances
+
+We recommend you to use managed-node groups (MNG) when using EC2 Spot instances. However, if you need to use self-managed node groups, you need to configure the ASG with the following Spot best practices:
+
+* Configure the [capacity_rebalance](https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-capacity-rebalancing.html) feature to `true`
+* Use the [capacity-optimized](https://aws.amazon.com/about-aws/whats-new/2019/08/new-capacity-optimized-allocation-strategy-for-provisioning-amazon-ec2-spot-instances/) allocation strategy to launch an instance from the [pool](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html#spot-features) with more spare capacity
+* Deploy the [Node Termination Handler (NTH)](https://github.com/aws/aws-node-termination-handler) to manage the rebalance recommendation and instance termination notice
+
+The below example demonstrates the minimum configuration required to deploy a self-managed node group. Notice how we're including more than one instance type for diversification purposes. Diversification is key, is how you'll get access to more spare capacity in EC2. You can use the [Amazon EC2 Instance Selector CLI](https://github.com/aws/amazon-ec2-instance-selector) to get a list of instances that match your workload.
+
+```hcl
+    spot_2vcpu_8mem = {
+      node_group_name    = "smng-spot-2vcpu-8mem"
+      capacity_type      = "spot"
+      capacity_rebalance = true
+      instance_types     = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"]
+      min_size           = 0
+      subnet_ids         = module.vpc.private_subnets
+      launch_template_os = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
+      k8s_taints         = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
+    }
+```
+
+You need to deploy the NTH as an add-on, so make sure you include the following within the `eks_blueprints_kubernetes_addons` block:
+
+```hcl
+  auto_scaling_group_names = module.eks_blueprints.self_managed_node_group_autoscaling_groups
+  enable_aws_node_termination_handler = true
+```
+
+Cluser autoscaler has the ability to set priorities on which node groups to scale by using the `priority` expander. To configure it, you need to add the following configuration in the `eks_blueprints_kubernetes_addons` block, like this:
+
+```hcl
+  enable_cluster_autoscaler = true
+  cluster_autoscaler_helm_config = {
+    set = [
+      {
+        name  = "extraArgs.expander"
+        value = "priority"
+      },
+      {
+        name  = "expanderPriorities"
+        value = <<-EOT
+                  100:
+                    - .*-spot-2vcpu-8mem.*
+                  90:
+                    - .*-spot-4vcpu-16mem.*
+                  10:
+                    - .*
+                EOT
+      }
+    ]
+  }
+```
 
 ### Fargate Profile
 
