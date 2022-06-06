@@ -55,16 +55,6 @@ locals {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
-
-  ca_expander          = "priority"
-  ca_priority_expander = <<-EOT
-    100:
-      - .*-spot-2vcpu-8mem.*
-    90:
-      - .*-spot-4vcpu-16mem.*
-    10:
-      - .*
-  EOT
 }
 
 #---------------------------------------------------------------
@@ -315,11 +305,18 @@ module "eks_blueprints_kubernetes_addons" {
     set = [
       {
         name  = "extraArgs.expander"
-        value = local.ca_expander
+        value = "priority"
       },
       {
         name  = "expanderPriorities"
-        value = local.ca_priority_expander
+        value = <<-EOT
+                  100:
+                    - .*-spot-2vcpu-8mem.*
+                  90:
+                    - .*-spot-4vcpu-16mem.*
+                  10:
+                    - .*
+                EOT
       }
     ]
   }
