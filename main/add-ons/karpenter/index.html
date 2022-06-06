@@ -416,6 +416,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../aws-efs-csi-driver/" class="md-nav__link">
+        AWS EFS CSI Driver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../aws-for-fluent-bit/" class="md-nav__link">
         AWS for Fluent Bit
       </a>
@@ -430,8 +444,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../aws-load-balancer-controller/" class="md-nav__link">
-        AWS Load Balancer Controller
+      <a href="../aws-cloudwatch-metrics/" class="md-nav__link">
+        AWS CloudWatch Metrics
       </a>
     </li>
   
@@ -444,8 +458,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../aws-open-telemetry.md" class="md-nav__link">
-        AWS Distro for OpenTelemetry
+      <a href="../aws-load-balancer-controller/" class="md-nav__link">
+        AWS Load Balancer Controller
       </a>
     </li>
   
@@ -488,6 +502,34 @@
     <li class="md-nav__item">
       <a href="../cluster-autoscaler/" class="md-nav__link">
         Cluster Autoscaler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crossplane/" class="md-nav__link">
+        Crossplane
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../external-dns/" class="md-nav__link">
+        ExternalDNS
       </a>
     </li>
   
@@ -596,6 +638,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../kube-state-metrics/" class="md-nav__link">
+        Kube State Metrics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../metrics-server/" class="md-nav__link">
         Metrics Server
       </a>
@@ -668,6 +724,20 @@
     <li class="md-nav__item">
       <a href="../traefik/" class="md-nav__link">
         Traefik
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vault/" class="md-nav__link">
+        HashiCorp Vault
       </a>
     </li>
   
@@ -826,6 +896,21 @@
   
 
     
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extensibility/" class="md-nav__link">
+        Extensibility
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -894,7 +979,7 @@
 <p>Karpenter is an open-source node provisioning project built for Kubernetes. Karpenter automatically launches just the right compute resources to handle your cluster's applications. It is designed to let you take full advantage of the cloud with fast and simple compute provisioning for Kubernetes clusters.</p>
 <p>For complete project documentation, please visit the <a href="https://karpenter.sh/docs/getting-started/">Karpenter</a>.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p>Karpenter can be deployed by enabling the add-on via the following. Check out the full <a href="../../modules/kubernetes-addons/karpenter/locals.tf">example</a> to deploy the EKS Cluster with Karpenter.</p>
+<p>Karpenter can be deployed by enabling the add-on via the following. Check out the full <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/karpenter/locals.tf">example</a> to deploy the EKS Cluster with Karpenter.</p>
 <div class="highlight"><pre><span></span><code>enable_karpenter = true
 </code></pre></div>
 <p>You can optionally customize the Helm chart that deploys <code>Karpenter</code> via the following configuration.</p>
