@@ -14,11 +14,11 @@ As of this writing, the primary means by which customers and partners can extend
 
 Helm add-ons are the most common case that generally combines provisioning of a helm chart as well as supporting infrastructure such as wiring of proper IAM policies for the Kubernetes service account, provisioning or configuring other AWS resources (VPC, subnets, node groups).
 
-In order to simplify the add-on creation, we have provided a helper module called [`helm-addon`](../modules/kubernetes-addons/helm-addon/README.md) for convenience.
+In order to simplify the add-on creation, we have provided a helper module called [`helm-addon`](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/helm-addon/README.md) for convenience.
 
 #### Non-helm Add-ons
 
-Add-ons that don't leverage helm but require to install arbitrary Kubernetes manifests will not be able to leverage the benefits provided by the [`helm-addon`](../modules/kubernetes-addons/helm-addon/README.md) however, they are still relatively easy to implement and would follow a similar pattern. Such addons should leverage the [kubectl provider](https://registry.terraform.io/providers/gavinbunney/kubectl).
+Add-ons that don't leverage helm but require to install arbitrary Kubernetes manifests will not be able to leverage the benefits provided by the [`helm-addon`](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/helm-addon/README.md) however, they are still relatively easy to implement and would follow a similar pattern. Such addons should leverage the [kubectl provider](https://registry.terraform.io/providers/gavinbunney/kubectl).
 
 ### Public Add-ons
 
@@ -38,8 +38,8 @@ Partner extensions (APN Partner) are expected to comply with the public extensio
 We expect 2 PRs to be created for every Partner Add-On.
 
 1. A PR against the main [EKS Blueprints](https://github.com/aws-ia/terraform-aws-eks-blueprints) repository that contains the following:
-   1. Update [kubernetes-addons/main.tf](../modules/kubernetes-addons/main.tf) to add a module invocation of the remote terraform module for the add-on.
-   2. Documentation to update the [Add-Ons](./add-ons) section. Example of add-on documentation can be found here along with the list of other add-ons.
+   1. Update [kubernetes-addons/main.tf](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/main.tf) to add a module invocation of the remote terraform module for the add-on.
+   2. Documentation to update the [Add-Ons](../add-ons/) section. Example of add-on documentation can be found here along with the list of other add-ons.
 2. A second PR against the [EKS Blueprints Add-Ons](https://github.com/aws-samples/eks-blueprints-add-ons) repository to create an ArgoCD application for your add-on. See example of other add-ons that shows what should be added. Add-ons that do not provide GitOps support are not expected to create this PR.
 
 ### Private Add-ons
@@ -114,7 +114,7 @@ In the above code tree,
 - The root directory contains your add-on code.
 - The blueprints code contains the code that demonstrates how customers can use your add-on with the EKS Blueprints framework. Here, we highly recommend that you show the true value add of your add-on through the pattern. Customers will benefit the most where the example shows how they can integrate their workload with your add-on.
 
-If your add-on can be deployed via helm chart, we recommend the use of the [helm-addon](../modules/kubernetes-addons/helm-addon) as shown below.
+If your add-on can be deployed via helm chart, we recommend the use of the [helm-addon](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/helm-addon) as shown below.
 
 **Note**: Use the latest published module in the source version.
 
@@ -137,7 +137,7 @@ module "helm_addon" {
 
 Once you have tested your add-on locally against your fork of the core repo, please open a PR that contains the following:
 
-> Update to [`kubernetes-addons/main.tf`](../modules/kubernetes-addons/main.tf) with a code block that invokes your add-on. E.g.
+> Update to [`kubernetes-addons/main.tf`](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/main.tf) with a code block that invokes your add-on. E.g.
 
 ```hcl
 module "kube_state_metrics" {
@@ -150,7 +150,7 @@ module "kube_state_metrics" {
 }
 ```
 
-> Update to [`kubernetes-addons/variables.tf`](../modules/kubernetes-addons/variables.tf) to accept parameters for your add-on. E.g.
+> Update to [`kubernetes-addons/variables.tf`](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/variables.tf) to accept parameters for your add-on. E.g.
 
 ```hcl
 #-----------Kube State Metrics ADDON-------------
@@ -167,7 +167,7 @@ variable "kube_state_metrics_helm_config" {
 }
 ```
 
-- Add documentation under add-on [`docs`](../docs/add-ons/kube-state-metrics.md) that gives an overview of your add-on and points the customer to the actual documentation which would live in your add-on repo.
+- Add documentation under add-on [`docs`](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/kube-state-metrics.md) that gives an overview of your add-on and points the customer to the actual documentation which would live in your add-on repo.
 
 ### GitOps
 
@@ -184,7 +184,7 @@ output "argocd_gitops_config" {
 }
 ```
 
-- In the PR against the core repo, update [`kubernetes-addons/locals.tf`](../modules/kubernetes-addons/locals.tf) to provide the add-on module output `argocd_gitops_config` to the `argocd_add_on_config` as shown for others.
+- In the PR against the core repo, update [`kubernetes-addons/locals.tf`]((https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/locals.tf) to provide the add-on module output `argocd_gitops_config` to the `argocd_add_on_config` as shown for others.
 
 - Open a PR against the [eks-blueprints-addons](https://github.com/aws-samples/eks-blueprints-add-ons) repo with the following changes:
 
