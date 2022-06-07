@@ -16,13 +16,6 @@ locals {
     local.default_helm_config,
     var.helm_config
   )
-
-  irsa_config = {
-    create_kubernetes_namespace       = true
-    kubernetes_namespace              = local.name
-    create_kubernetes_service_account = false
-    kubernetes_service_account        = local.name
-  }
   
   argocd_gitops_config = {
     enable = true
