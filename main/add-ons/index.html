@@ -462,8 +462,8 @@
   
   
     <li class="md-nav__item">
-      <a href="managed-add-ons/" class="md-nav__link">
-        Amazon EKS Add-ons
+      <a href="argocd/" class="md-nav__link">
+        ArgoCD
       </a>
     </li>
   
@@ -476,8 +476,8 @@
   
   
     <li class="md-nav__item">
-      <a href="argocd/" class="md-nav__link">
-        Argo CD
+      <a href="aws-cloudwatch-metrics/" class="md-nav__link">
+        AWS CloudWatch Metrics
       </a>
     </li>
   
@@ -518,20 +518,6 @@
   
   
     <li class="md-nav__item">
-      <a href="aws-cloudwatch-metrics/" class="md-nav__link">
-        AWS CloudWatch Metrics
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="aws-load-balancer-controller/" class="md-nav__link">
         AWS Load Balancer Controller
       </a>
@@ -548,6 +534,20 @@
     <li class="md-nav__item">
       <a href="aws-node-termination-handler/" class="md-nav__link">
         AWS Node Termination Handler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="aws-privateca-issuer/" class="md-nav__link">
+        aws-privateca-issuer
       </a>
     </li>
   
@@ -617,7 +617,7 @@
   
     <li class="md-nav__item">
       <a href="fargate-fluent-bit/" class="md-nav__link">
-        Fargate Fluent Bit
+        Fargate fluent bit
       </a>
     </li>
   
@@ -659,7 +659,35 @@
   
     <li class="md-nav__item">
       <a href="kube-state-metrics/" class="md-nav__link">
-        Kube State Metrics
+        Kube-State-Metrics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="kubernetes-dashboard/" class="md-nav__link">
+        Kubernetes Dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="managed-add-ons/" class="md-nav__link">
+        Amazon EKS Add-ons
       </a>
     </li>
   
@@ -729,7 +757,7 @@
   
     <li class="md-nav__item">
       <a href="tetrate-istio/" class="md-nav__link">
-        Tetrate Istio
+        Tetrate Istio Distro
       </a>
     </li>
   
@@ -771,7 +799,7 @@
   
     <li class="md-nav__item">
       <a href="vpa/" class="md-nav__link">
-        VPA
+        Vertical Pod Autoscaler
       </a>
     </li>
   
@@ -785,7 +813,7 @@
   
     <li class="md-nav__item">
       <a href="yunikorn/" class="md-nav__link">
-        YuniKorn
+        Apache YuniKorn
       </a>
     </li>
   
@@ -1017,117 +1045,7 @@
 
 <h1 id="kubernetes-addons-module">Kubernetes Addons Module<a class="headerlink" href="#kubernetes-addons-module" title="Permanent link">&para;</a></h1>
 <p>The <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/"><code>kubernetes-addons</code></a> module within EKS Blueprints allows you to configure the add-ons you would like deployed into you EKS cluster with simple <strong>true/false</strong> flags.</p>
-<p>The framework currently provides support for the following add-ons:</p>
-<table>
-<thead>
-<tr>
-<th>Add-on</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="agones/">Agones</a></td>
-<td>Deploys Agones into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="argocd/">ArgoCD</a></td>
-<td>Deploys ArgoCD into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="aws-efs-csi-driver/">AWS EFS CSI driver</a></td>
-<td>Deploys the AWS EFS CSI driver into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="aws-for-fluent-bit/">AWS for Fluent Bit</a></td>
-<td>Deploys Fluent Bit into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="aws-cloudwatch-metrics/">AWS CloudWatch Metrics</a></td>
-<td>Deploys AWS CloudWatch Metrics Agent into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="aws-load-balancer-controller/">AWS Load Balancer Controller</a></td>
-<td>Deploys the AWS Load Balancer Controller into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="aws-node-termination-handler/">AWS Node Termination Handler</a></td>
-<td>Deploys the AWS Node Termination Handler into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="cert-manager/">cert-manager</a></td>
-<td>Deploys cert-manager into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="cluster-autoscaler/">Cluster Autoscaler</a></td>
-<td>Deploys the standard cluster autoscaler into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="crossplane/">Crossplane</a></td>
-<td>Deploys Crossplane into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="external-dns/">ExternalDNS</a></td>
-<td>Deploys External DNS into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="fargate-fluent-bit/">Fargate Fluent Bit</a></td>
-<td>Adds Fluent Bit support for EKS Fargate</td>
-</tr>
-<tr>
-<td><a href="karpenter/">Karpenter</a></td>
-<td>Deploys Karpenter into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="keda/">Keda</a></td>
-<td>Deploys Keda into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="kube-state-metrics/">Kube State Metrics</a></td>
-<td>Deploys Kube State Metrics into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="kubernetes-dashboard/">Kubernetes Dashboard</a></td>
-<td>Deploys Kubernetes Dashboard into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="metrics-server/">Metrics Server</a></td>
-<td>Deploys the Kubernetes Metrics Server into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="nginx/">Ingress Nginx</a></td>
-<td>Deploys the NGINX Ingress Controller into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="prometheus/">Prometheus</a></td>
-<td>Deploys Prometheus into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="spark-on-k8s-operator/">Spark K8S Operator</a></td>
-<td>Deploys the Kubernetes Operator for Apache Spark into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="tetrate-istio/">Tetrate Istio</a></td>
-<td>Deploys Tetrate Istio Distro into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="traefik/">Traefik</a></td>
-<td>Deploys Traefik Proxy into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="vault/">HashiCorp Vault</a></td>
-<td>Deploys HashiCorp Vault into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="vpa/">VPA</a></td>
-<td>Deploys the Vertical Pod Autoscaler into an EKS cluster.</td>
-</tr>
-<tr>
-<td><a href="yunikorn/">YuniKorn</a></td>
-<td>Deploys Apache YuniKorn into an EKS cluster.</td>
-</tr>
-</tbody>
-</table>
+<p>The framework currently provides support for add-ons listed in the current folder.</p>
 <h2 id="add-on-management">Add-on Management<a class="headerlink" href="#add-on-management" title="Permanent link">&para;</a></h2>
 <p>The framework provides two approaches to managing add-on configuration for your EKS clusters. They are:</p>
 <ol>
