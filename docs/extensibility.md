@@ -39,7 +39,7 @@ We expect 2 PRs to be created for every Partner Add-On.
 
 1. A PR against the main [EKS Blueprints](https://github.com/aws-ia/terraform-aws-eks-blueprints) repository that contains the following:
    1. Update [kubernetes-addons/main.tf](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/main.tf) to add a module invocation of the remote terraform module for the add-on.
-   2. Documentation to update the [Add-Ons](../add-ons/) section. Example of add-on documentation can be found here along with the list of other add-ons.
+   2. Documentation to update the [Add-Ons](./add-ons/index.md) section. Example of add-on documentation can be found here along with the list of other add-ons.
 2. A second PR against the [EKS Blueprints Add-Ons](https://github.com/aws-samples/eks-blueprints-add-ons) repository to create an ArgoCD application for your add-on. See example of other add-ons that shows what should be added. Add-ons that do not provide GitOps support are not expected to create this PR.
 
 ### Private Add-ons
@@ -167,7 +167,7 @@ variable "kube_state_metrics_helm_config" {
 }
 ```
 
-- Add documentation under add-on [`docs`](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/kube-state-metrics.md) that gives an overview of your add-on and points the customer to the actual documentation which would live in your add-on repo.
+- Add documentation under add-on [`docs`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/docs/add-ons/) that gives an overview of your add-on and points the customer to the actual documentation which would live in your add-on repo.
 
 ### GitOps
 
@@ -184,11 +184,11 @@ output "argocd_gitops_config" {
 }
 ```
 
-- In the PR against the core repo, update [`kubernetes-addons/locals.tf`]((https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/locals.tf) to provide the add-on module output `argocd_gitops_config` to the `argocd_add_on_config` as shown for others.
+- In the PR against the core repo, update [`kubernetes-addons/locals.tf`](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/locals.tf) to provide the add-on module output `argocd_gitops_config` to the `argocd_add_on_config` as shown for others.
 
 - Open a PR against the [eks-blueprints-addons](https://github.com/aws-samples/eks-blueprints-add-ons) repo with the following changes:
 
   - Create a wrapper Helm chart for your add-on similar to [kube-state-metrics](https://github.com/aws-samples/eks-blueprints-add-ons/tree/main/add-ons/kube-state-metrics)
     - Create a [`Chart.yaml`](https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/add-ons/kube-state-metrics/Chart.yaml) which points to the location of your actual helm chart.
     - Create a [`values.yaml`](https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/add-ons/kube-state-metrics/values.yaml) which contains a default best-practice configuration for your add-on.
-  - Create an ArgoCD application [template](https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/templates/kube-state-metrics.yaml) which is applied if `enable_<add_on> = true` is used by the customer in the consumer module. This also used to parameterize your add-ons helm chart wrapper with values that will be passed over from Terraform to Helm using the [GitOps bridge](https://github.com/aws-samples/eks-blueprints/blob/doc/extension-guide/docs/add-ons/index.md#gitops-bridge).
+  - Create an ArgoCD application [template](https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/templates/kube-state-metrics.yaml) which is applied if `enable_<add_on> = true` is used by the customer in the consumer module. This also used to parameterize your add-ons helm chart wrapper with values that will be passed over from Terraform to Helm using the [GitOps bridge](./add-ons/index.md#gitops-bridge).
