@@ -19,21 +19,26 @@ nav:
       - Agones: "add-ons/agones.md"
       - Amazon EKS Add-ons: "add-ons/managed-add-ons.md"
       - Argo CD: "add-ons/argocd.md"
+      - AWS EFS CSI Driver: "add-ons/aws-efs-csi-driver.md"
       - AWS for Fluent Bit: "add-ons/aws-for-fluent-bit.md"
+      - AWS CloudWatch Metrics: "add-ons/aws-cloudwatch-metrics.md"
       - AWS Load Balancer Controller: "add-ons/aws-load-balancer-controller.md"
-      - AWS Distro for OpenTelemetry: "add-ons/aws-open-telemetry.md"
       - AWS Node Termination Handler: "add-ons/aws-node-termination-handler.md"
       - cert-manager: "add-ons/cert-manager.md"
       - Cluster Autoscaler: "add-ons/cluster-autoscaler.md"
+      - Crossplane: "add-ons/crossplane.md"
+      - ExternalDNS: "add-ons/external-dns.md"
       - Fargate Fluent Bit: "add-ons/fargate-fluent-bit.md"
       - Karpenter: "add-ons/karpenter.md"
       - KEDA: "add-ons/keda.md"
+      - Kube State Metrics: "add-ons/kube-state-metrics.md"
       - Metrics Server: "add-ons/metrics-server.md"
       - Nginx: "add-ons/nginx.md"
       - Prometheus: "add-ons/prometheus.md"
       - Spark K8S Operator: "add-ons/spark-on-k8s-operator.md"
       - Tetrate Istio: "add-ons/tetrate-istio.md"
       - Traefik: "add-ons/traefik.md"
+      - HashiCorp Vault: "add-ons/vault.md"
       - VPA: "add-ons/vpa.md"
       - YuniKorn: "add-ons/yunikorn.md"
   - Advanced:
@@ -43,6 +48,7 @@ nav:
       - GitOps with Flux: "advanced/gitops-with-flux.md"
       - Multi-cluster: "advanced/multi-cluster.md"
       - Private Clusters: "advanced/private-clusters.md"
+  - Extensibility: "extensibility.md"
 markdown_extensions:
   - def_list
   - pymdownx.highlight
@@ -54,3 +60,6 @@ markdown_extensions:
       permalink: true
 plugins:
   - search
+extra:
+  version:
+    provider: mike
