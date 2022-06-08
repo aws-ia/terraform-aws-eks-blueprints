@@ -435,3 +435,10 @@ module "adot_collector_nginx" {
     module.opentelemetry_operator
   ]
 }
+
+module "external_secrets" {
+  count         = var.enable_external_secrets ? 1 : 0
+  source        = "./external-secrets"
+  helm_config   = var.external_secrets_helm_config
+  addon_context = local.addon_context
+}

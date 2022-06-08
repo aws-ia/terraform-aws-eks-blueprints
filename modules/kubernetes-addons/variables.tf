@@ -889,3 +889,16 @@ variable "secrets_store_csi_driver_helm_config" {
   default     = null
   description = "CSI Secrets Store Provider Helm Configurations"
 }
+
+#-----------EXTERNAL SECRETS OPERATOR-----------
+variable "enable_external_secrets" {
+  type        = bool
+  default     = false
+  description = "Enable External Secrets operator add-on"
+}
+
+variable "external_secrets_helm_config" {
+  type        = any
+  default     = {}
+  description = "External Secrets operator Helm Chart config"
+}
