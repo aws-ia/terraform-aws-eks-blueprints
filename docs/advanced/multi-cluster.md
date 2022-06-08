@@ -1,4 +1,4 @@
-  ## Advanced Deployment Folder Structure
+## Advanced Deployment Folder Structure
 
 This example shows how to structure folders in your repo when you want to deploy multiple EKS Clusters across multiple regions and accounts.
 
