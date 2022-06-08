@@ -19,7 +19,7 @@ module "aws_coredns" {
   enable_amazon_eks_coredns = var.enable_amazon_eks_coredns
   addon_config = merge(
     {
-      kubernetes_version = var.eks_cluster_version
+      kubernetes_version = local.eks_cluster_version
     },
     var.amazon_eks_coredns_config,
   )
@@ -28,7 +28,7 @@ module "aws_coredns" {
   enable_self_managed_coredns = var.enable_self_managed_coredns
   helm_config = merge(
     {
-      kubernetes_version = var.eks_cluster_version
+      kubernetes_version = local.eks_cluster_version
     },
     var.self_managed_coredns_helm_config,
     {
