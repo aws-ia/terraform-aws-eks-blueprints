@@ -10,3 +10,8 @@ variable "grafana_api_key" {
   default     = ""
   sensitive   = true
 }
+
+variable "aws_region" {
+  description = "AWS Region to deploy resources"
+  type        = string
+}
