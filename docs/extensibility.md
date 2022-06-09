@@ -49,7 +49,7 @@ There are two ways in which a customer can implement fully private add-ons:
 1. Add-ons specific to a customer instance of EKS Blueprints can be implemented inline with the blueprint in the same codebase. Such extensions are scoped to the customer base. Forking the repo however has disadvantages when it comes to ongoing feature releases and bug fixes which will have to be manually ported to your fork.
 2. We recommend, you implement a separate repository for your private add-on while still using the upstream framework. This gives you the advantage of keeping up with ongoing feature releases and bug fixes while keeping your add-on private.
 
-The following example shows you can leverage EKS Blueprints to provide your own helm add-on. 
+The following example shows you can leverage EKS Blueprints to provide your own helm add-on.
 
 ```hcl
 #---------------------------------------------------------------
