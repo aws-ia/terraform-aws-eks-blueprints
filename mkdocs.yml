@@ -1,6 +1,7 @@
 site_name: Amazon EKS Blueprints for Terraform
 repo_name: "aws-ia/terraform-aws-eks-blueprints"
 repo_url: "https://github.com/aws-ia/terraform-aws-eks-blueprints"
+edit_uri: "edit/main/docs/"
 docs_dir: "docs"
 theme:
   name: material
