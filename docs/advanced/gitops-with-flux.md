@@ -9,7 +9,7 @@ You can use the above sample repository to experiment with the predefined cluste
 This sample installs the following Kubernetes add-ons:
 
 * **[metrics-server](https://github.com/kubernetes-sigs/metrics-server):** Aggregator of resource usage data in your cluster, commonly used by other Kubernetes add ons, such us [Horizontal Pod Autoscaler](https://docs.aws.amazon.com/eks/latest/userguide/horizontal-pod-autoscaler.html) or [Kubernetes Dashboard](https://docs.aws.amazon.com/eks/latest/userguide/dashboard-tutorial.html).
-* **[Calico](https://docs.projectcalico.org/about/about-calico):** Project Calico is a network policy engine for Kubernetes. Calico network policy enforcement allows you to implement network segmentation and tenant isolation. For more information check the [Amazon EKS documentation](https://docs.aws.amazon.com/eks/latest/userguide/calico.html).
+* **[Calico](https://projectcalico.docs.tigera.io/about/about-calico):** Project Calico is a network policy engine for Kubernetes. Calico network policy enforcement allows you to implement network segmentation and tenant isolation. For more information check the [Amazon EKS documentation](https://docs.aws.amazon.com/eks/latest/userguide/calico.html).
 * **[Kyverno](https://kyverno.io/):** Kubernetes Policy Management Engine. Kyverno allows cluster administrators to manage environment specific configurations independently of workload configurations and enforce configuration best practices for their clusters. Kyverno can be used to scan existing workloads for best practices, or can be used to enforce best practices by blocking or mutating API requests.
 * **[Prometheus](https://prometheus.io/):** Defacto standard open-source systems monitoring and alerting toolkit for Kubernetes. This repository installs [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack).
 * **[Flagger](https://flagger.app/):** Progressive delivery operator for Flux. Flagger can run automated application analysis, testing, promotion and rollback for the following deployment strategies: Canary, A/B Testing and Blue/Green. For more details, check the [Flagger documentation](https://docs.flagger.app/).
@@ -36,7 +36,7 @@ You'll also need the following:
 
 Fork the [aws-samples/flux-eks-gitops-config](https://github.com/aws-samples/flux-eks-gitops-config) repository on your personal GitHub account and export your GitHub access token, username and repo name:
 
-```bash
+```sh
   export GITHUB_TOKEN=<your-token>
   export GITHUB_USER=<your-username>
   export GITHUB_REPO=<repository-name>
@@ -44,7 +44,7 @@ Fork the [aws-samples/flux-eks-gitops-config](https://github.com/aws-samples/flu
 
 Define whether you want to bootstrap your cluster with the `TEST` or the `PRODUCTION` configuration:
 
-```bash
+```sh
   # TEST configuration
   export CLUSTER_ENVIRONMENT=test
 
@@ -54,13 +54,13 @@ Define whether you want to bootstrap your cluster with the `TEST` or the `PRODUC
 
 Verify that your stagging cluster satisfies the prerequisites with:
 
-```bash
+```sh
   flux check --pre
 ```
 
 You can now bootstrap your cluster with Flux CLI.
 
-```bash
+```sh
   flux bootstrap github --owner=${GITHUB_USER} --repository=${GITHUB_REPO} --branch=main --path=clusters/${CLUSTER_ENVIRONMENT} --personal
 ```
 
@@ -68,20 +68,20 @@ The bootstrap command commits the manifests for the Flux components in `clusters
 
 Confirm that Flux has finished applying the configuration to your cluster (it will take 3 or 4 minutes to sync everything):
 
-```bash
+```sh
   $ flux get kustomization
   NAME                READY MESSAGE                                                           REVISION                                        SUSPENDED
-  apps                True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False  
-  calico-installation True  Applied revision: master/00a2f33ea55f2018819434175c09c8bd8f20741a master/00a2f33ea55f2018819434175c09c8bd8f20741a False  
-  calico-operator     True  Applied revision: master/00a2f33ea55f2018819434175c09c8bd8f20741a master/00a2f33ea55f2018819434175c09c8bd8f20741a False  
-  config              True  Applied revision: main/8fd33f531df71002f2da7bc9619ee75281a9ead0   main/8fd33f531df71002f2da7bc9619ee75281a9ead0   False  
-  flux-system         True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False  
+  apps                True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False
+  calico-installation True  Applied revision: master/00a2f33ea55f2018819434175c09c8bd8f20741a master/00a2f33ea55f2018819434175c09c8bd8f20741a False
+  calico-operator     True  Applied revision: master/00a2f33ea55f2018819434175c09c8bd8f20741a master/00a2f33ea55f2018819434175c09c8bd8f20741a False
+  config              True  Applied revision: main/8fd33f531df71002f2da7bc9619ee75281a9ead0   main/8fd33f531df71002f2da7bc9619ee75281a9ead0   False
+  flux-system         True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False
   infrastructure      True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False
 ```
 
 Get the URL for the nginx ingress controller that has been deployed in your cluster (you will see two ingresses, since Flagger will create a canary ingress):
 
-```bash
+```sh
    $ kubectl get ingress -n podinfo
    NAME             CLASS   HOSTS          ADDRESS                               PORTS   AGE
    podinfo          nginx   podinfo.test   k8s-xxxxxx.elb.us-west-2.amazonaws.com   80      23h
@@ -90,7 +90,7 @@ Get the URL for the nginx ingress controller that has been deployed in your clus
 
 Confirm that podinfo can be correctly accessed via ingress:
 
-```bash
+```sh
   $ curl -H "Host: podinfo.test" k8s-xxxxxx.elb.us-west-2.amazonaws.com
   {
   "hostname": "podinfo-primary-65584c8f4f-d7v4t",

@@ -16,7 +16,7 @@ Remote API access API via SSM agent. You can launch trouble shooting container v
 ### Updates
 Bottlerocket can be updated automatically via Kubernetes  Operator
 
-```shell script
+```sh
     kubectl apply -f Bottlerocket_k8s.csv.yaml
     kubectl get ClusterServiceVersion Bottlerocket_k8s | jq.'status'
 ```

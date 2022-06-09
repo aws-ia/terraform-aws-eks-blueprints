@@ -2,8 +2,6 @@
 
 This example deploys the following resources
 
-- Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
-- Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
 - Creates EKS Cluster Control plane with public endpoint (for demo purpose only) with one managed node group
 - Deploys Metrics server, Cluster Autoscaler, Prometheus and EMR on EKS Addon
 - Creates Amazon managed Prometheus and configures Prometheus addon to remote write metrics to AMP
@@ -22,27 +20,27 @@ _Note: Currently Amazon Prometheus supported only in selected regions. Please se
 
 Clone the repository
 
-```
+```sh
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 Navigate into one of the example directories and run `terraform init`
 
-```
+```sh
 cd examples/analytics/emr-on-eks
 terraform init
 ```
 
 Set AWS_REGION and Run Terraform plan to verify the resources created by this execution.
 
-```
+```sh
 export AWS_REGION="<enter-your-region>"
 terraform plan
 ```
 
-Deploy the pattern
+**Deploy the pattern**
 
-```
+```sh
 terraform apply
 ```
 
@@ -54,13 +52,13 @@ Let’s verify the resources created by Step 4.
 
 Verify the Amazon EKS Cluster and Amazon Managed service for Prometheus
 
-```shell script
+```sh
 aws eks describe-cluster --name aws001-preprod-test-eks
 
 aws amp list-workspaces --alias amp-ws-aws001-preprod-test-eks
 ```
 
-```shell script
+```sh
 Verify EMR on EKS Namespaces emr-data-team-a and emr-data-team-b and Pod status for Prometheus, Vertical Pod Autoscaler, Metrics Server and Cluster Autoscaler.
 
 aws eks --region <ENTER_YOUR_REGION> update-kubeconfig --name aws001-preprod-test-eks # Creates k8s config file to authenticate with EKS Cluster
@@ -82,7 +80,7 @@ kubectl get pods --namespace=kube-system | grep  cluster-autoscaler # Output sho
 
 We are using AWS CLI to create EMR on EKS Clusters. You can leverage Terraform Module once the [EMR on EKS TF provider](https://github.com/hashicorp/terraform-provider-aws/pull/20003) is available.
 
-```shell script
+```sh
 vi examples/analytics/emr-on-eks/examples/create_emr_virtual_cluster_for_eks.sh
 ```
 
@@ -96,7 +94,7 @@ Extract the cluster_name as **EKS_CLUSTER_ID** from Terraform Outputs (**Step 1*
 
 Execute the shell script to create virtual cluster
 
-```shell script
+```sh
 cd examples/analytics/emr-on-eks/examples/
 ./create_emr_virtual_cluster_for_eks.sh
 ```
@@ -110,24 +108,40 @@ This script requires two input parameters.
     EMR_VIRTUAL_CLUSTER_ID=$1  # EMR Cluster ID e.g., aws001-preprod-test-eks-emr-data-team-a
     S3_BUCKET=$2               # S3 bucket for storing the scripts and spark output data e.g., s3://<bucket-name>
 
-```shell script
+```sh
 cd examples/analytics/emr-on-eks/examples/spark-execute/
 ./5-spark-job-with-AMP-AMG.sh aws001-preprod-test-eks-emr-data-team-a <ENTER_S3_BUCKET_NAME>
 ```
 
 Verify the job execution
 
-```shell script
+```sh
 kubectl get pods --namespace=emr-data-team-a -w
 ```
 
-## Step 5: Cleanup
+## Step 6: Cleanup
 
 ### Delete EMR Virtual Cluster for EKS
 
-```shell script
+```sh
 cd examples/analytics/emr-on-eks/examples/
 ./delete_emr_virtual_cluster_for_eks.sh
+```
+
+To clean up your environment, destroy the Terraform modules in reverse order.
+
+Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
+
+```sh
+terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
+terraform destroy -target="module.eks_blueprints" -auto-approve
+terraform destroy -target="module.vpc" -auto-approve
+```
+
+Finally, destroy any additional resources that are not in the above modules
+
+```sh
+terraform destroy -auto-approve
 ```
 
 ## Additional examples
@@ -179,7 +193,7 @@ Specifically, you can use persistent volume claims if the jobs require large shu
 
 ##### Issue1: Error: local-exec provisioner error
 
-```shell script
+```sh
 Error: local-exec provisioner error \
 with module.eks-blueprints.module.emr_on_eks["data_team_b"].null_resource.update_trust_policy,\
  on .terraform/modules/eks-blueprints/modules/emr-on-eks/main.tf line 105, in resource "null_resource" \

@@ -50,7 +50,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 #### Step 1: Clone the repo using the command below
 
-```shell script
+```sh
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
@@ -58,7 +58,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 
 Initialize a working directory with configuration files
 
-```shell script
+```sh
 cd examples/crossplane/
 terraform init
 ```
@@ -67,20 +67,20 @@ terraform init
 
 Verify the resources created by this execution
 
-```shell script
+```sh
 export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
 terraform plan
 ```
 
 #### Step 4: Finally, Terraform APPLY
 
-to create resources
+**Deploy the pattern**
 
-```shell script
+```sh
 terraform apply
 ```
 
-Enter `yes` to apply
+Enter `yes` to apply.
 
 ### Configure `kubectl` and test cluster
 
@@ -91,19 +91,19 @@ This following command used to update the `kubeconfig` in your local machine whe
 
 `~/.kube/config` file gets updated with cluster details and certificate from the below command
 
-```shell script
+```sh
 aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 ```
 
 #### Step 6: List all the worker nodes by running the command below
 
-```shell script
+```sh
 kubectl get nodes
 ```
 
 #### Step 7: List all the pods running in `crossplane` namespace
 
-```shell script
+```sh
 kubectl get pods -n crossplane
 ```
 
@@ -113,7 +113,7 @@ This example shows how to deploy S3 bucket using Crossplane AWS provider
 
 - Open the file below
 
-```shell script
+```sh
 vi ~/examples/crossplane/crossplane-aws-examples/aws-provider-s3.yaml
 ```
 
@@ -123,7 +123,7 @@ vi ~/examples/crossplane/crossplane-aws-examples/aws-provider-s3.yaml
 
 - Apply the K8s manifest
 
-```shell script
+```sh
 cd ~/examples/crossplane/crossplane-aws-examples/
 kubectl apply -f aws-provider-s3.yaml
 ```
@@ -132,7 +132,7 @@ kubectl apply -f aws-provider-s3.yaml
 
 To Delete the bucket
 
-```shell script
+```sh
 cd ~/examples/crossplane/crossplane-aws-examples/
 kubectl delete -f aws-provider-s3.yaml
 ```
@@ -143,7 +143,7 @@ This example shows how to deploy S3 bucket using Crossplane Terrajet AWS Provide
 
 - Open the file below
 
-```shell script
+```sh
 vi ~/examples/crossplane/crossplane-aws-examples/jet-aws-provider-s3.yaml
 ```
 
@@ -153,7 +153,7 @@ vi ~/examples/crossplane/crossplane-aws-examples/jet-aws-provider-s3.yaml
 
 - Apply the K8s manifest
 
-```shell script
+```sh
 cd ~/examples/crossplane/crossplane-aws-examples/
 kubectl apply -f jet-aws-provider-s3.yaml
 ```
@@ -162,7 +162,7 @@ kubectl apply -f jet-aws-provider-s3.yaml
 
 To Delete the bucket
 
-```shell script
+```sh
 cd ~/examples/crossplane/crossplane-aws-examples/
 kubectl delete -f jet-aws-provider-s3.yaml
 ```
@@ -175,7 +175,18 @@ Step 1: Delete resources created by Crossplane
 
 Step 2: Terraform Destroy
 
-```shell script
-cd examples/crossplane
-terraform destroy --auto-approve
+To clean up your environment, destroy the Terraform modules in reverse order.
+
+Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
+
+```sh
+terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
+terraform destroy -target="module.eks_blueprints" -auto-approve
+terraform destroy -target="module.vpc" -auto-approve
+```
+
+Finally, destroy any additional resources that are not in the above modules
+
+```sh
+terraform destroy -auto-approve
 ```

@@ -25,7 +25,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 #### Step 1: Clone the repo using the command below
 
-```shell script
+```sh
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
@@ -33,7 +33,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 
 to initialize a working directory with configuration files
 
-```shell script
+```sh
 cd examples/eks-cluster-with-karpenter/
 terraform init
 ```
@@ -42,20 +42,20 @@ terraform init
 
 to verify the resources created by this execution
 
-```shell script
+```sh
 export AWS_REGION=<ENTER-YOUR-REGION>   # Select your own region
 terraform plan
 ```
 
 #### Step 4: Finally, Terraform APPLY
 
-to create resources
+**Deploy the pattern**
 
-```shell script
+```sh
 terraform apply
 ```
 
-Enter `yes` to apply
+Enter `yes` to apply.
 
 ### Configure kubectl and test cluster
 
@@ -87,7 +87,19 @@ You should see one Self-managed node up and running
 NOTE: Make sure you delete all the deployments which clean up the nodes spun up by Karpenter Autoscaler
 Ensure no nodes are running created by Karpenter before running the `Terraform Destroy`. Otherwise, EKS Cluster will be cleaned up however this may leave some nodes running in EC2.
 
-```shell script
-cd examples/eks-cluster-with-karpenter
-terraform destroy
+
+To clean up your environment, destroy the Terraform modules in reverse order.
+
+Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
+
+```sh
+terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
+terraform destroy -target="module.eks_blueprints" -auto-approve
+terraform destroy -target="module.vpc" -auto-approve
+```
+
+Finally, destroy any additional resources that are not in the above modules
+
+```sh
+terraform destroy -auto-approve
 ```

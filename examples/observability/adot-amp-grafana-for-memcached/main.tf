@@ -36,83 +36,51 @@ provider "grafana" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  tenant      = var.tenant      # AWS account name or unique id for tenant
-  environment = var.environment # Environment area eg., preprod or prod
-  zone        = var.zone        # Environment within one sub_tenant or business unit
-
-  region = "us-east-1"
-  azs    = slice(data.aws_availability_zones.available.names, 0, 3)
-
-  cluster_version = "1.21"
-  cluster_name    = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
-  vpc_name = join("-", [local.tenant, local.environment, local.zone, "vpc"])
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  terraform_version = "Terraform v1.1.7"
-}
-
-module "aws_vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
-
-  name = local.vpc_name
-  cidr = local.vpc_cidr
-  azs  = local.azs
-
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
-
-  enable_nat_gateway   = true
-  create_igw           = true
-  enable_dns_hostnames = true
-  single_nat_gateway   = true
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 }
 
 #---------------------------------------------------------------
-# Provision EKS and Helm Charts
+# EKS Blueprints
 #---------------------------------------------------------------
 module "eks_blueprints" {
   source = "../../.."
 
-  tenant            = local.tenant
-  environment       = local.environment
-  zone              = local.zone
-  terraform_version = local.terraform_version
+  cluster_name    = local.name
+  cluster_version = "1.21"
 
-  # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = module.aws_vpc.private_subnets
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
 
-  # EKS Control Plane Variables
-  cluster_version = local.cluster_version
+  enable_amazon_prometheus = true
 
   managed_node_groups = {
     t3_l = {
       node_group_name = "managed-ondemand"
       instance_types  = ["t3.large"]
       min_size        = 2
-      subnet_ids      = module.aws_vpc.private_subnets
+      subnet_ids      = module.vpc.private_subnets
     }
   }
 
-  # Provisions a new Amazon Managed Service for Prometheus workspace
-  enable_amazon_prometheus = true
+  tags = local.tags
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source         = "../../../modules/kubernetes-addons"
-  eks_cluster_id = module.eks_blueprints.eks_cluster_id
+  source = "../../../modules/kubernetes-addons"
+
+  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
+  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
+  eks_oidc_provider    = module.eks_blueprints.oidc_provider
+  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
   # OTEL JMX use cases
   enable_cert_manager                  = true
@@ -120,14 +88,16 @@ module "eks_blueprints_kubernetes_addons" {
   enable_adot_collector_memcached      = true
   amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
   amazon_prometheus_workspace_region   = local.region
+
+  tags = local.tags
 }
 
-# Configure HAProxy default Grafana dashboards
 resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
   name       = "amp"
   is_default = true
   url        = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+
   json_data {
     http_method     = "GET"
     sigv4_auth      = true
@@ -174,4 +144,43 @@ resource "aws_prometheus_alert_manager_definition" "memcached" {
     receivers:
       - name: 'default'
   EOF
+}
+
+#---------------------------------------------------------------
+# Supporting Resources
+#---------------------------------------------------------------
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = local.name
+  cidr = local.vpc_cidr
+
+  azs             = local.azs
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  # Manage so we can name
+  manage_default_network_acl    = true
+  default_network_acl_tags      = { Name = "${local.name}-default" }
+  manage_default_route_table    = true
+  default_route_table_tags      = { Name = "${local.name}-default" }
+  manage_default_security_group = true
+  default_security_group_tags   = { Name = "${local.name}-default" }
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/elb"              = 1
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/internal-elb"     = 1
+  }
+
+  tags = local.tags
 }

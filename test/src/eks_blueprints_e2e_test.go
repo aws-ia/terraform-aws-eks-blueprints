@@ -41,9 +41,9 @@ var (
 		"awsRegion" : "us-west-2"}*/
 
 	destroyModules = []string{
-		"module.kubernetes_addons",
+		"module.eks_blueprints_kubernetes_addons",
 		"module.eks_blueprints",
-		"module.aws_vpc",
+		"module.vpc",
 		"full_destroy",
 	}
 
@@ -121,9 +121,7 @@ func TestEksBlueprintsE2E(t *testing.T) {
 				/*The path to where our Terraform code is located*/
 				TerraformDir: tempExampleFolder,
 				Vars: map[string]interface{}{
-					"tenant":      "aws",
-					"environment": "terra",
-					"zone":        "test",
+					"cluster_name": "aws-terra-test-eks",
 				},
 				// VarFiles:     []string{testCase.name + ".tfvars"}, // The var file paths to pass to Terraform commands using -var-file option.
 				//BackendConfig: map[string]interface{}{
@@ -144,9 +142,7 @@ func TestEksBlueprintsE2E(t *testing.T) {
 							/*The path to where our Terraform code is located*/
 							TerraformDir: tempExampleFolder,
 							Vars: map[string]interface{}{
-								"tenant":      "aws",
-								"environment": "terra",
-								"zone":        "test",
+								"cluster_name": "aws-terra-test-eks",
 							},
 							// VarFiles:     []string{testCase.name + ".tfvars"}, // The var file paths to pass to Terraform commands using -var-file option.
 							//BackendConfig: map[string]interface{}{

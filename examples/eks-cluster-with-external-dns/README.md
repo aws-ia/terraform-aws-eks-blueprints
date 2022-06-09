@@ -29,7 +29,7 @@ For information on Route53 Hosted Zones, [see Route53 documentation](https://doc
 
 #### Step 1: Clone the repo
 
-```shell script
+```sh
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
@@ -37,7 +37,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 
 Initialize a working directory with configuration files
 
-```shell script
+```sh
 cd examples/eks-cluster-with-external-dns
 terraform init
 ```
@@ -58,18 +58,20 @@ acm_certificate_domain  = "*.example.com"
 
 Verify the resources created by this execution
 
-```shell script
+```sh
 export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
 terraform plan
 ```
 
 #### Step 4: Terraform APPLY
 
-```shell script
+**Deploy the pattern**
+
+```sh
 terraform apply
 ```
 
-Enter `yes` to apply
+Enter `yes` to apply.
 
 #### Step 5: Update local kubeconfig
 
@@ -91,10 +93,20 @@ Enter `yes` to apply
 
 Navigate to the HOST url which should be `guestbook-ui.<eks_cluster_domain>`. At this point, you should be able to view the `guestbook-ui` application in the browser at the HOST url.
 
-## How to Destroy
+## Cleanup
 
-The following command destroys the resources created by `terraform apply`
+To clean up your environment, destroy the Terraform modules in reverse order.
 
-```shell script
-terraform destroy --auto-approve
+Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
+
+```sh
+terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
+terraform destroy -target="module.eks_blueprints" -auto-approve
+terraform destroy -target="module.vpc" -auto-approve
+```
+
+Finally, destroy any additional resources that are not in the above modules
+
+```sh
+terraform destroy -auto-approve
 ```

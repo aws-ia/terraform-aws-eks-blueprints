@@ -23,7 +23,7 @@ module "launch_templates" {
         {
           device_name = "/dev/xvda"
           volume_type = "io1"
-          volume_size = "200"
+          volume_size = 200
           iops = 100               # io1 and io2 -> Min: 100 IOPS, Max: 100000 IOPS (up to 1000 IOPS per GiB)
         }
       ]
@@ -38,7 +38,7 @@ module "launch_templates" {
         {
           device_name = "/dev/xvda"
           volume_type = "io2"
-          volume_size = "200"
+          volume_size = 200
           iops = 3000              #gp3-> Min: 3000 IOPS, Max: 16000 IOPS.
         }
       ]
@@ -53,7 +53,7 @@ module "launch_templates" {
         {
           device_name = "/dev/xvda"
           volume_type = "gp3"
-          volume_size = "200"
+          volume_size = 200
           iops        = 3000       # gp3 -> Min: 3000 IOPS, Max: 16000 IOPS.
           throughput  = 1000       # gp3 -> 125 to 1000
         }
@@ -70,7 +70,7 @@ module "launch_templates" {
         {
           device_name = "/dev/xvda"
           volume_type = "gp2"
-          volume_size = "200"
+          volume_size = 200
         }
       ]
     },
@@ -84,7 +84,7 @@ module "launch_templates" {
         {
           device_name = "/dev/xvda"
           volume_type = "gp2"
-          volume_size = "200"
+          volume_size = 200
         }
       ]
     },
