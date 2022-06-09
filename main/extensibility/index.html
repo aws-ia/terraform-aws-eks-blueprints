@@ -1214,6 +1214,86 @@
 <li>Add-ons specific to a customer instance of EKS Blueprints can be implemented inline with the blueprint in the same codebase. Such extensions are scoped to the customer base. Forking the repo however has disadvantages when it comes to ongoing feature releases and bug fixes which will have to be manually ported to your fork.</li>
 <li>We recommend, you implement a separate repository for your private add-on while still using the upstream framework. This gives you the advantage of keeping up with ongoing feature releases and bug fixes while keeping your add-on private.</li>
 </ol>
+<p>The following example shows you can leverage EKS Blueprints to provide your own helm add-on. </p>
+<div class="highlight"><pre><span></span><code>#---------------------------------------------------------------
+# AWS VPC CNI Metrics Helper
+# This is using local helm chart
+#---------------------------------------------------------------
+
+data &quot;aws_partition&quot; &quot;current&quot; {}
+
+data &quot;aws_caller_identity&quot; &quot;current&quot; {}
+
+
+locals {
+  cni_metrics_name = &quot;cni-metrics-helper&quot;
+
+  default_helm_values = [templatefile(&quot;${path.module}/helm-values/cni-metrics-helper-values.yaml&quot;, {
+    eks_cluster_id = var.eks_cluster_id,
+    image          = &quot;602401143452.dkr.ecr.${var.region}.amazonaws.com/cni-metrics-helper:v1.10.3&quot;,
+    sa-name        = local.cni_metrics_name
+   oidc_url        = &quot;oidc.eks.eu-west-1.amazonaws.com/id/E6CASOMETHING55B9D01F7&quot;
+  })]
+
+  addon_context = {
+    aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
+    aws_caller_identity_arn        = data.aws_caller_identity.current.arn
+    aws_eks_cluster_endpoint       = data.aws_eks_cluster.cluster.endpoint
+    aws_partition_id               = data.aws_partition.current.partition
+    aws_region_name                = var.region
+    eks_cluster_id                 = var.eks_cluster_id
+    eks_oidc_issuer_url            = local.oidc_url
+    eks_oidc_provider_arn          = &quot;arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.oidc_url}&quot;
+    tags                           = {}
+  }
+
+  helm_config = {
+    name        = local.cni_metrics_name
+    description = &quot;CNI Metrics Helper Helm Chart&quot;
+    timeout     = &quot;300&quot;
+    chart       = &quot;${path.module}/local-helm-charts/cni-metrics-helper&quot;
+    version     = &quot;0.1.7&quot;
+    repository  = null
+    namespace   = &quot;kube-system&quot;
+    lint        = false
+    values      = local.default_helm_values
+  }
+
+  irsa_config = {
+    kubernetes_namespace              = &quot;kube-system&quot;
+    kubernetes_service_account        = local.cni_metrics_name
+    create_kubernetes_namespace       = false
+    create_kubernetes_service_account = true
+    irsa_iam_policies                 = [aws_iam_policy.cni_metrics.arn]
+  }
+}
+
+module &quot;helm_addon&quot; {
+  source      = &quot;github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon&quot;
+  helm_config = local.helm_config
+  irsa_config = local.irsa_config
+  addon_context = local.addon_context
+}
+
+resource &quot;aws_iam_policy&quot; &quot;cni_metrics&quot; {
+  name        = &quot;${var.eks_cluster_id}-cni-metrics&quot;
+  description = &quot;IAM policy for EKS CNI Metrics helper&quot;
+  path        = &quot;/&quot;
+  policy      = data.aws_iam_policy_document.cni_metrics.json
+
+  tags = var.tags
+}
+
+data &quot;aws_iam_policy_document&quot; &quot;cni_metrics&quot; {
+  statement {
+    sid = &quot;CNIMetrics&quot;
+    actions = [
+      &quot;cloudwatch:PutMetricData&quot;
+    ]
+    resources = [&quot;*&quot;]
+  }
+}
+</code></pre></div>
 <h3 id="secrets-handling">Secrets Handling<a class="headerlink" href="#secrets-handling" title="Permanent link">&para;</a></h3>
 <p>We expect that certain add-ons will need to provide access to sensitive values to their helm chart configuration such as password, license keys, API keys, etc. We recommend that you ask customers to store such secrets in an external secret store such as AWS Secrets Manager or AWS Systems Manager Parameter Store and use the <a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_csi_driver.html">AWS Secrets and Configuration Provider (ASCP)</a> to mount the secrets as files or environment variables in the pods of your add-on. We are actively working on providing a native add-on for ASCP as of this writing which you will be able to levarage for your add-on.</p>
 <h2 id="example-public-add-on">Example Public Add-On<a class="headerlink" href="#example-public-add-on" title="Permanent link">&para;</a></h2>
