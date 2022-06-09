@@ -1,9 +1,11 @@
 variable "helm_config" {
-  type        = any
   description = "Helm provider config for ADOT Operator AddOn"
+  type        = any
   default     = {}
 }
+
 variable "addon_context" {
+  description = "Input configuration for the addon"
   type = object({
     aws_caller_identity_account_id = string
     aws_caller_identity_arn        = string
@@ -15,5 +17,4 @@ variable "addon_context" {
     eks_oidc_provider_arn          = string
     tags                           = map(string)
   })
-  description = "Input configuration for the addon"
 }

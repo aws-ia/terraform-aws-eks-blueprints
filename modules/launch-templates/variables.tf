@@ -1,4 +1,5 @@
 variable "launch_template_config" {
+  description = "Launch template configuration"
   type = map(object({
     ami                    = string
     launch_template_os     = optional(string)
@@ -39,7 +40,6 @@ variable "launch_template_config" {
 
     monitoring = optional(bool)
   }))
-  description = "Launch template configuration"
 }
 
 variable "eks_cluster_id" {
@@ -48,7 +48,7 @@ variable "eks_cluster_id" {
 }
 
 variable "tags" {
+  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
   type        = map(string)
   default     = {}
-  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }
