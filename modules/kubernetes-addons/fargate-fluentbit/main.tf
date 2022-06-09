@@ -1,4 +1,3 @@
-
 # Help on Fargate Logging with Fluentbit and CloudWatch
 # https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html
 
