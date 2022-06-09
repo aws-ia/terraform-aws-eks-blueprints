@@ -41,17 +41,17 @@ variable "irsa_iam_permissions_boundary" {
 
 variable "eks_oidc_provider" {
   description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
-  type        = string
+  default     = null
 }
 
 variable "eks_cluster_endpoint" {
   description = "Endpoint for your Kubernetes API server"
-  type        = string
+  default     = null
 }
 
 variable "eks_cluster_version" {
   description = "The Kubernetes version for the cluster"
-  type        = string
+  default     = null
 }
 
 #-----------EKS MANAGED ADD-ONS------------

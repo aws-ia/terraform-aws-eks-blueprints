@@ -49,6 +49,89 @@ There are two ways in which a customer can implement fully private add-ons:
 1. Add-ons specific to a customer instance of EKS Blueprints can be implemented inline with the blueprint in the same codebase. Such extensions are scoped to the customer base. Forking the repo however has disadvantages when it comes to ongoing feature releases and bug fixes which will have to be manually ported to your fork.
 2. We recommend, you implement a separate repository for your private add-on while still using the upstream framework. This gives you the advantage of keeping up with ongoing feature releases and bug fixes while keeping your add-on private.
 
+The following example shows you can leverage EKS Blueprints to provide your own helm add-on. 
+
+```hcl
+#---------------------------------------------------------------
+# AWS VPC CNI Metrics Helper
+# This is using local helm chart
+#---------------------------------------------------------------
+
+data "aws_partition" "current" {}
+
+data "aws_caller_identity" "current" {}
+
+
+locals {
+  cni_metrics_name = "cni-metrics-helper"
+
+  default_helm_values = [templatefile("${path.module}/helm-values/cni-metrics-helper-values.yaml", {
+    eks_cluster_id = var.eks_cluster_id,
+    image          = "602401143452.dkr.ecr.${var.region}.amazonaws.com/cni-metrics-helper:v1.10.3",
+    sa-name        = local.cni_metrics_name
+   oidc_url        = "oidc.eks.eu-west-1.amazonaws.com/id/E6CASOMETHING55B9D01F7"
+  })]
+
+  addon_context = {
+    aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
+    aws_caller_identity_arn        = data.aws_caller_identity.current.arn
+    aws_eks_cluster_endpoint       = data.aws_eks_cluster.cluster.endpoint
+    aws_partition_id               = data.aws_partition.current.partition
+    aws_region_name                = var.region
+    eks_cluster_id                 = var.eks_cluster_id
+    eks_oidc_issuer_url            = local.oidc_url
+    eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.oidc_url}"
+    tags                           = {}
+  }
+
+  helm_config = {
+    name        = local.cni_metrics_name
+    description = "CNI Metrics Helper Helm Chart"
+    timeout     = "300"
+    chart       = "${path.module}/local-helm-charts/cni-metrics-helper"
+    version     = "0.1.7"
+    repository  = null
+    namespace   = "kube-system"
+    lint        = false
+    values      = local.default_helm_values
+  }
+
+  irsa_config = {
+    kubernetes_namespace              = "kube-system"
+    kubernetes_service_account        = local.cni_metrics_name
+    create_kubernetes_namespace       = false
+    create_kubernetes_service_account = true
+    irsa_iam_policies                 = [aws_iam_policy.cni_metrics.arn]
+  }
+}
+
+module "helm_addon" {
+  source      = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon"
+  helm_config = local.helm_config
+  irsa_config = local.irsa_config
+  addon_context = local.addon_context
+}
+
+resource "aws_iam_policy" "cni_metrics" {
+  name        = "${var.eks_cluster_id}-cni-metrics"
+  description = "IAM policy for EKS CNI Metrics helper"
+  path        = "/"
+  policy      = data.aws_iam_policy_document.cni_metrics.json
+
+  tags = var.tags
+}
+
+data "aws_iam_policy_document" "cni_metrics" {
+  statement {
+    sid = "CNIMetrics"
+    actions = [
+      "cloudwatch:PutMetricData"
+    ]
+    resources = ["*"]
+  }
+}
+```
+
 ### Secrets Handling
 
 We expect that certain add-ons will need to provide access to sensitive values to their helm chart configuration such as password, license keys, API keys, etc. We recommend that you ask customers to store such secrets in an external secret store such as AWS Secrets Manager or AWS Systems Manager Parameter Store and use the [AWS Secrets and Configuration Provider (ASCP)](https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_csi_driver.html) to mount the secrets as files or environment variables in the pods of your add-on. We are actively working on providing a native add-on for ASCP as of this writing which you will be able to levarage for your add-on.

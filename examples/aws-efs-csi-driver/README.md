@@ -36,7 +36,7 @@ terraform init
 
 #### Step 3: Run Terraform PLAN
 
-Verify the resources created by this execution
+Confirm the region to deploy to in `main.tf` and verify the resources created by this execution
 
 ```sh
 export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
@@ -62,7 +62,7 @@ This following command used to update the `kubeconfig` in your local machine whe
 
 `~/.kube/config` file gets updated with cluster details and certificate from the below command
 
-    aws eks --region ${AWS_REGION} update-kubeconfig --name aws001-preprod-dev-eks
+    aws eks --region ${AWS_REGION} update-kubeconfig --name aws-efs-csi-driver
 
 #### Step 6: List all the worker nodes by running the command below
 

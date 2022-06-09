@@ -1,4 +1,9 @@
 locals {
+
+  eks_oidc_issuer_url  = var.eks_oidc_provider != null ? var.eks_oidc_provider : replace(data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer, "https://", "")
+  eks_cluster_endpoint = var.eks_cluster_endpoint != null ? var.eks_cluster_endpoint : data.aws_eks_cluster.eks_cluster.endpoint
+  eks_cluster_version  = var.eks_cluster_version != null ? var.eks_cluster_version : data.aws_eks_cluster.eks_cluster.version
+
   # Configuration for managing add-ons via ArgoCD.
   argocd_addon_config = {
     agones                    = var.enable_agones ? module.agones[0].argocd_gitops_config : null
@@ -25,12 +30,10 @@ locals {
     externalDns               = var.enable_external_dns ? module.external_dns[0].argocd_gitops_config : null
   }
 
-  eks_oidc_issuer_url = var.eks_oidc_provider
-
   addon_context = {
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
     aws_caller_identity_arn        = data.aws_caller_identity.current.arn
-    aws_eks_cluster_endpoint       = var.eks_cluster_endpoint
+    aws_eks_cluster_endpoint       = local.eks_cluster_endpoint
     aws_partition_id               = data.aws_partition.current.partition
     aws_region_name                = data.aws_region.current.name
     eks_cluster_id                 = var.eks_cluster_id
