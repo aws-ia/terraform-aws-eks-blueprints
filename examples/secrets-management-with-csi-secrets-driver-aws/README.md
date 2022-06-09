@@ -5,7 +5,7 @@ This example deploys the following Basic EKS Cluster with VPC
  - Provisions AWS Secrets Manager and Config Provider for Secret Store CSI Driver
  - Creates a namespace , IAM Roles for the service account, and the required CRDs required to retrieve the secrets for the application
  - Deploys a sample pod to demonstrate mounting of secrets retrieved from AWS Secrets Manager as CSI Volume
- 
+
 
 ## How to Deploy
 ### Prerequisites:
@@ -17,7 +17,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 #### Secrets Management
 1. Create the secrets in [AWS Secrets Manager] (https://docs.aws.amazon.com/secretsmanager/latest/userguide/managing-secrets.html)
-2. Copy the ARN of the secrets and paste it under `secretsconfig.yaml` . `secretsconfig.yaml` represents `spec.parameters.objects` of [SecretProviderClass](https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_csi_driver.html#integrating_csi_driver_SecretProviderClass) . 
+2. Copy the ARN of the secrets and paste it under `secretsconfig.yaml` . `secretsconfig.yaml` represents `spec.parameters.objects` of [SecretProviderClass](https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_csi_driver.html#integrating_csi_driver_SecretProviderClass) .
 
 *Note* At this time, this example supports use cases which refers the secrets using 'A secret specified by full ARN'. If you refer the secret using name, the deployment will fail.
 

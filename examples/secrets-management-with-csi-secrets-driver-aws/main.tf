@@ -108,7 +108,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_amazon_eks_kube_proxy = true
 
   #K8s Add-ons
-  enable_secrets_store_csi_driver       = true
+  enable_secrets_store_csi_driver              = true
   enable_secrets_store_csi_driver_provider_aws = true
 
   depends_on = [module.eks_blueprints.managed_node_groups]
@@ -138,7 +138,7 @@ resource "aws_secretsmanager_secret" "application_secret" {
   recovery_window_in_days = 0
 }
 resource "aws_secretsmanager_secret_version" "sversion" {
-  secret_id = aws_secretsmanager_secret.application_secret.id
+  secret_id     = aws_secretsmanager_secret.application_secret.id
   secret_string = <<EOF
    {
     "username": "adminaccount",
@@ -153,8 +153,8 @@ EOF
 
 data "aws_iam_policy_document" "secrets_management_policy" {
   statement {
-    sid       = ""
-    effect    = "Allow"
+    sid    = ""
+    effect = "Allow"
     resources = [
       aws_secretsmanager_secret_version.sversion.arn
     ]
@@ -163,7 +163,7 @@ data "aws_iam_policy_document" "secrets_management_policy" {
       "secretsmanager:DescribeSecret"
     ]
   }
-} 
+}
 
 #---------------------------------------------------------------
 # Creating IAM Policy to be attached to the IRSA Role
@@ -228,7 +228,7 @@ resource "kubectl_manifest" "csi_secrets_store_crd" {
 # Sample Kubernetes Pod to mount the Secrets as CSI Volume
 #---------------------------------------------------------------
 
-resource "kubectl_manifest"  "sample_nginx" {
+resource "kubectl_manifest" "sample_nginx" {
   yaml_body = yamlencode({
     apiVersion = "v1"
     kind       = "Pod"
