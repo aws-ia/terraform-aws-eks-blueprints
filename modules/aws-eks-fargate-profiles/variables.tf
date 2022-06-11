@@ -5,6 +5,7 @@ variable "fargate_profile" {
 }
 
 variable "context" {
+  description = "Input configuration for Fargate"
   type = object({
     eks_cluster_id   = string
     aws_partition_id = string
@@ -13,5 +14,4 @@ variable "context" {
     iam_role_permissions_boundary = string
     tags                          = map(string)
   })
-  description = "Input configuration for Fargate"
 }

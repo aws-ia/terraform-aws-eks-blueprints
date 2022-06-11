@@ -120,6 +120,67 @@ module "eks_blueprints" {
         subnet_type = "private"
       }
     }
+
+    spot_2vcpu_8mem = {
+      node_group_name    = "smng-spot-2vcpu-8mem"
+      capacity_type      = "spot"
+      capacity_rebalance = true
+      instance_types     = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"]
+      min_size           = 0
+      subnet_ids         = module.vpc.private_subnets
+      launch_template_os = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
+      k8s_taints         = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
+    }
+
+    spot_4vcpu_16mem = {
+      node_group_name    = "smng-spot-4vcpu-16mem"
+      capacity_type      = "spot"
+      capacity_rebalance = true
+      instance_types     = ["m5.xlarge", "m4.xlarge", "m6a.xlarge", "m5a.xlarge", "m5d.xlarge"]
+      min_size           = 0
+      subnet_ids         = module.vpc.private_subnets
+      launch_template_os = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
+      k8s_taints         = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }]
+    }
+  }
+}
+
+module "eks_blueprints_kubernetes_addons" {
+  source                   = "../../../modules/kubernetes-addons"
+  eks_cluster_id           = module.eks_blueprints.eks_cluster_id
+  eks_cluster_endpoint     = module.eks_blueprints.eks_cluster_endpoint
+  eks_oidc_provider        = module.eks_blueprints.oidc_provider
+  eks_cluster_version      = module.eks_blueprints.eks_cluster_version
+  auto_scaling_group_names = module.eks_blueprints.self_managed_node_group_autoscaling_groups
+
+  # EKS Managed Add-ons
+  enable_amazon_eks_vpc_cni    = true
+  enable_amazon_eks_coredns    = true
+  enable_amazon_eks_kube_proxy = true
+
+  #K8s Add-ons
+  enable_metrics_server               = true
+  enable_aws_node_termination_handler = true
+
+  enable_cluster_autoscaler = true
+  cluster_autoscaler_helm_config = {
+    set = [
+      {
+        name  = "extraArgs.expander"
+        value = "priority"
+      },
+      {
+        name  = "expanderPriorities"
+        value = <<-EOT
+                  100:
+                    - .*-spot-2vcpu-8mem.*
+                  90:
+                    - .*-spot-4vcpu-16mem.*
+                  10:
+                    - .*
+                EOT
+      }
+    ]
   }
 }
 
