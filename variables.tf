@@ -109,7 +109,7 @@ variable "cluster_kms_key_deletion_window_in_days" {
 }
 
 variable "cluster_kms_key_additional_admin_arns" {
-  description = "A list of additional IAM ARNs that should have FULL access (kms:*) in the KMS key policy."
+  description = "A list of additional IAM ARNs that should have FULL access (kms:*) in the KMS key policy"
   type        = list(string)
   default     = []
 }
@@ -130,11 +130,6 @@ variable "cluster_ip_family" {
   description = "The IP family used to assign Kubernetes pod and service addresses. Valid values are `ipv4` (default) and `ipv6`. You can only specify an IP family when you create a cluster, changing this value will force a new cluster to be created"
   type        = string
   default     = "ipv4"
-
-  validation {
-    condition     = contains(["ipv4", "ipv6"], var.cluster_ip_family)
-    error_message = "Invalid input, options: \"ipv4\", \"ipv6\"."
-  }
 }
 
 variable "cluster_service_ipv4_cidr" {
@@ -328,8 +323,8 @@ variable "map_users" {
 
 variable "aws_auth_additional_labels" {
   description = "Additional kubernetes labels applied on aws-auth ConfigMap"
-  default     = {}
   type        = map(string)
+  default     = {}
 }
 
 variable "eks_readiness_timeout" {
