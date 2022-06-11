@@ -1,4 +1,4 @@
-"helm_config" {
+variable "helm_config" {
   description = "Cluster Autoscaler Helm Config"
   type        = any
   default     = {}

@@ -1,8 +1,5 @@
 variable "helm_config" {
-  description = <<EOT
-Add-on helm chart config, provide repository and version at the minimum.
-See https://registry.terraform.io/providers/hashicorp/helm/latest/docs.
-EOT
+  description = "Helm chart config. Repository and version required. See https://registry.terraform.io/providers/hashicorp/helm/latest/docs"
   type        = any
 }
 
@@ -19,7 +16,7 @@ variable "set_sensitive_values" {
 }
 
 variable "manage_via_gitops" {
-  description = "Determines if the add-on should be managed via GitOps."
+  description = "Determines if the add-on should be managed via GitOps"
   type        = bool
   default     = false
 }
@@ -33,7 +30,7 @@ variable "irsa_config" {
     create_kubernetes_service_account = optional(bool)
     irsa_iam_policies                 = optional(list(string))
   })
-  default     = null
+  default = null
 }
 
 variable "addon_context" {
