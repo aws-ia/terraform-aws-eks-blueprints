@@ -4,21 +4,21 @@ variable "eks_cluster_id" {
 }
 
 variable "eks_cluster_domain" {
-  description = "The domain for the EKS cluster."
-  default     = ""
+  description = "The domain for the EKS cluster"
   type        = string
+  default     = ""
 }
 
 variable "eks_worker_security_group_id" {
   description = "EKS Worker Security group Id created by EKS module"
-  default     = ""
   type        = string
+  default     = ""
 }
 
 variable "auto_scaling_group_names" {
   description = "List of self-managed node groups autoscaling group names"
-  default     = []
   type        = list(string)
+  default     = []
 }
 
 variable "tags" {
@@ -41,17 +41,17 @@ variable "irsa_iam_permissions_boundary" {
 
 variable "eks_oidc_provider" {
   description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
-  default     = null
+  type        = string
 }
 
 variable "eks_cluster_endpoint" {
   description = "Endpoint for your Kubernetes API server"
-  default     = null
+  type        = string
 }
 
 variable "eks_cluster_version" {
   description = "The Kubernetes version for the cluster"
-  default     = null
+  type        = string
 }
 
 #-----------EKS MANAGED ADD-ONS------------
@@ -240,7 +240,7 @@ variable "ondat_admin_password" {
 
 #-----------External DNS ADDON-------------
 variable "enable_external_dns" {
-  description = "External DNS add-on."
+  description = "External DNS add-on"
   type        = bool
   default     = false
 }
@@ -536,19 +536,19 @@ variable "cert_manager_irsa_policies" {
 }
 
 variable "cert_manager_domain_names" {
-  description = "Domain names of the Route53 hosted zone to use with cert-manager."
+  description = "Domain names of the Route53 hosted zone to use with cert-manager"
   type        = list(string)
   default     = []
 }
 
 variable "cert_manager_install_letsencrypt_issuers" {
-  description = "Install Let's Encrypt Cluster Issuers."
+  description = "Install Let's Encrypt Cluster Issuers"
   type        = bool
   default     = true
 }
 
 variable "cert_manager_letsencrypt_email" {
-  description = "Email address for expiration emails from Let's Encrypt."
+  description = "Email address for expiration emails from Let's Encrypt"
   type        = string
   default     = ""
 }
@@ -586,7 +586,7 @@ variable "argocd_applications" {
 }
 
 variable "argocd_admin_password_secret_name" {
-  description = "Name for a secret stored in AWS Secrets Manager that contains the admin password."
+  description = "Name for a secret stored in AWS Secrets Manager that contains the admin password"
   type        = string
   default     = ""
 }
@@ -637,8 +637,8 @@ variable "karpenter_irsa_policies" {
 
 variable "karpenter_node_iam_instance_profile" {
   description = "Karpenter Node IAM Instance profile id"
-  default     = ""
   type        = string
+  default     = ""
 }
 
 #-----------KEDA ADDON-------------

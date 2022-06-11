@@ -109,7 +109,7 @@ variable "cluster_kms_key_deletion_window_in_days" {
 }
 
 variable "cluster_kms_key_additional_admin_arns" {
-  description = "A list of additional IAM ARNs that should have FULL access (kms:*) in the KMS key policy."
+  description = "A list of additional IAM ARNs that should have FULL access (kms:*) in the KMS key policy"
   type        = list(string)
   default     = []
 }
@@ -133,7 +133,7 @@ variable "cluster_ip_family" {
 
   validation {
     condition     = contains(["ipv4", "ipv6"], var.cluster_ip_family)
-    error_message = "Invalid input, options: \"ipv4\", \"ipv6\"."
+    error_message = "Invalid input, options: \"ipv4\", \"ipv6\""
   }
 }
 
@@ -328,8 +328,8 @@ variable "map_users" {
 
 variable "aws_auth_additional_labels" {
   description = "Additional kubernetes labels applied on aws-auth ConfigMap"
-  default     = {}
   type        = map(string)
+  default     = {}
 }
 
 variable "eks_readiness_timeout" {

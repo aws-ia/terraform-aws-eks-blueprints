@@ -10,6 +10,6 @@ variable "amazon_prometheus_workspace_alias" {
 }
 
 variable "tags" {
-  description = "A map of tags to assign to the object."
+  description = "A map of tags to assign to the object"
   type        = map(string)
 }
