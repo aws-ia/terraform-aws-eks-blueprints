@@ -1,12 +1,12 @@
 resource "aws_eks_addon" "example" {
-  cluster_name = var.addon_context.eks_cluster_id
+  cluster_name      = var.addon_context.eks_cluster_id
   resolve_conflicts = "OVERWRITE"
-  addon_name   = "adot"
-  depends_on = [kubectl_manifest.opentelemetry-prereq]
+  addon_name        = "adot"
+  depends_on        = [kubectl_manifest.opentelemetry-prereq]
 }
 
 resource "kubectl_manifest" "opentelemetry-prereq" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -90,7 +90,7 @@ rules:
   - apiGroups: ["authorization.k8s.io"]
     resources: ["subjectaccessreviews"]
     verbs: ["create"]
-  
+
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1

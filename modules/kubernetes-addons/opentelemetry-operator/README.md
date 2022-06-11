@@ -28,18 +28,20 @@ In this case, the CRD that is managed by the OpenTelemetry Operator is the Colle
 
 | Name | Version |
 |------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
+| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | n/a |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
 
 ## Modules
 
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_operator"></a> [operator](#module\_operator) | ../helm-addon | n/a |
+No modules.
 
 ## Resources
 
 | Name | Type |
 |------|------|
+| [aws_eks_addon.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_addon) | resource |
+| [kubectl_manifest.opentelemetry-prereq](https://registry.terraform.io/providers/hashicorp/kubectl/latest/docs/resources/manifest) | resource |
 | [kubernetes_namespace_v1.prometheus](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace_v1) | resource |
 
 ## Inputs
