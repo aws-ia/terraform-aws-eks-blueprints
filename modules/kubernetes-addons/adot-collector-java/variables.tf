@@ -1,22 +1,23 @@
 variable "helm_config" {
+  description = "Helm Config for Prometheus"
   type        = any
   default     = {}
-  description = "Helm Config for Prometheus"
 }
 
 variable "amazon_prometheus_workspace_endpoint" {
+  description = "Amazon Managed Prometheus Workspace Endpoint"
   type        = string
   default     = null
-  description = "Amazon Managed Prometheus Workspace Endpoint"
 }
 
 variable "amazon_prometheus_workspace_region" {
+  description = "Amazon Managed Prometheus Workspace's Region"
   type        = string
   default     = null
-  description = "Amazon Managed Prometheus Workspace's Region"
 }
 
 variable "addon_context" {
+  description = "Input configuration for the addon"
   type = object({
     aws_caller_identity_account_id = string
     aws_caller_identity_arn        = string
@@ -30,5 +31,4 @@ variable "addon_context" {
     irsa_iam_role_path             = string
     tags                           = map(string)
   })
-  description = "Input configuration for the addon"
 }

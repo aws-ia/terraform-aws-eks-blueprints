@@ -5,6 +5,7 @@ variable "self_managed_ng" {
 }
 
 variable "context" {
+  description = "Input configuration for the Node groups"
   type = object({
     # EKS Cluster Config
     eks_cluster_id    = string
@@ -33,5 +34,4 @@ variable "context" {
     service_ipv6_cidr = string
     service_ipv4_cidr = string
   })
-  description = "Input configuration for the Node groups"
 }
