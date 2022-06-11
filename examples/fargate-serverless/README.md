@@ -27,7 +27,7 @@ Ensure that you have the following tools installed locally:
 
 To provision this example:
 
-```bash
+```sh
 terraform init
 terraform apply
 ```
@@ -41,13 +41,13 @@ The following command will update the `kubeconfig` on your local machine and all
 
 1. Run `update-kubeconfig` command:
 
-```bash
+```sh
 aws eks --region <REGION> update-kubeconfig --name <CLSUTER_NAME>
 ```
 
 2. Test by listing all the pods running currently. The CoreDNS pod should reach a status of `Running` after approximately 60 seconds:
 
-```bash
+```sh
 kubectl get pods -A
 
 # Output should look like below
@@ -59,8 +59,6 @@ kube-system   coredns-dcc8d4c97-2jvfb   1/1     Running   0          2m28s
 
 To teardown and remove the resources created in this example:
 
-```bash
-terraform destroy
+```sh
+terraform destroy -auto-approve
 ```
-
-Enter `yes` at command prompt to destroy

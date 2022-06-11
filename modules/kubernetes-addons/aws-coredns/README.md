@@ -20,7 +20,7 @@ To enable and modify the EKS managed addon for CoreDNS, you can reference the fo
 
 ⚠️ Note: The EKS service by default provides and manages a CoreDNS deployment on clusters created after 1.18. In order to utilize the self-managed addon without conflicting with the EKS API that by default manages the addon, users will need to update the existing CoreDNS resources. Those changes that are required before deploying the addon are listed below. This change will result in downtime due to the deletion of the existing CoreDNS deployment.
 
-```bash
+```sh
 kubectl --namespace kube-system delete deployment coredns
 kubectl --namespace kube-system annotate --overwrite service kube-dns meta.helm.sh/release-name=coredns
 kubectl --namespace kube-system annotate --overwrite service kube-dns meta.helm.sh/release-namespace=kube-system

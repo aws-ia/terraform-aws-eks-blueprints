@@ -4,7 +4,7 @@ This add-on deploys the [AWS EFS CSI driver](https://docs.aws.amazon.com/eks/lat
 
 ## Usage
 
-The [AWS EFS CSI driver](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/aws-efs-csi-driver) can be deployed by enabling the add-on via the following. Check out the full [example](../../examples/aws-efs-csi-driver/main.tf) to deploy an EKS Cluster with EFS backing the dynamic provisioning of persistent volumes.
+The [AWS EFS CSI driver](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/aws-efs-csi-driver) can be deployed by enabling the add-on via the following. Check out the full [example](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/aws-efs-csi-driver/main.tf) to deploy an EKS Cluster with EFS backing the dynamic provisioning of persistent volumes.
 
 ```hcl
   enable_aws_efs_csi_driver = true
@@ -42,7 +42,7 @@ You can optionally customize the Helm chart that deploys the driver via the foll
 
 The following properties are made available for use when managing the add-on via GitOps.
 
-Refer to [locals.tf](../../modules/kubernetes-addons/aws-efs-csi-driver/locals.tf) for the latest config. The GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/eks-blueprints-add-ons).
+Refer to [locals.tf](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/aws-efs-csi-driver/locals.tf) for the latest config. The GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/eks-blueprints-add-ons).
 
 ```hcl
   argocd_gitops_config = {

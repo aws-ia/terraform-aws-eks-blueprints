@@ -22,7 +22,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 #### Step 1: Clone the repo using the command below
 
-```shell script
+```sh
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
@@ -30,7 +30,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 
 Initialize a working directory with configuration files
 
-```shell script
+```sh
 cd examples/ipv6-eks-cluster/
 terraform init
 ```
@@ -39,24 +39,24 @@ terraform init
 
 Verify the resources created by this execution
 
-```shell script
+```sh
 export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
 terraform plan
 ```
 
 #### Step 4: Finally, Terraform APPLY
 
-to create resources
+**Deploy the pattern**
 
-```shell script
+```sh
 terraform apply
 ```
 
-Enter `yes` to apply
+Enter `yes` to apply.
 
 #### Step 5: Verify EC2 instances running with IPv6 support
 
-```shell script
+```sh
 aws ec2 describe-instances --filters "Name=tag:eks:cluster-name,Values=ipv6-preprod-dev-eks" --query "Reservations[].Instances[? State.Name == 'running' ][].NetworkInterfaces[].Ipv6Addresses" --output table
 ```
 
@@ -69,13 +69,13 @@ This following command used to update the `kubeconfig` in your local machine whe
 
 `~/.kube/config` file gets updated with cluster details and certificate from the below command
 
-```shell script
+```sh
 aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 ```
 
 #### Step 7: List all the PODS running in `kube-system` and observe the **IP allocated**
 
-```shell script
+```sh
 kubectl get pods -n kube-system  -o wide
 ```
 
@@ -91,11 +91,21 @@ Output
         kube-proxy-k992g                               1/1     Running   0          3h1m   2a05:d018:434:7702:3784:d6b:fc0d:e156   ip-10-0-10-23.eu-west-1.compute.internal    <none>           <none>
         kube-proxy-nzfrq                               1/1     Running   0          3h1m   2a05:d018:434:7703:b3eb:2aa:aa4a:c838   ip-10-0-11-186.eu-west-1.compute.internal   <none>           <none>
 
-## How to Destroy
 
-The following command destroys the resources created by `terraform apply`
+## Cleanup
 
-```shell script
-cd examples/eks-cluster-with-new-vpc
-terraform destroy --auto-approve
+To clean up your environment, destroy the Terraform modules in reverse order.
+
+Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
+
+```sh
+terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
+terraform destroy -target="module.eks_blueprints" -auto-approve
+terraform destroy -target="module.vpc" -auto-approve
+```
+
+Finally, destroy any additional resources that are not in the above modules
+
+```sh
+terraform destroy -auto-approve
 ```

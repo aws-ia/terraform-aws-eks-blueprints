@@ -41,9 +41,9 @@ export AWS_REGION=<enter-your-region>   # Select your own region
 terraform plan
 ```
 
-Deploy the pattern
+**Deploy the pattern**
 
-```
+```sh
 terraform apply
 ```
 
@@ -53,22 +53,40 @@ Enter `yes` to apply.
 
 - Create Spark Namespace, Service Account and ClusterRole and ClusterRole Binding for the jobs
 
-```shell script
+```sh
    cd examples/analytics/spark-k8s-operator/k8s-schedular
    kubectl apply -f spark-teams-setup.yaml
 ```
 
 - Execute first spark job with simple example
 
-```shell script
+```sh
   cd examples/analytics/spark-k8s-operator/k8s-schedular
   kubectl apply -f pyspark-pi-job.yaml
 ```
 
 - Verify the Spark job status
 
-```shell script
+```sh
   kubectl get sparkapplications -n spark-ns
 
   kubectl describe sparkapplication pyspark-pi -n spark-ns
+```
+
+## Cleanup
+
+To clean up your environment, destroy the Terraform modules in reverse order.
+
+Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
+
+```sh
+terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
+terraform destroy -target="module.eks_blueprints" -auto-approve
+terraform destroy -target="module.vpc" -auto-approve
+```
+
+Finally, destroy any additional resources that are not in the above modules
+
+```sh
+terraform destroy -auto-approve
 ```
