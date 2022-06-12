@@ -332,6 +332,8 @@ module "adot_collector_java" {
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
   amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
   addon_context                        = local.addon_context
+
+  depends_on = [module.opentelemetry_operator]
 }
 
 module "adot_collector_haproxy" {

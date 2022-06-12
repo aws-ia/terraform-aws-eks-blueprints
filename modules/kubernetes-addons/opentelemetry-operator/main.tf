@@ -1,3 +1,8 @@
+module "cert_manager" {
+  source        = "../cert-manager"
+  addon_context = var.addon_context
+}
+
 resource "kubernetes_namespace_v1" "adot" {
   metadata {
     name = local.helm_config["namespace"]
@@ -24,5 +29,5 @@ resource "aws_eks_addon" "adot" {
   cluster_name      = var.addon_context.eks_cluster_id
   resolve_conflicts = "OVERWRITE"
   addon_name        = "adot"
-  depends_on        = [kubectl_manifest.adot]
+  depends_on        = [kubectl_manifest.adot, module.cert_manager]
 }
