@@ -6,10 +6,14 @@ provider "aws" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = basename(path.cwd)
-  region = var.region
+  name             = basename(path.cwd)
+  region           = var.region
+  cloud9_vpc_name  = var.cloud9_vpc_name
+  cloud9_vpc_cidr  = var.cloud9_vpc_cidr
+  cloud9_owner_arn = var.cloud9_owner_arn
 
-  vpc_cidr = var.vpc_cidr
+  vpc_cidr = var.eks_vpc_cidr
+  vpc_name = var.eks_vpc_name
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   tags = {
@@ -17,6 +21,35 @@ locals {
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 
+}
+
+#---------------------------------------------------------------
+# Supporting Resources
+#---------------------------------------------------------------
+module "cloud9_vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = local.cloud9_vpc_name
+  cidr = local.cloud9_vpc_cidr
+
+  azs             = local.azs
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.cloud9_vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.cloud9_vpc_cidr, 8, k + 10)]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  # Manage so we can name
+  manage_default_network_acl    = true
+  default_network_acl_tags      = { Name = "${local.name}-default" }
+  manage_default_route_table    = true
+  default_route_table_tags      = { Name = "${local.name}-default" }
+  manage_default_security_group = true
+  default_security_group_tags   = { Name = "${local.name}-default" }
+
+  tags = local.tags
 }
 
 module "aws_vpc" {
@@ -57,7 +90,7 @@ module "aws_vpc" {
       protocol    = -1
       from_port   = 0
       to_port     = 0
-      cidr_blocks = var.default_vpc_ipv4_cidr # Allow ingress from the default VPC CIDR range so the bastion host/Jenkins server can access the EKS private endpoint.
+      cidr_blocks = var.cloud9_vpc_cidr # Allow ingress from the default VPC CIDR range so the bastion host/Jenkins server can access the EKS private endpoint.
   }]
   default_security_group_egress = [
     {
