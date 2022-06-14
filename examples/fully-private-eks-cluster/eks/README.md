@@ -8,7 +8,11 @@ Please see this [document](https://docs.aws.amazon.com/eks/latest/userguide/priv
 
 
 ### Prerequisites:
-We will deploy the EKS cluster from the bastion host/Jenkins server that is running on the default VPC. In the "vpc stack" we manually configured VPC peering between the default subnet and the new subnet provisioned for eks and we also updated the route tables manually. This will ensure the bastion host/Jenkins server can interact with the new vpc that was provisioned for EKS.
+We will deploy the EKS cluster from the bastion Cloud9 instance that is running on the Cloud9 VPC. In the "vpc stack" we manually configured VPC peering between the default subnet and the new subnet provisioned for eks and we also updated the route tables manually. This will ensure the bastion host/Jenkins server can interact with the new vpc that was provisioned for EKS.
+
+1. Clone the EKs blueprints stack
+2. CD into the folder
+3. Update the base.tfvars - VPC details
 
 1. Ensure that you have installed the following tools in the bastion host/Jenkins server before start working with this module and run Terraform Plan and Apply
   1.1 [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
