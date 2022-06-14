@@ -1,4 +1,3 @@
-
 locals {
   name      = "agones"
   namespace = "agones-system"

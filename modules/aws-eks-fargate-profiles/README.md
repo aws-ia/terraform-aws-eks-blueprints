@@ -40,7 +40,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_context"></a> [context](#input\_context) | Input configuration for Fargate | <pre>object({<br>    eks_cluster_id   = string<br>    aws_partition_id = string<br>    #IAM<br>    iam_role_path                 = string<br>    iam_role_permissions_boundary = string<br>    tags                          = map(string)<br>  })</pre> | n/a | yes |
+| <a name="input_context"></a> [context](#input\_context) | Input configuration for Fargate | <pre>object({<br>    eks_cluster_id                = string<br>    aws_partition_id              = string<br>    iam_role_path                 = string<br>    iam_role_permissions_boundary = string<br>    tags                          = map(string)<br>  })</pre> | n/a | yes |
 | <a name="input_fargate_profile"></a> [fargate\_profile](#input\_fargate\_profile) | Map of maps of `eks_node_groups` to create | `any` | `{}` | no |
 
 ## Outputs

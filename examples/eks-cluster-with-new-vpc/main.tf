@@ -31,8 +31,10 @@ provider "helm" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = basename(path.cwd)
-  region = "us-west-2"
+  name = basename(path.cwd)
+  # var.cluster_name is for Terratest
+  cluster_name = coalesce(var.cluster_name, local.name)
+  region       = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -49,8 +51,7 @@ locals {
 module "eks_blueprints" {
   source = "../.."
 
-  #                 var.cluster_name is for Terratest
-  cluster_name    = coalesce(var.cluster_name, local.name)
+  cluster_name    = local.cluster_name
   cluster_version = "1.21"
 
   vpc_id             = module.vpc.vpc_id
@@ -118,13 +119,13 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                      = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"             = 1
   }
 
   tags = local.tags
