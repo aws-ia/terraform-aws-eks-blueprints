@@ -79,7 +79,7 @@ Enter `yes` to apply
 Note : Once the stack completes, you will see an output of the vpc-id and the private subnets for the eks-vpc. Note them so we can use them in the EKS Terraform stack.
 
  
-## How to Destroy
+### How to Destroy
 The following command destroys the resources created by `terraform apply`
 
 ```shell script
@@ -175,12 +175,55 @@ The EKS Terraform stack outputs the command you have to execute to update the  `
 
  
 
-## How to Destroy
+### How to Destroy
 The following command destroys the resources created by `terraform apply`
 
 ```shell script
-cd examples/fully-private-eks-cluster/vpc
+cd examples/fully-private-eks-cluster/eks
 terraform destroy -var-file base.tfvars -auto-approve  
 ``` 
 
+# Provision the Managed Add-ons using the add-ons stack.
+
+### Deployment Steps
+
+#### Step1: Review and update the base.tfvars
+Review base.tfvars and update the values for the variable(s).  The following shows some examples for the variables. Ensure you verify and replace all the values for these variables. 
+
+```shell script
+region         = "us-west-2"
+eks_cluster_id = "eks"
+cluster_version= "1.22"
+
+```
+#### Step2: Run Terraform INIT
+Initialize a working directory with configuration files
+
+```shell script
+cd examples/fully-private-eks-cluster/add-ons
+terraform init 
+```
+
+#### Step3: Run Terraform PLAN
+Verify the resources created by this execution
+
+```shell script
+export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
+terraform plan -var-file base.tfvars
+```
+
+#### Step4: Terraform APPLY
+to create resources
+
+```shell script
+terraform apply -var-file base.tfvars
+```
+Enter `yes` to apply
+### How to Destroy
+The following command destroys the resources created by `terraform apply`
+
+```shell script
+cd examples/fully-private-eks-cluster/add-ons
+terraform destroy -var-file base.tfvars -auto-approve  
+``` 
 <!--- END_TF_DOCS --->
