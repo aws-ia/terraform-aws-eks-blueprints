@@ -30,6 +30,11 @@ resource "aws_route" "private_eks-rt-cloud9" {
 }
 
 
+# resource "aws_iam_instance_profile" "eks-cloud9_instance_profile" {
+#   name = "eks-cloud9_instance_profile"
+#   role = local.cloud9_iam_role_arn
+# }
+
 resource "aws_cloud9_environment_ec2" "eks-cloud9" {
   instance_type = "t3.small"
   subnet_id     = module.cloud9_vpc.public_subnets[0]
@@ -44,7 +49,6 @@ data "aws_instance" "cloud9_instance" {
     name = "tag:aws:cloud9:environment"
     values = [
     aws_cloud9_environment_ec2.eks-cloud9.id]
-
   }
 }
 

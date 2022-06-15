@@ -6,11 +6,12 @@ provider "aws" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name             = basename(path.cwd)
-  region           = var.region
-  cloud9_vpc_name  = var.cloud9_vpc_name
-  cloud9_vpc_cidr  = var.cloud9_vpc_cidr
-  cloud9_owner_arn = var.cloud9_owner_arn
+  name                = basename(path.cwd)
+  region              = var.region
+  cloud9_vpc_name     = var.cloud9_vpc_name
+  cloud9_vpc_cidr     = var.cloud9_vpc_cidr
+  cloud9_owner_arn    = var.cloud9_owner_arn
+  cloud9_iam_role_arn = var.cloud9_iam_role_arn
 
   vpc_cidr = var.eks_vpc_cidr
   vpc_name = var.eks_vpc_name
