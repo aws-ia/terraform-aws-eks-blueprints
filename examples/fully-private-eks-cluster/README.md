@@ -40,7 +40,7 @@ git clone git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 #### Step2: Review and update the base.tfvars
-Review base.tfvars and update the values for the variables. The following shows some examples for the variables. 
+Create a Terraform variable definition file called base.tfvars and update the values for the variables. The following shows an example for the variables for the VPC Terraform Stack.
 ```shell script
 region           = "us-west-2"
 eks_vpc_name     = "eks_vpc"
@@ -96,7 +96,6 @@ We will deploy the EKS cluster from the Cloud9 instance that was deployed to the
 2. Install Kubernetes tools on the Cloud9 instance.
     - [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
 3. Create an IAM role for the Cloud9 workspace and attach the IAM role to your workspace.
-    TODO - Automate creation of this role - Discuss with the team.
 4. Update IAM settings for your workspace to disable Cloud9 managing IAM credentials.
 ```shell script
 aws cloud9 update-environment  --environment-id $C9_PID --managed-credentials-action DISABLE
@@ -111,7 +110,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 #### Step2: Review and update the base.tfvars
-Review base.tfvars and update the values for the variable(s).  The following shows some examples for the variables. Ensure you verify and replace all the values for these variables. You can get the VPC ID and subnet IDs from the VPC stack output.
+Create a Terraform variable definition file called base.tfvars and update the values for the variable(s).  The following shows an example for the variables for the EKS Terraform stack. Ensure you verify and replace all the values for these variables. You can get the VPC ID and subnet IDs from the VPC stack output.
 
 ```shell script
 region             = "us-west-2"
@@ -188,7 +187,7 @@ terraform destroy -var-file base.tfvars -auto-approve
 ### Deployment Steps
 
 #### Step1: Review and update the base.tfvars
-Review base.tfvars and update the values for the variable(s).  The following shows some examples for the variables. Ensure you verify and replace all the values for these variables. 
+Create a Terraform variable definition file called base.tfvars and update the values for the variable(s).  The following shows an example for the variables used in the add-ons Terraform stack. Ensure you verify and replace all the values for these variables. 
 
 ```shell script
 region         = "us-west-2"
