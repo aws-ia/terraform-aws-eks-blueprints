@@ -36,7 +36,7 @@ module "eks_blueprints_kubernetes_addons" {
 
 
   # EKS Addons
-  enable_amazon_eks_vpc_cni = false
+  enable_amazon_eks_vpc_cni = true
   amazon_eks_vpc_cni_config = {
     addon_version     = data.aws_eks_addon_version.latest["vpc-cni"].version
     resolve_conflicts = "OVERWRITE"
