@@ -22,6 +22,8 @@ provider "helm" {
 
 locals {
 
+  cluster_version = var.cluster_version
+
 }
 
 module "eks_blueprints_kubernetes_addons" {
