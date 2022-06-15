@@ -739,15 +739,27 @@ variable "aws_privateca_issuer_irsa_policies" {
 
 #-----------OPENTELEMETRY OPERATOR-------------
 variable "enable_opentelemetry_operator" {
+  description = "Enable opentelemetry operator addon"
   type        = bool
   default     = false
-  description = "Enable opentelemetry operator add-on"
 }
 
 variable "opentelemetry_operator_helm_config" {
+  description = "Opentelemetry Operator Helm Chart config"
   type        = any
   default     = {}
-  description = "Opentelemetry Operator Helm Chart config"
+}
+
+variable "enable_amazon_eks_adot" {
+  description = "Enable Amazon EKS ADOT addon"
+  type        = bool
+  default     = false
+}
+
+variable "amazon_eks_adot_config" {
+  description = "Amazon EKS ADOT addon config"
+  type        = any
+  default     = {}
 }
 
 #-----------AWS Observability patterns-------------

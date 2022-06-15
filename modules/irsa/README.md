@@ -62,4 +62,5 @@ No modules.
 |------|-------------|
 | <a name="output_irsa_iam_role_arn"></a> [irsa\_iam\_role\_arn](#output\_irsa\_iam\_role\_arn) | IAM role ARN for your service account |
 | <a name="output_irsa_iam_role_name"></a> [irsa\_iam\_role\_name](#output\_irsa\_iam\_role\_name) | IAM role name for your service account |
+| <a name="output_service_account"></a> [service\_account](#output\_service\_account) | Service account name |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

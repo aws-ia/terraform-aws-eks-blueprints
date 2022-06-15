@@ -7,3 +7,8 @@ output "irsa_iam_role_name" {
   description = "IAM role name for your service account"
   value       = var.irsa_iam_policies != null ? aws_iam_role.irsa[0].name : null
 }
+
+output "service_account" {
+  description = "Service account name"
+  value       = try(kubernetes_service_account_v1.irsa[0].metadata[0].name, var.kubernetes_service_account)
+}
