@@ -50,10 +50,14 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_amazon_eks_kube_proxy = true
   amazon_eks_kube_proxy_config = {
-    addon_version     = data.aws_eks_addon_version.default["kube-proxy"].version
+    addon_version     = data.aws_eks_addon_version.latest["kube-proxy"].version
     resolve_conflicts = "OVERWRITE"
   }
 
   enable_amazon_eks_aws_ebs_csi_driver = true
+  amazon_eks_aws_ebs_csi_driver_config = {
+    addon_version     = data.aws_eks_addon_version.latest["aws-ebs-csi-driver"].version
+    resolve_conflicts = "OVERWRITE"
+  }
 }
 
