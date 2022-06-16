@@ -36,6 +36,7 @@ locals {
     destination        = "https://kubernetes.default.svc"
     project            = "default"
     values             = {}
+    type               = "helm"
     add_on_application = false
   }
 
@@ -44,4 +45,5 @@ locals {
     account     = var.addon_context.aws_caller_identity_account_id
     clusterName = var.addon_context.eks_cluster_id
   }
+
 }

@@ -91,6 +91,13 @@ module "eks_blueprints_kubernetes_addons" {
       repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
       add_on_application = false
     }
+    /* other_workloads = {
+      path               = "kustomize-envs/overlays/dev"
+      # At the moment there are no kustomize examples in the aws-samples repo.
+      repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+      add_on_application = false
+      type               = "kustomize"
+    } */
   }
 
   # Add-ons
