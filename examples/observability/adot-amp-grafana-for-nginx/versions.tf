@@ -18,10 +18,6 @@ terraform {
       source  = "grafana/grafana"
       version = ">= 1.13.3"
     }
-    kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.14"
-    }
   }
 
   # ##  Used for end-to-end testing on project; update to suit your needs

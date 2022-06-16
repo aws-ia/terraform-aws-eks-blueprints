@@ -1,5 +1,7 @@
 locals {
-  name = "adot"
+  name                       = "adot"
+  eks_addon_role_name        = "eks:addon-manager"
+  eks_addon_clusterrole_name = "eks:addon-manager-otel"
   default_helm_config = {
     name        = "opentelemetry"
     repository  = "https://open-telemetry.github.io/opentelemetry-helm-charts"

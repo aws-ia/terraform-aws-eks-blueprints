@@ -29,5 +29,5 @@ variable "addon_config" {
 variable "enable_amazon_eks_adot" {
   description = "Enable Amazon EKS ADOT add-on"
   type        = bool
-  default     = false
+  default     = true
 }
