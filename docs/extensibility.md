@@ -39,7 +39,7 @@ We expect 2 PRs to be created for every Partner Add-On.
 
 1. A PR against the main [EKS Blueprints](https://github.com/aws-ia/terraform-aws-eks-blueprints) repository that contains the following:
    1. Update [kubernetes-addons/main.tf](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/main.tf) to add a module invocation of the remote terraform module for the add-on.
-   2. Documentation to update the [Add-Ons](../add-ons/) section. Example of add-on documentation can be found here along with the list of other add-ons.
+   2. Documentation to update the [Add-Ons](./add-ons/index.md) section. Example of add-on documentation can be found here along with the list of other add-ons.
 2. A second PR against the [EKS Blueprints Add-Ons](https://github.com/aws-samples/eks-blueprints-add-ons) repository to create an ArgoCD application for your add-on. See example of other add-ons that shows what should be added. Add-ons that do not provide GitOps support are not expected to create this PR.
 
 ### Private Add-ons
@@ -48,6 +48,89 @@ There are two ways in which a customer can implement fully private add-ons:
 
 1. Add-ons specific to a customer instance of EKS Blueprints can be implemented inline with the blueprint in the same codebase. Such extensions are scoped to the customer base. Forking the repo however has disadvantages when it comes to ongoing feature releases and bug fixes which will have to be manually ported to your fork.
 2. We recommend, you implement a separate repository for your private add-on while still using the upstream framework. This gives you the advantage of keeping up with ongoing feature releases and bug fixes while keeping your add-on private.
+
+The following example shows you can leverage EKS Blueprints to provide your own helm add-on.
+
+```hcl
+#---------------------------------------------------------------
+# AWS VPC CNI Metrics Helper
+# This is using local helm chart
+#---------------------------------------------------------------
+
+data "aws_partition" "current" {}
+
+data "aws_caller_identity" "current" {}
+
+
+locals {
+  cni_metrics_name = "cni-metrics-helper"
+
+  default_helm_values = [templatefile("${path.module}/helm-values/cni-metrics-helper-values.yaml", {
+    eks_cluster_id = var.eks_cluster_id,
+    image          = "602401143452.dkr.ecr.${var.region}.amazonaws.com/cni-metrics-helper:v1.10.3",
+    sa-name        = local.cni_metrics_name
+   oidc_url        = "oidc.eks.eu-west-1.amazonaws.com/id/E6CASOMETHING55B9D01F7"
+  })]
+
+  addon_context = {
+    aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
+    aws_caller_identity_arn        = data.aws_caller_identity.current.arn
+    aws_eks_cluster_endpoint       = data.aws_eks_cluster.cluster.endpoint
+    aws_partition_id               = data.aws_partition.current.partition
+    aws_region_name                = var.region
+    eks_cluster_id                 = var.eks_cluster_id
+    eks_oidc_issuer_url            = local.oidc_url
+    eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.oidc_url}"
+    tags                           = {}
+  }
+
+  helm_config = {
+    name        = local.cni_metrics_name
+    description = "CNI Metrics Helper Helm Chart"
+    timeout     = "300"
+    chart       = "${path.module}/local-helm-charts/cni-metrics-helper"
+    version     = "0.1.7"
+    repository  = null
+    namespace   = "kube-system"
+    lint        = false
+    values      = local.default_helm_values
+  }
+
+  irsa_config = {
+    kubernetes_namespace              = "kube-system"
+    kubernetes_service_account        = local.cni_metrics_name
+    create_kubernetes_namespace       = false
+    create_kubernetes_service_account = true
+    irsa_iam_policies                 = [aws_iam_policy.cni_metrics.arn]
+  }
+}
+
+module "helm_addon" {
+  source      = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon"
+  helm_config = local.helm_config
+  irsa_config = local.irsa_config
+  addon_context = local.addon_context
+}
+
+resource "aws_iam_policy" "cni_metrics" {
+  name        = "${var.eks_cluster_id}-cni-metrics"
+  description = "IAM policy for EKS CNI Metrics helper"
+  path        = "/"
+  policy      = data.aws_iam_policy_document.cni_metrics.json
+
+  tags = var.tags
+}
+
+data "aws_iam_policy_document" "cni_metrics" {
+  statement {
+    sid = "CNIMetrics"
+    actions = [
+      "cloudwatch:PutMetricData"
+    ]
+    resources = ["*"]
+  }
+}
+```
 
 ### Secrets Handling
 
@@ -167,7 +250,7 @@ variable "kube_state_metrics_helm_config" {
 }
 ```
 
-- Add documentation under add-on [`docs`](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/kube-state-metrics.md) that gives an overview of your add-on and points the customer to the actual documentation which would live in your add-on repo.
+- Add documentation under add-on [`docs`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/docs/add-ons/) that gives an overview of your add-on and points the customer to the actual documentation which would live in your add-on repo.
 
 ### GitOps
 
@@ -184,11 +267,11 @@ output "argocd_gitops_config" {
 }
 ```
 
-- In the PR against the core repo, update [`kubernetes-addons/locals.tf`]((https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/locals.tf) to provide the add-on module output `argocd_gitops_config` to the `argocd_add_on_config` as shown for others.
+- In the PR against the core repo, update [`kubernetes-addons/locals.tf`](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/locals.tf) to provide the add-on module output `argocd_gitops_config` to the `argocd_add_on_config` as shown for others.
 
 - Open a PR against the [eks-blueprints-addons](https://github.com/aws-samples/eks-blueprints-add-ons) repo with the following changes:
 
   - Create a wrapper Helm chart for your add-on similar to [kube-state-metrics](https://github.com/aws-samples/eks-blueprints-add-ons/tree/main/add-ons/kube-state-metrics)
     - Create a [`Chart.yaml`](https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/add-ons/kube-state-metrics/Chart.yaml) which points to the location of your actual helm chart.
     - Create a [`values.yaml`](https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/add-ons/kube-state-metrics/values.yaml) which contains a default best-practice configuration for your add-on.
-  - Create an ArgoCD application [template](https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/templates/kube-state-metrics.yaml) which is applied if `enable_<add_on> = true` is used by the customer in the consumer module. This also used to parameterize your add-ons helm chart wrapper with values that will be passed over from Terraform to Helm using the [GitOps bridge](https://github.com/aws-samples/eks-blueprints/blob/doc/extension-guide/docs/add-ons/index.md#gitops-bridge).
+  - Create an ArgoCD application [template](https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/templates/kube-state-metrics.yaml) which is applied if `enable_<add_on> = true` is used by the customer in the consumer module. This also used to parameterize your add-ons helm chart wrapper with values that will be passed over from Terraform to Helm using the [GitOps bridge](./add-ons/index.md#gitops-bridge).
