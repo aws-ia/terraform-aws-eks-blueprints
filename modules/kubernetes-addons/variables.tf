@@ -752,6 +752,13 @@ variable "opentelemetry_operator_helm_config" {
   type        = any
   default     = {}
 }
+
+variable "amazon_eks_adot_config" {
+  description = "Configuration for Amazon EKS ADOT add-on"
+  type        = any
+  default     = {}
+}
+
 #-----------AWS Observability patterns-------------
 #-----------Java/Jmx Use case-------------
 variable "enable_adot_collector_java" {
