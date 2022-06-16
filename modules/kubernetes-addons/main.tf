@@ -337,6 +337,10 @@ module "opentelemetry_operator" {
   helm_config                   = var.opentelemetry_operator_helm_config
 
   addon_context = local.addon_context
+
+  depends_on = [
+    module.cert_manager
+  ]
 }
 
 module "adot_collector_java" {

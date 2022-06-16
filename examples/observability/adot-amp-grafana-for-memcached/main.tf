@@ -29,7 +29,7 @@ provider "helm" {
 }
 
 provider "grafana" {
-  url  = var.grafana_endpoint
+  url  = "https://${module.managed_grafana.workspace_endpoint}"
   auth = var.grafana_api_key
 }
 
@@ -51,6 +51,7 @@ locals {
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
+
 module "eks_blueprints" {
   source = "../../.."
 
@@ -59,8 +60,6 @@ module "eks_blueprints" {
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
-
-  enable_amazon_prometheus = true
 
   managed_node_groups = {
     t3_l = {
@@ -82,10 +81,41 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
+  enable_cert_manager                  = true # cert issuer required for opentelemetry operator
   enable_opentelemetry_operator        = true
   enable_adot_collector_memcached      = true
-  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
   amazon_prometheus_workspace_region   = local.region
+
+  tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Observability Resources
+#---------------------------------------------------------------
+
+module "managed_grafana" {
+  source  = "terraform-aws-modules/managed-service-grafana/aws"
+  version = "~> 1.3"
+
+  # Workspace
+  name              = local.name
+  stack_set_name    = local.name
+  data_sources      = ["PROMETHEUS"]
+  associate_license = false
+
+  # # Role associations
+  # Pending https://github.com/hashicorp/terraform-provider-aws/issues/24166
+  # role_associations = {
+  #   "ADMIN" = {
+  #     "group_ids" = []
+  #     "user_ids"  = []
+  #   }
+  #   "EDITOR" = {
+  #     "group_ids" = []
+  #     "user_ids"  = []
+  #   }
+  # }
 
   tags = local.tags
 }
@@ -94,7 +124,7 @@ resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
   name       = "amp"
   is_default = true
-  url        = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  url        = module.managed_prometheus.workspace_prometheus_endpoint
 
   json_data {
     http_method     = "GET"
@@ -104,49 +134,56 @@ resource "grafana_data_source" "prometheus" {
   }
 }
 
-resource "grafana_folder" "memchached_dashboards" {
+resource "grafana_folder" "this" {
   title = "Observability"
 }
 
-resource "grafana_dashboard" "memchached_dashboards" {
-  folder      = grafana_folder.memchached_dashboards.id
+resource "grafana_dashboard" "this" {
+  folder      = grafana_folder.this.id
   config_json = file("${path.module}/dashboards/default.json")
 }
 
-resource "aws_prometheus_rule_group_namespace" "memcached" {
-  name         = "memcached_rules"
-  workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
 
-  data = <<-EOF
-  groups:
-    - name: obsa-memcached-down-alert
-      rules:
-      - alert: memcached-down
-      expr: memcached_up == 0
-      for: 0m
-      labels:
-        severity: critical
-      annotations:
-        summary: memcached down (instance {{ $labels.instance }})
-        description: "memcached instance is down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-  EOF
-}
+module "managed_prometheus" {
+  source  = "terraform-aws-modules/managed-service-prometheus/aws"
+  version = "~> 2.1"
 
-resource "aws_prometheus_alert_manager_definition" "memcached" {
-  workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
+  workspace_alias = local.name
 
-  definition = <<-EOF
+  alert_manager_definition = <<-EOT
   alertmanager_config: |
     route:
       receiver: 'default'
     receivers:
       - name: 'default'
-  EOF
+  EOT
+
+  rule_group_namespaces = {
+    memcached = {
+      name = "memcached_rules"
+      data = <<-EOT
+      groups:
+        - name: obsa-memcached-down-alert
+          rules:
+            - alert: memcached-down
+              expr: memcached_up == 0
+              for: 0m
+              labels:
+                severity: critical
+              annotations:
+                summary: memcached down (instance {{ $labels.instance }})
+                description: "memcached instance is down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+      EOT
+    }
+  }
+
+  tags = local.tags
 }
 
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"

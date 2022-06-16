@@ -51,6 +51,7 @@ locals {
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
+
 module "eks_blueprints" {
   source = "../../.."
 
@@ -86,18 +87,16 @@ module "eks_blueprints_kubernetes_addons" {
   amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
   amazon_prometheus_workspace_region   = local.region
 
-  tags = merge(
-    local.tags,
-    { Cluster = module.eks_blueprints.eks_cluster_id }
-  )
+  tags = local.tags
 }
 
 #---------------------------------------------------------------
 # Observability Resources
 #---------------------------------------------------------------
+
 module "managed_grafana" {
   source  = "terraform-aws-modules/managed-service-grafana/aws"
-  version = "~> 1.2"
+  version = "~> 1.3"
 
   # Workspace
   name              = local.name
@@ -121,10 +120,6 @@ module "managed_grafana" {
   tags = local.tags
 }
 
-output "prometheus_endpoint" {
-  value = module.managed_prometheus.workspace_prometheus_endpoint
-}
-
 resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
   name       = "amp"
@@ -139,12 +134,12 @@ resource "grafana_data_source" "prometheus" {
   }
 }
 
-resource "grafana_folder" "haproxy_dashboards" {
+resource "grafana_folder" "this" {
   title = "Observability"
 }
 
-resource "grafana_dashboard" "haproxy_dashboards" {
-  folder      = grafana_folder.haproxy_dashboards.id
+resource "grafana_dashboard" "this" {
+  folder      = grafana_folder.this.id
   config_json = file("${path.module}/dashboards/default.json")
 }
 
@@ -231,6 +226,7 @@ module "managed_prometheus" {
 #---------------------------------------------------------------
 # Sample Application
 #---------------------------------------------------------------
+
 # https://github.com/haproxy-ingress/charts/tree/master/haproxy-ingress
 resource "helm_release" "haproxy_ingress" {
   namespace        = "haproxy-ingress"
@@ -272,6 +268,7 @@ resource "helm_release" "haproxy_ingress" {
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
