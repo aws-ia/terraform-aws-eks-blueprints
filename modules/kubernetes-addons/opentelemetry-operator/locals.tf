@@ -1,4 +1,5 @@
 locals {
+  name = "adot"
   default_helm_config = {
     name        = "opentelemetry"
     repository  = "https://open-telemetry.github.io/opentelemetry-helm-charts"

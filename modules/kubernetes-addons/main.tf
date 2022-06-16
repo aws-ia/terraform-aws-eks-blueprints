@@ -323,6 +323,15 @@ module "opentelemetry_operator" {
   source        = "./opentelemetry-operator"
   helm_config   = var.opentelemetry_operator_helm_config
   addon_context = local.addon_context
+
+  # Amazon EKS ADOT add
+  enable_amazon_eks_adot = true
+  addon_config = merge(
+    {
+      kubernetes_version = var.eks_cluster_version
+    },
+    var.amazon_eks_adot_config,
+  )
 }
 
 module "adot_collector_java" {

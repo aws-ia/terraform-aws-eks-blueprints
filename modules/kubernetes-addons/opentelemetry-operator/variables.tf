@@ -19,3 +19,15 @@ variable "addon_context" {
     tags                           = map(string)
   })
 }
+
+variable "addon_config" {
+  description = "Amazon EKS Managed CoreDNS Add-on config"
+  type        = any
+  default     = {}
+}
+
+variable "enable_amazon_eks_adot" {
+  description = "Enable Amazon EKS ADOT add-on"
+  type        = bool
+  default     = false
+}

@@ -752,7 +752,6 @@ variable "opentelemetry_operator_helm_config" {
   type        = any
   default     = {}
 }
-
 #-----------AWS Observability patterns-------------
 #-----------Java/Jmx Use case-------------
 variable "enable_adot_collector_java" {
