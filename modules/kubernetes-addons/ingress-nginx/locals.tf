@@ -5,7 +5,7 @@ locals {
     name             = local.name
     chart            = local.name
     repository       = "https://kubernetes.github.io/ingress-nginx"
-    version          = "4.0.17"
+    version          = "4.1.4"
     namespace        = local.name
     create_namespace = false
     values           = local.default_helm_values

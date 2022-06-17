@@ -6,7 +6,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://aws.github.io/eks-charts"
-    version     = "1.4.1"
+    version     = "1.4.2"
     namespace   = "kube-system"
     timeout     = "1200"
     values      = local.default_helm_values

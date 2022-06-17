@@ -8,7 +8,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://charts.bitnami.com/bitnami"
-    version     = "6.1.6"
+    version     = "6.5.6"
     namespace   = local.name
     values      = local.default_helm_values
   }

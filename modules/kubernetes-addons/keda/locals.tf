@@ -5,7 +5,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://kedacore.github.io/charts"
-    version     = "2.6.2"
+    version     = "2.7.2"
     namespace   = local.name
     description = "Keda Event-based autoscaler for workloads on Kubernetes"
     values      = local.default_helm_values

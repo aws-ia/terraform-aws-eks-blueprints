@@ -4,7 +4,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://apache.github.io/yunikorn-release"
-    version     = "0.12.2"
+    version     = "1.0.0"
     namespace   = local.name
     description = "Apache YuniKorn (Incubating) is a light-weight, universal resource scheduler for container orchestrator systems"
     values      = local.default_helm_values

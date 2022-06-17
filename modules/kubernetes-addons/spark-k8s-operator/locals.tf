@@ -5,7 +5,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
-    version     = "1.1.19"
+    version     = "1.1.25"
     namespace   = local.name
     description = "The spark_k8s_operator HelmChart Ingress Controller deployment configuration"
     values      = null

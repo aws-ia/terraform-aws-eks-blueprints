@@ -6,7 +6,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://kubernetes.github.io/autoscaler"
-    version     = "9.15.0"
+    version     = "9.19.1"
     namespace   = "kube-system"
     description = "Cluster AutoScaler helm Chart deployment configuration."
     values      = local.default_helm_values

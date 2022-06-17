@@ -7,7 +7,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
-    version     = "2.2.3"
+    version     = "2.2.6"
     namespace   = local.namespace
     values      = local.default_helm_values
     description = "The AWS EFS CSI driver Helm chart deployment configuration"
