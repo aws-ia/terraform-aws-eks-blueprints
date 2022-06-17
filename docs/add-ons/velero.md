@@ -14,6 +14,34 @@ enable_velero           = true
 velero_backup_s3_bucket = "<YOUR_BUCKET_NAME>"
 ```
 
+You can also customize the Helm chart that deploys `velero` via the following configuration:
+
+```hcl
+enable_velero           = true
+velero_helm_config = {
+  name        = "velero"
+  description = "A Helm chart for velero"
+  chart       = "velero"
+  version     = "2.29.8"
+  repository  = "https://vmware-tanzu.github.io/helm-charts/"
+  namespace   = "velero"
+  values = [templatefile("${path.module}/values.yaml", {
+    backup_s3_bucket = "<YOUR_BUCKET_NAME>",
+  })]
+
+  set_values = [
+    {
+      name  = "serviceAccount.server.name"
+      value = local.name
+    },
+    {
+      name  = "serviceAccount.server.create"
+      value = false
+    }
+  ]
+}
+```
+
 To see a working example, see the [`stateful`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/stateful) example blueprint.
 
 ## Validate

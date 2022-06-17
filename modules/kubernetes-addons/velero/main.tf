@@ -1,5 +1,6 @@
 locals {
-  name = "velero"
+  name      = "velero"
+  namespace = try(var.helm_config.namespace, local.name)
 
   argocd_gitops_config = {
     enable             = true
@@ -10,29 +11,17 @@ locals {
 module "helm_addon" {
   source = "../helm-addon"
 
+  # https://github.com/vmware-tanzu/helm-charts/tree/main/charts/velero
   helm_config = merge({
     name        = local.name
     description = "A Helm chart for velero"
     chart       = local.name
-    version     = "2.29.6"
+    version     = "2.29.8"
     repository  = "https://vmware-tanzu.github.io/helm-charts/"
-    namespace   = local.name
-    values = [
-      <<-EOT
-      configuration:
-        provider: aws
-        backupStorageLocation:
-          bucket: ${var.backup_s3_bucket}
-
-      initContainers:
-        - name: velero-plugin-for-aws
-          image: velero/velero-plugin-for-aws:v1.4.1
-          imagePullPolicy: IfNotPresent
-          volumeMounts:
-            - mountPath: /target
-              name: plugins
-      EOT
-    ]
+    namespace   = local.namespace
+    values = [templatefile("${path.module}/values.yaml", {
+      backup_s3_bucket = var.backup_s3_bucket,
+    })]
     },
     var.helm_config
   )
@@ -49,14 +38,13 @@ module "helm_addon" {
   ]
 
   irsa_config = {
-    kubernetes_namespace              = local.name
-    kubernetes_service_account        = local.name
-    create_kubernetes_namespace       = true
+    create_kubernetes_namespace = true
+    kubernetes_namespace        = local.namespace
+
     create_kubernetes_service_account = true
-    iam_role_path                     = "/"
-    tags                              = var.addon_context.tags
-    eks_cluster_id                    = var.addon_context.eks_cluster_id
-    irsa_iam_policies                 = concat([aws_iam_policy.velero.arn], var.irsa_policies)
+    kubernetes_service_account        = try(var.helm_config.namespace, local.name)
+
+    irsa_iam_policies = concat([aws_iam_policy.velero.arn], var.irsa_policies)
   }
 
   # Blueprints
