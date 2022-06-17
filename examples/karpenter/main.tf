@@ -66,7 +66,7 @@ module "eks_blueprints" {
   source = "../.."
 
   cluster_name    = local.name
-  cluster_version = "1.21"
+  cluster_version = "1.22"
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
@@ -114,8 +114,6 @@ module "eks_blueprints_kubernetes_addons" {
   enable_aws_node_termination_handler = true
 
   tags = local.tags
-
-  depends_on = [module.eks_blueprints.self_managed_node_groups]
 }
 
 # Creates Launch templates for Karpenter

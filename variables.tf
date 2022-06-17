@@ -1,15 +1,15 @@
 variable "tags" {
+  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
   type        = map(string)
   default     = {}
-  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }
 
 #-------------------------------
 # VPC Config for EKS Cluster
 #-------------------------------
 variable "vpc_id" {
-  type        = string
   description = "VPC Id"
+  type        = string
 }
 
 variable "private_subnet_ids" {
@@ -28,9 +28,9 @@ variable "public_subnet_ids" {
 # EKS module variables (terraform-aws-modules/eks/aws)
 #-------------------------------
 variable "create_eks" {
+  description = "Create EKS cluster"
   type        = bool
   default     = true
-  description = "Create EKS cluster"
 }
 
 variable "cluster_timeouts" {
@@ -40,9 +40,9 @@ variable "cluster_timeouts" {
 }
 
 variable "cluster_name" {
+  description = "EKS Cluster Name"
   type        = string
   default     = ""
-  description = "EKS Cluster Name"
 }
 
 variable "cluster_version" {
@@ -76,15 +76,15 @@ variable "cluster_security_group_tags" {
 # EKS Cluster VPC Config
 #-------------------------------
 variable "cluster_endpoint_public_access" {
+  description = "Indicates whether or not the EKS public API server endpoint is enabled. Default to EKS resource and it is true"
   type        = bool
   default     = true
-  description = "Indicates whether or not the EKS public API server endpoint is enabled. Default to EKS resource and it is true"
 }
 
 variable "cluster_endpoint_private_access" {
+  description = "Indicates whether or not the EKS private API server endpoint is enabled. Default to EKS resource and it is false"
   type        = bool
   default     = false
-  description = "Indicates whether or not the EKS private API server endpoint is enabled. Default to EKS resource and it is false"
 }
 
 variable "cluster_endpoint_public_access_cidrs" {
@@ -97,20 +97,20 @@ variable "cluster_endpoint_public_access_cidrs" {
 # EKS Cluster ENCRYPTION
 #-------------------------------
 variable "cluster_kms_key_arn" {
+  description = "A valid EKS Cluster KMS Key ARN to encrypt Kubernetes secrets"
   type        = string
   default     = null
-  description = "A valid EKS Cluster KMS Key ARN to encrypt Kubernetes secrets"
 }
 
 variable "cluster_kms_key_deletion_window_in_days" {
+  description = "The waiting period, specified in number of days (7 - 30). After the waiting period ends, AWS KMS deletes the KMS key"
   type        = number
   default     = 30
-  description = "The waiting period, specified in number of days (7 - 30). After the waiting period ends, AWS KMS deletes the KMS key"
 }
 
 variable "cluster_kms_key_additional_admin_arns" {
+  description = "A list of additional IAM ARNs that should have FULL access (kms:*) in the KMS key policy"
   type        = list(string)
-  description = "A list of additional IAM ARNs that should have FULL access (kms:*) in the KMS key policy."
   default     = []
 }
 
@@ -130,11 +130,6 @@ variable "cluster_ip_family" {
   description = "The IP family used to assign Kubernetes pod and service addresses. Valid values are `ipv4` (default) and `ipv6`. You can only specify an IP family when you create a cluster, changing this value will force a new cluster to be created"
   type        = string
   default     = "ipv4"
-
-  validation {
-    condition     = contains(["ipv4", "ipv6"], var.cluster_ip_family)
-    error_message = "Invalid input, options: \"ipv4\", \"ipv6\"."
-  }
 }
 
 variable "cluster_service_ipv4_cidr" {
@@ -159,9 +154,9 @@ variable "create_cloudwatch_log_group" {
 }
 
 variable "cluster_enabled_log_types" {
+  description = "A list of the desired control plane logging to enable"
   type        = list(string)
   default     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
-  description = "A list of the desired control plane logging to enable"
 }
 
 variable "cloudwatch_log_group_retention_in_days" {
@@ -328,8 +323,8 @@ variable "map_users" {
 
 variable "aws_auth_additional_labels" {
   description = "Additional kubernetes labels applied on aws-auth ConfigMap"
-  default     = {}
   type        = map(string)
+  default     = {}
 }
 
 variable "eks_readiness_timeout" {
@@ -342,24 +337,24 @@ variable "eks_readiness_timeout" {
 # Amazon Managed Prometheus
 #-------------------------------
 variable "enable_amazon_prometheus" {
+  description = "Enable AWS Managed Prometheus service"
   type        = bool
   default     = false
-  description = "Enable AWS Managed Prometheus service"
 }
 
 variable "amazon_prometheus_workspace_alias" {
+  description = "AWS Managed Prometheus WorkSpace Name"
   type        = string
   default     = null
-  description = "AWS Managed Prometheus WorkSpace Name"
 }
 
 #-------------------------------
 # Amazon EMR on EKS
 #-------------------------------
 variable "enable_emr_on_eks" {
+  description = "Enable EMR on EKS"
   type        = bool
   default     = false
-  description = "Enable EMR on EKS"
 }
 
 variable "emr_on_eks_teams" {

@@ -1,10 +1,6 @@
 resource "kubernetes_namespace_v1" "crossplane" {
   metadata {
     name = local.namespace
-
-    labels = {
-      "app.kubernetes.io/managed-by" = "terraform-aws-eks-blueprints"
-    }
   }
 }
 

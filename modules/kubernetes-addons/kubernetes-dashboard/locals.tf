@@ -5,7 +5,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://kubernetes.github.io/dashboard/"
-    version     = "5.4.1"
+    version     = "5.7.0"
     namespace   = local.name
     description = "Kubernetes Dashboard Helm Chart"
     values      = []

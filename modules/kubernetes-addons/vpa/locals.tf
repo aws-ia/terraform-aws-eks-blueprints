@@ -5,7 +5,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://charts.fairwinds.com/stable"
-    version     = "1.0.0"
+    version     = "1.4.0"
     namespace   = local.name
     description = "Kubernetes Vertical Pod Autoscaler"
     values      = local.default_helm_values

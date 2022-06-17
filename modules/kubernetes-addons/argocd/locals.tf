@@ -16,7 +16,7 @@ locals {
     name             = local.name
     chart            = local.name
     repository       = "https://argoproj.github.io/argo-helm"
-    version          = "3.33.3"
+    version          = "4.9.1"
     namespace        = local.namespace
     timeout          = 1200
     create_namespace = true

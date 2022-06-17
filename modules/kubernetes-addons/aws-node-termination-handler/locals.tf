@@ -7,7 +7,7 @@ locals {
     name             = local.name
     chart            = local.name
     repository       = "https://aws.github.io/eks-charts"
-    version          = "0.16.0"
+    version          = "0.18.5"
     namespace        = local.namespace
     timeout          = "1200"
     create_namespace = false

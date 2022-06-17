@@ -18,7 +18,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://aws.github.io/eks-charts"
-    version     = "0.1.11"
+    version     = "0.1.17"
     namespace   = local.name
     values      = local.default_helm_values
     description = "aws-for-fluentbit Helm Chart deployment configuration"

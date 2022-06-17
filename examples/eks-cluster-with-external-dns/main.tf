@@ -55,7 +55,7 @@ module "eks_blueprints" {
   source = "../.."
 
   cluster_name    = local.name
-  cluster_version = "1.21"
+  cluster_version = "1.22"
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
@@ -108,11 +108,6 @@ module "eks_blueprints_kubernetes_addons" {
   enable_external_dns                 = true
 
   tags = local.tags
-
-  depends_on = [
-    module.vpc,
-    module.eks_blueprints.managed_node_groups
-  ]
 }
 
 #---------------------------------------------------------------
