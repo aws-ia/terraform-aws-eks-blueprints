@@ -13,8 +13,5 @@ resource "kubernetes_namespace_v1" "this" {
 
   metadata {
     name = local.helm_config["namespace"]
-    labels = {
-      "app.kubernetes.io/managed-by" = "terraform-aws-eks-blueprints"
-    }
   }
 }

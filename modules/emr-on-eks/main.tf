@@ -5,8 +5,7 @@ resource "kubernetes_namespace" "spark" {
     }
 
     labels = {
-      job-type                       = "spark"
-      "app.kubernetes.io/managed-by" = "terraform-aws-eks-blueprints"
+      job-type = "spark"
     }
 
     name = local.emr_on_eks_team["namespace"]
