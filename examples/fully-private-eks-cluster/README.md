@@ -11,7 +11,7 @@ This example deploys a fully private EKS Cluster into a new VPC using Cloud9.
 Please see this [document](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html) for more details on configuring fully private EKS Clusters
 
 Here is the high level design of the solution. The solution has been split into 3 different Terraform stacks for simplicity.
-1. VPC 
+1. VPC
     - This Terraform stack provisions the following resources :
         - A VPC (cloud9-vpc) with public and private subnets to run the Cloud9 Instance.
         - A VPC (eks-vpc) with private only subnets to run the EKS cluster with VPC endpoints.
@@ -56,7 +56,7 @@ Initialize a working directory with configuration files
 
 ```shell script
 cd examples/fully-private-eks-cluster/vpc
-terraform init 
+terraform init
 ```
 
 #### Step4: Run Terraform PLAN
@@ -78,19 +78,19 @@ Enter `yes` to apply
 
 Note : Once the stack completes, you will see an output of the vpc-id and the private subnets for the eks-vpc. Note them so we can use them in the EKS Terraform stack.
 
- 
+
 ### How to Destroy
 The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/fully-private-eks-cluster/vpc
 terraform destroy -var-file base.tfvars -auto-approve  
-```    
+```  
 
 # Provision the Private EKS cluster using the EKS stack.
 
 ### Prerequisites:
-We will deploy the EKS cluster from the Cloud9 instance that was deployed to the cloud9-vpc. 
+We will deploy the EKS cluster from the Cloud9 instance that was deployed to the cloud9-vpc.
 
 1. Launch the "EKS-Cloud9" Cloud9 instance.
 2. Install Kubernetes tools on the Cloud9 instance.
@@ -133,7 +133,7 @@ Initialize a working directory with configuration files
 
 ```shell script
 cd examples/fully-private-eks-cluster/eks
-terraform init 
+terraform init
 ```
 
 #### Step4: Run Terraform PLAN
@@ -172,7 +172,7 @@ The EKS Terraform stack outputs the command you have to execute to update the  `
 
     $ kubectl get pods -n kube-system
 
- 
+
 
 ### How to Destroy
 The following command destroys the resources created by `terraform apply`
@@ -180,14 +180,14 @@ The following command destroys the resources created by `terraform apply`
 ```shell script
 cd examples/fully-private-eks-cluster/eks
 terraform destroy -var-file base.tfvars -auto-approve  
-``` 
+```
 
 # Provision the Managed Add-ons using the add-ons stack.
 
 ### Deployment Steps
 
 #### Step1: Review and update the base.tfvars
-Create a Terraform variable definition file called base.tfvars and update the values for the variable(s).  The following shows an example for the variables used in the add-ons Terraform stack. Ensure you verify and replace all the values for these variables. 
+Create a Terraform variable definition file called base.tfvars and update the values for the variable(s).  The following shows an example for the variables used in the add-ons Terraform stack. Ensure you verify and replace all the values for these variables.
 
 ```shell script
 region         = "us-west-2"
@@ -200,7 +200,7 @@ Initialize a working directory with configuration files
 
 ```shell script
 cd examples/fully-private-eks-cluster/add-ons
-terraform init 
+terraform init
 ```
 
 #### Step3: Run Terraform PLAN
@@ -224,5 +224,5 @@ The following command destroys the resources created by `terraform apply`
 ```shell script
 cd examples/fully-private-eks-cluster/add-ons
 terraform destroy -var-file base.tfvars -auto-approve  
-``` 
+```
 <!--- END_TF_DOCS --->

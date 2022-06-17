@@ -9,5 +9,6 @@ output "private_subnets" {
 }
 
 output "cloud9_url" {
-  value = "https://${var.region}.console.aws.amazon.com/cloud9/ide/${aws_cloud9_environment_ec2.eks-cloud9.id}"
+  description = "Url to the Cloud9 Instance"
+  value       = "https://${var.region}.console.aws.amazon.com/cloud9/ide/${aws_cloud9_environment_ec2.eks_cloud9.id}"
 }

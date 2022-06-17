@@ -33,11 +33,3 @@ variable "cloud9_owner_arn" {
   type        = string
   default     = ""
 }
-
-variable "cloud9_iam_role_arn" {
-  description = "The arn of the IAM role that will be attached to the Cloud9 instance."
-  type        = string
-  default     = ""
-}
-
-

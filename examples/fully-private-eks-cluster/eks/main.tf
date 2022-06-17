@@ -52,6 +52,6 @@ module "eks_blueprints" {
     }
   }
 
-  //Custom Tags.
+  #Custom Tags.
   tags = local.tags
 }
