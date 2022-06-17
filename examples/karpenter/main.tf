@@ -114,8 +114,6 @@ module "eks_blueprints_kubernetes_addons" {
   enable_aws_node_termination_handler = true
 
   tags = local.tags
-
-  depends_on = [module.eks_blueprints.self_managed_node_groups]
 }
 
 # Creates Launch templates for Karpenter
