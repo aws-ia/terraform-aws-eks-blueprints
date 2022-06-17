@@ -753,6 +753,31 @@ variable "opentelemetry_operator_helm_config" {
   default     = {}
 }
 
+#-----------Kubernetes Velero ADDON-------------
+variable "enable_velero" {
+  description = "Enable Kubernetes Dashboard add-on"
+  type        = bool
+  default     = false
+}
+
+variable "velero_helm_config" {
+  description = "Kubernetes Velero Helm Chart config"
+  type        = any
+  default     = null
+}
+
+variable "velero_irsa_policies" {
+  description = "IAM policy ARNs for velero IRSA"
+  type        = list(string)
+  default     = []
+}
+
+variable "velero_backup_s3_bucket" {
+  description = "Bucket name for velero bucket"
+  type        = string
+  default     = ""
+}
+
 #-----------AWS Observability patterns-------------
 #-----------Java/Jmx Use case-------------
 variable "enable_adot_collector_java" {

@@ -28,6 +28,7 @@ locals {
     kubernetesDashboard       = var.enable_kubernetes_dashboard ? module.kubernetes_dashboard[0].argocd_gitops_config : null
     awsCloudWatchMetrics      = var.enable_aws_cloudwatch_metrics ? module.aws_cloudwatch_metrics[0].argocd_gitops_config : null
     externalDns               = var.enable_external_dns ? module.external_dns[0].argocd_gitops_config : null
+    velero                    = var.enable_velero ? module.velero[0].argocd_gitops_config : null
   }
 
   addon_context = {

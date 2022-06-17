@@ -318,6 +318,16 @@ module "aws_privateca_issuer" {
   irsa_policies           = var.aws_privateca_issuer_irsa_policies
 }
 
+module "velero" {
+  count             = var.enable_velero ? 1 : 0
+  source            = "./velero"
+  helm_config       = var.velero_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+  irsa_policies     = var.velero_irsa_policies
+  backup_s3_bucket  = var.velero_backup_s3_bucket
+}
+
 module "opentelemetry_operator" {
   count         = var.enable_opentelemetry_operator ? 1 : 0
   source        = "./opentelemetry-operator"
