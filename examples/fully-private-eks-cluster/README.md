@@ -95,7 +95,7 @@ We will deploy the EKS cluster from the Cloud9 instance that was deployed to the
 1. Launch the "EKS-Cloud9" Cloud9 instance.
 2. Install Kubernetes tools on the Cloud9 instance.
     - [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
-3. Create an IAM role for the Cloud9 workspace and attach the IAM role to your workspace.
+3. Create an IAM role for the Cloud9 workspace and attach the IAM role to your workspace. This IAM role should have enough permissions to provision an EKS cluster.
 4. Update IAM settings for your workspace to disable Cloud9 managing IAM credentials.
 ```shell script
 aws cloud9 update-environment  --environment-id $C9_PID --managed-credentials-action DISABLE
@@ -129,7 +129,7 @@ cluster_security_group_additional_rules = {
 }
 ```
 #### Step3: Run Terraform INIT
-Initialize a working directory with configuration files
+Initialize a working directory with configuration files. Change directory into the cloned repo.
 
 ```shell script
 cd examples/fully-private-eks-cluster/eks
