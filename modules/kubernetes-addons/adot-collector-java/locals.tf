@@ -55,6 +55,6 @@ locals {
     create_kubernetes_namespace       = false
     kubernetes_service_account        = local.adot_collector_service_account
     create_kubernetes_service_account = true
-    irsa_iam_policies                 = ["arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess"]
+    irsa_iam_policies                 = ["arn:${var.addon_context.aws_partition_id}:iam::aws:policy/AmazonPrometheusRemoteWriteAccess"]
   }
 }
