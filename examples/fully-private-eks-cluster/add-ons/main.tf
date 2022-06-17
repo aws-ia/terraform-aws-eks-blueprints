@@ -31,7 +31,7 @@ module "eks_blueprints_kubernetes_addons" {
 
   eks_cluster_id       = var.eks_cluster_id
   eks_cluster_endpoint = data.aws_eks_cluster.cluster.endpoint
-  eks_oidc_provider    = data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer
+  eks_oidc_provider   = replace(data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer, "https://", "")
   eks_cluster_version  = data.aws_eks_cluster.cluster.version
 
 
