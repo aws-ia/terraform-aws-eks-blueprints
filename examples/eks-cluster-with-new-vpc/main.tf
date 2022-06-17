@@ -89,7 +89,6 @@ module "eks_blueprints_kubernetes_addons" {
   enable_aws_cloudwatch_metrics       = true
 
   tags = local.tags
-
 }
 
 #---------------------------------------------------------------
