@@ -110,15 +110,15 @@ To access your Apache Airflow UI
 - Choose an environment.
 - Choose Open Airflow UI.
 
-#### Step 8: Trigerring the DAG
+#### Step 9: Trigerring the DAG
 
 Once you are on Airflow UI, enable the example and then trigger it.
 
-[Enable the DAG kubernetes_pod_example ](images/kubernetes_pod_example_dag.png)
+![Enable the DAG kubernetes_pod_example ](images/kubernetes_pod_example_dag.png)
 
-[Trigger the DAG kubernetes_pod_example ](images/dag_tree.png)
+![Trigger the DAG kubernetes_pod_example ](images/dag_tree.png)
 
-#### Step 9: Check if the pod was executed successfully 
+#### Step 10: Check if the pod was executed successfully 
 
 After it runs and completes successfully, use the following command to verify the pod:
 
