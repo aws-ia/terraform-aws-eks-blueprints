@@ -102,6 +102,37 @@ This following command used to update the `kubeconfig` in your local machine whe
 
     $ kubectl get pods -n kube-system
 
+#### Step 8: Logging into Apache Airflow
+
+To access your Apache Airflow UI
+
+- Open the Environments page on the Amazon MWAA console.
+- Choose an environment.
+- Choose Open Airflow UI.
+
+#### Step 8: Trigerring the DAG
+
+Once you are on Airflow UI, enable the example and then trigger it.
+
+[Enable the DAG kubernetes_pod_example ](images/kubernetes_pod_example_dag.png)
+
+[Trigger the DAG kubernetes_pod_example ](images/dag_tree.png)
+
+#### Step 9: Check if the pod was executed successfully 
+
+After it runs and completes successfully, use the following command to verify the pod:
+
+```
+kubectl get pods -n mwaa
+```
+
+You should see output similar to the following:
+
+```
+NAME                                             READY   STATUS      RESTARTS   AGE
+mwaa-pod-test.4bed823d645844bc8e6899fd858f119d   0/1     Completed   0          25s
+```
+
 ## How to Destroy
 
 The following command destroys the resources created by `terraform apply`

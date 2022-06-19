@@ -59,7 +59,7 @@ locals {
   plugins_s3_path       = "plugins.zip"
   requirements_s3_path  = "dags/requirements.txt"
   webserver_access_mode = "PUBLIC_ONLY"
-  vpn_cidr              = ["10.0.0.0/16"] #Add your IP here to access Airflow UI
+  source_cidr           = ["10.0.0.0/16"] #Add your IP here to access Airflow UI
 
 
   # Airflow configuration
@@ -189,8 +189,8 @@ module "eks_blueprints_kubernetes_addons" {
 
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
-  enable_metrics_server     = true
-  enable_cluster_autoscaler = true
+  enable_metrics_server     = false
+  enable_cluster_autoscaler = false
 
 }
 
@@ -199,7 +199,7 @@ module "eks_blueprints_kubernetes_addons" {
 #------------------------------------------------------------------------
 
 module "mwaa" {
-  source                        = "./aws-mwaa"
+  source                        = "aws-ia/mwaa/aws"
   environment_name              = local.environment_name
   airflow_version               = local.airflow_version
   environment_class             = local.environment_class
@@ -213,7 +213,7 @@ module "mwaa" {
   vpc_id                        = module.aws_vpc.vpc_id
   private_subnet_ids            = [module.aws_vpc.private_subnets[0], module.aws_vpc.private_subnets[1]]
   webserver_access_mode         = local.webserver_access_mode
-  vpn_cidr                      = local.vpn_cidr
+  source_cidr                   = local.source_cidr
 }
 
 #------------------------------------------------------------------------
