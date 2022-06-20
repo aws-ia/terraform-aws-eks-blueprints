@@ -39,6 +39,7 @@ locals {
     service_ipv4_cidr      = ""
     format_mount_nvme_disk = false
 
-    monitoring = true
+    monitoring              = true
+    enable_metadata_options = true
   })
 }

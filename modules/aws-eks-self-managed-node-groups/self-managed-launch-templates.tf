@@ -21,6 +21,8 @@ module "launch_template_self_managed_ng" {
       http_endpoint               = try(var.self_managed_ng.http_endpoint, "enabled")
       http_tokens                 = try(var.self_managed_ng.http_tokens, "required")
       http_put_response_hop_limit = try(var.self_managed_ng.http_put_response_hop_limit, 2)
+      http_protocol_ipv6          = try(var.self_managed_ng.http_protocol_ipv6, null)
+      instance_metadata_tags      = try(var.self_managed_ng.instance_metadata_tags, null)
 
       service_ipv6_cidr = var.context.service_ipv6_cidr
       service_ipv4_cidr = var.context.service_ipv4_cidr

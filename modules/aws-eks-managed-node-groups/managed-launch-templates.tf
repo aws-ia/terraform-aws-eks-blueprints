@@ -40,6 +40,8 @@ resource "aws_launch_template" "managed_node_groups" {
       http_endpoint               = try(var.managed_ng.http_endpoint, "enabled")
       http_tokens                 = try(var.managed_ng.http_tokens, "required") #tfsec:ignore:aws-autoscaling-enforce-http-token-imds
       http_put_response_hop_limit = try(var.managed_ng.http_put_response_hop_limit, 2)
+      http_protocol_ipv6          = try(var.managed_ng.http_protocol_ipv6, null)
+      instance_metadata_tags      = try(var.managed_ng.instance_metadata_tags, null)
     }
   }
 
