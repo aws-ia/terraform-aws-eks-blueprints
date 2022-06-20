@@ -77,9 +77,9 @@ resource "aws_launch_template" "this" {
   }
 
   metadata_options {
-    http_endpoint               = each.value.http_endpoint
-    http_tokens                 = each.value.http_tokens
-    http_put_response_hop_limit = each.value.http_put_response_hop_limit
+    http_endpoint               = try(each.value.http_endpoint, "enabled")
+    http_tokens                 = try(each.value.http_tokens, "required")
+    http_put_response_hop_limit = try(each.value.http_put_response_hop_limit, 2)
   }
 
   lifecycle {

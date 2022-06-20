@@ -34,9 +34,9 @@ resource "aws_launch_template" "managed_node_groups" {
   }
 
   metadata_options {
-    http_endpoint               = try(var.context.http_endpoint, "enabled")
-    http_tokens                 = try(var.context.http_tokens, "required") #tfsec:ignore:aws-autoscaling-enforce-http-token-imds
-    http_put_response_hop_limit = try(var.context.http_put_response_hop_limit, 2)
+    http_endpoint               = try(var.managed_ng.http_endpoint, "enabled")
+    http_tokens                 = try(var.managed_ng.http_tokens, "required") #tfsec:ignore:aws-autoscaling-enforce-http-token-imds
+    http_put_response_hop_limit = try(var.managed_ng.http_put_response_hop_limit, 2)
   }
 
   tag_specifications {
