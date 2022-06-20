@@ -124,6 +124,12 @@ variable "enable_amazon_eks_aws_ebs_csi_driver" {
   default     = false
 }
 
+variable "custom_image_registry_uri" {
+  description = "Custom image registry URI map of `{region = dkr.endpoint }`"
+  type        = map(string)
+  default     = {}
+}
+
 #-----------CLUSTER AUTOSCALER-------------
 variable "enable_cluster_autoscaler" {
   description = "Enable Cluster autoscaler add-on"
