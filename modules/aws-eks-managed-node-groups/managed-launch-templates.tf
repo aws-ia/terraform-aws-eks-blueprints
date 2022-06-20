@@ -33,10 +33,14 @@ resource "aws_launch_template" "managed_node_groups" {
     enabled = local.managed_node_group["enable_monitoring"]
   }
 
-  metadata_options {
-    http_endpoint               = try(var.managed_ng.http_endpoint, "enabled")
-    http_tokens                 = try(var.managed_ng.http_tokens, "required") #tfsec:ignore:aws-autoscaling-enforce-http-token-imds
-    http_put_response_hop_limit = try(var.managed_ng.http_put_response_hop_limit, 2)
+  dynamic "metadata_options" {
+    for_each = try(var.managed_ng.enable_metadata_options, true) ? [1] : []
+
+    content {
+      http_endpoint               = try(var.managed_ng.http_endpoint, "enabled")
+      http_tokens                 = try(var.managed_ng.http_tokens, "required") #tfsec:ignore:aws-autoscaling-enforce-http-token-imds
+      http_put_response_hop_limit = try(var.managed_ng.http_put_response_hop_limit, 2)
+    }
   }
 
   tag_specifications {

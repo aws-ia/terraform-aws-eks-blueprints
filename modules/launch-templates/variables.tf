@@ -31,6 +31,7 @@ variable "launch_template_config" {
     post_userdata          = optional(string)
     kubelet_extra_args     = optional(string)
 
+    enable_metadata_options     = optional(bool)
     http_endpoint               = optional(string)
     http_tokens                 = optional(string)
     http_put_response_hop_limit = optional(number)

@@ -17,6 +17,7 @@ module "launch_template_self_managed_ng" {
       kubelet_extra_args   = local.self_managed_node_group["kubelet_extra_args"]
       monitoring           = local.self_managed_node_group["enable_monitoring"]
 
+      enable_metadata_options     = try(var.self_managed_ng.enable_metadata_options, true)
       http_endpoint               = try(var.self_managed_ng.http_endpoint, "enabled")
       http_tokens                 = try(var.self_managed_ng.http_tokens, "required")
       http_put_response_hop_limit = try(var.self_managed_ng.http_put_response_hop_limit, 2)
