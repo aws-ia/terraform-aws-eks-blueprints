@@ -4,15 +4,22 @@ module "cert_manager" {
 }
 
 resource "kubernetes_namespace_v1" "adot" {
+  count = local.create_namespace ? 1 : 0
+
   metadata {
-    name = local.helm_config["namespace"]
+    # If using EKS addon, namespace must be "opentelemetry-operator-system"
+    name = var.enable_amazon_eks_adot ? local.addon_namespace : try(var.helm_config.namespace, local.addon_namespace)
+
     labels = {
-      "control-plane"                = "controller-manager"
+      # Prerequisite for EKS addon
+      "control-plane" = "controller-manager"
     }
   }
 }
 
 data "aws_eks_addon_version" "this" {
+  count = var.enable_amazon_eks_adot ? 1 : 0
+
   addon_name = local.name
   # Need to allow both config routes - for managed and self-managed configs
   kubernetes_version = try(var.addon_config.kubernetes_version, var.helm_config.kubernetes_version)
@@ -20,10 +27,11 @@ data "aws_eks_addon_version" "this" {
 }
 
 resource "aws_eks_addon" "adot" {
-  count                    = var.enable_amazon_eks_adot ? 1 : 0
-  cluster_name             = var.addon_context.eks_cluster_id
+  count = var.enable_amazon_eks_adot ? 1 : 0
+
+  cluster_name             = module.cert_manager.eks_cluster_id
   addon_name               = local.name
-  addon_version            = try(var.addon_config.addon_version, data.aws_eks_addon_version.this.version)
+  addon_version            = try(var.addon_config.addon_version, data.aws_eks_addon_version.this[0].version)
   resolve_conflicts        = try(var.addon_config.resolve_conflicts, "OVERWRITE")
   service_account_role_arn = try(var.addon_config.service_account_role_arn, null)
   preserve                 = try(var.addon_config.preserve, true)
@@ -32,13 +40,14 @@ resource "aws_eks_addon" "adot" {
     var.addon_context.tags,
     try(var.addon_config.tags, {})
   )
-  depends_on = [module.cert_manager]
 }
 
 resource "kubernetes_role_v1" "adot" {
+  count = var.enable_amazon_eks_adot ? 1 : 0
+
   metadata {
     name      = local.eks_addon_role_name
-    namespace = kubernetes_namespace_v1.adot.metadata[0].name
+    namespace = kubernetes_namespace_v1.adot[0].metadata[0].name
   }
 
   rule {
@@ -100,9 +109,11 @@ resource "kubernetes_role_v1" "adot" {
 }
 
 resource "kubernetes_role_binding_v1" "adot" {
+  count = var.enable_amazon_eks_adot ? 1 : 0
+
   metadata {
     name      = local.eks_addon_role_name
-    namespace = kubernetes_namespace_v1.adot.metadata[0].name
+    namespace = kubernetes_namespace_v1.adot[0].metadata[0].name
   }
 
   subject {
@@ -118,6 +129,8 @@ resource "kubernetes_role_binding_v1" "adot" {
 }
 
 resource "kubernetes_cluster_role_v1" "adot" {
+  count = var.enable_amazon_eks_adot ? 1 : 0
+
   metadata {
     name = local.eks_addon_clusterrole_name
   }
@@ -131,7 +144,7 @@ resource "kubernetes_cluster_role_v1" "adot" {
   rule {
     api_groups     = [""]
     resources      = ["namespaces"]
-    resource_names = [kubernetes_namespace_v1.adot.metadata[0].name]
+    resource_names = [kubernetes_namespace_v1.adot[0].metadata[0].name]
     verbs          = ["create", "delete", "get", "list", "patch", "update", "watch"]
   }
   rule {
@@ -144,12 +157,6 @@ resource "kubernetes_cluster_role_v1" "adot" {
     api_groups     = ["rbac.authorization.k8s.io"]
     resources      = ["clusterrolebindings"]
     resource_names = ["opentelemetry-operator-manager-rolebinding", "opentelemetry-operator-proxy-rolebinding"]
-    verbs          = ["create", "delete", "get", "list", "patch", "update", "watch"]
-  }
-  rule {
-    api_groups     = ["admissionregistration.k8s.io"]
-    resources      = ["mutatingwebhookconfigurations", "validatingwebhookconfigurations"]
-    resource_names = ["opentelemetry-operator-mutating-webhook-configuration", "opentelemetry-operator-validating-webhook-configuration"]
     verbs          = ["create", "delete", "get", "list", "patch", "update", "watch"]
   }
   rule {
@@ -208,6 +215,11 @@ resource "kubernetes_cluster_role_v1" "adot" {
     verbs      = ["create", "delete", "get", "list", "patch", "update", "watch"]
   }
   rule {
+    api_groups = ["autoscaling"]
+    resources  = ["horizontalpodautoscalers"]
+    verbs      = ["create", "delete", "get", "list", "patch", "update", "watch"]
+  }
+  rule {
     api_groups = ["coordination.k8s.io"]
     resources  = ["leases"]
     verbs      = ["create", "get", "list", "update"]
@@ -238,13 +250,15 @@ resource "kubernetes_cluster_role_v1" "adot" {
     verbs      = ["create"]
   }
   rule {
-    api_groups = ["authentication.k8s.io"]
+    api_groups = ["authorization.k8s.io"]
     resources  = ["subjectaccessreviews"]
     verbs      = ["create"]
   }
 }
 
 resource "kubernetes_cluster_role_binding_v1" "adot" {
+  count = var.enable_amazon_eks_adot ? 1 : 0
+
   metadata {
     name = local.eks_addon_clusterrole_name
   }
@@ -259,4 +273,16 @@ resource "kubernetes_cluster_role_binding_v1" "adot" {
     name      = local.eks_addon_clusterrole_name
   }
 
+}
+
+
+module "helm_addon" {
+  source = "../helm-addon"
+  count  = var.enable_opentelemetry_operator ? 1 : 0
+
+  helm_config   = local.helm_config
+  irsa_config   = null
+  addon_context = var.addon_context
+
+  depends_on = [module.cert_manager]
 }

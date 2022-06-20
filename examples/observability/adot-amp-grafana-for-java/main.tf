@@ -82,8 +82,13 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-  enable_opentelemetry_operator        = true
-  enable_adot_collector_java           = true
+  # OR enable AWS Managed EKS add-on for ADOT
+  enable_amazon_eks_adot = true
+  # enable a customer-managed OpenTelemetry collector
+  # enable_opentelemetry_operator = true
+
+
+  enable_adot_collector_java           = false
   amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
   amazon_prometheus_workspace_region   = local.region
 

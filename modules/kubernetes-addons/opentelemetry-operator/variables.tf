@@ -31,3 +31,9 @@ variable "enable_amazon_eks_adot" {
   type        = bool
   default     = true
 }
+
+variable "enable_opentelemetry_operator" {
+  description = "Enable opentelemetry operator addon"
+  type        = bool
+  default     = false
+}
