@@ -20,8 +20,9 @@ jobs:
     outputs:
       directories: ${{ steps.dirs.outputs.directories }}
     steps:
+      - run: aws --version
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Get root directories
         id: dirs
@@ -36,7 +37,7 @@ jobs:
         directory: ${{ fromJson(needs.collectInputs.outputs.directories) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Config Terraform plugin cache
         run: mkdir --parents ${{ env.TERRAFORM_DOCS_VERSION }}
@@ -76,7 +77,7 @@ jobs:
     needs: collectInputs
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{github.event.pull_request.head.repo.full_name}}

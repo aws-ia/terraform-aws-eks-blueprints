@@ -40,9 +40,10 @@ jobs:
           - example_path: examples/node-groups/managed-node-groups
           - example_path: examples/node-groups/self-managed-node-groups
           - example_path: examples/node-groups/windows-node-groups
+          - example_path: examples/stateful
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup backend
         # Un-comment remote backend for use in workflow
@@ -57,7 +58,7 @@ jobs:
           role-session-name: GithubActions-Session
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.0.0
 

@@ -124,6 +124,12 @@ variable "enable_amazon_eks_aws_ebs_csi_driver" {
   default     = false
 }
 
+variable "custom_image_registry_uri" {
+  description = "Custom image registry URI map of `{region = dkr.endpoint }`"
+  type        = map(string)
+  default     = {}
+}
+
 #-----------CLUSTER AUTOSCALER-------------
 variable "enable_cluster_autoscaler" {
   description = "Enable Cluster autoscaler add-on"
@@ -757,6 +763,31 @@ variable "amazon_eks_adot_config" {
   description = "Configuration for Amazon EKS ADOT add-on"
   type        = any
   default     = {}
+}
+
+#-----------Kubernetes Velero ADDON-------------
+variable "enable_velero" {
+  description = "Enable Kubernetes Dashboard add-on"
+  type        = bool
+  default     = false
+}
+
+variable "velero_helm_config" {
+  description = "Kubernetes Velero Helm Chart config"
+  type        = any
+  default     = null
+}
+
+variable "velero_irsa_policies" {
+  description = "IAM policy ARNs for velero IRSA"
+  type        = list(string)
+  default     = []
+}
+
+variable "velero_backup_s3_bucket" {
+  description = "Bucket name for velero bucket"
+  type        = string
+  default     = ""
 }
 
 #-----------AWS Observability patterns-------------

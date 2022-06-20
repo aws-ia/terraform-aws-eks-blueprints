@@ -7,7 +7,6 @@ resource "kubernetes_namespace_v1" "adot" {
   metadata {
     name = local.helm_config["namespace"]
     labels = {
-      "app.kubernetes.io/managed-by" = "terraform-aws-eks-blueprints"
       "control-plane"                = "controller-manager"
     }
   }

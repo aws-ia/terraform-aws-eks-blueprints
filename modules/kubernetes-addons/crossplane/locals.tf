@@ -5,7 +5,7 @@ locals {
     name        = "crossplane"
     chart       = "crossplane"
     repository  = "https://charts.crossplane.io/stable/"
-    version     = "1.6.3"
+    version     = "1.8.1"
     namespace   = local.namespace
     description = "Crossplane Helm chart"
     values      = local.default_helm_values

@@ -119,7 +119,7 @@ module "aws_load_balancer_controller" {
 }
 
 module "aws_node_termination_handler" {
-  count                   = var.enable_aws_node_termination_handler && length(var.auto_scaling_group_names) > 0 ? 1 : 0
+  count                   = var.enable_aws_node_termination_handler && (length(var.auto_scaling_group_names) > 0 || var.enable_karpenter) ? 1 : 0
   source                  = "./aws-node-termination-handler"
   helm_config             = var.aws_node_termination_handler_helm_config
   irsa_policies           = var.aws_node_termination_handler_irsa_policies
@@ -316,6 +316,16 @@ module "aws_privateca_issuer" {
   addon_context           = local.addon_context
   aws_privateca_acmca_arn = var.aws_privateca_acmca_arn
   irsa_policies           = var.aws_privateca_issuer_irsa_policies
+}
+
+module "velero" {
+  count             = var.enable_velero ? 1 : 0
+  source            = "./velero"
+  helm_config       = var.velero_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+  irsa_policies     = var.velero_irsa_policies
+  backup_s3_bucket  = var.velero_backup_s3_bucket
 }
 
 module "opentelemetry_operator" {
