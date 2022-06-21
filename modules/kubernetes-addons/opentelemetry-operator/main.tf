@@ -1,5 +1,9 @@
 module "cert_manager" {
-  source        = "../cert-manager"
+  source = "../cert-manager"
+
+  # https://docs.aws.amazon.com/eks/latest/userguide/adot-reqts.html
+  # certmanaager v1.6.0 onwards is not supported yet
+  helm_config   = { version = "v1.5.0" }
   addon_context = var.addon_context
 }
 
