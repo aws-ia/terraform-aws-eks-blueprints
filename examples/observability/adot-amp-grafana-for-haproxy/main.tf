@@ -50,6 +50,7 @@ locals {
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
+
 module "eks_blueprints" {
   source = "../../.."
 
@@ -58,8 +59,6 @@ module "eks_blueprints" {
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
-
-  enable_amazon_prometheus = true
 
   managed_node_groups = {
     t3_l = {
@@ -89,17 +88,21 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_adot_collector_haproxy = true
 
-  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
   amazon_prometheus_workspace_region   = local.region
 
   tags = local.tags
 }
 
+#---------------------------------------------------------------
+# Observability Resources
+#---------------------------------------------------------------
+
 resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
   name       = "amp"
   is_default = true
-  url        = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  url        = module.managed_prometheus.workspace_prometheus_endpoint
 
   json_data {
     http_method     = "GET"
@@ -192,18 +195,6 @@ module "managed_prometheus" {
   }
 
   tags = local.tags
-}
-
-resource "aws_prometheus_alert_manager_definition" "haproxy" {
-  workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
-
-  definition = <<-EOF
-  alertmanager_config: |
-    route:
-      receiver: 'default'
-    receivers:
-      - name: 'default'
-  EOF
 }
 
 #---------------------------------------------------------------
