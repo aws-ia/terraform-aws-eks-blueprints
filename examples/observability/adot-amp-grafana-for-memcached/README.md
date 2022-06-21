@@ -27,7 +27,7 @@ Ensure that you have the following tools installed locally:
 
 ## Deploy
 
-This example deploy all the necessary components to start monitoring your HAProxy
+This example deploy all the necessary components to start monitoring your memcached
 applications. You can follow the steps below to build and deploy an example
 application to populate the dashboard with metrics.
 

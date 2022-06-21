@@ -27,7 +27,7 @@ Ensure that you have the following tools installed locally:
 
 ## Deploy
 
-This example deploy all the necessary components to start monitoring your HAProxy
+This example deploy all the necessary components to start monitoring your NGINX
 applications. You can follow the steps below to build and deploy an example
 application to populate the dashboard with metrics.
 
@@ -111,7 +111,7 @@ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 kubectl create namespace nginx-ingress-sample
 ```
 
-3. Enter the following commands to install HAProxy:
+3. Enter the following commands to install NGINX:
 
 ```sh
 helm install my-nginx ingress-nginx/ingress-nginx \
@@ -145,7 +145,7 @@ kubectl get pods -n nginx-ingress-sample
 
 #### Visualize the Application's dashboard
 
-Log back into your Managed Grafana Workspace and navigate to the dashboard side panel, click on `Observability` Folder and open the `HAProxy for Kubernetes` Dashboard.
+Log back into your Managed Grafana Workspace and navigate to the dashboard side panel, click on `Observability` Folder and open the `NGINX for Kubernetes` Dashboard.
 
 <img width="1468" alt="Nginx-dashboard" src="https://github.com/awsdabra/amg-dashboard-examples/blob/d4275d2e0251963b8783dcc03fd475d6f8783cc7/nginx_grafana_dashboard.png">
 
