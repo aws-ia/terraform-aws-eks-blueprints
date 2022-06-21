@@ -32,6 +32,9 @@ locals {
     {
       name  = "serviceAccount.create"
       value = false
+    },
+    { name  = "queueURL"
+      value = aws_sqs_queue.aws_node_termination_handler_queue.url
     }
   ]
 
