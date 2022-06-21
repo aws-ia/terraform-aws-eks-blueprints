@@ -54,6 +54,18 @@ variable "cluster_version" {
 #-------------------------------
 # EKS Cluster Security Groups
 #-------------------------------
+variable "create_cluster_security_group" {
+  description = "Toggle to create or assign cluster security group"
+  type        = bool
+  default     = true
+}
+
+variable "cluster_security_group_id" {
+  description = "Security group to be used if creation of cluster security group is turned off"
+  type        = string
+  default     = ""
+}
+
 variable "cluster_additional_security_group_ids" {
   description = "List of additional, externally created security group IDs to attach to the cluster control plane"
   type        = list(string)

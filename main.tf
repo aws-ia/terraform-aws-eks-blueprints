@@ -45,7 +45,8 @@ module "aws_eks" {
   cluster_service_ipv4_cidr = var.cluster_service_ipv4_cidr
 
   # Cluster Security Group
-  create_cluster_security_group           = true
+  create_cluster_security_group           = var.create_cluster_security_group
+  cluster_security_group_id               = var.cluster_security_group_id
   vpc_id                                  = var.vpc_id
   cluster_additional_security_group_ids   = var.cluster_additional_security_group_ids
   cluster_security_group_additional_rules = var.cluster_security_group_additional_rules
