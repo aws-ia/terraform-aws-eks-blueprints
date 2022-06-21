@@ -68,7 +68,5 @@ the ADOT Operator.
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_namespace"></a> [namespace](#output\_namespace) | Kubernetes namespace |
+No outputs.
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
