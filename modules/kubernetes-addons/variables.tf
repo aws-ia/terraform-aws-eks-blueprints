@@ -298,6 +298,19 @@ variable "prometheus_helm_config" {
   default     = {}
 }
 
+#-----------KUBE-PROMETHEUS-STACK-------------
+variable "enable_kube_prometheus_stack" {
+  description = "Enable Community kube-prometheus-stack add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kube_prometheus_stack_helm_config" {
+  description = "Community kube-prometheus-stack Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------METRIC SERVER-------------
 variable "enable_metrics_server" {
   description = "Enable metrics server add-on"

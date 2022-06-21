@@ -235,6 +235,18 @@ module "ondat" {
   admin_password    = var.ondat_admin_password
 }
 
+module "kube-prometheus-stack" {
+  count       = var.enable_kube_prometheus_stack ? 1 : 0
+  source      = "./kube-prometheus-stack"
+  helm_config = var.kube_prometheus_stack_helm_config
+  #AWS Managed Prometheus Workspace
+  # enable_amazon_prometheus             = var.enable_amazon_prometheus
+  # amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
+  # manage_via_gitops                    = var.argocd_manage_add_ons
+  addon_context                        = local.addon_context
+}
+
+
 module "prometheus" {
   count       = var.enable_prometheus ? 1 : 0
   source      = "./prometheus"
