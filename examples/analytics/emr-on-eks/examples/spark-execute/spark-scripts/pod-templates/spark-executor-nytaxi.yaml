@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: catalog-sales-exec
+  namespace: emr-team-a
+spec:
+  volumes:
+    #    - name: source-data-volume
+    #      mountPath: {}
+    - name: metrics-files-volume
+      emptyDir: {}
+    - name: spark-local-dir-catalog-sales
+      hostPath:
+        # Ensure the file directory is created.
+        path: /local1/catalog-sales
+        type: DirectoryOrCreate
+
+  nodeSelector:
+    "NodeGroupType": "spark"
+    "topology.kubernetes.io/zone": "eu-west-1a"
+
+  containers:
+    - name: spark-kubernetes-executor # Don't change this name. EMR on EKS looking for this name
+      volumeMounts:
+        - name: spark-local-dir-catalog-sales
+          mountPath: /local1/catalog-sales
+        - name: metrics-files-volume
+          mountPath: /var/metrics/data
+  initContainers:
+    - name: spark-init-container-executor  # Don't change this name. EMR on EKS looking for this name
+      image: public.ecr.aws/y4g4v0z7/busybox
+      volumeMounts:
+        - name: spark-local-dir-catalog-sales
+          mountPath: /local1/catalog-sales
+      command: ["sh", "-c", "chmod -R 777 /local1"] # This is only for PoC. Will update with min permissions

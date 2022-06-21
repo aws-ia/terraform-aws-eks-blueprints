@@ -1,0 +1,117 @@
+# Default values for metrics-server.
+image:
+  repository: k8s.gcr.io/metrics-server/metrics-server
+  tag: ""
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: metrics-server
+
+rbac:
+  create: true
+  pspEnabled: false
+
+apiService:
+  # Specifies if the v1beta1.metrics.k8s.io API service should be created.
+  #
+  # You typically want this enabled! If you disable API service creation you have to
+  # manage it outside of this chart for e.g horizontal pod autoscaling to
+  # work with this release.
+  create: true
+
+podLabels:
+  k8s-app: metrics-server
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
+priorityClassName: system-cluster-critical
+
+containerPort: 4443
+
+# HA enabled by enabling replicas to 2, updateStrategy and podDisruptionBudget to true
+replicas: 2
+
+updateStrategy:
+   type: RollingUpdate
+   rollingUpdate:
+     maxSurge: 0
+     maxUnavailable: 1
+
+podDisruptionBudget:
+  # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  enabled: true
+  minAvailable: 1
+
+defaultArgs:
+  - --cert-dir=/tmp
+  - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+  - --kubelet-use-node-status-port
+  - --metric-resolution=15s
+
+args: []
+
+livenessProbe:
+  httpGet:
+    path: /livez
+    port: https
+    scheme: HTTPS
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /readyz
+    port: https
+    scheme: HTTPS
+  initialDelaySeconds: 20
+  periodSeconds: 10
+  failureThreshold: 3
+
+service:
+  type: ClusterIP
+  port: 443
+  annotations: {}
+  labels: {}
+  #  Add these labels to have metrics-server show up in `kubectl cluster-info`
+  #  kubernetes.io/cluster-service: "true"
+  #  kubernetes.io/name: "metrics-server"
+
+metrics:
+  enabled: false
+
+serviceMonitor:
+  enabled: false
+  additionalLabels: {}
+  interval: 1m
+  scrapeTimeout: 10s
+
+# See https://github.com/kubernetes-sigs/metrics-server#scaling
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+
+
+nodeSelector:
+  NodeGroupType: core
+  kubernetes.io/os: linux
+
+
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            k8s-app: metrics-server
+        namespaces:
+          - kube-system
+        topologyKey: kubernetes.io/hostname
+
+topologySpreadConstraints: []

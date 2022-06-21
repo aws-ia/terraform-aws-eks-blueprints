@@ -1,0 +1,101 @@
+server:
+  retention: 1h
+  remoteWrite:
+    - queue_config:
+        max_samples_per_send: 1000
+        max_shards: 200
+        capacity: 2500
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+  verticalAutoscaler:
+    enabled: true
+    updateMode: "Auto"
+    containerPolicies:
+      - containerName: "prometheus-server"
+        minAllowed:
+          cpu: 500m
+          memory: 1024Mi
+        maxAllowed:
+          cpu: 1000m
+          memory: 4048Mi
+
+  global:
+    evaluation_interval: 15s
+    scrape_interval: 15s
+    scrape_timeout: 10s
+
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+    NodeGroupType: core
+
+  readinessProbeInitialDelay: 120
+  readinessProbePeriodSeconds: 15
+  readinessProbeTimeout: 4
+  readinessProbeFailureThreshold: 3
+  readinessProbeSuccessThreshold: 1
+  livenessProbeInitialDelay: 30
+  livenessProbePeriodSeconds: 15
+  livenessProbeTimeout: 10
+  livenessProbeFailureThreshold: 3
+  livenessProbeSuccessThreshold: 1
+  startupProbe:
+    enabled: false
+    periodSeconds: 5
+    failureThreshold: 30
+    timeoutSeconds: 10
+
+serviceAccounts:
+  alertmanager:
+    create: false
+    name:
+    annotations: {}
+  nodeExporter:
+    create: true
+    name:
+    annotations: {}
+  pushgateway:
+    create: false
+    name:
+    annotations: {}
+  server:
+    create: true
+    name:
+    annotations: {}
+
+kube-state-metrics:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+    NodeGroupType: core
+
+nodeExporter:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+
+alertmanager:
+  enabled: false
+
+pushgateway:
+  enabled: false
+
+serverFiles:
+  prometheus.yml:
+    rule_files:
+      - /etc/config/recording_rules.yml
+      - /etc/config/alerting_rules.yml
+    scrape_configs:
+      - job_name: prometheus
+        static_configs:
+          - targets:
+              - localhost:9090
+  # Additional scrape config for Apache YuniKorn Scheduler metrics
+  #      - job_name: 'yunikorn'
+  #        metrics_path: '/ws/v1/metrics'
+  #        static_configs:
+  #          - targets:
+  #              - yunikorn-service.yunikorn.svc.cluster.local:9080
