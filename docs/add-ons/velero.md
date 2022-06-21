@@ -1,6 +1,6 @@
-# [Velero](https://velero.io/)
+# Velero
 
-Velero is an open source tool to safely backup and restore, perform disaster recovery, and migrate Kubernetes cluster resources and persistent volumes.
+[Velero](https://velero.io/) is an open source tool to safely backup and restore, perform disaster recovery, and migrate Kubernetes cluster resources and persistent volumes.
 
 - [Helm chart](https://github.com/vmware-tanzu/helm-charts/tree/main/charts/velero)
 - [Plugin for AWS](https://github.com/vmware-tanzu/velero-plugin-for-aws)
