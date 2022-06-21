@@ -29,8 +29,8 @@ server:
     scrape_timeout: 10s
 
   nodeSelector:
-    kubernetes.io/os: ${operating_system}
     NodeGroupType: core
+    kubernetes.io/os: ${operating_system}
 
   readinessProbeInitialDelay: 120
   readinessProbePeriodSeconds: 15
@@ -69,8 +69,8 @@ serviceAccounts:
 kube-state-metrics:
   enabled: true
   nodeSelector:
-    kubernetes.io/os: ${operating_system}
     NodeGroupType: core
+    kubernetes.io/os: ${operating_system}
 
 nodeExporter:
   enabled: true

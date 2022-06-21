@@ -9,12 +9,12 @@ recommender:
     pod-recommendation-min-cpu-millicores: 15
     pod-recommendation-min-memory-mb: 100
     # Best practise to use Prometheus as a history provider for the VPA recommender. Not required for this example
-    # storage: prometheus
-    # prometheus-address: http://prometheus-server.prometheus.svc.cluster.local:9090
+#   storage: prometheus
+#   prometheus-address: http://prometheus-server.prometheus.svc.cluster.local:9090
   nodeSelector:
-    kubernetes.io/os: ${operating_system}
     NodeGroupType: core
+    kubernetes.io/os: ${operating_system}
 updater:
+  enabled: true
   nodeSelector:
     kubernetes.io/os: ${operating_system}
-    NodeGroupType: core

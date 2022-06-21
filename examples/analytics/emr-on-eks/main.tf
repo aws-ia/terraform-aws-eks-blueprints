@@ -31,10 +31,10 @@ provider "helm" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = basename(path.cwd)
-  region = "us-west-2"
+  name   = var.name
+  region = var.region
 
-  vpc_cidr = "10.0.0.0/16"
+  vpc_cidr = var.vpc_cidr
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   tags = {
@@ -50,18 +50,110 @@ module "eks_blueprints" {
   source = "../../.."
 
   cluster_name    = local.name
-  cluster_version = "1.22"
+  cluster_version = var.eks_cluster_version
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
   managed_node_groups = {
-    mg_5 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m5.xlarge"]
-      min_size        = 3
+    # Core node group for deploying all the critical add-ons
+    mng1 = {
+      node_group_name = "core-node-grp"
       subnet_ids      = module.vpc.private_subnets
-    }
+
+      instance_types = ["m5.xlarge"]
+      ami_type       = "AL2_x86_64"
+      capacity_type  = "ON_DEMAND"
+
+      disk_size = 100
+      disk_type = "gp3"
+
+      max_size               = 9
+      min_size               = 3
+      desired_size           = 3
+      create_launch_template = true
+      launch_template_os     = "amazonlinux2eks"
+
+      update_config = [{
+        max_unavailable_percentage = 50
+      }]
+
+      k8s_labels = {
+        Environment   = "preprod"
+        Zone          = "test"
+        WorkerType    = "ON_DEMAND"
+        NodeGroupType = "core"
+      }
+
+      additional_tags = {
+        Name                                                             = "core-node-grp"
+        subnet_type                                                      = "private"
+        "k8s.io/cluster-autoscaler/node-template/label/arch"             = "x86"
+        "k8s.io/cluster-autoscaler/node-template/label/kubernetes.io/os" = "linux"
+        "k8s.io/cluster-autoscaler/node-template/label/noderole"         = "core"
+        "k8s.io/cluster-autoscaler/node-template/label/node-lifecycle"   = "on-demand"
+        "k8s.io/cluster-autoscaler/experiments"                          = "owned"
+        "k8s.io/cluster-autoscaler/enabled"                              = "true"
+      }
+    },
+    #---------------------------------------
+    # Note: This example only uses ON_DEMAND node group for both Spark Driver and Executors.
+    #   If you want to leverage SPOT nodes for Spark executors then create ON_DEMAND node group for placing your driver pods and SPOT nodegroup for executors.
+    #   Use NodeSelectors to place your driver/executor pods with the help of Pod Templates.
+    #---------------------------------------
+    mng2 = {
+      node_group_name = "spark-node-grp"
+      subnet_ids      = module.vpc.private_subnets
+      instance_types  = ["r5d.large"]
+      ami_type        = "AL2_x86_64"
+      capacity_type   = "ON_DEMAND"
+
+      format_mount_nvme_disk = true # Mounts NVMe disks to /local1, /local2 etc. for multiple NVMe disks
+
+      # RAID0 configuration is recommended for better performance when you use larger instances with multiple NVMe disks e.g., r5d.24xlarge
+      # Permissions can further be restricted to the mounted folder for only Spark execution user
+      post_userdata = <<-EOT
+        #!/bin/bash
+        set -ex
+        /usr/bin/chmod 777 /local1
+      EOT
+
+      disk_size = 100
+      disk_type = "gp3"
+
+      max_size     = 9 # Managed node group soft limit is 450; request AWS for limit increase
+      min_size     = 3
+      desired_size = 3
+
+      create_launch_template = true
+      launch_template_os     = "amazonlinux2eks"
+
+      update_config = [{
+        max_unavailable_percentage = 50
+      }]
+
+      additional_iam_policies = []
+      k8s_taints              = []
+
+      k8s_labels = {
+        Environment   = "preprod"
+        Zone          = "test"
+        WorkerType    = "ON_DEMAND"
+        NodeGroupType = "spark"
+      }
+
+      additional_tags = {
+        Name                                                             = "spark-node-grp"
+        subnet_type                                                      = "private"
+        "k8s.io/cluster-autoscaler/node-template/label/arch"             = "x86"
+        "k8s.io/cluster-autoscaler/node-template/label/kubernetes.io/os" = "linux"
+        "k8s.io/cluster-autoscaler/node-template/label/noderole"         = "spark"
+        "k8s.io/cluster-autoscaler/node-template/label/disk"             = "nvme"
+        "k8s.io/cluster-autoscaler/node-template/label/node-lifecycle"   = "on-demand"
+        "k8s.io/cluster-autoscaler/experiments"                          = "owned"
+        "k8s.io/cluster-autoscaler/enabled"                              = "true"
+      }
+    },
   }
 
   #---------------------------------------
@@ -96,33 +188,83 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-  # Add-ons
-  enable_metrics_server     = true
-  enable_cluster_autoscaler = true
+  #---------------------------------------
+  # Amazon EKS Managed Add-ons
+  #---------------------------------------
+  enable_amazon_eks_vpc_cni    = true
+  enable_amazon_eks_coredns    = true
+  enable_amazon_eks_kube_proxy = true
 
+  #---------------------------------------
+  # Metrics Server
+  #---------------------------------------
+  enable_metrics_server = true
+  metrics_server_helm_config = {
+    name       = "metrics-server"
+    repository = "https://kubernetes-sigs.github.io/metrics-server/" # (Optional) Repository URL where to locate the requested chart.
+    chart      = "metrics-server"
+    version    = "3.8.2"
+    namespace  = "kube-system"
+    timeout    = "300"
+    values = [templatefile("${path.module}/helm-values/metrics-server-values.yaml", {
+      operating_system = "linux"
+    })]
+  }
+
+  #---------------------------------------
+  # Cluster Autoscaler
+  #---------------------------------------
+  enable_cluster_autoscaler = true
+  cluster_autoscaler_helm_config = {
+    name       = "cluster-autoscaler"
+    repository = "https://kubernetes.github.io/autoscaler" # (Optional) Repository URL where to locate the requested chart.
+    chart      = "cluster-autoscaler"
+    version    = "9.15.0"
+    namespace  = "kube-system"
+    timeout    = "300"
+    values = [templatefile("${path.module}/helm-values/cluster-autoscaler-values.yaml", {
+      aws_region       = var.region,
+      eks_cluster_id   = local.name,
+      operating_system = "linux"
+    })]
+  }
+
+  #---------------------------------------
+  # Amazon Managed Prometheus
+  #---------------------------------------
   enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = aws_prometheus_workspace.amp.prometheus_endpoint
 
+  #---------------------------------------
+  # Prometheus Server Add-on
+  #---------------------------------------
   enable_prometheus = true
   prometheus_helm_config = {
     name       = "prometheus"
     repository = "https://prometheus-community.github.io/helm-charts"
     chart      = "prometheus"
-    version    = "15.3.0"
+    version    = "15.9.3"
     namespace  = "prometheus"
-    values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
+    timeout    = "300"
+    values = [templatefile("${path.module}/helm-values/prometheus-values.yaml", {
       operating_system = "linux"
     })]
   }
 
+  #---------------------------------------
+  # Vertical Pod Autoscaling
+  #---------------------------------------
   enable_vpa = true
   vpa_helm_config = {
     name       = "vpa"
-    repository = "https://charts.fairwinds.com/stable"
+    repository = "https://charts.fairwinds.com/stable" # (Optional) Repository URL where to locate the requested chart.
     chart      = "vpa"
-    version    = "1.0.0"
+    version    = "1.4.0"
     namespace  = "vpa"
-    values     = [templatefile("${path.module}/helm_values/vpa-values.yaml", {})]
+    timeout    = "300"
+    values = [templatefile("${path.module}/helm-values/vpa-values.yaml", {
+      operating_system = "linux"
+    })]
   }
 
   tags = local.tags
@@ -220,4 +362,22 @@ resource "aws_prometheus_workspace" "amp" {
   alias = format("%s-%s", "amp-ws", local.name)
 
   tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Create EMR on EKS Virtual Cluster
+#---------------------------------------------------------------
+resource "aws_emrcontainers_virtual_cluster" "this" {
+  name = format("%s-%s", module.eks_blueprints.eks_cluster_id, "emr-data-team-a")
+
+  container_provider {
+    id   = module.eks_blueprints.eks_cluster_id
+    type = "EKS"
+
+    info {
+      eks_info {
+        namespace = "emr-data-team-a"
+      }
+    }
+  }
 }
