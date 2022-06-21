@@ -57,7 +57,7 @@ var (
 	}
 
 	/*EKS API Validation*/
-	expectedEKSWorkerNodes = 3
+	expectedEKSWorkerNodes = 2
 
 	/*Update the expected Deployments names and the namespace*/
 	expectedDeployments = [...]Deployment{
