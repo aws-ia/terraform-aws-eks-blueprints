@@ -29,7 +29,7 @@ data "aws_eks_addon_version" "this" {
 resource "aws_eks_addon" "adot" {
   count = var.enable_amazon_eks_adot ? 1 : 0
 
-  cluster_name             = module.cert_manager.eks_cluster_id
+  cluster_name             = var.addon_context.eks_cluster_id
   addon_name               = local.name
   addon_version            = try(var.addon_config.addon_version, data.aws_eks_addon_version.this[0].version)
   resolve_conflicts        = try(var.addon_config.resolve_conflicts, "OVERWRITE")
@@ -38,8 +38,15 @@ resource "aws_eks_addon" "adot" {
 
   tags = merge(
     var.addon_context.tags,
-    try(var.addon_config.tags, {})
+    try(var.addon_config.tags, {}),
+    # implicit dependency with roles
+    {
+      RoleVersion        = try(kubernetes_role_v1.adot[0].metadata[0].resource_version, ""),
+      ClusterRoleVersion = try(kubernetes_cluster_role_v1.adot[0].metadata[0].resource_version, "")
+    }
   )
+
+  depends_on = [module.cert_manager]
 }
 
 resource "kubernetes_role_v1" "adot" {
