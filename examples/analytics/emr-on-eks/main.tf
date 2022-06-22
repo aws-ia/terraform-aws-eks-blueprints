@@ -57,8 +57,6 @@ locals {
   vpc_cidr = var.vpc_cidr
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  eks_cluster_version = var.eks_cluster_version
-
   tags = merge(var.tags, {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
