@@ -129,15 +129,18 @@ argocd_applications = {
     path                = "envs/dev"
     repo_url            = "https://github.com/aws-samples/eks-blueprints-workloads.git"
     values              = {}
-    type                = "helm" # Optional, defaults to helm.
+    type                = "helm"            # Optional, defaults to helm.
   }
-  /* other_workloads = {
-    path                = "kustomize/overlays/dev"
-    # At the moment there are no kustomize examples in the aws-samples repo.
-    repo_url            = "https://github.com/aws-samples/eks-blueprints-workloads.git"
-    values              = {}
-    type                = "kustomize" # Optional, defaults to helm.
-  } */
+  kustomize_apps = {
+    /*
+      This points to a single application with no overlays, but it could easily
+      point to a a specific overlay for an environment like "dev", and/or utilize
+      the ArgoCD app of apps model to install many additional ArgoCD apps.
+    */
+    path                = "argocd-example-apps/kustomize-guestbook/"
+    repo_url            = "https://github.com/argoproj/argocd-example-apps.git"
+    type                = "kustomize"
+  }
   addons = {
     path                = "chart"
     repo_url            = "git@github.com:aws-samples/eks-blueprints-add-ons.git"
@@ -145,6 +148,7 @@ argocd_applications = {
                                             # If provided, the type must be set to "helm" for the root add-on application.
     ssh_key_secret_name = "github-ssh-key"  # Needed for private repos
     values              = {}
+    type                = "helm"            # Optional, defaults to helm.
   }
 }
 ```
