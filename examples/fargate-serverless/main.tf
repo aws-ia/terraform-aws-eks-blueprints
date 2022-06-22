@@ -79,12 +79,13 @@ locals {
   }
 
   # Provide compute for sample_app
+  smaple_app_namespace = "game-2048"
   sample_app_profile = {
     alb_sample_app = {
       fargate_profile_name = "alb-sample-app"
       fargate_profile_namespaces = [
         {
-          namespace = "game-2048"
+          namespace = local.smaple_app_namespace
       }]
       subnet_ids = module.vpc.private_subnets
     }
@@ -286,34 +287,25 @@ module "vpc" {
 #---------------------------------------------------------------
 # Optional - Sample App
 #---------------------------------------------------------------
-resource "kubectl_manifest" "sample_app_namespace" {
-  count     = var.deploy_sample_app ? 1 : 0
-  yaml_body = templatefile("${path.module}/sample-app/2048-namespace.yaml", {})
+data "kubectl_path_documents" "sample_app" {
+  pattern = "${path.module}/sample-app/*.yaml"
+}
+
+resource "kubernetes_namespace_v1" "sample_app" {
+  count = var.deploy_sample_app ? 1 : 0
+  metadata {
+    name = local.smaple_app_namespace
+  }
   depends_on = [
+    module.eks_blueprints,
     module.eks_blueprints_kubernetes_addons
   ]
 }
 
-resource "kubectl_manifest" "sample_app_deployment" {
-  count     = var.deploy_sample_app ? 1 : 0
-  yaml_body = templatefile("${path.module}/sample-app/2048-deployment.yaml", {})
+resource "kubectl_manifest" "sample_app" {
+  count     = var.deploy_sample_app ? length(data.kubectl_path_documents.sample_app.documents) : 0
+  yaml_body = element(data.kubectl_path_documents.sample_app.documents, count.index)
   depends_on = [
-    kubectl_manifest.sample_app_namespace
-  ]
-}
-
-resource "kubectl_manifest" "sample_app_service" {
-  count     = var.deploy_sample_app ? 1 : 0
-  yaml_body = templatefile("${path.module}/sample-app/2048-service.yaml", {})
-  depends_on = [
-    kubectl_manifest.sample_app_deployment[0]
-  ]
-}
-
-resource "kubectl_manifest" "sample_app_ingress" {
-  count     = var.deploy_sample_app ? 1 : 0
-  yaml_body = templatefile("${path.module}/sample-app/2048-ingress.yaml", {})
-  depends_on = [
-    kubectl_manifest.sample_app_service[0]
+    kubernetes_namespace_v1.sample_app[0]
   ]
 }
