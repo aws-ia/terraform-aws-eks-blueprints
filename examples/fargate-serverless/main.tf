@@ -28,6 +28,20 @@ provider "helm" {
   }
 }
 
+provider "kubectl" {
+  apply_retry_count      = 10
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  load_config_file       = false
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
+  }
+}
+
 data "aws_caller_identity" "current" {}
 data "aws_availability_zones" "available" {}
 
@@ -42,6 +56,41 @@ locals {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
+
+  default_profiles = {
+    # Providing compute for default namespace
+    default = {
+      fargate_profile_name = "default"
+      fargate_profile_namespaces = [
+        {
+          namespace = "default"
+      }]
+      subnet_ids = module.vpc.private_subnets
+    }
+    # Providing compute for kube-system namespace where core addons reside
+    kube_system = {
+      fargate_profile_name = "kube-system"
+      fargate_profile_namespaces = [
+        {
+          namespace = "kube-system"
+      }]
+      subnet_ids = module.vpc.private_subnets
+    }
+  }
+
+  # Provide compute for sample_app
+  sample_app_profile = {
+    alb_sample_app = {
+      fargate_profile_name = "alb-sample-app"
+      fargate_profile_namespaces = [
+        {
+          namespace = "game-2048"
+      }]
+      subnet_ids = module.vpc.private_subnets
+    }
+  }
+
+  fargate_profiles = var.deploy_sample_app ? merge(local.default_profiles, local.sample_app_profile) : local.default_profiles
 }
 
 #---------------------------------------------------------------
@@ -60,29 +109,7 @@ module "eks_blueprints" {
   # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/494
   cluster_kms_key_additional_admin_arns = [data.aws_caller_identity.current.arn]
 
-  fargate_profiles = {
-    # Providing compute for default namespace
-    default = {
-      fargate_profile_name = "default"
-      fargate_profile_namespaces = [
-        {
-          namespace = "default"
-      }]
-
-      subnet_ids = module.vpc.private_subnets
-    }
-    # Providing compute for kube-system namespace where core addons reside
-    kube_system = {
-      fargate_profile_name = "kube-system"
-      fargate_profile_namespaces = [
-        {
-          namespace = "kube-system"
-      }]
-
-      subnet_ids = module.vpc.private_subnets
-    }
-    # Add additional profiles to suit your needs
-  }
+  fargate_profiles = local.fargate_profiles
 
   tags = local.tags
 }
@@ -120,6 +147,17 @@ module "eks_blueprints_kubernetes_addons" {
     # CoreDNS provided by EKS needs to be updated before applying self-managed CoreDNS Helm addon
     null_resource.modify_kube_dns
   ]
+
+  enable_aws_load_balancer_controller = true
+  aws_load_balancer_controller_helm_config = {
+    values = [
+      <<-EOT
+      clusterName: ${module.eks_blueprints.eks_cluster_id}
+      region: ${local.region}
+      vpcId: ${module.vpc.vpc_id}
+      EOT
+    ]
+  }
 }
 
 data "aws_eks_addon_version" "latest" {
@@ -243,4 +281,39 @@ module "vpc" {
   }
 
   tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Optional - Sample App
+#---------------------------------------------------------------
+resource "kubectl_manifest" "sample_app_namespace" {
+  count     = var.deploy_sample_app ? 1 : 0
+  yaml_body = templatefile("${path.module}/sample-app/2048-namespace.yaml", {})
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
+  ]
+}
+
+resource "kubectl_manifest" "sample_app_deployment" {
+  count     = var.deploy_sample_app ? 1 : 0
+  yaml_body = templatefile("${path.module}/sample-app/2048-deployment.yaml", {})
+  depends_on = [
+    kubectl_manifest.sample_app_namespace
+  ]
+}
+
+resource "kubectl_manifest" "sample_app_service" {
+  count     = var.deploy_sample_app ? 1 : 0
+  yaml_body = templatefile("${path.module}/sample-app/2048-service.yaml", {})
+  depends_on = [
+    kubectl_manifest.sample_app_deployment[0]
+  ]
+}
+
+resource "kubectl_manifest" "sample_app_ingress" {
+  count     = var.deploy_sample_app ? 1 : 0
+  yaml_body = templatefile("${path.module}/sample-app/2048-ingress.yaml", {})
+  depends_on = [
+    kubectl_manifest.sample_app_service[0]
+  ]
 }
