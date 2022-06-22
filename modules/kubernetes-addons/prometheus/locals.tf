@@ -6,7 +6,7 @@ locals {
     repository  = "https://prometheus-community.github.io/helm-charts"
     version     = "15.10.1"
     namespace   = local.name
-    timeout     = "1200"
+    timeout     = "300"
     description = "Prometheus helm Chart deployment configuration"
   }
 

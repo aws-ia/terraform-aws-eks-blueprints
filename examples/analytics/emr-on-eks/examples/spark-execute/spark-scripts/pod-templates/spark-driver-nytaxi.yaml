@@ -2,14 +2,14 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: ny-taxi-driver
-  namespace: emr-team-a
+  namespace: emr-data-team-a
 spec:
   volumes:
     - name: metrics-files-volume
       emptyDir: {}
     - name: spark-local-dir-ny-taxi
       hostPath:
-        path: /local1/ny-taxi
+        path: /local1
         type: DirectoryOrCreate
 
   nodeSelector:

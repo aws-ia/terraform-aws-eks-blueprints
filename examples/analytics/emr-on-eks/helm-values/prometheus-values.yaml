@@ -5,11 +5,15 @@ server:
         max_samples_per_send: 1000
         max_shards: 200
         capacity: 2500
+  global:
+    evaluation_interval: 30s
+    scrape_interval: 30s
+    scrape_timeout: 10s
 
   resources:
     requests:
       cpu: 500m
-      memory: 512Mi
+      memory: 1Gi
 
   verticalAutoscaler:
     enabled: true
@@ -18,81 +22,41 @@ server:
       - containerName: "prometheus-server"
         minAllowed:
           cpu: 500m
-          memory: 1024Mi
+          memory: 1Gi
         maxAllowed:
           cpu: 1000m
-          memory: 4048Mi
-
-  global:
-    evaluation_interval: 15s
-    scrape_interval: 15s
-    scrape_timeout: 10s
+          memory: 4Gi
 
   nodeSelector:
+    kubernetes.io/os: ${operating_system}
     NodeGroupType: core
-    kubernetes.io/os: ${operating_system}
-
-  readinessProbeInitialDelay: 120
-  readinessProbePeriodSeconds: 15
-  readinessProbeTimeout: 4
-  readinessProbeFailureThreshold: 3
-  readinessProbeSuccessThreshold: 1
-  livenessProbeInitialDelay: 30
-  livenessProbePeriodSeconds: 15
-  livenessProbeTimeout: 10
-  livenessProbeFailureThreshold: 3
-  livenessProbeSuccessThreshold: 1
-  startupProbe:
-    enabled: false
-    periodSeconds: 5
-    failureThreshold: 30
-    timeoutSeconds: 10
-
-serviceAccounts:
-  alertmanager:
-    create: false
-    name:
-    annotations: {}
-  nodeExporter:
-    create: true
-    name:
-    annotations: {}
-  pushgateway:
-    create: false
-    name:
-    annotations: {}
-  server:
-    create: true
-    name:
-    annotations: {}
-
-kube-state-metrics:
-  enabled: true
-  nodeSelector:
-    NodeGroupType: core
-    kubernetes.io/os: ${operating_system}
-
-nodeExporter:
-  enabled: true
-  nodeSelector:
-    kubernetes.io/os: ${operating_system}
+  persistentVolume:
+    accessModes:
+      - ReadWriteOnce
+    enabled: true
+    mountPath: /data
+    size: 20Gi
+    storageClass: gp2
 
 alertmanager:
-  enabled: false
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+    NodeGroupType: core
+
+kube-state-metrics:
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+    NodeGroupType: core
 
 pushgateway:
-  enabled: false
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+    NodeGroupType: core
 
-serverFiles:
-  prometheus.yml:
-    rule_files:
-      - /etc/config/recording_rules.yml
-      - /etc/config/alerting_rules.yml
-    scrape_configs:
-      - job_name: prometheus
-        static_configs:
-          - targets:
-              - localhost:9090
+nodeExporter:
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+
   # Additional scrape config for Apache YuniKorn Scheduler metrics
   #      - job_name: 'yunikorn'
   #        metrics_path: '/ws/v1/metrics'

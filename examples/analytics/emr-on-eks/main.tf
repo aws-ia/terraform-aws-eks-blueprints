@@ -28,7 +28,27 @@ provider "helm" {
   }
 }
 
+provider "kubectl" {
+  apply_retry_count      = 15
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  load_config_file       = false
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
+  }
+}
+
 data "aws_availability_zones" "available" {}
+
+data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_partition" "current" {}
 
 locals {
   name   = var.name
@@ -37,10 +57,12 @@ locals {
   vpc_cidr = var.vpc_cidr
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  tags = {
+  eks_cluster_version = var.eks_cluster_version
+
+  tags = merge(var.tags, {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
-  }
+  })
 }
 
 #---------------------------------------------------------------
@@ -54,6 +76,45 @@ module "eks_blueprints" {
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
+
+  cluster_endpoint_private_access = true # if true, Kubernetes API requests within your cluster's VPC (such as node to control plane communication) use the private VPC endpoint
+  cluster_endpoint_public_access  = true # if true, Your cluster API server is accessible from the internet. You can, optionally, limit the CIDR blocks that can access the public endpoint.
+
+  #---------------------------------------
+  # Note: This can further restricted to specific required for each Add-on and your application
+  #---------------------------------------
+  node_security_group_additional_rules = {
+    # Extend node-to-node security group rules. Recommended and required for the Add-ons
+    ingress_self_all = {
+      description = "Node to node all ports/protocols"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      self        = true
+    }
+    # Recommended outbound traffic for Node groups
+    egress_all = {
+      description      = "Node all egress"
+      protocol         = "-1"
+      from_port        = 0
+      to_port          = 0
+      type             = "egress"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+    }
+    # Allows Control Plane Nodes to talk to Worker nodes on all ports. Added this to simplify the example and further avoid issues with Add-ons communication with Control plane.
+    # This can be restricted further to specific port based on the requirement for each Add-on e.g., metrics-server 4443, spark-operator 8080, karpenter 8443 etc.
+    # Change this according to your security requirements if needed
+    ingress_cluster_to_node_all_traffic = {
+      description                   = "Cluster API to Nodegroup all traffic"
+      protocol                      = "-1"
+      from_port                     = 0
+      to_port                       = 0
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
+  }
 
   managed_node_groups = {
     # Core node group for deploying all the critical add-ons
@@ -166,12 +227,12 @@ module "eks_blueprints" {
   #---------------------------------------
   enable_emr_on_eks = true
   emr_on_eks_teams = {
-    emr-team-a = {
+    emr-data-team-a = {
       namespace               = "emr-data-team-a"
       job_execution_role      = "emr-eks-data-team-a"
       additional_iam_policies = [aws_iam_policy.emr_on_eks.arn]
     }
-    emr-team-b = {
+    emr-data-team-b = {
       namespace               = "emr-data-team-b"
       job_execution_role      = "emr-eks-data-team-b"
       additional_iam_policies = [aws_iam_policy.emr_on_eks.arn]
@@ -243,7 +304,7 @@ module "eks_blueprints_kubernetes_addons" {
     name       = "prometheus"
     repository = "https://prometheus-community.github.io/helm-charts"
     chart      = "prometheus"
-    version    = "15.9.3"
+    version    = "15.10.1"
     namespace  = "prometheus"
     timeout    = "300"
     values = [templatefile("${path.module}/helm-values/prometheus-values.yaml", {
@@ -271,7 +332,7 @@ module "eks_blueprints_kubernetes_addons" {
 }
 
 #---------------------------------------------------------------
-# Supporting Resources
+# VPC and Subnets
 #---------------------------------------------------------------
 
 module "vpc" {
@@ -307,14 +368,66 @@ module "vpc" {
     "kubernetes.io/role/internal-elb"     = 1
   }
 
+  default_security_group_name = "${local.name}-endpoint-secgrp"
+
+  default_security_group_ingress = [
+    {
+      protocol    = -1
+      from_port   = 0
+      to_port     = 0
+      cidr_blocks = local.vpc_cidr
+  }]
+  default_security_group_egress = [
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = -1
+      cidr_blocks = "0.0.0.0/0"
+  }]
+
   tags = local.tags
 }
 
-data "aws_region" "current" {}
+data "aws_security_group" "default" {
+  name   = "default"
+  vpc_id = module.vpc.vpc_id
+}
 
-data "aws_caller_identity" "current" {}
+#---------------------------------------------------------------
+# VPC Endpoints
+#---------------------------------------------------------------
 
-data "aws_partition" "current" {}
+module "vpc_endpoints" {
+  source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
+  version = "~> 3.0"
+
+  vpc_id             = module.vpc.vpc_id
+  security_group_ids = [data.aws_security_group.default.id]
+
+  endpoints = merge({
+    s3 = {
+      service      = "s3"
+      service_type = "Gateway"
+      route_table_ids = flatten([
+        module.vpc.intra_route_table_ids,
+      module.vpc.private_route_table_ids])
+      tags = {
+        Name = "${local.name}-s3"
+      }
+    }
+    },
+    { for service in toset(["autoscaling", "ecr.api", "ecr.dkr", "ec2", "ec2messages", "elasticloadbalancing", "sts", "kms", "logs", "ssm", "ssmmessages"]) :
+      replace(service, ".", "_") =>
+      {
+        service             = service
+        subnet_ids          = module.vpc.private_subnets
+        private_dns_enabled = true
+        tags                = { Name = "${local.name}-${service}" }
+      }
+  })
+
+  tags = local.tags
+}
 
 #---------------------------------------------------------------
 # Example IAM policies for EMR job execution
@@ -340,6 +453,7 @@ data "aws_iam_policy_document" "emr_on_eks" {
     resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*"]
 
     actions = [
+      "logs:CreateLogGroup",
       "logs:PutLogEvents",
       "logs:CreateLogStream",
       "logs:DescribeLogGroups",
@@ -380,4 +494,24 @@ resource "aws_emrcontainers_virtual_cluster" "this" {
       }
     }
   }
+}
+
+#---------------------------------------------------------
+# CoreDNS Autoscaler helps to scale for large EKS Clusters
+#   Further tuning for CoreDNS is to leverage NodeLocal DNSCache -> https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/
+#---------------------------------------------------------
+data "kubectl_path_documents" "coredns_autoscaler" {
+  pattern = "${path.module}/manifests/coredns-autoscaler.yaml"
+  vars = {
+    target          = "deployment/coredns"
+    coresPerReplica = "256"
+    nodesPerReplica = "16"
+  }
+}
+
+resource "kubectl_manifest" "coredns_autoscaler" {
+  count     = length(data.kubectl_path_documents.coredns_autoscaler.documents)
+  yaml_body = element(data.kubectl_path_documents.coredns_autoscaler.documents, count.index)
+
+  depends_on = [module.eks_blueprints_kubernetes_addons]
 }
