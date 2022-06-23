@@ -35,7 +35,7 @@ module "helm_addon" {
     },
     {
       name  = "image.tag"
-      value = "v${var.eks_cluster_version}"
+      value = "v${var.eks_cluster_version}.0"
     },
   ]
 
