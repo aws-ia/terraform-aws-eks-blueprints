@@ -4,18 +4,6 @@ variable "helm_config" {
   description = "Helm Config for kube-prometheus-stack"
 }
 
-# variable "enable_amazon_prometheus" {
-#   type        = bool
-#   default     = false
-#   description = "[not implemented] Enable AWS Managed Prometheus service"
-# }
-
-# variable "amazon_prometheus_workspace_endpoint" {
-#   type        = string
-#   default     = null
-#   description = "[not implemented] Amazon Managed Prometheus Workspace Endpoint"
-# }
-
 # variable "manage_via_gitops" {
 #   type        = bool
 #   default     = false
