@@ -101,7 +101,7 @@ module "irsa_amp_ingest" {
   create_kubernetes_namespace = false
   kubernetes_namespace        = local.namespace
 
-  kubernetes_service_account = local.amazon_prometheus_ingest_service_account
+  kubernetes_service_account = local.ingest_service_account
   irsa_iam_policies          = [aws_iam_policy.ingest[0].arn]
   addon_context              = var.addon_context
 }

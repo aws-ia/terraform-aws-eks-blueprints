@@ -166,7 +166,7 @@ module "managed_prometheus" {
 
   workspace_alias = local.name
 
-  tags = loca.tags
+  tags = local.tags
 }
 
 module "vpc" {
