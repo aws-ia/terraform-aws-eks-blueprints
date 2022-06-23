@@ -29,15 +29,16 @@ provider "helm" {
 }
 
 provider "grafana" {
-  url  = var.grafana_endpoint
+  url  = "https://${module.managed_grafana.workspace_endpoint}"
   auth = var.grafana_api_key
 }
 
 data "aws_availability_zones" "available" {}
 
 locals {
-  name     = basename(path.cwd)
-  region   = var.aws_region
+  name   = basename(path.cwd)
+  region = var.aws_region
+
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
@@ -82,10 +83,8 @@ module "eks_blueprints_kubernetes_addons" {
 
   # enable AWS Managed EKS add-on for ADOT
   enable_amazon_eks_adot = true
-
   # or enable a customer-managed OpenTelemetry operator
   # enable_opentelemetry_operator = true
-
   enable_adot_collector_haproxy = true
 
   amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
@@ -97,6 +96,32 @@ module "eks_blueprints_kubernetes_addons" {
 #---------------------------------------------------------------
 # Observability Resources
 #---------------------------------------------------------------
+
+module "managed_grafana" {
+  source  = "terraform-aws-modules/managed-service-grafana/aws"
+  version = "~> 1.3"
+
+  # Workspace
+  name              = local.name
+  stack_set_name    = local.name
+  data_sources      = ["PROMETHEUS"]
+  associate_license = false
+
+  # # Role associations
+  # Pending https://github.com/hashicorp/terraform-provider-aws/issues/24166
+  # role_associations = {
+  #   "ADMIN" = {
+  #     "group_ids" = []
+  #     "user_ids"  = []
+  #   }
+  #   "EDITOR" = {
+  #     "group_ids" = []
+  #     "user_ids"  = []
+  #   }
+  # }
+
+  tags = local.tags
+}
 
 resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
@@ -112,12 +137,12 @@ resource "grafana_data_source" "prometheus" {
   }
 }
 
-resource "grafana_folder" "haproxy_dashboards" {
+resource "grafana_folder" "this" {
   title = "Observability"
 }
 
-resource "grafana_dashboard" "haproxy_dashboards" {
-  folder      = grafana_folder.haproxy_dashboards.id
+resource "grafana_dashboard" "this" {
+  folder      = grafana_folder.this.id
   config_json = file("${path.module}/dashboards/default.json")
 }
 
@@ -198,8 +223,51 @@ module "managed_prometheus" {
 }
 
 #---------------------------------------------------------------
+# Sample Application
+#---------------------------------------------------------------
+
+# https://github.com/haproxy-ingress/charts/tree/master/haproxy-ingress
+resource "helm_release" "haproxy_ingress" {
+  namespace        = "haproxy-ingress"
+  create_namespace = true
+
+  name       = "haproxy-ingress"
+  repository = "https://haproxy-ingress.github.io/charts"
+  chart      = "haproxy-ingress"
+  version    = "0.13.7"
+
+  set {
+    name  = "defaultBackend.enabled"
+    value = true
+  }
+
+  set {
+    name  = "controller.stats.enabled"
+    value = true
+  }
+
+  set {
+    name  = "controller.metrics.enabled"
+    value = true
+  }
+
+  set {
+    name  = "controller.metrics.service.annotations.prometheus\\.io/port"
+    value = 9101
+    type  = "string"
+  }
+
+  set {
+    name  = "controller.metrics.service.annotations.prometheus\\.io/scrape"
+    value = true
+    type  = "string"
+  }
+}
+
+#---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"

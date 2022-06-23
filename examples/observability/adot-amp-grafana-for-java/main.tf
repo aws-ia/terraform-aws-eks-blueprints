@@ -51,6 +51,7 @@ locals {
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
+
 module "eks_blueprints" {
   source = "../../.."
 
@@ -59,8 +60,6 @@ module "eks_blueprints" {
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
-
-  enable_amazon_prometheus = true
 
   managed_node_groups = {
     t3_l = {
@@ -84,13 +83,42 @@ module "eks_blueprints_kubernetes_addons" {
 
   # enable AWS Managed EKS add-on for ADOT
   enable_amazon_eks_adot = true
-
   # or enable a customer-managed OpenTelemetry operator
   # enable_opentelemetry_operator = true
+  enable_adot_collector_java = true
 
-  enable_adot_collector_java           = true
-  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
   amazon_prometheus_workspace_region   = local.region
+
+  tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Observability Resources
+#---------------------------------------------------------------
+
+module "managed_grafana" {
+  source  = "terraform-aws-modules/managed-service-grafana/aws"
+  version = "~> 1.3"
+
+  # Workspace
+  name              = local.name
+  stack_set_name    = local.name
+  data_sources      = ["PROMETHEUS"]
+  associate_license = false
+
+  # # Role associations
+  # Pending https://github.com/hashicorp/terraform-provider-aws/issues/24166
+  # role_associations = {
+  #   "ADMIN" = {
+  #     "group_ids" = []
+  #     "user_ids"  = []
+  #   }
+  #   "EDITOR" = {
+  #     "group_ids" = []
+  #     "user_ids"  = []
+  #   }
+  # }
 
   tags = local.tags
 }
@@ -99,7 +127,7 @@ resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
   name       = "amp"
   is_default = true
-  url        = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  url        = module.managed_prometheus.workspace_prometheus_endpoint
 
   json_data {
     http_method     = "GET"
@@ -109,53 +137,59 @@ resource "grafana_data_source" "prometheus" {
   }
 }
 
-resource "grafana_folder" "jmx_dashboards" {
+resource "grafana_folder" "this" {
   title = "Observability"
 }
 
-resource "grafana_dashboard" "jmx_dashboards" {
-  folder      = grafana_folder.jmx_dashboards.id
+resource "grafana_dashboard" "this" {
+  folder      = grafana_folder.this.id
   config_json = file("${path.module}/dashboards/default.json")
 }
 
-resource "aws_prometheus_rule_group_namespace" "java_jmx" {
-  name         = local.name
-  workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
+module "managed_prometheus" {
+  source  = "terraform-aws-modules/managed-service-prometheus/aws"
+  version = "~> 2.1"
 
-  data = <<-EOF
-  groups:
-    - name: default-metric
-      rules:
-      - record: metric:recording_rule
-        expr: avg(rate(container_cpu_usage_seconds_total[5m]))
-    - name: default-alert
-      rules:
-      - alert: metric:alerting_rule
-        expr: jvm_memory_bytes_used{job="java", area="heap"} / jvm_memory_bytes_max * 100 > 80
-        for: 1m
-        labels:
-            severity: warning
-        annotations:
-            summary: "JVM heap warning"
-            description: "JVM heap of instance `{{$labels.instance}}` from application `{{$labels.application}}` is above 80% for one minute. (current=`{{$value}}%`)"
-  EOF
-}
+  workspace_alias = local.name
 
-resource "aws_prometheus_alert_manager_definition" "java_jmx" {
-  workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
-
-  definition = <<-EOF
+  alert_manager_definition = <<-EOT
   alertmanager_config: |
     route:
       receiver: 'default'
     receivers:
       - name: 'default'
-  EOF
+  EOT
+
+  rule_group_namespaces = {
+    java = {
+      name = "java_rules"
+      data = <<-EOT
+      groups:
+        - name: default-metric
+          rules:
+            - record: metric:recording_rule
+              expr: avg(rate(container_cpu_usage_seconds_total[5m]))
+        - name: default-alert
+          rules:
+            - alert: metric:alerting_rule
+              expr: jvm_memory_bytes_used{job="java", area="heap"} / jvm_memory_bytes_max * 100 > 80
+              for: 1m
+              labels:
+                  severity: warning
+              annotations:
+                  summary: "JVM heap warning"
+                  description: "JVM heap of instance `{{$labels.instance}}` from application `{{$labels.application}}` is above 80% for one minute. (current=`{{$value}}%`)"
+      EOT
+    }
+  }
+
+  tags = local.tags
 }
 
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
