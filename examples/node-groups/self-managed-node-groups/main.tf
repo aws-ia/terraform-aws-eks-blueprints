@@ -78,6 +78,8 @@ module "eks_blueprints" {
       public_ip              = false
       enable_monitoring      = false
 
+      enable_metadata_options = false
+
       pre_userdata = <<-EOT
         yum install -y amazon-ssm-agent
         systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
