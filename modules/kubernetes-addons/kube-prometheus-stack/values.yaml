@@ -1,4 +1,5 @@
 ## Create default rules for monitoring the cluster
+## Disable rules for unreachable components
 ##
 defaultRules:
   create: true
@@ -6,59 +7,146 @@ defaultRules:
     etcd: false
     kubeScheduler: false
 
-##
-global:
-  rbac:
-    create: true
-
-
-## Component scraping the kube controller manager
+## Disable component scraping for the kube controller manager, etcd, and kube-scheduler
+## These components are not reachable on EKS
 ##
 kubeControllerManager:
   enabled: false
-
-
-## Component scraping etcd
-##
 kubeEtcd:
   enabled: false
-
-
-## Component scraping kube scheduler
-##
 kubeScheduler:
   enabled: false
 
-  ## Prometheus-operator image
-  ##
-  image:
-    repository: quay.io/prometheus-operator/prometheus-operator
-    tag: v0.57.0
-    sha: ""
-    pullPolicy: IfNotPresent
 
-  ## Prometheus-config-reloader
-  ##
-  prometheusConfigReloader:
-    # image to use for config and rule reloading
-    image:
-      repository: quay.io/prometheus-operator/prometheus-config-reloader
-      tag: v0.57.0
-      sha: ""
+############################################
+## Below are the values.yaml file entries to control the images used by the kube-prometheus-stack
+############################################
 
-  ## Thanos side-car image when configured
-  ##
-  thanosImage:
-    repository: quay.io/thanos/thanos
-    tag: v0.25.2
-    sha: ""
+# alertmanager:
+#   alertmanagerSpec:
+#     ## Image of Alertmanager
+#     ##
+#     image:
+#       repository: quay.io/prometheus/alertmanager
+#       tag: v0.24.0
+#       sha: ""
 
-## Deploy a Prometheus instance
-##
-prometheus:
-    ## Image of Prometheus.
-    ##
-    image:
-      repository: quay.io/prometheus/prometheus
-      tag: v2.36.1
-      sha: ""
+# ## Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
+# ##
+# grafana:
+#   image:
+#     repository: grafana/grafana
+#     # Overrides the Grafana image tag whose default is the chart appVersion
+#     tag: ""
+#     sha: ""
+#     pullPolicy: IfNotPresent
+#   testFramework:
+#     enabled: true
+#     image: "bats/bats"
+#     tag: "v1.4.1"
+#     imagePullPolicy: IfNotPresent
+#     securityContext: {}
+#   downloadDashboardsImage:
+#     repository: curlimages/curl
+#     tag: 7.73.0
+#     sha: ""
+#     pullPolicy: IfNotPresent
+#   initChownData:
+#     ## If false, data ownership will not be reset at startup
+#     ## This allows the prometheus-server to be run with an arbitrary user
+#     ##
+#     enabled: true
+#     ## initChownData container image
+#     ##
+#     image:
+#       repository: busybox
+#       tag: "1.31.1"
+#       sha: ""
+#       pullPolicy: IfNotPresent
+#   ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
+#   ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
+#   sidecar:
+#     image:
+#       repository: quay.io/kiwigrid/k8s-sidecar
+#       tag: 1.19.2
+#       sha: ""
+#     imagePullPolicy: IfNotPresent
+#   # Add a seperate remote image renderer deployment/service
+#   imageRenderer:
+#     # Enable the image-renderer deployment & service
+#     enabled: false
+#     replicas: 1
+#     image:
+#       # image-renderer Image repository
+#       repository: grafana/grafana-image-renderer
+#       # image-renderer Image tag
+#       tag: latest
+#       # image-renderer Image sha (optional)
+#       sha: ""
+#       # image-renderer ImagePullPolicy
+#       pullPolicy: Always
+
+
+# prometheusOperator:
+#   ## Admission webhook support for PrometheusRules resources added in Prometheus Operator 0.30 can be enabled to prevent incorrectly formatted
+#   ## rules from making their way into prometheus and potentially preventing the container from starting
+#   admissionWebhooks:
+#     ## If enabled, generate a self-signed certificate, then patch the webhook configurations with the generated data.
+#     ## On chart upgrades (or if the secret exists) the cert will not be re-generated. You can use this to provide your own
+#     ## certs ahead of time if you wish.
+#     ##
+#     patch:
+#       enabled: true
+#       image:
+#         repository: k8s.gcr.io/ingress-nginx/kube-webhook-certgen
+#         tag: v1.1.1
+#         sha: ""
+#         pullPolicy: IfNotPresent
+
+#   ## Prometheus image to use for prometheuses managed by the operator
+#   ##
+#   # prometheusDefaultBaseImage: quay.io/prometheus/prometheus
+
+#   ## Alertmanager image to use for alertmanagers managed by the operator
+#   ##
+#   # alertmanagerDefaultBaseImage: quay.io/prometheus/alertmanager
+
+#   ## Prometheus-config-reloader
+#   ##
+#   prometheusConfigReloader:
+#     # image to use for config and rule reloading
+#     image:
+#       repository: quay.io/prometheus-operator/prometheus-config-reloader
+#       tag: v0.57.0
+#       sha: ""
+
+#   ## Thanos side-car image when configured
+#   ##
+#   thanosImage:
+#     repository: quay.io/thanos/thanos
+#     tag: v0.25.2
+#     sha: ""
+
+# ## Deploy a Prometheus instance
+# ##
+# prometheus:
+#   prometheusSpec: 
+#     ## Image of Prometheus.
+#     ##
+#     image:
+#       repository: quay.io/prometheus/prometheus
+#       tag: v2.36.1
+#       sha: ""
+
+# ## Configuration for thanosRuler
+# ## ref: https://thanos.io/tip/components/rule.md/
+# ##
+# thanosRuler:
+#   thanosRulerSpec:
+#     ## Image of ThanosRuler
+#     ##
+#     image:
+#       repository: quay.io/thanos/thanos
+#       tag: v0.24.0
+#       sha: ""
+
