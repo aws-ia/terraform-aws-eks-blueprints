@@ -22,10 +22,3 @@ spec:
           mountPath: /local1/ny-taxi
         - name: metrics-files-volume
           mountPath: /var/metrics/data
-#  initContainers:
-#    - name: spark-init-container-executor  # Don't change this name. EMR on EKS looking for this name
-#      image: public.ecr.aws/y4g4v0z7/busybox
-#      volumeMounts:
-#        - name: spark-local-dir-ny-taxi
-#          mountPath: /local1/ny-taxi
-#      command: ["sh", "-c", "chmod -R 777 /local1"] # This is only for PoC. Will update with min permissions
