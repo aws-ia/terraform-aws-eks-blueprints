@@ -24,7 +24,7 @@ Enable Prometheus with custom `values.yaml`
   #---------------------------------------
   # Amazon Prometheus Configuration to integrate with Prometheus Server Add-on
   enable_amazon_prometheus = true
-  amazon_prometheus_workspace_endpoint = "<Enter Amazon Workspace Endpoint>" # eg.,  module.eks-blueprints.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = "<Enter Amazon Workspace Endpoint>"
 
   enable_prometheus = true
   # Optional Map value
