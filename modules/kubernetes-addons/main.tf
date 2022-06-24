@@ -150,6 +150,14 @@ module "cluster_autoscaler" {
   addon_context       = local.addon_context
 }
 
+module "coredns_autoscaler" {
+  count             = var.enable_amazon_eks_coredns && var.enable_coredns_autoscaler && length(var.coredns_autoscaler_helm_config) > 0 ? 1 : 0
+  source            = "./cluster-proportional-autoscaler"
+  helm_config       = var.coredns_autoscaler_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "crossplane" {
   count            = var.enable_crossplane ? 1 : 0
   source           = "./crossplane"
