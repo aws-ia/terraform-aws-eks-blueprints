@@ -346,21 +346,6 @@ variable "eks_readiness_timeout" {
 }
 
 #-------------------------------
-# Amazon Managed Prometheus
-#-------------------------------
-variable "enable_amazon_prometheus" {
-  description = "Enable AWS Managed Prometheus service"
-  type        = bool
-  default     = false
-}
-
-variable "amazon_prometheus_workspace_alias" {
-  description = "AWS Managed Prometheus WorkSpace Name"
-  type        = string
-  default     = null
-}
-
-#-------------------------------
 # Amazon EMR on EKS
 #-------------------------------
 variable "enable_emr_on_eks" {
