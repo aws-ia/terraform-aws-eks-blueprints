@@ -19,10 +19,6 @@ variable "context" {
     # Security Groups
     worker_security_group_ids = list(string)
 
-    # Http config
-    http_endpoint               = string
-    http_tokens                 = string
-    http_put_response_hop_limit = number
     # Data sources
     aws_partition_dns_suffix = string
     aws_partition_id         = string

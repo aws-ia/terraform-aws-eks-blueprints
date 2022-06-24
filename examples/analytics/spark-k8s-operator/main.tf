@@ -103,8 +103,6 @@ module "eks_blueprints" {
     }
   }
 
-  enable_amazon_prometheus = true
-
   tags = local.tags
 }
 
@@ -120,7 +118,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_cluster_autoscaler = true
 
   enable_amazon_prometheus             = true
-  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
 
   enable_prometheus = true
   prometheus_helm_config = {
@@ -161,6 +159,16 @@ module "eks_blueprints_kubernetes_addons" {
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
+module "managed_prometheus" {
+  source  = "terraform-aws-modules/managed-service-prometheus/aws"
+  version = "~> 2.1"
+
+  workspace_alias = local.name
+
+  tags = local.tags
+}
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"

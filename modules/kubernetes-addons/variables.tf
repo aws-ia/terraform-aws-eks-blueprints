@@ -772,6 +772,18 @@ variable "opentelemetry_operator_helm_config" {
   default     = {}
 }
 
+variable "enable_amazon_eks_adot" {
+  description = "Enable Amazon EKS ADOT addon"
+  type        = bool
+  default     = false
+}
+
+variable "amazon_eks_adot_config" {
+  description = "Configuration for Amazon EKS ADOT add-on"
+  type        = any
+  default     = {}
+}
+
 #-----------Kubernetes Velero ADDON-------------
 variable "enable_velero" {
   description = "Enable Kubernetes Dashboard add-on"
@@ -798,7 +810,6 @@ variable "velero_backup_s3_bucket" {
 }
 
 #-----------AWS Observability patterns-------------
-#-----------Java/Jmx Use case-------------
 variable "enable_adot_collector_java" {
   description = "Enable metrics for JMX workloads"
   type        = bool
@@ -835,7 +846,6 @@ variable "adot_collector_memcached_helm_config" {
   default     = {}
 }
 
-#-----------Nginx Use case-------------
 variable "enable_adot_collector_nginx" {
   description = "Enable metrics for Nginx workloads"
   type        = bool
