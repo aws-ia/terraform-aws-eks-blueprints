@@ -4,7 +4,7 @@ This example deploys the following Basic EKS Cluster with VPC
 
 - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
 - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
-- Creates EKS Cluster Control plane with one managed node group and fargate profile
+- Creates EKS Cluster Control plane with one managed node group
 
 ## How to Deploy
 
@@ -80,7 +80,7 @@ Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
 ```sh
 terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
 terraform destroy -target="module.eks_blueprints" -auto-approve
-terraform destroy -target="module.aws_vpc" -auto-approve
+terraform destroy -target="module.vpc" -auto-approve
 ```
 
 Finally, destroy any additional resources that are not in the above modules

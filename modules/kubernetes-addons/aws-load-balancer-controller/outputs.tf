@@ -1,11 +1,11 @@
 output "ingress_namespace" {
-  value       = local.helm_config["namespace"]
   description = "AWS LoadBalancer Controller Ingress Namespace"
+  value       = local.helm_config["namespace"]
 }
 
 output "ingress_name" {
-  value       = local.helm_config["name"]
   description = "AWS LoadBalancer Controller Ingress Name"
+  value       = local.helm_config["name"]
 }
 
 output "argocd_gitops_config" {

@@ -7,7 +7,7 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
 
   exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
+    api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
     # This requires the awscli to be installed locally where Terraform is executed
     args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
@@ -20,7 +20,7 @@ provider "helm" {
     cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
 
     exec {
-      api_version = "client.authentication.k8s.io/v1alpha1"
+      api_version = "client.authentication.k8s.io/v1beta1"
       command     = "aws"
       # This requires the awscli to be installed locally where Terraform is executed
       args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
@@ -31,8 +31,10 @@ provider "helm" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = basename(path.cwd)
-  region = "us-west-2"
+  name = basename(path.cwd)
+  # var.cluster_name is for Terratest
+  cluster_name = coalesce(var.cluster_name, local.name)
+  region       = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -49,9 +51,8 @@ locals {
 module "eks_blueprints" {
   source = "../.."
 
-  #                 var.cluster_name is for Terratest
-  cluster_name    = coalesce(var.cluster_name, local.name)
-  cluster_version = "1.21"
+  cluster_name    = local.cluster_name
+  cluster_version = "1.22"
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
@@ -88,7 +89,6 @@ module "eks_blueprints_kubernetes_addons" {
   enable_aws_cloudwatch_metrics       = true
 
   tags = local.tags
-
 }
 
 #---------------------------------------------------------------
@@ -118,13 +118,13 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                      = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"             = 1
   }
 
   tags = local.tags

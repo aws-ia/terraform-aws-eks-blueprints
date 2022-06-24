@@ -1,4 +1,3 @@
-
 locals {
   name      = "agones"
   namespace = "agones-system"
@@ -7,7 +6,7 @@ locals {
     name               = local.name
     chart              = local.name
     repository         = "https://agones.dev/chart/stable"
-    version            = "1.18.0"
+    version            = "1.23.0"
     namespace          = local.namespace
     timeout            = "1200"
     description        = "Agones Gaming Server Helm Chart deployment configuration"

@@ -147,8 +147,7 @@ No modules.
 | [kubernetes_cluster_role.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role) | resource |
 | [kubernetes_cluster_role_binding.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role_binding) | resource |
 | [kubernetes_namespace.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
-| [kubernetes_resource_quota.team_compute_quota](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/resource_quota) | resource |
-| [kubernetes_resource_quota.team_object_quota](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/resource_quota) | resource |
+| [kubernetes_resource_quota.this](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/resource_quota) | resource |
 | [kubernetes_role.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/role) | resource |
 | [kubernetes_role_binding.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/role_binding) | resource |
 | [kubernetes_service_account.team](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account) | resource |
@@ -176,5 +175,6 @@ No modules.
 | <a name="output_application_teams_iam_role_arn"></a> [application\_teams\_iam\_role\_arn](#output\_application\_teams\_iam\_role\_arn) | IAM role ARN for Teams |
 | <a name="output_platform_teams_configure_kubectl"></a> [platform\_teams\_configure\_kubectl](#output\_platform\_teams\_configure\_kubectl) | Configure kubectl for each Platform Team: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
 | <a name="output_platform_teams_iam_role_arn"></a> [platform\_teams\_iam\_role\_arn](#output\_platform\_teams\_iam\_role\_arn) | IAM role ARN for Platform Teams |
+| <a name="output_team_sa_irsa_iam_role"></a> [team\_sa\_irsa\_iam\_role](#output\_team\_sa\_irsa\_iam\_role) | IAM role name for Teams EKS Service Account (IRSA) |
 | <a name="output_team_sa_irsa_iam_role_arn"></a> [team\_sa\_irsa\_iam\_role\_arn](#output\_team\_sa\_irsa\_iam\_role\_arn) | IAM role ARN for Teams EKS Service Account (IRSA) |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

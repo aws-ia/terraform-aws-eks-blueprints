@@ -12,6 +12,8 @@ This example solution has been developed to work around these current limitation
 - AWS EKS Fargate Profiles for the `default` namespace and `kube-system` namespace. This covers the two core namespaces, including the namespace used by the `coredns`, `vpc-cni`, and `kube-proxy` addons, while additional profiles can be added as needed.
 - AWS EKS managed addons `vpc-cni` and `kube-proxy`
 - Self-managed CoreDNS addon deployed through a Helm chart. The default CoreDNS deployment provided by AWS EKS is removed and replaced with a self-managed CoreDNS deployment, while the `kube-dns` service is updated to allow Helm to assume control.
+- AWS Load Balancer Controller add-on deployed throuh a Helm chart. The defaut AWS Load Balancer Controller add-on configuration is overriden so that it can be deployed on Fargate compute.
+- An optional [sample-app](./sample-app) is also provided which demonstrates how to configure the Ingress so that application can be accessed over the internet. The sample application deployment can be turned on by setting the `deploy_sample_app=true` when using `terraform apply`.
 
 ⚠️ The management of CoreDNS as demonstrated in this example is intended to be used on new clusters. Existing clusters with existing workloads will see downtime if the CoreDNS deployment is modified as shown here.
 
@@ -32,6 +34,13 @@ terraform init
 terraform apply
 ```
 
+To provision this example with sample app:
+
+```sh
+terraform init
+terraform apply -var deploy_sample_app=true
+```
+
 Enter `yes` at command prompt to apply
 
 
@@ -47,12 +56,52 @@ aws eks --region <REGION> update-kubeconfig --name <CLSUTER_NAME>
 
 2. Test by listing all the pods running currently. The CoreDNS pod should reach a status of `Running` after approximately 60 seconds:
 
+### Without sample app
+
 ```sh
 kubectl get pods -A
 
 # Output should look like below
-NAMESPACE     NAME                      READY   STATUS    RESTARTS   AGE
-kube-system   coredns-dcc8d4c97-2jvfb   1/1     Running   0          2m28s
+NAMESPACE     NAME                                           READY    STATUS    RESTARTS   AGE
+kube-system   aws-load-balancer-controller-7b69cfcc44-49z5n   1/1     Running   0          2m42s
+kube-system   aws-load-balancer-controller-7b69cfcc44-9vhq7   1/1     Running   0          2m43s
+kube-system   coredns-dcc8d4c97-2jvfb                         1/1     Running   0          2m28s
+```
+
+### With sample app
+
+```sh
+kubectl get pods -A
+
+# Output should look like below
+ame-2048      deployment-2048-7ff458c9f-mb5xs                 1/1     Running   0          5h23m
+game-2048     deployment-2048-7ff458c9f-qc99d                 1/1     Running   0          4h23m
+game-2048     deployment-2048-7ff458c9f-rm26f                 1/1     Running   0          4h23m
+game-2048     deployment-2048-7ff458c9f-vzjhm                 1/1     Running   0          4h23m
+game-2048     deployment-2048-7ff458c9f-xnrgh                 1/1     Running   0          4h23m
+kube-system   aws-load-balancer-controller-7b69cfcc44-49z5n   1/1     Running   0          5h42m
+kube-system   aws-load-balancer-controller-7b69cfcc44-9vhq7   1/1     Running   0          5h43m
+kube-system   coredns-7c9d764485-z247p                        1/1     Running   0          6h1m
+```
+
+3. If you have deployed the sample-app, you can test that application is now available
+
+```sh
+kubectl get ingress/ingress-2048 -n game-2048
+
+# Output should look like this
+NAME           CLASS   HOSTS   ADDRESS                                                                  PORTS   AGE
+ingress-2048   alb     *       k8s-game2048-ingress2-0d47205282-922438252.us-east-1.elb.amazonaws.com   80      4h28m
+```
+
+4. Open the browser to access the application via the ALB address http://k8s-game2048-ingress2-0d47205282-922438252.us-east-1.elb.amazonaws.com/
+
+⚠️ You might need to wait a few minutes, and then refresh your browser.
+
+⚠️ If your Ingress isn't created after several minutes, then run this command to view the AWS Load Balancer Controller logs:
+
+```sh
+kubectl logs -n kube-system deployment.apps/aws-load-balancer-controller
 ```
 
 ## Destroy
