@@ -36,13 +36,18 @@ You can optionally customize the Helm chart that deploys the driver via the foll
     repository  = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
     version     = "2.2.3"
   }
+  aws_efs_csi_driver_irsa_policies = ["<ADDITIONAL_IAM_POLICY_ARN>"]
 ```
 
 ### GitOps Configuration
 
-The following properties are made available for use when managing the add-on via GitOps.
+`ArgoCD` with `App of Apps` GitOps enabled for this Add-on by enabling the following variable
 
-Refer to [locals.tf](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/aws-efs-csi-driver/locals.tf) for the latest config. The GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/eks-blueprints-add-ons).
+```hcl
+argocd_manage_add_ons = true
+```
+
+The following is configured to ArgoCD App of Apps for this Add-on.
 
 ```hcl
   argocd_gitops_config = {

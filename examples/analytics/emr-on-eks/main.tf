@@ -28,6 +28,20 @@ provider "helm" {
   }
 }
 
+provider "kubectl" {
+  apply_retry_count      = 10
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  load_config_file       = false
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
+  }
+}
+
 data "aws_availability_zones" "available" {}
 
 data "aws_region" "current" {}
@@ -47,6 +61,7 @@ locals {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   })
+
 }
 
 #---------------------------------------------------------------
@@ -331,6 +346,19 @@ module "eks_blueprints_kubernetes_addons" {
     })]
   }
 
+  #---------------------------------------
+  # Enable FSx for Lustre CSI Driver
+  #---------------------------------------
+  enable_aws_fsx_csi_driver = true
+  aws_fsx_csi_driver_helm_config = {
+    name       = "aws-fsx-csi-driver"
+    chart      = "aws-fsx-csi-driver"
+    repository = "https://kubernetes-sigs.github.io/aws-fsx-csi-driver/"
+    version    = "1.4.2"
+    namespace  = "kube-system"
+    #    values = [templatefile("${path.module}/aws-fsx-csi-driver-values.yaml", {})]
+  }
+
   tags = local.tags
 }
 
@@ -456,4 +484,105 @@ resource "aws_emrcontainers_virtual_cluster" "this" {
       }
     }
   }
+}
+
+#---------------------------------------------------------------
+# FSx for Lustre
+#---------------------------------------------------------------
+# File system creation can take up to 10 mins
+resource "aws_fsx_lustre_file_system" "this" {
+  import_path        = "s3://${aws_s3_bucket.this.id}" # Data repository for your FSx for Lustre file system
+  storage_capacity   = 1200                            # GB
+  subnet_ids         = [module.vpc.private_subnets[0]]
+  security_group_ids = [aws_security_group.fsx.id]
+  log_configuration {
+    level = "WARN_ERROR"
+  }
+  tags = merge({ "Name" : local.name }, local.tags)
+}
+
+resource "aws_security_group" "fsx" {
+  name        = "${local.name}-fsx"
+  description = "Allow inbound traffic from private subnets of the VPC to FSx filesystem"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    description = "Allows Lustre traffic between Lustre clients"
+    cidr_blocks = module.vpc.private_subnets_cidr_blocks
+    from_port   = 1021
+    to_port     = 1023
+    protocol    = "tcp"
+  }
+  ingress {
+    description = "Allows Lustre traffic between Lustre clients"
+    cidr_blocks = module.vpc.private_subnets_cidr_blocks
+    from_port   = 988
+    to_port     = 988
+    protocol    = "tcp"
+  }
+  tags = local.tags
+}
+#---------------------------------------------------------------
+# Storage Class - FSx for Lustre
+#---------------------------------------------------------------
+resource "kubectl_manifest" "storage_class" {
+  yaml_body = templatefile("${path.module}/fsx_lustre/storage_class_fsx.yaml", {
+    storage_class_name = local.name,
+    subnet_id          = module.vpc.private_subnets[0],
+    security_group_id  = aws_security_group.fsx.id
+  })
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons,
+    aws_fsx_lustre_file_system.this
+  ]
+}
+#---------------------------------------------------------------
+# PVC for FSx Dynamic Provisioning
+#---------------------------------------------------------------
+resource "kubectl_manifest" "pvc" {
+  yaml_body = templatefile("${path.module}/fsx_lustre/pvc_fsx.yaml", {
+    namespace          = "emr-data-team-a", # EMR EKS Teams Namespace for job execution
+    claim_name         = "emr-eks-fsx-dynamic-claim",
+    storage_class_name = local.name,
+    request_storage    = "1000Gi"
+  })
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons,
+    aws_fsx_lustre_file_system.this,
+    kubectl_manifest.storage_class
+  ]
+}
+
+#---------------------------------------------------------------
+# S3 bucket for DataSync between FSx for Lustre and S3 Bucket
+#---------------------------------------------------------------
+resource "aws_s3_bucket" "this" {
+  bucket_prefix = format("%s-%s", "fsx", data.aws_caller_identity.current.account_id)
+  tags          = local.tags
+}
+
+resource "aws_s3_bucket_acl" "this" {
+  bucket = aws_s3_bucket.this.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
+  bucket = aws_s3_bucket.this.bucket
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "this" {
+  bucket = aws_s3_bucket.this.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  restrict_public_buckets = true
+  ignore_public_acls      = true
 }
