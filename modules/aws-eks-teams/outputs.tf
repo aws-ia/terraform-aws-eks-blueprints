@@ -1,5 +1,5 @@
 output "application_team_iam_role_arn" {
-  description = "IAM role ARN for Application Team"
+  description = "IAM role ARN for Application Team EKS Access"
   value = tomap({
     for k, v in aws_iam_role.application_team_iam_role : k => v.arn
   })
@@ -27,7 +27,7 @@ output "application_team_configure_kubectl" {
 }
 
 output "platform_team_iam_role_arn" {
-  description = "IAM role ARN for Platform Team"
+  description = "IAM role ARN for Platform Team EKS Access"
   value = tomap({
     for k, v in aws_iam_role.platform_team_iam_role : k => v.arn
   })
