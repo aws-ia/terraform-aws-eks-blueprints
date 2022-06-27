@@ -52,16 +52,16 @@ data "aws_iam_policy_document" "aws_ebs_csi_driver" {
     resources = ["*"]
 
     actions = [
-      "ec2:CreateSnapshot",
       "ec2:AttachVolume",
-      "ec2:DetachVolume",
-      "ec2:ModifyVolume",
+      "ec2:CreateSnapshot",
       "ec2:DescribeAvailabilityZones",
       "ec2:DescribeInstances",
       "ec2:DescribeSnapshots",
       "ec2:DescribeTags",
       "ec2:DescribeVolumes",
       "ec2:DescribeVolumesModifications",
+      "ec2:DetachVolume",
+      "ec2:ModifyVolume",
     ]
   }
 

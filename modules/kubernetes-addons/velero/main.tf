@@ -55,12 +55,12 @@ module "helm_addon" {
 data "aws_iam_policy_document" "velero" {
   statement {
     actions = [
-      "ec2:DescribeVolumes",
-      "ec2:DescribeSnapshots",
+      "ec2:CreateSnapshot",
       "ec2:CreateTags",
       "ec2:CreateVolume",
-      "ec2:CreateSnapshot",
       "ec2:DeleteSnapshot",
+      "ec2:DescribeSnapshots",
+      "ec2:DescribeVolumes",
     ]
 
     resources = ["*"]
@@ -68,11 +68,11 @@ data "aws_iam_policy_document" "velero" {
 
   statement {
     actions = [
-      "s3:GetObject",
-      "s3:DeleteObject",
-      "s3:PutObject",
       "s3:AbortMultipartUpload",
+      "s3:DeleteObject",
+      "s3:GetObject",
       "s3:ListMultipartUploadParts",
+      "s3:PutObject",
     ]
 
     resources = ["arn:${var.addon_context.aws_partition_id}:s3:::${var.backup_s3_bucket}/*"]

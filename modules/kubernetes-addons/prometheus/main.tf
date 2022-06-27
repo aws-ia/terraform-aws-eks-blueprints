@@ -76,10 +76,10 @@ data "aws_iam_policy_document" "ingest" {
     resources = ["*"]
 
     actions = [
-      "aps:RemoteWrite",
-      "aps:GetSeries",
       "aps:GetLabels",
       "aps:GetMetricMetadata",
+      "aps:GetSeries",
+      "aps:RemoteWrite",
     ]
   }
 }
@@ -116,10 +116,10 @@ data "aws_iam_policy_document" "query" {
     resources = ["*"]
 
     actions = [
-      "aps:QueryMetrics",
-      "aps:GetSeries",
       "aps:GetLabels",
       "aps:GetMetricMetadata",
+      "aps:GetSeries",
+      "aps:QueryMetrics",
     ]
   }
 }

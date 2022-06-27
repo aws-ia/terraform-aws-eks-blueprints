@@ -8,17 +8,17 @@ data "aws_iam_policy_document" "keda_irsa" {
     ]
 
     actions = [
-      "sqs:GetQueueUrl",
-      "sqs:ListDeadLetterSourceQueues",
-      "sqs:ReceiveMessage",
-      "sqs:GetQueueAttributes",
-      "sqs:ListQueueTags",
       "cloudwatch:DescribeAlarmHistory",
+      "cloudwatch:DescribeAlarms",
       "cloudwatch:GetDashboard",
       "cloudwatch:GetInsightRuleReport",
-      "cloudwatch:ListTagsForResource",
-      "cloudwatch:DescribeAlarms",
       "cloudwatch:GetMetricStream",
+      "cloudwatch:ListTagsForResource",
+      "sqs:GetQueueAttributes",
+      "sqs:GetQueueUrl",
+      "sqs:ListDeadLetterSourceQueues",
+      "sqs:ListQueueTags",
+      "sqs:ReceiveMessage",
     ]
   }
 
@@ -28,16 +28,16 @@ data "aws_iam_policy_document" "keda_irsa" {
     resources = ["*"]
 
     actions = [
-      "cloudwatch:DescribeInsightRules",
-      "sqs:ListQueues",
-      "cloudwatch:GetMetricData",
-      "cloudwatch:ListMetricStreams",
       "cloudwatch:DescribeAlarmsForMetric",
-      "cloudwatch:ListDashboards",
+      "cloudwatch:DescribeAnomalyDetectors",
+      "cloudwatch:DescribeInsightRules",
+      "cloudwatch:GetMetricData",
       "cloudwatch:GetMetricStatistics",
       "cloudwatch:GetMetricWidgetImage",
+      "cloudwatch:ListDashboards",
       "cloudwatch:ListMetrics",
-      "cloudwatch:DescribeAnomalyDetectors",
+      "cloudwatch:ListMetricStreams",
+      "sqs:ListQueues",
     ]
   }
 }

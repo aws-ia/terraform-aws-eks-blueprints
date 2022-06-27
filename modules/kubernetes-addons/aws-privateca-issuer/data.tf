@@ -5,7 +5,7 @@ data "aws_iam_policy_document" "aws_privateca_issuer" {
     actions = [
       "acm-pca:DescribeCertificateAuthority",
       "acm-pca:GetCertificate",
-      "acm-pca:IssueCertificate"
+      "acm-pca:IssueCertificate",
     ]
   }
 }

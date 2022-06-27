@@ -32,9 +32,9 @@ data "aws_iam_policy_document" "eks_windows_cni" {
 
     actions = [
       "ec2:DescribeInstances",
-      "ec2:DescribeTags",
-      "ec2:DescribeNetworkInterfaces",
       "ec2:DescribeInstanceTypes",
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:DescribeTags",
     ]
   }
 }
