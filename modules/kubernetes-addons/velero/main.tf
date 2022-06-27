@@ -18,7 +18,7 @@ module "helm_addon" {
     name        = local.name
     description = "A Helm chart for velero"
     chart       = local.name
-    version     = "2.29.8"
+    version     = "2.30.0"
     repository  = "https://vmware-tanzu.github.io/helm-charts/"
     namespace   = local.namespace
     values = [templatefile("${path.module}/values.yaml", {

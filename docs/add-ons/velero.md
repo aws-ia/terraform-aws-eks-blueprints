@@ -10,9 +10,8 @@
 [Velero](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/velero) can be deployed by enabling the add-on via the following.
 
 ```hcl
-enable_velero        = true
-velero_create_bucket = true
-velero_bucket_name   = "<YOUR_BUCKET_NAME>"
+enable_velero           = true
+velero_backup_s3_bucket = "<YOUR_BUCKET_NAME>"
 ```
 
 You can also customize the Helm chart that deploys `velero` via the following configuration:
@@ -30,17 +29,6 @@ velero_helm_config = {
     bucket = "<YOUR_BUCKET_NAME>",
     region = "<YOUR_BUCKET_REGION>"
   })]
-
-  set_values = [
-    {
-      name  = "serviceAccount.server.name"
-      value = local.service_account
-    },
-    {
-      name  = "serviceAccount.server.create"
-      value = false
-    }
-  ]
 }
 ```
 
