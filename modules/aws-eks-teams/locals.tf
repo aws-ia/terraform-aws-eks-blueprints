@@ -8,5 +8,4 @@ locals {
     for team_name, team_data in var.application_teams :
     try(fileset(path.root, "${team_data.manifests_dir}/*"), [])
   ])
-
 }

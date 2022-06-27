@@ -152,10 +152,10 @@ No modules.
 | [kubernetes_role_binding.application_team_role_binding](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/role_binding) | resource |
 | [kubernetes_service_account.application_team_sa](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account) | resource |
 | [kubectl_manifest.application_team_manifest](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/manifest) | resource |
-| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
-| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
-| [aws_eks_cluster.eks_cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
 | [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
+| [aws_eks_cluster.eks_cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
 | [aws_iam_policy_document.platform_team_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
@@ -179,6 +179,4 @@ No modules.
 | <a name="output_platform_team_iam_role_arn"></a> [platform\_team\_iam\_role\_arn](#output\_platform\_team\_iam\_role\_arn) | IAM role ARN for Platform Team EKS Access |
 | <a name="output_application_team_configure_kubectl"></a> [application\_team\_configure\_kubectl](#output\_application\_team\_configure\_kubectl) | Configure kubectl for each Application Team: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
 | <a name="output_platform_team_configure_kubectl"></a> [platform\_team\_configure\_kubectl](#output\_platform\_team\_configure\_kubectl) | Configure kubectl for each Platform Team: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
-
-
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
