@@ -17,7 +17,7 @@ variable "irsa_policies" {
 }
 
 variable "create_bucket" {
-  description = "Determines to create bucket"
+  description = "Determines to create a velero bucket"
   type        = bool
   default     = false
 }
