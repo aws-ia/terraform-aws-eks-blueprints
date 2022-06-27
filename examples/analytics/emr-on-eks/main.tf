@@ -401,11 +401,11 @@ data "aws_iam_policy_document" "emr_on_eks" {
     resources = ["arn:${data.aws_partition.current.partition}:s3:::*"]
 
     actions = [
-      "s3:PutObject",
+      "s3:DeleteObject",
+      "s3:DeleteObjectVersion",
       "s3:GetObject",
       "s3:ListBucket",
-      "s3:DeleteObject",
-      "s3:DeleteObjectVersion"
+      "s3:PutObject",
     ]
   }
 
@@ -416,10 +416,10 @@ data "aws_iam_policy_document" "emr_on_eks" {
 
     actions = [
       "logs:CreateLogGroup",
-      "logs:PutLogEvents",
       "logs:CreateLogStream",
       "logs:DescribeLogGroups",
       "logs:DescribeLogStreams",
+      "logs:PutLogEvents",
     ]
   }
 }

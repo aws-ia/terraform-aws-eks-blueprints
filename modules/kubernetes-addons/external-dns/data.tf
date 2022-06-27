@@ -8,7 +8,7 @@ data "aws_iam_policy_document" "external_dns_iam_policy_document" {
     resources = [data.aws_route53_zone.selected.arn]
     actions = [
       "route53:ChangeResourceRecordSets",
-      "route53:ListResourceRecordSets"
+      "route53:ListResourceRecordSets",
     ]
   }
 
@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "external_dns_iam_policy_document" {
     effect    = "Allow"
     resources = ["*"]
     actions = [
-      "route53:ListHostedZones"
+      "route53:ListHostedZones",
     ]
   }
 }

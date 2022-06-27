@@ -75,7 +75,7 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
       "autoscaling:SetDesiredCapacity",
       "autoscaling:TerminateInstanceInAutoScalingGroup",
       "ec2:DescribeInstanceTypes",
-      "eks:DescribeNodegroup"
+      "eks:DescribeNodegroup",
     ]
     condition {
       test     = "StringEquals"
