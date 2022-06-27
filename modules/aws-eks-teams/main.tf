@@ -172,8 +172,8 @@ resource "kubernetes_service_account" "application_team_sa" {
 }
 
 # Kubernetes Manifests
-resource "kubectl_manifest" "team" {
-  for_each = { for manifest in local.team_manifests : manifest => file(manifest) }
+resource "kubectl_manifest" "application_team_manifest" {
+  for_each = { for manifest in local.application_team_manifests : manifest => file(manifest) }
   
   yaml_body = each.value
   
