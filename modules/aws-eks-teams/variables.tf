@@ -29,5 +29,6 @@ variable "iam_role_permissions_boundary" {
 
 variable "application_team_iam_policy" {
   description = "Application Team IAM Policy"
-  type = any
+  type        = any
+  default     = null
 }
