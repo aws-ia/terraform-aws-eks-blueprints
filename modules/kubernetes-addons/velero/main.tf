@@ -1,27 +1,27 @@
 locals {
-  name      = "velero"
-  namespace = try(var.helm_config.namespace, local.name)
+  namespace       = try(var.helm_config.namespace, "velero")
+  service_account = try(var.helm_config.service_account, "velero-sa")
+}
 
-  argocd_gitops_config = {
-    enable             = true
-    serviceAccountName = local.name
-  }
+resource "aws_s3_bucket" "velero_bucket" {
+  count = var.create_bucket == true ? 1 : 0
+
+  bucket = var.bucket_name
 }
 
 module "helm_addon" {
   source = "../helm-addon"
 
   # https://github.com/vmware-tanzu/helm-charts/tree/main/charts/velero
-  helm_config = merge({
-    name        = local.name
-    description = "A Helm chart for velero"
-    chart       = local.name
-    version     = "2.29.8"
-    repository  = "https://vmware-tanzu.github.io/helm-charts/"
-    namespace   = local.namespace
-    values = [templatefile("${path.module}/values.yaml", {
-      backup_s3_bucket = var.backup_s3_bucket,
-    })]
+  helm_config = merge(
+    {
+      name        = "velero"
+      description = "A Helm chart for velero"
+      chart       = "velero"
+      version     = "2.30.0"
+      repository  = "https://vmware-tanzu.github.io/helm-charts/"
+      namespace   = local.namespace
+      values      = file("${path.module}/values.yaml")
     },
     var.helm_config
   )
@@ -29,7 +29,7 @@ module "helm_addon" {
   set_values = [
     {
       name  = "serviceAccount.server.name"
-      value = local.name
+      value = local.service_account
     },
     {
       name  = "serviceAccount.server.create"
@@ -38,16 +38,15 @@ module "helm_addon" {
   ]
 
   irsa_config = {
-    create_kubernetes_namespace = true
+    create_kubernetes_namespace = try(var.helm_config.create_namespace, true)
     kubernetes_namespace        = local.namespace
 
     create_kubernetes_service_account = true
-    kubernetes_service_account        = try(var.helm_config.namespace, local.name)
+    kubernetes_service_account        = local.service_account
 
     irsa_iam_policies = concat([aws_iam_policy.velero.arn], var.irsa_policies)
   }
 
-  # Blueprints
   addon_context = var.addon_context
 }
 
@@ -62,7 +61,6 @@ data "aws_iam_policy_document" "velero" {
       "ec2:CreateSnapshot",
       "ec2:DeleteSnapshot",
     ]
-
     resources = ["*"]
   }
 
@@ -74,13 +72,12 @@ data "aws_iam_policy_document" "velero" {
       "s3:AbortMultipartUpload",
       "s3:ListMultipartUploadParts",
     ]
-
-    resources = ["arn:${var.addon_context.aws_partition_id}:s3:::${var.backup_s3_bucket}/*"]
+    resources = [var.create_bucket == true ? aws_s3_bucket.velero_bucket.arn : "arn:${var.addon_context.aws_partition_id}:s3:::${var.bucket_name}/*"]
   }
 
   statement {
     actions   = ["s3:ListBucket"]
-    resources = ["arn:${var.addon_context.aws_partition_id}:s3:::${var.backup_s3_bucket}"]
+    resources = [var.create_bucket == true ? aws_s3_bucket.velero_bucket.arn : "arn:${var.addon_context.aws_partition_id}:s3:::${var.bucket_name}"]
   }
 }
 

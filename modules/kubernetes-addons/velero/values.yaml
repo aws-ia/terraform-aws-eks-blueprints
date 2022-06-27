@@ -1,12 +1,18 @@
-configuration:
-  provider: aws
-  backupStorageLocation:
-    bucket: ${backup_s3_bucket}
-
 initContainers:
   - name: velero-plugin-for-aws
-    image: velero/velero-plugin-for-aws:v1.4.1
+    image: velero/velero-plugin-for-aws:v1.5.0
     imagePullPolicy: IfNotPresent
     volumeMounts:
       - mountPath: /target
         name: plugins
+
+configuration:
+  provider: aws
+  backupStorageLocation:
+    bucket: ${var.bucket_name}
+  volumeSnapshotLocation:
+    config:
+      region: ${data.aws_region.current.name}
+
+credentials:
+  useSecret: false
