@@ -803,7 +803,13 @@ variable "velero_irsa_policies" {
   default     = []
 }
 
-variable "velero_backup_s3_bucket" {
+variable "velero_create_bucket" {
+  description = "Determines to create bucket"
+  type        = bool
+  default     = false
+}
+
+variable "velero_bucket_name" {
   description = "Bucket name for velero bucket"
   type        = string
   default     = ""

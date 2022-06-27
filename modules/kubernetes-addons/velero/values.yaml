@@ -1,7 +1,6 @@
 initContainers:
   - name: velero-plugin-for-aws
     image: velero/velero-plugin-for-aws:v1.5.0
-    imagePullPolicy: IfNotPresent
     volumeMounts:
       - mountPath: /target
         name: plugins
@@ -9,10 +8,10 @@ initContainers:
 configuration:
   provider: aws
   backupStorageLocation:
-    bucket: ${var.bucket_name}
+    bucket: ${bucket}
   volumeSnapshotLocation:
     config:
-      region: ${data.aws_region.current.name}
+      region: ${region}
 
 credentials:
   useSecret: false

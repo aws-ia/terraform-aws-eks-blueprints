@@ -1,6 +1,8 @@
+data "aws_region" "current" {}
+
 locals {
   namespace       = try(var.helm_config.namespace, "velero")
-  service_account = try(var.helm_config.service_account, "velero-sa")
+  service_account = try(var.helm_config.service_account, "velero")
 }
 
 resource "aws_s3_bucket" "velero_bucket" {
@@ -21,7 +23,10 @@ module "helm_addon" {
       version     = "2.30.0"
       repository  = "https://vmware-tanzu.github.io/helm-charts/"
       namespace   = local.namespace
-      values      = file("${path.module}/values.yaml")
+      values = [templatefile("${path.module}/values.yaml", {
+        bucket = var.bucket_name,
+        region = data.aws_region.current.name
+      })]
     },
     var.helm_config
   )
@@ -72,12 +77,12 @@ data "aws_iam_policy_document" "velero" {
       "s3:AbortMultipartUpload",
       "s3:ListMultipartUploadParts",
     ]
-    resources = [var.create_bucket == true ? aws_s3_bucket.velero_bucket.arn : "arn:${var.addon_context.aws_partition_id}:s3:::${var.bucket_name}/*"]
+    resources = [var.create_bucket == true ? "${aws_s3_bucket.velero_bucket[0].arn}/*" : "arn:${var.addon_context.aws_partition_id}:s3:::${var.bucket_name}/*"]
   }
 
   statement {
     actions   = ["s3:ListBucket"]
-    resources = [var.create_bucket == true ? aws_s3_bucket.velero_bucket.arn : "arn:${var.addon_context.aws_partition_id}:s3:::${var.bucket_name}"]
+    resources = [var.create_bucket == true ? aws_s3_bucket.velero_bucket[0].arn : "arn:${var.addon_context.aws_partition_id}:s3:::${var.bucket_name}"]
   }
 }
 

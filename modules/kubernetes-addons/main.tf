@@ -336,7 +336,8 @@ module "velero" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
   irsa_policies     = var.velero_irsa_policies
-  backup_s3_bucket  = var.velero_backup_s3_bucket
+  create_bucket     = var.velero_create_bucket
+  bucket_name       = var.velero_bucket_name
 }
 
 module "opentelemetry_operator" {
