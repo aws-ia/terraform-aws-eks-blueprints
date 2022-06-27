@@ -857,3 +857,9 @@ variable "adot_collector_nginx_helm_config" {
   type        = any
   default     = {}
 }
+
+variable "enable_adot_collector_kubeprometheus" {
+  description = "Kube Stack"
+  type        = bool
+  default     = false
+}

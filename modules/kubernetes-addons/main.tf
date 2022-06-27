@@ -419,3 +419,14 @@ module "adot_collector_nginx" {
     module.opentelemetry_operator
   ]
 }
+
+module "adot_collector_kubeprometheus" {
+  count  = var.enable_adot_collector_kubeprometheus ? 1 : 0
+  source = "./adot-collector-kubeprometheus"
+
+  
+
+  depends_on = [
+    module.opentelemetry_operator
+  ]
+}
