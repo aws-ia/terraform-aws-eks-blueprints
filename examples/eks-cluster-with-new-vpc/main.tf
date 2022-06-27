@@ -1,6 +1,4 @@
-provider "aws" {
-  region = local.region
-}
+provider "aws" {}
 
 provider "kubernetes" {
   host                   = module.eks_blueprints.eks_cluster_endpoint
@@ -28,13 +26,14 @@ provider "helm" {
   }
 }
 
+data "aws_region" "current" {}
 data "aws_availability_zones" "available" {}
 
 locals {
   name = basename(path.cwd)
   # var.cluster_name is for Terratest
   cluster_name = coalesce(var.cluster_name, local.name)
-  region       = "us-west-2"
+  region       = data.aws_region.current.name
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
