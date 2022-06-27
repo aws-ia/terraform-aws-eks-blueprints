@@ -48,7 +48,7 @@ resource "aws_iam_role" "application_team_iam_role" {
 
 # Application Team EKS Access IAM Policy
 resource "aws_iam_policy" "application_team_iam_policy" {
-  count = length(var.applicaiton_teams) > 0 ? 1 : 0
+  count = length(var.application_teams) > 0 ? 1 : 0
   
   name        = "${var.eks_cluster_id}-application-team-iam-policy"
   path        = "/"
