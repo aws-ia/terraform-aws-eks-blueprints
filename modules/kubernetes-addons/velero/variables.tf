@@ -16,13 +16,7 @@ variable "irsa_policies" {
   default     = []
 }
 
-variable "create_bucket" {
-  description = "Determines to create a velero bucket"
-  type        = bool
-  default     = false
-}
-
-variable "bucket_name" {
+variable "backup_s3_bucket" {
   description = "Bucket name for velero bucket"
   type        = string
   default     = ""
