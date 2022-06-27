@@ -103,7 +103,7 @@ To create an `Platform Team` for your cluster, simply use `platform_teams`. You 
 
 ## Cluster Access (`kubectl`)
 
-The output will contain the IAM roles for every application(`application_teams_iam_role_arn`) or platform team(`platform_teams_iam_role_arn`).
+The output will contain the IAM roles for every application(`application_team_iam_role_arn`) or platform team(`platform_team_iam_role_arn`).
 
 To update your kubeconfig, you can run the following command:
 
@@ -139,44 +139,44 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_iam_role.application_team_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_policy.application_team_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.platform_team_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_role.application_team_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.application_team_sa_irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.platform_team_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
-| [aws_iam_policy.platform_team_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
-| [kubernetes_namespace.application_team_ns](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
-| [kubernetes_resource_quota.application_team_quota](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/resource_quota) | resource |
+| [kubectl_manifest.application_team_manifest](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/manifest) | resource |
 | [kubernetes_cluster_role.application_team_cluster_role](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role) | resource |
 | [kubernetes_cluster_role_binding.application_team_cluster_role_binding](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role_binding) | resource |
+| [kubernetes_namespace.application_team_ns](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
+| [kubernetes_resource_quota.application_team_quota](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/resource_quota) | resource |
 | [kubernetes_role.application_team_role](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/role) | resource |
 | [kubernetes_role_binding.application_team_role_binding](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/role_binding) | resource |
 | [kubernetes_service_account.application_team_sa](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account) | resource |
-| [kubectl_manifest.application_team_manifest](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/manifest) | resource |
-| [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
-| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [aws_eks_cluster.eks_cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
 | [aws_iam_policy_document.platform_team_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_application_team_iam_policy"></a> [application\_team\_iam\_policy](#input\_application\_team\_iam\_policy) | IAM policy for application team IAM role | `any` | `null` | no |
 | <a name="input_application_teams"></a> [application\_teams](#input\_application\_teams) | Map of maps of application teams to create | `any` | `{}` | no |
-| <a name="input_platform_teams"></a> [platform\_teams](#input\_platform\_teams) | Map of maps of platform teams to create | `any` | `{}` | no |
 | <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS Cluster name | `string` | n/a | yes |
 | <a name="input_iam_role_permissions_boundary"></a> [iam\_role\_permissions\_boundary](#input\_iam\_role\_permissions\_boundary) | ARN of the policy that is used to set the permissions boundary for the IAM role | `string` | `null` | no |
-| <a name="input_application_team_iam_policy"></a> [application\_team\_iam\_policy](#input\_application\_team\_iam\_policy) | IAM policy for application team IAM role | `any` | `null` | no |
+| <a name="input_platform_teams"></a> [platform\_teams](#input\_platform\_teams) | Map of maps of platform teams to create | `any` | `{}` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_application_team_iam_role_arn"></a> [application\_team\_iam\_role\_arn](#output\_application\_team\_iam\_role\_arn) | IAM role ARN for Application Team EKS Access |
-| <a name="output_application_team_sa_irsa_name"></a> [application\_team\_sa\_irsa\_name](#output\_application\_team\_sa\_irsa\_name) | IAM role name for Application Team EKS Service Account (IRSA) |
-| <a name="output_application_team_sa_irsa_arn"></a> [application\_team\_sa\_irsa\_arn](#output\_application\_team\_sa\_irsa\_arn) | IAM role ARN for Application Team EKS Service Account (IRSA) |
-| <a name="output_platform_team_iam_role_arn"></a> [platform\_team\_iam\_role\_arn](#output\_platform\_team\_iam\_role\_arn) | IAM role ARN for Platform Team EKS Access |
 | <a name="output_application_team_configure_kubectl"></a> [application\_team\_configure\_kubectl](#output\_application\_team\_configure\_kubectl) | Configure kubectl for each Application Team: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
+| <a name="output_application_team_iam_role_arn"></a> [application\_team\_iam\_role\_arn](#output\_application\_team\_iam\_role\_arn) | IAM role ARN for Application Team EKS Access |
+| <a name="output_application_team_sa_irsa_arn"></a> [application\_team\_sa\_irsa\_arn](#output\_application\_team\_sa\_irsa\_arn) | IAM role ARN for Application Team EKS Service Account (IRSA) |
+| <a name="output_application_team_sa_irsa_name"></a> [application\_team\_sa\_irsa\_name](#output\_application\_team\_sa\_irsa\_name) | IAM role name for Application Team EKS Service Account (IRSA) |
 | <a name="output_platform_team_configure_kubectl"></a> [platform\_team\_configure\_kubectl](#output\_platform\_team\_configure\_kubectl) | Configure kubectl for each Platform Team: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
+| <a name="output_platform_team_iam_role_arn"></a> [platform\_team\_iam\_role\_arn](#output\_platform\_team\_iam\_role\_arn) | IAM role ARN for Platform Team EKS Access |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

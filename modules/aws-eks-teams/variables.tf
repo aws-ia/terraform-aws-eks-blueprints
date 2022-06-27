@@ -1,24 +1,18 @@
+variable "eks_cluster_id" {
+  description = "EKS Cluster name"
+  type        = string
+}
+
 variable "application_teams" {
-  description = "Map of maps of teams to create"
+  description = "Map of maps of application teams to create"
   type        = any
   default     = {}
 }
 
 variable "platform_teams" {
-  description = "Map of maps of teams to create"
+  description = "Map of maps of platform teams to create"
   type        = any
   default     = {}
-}
-
-variable "tags" {
-  description = "A map of tags to add to all resources"
-  type        = map(string)
-  default     = {}
-}
-
-variable "eks_cluster_id" {
-  description = "EKS Cluster name"
-  type        = string
 }
 
 variable "iam_role_permissions_boundary" {
@@ -28,7 +22,13 @@ variable "iam_role_permissions_boundary" {
 }
 
 variable "application_team_iam_policy" {
-  description = "Application Team IAM Policy"
+  description = "IAM policy for application team IAM role"
   type        = any
   default     = null
+}
+
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
 }
