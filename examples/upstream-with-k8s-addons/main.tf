@@ -73,7 +73,7 @@ module "eks" {
       desired_size = 1
 
       update_config = {
-        max_unavailable_percentage = 75
+        max_unavailable_percentage = 33
       }
     }
   }
