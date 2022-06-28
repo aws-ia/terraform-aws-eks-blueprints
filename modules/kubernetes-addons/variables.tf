@@ -143,6 +143,19 @@ variable "cluster_autoscaler_helm_config" {
   default     = {}
 }
 
+#-----------COREDNS AUTOSCALER-------------
+variable "enable_coredns_autoscaler" {
+  description = "Enable CoreDNS autoscaler add-on"
+  type        = bool
+  default     = false
+}
+
+variable "coredns_autoscaler_helm_config" {
+  description = "CoreDNS Autoscaler Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------Crossplane ADDON-------------
 variable "enable_crossplane" {
   description = "Enable Crossplane add-on"
@@ -264,6 +277,12 @@ variable "external_dns_irsa_policies" {
   description = "Additional IAM policies for a IAM role for service accounts"
   type        = list(string)
   default     = []
+}
+
+variable "external_dns_private_zone" {
+  type        = bool
+  description = "Determines if referenced Route53 zone is private."
+  default     = false
 }
 
 #-----------Amazon Managed Service for Prometheus-------------
