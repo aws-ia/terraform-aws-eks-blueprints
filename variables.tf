@@ -46,14 +46,26 @@ variable "cluster_name" {
 }
 
 variable "cluster_version" {
-  description = "Kubernetes `<major>.<minor>` version to use for the EKS cluster (i.e.: `1.21`)"
+  description = "Kubernetes `<major>.<minor>` version to use for the EKS cluster (i.e.: `1.22`)"
   type        = string
-  default     = "1.21"
+  default     = "1.22"
 }
 
 #-------------------------------
 # EKS Cluster Security Groups
 #-------------------------------
+variable "create_cluster_security_group" {
+  description = "Toggle to create or assign cluster security group"
+  type        = bool
+  default     = true
+}
+
+variable "cluster_security_group_id" {
+  description = "Security group to be used if creation of cluster security group is turned off"
+  type        = string
+  default     = ""
+}
+
 variable "cluster_additional_security_group_ids" {
   description = "List of additional, externally created security group IDs to attach to the cluster control plane"
   type        = list(string)
@@ -331,21 +343,6 @@ variable "eks_readiness_timeout" {
   description = "The maximum time (in seconds) to wait for EKS API server endpoint to become healthy"
   type        = number
   default     = "600"
-}
-
-#-------------------------------
-# Amazon Managed Prometheus
-#-------------------------------
-variable "enable_amazon_prometheus" {
-  description = "Enable AWS Managed Prometheus service"
-  type        = bool
-  default     = false
-}
-
-variable "amazon_prometheus_workspace_alias" {
-  description = "AWS Managed Prometheus WorkSpace Name"
-  type        = string
-  default     = null
 }
 
 #-------------------------------

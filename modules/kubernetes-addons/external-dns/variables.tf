@@ -20,6 +20,12 @@ variable "domain_name" {
   type        = string
 }
 
+variable "private_zone" {
+  type        = bool
+  description = "Determines if referenced Route53 hosted zone is private."
+  default     = false
+}
+
 variable "addon_context" {
   description = "Input configuration for the addon"
   type = object({

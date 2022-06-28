@@ -10,97 +10,71 @@ Amazon Managed Grafana.
 This example provides a curated dashboard along with Alerts and Rules on
 Amazon Managed Prometheus configured as a default data source on Managed Grafana.
 
----
+#### ⚠️ API Key
 
-**NOTE**
+The Grafana API key is currently handled in this example through a variable until [native support is provided](https://github.com/hashicorp/terraform-provider-aws/issues/25100).
+Users can store the retrieved key in a `terraform.tfvars` file with the variable name like `grafana_api_key="xxx"`, or set the value through an environment variable
+like `export TF_VAR_grafana_api_key="xxx"`when working with the example. However, in a current production environment, users should use an external secret store such as AWS Secrets Manager and use the
+[aws_secretsmanager_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret) data source to retrieve the API key.
 
-For the sake of simplicity in this example, we store sensitive information and
-credentials in `dev.tfvars`. This should not be done in a production environment.
-Instead, use an external secret store such as AWS Secrets Manager and use the
-[aws_secretsmanager_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret) data source to retrieve them.
+## Prerequisites
 
----
+Ensure that you have the following tools installed locally:
 
-## How to Deploy
+1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
+3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
-### Prerequisites
+## Deploy
 
-- Terraform
-- An AWS Account
-- kubectl
-- awscli
-- jq
-- An existing Amazon Managed Grafana workspace.
+This example deploy all the necessary components to start monitoring your Java
+applications. You can follow the steps below to build and deploy an example
+application to populate the dashboard with metrics.
 
-#### Generate a Grafana API Key
+To provision this example:
+
+1. Provision the Grafana workspace first; we need to retrieve the key after creation before we can proceed with provisioning:
+
+```sh
+terraform init
+terraform apply -target=module.managed_grafana # required to retrieve API key before we can proceed
+```
+
+Enter `yes` at command prompt to apply
+
+2. Generate a Grafana API Key
 
 - Give admin access to the SSO user you set up when creating the Amazon Managed Grafana Workspace:
   - In the AWS Console, navigate to Amazon Grafana. In the left navigation bar, click **All workspaces**, then click on the workspace name you are using for this example.
   - Under **Authentication** within **AWS Single Sign-On (SSO)**, click **Configure users and user groups**
   - Check the box next to the SSO user you created and click **Make admin**
-- Navigate back to the Grafana Dashboard. If you don't see the gear icon in the left navigation bar, log out and log back in.
+- From the workspace in the AWS console, click on the `Grafana workspace URL` to open the workspace
+- If you don't see the gear icon in the left navigation bar, log out and log back in.
 - Click on the gear icon, then click on the **API keys** tab.
 - Click **Add API key**, fill in the _Key name_ field and select _Admin_ as the Role.
-- Copy your API key into `dev.tfvars` under `grafana_api_key`
-- Add your Grafana endpoint to `dev.tfvars` under `grafana_endpoint`. (ex `https://<workspace-id>.grafana-workspace.<region>.amazonaws.com/`)
+- Copy your API key into `terraform.tfvars` under the `grafana_api_key` variable (`grafana_api_key="xxx"`) or set as an environment variable on your CLI (`export TF_VAR_grafana_api_key="xxx"`)
 
-### Deployment Steps
+3. Complete provisioning of resources
 
-- Clone this repository:
-
-```
-git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
+```sh
+terraform apply
 ```
 
-- Initialize a working directory
+Enter `yes` at command prompt to apply
 
-```
-cd examples/observability/eks-java-jmx
-terraform init
-```
+## Validate
 
-- Fill-in the values for the variables in `dev.tfvars`
-- Verify the resources created by this execution:
+The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the deployment.
 
-```
-export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
-terraform validate
-terraform plan -var-file=dev.tfvars
+1. Run `update-kubeconfig` command:
+
+```sh
+aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
 ```
 
-- Deploy resources:
+2. Test by listing all the pods running currently:
 
-```
-terraform apply -var-file=dev.tfvars --auto-approve
-```
-
-- Add the cluster to your kubeconfig:
-
-```
-aws eks --region $AWS_REGION update-kubeconfig --name aws001-preprod-observability-eks
-```
-
-`terraform apply` will provision all the aforementioned resources.
-
----
-
-**NOTE**
-
-This example deploy all the necessary components to start monitoring your Java-based
-applications. However, you can follow the steps below to build and deploy and example
-application.
-
----
-
-#### Verify that the Resources Deployed Successfully
-
-- Verify that Amazon Managed Prometheus workspace was created successfully:
-
-  - Check the status of Amazon Managed Prometheus workspace through the AWS console.
-
-- Check that OpenTelemetry Collector is running successfully inside EKS:
-
-```
+```sh
 kubectl get pods -A
 
 NAMESPACE                       NAME                                                         READY   STATUS    RESTARTS   AGE
@@ -125,35 +99,34 @@ opentelemetry-operator-system   opentelemetry-operator-controller-manager-68f5b4
 
 In this section we will reuse an example from the AWS OpenTelemetry collector [repository](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/container-insights-eks-jmx.md). For convenience, the steps can be found below.
 
-- 1. Clone [this repository](https://github.com/aws-observability/aws-otel-test-framework) and navigate to the `sample-apps/jmx/` directory.
+1. Clone [this repository](https://github.com/aws-observability/aws-otel-test-framework) and navigate to the `sample-apps/jmx/` directory.
 
-- 2. Authenticate to Amazon ECR
+2. Authenticate to Amazon ECR
 
-```
+```sh
 export AWS_ACCOUNT_ID=`aws sts get-caller-identity --query Account --output text`
 export AWS_REGION={region}
 aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 ```
 
-- 3. Create an Amazon ECR repository
+3. Create an Amazon ECR repository
 
-```
+```sh
 aws ecr create-repository --repository-name prometheus-sample-tomcat-jmx \
  --image-scanning-configuration scanOnPush=true \
  --region $AWS_REGION
-
 ```
 
-- 4. Build Docker image and push to ECR.
+4. Build Docker image and push to ECR.
 
-```
+```sh
 docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/prometheus-sample-tomcat-jmx:latest .
 docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/prometheus-sample-tomcat-jmx:latest
 ```
 
-- 5. Install sample application
+5. Install sample application
 
-```
+```sh
 export SAMPLE_TRAFFIC_NAMESPACE=javajmx-sample
 curl https://raw.githubusercontent.com/aws-observability/aws-otel-test-framework/terraform/sample-apps/jmx/examples/prometheus-metrics-sample.yaml > metrics-sample.yaml
 sed -i .bak "s/{{aws_account_id}}/$AWS_ACCOUNT_ID/g" metrics-sample.yaml
@@ -165,7 +138,7 @@ kubectl apply -f metrics-sample.yaml
 
 Verify that the sample application is running:
 
-```
+```sh
 kubectl get pods -n $SAMPLE_TRAFFIC_NAMESPACE
 
 NAME                              READY   STATUS              RESTARTS   AGE
@@ -174,24 +147,27 @@ tomcat-example-7958666589-2q755   0/1     ContainerCreating   0          11s
 tomcat-traffic-generator          1/1     Running             0          11s
 ```
 
-#### Vizualize the Application's dashboard
+#### Visualize the Application's dashboard
 
 Log back into your Managed Grafana Workspace and navigate to the dashboard side panel, click on `Observability` Folder and open the `Sample Java/JMX Dashboard for Kubernetes` Dashboard.
 
 <img width="1468" alt="java-dashboard" src="https://user-images.githubusercontent.com/10175027/159924937-51514e4e-3442-40a2-a921-950d69f372b4.png">
 
-## Cleanup
+## Destroy
 
-- Run `terraform destroy -var-file=dev.tfvars` to remove all resources except for your Amazon Managed Grafana workspace.
-- Delete your Amazon Managed Grafana workspace through the AWS console.
+To teardown and remove the resources created in this example:
+
+```sh
+terraform destroy -target=module.eks_blueprints_kubernetes_addons -auto-approve
+terraform destroy -target=module.eks_blueprints -auto-approve
+terraform destroy -auto-approve
+```
 
 ## Troubleshooting
 
-- When running `terraform apply` or `terraform destroy`, the process will sometimes time-out. If that happens, run the command again and the operation will continue where it left off.
+- You can explore the OpenTelemetry Collector logs by running the following command:
 
-- You can explore the OpenTelemtry Collector logs by running the following command:
-
-```
+```sh
 kubectl get pods -n opentelemetry-operator-system
-kubectl logs -f -n opentelemetry-operator-system adot-collector-xxxx
+kubectl logs -f -n opentelemetry-operator-system
 ```

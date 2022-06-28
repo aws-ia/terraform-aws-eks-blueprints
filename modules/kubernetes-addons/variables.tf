@@ -124,6 +124,12 @@ variable "enable_amazon_eks_aws_ebs_csi_driver" {
   default     = false
 }
 
+variable "custom_image_registry_uri" {
+  description = "Custom image registry URI map of `{region = dkr.endpoint }`"
+  type        = map(string)
+  default     = {}
+}
+
 #-----------CLUSTER AUTOSCALER-------------
 variable "enable_cluster_autoscaler" {
   description = "Enable Cluster autoscaler add-on"
@@ -133,6 +139,19 @@ variable "enable_cluster_autoscaler" {
 
 variable "cluster_autoscaler_helm_config" {
   description = "Cluster Autoscaler Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------COREDNS AUTOSCALER-------------
+variable "enable_coredns_autoscaler" {
+  description = "Enable CoreDNS autoscaler add-on"
+  type        = bool
+  default     = false
+}
+
+variable "coredns_autoscaler_helm_config" {
+  description = "CoreDNS Autoscaler Helm Chart config"
   type        = any
   default     = {}
 }
@@ -258,6 +277,12 @@ variable "external_dns_irsa_policies" {
   description = "Additional IAM policies for a IAM role for service accounts"
   type        = list(string)
   default     = []
+}
+
+variable "external_dns_private_zone" {
+  type        = bool
+  description = "Determines if referenced Route53 zone is private."
+  default     = false
 }
 
 #-----------Amazon Managed Service for Prometheus-------------
@@ -753,8 +778,44 @@ variable "opentelemetry_operator_helm_config" {
   default     = {}
 }
 
+variable "enable_amazon_eks_adot" {
+  description = "Enable Amazon EKS ADOT addon"
+  type        = bool
+  default     = false
+}
+
+variable "amazon_eks_adot_config" {
+  description = "Configuration for Amazon EKS ADOT add-on"
+  type        = any
+  default     = {}
+}
+
+#-----------Kubernetes Velero ADDON-------------
+variable "enable_velero" {
+  description = "Enable Kubernetes Dashboard add-on"
+  type        = bool
+  default     = false
+}
+
+variable "velero_helm_config" {
+  description = "Kubernetes Velero Helm Chart config"
+  type        = any
+  default     = null
+}
+
+variable "velero_irsa_policies" {
+  description = "IAM policy ARNs for velero IRSA"
+  type        = list(string)
+  default     = []
+}
+
+variable "velero_backup_s3_bucket" {
+  description = "Bucket name for velero bucket"
+  type        = string
+  default     = ""
+}
+
 #-----------AWS Observability patterns-------------
-#-----------Java/Jmx Use case-------------
 variable "enable_adot_collector_java" {
   description = "Enable metrics for JMX workloads"
   type        = bool
@@ -791,7 +852,6 @@ variable "adot_collector_memcached_helm_config" {
   default     = {}
 }
 
-#-----------Nginx Use case-------------
 variable "enable_adot_collector_nginx" {
   description = "Enable metrics for Nginx workloads"
   type        = bool

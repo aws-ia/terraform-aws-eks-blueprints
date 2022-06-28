@@ -7,7 +7,7 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
 
   exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
+    api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
     # This requires the awscli to be installed locally where Terraform is executed
     args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
@@ -20,7 +20,7 @@ provider "helm" {
     cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
 
     exec {
-      api_version = "client.authentication.k8s.io/v1alpha1"
+      api_version = "client.authentication.k8s.io/v1beta1"
       command     = "aws"
       # This requires the awscli to be installed locally where Terraform is executed
       args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
@@ -29,15 +29,16 @@ provider "helm" {
 }
 
 provider "grafana" {
-  url  = var.grafana_endpoint
+  url  = "https://${module.managed_grafana.workspace_endpoint}"
   auth = var.grafana_api_key
 }
 
 data "aws_availability_zones" "available" {}
 
 locals {
-  name     = basename(path.cwd)
-  region   = var.aws_region
+  name   = basename(path.cwd)
+  region = var.aws_region
+
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
@@ -50,16 +51,15 @@ locals {
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
+
 module "eks_blueprints" {
   source = "../../.."
 
   cluster_name    = local.name
-  cluster_version = "1.21"
+  cluster_version = "1.22"
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
-
-  enable_amazon_prometheus = true
 
   managed_node_groups = {
     t3_l = {
@@ -81,11 +81,44 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-  enable_cert_manager                  = true
-  enable_opentelemetry_operator        = true
-  enable_adot_collector_haproxy        = true
-  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  # enable AWS Managed EKS add-on for ADOT
+  enable_amazon_eks_adot = true
+  # or enable a customer-managed OpenTelemetry operator
+  # enable_opentelemetry_operator = true
+  enable_adot_collector_haproxy = true
+
+  amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
   amazon_prometheus_workspace_region   = local.region
+
+  tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Observability Resources
+#---------------------------------------------------------------
+
+module "managed_grafana" {
+  source  = "terraform-aws-modules/managed-service-grafana/aws"
+  version = "~> 1.3"
+
+  # Workspace
+  name              = local.name
+  stack_set_name    = local.name
+  data_sources      = ["PROMETHEUS"]
+  associate_license = false
+
+  # # Role associations
+  # Pending https://github.com/hashicorp/terraform-provider-aws/issues/24166
+  # role_associations = {
+  #   "ADMIN" = {
+  #     "group_ids" = []
+  #     "user_ids"  = []
+  #   }
+  #   "EDITOR" = {
+  #     "group_ids" = []
+  #     "user_ids"  = []
+  #   }
+  # }
 
   tags = local.tags
 }
@@ -94,7 +127,7 @@ resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
   name       = "amp"
   is_default = true
-  url        = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  url        = module.managed_prometheus.workspace_prometheus_endpoint
 
   json_data {
     http_method     = "GET"
@@ -104,93 +137,137 @@ resource "grafana_data_source" "prometheus" {
   }
 }
 
-resource "grafana_folder" "haproxy_dashboards" {
+resource "grafana_folder" "this" {
   title = "Observability"
 }
 
-resource "grafana_dashboard" "haproxy_dashboards" {
-  folder      = grafana_folder.haproxy_dashboards.id
+resource "grafana_dashboard" "this" {
+  folder      = grafana_folder.this.id
   config_json = file("${path.module}/dashboards/default.json")
 }
 
-resource "aws_prometheus_rule_group_namespace" "haproxy" {
-  name         = "haproxy_rules"
-  workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
+module "managed_prometheus" {
+  source  = "terraform-aws-modules/managed-service-prometheus/aws"
+  version = "~> 2.1"
 
-  data = <<-EOF
-  groups:
-    - name: obsa-haproxy-down-alert
-      rules:
-      - alert: HA_proxy_down
-      expr: haproxy_up == 0
-      for: 0m
-      labels:
-        severity: critical
-      annotations:
-        summary: HAProxy down (instance {{ $labels.instance }})
-        description: "HAProxy down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+  workspace_alias = local.name
 
-    - name: obsa-haproxy-http4xx-error-alert
-      rules:
-      - alert: Ha_proxy_High_Http4xx_ErrorRate_Backend
-      expr: sum by (backend) (rate(haproxy_server_http_responses_total{code="4xx"}[1m])) / sum by (backend) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
-      for: 1m
-      labels:
-        severity: critical
-      annotations:
-        summary: HAProxy high HTTP 4xx error rate backend (instance {{ $labels.instance }})
-        description: "Too many HTTP requests with status 4xx (> 5%) on backend {{ $labels.fqdn }}/{{ $labels.backend }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-
-    - name: obsa-haproxy-http4xx-error-alert
-      rules:
-      - alert: Ha_proxy_High_Http5xx_ErrorRate_Backend
-      expr: sum by (backend) (rate(haproxy_server_http_responses_total{code="5xx"}[1m])) / sum by (backend) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
-      for: 1m
-      labels:
-        severity: critical
-      annotations:
-        summary: HAProxy high HTTP 5xx error rate backend (instance {{ $labels.instance }})
-        description: "Too many HTTP requests with status 5xx (> 5%) on backend {{ $labels.fqdn }}/{{ $labels.backend }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-
-    - name: obsa-haproxy-Http4xx-ErrorRate-Server-alert
-      rules:
-      - alert: Ha_proxy_High_Http4xx_ErrorRate_Server
-      expr: sum by (server) (rate(haproxy_server_http_responses_total{code="4xx"}[1m])) / sum by (server) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
-      for: 1m
-      labels:
-        severity: critical
-      annotations:
-        summary: HAProxy high HTTP 4xx error rate server (instance {{ $labels.instance }})
-        description: "Too many HTTP requests with status 4xx (> 5%) on server {{ $labels.server }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-
-    - name: obsa-haproxy-Http5xx-ErrorRate-Server-alert
-      rules:
-      - alert: Ha_proxy_High_Http5xx_ErrorRate_Server
-      expr: sum by (server) (rate(haproxy_server_http_responses_total{code="5xx"}[1m])) / sum by (server) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
-      for: 1m
-      labels:
-        severity: critical
-      annotations:
-        summary: HAProxy high HTTP 5xx error rate server (instance {{ $labels.instance }})
-        description: "Too many HTTP requests with status 5xx (> 5%) on server {{ $labels.server }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-  EOF
-}
-
-resource "aws_prometheus_alert_manager_definition" "haproxy" {
-  workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
-
-  definition = <<-EOF
+  alert_manager_definition = <<-EOT
   alertmanager_config: |
     route:
       receiver: 'default'
     receivers:
       - name: 'default'
-  EOF
+  EOT
+
+  rule_group_namespaces = {
+    haproxy = {
+      name = "haproxy_rules"
+      data = <<-EOT
+      groups:
+        - name: obsa-haproxy-down-alert
+          rules:
+            - alert: HA_proxy_down
+              expr: haproxy_up == 0
+              for: 0m
+              labels:
+                severity: critical
+              annotations:
+                summary: HAProxy down (instance {{ $labels.instance }})
+                description: "HAProxy down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - name: obsa-haproxy-http4xx-error-alert
+          rules:
+            - alert: Ha_proxy_High_Http4xx_ErrorRate_Backend
+              expr: sum by (backend) (rate(haproxy_server_http_responses_total{code="4xx"}[1m])) / sum by (backend) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
+              for: 1m
+              labels:
+                severity: critical
+              annotations:
+                summary: HAProxy high HTTP 4xx error rate backend (instance {{ $labels.instance }})
+                description: "Too many HTTP requests with status 4xx (> 5%) on backend {{ $labels.fqdn }}/{{ $labels.backend }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - name: obsa-haproxy-http5xx-error-alert
+          rules:
+            - alert: Ha_proxy_High_Http5xx_ErrorRate_Backend
+              expr: sum by (backend) (rate(haproxy_server_http_responses_total{code="5xx"}[1m])) / sum by (backend) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
+              for: 1m
+              labels:
+                severity: critical
+              annotations:
+                summary: HAProxy high HTTP 5xx error rate backend (instance {{ $labels.instance }})
+                description: "Too many HTTP requests with status 5xx (> 5%) on backend {{ $labels.fqdn }}/{{ $labels.backend }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - name: obsa-haproxy-Http4xx-ErrorRate-Server-alert
+          rules:
+            - alert: Ha_proxy_High_Http4xx_ErrorRate_Server
+              expr: sum by (server) (rate(haproxy_server_http_responses_total{code="4xx"}[1m])) / sum by (server) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
+              for: 1m
+              labels:
+                severity: critical
+              annotations:
+                summary: HAProxy high HTTP 4xx error rate server (instance {{ $labels.instance }})
+                description: "Too many HTTP requests with status 4xx (> 5%) on server {{ $labels.server }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - name: obsa-haproxy-Http5xx-ErrorRate-Server-alert
+          rules:
+            - alert: Ha_proxy_High_Http5xx_ErrorRate_Server
+              expr: sum by (server) (rate(haproxy_server_http_responses_total{code="5xx"}[1m])) / sum by (server) (rate(haproxy_server_http_responses_total[1m]) * 100) > 5
+              for: 1m
+              labels:
+                severity: critical
+              annotations:
+                summary: HAProxy high HTTP 5xx error rate server (instance {{ $labels.instance }})
+                description: "Too many HTTP requests with status 5xx (> 5%) on server {{ $labels.server }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+      EOT
+    }
+  }
+
+  tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Sample Application
+#---------------------------------------------------------------
+
+# https://github.com/haproxy-ingress/charts/tree/master/haproxy-ingress
+resource "helm_release" "haproxy_ingress" {
+  namespace        = "haproxy-ingress"
+  create_namespace = true
+
+  name       = "haproxy-ingress"
+  repository = "https://haproxy-ingress.github.io/charts"
+  chart      = "haproxy-ingress"
+  version    = "0.13.7"
+
+  set {
+    name  = "defaultBackend.enabled"
+    value = true
+  }
+
+  set {
+    name  = "controller.stats.enabled"
+    value = true
+  }
+
+  set {
+    name  = "controller.metrics.enabled"
+    value = true
+  }
+
+  set {
+    name  = "controller.metrics.service.annotations.prometheus\\.io/port"
+    value = 9101
+    type  = "string"
+  }
+
+  set {
+    name  = "controller.metrics.service.annotations.prometheus\\.io/scrape"
+    value = true
+    type  = "string"
+  }
 }
 
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"

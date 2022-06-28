@@ -7,7 +7,7 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
 
   exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
+    api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
     # This requires the awscli to be installed locally where Terraform is executed
     args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
@@ -20,7 +20,7 @@ provider "helm" {
     cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
 
     exec {
-      api_version = "client.authentication.k8s.io/v1alpha1"
+      api_version = "client.authentication.k8s.io/v1beta1"
       command     = "aws"
       # This requires the awscli to be installed locally where Terraform is executed
       args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
@@ -46,7 +46,7 @@ locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
-  cluster_version = "1.21"
+  cluster_version = "1.22"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -133,6 +133,10 @@ module "eks_blueprints" {
       enable_monitoring = true
       eni_delete        = true
       public_ip         = false # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates
+
+      http_endpoint               = "enabled"
+      http_tokens                 = "optional"
+      http_put_response_hop_limit = 3
 
       # pre_userdata can be used in both cases where you provide custom_ami_id or ami_type
       pre_userdata = <<-EOT

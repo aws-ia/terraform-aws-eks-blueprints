@@ -65,4 +65,5 @@ cert-manager docker image is available at this repo:
 | Name | Description |
 |------|-------------|
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
+| <a name="output_eks_cluster_id"></a> [eks\_cluster\_id](#output\_eks\_cluster\_id) | Current AWS EKS Cluster ID |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
