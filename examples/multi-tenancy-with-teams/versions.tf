@@ -20,14 +20,6 @@ terraform {
     }
   }
 
-  cloud {
-    organization = "skdemo"
-
-    workspaces {
-      name = "multi-tenancy-eks"
-    }
-  }
-
   # ##  Used for end-to-end testing on project; update to suit your needs
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"

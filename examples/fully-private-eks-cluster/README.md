@@ -1,12 +1,12 @@
 # Fully Private EKS Cluster with VPC and VPC Endpoints deployment
 
-This example deploys a fully private EKS Cluster into a new VPC using Cloud9.
+This example deploys a fully private EKS Cluster into a new VPC using Cloud9 running on its on VPC. The Cloud9 instance and the Cloud9 VPC represents a development/deployment environment. This environment can be replaced by Direct Connect/VPN connection with an on-premises environment.
  - Create a new VPC called cloud9-vpc with public and private subnets to host the Cloud9 instance.
  - Creates a new VPC called eks-vpc and 3 Private Subnets to deploy the private EKS cluster.
  - VPC Peering connection between the above 2 VPCs and Route table updates to allow network traffic between these 2 VPCs.
  - VPC Endpoints for various services and S3 VPC Endpoint gateway in the eks-vpc that is required for the private EKS cluster.
  - Creates EKS Cluster Control plane with a private endpoint and with one Managed node group.
- - Deploys Managed add-ons to the EKS cluster.
+ - Deploys Amazon EKS add-ons to the EKS cluster.
 
 Please see this [document](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html) for more details on configuring fully private EKS Clusters
 

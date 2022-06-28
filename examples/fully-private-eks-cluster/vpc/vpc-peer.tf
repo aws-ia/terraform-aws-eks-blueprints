@@ -37,11 +37,3 @@ resource "aws_cloud9_environment_ec2" "eks_cloud9" {
   name          = "EKS-Cloud9"
   owner_arn     = local.cloud9_owner_arn
 }
-
-# data "aws_instance" "cloud9_instance" {
-#   filter {
-#     name = "tag:aws:cloud9:environment"
-#     values = [
-#     aws_cloud9_environment_ec2.eks-cloud9.id]
-#   }
-# }
