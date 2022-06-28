@@ -423,7 +423,11 @@ module "adot_collector_nginx" {
 module "adot_collector_kubeprometheus" {
   count  = var.enable_adot_collector_kubeprometheus ? 1 : 0
   source = "./adot-collector-kubeprometheus"
+  helm_config   = var.adot_collector_kubeprometheus_helm_config
+  addon_context = local.addon_context
 
+  amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
   
 
   depends_on = [
