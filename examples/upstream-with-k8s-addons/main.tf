@@ -58,6 +58,8 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
+  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+
   eks_managed_node_group_defaults = {
     instance_types        = ["m6i.large", "m5.large", "m5n.large", "m5zn.large"]
     create_security_group = false
