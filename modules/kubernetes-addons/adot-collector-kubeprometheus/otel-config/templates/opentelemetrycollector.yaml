@@ -1,0 +1,48 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: adot
+spec:
+  image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+  mode: deployment
+  serviceAccount: adot-collector-kubeprometheus
+  config: |
+    receivers:
+      prometheus:
+        config:
+          global:
+            scrape_interval: {{ .Values.scrapeInterval }}
+            scrape_timeout: {{ .Values.scrapeTimeout }}
+
+          scrape_configs:
+            - job_name: 'kube-state-metrics'
+              static_configs:
+                - targets: ['kube-state-metrics.kube-system.svc.cluster.local:8080']
+            - job_name: 'node-exporter'
+              kubernetes_sd_configs:
+                - role: endpoints
+              relabel_configs:
+                - source_labels: [__meta_kubernetes_endpoints_name]
+                  regex: 'node-exporter'
+                  action: keep      
+
+    exporters:
+      awsprometheusremotewrite:
+        endpoint: {{ .Values.ampurl }}
+        aws_auth:
+          region: {{ .Values.region }}
+          service: "aps"
+      logging:
+        loglevel: info
+    extensions:
+      health_check:
+      pprof:
+        endpoint: :1888
+      zpages:
+        endpoint: :55679
+    service:
+      extensions: [pprof, zpages, health_check]
+      pipelines:
+        metrics:
+          receivers: [prometheus]
+          exporters: [logging, awsprometheusremotewrite]
