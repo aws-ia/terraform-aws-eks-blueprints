@@ -863,3 +863,9 @@ variable "enable_adot_collector_kubeprometheus" {
   type        = bool
   default     = false
 }
+
+variable "adot_collector_kubeprometheus_helm_config" {
+  description = "ADOT Collector Kubeprom Helm Chart config"
+  type        = any
+  default     = {}
+}
