@@ -81,7 +81,7 @@ tf-plan:
     - changes:
         - "*.tf"
   script:
-    - gitlab-terraform plan 
+    - gitlab-terraform plan
     - gitlab-terraform plan-json
 
 tf-apply:

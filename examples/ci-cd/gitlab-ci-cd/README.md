@@ -31,7 +31,7 @@ git@github.com:aws-ia/terraform-aws-eks-blueprints.git
 
 Manually trigger the `tf-apply` to provision the resources
 
-## Step 5: Verify whether the state file update happened in your project (Infrastructure->Terraform-states). 
+## Step 5: Verify whether the state file update happened in your project (Infrastructure->Terraform-states).
 
 ## Step 6: (Optional) Manually Install, Configure and Run GitLab Agent for Kubernetes (“Agent”, for short) is your active in-cluster.
 
