@@ -29,7 +29,7 @@ jobs:
           - example_path: examples/crossplane
           - example_path: examples/eks-cluster-with-new-vpc
           - example_path: examples/fargate-serverless
-          - example_path: examples/fully-private-eks-cluster
+          # - example_path: examples/fully-private-eks-cluster # skipping until issue #711
           - example_path: examples/game-tech/agones-game-controller
           - example_path: examples/gitops/argocd
           # - example_path: examples/ingress-controllers/nginx # ignoring due to https://github.com/kubernetes-sigs/aws-load-balancer-controller/issues/1629
