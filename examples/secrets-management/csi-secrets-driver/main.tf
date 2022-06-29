@@ -2,14 +2,12 @@ provider "aws" {
   region = local.region
 }
 
-data "aws_region" "current" {}
-
 provider "kubernetes" {
   host                   = module.eks_blueprints.eks_cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
 
   exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
+    api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
     # This requires the awscli to be installed locally where Terraform is executed
     args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
@@ -22,7 +20,7 @@ provider "helm" {
     cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
 
     exec {
-      api_version = "client.authentication.k8s.io/v1alpha1"
+      api_version = "client.authentication.k8s.io/v1beta1"
       command     = "aws"
       # This requires the awscli to be installed locally where Terraform is executed
       args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
@@ -31,103 +29,67 @@ provider "helm" {
 }
 
 data "aws_availability_zones" "available" {}
+data "aws_caller_identity" "current" {}
+data "aws_partition" "current" {}
 
 locals {
-  tenant      = var.tenant      # AWS account name or unique id for tenant
-  environment = var.environment # Environment area eg., preprod or prod
-  zone        = var.zone        # Environment with in one sub_tenant or business unit
-  region      = "us-east-2"
+  name         = basename(path.cwd)
+  cluster_name = local.name
+  region       = "us-east-1"
 
-  vpc_cidr     = "10.0.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  azs          = slice(data.aws_availability_zones.available.names, 0, 3)
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
-}
+  vpc_cidr = "10.0.0.0/16"
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
-module "aws_vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
-
-  name = local.vpc_name
-  cidr = local.vpc_cidr
-  azs  = local.azs
-
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
-
-  enable_nat_gateway   = true
-  create_igw           = true
-  enable_dns_hostnames = true
-  single_nat_gateway   = true
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
-  }
+  application = "nginx"
 }
+
 #---------------------------------------------------------------
-# Example to consume eks_blueprints module
+# EKS Blueprints
 #---------------------------------------------------------------
 module "eks_blueprints" {
-  source = "../.."
+  source = "../../../"
 
-  tenant      = local.tenant
-  environment = local.environment
-  zone        = local.zone
+  cluster_name    = local.cluster_name
+  cluster_version = "1.22"
 
-  # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = module.aws_vpc.private_subnets
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
 
-  # EKS CONTROL PLANE VARIABLES
-  cluster_version = "1.21"
-
-  # EKS MANAGED NODE GROUPS
   managed_node_groups = {
-    mg_4 = {
+    mg_5 = {
       node_group_name = "managed-ondemand"
       instance_types  = ["m5.large"]
-      min_size        = "2"
-      subnet_ids      = module.aws_vpc.private_subnets
+      min_size        = 2
+      subnet_ids      = module.vpc.private_subnets
     }
   }
+
+  tags = local.tags
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source         = "../../modules/kubernetes-addons"
-  eks_cluster_id = module.eks_blueprints.eks_cluster_id
+  source = "../../../modules/kubernetes-addons"
 
-  # EKS Managed Add-ons
-  enable_amazon_eks_vpc_cni    = true
-  enable_amazon_eks_coredns    = true
-  enable_amazon_eks_kube_proxy = true
+  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
+  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
+  eks_oidc_provider    = module.eks_blueprints.oidc_provider
+  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
   #K8s Add-ons
   enable_secrets_store_csi_driver              = true
   enable_secrets_store_csi_driver_provider_aws = true
 
-  depends_on = [module.eks_blueprints.managed_node_groups]
+  tags = local.tags
 }
 
-
-data "aws_partition" "current" {}
-
-data "aws_caller_identity" "current" {}
-
-data "aws_eks_cluster" "eks_cluster" {
-  name = module.eks_blueprints.eks_cluster_id
-}
-
-#-----------------------------------------------------------------
-# This generates a random secret and stores in AWS Secret Manager
-#-----------------------------------------------------------------
-
-
+#------------------------------------------------------------------------------------
+# Create a sample secret in Secret Manager
+#------------------------------------------------------------------------------------
 resource "random_password" "password" {
   length           = 16
   special          = true
@@ -137,6 +99,7 @@ resource "random_password" "password" {
 resource "aws_secretsmanager_secret" "application_secret" {
   recovery_window_in_days = 0
 }
+
 resource "aws_secretsmanager_secret_version" "sversion" {
   secret_id     = aws_secretsmanager_secret.application_secret.id
   secret_string = <<EOF
@@ -150,7 +113,6 @@ EOF
 #------------------------------------------------------------------------------------
 # This creates a IAM Policy content limiting access to the secret in Secrets Manager
 #------------------------------------------------------------------------------------
-
 data "aws_iam_policy_document" "secrets_management_policy" {
   statement {
     sid    = ""
@@ -168,32 +130,30 @@ data "aws_iam_policy_document" "secrets_management_policy" {
 #---------------------------------------------------------------
 # Creating IAM Policy to be attached to the IRSA Role
 #---------------------------------------------------------------
-
 resource "aws_iam_policy" "this" {
   description = "Sample application IAM Policy for IRSA"
-  name        = "${module.eks_blueprints.eks_cluster_id}-${var.application}-irsa"
+  name        = "${module.eks_blueprints.eks_cluster_id}-${local.application}-irsa"
   policy      = data.aws_iam_policy_document.secrets_management_policy.json
 }
 
 #---------------------------------------------------------------
 # Creating IAM Role for Service Account
 #---------------------------------------------------------------
-
 module "iam_role_service_account" {
-  source = "../../modules/irsa"
+  source = "../../../modules/irsa"
   addon_context = {
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
     aws_caller_identity_arn        = data.aws_caller_identity.current.arn
-    aws_eks_cluster_endpoint       = data.aws_eks_cluster.eks_cluster.endpoint
+    aws_eks_cluster_endpoint       = module.eks_blueprints.eks_cluster_endpoint
     aws_partition_id               = data.aws_partition.current.partition
-    aws_region_name                = data.aws_region.current.name
+    aws_region_name                = local.region
     eks_cluster_id                 = module.eks_blueprints.eks_cluster_id
     eks_oidc_issuer_url            = module.eks_blueprints.eks_oidc_issuer_url
     eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${module.eks_blueprints.eks_oidc_issuer_url}"
     tags                           = {}
   }
-  kubernetes_namespace       = var.application
-  kubernetes_service_account = "${var.application}-sa"
+  kubernetes_namespace       = local.application
+  kubernetes_service_account = "${local.application}-sa"
   irsa_iam_policies          = [aws_iam_policy.this.arn]
 
   depends_on = [module.eks_blueprints]
@@ -203,14 +163,13 @@ module "iam_role_service_account" {
 # Kubernetes CRD to create the "SecretProviderClass" to represent the Secrets Manager Secrets
 # Refer https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_csi_driver.html#integrating_csi_driver_SecretProviderClass for syntax
 #---------------------------------------------------------------
-
 resource "kubectl_manifest" "csi_secrets_store_crd" {
   yaml_body = yamlencode({
     apiVersion = "secrets-store.csi.x-k8s.io/v1alpha1"
     kind       = "SecretProviderClass"
     metadata = {
-      name      = "${var.application}-secrets"
-      namespace = var.application
+      name      = "${local.application}-secrets"
+      namespace = local.application
     }
     spec = {
       provider = "aws"
@@ -227,32 +186,31 @@ resource "kubectl_manifest" "csi_secrets_store_crd" {
 #---------------------------------------------------------------
 # Sample Kubernetes Pod to mount the Secrets as CSI Volume
 #---------------------------------------------------------------
-
 resource "kubectl_manifest" "sample_nginx" {
   yaml_body = yamlencode({
     apiVersion = "v1"
     kind       = "Pod"
     metadata = {
-      name      = "${var.application}-secrets-pod-sample"
-      namespace = var.application
+      name      = "${local.application}-secrets-pod-sample"
+      namespace = local.application
     }
     spec = {
-      serviceAccountName = "${var.application}-sa"
+      serviceAccountName = "${local.application}-sa"
       volumes = [
         {
-          name = "${var.application}-secrets-volume"
+          name = "${local.application}-secrets-volume"
           csi = {
             driver   = "secrets-store.csi.k8s.io"
             readOnly = true
             volumeAttributes = {
-              secretProviderClass : "${var.application}-secrets"
+              secretProviderClass : "${local.application}-secrets"
             }
           }
         }
       ]
       containers = [
         {
-          name  = "${var.application}-deployment"
+          name  = "${local.application}-deployment"
           image = "nginx"
           ports = [
             {
@@ -261,7 +219,7 @@ resource "kubectl_manifest" "sample_nginx" {
           ]
           volumeMounts = [
             {
-              name      = "${var.application}-secrets-volume"
+              name      = "${local.application}-secrets-volume"
               mountPath = "/mnt/secrets-store"
               readOnly  = true
             }
@@ -271,4 +229,43 @@ resource "kubectl_manifest" "sample_nginx" {
     }
   })
   depends_on = [kubectl_manifest.csi_secrets_store_crd, module.iam_role_service_account]
+}
+
+#---------------------------------------------------------------
+# Supporting Resources
+#---------------------------------------------------------------
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = local.name
+  cidr = local.vpc_cidr
+
+  azs             = local.azs
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  # Manage so we can name
+  manage_default_network_acl    = true
+  default_network_acl_tags      = { Name = "${local.name}-default" }
+  manage_default_route_table    = true
+  default_route_table_tags      = { Name = "${local.name}-default" }
+  manage_default_security_group = true
+  default_security_group_tags   = { Name = "${local.name}-default" }
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/elb"              = 1
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/internal-elb"     = 1
+  }
+
+  tags = local.tags
 }
