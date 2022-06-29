@@ -22,7 +22,7 @@ variable "auto_scaling_group_names" {
 }
 
 variable "tags" {
-  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)".0
+  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
   type        = map(string)
   default     = {}
 }
