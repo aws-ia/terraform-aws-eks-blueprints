@@ -10,3 +10,9 @@ variable "grafana_api_key" {
   default     = "eyJrIjoic0dTMEJtQzNhR2RKQ2lBdVpRYlNLMmYxY2h2RGYxYWUiLCJuIjoiZGVzdHJvdSIsImlkIjoxfQ=="
   sensitive   = true
 }
+
+variable "aws_region" {
+  description = "AWS Region"
+  type       = string
+  default    = "us-east-1"
+}
