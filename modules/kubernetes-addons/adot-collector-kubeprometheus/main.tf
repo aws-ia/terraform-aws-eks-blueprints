@@ -53,7 +53,7 @@ module "helm_addon" {
   helm_config = merge(
     {
       name        = local.name
-      chart       = "${path.module}/otel-config-adot"
+      chart       = "${path.module}/otel-config"
       version     = "0.2.0"
       namespace   = local.namespace
       description = "ADOT helm Chart deployment configuration"
