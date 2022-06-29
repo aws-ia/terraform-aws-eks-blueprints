@@ -22,7 +22,7 @@ variable "auto_scaling_group_names" {
 }
 
 variable "tags" {
-  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)".0
+  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
   type        = map(string)
   default     = {}
 }
@@ -862,4 +862,10 @@ variable "enable_adot_collector_kubeprometheus" {
   description = "Kube Stack"
   type        = bool
   default     = false
+}
+
+variable "adot_collector_kubeprometheus_helm_config" {
+  description = "ADOT Collector Kubeprom Helm Chart config"
+  type        = any
+  default     = {}
 }
