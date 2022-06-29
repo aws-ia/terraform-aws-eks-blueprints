@@ -125,10 +125,10 @@ module "eks_blueprints" {
       node_group_name = "managed-ondemand"
       instance_types  = ["m5.large"]
 
-      subnet_ids      = module.vpc.private_subnets
-      max_size        = 2
-      desired_size    = 1
-      min_size        = 1
+      subnet_ids   = module.vpc.private_subnets
+      max_size     = 2
+      desired_size = 1
+      min_size     = 1
       update_config = [{
         max_unavailable_percentage = 30
       }]
@@ -145,10 +145,10 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id           = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint     = module.eks_blueprints.eks_cluster_endpoint
-  eks_oidc_provider        = module.eks_blueprints.oidc_provider
-  eks_cluster_version      = module.eks_blueprints.eks_cluster_version
+  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
+  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
+  eks_oidc_provider    = module.eks_blueprints.oidc_provider
+  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
   enable_karpenter                    = true
   enable_aws_node_termination_handler = true
