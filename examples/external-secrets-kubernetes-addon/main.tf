@@ -187,7 +187,7 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 #---------------------------------------------------------------
-# External Secrets Operator - Secret 
+# External Secrets Operator - Secret
 #---------------------------------------------------------------
 
 module "cluster_secretstore_role" {
@@ -226,7 +226,7 @@ resource "aws_iam_policy" "cluster_secretstore" {
         "secretsmanager:DescribeSecret",
         "secretsmanager:ListSecretVersionIds"
       ],
-      "Resource": "*"
+      "Resource": "${aws_secretsmanager_secret.secret.arn}"
     },
     {
       "Effect": "Allow",
@@ -244,14 +244,14 @@ resource "kubectl_manifest" "cluster_secretstore" {
   yaml_body  = <<YAML
 apiVersion: external-secrets.io/v1beta1
 kind: ClusterSecretStore
-metadata: 
+metadata:
   name: ${local.cluster_secretstore_name}
-spec: 
+spec:
   provider:
-    aws: 
+    aws:
       service: SecretsManager
       region: ${data.aws_region.current.name}
-      auth: 
+      auth:
         jwt:
           serviceAccountRef:
             name: ${local.cluster_secretstore_sa}
@@ -346,15 +346,15 @@ resource "kubectl_manifest" "secretstore" {
   yaml_body  = <<YAML
 apiVersion: external-secrets.io/v1beta1
 kind: SecretStore
-metadata: 
+metadata:
   name: ${local.secretstore_name}
   namespace: ${local.namespace}
-spec: 
+spec:
   provider:
-    aws: 
+    aws:
       service: ParameterStore
       region: ${data.aws_region.current.name}
-      auth: 
+      auth:
         jwt:
           serviceAccountRef:
             name: ${local.secretstore_sa}

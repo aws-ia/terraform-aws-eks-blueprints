@@ -60,7 +60,7 @@ This following command used to update the `kubeconfig` in your local machine whe
     $ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 
 ### Step 6: List the secret resources in the `external-secrets` namespace
-  
+
     $ kubectl get externalsecrets -n external-secrets
     $ kubectl get secrets -n external-secrets
 
