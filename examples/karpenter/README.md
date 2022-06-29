@@ -6,9 +6,10 @@ This example shows how to deploy and leverage Karpenter for Autoscaling. The fol
 
 - Creates a new VPC, 3 Private Subnets and 3 Public Subnets
 - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
-- Creates EKS Cluster Control plane with one Self-managed node group with Max ASG of 1
+- Creates EKS Cluster Control plane with one Managed node group with Max ASG of 1
 - Deploys Karpenter Helm Chart
-- Deploys default Karpenter Provisioner
+- Deploys default Karpenter Provisioner (with dedicated node labels ant taint)
+- Deploys default-lt Karpenter Provisioner using Launch Template (with dedicated node labels ant taint)
 
 # How to Deploy
 
@@ -69,7 +70,7 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
 
 #### Step 6: List all the worker nodes by running the command below
 
-You should see one Self-managed node up and running
+You should see one managed node up and running
 
     $ kubectl get nodes
 
@@ -79,8 +80,44 @@ You should see one Self-managed node up and running
 
     # Output should look like below
       NAME                                    READY   STATUS    RESTARTS   AGE
-      karpenter-controller-5f959cdc44-8dmjb   1/1     Running   0          31m
-      karpenter-webhook-65f48f8d49-5hkpb      1/1     Running   0          31m
+      karpenter-68f999967f-m4t4n  1/1     Running   0          31m
+
+#### Step 8: List all karpenter provisioners deployed
+
+    $  kubectl get provisioners
+
+    # Output should look like below
+    NAME         AGE
+    default      88s
+    default-lt   90s
+
+#### Step 8: Deploy workload on Karpenter provisioners
+
+Terraform has configured 2 provisioners : `default` and `default-lt` and we have 2 deployment examples, to be deployed using thoses provisioners.
+
+Deploy workload on `default` provisioner:
+
+    $ kubectl apply -f provisioners/sample_deployment.yaml
+
+
+Deploy workload on `default-lt` provisioner:
+
+    $ kubectl apply -f provisioners/sample_deployment_lt.yaml
+
+After few times you should see 2 new nodes (one created by each provisioner)
+
+    $ kubectl get node -L karpenter.sh/provisioner-name
+
+    # Output should look like below
+    NAME                                        STATUS   ROLES    AGE     VERSION               PROVISIONER-NAME
+    ip-10-0-10-14.us-west-2.compute.internal    Ready    <none>   11m     v1.22.9-eks-810597c   default
+    ip-10-0-11-16.us-west-2.compute.internal    Ready    <none>   70m     v1.22.9-eks-810597c  
+    ip-10-0-12-138.us-west-2.compute.internal   Ready    <none>   4m57s   v1.22.9-eks-810597c   default-lt
+
+We now have :
+- 1 Managed node group instance
+- 1 instance from the default provisioner
+- 1 instance from the default-lt provisioner
 
 # How to Destroy
 

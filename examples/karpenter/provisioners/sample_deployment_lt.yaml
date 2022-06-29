@@ -1,15 +1,16 @@
+#Same deployment app but target Karpenter createed with the launch-template provisioner
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ecsdemo-nodejs
+  name: ecsdemo-nodejs-lt
   labels:
-    app: ecsdemo-nodejs
+    app: ecsdemo-nodejs-lt
   namespace: default
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: ecsdemo-nodejs
+      app: ecsdemo-nodejs-lt
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -18,12 +19,12 @@ spec:
   template:
     metadata:
       labels:
-        app: ecsdemo-nodejs
+        app: ecsdemo-nodejs-lt
     spec:
       containers:
         - image: brentley/ecsdemo-nodejs:latest
           imagePullPolicy: Always
-          name: ecsdemo-nodejs
+          name: ecsdemo-nodejs-lt
           ports:
             - containerPort: 3000
               protocol: TCP
@@ -34,11 +35,11 @@ spec:
             limits:
               memory: '512Mi'
               cpu: '1024m'
-      #Deploy this app on the Karpenter nodes created by the default provisioner
+      #Deploy this app on the Karpenter nodes created by the default-lt provisioner
       nodeSelector:
-        type: karpenter
-        provisioner: default
+        type: 'karpenter'
+        provisioner: 'default-lt'
       tolerations:
-        - key: 'default'
+        - key: 'default-lt'
           operator: 'Exists'
           effect: 'NoSchedule'
