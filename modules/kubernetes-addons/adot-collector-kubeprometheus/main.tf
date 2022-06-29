@@ -27,7 +27,7 @@ resource "helm_release" "kube_state_metrics" {
 resource "helm_release" "prometheus_node_exporter" {
   count            = var.enabled_node_exporter ? 1 : 0
   chart            = var.helm_chart_name_ne
-  create_namespace = var.helm_create_namespace
+  create_namespace = var.helm_create_namespace_ne
   namespace        = var.k8s_namespace_ne
   name             = var.helm_release_name_ne
   version          = var.helm_chart_version_ne
