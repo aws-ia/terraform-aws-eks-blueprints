@@ -27,6 +27,12 @@ variable "application_team_iam_policy" {
   default     = ""
 }
 
+variable "platform_team_iam_policy" {
+  description = "IAM policy for platform team IAM role"
+  type        = string
+  default     = ""
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
