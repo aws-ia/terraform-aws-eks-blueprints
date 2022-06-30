@@ -190,6 +190,10 @@ data "aws_region" "current" {}
 # External Secrets Operator - Secret
 #---------------------------------------------------------------
 
+resource "aws_kms_key" "secrets" {
+  enable_key_rotation = true
+}
+
 module "cluster_secretstore_role" {
   source                      = "../../modules/irsa"
   kubernetes_namespace        = local.namespace
@@ -233,7 +237,7 @@ resource "aws_iam_policy" "cluster_secretstore" {
       "Action": [
         "kms:Decrypt"
       ],
-      "Resource": "*"
+      "Resource": "${aws_kms_key.secrets.arn}"
     }
   ]
 }
@@ -261,7 +265,9 @@ YAML
 }
 
 resource "aws_secretsmanager_secret" "secret" {
-  name = local.name
+  name                    = local.name
+  recovery_window_in_days = 0
+  kms_key_id              = aws_kms_key.secrets.arn
 }
 
 resource "aws_secretsmanager_secret_version" "secret" {
@@ -335,7 +341,7 @@ resource "aws_iam_policy" "secretstore" {
       "Action": [
         "kms:Decrypt"
       ],
-      "Resource": "*"
+      "Resource": "${aws_kms_key.secrets.arn}"
     }
   ]
 }
@@ -369,6 +375,7 @@ resource "aws_ssm_parameter" "secret_parameter" {
     username = "secretuser",
     password = "secretpassword"
   })
+  key_id = aws_kms_key.secrets.arn
 }
 
 
