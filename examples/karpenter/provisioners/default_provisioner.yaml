@@ -19,4 +19,11 @@ spec:
       Name: "${eks-vpc_name}-private*"
     securityGroupSelector:
       karpenter.sh/discovery/${eks-cluster-id}: '${eks-cluster-id}'
+  labels:
+    type: karpenter
+    provisioner: default
+  taints:
+    - key: default
+      value: 'true'
+      effect: NoSchedule
   ttlSecondsAfterEmpty: 120
