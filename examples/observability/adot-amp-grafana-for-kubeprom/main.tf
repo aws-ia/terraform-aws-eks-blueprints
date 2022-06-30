@@ -971,7 +971,7 @@ module "managed_prometheus" {
               labels:
                  severity: info
               annotations:
-                description: {{ $value | humanizePercentage }} throttling of CPU in namespace {{ $labels.namespace }} for container {{ $labels.container }} in pod {{ $labels.pod }}.
+                description: The {{ $value | humanizePercentage }} throttling of CPU in namespace {{ $labels.namespace }} for container {{ $labels.container }} in pod {{ $labels.pod }}.
                 summary: Processes experience elevated CPU throttling.                               
 
       EOT                                     
