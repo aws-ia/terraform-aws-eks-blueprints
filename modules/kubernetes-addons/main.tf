@@ -435,3 +435,10 @@ module "adot_collector_nginx" {
     module.opentelemetry_operator
   ]
 }
+
+module "ray_operator" {
+  count         = var.enable_ray_operator ? 1 : 0
+  source        = "./ray-operator"
+  helm_config   = var.ray_operator_helm_config
+  addon_context = local.addon_context
+}

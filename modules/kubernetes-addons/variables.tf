@@ -889,3 +889,16 @@ variable "secrets_store_csi_driver_helm_config" {
   default     = null
   description = "CSI Secrets Store Provider Helm Configurations"
 }
+
+#-----------RAY OPERATOR-------------
+variable "enable_ray_operator" {
+  description = "Enable Ray Operator add-on"
+  type        = bool
+  default     = false
+}
+
+variable "ray_operator_helm_config" {
+  description = "Ray Operator Helm Chart config"
+  type        = any
+  default     = {}
+}
