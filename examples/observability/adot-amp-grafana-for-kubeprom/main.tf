@@ -988,7 +988,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                description: Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) is in waiting state (reason: "CrashLoopBackOff").
+                description: Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) is in waiting state (reason:"CrashLoopBackOff").
                 summary: Pod is crash looping.
         - name: kubeapps-02
           rules:
@@ -1078,7 +1078,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                description: {{ $value }} Pods of DaemonSet {{ $labels.namespace }}/{{ $labels.daemonset }} are not scheduled.
+                description: The {{ $value }} Pods of DaemonSet {{ $labels.namespace }}/{{ $labels.daemonset }} are not scheduled.
                 summary: DaemonSet pods are not scheduled.
         - name: kubeapps-11
           rules:
@@ -1088,7 +1088,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                description: {{ $value }} Pods of DaemonSet {{ $labels.namespace }}/{{ $labels.daemonset }} are running where they are not supposed to run.
+                description: The {{ $value }} Pods of DaemonSet {{ $labels.namespace }}/{{ $labels.daemonset }} are running where they are not supposed to run.
                 summary: DaemonSet pods are misscheduled.
         - name: kubeapps-12
           rules:
