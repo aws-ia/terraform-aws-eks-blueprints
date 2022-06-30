@@ -136,6 +136,10 @@ The below example demonstrates advanced configuration options for a managed node
           Name        = "m4-on-demand"
           subnet_type = "private"
         }
+        launch_template_tags = {
+          SomeAwsProviderDefaultTag1: "TRUE"
+          SomeAwsProviderDefaultTag2: "TRUE"
+        }
       }
     }
 ```
@@ -189,6 +193,10 @@ The below example demonstrates advanced configuration options using GPU instance
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
+      launch_template_tags = {
+        SomeAwsProviderDefaultTag1: "TRUE"
+        SomeAwsProviderDefaultTag2: "TRUE"
+      }
     }
 
     #---------------------------------------------------------#
@@ -236,6 +244,10 @@ The below example demonstrates advanced configuration options using GPU instance
         Name        = "m6g-on-demand"
         subnet_type = "private"
       }
+      launch_template_tags = {
+        SomeAwsProviderDefaultTag1: "TRUE"
+        SomeAwsProviderDefaultTag2: "TRUE"
+      }
     }
 
     #---------------------------------------------------------#
@@ -274,6 +286,10 @@ The below example demonstrates advanced configuration options using GPU instance
         ExtraTag    = "m6g-on-demand"
         Name        = "m6g-on-demand"
         subnet_type = "private"
+      }
+      launch_template_tags = {
+        SomeAwsProviderDefaultTag1: "TRUE"
+        SomeAwsProviderDefaultTag2: "TRUE"
       }
     }
 
@@ -319,6 +335,10 @@ The below example demonstrates advanced configuration options using GPU instance
         ExtraTag    = "m5x-on-demand"
         Name        = "m5x-on-demand"
         subnet_type = "private"
+      }
+      launch_template_tags = {
+        SomeAwsProviderDefaultTag1: "TRUE"
+        SomeAwsProviderDefaultTag2: "TRUE"
       }
     }
 
@@ -402,6 +422,10 @@ The below example demonstrates advanced configuration options using GPU instance
         ExtraTag    = "mng-custom-ami"
         Name        = "mng-custom-ami"
         subnet_type = "private"
+      }
+      launch_template_tags = {
+        SomeAwsProviderDefaultTag1: "TRUE"
+        SomeAwsProviderDefaultTag2: "TRUE"
       }
     }
 ```
@@ -554,6 +578,10 @@ The below example demonstrates advanced configuration options for a self-managed
           ExtraTag    = "m5x-on-demand"
           Name        = "m5x-on-demand"
           subnet_type = "private"
+        }
+        launch_template_tags = {
+          SomeAwsProviderDefaultTag1: "TRUE"
+          SomeAwsProviderDefaultTag2: "TRUE"
         }
         additional_iam_policies = []
       },
