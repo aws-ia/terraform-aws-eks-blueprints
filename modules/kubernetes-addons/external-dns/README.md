@@ -43,6 +43,7 @@ For complete project documentation, please visit the [ExternalDNS Github reposit
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | External DNS Helm Configuration | `any` | `{}` | no |
 | <a name="input_irsa_policies"></a> [irsa\_policies](#input\_irsa\_policies) | Additional IAM policies used for the add-on service account. | `list(string)` | n/a | yes |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
+| <a name="input_private_zone"></a> [private\_zone](#input\_private\_zone) | Determines if referenced Route53 hosted zone is private. | `bool` | `false` | no |
 
 ## Outputs
 

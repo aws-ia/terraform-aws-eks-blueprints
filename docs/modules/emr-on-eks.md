@@ -13,6 +13,7 @@ This module deploys the necessary resources to run EMR Spark Jobs on EKS Cluster
 
 [EMR on EKS](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/emr-on-eks) can be deployed by enabling the module via the following.
 
+Checkout this [Blog](https://aws.amazon.com/blogs/mt/monitoring-amazon-emr-on-eks-with-amazon-managed-prometheus-and-amazon-managed-grafana/) to setup Observability for EMR on EKS Spark Jobs
 
 ```hcl
     #---------------------------------------

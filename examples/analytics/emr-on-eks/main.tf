@@ -30,17 +30,23 @@ provider "helm" {
 
 data "aws_availability_zones" "available" {}
 
-locals {
-  name   = basename(path.cwd)
-  region = "us-west-2"
+data "aws_region" "current" {}
 
-  vpc_cidr = "10.0.0.0/16"
+data "aws_caller_identity" "current" {}
+
+data "aws_partition" "current" {}
+
+locals {
+  name   = var.name
+  region = var.region
+
+  vpc_cidr = var.vpc_cidr
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  tags = {
+  tags = merge(var.tags, {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
-  }
+  })
 }
 
 #---------------------------------------------------------------
@@ -50,18 +56,149 @@ module "eks_blueprints" {
   source = "../../.."
 
   cluster_name    = local.name
-  cluster_version = "1.22"
+  cluster_version = var.eks_cluster_version
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
-  managed_node_groups = {
-    mg_5 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m5.xlarge"]
-      min_size        = 3
-      subnet_ids      = module.vpc.private_subnets
+  cluster_endpoint_private_access = true # if true, Kubernetes API requests within your cluster's VPC (such as node to control plane communication) use the private VPC endpoint
+  cluster_endpoint_public_access  = true # if true, Your cluster API server is accessible from the internet. You can, optionally, limit the CIDR blocks that can access the public endpoint.
+
+  #---------------------------------------
+  # Note: This can further restricted to specific required for each Add-on and your application
+  #---------------------------------------
+  node_security_group_additional_rules = {
+    # Extend node-to-node security group rules. Recommended and required for the Add-ons
+    ingress_self_all = {
+      description = "Node to node all ports/protocols"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      self        = true
     }
+    # Recommended outbound traffic for Node groups
+    egress_all = {
+      description      = "Node all egress"
+      protocol         = "-1"
+      from_port        = 0
+      to_port          = 0
+      type             = "egress"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+    }
+    # Allows Control Plane Nodes to talk to Worker nodes on all ports. Added this to simplify the example and further avoid issues with Add-ons communication with Control plane.
+    # This can be restricted further to specific port based on the requirement for each Add-on e.g., metrics-server 4443, spark-operator 8080, karpenter 8443 etc.
+    # Change this according to your security requirements if needed
+    ingress_cluster_to_node_all_traffic = {
+      description                   = "Cluster API to Nodegroup all traffic"
+      protocol                      = "-1"
+      from_port                     = 0
+      to_port                       = 0
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
+  }
+
+  managed_node_groups = {
+    # Core node group for deploying all the critical add-ons
+    mng1 = {
+      node_group_name = "core-node-grp"
+      subnet_ids      = module.vpc.private_subnets
+
+      instance_types = ["m5.xlarge"]
+      ami_type       = "AL2_x86_64"
+      capacity_type  = "ON_DEMAND"
+
+      disk_size = 100
+      disk_type = "gp3"
+
+      max_size               = 9
+      min_size               = 3
+      desired_size           = 3
+      create_launch_template = true
+      launch_template_os     = "amazonlinux2eks"
+
+      update_config = [{
+        max_unavailable_percentage = 50
+      }]
+
+      k8s_labels = {
+        Environment   = "preprod"
+        Zone          = "test"
+        WorkerType    = "ON_DEMAND"
+        NodeGroupType = "core"
+      }
+
+      additional_tags = {
+        Name                                                             = "core-node-grp"
+        subnet_type                                                      = "private"
+        "k8s.io/cluster-autoscaler/node-template/label/arch"             = "x86"
+        "k8s.io/cluster-autoscaler/node-template/label/kubernetes.io/os" = "linux"
+        "k8s.io/cluster-autoscaler/node-template/label/noderole"         = "core"
+        "k8s.io/cluster-autoscaler/node-template/label/node-lifecycle"   = "on-demand"
+        "k8s.io/cluster-autoscaler/experiments"                          = "owned"
+        "k8s.io/cluster-autoscaler/enabled"                              = "true"
+      }
+    },
+    #---------------------------------------
+    # Note: This example only uses ON_DEMAND node group for both Spark Driver and Executors.
+    #   If you want to leverage SPOT nodes for Spark executors then create ON_DEMAND node group for placing your driver pods and SPOT nodegroup for executors.
+    #   Use NodeSelectors to place your driver/executor pods with the help of Pod Templates.
+    #---------------------------------------
+    mng2 = {
+      node_group_name = "spark-node-grp"
+      subnet_ids      = module.vpc.private_subnets
+      instance_types  = ["r5d.large"]
+      ami_type        = "AL2_x86_64"
+      capacity_type   = "ON_DEMAND"
+
+      format_mount_nvme_disk = true # Mounts NVMe disks to /local1, /local2 etc. for multiple NVMe disks
+
+      # RAID0 configuration is recommended for better performance when you use larger instances with multiple NVMe disks e.g., r5d.24xlarge
+      # Permissions can further be restricted to the mounted folder for only Spark execution user
+      post_userdata = <<-EOT
+        #!/bin/bash
+        set -ex
+        /usr/bin/chmod 777 /local1
+      EOT
+
+      disk_size = 100
+      disk_type = "gp3"
+
+      max_size     = 9 # Managed node group soft limit is 450; request AWS for limit increase
+      min_size     = 3
+      desired_size = 3
+
+      create_launch_template = true
+      launch_template_os     = "amazonlinux2eks"
+
+      update_config = [{
+        max_unavailable_percentage = 50
+      }]
+
+      additional_iam_policies = []
+      k8s_taints              = []
+
+      k8s_labels = {
+        Environment   = "preprod"
+        Zone          = "test"
+        WorkerType    = "ON_DEMAND"
+        NodeGroupType = "spark"
+      }
+
+      additional_tags = {
+        Name                                                             = "spark-node-grp"
+        subnet_type                                                      = "private"
+        "k8s.io/cluster-autoscaler/node-template/label/arch"             = "x86"
+        "k8s.io/cluster-autoscaler/node-template/label/kubernetes.io/os" = "linux"
+        "k8s.io/cluster-autoscaler/node-template/label/noderole"         = "spark"
+        "k8s.io/cluster-autoscaler/node-template/label/disk"             = "nvme"
+        "k8s.io/cluster-autoscaler/node-template/label/node-lifecycle"   = "on-demand"
+        "k8s.io/cluster-autoscaler/experiments"                          = "owned"
+        "k8s.io/cluster-autoscaler/enabled"                              = "true"
+      }
+    },
   }
 
   #---------------------------------------
@@ -74,12 +211,12 @@ module "eks_blueprints" {
   #---------------------------------------
   enable_emr_on_eks = true
   emr_on_eks_teams = {
-    emr-team-a = {
+    emr-data-team-a = {
       namespace               = "emr-data-team-a"
       job_execution_role      = "emr-eks-data-team-a"
       additional_iam_policies = [aws_iam_policy.emr_on_eks.arn]
     }
-    emr-team-b = {
+    emr-data-team-b = {
       namespace               = "emr-data-team-b"
       job_execution_role      = "emr-eks-data-team-b"
       additional_iam_policies = [aws_iam_policy.emr_on_eks.arn]
@@ -96,40 +233,109 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-  # Add-ons
-  enable_metrics_server     = true
-  enable_cluster_autoscaler = true
+  #---------------------------------------
+  # Amazon EKS Managed Add-ons
+  #---------------------------------------
+  enable_amazon_eks_vpc_cni    = true
+  enable_amazon_eks_coredns    = true
+  enable_amazon_eks_kube_proxy = true
 
+  #---------------------------------------------------------
+  # CoreDNS Autoscaler helps to scale for large EKS Clusters
+  #   Further tuning for CoreDNS is to leverage NodeLocal DNSCache -> https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/
+  #---------------------------------------------------------
+  enable_coredns_autoscaler = true
+  coredns_autoscaler_helm_config = {
+    name       = "cluster-proportional-autoscaler"
+    chart      = "cluster-proportional-autoscaler"
+    repository = "https://kubernetes-sigs.github.io/cluster-proportional-autoscaler"
+    version    = "1.0.0"
+    namespace  = "kube-system"
+    timeout    = "300"
+    values = [templatefile("${path.module}/helm-values/coredns-autoscaler-values.yaml", {
+      operating_system = "linux"
+      target           = "deployment/coredns"
+    })]
+    description = "Cluster Proportional Autoscaler for CoreDNS Service"
+  }
+
+  #---------------------------------------
+  # Metrics Server
+  #---------------------------------------
+  enable_metrics_server = true
+  metrics_server_helm_config = {
+    name       = "metrics-server"
+    repository = "https://kubernetes-sigs.github.io/metrics-server/" # (Optional) Repository URL where to locate the requested chart.
+    chart      = "metrics-server"
+    version    = "3.8.2"
+    namespace  = "kube-system"
+    timeout    = "300"
+    values = [templatefile("${path.module}/helm-values/metrics-server-values.yaml", {
+      operating_system = "linux"
+    })]
+  }
+
+  #---------------------------------------
+  # Cluster Autoscaler
+  #---------------------------------------
+  enable_cluster_autoscaler = true
+  cluster_autoscaler_helm_config = {
+    name       = "cluster-autoscaler"
+    repository = "https://kubernetes.github.io/autoscaler" # (Optional) Repository URL where to locate the requested chart.
+    chart      = "cluster-autoscaler"
+    version    = "9.15.0"
+    namespace  = "kube-system"
+    timeout    = "300"
+    values = [templatefile("${path.module}/helm-values/cluster-autoscaler-values.yaml", {
+      aws_region       = var.region,
+      eks_cluster_id   = local.name,
+      operating_system = "linux"
+    })]
+  }
+
+  #---------------------------------------
+  # Amazon Managed Prometheus
+  #---------------------------------------
   enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = aws_prometheus_workspace.amp.prometheus_endpoint
 
+  #---------------------------------------
+  # Prometheus Server Add-on
+  #---------------------------------------
   enable_prometheus = true
   prometheus_helm_config = {
     name       = "prometheus"
     repository = "https://prometheus-community.github.io/helm-charts"
     chart      = "prometheus"
-    version    = "15.3.0"
+    version    = "15.10.1"
     namespace  = "prometheus"
-    values = [templatefile("${path.module}/helm_values/prometheus-values.yaml", {
+    timeout    = "300"
+    values = [templatefile("${path.module}/helm-values/prometheus-values.yaml", {
       operating_system = "linux"
     })]
   }
 
+  #---------------------------------------
+  # Vertical Pod Autoscaling
+  #---------------------------------------
   enable_vpa = true
   vpa_helm_config = {
     name       = "vpa"
-    repository = "https://charts.fairwinds.com/stable"
+    repository = "https://charts.fairwinds.com/stable" # (Optional) Repository URL where to locate the requested chart.
     chart      = "vpa"
-    version    = "1.0.0"
+    version    = "1.4.0"
     namespace  = "vpa"
-    values     = [templatefile("${path.module}/helm_values/vpa-values.yaml", {})]
+    timeout    = "300"
+    values = [templatefile("${path.module}/helm-values/vpa-values.yaml", {
+      operating_system = "linux"
+    })]
   }
 
   tags = local.tags
 }
 
 #---------------------------------------------------------------
-# Supporting Resources
+# VPC and Subnets
 #---------------------------------------------------------------
 
 module "vpc" {
@@ -165,14 +371,25 @@ module "vpc" {
     "kubernetes.io/role/internal-elb"     = 1
   }
 
+  default_security_group_name = "${local.name}-endpoint-secgrp"
+
+  default_security_group_ingress = [
+    {
+      protocol    = -1
+      from_port   = 0
+      to_port     = 0
+      cidr_blocks = local.vpc_cidr
+  }]
+  default_security_group_egress = [
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = -1
+      cidr_blocks = "0.0.0.0/0"
+  }]
+
   tags = local.tags
 }
-
-data "aws_region" "current" {}
-
-data "aws_caller_identity" "current" {}
-
-data "aws_partition" "current" {}
 
 #---------------------------------------------------------------
 # Example IAM policies for EMR job execution
@@ -184,11 +401,11 @@ data "aws_iam_policy_document" "emr_on_eks" {
     resources = ["arn:${data.aws_partition.current.partition}:s3:::*"]
 
     actions = [
-      "s3:PutObject",
+      "s3:DeleteObject",
+      "s3:DeleteObjectVersion",
       "s3:GetObject",
       "s3:ListBucket",
-      "s3:DeleteObject",
-      "s3:DeleteObjectVersion"
+      "s3:PutObject",
     ]
   }
 
@@ -198,10 +415,11 @@ data "aws_iam_policy_document" "emr_on_eks" {
     resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*"]
 
     actions = [
-      "logs:PutLogEvents",
+      "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:DescribeLogGroups",
       "logs:DescribeLogStreams",
+      "logs:PutLogEvents",
     ]
   }
 }
@@ -220,4 +438,22 @@ resource "aws_prometheus_workspace" "amp" {
   alias = format("%s-%s", "amp-ws", local.name)
 
   tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Create EMR on EKS Virtual Cluster
+#---------------------------------------------------------------
+resource "aws_emrcontainers_virtual_cluster" "this" {
+  name = format("%s-%s", module.eks_blueprints.eks_cluster_id, "emr-data-team-a")
+
+  container_provider {
+    id   = module.eks_blueprints.eks_cluster_id
+    type = "EKS"
+
+    info {
+      eks_info {
+        namespace = "emr-data-team-a"
+      }
+    }
+  }
 }

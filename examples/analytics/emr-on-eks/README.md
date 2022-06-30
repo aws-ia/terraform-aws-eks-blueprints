@@ -2,9 +2,10 @@
 
 This example deploys the following resources
 
-- Creates EKS Cluster Control plane with public endpoint (for demo purpose only) with one managed node group
-- Deploys Metrics server, Cluster Autoscaler, Prometheus and EMR on EKS Addon
-- Creates Amazon managed Prometheus and configures Prometheus addon to remote write metrics to AMP
+- Creates EKS Cluster Control plane with public endpoint (for demo purpose only) with two managed node groups
+- Deploys Metrics server with HA, Cluster Autoscaler, Prometheus, VPA, CoreDNS Autoscaler
+- EMR on EKS Teams and EMR Virtual cluster for `emr-data-team-a`
+- Creates Amazon managed Prometheus Endpoint and configures Prometheus Server addon with remote write configuration to Amazon Managed Prometheus
 
 ## Prerequisites:
 
@@ -14,9 +15,9 @@ Ensure that you have installed the following tools on your machine.
 2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
-_Note: Currently Amazon Prometheus supported only in selected regions. Please see this [userguide](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html) for supported regions._
+_Note: Currently Amazon Managed Prometheus supported only in selected regions. Please see this [userguide](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html) for supported regions._
 
-## Step 1: Deploy EKS Clusters with EMR on EKS feature
+## Deploy EKS Clusters with EMR on EKS feature
 
 Clone the repository
 
@@ -46,22 +47,22 @@ terraform apply
 
 Enter `yes` to apply.
 
-## Step 3: Verify the resources
+## Verify the resources
 
 Let’s verify the resources created by Step 4.
 
 Verify the Amazon EKS Cluster and Amazon Managed service for Prometheus
 
 ```sh
-aws eks describe-cluster --name aws001-preprod-test-eks
+aws eks describe-cluster --name emr-on-eks
 
-aws amp list-workspaces --alias amp-ws-aws001-preprod-test-eks
+aws amp list-workspaces --alias amp-ws-emr-on-eks
 ```
 
 ```sh
 Verify EMR on EKS Namespaces emr-data-team-a and emr-data-team-b and Pod status for Prometheus, Vertical Pod Autoscaler, Metrics Server and Cluster Autoscaler.
 
-aws eks --region <ENTER_YOUR_REGION> update-kubeconfig --name aws001-preprod-test-eks # Creates k8s config file to authenticate with EKS Cluster
+aws eks --region <ENTER_YOUR_REGION> update-kubeconfig --name emr-on-eks # Creates k8s config file to authenticate with EKS Cluster
 
 kubectl get nodes # Output shows the EKS Managed Node group nodes
 
@@ -76,41 +77,20 @@ kubectl get pods --namespace=kube-system | grep  metrics-server # Output shows M
 kubectl get pods --namespace=kube-system | grep  cluster-autoscaler # Output shows Cluster Autoscaler pod
 ```
 
-## Step 4: Create EMR Virtual Cluster for EKS
-
-We are using AWS CLI to create EMR on EKS Clusters. You can leverage Terraform Module once the [EMR on EKS TF provider](https://github.com/hashicorp/terraform-provider-aws/pull/20003) is available.
-
-```sh
-vi examples/analytics/emr-on-eks/examples/create_emr_virtual_cluster_for_eks.sh
-```
-
-Update the following variables.
-
-Extract the cluster_name as **EKS_CLUSTER_ID** from Terraform Outputs (**Step 1**)
-**EMR_ON_EKS_NAMESPACE** is same as what you passed from **Step 1**
-
-    EKS_CLUSTER_ID='aws001-preprod-test-eks'
-    EMR_ON_EKS_NAMESPACE='emr-data-team-a'
-
-Execute the shell script to create virtual cluster
-
-```sh
-cd examples/analytics/emr-on-eks/examples/
-./create_emr_virtual_cluster_for_eks.sh
-```
-
-## Step 5: Execute Spark job on EMR Virtual Cluster
+## Execute Spark job on EMR Virtual Cluster
 
 Execute the Spark job using the below shell script.
 
-This script requires two input parameters.
+This script requires three input parameters which can be extracted from `terraform apply` output values
 
-    EMR_VIRTUAL_CLUSTER_ID=$1  # EMR Cluster ID e.g., aws001-preprod-test-eks-emr-data-team-a
-    S3_BUCKET=$2               # S3 bucket for storing the scripts and spark output data e.g., s3://<bucket-name>
+    EMR_VIRTUAL_CLUSTER_ID=$1     # Terraform output variable is emrcontainers_virtual_cluster_id
+    S3_BUCKET=$2                  # This script requires s3 bucket as input parameter e.g., s3://<bucket-name>
+    EMR_JOB_EXECUTION_ROLE_ARN=$3 # Terraform output variable is emr_on_eks_role_arn
 
 ```sh
 cd examples/analytics/emr-on-eks/examples/spark-execute/
-./5-spark-job-with-AMP-AMG.sh aws001-preprod-test-eks-emr-data-team-a <ENTER_S3_BUCKET_NAME>
+
+./spark-job-with-AMP-AMG.sh "<ENTER_EMR_VIRTUAL_CLUSTER_ID>" "s3://<ENTER-YOUR-BUCKET-NAME>" "<EMR_JOB_EXECUTION_ROLE_ARN>"
 ```
 
 Verify the job execution
@@ -119,7 +99,7 @@ Verify the job execution
 kubectl get pods --namespace=emr-data-team-a -w
 ```
 
-## Step 6: Cleanup
+## Cleanup
 
 ### Delete EMR Virtual Cluster for EKS
 
@@ -150,13 +130,11 @@ terraform destroy -auto-approve
 
 Add these to `applicationConfiguration`.`properties`
 
-          "spark.kubernetes.node.selector.topology.kubernetes.io/zone":"<availability zone>",
-          "spark.kubernetes.node.selector.node.kubernetes.io/instance-type":"<instance type>"
+    "spark.kubernetes.node.selector.topology.kubernetes.io/zone":"<availability zone>",
+    "spark.kubernetes.node.selector.node.kubernetes.io/instance-type":"<instance type>"
 
 ### JDBC example
-
 In this example we are connecting to mysql db, so mariadb-connector-java.jar needs to be passed with --jars option
-https://aws.github.io/aws-emr-containers-best-practices/metastore-integrations/docs/hive-metastore/
 
       "sparkSubmitJobDriver": {
       "entryPoint": "s3://<s3 prefix>/hivejdbc.py",
@@ -172,7 +150,6 @@ https://aws.github.io/aws-emr-containers-best-practices/metastore-integrations/d
     }
 
 ### Storage
-
 Spark supports using volumes to spill data during shuffles and other operations.
 To use a volume as local storage, the volume’s name should starts with spark-local-dir-,
 for example:
@@ -190,7 +167,6 @@ Specifically, you can use persistent volume claims if the jobs require large shu
       spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.mount.readOnly=false
 
 ## Debugging
-
 ##### Issue1: Error: local-exec provisioner error
 
 ```sh
@@ -198,7 +174,7 @@ Error: local-exec provisioner error \
 with module.eks-blueprints.module.emr_on_eks["data_team_b"].null_resource.update_trust_policy,\
  on .terraform/modules/eks-blueprints/modules/emr-on-eks/main.tf line 105, in resource "null_resource" \
  "update_trust_policy":│ 105: provisioner "local-exec" {│ │ Error running command 'set -e│ │ aws emr-containers update-role-trust-policy \
- │ --cluster-name aws001-preprod-test-eks \│ --namespace emr-data-team-b \│ --role-name aws001-preprod-test-eks-emr-eks-data-team-b
+ │ --cluster-name emr-on-eks \│ --namespace emr-data-team-b \│ --role-name emr-on-eks-emr-eks-data-team-b
 ```
 
 ##### Solution :
