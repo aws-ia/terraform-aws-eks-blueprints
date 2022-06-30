@@ -296,7 +296,7 @@ module "managed_prometheus" {
       groups:
         - name: noderules-01
           rules:
-            - record: node_namespace_pod:kube_pod_info:
+            - record: "node_namespace_pod:kube_pod_info:"
               expr: topk by(cluster, namespace, pod) (1, max by(cluster, node, namespace, pod) (label_replace(kube_pod_info{job="kube-state-metrics",node!=""}, "pod", "$1", "pod", "(.*)")))
         - name: noderules-02
           rules:
