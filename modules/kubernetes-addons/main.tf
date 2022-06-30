@@ -320,6 +320,21 @@ module "yunikorn" {
   addon_context     = local.addon_context
 }
 
+module "csi_secrets_store_provider_aws" {
+  count             = var.enable_secrets_store_csi_driver_provider_aws ? 1 : 0
+  source            = "./csi-secrets-store-provider-aws"
+  helm_config       = var.csi_secrets_store_provider_aws_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "secrets_store_csi_driver" {
+  count             = var.enable_secrets_store_csi_driver ? 1 : 0
+  source            = "./secrets-store-csi-driver"
+  helm_config       = var.secrets_store_csi_driver_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
 module "aws_privateca_issuer" {
   count                   = var.enable_aws_privateca_issuer ? 1 : 0
   source                  = "./aws-privateca-issuer"

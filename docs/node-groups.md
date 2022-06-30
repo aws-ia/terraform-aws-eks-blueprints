@@ -196,7 +196,7 @@ The below example demonstrates advanced configuration options using GPU instance
     #---------------------------------------------------------#
     arm = {
       # 1> Node Group configuration - Part1
-      node_group_name        = "arm-mg5"         # Max 40 characters for node group name
+      node_group_name        = "arm-m6g-2vcpu-8gb"         # Max 40 characters for node group name
       create_launch_template = true              # false will use the default launch template
       launch_template_os     = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
       public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
@@ -213,7 +213,7 @@ The below example demonstrates advanced configuration options using GPU instance
       # 3> Node Group compute configuration
       ami_type       = "AL2_ARM_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
       capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
-      instance_types = ["m5.large"] # List of instances to get capacity from multipe pools
+      instance_types = ["m6g.large"] # List of instances to get capacity from multipe pools
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
@@ -232,8 +232,8 @@ The below example demonstrates advanced configuration options using GPU instance
         WorkerType  = "ON_DEMAND"
       }
       additional_tags = {
-        ExtraTag    = "m5x-on-demand"
-        Name        = "m5x-on-demand"
+        ExtraTag    = "m6g-on-demand"
+        Name        = "m6g-on-demand"
         subnet_type = "private"
       }
     }
@@ -257,7 +257,7 @@ The below example demonstrates advanced configuration options using GPU instance
       # 3> Node Group compute configuration
       ami_type       = "BOTTLEROCKET_ARM_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
       capacity_type  = "ON_DEMAND"           # ON_DEMAND or SPOT
-      instance_types = ["m5.large"]          # List of instances to get capacity from multipe pools
+      instance_types = ["m6g.large"]          # List of instances to get capacity from multipe pools
       disk_size      = 50
 
       # 4> Node Group network configuration
@@ -271,8 +271,8 @@ The below example demonstrates advanced configuration options using GPU instance
         WorkerType  = "ON_DEMAND"
       }
       additional_tags = {
-        ExtraTag    = "m5x-on-demand"
-        Name        = "m5x-on-demand"
+        ExtraTag    = "m6g-on-demand"
+        Name        = "m6g-on-demand"
         subnet_type = "private"
       }
     }
