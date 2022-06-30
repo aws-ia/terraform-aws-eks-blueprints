@@ -591,7 +591,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                description: {{ $labels.node }} has been unready for more than 15 minutes.
+                description: The {{ $labels.node }} has been unready for more than 15 minutes.
                 summary: Node is not ready.
         - name: kubesyskblt-02
           rules:
@@ -601,7 +601,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                description: {{ $labels.node }} is unreachable and some workloads may be rescheduled.
+                description: The {{ $labels.node }} is unreachable and some workloads may be rescheduled.
                 summary: Node is unreachable.
         - name: kubesyskblt-03
           rules:
