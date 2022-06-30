@@ -46,5 +46,8 @@ Helm Addon module can be used to provision a generic Helm Chart as an Add-On for
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_helm_release_addon"></a> [helm\_release\_addon](#output\_helm\_release\_addon) | Describes the desired status of a chart in a kubernetes cluster. |
+
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
