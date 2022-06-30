@@ -1488,7 +1488,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                description: {{ printf "%.4g" $value }}% of the {{ $labels.job }}/{{ $labels.service }} targets in {{ $labels.namespace }} namespace are down.
+                description: The {{ printf "%.4g" $value }}% of the {{ $labels.job }}/{{ $labels.service }} targets in {{ $labels.namespace }} namespace are down.
         - name: general-02
           rules:
             - alert: Watchdog
