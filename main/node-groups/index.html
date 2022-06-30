@@ -1263,6 +1263,10 @@ The authenticator gets its configuration information from the <code>aws-auth</co
           Name        = &quot;m4-on-demand&quot;
           subnet_type = &quot;private&quot;
         }
+        launch_template_tags = {
+          SomeAwsProviderDefaultTag1: &quot;TRUE&quot;
+          SomeAwsProviderDefaultTag2: &quot;TRUE&quot;
+        }
       }
     }
 </code></pre></div>
@@ -1313,6 +1317,10 @@ The authenticator gets its configuration information from the <code>aws-auth</co
         Name        = &quot;m5x-on-demand&quot;
         subnet_type = &quot;private&quot;
       }
+      launch_template_tags = {
+        SomeAwsProviderDefaultTag1: &quot;TRUE&quot;
+        SomeAwsProviderDefaultTag2: &quot;TRUE&quot;
+      }
     }
 
     #---------------------------------------------------------#
@@ -1360,6 +1368,10 @@ The authenticator gets its configuration information from the <code>aws-auth</co
         Name        = &quot;m6g-on-demand&quot;
         subnet_type = &quot;private&quot;
       }
+      launch_template_tags = {
+        SomeAwsProviderDefaultTag1: &quot;TRUE&quot;
+        SomeAwsProviderDefaultTag2: &quot;TRUE&quot;
+      }
     }
 
     #---------------------------------------------------------#
@@ -1398,6 +1410,10 @@ The authenticator gets its configuration information from the <code>aws-auth</co
         ExtraTag    = &quot;m6g-on-demand&quot;
         Name        = &quot;m6g-on-demand&quot;
         subnet_type = &quot;private&quot;
+      }
+      launch_template_tags = {
+        SomeAwsProviderDefaultTag1: &quot;TRUE&quot;
+        SomeAwsProviderDefaultTag2: &quot;TRUE&quot;
       }
     }
 
@@ -1443,6 +1459,10 @@ The authenticator gets its configuration information from the <code>aws-auth</co
         ExtraTag    = &quot;m5x-on-demand&quot;
         Name        = &quot;m5x-on-demand&quot;
         subnet_type = &quot;private&quot;
+      }
+      launch_template_tags = {
+        SomeAwsProviderDefaultTag1: &quot;TRUE&quot;
+        SomeAwsProviderDefaultTag2: &quot;TRUE&quot;
       }
     }
 
@@ -1526,6 +1546,10 @@ The authenticator gets its configuration information from the <code>aws-auth</co
         ExtraTag    = &quot;mng-custom-ami&quot;
         Name        = &quot;mng-custom-ami&quot;
         subnet_type = &quot;private&quot;
+      }
+      launch_template_tags = {
+        SomeAwsProviderDefaultTag1: &quot;TRUE&quot;
+        SomeAwsProviderDefaultTag2: &quot;TRUE&quot;
       }
     }
 </code></pre></div>
@@ -1661,6 +1685,10 @@ The authenticator gets its configuration information from the <code>aws-auth</co
           ExtraTag    = &quot;m5x-on-demand&quot;
           Name        = &quot;m5x-on-demand&quot;
           subnet_type = &quot;private&quot;
+        }
+        launch_template_tags = {
+          SomeAwsProviderDefaultTag1: &quot;TRUE&quot;
+          SomeAwsProviderDefaultTag2: &quot;TRUE&quot;
         }
         additional_iam_policies = []
       },
