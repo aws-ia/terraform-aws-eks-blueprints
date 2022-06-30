@@ -470,7 +470,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                description: {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} receive errors in the last two minutes.
+                description: The {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} receive errors in the last two minutes.
                 summary: Network interface is reporting many receive errors.
         - name: nodeexp-10
           rules:
@@ -480,7 +480,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                description:  {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} transmit errors in the last two minutes.
+                description:  The {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} transmit errors in the last two minutes.
                 summary: Network interface is reporting many transmit errors.
         - name: nodeexp-11
           rules:
@@ -489,7 +489,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                description:  {{ $value | humanizePercentage }} of conntrack entries are used.
+                description:  The {{ $value | humanizePercentage }} of conntrack entries are used.
                 summary: Number of conntrack are getting close to the limit.
         - name: nodeexp-12
           rules:
