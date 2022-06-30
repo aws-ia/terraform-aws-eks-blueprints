@@ -265,7 +265,6 @@ YAML
 }
 
 resource "aws_secretsmanager_secret" "secret" {
-  name                    = local.name
   recovery_window_in_days = 0
   kms_key_id              = aws_kms_key.secrets.arn
 }
