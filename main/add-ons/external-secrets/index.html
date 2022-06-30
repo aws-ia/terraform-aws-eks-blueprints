@@ -13,7 +13,7 @@
     
     
       
-        <title>Nginx - Amazon EKS Blueprints for Terraform</title>
+        <title>External Secrets Operator - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nginx" class="md-skip">
+        <a href="#external-secrets-operator" class="md-skip">
           Skip to content
         </a>
       
@@ -99,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Nginx
+              External Secrets Operator
             
           </span>
         </div>
@@ -568,11 +568,65 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../external-secrets/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          External Secrets Operator
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         External Secrets Operator
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitops-configuration" class="md-nav__link">
+    GitOps Configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -680,65 +734,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Nginx
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../nginx/" class="md-nav__link">
         Nginx
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-    <nav class="md-nav" aria-label="Usage">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gitops-configuration" class="md-nav__link">
-    GitOps Configuration
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1067,43 +1067,33 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/nginx.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/external-secrets.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-<h1 id="nginx">Nginx<a class="headerlink" href="#nginx" title="Permanent link">&para;</a></h1>
-<p>This add-on installs <a href="https://kubernetes.github.io/ingress-nginx/deploy/">Nginx Ingress Controller</a> on Amazon EKS. The Nginx ingress controller uses <a href="https://www.nginx.org/">Nginx</a> as a reverse proxy and load balancer.</p>
-<p>Other than handling Kubernetes ingress objects, this ingress controller can facilitate multi-tenancy and segregation of workload ingresses based on host name (host-based routing) and/or URL Path (path based routing).</p>
+<h1 id="external-secrets-operator">External Secrets Operator<a class="headerlink" href="#external-secrets-operator" title="Permanent link">&para;</a></h1>
+<p><a href="https://external-secrets.io/latest">External Secrets Operator</a> is a Kubernetes operator that integrates external secret management systems like AWS Secrets Manager, HashiCorp Vault, Google Secrets Manager, Azure Key Vault and many more. The operator reads information from external APIs and automatically injects the values into a Kubernetes Secret.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p>Nginx Ingress Controller can be deployed by enabling the add-on via the following. Check out the full <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/ingress-controllers/nginx/main.tf">example</a> to deploy the EKS Cluster with Nginx Ingress Controller.</p>
-<div class="highlight"><pre><span></span><code>enable_ingress_nginx = true
+<p>The External Secrets Operator can be deployed by enabling the add-on via the following.</p>
+<div class="highlight"><pre><span></span><code>enable_external_secrets = true
 </code></pre></div>
-<p>To validate that installation is successful run the following command:</p>
-<div class="highlight"><pre><span></span><code>$ kubectl get po -n kube-system
-NAME                                                              READY   STATUS    RESTARTS   AGE
-eks-blueprints-addon-ingress-nginx-78b8567p4q6   <span class="m">1</span>/1     Running   <span class="m">0</span>          4d10h
-</code></pre></div>
-<p>Note that the ingress controller is deployed in the <code>ingress-nginx</code> namespace.</p>
-<p>You can optionally customize the Helm chart that deploys <code>nginx</code> via the following configuration.</p>
-<div class="highlight"><pre><span></span><code>  enable_ingress_nginx = true
-
-  # Optional  ingress_nginx_helm_config
-  ingress_nginx_helm_config = {
-    repository  = &quot;https://kubernetes.github.io/ingress-nginx&quot;
-    version     = &quot;4.0.17&quot;
-    values      = [file(&quot;${path.module}/values.yaml&quot;)]
+<p>You can optionally customize the Helm chart that deploys the operator via the following configuration.</p>
+<div class="highlight"><pre><span></span><code>  enable_external_secrets = true
+  external_secrets_helm_config = {
+    name                       = &quot;external-secrets&quot;
+    chart                      = &quot;external-secrets&quot;
+    repository                 = &quot;https://charts.external-secrets.io/&quot;
+    version                    = &quot;0.5.6&quot;
+    namespace                  = &quot;external-secrets&quot;
   }
-
-  nginx_irsa_policies = [] # Optional to add additional policies to IRSA
 </code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p>The following properties are made available for use when managing the add-on via GitOps.</p>
-<p>Refer to <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/ingress-nginx/locals.tf">locals.tf</a> for latest config. GitOps with ArgoCD Add-on repo is located <a href="https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/values.yaml">here</a></p>
-<div class="highlight"><pre><span></span><code>argocd_gitops_config = {
-    enable             = true
-    serviceAccountName = local.service_account_name
+<p>Refer to <a href="modules/kubernetes-addons/external-secrets/locals.tf">locals.tf</a> for latest config. GitOps with ArgoCD Add-on repo is located <a href="https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/values.yaml">here</a>.</p>
+<div class="highlight"><pre><span></span><code>  argocd_gitops_config = {
+    enable = true
   }
 </code></pre></div>
 
@@ -1121,7 +1111,7 @@ eks-blueprints-addon-ingress-nginx-78b8567p4q6   <span class="m">1</span>/1     
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../metrics-server/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Metrics Server" rel="prev">
+        <a href="../external-dns/" class="md-footer__link md-footer__link--prev" aria-label="Previous: ExternalDNS" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1130,20 +1120,20 @@ eks-blueprints-addon-ingress-nginx-78b8567p4q6   <span class="m">1</span>/1     
               <span class="md-footer__direction">
                 Previous
               </span>
-              Metrics Server
+              ExternalDNS
             </div>
           </div>
         </a>
       
       
         
-        <a href="../prometheus/" class="md-footer__link md-footer__link--next" aria-label="Next: Prometheus" rel="next">
+        <a href="../fargate-fluent-bit/" class="md-footer__link md-footer__link--next" aria-label="Next: Fargate fluent bit" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Prometheus
+              Fargate fluent bit
             </div>
           </div>
           <div class="md-footer__button md-icon">
