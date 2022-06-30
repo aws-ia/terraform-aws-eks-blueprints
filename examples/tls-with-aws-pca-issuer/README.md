@@ -25,7 +25,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 #### Step 1: Clone the repo using the command below
 
 ```sh
-git clone https://github.com/aws-samples/aws-eks-accelerator-for-terraform.git
+git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 #### Step 2: Run Terraform INIT
