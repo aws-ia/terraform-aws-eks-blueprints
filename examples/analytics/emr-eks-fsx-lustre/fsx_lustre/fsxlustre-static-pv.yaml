@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ${pv_name}
+spec:
+  capacity:
+    storage: ${storage}
+  volumeMode: Filesystem
+  storageClassName: ${storage_class_name}
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - flock
+  persistentVolumeReclaimPolicy: Recycle
+  csi:
+    driver: fsx.csi.aws.com
+    volumeHandle: ${filesystem_id}
+    volumeAttributes:
+      dnsname: ${dns_name}
+      mountname: ${mount_name}
