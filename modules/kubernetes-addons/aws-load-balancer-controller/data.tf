@@ -3,6 +3,19 @@ data "aws_iam_policy_document" "aws_lb" {
     sid       = ""
     effect    = "Allow"
     resources = ["*"]
+    actions   = ["iam:CreateServiceLinkedRole"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "iam:AWSServiceName"
+      values   = ["elasticloadbalancing.amazonaws.com"]
+    }
+  }
+
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = ["*"]
 
     actions = [
       "ec2:DescribeAccountAttributes",
@@ -28,7 +41,6 @@ data "aws_iam_policy_document" "aws_lb" {
       "elasticloadbalancing:DescribeTargetGroupAttributes",
       "elasticloadbalancing:DescribeTargetGroups",
       "elasticloadbalancing:DescribeTargetHealth",
-      "iam:CreateServiceLinkedRole",
     ]
   }
 
@@ -232,6 +244,23 @@ data "aws_iam_policy_document" "aws_lb" {
       variable = "aws:ResourceTag/elbv2.k8s.aws/cluster"
       values   = ["false"]
     }
+  }
+
+  statement {
+    sid    = ""
+    effect = "Allow"
+
+    resources = [
+      "arn:${var.addon_context.aws_partition_id}:elasticloadbalancing:*:*:listener/net/*/*/*",
+      "arn:${var.addon_context.aws_partition_id}:elasticloadbalancing:*:*:listener/app/*/*/*",
+      "arn:${var.addon_context.aws_partition_id}:elasticloadbalancing:*:*:listener-rule/net/*/*/*",
+      "arn:${var.addon_context.aws_partition_id}:elasticloadbalancing:*:*:listener-rule/app/*/*/*",
+    ]
+
+    actions = [
+      "elasticloadbalancing:AddTags",
+      "elasticloadbalancing:RemoveTags",
+    ]
   }
 
   statement {
