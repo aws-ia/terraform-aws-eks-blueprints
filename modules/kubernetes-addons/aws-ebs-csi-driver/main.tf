@@ -42,4 +42,3 @@ resource "aws_iam_policy" "aws_ebs_csi_driver" {
     try(var.addon_config.tags, {})
   )
 }
-

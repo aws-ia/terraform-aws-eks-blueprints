@@ -119,7 +119,7 @@ module "eks_blueprints" {
       from_port   = 1021
       to_port     = 1023
       protocol    = "tcp"
-      type                          = "ingress"
+      type        = "ingress"
     }
     ingress_fsx2 = {
       description = "Allows Lustre traffic between Lustre clients"
@@ -127,7 +127,7 @@ module "eks_blueprints" {
       from_port   = 988
       to_port     = 988
       protocol    = "tcp"
-      type                          = "ingress"
+      type        = "ingress"
     }
   }
 
@@ -511,10 +511,10 @@ resource "aws_emrcontainers_virtual_cluster" "this" {
 #---------------------------------------------------------------
 # NOTE: FSx for Lustre file system creation can take up to 10 mins
 resource "aws_fsx_lustre_file_system" "this" {
-  deployment_type   = "PERSISTENT_2"
-  storage_type       = "SSD"
+  deployment_type             = "PERSISTENT_2"
+  storage_type                = "SSD"
   per_unit_storage_throughput = "500" # 125, 250, 500, 1000
-  storage_capacity   = 2400
+  storage_capacity            = 2400
 
   subnet_ids         = [module.vpc.private_subnets[0]]
   security_group_ids = [aws_security_group.fsx.id]
@@ -560,12 +560,12 @@ resource "kubectl_manifest" "storage_class" {
 #---------------------------------------------------------------
 resource "kubectl_manifest" "static_pv" {
   yaml_body = templatefile("${path.module}/fsx_lustre/fsxlustre-static-pv.yaml", {
-    pv_name       = "fsx-static-pv",
-    filesystem_id = aws_fsx_lustre_file_system.this.id,
-    dns_name      = aws_fsx_lustre_file_system.this.dns_name
-    mount_name    = aws_fsx_lustre_file_system.this.mount_name,
+    pv_name            = "fsx-static-pv",
+    filesystem_id      = aws_fsx_lustre_file_system.this.id,
+    dns_name           = aws_fsx_lustre_file_system.this.dns_name
+    mount_name         = aws_fsx_lustre_file_system.this.mount_name,
     storage_class_name = local.name,
-    storage       = "1000Gi"
+    storage            = "1000Gi"
   })
 
   depends_on = [
@@ -606,7 +606,7 @@ resource "kubectl_manifest" "dynamic_pvc" {
     namespace          = "emr-data-team-a", # EMR EKS Teams Namespace for job execution
     claim_name         = "fsx-dynamic-pvc",
     storage_class_name = local.name, # same name as storage class defined above
-    request_storage    = "2000Gi" # Creates 2400Gi filesystem for this request
+    request_storage    = "2000Gi"    # Creates 2400Gi filesystem for this request
   })
 
   depends_on = [

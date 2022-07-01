@@ -1,4 +1,4 @@
-# EMR EKS with FSx for Lustre 
+# EMR EKS with FSx for Lustre
 
 This example deploys the following resources
 
@@ -81,10 +81,10 @@ kubectl get pods --namespace=kube-system | grep  cluster-autoscaler # Output sho
 
 kubectl get pvc -n emr-data-team-a  # Output of persistent volume for static(`fsx-static-pvc`) and dynamic(`fsx-dynamic-pvc`)
 
-kubectl get storageclasses  # Output of storage class with the name `emr-eks-fsx-lustre` 
+kubectl get storageclasses  # Output of storage class with the name `emr-eks-fsx-lustre`
 
 kubectl get pv              # Output of static persistent volume with name `fsx-static-pv`
-``` 
+```
 
 ## Spark Job Execution - FSx - Static Provisioning
 
