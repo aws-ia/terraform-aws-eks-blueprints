@@ -24,7 +24,7 @@ data "aws_iam_policy_document" "irsa_policy" {
       "autoscaling:DescribeTags",
       "ec2:DescribeInstances",
       "sqs:DeleteMessage",
-      "sqs:ReceiveMessage"
+      "sqs:ReceiveMessage",
     ]
     resources = ["*"]
   }

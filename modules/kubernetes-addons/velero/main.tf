@@ -1,3 +1,5 @@
+data "aws_region" "current" {}
+
 locals {
   name      = "velero"
   namespace = try(var.helm_config.namespace, local.name)
@@ -16,11 +18,12 @@ module "helm_addon" {
     name        = local.name
     description = "A Helm chart for velero"
     chart       = local.name
-    version     = "2.29.8"
+    version     = "2.30.0"
     repository  = "https://vmware-tanzu.github.io/helm-charts/"
     namespace   = local.namespace
     values = [templatefile("${path.module}/values.yaml", {
-      backup_s3_bucket = var.backup_s3_bucket,
+      bucket = var.backup_s3_bucket,
+      region = data.aws_region.current.name
     })]
     },
     var.helm_config
@@ -55,26 +58,24 @@ module "helm_addon" {
 data "aws_iam_policy_document" "velero" {
   statement {
     actions = [
-      "ec2:DescribeVolumes",
-      "ec2:DescribeSnapshots",
+      "ec2:CreateSnapshot",
       "ec2:CreateTags",
       "ec2:CreateVolume",
-      "ec2:CreateSnapshot",
       "ec2:DeleteSnapshot",
+      "ec2:DescribeSnapshots",
+      "ec2:DescribeVolumes",
     ]
-
     resources = ["*"]
   }
 
   statement {
     actions = [
-      "s3:GetObject",
-      "s3:DeleteObject",
-      "s3:PutObject",
       "s3:AbortMultipartUpload",
+      "s3:DeleteObject",
+      "s3:GetObject",
       "s3:ListMultipartUploadParts",
+      "s3:PutObject",
     ]
-
     resources = ["arn:${var.addon_context.aws_partition_id}:s3:::${var.backup_s3_bucket}/*"]
   }
 

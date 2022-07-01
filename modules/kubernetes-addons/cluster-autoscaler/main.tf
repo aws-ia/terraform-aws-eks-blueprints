@@ -17,8 +17,9 @@ module "helm_addon" {
     namespace   = local.namespace
     description = "Cluster AutoScaler helm Chart deployment configuration."
     values = [templatefile("${path.module}/values.yaml", {
-      aws_region     = var.addon_context.aws_region_name,
+      aws_region     = var.addon_context.aws_region_name
       eks_cluster_id = var.addon_context.eks_cluster_id
+      image_tag      = "v${var.eks_cluster_version}.0"
     })]
     },
     var.helm_config
@@ -32,11 +33,7 @@ module "helm_addon" {
     {
       name  = "rbac.serviceAccount.name"
       value = local.service_account
-    },
-    {
-      name  = "image.tag"
-      value = "v${var.eks_cluster_version}.0"
-    },
+    }
   ]
 
   irsa_config = {
@@ -75,7 +72,7 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
       "autoscaling:SetDesiredCapacity",
       "autoscaling:TerminateInstanceInAutoScalingGroup",
       "ec2:DescribeInstanceTypes",
-      "eks:DescribeNodegroup"
+      "eks:DescribeNodegroup",
     ]
     condition {
       test     = "StringEquals"

@@ -279,6 +279,12 @@ variable "external_dns_irsa_policies" {
   default     = []
 }
 
+variable "external_dns_private_zone" {
+  type        = bool
+  description = "Determines if referenced Route53 zone is private."
+  default     = false
+}
+
 #-----------Amazon Managed Service for Prometheus-------------
 variable "enable_amazon_prometheus" {
   description = "Enable AWS Managed Prometheus service"
@@ -880,4 +886,43 @@ variable "adot_collector_nginx_helm_config" {
   description = "ADOT Collector Nginx Helm Chart config"
   type        = any
   default     = {}
+}
+
+#-----------AWS CSI Secrets Store Provider-------------
+variable "enable_secrets_store_csi_driver_provider_aws" {
+  type        = bool
+  default     = false
+  description = "Enable AWS CSI Secrets Store Provider"
+}
+
+variable "csi_secrets_store_provider_aws_helm_config" {
+  type        = any
+  default     = null
+  description = "CSI Secrets Store Provider AWS Helm Configurations"
+}
+
+#-----------CSI Secrets Store Provider-------------
+variable "enable_secrets_store_csi_driver" {
+  type        = bool
+  default     = false
+  description = "Enable CSI Secrets Store Provider"
+}
+
+variable "secrets_store_csi_driver_helm_config" {
+  type        = any
+  default     = null
+  description = "CSI Secrets Store Provider Helm Configurations"
+}
+
+#-----------EXTERNAL SECRETS OPERATOR-----------
+variable "enable_external_secrets" {
+  type        = bool
+  default     = false
+  description = "Enable External Secrets operator add-on"
+}
+
+variable "external_secrets_helm_config" {
+  type        = any
+  default     = {}
+  description = "External Secrets operator Helm Chart config"
 }

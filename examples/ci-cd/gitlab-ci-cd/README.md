@@ -19,29 +19,25 @@ git@github.com:aws-ia/terraform-aws-eks-blueprints.git
 
 ## Step 3: Update project settings-> CI/CD ->Variables
 
-- Login to the GitLab console, Open your repo and navigate to `settings->ci-cd->Variables`
+- Login to the GitLab console, Open your repo and navigate to `Settings->CI-CD->Variables`
 - Update the following variables as Key Value pairs before triggering the pipeline
 
        AWS_ACCESS_KEY_ID           e.g., access key from devops admin iam role
        AWS_SECRET_ACCESS_KEY       e.g., secret key from devops admin iam role
        AWS_REGION                  e.g., eu-west-1
+       AWS_SESSION_TOKEN           e.g,. session token from devops admin iam role. Note : This is required only if you are using temporary credentials
 
-## Step 4: Update variables in input.tfvars file
-
-1.  Update cluster_version to any version > "1.20"
-2.  Update CIDR of your VPC, vpc_cidcr = "10.2.0.0/16"
-
-## Step 5: Commit changes and push to verify the pipeline
+## Step 4: Commit changes and push to verify the pipeline
 
 Manually trigger the `tf-apply` to provision the resources
 
-## Step 6: Verify whether the state file update happened in your project (Infrastructure->Terraform-states)
+## Step 5: Verify whether the state file update happened in your project (Infrastructure->Terraform-states).
 
-## Step 7: (Optional) Manually Install, Configure and Run GitLab Agent for Kubernetes (“Agent”, for short) is your active in-cluster.
+## Step 6: (Optional) Manually Install, Configure and Run GitLab Agent for Kubernetes (“Agent”, for short) is your active in-cluster.
 
 This is for or connecting Kubernetes clusters to GitLab. Refer https://docs.gitlab.com/ee/user/clusters/agent/install/index.html
 
-## Step 8: Cleanup the deployed resources
+## Step 7: Cleanup the deployed resources
 
 Manually trigger the `tf-destroy` stage in the GitLab Ci/CD pipeline to destroy your deployment.
 
