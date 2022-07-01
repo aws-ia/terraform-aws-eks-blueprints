@@ -2,7 +2,7 @@ output "helm_release_addon" {
   description = "Describes the desired status of a chart in a kubernetes cluster."
   value = try(
     {
-      for k, v in helm_release.external-dns : k => (
+      for k, v in helm_release.addon : k => (
         k != "repository_password" ? v : null
       )
     }, null
