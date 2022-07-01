@@ -1,14 +1,6 @@
-# TLS with AWS PCA Issuer
+# External Secrets Operator Kubernetes addon
 
-This example deploys the following
-
-- Basic EKS Cluster with VPC
-- Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
-- Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
-- Enables cert-manager module
-- Enables aws-privateca-issuer module
-- Creates AWS Certificate Manager Private Certificate Authority, enables and activates it
-- Creates the CRDs to fetch `tls.crt`, `tls.key` and `ca.crt` , which will be available as Kubernetes Secret. Now you may mount the secret in the application for end to end TLS.
+This example deploys an EKS Cluster with the External Secrets Operator. The cluster is populated with a ClusterSecretStore and SecretStore example using SecretManager and Parameter Store respectively. A secret for each store is also created. Both stores use IRSA to retrieve the secret values from AWS.
 
 ## How to Deploy
 
@@ -33,7 +25,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 Initialize a working directory with configuration files
 
 ```sh
-cd examples/tls-with-aws-pca-issuer/
+cd examples/external-secrets-kubernetes-addon/
 terraform init
 ```
 
@@ -67,18 +59,10 @@ This following command used to update the `kubeconfig` in your local machine whe
 
     $ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 
-#### Step 6: List all the worker nodes by running the command below
+### Step 6: List the secret resources in the `external-secrets` namespace
 
-    $ kubectl get nodes
-
-#### Step 7: List all the pods running in `aws-privateca-issuer` and `cert-manager` namespace
-
-    $ kubectl get pods -n aws-privateca-issuer
-    $ kubectl get pods -n cert-manager
-
-#### Step 8: View the `Certificate` status. It should be in 'Ready' state.
-
-    $ kubectl get Certificate
+    $ kubectl get externalsecrets -n external-secrets
+    $ kubectl get secrets -n external-secrets
 
 ## Cleanup
 

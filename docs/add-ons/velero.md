@@ -22,23 +22,13 @@ velero_helm_config = {
   name        = "velero"
   description = "A Helm chart for velero"
   chart       = "velero"
-  version     = "2.29.8"
+  version     = "2.30.0"
   repository  = "https://vmware-tanzu.github.io/helm-charts/"
   namespace   = "velero"
   values = [templatefile("${path.module}/values.yaml", {
-    backup_s3_bucket = "<YOUR_BUCKET_NAME>",
+    bucket = "<YOUR_BUCKET_NAME>",
+    region = "<YOUR_BUCKET_REGION>"
   })]
-
-  set_values = [
-    {
-      name  = "serviceAccount.server.name"
-      value = local.name
-    },
-    {
-      name  = "serviceAccount.server.create"
-      value = false
-    }
-  ]
 }
 ```
 
