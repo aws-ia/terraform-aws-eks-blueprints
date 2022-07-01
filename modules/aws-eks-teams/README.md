@@ -103,7 +103,7 @@ To create an `Platform Team` for your cluster, simply use `platform_teams`. You 
 
 ## Cluster Access (`kubectl`)
 
-The output will contain the IAM roles for every application(`application_team_iam_role_arn`) or platform team(`platform_team_iam_role_arn`).
+The output will contain the IAM roles for every application(`application_teams_iam_role_arn`) or platform team(`platform_teams_iam_role_arn`).
 
 To update your kubeconfig, you can run the following command:
 
