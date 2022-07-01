@@ -112,9 +112,10 @@ resource "kubernetes_secret" "argocd_gitops" {
   }
 
   data = {
+    insecure = lookup(each.value, "insecure", false)
+    sshPrivateKey = data.aws_secretsmanager_secret_version.ssh_key_version[each.key].secret_string
     type          = "git"
     url           = each.value.repo_url
-    sshPrivateKey = data.aws_secretsmanager_secret_version.ssh_key_version[each.key].secret_string
   }
 
   depends_on = [module.helm_addon]
