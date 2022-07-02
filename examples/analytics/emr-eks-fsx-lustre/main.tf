@@ -647,6 +647,7 @@ resource "aws_security_group" "fsx" {
 #---------------------------------------------------------------
 # S3 bucket for DataSync between FSx for Lustre and S3 Bucket
 #---------------------------------------------------------------
+#tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
 resource "aws_s3_bucket" "this" {
   bucket_prefix = format("%s-%s", "fsx", data.aws_caller_identity.current.account_id)
   tags          = local.tags
@@ -657,6 +658,7 @@ resource "aws_s3_bucket_acl" "this" {
   acl    = "private"
 }
 
+#tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
   bucket = aws_s3_bucket.this.bucket
 
