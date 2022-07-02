@@ -3,7 +3,7 @@
 Fully managed shared storage built on the world's most popular high-performance file system.
 This add-on deploys the [Amazon FSx for Lustre CSI Driver](https://aws.amazon.com/fsx/lustre/) into an EKS cluster.
 
-Checkout the [examples](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/analytics/aws-efs-csi-driver) of using FSx for Lustre with EMR on EKS Spark Jobs.
+Checkout the [examples](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/analytics/emr-eks-fsx-lustre) of using FSx for Lustre with EMR on EKS Spark Jobs.
 
 ## Usage
 
