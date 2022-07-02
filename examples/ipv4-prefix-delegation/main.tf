@@ -126,8 +126,9 @@ data "aws_eks_addon_version" "latest" {
 }
 
 #---------------------------------------------------------------
-# Modifying CoreDNS for Fargate
+# Modify VPC CNI deployment
 #---------------------------------------------------------------
+
 data "aws_eks_cluster_auth" "this" {
   name = module.eks_blueprints.eks_cluster_id
 }

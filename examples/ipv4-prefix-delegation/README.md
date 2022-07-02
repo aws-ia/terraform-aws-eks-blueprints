@@ -27,7 +27,7 @@ Enter `yes` at command prompt to apply
 
 ## Validate
 
-The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the CoreDNS deployment for Fargate.
+The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the deployment.
 
 1. Run `update-kubeconfig` command:
 
