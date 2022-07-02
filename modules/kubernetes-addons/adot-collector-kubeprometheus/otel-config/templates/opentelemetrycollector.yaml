@@ -17,7 +17,7 @@ spec:
             alert_relabel_configs:
             - separator: ;
               regex: prometheus_replica
-              replacement: $1
+              replacement: $$1
               action: labeldrop
             alertmanagers:
             - follow_redirects: true
@@ -30,12 +30,12 @@ spec:
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
                 regex: kube-prometheus-stack-alertmanager
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 separator: ;
                 regex: http-web
-                replacement: $1
+                replacement: $$1
                 action: keep
               kubernetes_sd_configs:
               - role: endpoints
@@ -60,22 +60,22 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: __tmp_prometheus_job_name
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_app, __meta_kubernetes_service_labelpresent_app]
                 separator: ;
                 regex: (prometheus-node-exporter);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_service_label_release, __meta_kubernetes_service_labelpresent_release]
                 separator: ;
                 regex: (kube-prometheus-stack);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 separator: ;
                 regex: http-metrics
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
@@ -93,25 +93,25 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: namespace
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
                 regex: (.*)
                 target_label: service
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_name]
                 separator: ;
                 regex: (.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_container_name]
                 separator: ;
                 regex: (.*)
                 target_label: container
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
@@ -135,12 +135,12 @@ spec:
                 regex: (.*)
                 modulus: 1
                 target_label: __tmp_hash
-                replacement: $1
+                replacement: $$1
                 action: hashmod
               - source_labels: [__tmp_hash]
                 separator: ;
                 regex: "0"
-                replacement: $1
+                replacement: $$1
                 action: keep
               kubernetes_sd_configs:
               - role: endpoints
@@ -164,27 +164,27 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: __tmp_prometheus_job_name
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_app, __meta_kubernetes_service_labelpresent_app]
                 separator: ;
                 regex: (kube-prometheus-stack-prometheus);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_service_label_release, __meta_kubernetes_service_labelpresent_release]
                 separator: ;
                 regex: (kube-prometheus-stack);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_service_label_self_monitor, __meta_kubernetes_service_labelpresent_self_monitor]
                 separator: ;
                 regex: (true);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 separator: ;
                 regex: http-web
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
@@ -202,25 +202,25 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: namespace
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
                 regex: (.*)
                 target_label: service
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_name]
                 separator: ;
                 regex: (.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_container_name]
                 separator: ;
                 regex: (.*)
                 target_label: container
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
@@ -238,12 +238,12 @@ spec:
                 regex: (.*)
                 modulus: 1
                 target_label: __tmp_hash
-                replacement: $1
+                replacement: $$1
                 action: hashmod
               - source_labels: [__tmp_hash]
                 separator: ;
                 regex: "0"
-                replacement: $1
+                replacement: $$1
                 action: keep
               kubernetes_sd_configs:
               - role: endpoints
@@ -272,22 +272,22 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: __tmp_prometheus_job_name
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_app, __meta_kubernetes_service_labelpresent_app]
                 separator: ;
                 regex: (kube-prometheus-stack-operator);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_service_label_release, __meta_kubernetes_service_labelpresent_release]
                 separator: ;
                 regex: (kube-prometheus-stack);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 separator: ;
                 regex: https
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
@@ -305,25 +305,25 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: namespace
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
                 regex: (.*)
                 target_label: service
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_name]
                 separator: ;
                 regex: (.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_container_name]
                 separator: ;
                 regex: (.*)
                 target_label: container
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
@@ -341,12 +341,12 @@ spec:
                 regex: (.*)
                 modulus: 1
                 target_label: __tmp_hash
-                replacement: $1
+                replacement: $$1
                 action: hashmod
               - source_labels: [__tmp_hash]
                 separator: ;
                 regex: "0"
-                replacement: $1
+                replacement: $$1
                 action: keep
               kubernetes_sd_configs:
               - role: endpoints
@@ -377,22 +377,22 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: __tmp_prometheus_job_name
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name, __meta_kubernetes_service_labelpresent_app_kubernetes_io_name]
                 separator: ;
                 regex: (kubelet);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_service_label_k8s_app, __meta_kubernetes_service_labelpresent_k8s_app]
                 separator: ;
                 regex: (kubelet);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 separator: ;
                 regex: https-metrics
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
@@ -410,25 +410,25 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: namespace
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
                 regex: (.*)
                 target_label: service
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_name]
                 separator: ;
                 regex: (.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_container_name]
                 separator: ;
                 regex: (.*)
                 target_label: container
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
@@ -451,19 +451,19 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: metrics_path
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__address__]
                 separator: ;
                 regex: (.*)
                 modulus: 1
                 target_label: __tmp_hash
-                replacement: $1
+                replacement: $$1
                 action: hashmod
               - source_labels: [__tmp_hash]
                 separator: ;
                 regex: "0"
-                replacement: $1
+                replacement: $$1
                 action: keep
               kubernetes_sd_configs:
               - role: endpoints
@@ -494,22 +494,22 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: __tmp_prometheus_job_name
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name, __meta_kubernetes_service_labelpresent_app_kubernetes_io_name]
                 separator: ;
                 regex: (kubelet);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_service_label_k8s_app, __meta_kubernetes_service_labelpresent_k8s_app]
                 separator: ;
                 regex: (kubelet);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 separator: ;
                 regex: https-metrics
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
@@ -527,25 +527,25 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: namespace
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
                 regex: (.*)
                 target_label: service
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_name]
                 separator: ;
                 regex: (.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_container_name]
                 separator: ;
                 regex: (.*)
                 target_label: container
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
@@ -568,19 +568,19 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: metrics_path
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__address__]
                 separator: ;
                 regex: (.*)
                 modulus: 1
                 target_label: __tmp_hash
-                replacement: $1
+                replacement: $$1
                 action: hashmod
               - source_labels: [__tmp_hash]
                 separator: ;
                 regex: "0"
-                replacement: $1
+                replacement: $$1
                 action: keep
               kubernetes_sd_configs:
               - role: endpoints
@@ -612,22 +612,22 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: __tmp_prometheus_job_name
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name, __meta_kubernetes_service_labelpresent_app_kubernetes_io_name]
                 separator: ;
                 regex: (kubelet);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_service_label_k8s_app, __meta_kubernetes_service_labelpresent_k8s_app]
                 separator: ;
                 regex: (kubelet);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 separator: ;
                 regex: https-metrics
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
@@ -645,25 +645,25 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: namespace
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
                 regex: (.*)
                 target_label: service
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_name]
                 separator: ;
                 regex: (.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_container_name]
                 separator: ;
                 regex: (.*)
                 target_label: container
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
@@ -686,19 +686,19 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: metrics_path
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__address__]
                 separator: ;
                 regex: (.*)
                 modulus: 1
                 target_label: __tmp_hash
-                replacement: $1
+                replacement: $$1
                 action: hashmod
               - source_labels: [__tmp_hash]
                 separator: ;
                 regex: "0"
-                replacement: $1
+                replacement: $$1
                 action: keep
               kubernetes_sd_configs:
               - role: endpoints
@@ -723,22 +723,22 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: __tmp_prometheus_job_name
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_instance, __meta_kubernetes_service_labelpresent_app_kubernetes_io_instance]
                 separator: ;
                 regex: (kube-prometheus-stack);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name, __meta_kubernetes_service_labelpresent_app_kubernetes_io_name]
                 separator: ;
                 regex: (kube-state-metrics);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 separator: ;
                 regex: http
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
@@ -756,25 +756,25 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: namespace
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
                 regex: (.*)
                 target_label: service
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_name]
                 separator: ;
                 regex: (.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_container_name]
                 separator: ;
                 regex: (.*)
                 target_label: container
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
@@ -798,12 +798,12 @@ spec:
                 regex: (.*)
                 modulus: 1
                 target_label: __tmp_hash
-                replacement: $1
+                replacement: $$1
                 action: hashmod
               - source_labels: [__tmp_hash]
                 separator: ;
                 regex: "0"
-                replacement: $1
+                replacement: $$1
                 action: keep
               kubernetes_sd_configs:
               - role: endpoints
@@ -830,22 +830,22 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: __tmp_prometheus_job_name
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_app, __meta_kubernetes_service_labelpresent_app]
                 separator: ;
                 regex: (kube-prometheus-stack-kube-scheduler);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_service_label_release, __meta_kubernetes_service_labelpresent_release]
                 separator: ;
                 regex: (kube-prometheus-stack);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 separator: ;
                 regex: http-metrics
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
@@ -863,25 +863,25 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: namespace
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
                 regex: (.*)
                 target_label: service
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_name]
                 separator: ;
                 regex: (.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_container_name]
                 separator: ;
                 regex: (.*)
                 target_label: container
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
@@ -905,12 +905,12 @@ spec:
                 regex: (.*)
                 modulus: 1
                 target_label: __tmp_hash
-                replacement: $1
+                replacement: $$1
                 action: hashmod
               - source_labels: [__tmp_hash]
                 separator: ;
                 regex: "0"
-                replacement: $1
+                replacement: $$1
                 action: keep
               kubernetes_sd_configs:
               - role: endpoints
@@ -937,22 +937,22 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: __tmp_prometheus_job_name
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_app, __meta_kubernetes_service_labelpresent_app]
                 separator: ;
                 regex: (kube-prometheus-stack-kube-proxy);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_service_label_release, __meta_kubernetes_service_labelpresent_release]
                 separator: ;
                 regex: (kube-prometheus-stack);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 separator: ;
                 regex: http-metrics
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
@@ -970,25 +970,25 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: namespace
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
                 regex: (.*)
                 target_label: service
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_name]
                 separator: ;
                 regex: (.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_container_name]
                 separator: ;
                 regex: (.*)
                 target_label: container
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
@@ -1012,12 +1012,12 @@ spec:
                 regex: (.*)
                 modulus: 1
                 target_label: __tmp_hash
-                replacement: $1
+                replacement: $$1
                 action: hashmod
               - source_labels: [__tmp_hash]
                 separator: ;
                 regex: "0"
-                replacement: $1
+                replacement: $$1
                 action: keep
               kubernetes_sd_configs:
               - role: endpoints
@@ -1044,22 +1044,22 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: __tmp_prometheus_job_name
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_app, __meta_kubernetes_service_labelpresent_app]
                 separator: ;
                 regex: (kube-prometheus-stack-kube-etcd);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_service_label_release, __meta_kubernetes_service_labelpresent_release]
                 separator: ;
                 regex: (kube-prometheus-stack);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 separator: ;
                 regex: http-metrics
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
@@ -1077,25 +1077,25 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: namespace
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
                 regex: (.*)
                 target_label: service
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_name]
                 separator: ;
                 regex: (.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_container_name]
                 separator: ;
                 regex: (.*)
                 target_label: container
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
@@ -1119,12 +1119,12 @@ spec:
                 regex: (.*)
                 modulus: 1
                 target_label: __tmp_hash
-                replacement: $1
+                replacement: $$1
                 action: hashmod
               - source_labels: [__tmp_hash]
                 separator: ;
                 regex: "0"
-                replacement: $1
+                replacement: $$1
                 action: keep
               kubernetes_sd_configs:
               - role: endpoints
@@ -1151,22 +1151,22 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: __tmp_prometheus_job_name
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_app, __meta_kubernetes_service_labelpresent_app]
                 separator: ;
                 regex: (kube-prometheus-stack-kube-controller-manager);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_service_label_release, __meta_kubernetes_service_labelpresent_release]
                 separator: ;
                 regex: (kube-prometheus-stack);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 separator: ;
                 regex: http-metrics
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
@@ -1184,25 +1184,25 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: namespace
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
                 regex: (.*)
                 target_label: service
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_name]
                 separator: ;
                 regex: (.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_container_name]
                 separator: ;
                 regex: (.*)
                 target_label: container
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
@@ -1226,12 +1226,12 @@ spec:
                 regex: (.*)
                 modulus: 1
                 target_label: __tmp_hash
-                replacement: $1
+                replacement: $$1
                 action: hashmod
               - source_labels: [__tmp_hash]
                 separator: ;
                 regex: "0"
-                replacement: $1
+                replacement: $$1
                 action: keep
               kubernetes_sd_configs:
               - role: endpoints
@@ -1258,22 +1258,22 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: __tmp_prometheus_job_name
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_app, __meta_kubernetes_service_labelpresent_app]
                 separator: ;
                 regex: (kube-prometheus-stack-coredns);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_service_label_release, __meta_kubernetes_service_labelpresent_release]
                 separator: ;
                 regex: (kube-prometheus-stack);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 separator: ;
                 regex: http-metrics
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
@@ -1291,25 +1291,25 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: namespace
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
                 regex: (.*)
                 target_label: service
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_name]
                 separator: ;
                 regex: (.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_container_name]
                 separator: ;
                 regex: (.*)
                 target_label: container
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
@@ -1333,12 +1333,12 @@ spec:
                 regex: (.*)
                 modulus: 1
                 target_label: __tmp_hash
-                replacement: $1
+                replacement: $$1
                 action: hashmod
               - source_labels: [__tmp_hash]
                 separator: ;
                 regex: "0"
-                replacement: $1
+                replacement: $$1
                 action: keep
               kubernetes_sd_configs:
               - role: endpoints
@@ -1370,17 +1370,17 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: __tmp_prometheus_job_name
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_component, __meta_kubernetes_service_labelpresent_component]
                 separator: ;
                 regex: (kubernetes);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 separator: ;
                 regex: https
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
@@ -1398,25 +1398,25 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: namespace
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
                 regex: (.*)
                 target_label: service
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_name]
                 separator: ;
                 regex: (.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_container_name]
                 separator: ;
                 regex: (.*)
                 target_label: container
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
@@ -1440,12 +1440,12 @@ spec:
                 regex: (.*)
                 modulus: 1
                 target_label: __tmp_hash
-                replacement: $1
+                replacement: $$1
                 action: hashmod
               - source_labels: [__tmp_hash]
                 separator: ;
                 regex: "0"
-                replacement: $1
+                replacement: $$1
                 action: keep
               kubernetes_sd_configs:
               - role: endpoints
@@ -1469,27 +1469,27 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: __tmp_prometheus_job_name
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_app, __meta_kubernetes_service_labelpresent_app]
                 separator: ;
                 regex: (kube-prometheus-stack-alertmanager);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_service_label_release, __meta_kubernetes_service_labelpresent_release]
                 separator: ;
                 regex: (kube-prometheus-stack);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_service_label_self_monitor, __meta_kubernetes_service_labelpresent_self_monitor]
                 separator: ;
                 regex: (true);true
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 separator: ;
                 regex: http-web
-                replacement: $1
+                replacement: $$1
                 action: keep
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
@@ -1507,25 +1507,25 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: namespace
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
                 regex: (.*)
                 target_label: service
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_name]
                 separator: ;
                 regex: (.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_pod_container_name]
                 separator: ;
                 regex: (.*)
                 target_label: container
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_name]
                 separator: ;
@@ -1543,12 +1543,12 @@ spec:
                 regex: (.*)
                 modulus: 1
                 target_label: __tmp_hash
-                replacement: $1
+                replacement: $$1
                 action: hashmod
               - source_labels: [__tmp_hash]
                 separator: ;
                 regex: "0"
-                replacement: $1
+                replacement: $$1
                 action: keep
               kubernetes_sd_configs:
               - role: endpoints
