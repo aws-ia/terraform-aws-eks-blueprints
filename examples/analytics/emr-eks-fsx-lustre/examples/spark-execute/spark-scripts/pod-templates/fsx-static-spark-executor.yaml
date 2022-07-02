@@ -7,12 +7,10 @@ spec:
   volumes:
     - name: spark-local-dir-ny-taxi
       persistentVolumeClaim:
-        claimName: fsx-static-pvc
+        claimName: fsx-static-pvc # Static PVC pre-created by this example terraform template
 
   nodeSelector:
     NodeGroupType: spark
-#    topology.kubernetes.io/zone: us-west-2a
-#    beta.kubernetes.io/instance-type: r5d.large
 
   containers:
     - name: spark-kubernetes-executor # Don't change this name. EMR on EKS looking for this name

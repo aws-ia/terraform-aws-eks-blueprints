@@ -79,11 +79,24 @@ kubectl get pods --namespace=kube-system | grep  metrics-server # Output shows M
 
 kubectl get pods --namespace=kube-system | grep  cluster-autoscaler # Output shows Cluster Autoscaler pod
 
+kubectl get pods -n kube-system | grep fsx # Output of the FSx controller and node pods
+
 kubectl get pvc -n emr-data-team-a  # Output of persistent volume for static(`fsx-static-pvc`) and dynamic(`fsx-dynamic-pvc`)
 
-kubectl get storageclasses  # Output of storage class with the name `emr-eks-fsx-lustre`
+#FSx Storage Class
+kubectl get storageclasses | grep fsx
+  emr-eks-fsx-lustre   fsx.csi.aws.com         Delete          Immediate              false                  109s
 
-kubectl get pv              # Output of static persistent volume with name `fsx-static-pv`
+# Output of static persistent volume with name `fsx-static-pv`
+kubectl get pv | grep fsx  
+  fsx-static-pv                              1000Gi     RWX            Recycle          Bound    emr-data-team-a/fsx-static-pvc       fsx
+
+# Output of static persistent volume with name `fsx-static-pvc` and `fsx-dynamic-pvc`
+# Pending status means that the FSx for Lustre is still getting created. This will be changed to bound once the filesystem is created. Login to AWS console to verify.
+kubectl get pvc -n emr-data-team-a | grep fsx
+  fsx-dynamic-pvc   Pending                                             fsx            4m56s
+  fsx-static-pvc    Bound     fsx-static-pv   1000Gi     RWX            fsx            4m56s
+
 ```
 
 ## Spark Job Execution - FSx - Static Provisioning
@@ -175,3 +188,19 @@ with module.eks-blueprints.module.emr_on_eks["data_team_b"].null_resource.update
 - emr-containers not present in cli version 2.0.41 Python/3.7.4. For more [details](https://github.com/aws/aws-cli/issues/6162)
   This is fixed in version 2.0.54.
 - Action: aws cli version should be updated to 2.0.54 or later : Execute `pip install --upgrade awscliv2 `
+
+## Issue2: Forbidden! Configured service account doesn't have access
+
+Error:
+
+    io.fabric8.kubernetes.client.KubernetesClientException: Failure executing: PATCH at: https://kubernetes.default.svc/api/v1/namespaces/emr-team-a/pods/createnosaprocessedactions-772b9c81ae56a93d-exec-394. Message: Forbidden!Configured service account doesn't have access. Service account may have been revoked. pods "createnosaprocessedactions-772b9c81ae56a93d-exec-394" is forbidden: User "system:serviceaccount:emr-team-a:emr-containers-sa-spark-driver-682942051493-76simz7hn0n7qw78flb3z0c1ldt10ou9nmbeg8sh29" cannot patch resource "pods" in API group "" in the namespace "emr-team-a".
+
+##### Solution :
+The following script patches the Kubernetes roles created by EMR job execution for given namespace.
+This is a mandatory fix for `EMR6.6/Spark3.2` for missing permissions. This issue will be resolved in future release e.g., EMR6.7 and the patch script may not be required
+Repeat the above tests after applying the patch. This script needs to be run for all the namespaces used by by EMR on EKS Jobs
+
+```sh
+cd examples/analytics/emr-eks-fsx-lustre/fsx_lustre
+python3 emr-eks-sa-fix.py -n "emr-data-team-a"
+```

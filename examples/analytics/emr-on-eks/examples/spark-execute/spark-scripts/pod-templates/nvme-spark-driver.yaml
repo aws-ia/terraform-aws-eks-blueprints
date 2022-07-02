@@ -9,7 +9,7 @@ spec:
       emptyDir: {}
     - name: spark-local-dir-ny-taxi
       hostPath:
-        path: /local1                 # Formatted and mounted by terraform managed node groups; hadoop permissions applied using bootstrap data
+        path: /local1  # Formatted and mounted by terraform managed node groups; hadoop permissions applied using bootstrap data
         type: Directory
 
   nodeSelector:

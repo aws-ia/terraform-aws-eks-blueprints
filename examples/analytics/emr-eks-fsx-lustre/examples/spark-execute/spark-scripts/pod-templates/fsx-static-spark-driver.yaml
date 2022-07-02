@@ -7,7 +7,7 @@ spec:
   volumes:
     - name: spark-local-dir-ny-taxi
       persistentVolumeClaim:
-        claimName: fsx-static-pvc
+        claimName: fsx-static-pvc # Static PVC pre-created by this example terraform template
 
   nodeSelector:
     "NodeGroupType": "spark"

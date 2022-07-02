@@ -57,6 +57,8 @@ locals {
   vpc_cidr = var.vpc_cidr
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
+  storage_class_name = "fsx"
+
   tags = merge(var.tags, {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
@@ -500,6 +502,9 @@ resource "aws_emrcontainers_virtual_cluster" "this" {
       }
     }
   }
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
+  ]
 }
 
 #---------------------------------------------------------------
@@ -545,7 +550,7 @@ resource "aws_fsx_data_repository_association" "example" {
 #---------------------------------------------------------------
 resource "kubectl_manifest" "storage_class" {
   yaml_body = templatefile("${path.module}/fsx_lustre/fsxlustre-storage-class.yaml", {
-    storage_class_name = local.name,
+    storage_class_name = local.storage_class_name,
     subnet_id          = module.vpc.private_subnets[0],
     security_group_id  = aws_security_group.fsx.id
   })
@@ -564,7 +569,7 @@ resource "kubectl_manifest" "static_pv" {
     filesystem_id      = aws_fsx_lustre_file_system.this.id,
     dns_name           = aws_fsx_lustre_file_system.this.dns_name
     mount_name         = aws_fsx_lustre_file_system.this.mount_name,
-    storage_class_name = local.name,
+    storage_class_name = local.storage_class_name,
     storage            = "1000Gi"
   })
 
@@ -583,7 +588,7 @@ resource "kubectl_manifest" "static_pvc" {
     namespace          = "emr-data-team-a"
     pvc_name           = "fsx-static-pvc",
     pv_name            = "fsx-static-pv",
-    storage_class_name = local.name,
+    storage_class_name = local.storage_class_name,
     request_storage    = "1000Gi"
   })
 
@@ -604,9 +609,9 @@ resource "kubectl_manifest" "static_pvc" {
 resource "kubectl_manifest" "dynamic_pvc" {
   yaml_body = templatefile("${path.module}/fsx_lustre/fsxlustre-dynamic-pvc.yaml", {
     namespace          = "emr-data-team-a", # EMR EKS Teams Namespace for job execution
-    claim_name         = "fsx-dynamic-pvc",
-    storage_class_name = local.name, # same name as storage class defined above
-    request_storage    = "2000Gi"    # Creates 2400Gi filesystem for this request
+    pvc_name           = "fsx-dynamic-pvc",
+    storage_class_name = local.storage_class_name,
+    request_storage    = "2000Gi"
   })
 
   depends_on = [

@@ -2,7 +2,7 @@
 
 if [ $# -eq 0 ];
 then
-  echo "$0: Missing arguments EMR_VIRTUAL_CLUSTER_NAME and S3_BUCKET"
+  echo "$0: Missing arguments ENTER_EMR_VIRTUAL_CLUSTER_ID, S3_BUCKET_NAME and EMR_JOB_EXECUTION_ROLE_ARN"
   echo "USAGE: ./emr-eks-spark-amp-amg.sh '<ENTER_EMR_VIRTUAL_CLUSTER_ID>' '<s3://ENTER_BUCKET_NAME>' '<EMR_JOB_EXECUTION_ROLE_ARN>'"
   exit 1
 elif [ $# -gt 3 ];
@@ -38,7 +38,7 @@ EMR_VIRTUAL_CLUSTER_NAME=$(aws emr-containers list-virtual-clusters --query "vir
 # DEFAULT VARIABLES CAN BE MODIFIED
 #--------------------------------------------
 JOB_NAME='taxidata'
-EMR_EKS_RELEASE_LABEL="emr-6.3.0-latest"
+EMR_EKS_RELEASE_LABEL="emr-6.5.0-latest"
 SPARK_JOB_S3_PATH="${S3_BUCKET}/emr_virtual_cluster_name=${EMR_VIRTUAL_CLUSTER_NAME}/namespace=${EMR_VIRTUAL_CLUSTER_NAMESPACE}/job_name=${JOB_NAME}"
 
 #--------------------------------------------

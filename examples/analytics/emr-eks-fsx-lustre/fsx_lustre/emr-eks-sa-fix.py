@@ -7,7 +7,7 @@
 # 3. emr-containers (this is created by eks-blueprints)
 
 # How to run
-# python3 emr-eks-sa-fix.py -n "emr-team-a"  # namespace
+# python3 emr-eks-sa-fix.py -n "emr-data-team-a"  # namespace
 
 import os
 import subprocess as sp
