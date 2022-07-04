@@ -10,18 +10,18 @@ Alternatively, you can port-forward on spark-history-server service. e.g.,  `kub
 
 ### Basic Example
 
-```hcl
+```
 enable_spark_history_server   = true
 spark_history_server_s3a_path = "s3a://<ENTER_S3_BUCKET_NAME>/<PREFIX_FOR_SPARK_EVENT_LOGS>/"
 ```
 
 ### Advanced Example
 
-```hcl
+```
 enable_spark_history_server = true
 
 # IAM policy used by IRSA role. It's recommended to create a dedicated IAM policy to access your s3 bucket
-spark_history_server_irsa_policies = "[<IRSA_POLICY_ARN>]"
+spark_history_server_irsa_policies = ["<IRSA_POLICY_ARN>"]
 
 # NOTE: This block requires passing the helm values.yaml
 # `spark_history_server_s3a_path` won't be used when you pass custom `values.yaml`. s3a path is passed via `sparkHistoryOpts` in `values.yaml`
