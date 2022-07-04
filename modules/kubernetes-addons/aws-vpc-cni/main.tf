@@ -33,6 +33,7 @@ module "irsa_addon" {
     local.cni_ipv6_policy,
     try(var.addon_config.additional_iam_policies, [])
   )
+  timeouts = var.timeouts
 }
 
 resource "aws_iam_policy" "cni_ipv6_policy" {

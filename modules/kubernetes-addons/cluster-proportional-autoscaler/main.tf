@@ -5,4 +5,5 @@ module "helm_addon" {
   set_values        = local.set_values
   irsa_config       = null
   addon_context     = var.addon_context
+  timeouts          = var.timeouts
 }

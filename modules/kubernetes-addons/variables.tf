@@ -902,3 +902,9 @@ variable "external_secrets_helm_config" {
   default     = {}
   description = "External Secrets operator Helm Chart config"
 }
+
+variable "timeouts" {
+  description = "Define maximum timeout for creating, updating, and deleting resources"
+  type        = map(string)
+  default     = {}
+}

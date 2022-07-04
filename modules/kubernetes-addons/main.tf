@@ -6,6 +6,7 @@ module "aws_vpc_cni" {
   addon_config  = var.amazon_eks_vpc_cni_config
   addon_context = local.addon_context
   enable_ipv6   = var.enable_ipv6
+  timeouts      = var.timeouts
 }
 
 module "aws_coredns" {
@@ -36,6 +37,7 @@ module "aws_coredns" {
       image_registry = local.amazon_container_image_registry_uris[data.aws_region.current.name]
     }
   )
+  timeouts = var.timeouts
 }
 
 module "aws_kube_proxy" {
@@ -50,6 +52,7 @@ module "aws_ebs_csi_driver" {
   source        = "./aws-ebs-csi-driver"
   addon_config  = var.amazon_eks_aws_ebs_csi_driver_config
   addon_context = local.addon_context
+  timeouts      = var.timeouts
 }
 
 #-----------------Kubernetes Add-ons----------------------
@@ -61,6 +64,7 @@ module "agones" {
   eks_worker_security_group_id = var.eks_worker_security_group_id
   manage_via_gitops            = var.argocd_manage_add_ons
   addon_context                = local.addon_context
+  timeouts                     = var.timeouts
 }
 
 module "argocd" {
@@ -71,6 +75,7 @@ module "argocd" {
   admin_password_secret_name = var.argocd_admin_password_secret_name
   addon_config               = { for k, v in local.argocd_addon_config : k => v if v != null }
   addon_context              = local.addon_context
+  timeouts                   = var.timeouts
 }
 
 module "argo_rollouts" {
@@ -79,6 +84,7 @@ module "argo_rollouts" {
   helm_config       = var.argo_rollouts_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+  timeouts          = var.timeouts
 }
 
 module "aws_efs_csi_driver" {
@@ -87,6 +93,7 @@ module "aws_efs_csi_driver" {
   helm_config       = var.aws_efs_csi_driver_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+  timeouts          = var.timeouts
 }
 
 module "aws_for_fluent_bit" {
@@ -99,6 +106,7 @@ module "aws_for_fluent_bit" {
   cw_log_group_kms_key_arn = var.aws_for_fluentbit_cw_log_group_kms_key_arn
   manage_via_gitops        = var.argocd_manage_add_ons
   addon_context            = local.addon_context
+  timeouts                 = var.timeouts
 }
 
 module "aws_cloudwatch_metrics" {
@@ -108,6 +116,7 @@ module "aws_cloudwatch_metrics" {
   irsa_policies     = var.aws_cloudwatch_metrics_irsa_policies
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+  timeouts          = var.timeouts
 }
 
 module "aws_load_balancer_controller" {
@@ -116,6 +125,7 @@ module "aws_load_balancer_controller" {
   helm_config       = var.aws_load_balancer_controller_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = merge(local.addon_context, { default_repository = local.amazon_container_image_registry_uris[data.aws_region.current.name] })
+  timeouts          = var.timeouts
 }
 
 module "aws_node_termination_handler" {
@@ -125,6 +135,7 @@ module "aws_node_termination_handler" {
   irsa_policies           = var.aws_node_termination_handler_irsa_policies
   autoscaling_group_names = var.auto_scaling_group_names
   addon_context           = local.addon_context
+  timeouts                = var.timeouts
 }
 
 module "cert_manager" {
@@ -137,6 +148,7 @@ module "cert_manager" {
   domain_names                = var.cert_manager_domain_names
   install_letsencrypt_issuers = var.cert_manager_install_letsencrypt_issuers
   letsencrypt_email           = var.cert_manager_letsencrypt_email
+  timeouts                    = var.timeouts
 }
 
 module "cluster_autoscaler" {
@@ -148,6 +160,7 @@ module "cluster_autoscaler" {
   helm_config         = var.cluster_autoscaler_helm_config
   manage_via_gitops   = var.argocd_manage_add_ons
   addon_context       = local.addon_context
+  timeouts            = var.timeouts
 }
 
 module "coredns_autoscaler" {
@@ -156,6 +169,7 @@ module "coredns_autoscaler" {
   helm_config       = var.coredns_autoscaler_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+  timeouts          = var.timeouts
 }
 
 module "crossplane" {
@@ -167,6 +181,7 @@ module "crossplane" {
   account_id       = data.aws_caller_identity.current.account_id
   aws_partition    = data.aws_partition.current.id
   addon_context    = local.addon_context
+  timeouts         = var.timeouts
 }
 
 module "external_dns" {
@@ -178,6 +193,7 @@ module "external_dns" {
   addon_context     = local.addon_context
   domain_name       = var.eks_cluster_domain
   private_zone      = var.external_dns_private_zone
+  timeouts          = var.timeouts
 }
 
 module "fargate_fluentbit" {
@@ -193,6 +209,7 @@ module "ingress_nginx" {
   helm_config       = var.ingress_nginx_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+  timeouts          = var.timeouts
 }
 
 module "karpenter" {
@@ -203,6 +220,7 @@ module "karpenter" {
   node_iam_instance_profile = var.karpenter_node_iam_instance_profile
   manage_via_gitops         = var.argocd_manage_add_ons
   addon_context             = local.addon_context
+  timeouts                  = var.timeouts
 }
 
 module "keda" {
@@ -212,6 +230,7 @@ module "keda" {
   irsa_policies     = var.keda_irsa_policies
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+  timeouts          = var.timeouts
 }
 
 module "kubernetes_dashboard" {
@@ -220,6 +239,7 @@ module "kubernetes_dashboard" {
   helm_config       = var.kubernetes_dashboard_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+  timeouts          = var.timeouts
 }
 
 module "metrics_server" {
@@ -228,6 +248,7 @@ module "metrics_server" {
   helm_config       = var.metrics_server_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+  timeouts          = var.timeouts
 }
 
 module "ondat" {
@@ -256,6 +277,7 @@ module "prometheus" {
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
   manage_via_gitops                    = var.argocd_manage_add_ons
   addon_context                        = local.addon_context
+  timeouts                             = var.timeouts
 }
 
 module "spark_k8s_operator" {
@@ -264,6 +286,7 @@ module "spark_k8s_operator" {
   helm_config       = var.spark_k8s_operator_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+  timeouts          = var.timeouts
 }
 
 module "tetrate_istio" {
@@ -290,6 +313,7 @@ module "traefik" {
   helm_config       = var.traefik_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+  timeouts          = var.timeouts
 }
 
 module "vault" {
@@ -310,6 +334,7 @@ module "vpa" {
   helm_config       = var.vpa_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+  timeouts          = var.timeouts
 }
 
 module "yunikorn" {
@@ -318,6 +343,7 @@ module "yunikorn" {
   helm_config       = var.yunikorn_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+  timeouts          = var.timeouts
 }
 
 module "csi_secrets_store_provider_aws" {
@@ -326,6 +352,7 @@ module "csi_secrets_store_provider_aws" {
   helm_config       = var.csi_secrets_store_provider_aws_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+  timeouts          = var.timeouts
 }
 
 module "secrets_store_csi_driver" {
@@ -334,6 +361,7 @@ module "secrets_store_csi_driver" {
   helm_config       = var.secrets_store_csi_driver_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+  timeouts          = var.timeouts
 }
 module "aws_privateca_issuer" {
   count                   = var.enable_aws_privateca_issuer ? 1 : 0
@@ -343,6 +371,7 @@ module "aws_privateca_issuer" {
   addon_context           = local.addon_context
   aws_privateca_acmca_arn = var.aws_privateca_acmca_arn
   irsa_policies           = var.aws_privateca_issuer_irsa_policies
+  timeouts                = var.timeouts
 }
 
 module "velero" {
@@ -353,6 +382,7 @@ module "velero" {
   addon_context     = local.addon_context
   irsa_policies     = var.velero_irsa_policies
   backup_s3_bucket  = var.velero_backup_s3_bucket
+  timeouts          = var.timeouts
 }
 
 module "opentelemetry_operator" {
@@ -374,6 +404,7 @@ module "opentelemetry_operator" {
   helm_config                   = var.opentelemetry_operator_helm_config
 
   addon_context = local.addon_context
+  timeouts      = var.timeouts
 }
 
 module "adot_collector_java" {
@@ -389,6 +420,7 @@ module "adot_collector_java" {
   depends_on = [
     module.opentelemetry_operator
   ]
+  timeouts = var.timeouts
 }
 
 module "adot_collector_haproxy" {
@@ -404,6 +436,7 @@ module "adot_collector_haproxy" {
   depends_on = [
     module.opentelemetry_operator
   ]
+  timeouts = var.timeouts
 }
 
 module "adot_collector_memcached" {
@@ -419,6 +452,7 @@ module "adot_collector_memcached" {
   depends_on = [
     module.opentelemetry_operator
   ]
+  timeouts = var.timeouts
 }
 
 module "adot_collector_nginx" {
@@ -434,6 +468,7 @@ module "adot_collector_nginx" {
   depends_on = [
     module.opentelemetry_operator
   ]
+  timeouts = var.timeouts
 }
 
 module "external_secrets" {
@@ -441,4 +476,5 @@ module "external_secrets" {
   source        = "./external-secrets"
   helm_config   = var.external_secrets_helm_config
   addon_context = local.addon_context
+  timeouts      = var.timeouts
 }

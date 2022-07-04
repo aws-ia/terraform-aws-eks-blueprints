@@ -48,3 +48,9 @@ variable "aws_partition" {
   description = "AWS Identifier of the current partition e.g., aws or aws-cn"
   type        = string
 }
+
+variable "timeouts" {
+  description = "Define maximum timeout for creating, updating, and deleting resources"
+  type        = map(string)
+  default     = {}
+}

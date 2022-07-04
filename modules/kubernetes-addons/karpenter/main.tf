@@ -5,6 +5,7 @@ module "helm_addon" {
   set_values        = local.set_values
   irsa_config       = local.irsa_config
   addon_context     = var.addon_context
+  timeouts          = var.timeouts
 }
 
 resource "aws_iam_policy" "karpenter" {

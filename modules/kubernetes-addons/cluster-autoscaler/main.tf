@@ -45,6 +45,7 @@ module "helm_addon" {
   }
 
   addon_context = var.addon_context
+  timeouts      = var.timeouts
 }
 
 data "aws_iam_policy_document" "cluster_autoscaler" {
