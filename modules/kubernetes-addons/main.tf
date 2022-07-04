@@ -258,6 +258,16 @@ module "prometheus" {
   addon_context                        = local.addon_context
 }
 
+module "spark_history_server" {
+  count             = var.enable_spark_history_server ? 1 : 0
+  source            = "./spark-history-server"
+  helm_config       = var.spark_history_server_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+  irsa_policies     = var.spark_history_server_irsa_policies
+  s3a_path           = var.spark_history_server_s3a_path
+}
+
 module "spark_k8s_operator" {
   count             = var.enable_spark_k8s_operator ? 1 : 0
   source            = "./spark-k8s-operator"
