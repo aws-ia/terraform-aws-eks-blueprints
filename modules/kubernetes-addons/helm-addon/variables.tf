@@ -49,3 +49,9 @@ variable "addon_context" {
     irsa_iam_permissions_boundary  = optional(string)
   })
 }
+
+variable "timeouts" {
+  description = "Define maximum timeout for creating, updating, and deleting resources"
+  type        = map(string)
+  default     = {}
+}

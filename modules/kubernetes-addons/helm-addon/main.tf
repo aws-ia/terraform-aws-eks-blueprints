@@ -67,4 +67,5 @@ module "irsa" {
   kubernetes_service_account        = var.irsa_config.kubernetes_service_account
   irsa_iam_policies                 = var.irsa_config.irsa_iam_policies
   addon_context                     = var.addon_context
+  timeouts                          = var.timeouts
 }

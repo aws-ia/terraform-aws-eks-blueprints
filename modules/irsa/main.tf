@@ -3,6 +3,10 @@ resource "kubernetes_namespace_v1" "irsa" {
   metadata {
     name = var.kubernetes_namespace
   }
+
+  timeouts {
+    delete = local.timeouts.delete
+  }
 }
 
 resource "kubernetes_service_account_v1" "irsa" {
@@ -14,6 +18,10 @@ resource "kubernetes_service_account_v1" "irsa" {
   }
 
   automount_service_account_token = true
+
+  timeouts {
+    create = local.timeouts.create
+  }
 }
 
 resource "aws_iam_role" "irsa" {
