@@ -246,7 +246,7 @@ module "vpc" {
   tags = local.tags
 }
 
-
+#tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
 resource "aws_s3_bucket" "this" {
   bucket_prefix = format("%s-%s", "spark", data.aws_caller_identity.current.account_id)
   tags          = local.tags
