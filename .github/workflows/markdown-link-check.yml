@@ -12,7 +12,7 @@ on:
       - main
     paths:
       - "**/*.md"
-      
+
 jobs:
   markdown-link-check:
     runs-on: ubuntu-latest
