@@ -12,7 +12,7 @@ This example solution has been developed to work around these current limitation
 - AWS EKS Fargate Profiles for the `default` namespace and `kube-system` namespace. This covers the two core namespaces, including the namespace used by the `coredns`, `vpc-cni`, and `kube-proxy` addons, while additional profiles can be added as needed.
 - AWS EKS managed addons `vpc-cni` and `kube-proxy`
 - Self-managed CoreDNS addon deployed through a Helm chart. The default CoreDNS deployment provided by AWS EKS is removed and replaced with a self-managed CoreDNS deployment, while the `kube-dns` service is updated to allow Helm to assume control.
-- AWS Load Balancer Controller add-on deployed throuh a Helm chart. The defaut AWS Load Balancer Controller add-on configuration is overriden so that it can be deployed on Fargate compute.
+- AWS Load Balancer Controller add-on deployed through a Helm chart. The default AWS Load Balancer Controller add-on configuration is overridden so that it can be deployed on Fargate compute.
 - An optional [sample-app](./sample-app) is also provided which demonstrates how to configure the Ingress so that application can be accessed over the internet. The sample application deployment can be turned on by setting the `deploy_sample_app=true` when using `terraform apply`.
 
 ⚠️ The management of CoreDNS as demonstrated in this example is intended to be used on new clusters. Existing clusters with existing workloads will see downtime if the CoreDNS deployment is modified as shown here.
@@ -51,7 +51,7 @@ The following command will update the `kubeconfig` on your local machine and all
 1. Run `update-kubeconfig` command:
 
 ```sh
-aws eks --region <REGION> update-kubeconfig --name <CLSUTER_NAME>
+aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
 ```
 
 2. Test by listing all the pods running currently. The CoreDNS pod should reach a status of `Running` after approximately 60 seconds:
