@@ -5,8 +5,10 @@ data "aws_iam_policy_document" "aws_efs_csi_driver" {
     resources = ["*"]
 
     actions = [
+      "ec2:DescribeAvailabilityZones",
       "elasticfilesystem:DescribeAccessPoints",
       "elasticfilesystem:DescribeFileSystems",
+      "elasticfilesystem:DescribeMountTargets"
     ]
   }
 
