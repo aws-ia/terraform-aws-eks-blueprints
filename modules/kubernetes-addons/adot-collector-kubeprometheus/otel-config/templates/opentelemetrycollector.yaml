@@ -12,7 +12,8 @@ spec:
         config:
           global:
             scrape_interval: {{ .Values.scrapeInterval }}
-            scrape_timeout: {{ .Values.scrapeTimeout }}         
+            scrape_timeout: {{ .Values.scrapeTimeout }}
+ 
           scrape_configs:
             - job_name: serviceMonitor/default/kube-prometheus-stack-prometheus-node-exporter/0
               honor_timestamps: true
@@ -1493,17 +1494,6 @@ spec:
                 regex: (.*)
                 target_label: container
                 replacement: $$1
-                action: replace
-              - source_labels: [__meta_kubernetes_service_name]
-                separator: ;
-                regex: (.*)
-                target_label: job
-                replacement: ${1}
-                action: replace
-              - separator: ;
-                regex: (.*)
-                target_label: endpoint
-                replacement: http-web
                 action: replace
               - source_labels: [__address__]
                 separator: ;
