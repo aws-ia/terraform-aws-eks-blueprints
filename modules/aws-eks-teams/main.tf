@@ -228,7 +228,7 @@ resource "aws_iam_policy" "platform_team" {
   name        = "${var.eks_cluster_id}-PlatformTeamEKSAccess"
   path        = "/"
   description = "Platform Team EKS Access IAM Policy"
-  policy      = var.platform_team_iam_policy == "" ? data.aws_iam_policy_document.platform_team_default.json : var.platform_team_iam_policy
+  policy      = var.platform_team_iam_policy == "{}" ? data.aws_iam_policy_document.platform_team_default.json : var.platform_team_iam_policy
 
   tags = var.tags
 }

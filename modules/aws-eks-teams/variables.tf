@@ -22,15 +22,15 @@ variable "iam_role_permissions_boundary" {
 }
 
 variable "application_team_iam_policy" {
-  description = "IAM policy for application team IAM role"
+  description = "IAM policy for application team IAM role (json)"
   type        = string
-  default     = ""
+  default     = "{}"
 }
 
 variable "platform_team_iam_policy" {
-  description = "IAM policy for platform team IAM role"
+  description = "IAM policy for platform team IAM role (json)"
   type        = string
-  default     = ""
+  default     = "{}"
 }
 
 variable "tags" {
