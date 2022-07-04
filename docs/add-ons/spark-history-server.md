@@ -2,7 +2,7 @@
 
 [Spark Web UI](https://spark.apache.org/docs/latest/web-ui.html#web-ui) can be enabled by this Add-on.
 This Add-on deploys Spark History Server and fetches the Spark Event logs stored in S3. Spark Web UI can be exposed via Ingress and LoadBalancer `with values.yaml`.
-Alternatively, you can port-forward on spark-history-server service. e.g.,  `kubectl port-forward services/spark-history-server 18085:18080 -n spark-history-server`
+Alternatively, you can port-forward on spark-history-server service. e.g.,  `kubectl port-forward services/spark-history-server 18085:80 -n spark-history-server`
 
 ## Usage
 

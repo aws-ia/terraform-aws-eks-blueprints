@@ -265,7 +265,7 @@ module "spark_history_server" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
   irsa_policies     = var.spark_history_server_irsa_policies
-  s3a_path           = var.spark_history_server_s3a_path
+  s3a_path          = var.spark_history_server_s3a_path
 }
 
 module "spark_k8s_operator" {

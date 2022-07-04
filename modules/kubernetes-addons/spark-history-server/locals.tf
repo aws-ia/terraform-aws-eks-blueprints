@@ -20,7 +20,7 @@ locals {
   set_values = [{
     name  = "serviceAccount.name"
     value = local.name
-  },
+    },
     {
       name  = "serviceAccount.create"
       value = false
@@ -36,8 +36,8 @@ locals {
   }
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
-    s3a_path      = var.s3a_path
-    operating_system     = "linux"
+    s3a_path         = var.s3a_path
+    operating_system = "linux"
   })]
 
   argocd_gitops_config = {

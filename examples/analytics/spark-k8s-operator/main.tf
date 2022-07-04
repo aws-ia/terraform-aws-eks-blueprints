@@ -38,8 +38,9 @@ locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
-  vpc_cidr = "10.0.0.0/16"
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  vpc_cidr  = "10.0.0.0/16"
+  azs       = slice(data.aws_availability_zones.available.names, 0, 3)
+  s3_prefix = "logs/"
 
   tags = {
     Blueprint  = local.name
@@ -161,18 +162,18 @@ module "eks_blueprints_kubernetes_addons" {
   # This example is using a managed s3 readonly policy. It' recommended to create your own IAM Policy
   spark_history_server_irsa_policies = ["arn:${data.aws_partition.current.id}:iam::aws:policy/AmazonS3ReadOnlyAccess"]
   spark_history_server_helm_config = {
-    name             = "spark-history-server"
-    chart            = "spark-history-server"
-    repository       = "https://hyper-mesh.github.io/spark-history-server"
-    version          = "1.0.0"
-    namespace        = "spark-history-server"
-    timeout          = "300"
+    name       = "spark-history-server"
+    chart      = "spark-history-server"
+    repository = "https://hyper-mesh.github.io/spark-history-server"
+    version    = "1.0.0"
+    namespace  = "spark-history-server"
+    timeout    = "300"
     values = [
       <<-EOT
         serviceAccount:
           create: false
 
-        sparkHistoryOpts: "-Dspark.history.fs.logDirectory=s3a://${aws_s3_bucket.this.id}/logs/"
+        sparkHistoryOpts: "-Dspark.history.fs.logDirectory=s3a://${aws_s3_bucket.this.id}/${local.s3_prefix}"
 
         # Update spark conf according to your needs
         sparkConf: |-
@@ -275,4 +276,12 @@ resource "aws_s3_bucket_public_access_block" "this" {
   block_public_policy     = true
   restrict_public_buckets = true
   ignore_public_acls      = true
+}
+
+# Creating an s3 bucket prefix. Ensure you copy spark event logs under this path to visualize the dags
+resource "aws_s3_bucket_object" "this" {
+  bucket = aws_s3_bucket.this.id
+  acl    = "private"
+  key    = local.s3_prefix
+  source = "/dev/null"
 }
