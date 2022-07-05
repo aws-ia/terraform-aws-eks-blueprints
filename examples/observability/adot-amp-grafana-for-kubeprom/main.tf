@@ -1519,7 +1519,7 @@ module "managed_prometheus" {
               labels:
                  severity: critical
               annotations:
-                message: etcd cluster "{{ $labels.job }}": insufficient members ({{ $value }}).
+                message: etcd cluster "{{ $labels.job }}":insufficient members ({{ $value }}).
         - name: etcd-02   
           rules:
             - alert: etcdHighNumberOfLeaderChanges
@@ -1528,7 +1528,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                message: etcd cluster "{{ $labels.job }}": instance {{ $labels.instance }} has seen {{ $value }} leader changes within the last hour.
+                message: etcd cluster "{{ $labels.job }}":instance {{ $labels.instance }} has seen {{ $value }} leader changes within the last hour.
         - name: etcd-03   
           rules:
             - alert: etcdNoLeader
@@ -1537,7 +1537,7 @@ module "managed_prometheus" {
               labels:
                  severity: critical
               annotations:
-                message: message: etcd cluster "{{ $labels.job }}": member {{ $labels.instance }} has no leader.
+                message: message:etcd cluster "{{ $labels.job }}":member {{ $labels.instance }} has no leader.
         - name: etcd-04   
           rules:
             - alert: etcdHighNumberOfFailedGRPCRequests
@@ -1546,7 +1546,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                message: etcd cluster "{{ $labels.job }}": {{ $value }}% of requests for {{ $labels.grpc_method }} failed on etcd instance {{ $labels.instance }}.
+                message: etcd cluster "{{ $labels.job }}":{{ $value }}% of requests for {{ $labels.grpc_method }} failed on etcd instance {{ $labels.instance }}.
         - name: etcd-05   
           rules:
             - alert: etcdGRPCRequestsSlow
@@ -1555,7 +1555,7 @@ module "managed_prometheus" {
               labels:
                  severity: critical
               annotations:
-                message: etcd cluster "{{ $labels.job }}": gRPC requests to {{ $labels.grpc_method }} are taking {{ $value }}s on etcd instance {{ $labels.instance }}.
+                message: etcd cluster "{{ $labels.job }}":gRPC requests to {{ $labels.grpc_method }} are taking {{ $value }}s on etcd instance {{ $labels.instance }}.
         - name: etcd-06   
           rules:
             - alert: etcdMemberCommunicationSlow
@@ -1564,7 +1564,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                message: message: etcd cluster "{{ $labels.job }}": member communication with {{ $labels.To }} is taking {{ $value }}s on etcd instance {{ $labels.instance }}.
+                message: message:etcd cluster "{{ $labels.job }}":member communication with {{ $labels.To }} is taking {{ $value }}s on etcd instance {{ $labels.instance }}.
         - name: etcd-07   
           rules:
             - alert: etcdHighNumberOfFailedProposals
@@ -1573,7 +1573,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                message: etcd cluster "{{ $labels.job }}": {{ $value }} proposal failures within the last hour on etcd instance {{ $labels.instance }}.
+                message: etcd cluster "{{ $labels.job }}":{{ $value }} proposal failures within the last hour on etcd instance {{ $labels.instance }}.
         - name: etcd-08   
           rules:
             - alert: etcdHighFsyncDurations
@@ -1582,7 +1582,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                message: etcd cluster "{{ $labels.job }}": 99th percentile fync durations are {{ $value }}s on etcd instance {{ $labels.instance }}.
+                message: etcd cluster "{{ $labels.job }}":99th percentile fync durations are {{ $value }}s on etcd instance {{ $labels.instance }}.
         - name: etcd-09  
           rules:
             - alert: etcdHighCommitDurations
@@ -1591,7 +1591,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                message: etcd cluster "{{ $labels.job }}": 99th percentile commit durations {{ $value }}s on etcd instance {{ $labels.instance }}.
+                message: etcd cluster "{{ $labels.job }}":99th percentile commit durations {{ $value }}s on etcd instance {{ $labels.instance }}.
         - name: etcd-10   
           rules:
             - alert: etcdHighNumberOfFailedHTTPRequests
@@ -1600,7 +1600,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                message: {{ $value }}% of requests for {{ $labels.method }} failed on etcd instance {{ $labels.instance }}
+                message: The {{ $value }}% of requests for {{ $labels.method }} failed on etcd instance {{ $labels.instance }}
         - name: etcd-11   
           rules:
             - alert: etcdHighNumberOfFailedHTTPRequests
@@ -1609,7 +1609,7 @@ module "managed_prometheus" {
               labels:
                  severity: warning
               annotations:
-                message: {{ $value }}% of requests for {{ $labels.method }} failed on etcd instance {{ $labels.instance }}.
+                message: The {{ $value }}% of requests for {{ $labels.method }} failed on etcd instance {{ $labels.instance }}.
         - name: etcd-12
           rules:
             - alert: etcdHTTPRequestsSlow
