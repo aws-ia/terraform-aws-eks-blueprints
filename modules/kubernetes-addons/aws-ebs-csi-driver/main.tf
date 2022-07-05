@@ -27,6 +27,8 @@ module "irsa_addon" {
   kubernetes_service_account        = "ebs-csi-controller-sa"
   irsa_iam_policies                 = concat([aws_iam_policy.aws_ebs_csi_driver[0].arn], try(var.addon_config.additional_iam_policies, []))
   addon_context                     = var.addon_context
+  use_kubernetes_provider           = var.use_kubernetes_provider
+  use_kubectl_provider              = var.use_kubectl_provider
 }
 
 resource "aws_iam_policy" "aws_ebs_csi_driver" {

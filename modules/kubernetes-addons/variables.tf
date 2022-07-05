@@ -902,3 +902,15 @@ variable "external_secrets_helm_config" {
   default     = {}
   description = "External Secrets operator Helm Chart config"
 }
+
+variable "use_kubernetes_provider" {
+  description = "Use kubernetes provider"
+  type        = bool
+  default     = true
+}
+
+variable "use_kubectl_provider" {
+  description = "Use kubectl provider"
+  type        = bool
+  default     = false
+}

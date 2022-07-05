@@ -6,10 +6,12 @@ resource "kubernetes_namespace_v1" "crossplane" {
 }
 
 module "helm_addon" {
-  source        = "../helm-addon"
-  helm_config   = local.helm_config
-  irsa_config   = null
-  addon_context = var.addon_context
+  source                  = "../helm-addon"
+  helm_config             = local.helm_config
+  irsa_config             = null
+  addon_context           = var.addon_context
+  use_kubernetes_provider = var.use_kubernetes_provider
+  use_kubectl_provider    = var.use_kubectl_provider
 
   depends_on = [kubernetes_namespace_v1.crossplane]
 }
@@ -51,6 +53,8 @@ module "aws_provider_irsa" {
   kubernetes_service_account        = "${local.aws_provider_sa}-*"
   irsa_iam_policies                 = concat([aws_iam_policy.aws_provider[0].arn], var.aws_provider.additional_irsa_policies)
   addon_context                     = var.addon_context
+  use_kubernetes_provider           = var.use_kubernetes_provider
+  use_kubectl_provider              = var.use_kubectl_provider
 
   depends_on = [kubectl_manifest.aws_provider]
 }
@@ -103,6 +107,8 @@ module "jet_aws_provider_irsa" {
   kubernetes_service_account        = "${local.jet_aws_provider_sa}-*"
   irsa_iam_policies                 = concat([aws_iam_policy.jet_aws_provider[0].arn], var.jet_aws_provider.additional_irsa_policies)
   addon_context                     = var.addon_context
+  use_kubernetes_provider           = var.use_kubernetes_provider
+  use_kubectl_provider              = var.use_kubectl_provider
 
   depends_on = [kubectl_manifest.jet_aws_provider]
 }

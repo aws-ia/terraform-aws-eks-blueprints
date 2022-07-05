@@ -51,7 +51,9 @@ module "helm_addon" {
   }
 
   # Blueprints
-  addon_context = var.addon_context
+  addon_context           = var.addon_context
+  use_kubernetes_provider = var.use_kubernetes_provider
+  use_kubectl_provider    = var.use_kubectl_provider
 }
 
 # https://github.com/vmware-tanzu/velero-plugin-for-aws#option-1-set-permissions-with-an-iam-user

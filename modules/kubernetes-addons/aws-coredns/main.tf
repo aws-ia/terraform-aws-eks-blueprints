@@ -62,6 +62,8 @@ module "helm_addon" {
       value = true
     }
   ]
+  use_kubernetes_provider = var.use_kubernetes_provider
+  use_kubectl_provider    = var.use_kubectl_provider
 
   # Blueprints
   addon_context = var.addon_context

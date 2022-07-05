@@ -33,6 +33,8 @@ module "irsa_addon" {
     local.cni_ipv6_policy,
     try(var.addon_config.additional_iam_policies, [])
   )
+  use_kubernetes_provider = var.use_kubernetes_provider
+  use_kubectl_provider    = var.use_kubectl_provider
 }
 
 resource "aws_iam_policy" "cni_ipv6_policy" {

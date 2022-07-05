@@ -37,3 +37,15 @@ variable "enable_opentelemetry_operator" {
   type        = bool
   default     = false
 }
+
+variable "use_kubernetes_provider" {
+  description = "Use kubernetes provider"
+  type        = bool
+  default     = true
+}
+
+variable "use_kubectl_provider" {
+  description = "Use kubectl provider"
+  type        = bool
+  default     = false
+}

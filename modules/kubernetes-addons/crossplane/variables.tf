@@ -48,3 +48,15 @@ variable "aws_partition" {
   description = "AWS Identifier of the current partition e.g., aws or aws-cn"
   type        = string
 }
+
+variable "use_kubernetes_provider" {
+  description = "Use kubernetes provider"
+  type        = bool
+  default     = true
+}
+
+variable "use_kubectl_provider" {
+  description = "Use kubectl provider"
+  type        = bool
+  default     = false
+}

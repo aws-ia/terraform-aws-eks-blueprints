@@ -58,5 +58,7 @@ module "helm_addon" {
     irsa_iam_policies                 = ["arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonPrometheusRemoteWriteAccess"]
   }
 
-  addon_context = var.addon_context
+  addon_context           = var.addon_context
+  use_kubernetes_provider = var.use_kubernetes_provider
+  use_kubectl_provider    = var.use_kubectl_provider
 }

@@ -1,9 +1,11 @@
 module "helm_addon" {
-  source        = "../helm-addon"
-  helm_config   = local.helm_config
-  irsa_config   = local.irsa_config
-  addon_context = var.addon_context
-  set_values    = local.set_values
+  source                  = "../helm-addon"
+  helm_config             = local.helm_config
+  irsa_config             = local.irsa_config
+  addon_context           = var.addon_context
+  set_values              = local.set_values
+  use_kubernetes_provider = var.use_kubernetes_provider
+  use_kubectl_provider    = var.use_kubectl_provider
 }
 
 resource "aws_autoscaling_lifecycle_hook" "aws_node_termination_handler_hook" {

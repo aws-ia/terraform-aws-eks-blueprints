@@ -61,8 +61,10 @@ module "helm_addon" {
     }
   ] : []
 
-  irsa_config   = null
-  addon_context = var.addon_context
+  irsa_config             = null
+  addon_context           = var.addon_context
+  use_kubernetes_provider = var.use_kubernetes_provider
+  use_kubectl_provider    = var.use_kubectl_provider
 }
 
 resource "kubernetes_namespace_v1" "prometheus" {
@@ -111,6 +113,8 @@ module "irsa_amp_ingest" {
   kubernetes_service_account = local.ingest_service_account
   irsa_iam_policies          = [aws_iam_policy.ingest[0].arn]
   addon_context              = var.addon_context
+  use_kubernetes_provider    = var.use_kubernetes_provider
+  use_kubectl_provider       = var.use_kubectl_provider
 }
 
 # ------------------------------------------
@@ -151,4 +155,6 @@ module "irsa_amp_query" {
   kubernetes_service_account = "amp-query"
   irsa_iam_policies          = [aws_iam_policy.query[0].arn]
   addon_context              = var.addon_context
+  use_kubernetes_provider    = var.use_kubernetes_provider
+  use_kubectl_provider       = var.use_kubectl_provider
 }

@@ -200,6 +200,8 @@ module "cluster_secretstore_role" {
   create_kubernetes_namespace = false
   kubernetes_service_account  = local.cluster_secretstore_sa
   irsa_iam_policies           = [aws_iam_policy.cluster_secretstore.arn]
+  use_kubernetes_provider     = var.use_kubernetes_provider
+  use_kubectl_provider        = var.use_kubectl_provider
 
   addon_context = {
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
@@ -306,6 +308,8 @@ module "secretstore_role" {
   create_kubernetes_namespace = false
   kubernetes_service_account  = local.secretstore_sa
   irsa_iam_policies           = [aws_iam_policy.secretstore.arn]
+  use_kubernetes_provider     = var.use_kubernetes_provider
+  use_kubectl_provider        = var.use_kubectl_provider
 
   addon_context = {
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id

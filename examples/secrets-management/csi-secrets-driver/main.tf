@@ -160,6 +160,8 @@ module "iam_role_service_account" {
   kubernetes_namespace       = local.application
   kubernetes_service_account = "${local.application}-sa"
   irsa_iam_policies          = [aws_iam_policy.this.arn]
+  use_kubernetes_provider    = var.use_kubernetes_provider
+  use_kubectl_provider       = var.use_kubectl_provider
 
   depends_on = [module.eks_blueprints]
 }

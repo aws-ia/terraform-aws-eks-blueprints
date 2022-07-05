@@ -44,7 +44,9 @@ module "helm_addon" {
     irsa_iam_policies                 = [aws_iam_policy.cluster_autoscaler.arn]
   }
 
-  addon_context = var.addon_context
+  addon_context           = var.addon_context
+  use_kubernetes_provider = var.use_kubernetes_provider
+  use_kubectl_provider    = var.use_kubectl_provider
 }
 
 data "aws_iam_policy_document" "cluster_autoscaler" {
