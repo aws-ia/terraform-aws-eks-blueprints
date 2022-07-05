@@ -38,14 +38,14 @@ spec:
                 replacement: $$1
                 action: keep
               kubernetes_sd_configs:
-              - role: endpoints
-                kubeconfig_file: ""
-                follow_redirects: true
-                enable_http2: true
-                namespaces:
-                  own_namespace: false
-                  names:
-                  - default    
+                - role: endpoints
+                  kubeconfig_file: ""
+                  follow_redirects: true
+                  enable_http2: true
+                  namespaces:
+                    own_namespace: false
+                    names:
+                    - default    
           scrape_configs:
             - job_name: serviceMonitor/default/kube-prometheus-stack-prometheus-node-exporter/0
               honor_timestamps: true
@@ -143,14 +143,14 @@ spec:
                 replacement: $$1
                 action: keep
               kubernetes_sd_configs:
-              - role: endpoints
-                kubeconfig_file: ""
-                follow_redirects: true
-                enable_http2: true
-                namespaces:
-                  own_namespace: false
-                  names:
-                  - default          
+                - role: endpoints
+                  kubeconfig_file: ""
+                  follow_redirects: true
+                  enable_http2: true
+                  namespaces:
+                    own_namespace: false
+                    names:
+                    - default          
             - job_name: serviceMonitor/default/kube-prometheus-stack-prometheus/0
               honor_timestamps: true
               scrape_interval: 30s
@@ -246,14 +246,14 @@ spec:
                 replacement: $$1
                 action: keep
               kubernetes_sd_configs:
-              - role: endpoints
-                kubeconfig_file: ""
-                follow_redirects: true
-                enable_http2: true
-                namespaces:
-                  own_namespace: false
-                  names:
-                  - default          
+                - role: endpoints
+                  kubeconfig_file: ""
+                  follow_redirects: true
+                  enable_http2: true
+                  namespaces:
+                    own_namespace: false
+                    names:
+                    - default          
             - job_name: serviceMonitor/default/kube-prometheus-stack-operator/0
               honor_labels: true
               honor_timestamps: true
@@ -349,14 +349,14 @@ spec:
                 replacement: $$1
                 action: keep
               kubernetes_sd_configs:
-              - role: endpoints
-                kubeconfig_file: ""
-                follow_redirects: true
-                enable_http2: true
-                namespaces:
-                  own_namespace: false
-                  names:
-                  - default          
+                - role: endpoints
+                  kubeconfig_file: ""
+                  follow_redirects: true
+                  enable_http2: true
+                  namespaces:
+                    own_namespace: false
+                    names:
+                    - default          
             - job_name: serviceMonitor/default/kube-prometheus-stack-kubelet/2
               honor_labels: true
               honor_timestamps: true
@@ -466,14 +466,14 @@ spec:
                 replacement: $$1
                 action: keep
               kubernetes_sd_configs:
-              - role: endpoints
-                kubeconfig_file: ""
-                follow_redirects: true
-                enable_http2: true
-                namespaces:
-                  own_namespace: false
-                  names:
-                  - kube-system          
+                - role: endpoints
+                  kubeconfig_file: ""
+                  follow_redirects: true
+                  enable_http2: true
+                  namespaces:
+                    own_namespace: false
+                    names:
+                    - kube-system          
             - job_name: serviceMonitor/default/kube-prometheus-stack-kubelet/1
               honor_labels: true
               honor_timestamps: true
@@ -583,14 +583,14 @@ spec:
                 replacement: $$1
                 action: keep
               kubernetes_sd_configs:
-              - role: endpoints
-                kubeconfig_file: ""
-                follow_redirects: true
-                enable_http2: true
-                namespaces:
-                  own_namespace: false
-                  names:
-                  - kube-system
+                - role: endpoints
+                  kubeconfig_file: ""
+                  follow_redirects: true
+                  enable_http2: true
+                  namespaces:
+                    own_namespace: false
+                    names:
+                    - kube-system
 
             - job_name: serviceMonitor/default/kube-prometheus-stack-kubelet/0
               honor_labels: true
@@ -701,14 +701,14 @@ spec:
                 replacement: $$1
                 action: keep
               kubernetes_sd_configs:
-              - role: endpoints
-                kubeconfig_file: ""
-                follow_redirects: true
-                enable_http2: true
-                namespaces:
-                  own_namespace: false
-                  names:
-                  - kube-system          
+                - role: endpoints
+                  kubeconfig_file: ""
+                  follow_redirects: true
+                  enable_http2: true
+                  namespaces:
+                    own_namespace: false
+                    names:
+                    - kube-system          
             - job_name: serviceMonitor/default/kube-prometheus-stack-kube-state-metrics/0
               honor_labels: true
               honor_timestamps: true
@@ -806,14 +806,14 @@ spec:
                 replacement: $$1
                 action: keep
               kubernetes_sd_configs:
-              - role: endpoints
-                kubeconfig_file: ""
-                follow_redirects: true
-                enable_http2: true
-                namespaces:
-                  own_namespace: false
-                  names:
-                  - default          
+                - role: endpoints
+                  kubeconfig_file: ""
+                  follow_redirects: true
+                  enable_http2: true
+                  namespaces:
+                    own_namespace: false
+                    names:
+                    - default          
             - job_name: serviceMonitor/default/kube-prometheus-stack-kube-scheduler/0
               honor_timestamps: true
               scrape_interval: 30s
@@ -913,14 +913,14 @@ spec:
                 replacement: $$1
                 action: keep
               kubernetes_sd_configs:
-              - role: endpoints
-                kubeconfig_file: ""
-                follow_redirects: true
-                enable_http2: true
-                namespaces:
-                  own_namespace: false
-                  names:
-                  - kube-system            
+                - role: endpoints
+                  kubeconfig_file: ""
+                  follow_redirects: true
+                  enable_http2: true
+                  namespaces:
+                    own_namespace: false
+                    names:
+                    - kube-system            
             - job_name: serviceMonitor/default/kube-prometheus-stack-kube-proxy/0
               honor_timestamps: true
               scrape_interval: 30s
@@ -1020,14 +1020,14 @@ spec:
                 replacement: $$1
                 action: keep
               kubernetes_sd_configs:
-              - role: endpoints
-                kubeconfig_file: ""
-                follow_redirects: true
-                enable_http2: true
-                namespaces:
-                  own_namespace: false
-                  names:
-                  - kube-system          
+                - role: endpoints
+                  kubeconfig_file: ""
+                  follow_redirects: true
+                  enable_http2: true
+                  namespaces:
+                    own_namespace: false
+                    names:
+                    - kube-system          
             - job_name: serviceMonitor/default/kube-prometheus-stack-kube-etcd/0
               honor_timestamps: true
               scrape_interval: 30s
@@ -1127,14 +1127,14 @@ spec:
                 replacement: $$1
                 action: keep
               kubernetes_sd_configs:
-              - role: endpoints
-                kubeconfig_file: ""
-                follow_redirects: true
-                enable_http2: true
-                namespaces:
-                  own_namespace: false
-                  names:
-                  - kube-system
+                - role: endpoints
+                  kubeconfig_file: ""
+                  follow_redirects: true
+                  enable_http2: true
+                  namespaces:
+                    own_namespace: false
+                    names:
+                    - kube-system
             - job_name: serviceMonitor/default/kube-prometheus-stack-kube-controller-manager/0
               honor_timestamps: true
               scrape_interval: 30s
@@ -1234,14 +1234,14 @@ spec:
                 replacement: $$1
                 action: keep
               kubernetes_sd_configs:
-              - role: endpoints
-                kubeconfig_file: ""
-                follow_redirects: true
-                enable_http2: true
-                namespaces:
-                  own_namespace: false
-                  names:
-                  - kube-system
+                - role: endpoints
+                  kubeconfig_file: ""
+                  follow_redirects: true
+                  enable_http2: true
+                  namespaces:
+                    own_namespace: false
+                    names:
+                    - kube-system
             - job_name: serviceMonitor/default/kube-prometheus-stack-coredns/0
               honor_timestamps: true
               scrape_interval: 30s
@@ -1341,12 +1341,12 @@ spec:
                 replacement: $$1
                 action: keep
               kubernetes_sd_configs:
-              - role: endpoints
-              kubeconfig_file: ""
-              namespaces:
-                own_namespace: false
-                names:
-                - kube-system                           
+                - role: endpoints
+                  kubeconfig_file: ""
+                  namespaces:
+                    own_namespace: false
+                    names:
+                    - kube-system                           
 
             - job_name: serviceMonitor/default/kube-prometheus-stack-apiserver/0
               honor_timestamps: true
@@ -1446,14 +1446,14 @@ spec:
                 replacement: $$1
                 action: keep
               kubernetes_sd_configs:
-              - role: endpoints
-                kubeconfig_file: ""
-                follow_redirects: true
-                enable_http2: true
-                namespaces:
-                  own_namespace: false
-                  names:
-                  - default    
+                - role: endpoints
+                  kubeconfig_file: ""
+                  follow_redirects: true
+                  enable_http2: true
+                  namespaces:
+                    own_namespace: false
+                    names:
+                    - default    
             - job_name: serviceMonitor/default/kube-prometheus-stack-alertmanager/0
               honor_timestamps: true
               scrape_interval: 30s
@@ -1549,14 +1549,14 @@ spec:
                 replacement: $$1
                 action: keep
               kubernetes_sd_configs:
-              - role: endpoints
-                kubeconfig_file: ""
-                follow_redirects: true
-                enable_http2: true
-                namespaces:
-                  own_namespace: false
-                  names:
-                  - default                   
+                - role: endpoints
+                  kubeconfig_file: ""
+                  follow_redirects: true
+                  enable_http2: true
+                  namespaces:
+                    own_namespace: false
+                    names:
+                    - default                   
             - job_name: 'kube-state-metrics'
               static_configs:
                 - targets: ['kube-state-metrics.kube-system.svc.cluster.local:8080']
