@@ -30,5 +30,7 @@ variable "context" {
     # Service IPV4/IPV6 CIDR
     service_ipv6_cidr = string
     service_ipv4_cidr = string
+    #CNI custom network
+    enable_cni_custom_network = bool
   })
 }

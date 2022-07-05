@@ -46,6 +46,9 @@ locals {
     service_ipv6_cidr = var.cluster_service_ipv6_cidr
     service_ipv4_cidr = var.cluster_service_ipv4_cidr
 
+    # Enable cni custom network
+    enable_cni_custom_network = local.enable_cni_custom_network
+
     tags = var.tags
   }
 
@@ -144,4 +147,8 @@ locals {
 
   cluster_iam_role_name = var.iam_role_name == null ? "${var.cluster_name}-cluster-role" : var.iam_role_name
   cluster_iam_role_arn  = var.create_iam_role ? "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${local.cluster_iam_role_name}" : var.iam_role_arn
+
+  # CNI custom network
+  enable_cni_custom_network = length(var.pod_subnet_ids) > 0
+  pod_subnet_maps = {for sub in data.aws_subnet.pod_subnets: sub.availability_zone => sub.id}
 }

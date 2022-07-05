@@ -72,7 +72,8 @@ locals {
 
   managed_node_group = merge(
     local.default_managed_ng,
-    var.managed_ng
+    var.managed_ng,
+    local.custom_bootstrap_args[var.context.enable_cni_custom_network ? "enable" : "disable"] # update bootstrap argument when enable CNI custom networking
   )
 
   policy_arn_prefix = "arn:${var.context.aws_partition_id}:iam::aws:policy"
@@ -114,4 +115,15 @@ locals {
       "k8s.io/cluster-autoscaler/enabled"                       = "TRUE"
       "managed-by"                                              = "terraform-aws-eks-blueprints"
   })
+
+  # Identify node instance type to get max pod per node
+  node_instance_type = coalescelist(lookup(var.managed_ng, "instance_types", []), local.default_managed_ng["instance_types"])[0]
+  # Bootstrap args with max pod configuration for custom networking
+  custom_bootstrap_args = {
+    "disable" = {},
+    "enable"  = {
+      kubelet_extra_args   = join(" ", [lookup(var.managed_ng, "kubelet_extra_args", ""), "--max-pods=${data.external.get_max_pod_number.result.max_pod_number}"])
+      bootstrap_extra_args = join(" ", [lookup(var.managed_ng, "bootstrap_extra_args", ""), "--use-max-pods false"])
+    }
+  }
 }

@@ -374,3 +374,12 @@ variable "platform_teams" {
   type        = any
   default     = {}
 }
+
+#-------------------------------
+# CNI Custom Network
+#-------------------------------
+variable "pod_subnet_ids" {
+  description = "List of private subnets Ids for the pods"
+  type        = list(string)
+  default     = []
+}

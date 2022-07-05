@@ -38,3 +38,7 @@ data "aws_iam_policy_document" "eks_windows_cni" {
     ]
   }
 }
+
+data "external" "get_max_pod_number" {
+  program = ["bash", "${path.module}/scripts/get-max-pod.sh", local.node_instance_type]
+}

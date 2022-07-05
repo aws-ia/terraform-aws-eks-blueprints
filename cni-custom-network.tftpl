@@ -1,0 +1,22 @@
+#!/bin/bash
+set -euo pipefail
+
+aws eks --region ${aws_region} update-kubeconfig --name ${cluster_id}
+kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=true
+kubectl set env daemonset aws-node -n kube-system ENI_CONFIG_LABEL_DEF=topology.kubernetes.io/zone
+
+%{ for subnet_key, subnet_value in subnet_maps }
+cat >/tmp/${subnet_key}-eniconfg.yaml <<EOF
+apiVersion: crd.k8s.amazonaws.com/v1alpha1
+kind: ENIConfig
+metadata:
+  name: ${subnet_key}
+spec:
+  subnet: ${subnet_value}
+  securityGroups:
+  %{ for sg in worker_sgs ~}
+    - ${sg}
+  %{ endfor }
+EOF
+kubectl apply -f /tmp/${subnet_key}-eniconfg.yaml
+%{ endfor }

@@ -12,3 +12,7 @@ data "aws_iam_policy_document" "managed_ng_assume_role_policy" {
     }
   }
 }
+
+data "external" "get_max_pod_number" {
+  program = ["bash", "${path.module}/scripts/get-max-pod.sh", local.node_instance_type]
+}
