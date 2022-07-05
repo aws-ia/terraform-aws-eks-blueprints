@@ -78,6 +78,8 @@ Refer to [docs](../../../docs/add-ons/crossplane.md) on how to deploy AWS Provid
 | <a name="input_aws_provider"></a> [aws\_provider](#input\_aws\_provider) | AWS Provider config for Crossplane | <pre>object({<br>    enable                   = bool<br>    provider_aws_version     = string<br>    additional_irsa_policies = list(string)<br>  })</pre> | n/a | yes |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | Helm provider config for the Argo Rollouts | `any` | `{}` | no |
 | <a name="input_jet_aws_provider"></a> [jet\_aws\_provider](#input\_jet\_aws\_provider) | AWS Provider Jet AWS config for Crossplane | <pre>object({<br>    enable                   = bool<br>    provider_aws_version     = string<br>    additional_irsa_policies = list(string)<br>  })</pre> | n/a | yes |
+| <a name="input_use_kubectl_provider"></a> [use\_kubectl\_provider](#input\_use\_kubectl\_provider) | Use kubectl provider | `bool` | `false` | no |
+| <a name="input_use_kubernetes_provider"></a> [use\_kubernetes\_provider](#input\_use\_kubernetes\_provider) | Use kubernetes provider | `bool` | `true` | no |
 
 ## Outputs
 

@@ -44,6 +44,8 @@ For complete project documentation, please visit the [ExternalDNS Github reposit
 | <a name="input_irsa_policies"></a> [irsa\_policies](#input\_irsa\_policies) | Additional IAM policies used for the add-on service account. | `list(string)` | n/a | yes |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
 | <a name="input_private_zone"></a> [private\_zone](#input\_private\_zone) | Determines if referenced Route53 hosted zone is private. | `bool` | `false` | no |
+| <a name="input_use_kubectl_provider"></a> [use\_kubectl\_provider](#input\_use\_kubectl\_provider) | Use kubectl provider | `bool` | `false` | no |
+| <a name="input_use_kubernetes_provider"></a> [use\_kubernetes\_provider](#input\_use\_kubernetes\_provider) | Use kubernetes provider | `bool` | `true` | no |
 
 ## Outputs
 

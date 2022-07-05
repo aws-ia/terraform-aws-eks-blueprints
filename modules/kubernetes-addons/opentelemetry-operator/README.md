@@ -65,6 +65,8 @@ the ADOT Operator.
 | <a name="input_enable_amazon_eks_adot"></a> [enable\_amazon\_eks\_adot](#input\_enable\_amazon\_eks\_adot) | Enable Amazon EKS ADOT add-on | `bool` | `true` | no |
 | <a name="input_enable_opentelemetry_operator"></a> [enable\_opentelemetry\_operator](#input\_enable\_opentelemetry\_operator) | Enable opentelemetry operator addon | `bool` | `false` | no |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | Helm provider config for ADOT Operator AddOn | `any` | `{}` | no |
+| <a name="input_use_kubectl_provider"></a> [use\_kubectl\_provider](#input\_use\_kubectl\_provider) | Use kubectl provider | `bool` | `false` | no |
+| <a name="input_use_kubernetes_provider"></a> [use\_kubernetes\_provider](#input\_use\_kubernetes\_provider) | Use kubernetes provider | `bool` | `true` | no |
 
 ## Outputs
 

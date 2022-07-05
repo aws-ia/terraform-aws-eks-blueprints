@@ -37,6 +37,8 @@ The EBS CSI driver provides a CSI interface used by container orchestrators to m
 |------|-------------|------|---------|:--------:|
 | <a name="input_addon_config"></a> [addon\_config](#input\_addon\_config) | Amazon EKS Managed Add-on config for EBS CSI Driver | `any` | `{}` | no |
 | <a name="input_addon_context"></a> [addon\_context](#input\_addon\_context) | Input configuration for the addon | <pre>object({<br>    aws_caller_identity_account_id = string<br>    aws_caller_identity_arn        = string<br>    aws_eks_cluster_endpoint       = string<br>    aws_partition_id               = string<br>    aws_region_name                = string<br>    eks_cluster_id                 = string<br>    eks_oidc_issuer_url            = string<br>    eks_oidc_provider_arn          = string<br>    tags                           = map(string)<br>    irsa_iam_role_path             = string<br>    irsa_iam_permissions_boundary  = string<br>  })</pre> | n/a | yes |
+| <a name="input_use_kubectl_provider"></a> [use\_kubectl\_provider](#input\_use\_kubectl\_provider) | Use kubectl provider | `bool` | `false` | no |
+| <a name="input_use_kubernetes_provider"></a> [use\_kubernetes\_provider](#input\_use\_kubernetes\_provider) | Use kubernetes provider | `bool` | `true` | no |
 
 ## Outputs
 

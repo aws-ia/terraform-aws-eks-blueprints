@@ -59,6 +59,8 @@ cert-manager docker image is available at this repo:
 | <a name="input_irsa_policies"></a> [irsa\_policies](#input\_irsa\_policies) | Additional IAM policies used for the add-on service account. | `list(string)` | `[]` | no |
 | <a name="input_letsencrypt_email"></a> [letsencrypt\_email](#input\_letsencrypt\_email) | Email address for expiration emails from Let's Encrypt. | `string` | `""` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
+| <a name="input_use_kubectl_provider"></a> [use\_kubectl\_provider](#input\_use\_kubectl\_provider) | Use kubectl provider | `bool` | `false` | no |
+| <a name="input_use_kubernetes_provider"></a> [use\_kubernetes\_provider](#input\_use\_kubernetes\_provider) | Use kubernetes provider | `bool` | `true` | no |
 
 ## Outputs
 

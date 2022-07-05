@@ -54,6 +54,8 @@ Application definitions, configurations, and environments should be declarative 
 | <a name="input_admin_password_secret_name"></a> [admin\_password\_secret\_name](#input\_admin\_password\_secret\_name) | Name for a secret stored in AWS Secrets Manager that contains the admin password for ArgoCD. | `string` | `""` | no |
 | <a name="input_applications"></a> [applications](#input\_applications) | ArgoCD Application config used to bootstrap a cluster. | `any` | `{}` | no |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | ArgoCD Helm Chart Config values | `any` | `{}` | no |
+| <a name="input_use_kubectl_provider"></a> [use\_kubectl\_provider](#input\_use\_kubectl\_provider) | Use kubectl provider | `bool` | `false` | no |
+| <a name="input_use_kubernetes_provider"></a> [use\_kubernetes\_provider](#input\_use\_kubernetes\_provider) | Use kubernetes provider | `bool` | `true` | no |
 
 ## Outputs
 

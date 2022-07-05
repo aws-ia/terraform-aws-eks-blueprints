@@ -51,6 +51,8 @@ kubectl delete apiservice v1beta1.external.metrics.k8s.io
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | Helm provider config for the KEDA | `any` | `{}` | no |
 | <a name="input_irsa_policies"></a> [irsa\_policies](#input\_irsa\_policies) | IAM Policy ARN list for any IRSA policies | `list(string)` | `[]` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps | `bool` | `false` | no |
+| <a name="input_use_kubectl_provider"></a> [use\_kubectl\_provider](#input\_use\_kubectl\_provider) | Use kubectl provider | `bool` | `false` | no |
+| <a name="input_use_kubernetes_provider"></a> [use\_kubernetes\_provider](#input\_use\_kubernetes\_provider) | Use kubernetes provider | `bool` | `true` | no |
 
 ## Outputs
 
