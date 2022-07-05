@@ -1350,7 +1350,7 @@ spec:
 
             - job_name: serviceMonitor/default/kube-prometheus-stack-apiserver/0
               honor_timestamps: true
-              scrape_interval: 30
+              scrape_interval: 30s
               scrape_timeout: 10s
               metrics_path: /metrics
               scheme: https
