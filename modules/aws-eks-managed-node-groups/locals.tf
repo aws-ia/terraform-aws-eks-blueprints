@@ -27,9 +27,10 @@ locals {
     release_version      = ""
     force_update_version = null
 
-    k8s_labels      = {}
-    k8s_taints      = []
-    additional_tags = {}
+    k8s_labels           = {}
+    k8s_taints           = []
+    additional_tags      = {}
+    launch_template_tags = {}
 
     remote_access           = false
     ec2_ssh_key             = null

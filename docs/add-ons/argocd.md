@@ -100,6 +100,7 @@ argocd_applications     = {
     project             = "default"
     add_on_application  = true              # Indicates the root add-on application.
     ssh_key_secret_name = "github-ssh-key"  # Needed for private repos
+    insecure            = false # Set to true to disable the server's certificate verification
   }
 }
 ```

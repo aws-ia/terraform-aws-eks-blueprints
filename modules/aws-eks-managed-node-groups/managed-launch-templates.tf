@@ -45,9 +45,12 @@ resource "aws_launch_template" "managed_node_groups" {
     }
   }
 
-  tag_specifications {
-    resource_type = "instance"
-    tags          = local.common_tags
+  dynamic "tag_specifications" {
+    for_each = toset(["instance", "volume", "network-interface"])
+    content {
+      resource_type = tag_specifications.key
+      tags          = merge(local.common_tags, local.managed_node_group["launch_template_tags"])
+    }
   }
 
   network_interfaces {

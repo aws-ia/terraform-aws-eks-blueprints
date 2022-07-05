@@ -233,7 +233,7 @@ module "metrics_server" {
 module "ondat" {
   count             = var.enable_ondat ? 1 : 0
   source            = "ondat/ondat-addon/eksblueprints"
-  version           = "0.1.0"
+  version           = "0.1.1"
   helm_config       = var.ondat_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
@@ -320,6 +320,21 @@ module "yunikorn" {
   addon_context     = local.addon_context
 }
 
+module "csi_secrets_store_provider_aws" {
+  count             = var.enable_secrets_store_csi_driver_provider_aws ? 1 : 0
+  source            = "./csi-secrets-store-provider-aws"
+  helm_config       = var.csi_secrets_store_provider_aws_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "secrets_store_csi_driver" {
+  count             = var.enable_secrets_store_csi_driver ? 1 : 0
+  source            = "./secrets-store-csi-driver"
+  helm_config       = var.secrets_store_csi_driver_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
 module "aws_privateca_issuer" {
   count                   = var.enable_aws_privateca_issuer ? 1 : 0
   source                  = "./aws-privateca-issuer"
@@ -419,4 +434,11 @@ module "adot_collector_nginx" {
   depends_on = [
     module.opentelemetry_operator
   ]
+}
+
+module "external_secrets" {
+  count         = var.enable_external_secrets ? 1 : 0
+  source        = "./external-secrets"
+  helm_config   = var.external_secrets_helm_config
+  addon_context = local.addon_context
 }
