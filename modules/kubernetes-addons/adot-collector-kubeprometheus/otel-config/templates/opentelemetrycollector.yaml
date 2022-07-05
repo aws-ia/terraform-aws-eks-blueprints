@@ -1343,8 +1343,6 @@ spec:
               kubernetes_sd_configs:
               - role: endpoints
               kubeconfig_file: ""
-              follow_redirects: true
-              enable_http2: true
               namespaces:
                 own_namespace: false
                 names:
