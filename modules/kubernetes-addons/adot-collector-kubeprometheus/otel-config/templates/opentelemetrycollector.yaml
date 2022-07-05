@@ -1360,7 +1360,6 @@ spec:
               tls_config:
                 ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
                 server_name: kubernetes  
-                inserver_name: kubernetes
               follow_redirects: true
               enable_http2: true
               relabel_configs:
