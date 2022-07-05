@@ -1,12 +1,12 @@
 resource "kubernetes_namespace_v1" "irsa" {
-  count = var.create_kubernetes_namespace && var.kubernetes_namespace != "kube-system" ? 1 : 0
+  count = var.use_kubernetes_provider && var.create_kubernetes_namespace && var.kubernetes_namespace != "kube-system" ? 1 : 0
   metadata {
     name = var.kubernetes_namespace
   }
 }
 
 resource "kubernetes_service_account_v1" "irsa" {
-  count = var.create_kubernetes_service_account ? 1 : 0
+  count = var.use_kubernetes_provider && var.create_kubernetes_service_account ? 1 : 0
   metadata {
     name        = var.kubernetes_service_account
     namespace   = var.kubernetes_namespace
@@ -14,6 +14,34 @@ resource "kubernetes_service_account_v1" "irsa" {
   }
 
   automount_service_account_token = true
+}
+
+resource "kubectl_manifest" "irsa_namespace" {
+  count = var.use_kubectl_provider && var.create_kubernetes_namespace && var.kubernetes_namespace != "kube-system" ? 1 : 0
+  yaml_body = yamlencode({
+    apiVersion = "v1"
+    kind       = "Namespace"
+    metadata = {
+      name = var.kubernetes_namespace
+    }
+  })
+}
+
+resource "kubectl_manifest" "irsa_service_account" {
+  count = var.use_kubectl_provider && var.create_kubernetes_service_account ? 1 : 0
+  yaml_body = yamlencode({
+    apiVersion = "v1"
+    kind       = "ServiceAccount"
+    metadata = {
+      name      = var.kubernetes_service_account
+      namespace = var.kubernetes_namespace
+      labels = {
+        "app.kubernetes.io/managed-by" : "Terraform"
+      }
+      "annotations" = var.irsa_iam_policies != null ? { "eks.amazonaws.com/role-arn" : aws_iam_role.irsa[0].arn } : null
+    }
+    automountServiceAccountToken = true
+  })
 }
 
 resource "aws_iam_role" "irsa" {
