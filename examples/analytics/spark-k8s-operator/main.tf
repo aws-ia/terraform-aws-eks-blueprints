@@ -153,6 +153,7 @@ module "eks_blueprints_kubernetes_addons" {
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
 
+
   tags = local.tags
 }
 

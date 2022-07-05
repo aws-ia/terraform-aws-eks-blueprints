@@ -1,0 +1,59 @@
+#Enabling IRSA module for extending the data sources to CloudWatch
+serviceAccount:
+  create: false
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 512Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+   resource:
+     name: cpu
+     targetAverageUtilization: 60
+  - type: Resource
+   resource:
+     name: memory
+     targetAverageUtilization: 60
+
+nodeSelector:
+  kubernetes.io/os: ${operating_system}
+
+
+adminUser: admin
+# This module secrets manager to set the Admin password securely. Secrets name used for this addon is grafana_admin_password_secret_name
+#adminPassword:
+
+persistence:
+  type: pvc
+  enabled: true
+  storageClassName: gp2
+  accessModes:
+    - ReadWriteOnce
+  size: 50Gi
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus-server.prometheus.svc.cluster.local
+      access: proxy
+      isDefault: true
+    - name: CloudWatch
+      type: cloudwatch
+      access: proxy
+      uid: cloudwatch
+      editable: false
+      jsonData:
+        authType: default
+        defaultRegion: ${region}
