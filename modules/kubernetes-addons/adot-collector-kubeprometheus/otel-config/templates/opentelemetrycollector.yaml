@@ -81,13 +81,13 @@ spec:
                 separator: ;
                 regex: Node;(.*)
                 target_label: node
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
                 regex: Pod;(.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_namespace]
                 separator: ;
@@ -117,13 +117,13 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_jobLabel]
                 separator: ;
                 regex: (.+)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - separator: ;
                 regex: (.*)
@@ -190,13 +190,13 @@ spec:
                 separator: ;
                 regex: Node;(.*)
                 target_label: node
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
                 regex: Pod;(.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_namespace]
                 separator: ;
@@ -226,7 +226,7 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - separator: ;
                 regex: (.*)
@@ -293,13 +293,13 @@ spec:
                 separator: ;
                 regex: Node;(.*)
                 target_label: node
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
                 regex: Pod;(.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_namespace]
                 separator: ;
@@ -329,7 +329,7 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - separator: ;
                 regex: (.*)
@@ -398,13 +398,13 @@ spec:
                 separator: ;
                 regex: Node;(.*)
                 target_label: node
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
                 regex: Pod;(.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_namespace]
                 separator: ;
@@ -434,13 +434,13 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_k8s_app]
                 separator: ;
                 regex: (.+)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - separator: ;
                 regex: (.*)
@@ -515,13 +515,13 @@ spec:
                 separator: ;
                 regex: Node;(.*)
                 target_label: node
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
                 regex: Pod;(.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_namespace]
                 separator: ;
@@ -551,13 +551,13 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_k8s_app]
                 separator: ;
                 regex: (.+)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - separator: ;
                 regex: (.*)
@@ -633,13 +633,13 @@ spec:
                 separator: ;
                 regex: Node;(.*)
                 target_label: node
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
                 regex: Pod;(.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_namespace]
                 separator: ;
@@ -669,13 +669,13 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_k8s_app]
                 separator: ;
                 regex: (.+)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - separator: ;
                 regex: (.*)
@@ -744,13 +744,13 @@ spec:
                 separator: ;
                 regex: Node;(.*)
                 target_label: node
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
                 regex: Pod;(.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_namespace]
                 separator: ;
@@ -780,13 +780,13 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
                 separator: ;
                 regex: (.+)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - separator: ;
                 regex: (.*)
@@ -851,13 +851,13 @@ spec:
                 separator: ;
                 regex: Node;(.*)
                 target_label: node
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
                 regex: Pod;(.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_namespace]
                 separator: ;
@@ -887,13 +887,13 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_jobLabel]
                 separator: ;
                 regex: (.+)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - separator: ;
                 regex: (.*)
@@ -958,13 +958,13 @@ spec:
                 separator: ;
                 regex: Node;(.*)
                 target_label: node
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
                 regex: Pod;(.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_namespace]
                 separator: ;
@@ -994,13 +994,13 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_jobLabel]
                 separator: ;
                 regex: (.+)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - separator: ;
                 regex: (.*)
@@ -1065,13 +1065,13 @@ spec:
                 separator: ;
                 regex: Node;(.*)
                 target_label: node
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
                 regex: Pod;(.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_namespace]
                 separator: ;
@@ -1101,13 +1101,13 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_jobLabel]
                 separator: ;
                 regex: (.+)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - separator: ;
                 regex: (.*)
@@ -1172,13 +1172,13 @@ spec:
                 separator: ;
                 regex: Node;(.*)
                 target_label: node
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
                 regex: Pod;(.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_namespace]
                 separator: ;
@@ -1208,13 +1208,13 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_jobLabel]
                 separator: ;
                 regex: (.+)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - separator: ;
                 regex: (.*)
@@ -1279,13 +1279,13 @@ spec:
                 separator: ;
                 regex: Node;(.*)
                 target_label: node
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
                 regex: Pod;(.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_namespace]
                 separator: ;
@@ -1315,13 +1315,13 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_jobLabel]
                 separator: ;
                 regex: (.+)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - separator: ;
                 regex: (.*)
@@ -1386,13 +1386,13 @@ spec:
                 separator: ;
                 regex: Node;(.*)
                 target_label: node
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
                 regex: Pod;(.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_namespace]
                 separator: ;
@@ -1422,13 +1422,13 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_service_label_component]
                 separator: ;
                 regex: (.+)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - separator: ;
                 regex: (.*)
@@ -1495,13 +1495,13 @@ spec:
                 separator: ;
                 regex: Node;(.*)
                 target_label: node
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
                 separator: ;
                 regex: Pod;(.*)
                 target_label: pod
-                replacement: $1
+                replacement: $$1
                 action: replace
               - source_labels: [__meta_kubernetes_namespace]
                 separator: ;
@@ -1531,7 +1531,7 @@ spec:
                 separator: ;
                 regex: (.*)
                 target_label: job
-                replacement: $1
+                replacement: $$1
                 action: replace
               - separator: ;
                 regex: (.*)
