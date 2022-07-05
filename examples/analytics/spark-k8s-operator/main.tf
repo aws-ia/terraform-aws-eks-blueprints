@@ -30,12 +30,17 @@ provider "helm" {
 
 data "aws_availability_zones" "available" {}
 
+data "aws_caller_identity" "current" {}
+
+data "aws_partition" "current" {}
+
 locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
-  vpc_cidr = "10.0.0.0/16"
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  vpc_cidr  = "10.0.0.0/16"
+  azs       = slice(data.aws_availability_zones.available.names, 0, 3)
+  s3_prefix = "logs/"
 
   tags = {
     Blueprint  = local.name
@@ -153,6 +158,42 @@ module "eks_blueprints_kubernetes_addons" {
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
 
+  enable_spark_history_server = true
+  # This example is using a managed s3 readonly policy. It' recommended to create your own IAM Policy
+  spark_history_server_irsa_policies = ["arn:${data.aws_partition.current.id}:iam::aws:policy/AmazonS3ReadOnlyAccess"]
+  spark_history_server_helm_config = {
+    name       = "spark-history-server"
+    chart      = "spark-history-server"
+    repository = "https://hyper-mesh.github.io/spark-history-server"
+    version    = "1.0.0"
+    namespace  = "spark-history-server"
+    timeout    = "300"
+    values = [
+      <<-EOT
+        serviceAccount:
+          create: false
+
+        sparkHistoryOpts: "-Dspark.history.fs.logDirectory=s3a://${aws_s3_bucket.this.id}/${local.s3_prefix}"
+
+        # Update spark conf according to your needs
+        sparkConf: |-
+          spark.hadoop.fs.s3a.aws.credentials.provider=com.amazonaws.auth.WebIdentityTokenCredentialsProvider
+          spark.history.fs.eventLog.rolling.maxFilesToRetain=5
+          spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
+          spark.eventLog.enabled=true
+          spark.history.ui.port=18080
+
+        resources:
+          limits:
+            cpu: 200m
+            memory: 2G
+          requests:
+            cpu: 100m
+            memory: 1G
+        EOT
+    ]
+  }
+
   tags = local.tags
 }
 
@@ -203,4 +244,42 @@ module "vpc" {
   }
 
   tags = local.tags
+}
+
+#tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
+resource "aws_s3_bucket" "this" {
+  bucket_prefix = format("%s-%s", "spark", data.aws_caller_identity.current.account_id)
+  tags          = local.tags
+}
+
+resource "aws_s3_bucket_acl" "this" {
+  bucket = aws_s3_bucket.this.id
+  acl    = "private"
+}
+
+#tfsec:ignore:aws-s3-encryption-customer-key
+resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
+  bucket = aws_s3_bucket.this.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "this" {
+  bucket                  = aws_s3_bucket.this.id
+  block_public_acls       = true
+  block_public_policy     = true
+  restrict_public_buckets = true
+  ignore_public_acls      = true
+}
+
+# Creating an s3 bucket prefix. Ensure you copy spark event logs under this path to visualize the dags
+resource "aws_s3_bucket_object" "this" {
+  bucket = aws_s3_bucket.this.id
+  acl    = "private"
+  key    = local.s3_prefix
+  source = "/dev/null"
 }
