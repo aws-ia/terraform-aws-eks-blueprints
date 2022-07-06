@@ -297,6 +297,7 @@ resource "aws_s3_bucket_object" "this" {
 
 #---------------------------------------------------------------
 # Grafana Admin credentials resources
+# Login to AWS secrets manager with the same role to to extract the Grafana admin password with the secret name as "grafana"
 #---------------------------------------------------------------
 resource "random_password" "grafana" {
   length           = 16

@@ -1,9 +1,9 @@
 # Grafana
 
-[Grafana](https://github.com/grafana/grafana) is an open source platform for monitoring and observability. 
+[Grafana](https://github.com/grafana/grafana) is an open source platform for monitoring and observability.
 
-Grafana addon can be deployed with EKS blueprints in Amazon EKS server. 
-This add-on configures [Prometheus](https://grafana.com/docs/grafana/latest/datasources/prometheus/) and [CloudWatch](https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/) data sources. 
+Grafana addon can be deployed with EKS blueprints in Amazon EKS server.
+This add-on configures [Prometheus](https://grafana.com/docs/grafana/latest/datasources/prometheus/) and [CloudWatch](https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/) data sources.
 You can add more data sources using the [values.yaml](https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml)
 
 ## Usage
@@ -16,7 +16,7 @@ enable_grafana = true
 # grafana_admin_password_secret_name is an optional parameter but its recommended for security best practise.
 # Checkout the above usage example to create secrets on the fly by Terraform
 
-grafana_admin_password_secret_name = <aws_secrets_manager_secret_name> 
+grafana_admin_password_secret_name = <aws_secrets_manager_secret_name>
 ```
 
 You can optionally customize the Helm chart that deploys `Grafana` via the following configuration.
