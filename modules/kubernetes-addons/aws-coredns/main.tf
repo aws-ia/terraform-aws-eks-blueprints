@@ -65,4 +65,5 @@ module "helm_addon" {
 
   # Blueprints
   addon_context = var.addon_context
+  timeouts      = var.timeouts
 }

@@ -8,6 +8,7 @@ module "helm_addon" {
   helm_config       = local.helm_config
   irsa_config       = null
   addon_context     = var.addon_context
+  timeouts          = var.timeouts
 
   depends_on = [kubernetes_namespace_v1.this]
 }

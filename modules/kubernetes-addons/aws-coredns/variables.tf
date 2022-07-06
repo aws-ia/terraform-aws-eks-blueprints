@@ -36,3 +36,9 @@ variable "helm_config" {
   default     = {}
   type        = any
 }
+
+variable "timeouts" {
+  description = "Define maximum timeout for creating, updating, and deleting resources"
+  type        = map(string)
+  default     = {}
+}
