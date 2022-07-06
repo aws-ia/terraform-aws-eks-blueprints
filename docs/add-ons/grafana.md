@@ -21,18 +21,18 @@ grafana_admin_password_secret_name = <aws_secrets_manager_secret_name>
 
 You can optionally customize the Helm chart that deploys `Grafana` via the following configuration.
 
-```hcl
+```
   enable_grafana = true
   grafana_admin_password_secret_name = "<aws_secrets_manager_secret_name>"
   grafana_irsa_policies = [] # Optional to add additional policies to IRSA
 
 # Optional  karpenter_helm_config
   grafana_helm_config = {
-    name        = local.name
-    chart       = local.name
+    name        = "grafana"
+    chart       = "grafana"
     repository  = "https://grafana.github.io/helm-charts"
     version     = "6.32.1"
-    namespace   = local.name
+    namespace   = "grafana"
     description = "Grafana Helm Chart deployment configuration"
     values = [templatefile("${path.module}/values.yaml", {})]
   }

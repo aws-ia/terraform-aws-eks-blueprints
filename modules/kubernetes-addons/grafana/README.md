@@ -1,6 +1,6 @@
 # Grafana Helm Chart
 
-This add-on configures [AWS CloudWatch Agent](https://github.com/aws/eks-charts/tree/master/stable/aws-cloudwatch-metrics) used for CloudWatch [Container Insights](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html). Use CloudWatch Container Insights to collect, aggregate, and summarize metrics and logs from your containerized applications and microservices. CloudWatch automatically collects metrics for many resources, such as CPU, memory, disk, and network. Container Insights also provides diagnostic information, such as container restart failures, to help you isolate issues and resolve them quickly. You can also set CloudWatch alarms on metrics that Container Insights collects.
+This add-on configures [Grafana Helm Chart](https://github.com/aws/eks-charts/tree/master/stable/aws-cloudwatch-metrics)
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
