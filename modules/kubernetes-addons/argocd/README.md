@@ -54,6 +54,7 @@ Application definitions, configurations, and environments should be declarative 
 | <a name="input_admin_password_secret_name"></a> [admin\_password\_secret\_name](#input\_admin\_password\_secret\_name) | Name for a secret stored in AWS Secrets Manager that contains the admin password for ArgoCD. | `string` | `""` | no |
 | <a name="input_applications"></a> [applications](#input\_applications) | ArgoCD Application config used to bootstrap a cluster. | `any` | `{}` | no |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | ArgoCD Helm Chart Config values | `any` | `{}` | no |
+| <a name="input_timeouts"></a> [timeouts](#input\_timeouts) | Define maximum timeout for creating, updating, and deleting resources | `map(string)` | `{}` | no |
 
 ## Outputs
 

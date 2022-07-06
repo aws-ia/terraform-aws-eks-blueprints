@@ -35,6 +35,7 @@
 | <a name="input_eks_cluster_version"></a> [eks\_cluster\_version](#input\_eks\_cluster\_version) | The Kubernetes version for the cluster - used to match appropriate version for image used | `string` | n/a | yes |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | Cluster Autoscaler Helm Config | `any` | `{}` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
+| <a name="input_timeouts"></a> [timeouts](#input\_timeouts) | Define maximum timeout for creating, updating, and deleting resources | `map(string)` | `{}` | no |
 
 ## Outputs
 
