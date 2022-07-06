@@ -86,6 +86,7 @@ module "eks_blueprints_kubernetes_addons" {
   # or enable a customer-managed OpenTelemetry operator
   # enable_opentelemetry_operator = true
   enable_adot_collector_java = false
+  enable_adot_collector_kubeprometheus = true
 
 
   amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
