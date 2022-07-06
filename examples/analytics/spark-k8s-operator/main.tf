@@ -41,6 +41,7 @@ locals {
   vpc_cidr  = "10.0.0.0/16"
   azs       = slice(data.aws_availability_zones.available.names, 0, 3)
   s3_prefix = "logs/"
+  grafana_admin_password_secret_name = "grafana"
 
   tags = {
     Blueprint  = local.name
@@ -137,6 +138,9 @@ module "eks_blueprints_kubernetes_addons" {
     })]
   }
 
+  #---------------------------------------------------------------
+  # Spark History Server Addon
+  #---------------------------------------------------------------
   enable_spark_k8s_operator = true
   spark_k8s_operator_helm_config = {
     name             = "spark-operator"
@@ -193,6 +197,13 @@ module "eks_blueprints_kubernetes_addons" {
         EOT
     ]
   }
+
+  #---------------------------------------------------------------
+  # Open Source Grafana Add-on
+  #---------------------------------------------------------------
+  enable_grafana = true
+  grafana_admin_password_secret_name = local.grafana_admin_password_secret_name
+
 
   tags = local.tags
 }
@@ -282,4 +293,22 @@ resource "aws_s3_bucket_object" "this" {
   acl    = "private"
   key    = local.s3_prefix
   source = "/dev/null"
+}
+
+#---------------------------------------------------------------
+# Grafana Admin credentials resources
+#---------------------------------------------------------------
+resource "random_password" "grafana" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+resource "aws_secretsmanager_secret" "grafana" {
+  name = local.grafana_admin_password_secret_name
+}
+
+resource "aws_secretsmanager_secret_version" "grafana" {
+  secret_id = aws_secretsmanager_secret.grafana.id
+  secret_string = random_password.grafana.result
 }

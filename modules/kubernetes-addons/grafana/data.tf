@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "this" {
   statement {
     sid       = "AllowReadingMetricsFromCloudWatch"
     effect    = "Allow"
-    resources = ["arn:${var.addon_context.aws_partition_id}:cloudwatch:${var.addon_context.aws_caller_identity_account_id}:*:*"]
+    resources = ["*"]
 
     actions = [
       "cloudwatch:DescribeAlarmsForMetric",

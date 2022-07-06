@@ -16,13 +16,13 @@ autoscaling:
   maxReplicas: 10
   metrics:
   - type: Resource
-   resource:
-     name: cpu
-     targetAverageUtilization: 60
+    resource:
+      name: cpu
+      targetAverageUtilization: 60
   - type: Resource
-   resource:
-     name: memory
-     targetAverageUtilization: 60
+    resource:
+      name: memory
+      targetAverageUtilization: 60
 
 nodeSelector:
   kubernetes.io/os: ${operating_system}
