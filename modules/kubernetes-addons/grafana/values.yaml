@@ -29,7 +29,7 @@ nodeSelector:
 
 
 adminUser: admin
-# This module secrets manager to set the Admin password securely. Secrets name used for this addon is grafana_admin_password_secret_name
+# Use secrets manager to set the Admin password securely. Secrets name used for this addon is grafana_admin_password_secret_name
 #adminPassword:
 
 persistence:

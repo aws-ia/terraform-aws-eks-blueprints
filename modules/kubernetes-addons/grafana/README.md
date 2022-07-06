@@ -1,6 +1,6 @@
 # Grafana Helm Chart
 
-This add-on configures [Grafana Helm Chart](https://github.com/aws/eks-charts/tree/master/stable/aws-cloudwatch-metrics)
+This add-on configures [Grafana Helm Chart](https://github.com/grafana/helm-charts/tree/main/charts/grafana)
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements

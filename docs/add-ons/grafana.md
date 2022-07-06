@@ -10,13 +10,13 @@ You can add more data sources using the [values.yaml](https://github.com/grafana
 
 [Grafana](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/spark-k8s-operator) can be deployed by enabling the add-on via the following.
 
+`grafana_admin_password_secret_name` is an optional parameter however it's recommended for security best practise.
+Checkout the above usage example to create secrets on the fly using Terraform.
+You can leave this blank and pass `adminPassword` chart value through `values.yaml` when you use secrets other than Secrets manager.
+
 ```
 enable_grafana = true
-
-# grafana_admin_password_secret_name is an optional parameter but its recommended for security best practise.
-# Checkout the above usage example to create secrets on the fly by Terraform
-
-grafana_admin_password_secret_name = <aws_secrets_manager_secret_name>
+grafana_admin_password_secret_name = <aws_secrets_manager_secret_name> # optional
 ```
 
 You can optionally customize the Helm chart that deploys `Grafana` via the following configuration.
