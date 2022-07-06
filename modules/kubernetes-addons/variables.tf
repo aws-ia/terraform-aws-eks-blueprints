@@ -927,3 +927,28 @@ variable "external_secrets_helm_config" {
   default     = {}
   description = "External Secrets operator Helm Chart config"
 }
+
+#-----------Grafana ADDON-------------
+variable "enable_grafana" {
+  description = "Enable Grafana add-on"
+  type        = bool
+  default     = false
+}
+
+variable "grafana_helm_config" {
+  description = "Kubernetes Grafana Helm Chart config"
+  type        = any
+  default     = null
+}
+
+variable "grafana_irsa_policies" {
+  description = "IAM policy ARNs for grafana IRSA"
+  type        = list(string)
+  default     = []
+}
+
+variable "grafana_admin_password_secret_name" {
+  description = "Grafana Admin password Secrets Manager secret name"
+  type        = string
+  default     = ""
+}
