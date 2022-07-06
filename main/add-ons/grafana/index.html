@@ -13,7 +13,7 @@
     
     
       
-        <title>GitOps with Flux - Amazon EKS Blueprints for Terraform</title>
+        <title>Grafana - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#manage-your-clusters-configuration-with-flux" class="md-skip">
+        <a href="#grafana" class="md-skip">
           Skip to content
         </a>
       
@@ -99,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              GitOps with Flux
+              Grafana
             
           </span>
         </div>
@@ -330,12 +330,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" checked>
       
       
       
@@ -358,7 +360,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         Overview
       </a>
     </li>
@@ -372,7 +374,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/agones/" class="md-nav__link">
+      <a href="../agones/" class="md-nav__link">
         Agones
       </a>
     </li>
@@ -386,7 +388,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/argocd/" class="md-nav__link">
+      <a href="../argocd/" class="md-nav__link">
         ArgoCD
       </a>
     </li>
@@ -400,7 +402,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/aws-cloudwatch-metrics/" class="md-nav__link">
+      <a href="../aws-cloudwatch-metrics/" class="md-nav__link">
         AWS CloudWatch Metrics
       </a>
     </li>
@@ -414,7 +416,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/aws-efs-csi-driver/" class="md-nav__link">
+      <a href="../aws-efs-csi-driver/" class="md-nav__link">
         AWS EFS CSI Driver
       </a>
     </li>
@@ -428,7 +430,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/aws-for-fluent-bit/" class="md-nav__link">
+      <a href="../aws-for-fluent-bit/" class="md-nav__link">
         AWS for Fluent Bit
       </a>
     </li>
@@ -442,7 +444,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/aws-load-balancer-controller/" class="md-nav__link">
+      <a href="../aws-load-balancer-controller/" class="md-nav__link">
         AWS Load Balancer Controller
       </a>
     </li>
@@ -456,7 +458,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/aws-node-termination-handler/" class="md-nav__link">
+      <a href="../aws-node-termination-handler/" class="md-nav__link">
         AWS Node Termination Handler
       </a>
     </li>
@@ -470,7 +472,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/aws-privateca-issuer/" class="md-nav__link">
+      <a href="../aws-privateca-issuer/" class="md-nav__link">
         aws-privateca-issuer
       </a>
     </li>
@@ -484,7 +486,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/cert-manager/" class="md-nav__link">
+      <a href="../cert-manager/" class="md-nav__link">
         cert-manager
       </a>
     </li>
@@ -498,7 +500,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/cluster-autoscaler/" class="md-nav__link">
+      <a href="../cluster-autoscaler/" class="md-nav__link">
         Cluster Autoscaler
       </a>
     </li>
@@ -512,7 +514,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/cluster-proportional-autoscaler/" class="md-nav__link">
+      <a href="../cluster-proportional-autoscaler/" class="md-nav__link">
         Horizontal cluster-proportional-autoscaler container
       </a>
     </li>
@@ -526,7 +528,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/crossplane/" class="md-nav__link">
+      <a href="../crossplane/" class="md-nav__link">
         Crossplane
       </a>
     </li>
@@ -540,7 +542,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/csi-secrets-store-provider-aws/" class="md-nav__link">
+      <a href="../csi-secrets-store-provider-aws/" class="md-nav__link">
         secrets-store-csi-driver-provider-aws
       </a>
     </li>
@@ -554,7 +556,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/external-dns/" class="md-nav__link">
+      <a href="../external-dns/" class="md-nav__link">
         ExternalDNS
       </a>
     </li>
@@ -568,7 +570,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/external-secrets/" class="md-nav__link">
+      <a href="../external-secrets/" class="md-nav__link">
         External Secrets Operator
       </a>
     </li>
@@ -582,338 +584,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../add-ons/fargate-fluent-bit/" class="md-nav__link">
+      <a href="../fargate-fluent-bit/" class="md-nav__link">
         Fargate fluent bit
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/grafana/" class="md-nav__link">
-        Grafana
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/karpenter/" class="md-nav__link">
-        Karpenter
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/keda/" class="md-nav__link">
-        KEDA
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/kube-state-metrics/" class="md-nav__link">
-        Kube-State-Metrics
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/kubernetes-dashboard/" class="md-nav__link">
-        Kubernetes Dashboard
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/managed-add-ons/" class="md-nav__link">
-        Amazon EKS Add-ons
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/metrics-server/" class="md-nav__link">
-        Metrics Server
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/nginx/" class="md-nav__link">
-        Nginx
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/prometheus/" class="md-nav__link">
-        Prometheus
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/secrets-store-csi-driver/" class="md-nav__link">
-        secrets-store-csi-driver
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/spark-history-server/" class="md-nav__link">
-        Spark History Server
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/spark-on-k8s-operator/" class="md-nav__link">
-        Spark K8S Operator
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/tetrate-istio/" class="md-nav__link">
-        Tetrate Istio Distro
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/traefik/" class="md-nav__link">
-        Traefik
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/vault/" class="md-nav__link">
-        HashiCorp Vault
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/velero/" class="md-nav__link">
-        Velero
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/vpa/" class="md-nav__link">
-        Vertical Pod Autoscaler
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../add-ons/yunikorn/" class="md-nav__link">
-        Apache YuniKorn
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-    
-  
-  
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_8">
-          Advanced
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Advanced" data-md-level="1">
-        <label class="md-nav__title" for="__nav_8">
-          <span class="md-nav__icon md-icon"></span>
-          Advanced
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../bottlerocket/" class="md-nav__link">
-        Bottlerocket
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cluster-upgrades/" class="md-nav__link">
-        Cluster Upgrades
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ecr-instructions/" class="md-nav__link">
-        ECR Instructions
       </a>
     </li>
   
@@ -936,12 +608,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          GitOps with Flux
+          Grafana
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        GitOps with Flux
+        Grafana
       </a>
       
         
@@ -960,23 +632,16 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bootstrap-your-cluster-with-flux" class="md-nav__link">
-    Bootstrap your cluster with Flux
+  <a href="#usage" class="md-nav__link">
+    Usage
   </a>
   
-    <nav class="md-nav" aria-label="Bootstrap your cluster with Flux">
+    <nav class="md-nav" aria-label="Usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#bootstrap-your-cluster" class="md-nav__link">
-    Bootstrap your cluster
+  <a href="#gitops-configuration" class="md-nav__link">
+    GitOps Configuration
   </a>
   
 </li>
@@ -1001,7 +666,335 @@
   
   
     <li class="md-nav__item">
-      <a href="../multi-cluster/" class="md-nav__link">
+      <a href="../karpenter/" class="md-nav__link">
+        Karpenter
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../keda/" class="md-nav__link">
+        KEDA
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kube-state-metrics/" class="md-nav__link">
+        Kube-State-Metrics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kubernetes-dashboard/" class="md-nav__link">
+        Kubernetes Dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../managed-add-ons/" class="md-nav__link">
+        Amazon EKS Add-ons
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metrics-server/" class="md-nav__link">
+        Metrics Server
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nginx/" class="md-nav__link">
+        Nginx
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prometheus/" class="md-nav__link">
+        Prometheus
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../secrets-store-csi-driver/" class="md-nav__link">
+        secrets-store-csi-driver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spark-history-server/" class="md-nav__link">
+        Spark History Server
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spark-on-k8s-operator/" class="md-nav__link">
+        Spark K8S Operator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tetrate-istio/" class="md-nav__link">
+        Tetrate Istio Distro
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../traefik/" class="md-nav__link">
+        Traefik
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vault/" class="md-nav__link">
+        HashiCorp Vault
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../velero/" class="md-nav__link">
+        Velero
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vpa/" class="md-nav__link">
+        Vertical Pod Autoscaler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../yunikorn/" class="md-nav__link">
+        Apache YuniKorn
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          Advanced
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Advanced" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Advanced
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/bottlerocket/" class="md-nav__link">
+        Bottlerocket
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/cluster-upgrades/" class="md-nav__link">
+        Cluster Upgrades
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/ecr-instructions/" class="md-nav__link">
+        ECR Instructions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/gitops-with-flux/" class="md-nav__link">
+        GitOps with Flux
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/multi-cluster/" class="md-nav__link">
         Multi-cluster
       </a>
     </li>
@@ -1015,7 +1008,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../private-clusters/" class="md-nav__link">
+      <a href="../../advanced/private-clusters/" class="md-nav__link">
         Private Clusters
       </a>
     </li>
@@ -1071,23 +1064,16 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bootstrap-your-cluster-with-flux" class="md-nav__link">
-    Bootstrap your cluster with Flux
+  <a href="#usage" class="md-nav__link">
+    Usage
   </a>
   
-    <nav class="md-nav" aria-label="Bootstrap your cluster with Flux">
+    <nav class="md-nav" aria-label="Usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#bootstrap-your-cluster" class="md-nav__link">
-    Bootstrap your cluster
+  <a href="#gitops-configuration" class="md-nav__link">
+    GitOps Configuration
   </a>
   
 </li>
@@ -1109,94 +1095,47 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/advanced/gitops-with-flux.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/grafana.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-<h1 id="manage-your-clusters-configuration-with-flux">Manage your cluster(s) configuration with Flux<a class="headerlink" href="#manage-your-clusters-configuration-with-flux" title="Permanent link">&para;</a></h1>
-<p>Once you have deployed your EKS cluster(s) with Terraform, you can leverage <a href="https://fluxcd.io">Flux</a> to manage your cluster's configuration with <a href="https://www.gitops.tech/">GitOps</a>, including the deployment of add-ons, cluster configuration (e.g. cluster policies) and applications. Using GitOps practices to manage your clusters configuration will simplfy management, scaling the number of clusters you run and be able to easily recreate your clusters, treating them as ephemeral resources. Recreating your cluster is as simple as deploying a new cluster with Terraform and bootstraping it with Flux pointing to the repository containing the configuration.</p>
-<p>The <a href="https://github.com/aws-samples/flux-eks-gitops-config">aws-samples/flux-eks-gitops-config</a> repository provides a sample configuration blueprint for configuring multiple Amazon EKS clusters belonging to different stages (<code>test</code> and <code>production</code>) using <a href="https://www.gitops.tech/">GitOps</a> with <a href="https://fluxcd.io/docs/">Flux v2</a>. This repository installs a set of commonly used Kubernetes add-ons to perform policy enforcement, restrict network traffic with network policies, cluster monitoring, extend Kubernetes deployment capabilities enabling progressive Canary deployments for your applications...</p>
-<p>You can use the above sample repository to experiment with the predefined cluster configurations and use it as a baseline to adjust it to your own needs.</p>
-<p>This sample installs the following Kubernetes add-ons:</p>
-<ul>
-<li><strong><a href="https://github.com/kubernetes-sigs/metrics-server">metrics-server</a>:</strong> Aggregator of resource usage data in your cluster, commonly used by other Kubernetes add ons, such us <a href="https://docs.aws.amazon.com/eks/latest/userguide/horizontal-pod-autoscaler.html">Horizontal Pod Autoscaler</a> or <a href="https://docs.aws.amazon.com/eks/latest/userguide/dashboard-tutorial.html">Kubernetes Dashboard</a>.</li>
-<li><strong><a href="https://projectcalico.docs.tigera.io/about/about-calico">Calico</a>:</strong> Project Calico is a network policy engine for Kubernetes. Calico network policy enforcement allows you to implement network segmentation and tenant isolation. For more information check the <a href="https://docs.aws.amazon.com/eks/latest/userguide/calico.html">Amazon EKS documentation</a>.</li>
-<li><strong><a href="https://kyverno.io/">Kyverno</a>:</strong> Kubernetes Policy Management Engine. Kyverno allows cluster administrators to manage environment specific configurations independently of workload configurations and enforce configuration best practices for their clusters. Kyverno can be used to scan existing workloads for best practices, or can be used to enforce best practices by blocking or mutating API requests.</li>
-<li><strong><a href="https://prometheus.io/">Prometheus</a>:</strong> Defacto standard open-source systems monitoring and alerting toolkit for Kubernetes. This repository installs <a href="https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack">kube-prometheus-stack</a>.</li>
-<li><strong><a href="https://flagger.app/">Flagger</a>:</strong> Progressive delivery operator for Flux. Flagger can run automated application analysis, testing, promotion and rollback for the following deployment strategies: Canary, A/B Testing and Blue/Green. For more details, check the <a href="https://docs.flagger.app/">Flagger documentation</a>.</li>
-<li><strong><a href="https://kubernetes.github.io/ingress-nginx/">nginx-ingress-controller</a>:</strong> Ingress controller to expose apps and enable <a href="https://docs.flagger.app/tutorials/nginx-progressive-delivery">canary deployments and A/B testing with Flagger</a>.</li>
-</ul>
-<p><strong>NOTE:</strong> The add-ons on the sample are not configured for a production-ready cluster (e.g. Prometheus would need to be configured for long term metric storage, nginx would need HPA and any custom settings you need...).</p>
-<p>There're also a set of Kyverno cluster policies deployed to audit (test) or enforce (production) security settings on your workloads, as well as <a href="https://github.com/stefanprodan/podinfo">podinfo</a> as a sample application, configured with <a href="https://flagger.app/">Flagger</a> to perform progressive deployments. For further information, visit the <a href="https://github.com/aws-samples/flux-eks-gitops-config">aws-samples/flux-eks-gitops-config</a> repository documentation.</p>
-<h2 id="bootstrap-your-cluster-with-flux">Bootstrap your cluster with Flux<a class="headerlink" href="#bootstrap-your-cluster-with-flux" title="Permanent link">&para;</a></h2>
-<p>The below instructions assume you have created a cluster with <code>eks-blueprints</code> with no add-ons other than aws-load-balancer-controller. If you're installing additonal add-ons via terraform, the configuration may clash with the one on the sample repository. If you plan to leverage Flux, we recommend that you use Terraform to install and manage only add-ons that require additional AWS resources to be created (like IAM roles for Service accounts), and then use Flux to manage the rest.</p>
-<h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
-<p>The add-ons and configurations of this repository require Kubernetes 1.21 or higher (this is required by the version of kube-prometheus-stack that is installed, you can use 1.19+ installing previous versions of kube-prometheus-stack).</p>
-<p>You'll also need the following:</p>
-<ul>
-<li>Install flux CLI on your computer following the instructions <a href="https://fluxcd.io/docs/installation/">here</a>. This repository has been tested with flux 0.22.</li>
-<li>A GitHub account and a <a href="https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line">personal access token</a> that can create repositories.</li>
-</ul>
-<h3 id="bootstrap-your-cluster">Bootstrap your cluster<a class="headerlink" href="#bootstrap-your-cluster" title="Permanent link">&para;</a></h3>
-<p>Fork the <a href="https://github.com/aws-samples/flux-eks-gitops-config">aws-samples/flux-eks-gitops-config</a> repository on your personal GitHub account and export your GitHub access token, username and repo name:</p>
-<div class="highlight"><pre><span></span><code>  <span class="nb">export</span> <span class="nv">GITHUB_TOKEN</span><span class="o">=</span>&lt;your-token&gt;
-  <span class="nb">export</span> <span class="nv">GITHUB_USER</span><span class="o">=</span>&lt;your-username&gt;
-  <span class="nb">export</span> <span class="nv">GITHUB_REPO</span><span class="o">=</span>&lt;repository-name&gt;
+<h1 id="grafana">Grafana<a class="headerlink" href="#grafana" title="Permanent link">&para;</a></h1>
+<p><a href="https://github.com/grafana/grafana">Grafana</a> is an open source platform for monitoring and observability.</p>
+<p>Grafana addon can be deployed with EKS blueprints in Amazon EKS server.
+This add-on configures <a href="https://grafana.com/docs/grafana/latest/datasources/prometheus/">Prometheus</a> and <a href="https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/">CloudWatch</a> data sources.
+You can add more data sources using the <a href="https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml">values.yaml</a></p>
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
+<p><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/spark-k8s-operator">Grafana</a> can be deployed by enabling the add-on via the following.</p>
+<p><code>grafana_admin_password_secret_name</code> is an optional parameter however it's recommended for security best practise.
+Checkout the above usage example to create secrets on the fly using Terraform.
+You can leave this blank and pass <code>adminPassword</code> chart value through <code>values.yaml</code> when you use secrets other than Secrets manager.</p>
+<div class="highlight"><pre><span></span><code>enable_grafana = true
+grafana_admin_password_secret_name = &lt;aws_secrets_manager_secret_name&gt; # optional
 </code></pre></div>
-<p>Define whether you want to bootstrap your cluster with the <code>TEST</code> or the <code>PRODUCTION</code> configuration:</p>
-<div class="highlight"><pre><span></span><code>  <span class="c1"># TEST configuration</span>
-  <span class="nb">export</span> <span class="nv">CLUSTER_ENVIRONMENT</span><span class="o">=</span><span class="nb">test</span>
+<p>You can optionally customize the Helm chart that deploys <code>Grafana</code> via the following configuration.</p>
+<div class="highlight"><pre><span></span><code>  enable_grafana = true
+  grafana_admin_password_secret_name = &quot;&lt;aws_secrets_manager_secret_name&gt;&quot;
+  grafana_irsa_policies = [] # Optional to add additional policies to IRSA
 
-  <span class="c1"># PRODUCTION configuration</span>
-  <span class="nb">export</span> <span class="nv">CLUSTER_ENVIRONMENT</span><span class="o">=</span>production
+# Optional  karpenter_helm_config
+  grafana_helm_config = {
+    name        = &quot;grafana&quot;
+    chart       = &quot;grafana&quot;
+    repository  = &quot;https://grafana.github.io/helm-charts&quot;
+    version     = &quot;6.32.1&quot;
+    namespace   = &quot;grafana&quot;
+    description = &quot;Grafana Helm Chart deployment configuration&quot;
+    values = [templatefile(&quot;${path.module}/values.yaml&quot;, {})]
+  }
 </code></pre></div>
-<p>Verify that your stagging cluster satisfies the prerequisites with:</p>
-<div class="highlight"><pre><span></span><code>  flux check --pre
+<h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
+<p>The following properties are made available for use when managing the add-on via GitOps</p>
+<div class="highlight"><pre><span></span><code>grafana = {
+  enable = true
+}
 </code></pre></div>
-<p>You can now bootstrap your cluster with Flux CLI.</p>
-<div class="highlight"><pre><span></span><code>  flux bootstrap github --owner<span class="o">=</span><span class="si">${</span><span class="nv">GITHUB_USER</span><span class="si">}</span> --repository<span class="o">=</span><span class="si">${</span><span class="nv">GITHUB_REPO</span><span class="si">}</span> --branch<span class="o">=</span>main --path<span class="o">=</span>clusters/<span class="si">${</span><span class="nv">CLUSTER_ENVIRONMENT</span><span class="si">}</span> --personal
-</code></pre></div>
-<p>The bootstrap command commits the manifests for the Flux components in <code>clusters/${CLUSTER_ENVIRONMENT}/flux-system</code> directory and creates a deploy key with read-only access on GitHub, so it can pull changes inside the cluster.</p>
-<p>Confirm that Flux has finished applying the configuration to your cluster (it will take 3 or 4 minutes to sync everything):</p>
-<div class="highlight"><pre><span></span><code>  $ flux get kustomization
-  NAME                READY MESSAGE                                                           REVISION                                        SUSPENDED
-  apps                True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False
-  calico-installation True  Applied revision: master/00a2f33ea55f2018819434175c09c8bd8f20741a master/00a2f33ea55f2018819434175c09c8bd8f20741a False
-  calico-operator     True  Applied revision: master/00a2f33ea55f2018819434175c09c8bd8f20741a master/00a2f33ea55f2018819434175c09c8bd8f20741a False
-  config              True  Applied revision: main/8fd33f531df71002f2da7bc9619ee75281a9ead0   main/8fd33f531df71002f2da7bc9619ee75281a9ead0   False
-  flux-system         True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False
-  infrastructure      True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False
-</code></pre></div>
-<p>Get the URL for the nginx ingress controller that has been deployed in your cluster (you will see two ingresses, since Flagger will create a canary ingress):</p>
-<div class="highlight"><pre><span></span><code>   $ kubectl get ingress -n podinfo
-   NAME             CLASS   HOSTS          ADDRESS                               PORTS   AGE
-   podinfo          nginx   podinfo.test   k8s-xxxxxx.elb.us-west-2.amazonaws.com   <span class="m">80</span>      23h
-   podinfo-canary   nginx   podinfo.test   k8s-xxxxxx.elb.us-west-2.amazonaws.com   <span class="m">80</span>      23h
-</code></pre></div>
-<p>Confirm that podinfo can be correctly accessed via ingress:</p>
-<div class="highlight"><pre><span></span><code>  $ curl -H <span class="s2">&quot;Host: podinfo.test&quot;</span> k8s-xxxxxx.elb.us-west-2.amazonaws.com
-  <span class="o">{</span>
-  <span class="s2">&quot;hostname&quot;</span>: <span class="s2">&quot;podinfo-primary-65584c8f4f-d7v4t&quot;</span>,
-  <span class="s2">&quot;version&quot;</span>: <span class="s2">&quot;6.0.0&quot;</span>,
-  <span class="s2">&quot;revision&quot;</span>: <span class="s2">&quot;&quot;</span>,
-  <span class="s2">&quot;color&quot;</span>: <span class="s2">&quot;#34577c&quot;</span>,
-  <span class="s2">&quot;logo&quot;</span>: <span class="s2">&quot;https://raw.githubusercontent.com/stefanprodan/podinfo/gh-pages/cuddle_clap.gif&quot;</span>,
-  <span class="s2">&quot;message&quot;</span>: <span class="s2">&quot;greetings from podinfo v6.0.0&quot;</span>,
-  <span class="s2">&quot;goos&quot;</span>: <span class="s2">&quot;linux&quot;</span>,
-  <span class="s2">&quot;goarch&quot;</span>: <span class="s2">&quot;amd64&quot;</span>,
-  <span class="s2">&quot;runtime&quot;</span>: <span class="s2">&quot;go1.16.5&quot;</span>,
-  <span class="s2">&quot;num_goroutine&quot;</span>: <span class="s2">&quot;10&quot;</span>,
-  <span class="s2">&quot;num_cpu&quot;</span>: <span class="s2">&quot;2&quot;</span>
-  <span class="o">}</span>
-</code></pre></div>
-<p>Congratulations! Your cluster has sync'ed all the configuration defined on the repository. Continue exploring the deployed configuration following these docs:</p>
-<ul>
-<li><a href="https://github.com/aws-samples/flux-eks-gitops-config/blob/main/docs/repository-structure.md">Review the repository structure to understand the applied configuration</a></li>
-<li><a href="https://github.com/aws-samples/flux-eks-gitops-config/blob/main/docs/test-kyverno-policies.md">Test the cluster policies configured with Kyverno</a></li>
-<li><a href="https://github.com/aws-samples/flux-eks-gitops-config/blob/main/docs/flagger-canary-deployments.md">Test progressive deployments with Flux, Flagger and nginx controller</a></li>
-</ul>
 
               
             </article>
@@ -1212,7 +1151,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../ecr-instructions/" class="md-footer__link md-footer__link--prev" aria-label="Previous: ECR Instructions" rel="prev">
+        <a href="../fargate-fluent-bit/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Fargate fluent bit" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1221,20 +1160,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              ECR Instructions
+              Fargate fluent bit
             </div>
           </div>
         </a>
       
       
         
-        <a href="../multi-cluster/" class="md-footer__link md-footer__link--next" aria-label="Next: Multi-cluster" rel="next">
+        <a href="../karpenter/" class="md-footer__link md-footer__link--next" aria-label="Next: Karpenter" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Multi-cluster
+              Karpenter
             </div>
           </div>
           <div class="md-footer__button md-icon">

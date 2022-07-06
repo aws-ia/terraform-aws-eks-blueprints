@@ -598,6 +598,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../grafana/" class="md-nav__link">
+        Grafana
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../karpenter/" class="md-nav__link">
         Karpenter
       </a>
@@ -1117,7 +1131,7 @@
 
 <h1 id="spark-history-server">Spark History Server<a class="headerlink" href="#spark-history-server" title="Permanent link">&para;</a></h1>
 <p><a href="https://spark.apache.org/docs/latest/web-ui.html#web-ui">Spark Web UI</a> can be enabled by this Add-on.
-This Add-on deploys Spark History Server and fetches the Spark Event logs stored in S3. Spark Web UI can be exposed via Ingress and LoadBalancer <code>with values.yaml</code>.
+This Add-on deploys Spark History Server and fetches the Spark Event logs stored in S3. Spark Web UI can be exposed via Ingress and LoadBalancer with <code>values.yaml</code>.
 Alternatively, you can port-forward on spark-history-server service. e.g.,  <code>kubectl port-forward services/spark-history-server 18085:80 -n spark-history-server</code></p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/spark-k8s-operator">Spark History Server</a> can be deployed by enabling the add-on via the following.</p>
@@ -1132,7 +1146,7 @@ spark_history_server_s3a_path = &quot;s3a://&lt;ENTER_S3_BUCKET_NAME&gt;/&lt;PRE
 spark_history_server_irsa_policies = [&quot;&lt;IRSA_POLICY_ARN&gt;&quot;]
 
 # NOTE: This block requires passing the helm values.yaml
-# `spark_history_server_s3a_path` won&#39;t be used when you pass custom `values.yaml`. s3a path is passed via `sparkHistoryOpts` in `values.yaml`
+# spark_history_server_s3a_path won&#39;t be used when you pass custom `values.yaml`. s3a path is passed via `sparkHistoryOpts` in `values.yaml`
 
 spark_history_server_helm_config = {
     name             = &quot;spark-history-server&quot;
