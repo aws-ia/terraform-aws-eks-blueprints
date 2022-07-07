@@ -6,7 +6,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://charts.jetstack.io"
-    version     = "v1.7.1"
+    version     = "v1.8.0"
     namespace   = local.name
     description = "Cert Manager Add-on"
     values      = local.default_helm_values
@@ -35,6 +35,7 @@ locals {
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
     create_kubernetes_service_account = true
+    irsa_iam_policies                 = concat([aws_iam_policy.cert_manager.arn], var.irsa_policies)
   }
 
   argocd_gitops_config = {

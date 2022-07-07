@@ -40,13 +40,14 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_context"></a> [context](#input\_context) | Input configuration for Fargate | <pre>object({<br>    eks_cluster_id   = string<br>    aws_partition_id = string<br>    #IAM<br>    iam_role_path                 = string<br>    iam_role_permissions_boundary = string<br>    tags                          = map(string)<br>  })</pre> | n/a | yes |
+| <a name="input_context"></a> [context](#input\_context) | Input configuration for Fargate | <pre>object({<br>    eks_cluster_id                = string<br>    aws_partition_id              = string<br>    iam_role_path                 = string<br>    iam_role_permissions_boundary = string<br>    tags                          = map(string)<br>  })</pre> | n/a | yes |
 | <a name="input_fargate_profile"></a> [fargate\_profile](#input\_fargate\_profile) | Map of maps of `eks_node_groups` to create | `any` | `{}` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
+| <a name="output_eks_fargate_profile_arn"></a> [eks\_fargate\_profile\_arn](#output\_eks\_fargate\_profile\_arn) | Amazon Resource Name (ARN) of the EKS Fargate Profile |
 | <a name="output_eks_fargate_profile_id"></a> [eks\_fargate\_profile\_id](#output\_eks\_fargate\_profile\_id) | EKS Cluster name and EKS Fargate Profile name separated by a colon |
 | <a name="output_eks_fargate_profile_role_name"></a> [eks\_fargate\_profile\_role\_name](#output\_eks\_fargate\_profile\_role\_name) | Name of the EKS Fargate Profile IAM role |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

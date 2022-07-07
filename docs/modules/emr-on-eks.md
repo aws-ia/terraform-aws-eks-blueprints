@@ -13,24 +13,25 @@ This module deploys the necessary resources to run EMR Spark Jobs on EKS Cluster
 
 [EMR on EKS](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/emr-on-eks) can be deployed by enabling the module via the following.
 
+Checkout this [Blog](https://aws.amazon.com/blogs/mt/monitoring-amazon-emr-on-eks-with-amazon-managed-prometheus-and-amazon-managed-grafana/) to setup Observability for EMR on EKS Spark Jobs
 
 ```hcl
-  #---------------------------------------
-  # ENABLE EMR ON EKS
-  #---------------------------------------
-  enable_emr_on_eks = true
-
-  emr_on_eks_teams = {
-    data_team_a = {
-      emr_on_eks_namespace     = "emr-data-team-a"
-      emr_on_eks_iam_role_name = "emr-eks-data-team-a"
+    #---------------------------------------
+    # ENABLE EMR ON EKS
+    #---------------------------------------
+    enable_emr_on_eks = true
+    emr_on_eks_teams = {
+      emr-team-a = {
+        namespace               = "emr-data-team-a"
+        job_execution_role      = "emr-eks-data-team-a"
+        additional_iam_policies = ["<ENTER-IAM-POLICY-ARN>"]
+      }
+      emr-team-b = {
+        namespace               = "emr-data-team-b"
+        job_execution_role      = "emr-eks-data-team-b"
+        additional_iam_policies = ["<ENTER-IAM-POLICY-ARN>"]
+      }
     }
-
-    data_team_b = {
-      emr_on_eks_namespace     = "emr-data-team-b"
-      emr_on_eks_iam_role_name = "emr-eks-data-team-b"
-    }
-  }
 ```
 
 Once deployed, you can create Virtual EMR Cluster and execute Spark jobs. See the [document](https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/setting-up-registration.html) below for more details.

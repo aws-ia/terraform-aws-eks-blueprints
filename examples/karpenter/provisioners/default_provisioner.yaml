@@ -18,5 +18,12 @@ spec:
     subnetSelector:
       Name: "${eks-vpc_name}-private*"
     securityGroupSelector:
-      kubernetes.io/cluster/${eks-cluster-id}: 'owned'
+      karpenter.sh/discovery/${eks-cluster-id}: '${eks-cluster-id}'
+  labels:
+    type: karpenter
+    provisioner: default
+  taints:
+    - key: default
+      value: 'true'
+      effect: NoSchedule
   ttlSecondsAfterEmpty: 120

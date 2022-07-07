@@ -7,7 +7,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
-    version     = "2.2.3"
+    version     = "2.2.6"
     namespace   = local.namespace
     values      = local.default_helm_values
     description = "The AWS EFS CSI driver Helm chart deployment configuration"
@@ -41,9 +41,9 @@ locals {
   ]
 
   irsa_config = {
-    kubernetes_namespace              = local.namespace
+    kubernetes_namespace              = local.helm_config["namespace"]
     kubernetes_service_account        = local.service_account_name
-    create_kubernetes_namespace       = false
+    create_kubernetes_namespace       = try(var.helm_config.create_namespace, false)
     create_kubernetes_service_account = true
     iam_role_path                     = "/"
     eks_cluster_id                    = var.addon_context.eks_cluster_id

@@ -23,7 +23,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 #### Step 1: Clone the repo using the command below
 
-```shell script
+```sh
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
@@ -31,7 +31,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 
 Initialize a working directory with configuration files
 
-```shell script
+```sh
 cd examples/ingress-controllers/nginx
 terraform init
 ```
@@ -40,24 +40,20 @@ terraform init
 
 Verify the resources created by this execution
 
-```shell script
+```sh
 export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
 terraform plan
 ```
 
 #### Step 4: Finally, Terraform APPLY
 
-to create resources
+**Deploy the pattern**
 
-```shell script
-terraform apply -target="module.aws_vpc"
-terraform apply -target="module.eks_blueprints"
-terraform apply -target="module.eks_blueprints_kubernetes_addons"
-terraform apply -target="module.aws_load_balancer_controller"
-terraform apply -target="module.ingress_nginx"
+```sh
+terraform apply
 ```
 
-Enter `yes` for each apply
+Enter `yes` to apply.
 
 ### Configure `kubectl` and test cluster
 
@@ -68,19 +64,19 @@ This following command used to update the `kubeconfig` in your local machine whe
 
 `~/.kube/config` file gets updated with cluster details and certificate from the below command
 
-```shell
+```sh
     aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 ```
 
 #### Step 6: List all the worker nodes by running the command below
 
-```shell
+```sh
     kubectl get nodes
 ```
 
 #### Step 7: List all the pods running in `nginx` namespace
 
-```shell
+```sh
     kubectl get pods -n nginx
 ```
 
@@ -88,13 +84,13 @@ This following command used to update the `kubeconfig` in your local machine whe
 
 The following command destroys the resources created by `terraform apply`
 
-```shell script
+```sh
 cd examples/ingress-controllers/nginx
-terraform destroy -target="module.module.ingress_nginx" -auto-approve
-terraform destroy -target="module.module.aws_load_balancer_controller" -auto-approve
-terraform destroy -target="module.module.eks-blueprints-kubernetes-addons" -auto-approve
-terraform destroy -target="module.module.eks-blueprints" -auto-approve
-terraform destroy -target="module.aws_vpc" -auto-approve
+terraform destroy -target="module.eks_blueprints_kubernetes_addons.module.ingress_nginx[0]" -auto-approve
+terraform destroy -target="module.eks_blueprints_kubernetes_addons.module.aws_load_balancer_controller[0]" -auto-approve
+terraform destroy -target="module.eks-blueprints-kubernetes-addons" -auto-approve
+terraform destroy -target="module.eks-blueprints" -auto-approve
+terraform destroy -auto-approve
 ```
 
 ## Learn more

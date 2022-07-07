@@ -13,14 +13,14 @@ data "aws_iam_policy_document" "platform_team_eks_access" {
   statement {
     sid = "AllowPlatformTeamEKSAccess"
     actions = [
-      "eks:DescribeNodegroup",
-      "eks:ListNodegroups",
-      "eks:DescribeCluster",
-      "eks:ListClusters",
       "eks:AccessKubernetesApi",
-      "ssm:GetParameter",
+      "eks:DescribeCluster",
+      "eks:DescribeNodegroup",
+      "eks:ListClusters",
+      "eks:ListFargateProfiles",
+      "eks:ListNodegroups",
       "eks:ListUpdates",
-      "eks:ListFargateProfiles"
+      "ssm:GetParameter",
     ]
     resources = [
       data.aws_eks_cluster.eks_cluster.arn

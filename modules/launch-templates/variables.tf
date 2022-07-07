@@ -1,4 +1,5 @@
 variable "launch_template_config" {
+  description = "Launch template configuration"
   type = map(object({
     ami                    = string
     launch_template_os     = optional(string)
@@ -24,11 +25,13 @@ variable "launch_template_config" {
       throughput            = optional(string)
     }))
 
-    pre_userdata         = optional(string)
-    bootstrap_extra_args = optional(string)
-    post_userdata        = optional(string)
-    kubelet_extra_args   = optional(string)
+    format_mount_nvme_disk = optional(bool)
+    pre_userdata           = optional(string)
+    bootstrap_extra_args   = optional(string)
+    post_userdata          = optional(string)
+    kubelet_extra_args     = optional(string)
 
+    enable_metadata_options     = optional(bool)
     http_endpoint               = optional(string)
     http_tokens                 = optional(string)
     http_put_response_hop_limit = optional(number)
@@ -38,7 +41,6 @@ variable "launch_template_config" {
 
     monitoring = optional(bool)
   }))
-  description = "Launch template configuration"
 }
 
 variable "eks_cluster_id" {
@@ -47,7 +49,7 @@ variable "eks_cluster_id" {
 }
 
 variable "tags" {
+  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
   type        = map(string)
   default     = {}
-  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }

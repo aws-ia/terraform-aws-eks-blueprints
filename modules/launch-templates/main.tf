@@ -11,15 +11,16 @@ resource "aws_launch_template" "this" {
 
   user_data = base64encode(templatefile("${path.module}/templates/userdata-${each.value.launch_template_os}.tpl",
     {
-      pre_userdata         = each.value.pre_userdata
-      post_userdata        = each.value.post_userdata
-      bootstrap_extra_args = each.value.bootstrap_extra_args
-      kubelet_extra_args   = each.value.kubelet_extra_args
-      eks_cluster_id       = var.eks_cluster_id
-      cluster_ca_base64    = data.aws_eks_cluster.eks.certificate_authority[0].data
-      cluster_endpoint     = data.aws_eks_cluster.eks.endpoint
-      service_ipv6_cidr    = try(each.value.service_ipv6_cidr, "")
-      service_ipv4_cidr    = try(each.value.service_ipv4_cidr, "")
+      pre_userdata           = each.value.pre_userdata
+      post_userdata          = each.value.post_userdata
+      bootstrap_extra_args   = each.value.bootstrap_extra_args
+      kubelet_extra_args     = each.value.kubelet_extra_args
+      eks_cluster_id         = var.eks_cluster_id
+      cluster_ca_base64      = data.aws_eks_cluster.eks.certificate_authority[0].data
+      cluster_endpoint       = data.aws_eks_cluster.eks.endpoint
+      service_ipv6_cidr      = try(each.value.service_ipv6_cidr, "")
+      service_ipv4_cidr      = try(each.value.service_ipv4_cidr, "")
+      format_mount_nvme_disk = each.value.format_mount_nvme_disk
   }))
 
   dynamic "iam_instance_profile" {
@@ -69,16 +70,23 @@ resource "aws_launch_template" "this" {
   }
 
   dynamic "monitoring" {
-    for_each = each.value.monitoring ? { enabled = true } : {}
+    for_each = each.value.monitoring ? [1] : []
+
     content {
       enabled = true
     }
   }
 
-  metadata_options {
-    http_endpoint               = each.value.http_endpoint
-    http_tokens                 = each.value.http_tokens
-    http_put_response_hop_limit = each.value.http_put_response_hop_limit
+  dynamic "metadata_options" {
+    for_each = each.value.enable_metadata_options ? [1] : []
+
+    content {
+      http_endpoint               = try(each.value.http_endpoint, "enabled")
+      http_tokens                 = try(each.value.http_tokens, "required")
+      http_put_response_hop_limit = try(each.value.http_put_response_hop_limit, 2)
+      http_protocol_ipv6          = try(each.value.http_protocol_ipv6, null)
+      instance_metadata_tags      = try(each.value.instance_metadata_tags, null)
+    }
   }
 
   lifecycle {

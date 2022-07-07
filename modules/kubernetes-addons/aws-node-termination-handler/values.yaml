@@ -1,2 +1,5 @@
 enableSqsTerminationDraining: true
 enablePrometheusServer: true
+%{ if length(autoscaling_group_names) == 0 ~}
+checkASGTagBeforeDraining: false
+%{ endif ~}

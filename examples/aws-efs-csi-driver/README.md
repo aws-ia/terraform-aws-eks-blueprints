@@ -21,7 +21,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 #### Step 1: Clone the repo using the command below
 
-```shell script
+```sh
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
@@ -29,29 +29,29 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 
 Initialize a working directory with configuration files
 
-```shell script
+```sh
 cd examples/aws-efs-csi-driver/
 terraform init
 ```
 
 #### Step 3: Run Terraform PLAN
 
-Verify the resources created by this execution
+Confirm the region to deploy to in `main.tf` and verify the resources created by this execution
 
-```shell script
+```sh
 export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
 terraform plan
 ```
 
 #### Step 4: Finally, Terraform APPLY
 
-To create resources
+**Deploy the pattern**
 
-```shell script
+```sh
 terraform apply
 ```
 
-Enter `yes` to apply
+Enter `yes` to apply.
 
 ### Configure `kubectl` and test cluster
 
@@ -62,7 +62,7 @@ This following command used to update the `kubeconfig` in your local machine whe
 
 `~/.kube/config` file gets updated with cluster details and certificate from the below command
 
-    aws eks --region ${AWS_REGION} update-kubeconfig --name aws001-preprod-dev-eks
+    aws eks --region ${AWS_REGION} update-kubeconfig --name aws-efs-csi-driver
 
 #### Step 6: List all the worker nodes by running the command below
 
@@ -118,11 +118,20 @@ Confirm that the data is written to the volume
     Wed Feb 23 13:37:44 UTC 2022
     Wed Feb 23 13:37:49 UTC 2022
 
-## How to Destroy
+## Cleanup
 
-The following command destroys the resources created by `terraform apply`
+To clean up your environment, destroy the Terraform modules in reverse order.
 
-```shell script
-cd examples/aws-efs-csi-driver/
+Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
+
+```sh
+terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
+terraform destroy -target="module.eks_blueprints" -auto-approve
+terraform destroy -target="module.vpc" -auto-approve
+```
+
+Finally, destroy any additional resources that are not in the above modules
+
+```sh
 terraform destroy -auto-approve
 ```
