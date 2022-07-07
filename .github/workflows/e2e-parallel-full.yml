@@ -119,7 +119,7 @@ jobs:
           kill ${{ env.iamlive_pid }}
           while $(kill -0 ${{ env.iamlive_pid }} 2>/dev/null); do sleep 1; done;
           cat ${HOME}/policy.json
-          aws s3 cp ${HOME}/policy.json s3://${{ env.BUCKET_NAME }}/${{ matrix.example_path }}.json
+          aws s3 cp ${HOME}/policy.json s3://${{ env.BUCKET_NAME }}/${{ github.ref }}/${{ matrix.example_path }}.json
 
     post_deploy:
       if: ${{ always() }}
