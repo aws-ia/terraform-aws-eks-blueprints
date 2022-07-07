@@ -202,7 +202,6 @@ module "eks_blueprints_kubernetes_addons" {
   # Open Source Grafana Add-on
   #---------------------------------------------------------------
   enable_grafana                     = true
-  grafana_admin_password_secret_name = ""
 
   tags = local.tags
 }
