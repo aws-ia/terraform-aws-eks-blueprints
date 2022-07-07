@@ -10,7 +10,7 @@ data "aws_partition" "current" {}
 
 data "aws_iam_policy_document" "platform_team_default" {
   count = length(var.platform_teams) > 0 ? 1 : 0
-  
+
   statement {
     sid = "AllowPlatformTeamEKSAccess"
     actions = [
