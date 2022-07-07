@@ -10,6 +10,9 @@ on:
 
 concurrency: e2e-parallel-full
 
+env:
+  IAMLIVE_VERSION: v0.48.0
+
 jobs:
   deploy:
     name: Run e2e test
@@ -60,11 +63,8 @@ jobs:
       - name: Iamlive Setup
         run: |
           #!/bin/bash
-          set -e
-          set -o pipefail
-          set -x
-          export IAMLIVE_VERSION=v0.48.0
-          wget -O iamlive.tar.gz "https://github.com/iann0036/iamlive/releases/download/${IAMLIVE_VERSION}/iamlive-${IAMLIVE_VERSION}-linux-amd64.tar.gz"
+          set -eox pipefail
+          wget -O iamlive.tar.gz "https://github.com/iann0036/iamlive/releases/download/${{ env.IAMLIVE_VERSION }}/iamlive-${{ env.IAMLIVE_VERSION }}-linux-amd64.tar.gz"
           tar -xzf iamlive.tar.gz
           chmod +x iamlive
           IAMLIVE_PID=$(./iamlive --mode proxy --bind-addr 0.0.0.0:10080 --output-file ${HOME}/policy.json --refresh-rate 1 --sort-alphabetical --force-wildcard-resource --background)
