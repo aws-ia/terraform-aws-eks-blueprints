@@ -41,7 +41,6 @@ locals {
   vpc_cidr                           = "10.0.0.0/16"
   azs                                = slice(data.aws_availability_zones.available.names, 0, 3)
   s3_prefix                          = "logs/"
-  grafana_admin_password_secret_name = "grafana"
 
   tags = {
     Blueprint  = local.name
