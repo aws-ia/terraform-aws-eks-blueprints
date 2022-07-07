@@ -201,7 +201,7 @@ module "eks_blueprints_kubernetes_addons" {
   #---------------------------------------------------------------
   # Open Source Grafana Add-on
   #---------------------------------------------------------------
-  enable_grafana                     = true
+  enable_grafana = true
 
   tags = local.tags
 }
