@@ -18,7 +18,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://aws.github.io/eks-charts"
-    version     = "0.1.11"
+    version     = "0.1.17"
     namespace   = local.name
     values      = local.default_helm_values
     description = "aws-for-fluentbit Helm Chart deployment configuration"
@@ -44,7 +44,7 @@ locals {
   irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
     kubernetes_service_account        = local.service_account_name
-    create_kubernetes_namespace       = true
+    create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
     create_kubernetes_service_account = true
     irsa_iam_policies                 = concat([aws_iam_policy.aws_for_fluent_bit.arn], var.irsa_policies)
   }

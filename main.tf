@@ -45,7 +45,8 @@ module "aws_eks" {
   cluster_service_ipv4_cidr = var.cluster_service_ipv4_cidr
 
   # Cluster Security Group
-  create_cluster_security_group           = true
+  create_cluster_security_group           = var.create_cluster_security_group
+  cluster_security_group_id               = var.cluster_security_group_id
   vpc_id                                  = var.vpc_id
   cluster_additional_security_group_ids   = var.cluster_additional_security_group_ids
   cluster_security_group_additional_rules = var.cluster_security_group_additional_rules
@@ -83,17 +84,6 @@ module "aws_eks" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# AWS Managed Prometheus Module
-# ---------------------------------------------------------------------------------------------------------------------
-module "aws_managed_prometheus" {
-  count  = var.create_eks && var.enable_amazon_prometheus ? 1 : 0
-  source = "./modules/aws-managed-prometheus"
-
-  amazon_prometheus_workspace_alias = var.amazon_prometheus_workspace_alias
-  eks_cluster_id                    = module.aws_eks.cluster_id
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
 # Amazon EMR on EKS Virtual Clusters
 # ---------------------------------------------------------------------------------------------------------------------
 module "emr_on_eks" {
@@ -103,9 +93,10 @@ module "emr_on_eks" {
     if var.enable_emr_on_eks && length(var.emr_on_eks_teams) > 0
   }
 
-  emr_on_eks_teams = each.value
-  eks_cluster_id   = module.aws_eks.cluster_id
-  tags             = var.tags
+  emr_on_eks_teams              = each.value
+  eks_cluster_id                = module.aws_eks.cluster_id
+  iam_role_permissions_boundary = var.iam_role_permissions_boundary
+  tags                          = var.tags
 
   depends_on = [kubernetes_config_map.aws_auth]
 }

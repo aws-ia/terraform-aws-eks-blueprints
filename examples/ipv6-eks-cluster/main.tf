@@ -7,7 +7,7 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
 
   exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
+    api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
     # This requires the awscli to be installed locally where Terraform is executed
     args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
@@ -20,7 +20,7 @@ provider "helm" {
     cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
 
     exec {
-      api_version = "client.authentication.k8s.io/v1alpha1"
+      api_version = "client.authentication.k8s.io/v1beta1"
       command     = "aws"
       # This requires the awscli to be installed locally where Terraform is executed
       args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
@@ -50,7 +50,7 @@ module "eks_blueprints" {
   source = "../.."
 
   cluster_name      = local.name
-  cluster_version   = "1.21"
+  cluster_version   = "1.22"
   cluster_ip_family = "ipv6"
 
   vpc_id             = module.vpc.vpc_id
@@ -73,8 +73,12 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id = module.eks_blueprints.eks_cluster_id
-  enable_ipv6    = true # Enable Ipv6 network. Attaches new VPC CNI policy to the IRSA role
+  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
+  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
+  eks_oidc_provider    = module.eks_blueprints.oidc_provider
+  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
+
+  enable_ipv6 = true # Enable Ipv6 network. Attaches new VPC CNI policy to the IRSA role
 
   # EKS Managed Add-ons
   enable_amazon_eks_coredns    = true
@@ -86,7 +90,6 @@ module "eks_blueprints_kubernetes_addons" {
 
   tags = local.tags
 
-  depends_on = [module.eks_blueprints.managed_node_groups]
 }
 
 #---------------------------------------------------------------

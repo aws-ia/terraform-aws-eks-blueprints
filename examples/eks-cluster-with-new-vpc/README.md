@@ -4,7 +4,7 @@ This example deploys the following Basic EKS Cluster with VPC
 
 - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
 - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
-- Creates EKS Cluster Control plane with one managed node group and fargate profile
+- Creates EKS Cluster Control plane with one managed node group
 
 ## How to Deploy
 
@@ -20,7 +20,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 #### Step 1: Clone the repo using the command below
 
-```shell script
+```sh
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
@@ -28,7 +28,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 
 Initialize a working directory with configuration files
 
-```shell script
+```sh
 cd examples/eks-cluster-with-new-vpc/
 terraform init
 ```
@@ -37,20 +37,20 @@ terraform init
 
 Verify the resources created by this execution
 
-```shell script
+```sh
 export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
 terraform plan
 ```
 
 #### Step 4: Finally, Terraform APPLY
 
-to create resources
+**Deploy the pattern**
 
-```shell script
+```sh
 terraform apply
 ```
 
-Enter `yes` to apply
+Enter `yes` to apply.
 
 ### Configure `kubectl` and test cluster
 
@@ -71,11 +71,20 @@ This following command used to update the `kubeconfig` in your local machine whe
 
     $ kubectl get pods -n kube-system
 
-## How to Destroy
+## Cleanup
 
-The following command destroys the resources created by `terraform apply`
+To clean up your environment, destroy the Terraform modules in reverse order.
 
-```shell script
-cd examples/eks-cluster-with-new-vpc
-terraform destroy --auto-approve
+Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
+
+```sh
+terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
+terraform destroy -target="module.eks_blueprints" -auto-approve
+terraform destroy -target="module.vpc" -auto-approve
+```
+
+Finally, destroy any additional resources that are not in the above modules
+
+```sh
+terraform destroy -auto-approve
 ```

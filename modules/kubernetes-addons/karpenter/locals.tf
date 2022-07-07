@@ -17,7 +17,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://charts.karpenter.sh"
-    version     = "0.6.5"
+    version     = "0.11.0"
     namespace   = local.name
     timeout     = "300"
     values      = local.default_helm_values
@@ -33,7 +33,7 @@ locals {
   irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
     kubernetes_service_account        = local.service_account_name
-    create_kubernetes_namespace       = true
+    create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
     create_kubernetes_service_account = true
     irsa_iam_policies                 = concat([aws_iam_policy.karpenter.arn], var.irsa_policies)
   }

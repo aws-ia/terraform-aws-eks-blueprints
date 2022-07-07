@@ -1,9 +1,9 @@
 resource "helm_release" "addon" {
   count                      = var.manage_via_gitops ? 0 : 1
   name                       = var.helm_config["name"]
-  repository                 = var.helm_config["repository"]
+  repository                 = try(var.helm_config["repository"], null)
   chart                      = var.helm_config["chart"]
-  version                    = var.helm_config["version"]
+  version                    = try(var.helm_config["version"], null)
   timeout                    = try(var.helm_config["timeout"], 1200)
   values                     = try(var.helm_config["values"], null)
   create_namespace           = var.irsa_config != null ? false : try(var.helm_config["create_namespace"], false)

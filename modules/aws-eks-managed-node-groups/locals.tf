@@ -27,9 +27,10 @@ locals {
     release_version      = ""
     force_update_version = null
 
-    k8s_labels      = {}
-    k8s_taints      = []
-    additional_tags = {}
+    k8s_labels           = {}
+    k8s_taints           = []
+    additional_tags      = {}
+    launch_template_tags = {}
 
     remote_access           = false
     ec2_ssh_key             = null
@@ -103,19 +104,14 @@ locals {
     local.managed_node_group["additional_iam_policies"
   ])) : k => v if local.managed_node_group["create_iam_role"] }
 
-  #  eks_worker_policies = local.managed_node_group["create_iam_role"] ? toset(concat(
-  #    local.managed_node_group["additional_iam_policies"]
-  #  )) : []
-
   common_tags = merge(
     var.context.tags,
     local.managed_node_group["additional_tags"],
     {
-      Name = "${var.context.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
-    },
-    {
+      Name                                                      = "${var.context.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
       "kubernetes.io/cluster/${var.context.eks_cluster_id}"     = "owned"
       "k8s.io/cluster-autoscaler/${var.context.eks_cluster_id}" = "owned"
       "k8s.io/cluster-autoscaler/enabled"                       = "TRUE"
+      "managed-by"                                              = "terraform-aws-eks-blueprints"
   })
 }

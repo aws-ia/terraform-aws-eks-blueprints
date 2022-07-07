@@ -5,3 +5,4 @@ exclude:
   - aws-eks-no-public-cluster-access-to-cidr # Public access enabled for better example usability, users are recommended to disable if possible
   - aws-eks-no-public-cluster-access # Public access enabled for better example usability, users are recommended to disable if possible
   - aws-eks-encrypt-secrets # Module defaults to encrypting secrets with CMK, but this is not hardcoded and therefore a spurious error
+  - aws-vpc-no-public-egress-sgr # Added in v1.22

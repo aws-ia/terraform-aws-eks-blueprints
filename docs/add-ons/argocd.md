@@ -41,7 +41,7 @@ argocd_helm_config = {
 }
 ```
 
-### Boostrapping
+### Bootstrapping
 
 The framework provides an approach to bootstrapping workloads and/or additional add-ons by leveraging the ArgoCD [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern.
 
@@ -59,7 +59,7 @@ argocd_applications = {
 
 ### Add-ons
 
-A common operational pattern for EKS customers is to leverage Infrastructure as Code to provision EKS clusters (in addition to other AWS resources), and ArgoCD to manage cluster add-ons. This can present a challenge when add-ons manged by ArgoCD depend on AWS resource values which are created via Terraform execution (such as an IAM arn for an add-on that leverages IRSA), to function properly. The framework provides an approach to bridging the gap between Terraform and ArgoCD by leveraging the ArgoCD [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern.
+A common operational pattern for EKS customers is to leverage Infrastructure as Code to provision EKS clusters (in addition to other AWS resources), and ArgoCD to manage cluster add-ons. This can present a challenge when add-ons managed by ArgoCD depend on AWS resource values which are created via Terraform execution (such as an IAM ARN for an add-on that leverages IRSA), to function properly. The framework provides an approach to bridging the gap between Terraform and ArgoCD by leveraging the ArgoCD [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern.
 
 To indicate that ArgoCD should responsible for managing cluster add-ons (applying add-on Helm charts to a cluster), you can set the `argocd_manage_add_ons` property to true. When this flag is set, the framework will still provision all AWS resources necessary to support add-on functionality, but it will not apply Helm charts directly via the Terraform Helm provider.
 
@@ -67,7 +67,7 @@ Next, identify which ArgoCD Application will serve as the add-on configuration r
 
 Sample configuration can be found below:
 
-```
+```hcl
 enable_argocd           = true
 argocd_manage_add_ons   = true
 argocd_applications     = {
@@ -88,9 +88,9 @@ To leverage private repositories, do the following:
 1. Create a new secret in AWS Secrets Manager for your desired region. The value for the secret should be a private SSH key for your Git provider.
 2. Set the `ssh_key_secret_name` in each Application's configuration as the name of the secret.
 
-Internally, the framework will create a Kubernetes Secret, which ArgoCD will leverage when making requests to your Git provider. See example configuration below.
+Internally, the framework will create a Kubernetes Secret, which ArgoCD will leverage when making requests to your Git provider. See the example configuration below.
 
-```
+```hcl
 enable_argocd           = true
 argocd_manage_add_ons   = true
 argocd_applications     = {
@@ -100,6 +100,7 @@ argocd_applications     = {
     project             = "default"
     add_on_application  = true              # Indicates the root add-on application.
     ssh_key_secret_name = "github-ssh-key"  # Needed for private repos
+    insecure            = false # Set to true to disable the server's certificate verification
   }
 }
 ```
@@ -108,7 +109,7 @@ argocd_applications     = {
 
 The following demonstrates a complete example for configuring ArgoCD.
 
-```
+```hcl
 enable_argocd                       = true
 argocd_manage_add_ons               = true
 argocd_admin_password_secret_name   = <secret_name>
@@ -129,13 +130,26 @@ argocd_applications = {
     path                = "envs/dev"
     repo_url            = "https://github.com/aws-samples/eks-blueprints-workloads.git"
     values              = {}
+    type                = "helm"            # Optional, defaults to helm.
+  }
+  kustomize_apps = {
+    /*
+      This points to a single application with no overlays, but it could easily
+      point to a a specific overlay for an environment like "dev", and/or utilize
+      the ArgoCD app of apps model to install many additional ArgoCD apps.
+    */
+    path                = "argocd-example-apps/kustomize-guestbook/"
+    repo_url            = "https://github.com/argoproj/argocd-example-apps.git"
+    type                = "kustomize"
   }
   addons = {
     path                = "chart"
     repo_url            = "git@github.com:aws-samples/eks-blueprints-add-ons.git"
     add_on_application  = true              # Indicates the root add-on application.
+                                            # If provided, the type must be set to "helm" for the root add-on application.
     ssh_key_secret_name = "github-ssh-key"  # Needed for private repos
     values              = {}
+    type                = "helm"            # Optional, defaults to helm.
   }
 }
 ```

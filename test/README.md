@@ -10,13 +10,13 @@ The following steps can be used to configure Go lang and run Terratests locally(
 
 ### Step 2: Change directory into the test folder.
 
-```shell
+```sh
 cd test
 ```
 
 ### Step 3: Initialize your test
 
-```shell
+```sh
 go mod init github.com/aws-ia/terraform-aws-eks-blueprints
 
 go mod tidy -go=1.17
@@ -24,7 +24,7 @@ go mod tidy -go=1.17
 
 ### Step 4: Build and Run E2E Test
 
-```shell
+```sh
 cd src
 
 go get -v -t -d && go mod tidy -compat=1.17

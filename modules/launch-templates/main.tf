@@ -70,16 +70,23 @@ resource "aws_launch_template" "this" {
   }
 
   dynamic "monitoring" {
-    for_each = each.value.monitoring ? { enabled = true } : {}
+    for_each = each.value.monitoring ? [1] : []
+
     content {
       enabled = true
     }
   }
 
-  metadata_options {
-    http_endpoint               = each.value.http_endpoint
-    http_tokens                 = each.value.http_tokens
-    http_put_response_hop_limit = each.value.http_put_response_hop_limit
+  dynamic "metadata_options" {
+    for_each = each.value.enable_metadata_options ? [1] : []
+
+    content {
+      http_endpoint               = try(each.value.http_endpoint, "enabled")
+      http_tokens                 = try(each.value.http_tokens, "required")
+      http_put_response_hop_limit = try(each.value.http_put_response_hop_limit, 2)
+      http_protocol_ipv6          = try(each.value.http_protocol_ipv6, null)
+      instance_metadata_tags      = try(each.value.instance_metadata_tags, null)
+    }
   }
 
   lifecycle {
