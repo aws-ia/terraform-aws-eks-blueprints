@@ -12,6 +12,7 @@ concurrency: e2e-parallel-full
 
 env:
   IAMLIVE_VERSION: v0.48.0
+  BUCKET_NAME: terraform-eks-blueprints-iam-policies-examples
 
 jobs:
   deploy:
@@ -118,7 +119,7 @@ jobs:
           kill ${{ env.iamlive_pid }}
           while $(kill -0 ${{ env.iamlive_pid }} 2>/dev/null); do sleep 1; done;
           cat ${HOME}/policy.json
-          aws s3 cp ${HOME}/policy.json s3://eks-blueprints-iam-policies/${{ matrix.example_path }}.json
+          aws s3 cp ${HOME}/policy.json s3://${{ env.BUCKET_NAME }}/${{ matrix.example_path }}.json
 
     post_deploy:
       if: ${{ always() }}

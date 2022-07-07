@@ -1,9 +1,10 @@
 import json
 import boto3
+import os
 
 iam_actions = []
 s3 = boto3.resource('s3')
-bucket_name = 'terraform-eks-blueprints-iam-policies-examples'
+bucket_name = os.getenv('BUCKET_NAME')
 bucket = s3.Bucket(bucket_name)
 bucket_files = [x.key for x in bucket.objects.all()]
 
