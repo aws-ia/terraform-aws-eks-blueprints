@@ -202,29 +202,11 @@ module "eks_blueprints_kubernetes_addons" {
   # Open Source Grafana Add-on
   #---------------------------------------------------------------
   enable_grafana                     = true
-  grafana_admin_password_secret_name = local.grafana_admin_password_secret_name
+  grafana_admin_password_secret_name = ""
 
   tags = local.tags
 }
 
-#---------------------------------------------------------------
-# Grafana Admin credentials resources
-# Login to AWS secrets manager with the same role as Terraform to extract the Grafana admin password with the secret name as "grafana"
-#---------------------------------------------------------------
-resource "random_password" "grafana" {
-  length           = 16
-  special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
-}
-
-resource "aws_secretsmanager_secret" "grafana" {
-  name = local.grafana_admin_password_secret_name
-}
-
-resource "aws_secretsmanager_secret_version" "grafana" {
-  secret_id     = aws_secretsmanager_secret.grafana.id
-  secret_string = random_password.grafana.result
-}
 
 module "managed_prometheus" {
   source  = "terraform-aws-modules/managed-service-prometheus/aws"
