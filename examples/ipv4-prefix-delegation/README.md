@@ -2,7 +2,7 @@
 
 This example shows how to provision an EKS cluster with prefix delegation enabled for increasing the number of available IP addresses for the EC2 nodes utilized.
 
-- [Docuemtation](https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html)
+- [Documentation](https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html)
 - [Blog post](https://aws.amazon.com/blogs/containers/amazon-vpc-cni-increases-pods-per-node-limits/)
 
 ## Prerequisites:
@@ -32,7 +32,7 @@ The following command will update the `kubeconfig` on your local machine and all
 1. Run `update-kubeconfig` command:
 
 ```sh
-aws eks --region <REGION> update-kubeconfig --name <CLSUTER_NAME>
+aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
 ```
 
 2. List the nodes running currently
@@ -50,7 +50,7 @@ ip-10-0-30-125.us-west-2.compute.internal   Ready                         <none>
 ```sh
 kubectl describe node ip-10-0-30-125.us-west-2.compute.internal
 
-# Ouput should look like below (truncated for brevity)
+# Output should look like below (truncated for brevity)
   Capacity:
     attachable-volumes-aws-ebs:  25
     cpu:                         4
@@ -87,7 +87,7 @@ kube-system   kube-proxy-plwlc           1/1     Running       0          6m5s
 ```sh
 kubectl describe pod aws-node-77rwz -n kube-system
 
-# Ouput should look like below (truncated for brevity)
+# Output should look like below (truncated for brevity)
   Environment:
     ADDITIONAL_ENI_TAGS:                    {}
     AWS_VPC_CNI_NODE_PORT_SUPPORT:          true

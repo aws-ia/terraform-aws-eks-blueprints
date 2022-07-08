@@ -14,6 +14,10 @@ terraform {
       source  = "hashicorp/helm"
       version = ">= 2.4.1"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = "3.3.2"
+    }
   }
 
   # ##  Used for end-to-end testing on project; update to suit your needs

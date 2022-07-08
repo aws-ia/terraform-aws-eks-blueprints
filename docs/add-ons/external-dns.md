@@ -39,6 +39,6 @@ The following properties are made available for use when managing the add-on via
 external_dns = {
   enable            = true
   zoneFilterIds     = local.zone_filter_ids
-  serviceAccontName = local.service_account_name
+  serviceAccountName = local.service_account_name
 }
 ```

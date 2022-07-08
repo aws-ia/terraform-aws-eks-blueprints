@@ -1,19 +1,19 @@
 variable "helm_config" {
-  description = "ArgoCD Helm Chart Config values"
+  description = "Helm provider config for Grafana."
   type        = any
   default     = {}
 }
 
-variable "applications" {
-  description = "ArgoCD Application config used to bootstrap a cluster."
-  type        = any
-  default     = {}
+variable "manage_via_gitops" {
+  description = "Determines if the add-on should be managed via GitOps."
+  type        = bool
+  default     = false
 }
 
-variable "addon_config" {
-  description = "Configuration for managing add-ons via ArgoCD"
-  type        = any
-  default     = {}
+variable "irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
 }
 
 variable "addon_context" {
@@ -28,5 +28,7 @@ variable "addon_context" {
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
     tags                           = map(string)
+    irsa_iam_role_path             = string
+    irsa_iam_permissions_boundary  = string
   })
 }

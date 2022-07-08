@@ -10,6 +10,10 @@ on:
 
 concurrency: e2e-parallel-full
 
+env:
+  IAMLIVE_VERSION: v0.48.0
+  BUCKET_NAME: terraform-eks-blueprints-iam-policies-examples
+
 jobs:
   deploy:
     name: Run e2e test
@@ -57,6 +61,16 @@ jobs:
           role-duration-seconds: 3600
           role-session-name: GithubActions-Session
 
+      - name: Iamlive Setup
+        run: |
+          #!/bin/bash
+          set -eox pipefail
+          wget -O iamlive.tar.gz "https://github.com/iann0036/iamlive/releases/download/${{ env.IAMLIVE_VERSION }}/iamlive-${{ env.IAMLIVE_VERSION }}-linux-amd64.tar.gz"
+          tar -xzf iamlive.tar.gz
+          chmod +x iamlive
+          IAMLIVE_PID=$(./iamlive --mode proxy --bind-addr 0.0.0.0:10080 --output-file ${HOME}/policy.json --refresh-rate 1 --sort-alphabetical --force-wildcard-resource --background)
+          echo "iamlive_pid=$IAMLIVE_PID" >> $GITHUB_ENV
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -67,6 +81,10 @@ jobs:
         working-directory: ${{ matrix.example_path }}
         run: |
           terraform init -upgrade=true
+          export HTTP_PROXY=http://127.0.0.1:10080
+          export HTTPS_PROXY=http://127.0.0.1:10080
+          export AWS_CA_BUNDLE="${HOME}/.iamlive/ca.pem"
+          export NO_PROXY=eks.amazonaws.com,github.io,fairwinds.com,crossplane.io,github.com,agones.dev,karpenter.sh,githubusercontent.com,storage.googleapis.com
           terraform apply -target=module.vpc -no-color -input=false -auto-approve
           terraform apply -target=module.eks_blueprints -no-color -input=false -auto-approve
           terraform apply -target=module.eks_blueprints_kubernetes_addons -no-color -input=false -auto-approve
@@ -77,6 +95,10 @@ jobs:
         working-directory: ${{ matrix.example_path }}
         run: |
           terraform init -upgrade=true
+          export HTTP_PROXY=http://127.0.0.1:10080
+          export HTTPS_PROXY=http://127.0.0.1:10080
+          export AWS_CA_BUNDLE="${HOME}/.iamlive/ca.pem"
+          export NO_PROXY=eks.amazonaws.com,github.io,fairwinds.com,crossplane.io,github.com,agones.dev,karpenter.sh,githubusercontent.com,storage.googleapis.com
           terraform destroy -target=module.eks_blueprints_kubernetes_addons  -no-color -input=false -auto-approve
           terraform destroy -target=module.eks_blueprints  -no-color -input=false -auto-approve
           terraform destroy -no-color -input=false -auto-approve
@@ -86,4 +108,42 @@ jobs:
         run: |
           echo "Terraform Apply step failed...Please check the logs of the Terraform Apply step."
           echo "Failing the job to avoid false positives."
+          kill ${{ env.iamlive_pid }}
+          while $(kill -0 ${{ env.iamlive_pid }} 2>/dev/null); do sleep 1; done;
+          cat ${HOME}/policy.json
           exit 1
+
+      - name: Iamlive Print & Upload Policy
+        if: ${{ always() }}
+        run: |
+          kill ${{ env.iamlive_pid }}
+          while $(kill -0 ${{ env.iamlive_pid }} 2>/dev/null); do sleep 1; done;
+          cat ${HOME}/policy.json
+          aws s3 cp ${HOME}/policy.json s3://${{ env.BUCKET_NAME }}/${{ matrix.example_path }}.json
+
+  post_deploy:
+    if: ${{ always() }}
+    needs: [deploy]
+    permissions:
+      id-token: write
+      contents: read
+    name: Merge Policies and Print Final IAM Policy
+    runs-on: ubuntu-latest
+    steps:
+      # Be careful not to change this to explicit checkout from PR ref/code, as below we run a python code that may change from the PR code.
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials from Test account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          aws-region: us-west-2
+          role-duration-seconds: 3600
+          role-session-name: GithubActions-Session
+
+      - name: Merge iamlive IAM policies and Print Final Policy
+        id: dirs
+        run: |
+          pip3 install boto3
+          python3 .github/workflows/iam-policy-generator.py

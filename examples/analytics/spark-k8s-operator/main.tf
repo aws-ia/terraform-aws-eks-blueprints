@@ -3,39 +3,40 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-  }
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-    }
+    host                   = data.aws_eks_cluster.cluster.endpoint
+    token                  = data.aws_eks_cluster_auth.cluster.token
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
   }
 }
 
+data "aws_eks_cluster" "cluster" {
+  name = module.eks_blueprints.eks_cluster_id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks_blueprints.eks_cluster_id
+}
+
 data "aws_availability_zones" "available" {}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_partition" "current" {}
 
 locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
-  vpc_cidr = "10.0.0.0/16"
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  vpc_cidr  = "10.0.0.0/16"
+  azs       = slice(data.aws_availability_zones.available.names, 0, 3)
+  s3_prefix = "logs/"
 
   tags = {
     Blueprint  = local.name
@@ -132,6 +133,9 @@ module "eks_blueprints_kubernetes_addons" {
     })]
   }
 
+  #---------------------------------------------------------------
+  # Spark History Server Addon
+  #---------------------------------------------------------------
   enable_spark_k8s_operator = true
   spark_k8s_operator_helm_config = {
     name             = "spark-operator"
@@ -153,12 +157,86 @@ module "eks_blueprints_kubernetes_addons" {
     values     = [templatefile("${path.module}/helm_values/yunikorn-values.yaml", {})]
   }
 
+  enable_spark_history_server = true
+  # This example is using a managed s3 readonly policy. It' recommended to create your own IAM Policy
+  spark_history_server_irsa_policies = ["arn:${data.aws_partition.current.id}:iam::aws:policy/AmazonS3ReadOnlyAccess"]
+  spark_history_server_helm_config = {
+    name       = "spark-history-server"
+    chart      = "spark-history-server"
+    repository = "https://hyper-mesh.github.io/spark-history-server"
+    version    = "1.0.0"
+    namespace  = "spark-history-server"
+    timeout    = "300"
+    values = [
+      <<-EOT
+        serviceAccount:
+          create: false
+
+        sparkHistoryOpts: "-Dspark.history.fs.logDirectory=s3a://${aws_s3_bucket.this.id}/${local.s3_prefix}"
+
+        # Update spark conf according to your needs
+        sparkConf: |-
+          spark.hadoop.fs.s3a.aws.credentials.provider=com.amazonaws.auth.WebIdentityTokenCredentialsProvider
+          spark.history.fs.eventLog.rolling.maxFilesToRetain=5
+          spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
+          spark.eventLog.enabled=true
+          spark.history.ui.port=18080
+
+        resources:
+          limits:
+            cpu: 200m
+            memory: 2G
+          requests:
+            cpu: 100m
+            memory: 1G
+        EOT
+    ]
+  }
+
+  #---------------------------------------------------------------
+  # Open Source Grafana Add-on
+  #---------------------------------------------------------------
+  enable_grafana = true
+
+  # This example shows how to set default password for grafana using SecretsManager and Helm Chart set_sensitive values.
+  grafana_helm_config = {
+    set_sensitive = [
+      {
+        name  = "adminPassword"
+        value = data.aws_secretsmanager_secret_version.admin_password_version.secret_string
+      }
+    ]
+  }
+
   tags = local.tags
+
 }
 
 #---------------------------------------------------------------
-# Supporting Resources
+# Grafana Admin credentials resources
+# Login to AWS secrets manager with the same role as Terraform to extract the Grafana admin password with the secret name as "grafana"
 #---------------------------------------------------------------
+resource "random_password" "grafana" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+#tfsec:ignore:aws-ssm-secret-use-customer-key
+resource "aws_secretsmanager_secret" "grafana" {
+  name                    = "grafana"
+  recovery_window_in_days = 0 # Set to zero for this example to force delete during Terraform destroy
+}
+
+resource "aws_secretsmanager_secret_version" "grafana" {
+  secret_id     = aws_secretsmanager_secret.grafana.id
+  secret_string = random_password.grafana.result
+}
+
+data "aws_secretsmanager_secret_version" "admin_password_version" {
+  secret_id = aws_secretsmanager_secret.grafana.id
+
+  depends_on = [aws_secretsmanager_secret_version.grafana]
+}
 
 module "managed_prometheus" {
   source  = "terraform-aws-modules/managed-service-prometheus/aws"
@@ -168,6 +246,10 @@ module "managed_prometheus" {
 
   tags = local.tags
 }
+
+#---------------------------------------------------------------
+# Supporting Resources
+#---------------------------------------------------------------
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
@@ -203,4 +285,42 @@ module "vpc" {
   }
 
   tags = local.tags
+}
+
+#tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
+resource "aws_s3_bucket" "this" {
+  bucket_prefix = format("%s-%s", "spark", data.aws_caller_identity.current.account_id)
+  tags          = local.tags
+}
+
+resource "aws_s3_bucket_acl" "this" {
+  bucket = aws_s3_bucket.this.id
+  acl    = "private"
+}
+
+#tfsec:ignore:aws-s3-encryption-customer-key
+resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
+  bucket = aws_s3_bucket.this.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "this" {
+  bucket                  = aws_s3_bucket.this.id
+  block_public_acls       = true
+  block_public_policy     = true
+  restrict_public_buckets = true
+  ignore_public_acls      = true
+}
+
+# Creating an s3 bucket prefix. Ensure you copy spark event logs under this path to visualize the dags
+resource "aws_s3_object" "this" {
+  bucket = aws_s3_bucket.this.id
+  acl    = "private"
+  key    = local.s3_prefix
+  source = "/dev/null"
 }

@@ -12,7 +12,7 @@ The following command will update the `kubeconfig` on your local machine and all
 1. Run `update-kubeconfig` command:
 
 ```bash
-aws eks --region <REGION> update-kubeconfig --name <CLSUTER_NAME>
+aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
 ```
 
 2. Test by listing velero resources provisioned:

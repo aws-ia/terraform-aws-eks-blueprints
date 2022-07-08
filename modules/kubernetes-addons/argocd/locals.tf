@@ -1,14 +1,6 @@
 locals {
   default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
-  # Admin Password
-  set_sensitive = var.admin_password_secret_name != "" ? [
-    {
-      name  = "configs.secret.argocdServerAdminPassword"
-      value = data.aws_secretsmanager_secret_version.admin_password_version[0].secret_string
-    }
-  ] : []
-
   name      = "argo-cd"
   namespace = "argocd"
 

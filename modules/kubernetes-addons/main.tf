@@ -64,13 +64,12 @@ module "agones" {
 }
 
 module "argocd" {
-  count                      = var.enable_argocd ? 1 : 0
-  source                     = "./argocd"
-  helm_config                = var.argocd_helm_config
-  applications               = var.argocd_applications
-  admin_password_secret_name = var.argocd_admin_password_secret_name
-  addon_config               = { for k, v in local.argocd_addon_config : k => v if v != null }
-  addon_context              = local.addon_context
+  count         = var.enable_argocd ? 1 : 0
+  source        = "./argocd"
+  helm_config   = var.argocd_helm_config
+  applications  = var.argocd_applications
+  addon_config  = { for k, v in local.argocd_addon_config : k => v if v != null }
+  addon_context = local.addon_context
 }
 
 module "argo_rollouts" {
@@ -187,6 +186,15 @@ module "fargate_fluentbit" {
   addon_context = local.addon_context
 }
 
+module "grafana" {
+  count             = var.enable_grafana ? 1 : 0
+  source            = "./grafana"
+  helm_config       = var.grafana_helm_config
+  irsa_policies     = var.grafana_irsa_policies
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "ingress_nginx" {
   count             = var.enable_ingress_nginx ? 1 : 0
   source            = "./ingress-nginx"
@@ -233,7 +241,7 @@ module "metrics_server" {
 module "ondat" {
   count             = var.enable_ondat ? 1 : 0
   source            = "ondat/ondat-addon/eksblueprints"
-  version           = "0.1.0"
+  version           = "0.1.1"
   helm_config       = var.ondat_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
@@ -256,6 +264,16 @@ module "prometheus" {
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
   manage_via_gitops                    = var.argocd_manage_add_ons
   addon_context                        = local.addon_context
+}
+
+module "spark_history_server" {
+  count             = var.enable_spark_history_server ? 1 : 0
+  source            = "./spark-history-server"
+  helm_config       = var.spark_history_server_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+  irsa_policies     = var.spark_history_server_irsa_policies
+  s3a_path          = var.spark_history_server_s3a_path
 }
 
 module "spark_k8s_operator" {
