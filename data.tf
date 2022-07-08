@@ -139,6 +139,6 @@ data "aws_iam_policy_document" "eks_key" {
 }
 
 data "aws_subnet" "pod_subnets" {
-  for_each = toset(var.pod_subnet_ids)
-  id = each.value
+  count = length(var.pod_subnet_ids) > 0 ? length(var.pod_subnet_ids) : 0
+  id    = var.pod_subnet_ids[count.index]
 }

@@ -150,5 +150,5 @@ locals {
 
   # CNI custom network
   enable_cni_custom_network = length(var.pod_subnet_ids) > 0
-  pod_subnet_maps = {for sub in data.aws_subnet.pod_subnets: sub.availability_zone => sub.id}
+  pod_subnet_maps = {for subnet in data.aws_subnet.pod_subnets: subnet.availability_zone => subnet.id}
 }
