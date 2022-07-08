@@ -1,10 +1,4 @@
-output "helm_release_addon" {
-  description = "Describes the desired status of a chart in a kubernetes cluster."
-  value = try(
-    {
-      for k, v in helm_release.addon : k => (
-        k != "repository_password" ? v : null
-      )
-    }, null
-  )
+output "helm_release" {
+  description = "Map of attributes of the Helm release created without sensitive outputs"
+  value       = try({ for k, v in helm_release.addon : k => v if k != "repository_password" }, {})
 }
