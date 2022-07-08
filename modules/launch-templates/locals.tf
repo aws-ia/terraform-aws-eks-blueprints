@@ -1,8 +1,4 @@
-terraform {
-  # Optional attributes and the defaults function are
-  # both experimental, so we must opt in to the experiment.
-  experiments = [module_variable_optional_attrs]
-}
+terraform {}
 
 locals {
   launch_template_config = defaults(var.launch_template_config, {
