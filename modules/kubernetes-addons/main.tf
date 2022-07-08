@@ -192,7 +192,6 @@ module "grafana" {
   source                             = "./grafana"
   helm_config                        = var.grafana_helm_config
   irsa_policies                      = var.grafana_irsa_policies
-  grafana_admin_password_secret_name = var.grafana_admin_password_secret_name
   manage_via_gitops                  = var.argocd_manage_add_ons
   addon_context                      = local.addon_context
 }
