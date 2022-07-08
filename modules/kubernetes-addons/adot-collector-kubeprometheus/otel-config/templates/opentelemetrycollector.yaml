@@ -31,7 +31,8 @@ spec:
                 regex: (.+)
                 target_label: __metrics_path__
                 replacement: /api/v1/nodes/$${1}/proxy/metrics
-            - job_name: 'kubernetes-cadvisor'
+            - job_name: 'kubelet'
+              metrics_path: /metrics/cadvisor
               scheme: https
               tls_config:
                 ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -47,7 +48,13 @@ spec:
               - source_labels: [__meta_kubernetes_node_name]
                 regex: (.+)
                 target_label: __metrics_path__
-                replacement: /api/v1/nodes/$${1}/proxy/metrics/cadvisor    
+                replacement: /api/v1/nodes/$${1}/proxy/metrics/cadvisor   
+              - source_labels: [__metrics_path__]
+                separator: ;
+                regex: (.*)
+                target_label: metrics_path
+                replacement: $$1
+                action: replace
             - job_name: serviceMonitor/default/kube-prometheus-stack-prometheus-node-exporter/0
               honor_timestamps: true
               scrape_interval: 30s
