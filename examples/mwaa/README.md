@@ -26,7 +26,7 @@ The module aws-mwaa included on this example will create the following resources
 
 ### Considerations
 
-1. If you used a specific profile when you ran Terraform commands to create the kubeconfig(Line 223 of main.tf) you need to remove the env: section added to the dags/kube_config.yaml file so that it works correctly with Amazon MWAA. To do so, delete the following from the file and then save it:
+1. If you used a specific profile when you ran Terraform commands to create the kubeconfig(Line 215 of main.tf) you need to remove the env: section added to the dags/kube_config.yaml file so that it works correctly with Amazon MWAA. To do so, delete the following from the file and then save it:
 
 env:
 - name: AWS_PROFILE
