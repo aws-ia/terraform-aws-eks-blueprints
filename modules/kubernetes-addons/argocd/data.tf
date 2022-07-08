@@ -1,18 +1,4 @@
 # ---------------------------------------------------------------------------------------------------------------------
-# Admin Password
-# ---------------------------------------------------------------------------------------------------------------------
-
-data "aws_secretsmanager_secret" "admin_password" {
-  count = var.admin_password_secret_name == "" ? 0 : 1
-  name  = var.admin_password_secret_name
-}
-
-data "aws_secretsmanager_secret_version" "admin_password_version" {
-  count     = var.admin_password_secret_name == "" ? 0 : 1
-  secret_id = data.aws_secretsmanager_secret.admin_password[0].id
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
 # SSH Key
 # ---------------------------------------------------------------------------------------------------------------------
 
