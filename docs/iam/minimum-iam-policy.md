@@ -5,7 +5,7 @@ This document describes the minimum IAM policy required to run [core examples](h
 > **Note**: The policy resource is set as `*` to allow all resources, this is not a recommended practice.
 
 
-```
+```yaml
 {
     "Version": "2012-10-17",
     "Statement": [
