@@ -1107,16 +1107,13 @@
 This add-on configures <a href="https://grafana.com/docs/grafana/latest/datasources/prometheus/">Prometheus</a> and <a href="https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/">CloudWatch</a> data sources.
 You can add more data sources using the <a href="https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml">values.yaml</a></p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/spark-k8s-operator">Grafana</a> can be deployed by enabling the add-on via the following.</p>
-<p><code>grafana_admin_password_secret_name</code> is an optional parameter however it's recommended for security best practise.
-Checkout the above usage example to create secrets on the fly using Terraform.
-You can leave this blank and pass <code>adminPassword</code> chart value through <code>values.yaml</code> when you use secrets other than Secrets manager.</p>
+<p><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/spark-k8s-operator">Grafana</a> can be deployed by enabling the add-on via the following. This example shows the usage of the Secrets Manager to create a new secret for Grafana adminPassword.</p>
+<p>This option sets a default <code>adminPassword</code> by the helm chart which can be extracted from kubernetes <code>secrets</code> with the name as <code>grafana</code>.<br />
 <div class="highlight"><pre><span></span><code>enable_grafana = true
-grafana_admin_password_secret_name = &lt;aws_secrets_manager_secret_name&gt; # optional
-</code></pre></div>
-<p>You can optionally customize the Helm chart that deploys <code>Grafana</code> via the following configuration.</p>
+</code></pre></div></p>
+<p>You can optionally customize the Helm chart that deploys <code>Grafana</code> via the following configuration.
+Also, provide the <code>adminPassword</code> using set_sensitive values as shown in the example</p>
 <div class="highlight"><pre><span></span><code>  enable_grafana = true
-  grafana_admin_password_secret_name = &quot;&lt;aws_secrets_manager_secret_name&gt;&quot;
   grafana_irsa_policies = [] # Optional to add additional policies to IRSA
 
 # Optional  karpenter_helm_config
@@ -1128,6 +1125,12 @@ grafana_admin_password_secret_name = &lt;aws_secrets_manager_secret_name&gt; # o
     namespace   = &quot;grafana&quot;
     description = &quot;Grafana Helm Chart deployment configuration&quot;
     values = [templatefile(&quot;${path.module}/values.yaml&quot;, {})]
+    set_sensitive = [
+      {
+        name  = &quot;adminPassword&quot;
+        value = &quot;&lt;YOUR_SECURE_PASSWORD_FOR_GARFANA_ADMIN&gt;&quot;
+      }
+    ]
   }
 </code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
