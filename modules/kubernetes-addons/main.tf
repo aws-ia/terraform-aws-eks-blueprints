@@ -64,13 +64,12 @@ module "agones" {
 }
 
 module "argocd" {
-  count                      = var.enable_argocd ? 1 : 0
-  source                     = "./argocd"
-  helm_config                = var.argocd_helm_config
-  applications               = var.argocd_applications
-  admin_password_secret_name = var.argocd_admin_password_secret_name
-  addon_config               = { for k, v in local.argocd_addon_config : k => v if v != null }
-  addon_context              = local.addon_context
+  count         = var.enable_argocd ? 1 : 0
+  source        = "./argocd"
+  helm_config   = var.argocd_helm_config
+  applications  = var.argocd_applications
+  addon_config  = { for k, v in local.argocd_addon_config : k => v if v != null }
+  addon_context = local.addon_context
 }
 
 module "argo_rollouts" {

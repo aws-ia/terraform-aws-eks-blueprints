@@ -638,12 +638,6 @@ variable "argocd_applications" {
   default     = {}
 }
 
-variable "argocd_admin_password_secret_name" {
-  description = "Name for a secret stored in AWS Secrets Manager that contains the admin password"
-  type        = string
-  default     = ""
-}
-
 variable "argocd_manage_add_ons" {
   description = "Enable managing add-on configuration via ArgoCD"
   type        = bool
