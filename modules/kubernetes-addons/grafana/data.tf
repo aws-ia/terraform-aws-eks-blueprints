@@ -1,14 +1,3 @@
-
-data "aws_secretsmanager_secret" "admin_password" {
-  count = var.grafana_admin_password_secret_name == "" ? 0 : 1
-  name  = var.grafana_admin_password_secret_name
-}
-
-data "aws_secretsmanager_secret_version" "admin_password_version" {
-  count     = var.grafana_admin_password_secret_name == "" ? 0 : 1
-  secret_id = data.aws_secretsmanager_secret.admin_password[0].id
-}
-
 data "aws_iam_policy_document" "this" {
   statement {
     sid       = "AllowReadingMetricsFromCloudWatch"

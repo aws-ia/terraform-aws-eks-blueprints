@@ -3,29 +3,25 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-  }
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-    }
+    host                   = data.aws_eks_cluster.cluster.endpoint
+    token                  = data.aws_eks_cluster_auth.cluster.token
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
   }
+}
+
+data "aws_eks_cluster" "cluster" {
+  name = module.eks_blueprints.eks_cluster_id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks_blueprints.eks_cluster_id
 }
 
 data "aws_availability_zones" "available" {}
@@ -38,10 +34,9 @@ locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
-  vpc_cidr                           = "10.0.0.0/16"
-  azs                                = slice(data.aws_availability_zones.available.names, 0, 3)
-  s3_prefix                          = "logs/"
-  grafana_admin_password_secret_name = "grafana"
+  vpc_cidr  = "10.0.0.0/16"
+  azs       = slice(data.aws_availability_zones.available.names, 0, 3)
+  s3_prefix = "logs/"
 
   tags = {
     Blueprint  = local.name
@@ -201,10 +196,20 @@ module "eks_blueprints_kubernetes_addons" {
   #---------------------------------------------------------------
   # Open Source Grafana Add-on
   #---------------------------------------------------------------
-  enable_grafana                     = true
-  grafana_admin_password_secret_name = local.grafana_admin_password_secret_name
+  enable_grafana = true
+
+  # This example shows how to set default password for grafana using SecretsManager and Helm Chart set_sensitive values.
+  grafana_helm_config = {
+    set_sensitive = [
+      {
+        name  = "adminPassword"
+        value = data.aws_secretsmanager_secret_version.admin_password_version.secret_string
+      }
+    ]
+  }
 
   tags = local.tags
+
 }
 
 #---------------------------------------------------------------
@@ -216,14 +221,21 @@ resource "random_password" "grafana" {
   special          = true
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
-
+#tfsec:ignore:aws-ssm-secret-use-customer-key
 resource "aws_secretsmanager_secret" "grafana" {
-  name = local.grafana_admin_password_secret_name
+  name                    = "grafana"
+  recovery_window_in_days = 0 # Set to zero for this example to force delete during Terraform destroy
 }
 
 resource "aws_secretsmanager_secret_version" "grafana" {
   secret_id     = aws_secretsmanager_secret.grafana.id
   secret_string = random_password.grafana.result
+}
+
+data "aws_secretsmanager_secret_version" "admin_password_version" {
+  secret_id = aws_secretsmanager_secret.grafana.id
+
+  depends_on = [aws_secretsmanager_secret_version.grafana]
 }
 
 module "managed_prometheus" {
@@ -306,7 +318,7 @@ resource "aws_s3_bucket_public_access_block" "this" {
 }
 
 # Creating an s3 bucket prefix. Ensure you copy spark event logs under this path to visualize the dags
-resource "aws_s3_bucket_object" "this" {
+resource "aws_s3_object" "this" {
   bucket = aws_s3_bucket.this.id
   acl    = "private"
   key    = local.s3_prefix

@@ -16,12 +16,6 @@ variable "irsa_policies" {
   default     = []
 }
 
-variable "grafana_admin_password_secret_name" {
-  description = "Grafana Admin password secrets manager secret name"
-  type        = string
-  default     = ""
-}
-
 variable "addon_context" {
   description = "Input configuration for the addon"
   type = object({

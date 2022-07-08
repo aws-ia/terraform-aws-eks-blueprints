@@ -32,13 +32,6 @@ locals {
     }
   ]
 
-  set_sensitive = var.grafana_admin_password_secret_name != "" ? [
-    {
-      name  = "adminPassword"
-      value = data.aws_secretsmanager_secret_version.admin_password_version[0].secret_string
-    }
-  ] : []
-
   irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
     kubernetes_service_account        = local.name
