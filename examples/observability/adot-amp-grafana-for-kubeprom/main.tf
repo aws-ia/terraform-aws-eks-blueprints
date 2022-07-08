@@ -3,27 +3,27 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = data.aws_eks_cluster.ekscluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.ekscluster.certificate_authority[0].data)
 
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
     # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
+    args = ["eks", "get-token", "--cluster-name", var.eks_cluster]
   }
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = data.aws_eks_cluster.ekscluster.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.ekscluster.certificate_authority[0].data)
 
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
       command     = "aws"
       # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
+      args = ["eks", "get-token", "--cluster-name", var.eks_cluster]
     }
   }
 }
@@ -32,7 +32,9 @@ provider "grafana" {
   url  = var.grafana_endpoint
   auth = var.grafana_api_key
 }
-
+data "aws_eks_cluster" "ekscluster" {
+  name = var.eks_cluster
+}
 data "aws_availability_zones" "available" {}
 
 locals {
@@ -52,34 +54,11 @@ locals {
 # EKS Blueprints
 #---------------------------------------------------------------
 
-module "eks_blueprints" {
-  source = "../../.."
-
-  cluster_name    = local.name
-  cluster_version = "1.22"
-
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
-
-  managed_node_groups = {
-    t3_l = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["t3.large"]
-      min_size        = 2
-      subnet_ids      = module.vpc.private_subnets
-    }
-  }
-
-  tags = local.tags
-}
 
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../modules/kubernetes-addons"
 
-  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
-  eks_oidc_provider    = module.eks_blueprints.oidc_provider
-  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
+  eks_cluster_id       = var.eks_cluster
 
   # enable AWS Managed EKS add-on for ADOT
   enable_amazon_eks_adot = true
@@ -1659,24 +1638,24 @@ module "managed_prometheus" {
         - name: k8s-01
           rules:
             - record: node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate
-              expr: sum by(cluster, namespace, pod, container) (irate(container_cpu_usage_seconds_total{image!="",job="kubelet",metrics_path=~".*/metrics/cadvisor"}[5m])) * on(cluster, namespace, pod) group_left(node) topk by(cluster, namespace, pod) (1, max by(cluster, namespace, pod, node) (kube_pod_info{node!=""}))
+              expr: sum by(cluster, namespace, pod, container) (irate(container_cpu_usage_seconds_total{image!="",job="kubelet",metrics_path="/metrics/cadvisor"}[5m])) * on(cluster, namespace, pod) group_left(node) topk by(cluster, namespace, pod) (1, max by(cluster, namespace, pod, node) (kube_pod_info{node!=""}))
         
         - name: k8s-02
           rules:
             - record: node_namespace_pod_container:container_memory_working_set_bytes
-              expr: container_memory_working_set_bytes{image!="",job="kubelet",metrics_path=~".*/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
+              expr: container_memory_working_set_bytes{image!="",job="kubelet",metrics_path="/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
         - name: k8s-03
           rules:
             - record: node_namespace_pod_container:container_memory_rss
-              expr: container_memory_rss{image!="",job="kubelet",metrics_path=~".*/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
+              expr: container_memory_rss{image!="",job="kubelet",metrics_path="/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
         - name: k8s-04
           rules:
             - record: node_namespace_pod_container:container_memory_cache
-              expr: container_memory_cache{image!="",job="kubelet",metrics_path=~".*/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
+              expr: container_memory_cache{image!="",job="kubelet",metrics_path="/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
         - name: k8s-05
           rules:
             - record: node_namespace_pod_container:container_memory_swap
-              expr: container_memory_swap{image!="",job="kubelet",metrics_path=~".*/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
+              expr: container_memory_swap{image!="",job="kubelet",metrics_path="/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
         - name: k8s-06
           rules:
             - record: cluster:namespace:pod_memory:active:kube_pod_container_resource_requests
