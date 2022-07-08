@@ -198,7 +198,7 @@ module "eks_blueprints_kubernetes_addons" {
   #---------------------------------------------------------------
   enable_grafana = true
 
-  # This example shows how to set default password for grafana using SecretsManager and Helm Set sensitive values.
+  # This example shows how to set default password for grafana using SecretsManager and Helm Chart set_sensitive values.
   grafana_helm_config = {
     set_sensitive = [
       {
@@ -211,8 +211,6 @@ module "eks_blueprints_kubernetes_addons" {
   tags = local.tags
 
 }
-
-
 
 #---------------------------------------------------------------
 # Grafana Admin credentials resources
