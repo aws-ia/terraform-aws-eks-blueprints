@@ -946,9 +946,3 @@ variable "grafana_irsa_policies" {
   type        = list(string)
   default     = []
 }
-
-variable "grafana_admin_password_secret_name" {
-  description = "Grafana Admin password Secrets Manager secret name"
-  type        = string
-  default     = ""
-}
