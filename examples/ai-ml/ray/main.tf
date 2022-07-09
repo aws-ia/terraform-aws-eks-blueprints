@@ -29,6 +29,12 @@ provider "helm" {
 }
 
 data "aws_availability_zones" "available" {}
+data "aws_caller_identity" "current" {}
+
+data "aws_acm_certificate" "issued" {
+  domain   = var.acm_certificate_domain
+  statuses = ["ISSUED"]
+}
 
 locals {
   name   = basename(path.cwd)
@@ -113,10 +119,21 @@ module "eks_blueprints_kubernetes_addons" {
   eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
+  eks_cluster_domain   = var.eks_cluster_domain
 
   # Add-Ons
-  enable_ray_operator = true
+  enable_ray_operator                 = true
+  enable_ingress_nginx                = true
+  enable_aws_load_balancer_controller = true
+  enable_external_dns                 = true
 
+  # Add-on customizations
+  ingress_nginx_helm_config = {
+    values = [templatefile("${path.module}/helm-values/nginx-values.yaml", {
+      hostname     = var.eks_cluster_domain
+      ssl_cert_arn = data.aws_acm_certificate.issued.arn
+    })]
+  }
   tags = local.tags
 }
 
@@ -127,15 +144,32 @@ resource "kubernetes_namespace_v1" "this" {
   }
 }
 
-data "kubectl_path_documents" "ray_clusters" {
-  pattern = "${path.module}/ray-clusters/example-cluster.yaml"
+data "kubectl_path_documents" "docs" {
+  pattern = "${path.module}/ray-clusters/*.yaml"
   vars = {
-    namespace = kubernetes_namespace_v1.this.metadata[0].name
+    namespace  = kubernetes_namespace_v1.this.metadata[0].name
+    hostname   = var.eks_cluster_domain
+    account_id = data.aws_caller_identity.current.account_id
+    region     = local.region
   }
 }
 
-resource "kubectl_manifest" "karpenter_provisioner" {
-  yaml_body  = data.kubectl_path_documents.ray_clusters.documents[0]
+# Ugly Terraform issue: 
+# See https://github.com/gavinbunney/terraform-provider-kubectl/issues/58#issuecomment-718174177
+data "kubectl_path_documents" "count_hack" {
+  pattern = "${path.module}/ray-clusters/*.yaml"
+  vars = {
+    namespace  = ""
+    hostname   = ""
+    account_id = ""
+    region     = ""
+  }
+}
+
+resource "kubectl_manifest" "cluster_provisioner" {
+  count     = length(data.kubectl_path_documents.count_hack.documents)
+  yaml_body = element(data.kubectl_path_documents.docs.documents, count.index)
+
   depends_on = [module.eks_blueprints_kubernetes_addons]
 }
 

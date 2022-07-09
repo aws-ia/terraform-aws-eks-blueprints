@@ -2,20 +2,20 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: ray-test-job
+  generateName: ray-summarize-job-
+  namespace: ray-cluster
 spec:
   template:
     spec:
       restartPolicy: Never
       containers:
-        - name: ray
-          image: rayproject/ray:latest
+        - name: summarize
+          image: $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/ray-demo:latest
           imagePullPolicy: Always
           command: [ "/bin/bash", "-c", "--" ]
           args:
-            - "wget https://raw.githubusercontent.com/ray-project/ray/master/doc/kubernetes/example_scripts/job_example.py &&
-              python job_example.py"
+            - "python /opt/deployment.py"
           resources:
             requests:
-              cpu: 100m
-              memory: 512Mi
+              cpu: 1000m
+              memory: 2Gi

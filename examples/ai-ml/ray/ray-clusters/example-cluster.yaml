@@ -36,6 +36,9 @@ spec:
       metadata:
         # The operator automatically prepends the cluster name to this field.
         generateName: ray-head-
+        # Matches the selector in the service definition.
+        labels:
+          component: ray-head
       spec:
         restartPolicy: Never
 
@@ -49,7 +52,7 @@ spec:
         containers:
         - name: ray-node
           imagePullPolicy: Always
-          image: rayproject/ray:latest
+          image: ${account_id}.dkr.ecr.${region}.amazonaws.com/ray-demo:latest
           # Do not change this command - it keeps the pod alive until it is
           # explicitly killed.
           command: ["/bin/bash", "-c", "--"]
@@ -69,7 +72,7 @@ spec:
           resources:
             requests:
               cpu: 1000m
-              memory: 1Gi
+              memory: 2Gi
               ephemeral-storage: 1Gi
             limits:
               cpu: 1000m
@@ -80,7 +83,7 @@ spec:
               # the object store size is not set manually, ray will
               # allocate a very large object store in each pod that may
               # cause problems for other pods.
-              memory: 1Gi
+              memory: 2Gi
   - name: worker-node
     # Minimum number of Ray workers of this Pod type.
     minWorkers: 2
@@ -104,7 +107,7 @@ spec:
         containers:
         - name: ray-node
           imagePullPolicy: Always
-          image: rayproject/ray:latest
+          image: ${account_id}.dkr.ecr.${region}.amazonaws.com/ray-demo:latest
           command: ["/bin/bash", "-c", "--"]
           args: ["trap : TERM INT; touch /tmp/raylogs; tail -f /tmp/raylogs; sleep infinity & wait;"]
           # This volume allocates shared memory for Ray to use for its plasma
@@ -116,7 +119,7 @@ spec:
           resources:
             requests:
               cpu: 1000m
-              memory: 1Gi
+              memory: 2Gi
               ephemeral-storage: 1Gi
             limits:
               cpu: 1000m
@@ -127,7 +130,7 @@ spec:
               # the object store size is not set manually, ray will
               # allocate a very large object store in each pod that may
               # cause problems for other pods.
-              memory: 1Gi
+              memory: 2Gi
   # Commands to start Ray on the head node. You don't need to change this.
   # Note dashboard-host is set to 0.0.0.0 so that Kubernetes can port forward.
   headStartRayCommands:
