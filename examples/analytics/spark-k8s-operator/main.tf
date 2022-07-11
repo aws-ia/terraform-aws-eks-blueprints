@@ -214,7 +214,8 @@ module "eks_blueprints_kubernetes_addons" {
     aws_s3_bucket_acl.this,
     aws_s3_bucket_public_access_block.this,
     aws_s3_bucket_server_side_encryption_configuration.this,
-  aws_s3_object.this]
+    aws_s3_object.this
+  ]
 }
 
 #---------------------------------------------------------------
