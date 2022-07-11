@@ -329,4 +329,10 @@ resource "aws_s3_object" "this" {
   acl          = "private"
   key          = "logs/"
   content_type = "application/x-directory"
+
+  depends_on = [
+    aws_s3_bucket_acl.this,
+    aws_s3_bucket_public_access_block.this,
+    aws_s3_bucket_server_side_encryption_configuration.this
+  ]
 }
