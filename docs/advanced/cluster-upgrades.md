@@ -75,7 +75,7 @@ module "eks_blueprints_kubernetes_addons" {
 
 3. Apply the changes to the cluster with Terraform. This will:
   - Upgrade the Control Plane to the version specified
-  - Update the Data Plane to ensure the compute resources are uitlizing the corresponding AMI for the given cluster version
+  - Update the Data Plane to ensure the compute resources are utilizing the corresponding AMI for the given cluster version
   - Update addons to reflect the respective versions
 
 ## Important Note

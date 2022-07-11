@@ -1,6 +1,11 @@
 #-------------------------------
 # EKS Cluster Module Outputs
 #-------------------------------
+output "eks_cluster_arn" {
+  description = "Amazon EKS Cluster Name"
+  value       = module.aws_eks.cluster_arn
+}
+
 output "eks_cluster_id" {
   description = "Amazon EKS Cluster Name"
   value       = module.aws_eks.cluster_id

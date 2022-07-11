@@ -1,0 +1,5 @@
+
+sparkHistoryOpts: "-Dspark.history.fs.logDirectory="${s3a_path}
+
+nodeSelector:
+  kubernetes.io/os: ${operating_system}

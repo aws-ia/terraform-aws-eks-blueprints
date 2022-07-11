@@ -84,8 +84,8 @@ resource "aws_launch_template" "this" {
       http_endpoint               = try(each.value.http_endpoint, "enabled")
       http_tokens                 = try(each.value.http_tokens, "required")
       http_put_response_hop_limit = try(each.value.http_put_response_hop_limit, 2)
-      http_protocol_ipv6          = try(each.value.http_protocol_ipv6, null)
-      instance_metadata_tags      = try(each.value.instance_metadata_tags, null)
+      http_protocol_ipv6          = try(each.value.http_protocol_ipv6, "disabled")
+      instance_metadata_tags      = try(each.value.instance_metadata_tags, "disabled")
     }
   }
 

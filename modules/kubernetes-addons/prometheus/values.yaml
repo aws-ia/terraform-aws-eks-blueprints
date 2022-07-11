@@ -23,17 +23,35 @@ server:
     storageClass: gp2
 
 alertmanager:
+  enabled: false
   nodeSelector:
     kubernetes.io/os: ${operating_system}
 
 kube-state-metrics:
+  enabled: true
   nodeSelector:
     kubernetes.io/os: ${operating_system}
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 512Mi
 
 pushgateway:
+  enabled: false
   nodeSelector:
     kubernetes.io/os: ${operating_system}
 
 nodeExporter:
   nodeSelector:
     kubernetes.io/os: ${operating_system}
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 512Mi

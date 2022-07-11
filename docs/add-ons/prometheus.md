@@ -9,7 +9,7 @@ This project provides support for installing a open source Prometheus server in 
 The following will deploy the Prometheus server into an EKS Cluster and provision a new Amazon Managed Service for Prometheus instance.
 
 ```hcl-terraform
-# Creates the AMP workspace and all the relevent IAM Roles
+# Creates the AMP workspace and all the relevant IAM Roles
 enable_amazon_prometheus         = true
 
 # Deploys Prometheus server with remote write to AWS AMP Workspace
