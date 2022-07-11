@@ -1,6 +1,5 @@
 # Usage
 
-
 ## Minimum IAM Policy
 
 > **Note**: The policy resource is set as `*` to allow all resources, this is not a recommended practice.
