@@ -33,8 +33,8 @@ def main(args):
     spark.sparkContext.setLogLevel("INFO")
     logger.info("Starting spark application")
 
-    logger.info("Reading csv file from S3")
-    ny_taxi_df = spark.read.option("inferSchema", "true").option("header", "true").csv(raw_input_folder)
+    logger.info("Reading Parquet file from S3")
+    ny_taxi_df = spark.read.parquet(raw_input_folder)
 
     # Add additional columns to the DF
     final_ny_taxi_df = ny_taxi_df.withColumn("current_date", f.lit(datetime.now()))
@@ -48,7 +48,7 @@ def main(args):
     logger.info("Total number of records: " + str(final_ny_taxi_df.count()))
 
     logger.info("Write New York Taxi data to S3 transform table")
-    final_ny_taxi_df.repartition(1).write.mode("overwrite").parquet(transform_output_folder)
+    final_ny_taxi_df.repartition(2).write.mode("overwrite").parquet(transform_output_folder)
 
     logger.info("Ending spark application")
     # end spark code

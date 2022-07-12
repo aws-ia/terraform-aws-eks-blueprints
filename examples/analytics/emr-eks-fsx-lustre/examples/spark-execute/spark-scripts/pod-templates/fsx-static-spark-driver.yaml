@@ -10,13 +10,14 @@ spec:
         claimName: fsx-static-pvc # Static PVC pre-created by this example terraform template
 
   nodeSelector:
-    "NodeGroupType": "spark"
+    NodeGroupType: spark
 
   containers:
     - name: spark-kubernetes-driver # Don't change this name. EMR on EKS looking for this name
       volumeMounts:
         - name: spark-local-dir-ny-taxi
           mountPath: /static
+          subPath: data # sub folder created in fsx file system and mapped to s3 bucket sync and export
           readOnly: false
   initContainers:
     - name: spark-init-container-driver  # Don't change this name. EMR on EKS looking for this name
@@ -24,4 +25,4 @@ spec:
       volumeMounts:
         - name: spark-local-dir-ny-taxi
           mountPath: /static
-      command: ["sh", "-c", "chmod 777 /static", "chown -hR +999:+1000 /static"]
+      command: ["sh", "-c", "chmod -R 777 /static", "chown -hR +999:+1000 /static/data"]

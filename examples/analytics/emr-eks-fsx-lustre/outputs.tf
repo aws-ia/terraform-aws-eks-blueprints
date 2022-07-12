@@ -42,3 +42,4 @@ output "aws_fsx_lustre_file_system_owner_id" {
   description = "AWS account identifier that created the file system"
   value       = aws_fsx_lustre_file_system.this.owner_id
 }
+

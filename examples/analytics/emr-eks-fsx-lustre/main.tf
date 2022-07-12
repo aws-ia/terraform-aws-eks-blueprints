@@ -378,6 +378,7 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   tags = local.tags
+
 }
 
 #---------------------------------------------------------------
@@ -532,7 +533,7 @@ resource "aws_fsx_lustre_file_system" "this" {
 resource "aws_fsx_data_repository_association" "example" {
   file_system_id       = aws_fsx_lustre_file_system.this.id
   data_repository_path = "s3://${aws_s3_bucket.this.id}"
-  file_system_path     = "/data"
+  file_system_path     = "/data" # This directory will be used in Spark podTemplates under volumeMounts as subPath
 
   s3 {
     auto_export_policy {
@@ -601,10 +602,12 @@ resource "kubectl_manifest" "static_pvc" {
 
 #---------------------------------------------------------------
 # PVC for FSx Dynamic Provisioning
-# Note: There is no need to provision a FSx for Lustre file system in advance for Dynamic Provisioning
-#   1> Need to create a Storage-class resource that instantiates the Storage class for FSx for Lustre
-#   2> PVC is created and it refers to the storage class resource that was created
-#   3> Whenever a pod refers to the PVC, the storage class invokes the FSx for Lustre Container Storage Interface (CSI) to provision a Lustre file system on the fly dynamically.
+#   Note: There is no need to provision a FSx for Lustre file system in advance for Dynamic Provisioning like we did for static provisioning as shown above
+#
+# Prerequisite for this PVC:
+#   1> FSx for Lustre StorageClass should exist
+#   2> FSx for CSI driver is installed
+# This resource will provision a new PVC for FSx for Lustre filesystem. FSx CSI driver will then create PV and FSx for Lustre Scratch1 FileSystem for this PVC.
 #---------------------------------------------------------------
 resource "kubectl_manifest" "dynamic_pvc" {
   yaml_body = templatefile("${path.module}/fsx_lustre/fsxlustre-dynamic-pvc.yaml", {
