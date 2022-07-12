@@ -51,6 +51,7 @@ locals {
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
+
 module "eks_blueprints" {
   source = "../../.."
 
@@ -59,8 +60,6 @@ module "eks_blueprints" {
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
-
-  enable_amazon_prometheus = true
 
   managed_node_groups = {
     t3_l = {
@@ -84,13 +83,42 @@ module "eks_blueprints_kubernetes_addons" {
 
   # enable AWS Managed EKS add-on for ADOT
   enable_amazon_eks_adot = true
-
   # or enable a customer-managed OpenTelemetry operator
   # enable_opentelemetry_operator = true
+  enable_adot_collector_nginx = true
 
-  enable_adot_collector_nginx          = true
-  amazon_prometheus_workspace_endpoint = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
   amazon_prometheus_workspace_region   = local.region
+
+  tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Observability Resources
+#---------------------------------------------------------------
+
+module "managed_grafana" {
+  source  = "terraform-aws-modules/managed-service-grafana/aws"
+  version = "~> 1.3"
+
+  # Workspace
+  name              = local.name
+  stack_set_name    = local.name
+  data_sources      = ["PROMETHEUS"]
+  associate_license = false
+
+  # # Role associations
+  # Pending https://github.com/hashicorp/terraform-provider-aws/issues/24166
+  # role_associations = {
+  #   "ADMIN" = {
+  #     "group_ids" = []
+  #     "user_ids"  = []
+  #   }
+  #   "EDITOR" = {
+  #     "group_ids" = []
+  #     "user_ids"  = []
+  #   }
+  # }
 
   tags = local.tags
 }
@@ -99,7 +127,7 @@ resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
   name       = "amp"
   is_default = true
-  url        = module.eks_blueprints.amazon_prometheus_workspace_endpoint
+  url        = module.managed_prometheus.workspace_prometheus_endpoint
 
   json_data {
     http_method     = "GET"
@@ -109,69 +137,74 @@ resource "grafana_data_source" "prometheus" {
   }
 }
 
-resource "grafana_folder" "nginx_dashboards" {
+resource "grafana_folder" "this" {
   title = "Observability"
 }
 
-resource "grafana_dashboard" "nginx_dashboards" {
-  folder      = grafana_folder.nginx_dashboards.id
+resource "grafana_dashboard" "this" {
+  folder      = grafana_folder.this.id
   config_json = file("${path.module}/dashboards/default.json")
 }
 
-resource "aws_prometheus_rule_group_namespace" "nginx" {
-  name         = local.name
-  workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
+module "managed_prometheus" {
+  source  = "terraform-aws-modules/managed-service-prometheus/aws"
+  version = "~> 2.1"
 
-  data = <<-EOF
-  groups:
-    - name: Nginx-HTTP-4xx-error-rate
-      rules:
-      - alert: metric:alerting_rule
-      expr: sum(rate(nginx_http_requests_total{status=~"^4.."}[1m])) / sum(rate(nginx_http_requests_total[1m])) * 100 > 5
-      for: 1m
-      labels:
-        severity: critical
-      annotations:
-        summary: Nginx high HTTP 4xx error rate (instance {{ $labels.instance }})
-        description: "Too many HTTP requests with status 4xx (> 5%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-    - name: Nginx-HTTP-5xx-error-rate
-      rules:
-      - alert: metric:alerting_rule
-      expr: sum(rate(nginx_http_requests_total{status=~"^5.."}[1m])) / sum(rate(nginx_http_requests_total[1m])) * 100 > 5
-      for: 1m
-      labels:
-        severity: critical
-      annotations:
-        summary: Nginx high HTTP 5xx error rate (instance {{ $labels.instance }})
-        description: "Too many HTTP requests with status 5xx (> 5%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-    - name: Nginx-high-latency
-      rules:
-      - alert: metric:alerting_rule
-      expr: histogram_quantile(0.99, sum(rate(nginx_http_request_duration_seconds_bucket[2m])) by (host, node)) > 3
-      for: 2m
-      labels:
-        severity: warning
-      annotations:
-        summary: Nginx latency high (instance {{ $labels.instance }})
-        description: "Nginx p99 latency is higher than 3 seconds\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-  EOF
-}
+  workspace_alias = local.name
 
-resource "aws_prometheus_alert_manager_definition" "nginx" {
-  workspace_id = module.eks_blueprints.amazon_prometheus_workspace_id
-
-  definition = <<-EOF
+  alert_manager_definition = <<-EOT
   alertmanager_config: |
     route:
       receiver: 'default'
     receivers:
       - name: 'default'
-  EOF
+  EOT
+  rule_group_namespaces = {
+    nginx = {
+      name = "nginx_rules"
+      data = <<-EOT
+      groups:
+        - name: Nginx-HTTP-4xx-error-rate
+          rules:
+          - alert: metric:alerting_rule
+            expr: sum(rate(nginx_http_requests_total{status=~"^4.."}[1m])) / sum(rate(nginx_http_requests_total[1m])) * 100 > 5
+            for: 1m
+            labels:
+             severity: critical
+            annotations:
+             summary: Nginx high HTTP 4xx error rate (instance {{ $labels.instance }})
+             description: "Too many HTTP requests with status 4xx (> 5%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - name: Nginx-HTTP-5xx-error-rate
+          rules:
+          - alert: metric:alerting_rule
+            expr: sum(rate(nginx_http_requests_total{status=~"^5.."}[1m])) / sum(rate(nginx_http_requests_total[1m])) * 100 > 5
+            for: 1m
+            labels:
+             severity: critical
+            annotations:
+             summary: Nginx high HTTP 5xx error rate (instance {{ $labels.instance }})
+             description: "Too many HTTP requests with status 5xx (> 5%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - name: Nginx-high-latency
+          rules:
+          - alert: metric:alerting_rule
+            expr: histogram_quantile(0.99, sum(rate(nginx_http_request_duration_seconds_bucket[2m])) by (host, node)) > 3
+            for: 2m
+            labels:
+             severity: warning
+            annotations:
+             summary: Nginx latency high (instance {{ $labels.instance }})
+             description: "Nginx p99 latency is higher than 3 seconds\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+      EOT
+    }
+  }
+
+  tags = local.tags
 }
 
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"

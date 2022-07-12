@@ -56,9 +56,9 @@ data "aws_iam_policy_document" "ipv6_policy" {
     actions = [
       "ec2:AssignIpv6Addresses",
       "ec2:DescribeInstances",
-      "ec2:DescribeTags",
+      "ec2:DescribeInstanceTypes",
       "ec2:DescribeNetworkInterfaces",
-      "ec2:DescribeInstanceTypes"
+      "ec2:DescribeTags",
     ]
     resources = ["*"]
   }

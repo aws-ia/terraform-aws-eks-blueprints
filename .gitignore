@@ -35,10 +35,12 @@ terraform.rc
 
 # Locals
 kubeconfig*
+kube-config*
 local_tf_state/
 .vscode
 .gitallowed
 site
+.env*
 
 # Checks
 .tfsec

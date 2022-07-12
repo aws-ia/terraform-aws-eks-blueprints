@@ -77,8 +77,8 @@ data "aws_iam_policy_document" "cwlogs" {
     resources = ["*"]
 
     actions = [
-      "logs:CreateLogStream",
       "logs:CreateLogGroup",
+      "logs:CreateLogStream",
       "logs:DescribeLogStreams",
       "logs:PutLogEvents",
     ]

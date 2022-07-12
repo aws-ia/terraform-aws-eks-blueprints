@@ -1,14 +1,6 @@
 locals {
   default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
-  # Admin Password
-  set_sensitive = var.admin_password_secret_name != "" ? [
-    {
-      name  = "configs.secret.argocdServerAdminPassword"
-      value = data.aws_secretsmanager_secret_version.admin_password_version[0].secret_string
-    }
-  ] : []
-
   name      = "argo-cd"
   namespace = "argocd"
 
@@ -36,6 +28,7 @@ locals {
     destination        = "https://kubernetes.default.svc"
     project            = "default"
     values             = {}
+    type               = "helm"
     add_on_application = false
   }
 
@@ -44,4 +37,5 @@ locals {
     account     = var.addon_context.aws_caller_identity_account_id
     clusterName = var.addon_context.eks_cluster_id
   }
+
 }

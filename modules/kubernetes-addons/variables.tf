@@ -143,6 +143,19 @@ variable "cluster_autoscaler_helm_config" {
   default     = {}
 }
 
+#-----------COREDNS AUTOSCALER-------------
+variable "enable_coredns_autoscaler" {
+  description = "Enable CoreDNS autoscaler add-on"
+  type        = bool
+  default     = false
+}
+
+variable "coredns_autoscaler_helm_config" {
+  description = "CoreDNS Autoscaler Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------Crossplane ADDON-------------
 variable "enable_crossplane" {
   description = "Enable Crossplane add-on"
@@ -264,6 +277,12 @@ variable "external_dns_irsa_policies" {
   description = "Additional IAM policies for a IAM role for service accounts"
   type        = list(string)
   default     = []
+}
+
+variable "external_dns_private_zone" {
+  type        = bool
+  description = "Determines if referenced Route53 zone is private."
+  default     = false
 }
 
 #-----------Amazon Managed Service for Prometheus-------------
@@ -456,6 +475,31 @@ variable "ingress_nginx_helm_config" {
   default     = {}
 }
 
+#-----------Spark History Server-------------
+variable "enable_spark_history_server" {
+  description = "Enable Spark History Server add-on"
+  type        = bool
+  default     = false
+}
+
+variable "spark_history_server_helm_config" {
+  description = "Spark History Server Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "spark_history_server_s3a_path" {
+  description = "s3a path with prefix for Spark history server e.g., s3a://<bucket_name>/<spark_event_logs>"
+  type        = string
+  default     = ""
+}
+
+variable "spark_history_server_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
+}
+
 #-----------SPARK K8S OPERATOR-------------
 variable "enable_spark_k8s_operator" {
   description = "Enable Spark on K8s Operator add-on"
@@ -605,12 +649,6 @@ variable "argocd_applications" {
   description = "Argo CD Applications config to bootstrap the cluster"
   type        = any
   default     = {}
-}
-
-variable "argocd_admin_password_secret_name" {
-  description = "Name for a secret stored in AWS Secrets Manager that contains the admin password"
-  type        = string
-  default     = ""
 }
 
 variable "argocd_manage_add_ons" {
@@ -856,4 +894,62 @@ variable "adot_collector_nginx_helm_config" {
   description = "ADOT Collector Nginx Helm Chart config"
   type        = any
   default     = {}
+}
+
+#-----------AWS CSI Secrets Store Provider-------------
+variable "enable_secrets_store_csi_driver_provider_aws" {
+  type        = bool
+  default     = false
+  description = "Enable AWS CSI Secrets Store Provider"
+}
+
+variable "csi_secrets_store_provider_aws_helm_config" {
+  type        = any
+  default     = null
+  description = "CSI Secrets Store Provider AWS Helm Configurations"
+}
+
+#-----------CSI Secrets Store Provider-------------
+variable "enable_secrets_store_csi_driver" {
+  type        = bool
+  default     = false
+  description = "Enable CSI Secrets Store Provider"
+}
+
+variable "secrets_store_csi_driver_helm_config" {
+  type        = any
+  default     = null
+  description = "CSI Secrets Store Provider Helm Configurations"
+}
+
+#-----------EXTERNAL SECRETS OPERATOR-----------
+variable "enable_external_secrets" {
+  type        = bool
+  default     = false
+  description = "Enable External Secrets operator add-on"
+}
+
+variable "external_secrets_helm_config" {
+  type        = any
+  default     = {}
+  description = "External Secrets operator Helm Chart config"
+}
+
+#-----------Grafana ADDON-------------
+variable "enable_grafana" {
+  description = "Enable Grafana add-on"
+  type        = bool
+  default     = false
+}
+
+variable "grafana_helm_config" {
+  description = "Kubernetes Grafana Helm Chart config"
+  type        = any
+  default     = null
+}
+
+variable "grafana_irsa_policies" {
+  description = "IAM policy ARNs for grafana IRSA"
+  type        = list(string)
+  default     = []
 }

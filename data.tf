@@ -26,12 +26,12 @@ data "aws_iam_policy_document" "eks_key" {
     sid    = "Allow access for all principals in the account that are authorized"
     effect = "Allow"
     actions = [
-      "kms:Encrypt",
-      "kms:Decrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
       "kms:CreateGrant",
-      "kms:DescribeKey"
+      "kms:Decrypt",
+      "kms:DescribeKey",
+      "kms:Encrypt",
+      "kms:GenerateDataKey*",
+      "kms:ReEncrypt*",
     ]
     resources = ["*"]
 
@@ -62,7 +62,7 @@ data "aws_iam_policy_document" "eks_key" {
       "kms:Describe*",
       "kms:Get*",
       "kms:List*",
-      "kms:RevokeGrant"
+      "kms:RevokeGrant",
     ]
     resources = ["*"]
 
@@ -95,11 +95,11 @@ data "aws_iam_policy_document" "eks_key" {
     sid    = "Allow use of the key"
     effect = "Allow"
     actions = [
-      "kms:Encrypt",
       "kms:Decrypt",
-      "kms:ReEncrypt*",
+      "kms:DescribeKey",
+      "kms:Encrypt",
       "kms:GenerateDataKey*",
-      "kms:DescribeKey"
+      "kms:ReEncrypt*",
     ]
     resources = ["*"]
 
@@ -119,7 +119,7 @@ data "aws_iam_policy_document" "eks_key" {
     actions = [
       "kms:CreateGrant",
       "kms:ListGrants",
-      "kms:RevokeGrant"
+      "kms:RevokeGrant",
     ]
     resources = ["*"]
 

@@ -1,6 +1,11 @@
 #-------------------------------
 # EKS Cluster Module Outputs
 #-------------------------------
+output "eks_cluster_arn" {
+  description = "Amazon EKS Cluster Name"
+  value       = module.aws_eks.cluster_arn
+}
+
 output "eks_cluster_id" {
   description = "Amazon EKS Cluster Name"
   value       = module.aws_eks.cluster_id
@@ -195,17 +200,4 @@ output "emr_on_eks_role_id" {
 output "teams" {
   description = "Outputs from EKS Fargate profiles groups "
   value       = var.create_eks && (length(var.platform_teams) > 0 || length(var.application_teams) > 0) ? module.aws_eks_teams.* : []
-}
-
-#-------------------------------
-# Amazon Prometheus WorkSpace Outputs
-#-------------------------------
-output "amazon_prometheus_workspace_endpoint" {
-  description = "Amazon Managed Prometheus Workspace Endpoint"
-  value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_workspace_endpoint : null
-}
-
-output "amazon_prometheus_workspace_id" {
-  description = "Amazon Managed Prometheus Workspace ID"
-  value       = var.create_eks && var.enable_amazon_prometheus ? module.aws_managed_prometheus[0].amazon_prometheus_workspace_id : null
 }

@@ -64,13 +64,12 @@ module "agones" {
 }
 
 module "argocd" {
-  count                      = var.enable_argocd ? 1 : 0
-  source                     = "./argocd"
-  helm_config                = var.argocd_helm_config
-  applications               = var.argocd_applications
-  admin_password_secret_name = var.argocd_admin_password_secret_name
-  addon_config               = { for k, v in local.argocd_addon_config : k => v if v != null }
-  addon_context              = local.addon_context
+  count         = var.enable_argocd ? 1 : 0
+  source        = "./argocd"
+  helm_config   = var.argocd_helm_config
+  applications  = var.argocd_applications
+  addon_config  = { for k, v in local.argocd_addon_config : k => v if v != null }
+  addon_context = local.addon_context
 }
 
 module "argo_rollouts" {
@@ -140,9 +139,20 @@ module "cert_manager" {
 }
 
 module "cluster_autoscaler" {
-  count             = var.enable_cluster_autoscaler ? 1 : 0
-  source            = "./cluster-autoscaler"
-  helm_config       = var.cluster_autoscaler_helm_config
+  source = "./cluster-autoscaler"
+
+  count = var.enable_cluster_autoscaler ? 1 : 0
+
+  eks_cluster_version = local.eks_cluster_version
+  helm_config         = var.cluster_autoscaler_helm_config
+  manage_via_gitops   = var.argocd_manage_add_ons
+  addon_context       = local.addon_context
+}
+
+module "coredns_autoscaler" {
+  count             = var.enable_amazon_eks_coredns && var.enable_coredns_autoscaler && length(var.coredns_autoscaler_helm_config) > 0 ? 1 : 0
+  source            = "./cluster-proportional-autoscaler"
+  helm_config       = var.coredns_autoscaler_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
@@ -166,6 +176,7 @@ module "external_dns" {
   irsa_policies     = var.external_dns_irsa_policies
   addon_context     = local.addon_context
   domain_name       = var.eks_cluster_domain
+  private_zone      = var.external_dns_private_zone
 }
 
 module "fargate_fluentbit" {
@@ -173,6 +184,15 @@ module "fargate_fluentbit" {
   source        = "./fargate-fluentbit"
   addon_config  = var.fargate_fluentbit_addon_config
   addon_context = local.addon_context
+}
+
+module "grafana" {
+  count             = var.enable_grafana ? 1 : 0
+  source            = "./grafana"
+  helm_config       = var.grafana_helm_config
+  irsa_policies     = var.grafana_irsa_policies
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "ingress_nginx" {
@@ -221,7 +241,7 @@ module "metrics_server" {
 module "ondat" {
   count             = var.enable_ondat ? 1 : 0
   source            = "ondat/ondat-addon/eksblueprints"
-  version           = "0.0.4"
+  version           = "0.1.1"
   helm_config       = var.ondat_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
@@ -256,6 +276,16 @@ module "prometheus" {
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
   manage_via_gitops                    = var.argocd_manage_add_ons
   addon_context                        = local.addon_context
+}
+
+module "spark_history_server" {
+  count             = var.enable_spark_history_server ? 1 : 0
+  source            = "./spark-history-server"
+  helm_config       = var.spark_history_server_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+  irsa_policies     = var.spark_history_server_irsa_policies
+  s3a_path          = var.spark_history_server_s3a_path
 }
 
 module "spark_k8s_operator" {
@@ -320,6 +350,21 @@ module "yunikorn" {
   addon_context     = local.addon_context
 }
 
+module "csi_secrets_store_provider_aws" {
+  count             = var.enable_secrets_store_csi_driver_provider_aws ? 1 : 0
+  source            = "./csi-secrets-store-provider-aws"
+  helm_config       = var.csi_secrets_store_provider_aws_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "secrets_store_csi_driver" {
+  count             = var.enable_secrets_store_csi_driver ? 1 : 0
+  source            = "./secrets-store-csi-driver"
+  helm_config       = var.secrets_store_csi_driver_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
 module "aws_privateca_issuer" {
   count                   = var.enable_aws_privateca_issuer ? 1 : 0
   source                  = "./aws-privateca-issuer"
@@ -341,11 +386,11 @@ module "velero" {
 }
 
 module "opentelemetry_operator" {
-  count         = var.enable_amazon_eks_adot || var.enable_opentelemetry_operator ? 1 : 0
-  source        = "./opentelemetry-operator"
-  addon_context = local.addon_context
+  source = "./opentelemetry-operator"
 
-  # Amazon EKS ADOT add
+  count = var.enable_amazon_eks_adot || var.enable_opentelemetry_operator ? 1 : 0
+
+  # Amazon EKS ADOT addon
   enable_amazon_eks_adot = var.enable_amazon_eks_adot
   addon_config = merge(
     {
@@ -357,80 +402,73 @@ module "opentelemetry_operator" {
   # Self-managed OpenTelemetry Operator via Helm chart
   enable_opentelemetry_operator = var.enable_opentelemetry_operator
   helm_config                   = var.opentelemetry_operator_helm_config
+
+  addon_context = local.addon_context
 }
 
 module "adot_collector_java" {
   count  = var.enable_adot_collector_java ? 1 : 0
   source = "./adot-collector-java"
 
-  helm_config = merge(
-    var.adot_collector_java_helm_config,
-    {
-      # Using the output from the operator addon, this will ensure correct deployment order
-      operator_namespace = module.opentelemetry_operator[0].namespace
-    }
-  )
+  helm_config   = var.adot_collector_java_helm_config
+  addon_context = local.addon_context
 
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
   amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
-  addon_context                        = local.addon_context
 
-  depends_on = [module.opentelemetry_operator]
+  depends_on = [
+    module.opentelemetry_operator
+  ]
 }
 
 module "adot_collector_haproxy" {
   count  = var.enable_adot_collector_haproxy ? 1 : 0
   source = "./adot-collector-haproxy"
 
-  helm_config = merge(
-    var.adot_collector_haproxy_helm_config,
-    {
-      # Using the output from the operator addon, this will ensure correct deployment order
-      operator_namespace = module.opentelemetry_operator[0].namespace
-    }
-  )
+  helm_config   = var.adot_collector_haproxy_helm_config
+  addon_context = local.addon_context
 
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
   amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
-  addon_context                        = local.addon_context
 
-  depends_on = [module.opentelemetry_operator]
+  depends_on = [
+    module.opentelemetry_operator
+  ]
 }
 
 module "adot_collector_memcached" {
   count  = var.enable_adot_collector_memcached ? 1 : 0
   source = "./adot-collector-memcached"
 
-  helm_config = merge(
-    var.adot_collector_memcached_helm_config,
-    {
-      # Using the output from the operator addon, this will ensure correct deployment order
-      operator_namespace = module.opentelemetry_operator[0].namespace
-    }
-  )
+  helm_config   = var.adot_collector_memcached_helm_config
+  addon_context = local.addon_context
 
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
   amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
-  addon_context                        = local.addon_context
 
-  depends_on = [module.opentelemetry_operator]
+  depends_on = [
+    module.opentelemetry_operator
+  ]
 }
 
 module "adot_collector_nginx" {
   count  = var.enable_adot_collector_nginx ? 1 : 0
   source = "./adot-collector-nginx"
 
-  helm_config = merge(
-    var.adot_collector_nginx_helm_config,
-    {
-      # Using the output from the operator addon, this will ensure correct deployment order
-      operator_namespace = module.opentelemetry_operator[0].namespace
-    }
-  )
+  helm_config   = var.adot_collector_nginx_helm_config
+  addon_context = local.addon_context
 
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
   amazon_prometheus_workspace_region   = var.amazon_prometheus_workspace_region
-  addon_context                        = local.addon_context
 
-  depends_on = [module.opentelemetry_operator]
+  depends_on = [
+    module.opentelemetry_operator
+  ]
+}
+
+module "external_secrets" {
+  count         = var.enable_external_secrets ? 1 : 0
+  source        = "./external-secrets"
+  helm_config   = var.external_secrets_helm_config
+  addon_context = local.addon_context
 }

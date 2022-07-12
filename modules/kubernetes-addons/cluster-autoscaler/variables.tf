@@ -1,3 +1,8 @@
+variable "eks_cluster_version" {
+  description = "The Kubernetes version for the cluster - used to match appropriate version for image used"
+  type        = string
+}
+
 variable "helm_config" {
   description = "Cluster Autoscaler Helm Config"
   type        = any

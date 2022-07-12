@@ -35,14 +35,11 @@ locals {
     post_userdata        = ""
     kubelet_extra_args   = ""
 
-    http_endpoint               = "enabled"
-    http_tokens                 = "required"
-    http_put_response_hop_limit = 2
-
     service_ipv6_cidr      = ""
     service_ipv4_cidr      = ""
     format_mount_nvme_disk = false
 
-    monitoring = true
+    monitoring              = true
+    enable_metadata_options = true
   })
 }

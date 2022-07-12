@@ -75,7 +75,7 @@ To indicate that you would like to manage add-ons via ArgoCD, you must do the fo
 
 Note, that the `add_on_application` flag in your `Application` configuration must be set to `true`.
 
-```
+```hcl
 enable_argocd           = true
 argocd_manage_add_ons   = true
 argocd_applications     = {

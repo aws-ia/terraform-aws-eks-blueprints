@@ -1,9 +1,6 @@
 name: plan-examples
 
 on:
-  push:
-    branches:
-      - main
   # Review https://securitylab.github.com/research/github-actions-preventing-pwn-requests/ and better understand the risks of using pull_request_target before making major changes to this workflow.
   pull_request_target:
     branches:

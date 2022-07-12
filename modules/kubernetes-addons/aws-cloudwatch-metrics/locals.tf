@@ -36,7 +36,7 @@ locals {
   irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
     kubernetes_service_account        = local.service_account_name
-    create_kubernetes_namespace       = true
+    create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
     create_kubernetes_service_account = true
     irsa_iam_policies                 = concat(["arn:${var.addon_context.aws_partition_id}:iam::aws:policy/CloudWatchAgentServerPolicy"], var.irsa_policies)
   }
