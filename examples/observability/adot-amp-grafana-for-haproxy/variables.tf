@@ -1,7 +1,7 @@
 variable "grafana_endpoint" {
   description = "Grafana endpoint"
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "grafana_api_key" {
