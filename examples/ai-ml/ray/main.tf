@@ -154,7 +154,7 @@ data "kubectl_path_documents" "docs" {
   }
 }
 
-# Ugly Terraform issue: 
+# Ugly Terraform issue:
 # See https://github.com/gavinbunney/terraform-provider-kubectl/issues/58#issuecomment-718174177
 data "kubectl_path_documents" "count_hack" {
   pattern = "${path.module}/ray-clusters/*.yaml"

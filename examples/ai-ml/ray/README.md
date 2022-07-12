@@ -50,7 +50,7 @@ aws ecr get-login-password \
   --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/ray-demo
 ```
 
-Build the docker image containing our model deployment. 
+Build the docker image containing our model deployment.
 
 ```sh
 docker build sample-job -t $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/ray-demo
@@ -130,7 +130,7 @@ As a sample deployment, we will use [Ray Serve](https://docs.ray.io/en/latest/se
 Create the Job to deploy the model to the Ray Cluster
 
 ```sh
-envsubst < sample-job/job-example.yaml | kubectl create -f - 
+envsubst < sample-job/job-example.yaml | kubectl create -f -
 
 job.batch/ray-summarize-job-cjdd8 created
 ```
@@ -138,7 +138,7 @@ job.batch/ray-summarize-job-cjdd8 created
 Tail the logs of the job to verify successful deployment of the job.
 
 ```sh
-kubectl logs -n ray-cluster ray-summarize-job-cjdd8-wmxm8 -f 
+kubectl logs -n ray-cluster ray-summarize-job-cjdd8-wmxm8 -f
 
 Caught schedule exception
 2022-07-08 17:03:29,579 INFO common.py:220 -- Exception from actor creation is ignored in destructor. To receive this exception in application code, call a method on the actor reference before its destructor is run.
@@ -167,7 +167,7 @@ Downloading:  36%|███▌      | 82.2M/231M [00:01<00:02, 52.5MB/s]
 Downloading:  38%|███▊      | 87.3M/231M [00:01<00:02, 52.6MB/s]
 Downloading:  40%|████      | 92.6M/231M [00:01<00:02, 53.5MB/s]
 Downloading:  42%|████▏     | 97.7M/231M [00:01<00:02, 53.5MB/s]
-Downloading:  45%|████▍     | 103M/231M [00:02<00:02, 54.2MB/s] 
+Downloading:  45%|████▍     | 103M/231M [00:02<00:02, 54.2MB/s]
 Downloading:  47%|████▋     | 108M/231M [00:02<00:02, 53.5MB/s]
 Downloading:  49%|████▉     | 114M/231M [00:02<00:02, 54.3MB/s]
 Downloading:  51%|█████▏    | 119M/231M [00:02<00:02, 54.6MB/s]
