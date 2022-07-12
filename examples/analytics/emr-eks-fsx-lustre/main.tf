@@ -28,6 +28,20 @@ provider "helm" {
   }
 }
 
+provider "kubectl" {
+  apply_retry_count      = 10
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  load_config_file       = false
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
+  }
+}
+
 data "aws_availability_zones" "available" {}
 
 data "aws_region" "current" {}
@@ -43,10 +57,13 @@ locals {
   vpc_cidr = var.vpc_cidr
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
+  storage_class_name = "fsx"
+
   tags = merge(var.tags, {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   })
+
 }
 
 #---------------------------------------------------------------
@@ -97,6 +114,22 @@ module "eks_blueprints" {
       to_port                       = 0
       type                          = "ingress"
       source_cluster_security_group = true
+    }
+    ingress_fsx1 = {
+      description = "Allows Lustre traffic between Lustre clients"
+      cidr_blocks = module.vpc.private_subnets_cidr_blocks
+      from_port   = 1021
+      to_port     = 1023
+      protocol    = "tcp"
+      type        = "ingress"
+    }
+    ingress_fsx2 = {
+      description = "Allows Lustre traffic between Lustre clients"
+      cidr_blocks = module.vpc.private_subnets_cidr_blocks
+      from_port   = 988
+      to_port     = 988
+      protocol    = "tcp"
+      type        = "ingress"
     }
   }
 
@@ -331,7 +364,21 @@ module "eks_blueprints_kubernetes_addons" {
     })]
   }
 
+  #---------------------------------------
+  # Enable FSx for Lustre CSI Driver
+  #---------------------------------------
+  enable_aws_fsx_csi_driver = true
+  aws_fsx_csi_driver_helm_config = {
+    name       = "aws-fsx-csi-driver"
+    chart      = "aws-fsx-csi-driver"
+    repository = "https://kubernetes-sigs.github.io/aws-fsx-csi-driver/"
+    version    = "1.4.2"
+    namespace  = "kube-system"
+    #    values = [templatefile("${path.module}/aws-fsx-csi-driver-values.yaml", {})]
+  }
+
   tags = local.tags
+
 }
 
 #---------------------------------------------------------------
@@ -401,11 +448,11 @@ data "aws_iam_policy_document" "emr_on_eks" {
     resources = ["arn:${data.aws_partition.current.partition}:s3:::*"]
 
     actions = [
-      "s3:DeleteObject",
-      "s3:DeleteObjectVersion",
+      "s3:PutObject",
       "s3:GetObject",
       "s3:ListBucket",
-      "s3:PutObject",
+      "s3:DeleteObject",
+      "s3:DeleteObjectVersion"
     ]
   }
 
@@ -416,10 +463,10 @@ data "aws_iam_policy_document" "emr_on_eks" {
 
     actions = [
       "logs:CreateLogGroup",
+      "logs:PutLogEvents",
       "logs:CreateLogStream",
       "logs:DescribeLogGroups",
       "logs:DescribeLogStreams",
-      "logs:PutLogEvents",
     ]
   }
 }
@@ -456,4 +503,180 @@ resource "aws_emrcontainers_virtual_cluster" "this" {
       }
     }
   }
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
+  ]
+}
+
+#---------------------------------------------------------------
+# FSx for Lustre File system Static provisioning
+#    1> Create Fsx for Lustre filesystem (Lustre FS storage capacity must be 1200, 2400, or a multiple of 3600)
+#    2> Create Storage Class for Filesystem (Cluster scoped)
+#    3> Persistent Volume with  Hardcoded reference to Fsx for Lustre filesystem with filesystem_id and dns_name (Cluster scoped)
+#    4> Persistent Volume claim for this persistent volume will always use the same file system (Namespace scoped)
+#---------------------------------------------------------------
+# NOTE: FSx for Lustre file system creation can take up to 10 mins
+resource "aws_fsx_lustre_file_system" "this" {
+  deployment_type             = "PERSISTENT_2"
+  storage_type                = "SSD"
+  per_unit_storage_throughput = "500" # 125, 250, 500, 1000
+  storage_capacity            = 2400
+
+  subnet_ids         = [module.vpc.private_subnets[0]]
+  security_group_ids = [aws_security_group.fsx.id]
+  log_configuration {
+    level = "WARN_ERROR"
+  }
+  tags = merge({ "Name" : "${local.name}-static" }, local.tags)
+}
+
+resource "aws_fsx_data_repository_association" "example" {
+  file_system_id       = aws_fsx_lustre_file_system.this.id
+  data_repository_path = "s3://${aws_s3_bucket.this.id}"
+  file_system_path     = "/data" # This directory will be used in Spark podTemplates under volumeMounts as subPath
+
+  s3 {
+    auto_export_policy {
+      events = ["NEW", "CHANGED", "DELETED"]
+    }
+
+    auto_import_policy {
+      events = ["NEW", "CHANGED", "DELETED"]
+    }
+  }
+}
+
+#---------------------------------------------------------------
+# Storage Class - FSx for Lustre
+#---------------------------------------------------------------
+resource "kubectl_manifest" "storage_class" {
+  yaml_body = templatefile("${path.module}/fsx_lustre/fsxlustre-storage-class.yaml", {
+    storage_class_name = local.storage_class_name,
+    subnet_id          = module.vpc.private_subnets[0],
+    security_group_id  = aws_security_group.fsx.id
+  })
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
+  ]
+}
+
+#---------------------------------------------------------------
+# FSx for Lustre Persistent Volume - Static provisioning
+#---------------------------------------------------------------
+resource "kubectl_manifest" "static_pv" {
+  yaml_body = templatefile("${path.module}/fsx_lustre/fsxlustre-static-pv.yaml", {
+    pv_name            = "fsx-static-pv",
+    filesystem_id      = aws_fsx_lustre_file_system.this.id,
+    dns_name           = aws_fsx_lustre_file_system.this.dns_name
+    mount_name         = aws_fsx_lustre_file_system.this.mount_name,
+    storage_class_name = local.storage_class_name,
+    storage            = "1000Gi"
+  })
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons,
+    kubectl_manifest.storage_class,
+    aws_fsx_lustre_file_system.this
+  ]
+}
+
+#---------------------------------------------------------------
+# PVC for FSx Static Provisioning
+#---------------------------------------------------------------
+resource "kubectl_manifest" "static_pvc" {
+  yaml_body = templatefile("${path.module}/fsx_lustre/fsxlustre-static-pvc.yaml", {
+    namespace          = "emr-data-team-a"
+    pvc_name           = "fsx-static-pvc",
+    pv_name            = "fsx-static-pv",
+    storage_class_name = local.storage_class_name,
+    request_storage    = "1000Gi"
+  })
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons,
+    kubectl_manifest.storage_class,
+    aws_fsx_lustre_file_system.this
+  ]
+}
+
+#---------------------------------------------------------------
+# PVC for FSx Dynamic Provisioning
+#   Note: There is no need to provision a FSx for Lustre file system in advance for Dynamic Provisioning like we did for static provisioning as shown above
+#
+# Prerequisite for this PVC:
+#   1> FSx for Lustre StorageClass should exist
+#   2> FSx for CSI driver is installed
+# This resource will provision a new PVC for FSx for Lustre filesystem. FSx CSI driver will then create PV and FSx for Lustre Scratch1 FileSystem for this PVC.
+#---------------------------------------------------------------
+resource "kubectl_manifest" "dynamic_pvc" {
+  yaml_body = templatefile("${path.module}/fsx_lustre/fsxlustre-dynamic-pvc.yaml", {
+    namespace          = "emr-data-team-a", # EMR EKS Teams Namespace for job execution
+    pvc_name           = "fsx-dynamic-pvc",
+    storage_class_name = local.storage_class_name,
+    request_storage    = "2000Gi"
+  })
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons,
+    kubectl_manifest.storage_class
+  ]
+}
+
+#---------------------------------------------------------------
+# Sec group for FSx for Lustre
+#---------------------------------------------------------------
+resource "aws_security_group" "fsx" {
+  name        = "${local.name}-fsx"
+  description = "Allow inbound traffic from private subnets of the VPC to FSx filesystem"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    description = "Allows Lustre traffic between Lustre clients"
+    cidr_blocks = module.vpc.private_subnets_cidr_blocks
+    from_port   = 1021
+    to_port     = 1023
+    protocol    = "tcp"
+  }
+  ingress {
+    description = "Allows Lustre traffic between Lustre clients"
+    cidr_blocks = module.vpc.private_subnets_cidr_blocks
+    from_port   = 988
+    to_port     = 988
+    protocol    = "tcp"
+  }
+  tags = local.tags
+}
+#---------------------------------------------------------------
+# S3 bucket for DataSync between FSx for Lustre and S3 Bucket
+#---------------------------------------------------------------
+#tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
+resource "aws_s3_bucket" "this" {
+  bucket_prefix = format("%s-%s", "fsx", data.aws_caller_identity.current.account_id)
+  tags          = local.tags
+}
+
+resource "aws_s3_bucket_acl" "this" {
+  bucket = aws_s3_bucket.this.id
+  acl    = "private"
+}
+
+#tfsec:ignore:aws-s3-encryption-customer-key
+resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
+  bucket = aws_s3_bucket.this.bucket
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "this" {
+  bucket = aws_s3_bucket.this.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  restrict_public_buckets = true
+  ignore_public_acls      = true
 }

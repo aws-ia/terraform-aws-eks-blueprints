@@ -436,6 +436,30 @@ variable "aws_efs_csi_driver_helm_config" {
   default     = {}
 }
 
+variable "aws_efs_csi_driver_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
+}
+
+#-----------AWS EFS CSI DRIVER ADDON-------------
+variable "enable_aws_fsx_csi_driver" {
+  description = "Enable AWS FSx CSI driver add-on"
+  type        = bool
+  default     = false
+}
+
+variable "aws_fsx_csi_driver_helm_config" {
+  description = "AWS FSx CSI driver Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "aws_fsx_csi_driver_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
+}
 #-----------AWS LB Ingress Controller-------------
 variable "enable_aws_load_balancer_controller" {
   description = "Enable AWS Load Balancer Controller add-on"
@@ -639,7 +663,7 @@ variable "argocd_applications" {
 }
 
 variable "argocd_manage_add_ons" {
-  description = "Enable managing add-on configuration via ArgoCD"
+  description = "Enable managing add-on configuration via ArgoCD App of Apps"
   type        = bool
   default     = false
 }

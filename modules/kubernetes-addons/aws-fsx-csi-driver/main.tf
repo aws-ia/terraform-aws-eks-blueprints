@@ -1,5 +1,5 @@
 #-------------------------------------------------
-# EFS CSI Driver Helm Add-on
+# FSx for Lustre Helm Add-on
 #-------------------------------------------------
 module "helm_addon" {
   source            = "../helm-addon"
@@ -10,9 +10,12 @@ module "helm_addon" {
   addon_context     = var.addon_context
 }
 
-resource "aws_iam_policy" "aws_efs_csi_driver" {
-  name        = "${var.addon_context.eks_cluster_id}-efs-csi-policy"
-  description = "IAM Policy for AWS EFS CSI Driver"
-  policy      = data.aws_iam_policy_document.aws_efs_csi_driver.json
+#-------------------------------------------------
+# IRSA IAM policy for FSx for Lustre
+#-------------------------------------------------
+resource "aws_iam_policy" "aws_fsx_csi_driver" {
+  name        = "${var.addon_context.eks_cluster_id}-fsx-csi-policy"
+  description = "IAM Policy for AWS FSx CSI Driver"
+  policy      = data.aws_iam_policy_document.aws_fsx_csi_driver.json
   tags        = var.addon_context.tags
 }
