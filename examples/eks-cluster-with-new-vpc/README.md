@@ -8,13 +8,20 @@ This example deploys the following Basic EKS Cluster with VPC
 
 ## How to Deploy
 
-### Prerequisites:
+### Prerequisites
 
 Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
 
 1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 2. [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
 3. [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+
+### Minimum IAM Policy
+
+> **Note**: The policy resource is set as `*` to allow all resources, this is not a recommended practice.
+
+You can find the policy [here](min-iam-policy.json)
+
 
 ### Deployment Steps
 
@@ -61,15 +68,15 @@ This following command used to update the `kubeconfig` in your local machine whe
 
 `~/.kube/config` file gets updated with cluster details and certificate from the below command
 
-    $ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
+    aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 
 #### Step 6: List all the worker nodes by running the command below
 
-    $ kubectl get nodes
+    kubectl get nodes
 
 #### Step 7: List all the pods running in `kube-system` namespace
 
-    $ kubectl get pods -n kube-system
+    kubectl get pods -n kube-system
 
 ## Cleanup
 
