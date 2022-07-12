@@ -110,6 +110,9 @@ This script requires three input parameters which can be extracted from `terrafo
     S3_BUCKET=$2                  # This script requires s3 bucket as input parameter e.g., s3://<bucket-name>
     EMR_JOB_EXECUTION_ROLE_ARN=$3 # Terraform output variable is emr_on_eks_role_arn
 
+
+Note: THis script downloads the test data to your local mac and uploads to S3 bucket. Verify the shell script for more details
+
 ```sh
 cd examples/analytics/emr-eks-fsx-lustre/examples/spark-execute/
 
@@ -124,19 +127,24 @@ kubectl get pods --namespace=emr-data-team-a -w
 This will show the mounted `/data` directory with FSx DNS name
 
 ```sh
-kubectl exec -ti <executor-pod-name> -c spark-kubernetes-executor -n emr-data-team-a -- df -h
+kubectl exec -ti ny-taxi-trip-static-exec-1 -c spark-kubernetes-executor -n emr-data-team-a -- df -h
+
+kubectl exec -ti ny-taxi-trip-static-exec-1 -c spark-kubernetes-executor -n emr-data-team-a -- ls -lah /static
 ```
 
 ## Spark Job Execution - FSx - Dynamic Provisioning
 
-Execute Spark Job by using FSx for Lustre with dynamically provisioned volume
+Execute Spark Job by using FSx for Lustre with dynamically provisioned volume and Fsx for Lustre file system
 Execute the Spark job using the below shell script.
+
 
 This script requires three input parameters which can be extracted from `terraform apply` output values
 
     EMR_VIRTUAL_CLUSTER_ID=$1     # Terraform output variable is emrcontainers_virtual_cluster_id
     S3_BUCKET=$2                  # This script requires s3 bucket as input parameter e.g., s3://<bucket-name>
     EMR_JOB_EXECUTION_ROLE_ARN=$3 # Terraform output variable is emr_on_eks_role_arn
+
+Note: THis script downloads the test data to your local mac and uploads to S3 bucket. Verify the shell script for more details
 
 ```sh
 cd examples/analytics/emr-eks-fsx-lustre/examples/spark-execute/
@@ -149,10 +157,11 @@ Verify the job execution events
 ```sh
 kubectl get pods --namespace=emr-data-team-a -w
 ```
-This will show the mounted `/data` directory with FSx DNS name
 
 ```sh
-kubectl exec -ti <executor-pod-name> -c spark-kubernetes-executor -n emr-data-team-a -- df -h
+kubectl exec -ti ny-taxi-trip-dyanmic-exec-1 -c spark-kubernetes-executor -n emr-data-team-a -- df -h
+
+kubectl exec -ti ny-taxi-trip-dyanmic-exec-1 -c spark-kubernetes-executor -n emr-data-team-a -- ls -lah /dyanmic
 ```
 
 ## Cleanup
@@ -171,6 +180,8 @@ Finally, destroy any additional resources that are not in the above modules
 ```sh
 terraform destroy -auto-approve
 ```
+
+Make user all the S3 buckets are empty and deleted once your test is finished
 
 ## Debugging
 ##### Issue1: Error: local-exec provisioner error
