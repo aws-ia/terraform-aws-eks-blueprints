@@ -17,7 +17,7 @@ locals {
   )
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
-    aws_region           = var.addon_context.aws_region_name
+    aws_region = var.addon_context.aws_region_name
   })]
 
 

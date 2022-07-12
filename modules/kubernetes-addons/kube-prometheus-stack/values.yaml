@@ -130,7 +130,7 @@ kubeScheduler:
 # ## Deploy a Prometheus instance
 # ##
 # prometheus:
-#   prometheusSpec: 
+#   prometheusSpec:
 #     ## Image of Prometheus.
 #     ##
 #     image:
@@ -149,4 +149,3 @@ kubeScheduler:
 #       repository: quay.io/thanos/thanos
 #       tag: v0.24.0
 #       sha: ""
-
