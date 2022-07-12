@@ -29,7 +29,7 @@ provider "helm" {
 }
 
 provider "grafana" {
-  url  = "https://${module.managed_grafana.workspace_endpoint}"
+  url  = try(var.grafana_endpoint, "https://${module.managed_grafana.workspace_endpoint}")
   auth = var.grafana_api_key
 }
 

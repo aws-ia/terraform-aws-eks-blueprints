@@ -14,7 +14,7 @@ Amazon Managed Prometheus configured as a default data source on Managed Grafana
 
 The Grafana API key is currently handled in this example through a variable until [native support is provided](https://github.com/hashicorp/terraform-provider-aws/issues/25100).
 Users can store the retrieved key in a `terraform.tfvars` file with the variable name like `grafana_api_key="xxx"`, or set the value through an environment variable
-like `export TF_VAR_grafana_api_key="xxx"`when working with the example. However, in a current production environment, users should use an external secret store such as AWS Secrets Manager and use the
+like `export TF_VAR_grafana_api_key="xxx"` when working with the example. However, in a current production environment, users should use an external secret store such as AWS Secrets Manager and use the
 [aws_secretsmanager_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret) data source to retrieve the API key.
 
 ## Prerequisites
@@ -41,6 +41,8 @@ terraform apply -target=module.managed_grafana # required to retrieve API key be
 ```
 
 Enter `yes` at command prompt to apply
+
+Alternatively, you can reuse an existing Managed Grafana workspace. In this case, you can add `grafana_endpoint="https://xxx/"` to your `terraform.tfvars` or use an evironment variable `export TF_VAR_grafana_endpoint=""https://xxx/""`
 
 2. Generate a Grafana API Key
 

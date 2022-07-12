@@ -10,12 +10,6 @@ variable "applications" {
   default     = {}
 }
 
-variable "admin_password_secret_name" {
-  description = "Name for a secret stored in AWS Secrets Manager that contains the admin password for ArgoCD."
-  type        = string
-  default     = ""
-}
-
 variable "addon_config" {
   description = "Configuration for managing add-ons via ArgoCD"
   type        = any

@@ -1,14 +1,14 @@
 module "helm_addon" {
-  source               = "../helm-addon"
-  helm_config          = local.helm_config
-  irsa_config          = null
-  set_sensitive_values = local.set_sensitive
-  addon_context        = var.addon_context
+  source        = "../helm-addon"
+  helm_config   = local.helm_config
+  irsa_config   = null
+  addon_context = var.addon_context
 
   depends_on = [kubernetes_namespace_v1.this]
 }
 
 resource "kubernetes_namespace_v1" "this" {
+  count = try(local.helm_config["create_namespace"], true) && local.helm_config["namespace"] != "kube-system" ? 1 : 0
   metadata {
     name = local.helm_config["namespace"]
   }
@@ -111,9 +111,10 @@ resource "kubernetes_secret" "argocd_gitops" {
   }
 
   data = {
+    insecure      = lookup(each.value, "insecure", false)
+    sshPrivateKey = data.aws_secretsmanager_secret_version.ssh_key_version[each.key].secret_string
     type          = "git"
     url           = each.value.repo_url
-    sshPrivateKey = data.aws_secretsmanager_secret_version.ssh_key_version[each.key].secret_string
   }
 
   depends_on = [module.helm_addon]

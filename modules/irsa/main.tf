@@ -16,6 +16,7 @@ resource "kubernetes_service_account_v1" "irsa" {
   automount_service_account_token = true
 }
 
+# NOTE: Don't change the condition from StringLike to StringEquals. We are using wild characters for service account hence StringLike is required.
 resource "aws_iam_role" "irsa" {
   count = var.irsa_iam_policies != null ? 1 : 0
 
@@ -31,7 +32,7 @@ resource "aws_iam_role" "irsa" {
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
-          "StringEquals" : {
+          "StringLike" : {
             "${var.addon_context.eks_oidc_issuer_url}:sub" : "system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}",
             "${var.addon_context.eks_oidc_issuer_url}:aud" : "sts.amazonaws.com"
           }

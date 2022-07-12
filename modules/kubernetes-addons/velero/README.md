@@ -12,7 +12,7 @@ The following command will update the `kubeconfig` on your local machine and all
 1. Run `update-kubeconfig` command:
 
 ```bash
-aws eks --region <REGION> update-kubeconfig --name <CLSUTER_NAME>
+aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
 ```
 
 2. Test by listing velero resources provisioned:
@@ -159,6 +159,7 @@ pod/nginx   1/1     Running   0          21s
 |------|------|
 | [aws_iam_policy.velero](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy_document.velero](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 

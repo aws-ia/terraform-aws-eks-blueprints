@@ -1,6 +1,11 @@
 locals {
-  name      = try(var.helm_config.name, "prometheus")
-  namespace = kubernetes_namespace_v1.prometheus.metadata[0].name
+  name             = try(var.helm_config.name, "prometheus")
+  namespace_name   = try(var.helm_config.namespace, "prometheus")
+  create_namespace = try(var.helm_config.create_namespace, true) && local.namespace_name != "kube-system"
+
+  # `namespace_name` is just the string representation of the namespace name
+  # `namespace` is the name of the resultant namespace to use - created or not
+  namespace = local.create_namespace ? kubernetes_namespace_v1.prometheus[0].metadata[0].name : local.namespace_name
 
   workspace_url          = var.amazon_prometheus_workspace_endpoint != null ? "${var.amazon_prometheus_workspace_endpoint}api/v1/remote_write" : ""
   ingest_service_account = "amp-ingest"
@@ -24,7 +29,7 @@ module "helm_addon" {
       chart       = local.name
       version     = "15.10.1"
       repository  = "https://prometheus-community.github.io/helm-charts"
-      namespace   = local.namespace
+      namespace   = local.namespace_name
       description = "Prometheus helm Chart deployment configuration"
       values = [templatefile("${path.module}/values.yaml", {
         operating_system = try(var.helm_config.operating_system, "linux")
@@ -61,8 +66,10 @@ module "helm_addon" {
 }
 
 resource "kubernetes_namespace_v1" "prometheus" {
+  count = local.create_namespace ? 1 : 0
+
   metadata {
-    name = try(var.helm_config.namespace, "prometheus")
+    name = local.namespace_name
   }
 }
 
