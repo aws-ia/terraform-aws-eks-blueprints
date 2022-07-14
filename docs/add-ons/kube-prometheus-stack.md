@@ -8,7 +8,7 @@ The default values.yaml file in this add-on has disabled the components that are
 
 You can override the defaults using the `set` helm_config key:
 
-```
+```sh
   enable_kube_prometheus_stack      = true
   kube_prometheus_stack_helm_config = {
     set = [
