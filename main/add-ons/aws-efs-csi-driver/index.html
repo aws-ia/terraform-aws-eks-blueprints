@@ -1166,7 +1166,7 @@
 <h1 id="aws-efs-csi-driver">AWS EFS CSI Driver<a class="headerlink" href="#aws-efs-csi-driver" title="Permanent link">&para;</a></h1>
 <p>This add-on deploys the <a href="https://docs.aws.amazon.com/eks/latest/userguide/efs-csi.html">AWS EFS CSI driver</a> into an EKS cluster.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p>The <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/aws-efs-csi-driver">AWS EFS CSI driver</a> can be deployed by enabling the add-on via the following. Check out the full <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/aws-efs-csi-driver/main.tf">example</a> to deploy an EKS Cluster with EFS backing the dynamic provisioning of persistent volumes.</p>
+<p>The <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/aws-efs-csi-driver">AWS EFS CSI driver</a> can be deployed by enabling the add-on via the following. Check out the full <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/stateful/main.tf">example</a> to deploy an EKS Cluster with EFS backing the dynamic provisioning of persistent volumes.</p>
 <div class="highlight"><pre><span></span><code>  enable_aws_efs_csi_driver = true
 </code></pre></div>
 <p>Once deployed, you will be able to see a number of supporting resources in the <code>kube-system</code> namespace.</p>
