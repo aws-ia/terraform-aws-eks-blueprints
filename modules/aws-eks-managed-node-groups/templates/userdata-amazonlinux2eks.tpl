@@ -6,12 +6,11 @@ Content-Type: text/x-shellscript; charset="us-ascii"
 #!/bin/bash
 set -ex
 
-echo "Running custom user data script"
-
+%{ if length(pre_userdata) > 0 ~}
 # User-supplied pre userdata
 ${pre_userdata}
-
-if [ ${format_mount_nvme_disk} = true ];then
+%{ endif ~}
+%{ if format_mount_nvme_disk ~}
 echo "Format and Mount NVMe Disks if available"
 IDX=1
 DEVICES=$(lsblk -o NAME,TYPE -dsn | awk '/disk/ {print $1}')
@@ -26,30 +25,20 @@ do
   IDX=$(($${IDX} + 1))
 done
 mount -a
-fi
-
-if [ ${service_ipv4_cidr} ];then
-echo "Setting custom IPV4 CIDR"
+%{ endif ~}
+%{ if length(service_ipv4_cidr) > 0 ~}
 export SERVICE_IPV4_CIDR=${service_ipv4_cidr}
-fi
-
-if [ ${service_ipv6_cidr} ];then
-echo "Setting custom IPV6 CIDR"
+%{ endif ~}
+%{ if length(service_ipv4_cidr) > 0 ~}
 export SERVICE_IPV6_CIDR=${service_ipv6_cidr}
-fi
-
-# Bootstrap and join the cluster used only when custom_ami_id is specified. Otherwise, it will use the bootstrap.sh from the default managed launch template merged by EKS API
-# e.g., bootstrap_extra_args="--use-max-pods false --container-runtime containerd"
-# e.g., kubelet_extra_args = "--node-labels=arch=x86,WorkerType=SPOT --max-pods=50 --register-with-taints=spot=true:NoSchedule"  # Equivalent to k8s_labels used in managed node groups
-
-if [ ${custom_ami_id} ];then
-echo "Running custom Bootstrap script"
+%{ endif ~}
+%{ if length(custom_ami_id) > 0 ~}
 B64_CLUSTER_CA=${cluster_ca_base64}
 API_SERVER_URL=${cluster_endpoint}
-/etc/eks/bootstrap.sh '${eks_cluster_id}' --kubelet-extra-args "${kubelet_extra_args}" ${bootstrap_extra_args}
-fi
-
+/etc/eks/bootstrap.sh ${eks_cluster_id} --kubelet-extra-args "${kubelet_extra_args}" ${bootstrap_extra_args}
+%{ endif ~}
+%{ if length(post_userdata) > 0 ~}
 # User-supplied post userdata
 ${post_userdata}
-
+%{ endif ~}
 --//--

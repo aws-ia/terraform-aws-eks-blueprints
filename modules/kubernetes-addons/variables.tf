@@ -436,6 +436,30 @@ variable "aws_efs_csi_driver_helm_config" {
   default     = {}
 }
 
+variable "aws_efs_csi_driver_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
+}
+
+#-----------AWS EFS CSI DRIVER ADDON-------------
+variable "enable_aws_fsx_csi_driver" {
+  description = "Enable AWS FSx CSI driver add-on"
+  type        = bool
+  default     = false
+}
+
+variable "aws_fsx_csi_driver_helm_config" {
+  description = "AWS FSx CSI driver Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "aws_fsx_csi_driver_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
+}
 #-----------AWS LB Ingress Controller-------------
 variable "enable_aws_load_balancer_controller" {
   description = "Enable AWS Load Balancer Controller add-on"
@@ -460,6 +484,31 @@ variable "ingress_nginx_helm_config" {
   description = "Ingress Nginx Helm Chart config"
   type        = any
   default     = {}
+}
+
+#-----------Spark History Server-------------
+variable "enable_spark_history_server" {
+  description = "Enable Spark History Server add-on"
+  type        = bool
+  default     = false
+}
+
+variable "spark_history_server_helm_config" {
+  description = "Spark History Server Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "spark_history_server_s3a_path" {
+  description = "s3a path with prefix for Spark history server e.g., s3a://<bucket_name>/<spark_event_logs>"
+  type        = string
+  default     = ""
+}
+
+variable "spark_history_server_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
 }
 
 #-----------SPARK K8S OPERATOR-------------
@@ -613,14 +662,8 @@ variable "argocd_applications" {
   default     = {}
 }
 
-variable "argocd_admin_password_secret_name" {
-  description = "Name for a secret stored in AWS Secrets Manager that contains the admin password"
-  type        = string
-  default     = ""
-}
-
 variable "argocd_manage_add_ons" {
-  description = "Enable managing add-on configuration via ArgoCD"
+  description = "Enable managing add-on configuration via ArgoCD App of Apps"
   type        = bool
   default     = false
 }
@@ -901,4 +944,23 @@ variable "external_secrets_helm_config" {
   type        = any
   default     = {}
   description = "External Secrets operator Helm Chart config"
+}
+
+#-----------Grafana ADDON-------------
+variable "enable_grafana" {
+  description = "Enable Grafana add-on"
+  type        = bool
+  default     = false
+}
+
+variable "grafana_helm_config" {
+  description = "Kubernetes Grafana Helm Chart config"
+  type        = any
+  default     = null
+}
+
+variable "grafana_irsa_policies" {
+  description = "IAM policy ARNs for grafana IRSA"
+  type        = list(string)
+  default     = []
 }

@@ -5,43 +5,31 @@ provider "aws" {
 provider "kubernetes" {
   host                   = module.eks_blueprints.eks_cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-  }
+  token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
     host                   = module.eks_blueprints.eks_cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-    }
+    token                  = data.aws_eks_cluster_auth.this.token
   }
 }
 
 provider "kubectl" {
   host                   = module.eks_blueprints.eks_cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-  }
+  token                  = data.aws_eks_cluster_auth.this.token
 }
 
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks_blueprints.eks_cluster_id
+}
 
 data "aws_availability_zones" "available" {}
+data "aws_partition" "current" {}
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
 
 locals {
   name      = basename(path.cwd)
@@ -56,7 +44,6 @@ locals {
   secretstore_name         = "secretstore-ps"
   secretstore_sa           = "secretstore-sa"
 
-
   tags = {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
@@ -66,6 +53,7 @@ locals {
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
+
 module "eks_blueprints" {
   source = "../.."
 
@@ -138,12 +126,12 @@ module "eks_blueprints_kubernetes_addons" {
   enable_external_secrets = true
 
   tags = local.tags
-
 }
 
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
@@ -179,12 +167,6 @@ module "vpc" {
 
   tags = local.tags
 }
-
-data "aws_partition" "current" {}
-
-data "aws_caller_identity" "current" {}
-
-data "aws_region" "current" {}
 
 #---------------------------------------------------------------
 # External Secrets Operator - Secret

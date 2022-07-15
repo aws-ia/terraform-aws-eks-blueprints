@@ -5,27 +5,19 @@ provider "aws" {
 provider "kubernetes" {
   host                   = module.eks_blueprints.eks_cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-  }
+  token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
     host                   = module.eks_blueprints.eks_cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-    }
+    token                  = data.aws_eks_cluster_auth.this.token
   }
+}
+
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks_blueprints.eks_cluster_id
 }
 
 data "aws_availability_zones" "available" {}
@@ -46,6 +38,7 @@ locals {
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
+
 module "eks_blueprints" {
   source = "../../.."
 
@@ -78,7 +71,17 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-  enable_argocd         = true
+  enable_argocd = true
+  # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.
+  argocd_helm_config = {
+    set_sensitive = [
+      {
+        name  = "configs.secret.argocdServerAdminPassword"
+        value = data.aws_secretsmanager_secret_version.admin_password_version.secret_string
+      }
+    ]
+  }
+
   argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying add-ons
   argocd_applications = {
     addons = {
@@ -107,12 +110,39 @@ module "eks_blueprints_kubernetes_addons" {
   enable_argo_rollouts      = true
 
   tags = local.tags
+}
 
+#---------------------------------------------------------------
+# ArgoCD Admin Password credentials with Secrets Manager
+# Login to AWS Secrets manager with the same role as Terraform to extract the ArgoCD admin password with the secret name as "argocd"
+#---------------------------------------------------------------
+resource "random_password" "argocd" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+#tfsec:ignore:aws-ssm-secret-use-customer-key
+resource "aws_secretsmanager_secret" "arogcd" {
+  name                    = "argocd"
+  recovery_window_in_days = 0 # Set to zero for this example to force delete during Terraform destroy
+}
+
+resource "aws_secretsmanager_secret_version" "arogcd" {
+  secret_id     = aws_secretsmanager_secret.arogcd.id
+  secret_string = random_password.argocd.result
+}
+
+data "aws_secretsmanager_secret_version" "admin_password_version" {
+  secret_id = aws_secretsmanager_secret.arogcd.id
+
+  depends_on = [aws_secretsmanager_secret_version.arogcd]
 }
 
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"

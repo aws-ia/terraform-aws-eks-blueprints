@@ -38,6 +38,7 @@ variable "addon_context" {
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
     tags                           = map(string)
+    irsa_iam_role_name             = optional(string)
     irsa_iam_role_path             = optional(string)
     irsa_iam_permissions_boundary  = optional(string)
   })
