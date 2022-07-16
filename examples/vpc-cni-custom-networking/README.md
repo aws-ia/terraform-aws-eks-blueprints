@@ -34,7 +34,6 @@ terraform apply
 
 Enter `yes` at command prompt to apply
 
-
 ## Validate
 
 The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the deployment.

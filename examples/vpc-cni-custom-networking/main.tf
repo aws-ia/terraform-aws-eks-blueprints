@@ -37,12 +37,9 @@ locals {
 
   cluster_version = "1.22"
 
-  azs                  = slice(data.aws_availability_zones.available.names, 0, 3)
-  vpc_cidr             = "10.0.0.0/16"
-  primary_subnet_cidrs = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
-
-  secondary_vpc_cidr     = "10.99.0.0/16"
-  secondary_subnet_cidrs = [for k, v in local.azs : cidrsubnet(local.secondary_vpc_cidr, 2, k)]
+  azs                = slice(data.aws_availability_zones.available.names, 0, 3)
+  vpc_cidr           = "10.0.0.0/16"
+  secondary_vpc_cidr = "10.99.0.0/16"
 
   tags = {
     Blueprint  = local.name
@@ -232,10 +229,13 @@ module "vpc" {
 
   secondary_cidr_blocks = [local.secondary_vpc_cidr] # can add up to 5 total CIDR blocks
 
-  azs             = local.azs
-  private_subnets = concat(local.primary_subnet_cidrs, local.secondary_subnet_cidrs)
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
-  intra_subnets   = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 52)]
+  azs = local.azs
+  private_subnets = concat(
+    [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)],
+    [for k, v in local.azs : cidrsubnet(local.secondary_vpc_cidr, 2, k)]
+  )
+  public_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
+  intra_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 52)]
 
   enable_nat_gateway   = true
   single_nat_gateway   = true
