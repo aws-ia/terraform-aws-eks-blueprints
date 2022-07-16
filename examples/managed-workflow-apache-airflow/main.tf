@@ -59,12 +59,22 @@ module "eks_blueprints" {
     }
   ]
 
-  managed_node_groups = {
-    mg5 = {
-      node_group_name = "mg5"
-      instance_types  = ["m5.large"]
-      min_size        = "2"
-      disk_size       = 100
+  eks_managed_node_groups = {
+    mwaa = {
+      name = "mwaa"
+
+      instance_types = ["m5.large"]
+      min_size       = 2
+
+      block_device_mappings = {
+        xvda = {
+          device_name = "/dev/xvda"
+          ebs = {
+            volume_size = 100
+            volume_type = "gp3"
+          }
+        }
+      }
     }
   }
 

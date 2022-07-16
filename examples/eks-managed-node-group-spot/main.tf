@@ -26,6 +26,8 @@ locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
+  cluster_version = "1.22"
+
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
@@ -40,89 +42,112 @@ locals {
 #---------------------------------------------------------------
 
 module "eks_blueprints" {
-  source = "../.."
+  source = "../../.."
 
   cluster_name    = local.name
-  cluster_version = "1.22"
+  cluster_version = local.cluster_version
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
-  self_managed_node_groups = {
+  node_security_group_additional_rules = {
+    # Extend node-to-node security group rules. Recommended and required for the Add-ons
+    ingress_self_all = {
+      description = "Node to node all ports/protocols"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      self        = true
+    }
+    # Recommended outbound traffic for Node groups
+    egress_all = {
+      description      = "Node all egress"
+      protocol         = "-1"
+      from_port        = 0
+      to_port          = 0
+      type             = "egress"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+    }
+    # Allows Control Plane Nodes to talk to Worker nodes on all ports. Added this to simplify the example and further avoid issues with Add-ons communication with Control plane.
+    # This can be restricted further to specific port based on the requirement for each Add-on e.g., metrics-server 4443, spark-operator 8080, karpenter 8443 etc.
+    # Change this according to your security requirements if needed
+    ingress_cluster_to_node_all_traffic = {
+      description                   = "Cluster API to Nodegroup all traffic"
+      protocol                      = "-1"
+      from_port                     = 0
+      to_port                       = 0
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
+  }
+
+  eks_managed_node_groups = {
     on_demand = {
+      # Due to spot taints, need somewhere for core addons to run
       name = "on-demand"
 
       instance_types = ["m5.large"]
     }
 
     spot_2vcpu_8mem = {
-      name = "spot-2vcpu-8mem"
+      name = "mng-spot-2vcpu-8mem"
 
-      min_size = 0
+      capacity_type  = "SPOT"
+      instance_types = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"]
 
-      capacity_rebalance         = true
-      use_mixed_instances_policy = true
-      mixed_instances_policy = {
-        override = [
-          { instance_type = "m5.large" },
-          { instance_type = "m4.large" },
-          { instance_type = "m6a.large" },
-          { instance_type = "m5a.large" },
-          { instance_type = "m5d.large" },
-        ]
-      }
+      taints = [
+        {
+          key    = "spotInstance"
+          value  = "true"
+          effect = "NO_SCHEDULE"
+        }
+      ]
 
-      autoscaling_group_tags = {
-        "k8s.io/cluster-autoscaler/enabled"                              = "TRUE"
-        "k8s.io/cluster-autoscaler/migrate"                              = "owned"
-        "k8s.io/cluster-autoscaler/node-template/label/eks/capacityType" = "spot"
-        "k8s.io/cluster-autoscaler/node-template/label/eks/nodegroup"    = "spot-2vcpu-8mem"
-      }
+      max_size     = 2
+      desired_size = 1
+      min_size     = 1
     }
 
     spot_4vcpu_16mem = {
-      name = "spot-4vcpu-16mem"
+      name = "mng-spot-4vcpu-16mem"
 
+      capacity_type  = "SPOT"
+      instance_types = ["m5.xlarge", "m4.xlarge", "m6a.xlarge", "m5a.xlarge", "m5d.xlarge"]
+
+      taints = [
+        {
+          key    = "spotInstance"
+          value  = "true"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+
+      # NOTE: If we want the node group to scale-down to zero nodes,
+      # we need to use a custom launch template and define some additional tags for the ASGs
       min_size = 0
 
-      capacity_rebalance         = true
-      use_mixed_instances_policy = true
-      mixed_instances_policy = {
-        override = [
-          { instance_type = "m5.xlarge" },
-          { instance_type = "m4.xlarge" },
-          { instance_type = "m6a.xlarge" },
-          { instance_type = "m5a.xlarge" },
-          { instance_type = "m5d.xlarge" },
-        ]
-      }
-
-      autoscaling_group_tags = {
-        "k8s.io/cluster-autoscaler/enabled"                              = "TRUE"
-        "k8s.io/cluster-autoscaler/migrate"                              = "owned"
-        "k8s.io/cluster-autoscaler/node-template/label/eks/capacityType" = "spot"
-        "k8s.io/cluster-autoscaler/node-template/label/eks/nodegroup"    = "spot-4vcpu-16mem"
+      # This is so cluster autoscaler can identify which node (using ASGs tags) to scale-down to zero nodes
+      tags = {
+        "k8s.io/cluster-autoscaler/node-template/label/eks.amazonaws.com/capacityType" = "SPOT"
+        "k8s.io/cluster-autoscaler/node-template/label/eks/node_group_name"            = "mng-spot-2vcpu-8mem"
       }
     }
   }
+
+  tags = local.tags
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "../../modules/kubernetes-addons"
+  source = "../../../modules/kubernetes-addons"
 
   eks_cluster_id       = module.eks_blueprints.eks_cluster_id
   eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-  enable_amazon_eks_vpc_cni    = true
-  enable_amazon_eks_coredns    = true
-  enable_amazon_eks_kube_proxy = true
-
-  enable_metrics_server               = true
-  enable_aws_node_termination_handler = true
-  auto_scaling_group_names            = module.eks_blueprints.self_managed_node_groups_autoscaling_group_names
-
+  enable_metrics_server     = true
   enable_cluster_autoscaler = true
   cluster_autoscaler_helm_config = {
     set = [
@@ -145,7 +170,6 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   tags = local.tags
-
 }
 
 #---------------------------------------------------------------
