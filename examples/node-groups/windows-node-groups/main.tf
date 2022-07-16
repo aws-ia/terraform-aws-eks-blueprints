@@ -47,14 +47,13 @@ module "eks_blueprints" {
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
-  managed_node_groups = {
+  eks_managed_node_groups = {
     mng_spot_medium = {
-      node_group_name = "mng-spot-med"
-      capacity_type   = "SPOT"
-      instance_types  = ["t3.large", "t3.xlarge"]
-      subnet_ids      = module.vpc.private_subnets
-      desired_size    = 2
-      disk_size       = 30
+      names = "mng-spot-med"
+
+      capacity_type  = "SPOT"
+      instance_types = ["t3.large", "t3.xlarge"]
+      desired_size   = 2
     }
   }
 
@@ -116,7 +115,6 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   tags = local.tags
-
 }
 
 #---------------------------------------------------------------

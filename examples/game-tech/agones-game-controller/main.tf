@@ -48,39 +48,15 @@ module "eks_blueprints" {
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
-  managed_node_groups = {
+  eks_managed_node_groups = {
     mg_5 = {
-      node_group_name        = "managed-ondemand"
-      create_launch_template = true
-      launch_template_os     = "amazonlinux2eks"
-      public_ip              = true
-      pre_userdata           = <<-EOT
-        yum install -y amazon-ssm-agent
-        systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
-      EOT
+      name = "managed-ondemand"
 
-      desired_size    = 3
-      max_size        = 12
-      min_size        = 3
-      max_unavailable = 1
-
-      ami_type       = "AL2_x86_64"
-      capacity_type  = "ON_DEMAND"
       instance_types = ["m5.large"]
-      disk_size      = 50
 
-      subnet_ids = module.vpc.public_subnets
-
-      k8s_labels = {
-        Environment = "preprod"
-        Zone        = "dev"
-        WorkerType  = "ON_DEMAND"
-      }
-      additional_tags = {
-        ExtraTag    = "m5x-on-demand"
-        Name        = "m5x-on-demand"
-        subnet_type = "public"
-      }
+      desired_size = 3
+      max_size     = 12
+      min_size     = 3
     }
   }
 

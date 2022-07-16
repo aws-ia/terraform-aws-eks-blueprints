@@ -250,8 +250,15 @@ variable "cluster_identity_providers" {
 #-------------------------------
 # Node Groups
 #-------------------------------
-variable "managed_node_groups" {
-  description = "Managed node groups configuration"
+
+variable "eks_managed_node_groups" {
+  description = "Map of EKS managed node group definitions to create"
+  type        = any
+  default     = {}
+}
+
+variable "eks_managed_node_group_defaults" {
+  description = "Map of EKS managed node group default configurations"
   type        = any
   default     = {}
 }

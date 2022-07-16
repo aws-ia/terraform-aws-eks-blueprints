@@ -17,8 +17,9 @@ module "kms" {
 # ---------------------------------------------------------------------------------------------------------------------
 module "aws_eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "v18.17.0"
-  create  = var.create_eks
+  version = "v18.26.3"
+
+  create = var.create_eks
 
   cluster_name     = var.cluster_name
   cluster_version  = var.cluster_version
@@ -81,6 +82,9 @@ module "aws_eks" {
   ] : var.cluster_encryption_config
 
   cluster_identity_providers = var.cluster_identity_providers
+
+  eks_managed_node_groups         = var.eks_managed_node_groups
+  eks_managed_node_group_defaults = var.eks_managed_node_group_defaults
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

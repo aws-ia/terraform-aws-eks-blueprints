@@ -21,9 +21,7 @@ data "aws_eks_cluster_auth" "this" {
 }
 
 data "aws_availability_zones" "available" {}
-
 data "aws_caller_identity" "current" {}
-
 data "aws_partition" "current" {}
 
 locals {
@@ -42,6 +40,7 @@ locals {
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
+
 module "eks_blueprints" {
   source = "../../.."
 
@@ -90,12 +89,12 @@ module "eks_blueprints" {
     }
   }
 
-  managed_node_groups = {
+  eks_managed_node_groups = {
     mg_5 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m5.xlarge"]
-      min_size        = 3
-      subnet_ids      = module.vpc.private_subnets
+      name = "managed-ondemand"
+
+      instance_types = ["m5.xlarge"]
+      min_size       = 3
     }
   }
 
@@ -109,7 +108,7 @@ module "eks_blueprints_kubernetes_addons" {
   eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
-  # Add-ons
+
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
 

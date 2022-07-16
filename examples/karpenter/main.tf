@@ -58,38 +58,10 @@ module "eks_blueprints" {
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
-  #----------------------------------------------------------------------------------------------------------#
-  # Security groups used in this module created by the upstream modules terraform-aws-eks (https://github.com/terraform-aws-modules/terraform-aws-eks).
-  #   Upstream module implemented Security groups based on the best practices doc https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html.
-  #   So, by default the security groups are restrictive. Users needs to enable rules for specific ports required for App requirement or Add-ons
-  #   See the notes below for each rule used in these examples
-  #----------------------------------------------------------------------------------------------------------#
   node_security_group_additional_rules = {
-    # Extend node-to-node security group rules. Recommended and required for the Add-ons
-    ingress_self_all = {
-      description = "Node to node all ports/protocols"
-      protocol    = "-1"
-      from_port   = 0
-      to_port     = 0
-      type        = "ingress"
-      self        = true
-    }
-    # Recommended outbound traffic for Node groups
-    egress_all = {
-      description      = "Node all egress"
-      protocol         = "-1"
-      from_port        = 0
-      to_port          = 0
-      type             = "egress"
-      cidr_blocks      = ["0.0.0.0/0"]
-      ipv6_cidr_blocks = ["::/0"]
-    }
-
-    # Allows Control Plane Nodes to talk to Worker nodes on Karpenter ports.
-    # This can be extended further to specific port based on the requirement for others Add-on e.g., metrics-server 4443, spark-operator 8080, etc.
-    # Change this according to your security requirements if needed
-    ingress_nodes_karpenter_port = {
-      description                   = "Cluster API to Nodegroup for Karpenter"
+    # Control plane invoke Karpenter webhook
+    ingress_karpenter_webhook_tcp = {
+      description                   = "Control plane invoke Karpenter webhook"
       protocol                      = "tcp"
       from_port                     = 8443
       to_port                       = 8443
@@ -103,26 +75,24 @@ module "eks_blueprints" {
     "karpenter.sh/discovery/${local.name}" = local.name
   }
 
-  # EKS MANAGED NODE GROUPS
-  # We recommend to have a MNG to place your critical workloads and add-ons
-  # Then rely on Karpenter to scale your workloads
-  # You can also make uses on nodeSelector and Taints/tolerations to spread workloads on MNG or Karpenter provisioners
-  managed_node_groups = {
-    mg_5 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m5.large"]
+  eks_managed_node_groups = {
+    karpenter = {
+      name = "karpenter"
 
-      subnet_ids   = module.vpc.private_subnets
+      instance_types = ["m5.large"]
+
       max_size     = 2
       desired_size = 1
       min_size     = 1
+
+      iam_role_additional_policies = [
+        # Required by Karpenter
+        "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+      ]
+
       update_config = [{
         max_unavailable_percentage = 30
       }]
-
-      # Launch template configuration
-      create_launch_template = true              # false will use the default launch template
-      launch_template_os     = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
     }
   }
 
@@ -141,7 +111,11 @@ module "eks_blueprints_kubernetes_addons" {
   enable_aws_node_termination_handler = true
 
   tags = local.tags
+}
 
+resource "aws_iam_instance_profile" "karpenter" {
+  name = "KarpenterNodeInstanceProfile-${local.name}"
+  role = module.eks_blueprints.eks_managed_node_groups["karpenter"].iam_role_name
 }
 
 # Creates Launch templates for Karpenter
@@ -155,7 +129,7 @@ module "karpenter_launch_templates" {
     linux = {
       ami                    = data.aws_ami.eks.id
       launch_template_prefix = "karpenter"
-      iam_instance_profile   = module.eks_blueprints.managed_node_group_iam_instance_profile_id[0]
+      iam_instance_profile   = aws_iam_instance_profile.karpenter.name
       vpc_security_group_ids = [module.eks_blueprints.worker_node_security_group_id]
       block_device_mappings = [
         {
@@ -170,7 +144,7 @@ module "karpenter_launch_templates" {
       ami                    = data.aws_ami.bottlerocket.id
       launch_template_os     = "bottlerocket"
       launch_template_prefix = "bottle"
-      iam_instance_profile   = module.eks_blueprints.managed_node_group_iam_instance_profile_id[0]
+      iam_instance_profile   = aws_iam_instance_profile.karpenter.name
       vpc_security_group_ids = [module.eks_blueprints.worker_node_security_group_id]
       block_device_mappings = [
         {
