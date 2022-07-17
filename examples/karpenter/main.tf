@@ -126,6 +126,32 @@ module "eks_blueprints" {
     }
   }
 
+  self_managed_node_group_defaults = {
+    # These are used only for generating launch templates for Karpenter
+    # so we disable autoscaling group creation
+    create_autoscaling_group = false
+    create_security_group    = false
+
+    block_device_mappings = {
+      xvda = {
+        device_name = "/dev/xvda"
+        ebs = {
+          volume_size = 200
+          volume_type = "gp3"
+        }
+      }
+    }
+
+    # Required by Karpenter
+    iam_role_additional_policies = ["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
+  }
+
+  self_managed_node_groups = {
+    al2 = {
+      name = "karpenter-al2"
+    }
+  }
+
   tags = local.tags
 }
 
@@ -144,63 +170,18 @@ module "eks_blueprints_kubernetes_addons" {
 
 }
 
-# Creates Launch templates for Karpenter
-# Launch template outputs will be used in Karpenter Provisioners yaml files. Checkout this examples/karpenter/provisioners/default_provisioner_with_launch_templates.yaml
-module "karpenter_launch_templates" {
-  source = "../../modules/launch-templates"
-
-  eks_cluster_id = module.eks_blueprints.eks_cluster_id
-
-  launch_template_config = {
-    linux = {
-      ami                    = data.aws_ami.eks.id
-      launch_template_prefix = "karpenter"
-      iam_instance_profile   = module.eks_blueprints.managed_node_group_iam_instance_profile_id[0]
-      vpc_security_group_ids = [module.eks_blueprints.worker_node_security_group_id]
-      block_device_mappings = [
-        {
-          device_name = "/dev/xvda"
-          volume_type = "gp3"
-          volume_size = 200
-        }
-      ]
-    }
-
-    bottlerocket = {
-      ami                    = data.aws_ami.bottlerocket.id
-      launch_template_os     = "bottlerocket"
-      launch_template_prefix = "bottle"
-      iam_instance_profile   = module.eks_blueprints.managed_node_group_iam_instance_profile_id[0]
-      vpc_security_group_ids = [module.eks_blueprints.worker_node_security_group_id]
-      block_device_mappings = [
-        {
-          device_name = "/dev/xvda"
-          volume_type = "gp3"
-          volume_size = 200
-        }
-      ]
-    }
-  }
-
-  tags = merge(local.tags, { Name = "karpenter" })
-}
-
-# Deploying default provisioner and default-lt (using launch template) for Karpenter autoscaler
-data "kubectl_path_documents" "karpenter_provisioners" {
-  pattern = "${path.module}/provisioners/default_provisioner*.yaml" # without launch template
-  vars = {
+resource "kubectl_manifest" "karpenter_provisioners" {
+  yaml_body = templatefile("provisioners/karpenter_provisioners.yaml", {
+    vpc_name                = local.name
     azs                     = join(",", local.azs)
-    iam-instance-profile-id = "${local.name}-${local.node_group_name}"
-    eks-cluster-id          = local.name
-    eks-vpc_name            = local.name
-  }
-}
+    eks_cluster_id          = local.name
+    iam_instance_profile_id = module.eks_blueprints.self_managed_node_groups["al2"].iam_instance_profile_id
+    launch_template_name    = module.eks_blueprints.self_managed_node_groups["al2"].launch_template_name
+  })
 
-resource "kubectl_manifest" "karpenter_provisioner" {
-  for_each  = toset(data.kubectl_path_documents.karpenter_provisioners.documents)
-  yaml_body = each.value
-
-  depends_on = [module.eks_blueprints_kubernetes_addons]
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
+  ]
 }
 
 #---------------------------------------------------------------
@@ -241,24 +222,4 @@ module "vpc" {
   }
 
   tags = local.tags
-}
-
-data "aws_ami" "eks" {
-  owners      = ["amazon"]
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["amazon-eks-node-${module.eks_blueprints.eks_cluster_version}-*"]
-  }
-}
-
-data "aws_ami" "bottlerocket" {
-  owners      = ["amazon"]
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["bottlerocket-aws-k8s-${module.eks_blueprints.eks_cluster_version}-x86_64-*"]
-  }
 }

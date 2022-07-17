@@ -1,0 +1,93 @@
+---
+# Default provisioner
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: default
+spec:
+  requirements:
+    - key: "topology.kubernetes.io/zone"
+      operator: In
+      values: [${azs}]
+    - key: "karpenter.sh/capacity-type"
+      operator: In
+      values: ["spot", "on-demand"]
+  limits:
+    resources:
+      cpu: 1000
+  provider:
+    instanceProfile: ${iam_instance_profile_id}
+    subnetSelector:
+      Name: "${vpc_name}-private*"
+    securityGroupSelector:
+      karpenter.sh/discovery/${eks_cluster_id}: '${eks_cluster_id}'
+  labels:
+    type: karpenter
+    provisioner: default
+  taints:
+    - key: default
+      value: 'true'
+      effect: NoSchedule
+  ttlSecondsAfterEmpty: 120
+
+---
+# Default provisioner with launch template
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: default-lt
+spec:
+  requirements:
+    - key: "topology.kubernetes.io/zone"
+      operator: In
+      values: [${azs}]
+    - key: "karpenter.sh/capacity-type"
+      operator: In
+      values: ["spot", "on-demand"]
+    - key: "node.kubernetes.io/instance-type" # If not included, all instance types are considered
+      operator: In
+      values: ["m5.2xlarge", "m5.4xlarge"]
+    - key: "kubernetes.io/arch"               # If not included, all architectures are considered
+      operator: In
+      values: ["arm64", "amd64"]
+  limits:
+    resources:
+      cpu: 1000
+  provider:
+    launchTemplate: ${launch_template_name}
+    subnetSelector:
+      Name: "${vpc_name}-private*"
+  labels:
+    type: karpenter
+    provisioner: default-lt
+  taints:
+    - key: default-lt
+      value: 'true'
+      effect: NoSchedule
+  ttlSecondsAfterEmpty: 120
+
+---
+# GPU provisioner
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: gpu
+spec:
+  requirements:
+    - key: node.kubernetes.io/instance-type
+      operator: In
+      values: ['p3.8xlarge', 'p3.16xlarge']
+  taints:
+    - key: nvidia.com/gpu
+      value: true
+      effect: “NoSchedule”
+  provider:
+    instanceProfile: ${iam_instance_profile_id}
+  labels:
+    type: karpenter
+    provisioner: gpu
+  taints:
+    - key: gpu
+      value: 'true'
+      effect: NoSchedule
+  ttlSecondsAfterEmpty: 60

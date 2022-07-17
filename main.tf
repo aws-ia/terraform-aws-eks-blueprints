@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 module "aws_eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "v18.27.1"
+  version = "v18.28.0"
 
   create = var.create_eks
 
@@ -14,6 +14,9 @@ module "aws_eks" {
 
   fargate_profiles         = var.fargate_profiles
   fargate_profile_defaults = var.fargate_profile_defaults
+
+  self_managed_node_groups         = var.self_managed_node_groups
+  self_managed_node_group_defaults = var.self_managed_node_group_defaults
 
   # IAM Role
   create_iam_role = var.create_iam_role
