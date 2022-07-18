@@ -9,7 +9,7 @@ locals {
     repository  = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
     version     = "2.2.6"
     namespace   = local.namespace
-    values      = local.default_helm_values
+    values      = []
     description = "The AWS EFS CSI driver Helm chart deployment configuration"
   }
 
@@ -18,9 +18,6 @@ locals {
     var.helm_config
   )
 
-  default_helm_values = []
-
-  # Disable service account creation as that's handled by the IRSA add-on module
   set_values = [
     {
       name  = "controller.serviceAccount.name"
@@ -45,8 +42,6 @@ locals {
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = try(var.helm_config.create_namespace, false)
     create_kubernetes_service_account = true
-    iam_role_path                     = "/"
-    eks_cluster_id                    = var.addon_context.eks_cluster_id
     irsa_iam_policies                 = concat([aws_iam_policy.aws_efs_csi_driver.arn], var.irsa_policies)
     tags                              = var.addon_context.tags
   }

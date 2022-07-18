@@ -90,7 +90,7 @@ This script requires three input parameters which can be extracted from `terrafo
 ```sh
 cd examples/analytics/emr-on-eks/examples/spark-execute/
 
-./spark-job-with-AMP-AMG.sh "<ENTER_EMR_VIRTUAL_CLUSTER_ID>" "s3://<ENTER-YOUR-BUCKET-NAME>" "<EMR_JOB_EXECUTION_ROLE_ARN>"
+./emr-eks-spark-amp-amg.sh "<ENTER_EMR_VIRTUAL_CLUSTER_ID>" "s3://<ENTER-YOUR-BUCKET-NAME>" "<EMR_JOB_EXECUTION_ROLE_ARN>"
 ```
 
 Verify the job execution
@@ -100,13 +100,6 @@ kubectl get pods --namespace=emr-data-team-a -w
 ```
 
 ## Cleanup
-
-### Delete EMR Virtual Cluster for EKS
-
-```sh
-cd examples/analytics/emr-on-eks/examples/
-./delete_emr_virtual_cluster_for_eks.sh
-```
 
 To clean up your environment, destroy the Terraform modules in reverse order.
 
