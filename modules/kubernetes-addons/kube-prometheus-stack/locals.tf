@@ -20,5 +20,4 @@ locals {
     aws_region = var.addon_context.aws_region_name
   })]
 
-
 }

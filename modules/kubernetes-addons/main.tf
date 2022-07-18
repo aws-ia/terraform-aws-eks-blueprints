@@ -262,7 +262,6 @@ module "kube_prometheus_stack" {
   addon_context = local.addon_context
 }
 
-
 module "prometheus" {
   count       = var.enable_prometheus ? 1 : 0
   source      = "./prometheus"

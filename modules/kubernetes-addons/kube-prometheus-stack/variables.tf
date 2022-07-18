@@ -4,12 +4,6 @@ variable "helm_config" {
   description = "Helm Config for kube-prometheus-stack"
 }
 
-# variable "manage_via_gitops" {
-#   type        = bool
-#   default     = false
-#   description = "[not implemented] Determines if the add-on should be managed via GitOps."
-# }
-
 variable "addon_context" {
   type = object({
     aws_caller_identity_account_id = string

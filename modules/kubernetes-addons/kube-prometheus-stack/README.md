@@ -2,7 +2,18 @@
 
 ## Introduction
 
-[kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)is a a collection of Kubernetes manifests, Grafana dashboards, and Prometheus rules combined with documentation and scripts to provide easy to operate end-to-end Kubernetes cluster monitoring with Prometheus using the Prometheus Operator.
+[kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) is a a collection of Kubernetes manifests, Grafana dashboards, and Prometheus rules combined with documentation and scripts to provide easy to operate end-to-end Kubernetes cluster monitoring with Prometheus using the Prometheus Operator.
+
+Components installed by this chart in this package by default:
+
+  - [The Prometheus Operator](https://github.com/prometheus-operator/prometheus-operator)
+  - Highly available [Prometheus](https://github.com/prometheus/prometheus)
+  - Highly available [Alertmanager](https://github.com/prometheus/alertmanager)
+  - [Prometheus node-exporter](https://github.com/prometheus/node_exporter)
+  - [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics)
+  - [Grafana](https://github.com/grafana/grafana)
+
+## Usage
 
 The default values.yaml file in this add-on has disabled the components that are unreachable in EKS environments.
 
@@ -16,7 +27,7 @@ You can override the defaults using the `set` helm_config key:
         name  = "kubeProxy.enabled"
         value = false
       }
-    ]  
+    ]
   }
 ```
 
