@@ -10,7 +10,7 @@ repos:
       - id: detect-aws-credentials
         args: ['--allow-missing-credentials']
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.73.0
+    rev: v1.74.1
     hooks:
       - id: terraform_fmt
       - id: terraform_docs

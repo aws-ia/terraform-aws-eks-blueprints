@@ -17,4 +17,18 @@ kubeEtcd:
 kubeScheduler:
   enabled: false
 
+prometheus:
+  prometheusSpec:
+    ## Prometheus StorageSpec for persistent data on AWS EBS
+    ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/user-guides/storage.md
+    ##
+    storageSpec:
+     volumeClaimTemplate:
+       spec:
+         storageClassName: gp2
+         accessModes: ["ReadWriteOnce"]
+         resources:
+           requests:
+             storage: 20Gi
+
 ## additional configuration options available here: https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml

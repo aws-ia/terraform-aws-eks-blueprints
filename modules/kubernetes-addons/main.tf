@@ -84,6 +84,16 @@ module "aws_efs_csi_driver" {
   count             = var.enable_aws_efs_csi_driver ? 1 : 0
   source            = "./aws-efs-csi-driver"
   helm_config       = var.aws_efs_csi_driver_helm_config
+  irsa_policies     = var.aws_efs_csi_driver_irsa_policies
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "aws_fsx_csi_driver" {
+  count             = var.enable_aws_fsx_csi_driver ? 1 : 0
+  source            = "./aws-fsx-csi-driver"
+  helm_config       = var.aws_fsx_csi_driver_helm_config
+  irsa_policies     = var.aws_fsx_csi_driver_irsa_policies
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
@@ -261,7 +271,6 @@ module "kube_prometheus_stack" {
   helm_config   = var.kube_prometheus_stack_helm_config
   addon_context = local.addon_context
 }
-
 
 module "prometheus" {
   count       = var.enable_prometheus ? 1 : 0
