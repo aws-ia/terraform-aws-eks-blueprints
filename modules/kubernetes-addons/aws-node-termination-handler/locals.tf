@@ -49,31 +49,31 @@ locals {
   event_rules = flatten([
     length(var.autoscaling_group_names) > 0 ?
     [{
-      name          = "NTHASGTermRule",
+      name          = substr("NTHASGTermRule-${var.addon_context.eks_cluster_id}", 0, 63),
       event_pattern = <<EOF
 {"source":["aws.autoscaling"],"detail-type":["EC2 Instance-terminate Lifecycle Action"]}
 EOF
     }] : [],
     {
-      name          = "NTHSpotTermRule",
+      name          = substr("NTHSpotTermRule-${var.addon_context.eks_cluster_id}", 0, 63),
       event_pattern = <<EOF
 {"source": ["aws.ec2"],"detail-type": ["EC2 Spot Instance Interruption Warning"]}
 EOF
     },
     {
-      name          = "NTHRebalanceRule",
+      name          = substr("NTHRebalanceRule-${var.addon_context.eks_cluster_id}", 0, 63),
       event_pattern = <<EOF
 {"source": ["aws.ec2"],"detail-type": ["EC2 Instance Rebalance Recommendation"]}
 EOF
     },
     {
-      name          = "NTHInstanceStateChangeRule",
+      name          = substr("NTHInstanceStateChangeRule-${var.addon_context.eks_cluster_id}", 0, 63),
       event_pattern = <<EOF
 {"source": ["aws.ec2"],"detail-type": ["EC2 Instance State-change Notification"]}
 EOF
     },
     {
-      name          = "NTHScheduledChangeRule",
+      name          = substr("NTHScheduledChangeRule-${var.addon_context.eks_cluster_id}", 0, 63),
       event_pattern = <<EOF
 {"source": ["aws.health"],"detail-type": ["AWS Health Event"]}
 EOF

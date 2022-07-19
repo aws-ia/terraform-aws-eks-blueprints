@@ -10,6 +10,10 @@ on:
 
 concurrency: e2e-parallel-full
 
+env:
+  IAMLIVE_VERSION: v0.48.0
+  BUCKET_NAME: terraform-eks-blueprints-iam-policies-examples
+
 jobs:
   deploy:
     name: Run e2e test
@@ -25,7 +29,6 @@ jobs:
         include:
           - example_path: examples/analytics/emr-on-eks
           - example_path: examples/analytics/spark-k8s-operator
-          - example_path: examples/aws-efs-csi-driver
           - example_path: examples/crossplane
           - example_path: examples/eks-cluster-with-new-vpc
           - example_path: examples/fargate-serverless
@@ -41,6 +44,7 @@ jobs:
           - example_path: examples/node-groups/self-managed-node-groups
           - example_path: examples/node-groups/windows-node-groups
           - example_path: examples/stateful
+          - example_path: examples/vpc-cni-custom-networking
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -57,6 +61,16 @@ jobs:
           role-duration-seconds: 3600
           role-session-name: GithubActions-Session
 
+      - name: Iamlive Setup & Run
+        run: |
+          #!/bin/bash
+          set -eox pipefail
+          wget -O iamlive.tar.gz "https://github.com/iann0036/iamlive/releases/download/${{ env.IAMLIVE_VERSION }}/iamlive-${{ env.IAMLIVE_VERSION }}-linux-amd64.tar.gz"
+          tar -xzf iamlive.tar.gz
+          chmod +x iamlive
+          IAMLIVE_PID=$(./iamlive --mode csm --output-file ${HOME}/policy.json --refresh-rate 1 --sort-alphabetical --force-wildcard-resource --background)
+          echo "iamlive_pid=$IAMLIVE_PID" >> $GITHUB_ENV
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -67,6 +81,9 @@ jobs:
         working-directory: ${{ matrix.example_path }}
         run: |
           terraform init -upgrade=true
+          export AWS_CSM_ENABLED=true
+          export AWS_CSM_PORT=31000
+          export AWS_CSM_HOST=127.0.0.1
           terraform apply -target=module.vpc -no-color -input=false -auto-approve
           terraform apply -target=module.eks_blueprints -no-color -input=false -auto-approve
           terraform apply -target=module.eks_blueprints_kubernetes_addons -no-color -input=false -auto-approve
@@ -77,6 +94,9 @@ jobs:
         working-directory: ${{ matrix.example_path }}
         run: |
           terraform init -upgrade=true
+          export AWS_CSM_ENABLED=true
+          export AWS_CSM_PORT=31000
+          export AWS_CSM_HOST=127.0.0.1
           terraform destroy -target=module.eks_blueprints_kubernetes_addons  -no-color -input=false -auto-approve
           terraform destroy -target=module.eks_blueprints  -no-color -input=false -auto-approve
           terraform destroy -no-color -input=false -auto-approve
@@ -86,4 +106,42 @@ jobs:
         run: |
           echo "Terraform Apply step failed...Please check the logs of the Terraform Apply step."
           echo "Failing the job to avoid false positives."
+          kill ${{ env.iamlive_pid }}
+          while $(kill -0 ${{ env.iamlive_pid }} 2>/dev/null); do sleep 1; done;
+          cat ${HOME}/policy.json
           exit 1
+
+      - name: Iamlive Print & Upload Policy
+        if: ${{ always() }}
+        run: |
+          kill ${{ env.iamlive_pid }}
+          while $(kill -0 ${{ env.iamlive_pid }} 2>/dev/null); do sleep 1; done;
+          cat ${HOME}/policy.json
+          aws s3 cp ${HOME}/policy.json s3://${{ env.BUCKET_NAME }}/${{ matrix.example_path }}.json
+
+  post_deploy:
+    if: ${{ always() }}
+    needs: [deploy]
+    permissions:
+      id-token: write
+      contents: read
+    name: Merge Policies and Print Final IAM Policy
+    runs-on: ubuntu-latest
+    steps:
+      # Be careful not to change this to explicit checkout from PR ref/code, as below we run a python code that may change from the PR code.
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials from Test account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          aws-region: us-west-2
+          role-duration-seconds: 3600
+          role-session-name: GithubActions-Session
+
+      - name: Merge iamlive IAM policies and Print Final Policy
+        id: dirs
+        run: |
+          pip3 install boto3
+          python3 .github/workflows/iam-policy-generator.py
