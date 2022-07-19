@@ -36,7 +36,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 #### Step1: Clone the repo using the command below
 
 ```shell script
-git clone git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
+git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 #### Step2: Review and update the base.tfvars
@@ -96,6 +96,7 @@ We will deploy the EKS cluster from the Cloud9 instance that was deployed to the
 2. Install Kubernetes tools on the Cloud9 instance.
     - [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
 3. Create an IAM role for the Cloud9 workspace and attach the IAM role to your workspace. This IAM role should have enough permissions to provision an EKS cluster.
+
 4. Update IAM settings for your workspace to disable Cloud9 managing IAM credentials.
 ```shell script
 aws cloud9 update-environment  --environment-id $C9_PID --managed-credentials-action DISABLE
