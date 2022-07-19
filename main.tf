@@ -83,6 +83,12 @@ module "aws_eks" {
   ] : var.cluster_encryption_config
 
   cluster_identity_providers = var.cluster_identity_providers
+
+  # Cluster auth
+  
+  # aws-auth configmap
+  manage_aws_auth_configmap = var.manage_aws_auth_configmap
+  create_aws_auth_configmap = var.create_aws_auth_configmap
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
