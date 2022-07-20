@@ -46,7 +46,7 @@ locals {
     # The following defaults used only when you enable Launch Templates e.g., create_launch_template=true
     # LAUNCH TEMPLATES
     custom_ami_id          = ""
-    create_launch_template = false
+    create_launch_template = true
     enable_monitoring      = true
     launch_template_os     = "amazonlinux2eks" # amazonlinux2eks/bottlerocket # Used to identify the launch template
     pre_userdata           = ""
