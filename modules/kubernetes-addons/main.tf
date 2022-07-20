@@ -265,6 +265,13 @@ module "ondat" {
   admin_password    = var.ondat_admin_password
 }
 
+module "kube_prometheus_stack" {
+  count         = var.enable_kube_prometheus_stack ? 1 : 0
+  source        = "./kube-prometheus-stack"
+  helm_config   = var.kube_prometheus_stack_helm_config
+  addon_context = local.addon_context
+}
+
 module "prometheus" {
   count       = var.enable_prometheus ? 1 : 0
   source      = "./prometheus"
