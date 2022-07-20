@@ -1694,7 +1694,7 @@
           "name": "cluster",
           "options": [],
           "query": {
-            "query": "label_values(up{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\"}, cluster)",
+            "query": "label_values(up{job=\"kubelet\", metrics_path=~\".*/metrics/cadvisor\"}, cluster)",
             "refId": "Prometheus-cluster-Variable-Query"
           },
           "refresh": 2,
