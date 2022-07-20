@@ -1655,7 +1655,7 @@ module "managed_prometheus" {
         - name: k8s-05
           rules:
             - record: node_namespace_pod_container:container_memory_swap
-              expr: container_memory_swap{image!="",job="kubelet",metrics_path="/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
+              expr: container_memory_swap{image!="",job="kubelet",metrics_path=~".*/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
         - name: k8s-06
           rules:
             - record: cluster:namespace:pod_memory:active:kube_pod_container_resource_requests
