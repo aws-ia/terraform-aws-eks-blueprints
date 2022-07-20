@@ -51,7 +51,7 @@ The following command will update the `kubeconfig` on your local machine and all
 2. List out the pods running currently:
 
     ```sh
-    kubectl get pods -A 
+    kubectl get pods -A
 
     NAMESPACE            NAME                                                         READY   STATUS    RESTARTS   AGE
     argo-rollouts        argo-rollouts-5656b86459-jgssp                               1/1     Running   0          6m59s
