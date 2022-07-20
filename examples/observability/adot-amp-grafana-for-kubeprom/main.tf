@@ -1638,20 +1638,20 @@ module "managed_prometheus" {
         - name: k8s-01
           rules:
             - record: node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate
-              expr: sum by(cluster, namespace, pod, container) (irate(container_cpu_usage_seconds_total{image!="",job="kubelet",metrics_path="/metrics/cadvisor"}[5m])) * on(cluster, namespace, pod) group_left(node) topk by(cluster, namespace, pod) (1, max by(cluster, namespace, pod, node) (kube_pod_info{node!=""}))
+              expr: sum by(cluster, namespace, pod, container) (irate(container_cpu_usage_seconds_total{image!="",job="kubelet",metrics_path=~".*/metrics/cadvisor"}[5m])) * on(cluster, namespace, pod) group_left(node) topk by(cluster, namespace, pod) (1, max by(cluster, namespace, pod, node) (kube_pod_info{node!=""}))
         
         - name: k8s-02
           rules:
             - record: node_namespace_pod_container:container_memory_working_set_bytes
-              expr: container_memory_working_set_bytes{image!="",job="kubelet",metrics_path="/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
+              expr: container_memory_working_set_bytes{image!="",job="kubelet",metrics_path=~".*/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
         - name: k8s-03
           rules:
             - record: node_namespace_pod_container:container_memory_rss
-              expr: container_memory_rss{image!="",job="kubelet",metrics_path="/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
+              expr: container_memory_rss{image!="",job="kubelet",metrics_path=~".*/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
         - name: k8s-04
           rules:
             - record: node_namespace_pod_container:container_memory_cache
-              expr: container_memory_cache{image!="",job="kubelet",metrics_path="/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
+              expr: container_memory_cache{image!="",job="kubelet",metrics_path=~".*/metrics/cadvisor"} * on(namespace, pod) group_left(node) topk by(namespace, pod) (1, max by(namespace, pod, node) (kube_pod_info{node!=""}))
         - name: k8s-05
           rules:
             - record: node_namespace_pod_container:container_memory_swap
