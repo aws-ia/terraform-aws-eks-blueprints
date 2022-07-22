@@ -2,20 +2,20 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: ray-summarize-job-
+  generateName: ray-mnist-job-
   namespace: ray-cluster
 spec:
   template:
     spec:
       restartPolicy: Never
       containers:
-        - name: summarize
+        - name: mnist
           image: $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/ray-demo:latest
           imagePullPolicy: Always
           command: [ "/bin/bash", "-c", "--" ]
           args:
-            - "python /opt/deployment.py"
+            - "python /opt/train_fashion_mnist_example.py --address ray://example-cluster-ray-head:10001"
           resources:
             requests:
               cpu: 1000m
-              memory: 2Gi
+              memory: 6Gi

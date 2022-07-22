@@ -53,7 +53,7 @@ aws ecr get-login-password \
 Build the docker image containing our model deployment.
 
 ```sh
-docker build sample-job -t $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/ray-demo
+docker build sources -t $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/ray-demo
 ```
 
 Push the docker image to the ECR repo
@@ -123,14 +123,16 @@ ray-cluster     example-cluster-ray-worker-rwplm                1/1     Running 
 ray-operator    ray-operator-5b985c9d77-4rtq6                   1/1     Running   0          8h
 ```
 
-### Sample Deployment
+### Sample Jobs
 
-As a sample deployment, we will use [Ray Serve](https://docs.ray.io/en/latest/serve/index.html) to deploy a sample machine learning model and expose it to the outside world via the Ingress configuration. The code for this deployment can be found [here](sample-job/deployment.py). We use the [Hugging Face T5](https://huggingface.co/docs/transformers/model_doc/t5) model to serve an endpoint to summarize an arbitrary block of text. This model is deployed as Kubernetes [Job](sample-job/job-example.yaml).
+#### Ray Serve - Summarize
+
+As a sample deployment, we will use [Ray Serve](https://docs.ray.io/en/latest/serve/index.html) to deploy a sample machine learning model and expose it to the outside world via the Ingress configuration. The code for this deployment can be found [here](sources/hface_t5_summarize_serve.py). We use the [Hugging Face T5](https://huggingface.co/docs/transformers/model_doc/t5) model to serve an endpoint to summarize an arbitrary block of text. This model is deployed as Kubernetes [Job](sample-jobs/summarize-serve-job.yaml).
 
 Create the Job to deploy the model to the Ray Cluster
 
 ```sh
-envsubst < sample-job/job-example.yaml | kubectl create -f -
+envsubst < sample-jobs/summarize-serve-job.yaml | kubectl create -f -
 
 job.batch/ray-summarize-job-cjdd8 created
 ```
@@ -196,12 +198,12 @@ Downloading: 100%|██████████| 773k/773k [00:00<00:00, 29.1MB
 Downloading: 100%|██████████| 1.32M/1.32M [00:00<00:00, 25.5MB/s]
 ```
 
-### Test Deployment
+##### Test Summarize Deployment
 
 The client code uses python `requests` module to invoke the `/summarize` endpoint with a block of text. If all goes well, the endpoint should return summarized text of the block text submitted.
 
 ```sh
-python sample-job/router_client.py
+python sources/summarize_client.py
 
 two astronauts steered their fragile lunar module safely and smoothly to the historic landing . the first men to reach the moon -- Armstrong and his co-pilot, col. Edwin E. Aldrin Jr. of the air force -- brought their ship to rest on a level, rock-strewn plain .
 ```

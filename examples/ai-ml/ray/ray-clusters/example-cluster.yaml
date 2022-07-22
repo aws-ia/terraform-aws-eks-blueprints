@@ -40,6 +40,7 @@ spec:
         labels:
           component: ray-head
       spec:
+        serviceAccountName: ${service_account}
         restartPolicy: Never
 
         # This volume allocates shared memory for Ray to use for its plasma
@@ -99,6 +100,7 @@ spec:
         # The operator automatically prepends the cluster name to this field.
         generateName: ray-worker-
       spec:
+        serviceAccountName: ${service_account}
         restartPolicy: Never
         volumes:
         - name: dshm

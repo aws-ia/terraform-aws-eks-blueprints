@@ -1,4 +1,4 @@
-# File name: summarizer_on_ray_serve.py
+# source: https://github.com/ray-project/ray/blob/master/python/ray/serve/examples/doc/e2e_class_deployment.py
 from importlib_metadata import version
 import ray
 from ray import serve

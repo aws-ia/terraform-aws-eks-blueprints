@@ -30,6 +30,7 @@ provider "helm" {
 
 data "aws_availability_zones" "available" {}
 data "aws_caller_identity" "current" {}
+data "aws_partition" "current" {}
 
 data "aws_acm_certificate" "issued" {
   domain   = var.acm_certificate_domain
@@ -37,8 +38,9 @@ data "aws_acm_certificate" "issued" {
 }
 
 locals {
-  name   = basename(path.cwd)
-  region = "us-east-1"
+  name      = basename(path.cwd)
+  namespace = "ray-cluster"
+  region    = "us-east-1"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -137,20 +139,62 @@ module "eks_blueprints_kubernetes_addons" {
   tags = local.tags
 }
 
-# Deploy Ray Cluster
-resource "kubernetes_namespace_v1" "this" {
-  metadata {
-    name = "ray-cluster"
+## Deploy Ray Cluster Resources
+module "s3_bucket" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "v3.3.0"
+
+  bucket_prefix = "ray-demo-models-"
+  acl           = "private"
+}
+
+data "aws_iam_policy_document" "irsa_policy" {
+  statement {
+    actions   = ["s3:ListBucket"]
+    resources = ["${module.s3_bucket.s3_bucket_arn}"]
+  }
+  statement {
+    actions   = ["s3:*Object"]
+    resources = ["${module.s3_bucket.s3_bucket_arn}/*"]
   }
 }
+
+resource "aws_iam_policy" "irsa_policy" {
+  description = "IAM Policy for IRSA"
+  name_prefix = substr("${module.eks_blueprints.eks_cluster_id}-${local.namespace}-access", 0, 127)
+  policy      = data.aws_iam_policy_document.irsa_policy.json
+}
+
+module "cluster_irsa" {
+  source                     = "../../../modules/irsa"
+  kubernetes_namespace       = local.namespace
+  kubernetes_service_account = "${local.namespace}-sa"
+  irsa_iam_policies          = [aws_iam_policy.irsa_policy.arn]
+
+  addon_context = {
+    aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
+    aws_caller_identity_arn        = data.aws_caller_identity.current.arn
+    aws_eks_cluster_endpoint       = module.eks_blueprints.eks_cluster_endpoint
+    aws_partition_id               = data.aws_partition.current.partition
+    aws_region_name                = local.region
+    eks_cluster_id                 = module.eks_blueprints.eks_cluster_id
+    eks_oidc_issuer_url            = module.eks_blueprints.eks_oidc_issuer_url
+    eks_oidc_provider_arn          = module.eks_blueprints.eks_oidc_provider_arn
+    tags                           = {}
+  }
+
+  depends_on = [module.s3_bucket]
+}
+
 
 data "kubectl_path_documents" "docs" {
   pattern = "${path.module}/ray-clusters/*.yaml"
   vars = {
-    namespace  = kubernetes_namespace_v1.this.metadata[0].name
-    hostname   = var.eks_cluster_domain
-    account_id = data.aws_caller_identity.current.account_id
-    region     = local.region
+    namespace       = local.namespace
+    hostname        = var.eks_cluster_domain
+    account_id      = data.aws_caller_identity.current.account_id
+    region          = local.region
+    service_account = "${local.namespace}-sa"
   }
 }
 
@@ -159,10 +203,11 @@ data "kubectl_path_documents" "docs" {
 data "kubectl_path_documents" "count_hack" {
   pattern = "${path.module}/ray-clusters/*.yaml"
   vars = {
-    namespace  = ""
-    hostname   = ""
-    account_id = ""
-    region     = ""
+    namespace       = ""
+    hostname        = ""
+    account_id      = ""
+    region          = ""
+    service_account = ""
   }
 }
 
@@ -170,7 +215,7 @@ resource "kubectl_manifest" "cluster_provisioner" {
   count     = length(data.kubectl_path_documents.count_hack.documents)
   yaml_body = element(data.kubectl_path_documents.docs.documents, count.index)
 
-  depends_on = [module.eks_blueprints_kubernetes_addons]
+  depends_on = [module.cluster_irsa]
 }
 
 #---------------------------------------------------------------
