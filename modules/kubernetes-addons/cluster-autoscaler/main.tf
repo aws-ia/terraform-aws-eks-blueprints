@@ -44,7 +44,8 @@ module "helm_addon" {
     irsa_iam_policies                 = [aws_iam_policy.cluster_autoscaler.arn]
   }
 
-  addon_context = var.addon_context
+  addon_context       = var.addon_context
+  kubernetes_timeouts = var.kubernetes_timeouts
 }
 
 data "aws_iam_policy_document" "cluster_autoscaler" {
