@@ -3,12 +3,13 @@
 #-------------------------------------
 
 module "helm_addon" {
-  source            = "../helm-addon"
-  helm_config       = local.helm_config
-  irsa_config       = local.irsa_config
-  set_values        = local.set_values
-  addon_context     = var.addon_context
-  manage_via_gitops = var.manage_via_gitops
+  source              = "../helm-addon"
+  helm_config         = local.helm_config
+  irsa_config         = local.irsa_config
+  set_values          = local.set_values
+  addon_context       = var.addon_context
+  manage_via_gitops   = var.manage_via_gitops
+  kubernetes_timeouts = var.kubernetes_timeouts
 }
 
 #------------------------------------
