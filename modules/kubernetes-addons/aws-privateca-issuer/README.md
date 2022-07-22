@@ -43,6 +43,7 @@ See the [aws-pca-issuer documentation](https://cert-manager.github.io/aws-privat
 | <a name="input_aws_privateca_acmca_arn"></a> [aws\_privateca\_acmca\_arn](#input\_aws\_privateca\_acmca\_arn) | ARN of AWS ACM PCA | `string` | n/a | yes |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | AWS PCA Issuer Helm Config | `any` | `{}` | no |
 | <a name="input_irsa_policies"></a> [irsa\_policies](#input\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
+| <a name="input_kubernetes_timeouts"></a> [kubernetes\_timeouts](#input\_kubernetes\_timeouts) | Define maximum timeout for creating, updating, and deleting kubernetes resources | `map(string)` | `{}` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
 
 ## Outputs

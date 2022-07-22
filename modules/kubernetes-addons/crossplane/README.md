@@ -78,6 +78,7 @@ Refer to [docs](../../../docs/add-ons/crossplane.md) on how to deploy AWS Provid
 | <a name="input_aws_provider"></a> [aws\_provider](#input\_aws\_provider) | AWS Provider config for Crossplane | <pre>object({<br>    enable                   = bool<br>    provider_aws_version     = string<br>    additional_irsa_policies = list(string)<br>  })</pre> | n/a | yes |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | Helm provider config for the Argo Rollouts | `any` | `{}` | no |
 | <a name="input_jet_aws_provider"></a> [jet\_aws\_provider](#input\_jet\_aws\_provider) | AWS Provider Jet AWS config for Crossplane | <pre>object({<br>    enable                   = bool<br>    provider_aws_version     = string<br>    additional_irsa_policies = list(string)<br>  })</pre> | n/a | yes |
+| <a name="input_kubernetes_timeouts"></a> [kubernetes\_timeouts](#input\_kubernetes\_timeouts) | Define maximum timeout for creating, updating, and deleting kubernetes resources | `map(string)` | `{}` | no |
 
 ## Outputs
 

@@ -47,6 +47,7 @@ See this [Helm Chart](https://github.com/aws/eks-charts/tree/master/stable/aws-f
 | <a name="input_cw_log_group_retention"></a> [cw\_log\_group\_retention](#input\_cw\_log\_group\_retention) | FluentBit CloudWatch Log group retention period | `number` | `90` | no |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | Helm provider config aws\_for\_fluent\_bit. | `any` | `{}` | no |
 | <a name="input_irsa_policies"></a> [irsa\_policies](#input\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
+| <a name="input_kubernetes_timeouts"></a> [kubernetes\_timeouts](#input\_kubernetes\_timeouts) | Define maximum timeout for creating, updating, and deleting kubernetes resources | `map(string)` | `{}` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
 
 ## Outputs

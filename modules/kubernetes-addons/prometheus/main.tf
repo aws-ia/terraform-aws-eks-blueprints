@@ -61,8 +61,9 @@ module "helm_addon" {
     }
   ] : []
 
-  irsa_config   = null
-  addon_context = var.addon_context
+  irsa_config         = null
+  addon_context       = var.addon_context
+  kubernetes_timeouts = var.kubernetes_timeouts
 }
 
 resource "kubernetes_namespace_v1" "prometheus" {

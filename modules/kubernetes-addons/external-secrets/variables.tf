@@ -24,3 +24,9 @@ variable "addon_context" {
   })
   description = "Input configuration for the addon"
 }
+
+variable "kubernetes_timeouts" {
+  description = "Define maximum timeout for creating, updating, and deleting kubernetes resources"
+  type        = map(string)
+  default     = {}
+}

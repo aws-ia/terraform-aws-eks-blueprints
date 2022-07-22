@@ -48,3 +48,9 @@ variable "aws_partition" {
   description = "AWS Identifier of the current partition e.g., aws or aws-cn"
   type        = string
 }
+
+variable "kubernetes_timeouts" {
+  description = "Define maximum timeout for creating, updating, and deleting kubernetes resources"
+  type        = map(string)
+  default     = {}
+}

@@ -36,3 +36,9 @@ variable "helm_config" {
   default     = {}
   type        = any
 }
+
+variable "kubernetes_timeouts" {
+  description = "Define maximum timeout for creating, updating, and deleting kubernetes resources"
+  type        = map(string)
+  default     = {}
+}

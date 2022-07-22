@@ -27,6 +27,7 @@ module "irsa_addon" {
   kubernetes_service_account        = "ebs-csi-controller-sa"
   irsa_iam_policies                 = concat([aws_iam_policy.aws_ebs_csi_driver[0].arn], try(var.addon_config.additional_iam_policies, []))
   addon_context                     = var.addon_context
+  kubernetes_timeouts               = var.kubernetes_timeouts
 }
 
 resource "aws_iam_policy" "aws_ebs_csi_driver" {

@@ -64,5 +64,6 @@ module "helm_addon" {
   ]
 
   # Blueprints
-  addon_context = var.addon_context
+  addon_context       = var.addon_context
+  kubernetes_timeouts = var.kubernetes_timeouts
 }

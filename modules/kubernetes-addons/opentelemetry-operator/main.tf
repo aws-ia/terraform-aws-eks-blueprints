@@ -291,9 +291,10 @@ module "helm_addon" {
   source = "../helm-addon"
   count  = var.enable_opentelemetry_operator ? 1 : 0
 
-  helm_config   = local.helm_config
-  irsa_config   = null
-  addon_context = var.addon_context
+  helm_config         = local.helm_config
+  irsa_config         = null
+  addon_context       = var.addon_context
+  kubernetes_timeouts = var.kubernetes_timeouts
 
   depends_on = [module.cert_manager]
 }
