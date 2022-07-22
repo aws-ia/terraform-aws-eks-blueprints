@@ -51,7 +51,8 @@ module "helm_addon" {
   }
 
   # Blueprints
-  addon_context = var.addon_context
+  addon_context       = var.addon_context
+  kubernetes_timeouts = var.kubernetes_timeouts
 }
 
 # https://github.com/vmware-tanzu/velero-plugin-for-aws#option-1-set-permissions-with-an-iam-user
