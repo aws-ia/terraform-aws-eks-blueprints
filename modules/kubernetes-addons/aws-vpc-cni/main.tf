@@ -36,6 +36,7 @@ module "irsa_addon" {
     local.cni_ipv6_policy,
     try(var.addon_config.additional_iam_policies, [])
   )
+  kubernetes_timeouts = var.kubernetes_timeouts
 }
 
 resource "aws_iam_policy" "cni_ipv6_policy" {
