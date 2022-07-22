@@ -17,8 +17,9 @@ module "kms" {
 # ---------------------------------------------------------------------------------------------------------------------
 module "aws_eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "v18.17.0"
-  create  = var.create_eks
+  version = "v18.26.6"
+
+  create = var.create_eks
 
   cluster_name     = var.cluster_name
   cluster_version  = var.cluster_version
@@ -36,6 +37,7 @@ module "aws_eks" {
 
   # EKS Cluster VPC Config
   subnet_ids                           = var.private_subnet_ids
+  control_plane_subnet_ids             = var.control_plane_subnet_ids
   cluster_endpoint_private_access      = var.cluster_endpoint_private_access
   cluster_endpoint_public_access       = var.cluster_endpoint_public_access
   cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs

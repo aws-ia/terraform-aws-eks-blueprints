@@ -20,7 +20,7 @@ resource "kubernetes_service_account_v1" "irsa" {
 resource "aws_iam_role" "irsa" {
   count = var.irsa_iam_policies != null ? 1 : 0
 
-  name        = format("%s-%s-%s", var.addon_context.eks_cluster_id, trim(var.kubernetes_service_account, "-*"), "irsa")
+  name        = try(var.addon_context.irsa_iam_role_name, format("%s-%s-%s", var.addon_context.eks_cluster_id, trim(var.kubernetes_service_account, "-*"), "irsa"))
   description = "AWS IAM Role for the Kubernetes service account ${var.kubernetes_service_account}."
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
@@ -44,12 +44,7 @@ resource "aws_iam_role" "irsa" {
   force_detach_policies = true
   permissions_boundary  = var.addon_context.irsa_iam_permissions_boundary
 
-  tags = merge(
-    {
-      "Name" = format("%s-%s-%s", var.addon_context.eks_cluster_id, trim(var.kubernetes_service_account, "-*"), "irsa"),
-    },
-    var.addon_context.tags
-  )
+  tags = var.addon_context.tags
 }
 
 resource "aws_iam_role_policy_attachment" "irsa" {

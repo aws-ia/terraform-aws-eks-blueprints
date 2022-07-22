@@ -5,27 +5,19 @@ provider "aws" {
 provider "kubernetes" {
   host                   = module.eks_blueprints.eks_cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-  }
+  token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
     host                   = module.eks_blueprints.eks_cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-    }
+    token                  = data.aws_eks_cluster_auth.this.token
   }
+}
+
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks_blueprints.eks_cluster_id
 }
 
 data "aws_availability_zones" "available" {}
@@ -51,6 +43,7 @@ locals {
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
+
 module "eks_blueprints" {
   source = "../../../"
 
@@ -90,6 +83,7 @@ module "eks_blueprints_kubernetes_addons" {
 #------------------------------------------------------------------------------------
 # Create a sample secret in Secret Manager
 #------------------------------------------------------------------------------------
+
 resource "random_password" "password" {
   length           = 16
   special          = true
@@ -107,17 +101,18 @@ resource "aws_secretsmanager_secret" "application_secret" {
 
 resource "aws_secretsmanager_secret_version" "sversion" {
   secret_id     = aws_secretsmanager_secret.application_secret.id
-  secret_string = <<EOF
-   {
+  secret_string = <<-EOT
+  {
     "username": "adminaccount",
     "password": "${random_password.password.result}"
-   }
-EOF
+  }
+  EOT
 }
 
 #------------------------------------------------------------------------------------
 # This creates a IAM Policy content limiting access to the secret in Secrets Manager
 #------------------------------------------------------------------------------------
+
 data "aws_iam_policy_document" "secrets_management_policy" {
   statement {
     sid    = ""

@@ -19,6 +19,7 @@ markdown_extensions:
 plugins:
   - search
   - awesome-pages
+  - include-markdown
 extra:
   version:
     provider: mike

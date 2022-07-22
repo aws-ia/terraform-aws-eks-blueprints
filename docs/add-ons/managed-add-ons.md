@@ -26,7 +26,7 @@ Checkout this [doc](https://docs.aws.amazon.com/eks/latest/userguide/managing-vp
   #Optional
   amazon_eks_vpc_cni_config = {
     addon_name               = "vpc-cni"
-    addon_version            = "v1.10.1-eksbuild.1"
+    addon_version            = "v1.11.2-eksbuild.1"
     service_account          = "aws-node"
     resolve_conflicts        = "OVERWRITE"
     namespace                = "kube-system"
