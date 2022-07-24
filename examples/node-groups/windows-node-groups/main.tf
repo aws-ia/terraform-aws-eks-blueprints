@@ -51,7 +51,7 @@ module "eks_blueprints" {
     mng_spot_medium = {
       node_group_name = "mng-spot-med"
       capacity_type   = "SPOT"
-      instance_types  = ["t3.large", "t3.xlarge"]
+      instance_types  = ["t3.large", "m6i.large", "m6a.large", "m5n.large"]
       subnet_ids      = module.vpc.private_subnets
       desired_size    = 2
       disk_size       = 30
@@ -63,7 +63,7 @@ module "eks_blueprints" {
     ng_od_windows = {
       node_group_name    = "ng-od-windows"
       launch_template_os = "windows"
-      instance_type      = "m5.large"
+      instance_type      = "m6a.xlarge"
       subnet_ids         = module.vpc.private_subnets
       min_size           = 2
     }

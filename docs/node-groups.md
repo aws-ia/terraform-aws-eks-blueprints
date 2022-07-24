@@ -723,7 +723,7 @@ The example below demonstrates the minimum configuration required to deploy a Se
     ng_od_windows = {
       node_group_name    = "ng-od-windows"
       launch_template_os = "windows"
-      instance_type      = "m5n.large"
+      instance_type      = "m6a.xlarge"
       subnet_ids         = module.vpc.private_subnets
       min_size           = 2
     }
@@ -744,3 +744,8 @@ For example, if you are enabling the `metrics-server` Kubernetes add-on (Helm ch
     ]
   }
 ```
+
+### Security groups attached to self-managed node groups
+
+EKS automatically creates a [cluster security group](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html) and attaches it to any managed node groups in the cluster. This framework attaches the EKS cluster security group along with an additional security group to self-managed node groups, so that they can communicate with any EKS managed node groups that may be present in the cluster. As recommended in the AWS Load Balancer Controller [troubleshooting guide](https://aws.amazon.com/premiumsupport/knowledge-center/load-balancer-troubleshoot-creating/), the framework ensures that only one of the security groups - the EKS cluster security group - is tagged with tag `kubernetes.io/cluster/[cluster-name] = "owned"`, so that AWS Load Balancer Controller can create necessary rules for ingresses in the EKS cluster security group.
+
