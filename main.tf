@@ -57,7 +57,7 @@ module "aws_eks" {
   # Worker Node Security Group
   create_node_security_group           = var.create_node_security_group
   node_security_group_additional_rules = var.node_security_group_additional_rules
-  node_security_group_tags             = var.node_security_group_tags
+  node_security_group_tags             = local.node_security_group_tags
 
   # IRSA
   enable_irsa              = var.enable_irsa # no change

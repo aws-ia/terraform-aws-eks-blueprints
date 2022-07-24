@@ -19,7 +19,14 @@ locals {
   public_subnet_ids  = var.public_subnet_ids
 
   enable_workers            = length(var.self_managed_node_groups) > 0 || length(var.managed_node_groups) > 0 ? true : false
-  worker_security_group_ids = local.enable_workers ? compact(flatten([[module.aws_eks.node_security_group_id], var.worker_additional_security_group_ids])) : []
+  worker_security_group_ids = local.enable_workers ? compact(flatten([[module.aws_eks.cluster_primary_security_group_id, module.aws_eks.node_security_group_id], var.worker_additional_security_group_ids])) : []
+  # Ensure only the EKS-created cluster SG has cluster "owned" tag
+  # Otherwise ALB controller will not be able to modify SGs for ingresses
+  node_security_group_tags = merge({
+    "kubernetes.io/cluster/${var.cluster_name}" = null
+    },
+    var.node_security_group_tags
+  )
 
   node_group_context = {
     # EKS Cluster Config
