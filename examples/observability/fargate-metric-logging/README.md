@@ -26,7 +26,7 @@ To validate the monitoring solution, you can deploy a test application by applyi
 In order to use Fluent Bit-based logging in EKS on Fargate, you apply a ConfigMap in fluentbit-openseach-logging/fargate-cm.yaml to your Amazon EKS clusters using Fluent Bit’s configuration as a data value, defining where container logs will be shipped to. Replace <your opensearch domain> and <your region> with your own values (get from terraform output) before applying. This logging ConfigMap has to be used in a fixed namespace called aws-observability has a cluster-wide effect, meaning that you can send application-level logs from any application in any namespace. As shown in the diagram below, Fluent Bit container sends logs to Amazon OpenSearch using Fargate execution role which has been attached with Amazon OpenSearch access policy earlier in terraform code.<br>
    ![Alt text](./images/Fluent-bit-opensearch.drawio.png)
   
-To validate the logging solution, you can deploy a test application by applying fluentbit-openseach-logging/test-app.yaml. Then go to your OpenSearch dashboard (get url from terraform output), login with the username and password defined in base.tfvars (It is only for demo purpose. Please don’t put any sensitive data into code repo for production usage). As shown below, make sure that map the Fargate pod execution role as all_access and security_manager roles in OpenSearch. After that, you can query the logs in OpenSearch as shown below.
+To validate the logging solution, you can deploy a test application by applying fluentbit-openseach-logging/test-app.yaml. Then go to your OpenSearch dashboard (get url from terraform output), login with the username and password defined in variables.tf (It is only for demo purpose. Please don’t put any sensitive data into code repo for production usage). As shown below, make sure that map the Fargate pod execution role as all_access and security_manager roles in OpenSearch. After that, you can query the logs in OpenSearch as shown below.
    ![Alt text](./images/opensearch1.png)
      ![Alt text](./images/opensearch2.png)
 
@@ -57,8 +57,8 @@ Ensure that you have the following tools installed locally:
 
 ```sh
 terraform init 
-terraform plan -var-file base.tfvars
-terraform apply -var-file base.tfvars
+terraform plan 
+terraform apply
 ```
 
 Enter `yes` at command prompt to apply
