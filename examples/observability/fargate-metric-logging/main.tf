@@ -288,7 +288,7 @@ resource "aws_elasticsearch_domain" "opensearch" {
 # cloud watch log group for opensearch
 resource "aws_cloudwatch_log_group" "example" {
   name       = "${local.name}-opensearch-log"
-  kms_key_id = aws_kms_key.log_key.arn
+  # kms_key_id = aws_kms_key.log_key.arn
   tags       = local.tags
 }
 
