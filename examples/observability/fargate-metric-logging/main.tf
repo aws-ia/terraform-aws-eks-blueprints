@@ -309,7 +309,7 @@ data "aws_iam_policy_document" "opensearch_access_policy" {
 }
 
 
-// access policy for fargate execution role
+# access policy for fargate execution role
 resource "aws_iam_policy" "fluentbit_opensearch_access" {
   name        = "${local.name}-logging-policy"
   description = "IAM policy to allow Fluentbit access to OpenSearch"
@@ -324,7 +324,7 @@ data "aws_iam_policy_document" "fluentbit_opensearch_access" {
   }
 }
 
-//AMP
+# AMP
 module "managed_prometheus" {
   source  = "terraform-aws-modules/managed-service-prometheus/aws"
   version = "~> 2.1"
