@@ -242,6 +242,12 @@ resource "aws_elasticsearch_domain" "opensearch" {
   domain_name           = "opensearch-demo"
   elasticsearch_version = "OpenSearch_1.2"
 
+  log_publishing_options {
+     cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
+     log_type                 = "AUDIT_LOGS"
+     enabled                  = true  
+   }
+
   cluster_config {
     instance_type  = "m6g.large.elasticsearch"
     instance_count = 1
@@ -279,9 +285,13 @@ resource "aws_elasticsearch_domain" "opensearch" {
   tags = local.tags
 }
 
+# cloud watch log group for opensearch 
+resource "aws_cloudwatch_log_group" "example" {
+  name = "${local.name}-opensearch-log"
+  tags = local.tags
+}
 
-
-// access policy in opensearch
+# access policy in opensearch
 resource "aws_elasticsearch_domain_policy" "opensearch_access_policy" {
   domain_name     = aws_elasticsearch_domain.opensearch.domain_name
   access_policies = data.aws_iam_policy_document.opensearch_access_policy.json
