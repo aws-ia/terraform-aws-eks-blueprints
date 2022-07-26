@@ -22,4 +22,3 @@ data:
       tls On
       Index fargate_log
       Type  _doc
-      

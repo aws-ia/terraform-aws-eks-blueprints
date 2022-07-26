@@ -37,15 +37,15 @@ locals {
   region = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
-  
-  azs  = data.aws_availability_zones.available.names
-  
+
+  azs = data.aws_availability_zones.available.names
+
   tags = {
     Blueprint  = local.name
     GithubRepo = "eks-fargate-quickstart"
   }
-  
-    #---------------------------------------------------------------
+
+  #---------------------------------------------------------------
   # ARGOCD ADD-ON APPLICATION
   #---------------------------------------------------------------
   addon_application = {
@@ -53,7 +53,7 @@ locals {
     repo_url           = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
     add_on_application = true
   }
-  
+
   kubeconfig = yamlencode({
     apiVersion      = "v1"
     kind            = "Config"
@@ -79,7 +79,7 @@ locals {
       }
     }]
   })
-  
+
 }
 
 
@@ -101,15 +101,15 @@ module "eks_blueprints" {
   fargate_profiles = {
     # Providing default fargate profile
     default = {
-      fargate_profile_name = "default"
+      fargate_profile_name    = "default"
       additional_iam_policies = ["arn:aws:iam::349361870252:policy/eks-fargate-logging-policy"]
       fargate_profile_namespaces = [
         {
           namespace = "default"
-      },     {
+          }, {
           namespace = "argocd"
-      },
-      {
+        },
+        {
           namespace = "prometheus"
       }]
 
@@ -126,10 +126,10 @@ module "eks_blueprints" {
       subnet_ids = module.vpc.private_subnets
     }
   }
-  
+
   cluster_endpoint_public_access  = true
   cluster_endpoint_private_access = true
-  tags = local.tags
+  tags                            = local.tags
 }
 
 module "eks_blueprints_kubernetes_addons" {
@@ -160,14 +160,14 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
 
-  enable_metrics_server     = true
+  enable_metrics_server = true
   enable_argocd         = true
   argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying Add-ons.
   argocd_applications = {
-    addons    = local.addon_application
+    addons = local.addon_application
     #workloads = local.workload_application # for deploying your own applications
   }
-  
+
   # enable_aws_load_balancer_controller = true
 
 
@@ -211,7 +211,7 @@ resource "null_resource" "remove_default_coredns_deployment" {
       kubectl --namespace kube-system delete deployment coredns --kubeconfig <(echo $KUBECONFIG | base64 --decode)
     EOT
   }
-  
+
 }
 
 resource "null_resource" "modify_kube_dns" {
@@ -243,9 +243,9 @@ resource "aws_elasticsearch_domain" "opensearch" {
   elasticsearch_version = "OpenSearch_1.2"
 
   cluster_config {
-    instance_type          = "m6g.large.elasticsearch"
-    instance_count         = 1
-   
+    instance_type  = "m6g.large.elasticsearch"
+    instance_count = 1
+
   }
 
   node_to_node_encryption {
@@ -260,7 +260,7 @@ resource "aws_elasticsearch_domain" "opensearch" {
   encrypt_at_rest {
     enabled = true
   }
-  
+
   ebs_options {
     ebs_enabled = true
     volume_size = 10
@@ -299,7 +299,7 @@ data "aws_iam_policy_document" "opensearch_access_policy" {
 }
 
 
-// access policy for fargate execution role 
+// access policy for fargate execution role
 resource "aws_iam_policy" "fluentbit_opensearch_access" {
   name        = "${local.name}-logging-policy"
   description = "IAM policy to allow Fluentbit access to OpenSearch"
@@ -324,7 +324,7 @@ module "managed_prometheus" {
   tags = local.tags
 }
 
-# create irsa for adot 
+# create irsa for adot
 resource "aws_iam_role" "amp_ingest_role" {
   name = "${local.name}-amp-ingest-irsa"
 
@@ -340,11 +340,11 @@ resource "aws_iam_role" "amp_ingest_role" {
         Principal = {
           Federated = "${module.eks_blueprints.eks_oidc_provider_arn}"
         }
-        
+
       },
     ]
   })
-  
+
   inline_policy {
     name = "my_inline_policy"
 
@@ -352,11 +352,11 @@ resource "aws_iam_role" "amp_ingest_role" {
       Version = "2012-10-17"
       Statement = [
         {
-          Action   = [
-             "aps:RemoteWrite", 
-             "aps:GetSeries", 
-             "aps:GetLabels",
-             "aps:GetMetricMetadata"
+          Action = [
+            "aps:RemoteWrite",
+            "aps:GetSeries",
+            "aps:GetLabels",
+            "aps:GetMetricMetadata"
           ]
           Effect   = "Allow"
           Resource = "*"
