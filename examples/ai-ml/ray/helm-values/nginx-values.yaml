@@ -9,13 +9,16 @@ controller:
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
       service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
 
+      %{ if ssl_cert_arn != null }
       # SSL Annotations
       service.beta.kubernetes.io/aws-load-balancer-ssl-cert: ${ssl_cert_arn}
       service.beta.kubernetes.io/aws-load-balancer-ssl-ports: '443'
+      %{ endif }
 
+      %{ if hostname != null }
       # External DNS Annotations
       external-dns.alpha.kubernetes.io/hostname: ${hostname}
-
+      %{ endif }
     targetPorts:
       http: http
       https: http

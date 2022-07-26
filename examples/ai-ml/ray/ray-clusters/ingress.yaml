@@ -8,8 +8,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
-  - host: ray-demo.${hostname}
-    http:
+  - http:
       paths:
       - path: /dashboard(/|$)(.*)
         pathType: Prefix
@@ -25,3 +24,6 @@ spec:
             name: example-cluster-ray-head
             port:
               number: 8000
+    %{ if hostname != "" }
+    host: ray-demo.${hostname}
+    %{ endif }

@@ -33,6 +33,8 @@ data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 
 data "aws_acm_certificate" "issued" {
+  count = var.acm_certificate_domain == null ? 0 : 1
+
   domain   = var.acm_certificate_domain
   statuses = ["ISSUED"]
 }
@@ -127,13 +129,13 @@ module "eks_blueprints_kubernetes_addons" {
   enable_ray_operator                 = true
   enable_ingress_nginx                = true
   enable_aws_load_balancer_controller = true
-  enable_external_dns                 = true
+  enable_external_dns                 = var.eks_cluster_domain == null ? false : true
 
   # Add-on customizations
   ingress_nginx_helm_config = {
     values = [templatefile("${path.module}/helm-values/nginx-values.yaml", {
       hostname     = var.eks_cluster_domain
-      ssl_cert_arn = data.aws_acm_certificate.issued.arn
+      ssl_cert_arn = var.acm_certificate_domain == null ? null : data.aws_acm_certificate.issued[0].arn
     })]
   }
   tags = local.tags
@@ -191,7 +193,7 @@ data "kubectl_path_documents" "docs" {
   pattern = "${path.module}/ray-clusters/*.yaml"
   vars = {
     namespace       = local.namespace
-    hostname        = var.eks_cluster_domain
+    hostname        = var.eks_cluster_domain == null ? "" : var.eks_cluster_domain
     account_id      = data.aws_caller_identity.current.account_id
     region          = local.region
     service_account = "${local.namespace}-sa"

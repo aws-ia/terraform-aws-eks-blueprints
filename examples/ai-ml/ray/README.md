@@ -5,7 +5,7 @@ This example deploys an EKS Cluster running the Ray Operator.
 - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
 - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
 - Creates EKS Cluster Control plane with public endpoint (for demo reasons only) with one managed node group
-- Deploys Ray Operator, AWS Load Balancer Controller, Ingress-nginx and External DNS add-ons
+- Deploys Ray Operator, AWS Load Balancer Controller, Ingress-nginx and External DNS (optional) add-ons
 - Deploys a Ray Cluster in the `ray-cluster` namespace
 
 ## Prerequisites
@@ -18,7 +18,7 @@ Ensure that you have installed the following tools on your machine.
 4. [python3](https://www.python.org/)
 5. [jq](https://stedolan.github.io/jq/)
 
-Additionally for end-to-end configuration of Ingress, this examples expects the following to be pre-configured.
+Additionally for end-to-end configuration of Ingress, you can optionally provide the following:
 
 1. A [Route53 Public Hosted Zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-configuring.html) configured in the account where you are deploying this example. E.g. "bar.com"
 2. An [ACM Certificate](https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html) in the account + region where you are deploying this example. A wildcard certificate is preferred, e.g. "*.bar.com"
@@ -78,15 +78,26 @@ Run Terraform plan to verify the resources created by this execution.
 ```sh
 export AWS_REGION=<enter-your-region>
 export ACCOUNT_ID=$(aws sts get-caller-identity | jq -r '.Account')
+```
+
+**Optional** - provide a Route53 Hosted Zone hostname and a corresponding ACM Certificate;
+
+```sh
 export TF_VAR_eks_cluster_domain="bar.com"
 export TF_VAR_acm_certificate_domain="*.bar.com"
-terraform apply
 ```
 
 ### Deploy the pattern
 
 ```sh
 terraform apply
+...
+...
+
+Outputs:
+
+configure_kubectl = "aws eks --region us-east-1 update-kubeconfig --name ray"
+s3_bucket = "ray-demo-models-20220719224423900800000001"
 ```
 
 Enter `yes` to apply.
