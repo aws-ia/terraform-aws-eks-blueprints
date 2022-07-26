@@ -34,7 +34,7 @@ data "aws_availability_zones" "available" {}
 locals {
 
   name   = basename(path.cwd)
-  region = "us-west-2"
+  region = "us-east-2"
 
   vpc_cidr = "10.0.0.0/16"
 
@@ -288,12 +288,39 @@ resource "aws_elasticsearch_domain" "opensearch" {
 # cloud watch log group for opensearch
 resource "aws_cloudwatch_log_group" "example" {
   name       = "${local.name}-opensearch-log"
-  kms_key_id = aws_kms_key.log_key.arn
+  kms_key_id = module.cloudwatch_kms_key.aws_kms_key_arn
   tags       = local.tags
 }
 
-resource "aws_kms_key" "log_key" {
-  enable_key_rotation = true
+
+
+# policy for cloud watch log group
+resource "aws_cloudwatch_log_resource_policy" "example" {
+  policy_name = "example"
+
+  policy_document = <<CONFIG
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": {
+          "Service": "es.amazonaws.com"
+        },
+        "Action": [
+          "logs:PutLogEvents",
+          "logs:PutLogEventsBatch",
+          "logs:CreateLogStream"
+        ],
+        "Resource": "arn:aws:logs:*"
+      }
+    ]
+  }
+  CONFIG
+}
+
+module "cloudwatch_kms_key" {
+  source = "dod-iac/cloudwatch-kms-key/aws"
 }
 
 # access policy in opensearch
