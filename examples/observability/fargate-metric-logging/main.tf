@@ -243,10 +243,10 @@ resource "aws_elasticsearch_domain" "opensearch" {
   elasticsearch_version = "OpenSearch_1.2"
 
   log_publishing_options {
-     cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
-     log_type                 = "AUDIT_LOGS"
-     enabled                  = true  
-   }
+    cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
+    log_type                 = "AUDIT_LOGS"
+    enabled                  = true
+  }
 
   cluster_config {
     instance_type  = "m6g.large.elasticsearch"
@@ -285,7 +285,7 @@ resource "aws_elasticsearch_domain" "opensearch" {
   tags = local.tags
 }
 
-# cloud watch log group for opensearch 
+# cloud watch log group for opensearch
 resource "aws_cloudwatch_log_group" "example" {
   name = "${local.name}-opensearch-log"
   tags = local.tags
