@@ -1,5 +1,5 @@
 extraArgs:
-  - --enable-certificate-owner-ref=true
+  - --enable-certificate-owner-ref=${delete_permanently}
 
 installCRDs: true
 

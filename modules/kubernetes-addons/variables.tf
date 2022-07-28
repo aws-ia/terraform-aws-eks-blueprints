@@ -643,6 +643,12 @@ variable "cert_manager_letsencrypt_email" {
   default     = ""
 }
 
+variable "cert_manager_allow_reuse_cert_after_delete" {
+  description = "To avoid recreation of certificate when service is being delete and recreate.(can assist with letsencrypt rate limit)"
+  type        = bool
+  default     = true
+}
+
 #-----------Argo Rollouts ADDON-------------
 variable "enable_argo_rollouts" {
   description = "Enable Argo Rollouts add-on"

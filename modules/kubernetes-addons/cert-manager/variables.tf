@@ -34,6 +34,12 @@ variable "letsencrypt_email" {
   default     = ""
 }
 
+variable "allow_reuse_cert_after_delete" {
+  description = "To avoid recreation of certificate when service is being delete and recreate.(can assist with letsencrypt rate limit)"
+  type        = bool
+  default     = true
+}
+
 variable "addon_context" {
   description = "Input configuration for the addon"
   type = object({

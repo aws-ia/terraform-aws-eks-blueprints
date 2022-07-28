@@ -137,15 +137,16 @@ module "aws_node_termination_handler" {
 }
 
 module "cert_manager" {
-  count                       = var.enable_cert_manager ? 1 : 0
-  source                      = "./cert-manager"
-  helm_config                 = var.cert_manager_helm_config
-  manage_via_gitops           = var.argocd_manage_add_ons
-  irsa_policies               = var.cert_manager_irsa_policies
-  addon_context               = local.addon_context
-  domain_names                = var.cert_manager_domain_names
-  install_letsencrypt_issuers = var.cert_manager_install_letsencrypt_issuers
-  letsencrypt_email           = var.cert_manager_letsencrypt_email
+  count                         = var.enable_cert_manager ? 1 : 0
+  source                        = "./cert-manager"
+  helm_config                   = var.cert_manager_helm_config
+  manage_via_gitops             = var.argocd_manage_add_ons
+  irsa_policies                 = var.cert_manager_irsa_policies
+  addon_context                 = local.addon_context
+  domain_names                  = var.cert_manager_domain_names
+  install_letsencrypt_issuers   = var.cert_manager_install_letsencrypt_issuers
+  letsencrypt_email             = var.cert_manager_letsencrypt_email
+  allow_reuse_cert_after_delete = var.cert_manager_allow_reuse_cert_after_delete
 }
 
 module "cluster_autoscaler" {

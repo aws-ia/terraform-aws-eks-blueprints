@@ -12,7 +12,7 @@ locals {
     values      = local.default_helm_values
   }
 
-  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
+  default_helm_values = [templatefile("${path.module}/values.yaml", { delete_permanently = !var.allow_reuse_cert_after_delete })]
 
   helm_config = merge(
     local.default_helm_config,

@@ -53,6 +53,7 @@ cert-manager docker image is available at this repo:
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_addon_context"></a> [addon\_context](#input\_addon\_context) | Input configuration for the addon | <pre>object({<br>    aws_caller_identity_account_id = string<br>    aws_caller_identity_arn        = string<br>    aws_eks_cluster_endpoint       = string<br>    aws_partition_id               = string<br>    aws_region_name                = string<br>    eks_cluster_id                 = string<br>    eks_oidc_issuer_url            = string<br>    eks_oidc_provider_arn          = string<br>    tags                           = map(string)<br>    irsa_iam_role_path             = string<br>  })</pre> | n/a | yes |
+| <a name="input_allow_reuse_cert_after_delete"></a> [allow\_reuse\_cert\_after\_delete](#input\_allow\_reuse\_cert\_after\_delete) | To avoid recreation of certificate when service is being delete and recreate.(can assist with letsencrypt rate limit) | `bool` | `true` | no |
 | <a name="input_domain_names"></a> [domain\_names](#input\_domain\_names) | Domain names of the Route53 hosted zone to use with cert-manager. | `list(string)` | `[]` | no |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | cert-manager Helm chart configuration | `any` | `{}` | no |
 | <a name="input_install_letsencrypt_issuers"></a> [install\_letsencrypt\_issuers](#input\_install\_letsencrypt\_issuers) | Install Let's Encrypt Cluster Issuers. | `bool` | `true` | no |
