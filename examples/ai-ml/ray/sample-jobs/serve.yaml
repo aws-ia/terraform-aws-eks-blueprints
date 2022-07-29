@@ -1,0 +1,23 @@
+# Job to submit a Ray program from a pod outside a running Ray cluster.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: ray-fashion-mnist-job-
+  namespace: ray-cluster
+spec:
+  template:
+    spec:
+      serviceAccountName: ray-cluster-sa
+      restartPolicy: Never
+      containers:
+        - name: mnist
+          image: $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/ray-demo:latest
+          imagePullPolicy: Always
+          command: [ "/bin/bash", "-c", "--" ]
+          args:
+            - "python /opt/serve.py"
+            #- "python /opt/train.py --address ray://example-cluster-ray-head:10001"
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 6Gi
