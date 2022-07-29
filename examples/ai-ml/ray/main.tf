@@ -217,7 +217,7 @@ resource "kubectl_manifest" "cluster_provisioner" {
   count     = length(data.kubectl_path_documents.count_hack.documents)
   yaml_body = element(data.kubectl_path_documents.docs.documents, count.index)
 
-  depends_on = [module.cluster_irsa]
+  depends_on = [module.cluster_irsa, module.eks_blueprints_kubernetes_addons]
 }
 
 #---------------------------------------------------------------
