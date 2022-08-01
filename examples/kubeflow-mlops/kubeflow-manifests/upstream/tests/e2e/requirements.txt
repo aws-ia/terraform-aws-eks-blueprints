@@ -1,0 +1,3 @@
+kubernetes==21.7.0
+kfp==1.8.4
+kubeflow-katib==0.12.0

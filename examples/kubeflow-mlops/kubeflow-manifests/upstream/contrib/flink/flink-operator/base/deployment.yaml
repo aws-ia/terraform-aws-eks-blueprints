@@ -1,0 +1,62 @@
+---
+# Source: flink-operator/templates/flink-operator.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: flink-operator
+    control-plane: controller-manager
+  name: flink-operator-controller-manager
+  namespace: kubeflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flink-operator
+      control-plane: controller-manager
+  template:
+    metadata:
+      labels:
+        app: flink-operator
+        control-plane: controller-manager
+    spec:
+      containers:
+      - args:
+        - --secure-listen-address=0.0.0.0:8443
+        - --upstream=http://127.0.0.1:8080/
+        - --logtostderr=true
+        - --v=10
+        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.4.0
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 8443
+          name: https
+      - args:
+        - --metrics-addr=127.0.0.1:8080
+        - --watch-namespace=
+        command:
+        - /flink-operator
+        image: gcr.io/flink-operator/flink-operator:latest
+        name: flink-operator
+        ports:
+        - containerPort: 443
+          name: webhook-server
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 100m
+            memory: 30Mi
+          requests:
+            cpu: 100m
+            memory: 20Mi
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+      terminationGracePeriodSeconds: 10
+      serviceAccountName: flink-operator-sa
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: webhook-server-cert

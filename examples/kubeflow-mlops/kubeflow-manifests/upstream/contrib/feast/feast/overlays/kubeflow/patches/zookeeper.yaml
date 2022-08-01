@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kf-feast-zookeeper
+  namespace: feast
+spec:
+  template:
+    spec:
+      containers:
+        - name: zookeeper
+          env:
+            - name: ZOO_SERVERS
+              value: kf-feast-zookeeper-0.kf-feast-zookeeper-headless.kubeflow.svc.cluster.local:2888:3888

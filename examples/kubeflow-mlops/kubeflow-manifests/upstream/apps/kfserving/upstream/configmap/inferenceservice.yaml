@@ -1,0 +1,187 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: inferenceservice-config
+  namespace: kfserving-system
+data:
+  predictors: |-
+    {
+        "tensorflow": {
+            "image": "tensorflow/serving",
+            "defaultImageVersion": "1.14.0",
+            "defaultGpuImageVersion": "1.14.0-gpu",
+            "defaultTimeout": "60",
+            "supportedFrameworks": [
+              "tensorflow"
+            ],
+            "multiModelServer": false
+        },
+        "onnx": {
+            "image": "mcr.microsoft.com/onnxruntime/server",
+            "defaultImageVersion": "v1.0.0",
+            "supportedFrameworks": [
+              "onnx"
+            ],
+            "multiModelServer": false
+        },
+        "sklearn": {
+          "v1": {
+            "image": "kfserving/sklearnserver",
+            "defaultImageVersion": "v0.6.1",
+            "supportedFrameworks": [
+              "sklearn"
+            ],
+            "multiModelServer": true
+          },
+          "v2": {
+            "image": "docker.io/seldonio/mlserver",
+            "defaultImageVersion": "0.2.1",
+            "supportedFrameworks": [
+              "sklearn"
+            ],
+            "multiModelServer": false
+          }
+        },
+        "xgboost": {
+          "v1": {
+            "image": "kfserving/xgbserver",
+            "defaultImageVersion": "v0.6.1",
+            "supportedFrameworks": [
+              "xgboost"
+            ],
+            "multiModelServer": true
+          },
+          "v2": {
+            "image": "docker.io/seldonio/mlserver",
+            "defaultImageVersion": "0.2.1",
+            "supportedFrameworks": [
+              "xgboost"
+            ],
+            "multiModelServer": false
+          }
+        },
+        "pytorch": {
+          "v1" : {
+            "image": "kfserving/pytorchserver",
+            "defaultImageVersion": "v0.6.1",
+            "defaultGpuImageVersion": "v0.6.1-gpu",
+            "supportedFrameworks": [
+              "pytorch"
+            ],
+            "multiModelServer": false
+          },
+          "v2" : {
+            "image": "pytorch/torchserve-kfs",
+            "defaultImageVersion": "0.4.0",
+            "defaultGpuImageVersion": "0.4.0-gpu",
+            "supportedFrameworks": [
+              "pytorch"
+            ],
+            "multiModelServer": false
+          }
+        },
+        "triton": {
+            "image": "nvcr.io/nvidia/tritonserver",
+            "defaultImageVersion": "20.08-py3",
+            "supportedFrameworks": [
+              "tensorrt",
+              "tensorflow",
+              "onnx",
+              "pytorch",
+              "caffe2"
+            ],
+            "multiModelServer": true
+        },
+        "pmml": {
+            "image": "kfserving/pmmlserver",
+            "defaultImageVersion": "v0.6.1",
+            "supportedFrameworks": [
+              "pmml"
+            ],
+            "multiModelServer": false
+        },
+        "lightgbm": {
+            "image": "kfserving/lgbserver",
+            "defaultImageVersion": "v0.6.1",
+            "supportedFrameworks": [
+              "lightgbm"
+            ],
+            "multiModelServer": false
+        },
+        "paddle": {
+            "image": "kfserving/paddleserver",
+            "defaultImageVersion": "v0.6.1",
+            "supportedFrameworks": [
+              "paddle"
+            ],
+            "multiModelServer": false
+        }
+    }
+  transformers: |-
+    {
+    }
+  explainers: |-
+    {
+        "alibi": {
+            "image" : "kfserving/alibi-explainer",
+            "defaultImageVersion": "v0.6.1"
+        },
+        "aix": {
+            "image" : "kfserving/aix-explainer",
+            "defaultImageVersion": "v0.6.1"
+        },
+        "art": {
+            "image" : "kfserving/art-explainer",
+            "defaultImageVersion": "v0.6.1"
+        }
+    }
+  storageInitializer: |-
+    {
+        "image" : "kfserving/storage-initializer:v0.6.1",
+        "memoryRequest": "100Mi",
+        "memoryLimit": "1Gi",
+        "cpuRequest": "100m",
+        "cpuLimit": "1"
+    }
+  credentials: |-
+    {
+       "gcs": {
+           "gcsCredentialFileName": "gcloud-application-credentials.json"
+       },
+       "s3": {
+           "s3AccessKeyIDName": "AWS_ACCESS_KEY_ID",
+           "s3SecretAccessKeyName": "AWS_SECRET_ACCESS_KEY"
+       }
+    }
+  ingress: |-
+    {
+        "ingressGateway" : "$(ingressGateway)",
+        "ingressService" : "istio-ingressgateway.istio-system.svc.cluster.local",
+        "localGateway" : "knative-serving/knative-local-gateway",
+        "localGatewayService" : "knative-local-gateway.istio-system.svc.cluster.local"
+    }
+  logger: |-
+    {
+        "image" : "kfserving/agent:v0.6.1",
+        "memoryRequest": "100Mi",
+        "memoryLimit": "1Gi",
+        "cpuRequest": "100m",
+        "cpuLimit": "1",
+        "defaultUrl": "http://default-broker"
+    }
+  batcher: |-
+    {
+        "image" : "kfserving/agent:v0.6.1",
+        "memoryRequest": "1Gi",
+        "memoryLimit": "1Gi",
+        "cpuRequest": "1",
+        "cpuLimit": "1"
+    }
+  agent: |-
+    {
+        "image" : "kfserving/agent:v0.6.1",
+        "memoryRequest": "100Mi",
+        "memoryLimit": "1Gi",
+        "cpuRequest": "100m",
+        "cpuLimit": "1"
+    }

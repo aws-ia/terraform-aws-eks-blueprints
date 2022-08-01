@@ -1,0 +1,22 @@
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+commonLabels:
+  app.kubernetes.io/name: flinkoperator
+  kustomize.component: flink-operator
+images:
+- name: gcr.io/flink-operator/flink-operator
+  newName: gcr.io/flink-operator/flink-operator
+  newTag: v1beta1-6
+namespace: kubeflow
+resources:
+- crd.yaml
+- configmap.yaml
+- deployment.yaml
+- service.yaml
+- service-account.yaml
+- cluster-role.yaml
+- cluster-role-binding.yaml
+- leader-election-role.yaml
+- leader-election-role-binding.yaml
+- setup-job.yaml
+- webhook.yaml

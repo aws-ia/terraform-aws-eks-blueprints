@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: aws-authservice
+  namespace: istio-system
+spec:
+  ports:
+  - name: aws-authservice
+    port: 8082
+    targetPort: http-api
+  selector:
+    app: aws-authservice
+  type: ClusterIP

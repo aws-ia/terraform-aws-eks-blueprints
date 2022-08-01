@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: katib-db-manager
+  namespace: kubeflow
+spec:
+  template:
+    spec:
+      containers:
+        - name: katib-db-manager
+          env:
+            - name: DB_NAME
+              value: mysql
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: password
+            - name: KATIB_MYSQL_DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: database
+            - name: KATIB_MYSQL_DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: host
+            - name: KATIB_MYSQL_DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: port

@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# kserve offers 2 installation options for serverless: standalone installation (in its own namespace) and a Kubeflow one
+# See: https://github.com/kserve/kserve/tree/release-0.7/install/v0.7.0
+# In 1.5 since both KFServing and KServe were included, Kserve standalone installation was used to avoid conflicts in resource names
+# but in doing so the default ingress gateway configured became knative-serving/knative-ingress-gateway which does not exist in Kubeflow installation
+# Kubeflow integrated installation should use kubeflow/kubeflow-gateway
+# this overlay fixes what is achieved by https://github.com/kserve/kserve/blob/release-0.7/config/overlays/kubeflow/params.env#L1 and should eventually be merged upstream
+bases:
+- ../../../upstream/contrib/kserve/kserve
+
+# To make namespace for standalone installation kustomizable,
+# variabalize ingress gateway, webhook service name and
+# kserve namespace in webhook configurations
+configMapGenerator:
+  - name: kserve-config
+    namespace: kserve
+    behavior: merge
+    envs:
+    - params.env

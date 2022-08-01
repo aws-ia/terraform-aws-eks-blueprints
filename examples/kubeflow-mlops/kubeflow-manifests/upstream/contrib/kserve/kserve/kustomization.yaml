@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- kserve.yaml
+- aggregated-roles.yaml
+# For KF 1.5 we are including both KFServing and KServe. Thus we install the
+# standalone kserve manifests, to avoid conflicts with 0.6.1 KFServing.
+#- kserve_kubeflow.yaml

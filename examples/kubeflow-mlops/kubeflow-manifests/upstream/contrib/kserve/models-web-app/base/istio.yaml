@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: kserve-models-web-app
+  namespace: kserve
+spec:
+  gateways:
+  - knative-serving/knative-ingress-gateway
+  hosts:
+  - '*'
+  http:
+  - match:
+    - uri:
+        prefix: /kserve-endpoints/
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: kserve-models-web-app.kserve.svc.cluster.local
+        port:
+          number: 80

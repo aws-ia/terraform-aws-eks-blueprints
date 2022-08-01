@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: katib-controller
+  namespace: kubeflow
+  labels:
+    katib.kubeflow.org/component: controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      katib.kubeflow.org/component: controller
+  template:
+    metadata:
+      labels:
+        katib.kubeflow.org/component: controller
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: katib-controller
+      containers:
+        - name: katib-controller
+          image: docker.io/kubeflowkatib/katib-controller
+          command: ["./katib-controller"]
+          args:
+            - "--webhook-port=8443"
+            - "--trial-resources=Job.v1.batch"
+            - "--trial-resources=TFJob.v1.kubeflow.org"
+            - "--trial-resources=PyTorchJob.v1.kubeflow.org"
+            - "--trial-resources=MPIJob.v1.kubeflow.org"
+            - "--trial-resources=XGBoostJob.v1.kubeflow.org"
+            - "--trial-resources=MXJob.v1.kubeflow.org"
+          ports:
+            - containerPort: 8443
+              name: webhook
+              protocol: TCP
+            - containerPort: 8080
+              name: metrics
+              protocol: TCP
+          env:
+            - name: KATIB_CORE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - mountPath: /tmp/cert
+              name: cert
+              readOnly: true
+      volumes:
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: katib-webhook-cert

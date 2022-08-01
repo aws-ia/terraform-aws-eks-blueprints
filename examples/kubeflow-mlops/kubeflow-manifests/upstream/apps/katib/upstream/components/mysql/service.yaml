@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: katib-mysql
+  namespace: kubeflow
+  labels:
+    katib.kubeflow.org/component: mysql
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3306
+      protocol: TCP
+      name: dbapi
+  selector:
+    katib.kubeflow.org/component: mysql

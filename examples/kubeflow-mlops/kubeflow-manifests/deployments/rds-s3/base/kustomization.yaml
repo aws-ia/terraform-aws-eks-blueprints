@@ -1,0 +1,55 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  # Cert-Manager
+  - ../../../upstream/common/cert-manager/cert-manager/base
+  - ../../../upstream/common/cert-manager/kubeflow-issuer/base
+  # Istio
+  - ../../../upstream/common/istio-1-11/istio-crds/base
+  - ../../../upstream/common/istio-1-11/istio-namespace/base
+  - ../../../upstream/common/istio-1-11/istio-install/base
+  # OIDC Authservice
+  - ../../../upstream/common/oidc-authservice/base
+  # Dex
+  - ../../../upstream/common/dex/overlays/istio
+  # KNative
+  - ../../../upstream/common/knative/knative-serving/overlays/gateways
+  - ../../../upstream/common/knative/knative-eventing/base
+  - ../../../upstream/common/istio-1-11/cluster-local-gateway/base
+  # Kubeflow namespace
+  - ../../../upstream/common/kubeflow-namespace/base
+  # Kubeflow Roles
+  - ../../../upstream/common/kubeflow-roles/base
+  # Kubeflow Istio Resources
+  - ../../../upstream/common/istio-1-11/kubeflow-istio-resources/base
+
+  # KFServing
+  - ../../../upstream/apps/kfserving/upstream/overlays/kubeflow
+  # Central Dashboard
+  - ../../../upstream/apps/centraldashboard/upstream/overlays/kserve
+  # Admission Webhook
+  - ../../../upstream/apps/admission-webhook/upstream/overlays/cert-manager
+  # Jupyter Web App
+  - ../../../awsconfigs/apps/jupyter-web-app
+  # Notebook Controller
+  - ../../../upstream/apps/jupyter/notebook-controller/upstream/overlays/kubeflow
+  # Profiles + KFAM
+  - ../../../upstream/apps/profiles/upstream/overlays/kubeflow
+  # Volumes Web App
+  - ../../../upstream/apps/volumes-web-app/upstream/overlays/istio
+  # Tensorboard Controller
+  - ../../../upstream/apps/tensorboard/tensorboard-controller/upstream/overlays/kubeflow
+  # Tensorboards Web App
+  - ../../../upstream/apps/tensorboard/tensorboards-web-app/upstream/overlays/istio
+  # Training Operator
+  - ../../../upstream/apps/training-operator/upstream/overlays/kubeflow
+  # User namespace
+  - ../../../upstream/common/user-namespace/base
+
+  # KServe
+  - ../../../awsconfigs/apps/kserve
+  - ../../../upstream/contrib/kserve/models-web-app/overlays/kubeflow
+
+  # AWS Telemetry - This is an optional component. See usage tracking documentation for more information
+  - ../../../awsconfigs/common/aws-telemetry

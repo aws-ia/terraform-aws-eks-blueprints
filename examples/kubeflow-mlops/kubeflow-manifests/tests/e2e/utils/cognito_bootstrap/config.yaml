@@ -1,0 +1,11 @@
+cluster:
+  name:
+  region:
+cognitoUserpool:
+  name:
+route53:
+  rootDomain:
+    hostedZoneId:
+    name:
+  subDomain:
+    name:

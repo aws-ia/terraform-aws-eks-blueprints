@@ -1,0 +1,72 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: kubeflow-userid
+  namespace: istio-system
+spec:
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        filterChain:
+          filter:
+            name: envoy.filters.network.http_connection_manager
+            subFilter:
+              name: envoy.filters.http.router
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: envoy.filters.http.lua
+        typed_config:
+          '@type': type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+          inline_code: "local valid_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'\n\nlocal
+            function request_handling_error(string)\n  error(\"Error validating JWT
+            token due to: \" .. string)\nend\n\nlocal function base64_char_to_bitstring(base64_char)\n
+            \ -- lua arrays start at 1\n  local offset_base64_value = string.find(valid_chars,
+            base64_char)\n\n  if offset_base64_value == nil then\n    return ''\n
+            \ end\n\n  local base64_value = offset_base64_value-1\n\n  local bitstring
+            = ''\n\n  for i = 5,0,-1 do\n    local int_value_of_bit = 2^i\n    if
+            base64_value >= int_value_of_bit then\n      base64_value = base64_value
+            - int_value_of_bit\n      bitstring = bitstring .. '1'\n    else\n      bitstring
+            = bitstring .. '0'\n    end\n  end\n\n  return bitstring\nend\n\nlocal
+            function base64_string_to_bitstring(base64_string)\n  local bitstring
+            = ''\n\n  for i=1, string.len(base64_string) do\n    local base64_char
+            = string.sub(base64_string, i, i)\n    bitstring = bitstring .. base64_char_to_bitstring(base64_char)\n
+            \ end\n\n  return bitstring\nend\n\nlocal function bitstring_to_string(bitstring)\n
+            \ local output_string = ''\n\n  for i=1, string.len(bitstring), 8 do\n
+            \   local bitstring_chunk = string.sub(bitstring, i, i+7)\n\n    if string.len(bitstring_chunk)
+            < 8 then\n      break\n    end\n\n    local output_string_char = string.char(tonumber(bitstring_chunk,
+            2))\n    output_string = output_string .. output_string_char\n  end\n\n
+            \ return output_string\nend\n\nlocal function decode_base64(base64_string)\n
+            \ local base64_bitstring = base64_string_to_bitstring(base64_string)\n
+            \ return bitstring_to_string(base64_bitstring)\nend\n\nlocal function
+            extract_jwt_payload(jwt)\n  local claim_start = string.find(jwt, \"%.\")\n
+            \ if claim_start == nil then\n    request_handling_error(\"Could not find
+            claims section of JWT\")\n  end\n\n  local claim_end = string.find(jwt,
+            \"%.\", claim_start+1)\n  if claim_end == nil then\n    request_handling_error(\"Could
+            not find claims section of JWT\")\n  end\n\n  -- don't include periods\n
+            \ return string.sub(jwt, claim_start+1, claim_end-1)\nend\n\nlocal function
+            get_email_from_jwt_payload(jwt_payload)\n  local claim_start = 0\n  while
+            true do\n    local claim_end = string.find(jwt_payload, \",\", claim_start)\n
+            \   local claim = string.sub(jwt_payload, claim_start, claim_end)\n\n
+            \   if string.find(claim, \"\\\"email\\\"\") ~= nil then\n      local
+            delimiter_index = string.find(claim, \":\")\n      if delimiter_index
+            == nil then\n        request_handling_error(\"Could not parse email in
+            JWT payload\")\n      end\n      local email_start = string.find(claim,
+            \"\\\"\", delimiter_index+1)\n      if email_start == nil then\n        request_handling_error(\"Could
+            not parse email in JWT payload\")\n      end\n      local email_end =
+            string.find(claim, \"\\\"\", email_start+1)\n      if email_end == nil
+            then\n        request_handling_error(\"Could not parse email in JWT payload\")\n
+            \     end\n\n      return string.sub(claim, email_start+1, email_end-1)\n
+            \   end\n\n    if claim_end == nil then\n      break\n    end\n\n    claim_start
+            = claim_end + 1\n  end\n\n  request_handling_error(\"Could not find email
+            in JWT payload\")\nend\n\nfunction envoy_on_request(request_handle)\n
+            \ if request_handle:headers():get(\"kubeflow-userid\") ~= nil then\n    return\n
+            \ end\n\n  local jwt_head = request_handle:headers():get(\"x-amzn-oidc-data\")\n
+            \ \n  if jwt_head ~= nil then\n    local payload = decode_base64(extract_jwt_payload(jwt_head))\n
+            \   local email = get_email_from_jwt_payload(payload)\n\n    request_handle:headers():add(\"kubeflow-userid\",
+            email)\n  end\nend\n"
+  workloadSelector:
+    labels:
+      istio: ingressgateway

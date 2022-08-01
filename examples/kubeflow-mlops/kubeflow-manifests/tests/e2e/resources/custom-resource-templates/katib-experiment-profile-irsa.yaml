@@ -1,0 +1,73 @@
+# https://github.com/kubeflow/katib/blob/master/examples/v1beta1/hp-tuning/random.yaml
+
+apiVersion: kubeflow.org/v1beta1
+kind: Experiment
+metadata:
+  namespace: ${NAMESPACE}
+  name: ${NAME}
+spec:
+  objective:
+    type: maximize
+    goal: 0.90
+    objectiveMetricName: Validation-accuracy
+    additionalMetricNames:
+      - Train-accuracy
+  algorithm:
+    algorithmName: random
+  parallelTrialCount: 3
+  maxTrialCount: 12
+  maxFailedTrialCount: 1
+  parameters:
+    - name: lr
+      parameterType: double
+      feasibleSpace:
+        min: "0.01"
+        max: "0.03"
+    - name: num-layers
+      parameterType: int
+      feasibleSpace:
+        min: "2"
+        max: "5"
+    - name: optimizer
+      parameterType: categorical
+      feasibleSpace:
+        list:
+          - sgd
+          - adam
+          - ftrl
+  trialTemplate:
+    primaryContainerName: training-container
+    trialParameters:
+      - name: learningRate
+        description: Learning rate for the training model
+        reference: lr
+      - name: numberLayers
+        description: Number of training model layers
+        reference: num-layers
+      - name: optimizer
+        description: Training model optimizer (sdg, adam or ftrl)
+        reference: optimizer
+    trialSpec:
+      apiVersion: batch/v1
+      kind: Job
+      spec:
+        template:
+          metadata:
+            annotations:
+              sidecar.istio.io/inject: "false"
+          spec:
+            containers:
+              - name: training-container
+                image: public.ecr.aws/z1j2m4o4/kubeflow-katib-mxnet-mnist:latest
+                command:
+                  - "python3"
+                  - "/opt/mxnet-mnist/list_s3_buckets.py"
+                  - "&&"
+                  - "python3"
+                  - "/opt/mxnet-mnist/mnist.py"
+                  - "--batch-size=64"
+                  - "--lr=${trialParameters.learningRate}"
+                  - "--num-layers=${trialParameters.numberLayers}"
+                  - "--optimizer=${trialParameters.optimizer}"
+            restartPolicy: Never
+            serviceAccountName: default-editor

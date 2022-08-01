@@ -1,0 +1,448 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: knative-eventing-mt-channel-broker-controller
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - "namespaces/finalizers"
+    verbs:
+      - "update"
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - "get"
+      - "list"
+      - "create"
+      - "update"
+      - "delete"
+      - "patch"
+      - "watch"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: knative-eventing-mt-broker-filter
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+rules:
+  - apiGroups:
+      - eventing.knative.dev
+    resources:
+      - triggers
+      - triggers/status
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - "configmaps"
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mt-broker-filter
+  namespace: knative-eventing
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: knative-eventing-mt-broker-ingress
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+rules:
+  - apiGroups:
+      - eventing.knative.dev
+    resources:
+      - brokers
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - "configmaps"
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mt-broker-ingress
+  namespace: knative-eventing
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: eventing-mt-channel-broker-controller
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+subjects:
+  - kind: ServiceAccount
+    name: eventing-controller
+    namespace: knative-eventing
+roleRef:
+  kind: ClusterRole
+  name: knative-eventing-mt-channel-broker-controller
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: knative-eventing-mt-broker-filter
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+subjects:
+  - kind: ServiceAccount
+    name: mt-broker-filter
+    namespace: knative-eventing
+roleRef:
+  kind: ClusterRole
+  name: knative-eventing-mt-broker-filter
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: knative-eventing-mt-broker-ingress
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+subjects:
+  - kind: ServiceAccount
+    name: mt-broker-ingress
+    namespace: knative-eventing
+roleRef:
+  kind: ClusterRole
+  name: knative-eventing-mt-broker-ingress
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mt-broker-filter
+  namespace: knative-eventing
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+spec:
+  selector:
+    matchLabels:
+      eventing.knative.dev/brokerRole: filter
+  template:
+    metadata:
+      labels:
+        eventing.knative.dev/brokerRole: filter
+        eventing.knative.dev/release: "v0.22.1"
+    spec:
+      serviceAccountName: mt-broker-filter
+      enableServiceLinks: false
+      containers:
+        - name: filter
+          terminationMessagePolicy: FallbackToLogsOnError
+          image: gcr.io/knative-releases/knative.dev/eventing/cmd/broker/filter@sha256:0e25aa1613a3a1779b3f7b7f863e651e5f37520a7f6808ccad2164cc2b6a9b12
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+            initialDelaySeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+            - containerPort: 9092
+              name: metrics
+              protocol: TCP
+          terminationMessagePath: /dev/termination-log
+          env:
+            - name: SYSTEM_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: CONTAINER_NAME
+              value: filter
+            - name: CONFIG_LOGGING_NAME
+              value: config-logging
+            - name: CONFIG_OBSERVABILITY_NAME
+              value: config-observability
+            - name: METRICS_DOMAIN
+              value: knative.dev/internal/eventing
+            - name: FILTER_PORT
+              value: "8080"
+          securityContext:
+            allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    eventing.knative.dev/brokerRole: filter
+    eventing.knative.dev/release: "v0.22.1"
+  name: broker-filter
+  namespace: knative-eventing
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+    - name: http-metrics
+      port: 9092
+      protocol: TCP
+      targetPort: 9092
+  selector:
+    eventing.knative.dev/brokerRole: filter
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mt-broker-ingress
+  namespace: knative-eventing
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+spec:
+  selector:
+    matchLabels:
+      eventing.knative.dev/brokerRole: ingress
+  template:
+    metadata:
+      labels:
+        eventing.knative.dev/brokerRole: ingress
+        eventing.knative.dev/release: "v0.22.1"
+    spec:
+      serviceAccountName: mt-broker-ingress
+      enableServiceLinks: false
+      containers:
+        - name: ingress
+          terminationMessagePolicy: FallbackToLogsOnError
+          image: gcr.io/knative-releases/knative.dev/eventing/cmd/broker/ingress@sha256:cf579f88aa2a37c240e25bb886c1ef5404e326e12c7caf571e49308612243eee
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+            initialDelaySeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+            - containerPort: 9092
+              name: metrics
+              protocol: TCP
+          terminationMessagePath: /dev/termination-log
+          env:
+            - name: SYSTEM_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: CONTAINER_NAME
+              value: ingress
+            - name: CONFIG_LOGGING_NAME
+              value: config-logging
+            - name: CONFIG_OBSERVABILITY_NAME
+              value: config-observability
+            - name: METRICS_DOMAIN
+              value: knative.dev/internal/eventing
+            - name: INGRESS_PORT
+              value: "8080"
+          securityContext:
+            allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    eventing.knative.dev/brokerRole: ingress
+    eventing.knative.dev/release: "v0.22.1"
+  name: broker-ingress
+  namespace: knative-eventing
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+    - name: http-metrics
+      port: 9092
+      protocol: TCP
+      targetPort: 9092
+  selector:
+    eventing.knative.dev/brokerRole: ingress
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mt-broker-controller
+  namespace: knative-eventing
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+spec:
+  selector:
+    matchLabels:
+      app: mt-broker-controller
+  template:
+    metadata:
+      labels:
+        app: mt-broker-controller
+        eventing.knative.dev/release: "v0.22.1"
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: mt-broker-controller
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+      serviceAccountName: eventing-controller
+      enableServiceLinks: false
+      containers:
+        - name: mt-broker-controller
+          terminationMessagePolicy: FallbackToLogsOnError
+          image: gcr.io/knative-releases/knative.dev/eventing/cmd/mtchannel_broker@sha256:a2678934d280ea19b0804cc7757d559a0312e2acea221b17a99bd830cd9eeaac
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          env:
+            - name: SYSTEM_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: CONFIG_LOGGING_NAME
+              value: config-logging
+            - name: CONFIG_OBSERVABILITY_NAME
+              value: config-observability
+            - name: METRICS_DOMAIN
+              value: knative.dev/eventing
+            - name: BROKER_INJECTION_DEFAULT
+              value: "false"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          securityContext:
+            allowPrivilegeEscalation: false
+          ports:
+            - name: metrics
+              containerPort: 9090
+            - name: profiling
+              containerPort: 8008
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: broker-ingress-hpa
+  namespace: knative-eventing
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mt-broker-ingress
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: broker-filter-hpa
+  namespace: knative-eventing
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mt-broker-filter
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+---
+

@@ -1,0 +1,23 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: katib-db-manager
+  namespace: kubeflow
+spec:
+  podSelector:
+    matchExpressions:
+      - key: katib.kubeflow.org/component
+        operator: In
+        values:
+          - db-manager # the metrics loggers write directly to this database
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/part-of
+                operator: In
+                values:
+                  - kubeflow-profile
+        - podSelector: {} # allow all pods from the same namespace
+  policyTypes:
+    - Ingress

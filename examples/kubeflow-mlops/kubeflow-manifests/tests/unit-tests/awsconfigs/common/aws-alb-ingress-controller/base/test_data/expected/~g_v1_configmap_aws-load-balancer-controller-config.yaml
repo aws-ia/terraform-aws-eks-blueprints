@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  clusterName: ""
+kind: ConfigMap
+metadata:
+  labels:
+    kustomize.component: aws-load-balancer-controller
+  name: aws-load-balancer-controller-config
+  namespace: kube-system

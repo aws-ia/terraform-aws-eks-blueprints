@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-pipeline
+spec:
+  template:
+    spec:
+      containers:
+      - name: ml-pipeline-api-server
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: OBJECTSTORECONFIG_SECURE
+          value: "false"
+        - name: OBJECTSTORECONFIG_BUCKETNAME
+          valueFrom:
+            configMapKeyRef:
+              name: pipeline-install-config
+              key: bucketName
+        - name: DBCONFIG_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: username
+        - name: DBCONFIG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: password
+        - name: DBCONFIG_DBNAME
+          valueFrom:
+            configMapKeyRef:
+              name: pipeline-install-config
+              key: pipelineDb
+        - name: DBCONFIG_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: pipeline-install-config
+              key: dbHost
+        - name: DBCONFIG_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: pipeline-install-config
+              key: dbPort
+        - name: OBJECTSTORECONFIG_ACCESSKEY
+          valueFrom:
+            secretKeyRef:
+              name: mlpipeline-minio-artifact
+              key: accesskey
+        - name: OBJECTSTORECONFIG_SECRETACCESSKEY
+          valueFrom:
+            secretKeyRef:
+              name: mlpipeline-minio-artifact
+              key: secretkey
+        - name: PIPELINE_RUNTIME
+          value: tekton
+        - name: ARTIFACT_BUCKET
+          valueFrom:
+            configMapKeyRef:
+              name: kfp-tekton-config
+              key: artifact_bucket
+        - name: ARTIFACT_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: kfp-tekton-config
+              key: artifact_endpoint
+        - name: ARTIFACT_ENDPOINT_SCHEME
+          valueFrom:
+            configMapKeyRef:
+              name: kfp-tekton-config
+              key: artifact_endpoint_scheme
+        - name: ARCHIVE_LOGS
+          valueFrom:
+            configMapKeyRef:
+              name: kfp-tekton-config
+              key: archive_logs
+        - name: TRACK_ARTIFACTS
+          valueFrom:
+            configMapKeyRef:
+              name: kfp-tekton-config
+              key: track_artifacts
+        - name: STRIP_EOF
+          valueFrom:
+            configMapKeyRef:
+              name: kfp-tekton-config
+              key: strip_eof
+        - name: ARTIFACT_SCRIPT
+          valueFrom:
+            configMapKeyRef:
+              name: kfp-tekton-config
+              key: artifact_script
+        - name: ARTIFACT_IMAGE
+          valueFrom:
+            configMapKeyRef:
+              name: kfp-tekton-config
+              key: artifact_image
+        - name: INJECT_DEFAULT_SCRIPT
+          valueFrom:
+            configMapKeyRef:
+              name: kfp-tekton-config
+              key: inject_default_script
+        - name: APPLY_TEKTON_CUSTOM_RESOURCE
+          valueFrom:
+            configMapKeyRef:
+              name: kfp-tekton-config
+              key: apply_tekton_custom_resource
+        - name: TERMINATE_STATUS
+          valueFrom:
+            configMapKeyRef:
+              name: kfp-tekton-config
+              key: terminate_status

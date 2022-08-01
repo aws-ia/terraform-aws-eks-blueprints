@@ -1,0 +1,64 @@
+# This kustomization copies the `katib-standalone` one with following exclusions:
+#  - No Job is spawned to generate TLS key for `katib-controller` Service
+#  - Instead, the Service and WebhookConfigurations linked to it are annotated
+#    for OpenShift service controller to handle TLS certification.
+#
+# Requires OpenShift version: 4.4+
+#
+# To achieve this, run:
+#
+# `kustomize build ./manifests/v1beta1/installs/katib-openshift | oc apply -f - -l type!=local`
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kubeflow
+resources:
+  # Namespace.
+  - ../../components/namespace/
+  # Katib controller.
+  - ../../components/controller/
+  # Katib CRDs.
+  - ../../components/crd/
+  # Katib DB manager.
+  - ../../components/db-manager/
+  # Katib DB mysql.
+  - ../../components/mysql/
+  # Katib UI.
+  - ../../components/ui/
+  # Katib webhooks.
+  - ../../components/webhook/
+images:
+  - name: docker.io/kubeflowkatib/katib-controller
+    newName: docker.io/kubeflowkatib/katib-controller
+    newTag: v0.13.0
+  - name: docker.io/kubeflowkatib/katib-db-manager
+    newName: docker.io/kubeflowkatib/katib-db-manager
+    newTag: v0.13.0
+  - name: docker.io/kubeflowkatib/katib-ui
+    newName: docker.io/kubeflowkatib/katib-ui
+    newTag: v0.13.0
+
+patchesJson6902:
+  # Annotate Service to delegate TLS-secret generation to OpenShift service controller
+  # https://docs.openshift.com/container-platform/4.6/security/certificates/service-serving-certificate.html#add-service-certificate_service-serving-certificate
+  - target:
+      group: ""
+      version: v1
+      kind: Service
+      name: katib-controller
+      namespace: kubeflow
+    path: patches/service-serving-cert.yaml
+  # Annotate WebhookConfigurations to delegate `caBundle` population to OpenShift service controller
+  # https://docs.openshift.com/container-platform/4.6/security/certificates/service-serving-certificate.html#add-service-certificate-mutating-webhook_service-serving-certificate
+  - target:
+      group: admissionregistration.k8s.io
+      version: v1
+      kind: ValidatingWebhookConfiguration
+      name: katib.kubeflow.org
+    path: patches/webhook-inject-cabundle.yaml
+  - target:
+      group: admissionregistration.k8s.io
+      version: v1
+      kind: MutatingWebhookConfiguration
+      name: katib.kubeflow.org
+    path: patches/webhook-inject-cabundle.yaml

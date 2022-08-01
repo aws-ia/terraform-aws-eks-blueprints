@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: istio-system
+resources:
+- envoy-filter-kubeflow-userid.yaml
+- auth-service.yaml
+- auth-deployment.yaml
+- virtual-service.yaml
+images:
+  - name: public.ecr.aws/c9e4w0g3/cognito/aws-authservice
+    newName: public.ecr.aws/c9e4w0g3/cognito/aws-authservice
+    newTag: v1.0.0
+configMapGenerator:
+- name: authservice-config
+  env: params.env

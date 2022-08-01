@@ -1,0 +1,14 @@
+allowVolumeExpansion: true
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: efs-sc
+mountOptions:
+  - tls
+parameters:
+  directoryPerms: '700'
+  fileSystemId: <YOUR_FILE_SYSTEM_ID>
+  provisioningMode: efs-ap
+provisioner: efs.csi.aws.com
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer

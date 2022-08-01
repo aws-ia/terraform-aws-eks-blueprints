@@ -1,0 +1,9 @@
+<div class="alert alert-warning" role="alert">
+  <h4 class="alert-heading">Beta</h4>
+  This Kubeflow component has <b>beta</b> status. See the
+  <a href="/docs/started/support/#application-status">Kubeflow versioning policies</a>.
+  The Kubeflow team is interested in your {{ if .Get "feedbacklink"}} {{ with .Get "feedbacklink" }} 
+  <a href="{{ . | safeURL }}">feedback</a></h4>{{ end }} {{ else }}feedback{{ end }}
+  about the usability of the feature.
+</div>
+  

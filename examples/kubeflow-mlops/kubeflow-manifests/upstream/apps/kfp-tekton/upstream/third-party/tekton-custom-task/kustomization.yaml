@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+- pipeline-loops
+
+namespace: tekton-pipelines
+
+images:
+  - name: docker.io/aipipeline/pipelineloop-controller
+    newTag: 1.1.1
+  - name: docker.io/aipipeline/pipelineloop-webhook
+    newTag: 1.1.1

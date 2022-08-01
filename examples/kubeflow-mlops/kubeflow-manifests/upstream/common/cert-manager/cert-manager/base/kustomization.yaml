@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+# Manifests downloaded from:
+# https://github.com/jetstack/cert-manager/releases/download/v1.5.0/cert-manager.yaml
+- cert-manager.yaml
+
+# XXX: Do NOT use the namespace transformer, as cert-manager defines resources
+# in two namespaces, 'cert-manager' and 'kube-system'.
+# For more information, see https://github.com/jetstack/cert-manager/issues/4102.
+
+# Patch upstream manifests to explicitly disable 'preserveUnknownFields',
+# otherwise upgrade with 'kubectl apply' fails.
+patches:
+- path: patches/crd-preserve-unknown-fields.yaml
+  target:
+    kind: CustomResourceDefinition

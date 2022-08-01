@@ -1,0 +1,114 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: knative-eventing-post-install-job-role
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+rules:
+  - apiGroups:
+      - "apiextensions.k8s.io"
+    resources:
+      - "customresourcedefinitions"
+      - "customresourcedefinitions/status"
+    verbs:
+      - "get"
+      - "list"
+      - "update"
+      - "patch"
+      - "watch"
+  - apiGroups:
+      - "sources.knative.dev"
+    resources:
+      - "pingsources"
+    verbs:
+      - "get"
+      - "list"
+      - "create"
+      - "update"
+      - "delete"
+      - "patch"
+      - "watch"
+  - apiGroups:
+      - ""
+    resources:
+      - "namespaces"
+    verbs:
+      - "get"
+      - "list"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: v0.22.0-pingsource-cleanup
+  namespace: knative-eventing
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+spec:
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: knative-eventing-post-install-job
+      restartPolicy: Never
+      containers:
+        - name: pingsource
+          image: gcr.io/knative-releases/knative.dev/eventing/cmd/v0.22/pingsource-cleanup@sha256:837b8d5cfe38afa297d25e7aed30ec8df80f721a084d4fdcc614d65afde4c528
+          env:
+            - name: SYSTEM_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: knative-eventing-post-install-job
+  namespace: knative-eventing
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: knative-eventing-post-install-job-role-binding
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+subjects:
+  - kind: ServiceAccount
+    name: knative-eventing-post-install-job
+    namespace: knative-eventing
+roleRef:
+  kind: ClusterRole
+  name: knative-eventing-post-install-job-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: v0.21-storage-version-migration
+  namespace: knative-eventing
+  labels:
+    app: "storage-version-migration"
+    eventing.knative.dev/release: "v0.22.1"
+spec:
+  ttlSecondsAfterFinished: 600
+  backoffLimit: 10
+  template:
+    metadata:
+      labels:
+        app: "storage-version-migration"
+        eventing.knative.dev/release: "v0.22.1"
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: knative-eventing-post-install-job
+      restartPolicy: OnFailure
+      containers:
+        - name: migrate
+          image: gcr.io/knative-releases/knative.dev/eventing/vendor/knative.dev/pkg/apiextensions/storageversion/cmd/migrate@sha256:ef150a99d5b18781746d3934f181a766b27a975cb7593d9283fbd040e9ebfe5b
+          args:
+            - "pingsources.sources.knative.dev"
+---
+

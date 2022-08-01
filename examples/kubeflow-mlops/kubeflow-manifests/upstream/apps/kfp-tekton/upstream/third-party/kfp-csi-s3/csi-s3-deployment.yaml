@@ -1,0 +1,531 @@
+
+# Source: dlf-chart/charts/csi-s3-chart/templates/csi-s3.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kfp-csi-s3
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+  namespace: kubeflow
+---
+# Source: dlf-chart/charts/csi-sidecars-rbac/templates/attacher-rbac.yaml
+# This YAML file contains all RBAC objects that are necessary to run external
+# CSI attacher.
+#
+# In production, each CSI driver deployment has to be customized:
+# - to avoid conflicts, use non-default namespace and different names
+#   for non-namespaced entities like the ClusterRole
+# - decide whether the deployment replicates the external CSI
+#   attacher, in which case leadership election must be enabled;
+#   this influences the RBAC setup, see below
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: csi-attacher
+  # replace with non-default namespace name
+  namespace: kubeflow
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+---
+# Source: dlf-chart/charts/csi-sidecars-rbac/templates/provisioner-rbac.yaml
+# This YAML file contains all RBAC objects that are necessary to run external
+# CSI provisioner.
+#
+# In production, each CSI driver deployment has to be customized:
+# - to avoid conflicts, use non-default namespace and different names
+#   for non-namespaced entities like the ClusterRole
+# - decide whether the deployment replicates the external CSI
+#   provisioner, in which case leadership election must be enabled;
+#   this influences the RBAC setup, see below
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: csi-provisioner
+  # replace with non-default namespace name
+  namespace: kubeflow
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+---
+# Source: dlf-chart/charts/csi-s3-chart/templates/storageclass.yaml
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: kfp-csi-s3
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+provisioner: ch.ctrox.csi.s3-driver
+parameters:
+  # specify which mounter to use
+  # can be set to s3fs, goofys
+  # OTHER OPTIONS NOT WORKING!
+  mounter: goofys
+
+  csi.storage.k8s.io/provisioner-secret-name: kfp-csi-secret
+  csi.storage.k8s.io/provisioner-secret-namespace: kubeflow
+
+  csi.storage.k8s.io/controller-publish-secret-name: kfp-csi-secret
+  csi.storage.k8s.io/controller-publish-secret-namespace: kubeflow
+
+  csi.storage.k8s.io/node-stage-secret-name: kfp-csi-secret
+  csi.storage.k8s.io/node-stage-secret-namespace: kubeflow
+
+  csi.storage.k8s.io/node-publish-secret-name: kfp-csi-secret
+  csi.storage.k8s.io/node-publish-secret-namespace: kubeflow
+---
+# Source: dlf-chart/charts/csi-s3-chart/templates/csi-s3.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: kfp-csi-s3
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+  namespace: kubeflow
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "update"]
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["volumeattachments"]
+    verbs: ["get", "list", "watch", "update","create"]
+---
+# Source: dlf-chart/charts/csi-sidecars-rbac/templates/attacher-rbac.yaml
+# Attacher must be able to work with PVs, CSINodes and VolumeAttachments
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: external-attacher-runner
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+rules:
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list", "watch", "update", "patch"] #Adding "update"
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["csinodes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["volumeattachments"]
+    verbs: ["get", "list", "watch", "update", "patch", "create"]  #Adding "update"
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["volumeattachments/status"]
+    verbs: ["patch"]
+#Secret permission is optional.
+#Enable it if you need value from secret.
+#For example, you have key `csi.storage.k8s.io/controller-publish-secret-name` in StorageClass.parameters
+#see https://kubernetes-csi.github.io/docs/secrets-and-credentials.html
+#  - apiGroups: [""]
+#    resources: ["secrets"]
+#    verbs: ["get", "list"]
+---
+# Source: dlf-chart/charts/csi-sidecars-rbac/templates/provisioner-rbac.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: external-provisioner-runner
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+  namespace: kubeflow
+rules:
+  # The following rule should be uncommented for plugins that require secrets
+  # for provisioning. #Enabling secrets
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["list", "watch", "create", "update", "patch"]
+  - apiGroups: ["snapshot.storage.k8s.io"]
+    resources: ["volumesnapshots"]
+    verbs: ["get", "list"]
+  - apiGroups: ["snapshot.storage.k8s.io"]
+    resources: ["volumesnapshotcontents"]
+    verbs: ["get", "list"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["csinodes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "watch"]
+  # Access to volumeattachments is only needed when the CSI driver
+  # has the PUBLISH_UNPUBLISH_VOLUME controller capability.
+  # In that case, external-provisioner will watch volumeattachments
+  # to determine when it is safe to delete a volume.
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["volumeattachments"]
+    verbs: ["get", "list", "watch","create"]
+---
+# Source: dlf-chart/charts/csi-s3-chart/templates/csi-s3.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: kfp-csi-s3
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+  namespace: kubeflow
+subjects:
+  - kind: ServiceAccount
+    name: kfp-csi-s3
+    namespace: kubeflow
+roleRef:
+  kind: ClusterRole
+  name: kfp-csi-s3
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: dlf-chart/charts/csi-sidecars-rbac/templates/attacher-rbac.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: csi-attacher-role
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+subjects:
+  - kind: ServiceAccount
+    name: csi-attacher
+    # replace with non-default namespace name
+    namespace: kubeflow
+roleRef:
+  kind: ClusterRole
+  name: external-attacher-runner
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: dlf-chart/charts/csi-sidecars-rbac/templates/provisioner-rbac.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: csi-provisioner-role
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+  namespace: kubeflow
+subjects:
+  - kind: ServiceAccount
+    name: csi-provisioner
+    # replace with non-default namespace name
+    namespace: kubeflow
+roleRef:
+  kind: ClusterRole
+  name: external-provisioner-runner
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: dlf-chart/charts/csi-sidecars-rbac/templates/attacher-rbac.yaml
+# Attacher must be able to work with configmaps or leases in the current namespace
+# if (and only if) leadership election is enabled
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  # replace with non-default namespace name
+  namespace: kubeflow
+  name: external-attacher-cfg
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+rules:
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "watch", "list", "delete", "update", "create"]
+---
+# Source: dlf-chart/charts/csi-sidecars-rbac/templates/provisioner-rbac.yaml
+# Provisioner must be able to work with endpoints in current namespace
+# if (and only if) leadership election is enabled
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  # replace with non-default namespace name
+  namespace: kubeflow
+  name: external-provisioner-cfg
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+rules:
+  # Only one of the following rules for endpoints or leases is required based on
+  # what is set for `--leader-election-type`. Endpoints are deprecated in favor of Leases.
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["get", "watch", "list", "delete", "update", "create"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "watch", "list", "delete", "update", "create"]
+  # Permissions for CSIStorageCapacity are only needed enabling the publishing
+  # of storage capacity information.
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["csistoragecapacities"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  # The GET permissions below are needed for walking up the ownership chain
+  # for CSIStorageCapacity. They are sufficient for deployment via
+  # StatefulSet (only needs to get Pod) and Deployment (needs to get
+  # Pod and then ReplicaSet to find the Deployment).
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get"]
+  - apiGroups: ["apps"]
+    resources: ["replicasets"]
+    verbs: ["get"]
+---
+# Source: dlf-chart/charts/csi-sidecars-rbac/templates/attacher-rbac.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: csi-attacher-role-cfg
+  # replace with non-default namespace name
+  namespace: kubeflow
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+subjects:
+  - kind: ServiceAccount
+    name: csi-attacher
+    # replace with non-default namespace name
+    namespace: kubeflow
+roleRef:
+  kind: Role
+  name: external-attacher-cfg
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: dlf-chart/charts/csi-sidecars-rbac/templates/provisioner-rbac.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: csi-provisioner-role-cfg
+  # replace with non-default namespace name
+  namespace: kubeflow
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+subjects:
+  - kind: ServiceAccount
+    name: csi-provisioner
+    # replace with non-default namespace name
+    namespace: kubeflow
+roleRef:
+  kind: Role
+  name: external-provisioner-cfg
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: dlf-chart/charts/csi-s3-chart/templates/attacher.yaml
+# needed for StatefulSet
+kind: Service
+apiVersion: v1
+metadata:
+  name: csi-attacher-s3
+  namespace: kubeflow
+  labels:
+    app: csi-attacher-s3
+    app.kubernetes.io/name: "kubeflow"
+spec:
+  selector:
+    app: csi-attacher-s3
+  ports:
+    - name: dummy
+      port: 12345
+---
+# Source: dlf-chart/charts/csi-s3-chart/templates/provisioner.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: csi-provisioner-s3
+  namespace: kubeflow
+  labels:
+    app: csi-provisioner-s3
+    app.kubernetes.io/name: "kubeflow"
+spec:
+  selector:
+    app: csi-provisioner-s3
+  ports:
+    - name: dummy
+      port: 12345
+---
+# Source: dlf-chart/charts/csi-s3-chart/templates/csi-s3.yaml
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: kfp-csi-s3
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+  namespace: kubeflow
+spec:
+  selector:
+    matchLabels:
+      app: kfp-csi-s3
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "kubeflow"
+        app: kfp-csi-s3
+    spec:
+      serviceAccountName: kfp-csi-s3
+      containers:
+        - name: driver-registrar
+          image: "quay.io/k8scsi/csi-node-driver-registrar:v1.2.0"
+          imagePullPolicy: Always
+          args:
+            - --v=5
+            - --csi-address=/csi/csi.sock
+            - --kubelet-registration-path=/var/data/kubelet/plugins/kfp-csi-s3/csi.sock
+          securityContext:
+            # This is necessary only for systems with SELinux, where
+            # non-privileged sidecar containers cannot access unix domain socket
+            # created by privileged CSI driver container.
+            privileged: true
+          env:
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - mountPath: /csi
+              name: socket-dir
+            - mountPath: /registration
+              name: registration-dir
+        - name: kfp-csi-s3
+          image: "quay.io/datashim/csi-s3:latest-amd64"
+          imagePullPolicy: Always
+          args:
+            - "--v=5"
+            - "--endpoint=$(CSI_ENDPOINT)"
+            - "--nodeid=$(KUBE_NODE_NAME)"
+          env:
+            - name: CSI_ENDPOINT
+              value: unix:///csi/csi.sock
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: cheap
+              value: "off"
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: /csi
+              name: socket-dir
+            - mountPath: /var/data/kubelet/pods
+              mountPropagation: Bidirectional
+              name: mountpoint-dir
+            - mountPath: /dev
+              name: dev-dir
+      volumes:
+        - hostPath:
+            path: /var/data/kubelet/plugins/kfp-csi-s3
+            type: DirectoryOrCreate
+          name: socket-dir
+        - hostPath:
+            path: /var/data/kubelet/pods
+            type: DirectoryOrCreate
+          name: mountpoint-dir
+        - hostPath:
+            path: /var/data/kubelet/plugins_registry
+            type: Directory
+          name: registration-dir
+        - hostPath:
+            path: /dev
+            type: Directory
+          name: dev-dir
+---
+# Source: dlf-chart/charts/csi-s3-chart/templates/attacher.yaml
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: csi-attacher-s3
+  namespace: kubeflow
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+spec:
+  serviceName: "csi-attacher-s3"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csi-attacher-s3
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "kubeflow"
+        app: csi-attacher-s3
+    spec:
+      serviceAccountName: csi-attacher
+      containers:
+        - name: csi-attacher
+          image: "quay.io/k8scsi/csi-attacher:v2.2.0"
+          imagePullPolicy: Always
+          args:
+            - --v=5
+            - --csi-address=/csi/csi.sock
+          securityContext:
+            # This is necessary only for systems with SELinux, where
+            # non-privileged sidecar containers cannot access unix domain socket
+            # created by privileged CSI driver container.
+            privileged: true
+          volumeMounts:
+          - mountPath: /csi
+            name: socket-dir
+      volumes:
+        - hostPath:
+            path: /var/data/kubelet/plugins/kfp-csi-s3
+            type: DirectoryOrCreate
+          name: socket-dir
+---
+# Source: dlf-chart/charts/csi-s3-chart/templates/provisioner.yaml
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: csi-provisioner-s3
+  labels:
+    app.kubernetes.io/name: "kubeflow"
+  namespace: kubeflow
+spec:
+  serviceName: "csi-provisioner-s3"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csi-provisioner-s3
+  template:
+    metadata:
+      labels:
+        app: csi-provisioner-s3
+    spec:
+      serviceAccountName: csi-provisioner
+      containers:
+        - name: csi-provisioner
+          image: "quay.io/k8scsi/csi-provisioner:v2.0.2"
+          imagePullPolicy: Always
+          args:
+            - -v=5
+            - --csi-address=/csi/csi.sock
+            - --feature-gates=Topology=true
+          securityContext:
+            # This is necessary only for systems with SELinux, where
+            # non-privileged sidecar containers cannot access unix domain socket
+            # created by privileged CSI driver container.
+            privileged: true
+          volumeMounts:
+            - mountPath: /csi
+              name: socket-dir
+      volumes:
+        - hostPath:
+            path: /var/data/kubelet/plugins/kfp-csi-s3
+            type: DirectoryOrCreate
+          name: socket-dir
+---
+# Source: dlf-chart/charts/csi-s3-chart/templates/driver.yaml
+apiVersion: storage.k8s.io/v1
+kind: CSIDriver
+metadata:
+  name: ch.ctrox.csi.s3-driver
+spec:
+  attachRequired: false
+  podInfoOnMount: false

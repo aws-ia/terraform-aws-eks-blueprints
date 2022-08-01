@@ -1,0 +1,32 @@
+# These packages are installed for both python2 and python3
+
+# Jupyter related packages
+jupyter-console==6.4.4
+jupyterlab==3.4.3
+jupyterlab-git==0.37.1
+notebook==6.4.12
+ipykernel==6.15.0
+
+# Extensions for jupyter notebook
+widgetsnbextension==3.6.1
+ipywidgets==7.7.1
+
+# Kubeflow Related Packages
+kfp==1.8.12
+kfp-server-api==1.8.2
+kfserving==0.6.1
+kubeflow-training==1.4.0
+
+# Common data science packages
+h5py==3.7.0
+pandas==1.4.2
+matplotlib==3.5.2
+xgboost==1.6.1
+ipympl==0.9.1
+
+# AWS related packages
+awscli==1.25.15
+boto3==1.24.15
+
+# pytorch packages
+fastai==2.7.3

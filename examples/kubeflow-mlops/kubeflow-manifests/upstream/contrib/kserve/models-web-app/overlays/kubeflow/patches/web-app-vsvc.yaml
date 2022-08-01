@@ -1,0 +1,10 @@
+- op: replace
+  path: /spec/gateways
+  value:
+    - kubeflow/kubeflow-gateway
+- op: replace
+  path: /spec/http/0/route/0/destination
+  value:
+    host: kserve-models-web-app.kubeflow.svc.cluster.local
+    port:
+      number: 80

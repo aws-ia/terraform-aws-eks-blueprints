@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: storage-version-migration-serving-
+  namespace: knative-serving
+  labels:
+    app: "storage-version-migration-serving"
+    serving.knative.dev/release: "v0.22.1"
+  name: storage-version-migration-serving
+spec:
+  ttlSecondsAfterFinished: 600
+  backoffLimit: 10
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: "storage-version-migration-serving"
+    spec:
+      serviceAccountName: controller
+      restartPolicy: OnFailure
+      containers:
+        - name: migrate
+          image: gcr.io/knative-releases/knative.dev/serving/vendor/knative.dev/pkg/apiextensions/storageversion/cmd/migrate@sha256:dce9002c02d7abda2f7d4b656c28029ec172d085bb116f22936cb1e096c3d1c7
+          args:
+            - "services.serving.knative.dev"
+            - "configurations.serving.knative.dev"
+            - "revisions.serving.knative.dev"
+            - "routes.serving.knative.dev"

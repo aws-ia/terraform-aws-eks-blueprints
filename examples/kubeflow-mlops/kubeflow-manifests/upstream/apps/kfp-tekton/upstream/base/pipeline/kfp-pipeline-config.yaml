@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kfp-tekton-config
+data:
+  artifact_bucket: "mlpipeline"
+  artifact_endpoint: "minio-service.kubeflow:9000"
+  artifact_endpoint_scheme: "http://"
+  artifact_image: "minio/mc:RELEASE.2020-11-25T23-04-07Z"
+  archive_logs: "true"
+  track_artifacts: "true"
+  strip_eof: "true"
+  inject_default_script: "true"
+  apply_tekton_custom_resource: "true"
+  terminate_status: "Cancelled"
+  artifact_script: |-
+    #!/usr/bin/env sh
+    push_artifact() {
+        if [ -f "$2" ]; then
+            tar -cvzf $1.tgz $2
+            mc cp $1.tgz storage/$ARTIFACT_BUCKET/artifacts/$PIPELINERUN/$PIPELINETASK/$1.tgz
+        else
+            echo "$2 file does not exist. Skip artifact tracking for $1"
+        fi
+    }
+    push_log() {
+        cat /var/log/containers/$PODNAME*$NAMESPACE*step-main*.log > step-main.log
+        push_artifact main-log step-main.log
+    }
+    strip_eof() {
+        if [ -f "$2" ]; then
+            awk 'NF' $2 | head -c -1 > $1_temp_save && cp $1_temp_save $2
+        fi
+    }
+    mc config host add storage ${ARTIFACT_ENDPOINT_SCHEME}${ARTIFACT_ENDPOINT} $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY

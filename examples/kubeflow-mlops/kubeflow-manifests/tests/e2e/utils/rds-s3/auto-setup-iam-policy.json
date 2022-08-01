@@ -1,0 +1,28 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "rds:*",
+                "secretsmanager:*",
+                "s3:*",
+                "cloudformation:*",
+                "ec2:*",
+                "eks:*",
+                "iam:GetOpenIDConnectProvider",
+                "iam:CreateOpenIDConnectProvider",
+                "iam:TagOpenIDConnectProvider",
+                "iam:CreateRole",
+                "iam:AttachRolePolicy",
+                "iam:PutRolePolicy",
+                "iam:GetRole",
+                "iam:PassRole",
+                "iam:ListAttachedRolePolicies",
+                "iam:DetachRolePolicy"
+            ],
+            "Resource": "*"
+        }
+    ]
+}

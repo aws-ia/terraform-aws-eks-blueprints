@@ -1,0 +1,21 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: katib-webhook-cert
+spec:
+  isCA: true
+  commonName: $(KATIB_SERVICE_NAME).$(KATIB_NAMESPACE).svc
+  dnsNames:
+    - $(KATIB_SERVICE_NAME).$(KATIB_NAMESPACE).svc
+    - $(KATIB_SERVICE_NAME).$(KATIB_NAMESPACE).svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: katib-selfsigned-issuer
+  secretName: katib-webhook-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: katib-selfsigned-issuer
+spec:
+  selfSigned: {}

@@ -1,0 +1,6 @@
+# Remove namespace resource as Kubeflow namespace will already exist.
+$patch: delete
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: feast

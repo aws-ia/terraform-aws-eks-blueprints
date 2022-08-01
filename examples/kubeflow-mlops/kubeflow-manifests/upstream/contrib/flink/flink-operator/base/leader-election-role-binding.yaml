@@ -1,0 +1,15 @@
+---
+# Source: flink-operator/templates/flink-operator.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flink-operator-leader-election-rolebinding
+  namespace: kubeflow
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flink-operator-leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: flink-operator-sa
+  namespace: kubeflow

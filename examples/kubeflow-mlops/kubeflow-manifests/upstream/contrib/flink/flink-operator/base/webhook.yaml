@@ -1,0 +1,52 @@
+---
+# Source: flink-operator/templates/flink-operator.yaml
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  creationTimestamp: null
+  name: flink-operator-mutating-webhook-configuration
+webhooks:
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: flink-operator-webhook-service
+      namespace: kubeflow
+      path: /mutate-flinkoperator-k8s-io-v1beta1-flinkcluster
+  failurePolicy: Fail
+  name: mflinkcluster.flinkoperator.k8s.io
+  rules:
+  - apiGroups:
+    - flinkoperator.k8s.io
+    apiVersions:
+    - v1beta1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - flinkclusters
+---
+# Source: flink-operator/templates/flink-operator.yaml
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  creationTimestamp: null
+  name: flink-operator-validating-webhook-configuration
+webhooks:
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: flink-operator-webhook-service
+      namespace: kubeflow
+      path: /validate-flinkoperator-k8s-io-v1beta1-flinkcluster
+  failurePolicy: Fail
+  name: vflinkcluster.flinkoperator.k8s.io
+  rules:
+  - apiGroups:
+    - flinkoperator.k8s.io
+    apiVersions:
+    - v1beta1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - flinkclusters

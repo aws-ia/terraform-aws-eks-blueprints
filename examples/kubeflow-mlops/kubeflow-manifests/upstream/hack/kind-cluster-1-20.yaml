@@ -1,0 +1,23 @@
+# https://github.com/kubernetes-sigs/kind/issues/1954#issuecomment-737775492
+# https://github.com/istio/istio/blob/e02690fbfb8bda564582b27d22d9e8e6e00422a5/prow/config/trustworthy-jwt.yaml#L1-L13
+# This configs KinD to spin up a k8s cluster with trustworthy jwt (Service Account Token Volume Projection) feature.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: manifests-1-20
+nodes:
+- role: control-plane
+  image: kindest/node:1.20.7@sha256:688fba5ce6b825be62a7c7fe1415b35da2bdfbb5a69227c499ea4cc0008661ca
+- role: worker
+  image: kindest/node:1.20.7@sha256:688fba5ce6b825be62a7c7fe1415b35da2bdfbb5a69227c499ea4cc0008661ca
+- role: worker
+  image: kindest/node:1.20.7@sha256:688fba5ce6b825be62a7c7fe1415b35da2bdfbb5a69227c499ea4cc0008661ca
+kubeadmConfigPatches:
+  - |
+    apiVersion: kubeadm.k8s.io/v1beta2
+    kind: ClusterConfiguration
+    metadata:
+      name: config
+    apiServer:
+      extraArgs:
+        "service-account-issuer": "kubernetes.default.svc"
+        "service-account-signing-key-file": "/etc/kubernetes/pki/sa.key"

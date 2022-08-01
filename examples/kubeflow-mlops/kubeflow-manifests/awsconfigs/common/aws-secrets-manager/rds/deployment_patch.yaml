@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aws-secrets-sync
+  namespace: kubeflow
+spec:
+  template:
+    spec:
+      containers:
+        - name: secrets
+          volumeMounts:
+          - name: rds-secret
+            mountPath: "/mnt/rds-store"
+            readOnly: true
+      volumes:
+        - name: rds-secret
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "rds-secret"

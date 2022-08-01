@@ -1,0 +1,23 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: katib-controller
+  namespace: kubeflow
+spec:
+  podSelector:
+    matchExpressions:
+      - key: katib.kubeflow.org/component
+        operator: In
+        values:
+          - controller # katib mutating webhook to add metrics logger
+  # https://www.elastic.co/guide/en/cloud-on-k8s/1.1/k8s-webhook-network-policies.html
+  # The kubernetes api server must reach the webhook
+  ingress:
+    - ports: # webhook
+        - protocol: TCP
+          port: 8443
+#    - ports: # metrics
+#        - protocol: TCP
+#          port: 8080
+  policyTypes:
+    - Ingress

@@ -1,0 +1,81 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: aws-telemetry
+  name: aws-kubelow-telemetry
+  namespace: kubeflow
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: aws-telemetry
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -c
+        - |
+          # Following code uses IMDS service. See: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
+
+          get_instance_id() {
+            # use IMDSv2 if enabled else fallback to IMDSv1
+            local _token
+            _token=$(curl -s --retry 3 --max-time 3 -X PUT http://169.254.169.254/latest/api/token -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+            if [[ -n ${_token+x} ]]; then
+              IMDSV2_HEADER=(-H "X-aws-ec2-metadata-token: ${_token}")
+            fi
+
+            INSTANCE_ID=$(curl -s --retry 3 "${IMDSV2_HEADER[@]}" http://169.254.169.254/latest/meta-data/instance-id)
+
+            local _instance_id_regex="^(i-\S{17})"
+            if [[ -z ${INSTANCE_ID+x} || ! ${INSTANCE_ID} =~ ${_instance_id_regex} ]]; then
+              exit 0
+            fi
+          }
+
+          get_region() {
+            # regions where S3 buckets have been created
+            local _valid_regions=(
+              "us-east-1"
+              "us-east-2"
+              "us-west-1"
+              "us-west-2"
+              "af-south-1"
+              "ap-east-1"
+              "ap-southeast-1"
+              "ap-southeast-2"
+              "ap-southeast-3"
+              "ap-south-1"
+              "ap-northeast-1"
+              "ap-northeast-2"
+              "ap-northeast-3"
+              "ca-central-1"
+              "eu-central-1"
+              "eu-north-1"
+              "eu-west-1"
+              "eu-west-2"
+              "eu-west-3"
+              "eu-south-1"
+              "me-south-1"
+              "sa-east-1"
+            )
+            REGION=$(curl -s --retry 3 "${IMDSV2_HEADER[@]}" http://169.254.169.254/latest/meta-data/placement/availability-zone | awk '{print substr($1, 1, length($1)-1)}')
+
+            if [[ -z ${REGION+x} || ! ${_valid_regions[${REGION}]+x} ]]; then
+              exit 0
+            fi
+          }
+
+          get_instance_id
+          get_region
+
+          # send a GET request to S3 access point
+          curl -s -o /dev/null "https://kubeflow-on-aws-usage-tracking-${REGION}.s3.${REGION}.amazonaws.com/instance-${INSTANCE_ID}.log?x-instance-id=${INSTANCE_ID}"
+        image: public.ecr.aws/amazonlinux/amazonlinux:2
+        name: amazonlinux
+      restartPolicy: Never
+  ttlSecondsAfterFinished: 0

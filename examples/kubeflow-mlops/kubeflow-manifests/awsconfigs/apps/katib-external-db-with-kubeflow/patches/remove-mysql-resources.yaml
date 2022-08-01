@@ -1,0 +1,20 @@
+$patch: delete
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: katib-mysql
+  namespace: kubeflow
+---
+$patch: delete
+apiVersion: v1
+kind: Secret
+metadata:
+  name: katib-mysql-secrets
+  namespace: kubeflow
+---
+$patch: delete
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: katib-mysql
+  namespace: kubeflow

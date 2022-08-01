@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+  - ../plain
+  - ../../third-party/tekton-custom-task
+
+resources:
+  - namespace.yaml
+
+patchesStrategicMerge:
+  - scheduled-workflow-crd.yaml
+  - viewer-crd.yaml

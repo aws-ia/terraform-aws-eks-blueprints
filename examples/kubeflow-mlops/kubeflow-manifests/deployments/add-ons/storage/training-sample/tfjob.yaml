@@ -1,0 +1,24 @@
+apiVersion: kubeflow.org/v1
+kind: TFJob
+metadata:
+  name: image-classification-pvc
+  namespace: <namespace>
+spec:
+  runPolicy:
+    cleanPodPolicy: None
+  tfReplicaSpecs:
+    Worker:
+      replicas: 2
+      restartPolicy: Never
+      template:
+        spec:
+          containers:
+            - name: tensorflow
+              image: <dockerimage:tag>
+              volumeMounts:
+                - mountPath: /train
+                  name: training
+          volumes:
+            - name: training
+              persistentVolumeClaim:
+                claimName: <claim-name>

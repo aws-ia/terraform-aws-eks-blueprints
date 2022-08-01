@@ -1,0 +1,49 @@
+apiVersion: kubeflow.org/v1
+kind: Notebook
+metadata:
+  annotations:
+    notebooks.kubeflow.org/server-type: jupyter
+  labels:
+    app: test-notebook-irsa
+  name: test-notebook-irsa
+  namespace: profile-aws-iam
+spec:
+  template:
+    spec:
+      containers:
+      - env:
+        - name: S3_BUCKET_NAME
+          value: ${S3_BUCKET_NAME}
+        - name: REGION
+          value: ${REGION}
+        - name: FOR_E2E_TEST
+          value: "True"
+        image: public.ecr.aws/j1r0q0g6/notebooks/notebook-servers/jupyter-scipy:v1.4
+        imagePullPolicy: IfNotPresent
+        name: test-notebook-irsa
+        resources:
+          limits:
+            cpu: "0.6"
+            memory: 1.2Gi
+          requests:
+            cpu: "0.5"
+            memory: 1Gi
+        volumeMounts:
+        - mountPath: /home/jovyan
+          name: workspace-test-notebook-irsa
+        - mountPath: /home/uploaded
+          name: config-map-notebook
+        - mountPath: /dev/shm
+          name: dshm
+      serviceAccountName: default-editor
+      tolerations: []
+      volumes:
+      - name: workspace-test-notebook-irsa
+        persistentVolumeClaim:
+          claimName: workspace-test-notebook-irsa
+      - name: config-map-notebook
+        configMap:
+          name: irsa-notebook-as-configmap
+      - emptyDir:
+          medium: Memory
+        name: dshm  

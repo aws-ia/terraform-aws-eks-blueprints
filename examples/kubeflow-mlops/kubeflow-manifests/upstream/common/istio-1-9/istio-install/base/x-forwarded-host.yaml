@@ -1,0 +1,42 @@
+# EnvoyFilter for adding the X-Forwarded-Host header.
+# Needed for the Rok GW to work correctly.
+# Older manifests used an Istio rule, but that relies on Mixer which
+# is deprecated. This way is more performant and up-to-date.
+#
+# TODO: X-Forwarded-Host needs to be applied in two steps:
+# 1. Put old host in `X-Forwarded-Host`
+# 2. Update Host in request
+#
+# This filter only does (1). It can't do (2) because it doesn't know the new
+# host yet. See if we can add an EnvoyFilter for (2). We currently have to do
+# this per VirtualService, in each app that needs it.
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: x-forwarded-host
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+    # The first patch adds the lua filter to the listener/http connection manager
+  - applyTo: HTTP_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        filterChain:
+          filter:
+            name: "envoy.http_connection_manager"
+            subFilter:
+              name: "envoy.router"
+    patch:
+      operation: INSERT_BEFORE
+      value:
+       name: envoy.filters.http.lua
+       typed_config:
+          "@type": "type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua"
+          inlineCode: |
+            function envoy_on_request(request_handle)
+              local host = request_handle:headers():get(":authority")
+              request_handle:headers():add("x-forwarded-host", host)
+            end

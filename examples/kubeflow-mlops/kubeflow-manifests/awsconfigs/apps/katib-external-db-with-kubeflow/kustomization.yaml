@@ -1,0 +1,10 @@
+# The katib-external-db manifest does not create the necessary katib ui virtual service and does not apply the configurations from katib-cert-manager, which the katib-with-kubeflow manifest does. 
+# This manifest extends off of the katib-with-kubeflow manifest and applies the necessary patch for katib to use an external db
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kubeflow
+bases:
+  - ../../../upstream/apps/katib/upstream/installs/katib-with-kubeflow
+patchesStrategicMerge:
+  - patches/db-manager.yaml
+  - patches/remove-mysql-resources.yaml

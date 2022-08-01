@@ -1,0 +1,10 @@
+# Define the self-signed issuer for Kubeflow
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: cert-manager
+commonLabels:
+  kustomize.component: cert-manager
+  app.kubernetes.io/component: cert-manager
+  app.kubernetes.io/name: cert-manager
+resources:
+- cluster-issuer.yaml

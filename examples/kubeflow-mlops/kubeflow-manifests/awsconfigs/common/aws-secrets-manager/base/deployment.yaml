@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aws-secrets-sync
+  namespace: kubeflow
+  annotations:
+    sidecar.istio.io/inject: "false"
+spec:
+  selector:
+    matchLabels:
+      app: aws-secrets-sync
+  template:
+    metadata:
+      labels:
+        app: aws-secrets-sync
+    spec:
+      containers:
+        - name: secrets
+          image: public.ecr.aws/xray/aws-xray-daemon:latest
+      serviceAccountName: kubeflow-secrets-manager-sa

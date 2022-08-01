@@ -1,0 +1,76 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: katib.kubeflow.org
+webhooks:
+  - name: validator.experiment.katib.kubeflow.org
+    sideEffects: None
+    failurePolicy: Ignore
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      caBundle: Cg==
+      service:
+        name: katib-controller
+        namespace: kubeflow
+        path: /validate-experiment
+    rules:
+      - apiGroups:
+          - kubeflow.org
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - experiments
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: katib.kubeflow.org
+webhooks:
+  - name: defaulter.experiment.katib.kubeflow.org
+    sideEffects: None
+    failurePolicy: Ignore
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      caBundle: Cg==
+      service:
+        name: katib-controller
+        namespace: kubeflow
+        path: /mutate-experiment
+    rules:
+      - apiGroups:
+          - kubeflow.org
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - experiments
+  - name: mutator.pod.katib.kubeflow.org
+    sideEffects: None
+    failurePolicy: Ignore
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      caBundle: Cg==
+      service:
+        name: katib-controller
+        namespace: kubeflow
+        path: /mutate-pod
+    namespaceSelector:
+      matchLabels:
+        katib.kubeflow.org/metrics-collector-injection: enabled
+    rules:
+      - apiGroups:
+          - ""
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+        resources:
+          - pods

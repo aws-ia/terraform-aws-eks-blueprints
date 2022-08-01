@@ -1,0 +1,3 @@
+- op: add
+  path: /spec/preserveUnknownFields
+  value: false

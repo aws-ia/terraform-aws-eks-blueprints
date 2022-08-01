@@ -1,0 +1,2 @@
+*.yaml linguist-detectable=true
+*.json linguist-detectable=true

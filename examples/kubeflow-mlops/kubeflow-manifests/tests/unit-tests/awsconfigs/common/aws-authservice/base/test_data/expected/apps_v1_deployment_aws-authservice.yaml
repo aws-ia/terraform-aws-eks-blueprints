@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aws-authservice
+  namespace: istio-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aws-authservice
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: aws-authservice
+    spec:
+      containers:
+      - env:
+        - name: LOGOUT_URL
+          valueFrom:
+            configMapKeyRef:
+              key: LOGOUT_URL
+              name: authservice-config-ck6577dfkd
+        image: public.ecr.aws/c9e4w0g3/cognito/aws-authservice:v1.0.0
+        imagePullPolicy: IfNotPresent
+        name: aws-authservice
+        ports:
+        - containerPort: 8082
+          name: http-api

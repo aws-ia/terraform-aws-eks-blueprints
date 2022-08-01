@@ -1,0 +1,12 @@
+webhooks:
+- name: cache-server.kubeflow.svc
+  rules:
+  - apiGroups:
+    - ""
+    apiVersions:
+    - v1
+    operations:
+    - DELETE
+    resources:
+    - pods
+    scope: '*'

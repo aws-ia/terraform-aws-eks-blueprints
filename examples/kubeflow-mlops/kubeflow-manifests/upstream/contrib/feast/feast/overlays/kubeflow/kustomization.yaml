@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kubeflow
+commonLabels:
+  app.kubernetes.io/component: feast
+  app.kubernetes.io/name: feast
+bases:
+- ../../base
+patchesStrategicMerge:
+- patches/namespace.yaml
+- patches/redis.yaml
+# If Kafka is enabled, uncomment the following patches.
+# - patches/kafka.yaml
+# - patches/zookeeper.yaml
+

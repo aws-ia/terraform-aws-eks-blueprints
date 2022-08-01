@@ -1,0 +1,51 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- csi-s3-deployment.yaml
+- csi-s3-secret.yaml
+
+namespace: kubeflow
+
+configMapGenerator:
+- name: csi-s3-parameters
+  literals:
+  # Update the credentials for the below fields before apply.
+  - endpoint-base64=aHR0cDovL21pbmlvLXNlcnZpY2Uua3ViZWZsb3c6OTAwMA==
+  - bucket-base64=bWxwaXBlbGluZQ==
+  - accessKeyID-base64=bWluaW8=
+  - secretAccessKey-bas64=bWluaW8xMjM=
+generatorOptions:
+  disableNameSuffixHash: true
+vars:
+- name: endpoint-base64
+  objref:
+    kind: ConfigMap
+    name: csi-s3-parameters
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.endpoint-base64
+- name: bucket-base64
+  objref:
+    kind: ConfigMap
+    name: csi-s3-parameters
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.bucket-base64
+- name: accessKeyID-base64
+  objref:
+    kind: ConfigMap
+    name: csi-s3-parameters
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.accessKeyID-base64
+- name: secretAccessKey-bas64
+  objref:
+    kind: ConfigMap
+    name: csi-s3-parameters
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.secretAccessKey-bas64
+
+configurations:
+- params.yaml

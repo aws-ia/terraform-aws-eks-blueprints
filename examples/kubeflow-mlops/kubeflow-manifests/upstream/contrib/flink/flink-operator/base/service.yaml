@@ -1,0 +1,33 @@
+---
+# Source: flink-operator/templates/flink-operator.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/port: "8443"
+    prometheus.io/scheme: https
+    prometheus.io/scrape: "true"
+  labels:
+    control-plane: controller-manager
+  name: flink-operator-controller-manager-metrics-service
+  namespace: kubeflow
+spec:
+  ports:
+  - name: https
+    port: 8443
+    targetPort: https
+  selector:
+    control-plane: controller-manager
+---
+# Source: flink-operator/templates/flink-operator.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: flink-operator-webhook-service
+  namespace: kubeflow
+spec:
+  ports:
+  - port: 443
+    targetPort: 443
+  selector:
+    control-plane: controller-manager

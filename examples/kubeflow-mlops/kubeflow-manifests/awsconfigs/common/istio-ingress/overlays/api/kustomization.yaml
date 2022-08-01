@@ -1,0 +1,52 @@
+bases:
+- ../../base
+patchesStrategicMerge:
+- ingress.yaml
+patchesJson6902:
+  - target:
+      group: networking.k8s.io
+      version: v1beta1
+      kind: Ingress
+      name: istio-ingress
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: istio-ingress-api
+  - target:
+      version: v1
+      kind: ConfigMap
+      name: istio-ingress-parameters
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: istio-ingress-api
+generatorOptions:
+  disableNameSuffixHash: true
+configMapGenerator:
+- name: istio-ingress-parameters
+  behavior: merge
+  envs:
+  - params.env
+vars:
+- name: certArn
+  objref:
+    kind: ConfigMap
+    name: istio-ingress-parameters
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.certArn
+- name: httpHeaderValues
+  objref:
+    kind: ConfigMap
+    name: istio-ingress-parameters
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.httpHeaderValues
+- name: httpHeaderName
+  objref:
+    kind: ConfigMap
+    name: istio-ingress-parameters
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.httpHeaderName
+namespace: istio-system

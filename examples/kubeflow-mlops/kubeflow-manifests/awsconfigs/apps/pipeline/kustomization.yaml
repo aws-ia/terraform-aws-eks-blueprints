@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kubeflow
+bases:
+- ../../../upstream/apps/pipeline/upstream/env/cert-manager/platform-agnostic-multi-user
+configMapGenerator:
+- name: pipeline-install-config
+  env: ./rds/params.env
+  behavior: merge
+- name: pipeline-install-config
+  env: ./s3/params.env
+  behavior: merge
+- name: workflow-controller-configmap
+  behavior: replace
+  files:
+  - ./s3/config
+- name: ml-pipeline-ui-configmap
+  behavior: replace
+  files:
+  - ./s3/viewer-pod-template.json
+generatorOptions:
+  disableNameSuffixHash: true
+patchesStrategicMerge:
+- ./rds/disable-mysql-pv-claim.yaml
+- ./rds/disable-default-secret.yaml
+- ./s3/disable-default-secret.yaml
+- ./s3/aws-configuration-patch.yaml
+# Identifier for application manager to apply ownerReference.
+# The ownerReference ensures the resources get garbage collected
+# when application is deleted.
+commonLabels:
+  application-crd-id: kubeflow-pipelines

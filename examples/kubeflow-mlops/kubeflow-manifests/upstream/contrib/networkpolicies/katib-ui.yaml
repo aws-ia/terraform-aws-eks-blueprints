@@ -1,0 +1,22 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: katib-ui
+  namespace: kubeflow
+spec:
+  podSelector:
+    matchExpressions:
+      - key: katib.kubeflow.org/component
+        operator: In
+        values:
+          - ui
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values:
+                  - istio-system
+  policyTypes:
+    - Ingress

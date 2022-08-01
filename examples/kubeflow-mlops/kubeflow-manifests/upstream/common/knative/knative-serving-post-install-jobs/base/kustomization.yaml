@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- serving-post-install-jobs.yaml
+
+# patches:
+# - patch: |
+#     - op: add
+#       path: /metadata/name
+#       value: storage-version-migration-serving
+#   target:
+#     kind: Job
+#     labelSelector: app=storage-version-migration-serving

@@ -1,0 +1,10 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: istio-ingress
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/certificate-arn: $(certArn)
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/conditions.istio-ingressgateway: '[{"Field":"http-header","HttpHeaderConfig":{"HttpHeaderName": "$(httpHeaderName)", "Values":$(httpHeaderValues)}}]'
+    alb.ingress.kubernetes.io/actions.istio-ingressgateway: '{"Type":"forward","ForwardConfig":{"TargetGroups":[{"ServiceName":"istio-ingressgateway","ServicePort":"80","Weight":100}]}}'

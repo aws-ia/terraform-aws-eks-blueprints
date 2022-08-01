@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: knative-eventing
+resources:
+- upstream/eventing-core.yaml
+- upstream/in-memory-channel.yaml
+- upstream/mt-channel-broker.yaml
+patchesStrategicMerge:
+- patches/clusterrole-patch.yaml
+commonLabels:
+  kustomize.component: knative
+  app.kubernetes.io/component: knative-eventing
+  app.kubernetes.io/name: knative-eventing

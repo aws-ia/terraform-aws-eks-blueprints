@@ -1,0 +1,41 @@
+FROM public.ecr.aws/ubuntu/ubuntu:18.04
+
+RUN apt-get update && apt-get install -y curl \
+    wget \
+    git \
+    python3.8 \
+    python3-pip \
+    python3.8-dev \
+    vim \
+    sudo \
+    jq \
+    unzip
+
+# Install awscli
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+ && unzip -qq awscliv2.zip \
+ && ./aws/install
+
+# Install kubectl
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.21.8/bin/linux/amd64/kubectl \
+ && chmod +x ./kubectl \
+ && cp ./kubectl /bin
+
+# Install eksctl
+RUN curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp && mv /tmp/eksctl /bin
+
+# Install kustomize 
+RUN wget "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.2.1/kustomize_kustomize.v3.2.1_linux_amd64" \
+ && chmod +x ./kustomize_kustomize.v3.2.1_linux_amd64 \
+ && cp ./kustomize_kustomize.v3.2.1_linux_amd64 /bin/kustomize
+
+ENV REPO_PATH=/kubeflow-manifests
+COPY ./tests/e2e/requirements.txt requirements.txt
+
+RUN ln -s /usr/bin/python3.8 /usr/bin/python \
+ && python -m pip install --upgrade pip
+
+RUN python -m pip install -r requirements.txt
+
+WORKDIR /$REPO_PATH
+CMD ["./tests/canary/scripts/run_test.sh"]

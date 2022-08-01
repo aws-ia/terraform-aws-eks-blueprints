@@ -1,0 +1,78 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: activator-service
+  namespace: knative-serving
+spec:
+  action: ALLOW
+  selector:
+    matchLabels:
+      app: activator
+  rules:
+  - {}
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: autoscaler
+  namespace: knative-serving
+spec:
+  action: ALLOW
+  selector:
+    matchLabels:
+      app: autoscaler
+  rules:
+  - {}
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: controller
+  namespace: knative-serving
+spec:
+  action: ALLOW
+  selector:
+    matchLabels:
+      app: controller
+  rules:
+  - {}
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: webhook
+  namespace: knative-serving
+spec:
+  action: ALLOW
+  selector:
+    matchLabels:
+      role: webhook
+  rules:
+  - {}
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: istio-webhook
+  namespace: knative-serving
+spec:
+  action: ALLOW
+  selector:
+    matchLabels:
+      app: istio-webhook
+  rules:
+  - {}
+---
+
+# DestinationRule for mTLS
+apiVersion: "networking.istio.io/v1alpha3"
+kind: DestinationRule
+metadata:
+  name: knative
+  namespace: knative-serving
+spec:
+  host: "*.knative-serving.svc.cluster.local"
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL

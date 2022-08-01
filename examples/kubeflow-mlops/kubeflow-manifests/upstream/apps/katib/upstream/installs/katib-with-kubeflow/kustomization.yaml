@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kubeflow
+resources:
+  - ../katib-cert-manager
+  # Kubeflow Katib components.
+  - kubeflow-katib-roles.yaml
+  - ui-virtual-service.yaml
+images:
+  - name: docker.io/kubeflowkatib/katib-controller
+    newName: docker.io/kubeflowkatib/katib-controller
+    newTag: v0.13.0
+  - name: docker.io/kubeflowkatib/katib-db-manager
+    newName: docker.io/kubeflowkatib/katib-db-manager
+    newTag: v0.13.0
+  - name: docker.io/kubeflowkatib/katib-ui
+    newName: docker.io/kubeflowkatib/katib-ui
+    newTag: v0.13.0
+
+patchesStrategicMerge:
+  - patches/remove-namespace.yaml
+
+vars:
+  - fieldref:
+      fieldPath: metadata.namespace
+    name: KATIB_UI_NAMESPACE
+    objref:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: katib-ui
+
+configurations:
+  - params.yaml

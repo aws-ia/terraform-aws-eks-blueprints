@@ -1,0 +1,14 @@
+# Allow all traffic to the istio-ingressgateway
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: istio-ingressgateway
+spec:
+  action: ALLOW
+  selector:
+    # Same as the istio-ingressgateway Service selector
+    matchLabels:
+      app: istio-ingressgateway
+      istio: ingressgateway
+  rules:
+  - {}

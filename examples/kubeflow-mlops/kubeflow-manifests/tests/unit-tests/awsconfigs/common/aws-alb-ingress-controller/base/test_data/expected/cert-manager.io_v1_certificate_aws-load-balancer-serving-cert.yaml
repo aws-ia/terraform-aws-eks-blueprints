@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/name: aws-load-balancer-controller
+    kustomize.component: aws-load-balancer-controller
+  name: aws-load-balancer-serving-cert
+  namespace: kube-system
+spec:
+  dnsNames:
+  - aws-load-balancer-webhook-service.kube-system.svc
+  - aws-load-balancer-webhook-service.kube-system.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: aws-load-balancer-selfsigned-issuer
+  secretName: aws-load-balancer-webhook-tls

@@ -1,0 +1,7 @@
+boto3==1.18.50
+kfp==1.8.9
+kubernetes==12.0.1
+pytest==6.2.5
+PyYAML==5.4
+black==21.12b0
+mysql-connector-python==8.0.27

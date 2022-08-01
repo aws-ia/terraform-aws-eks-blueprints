@@ -1,0 +1,20 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: poddefaults
+  namespace: kubeflow
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - poddefaults  # mutating webhook 
+  # https://www.elastic.co/guide/en/cloud-on-k8s/1.1/k8s-webhook-network-policies.html
+  # The kubernetes api server must reach the webhook
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 4443
+  policyTypes:
+    - Ingress

@@ -1,0 +1,47 @@
+apiVersion: kubeflow.org/v1alpha1
+kind: PodDefault
+metadata:
+  name: add-aws-secret
+  labels:
+    add-aws-secret : "true"
+spec:
+  desc: add-aws-secret
+  selector:
+    matchLabels:
+      add-aws-secret: "true"
+  env:
+  - name: AWS_ACCESS_KEY_ID
+    valueFrom:
+      secretKeyRef:
+        name: mlpipeline-minio-artifact
+        key: accesskey
+  - name: AWS_SECRET_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: mlpipeline-minio-artifact
+        key: secretkey
+  - name: username
+    valueFrom:
+      secretKeyRef:
+        name: mysql-secret
+        key: username
+  - name: password
+    valueFrom:
+      secretKeyRef:
+        name: mysql-secret
+        key: password
+  - name: host
+    valueFrom:
+      secretKeyRef:
+        name: mysql-secret
+        key: host
+  - name: database
+    valueFrom:
+      secretKeyRef:
+        name: mysql-secret
+        key: database
+  - name: port
+    valueFrom:
+      secretKeyRef:
+        name: mysql-secret
+        key: port

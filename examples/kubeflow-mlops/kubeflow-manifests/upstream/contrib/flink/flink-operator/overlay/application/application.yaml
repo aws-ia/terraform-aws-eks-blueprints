@@ -1,0 +1,38 @@
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  name: flink-operator
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: flinkoperator
+      app.kubernetes.io/instance: flink-operator-v1.1.0
+      app.kubernetes.io/managed-by: kfctl
+      app.kubernetes.io/component: flink-operator
+      app.kubernetes.io/part-of: kubeflow
+      app.kubernetes.io/version: v1.1.0
+  componentKinds:
+  - group: core
+    kind: Service
+  - group: apps
+    kind: Deployment
+  - group: core
+    kind: ConfigMap
+  - group: core
+    kind: ServiceAccount
+  - group: flinkoperator.k8s.io
+    kind: FlinkCluster
+  descriptor:
+    type: "flink-operator"
+    version: "v1beta1"
+    description: "Flink Operator allows users to create and manage the \"FlinkCluster\" custom resource."
+    maintainers:
+    - name: Jiaxin Shan
+      email: seedjeffwan@gmail.com
+    owners:
+    - name: Jiaxin Shan
+      email: seedjeffwan@gmail.com
+    keywords:
+    - "flink"
+    - "beam"
+  addOwnerRef: true

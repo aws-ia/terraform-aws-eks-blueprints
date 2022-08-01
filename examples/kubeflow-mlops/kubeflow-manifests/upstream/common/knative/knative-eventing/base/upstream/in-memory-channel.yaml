@@ -1,0 +1,828 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-imc-event-dispatcher
+  namespace: knative-eventing
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+data:
+  MaxIdleConnections: "1000"
+  MaxIdleConnectionsPerHost: "100"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: imc-addressable-resolver
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+    duck.knative.dev/addressable: "true"
+rules:
+  - apiGroups:
+      - messaging.knative.dev
+    resources:
+      - inmemorychannels
+      - inmemorychannels/status
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: imc-channelable-manipulator
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+    duck.knative.dev/channelable: "true"
+rules:
+  - apiGroups:
+      - messaging.knative.dev
+    resources:
+      - inmemorychannels
+      - inmemorychannels/status
+    verbs:
+      - create
+      - get
+      - list
+      - watch
+      - update
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: imc-controller
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+rules:
+  - apiGroups:
+      - messaging.knative.dev
+    resources:
+      - inmemorychannels
+      - inmemorychannels/status
+    verbs:
+      - get
+      - list
+      - watch
+      - update
+  - apiGroups:
+      - messaging.knative.dev
+    resources:
+      - inmemorychannels/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - messaging.knative.dev
+    resources:
+      - inmemorychannels/finalizers
+      - inmemorychannels/status
+      - inmemorychannels
+    verbs:
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - services
+      - serviceaccounts
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - endpoints
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - "rbac.authorization.k8s.io"
+    resources:
+      - rolebindings
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+  - apiGroups:
+      - apps
+    resources:
+      - deployments/status
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: imc-controller
+  namespace: knative-eventing
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: imc-dispatcher
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+rules:
+  - apiGroups:
+      - messaging.knative.dev
+    resources:
+      - inmemorychannels
+      - inmemorychannels/status
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - messaging.knative.dev
+    resources:
+      - inmemorychannels/finalizers
+      - inmemorychannels/status
+      - inmemorychannels
+    verbs:
+      - patch
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: imc-dispatcher
+  namespace: knative-eventing
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+    messaging.knative.dev/channel: in-memory-channel
+    messaging.knative.dev/role: dispatcher
+spec:
+  selector:
+    messaging.knative.dev/channel: in-memory-channel
+    messaging.knative.dev/role: dispatcher
+  ports:
+    - name: http-dispatcher
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: imc-dispatcher
+  namespace: knative-eventing
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: imc-controller
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+subjects:
+  - kind: ServiceAccount
+    name: imc-controller
+    namespace: knative-eventing
+roleRef:
+  kind: ClusterRole
+  name: imc-controller
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: imc-dispatcher
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+subjects:
+  - kind: ServiceAccount
+    name: imc-dispatcher
+    namespace: knative-eventing
+roleRef:
+  kind: ClusterRole
+  name: imc-dispatcher
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: inmemorychannels.messaging.knative.dev
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+    knative.dev/crd-install: "true"
+    messaging.knative.dev/subscribable: "true"
+    duck.knative.dev/addressable: "true"
+spec:
+  group: messaging.knative.dev
+  versions:
+    - name: v1beta1
+      served: true
+      storage: false
+      subresources:
+        status: {}
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              description: Spec defines the desired state of the Channel.
+              type: object
+              properties:
+                delivery:
+                  description: DeliverySpec contains the default delivery spec for each subscription to this Channelable. Each subscription delivery spec, if any, overrides this global delivery spec.
+                  type: object
+                  properties:
+                    backoffDelay:
+                      description: 'BackoffDelay is the delay before retrying. More information on Duration format: - https://www.iso.org/iso-8601-date-and-time-format.html - https://en.wikipedia.org/wiki/ISO_8601  For linear policy, backoff delay is backoffDelay*<numberOfRetries>. For exponential policy, backoff delay is backoffDelay*2^<numberOfRetries>.'
+                      type: string
+                    backoffPolicy:
+                      description: BackoffPolicy is the retry backoff policy (linear, exponential).
+                      type: string
+                    deadLetterSink:
+                      description: DeadLetterSink is the sink receiving event that could not be sent to a destination.
+                      type: object
+                      properties:
+                        ref:
+                          description: Ref points to an Addressable.
+                          type: object
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/ This is optional field, it gets defaulted to the object holding it if left out.'
+                              type: string
+                        uri:
+                          description: URI can be an absolute URL(non-empty scheme and non-empty host) pointing to the target or a relative URI. Relative URIs will be resolved using the base URI retrieved from Ref.
+                          type: string
+                    retry:
+                      description: Retry is the minimum number of retries the sender should attempt when sending an event before moving it to the dead letter sink.
+                      type: integer
+                      format: int32
+                subscribers:
+                  description: This is the list of subscriptions for this subscribable.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      delivery:
+                        description: DeliverySpec contains options controlling the event delivery
+                        type: object
+                        properties:
+                          backoffDelay:
+                            description: 'BackoffDelay is the delay before retrying. More information on Duration format: - https://www.iso.org/iso-8601-date-and-time-format.html - https://en.wikipedia.org/wiki/ISO_8601  For linear policy, backoff delay is backoffDelay*<numberOfRetries>. For exponential policy, backoff delay is backoffDelay*2^<numberOfRetries>.'
+                            type: string
+                          backoffPolicy:
+                            description: BackoffPolicy is the retry backoff policy (linear, exponential).
+                            type: string
+                          deadLetterSink:
+                            description: DeadLetterSink is the sink receiving event that could not be sent to a destination.
+                            type: object
+                            properties:
+                              ref:
+                                description: Ref points to an Addressable.
+                                type: object
+                                properties:
+                                  apiVersion:
+                                    description: API version of the referent.
+                                    type: string
+                                  kind:
+                                    description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                    type: string
+                                  namespace:
+                                    description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/ This is optional field, it gets defaulted to the object holding it if left out.'
+                                    type: string
+                              uri:
+                                description: URI can be an absolute URL(non-empty scheme and non-empty host) pointing to the target or a relative URI. Relative URIs will be resolved using the base URI retrieved from Ref.
+                                type: string
+                          retry:
+                            description: Retry is the minimum number of retries the sender should attempt when sending an event before moving it to the dead letter sink.
+                            type: integer
+                            format: int32
+                      generation:
+                        description: Generation of the origin of the subscriber with uid:UID.
+                        type: integer
+                        format: int64
+                      replyUri:
+                        description: ReplyURI is the endpoint for the reply
+                        type: string
+                      subscriberUri:
+                        description: SubscriberURI is the endpoint for the subscriber
+                        type: string
+                      uid:
+                        description: UID is used to understand the origin of the subscriber.
+                        type: string
+            status:
+              description: Status represents the current state of the Channel. This data may be out of date.
+              type: object
+              properties:
+                address:
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                annotations:
+                  description: Annotations is additional Status fields for the Resource to save some additional State as well as convey more information to the user. This is roughly akin to Annotations on any k8s resource, just the reconciler conveying richer information outwards.
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                conditions:
+                  description: Conditions the latest available observations of a resource's current state.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      lastTransitionTime:
+                        description: LastTransitionTime is the last time the condition transitioned from one status to another. We use VolatileTime in place of metav1.Time to exclude this from creating equality.Semantic differences (all other things held constant).
+                        type: string
+                      message:
+                        description: A human readable message indicating details about the transition.
+                        type: string
+                      reason:
+                        description: The reason for the condition's last transition.
+                        type: string
+                      severity:
+                        description: Severity with which to treat failures of this type of condition. When this is not specified, it defaults to Error.
+                        type: string
+                      status:
+                        description: Status of the condition, one of True, False, Unknown.
+                        type: string
+                      type:
+                        description: Type of condition.
+                        type: string
+                deadLetterChannel:
+                  description: DeadLetterChannel is a KReference and is set by the channel when it supports native error handling via a channel Failed messages are delivered here.
+                  type: object
+                  properties:
+                    apiVersion:
+                      description: API version of the referent.
+                      type: string
+                    kind:
+                      description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                      type: string
+                    name:
+                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                      type: string
+                    namespace:
+                      description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/ This is optional field, it gets defaulted to the object holding it if left out.'
+                      type: string
+                observedGeneration:
+                  description: ObservedGeneration is the 'Generation' of the Service that was last processed by the controller.
+                  type: integer
+                  format: int64
+                subscribers:
+                  description: This is the list of subscription's statuses for this channel.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      message:
+                        description: A human readable message indicating details of Ready status.
+                        type: string
+                      observedGeneration:
+                        description: Generation of the origin of the subscriber with uid:UID.
+                        type: integer
+                        format: int64
+                      ready:
+                        description: Status of the subscriber.
+                        type: string
+                      uid:
+                        description: UID is used to understand the origin of the subscriber.
+                        type: string
+      additionalPrinterColumns:
+        - name: URL
+          type: string
+          jsonPath: .status.address.url
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+        - name: Ready
+          type: string
+          jsonPath: ".status.conditions[?(@.type==\"Ready\")].status"
+        - name: Reason
+          type: string
+          jsonPath: ".status.conditions[?(@.type==\"Ready\")].reason"
+    - subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: URL
+          type: string
+          jsonPath: .status.address.url
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+        - name: Ready
+          type: string
+          jsonPath: ".status.conditions[?(@.type==\"Ready\")].status"
+        - name: Reason
+          type: string
+          jsonPath: ".status.conditions[?(@.type==\"Ready\")].reason"
+      name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              description: Spec defines the desired state of the Channel.
+              type: object
+              properties:
+                delivery:
+                  description: DeliverySpec contains the default delivery spec for each subscription to this Channelable. Each subscription delivery spec, if any, overrides this global delivery spec.
+                  type: object
+                  properties:
+                    backoffDelay:
+                      description: 'BackoffDelay is the delay before retrying. More information on Duration format: - https://www.iso.org/iso-8601-date-and-time-format.html - https://en.wikipedia.org/wiki/ISO_8601  For linear policy, backoff delay is backoffDelay*<numberOfRetries>. For exponential policy, backoff delay is backoffDelay*2^<numberOfRetries>.'
+                      type: string
+                    backoffPolicy:
+                      description: BackoffPolicy is the retry backoff policy (linear, exponential).
+                      type: string
+                    deadLetterSink:
+                      description: DeadLetterSink is the sink receiving event that could not be sent to a destination.
+                      type: object
+                      properties:
+                        ref:
+                          description: Ref points to an Addressable.
+                          type: object
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/ This is optional field, it gets defaulted to the object holding it if left out.'
+                              type: string
+                        uri:
+                          description: URI can be an absolute URL(non-empty scheme and non-empty host) pointing to the target or a relative URI. Relative URIs will be resolved using the base URI retrieved from Ref.
+                          type: string
+                    retry:
+                      description: Retry is the minimum number of retries the sender should attempt when sending an event before moving it to the dead letter sink.
+                      type: integer
+                      format: int32
+                subscribers:
+                  description: This is the list of subscriptions for this subscribable.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      delivery:
+                        description: DeliverySpec contains options controlling the event delivery
+                        type: object
+                        properties:
+                          backoffDelay:
+                            description: 'BackoffDelay is the delay before retrying. More information on Duration format: - https://www.iso.org/iso-8601-date-and-time-format.html - https://en.wikipedia.org/wiki/ISO_8601  For linear policy, backoff delay is backoffDelay*<numberOfRetries>. For exponential policy, backoff delay is backoffDelay*2^<numberOfRetries>.'
+                            type: string
+                          backoffPolicy:
+                            description: BackoffPolicy is the retry backoff policy (linear, exponential).
+                            type: string
+                          deadLetterSink:
+                            description: DeadLetterSink is the sink receiving event that could not be sent to a destination.
+                            type: object
+                            properties:
+                              ref:
+                                description: Ref points to an Addressable.
+                                type: object
+                                properties:
+                                  apiVersion:
+                                    description: API version of the referent.
+                                    type: string
+                                  kind:
+                                    description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                    type: string
+                                  namespace:
+                                    description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/ This is optional field, it gets defaulted to the object holding it if left out.'
+                                    type: string
+                              uri:
+                                description: URI can be an absolute URL(non-empty scheme and non-empty host) pointing to the target or a relative URI. Relative URIs will be resolved using the base URI retrieved from Ref.
+                                type: string
+                          retry:
+                            description: Retry is the minimum number of retries the sender should attempt when sending an event before moving it to the dead letter sink.
+                            type: integer
+                            format: int32
+                      generation:
+                        description: Generation of the origin of the subscriber with uid:UID.
+                        type: integer
+                        format: int64
+                      replyUri:
+                        description: ReplyURI is the endpoint for the reply
+                        type: string
+                      subscriberUri:
+                        description: SubscriberURI is the endpoint for the subscriber
+                        type: string
+                      uid:
+                        description: UID is used to understand the origin of the subscriber.
+                        type: string
+            status:
+              description: Status represents the current state of the Channel. This data may be out of date.
+              type: object
+              properties:
+                address:
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                annotations:
+                  description: Annotations is additional Status fields for the Resource to save some additional State as well as convey more information to the user. This is roughly akin to Annotations on any k8s resource, just the reconciler conveying richer information outwards.
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                conditions:
+                  description: Conditions the latest available observations of a resource's current state.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      lastTransitionTime:
+                        description: LastTransitionTime is the last time the condition transitioned from one status to another. We use VolatileTime in place of metav1.Time to exclude this from creating equality.Semantic differences (all other things held constant).
+                        type: string
+                      message:
+                        description: A human readable message indicating details about the transition.
+                        type: string
+                      reason:
+                        description: The reason for the condition's last transition.
+                        type: string
+                      severity:
+                        description: Severity with which to treat failures of this type of condition. When this is not specified, it defaults to Error.
+                        type: string
+                      status:
+                        description: Status of the condition, one of True, False, Unknown.
+                        type: string
+                      type:
+                        description: Type of condition.
+                        type: string
+                deadLetterChannel:
+                  description: DeadLetterChannel is a KReference and is set by the channel when it supports native error handling via a channel Failed messages are delivered here.
+                  type: object
+                  properties:
+                    apiVersion:
+                      description: API version of the referent.
+                      type: string
+                    kind:
+                      description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                      type: string
+                    name:
+                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                      type: string
+                    namespace:
+                      description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/ This is optional field, it gets defaulted to the object holding it if left out.'
+                      type: string
+                observedGeneration:
+                  description: ObservedGeneration is the 'Generation' of the Service that was last processed by the controller.
+                  type: integer
+                  format: int64
+                subscribers:
+                  description: This is the list of subscription's statuses for this channel.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      message:
+                        description: A human readable message indicating details of Ready status.
+                        type: string
+                      observedGeneration:
+                        description: Generation of the origin of the subscriber with uid:UID.
+                        type: integer
+                        format: int64
+                      ready:
+                        description: Status of the subscriber.
+                        type: string
+                      uid:
+                        description: UID is used to understand the origin of the subscriber.
+                        type: string
+  names:
+    kind: InMemoryChannel
+    plural: inmemorychannels
+    singular: inmemorychannel
+    categories:
+      - all
+      - knative
+      - messaging
+      - channel
+    shortNames:
+      - imc
+  scope: Namespaced
+  conversion:
+    strategy: Webhook
+    webhook:
+      conversionReviewVersions: ["v1", "v1beta1"]
+      clientConfig:
+        service:
+          name: eventing-webhook
+          namespace: knative-eventing
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: imc-controller
+  namespace: knative-eventing
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+    knative.dev/high-availability: "true"
+spec:
+  selector:
+    matchLabels:
+      messaging.knative.dev/channel: in-memory-channel
+      messaging.knative.dev/role: controller
+  template:
+    metadata:
+      labels:
+        messaging.knative.dev/channel: in-memory-channel
+        messaging.knative.dev/role: controller
+    spec:
+      serviceAccountName: imc-controller
+      enableServiceLinks: false
+      containers:
+        - name: controller
+          image: gcr.io/knative-releases/knative.dev/eventing/cmd/in_memory/channel_controller@sha256:904f42a768a9bc64999e7302d2bc7c1c48a08e74a82355cf57be513e6a124b82
+          env:
+            - name: CONFIG_LOGGING_NAME
+              value: config-logging
+            - name: CONFIG_OBSERVABILITY_NAME
+              value: config-observability
+            - name: METRICS_DOMAIN
+              value: knative.dev/inmemorychannel-controller
+            - name: SYSTEM_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: DISPATCHER_IMAGE
+              value: gcr.io/knative-releases/knative.dev/eventing/cmd/in_memory/channel_dispatcher@sha256:a6983f71c04619928199cc21e07ee6f1e1c87586621bc03b10c9ba1abd92bfa8
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          securityContext:
+            allowPrivilegeEscalation: false
+          ports:
+            - name: metrics
+              containerPort: 9090
+            - name: profiling
+              containerPort: 8008
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: imc-dispatcher
+  namespace: knative-eventing
+  labels:
+    eventing.knative.dev/release: "v0.22.1"
+    knative.dev/high-availability: "true"
+spec:
+  selector:
+    matchLabels:
+      messaging.knative.dev/channel: in-memory-channel
+      messaging.knative.dev/role: dispatcher
+  template:
+    metadata:
+      labels:
+        messaging.knative.dev/channel: in-memory-channel
+        messaging.knative.dev/role: dispatcher
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    messaging.knative.dev/channel: in-memory-channel
+                    messaging.knative.dev/role: dispatcher
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+      serviceAccountName: imc-dispatcher
+      enableServiceLinks: false
+      containers:
+        - name: dispatcher
+          image: gcr.io/knative-releases/knative.dev/eventing/cmd/in_memory/channel_dispatcher@sha256:a6983f71c04619928199cc21e07ee6f1e1c87586621bc03b10c9ba1abd92bfa8
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+            initialDelaySeconds: 5
+          env:
+            - name: CONFIG_LOGGING_NAME
+              value: config-logging
+            - name: CONFIG_OBSERVABILITY_NAME
+              value: config-observability
+            - name: METRICS_DOMAIN
+              value: knative.dev/inmemorychannel-dispatcher
+            - name: SYSTEM_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: CONTAINER_NAME
+              value: dispatcher
+            - name: MAX_IDLE_CONNS
+              value: "1000"
+            - name: MAX_IDLE_CONNS_PER_HOST
+              value: "1000"
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+            - containerPort: 9090
+              name: metrics
+---
+

@@ -1,0 +1,7 @@
+{{ if (findRE "<pre" .Content 1) }}
+    {{ $syntax := resources.Get "css/syntax.css" | minify }}
+    <link href="{{ $syntax.RelPermalink }}" rel="stylesheet">
+
+    {{ $copyCss := resources.Get "css/copy-code-button.css" | minify }}
+    <link href="{{ $copyCss.RelPermalink }}" rel="stylesheet">
+{{ end }}

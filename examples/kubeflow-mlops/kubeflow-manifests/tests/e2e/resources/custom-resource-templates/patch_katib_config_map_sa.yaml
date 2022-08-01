@@ -1,0 +1,64 @@
+# This patch enables compatibility of the AwsIamForServiceAccount profile plugin with Katib
+# to grant profile IAM permissions to Katib pods in the profile namespace.
+#
+# The patch sets the service account for all Katib algorithms to be the default-editor service account.
+# The default service account is `default`.
+#
+# Warning: If you have already applied changes to the `katib-config` config map this patch will override
+# your changes. To enable AwsIamForServiceAccount profile plugin compatibility with your installation
+# please follow the guide at https://awslabs.github.io/kubeflow-manifests/docs/component-guides/katib/ .
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: katib-config
+  namespace: kubeflow
+data:
+  suggestion: |-
+    {
+      "random": {
+        "image": "docker.io/kubeflowkatib/suggestion-hyperopt:v0.13.0",
+        "serviceAccountName": "default-editor"
+      },
+      "tpe": {
+        "image": "docker.io/kubeflowkatib/suggestion-hyperopt:v0.13.0",
+        "serviceAccountName": "default-editor"
+      },
+      "grid": {
+        "image": "docker.io/kubeflowkatib/suggestion-chocolate:v0.13.0",
+        "serviceAccountName": "default-editor"
+      },
+      "hyperband": {
+        "image": "docker.io/kubeflowkatib/suggestion-hyperband:v0.13.0",
+        "serviceAccountName": "default-editor"
+      },
+      "bayesianoptimization": {
+        "image": "docker.io/kubeflowkatib/suggestion-skopt:v0.13.0",
+        "serviceAccountName": "default-editor"
+      },
+      "cmaes": {
+        "image": "docker.io/kubeflowkatib/suggestion-goptuna:v0.13.0",
+        "serviceAccountName": "default-editor"
+      },
+      "sobol": {
+        "image": "docker.io/kubeflowkatib/suggestion-goptuna:v0.13.0",
+        "serviceAccountName": "default-editor"
+      },
+      "multivariate-tpe": {
+        "image": "docker.io/kubeflowkatib/suggestion-optuna:v0.13.0",
+        "serviceAccountName": "default-editor"
+      },
+      "enas": {
+        "image": "docker.io/kubeflowkatib/suggestion-enas:v0.13.0",
+        "resources": {
+          "limits": {
+            "memory": "200Mi"
+          }
+        },
+        "serviceAccountName": "default-editor"
+      },
+      "darts": {
+        "image": "docker.io/kubeflowkatib/suggestion-darts:v0.13.0",
+        "serviceAccountName": "default-editor"
+      }
+    }

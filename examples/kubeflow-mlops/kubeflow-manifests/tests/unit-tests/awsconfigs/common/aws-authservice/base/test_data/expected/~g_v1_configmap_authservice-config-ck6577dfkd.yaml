@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  LOGOUT_URL: ""
+kind: ConfigMap
+metadata:
+  name: authservice-config-ck6577dfkd
+  namespace: istio-system

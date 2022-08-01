@@ -1,0 +1,60 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kubeflow
+resources:
+  # Namespace.
+  - ../../components/namespace
+  # Katib controller.
+  - ../../components/controller/
+  # Katib CRDs.
+  - ../../components/crd/
+  # Katib DB manager.
+  - ../../components/db-manager/
+  # Katib DB mysql.
+  - ../../components/mysql/
+  # Katib UI.
+  - ../../components/ui/
+  # Katib webhooks.
+  - ../../components/webhook/
+  # Cert-manager certificate for webhooks
+  - certificate.yaml
+images:
+  - name: docker.io/kubeflowkatib/katib-controller
+    newName: docker.io/kubeflowkatib/katib-controller
+    newTag: v0.13.0
+  - name: docker.io/kubeflowkatib/katib-db-manager
+    newName: docker.io/kubeflowkatib/katib-db-manager
+    newTag: v0.13.0
+  - name: docker.io/kubeflowkatib/katib-ui
+    newName: docker.io/kubeflowkatib/katib-ui
+    newTag: v0.13.0
+
+patchesStrategicMerge:
+  - patches/katib-cert-injection.yaml
+
+vars:
+  - fieldref:
+      fieldPath: metadata.namespace
+    name: KATIB_NAMESPACE
+    objref:
+      apiVersion: v1
+      kind: Service
+      name: katib-controller
+  - fieldref:
+      fieldPath: metadata.name
+    name: KATIB_SERVICE_NAME
+    objref:
+      apiVersion: v1
+      kind: Service
+      name: katib-controller
+  - name: KATIB_CERT_NAME
+    objref:
+      kind: Certificate
+      group: cert-manager.io
+      version: v1
+      name: katib-webhook-cert
+    fieldref:
+      fieldpath: metadata.name
+
+configurations:
+  - params.yaml

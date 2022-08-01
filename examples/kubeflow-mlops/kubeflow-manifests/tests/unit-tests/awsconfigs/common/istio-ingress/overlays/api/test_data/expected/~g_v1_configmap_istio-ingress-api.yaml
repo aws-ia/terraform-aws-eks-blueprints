@@ -1,0 +1,13 @@
+apiVersion: v1
+data:
+  certArn: ""
+  httpHeaderName: x-api-key
+  httpHeaderValues: '["token1", "token2"]'
+  loadBalancerScheme: internet-facing
+kind: ConfigMap
+metadata:
+  annotations: {}
+  labels:
+    kustomize.component: istio-ingress
+  name: istio-ingress-api
+  namespace: istio-system

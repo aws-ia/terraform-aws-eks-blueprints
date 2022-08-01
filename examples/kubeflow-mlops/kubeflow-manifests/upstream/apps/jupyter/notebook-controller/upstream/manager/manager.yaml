@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    control-plane: controller-manager
+  name: system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+spec:
+  template:
+    metadata:
+      labels:
+        app: notebook-controller
+        kustomize.component: notebook-controller
+    spec:
+      containers:
+      - name: manager
+        image: public.ecr.aws/j1r0q0g6/notebooks/notebook-controller
+        command:
+          - /manager
+        env:
+          - name: USE_ISTIO
+            valueFrom:
+              configMapKeyRef:
+                name: config
+                key: USE_ISTIO
+          - name: ISTIO_GATEWAY
+            valueFrom:
+              configMapKeyRef:
+                name: config
+                key: ISTIO_GATEWAY
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
+      serviceAccountName: service-account

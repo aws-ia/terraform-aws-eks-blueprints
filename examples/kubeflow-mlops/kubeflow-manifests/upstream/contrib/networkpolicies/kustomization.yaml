@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kubeflow
+resources:
+  - cache-server.yaml
+  - centraldashboard.yaml
+  - default-allow-same-namespace.yaml
+  - jupyter-web-app.yaml
+  - katib-controller.yaml
+  - katib-db-manager.yaml
+  - katib-ui.yaml
+  - kfserving-models-web-app.yaml
+  - kfserving.yaml
+  - kserve-models-web-app.yaml
+  - metadata-grpc-server.yaml
+  - minio.yaml
+  - ml-pipeline-ui.yaml 
+  - ml-pipeline.yaml
+  - poddefaults.yaml
+  - seldon.yaml
+  - volumes-web-app.yaml

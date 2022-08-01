@@ -1,0 +1,10 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    app.kubernetes.io/name: aws-load-balancer-controller
+    kustomize.component: aws-load-balancer-controller
+  name: aws-load-balancer-selfsigned-issuer
+  namespace: kube-system
+spec:
+  selfSigned: {}

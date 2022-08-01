@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kf-feast-kafka
+spec:
+  template:
+    spec:
+      containers:
+        - name: kafka
+          env:
+            - name: KAFKA_CFG_ADVERTISED_LISTENERS
+              value: "INTERNAL://kf-feast-kafka-0.kf-feast-kafka-headless.kubeflow.svc.cluster.local:9093,CLIENT://kf-feast-kafka-0.kf-feast-kafka-headless.kubeflow.svc.cluster.local:9092"

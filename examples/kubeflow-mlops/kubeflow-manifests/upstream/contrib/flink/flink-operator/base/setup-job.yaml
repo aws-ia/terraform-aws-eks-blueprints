@@ -1,0 +1,45 @@
+---
+# Source: flink-operator/templates/generate-cert.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cert-job
+  namespace: kubeflow
+  labels:
+    app.kubernetes.io/name: flink-operator
+    app.kubernetes.io/component: cert-job
+spec:
+  ttlSecondsAfterFinished: 300
+  backoffLimit: 0
+  completions: 1
+  parallelism: 1
+  template:
+    spec:
+      containers:
+      - command:
+        - "/bin/bash"
+        - "-ec"
+        - |
+          ls /cert_to_create  
+          for cert in /cert_to_create/*;
+            do
+              bash $cert;
+          done
+        image: gcr.io/flink-operator/deployer:webhook-cert
+        imagePullPolicy: Always
+        name: create-cert
+        volumeMounts:
+        - name: cert-configmap
+          mountPath: "/cert_to_create/"
+        - name: webhook-configmap
+          mountPath: "/webhook_to_create/"
+      dnsPolicy: ClusterFirst
+      restartPolicy: Never
+      serviceAccountName: flink-operator-sa
+      volumes:
+      - name: cert-configmap
+        configMap:
+          name: cert-configmap
+      - name: webhook-configmap
+        configMap:
+          name: webhook-configmap

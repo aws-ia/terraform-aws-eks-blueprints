@@ -1,0 +1,1007 @@
+---
+# Source: feast/charts/feast-core/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kf-feast-feast-core
+  namespace: feast
+  labels:
+    app: feast-core
+    component: core
+    chart: feast-core-0.25.0
+    release: kf-feast
+    heritage: Helm
+type: Opaque
+stringData:
+  application-secret.yaml: |
+    enabled: true
+---
+# Source: feast/charts/feast-serving/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kf-feast-feast-serving
+  namespace: feast
+  labels:
+    app: feast-serving
+    component: serving
+    chart: feast-serving-0.25.0
+    release: kf-feast
+    heritage: Helm
+type: Opaque
+stringData:
+  application-secret.yaml: |
+    enabled: true
+---
+# Source: feast/charts/feast-core/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kf-feast-feast-core
+  namespace: feast
+  labels:
+    app: feast-core
+    component: core
+    chart: feast-core-0.25.0
+    release: kf-feast
+    heritage: Helm
+data:
+  application-generated.yaml: |
+    spring:
+      datasource:
+        url: jdbc:postgresql://kf-feast-postgresql:5432/postgres
+
+    server:
+      port: 8080
+
+  application-override.yaml: |
+    enabled: true
+---
+# Source: feast/charts/feast-serving/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kf-feast-feast-serving
+  namespace: feast
+  labels:
+    app: feast-serving
+    component: serving
+    chart: feast-serving-0.25.0
+    release: kf-feast
+    heritage: Helm
+data:
+  application-generated.yaml: |
+    feast:
+      core-host: kf-feast-feast-core
+      
+      stores:
+      - name: online
+        type: REDIS 
+        config:
+          host: kf-feast-redis-master
+          port: 6379
+        subscriptions:
+        - name: "*"
+          project: "*"
+          version: "*"
+      
+      job_store:
+        redis_host: kf-feast-redis-master
+        redis_port: 6379
+
+    server:
+      port: 8080
+
+  application-override.yaml: |
+    enabled: true
+---
+# Source: feast/charts/redis/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kf-feast-redis
+  labels:
+    app: redis
+    chart: redis-10.5.6
+    heritage: Helm
+    release: kf-feast
+data:
+  redis.conf: |-
+    # User-supplied configuration:
+    # Enable AOF https://redis.io/topics/persistence#append-only-file
+    appendonly yes
+    # Disable RDB persistence, AOF persistence already enabled.
+    save ""
+  master.conf: |-
+    dir /data
+    rename-command FLUSHDB ""
+    rename-command FLUSHALL ""
+  replica.conf: |-
+    dir /data
+    slave-read-only yes
+    rename-command FLUSHDB ""
+    rename-command FLUSHALL ""
+---
+# Source: feast/charts/redis/templates/health-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kf-feast-redis-health
+  labels:
+    app: redis
+    chart: redis-10.5.6
+    heritage: Helm
+    release: kf-feast
+data:
+  ping_readiness_local.sh: |-
+    response=$(
+      timeout -s 9 $1 \
+      redis-cli \
+        -h localhost \
+        -p $REDIS_PORT \
+        ping
+    )
+    if [ "$response" != "PONG" ]; then
+      echo "$response"
+      exit 1
+    fi
+  ping_liveness_local.sh: |-
+    response=$(
+      timeout -s 9 $1 \
+      redis-cli \
+        -h localhost \
+        -p $REDIS_PORT \
+        ping
+    )
+    if [ "$response" != "PONG" ] && [ "$response" != "LOADING Redis is loading the dataset in memory" ]; then
+      echo "$response"
+      exit 1
+    fi
+  ping_readiness_master.sh: |-
+    response=$(
+      timeout -s 9 $1 \
+      redis-cli \
+        -h $REDIS_MASTER_HOST \
+        -p $REDIS_MASTER_PORT_NUMBER \
+        ping
+    )
+    if [ "$response" != "PONG" ]; then
+      echo "$response"
+      exit 1
+    fi
+  ping_liveness_master.sh: |-
+    response=$(
+      timeout -s 9 $1 \
+      redis-cli \
+        -h $REDIS_MASTER_HOST \
+        -p $REDIS_MASTER_PORT_NUMBER \
+        ping
+    )
+    if [ "$response" != "PONG" ] && [ "$response" != "LOADING Redis is loading the dataset in memory" ]; then
+      echo "$response"
+      exit 1
+    fi
+  ping_readiness_local_and_master.sh: |-
+    script_dir="$(dirname "$0")"
+    exit_status=0
+    "$script_dir/ping_readiness_local.sh" $1 || exit_status=$?
+    "$script_dir/ping_readiness_master.sh" $1 || exit_status=$?
+    exit $exit_status
+  ping_liveness_local_and_master.sh: |-
+    script_dir="$(dirname "$0")"
+    exit_status=0
+    "$script_dir/ping_liveness_local.sh" $1 || exit_status=$?
+    "$script_dir/ping_liveness_master.sh" $1 || exit_status=$?
+    exit $exit_status
+---
+# Source: feast/charts/feast-core/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kf-feast-feast-core
+  namespace: feast
+  labels:
+    app: feast-core
+    chart: feast-core-0.25.0
+    release: kf-feast
+    heritage: Helm
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+  - name: grpc
+    port: 6565
+    targetPort: 6565
+  selector:
+    app: feast-core
+    component: core
+    release: kf-feast
+---
+# Source: feast/charts/feast-jobservice/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kf-feast-feast-jobservice
+  namespace: feast
+  labels:
+    app: feast-jobservice
+    chart: feast-jobservice-0.9.2
+    release: kf-feast
+    heritage: Helm
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+  - name: grpc
+    port: 6568
+    targetPort: 6568
+  selector:
+    app: feast-jobservice
+    component: jobservice
+    release: kf-feast
+---
+# Source: feast/charts/feast-serving/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kf-feast-feast-serving
+  namespace: feast
+  labels:
+    app: feast-serving
+    chart: feast-serving-0.25.0
+    release: kf-feast
+    heritage: Helm
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+  - name: grpc
+    port: 6566
+    targetPort: 6566
+  selector:
+    app: feast-serving
+    component: serving
+    release: kf-feast
+---
+# Source: feast/charts/postgresql/templates/svc-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kf-feast-postgresql-headless
+  labels:
+    app: postgresql
+    chart: postgresql-8.6.1
+    release: "kf-feast"
+    heritage: "Helm"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: tcp-postgresql
+      port: 5432
+      targetPort: tcp-postgresql
+  selector:
+    app: postgresql
+    release: "kf-feast"
+---
+# Source: feast/charts/postgresql/templates/svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kf-feast-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.6.1
+    release: "kf-feast"
+    heritage: "Helm"
+spec:
+  type: ClusterIP
+  ports:
+    - name: tcp-postgresql
+      port: 5432
+      targetPort: tcp-postgresql
+  selector:
+    app: postgresql
+    release: "kf-feast"
+    role: master
+---
+# Source: feast/charts/redis/templates/headless-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kf-feast-redis-headless
+  labels:
+    app: redis
+    chart: redis-10.5.6
+    release: kf-feast
+    heritage: Helm
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: redis
+  selector:
+    app: redis
+    release: kf-feast
+---
+# Source: feast/charts/redis/templates/redis-master-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kf-feast-redis-master
+  labels:
+    app: redis
+    chart: redis-10.5.6
+    release: kf-feast
+    heritage: Helm
+spec:
+  type: ClusterIP
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: redis
+  selector:
+    app: redis
+    release: kf-feast
+    role: master
+---
+# Source: feast/charts/redis/templates/redis-slave-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kf-feast-redis-slave
+  labels:
+    app: redis
+    chart: redis-10.5.6
+    release: kf-feast
+    heritage: Helm
+spec:
+  type: ClusterIP
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: redis
+  selector:
+    app: redis
+    release: kf-feast
+    role: slave
+---
+# Source: feast/charts/feast-core/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kf-feast-feast-core
+  namespace: feast
+  labels:
+    app: feast-core
+    component: core
+    chart: feast-core-0.25.0
+    release: kf-feast
+    heritage: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: feast-core
+      component: core
+      release: kf-feast
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: 65652a82857b1cc41cf1b96a3466be3004271fc1e9c7c100927ceade4f499ff4
+        checksum/secret: 534fff11a6f05225ea57b92e5ac8d9a74f9c1bb762c1f24930ea7bdc82728d52
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+      labels:
+        app: feast-core
+        component: core
+        release: kf-feast
+    spec:
+
+      volumes:
+      - name: kf-feast-feast-core-config
+        configMap:
+          name: kf-feast-feast-core
+      - name: kf-feast-feast-core-secret
+        secret:
+          secretName: kf-feast-feast-core
+
+      containers:
+      - name: feast-core
+        image: gcr.io/kf-feast/feast-core:develop
+        imagePullPolicy: IfNotPresent
+
+        volumeMounts:
+        - name: kf-feast-feast-core-config
+          mountPath: /etc/feast
+        - name: kf-feast-feast-core-secret
+          mountPath: /etc/secrets/feast
+          readOnly: true
+
+        env:
+        - name: LOG_TYPE
+          value: "Console"
+        - name: LOG_LEVEL
+          value: "WARN"
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: feast-postgresql
+              key: postgresql-password
+
+        command:
+        - java 
+        - -jar 
+        - /opt/feast/feast-core.jar
+        - --spring.config.location=classpath:/application.yml,file:/etc/feast/application-generated.yaml,file:/etc/secrets/feast/application-secret.yaml,file:/etc/feast/application-override.yaml
+        ports:
+        - name: http
+          containerPort: 8080
+        - name: grpc
+          containerPort: 6565
+        readinessProbe:
+          exec:
+            command: ["/usr/bin/grpc-health-probe", "-addr=:6565"]
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+          failureThreshold: 5
+
+        resources:
+          {}
+---
+# Source: feast/charts/feast-jobservice/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kf-feast-feast-jobservice
+  namespace: feast
+  labels:
+    app: feast-jobservice
+    component: jobservice
+    chart: feast-jobservice-0.9.2
+    release: kf-feast
+    heritage: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: feast-jobservice
+      component: jobservice
+      release: kf-feast
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+      labels:
+        app: feast-jobservice
+        component: jobservice
+        release: kf-feast
+    spec:
+
+      containers:
+      - name: feast-jobservice
+        image: gcr.io/kf-feast/feast-jobservice:develop
+        imagePullPolicy: IfNotPresent
+
+        env:
+
+        ports:
+        - name: http
+          containerPort: 8080
+        - name: grpc
+          containerPort: 6568
+        livenessProbe:
+          exec:
+            command: ["/usr/bin/grpc-health-probe", "-addr=:6568"]
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+          failureThreshold: 5
+        readinessProbe:
+          exec:
+            command: ["/usr/bin/grpc-health-probe", "-addr=:6568"]
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+          failureThreshold: 5
+
+        resources:
+          {}
+---
+# Source: feast/charts/feast-serving/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kf-feast-feast-serving
+  namespace: feast
+  labels:
+    app: feast-serving
+    component: serving
+    chart: feast-serving-0.25.0
+    release: kf-feast
+    heritage: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: feast-serving
+      component: serving
+      release: kf-feast
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: 179927bcdb9de7eadf95390cc6dca8046db451bad6320e4d5cf1ab3f28bf92b0
+        checksum/secret: 023c324d70d3e0d551c155dcba35b4c6addbf9aa8c844a67bc5f53b77e45e9b9
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+      labels:
+        app: feast-serving
+        component: serving
+        release: kf-feast
+    spec:
+
+      volumes:
+      - name: kf-feast-feast-serving-config
+        configMap:
+          name: kf-feast-feast-serving
+      - name: kf-feast-feast-serving-secret
+        secret:
+          secretName: kf-feast-feast-serving
+
+      containers:
+      - name: feast-serving
+        image: gcr.io/kf-feast/feast-serving:develop
+        imagePullPolicy: IfNotPresent
+
+        volumeMounts:
+        - name: kf-feast-feast-serving-config
+          mountPath: /etc/feast
+        - name: kf-feast-feast-serving-secret
+          mountPath: /etc/secrets/feast
+          readOnly: true
+
+        env:
+        - name: LOG_TYPE
+          value: "Console"
+        - name: LOG_LEVEL
+          value: "WARN"
+
+        command:
+        - java
+        - -jar
+        - /opt/feast/feast-serving.jar
+        - --spring.config.location=classpath:/application.yml,file:/etc/feast/application-generated.yaml,file:/etc/secrets/feast/application-secret.yaml,file:/etc/feast/application-override.yaml
+
+        ports:
+        - name: http
+          containerPort: 8080
+        - name: grpc
+          containerPort: 6566
+        livenessProbe:
+          exec:
+            command:
+            - "grpc-health-probe"
+            - "-addr=:6566"
+            - "-connect-timeout=5s"
+            - "-rpc-timeout=5s"
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+          failureThreshold: 5
+        readinessProbe:
+          exec:
+            command:
+            - "grpc-health-probe"
+            - "-addr=:6566"
+            - "-connect-timeout=10s"
+            - "-rpc-timeout=10s"
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+          failureThreshold: 5
+
+        resources:
+          {}
+---
+# Source: feast/charts/postgresql/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kf-feast-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.6.1
+    release: "kf-feast"
+    heritage: "Helm"
+spec:
+  serviceName: kf-feast-postgresql-headless
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: postgresql
+      release: "kf-feast"
+      role: master
+  template:
+    metadata:
+      name: kf-feast-postgresql
+      labels:
+        app: postgresql
+        chart: postgresql-8.6.1
+        release: "kf-feast"
+        heritage: "Helm"
+        role: master
+    spec:      
+      securityContext:
+        fsGroup: 1001
+      initContainers:
+        # - name: do-something
+        #   image: busybox
+        #   command: ['do', 'something']
+        
+      containers:
+        - name: kf-feast-postgresql
+          image: docker.io/bitnami/postgresql:11.7.0-debian-10-r9
+          imagePullPolicy: "IfNotPresent"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          securityContext:
+            runAsUser: 1001
+          env:
+            - name: BITNAMI_DEBUG
+              value: "false"
+            - name: POSTGRESQL_PORT_NUMBER
+              value: "5432"
+            - name: POSTGRESQL_VOLUME_DIR
+              value: "/bitnami/postgresql"
+            - name: PGDATA
+              value: "/bitnami/postgresql/data"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: feast-postgresql
+                  key: postgresql-password
+            - name: POSTGRESQL_ENABLE_LDAP
+              value: "no"
+          ports:
+            - name: tcp-postgresql
+              containerPort: 5432
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - -e
+                - |
+                  exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432
+                  [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          volumeMounts:
+            - name: dshm
+              mountPath: /dev/shm
+            - name: data
+              mountPath: /bitnami/postgresql
+              subPath: 
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "8Gi"
+---
+# Source: feast/charts/redis/templates/redis-master-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kf-feast-redis-master
+  labels:
+    app: redis
+    chart: redis-10.5.6
+    release: kf-feast
+    heritage: Helm
+spec:
+  selector:
+    matchLabels:
+      app: redis
+      release: kf-feast
+      role: master
+  serviceName: kf-feast-redis-headless
+  template:
+    metadata:
+      labels:
+        app: redis
+        chart: redis-10.5.6
+        release: kf-feast
+        role: master
+      annotations:
+        checksum/health: 466e9c6e1580496ae816ea2ba97eb274e0722a0e448f05b626d65a514edd4b7e
+        checksum/configmap: 2694f00f7d90b157fe8a55b1fef4fdac62061e59d606f4182a6dab35be93cb86
+        checksum/secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    spec:      
+      securityContext:
+        fsGroup: 1001
+      serviceAccountName: "default"
+      containers:
+      - name: kf-feast-redis
+        image: "docker.io/bitnami/redis:5.0.7-debian-10-r32"
+        imagePullPolicy: "IfNotPresent"
+        securityContext:
+          runAsUser: 1001
+        command:
+        - /bin/bash
+        - -c
+        - |
+          if [[ -n $REDIS_PASSWORD_FILE ]]; then
+            password_aux=`cat ${REDIS_PASSWORD_FILE}`
+            export REDIS_PASSWORD=$password_aux
+          fi
+          if [[ ! -f /opt/bitnami/redis/etc/master.conf ]];then
+            cp /opt/bitnami/redis/mounted-etc/master.conf /opt/bitnami/redis/etc/master.conf
+          fi
+          if [[ ! -f /opt/bitnami/redis/etc/redis.conf ]];then
+            cp /opt/bitnami/redis/mounted-etc/redis.conf /opt/bitnami/redis/etc/redis.conf
+          fi
+          ARGS=("--port" "${REDIS_PORT}")
+          ARGS+=("--protected-mode" "no")
+          ARGS+=("--include" "/opt/bitnami/redis/etc/redis.conf")
+          ARGS+=("--include" "/opt/bitnami/redis/etc/master.conf")
+          /run.sh ${ARGS[@]}
+        env:
+        - name: REDIS_REPLICATION_MODE
+          value: master
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        - name: REDIS_PORT
+          value: "6379"
+        ports:
+        - name: redis
+          containerPort: 6379
+        livenessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/ping_liveness_local.sh 5
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 5
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/ping_readiness_local.sh 5
+        resources:
+          null
+        volumeMounts:
+        - name: health
+          mountPath: /health
+        - name: redis-data
+          mountPath: /data
+          subPath: 
+        - name: config
+          mountPath: /opt/bitnami/redis/mounted-etc
+        - name: redis-tmp-conf
+          mountPath: /opt/bitnami/redis/etc/
+      volumes:
+      - name: health
+        configMap:
+          name: kf-feast-redis-health
+          defaultMode: 0755
+      - name: config
+        configMap:
+          name: kf-feast-redis
+      - name: redis-tmp-conf
+        emptyDir: {}
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-data
+        labels:
+          app: redis
+          release: kf-feast
+          heritage: Helm
+          component: master
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "8Gi"
+        
+        selector:
+  updateStrategy:
+    type: RollingUpdate
+---
+# Source: feast/charts/redis/templates/redis-slave-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kf-feast-redis-slave
+  labels:
+    app: redis
+    chart: redis-10.5.6
+    release: kf-feast
+    heritage: Helm
+spec:
+  replicas: 2
+  serviceName: kf-feast-redis-headless
+  selector:
+    matchLabels:
+      app: redis
+      release: kf-feast
+      role: slave
+  template:
+    metadata:
+      labels:
+        app: redis
+        release: kf-feast
+        chart: redis-10.5.6
+        role: slave
+      annotations:
+        checksum/health: 466e9c6e1580496ae816ea2ba97eb274e0722a0e448f05b626d65a514edd4b7e
+        checksum/configmap: 2694f00f7d90b157fe8a55b1fef4fdac62061e59d606f4182a6dab35be93cb86
+        checksum/secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    spec:      
+      securityContext:
+        fsGroup: 1001
+      serviceAccountName: "default"
+      containers:
+      - name: kf-feast-redis
+        image: docker.io/bitnami/redis:5.0.7-debian-10-r32
+        imagePullPolicy: "IfNotPresent"
+        securityContext:
+          runAsUser: 1001
+        command:
+        - /bin/bash
+        - -c
+        - |
+          if [[ -n $REDIS_PASSWORD_FILE ]]; then
+            password_aux=`cat ${REDIS_PASSWORD_FILE}`
+            export REDIS_PASSWORD=$password_aux
+          fi
+          if [[ -n $REDIS_MASTER_PASSWORD_FILE ]]; then
+            password_aux=`cat ${REDIS_MASTER_PASSWORD_FILE}`
+            export REDIS_MASTER_PASSWORD=$password_aux
+          fi
+          if [[ ! -f /opt/bitnami/redis/etc/replica.conf ]];then
+            cp /opt/bitnami/redis/mounted-etc/replica.conf /opt/bitnami/redis/etc/replica.conf
+          fi
+          if [[ ! -f /opt/bitnami/redis/etc/redis.conf ]];then
+            cp /opt/bitnami/redis/mounted-etc/redis.conf /opt/bitnami/redis/etc/redis.conf
+          fi
+          ARGS=("--port" "${REDIS_PORT}")
+          ARGS+=("--slaveof" "${REDIS_MASTER_HOST}" "${REDIS_MASTER_PORT_NUMBER}")
+          ARGS+=("--protected-mode" "no")
+          ARGS+=("--include" "/opt/bitnami/redis/etc/redis.conf")
+          ARGS+=("--include" "/opt/bitnami/redis/etc/replica.conf")
+          /run.sh "${ARGS[@]}"
+        env:
+        - name: REDIS_REPLICATION_MODE
+          value: slave
+        - name: REDIS_MASTER_HOST
+          value: kf-feast-redis-master-0.kf-feast-redis-headless.feast.svc.cluster.local
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_MASTER_PORT_NUMBER
+          value: "6379"
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        ports:
+        - name: redis
+          containerPort: 6379
+        livenessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/ping_liveness_local_and_master.sh 5
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 10
+          successThreshold: 1
+          failureThreshold: 5
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/ping_readiness_local_and_master.sh 5
+        resources:
+          null
+        volumeMounts:
+        - name: health
+          mountPath: /health
+        - name: redis-data
+          mountPath: /data
+        - name: config
+          mountPath: /opt/bitnami/redis/mounted-etc
+        - name: redis-tmp-conf
+          mountPath: /opt/bitnami/redis/etc
+      volumes:
+      - name: health
+        configMap:
+          name: kf-feast-redis-health
+          defaultMode: 0755
+      - name: config
+        configMap:
+          name: kf-feast-redis
+      - name: sentinel-tmp-conf
+        emptyDir: {}
+      - name: redis-tmp-conf
+        emptyDir: {}
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-data
+        labels:
+          app: redis
+          release: kf-feast
+          heritage: Helm
+          component: slave
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "8Gi"
+        
+        selector:
+  updateStrategy:
+    type: RollingUpdate

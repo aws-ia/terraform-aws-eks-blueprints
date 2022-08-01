@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: auth
+resources:
+- namespace.yaml
+- config-map.yaml
+- crds.yaml
+- deployment.yaml
+- service.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+images:
+- name: quay.io/dexidp/dex
+  newName: quay.io/dexidp/dex
+  newTag: v2.24.0
+
+secretGenerator:
+- name: dex-oidc-client
+  type: Opaque
+  envs:
+  - secret_params.env
