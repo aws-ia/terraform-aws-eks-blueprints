@@ -103,6 +103,7 @@ module "aws_for_fluent_bit" {
   source                   = "./aws-for-fluentbit"
   helm_config              = var.aws_for_fluentbit_helm_config
   irsa_policies            = var.aws_for_fluentbit_irsa_policies
+  create_cw_log_group      = var.aws_for_fluentbit_create_cw_log_group
   cw_log_group_name        = var.aws_for_fluentbit_cw_log_group_name
   cw_log_group_retention   = var.aws_for_fluentbit_cw_log_group_retention
   cw_log_group_kms_key_arn = var.aws_for_fluentbit_cw_log_group_kms_key_arn
