@@ -59,7 +59,7 @@ workflows: []
 #     kwargs:
 #       build_and_apply: false
 #       config_path: https://raw.githubusercontent.com/kubeflow/manifests/master/kfdef/kfctl_aws.yaml
-      
+
 #   - py_func: kubeflow.kfctl.testing.ci.kfctl_e2e_workflow.create_workflow
 #     name: aws-1-15
 #     job_types:
@@ -68,7 +68,7 @@ workflows: []
 #       build_and_apply: false
 #       config_path: https://raw.githubusercontent.com/kubeflow/manifests/master/kfdef/kfctl_aws.yaml
 #       eks_cluster_version: "1.15"
-    
+
 #   - py_func: kubeflow.kfctl.testing.ci.kfctl_e2e_workflow.create_workflow
 #     name: aws-1-16
 #     job_types:
@@ -76,7 +76,7 @@ workflows: []
 #     kwargs:
 #       build_and_apply: false
 #       config_path: https://raw.githubusercontent.com/kubeflow/manifests/master/kfdef/kfctl_aws.yaml
-#       eks_cluster_version: "1.16"  
+#       eks_cluster_version: "1.16"
 
 #   - py_func: kubeflow.kfctl.testing.ci.kfctl_e2e_workflow.create_workflow
 #     name: aws-1-17
@@ -86,7 +86,7 @@ workflows: []
 #       build_and_apply: false
 #       config_path: https://raw.githubusercontent.com/kubeflow/manifests/master/kfdef/kfctl_aws.yaml
 #       eks_cluster_version: "1.17"
-  
+
 #   - py_func: kubeflow.kfctl.testing.ci.kfctl_e2e_workflow.create_workflow
 #     name: aws-1-18
 #     job_types:

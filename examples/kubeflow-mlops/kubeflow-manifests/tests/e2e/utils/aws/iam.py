@@ -27,7 +27,7 @@ class IAMPolicy:
         self.arn = arn
         if not name and not arn:
             raise ValueError("Either policy name or arn should be defined")
-    
+
     def create(
         self, policy_document: dict
     ):
@@ -47,7 +47,7 @@ class IAMPolicy:
                 f"created iam policy {self.arn}."
             )
             return self.arn
-    
+
     def delete(self):
         try:
             self.iam_client.delete_policy(
@@ -57,7 +57,7 @@ class IAMPolicy:
         except ClientError:
             logger.exception(f"failed to delete iam policy {self.arn}")
             raise
-    
+
     def wait_for_policy_detachments(self):
         """
         Policies can't be deleted unless they are not attached to any IAM resources.
@@ -73,5 +73,5 @@ class IAMPolicy:
             assert len(resp['PolicyGroups']) == 0
             assert len(resp['PolicyUsers']) == 0
             assert len(resp['PolicyRoles']) == 0
-        
+
         wait_for(callback)

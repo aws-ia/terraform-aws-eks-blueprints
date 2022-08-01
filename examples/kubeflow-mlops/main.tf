@@ -33,7 +33,7 @@ data "aws_availability_zones" "available" {}
 
 locals {
   name   = var.name
-  region =  var.region
+  region = var.region
 
   vpc_cidr = var.vpc_cidr
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -57,23 +57,23 @@ module "eks_blueprints" {
   private_subnet_ids = module.vpc.private_subnets
 
   cluster_kms_key_additional_admin_arns = [data.aws_caller_identity.current.arn]
-  
+
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     mg_4 = {
       node_group_name = "managed-ondemand"
       instance_types  = ["m5.large"]
-      subnet_ids      =  module.vpc.private_subnets
-      desired_size    = 5     
-      max_size               = 5
-      min_size               = 3
+      subnet_ids      = module.vpc.private_subnets
+      desired_size    = 5
+      max_size        = 5
+      min_size        = 3
     }
   }
-  
-  
+
+
   cluster_endpoint_public_access  = true
   cluster_endpoint_private_access = true
-  tags = local.tags
+  tags                            = local.tags
 }
 
 module "eks_blueprints_kubernetes_addons" {
@@ -102,10 +102,10 @@ module "eks_blueprints_kubernetes_addons" {
     resolve_conflicts = "OVERWRITE"
   }
 
-  enable_metrics_server     = true
-  enable_aws_efs_csi_driver = true
-  enable_amazon_eks_aws_ebs_csi_driver  = true
-  enable_aws_load_balancer_controller = true
+  enable_metrics_server                = true
+  enable_aws_efs_csi_driver            = true
+  enable_amazon_eks_aws_ebs_csi_driver = true
+  enable_aws_load_balancer_controller  = true
 
   tags = local.tags
 
@@ -116,7 +116,7 @@ module "eks_blueprints_kubernetes_addons" {
 }
 
 data "aws_eks_addon_version" "latest" {
-  for_each = toset(["kube-proxy", "vpc-cni","coredns"])
+  for_each = toset(["kube-proxy", "vpc-cni", "coredns"])
 
   addon_name         = each.value
   kubernetes_version = module.eks_blueprints.eks_cluster_version

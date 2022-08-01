@@ -142,7 +142,7 @@ spec:
               end
 
               local jwt_head = request_handle:headers():get("x-amzn-oidc-data")
-              
+
               if jwt_head ~= nil then
                 local payload = decode_base64(extract_jwt_payload(jwt_head))
                 local email = get_email_from_jwt_payload(payload)

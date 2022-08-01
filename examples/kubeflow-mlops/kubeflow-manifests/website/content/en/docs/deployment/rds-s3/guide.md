@@ -10,7 +10,7 @@ This guide can be used to deploy Kubeflow Pipelines (KFP) and Katib with RDS and
 
 [Amazon Relational Database Service (RDS)](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html) is a managed relational database service that facilitates several database management tasks such as database scaling, database backups, database software patching, OS patching, and more.
 
-In the [default Kubeflow installation]({{< ref "/docs/deployment/vanilla/guide.md" >}}), the [KFP](https://github.com/kubeflow/manifests/blob/v1.5-branch/apps/pipeline/upstream/third-party/mysql/base/mysql-deployment.yaml) and [Katib](https://github.com/kubeflow/manifests/blob/v1.5-branch/apps/katib/upstream/components/mysql/mysql.yaml) components both use their own MySQL pod to persist KFP data (such as experiments, pipelines, jobs, etc.) and Katib experiment observation logs, respectively. 
+In the [default Kubeflow installation]({{< ref "/docs/deployment/vanilla/guide.md" >}}), the [KFP](https://github.com/kubeflow/manifests/blob/v1.5-branch/apps/pipeline/upstream/third-party/mysql/base/mysql-deployment.yaml) and [Katib](https://github.com/kubeflow/manifests/blob/v1.5-branch/apps/katib/upstream/components/mysql/mysql.yaml) components both use their own MySQL pod to persist KFP data (such as experiments, pipelines, jobs, etc.) and Katib experiment observation logs, respectively.
 
 Compared to the MySQL setup in the default installation, using RDS provides the following advantages:
 - Availability: RDS provides high availability and failover support for DB instances using Multi Availability Zone (Mulit-AZ) deployments with a single standby DB instance, increasing the availability of KFP and Katib services during unexpected network events.
@@ -19,7 +19,7 @@ Compared to the MySQL setup in the default installation, using RDS provides the 
 - Customization and management: RDS provides management features to facilitate changing database instance types, updating SQL versions, and more.
 
 ### S3
-[Amazon Simple Storage Service (S3)](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) is an object storage service that is highly scalable, available, secure, and performant. 
+[Amazon Simple Storage Service (S3)](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) is an object storage service that is highly scalable, available, secure, and performant.
 
 In the [default Kubeflow installation]({{< ref "/docs/deployment/vanilla/guide.md" >}}), the [KFP](https://github.com/kubeflow/manifests/blob/v1.4-branch/apps/pipeline/upstream/third-party/minio/base/minio-deployment.yaml) component uses the MinIO object storage service that can be configured to store objects in S3. However, by default the installation hosts the object store service locally in the cluster. KFP stores data such as pipeline architectures and pipeline run artifacts in MinIO.
 
@@ -47,9 +47,9 @@ To install for only RDS or only S3, complete the steps relevant to your installa
 To install for both RDS and S3, complete all the steps below.
 
 ## 1.0 Prerequisites
-Follow the steps in [Prerequisites]({{< ref "/docs/deployment/prerequisites.md" >}}) to make sure that you have everything you need to get started. 
+Follow the steps in [Prerequisites]({{< ref "/docs/deployment/prerequisites.md" >}}) to make sure that you have everything you need to get started.
 
-Make sure you are starting from the repository root directory. 
+Make sure you are starting from the repository root directory.
 Export the below variable:
 ```bash
 export REPO_ROOT=$(pwd)
@@ -97,7 +97,7 @@ PYTHONPATH=.. python utils/rds-s3/auto-rds-s3-setup.py --help
 ```
 
 ### 2.2 **Option 2: Manual Setup**
-Follow this step if you prefer to manually set up each component. 
+Follow this step if you prefer to manually set up each component.
 1. [S3] Create an S3 Bucket
 
     Refer to the [S3 documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/GetStartedWithS3.html) for steps on creating an `S3 bucket`.
@@ -128,7 +128,7 @@ Follow this step if you prefer to manually set up each component.
            export RDS_SECRET=<your rds secret name>
            aws secretsmanager create-secret --name $RDS_SECRET --secret-string '{"username":"admin","password":"Kubefl0w","database":"kubeflow","host":"rm12abc4krxxxxx.xxxxxxxxxxxx.us-west-2.rds.amazonaws.com","port":"3306"}' --region $CLUSTER_REGION
            ```
-      1. Rename the `parameters.objects.objectName` field in [the RDS Secret provider configuration](https://github.com/awslabs/kubeflow-manifests/blob/main/awsconfigs/common/aws-secrets-manager/rds/secret-provider.yaml) to the name of the Secret. 
+      1. Rename the `parameters.objects.objectName` field in [the RDS Secret provider configuration](https://github.com/awslabs/kubeflow-manifests/blob/main/awsconfigs/common/aws-secrets-manager/rds/secret-provider.yaml) to the name of the Secret.
          - Rename the field with the following command:
            ```bash
            yq e -i '.spec.parameters.objects |= sub("rds-secret",env(RDS_SECRET))' awsconfigs/common/aws-secrets-manager/rds/secret-provider.yaml
@@ -141,9 +141,9 @@ Follow this step if you prefer to manually set up each component.
               name: rds-secret
 
               ...
-              
+
               parameters:
-                 objects: | 
+                 objects: |
                  - objectName: "rds-secret-new" # This line was changed
                    objectType: "secretsmanager"
                    jmesPath:
@@ -158,7 +158,7 @@ Follow this step if you prefer to manually set up each component.
                       - path: "port"
                          objectAlias: "port"
            ```
-         
+
    1. [S3] Create the S3 Secret and configure the Secret provider:
       1. Configure a Secret (e.g. `s3-secret`) with your AWS credentials. These need to be long-term credentials from an IAM user and not temporary.
          - For more details about configuring or finding your AWS credentials, see [AWS security credentials](https://docs.aws.amazon.com/general/latest/gr/aws-security-credentials.html)
@@ -166,7 +166,7 @@ Follow this step if you prefer to manually set up each component.
            export S3_SECRET=<your s3 secret name>
            aws secretsmanager create-secret --name S3_SECRET --secret-string '{"accesskey":"AXXXXXXXXXXXXXXXXXX6","secretkey":"eXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXq"}' --region $CLUSTER_REGION
            ```
-      1. Rename the `parameters.objects.objectName` field in [the S3 Secret provider configuration](https://github.com/awslabs/kubeflow-manifests/blob/main/awsconfigs/common/aws-secrets-manager/s3/secret-provider.yaml) to the name of the Secret. 
+      1. Rename the `parameters.objects.objectName` field in [the S3 Secret provider configuration](https://github.com/awslabs/kubeflow-manifests/blob/main/awsconfigs/common/aws-secrets-manager/s3/secret-provider.yaml) to the name of the Secret.
          - Rename the field with the following command:
            ```bash
            yq e -i '.spec.parameters.objects |= sub("s3-secret",env(S3_SECRET))' awsconfigs/common/aws-secrets-manager/s3/secret-provider.yaml
@@ -179,16 +179,16 @@ Follow this step if you prefer to manually set up each component.
              name: s3-secret
 
              ...
-             
+
              parameters:
-               objects: | 
+               objects: |
                  - objectName: "s3-secret-new" # This line was changed
                    objectType: "secretsmanager"
                    jmesPath:
                        - path: "accesskey"
                          objectAlias: "access"
                        - path: "secretkey"
-                         objectAlias: "secret"           
+                         objectAlias: "secret"  
            ```
 
 4. Install AWS Secrets & Configuration Provider with Kubernetes Secrets Store CSI driver
@@ -370,7 +370,7 @@ To uninstall AWS resources created by the automated setup, run the cleanup scrip
 ```bash
 cd tests/e2e
 ```
-2. Install the script dependencies. 
+2. Install the script dependencies.
 ```bash
 pip install -r requirements.txt
 ```

@@ -40,40 +40,40 @@ data:
 ...
 ```
 
-For more detailed instructions, see the KNative Serving [Changing the default domain](https://knative.dev/docs/serving/using-a-custom-domain/#procedure) procedure. 
+For more detailed instructions, see the KNative Serving [Changing the default domain](https://knative.dev/docs/serving/using-a-custom-domain/#procedure) procedure.
 
 ## Request a certificate
 
-Request a certificate in AWS Certificate Manager (ACM) to get TLS support from the Load Balancer. 
+Request a certificate in AWS Certificate Manager (ACM) to get TLS support from the Load Balancer.
 
 ### Certificate request background
 
-Knative concatenates the namespace in the FQDN for a route and the domain is delimited by a dot by default. The URLs for `InferenceService`  resources created in each namespace will be in a different [subdomain](https://en.wikipedia.org/wiki/Subdomain). 
-- For example, if you have two namespaces, `staging` and `prod`, and create an `InferenceService` resource called `sklearn-iris` in both of these namespaces, then the URLs for each resource will be `http://sklearn-iris.staging.platform.example.com` and `http://sklearn-iris.prod.platform.example.com`, respectively. 
+Knative concatenates the namespace in the FQDN for a route and the domain is delimited by a dot by default. The URLs for `InferenceService`  resources created in each namespace will be in a different [subdomain](https://en.wikipedia.org/wiki/Subdomain).
+- For example, if you have two namespaces, `staging` and `prod`, and create an `InferenceService` resource called `sklearn-iris` in both of these namespaces, then the URLs for each resource will be `http://sklearn-iris.staging.platform.example.com` and `http://sklearn-iris.prod.platform.example.com`, respectively.
 
-This means that you need to specify all subdomains in which you plan to create an `InferenceService` resource while creating the SSL certificate in ACM. 
-- For example, for `staging` and `prod` namespaces, you will need to add `*.prod.platform.example.com`, `*.staging.platform.example.com` and `*.platform.example.com` to the certificate. 
+This means that you need to specify all subdomains in which you plan to create an `InferenceService` resource while creating the SSL certificate in ACM.
+- For example, for `staging` and `prod` namespaces, you will need to add `*.prod.platform.example.com`, `*.staging.platform.example.com` and `*.platform.example.com` to the certificate.
 
-DNS only supports wildcard placeholders in the [leftmost part of the domain name](https://en.wikipedia.org/wiki/Wildcard_DNS_record). When you request a wildcard certificate using ACM, the asterisk (*) must be in the leftmost position of the domain name and can protect only one subdomain level. 
+DNS only supports wildcard placeholders in the [leftmost part of the domain name](https://en.wikipedia.org/wiki/Wildcard_DNS_record). When you request a wildcard certificate using ACM, the asterisk (*) must be in the leftmost position of the domain name and can protect only one subdomain level.
 - For example, `*.platform.example.com` can protect `staging.platform.example.com`, and `prod.platform.example.com`, but it cannot protect `sklearn-iris.staging.platform.example.com`.
 
 ### Create a certificate
 > Note: Both of these domains should be requested in the same certificate
 
-Create an ACM certificate for `*.platform.example.com` and `*.staging.platform.example.com` in your cluster's region by following the [create certificates for domain]({{< ref "/docs/deployment/add-ons/load-balancer/guide.md#create-certificates-for-domain" >}}) steps in the Load Balancer installation guide. 
+Create an ACM certificate for `*.platform.example.com` and `*.staging.platform.example.com` in your cluster's region by following the [create certificates for domain]({{< ref "/docs/deployment/add-ons/load-balancer/guide.md#create-certificates-for-domain" >}}) steps in the Load Balancer installation guide.
 
 Once the certificate status changes to `Issued`, export the ARN of the certificate created:
 ```bash
 export certArn=<>
 ```
 
-If you are using Cognito for user authentication, see [Cognito]({{< ref "/docs/component-guides/kserve.md#cognito-ingress" >}}). If you use Dex as the auth provider in your Kubeflow deployment, see [Dex]({{< ref "/docs/component-guides/kserve.md#dex-ingress" >}}). 
+If you are using Cognito for user authentication, see [Cognito]({{< ref "/docs/component-guides/kserve.md#cognito-ingress" >}}). If you use Dex as the auth provider in your Kubeflow deployment, see [Dex]({{< ref "/docs/component-guides/kserve.md#dex-ingress" >}}).
 
 ## Cognito ingress
 
-It is not currently possible to programatically authenticate a request that uses Amazon Cognito for user authentication through Load Balancer. You cannot generate `AWSELBAuthSessionCookie` cookies by using the access tokens from Cognito. 
+It is not currently possible to programatically authenticate a request that uses Amazon Cognito for user authentication through Load Balancer. You cannot generate `AWSELBAuthSessionCookie` cookies by using the access tokens from Cognito.
 
-To work around this, it is necessary to create a new Load Balancer endpoint for serving traffic that authorizes based on custom strings specified in a predefined HTTP header. 
+To work around this, it is necessary to create a new Load Balancer endpoint for serving traffic that authorizes based on custom strings specified in a predefined HTTP header.
 
 Use an ingress to set the [HTTP header conditions](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html#http-header-conditions) on your Load Balancer. This creates rules that route requests based on HTTP headers. This can be used for service-to-service communication in your application.
 
@@ -117,7 +117,7 @@ Once your Load Balancer is ready, move on to the [Add DNS records]({{< ref "/doc
 2. Update the Load Balancer with the following command:
     ```bash
     kustomize build awsconfigs/common/istio-ingress/overlays/https | kubectl apply -f -
-    ``` 
+    ```
 3. Get the Load Balancer address
     ```bash
     kubectl get ingress -n istio-system istio-ingress
@@ -134,7 +134,7 @@ Once your ingress-managed Load Balancer is ready, copy the `ADDRESS` of that Loa
 
 ### Create an `AuthorizationPolicy`
 
-Namespaces created by the Kubeflow profile controller have a missing authorization policy that prevents the KFServing predictor and transformer from working. 
+Namespaces created by the Kubeflow profile controller have a missing authorization policy that prevents the KFServing predictor and transformer from working.
 
 > Known Issue: See [kserve/kserve#1558](https://github.com/kserve/kserve/issues/1558) and [kubeflow/kubeflow#5965](https://github.com/kubeflow/kubeflow/issues/5965) for more information.
 
@@ -181,7 +181,7 @@ pip install requirements.txt
 
 Run the sample python script to send an inference request based on your auth provider:
 
-#### Cognito inference 
+#### Cognito inference
 
 Run the [inference_sample.py](https://github.com/awslabs/kubeflow-manifests/blob/main/tests/e2e/utils/kserve/inference_sample.py) Python script by exporting the values for `HTTP_HEADER_NAME`(e.g. `x-api-key`) and `HTTP_HEADER_VALUE`(e.g. `token1`) according to the values configured in [ingress section]({{< ref "/docs/component-guides/kserve.md#create-ingress" >}}).
 ```bash
@@ -220,7 +220,7 @@ JSON Response  {
 ```
 
 #### Dex inference
-Run the [inference_sample.py](https://github.com/awslabs/kubeflow-manifests/blob/main/tests/e2e/utils/kserve/inference_sample.py) Python script by exporting the values for `USERNAME`(e.g. `user@example.com`), `PASSWORD` according to the user profile 
+Run the [inference_sample.py](https://github.com/awslabs/kubeflow-manifests/blob/main/tests/e2e/utils/kserve/inference_sample.py) Python script by exporting the values for `USERNAME`(e.g. `user@example.com`), `PASSWORD` according to the user profile
 ```bash
 export AUTH_PROVIDER="dex"
 export USERNAME="user@example.com"

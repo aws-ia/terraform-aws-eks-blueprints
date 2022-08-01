@@ -12,4 +12,3 @@ patchesStrategicMerge:
 # If Kafka is enabled, uncomment the following patches.
 # - patches/kafka.yaml
 # - patches/zookeeper.yaml
-

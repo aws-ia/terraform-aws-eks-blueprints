@@ -79,7 +79,7 @@ def kustomize(
 
     def on_delete():
         # deleting the kubeflow deployment deletes the load balancer controller at the same time as ingress
-        # the problem with this is the ingress managed load balacer does not get cleaned up as there is no controller 
+        # the problem with this is the ingress managed load balacer does not get cleaned up as there is no controller
         subprocess.call(f"kubectl delete ingress -n istio-system --all".split())
         # load balancer controller does not place a finalizer on the ingress and so deleting the attached load balancer is asynhronous
         # adding a random wait to allow controller to delete the load balancer

@@ -14,9 +14,9 @@ When a version of Kubeflow on AWS is released, a Git tag with the naming convent
 
 ## v1.3.1
 
-> Note: Documentation for Kubeflow on AWS v.1.3 can be found on the [Kubeflow website](https://v1-3-branch.kubeflow.org/docs/distributions/aws/). 
+> Note: Documentation for Kubeflow on AWS v.1.3 can be found on the [Kubeflow website](https://v1-3-branch.kubeflow.org/docs/distributions/aws/).
 
-Although the distribution manifests are hosted in the [Kubeflow on AWS repository](https://github.com/awslabs/kubeflow-manifests), many of the overlays and configuration files in this repository have a dependency on the manifests published by the Kubeflow community in the [kubeflow/manifests](https://github.com/kubeflow/manifests) repository. Hence, the AWS distribution of Kubeflow for v1.3.1 was developed on a [fork](https://github.com/awslabs/kubeflow-manifests/tree/v1.3-branch) of the `v1.3-branch` of the `kubeflow/manifests` repository. This presented several challenges for ongoing maintenance as described in [Issue #76](https://github.com/awslabs/kubeflow-manifests/issues/76). 
+Although the distribution manifests are hosted in the [Kubeflow on AWS repository](https://github.com/awslabs/kubeflow-manifests), many of the overlays and configuration files in this repository have a dependency on the manifests published by the Kubeflow community in the [kubeflow/manifests](https://github.com/kubeflow/manifests) repository. Hence, the AWS distribution of Kubeflow for v1.3.1 was developed on a [fork](https://github.com/awslabs/kubeflow-manifests/tree/v1.3-branch) of the `v1.3-branch` of the `kubeflow/manifests` repository. This presented several challenges for ongoing maintenance as described in [Issue #76](https://github.com/awslabs/kubeflow-manifests/issues/76).
 
 ## v1.4+
 

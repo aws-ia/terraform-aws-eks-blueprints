@@ -14,7 +14,7 @@ spec:
     kind: Pipeline
   - group: tekton.dev
     kind: Task
-  descriptor: 
+  descriptor:
     type: tektoncd-dashboard
     version: v1beta1
     description: installs tektoncd pipeline dashboard

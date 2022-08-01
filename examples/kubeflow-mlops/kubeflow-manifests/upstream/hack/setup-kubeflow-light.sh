@@ -102,4 +102,3 @@ kubectl wait --timeout=${TIMEOUT} -n kubeflow -l kustomize.component=profiles --
 echo "Creating user resources."
 kustomize build common/user-namespace/base | kubectl apply -f -
 kustomize build common/cert-manager/kubeflow-issuer/base | kubectl apply -f -
-

@@ -7,5 +7,3 @@
 
 5. gotest close to package (manifests)
 6. golang is not brittle
-
-

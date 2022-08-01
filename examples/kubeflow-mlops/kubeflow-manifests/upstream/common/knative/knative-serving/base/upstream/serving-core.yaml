@@ -2210,4 +2210,3 @@ metadata:
   labels:
     serving.knative.dev/release: "v0.22.1"
 ---
-

@@ -4,11 +4,11 @@ description = "Follow AWS security best practices when using Kubeflow on AWS"
 weight = 40
 +++
 
-We highly recommend that you follow AWS security best practices while provisioning any AWS resources. 
+We highly recommend that you follow AWS security best practices while provisioning any AWS resources.
 
 ## Security resources
 
-Refer to the following documents for more information: 
+Refer to the following documents for more information:
 
 * [Security best practices for Amazon Elastic Kubernetes Service (EKS)](https://aws.github.io/aws-eks-best-practices/security/docs/)  
 * [Security best practices for AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/best-practices.html)  

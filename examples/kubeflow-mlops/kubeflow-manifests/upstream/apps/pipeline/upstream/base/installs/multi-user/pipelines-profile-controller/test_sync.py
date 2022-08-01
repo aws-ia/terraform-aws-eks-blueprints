@@ -271,7 +271,7 @@ def test_sync_server_without_pipeline_enabled(sync_server, data, expected_status
     """
     Nearly end-to-end test of how Controller serves .sync as a POST
 
-    Tests case where metadata.labels.pipelines.kubeflow.org/enabled does not 
+    Tests case where metadata.labels.pipelines.kubeflow.org/enabled does not
     exist and thus server returns an empty reply
     """
     server, environ = sync_server

@@ -1,6 +1,6 @@
 # Install Kubeflow Pipelines Standalone using Kustomize Manifests
 
-This folder contains [Kubeflow Pipelines Standalone](https://www.kubeflow.org/docs/components/pipelines/installation/standalone-deployment/) 
+This folder contains [Kubeflow Pipelines Standalone](https://www.kubeflow.org/docs/components/pipelines/installation/standalone-deployment/)
 Kustomize manifests.
 
 Kubeflow Pipelines Standalone is one option to install Kubeflow Pipelines. You can review all other options in

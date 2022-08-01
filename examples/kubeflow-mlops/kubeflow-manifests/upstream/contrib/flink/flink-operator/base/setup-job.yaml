@@ -20,7 +20,7 @@ spec:
         - "/bin/bash"
         - "-ec"
         - |
-          ls /cert_to_create  
+          ls /cert_to_create
           for cert in /cert_to_create/*;
             do
               bash $cert;

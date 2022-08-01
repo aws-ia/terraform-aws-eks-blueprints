@@ -1,7 +1,7 @@
 import pytest
 
 from e2e.utils.cognito_bootstrap.cognito_pre_deployment import (
-    
+
     create_certificates_cognito,
     create_cognito_userpool,
     configure_ingress,

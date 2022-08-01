@@ -10,11 +10,11 @@ spec:
   - src:
       include: quay.io/jetstack
     # change to the gcr registry as image replication destination
-    dest: gcr.io/gcp-private-dev/mirror   # {"type":"string","x-kustomize":{"setBy":"kpt","partialSetters":[{"name":"gcloud.core.project","value":"gcp-private-dev"}]}}    
+    dest: gcr.io/gcp-private-dev/mirror   # {"type":"string","x-kustomize":{"setBy":"kpt","partialSetters":[{"name":"gcloud.core.project","value":"gcp-private-dev"}]}}
   - src:
       include: gcr.io/ml-pipeline
     # change to the gcr registry as image replication destination
-    dest: gcr.io/gcp-private-dev/mirror   # {"type":"string","x-kustomize":{"setBy":"kpt","partialSetters":[{"name":"gcloud.core.project","value":"gcp-private-dev"}]}}          
+    dest: gcr.io/gcp-private-dev/mirror   # {"type":"string","x-kustomize":{"setBy":"kpt","partialSetters":[{"name":"gcloud.core.project","value":"gcp-private-dev"}]}}
   - src:
       include: argoproj
     # change to the gcr registry as image replication destination
@@ -22,15 +22,15 @@ spec:
   - src:
       include: minio
     # change to the gcr registry as image replication destination
-    dest: gcr.io/gcp-private-dev/mirror   # {"type":"string","x-kustomize":{"setBy":"kpt","partialSetters":[{"name":"gcloud.core.project","value":"gcp-private-dev"}]}}          
+    dest: gcr.io/gcp-private-dev/mirror   # {"type":"string","x-kustomize":{"setBy":"kpt","partialSetters":[{"name":"gcloud.core.project","value":"gcp-private-dev"}]}}
   # Use the existing public context
   - src:
       include: mysql
     # change to the gcr registry as image replication destination
-    dest: gcr.io/gcp-private-dev/mirror   # {"type":"string","x-kustomize":{"setBy":"kpt","partialSetters":[{"name":"gcloud.core.project","value":"gcp-private-dev"}]}}          
+    dest: gcr.io/gcp-private-dev/mirror   # {"type":"string","x-kustomize":{"setBy":"kpt","partialSetters":[{"name":"gcloud.core.project","value":"gcp-private-dev"}]}}
     # Use the existing public context
   - src:
       include: metacontroller
     # change to the gcr registry as image replication destination
-    dest: gcr.io/gcp-private-dev/mirror   # {"type":"string","x-kustomize":{"setBy":"kpt","partialSetters":[{"name":"gcloud.core.project","value":"gcp-private-dev"}]}}          
+    dest: gcr.io/gcp-private-dev/mirror   # {"type":"string","x-kustomize":{"setBy":"kpt","partialSetters":[{"name":"gcloud.core.project","value":"gcp-private-dev"}]}}
   context: gs://kubeflow-examples/image-replicate/replicate-context.tar.gz

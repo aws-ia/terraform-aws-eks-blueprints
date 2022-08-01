@@ -1,4 +1,4 @@
-# Change resyncPeriodSeconds to 1 hour from insane 20 seconds  
+# Change resyncPeriodSeconds to 1 hour from insane 20 seconds
 # Only  sync namespaces with pipelines.kubeflow.org/enabled = "true"
 apiVersion: metacontroller.k8s.io/v1alpha1
 kind: CompositeController

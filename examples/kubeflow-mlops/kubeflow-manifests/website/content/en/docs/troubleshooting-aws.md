@@ -8,7 +8,7 @@ For general errors related to Kubernetes and Amazon EKS, please refer to the [Am
 
 ### Validate prerequisites
 
-You may experience issues due to version incompatibility. Before diving into more specific issues, check to make sure that you have the correct [prerequisites]({{< ref "/docs/deployment/prerequisites.md" >}}) installed. 
+You may experience issues due to version incompatibility. Before diving into more specific issues, check to make sure that you have the correct [prerequisites]({{< ref "/docs/deployment/prerequisites.md" >}}) installed.
 
 ### ALB fails to provision
 
@@ -40,7 +40,7 @@ If this does not resolve the error, it is possible that your subnets are not tag
 
 ### FSx issues
 
-Verify that the FSx drivers are installed by running the following command: 
+Verify that the FSx drivers are installed by running the following command:
 ```bash
 kubectl get csidriver -A
 ```
@@ -52,7 +52,7 @@ kubectl get pv,pvc,sc -A
 
 Use the `kubectl logs` command to get more information on Pods that use these resources.
 
-For more information, see the [Amazon FSx for Lustre CSI Driver](https://github.com/kubernetes-sigs/aws-fsx-csi-driver) GitHub repository. Troubleshooting information for specific FSx filesystems can be found in the [Amazon FSx documentation](https://docs.aws.amazon.com/fsx/index.html). 
+For more information, see the [Amazon FSx for Lustre CSI Driver](https://github.com/kubernetes-sigs/aws-fsx-csi-driver) GitHub repository. Troubleshooting information for specific FSx filesystems can be found in the [Amazon FSx documentation](https://docs.aws.amazon.com/fsx/index.html).
 
 ### RDS issues
 

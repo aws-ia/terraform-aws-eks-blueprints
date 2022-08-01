@@ -73,10 +73,10 @@ data:
   application-generated.yaml: |
     feast:
       core-host: kf-feast-feast-core
-      
+
       stores:
       - name: online
-        type: REDIS 
+        type: REDIS
         config:
           host: kf-feast-redis-master
           port: 6379
@@ -84,7 +84,7 @@ data:
         - name: "*"
           project: "*"
           version: "*"
-      
+
       job_store:
         redis_host: kf-feast-redis-master
         redis_port: 6379
@@ -439,8 +439,8 @@ spec:
               key: postgresql-password
 
         command:
-        - java 
-        - -jar 
+        - java
+        - -jar
         - /opt/feast/feast-core.jar
         - --spring.config.location=classpath:/application.yml,file:/etc/feast/application-generated.yaml,file:/etc/secrets/feast/application-secret.yaml,file:/etc/feast/application-override.yaml
         ports:
@@ -650,14 +650,14 @@ spec:
         release: "kf-feast"
         heritage: "Helm"
         role: master
-    spec:      
+    spec:
       securityContext:
         fsGroup: 1001
       initContainers:
         # - name: do-something
         #   image: busybox
         #   command: ['do', 'something']
-        
+
       containers:
         - name: kf-feast-postgresql
           image: docker.io/bitnami/postgresql:11.7.0-debian-10-r9
@@ -719,7 +719,7 @@ spec:
               mountPath: /dev/shm
             - name: data
               mountPath: /bitnami/postgresql
-              subPath: 
+              subPath:
       volumes:
         - name: dshm
           emptyDir:
@@ -763,7 +763,7 @@ spec:
         checksum/health: 466e9c6e1580496ae816ea2ba97eb274e0722a0e448f05b626d65a514edd4b7e
         checksum/configmap: 2694f00f7d90b157fe8a55b1fef4fdac62061e59d606f4182a6dab35be93cb86
         checksum/secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-    spec:      
+    spec:
       securityContext:
         fsGroup: 1001
       serviceAccountName: "default"
@@ -831,7 +831,7 @@ spec:
           mountPath: /health
         - name: redis-data
           mountPath: /data
-          subPath: 
+          subPath:
         - name: config
           mountPath: /opt/bitnami/redis/mounted-etc
         - name: redis-tmp-conf
@@ -860,7 +860,7 @@ spec:
         resources:
           requests:
             storage: "8Gi"
-        
+
         selector:
   updateStrategy:
     type: RollingUpdate
@@ -894,7 +894,7 @@ spec:
         checksum/health: 466e9c6e1580496ae816ea2ba97eb274e0722a0e448f05b626d65a514edd4b7e
         checksum/configmap: 2694f00f7d90b157fe8a55b1fef4fdac62061e59d606f4182a6dab35be93cb86
         checksum/secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-    spec:      
+    spec:
       securityContext:
         fsGroup: 1001
       serviceAccountName: "default"
@@ -1001,7 +1001,7 @@ spec:
         resources:
           requests:
             storage: "8Gi"
-        
+
         selector:
   updateStrategy:
     type: RollingUpdate

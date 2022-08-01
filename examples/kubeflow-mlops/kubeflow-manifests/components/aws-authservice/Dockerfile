@@ -3,7 +3,7 @@ ENV GOPROXY=direct
 RUN apt-get update
 ADD *.go /go/src/aws-authservice/
 WORKDIR /go/src/aws-authservice
-COPY go.mod . 
+COPY go.mod .
 COPY go.sum .
 RUN go mod download
 RUN go build -o /go/bin/aws-authservice

@@ -64,7 +64,7 @@ def wait_for_run_succeeded(kfp_client, run, job_name, pipeline_id):
 
 @pytest.fixture(scope="class")
 def setup_load_balancer(metadata, region, request, cluster, kustomize, root_domain_name, root_domain_hosted_zone_id):
-    
+
     lb_deps = {}
     env_value = os.environ.copy()
     env_value["PYTHONPATH"] = f"{os.getcwd()}/..:" + os.environ.get("PYTHONPATH", "")

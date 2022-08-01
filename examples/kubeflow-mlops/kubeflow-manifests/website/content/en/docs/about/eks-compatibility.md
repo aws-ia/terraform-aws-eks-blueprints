@@ -39,4 +39,3 @@ Amazon EKS maintains end-to-end testing between EKS Kubernetes versions and Kube
 
 - **Incompatible**: the combination is not known to work together
 - **Compatible**: all Kubeflow features have been tested and verified for the EKS Kubernetes version
-

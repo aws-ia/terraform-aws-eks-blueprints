@@ -44,7 +44,7 @@ def wait_on_fsx_deletion(fsx_client, file_system_id):
             )
             number_of_file_systems_with_id = len(response["FileSystems"])
             print(f"{file_system_id} has {number_of_file_systems_with_id} results .... waiting")
-            assert number_of_file_systems_with_id == 0 
+            assert number_of_file_systems_with_id == 0
         except fsx_client.exceptions.FileSystemNotFound:
             return True
 

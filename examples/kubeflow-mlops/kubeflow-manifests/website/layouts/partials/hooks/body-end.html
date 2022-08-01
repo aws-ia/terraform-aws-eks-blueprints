@@ -2,4 +2,3 @@
 {{ $jsCopy := resources.Get "js/copy-code-button.js" | minify }}
 <script src="{{ $jsCopy.RelPermalink }}"></script>
 {{ end }}
-

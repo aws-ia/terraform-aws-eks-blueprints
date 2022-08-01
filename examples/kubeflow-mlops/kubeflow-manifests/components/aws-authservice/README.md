@@ -30,12 +30,12 @@ Finally push the image to ECR or any Container Image Registry like Dockerhub
 To use your new image you must modify
   - [kustomization](../../awsconfigs/common/aws-authservice/base/kustomization.yaml#L11)
 
-If user has any custom changes to the manifests, they can choose to modify the [manifests](../../awsconfigs/common/aws-authservice/base/) 
+If user has any custom changes to the manifests, they can choose to modify the [manifests](../../awsconfigs/common/aws-authservice/base/)
 
 ### Configurable Parameters
 In testing you must provide a LOGOUT_URL for AWS AuthService to redirect to in the [params.env](../../awsconfigs/common/aws-authservice/base/params.env) file.
 
-Finally apply the manifests 
+Finally apply the manifests
 ```
 kubectl apply -k ../../awsconfigs/common/aws-authservice/base/
 ```
@@ -47,5 +47,4 @@ Inspired by [oidc-authservice](https://github.com/arrikto/oidc-authservice)
 
 
 ## Licensing
-See the [LICENSE](../../LICENSE) file for our project's licensing. 
-
+See the [LICENSE](../../LICENSE) file for our project's licensing.

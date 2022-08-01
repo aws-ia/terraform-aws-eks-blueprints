@@ -6,7 +6,7 @@ spec:
   componentKinds:
     - group: app.k8s.io
       kind: Application
-  descriptor: 
+  descriptor:
     type: tektoncd-install
     version: v1beta1
     description: installs tektoncd pipeline

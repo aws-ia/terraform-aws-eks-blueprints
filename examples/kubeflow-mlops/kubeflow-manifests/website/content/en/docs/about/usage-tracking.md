@@ -4,9 +4,9 @@ description = "Learn about usage tracking for Kubeflow on AWS"
 weight = 50
 +++
 
-AWS uses customer feedback and usage information to improve the quality of the services and software we offer to customers. We have added usage data collection to the AWS Kubeflow distribution in order to better understand customer usage and guide future improvements. Usage tracking for Kubeflow is activated by default, but is entirely voluntary and can be deactivated at any time. 
+AWS uses customer feedback and usage information to improve the quality of the services and software we offer to customers. We have added usage data collection to the AWS Kubeflow distribution in order to better understand customer usage and guide future improvements. Usage tracking for Kubeflow is activated by default, but is entirely voluntary and can be deactivated at any time.
 
-Usage tracking for Kubeflow on AWS collects the instance ID used by one of the worker nodes in a customer’s cluster. This data is sent back to AWS once per day. Usage tracking only collects the EC2 instance ID where Kubeflow is running and does not collect or export any other data to AWS. If you wish to deactivate this tracking, instructions are below. 
+Usage tracking for Kubeflow on AWS collects the instance ID used by one of the worker nodes in a customer’s cluster. This data is sent back to AWS once per day. Usage tracking only collects the EC2 instance ID where Kubeflow is running and does not collect or export any other data to AWS. If you wish to deactivate this tracking, instructions are below.
 
 ### Activate usage tracking
 
@@ -18,7 +18,7 @@ kustomize build awsconfigs/common/aws-telemetry | kubectl apply -f -
 
 ### Deactivate usage tracking
 
-**Before deploying Kubeflow:** 
+**Before deploying Kubeflow:**
 
 You can deactivate usage tracking by skipping the telemetry component installation in one of two ways:
 
@@ -26,9 +26,9 @@ You can deactivate usage tracking by skipping the telemetry component installati
     ```bash
     # ../../aws-telemetry
     ```
-2. For individual component installation, **do not** install the `aws-telemetry` component: 
+2. For individual component installation, **do not** install the `aws-telemetry` component:
     ```bash
-    # AWS Telemetry - This is an optional component. 
+    # AWS Telemetry - This is an optional component.
     kustomize build awsconfigs/common/aws-telemetry | kubectl apply -f -
     ```
 **After deploying Kubeflow:**

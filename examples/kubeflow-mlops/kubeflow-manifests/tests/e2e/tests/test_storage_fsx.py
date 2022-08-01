@@ -2,7 +2,7 @@
 Installs the vanilla distribution of kubeflow and validates FSx for Lustre integration by:
     - Installing the FSx CSI Driver from upstream
     - Creating the required IAM Policy, Role and Service Account
-    - Creating the FSx for Lustre Volume 
+    - Creating the FSx for Lustre Volume
     - Creating a StorageClass, PersistentVolume and PersistentVolumeClaim using Static Provisioning
 """
 
@@ -83,7 +83,7 @@ class TestFSx:
         sa_account = get_service_account(
             cluster, region, DEFAULT_SYSTEM_NAMESPACE, "fsx-csi-controller-sa"
         )
-        assert sa_account.split("/")[0] == f"arn:aws:iam::{account_id}:role" 
+        assert sa_account.split("/")[0] == f"arn:aws:iam::{account_id}:role"
 
         fs_id = static_provisioning["file_system_id"]
         assert "fs-" in fs_id

@@ -87,7 +87,7 @@ spec:
       awsIamRole: arn:aws:iam::123456789012:role/some-profile-role
 ```
 
-The AWS IAM permissions granted to the pipelines components are specified in the profile's `awsIamRole`. 
+The AWS IAM permissions granted to the pipelines components are specified in the profile's `awsIamRole`.
 
 ### Verify configuration
 

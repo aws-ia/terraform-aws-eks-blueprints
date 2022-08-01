@@ -1,5 +1,5 @@
 """
-EKS cluster fixture module 
+EKS cluster fixture module
 """
 
 import subprocess

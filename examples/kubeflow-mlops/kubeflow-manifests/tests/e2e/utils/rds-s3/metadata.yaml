@@ -1,10 +1,10 @@
 RDS:
-  instanceName: 
-  secretName: 
+  instanceName:
+  secretName:
   subnetGroupName:
 S3:
-  bucket: 
-  secretName: 
+  bucket:
+  secretName:
 CLUSTER:
   region:
   name:

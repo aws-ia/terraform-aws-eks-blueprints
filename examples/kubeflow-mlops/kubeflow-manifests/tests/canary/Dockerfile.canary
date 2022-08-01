@@ -24,7 +24,7 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.21.8/b
 # Install eksctl
 RUN curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp && mv /tmp/eksctl /bin
 
-# Install kustomize 
+# Install kustomize
 RUN wget "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.2.1/kustomize_kustomize.v3.2.1_linux_amd64" \
  && chmod +x ./kustomize_kustomize.v3.2.1_linux_amd64 \
  && cp ./kustomize_kustomize.v3.2.1_linux_amd64 /bin/kustomize

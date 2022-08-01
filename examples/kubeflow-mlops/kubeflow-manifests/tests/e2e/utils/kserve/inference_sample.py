@@ -20,7 +20,7 @@ response = None
 if AUTH_PROVIDER != "cognito":
     USERNAME = os.environ.get("USERNAME", "user@example.com")
     PASSWORD = os.environ.get("PASSWORD", "12341234")
-    
+
     def session_cookie(host, login, password):
         session = requests.Session()
         response = session.get(host)

@@ -22,7 +22,7 @@ RUN apt-get update \
   build-essential \
   bash \
   bzip2 \
-  ca-certificates \ 
+  ca-certificates \
   curl \
   emacs \
   g++ \

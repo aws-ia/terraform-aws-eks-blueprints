@@ -7,4 +7,3 @@ commonLabels:
 kind: Kustomization
 resources:
 - application.yaml
-

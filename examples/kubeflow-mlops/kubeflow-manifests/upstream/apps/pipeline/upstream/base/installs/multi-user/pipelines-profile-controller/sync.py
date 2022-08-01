@@ -93,7 +93,7 @@ def get_settings_from_env(controller_port=None,
 def server_factory(visualization_server_image,
                    visualization_server_tag, frontend_image, frontend_tag,
                    disable_istio_sidecar, minio_access_key,
-                   minio_secret_key, kfp_default_pipeline_root=None, 
+                   minio_secret_key, kfp_default_pipeline_root=None,
                    url="", controller_port=8080):
     """
     Returns an HTTPServer populated with Handler with customized settings

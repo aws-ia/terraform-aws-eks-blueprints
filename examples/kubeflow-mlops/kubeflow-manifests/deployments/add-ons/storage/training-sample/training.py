@@ -45,7 +45,7 @@ def get_data_split(subset_type):
 
     return ds
 
-def main():    
+def main():
     # Define the datasets based on images already loaded onto the EFS Volume
     train_ds = get_data_split("training")
     val_ds = get_data_split("validation")

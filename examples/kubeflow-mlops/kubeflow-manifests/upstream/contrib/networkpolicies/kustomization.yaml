@@ -14,7 +14,7 @@ resources:
   - kserve-models-web-app.yaml
   - metadata-grpc-server.yaml
   - minio.yaml
-  - ml-pipeline-ui.yaml 
+  - ml-pipeline-ui.yaml
   - ml-pipeline.yaml
   - poddefaults.yaml
   - seldon.yaml

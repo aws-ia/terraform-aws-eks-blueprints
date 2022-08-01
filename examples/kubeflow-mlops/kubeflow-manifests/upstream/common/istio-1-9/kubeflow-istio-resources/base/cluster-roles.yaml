@@ -22,7 +22,7 @@ metadata:
     rbac.authorization.kubeflow.org/aggregate-to-kubeflow-edit: "true"
     rbac.authorization.kubeflow.org/aggregate-to-kubeflow-istio-admin: "true"
 rules:
-- apiGroups: 
+- apiGroups:
   - istio.io
   - networking.istio.io
   resources: ["*"]

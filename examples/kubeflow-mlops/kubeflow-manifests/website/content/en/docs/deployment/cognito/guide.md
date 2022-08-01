@@ -13,7 +13,7 @@ This guide describes how to deploy Kubeflow on Amazon EKS using Cognito as your 
 ## Prerequisites
 Check to make sure that you have the necessary [prerequisites]({{< ref "/docs/deployment/prerequisites.md" >}}).
 
-## Background 
+## Background
 
 Read the [background section]({{< ref "/docs/deployment/add-ons/load-balancer/guide.md#background" >}}) in the Load Balancer guide for information on the requirements for exposing Kubeflow over a Load Balancer.
 
@@ -38,13 +38,13 @@ From this point onwards, we will be creating/updating the DNS records **only in 
 1. Click on `Create pool` to create the user pool.
 1. Add an `App client` with any name and the default options.
     1. ![cognito-app-client-id](https://raw.githubusercontent.com/awslabs/kubeflow-manifests/main/website/content/en/docs/images/cognito/cognito-app-client-id.png)
-1. In the `App client settings`, select `Authorization code grant` flow under OAuth-2.0 and check box `email`, `openid`, `aws.cognito.signin.user.admin` and `profile` scopes. Also check box `Enabled Identity Providers`. 
+1. In the `App client settings`, select `Authorization code grant` flow under OAuth-2.0 and check box `email`, `openid`, `aws.cognito.signin.user.admin` and `profile` scopes. Also check box `Enabled Identity Providers`.
     1. Substitute `example.com` in this URL - `https://kubeflow.platform.example.com/oauth2/idpresponse` with your domain and use it as the Callback URL(s).
     2. Substitute `example.com` in this URL - `https://kubeflow.platform.example.com` with your domain and use it as the Sign out URL(s).
     3. ![cognito-app-client-settings](https://raw.githubusercontent.com/awslabs/kubeflow-manifests/main/website/content/en/docs/images/cognito/cognito-app-client-settings.png)
 1. Add a custom domain to the user pool. In order to add a custom domain to your user pool, you need specify a domain name, and provide a certificate managed with AWS Certificate Manager (ACM).
     1. In order to use a custom domain, its root(i.e. `platform.example.com`) must have an valid A type record. Create a new record of type `A` in `platform.example.com` hosted zone with an arbitrary IP for now. Once we have ALB created, we will update this value.
-        1. Following is a screenshot of `platform.example.com` hosted zone. A record is shown. 
+        1. Following is a screenshot of `platform.example.com` hosted zone. A record is shown.
             1. ![subdomain-initial-A-record](https://raw.githubusercontent.com/awslabs/kubeflow-manifests/main/website/content/en/docs/images/cognito/subdomain-initial-A-record.png)
     1. If your cluster is not in N.Virginia(us-east-1), create an ACM certificate in us-east-1 for `*.platform.example.com` by following the process similar to [section 2.0]({{< ref "/docs/deployment/add-ons/load-balancer/guide.md#create-certificates-for-domain" >}}). That is because [Cognito requires](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-add-custom-domain.html) a certificate in N.Virginia in order to have a custom domain for a user pool.
     1. In the `Domain name` choose `Use your domain`, type `auth.platform.example.com` and select the `*.platform.example.com` AWS managed certificate you’ve created in N.Virginia. Creating domain takes up to 15 mins.
@@ -68,7 +68,7 @@ From this point onwards, we will be creating/updating the DNS records **only in 
     1. signOutURL is the domain that you provided as the Sign out URL(s).
     1. CognitoLogoutURL is comprised of your CognitoUserPoolDomain, CognitoAppClientId, and your domain that you provided as the Sign out URL(s).
     1. Export the values:
-        1. 
+        1.
           ```bash
           export CognitoUserPoolArn="<YOUR_USER_POOL_ARN>"
           export CognitoAppClientId="<YOUR_APP_CLIENT_ID>"
@@ -105,31 +105,31 @@ From this point onwards, we will be creating/updating the DNS records **only in 
         ```bash
         # Kubeflow namespace
         kustomize build upstream/common/kubeflow-namespace/base | kubectl apply -f -
-        
+
         # Kubeflow Roles
         kustomize build upstream/common/kubeflow-roles/base | kubectl apply -f -
-        
+
         # Istio
         kustomize build upstream/common/istio-1-11/istio-crds/base | kubectl apply -f -
         kustomize build upstream/common/istio-1-11/istio-namespace/base | kubectl apply -f -
         kustomize build upstream/common/istio-1-11/istio-install/base | kubectl apply -f -
-        
+
         # Cert-Manager
         kustomize build upstream/common/cert-manager/cert-manager/base | kubectl apply -f -
         kustomize build upstream/common/cert-manager/kubeflow-issuer/base | kubectl apply -f -
-        
+
         # KNative
         kustomize build upstream/common/knative/knative-serving/overlays/gateways | kubectl apply -f -
         kustomize build upstream/common/knative/knative-eventing/base | kubectl apply -f -
         kustomize build upstream/common/istio-1-11/cluster-local-gateway/base | kubectl apply -f -
-        
+
         # Kubeflow Istio Resources
         kustomize build upstream/common/istio-1-11/kubeflow-istio-resources/base | kubectl apply -f -
-        
+
         # Kubeflow Pipelines
         # reapply manifest if you see an error
         kustomize build upstream/apps/pipeline/upstream/env/cert-manager/platform-agnostic-multi-user | kubectl apply -f -
-        
+
         # KServe
         kustomize build awsconfigs/apps/kserve | kubectl apply -f -
         kustomize build upstream/contrib/kserve/models-web-app/overlays/kubeflow | kubectl apply -f -
@@ -139,27 +139,27 @@ From this point onwards, we will be creating/updating the DNS records **only in 
 
         # Katib
         kustomize build upstream/apps/katib/upstream/installs/katib-with-kubeflow | kubectl apply -f -
-        
+
         # Central Dashboard
         kustomize build upstream/apps/centraldashboard/upstream/overlays/kserve | kubectl apply -f -
-        
+
         # Notebooks
         kustomize build upstream/apps/jupyter/notebook-controller/upstream/overlays/kubeflow | kubectl apply -f -
         kustomize build awsconfigs/apps/jupyter-web-app | kubectl apply -f -
-        
+
         # Admission Webhook
         kustomize build upstream/apps/admission-webhook/upstream/overlays/cert-manager | kubectl apply -f -
-        
+
         # Profiles + KFAM
         kustomize build upstream/apps/profiles/upstream/overlays/kubeflow | kubectl apply -f -
-        
+
         # Volumes Web App
         kustomize build upstream/apps/volumes-web-app/upstream/overlays/istio | kubectl apply -f -
-        
+
         # Tensorboard
         kustomize build upstream/apps/tensorboard/tensorboards-web-app/upstream/overlays/istio | kubectl apply -f -
         kustomize build upstream/apps/tensorboard/tensorboard-controller/upstream/overlays/kubeflow | kubectl apply -f -
-        
+
         # Training Operator
         kustomize build upstream/apps/training-operator/upstream/overlays/kubeflow | kubectl apply -f -
 

@@ -46,4 +46,4 @@ spec:
           name: irsa-notebook-as-configmap
       - emptyDir:
           medium: Memory
-        name: dshm  
+        name: dshm

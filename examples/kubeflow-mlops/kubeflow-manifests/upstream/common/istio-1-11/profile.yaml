@@ -194,4 +194,3 @@ spec:
           logging: false
           monitoring: false
           topology: false
-

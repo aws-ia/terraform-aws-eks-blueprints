@@ -2,7 +2,7 @@
 # Below are the default values when installing Seldon Core
 
 # Defaults to .Release.Namespace
-namespaceOverride: "" 
+namespaceOverride: ""
 
 # ## Ingress Options
 # You are able to choose between Istio and Ambassador
@@ -101,7 +101,7 @@ webhook:
 # ## Predictive Unit Values
 predictiveUnit:
   httpPort: 9000
-  grpcPort: 9500    
+  grpcPort: 9500
   metricsPortName: metrics
   # If you would like to add extra environment variables to the init container to make available
   #   secrets such as cloud credentials, you can provide a default secret name that will be loaded
@@ -126,7 +126,7 @@ predictor_servers:
       seldon:
         defaultImageVersion: "1.9.0"
         image: seldonio/tfserving-proxy
-      tensorflow: 
+      tensorflow:
         defaultImageVersion: 2.1.0
         image:  tensorflow/serving
   XGBOOST_SERVER:
@@ -197,4 +197,3 @@ engine:
 # Explainer image
 explainer:
   image: seldonio/alibiexplainer:1.9.0
-

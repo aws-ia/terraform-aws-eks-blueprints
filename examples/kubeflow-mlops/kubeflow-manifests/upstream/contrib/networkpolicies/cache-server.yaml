@@ -18,4 +18,3 @@ spec:
           port: 8443
   policyTypes:
     - Ingress
-

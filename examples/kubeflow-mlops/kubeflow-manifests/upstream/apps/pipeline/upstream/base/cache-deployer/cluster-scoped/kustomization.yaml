@@ -8,4 +8,3 @@ resources:
   # Presence of a SA referred by a clusterrolebinding allows kustomize to auto-add
   # namespace for the clusterrolebinding's SA ref.
   - cache-deployer-sa.yaml
-  

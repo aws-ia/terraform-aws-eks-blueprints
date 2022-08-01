@@ -1,6 +1,6 @@
 """
 A Kubeflow Pipeline Function which reads a file with dummy content at a specified path.
-The Pipeline is run with a specified PVC volume mount. 
+The Pipeline is run with a specified PVC volume mount.
 """
 
 import kfp

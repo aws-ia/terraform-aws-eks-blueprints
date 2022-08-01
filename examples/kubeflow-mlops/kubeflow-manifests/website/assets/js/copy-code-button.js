@@ -8,13 +8,13 @@ function createCopyButton(highlightDiv) {
     button.innerText = "⧉";
     button.addEventListener("click", () => copyCodeToClipboard(button, highlightDiv));
     highlightDiv.insertBefore(button, highlightDiv.firstChild);
-  
+
     const wrapper = document.createElement("div");
     wrapper.className = "highlight-wrapper";
     highlightDiv.parentNode.insertBefore(wrapper, highlightDiv);
     wrapper.appendChild(highlightDiv);
   }
-  
+
   document.querySelectorAll(".highlight").forEach((highlightDiv) => createCopyButton(highlightDiv));
   async function copyCodeToClipboard(button, highlightDiv) {
     const codeToCopy = highlightDiv.querySelector(":last-child > .chroma > code").innerText;
@@ -34,7 +34,7 @@ function createCopyButton(highlightDiv) {
       button.innerText = "⧉";
     }, 2000);  }
   }
-  
+
   function copyCodeBlockExecCommand(codeToCopy, highlightDiv) {
     const textArea = document.createElement("textArea");
     textArea.contentEditable = "true";
@@ -51,4 +51,3 @@ function createCopyButton(highlightDiv) {
     document.execCommand("copy");
     highlightDiv.removeChild(textArea);
   }
-  

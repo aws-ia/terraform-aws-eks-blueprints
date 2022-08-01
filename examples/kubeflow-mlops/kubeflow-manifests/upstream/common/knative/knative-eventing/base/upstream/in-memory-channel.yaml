@@ -825,4 +825,3 @@ spec:
             - containerPort: 9090
               name: metrics
 ---
-

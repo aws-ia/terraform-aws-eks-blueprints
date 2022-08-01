@@ -27,10 +27,10 @@ spec:
     spec:
       awsIamRole: arn:aws:iam::123456789012:role/some-profile-role
 ```
-The AWS IAM permissions granted to the experiment pods are specified in the profile's `awsIamRole`. 
+The AWS IAM permissions granted to the experiment pods are specified in the profile's `awsIamRole`.
 
 
-### Configuration 
+### Configuration
 
 #### Verify Prerequisites
 
@@ -47,7 +47,7 @@ eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/some-profile-role
 
 #### Experiment trial spec configuration
 
-When creating Katib experiments, you must correctly configure the experiment trial spec. 
+When creating Katib experiments, you must correctly configure the experiment trial spec.
 
 The `default-editor` service account needs to be added to the `trialSpec` section of an experiment spec.
 
@@ -124,7 +124,7 @@ As another example, in the following experiment spec the `serviceAccountName` fi
                 ...
             serviceAccountName: default-editor    # This addition is necessary
   ```
-#### Config map configuration for `katib-config` 
+#### Config map configuration for `katib-config`
 
 **This configuration is only required if your Katib [algorithm](https://www.kubeflow.org/docs/components/katib/experiment/#search-algorithms-in-detail) pod needs access to AWS services.**
 

@@ -19,7 +19,7 @@ In order to connect to Kubeflow using a Load Balancer, we need to setup HTTPS. M
 To secure the traffic and use HTTPS, we must associate a Secure Sockets Layer/Transport Layer Security (SSL/TLS) certificate with the Load Balancer. [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/) is a service that lets you easily provision, manage, and deploy public and private SSL/TLS certificates for use with AWS services and your internal connected resources. To create a certificate for use with the Load Balancer, [you must specify a domain name](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html#https-listener-certificates) (i.e. certificates cannot be created for ALB DNS). You can register your domain using any domain service provider such as [Route53](https://aws.amazon.com/route53/), or GoDoddy.
 
 ## Prerequisites
-This guide assumes that you have: 
+This guide assumes that you have:
 - A Kubeflow deployment on EKS with Dex as your authentication provider (Dex is the default authentication provider in the [Vanilla]({{< ref "/docs/deployment/vanilla/guide.md" >}}) deployment of Kubeflow on AWS).
 - Installed the tools mentioned in the [general prerequisites]({{< ref "/docs/deployment/prerequisites.md" >}}) guide on the client machine.
 - Verified that you are connected to the right cluster, that the cluster has compute, and that the AWS region is set to the region of your cluster.
@@ -65,13 +65,13 @@ From this point on, you create and update the DNS records **only in the subdomai
 To create the certificates for the domains in the region where your platform will run (i.e. EKS cluster region), follow the steps in the [Request a public certificate using the console](https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html#request-public-console) guide.
 
 > Note: The certificates are valid only after successful [validation of domain ownership](https://docs.aws.amazon.com/acm/latest/userguide/domain-ownership-validation.html).
-    
+
 The following image is a screenshot showing that a certificate has been issued.
 > Note: Status turns to `Issued` after a few minutes of validation.
 ![successfully-issued-certificate](https://raw.githubusercontent.com/awslabs/kubeflow-manifests/main/website/content/en/docs/images/load-balancer/successfully-issued-certificate.png)
 
 If you choose DNS validation for the validation of the certificates, you will be asked to create a CNAME type record in the hosted zone. The following image is a screenshot of the CNAME record of the certificate in the `platform.example.com` hosted zone for DNS validation:
-![DNS-record-for-certificate-validation](https://raw.githubusercontent.com/awslabs/kubeflow-manifests/main/website/content/en/docs/images/load-balancer/DNS-record-for-certificate-validation.png)    
+![DNS-record-for-certificate-validation](https://raw.githubusercontent.com/awslabs/kubeflow-manifests/main/website/content/en/docs/images/load-balancer/DNS-record-for-certificate-validation.png)  
 
 1. Create a certificate for `*.example.com` in the region where your platform will run.
 1. Create a certificate for `*.platform.example.com` in the region where your platform will run.

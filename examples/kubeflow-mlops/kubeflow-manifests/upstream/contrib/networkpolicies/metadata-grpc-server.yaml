@@ -21,4 +21,3 @@ spec:
         - podSelector: {} # allow all pods from the same namespace
   policyTypes:
     - Ingress
-

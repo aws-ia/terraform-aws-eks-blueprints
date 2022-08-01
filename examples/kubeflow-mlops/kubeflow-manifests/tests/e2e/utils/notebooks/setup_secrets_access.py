@@ -39,7 +39,7 @@ def setup_secrets_manager_kustomize():
     print_banner("Secrets Manager Setup")
     secrets_manager_kustomize_content = load_yaml_file(SECRETS_MANAGER_KUSTOMIZE_FILE_PATH)
     DEFAULT_NAMESPACE = secrets_manager_kustomize_content["namespace"]
-    
+
     edit_secrets_manager_kustomize(secrets_manager_kustomize_content, NAMESPACE)
     kubectl_apply_kustomize(SECRETS_MANAGER_KUSTOMIZE_FILE_BASE_PATH)
     edit_secrets_manager_kustomize(secrets_manager_kustomize_content, DEFAULT_NAMESPACE)

@@ -34,7 +34,7 @@ spec:
                   if [[ -n ${_token+x} ]]; then
                     IMDSV2_HEADER=(-H "X-aws-ec2-metadata-token: ${_token}")
                   fi
-                  
+
                   INSTANCE_ID=$(curl -s --retry 3 "${IMDSV2_HEADER[@]}" http://169.254.169.254/latest/meta-data/instance-id)
 
                   local _instance_id_regex="^(i-\S{17})"

@@ -22,7 +22,7 @@ FluentBitHttpPort='2020'
 FluentBitReadFromHead='Off'
 [[ ${FluentBitReadFromHead} = 'On' ]] && FluentBitReadFromTail='Off'|| FluentBitReadFromTail='On'
 [[ -z ${FluentBitHttpPort} ]] && FluentBitHttpServer='Off' || FluentBitHttpServer='On'
-curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/quickstart/cwagent-fluent-bit-quickstart.yaml | sed 's/{{cluster_name}}/'${CLUSTER_NAME}'/;s/{{region_name}}/'${CLUSTER_REGION}'/;s/{{http_server_toggle}}/"'${FluentBitHttpServer}'"/;s/{{http_server_port}}/"'${FluentBitHttpPort}'"/;s/{{read_from_head}}/"'${FluentBitReadFromHead}'"/;s/{{read_from_tail}}/"'${FluentBitReadFromTail}'"/' | kubectl apply -f - 
+curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/quickstart/cwagent-fluent-bit-quickstart.yaml | sed 's/{{cluster_name}}/'${CLUSTER_NAME}'/;s/{{region_name}}/'${CLUSTER_REGION}'/;s/{{http_server_toggle}}/"'${FluentBitHttpServer}'"/;s/{{http_server_port}}/"'${FluentBitHttpPort}'"/;s/{{read_from_head}}/"'${FluentBitReadFromHead}'"/;s/{{read_from_tail}}/"'${FluentBitReadFromTail}'"/' | kubectl apply -f -
 ```
 
 To verify the installation, you can run the `list-metrics` command and check that metrics have been created. It may take up to 15 minutes for the metrics to populate.
@@ -30,7 +30,7 @@ To verify the installation, you can run the `list-metrics` command and check tha
 aws cloudwatch list-metrics --namespace ContainerInsights --region $CLUSTER_REGION
 ```
 
-An example of the logs that will be available after installation are the logs of the Pods on your cluster. This way, the Pod logs can still be accessed past their default storage time. This also allows for an easy way to view logs for all Pods on your cluster without having to directly connect to your EKS cluster. 
+An example of the logs that will be available after installation are the logs of the Pods on your cluster. This way, the Pod logs can still be accessed past their default storage time. This also allows for an easy way to view logs for all Pods on your cluster without having to directly connect to your EKS cluster.
 
 The logs can be accessed by through CloudWatch log groups ![cloudwatch](../../../../images/cloudwatch/cloudwatch-logs.png)
 

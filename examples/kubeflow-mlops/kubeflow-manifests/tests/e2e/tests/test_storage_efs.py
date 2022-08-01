@@ -2,7 +2,7 @@
 Installs the vanilla distribution of kubeflow and validates EFS integration by:
     - Installing the EFS Driver from upstream
     - Creating the required IAM Policy, Role and Service Account
-    - Creating the EFS Volume 
+    - Creating the EFS Volume
     - Creating a StorageClass, PersistentVolume and PersistentVolumeClaim using Static Provisioning
     - Using KFP to check that the EFS can be accessed
 """
@@ -98,7 +98,7 @@ class TestEFS_Static:
         sa_account = get_service_account(
             cluster, region, DEFAULT_SYSTEM_NAMESPACE, "efs-csi-controller-sa"
         )
-        assert sa_account.split("/")[0] == f"arn:aws:iam::{account_id}:role" 
+        assert sa_account.split("/")[0] == f"arn:aws:iam::{account_id}:role"
 
         fs_id = create_efs_volume["file_system_id"]
         assert "fs-" in fs_id
@@ -184,13 +184,13 @@ class TestEFS_Dynamic:
         sa_account = get_service_account(
             cluster, region, DEFAULT_SYSTEM_NAMESPACE, "efs-csi-controller-sa"
         )
-        assert sa_account.split("/")[0] == f"arn:aws:iam::{account_id}:role" 
+        assert sa_account.split("/")[0] == f"arn:aws:iam::{account_id}:role"
 
         fs_id = dynamic_provisioning["file_system_id"]
         assert "fs-" in fs_id
 
-        # There are some differences in the static and dynamic volume names. 
-        # For dynamic provisioning the volume name is not the same as the claim_name unless I specify it in the spec file. 
+        # There are some differences in the static and dynamic volume names.
+        # For dynamic provisioning the volume name is not the same as the claim_name unless I specify it in the spec file.
         CLAIM_NAME = dynamic_provisioning["efs_claim_dyn"]
         _, claim_status = get_pvc_status(
             cluster, region, DEFAULT_USER_NAMESPACE, CLAIM_NAME

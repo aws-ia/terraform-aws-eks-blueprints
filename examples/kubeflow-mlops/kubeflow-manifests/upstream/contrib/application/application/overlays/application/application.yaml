@@ -14,7 +14,7 @@ spec:
   componentKinds:
     - group: app.k8s.io
       kind: Application
-  descriptor: 
+  descriptor:
     type: kubeflow
     version: v1beta1
     description: application that aggregates all kubeflow applications

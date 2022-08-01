@@ -33,10 +33,10 @@ Refer to the [general prerequisites guide]({{< ref "/docs/deployment/prerequisit
         ```sh
         # Kubeflow namespace
         kustomize build upstream/common/kubeflow-namespace/base | kubectl apply -f -
-        
+
         # Kubeflow Roles
         kustomize build upstream/common/kubeflow-roles/base | kubectl apply -f -
-        
+
         # Istio
         kustomize build upstream/common/istio-1-11/istio-crds/base | kubectl apply -f -
         kustomize build upstream/common/istio-1-11/istio-namespace/base | kubectl apply -f -
@@ -45,38 +45,38 @@ Refer to the [general prerequisites guide]({{< ref "/docs/deployment/prerequisit
         # Cert-Manager
         kustomize build upstream/common/cert-manager/cert-manager/base | kubectl apply -f -
         kustomize build upstream/common/cert-manager/kubeflow-issuer/base | kubectl apply -f -
-        
+
         # KNative
         kustomize build upstream/common/knative/knative-serving/overlays/gateways | kubectl apply -f -
         kustomize build upstream/common/knative/knative-eventing/base | kubectl apply -f -
         kustomize build upstream/common/istio-1-11/cluster-local-gateway/base | kubectl apply -f -
-        
+
         # Kubeflow Istio Resources
         kustomize build upstream/common/istio-1-11/kubeflow-istio-resources/base | kubectl apply -f -
-        
+
         # KServe
         kustomize build awsconfigs/apps/kserve | kubectl apply -f -
         kustomize build upstream/contrib/kserve/models-web-app/overlays/kubeflow | kubectl apply -f -
 
         # KFServing -  This is an optional component and required only if you are not ready to migrate to KServe. We recommend migrating to KServe as soon as possible
         kustomize build upstream/apps/kfserving/upstream/overlays/kubeflow | kubectl apply -f -
-        
+
         # Central Dashboard
         kustomize build upstream/apps/centraldashboard/upstream/overlays/kserve | kubectl apply -f -
-        
+
         # Notebooks
         kustomize build upstream/apps/jupyter/notebook-controller/upstream/overlays/kubeflow | kubectl apply -f -
         kustomize build awsconfigs/apps/jupyter-web-app | kubectl apply -f -
-        
+
         # Admission Webhook
         kustomize build upstream/apps/admission-webhook/upstream/overlays/cert-manager | kubectl apply -f -
-        
+
         # Profiles + KFAM
         kustomize build upstream/apps/profiles/upstream/overlays/kubeflow | kubectl apply -f -
-        
+
         # Volumes Web App
         kustomize build upstream/apps/volumes-web-app/upstream/overlays/istio | kubectl apply -f -
-        
+
         # Tensorboard
         kustomize build upstream/apps/tensorboard/tensorboards-web-app/upstream/overlays/istio | kubectl apply -f -
         kustomize build upstream/apps/tensorboard/tensorboard-controller/upstream/overlays/kubeflow | kubectl apply -f -
@@ -97,7 +97,7 @@ Refer to the [general prerequisites guide]({{< ref "/docs/deployment/prerequisit
         kustomize build awsconfigs/apps/katib-external-db-with-kubeflow | kubectl apply -f -
 
         # Configured for AWS Cognito
-        
+
         # Ingress
         kustomize build awsconfigs/common/istio-ingress/overlays/cognito | kubectl apply -f -
 
@@ -105,7 +105,7 @@ Refer to the [general prerequisites guide]({{< ref "/docs/deployment/prerequisit
         kustomize build awsconfigs/common/aws-alb-ingress-controller/base | kubectl apply -f -
 
         # Authservice
-        kustomize build awsconfigs/common/aws-authservice/base | kubectl apply -f -        
+        kustomize build awsconfigs/common/aws-authservice/base | kubectl apply -f -  
         ```
 1. Follow the rest of the Cognito guide from [section 5.0 (Updating the domain with ALB address)]({{< ref "/docs/deployment/cognito/guide.md#50-updating-the-domain-with-alb-address" >}}) in order to:
     1. Add/Update the DNS records in a custom domain with the ALB address

@@ -6,4 +6,3 @@ varReference:
 - kind: Certificate
   group: cert-manager.io
   path: spec/dnsNames
-

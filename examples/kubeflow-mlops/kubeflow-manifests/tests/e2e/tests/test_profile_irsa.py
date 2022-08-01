@@ -322,7 +322,7 @@ class TestProfileIRSA:
         assert bucket_name in buckets
 
         s3_client.delete_bucket(Bucket=bucket_name)
-    
+
     def test_pipeline_component_irsa(self, setup, kfp_client, client_namespace):
 
         def s3_op():
@@ -347,14 +347,14 @@ class TestProfileIRSA:
 
         def s3_pipeline():
             s3_operation = s3_op()
-        
+
         run = kfp_client.create_run_from_pipeline_func(
             s3_pipeline, namespace=client_namespace, arguments={}
         )
 
         wait_for_kfp_run_succeeded_from_run_id(kfp_client, run.run_id)
 
-    
+
     def test_katib_experiment(self, setup, cluster, region, client_namespace):
 
         patch_configmap(KUBEFLOW_NAMESPACE, KATIB_CONFIG_MAP_NAME, KATIB_CONFIG_MAP_PATCH_FILE)

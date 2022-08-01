@@ -1,4 +1,4 @@
-# Seldon Kustomize 
+# Seldon Kustomize
 
 ## Install Seldon Operator
 

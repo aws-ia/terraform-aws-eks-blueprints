@@ -4,7 +4,7 @@ description = "Everything you need to get started with Kubeflow on AWS"
 weight = 20
 +++
 
-## Install the necessary tools 
+## Install the necessary tools
 - [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) - A command line tool for interacting with AWS services.
 - [eksctl](https://eksctl.io/introduction/#installation) - A command line tool for working with EKS clusters.
 - [kubectl](https://kubernetes.io/docs/tasks/tools) - A command line tool for working with Kubernetes clusters.
@@ -14,7 +14,7 @@ weight = 20
 > Warning: Kubeflow is not compatible with the latest versions of of kustomize 4.x. This is due to changes in the order that resources are sorted and printed. Please see [kubernetes-sigs/kustomize#3794](https://github.com/kubernetes-sigs/kustomize/issues/3794) and [kubeflow/manifests#1797](https://github.com/kubeflow/manifests/issues/1797). We know that this is not ideal and are working with the upstream kustomize team to add support for the latest versions of kustomize as soon as we can.
 - [python 3.8+](https://www.python.org/downloads/) - A programming language used for automated installation scripts.
 - [pip](https://pip.pypa.io/en/stable/installation/) - A package installer for python.
-   
+
 ## Create an EKS cluster
 > Note: Be sure to check [Amazon EKS and Kubeflow Compatibility]({{< ref "/docs/about/eks-compatibility.md" >}}) when creating your cluster with specific EKS versions.
 
@@ -22,7 +22,7 @@ If you do not have an existing cluster, run the following command to create an E
 
 > Note: Various controllers use IAM roles for service accounts (IRSA). An [OIDC provider](https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html) must exist for your cluster to use IRSA.
 
-Change the values for the `CLUSTER_NAME` and `CLUSTER_REGION` environment variables: 
+Change the values for the `CLUSTER_NAME` and `CLUSTER_REGION` environment variables:
 ```bash
 export CLUSTER_NAME=$CLUSTER_NAME
 export CLUSTER_REGION=$CLUSTER_REGION
@@ -50,7 +50,7 @@ eksctl utils associate-iam-oidc-provider --cluster ${CLUSTER_NAME} \
 ```
 More details about cluster creation via `eksctl` can be found in the [Creating and managing clusters](https://eksctl.io/usage/creating-and-managing-clusters/) guide.
 
-## Clone the repository 
+## Clone the repository
 Clone the [`awslabs/kubeflow-manifests`](https://github.com/awslabs/kubeflow-manifests) and the [`kubeflow/manifests`](https://github.com/kubeflow/manifests) repositories and check out the release branches of your choosing.
 
 Substitute the value for `KUBEFLOW_RELEASE_VERSION`(e.g. v1.5.1) and `AWS_RELEASE_VERSION`(e.g. v1.5.1-aws-b1.0.0) with the tag or branch you want to use below. Read more about [releases and versioning]({{< ref "/docs/about/releases.md" >}}) if you are unsure about what these values should be.

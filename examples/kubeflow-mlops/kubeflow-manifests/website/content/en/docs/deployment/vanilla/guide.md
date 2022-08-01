@@ -47,7 +47,7 @@ You can now start experimenting and running your end-to-end ML workflows with Ku
 
 This section lists an installation command for each official Kubeflow component (under `apps`) and each common service (under `common`) using just `kubectl` and `kustomize`.
 
-If you run all of the following commands, the end result is the same as installing everything through the [single command installation](#install-with-a-single-command). 
+If you run all of the following commands, the end result is the same as installing everything through the [single command installation](#install-with-a-single-command).
 
 The purpose of this section is to:
 - Provide a description of each component and insight on how it gets installed.

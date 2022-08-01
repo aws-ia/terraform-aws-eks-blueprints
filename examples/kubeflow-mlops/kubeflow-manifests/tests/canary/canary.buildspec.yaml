@@ -15,8 +15,6 @@ phases:
     commands:
       # Run tests
       - docker run --name kf-distro-canary $(env | cut -f1 -d= | sed 's/^/-e /') --mount type=bind,source="$(pwd)/",target="/kubeflow-manifests/" ${ECR_CACHE_URI}:latest
-      
+
       # Push test image to cache ECR repo
       - docker push ${ECR_CACHE_URI}:latest || true
-      
-      
