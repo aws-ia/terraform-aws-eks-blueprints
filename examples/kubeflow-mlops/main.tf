@@ -123,13 +123,6 @@ data "aws_eks_addon_version" "latest" {
   most_recent        = true
 }
 
-#---------------------------------------------------------------
-# Modifying CoreDNS for Fargate
-#---------------------------------------------------------------
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
-}
-
 
 #---------------------------------------------------------------
 # Supporting Resources
