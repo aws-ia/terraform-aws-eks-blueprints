@@ -74,7 +74,7 @@ to:
     tls:
       mode: DISABLE
 
-Modify     
+Modify  
 /kubeflow-manifests/upstream/apps/jupyter/jupyter-web-app/upstream/base/deployment.yaml <br>
 /kubeflow-manifests/upstream/apps/volumes-web-app/upstream/base/deployment.yaml <br>
 by adding the attribute value under env:
