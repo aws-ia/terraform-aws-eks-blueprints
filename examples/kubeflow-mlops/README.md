@@ -53,6 +53,36 @@ terraform apply
 Enter `yes` to apply.
 
 **Deploy kubeflow**
+* clone kubeflow source code
+```sh
+export KUBEFLOW_RELEASE_VERSION=v1.5.1
+export AWS_RELEASE_VERSION=v1.5.1-aws-b1.0.0
+git clone https://github.com/awslabs/kubeflow-manifests.git && cd kubeflow-manifests
+git checkout ${AWS_RELEASE_VERSION}
+git clone --branch ${KUBEFLOW_RELEASE_VERSION} https://github.com/kubeflow/manifests.git upstream
+```
+
+If you install kubeflow in non-prod env and would like to access with http
+
+modify /kubeflow-manifests/upstream/apps/pipeline/upstream/base/installs/multi-user/istio-authorization-config.yaml <br>
+change<br>
+
+    tls:
+      mode: ISTIO_MUTUAL
+to:
+
+    tls:
+      mode: DISABLE
+
+Modify     
+/kubeflow-manifests/upstream/apps/jupyter/jupyter-web-app/upstream/base/deployment.yaml <br>
+/kubeflow-manifests/upstream/apps/volumes-web-app/upstream/base/deployment.yaml <br>
+by adding the attribute value under env:
+
+        - name: APP_SECURE_COOKIES
+          value: "false"
+
+* install kubeflow using kustomize
 ```sh
 cd kubeflow-manifests
 while ! kustomize build deployments/vanilla | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 30; done
@@ -61,6 +91,7 @@ while ! kustomize build deployments/vanilla | kubectl apply -f -; do echo "Retry
 **Set ALB and default storage class**
 ```sh
 aws eks --region <REGION> update-kubeconfig --name <CLSUTER_NAME>
+cd ..
 kubectl apply -f ebs-sc.yaml
 
 kubectl patch storageclass ebs-sc -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'

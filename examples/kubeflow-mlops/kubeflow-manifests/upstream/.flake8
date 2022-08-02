@@ -1,4 +1,0 @@
-[flake8]
-docstring_convention = google
-exclude = assets,__init__.py,__pycache__
-ignore = D100,D103,D104,D107,W503
