@@ -54,3 +54,17 @@ awsForFluentBit = {
   logGroupName = "<log_group_name>"
 }
 ```
+
+### Externally Created CloudWatch Log Group(s)
+
+If FluentBit will be configured to send various categories of logs to different CloudWatch log groups
+or if a KMS customer-managed key for log group encryption is required to be created outside of the
+Blueprints module, then a flag can be set to enable this.
+
+```hcl
+aws_for_fluentbit_create_cw_log_group = false
+aws_for_fluentbit_cw_log_group_name   = aws_cloudwatch_log_group.application.name
+```
+
+A full configuration for this along with a sophisticated collection and routing of logs can be
+found in the `examples/fluentbit-to-multiple-loggroups` directory.
