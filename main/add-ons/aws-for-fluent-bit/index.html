@@ -1204,6 +1204,7 @@ See this <a href="https://github.com/aws/eks-charts/tree/master/stable/aws-for-f
 <p>You can optionally customize the Helm chart that deploys <code>aws_for_fluentbit</code> via the following configuration.</p>
 <div class="highlight"><pre><span></span><code>  enable_aws_for_fluentbit = true
   aws_for_fluentbit_irsa_policies = [&quot;IAM Policies&quot;] # Add list of additional policies to IRSA to enable access to Kinesis, OpenSearch etc.
+  aws_for_fluentbit_cw_log_group_retention = 90
   aws_for_fluentbit_helm_config = {
     name                                      = &quot;aws-for-fluent-bit&quot;
     chart                                     = &quot;aws-for-fluent-bit&quot;
@@ -1211,7 +1212,6 @@ See this <a href="https://github.com/aws/eks-charts/tree/master/stable/aws-for-f
     version                                   = &quot;0.1.0&quot;
     namespace                                 = &quot;logging&quot;
     aws_for_fluent_bit_cw_log_group           = &quot;/${local.cluster_id}/worker-fluentbit-logs&quot; # Optional
-    aws_for_fluentbit_cwlog_retention_in_days = 90
     create_namespace                          = true
     values = [templatefile(&quot;${path.module}/values.yaml&quot;, {
       region                          = data.aws_region.current.name,
