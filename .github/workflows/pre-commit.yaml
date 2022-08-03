@@ -9,6 +9,7 @@ env:
   TERRAFORM_DOCS_VERSION: v0.16.0
   TFSEC_VERSION: v1.22.0
   TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
+  TFLINT_VERSION: v0.38.1
 
 jobs:
   collectInputs:
@@ -55,7 +56,7 @@ jobs:
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
         # Run only validate pre-commit check on min version supported
         if: ${{ matrix.directory !=  '.' }}
-        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.4.1
+        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.6.0
         with:
           terraform-version: ${{ steps.minMax.outputs.minVersion }}
           args: 'terraform_validate --color=always --show-diff-on-failure --files ${{ matrix.directory }}/*'
@@ -63,7 +64,7 @@ jobs:
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
         # Run only validate pre-commit check on min version supported
         if: ${{ matrix.directory ==  '.' }}
-        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.4.1
+        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.6.0
         with:
           terraform-version: ${{ steps.minMax.outputs.minVersion }}
           args: 'terraform_validate --color=always --show-diff-on-failure --files $(ls *.tf)'
@@ -97,7 +98,8 @@ jobs:
         uses: clowdhaus/terraform-min-max@v1.0.7
 
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.maxVersion }}
-        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.4.1
+        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.6.0
         with:
           terraform-version: ${{ steps.minMax.outputs.maxVersion }}
           terraform-docs-version: ${{ env.TERRAFORM_DOCS_VERSION }}
+          tflint-version: ${{ env.TFLINT_VERSION }}
