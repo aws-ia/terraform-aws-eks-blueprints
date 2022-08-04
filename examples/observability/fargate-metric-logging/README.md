@@ -82,6 +82,7 @@ NAMESPACE     NAME                      READY   STATUS    RESTARTS   AGE
 kube-system   coredns-dcc8d4c97-2jvfb   1/1     Running   0          2m28s
 
 2. Configure and test logging components
+- attach <your-cluster-name>-logging-policy to your fargate execution role
 - Go to directory fluentbit-openseach-logging, replace <your opensearch domain> and <your region> in fargate-cm.yaml with your setup values. then run  kubectl apply -f  fargate-cm.yaml
 - Deploy a test app by running kubectl apply -f test-app.yaml
 - Go to your Amazon opensearch service opensearch-demo
