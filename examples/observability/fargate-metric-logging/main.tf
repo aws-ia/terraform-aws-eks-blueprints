@@ -101,7 +101,7 @@ module "eks_blueprints" {
   fargate_profiles = {
     # Providing default fargate profile
     default = {
-      fargate_profile_name    = "default"
+      fargate_profile_name = "default"
       fargate_profile_namespaces = [
         {
           namespace = "default"
