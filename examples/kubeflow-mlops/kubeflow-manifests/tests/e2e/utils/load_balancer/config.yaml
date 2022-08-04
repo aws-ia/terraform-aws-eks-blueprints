@@ -1,9 +1,0 @@
-cluster:
-  name:
-  region:
-route53:
-  rootDomain:
-    hostedZoneId:
-    name:
-  subDomain:
-    name:

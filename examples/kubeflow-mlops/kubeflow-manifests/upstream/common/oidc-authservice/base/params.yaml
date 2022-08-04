@@ -1,5 +1,0 @@
-varReference:
-- path: spec/configPatches/patch/value/typed_config/http_service/server_uri/uri
-  kind: EnvoyFilter
-- path: spec/configPatches/patch/value/typed_config/http_service/server_uri/cluster
-  kind: EnvoyFilter
