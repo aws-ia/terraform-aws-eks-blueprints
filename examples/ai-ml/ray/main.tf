@@ -28,6 +28,11 @@ provider "helm" {
   }
 }
 
+provider "grafana" {
+  url  = "https://ray-demo.${var.eks_cluster_domain}/monitoring"
+  auth = "admin:${data.aws_secretsmanager_secret_version.admin_password_version.secret_string}"
+}
+
 data "aws_availability_zones" "available" {}
 data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
@@ -107,7 +112,7 @@ module "eks_blueprints" {
   managed_node_groups = {
     mg_5 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["m5.xlarge"]
+      instance_types  = ["m5.8xlarge"]
       min_size        = 3
       subnet_ids      = module.vpc.private_subnets
     }
@@ -116,6 +121,9 @@ module "eks_blueprints" {
   tags = local.tags
 }
 
+#---------------------------------------------------------------
+# EKS Blueprints AddOns
+#---------------------------------------------------------------
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../modules/kubernetes-addons"
 
@@ -126,10 +134,11 @@ module "eks_blueprints_kubernetes_addons" {
   eks_cluster_domain   = var.eks_cluster_domain
 
   # Add-Ons
-  enable_ray_operator                 = true
+  enable_kuberay_operator             = true
   enable_ingress_nginx                = true
   enable_aws_load_balancer_controller = true
   enable_external_dns                 = var.eks_cluster_domain == null ? false : true
+  enable_kube_prometheus_stack        = true
 
   # Add-on customizations
   ingress_nginx_helm_config = {
@@ -138,10 +147,24 @@ module "eks_blueprints_kubernetes_addons" {
       ssl_cert_arn = var.acm_certificate_domain == null ? null : data.aws_acm_certificate.issued[0].arn
     })]
   }
+  kube_prometheus_stack_helm_config = {
+    values = [templatefile("${path.module}/helm-values/kube-stack-prometheus-values.yaml", {
+      hostname = var.eks_cluster_domain
+    })]
+    set_sensitive = [
+      {
+        name  = "grafana.adminPassword"
+        value = data.aws_secretsmanager_secret_version.admin_password_version.secret_string
+      }
+    ]
+  }
+
   tags = local.tags
 }
 
-## Deploy Ray Cluster Resources
+#---------------------------------------------------------------
+# Deploy Ray Cluster Resources
+#---------------------------------------------------------------
 module "s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "v3.3.0"
@@ -217,8 +240,66 @@ resource "kubectl_manifest" "cluster_provisioner" {
   count     = length(data.kubectl_path_documents.count_hack.documents)
   yaml_body = element(data.kubectl_path_documents.docs.documents, count.index)
 
-  depends_on = [module.cluster_irsa, module.eks_blueprints_kubernetes_addons]
+  depends_on = [
+    module.cluster_irsa,
+    module.eks_blueprints_kubernetes_addons
+  ]
 }
+
+
+#---------------------------------------------------------------
+# Monitoring
+#---------------------------------------------------------------
+data "kubectl_path_documents" "prometheus" {
+  pattern = "${path.module}/monitoring/monitor.yaml"
+  vars = {
+    namespace = local.namespace
+  }
+}
+
+resource "kubectl_manifest" "prometheus" {
+  yaml_body = data.kubectl_path_documents.prometheus.documents[0]
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons,
+    kubectl_manifest.cluster_provisioner
+  ]
+}
+
+resource "random_password" "grafana" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+#tfsec:ignore:aws-ssm-secret-use-customer-key
+resource "aws_secretsmanager_secret" "grafana" {
+  name                    = "grafana"
+  recovery_window_in_days = 0 # Set to zero for this example to force delete during Terraform destroy
+}
+
+resource "aws_secretsmanager_secret_version" "grafana" {
+  secret_id     = aws_secretsmanager_secret.grafana.id
+  secret_string = random_password.grafana.result
+}
+
+data "aws_secretsmanager_secret_version" "admin_password_version" {
+  secret_id = aws_secretsmanager_secret.grafana.id
+
+  depends_on = [aws_secretsmanager_secret_version.grafana]
+}
+
+
+resource "grafana_folder" "ray" {
+  title = "ray"
+}
+
+resource "grafana_dashboard" "ray" {
+  config_json = file("monitoring/dashboard_default.json")
+  folder      = grafana_folder.ray.id
+}
+
+
 
 #---------------------------------------------------------------
 # Supporting Resources

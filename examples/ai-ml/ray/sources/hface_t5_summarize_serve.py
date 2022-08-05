@@ -5,7 +5,7 @@ from ray import serve
 from transformers import pipeline
 
 
-ray.init(address="ray://example-cluster-ray-head:10001", namespace="serve")
+ray.init(address="ray://raycluster-autoscaler-head-svc:10001", namespace="serve")
 serve.start(detached=True, http_options={"host": "0.0.0.0"})
 
 

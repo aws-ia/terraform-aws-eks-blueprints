@@ -1,5 +1,5 @@
 locals {
-  name      = "ray-operator"
+  name      = "kuberay-operator"
   namespace = try(var.helm_config.namespace, local.name)
 }
 
@@ -15,24 +15,13 @@ module "helm_addon" {
   helm_config = merge(
     {
       name        = local.name
-      chart       = "${path.module}/ray-operator-config"
-      version     = "0.2.0"
+      chart       = "${path.module}/kuberay-operator-config"
+      version     = "0.1.0"
       namespace   = local.namespace
-      description = "Ray Operator Helm Chart deployment configuration"
+      description = "KubeRay Operator Helm Chart deployment configuration"
     },
     var.helm_config
   )
-
-  set_values = [
-    {
-      name  = "operatorOnly"
-      value = "true"
-    },
-    {
-      name  = "operatorNamespace"
-      value = local.namespace
-    }
-  ]
 
   irsa_config   = null
   addon_context = var.addon_context

@@ -14,7 +14,7 @@ spec:
           imagePullPolicy: Always
           command: [ "/bin/bash", "-c", "--" ]
           args:
-            - "python /opt/train_fashion_mnist_example.py --address ray://example-cluster-ray-head:10001"
+            - "python /opt/train_fashion_mnist_example.py --address ray://raycluster-autoscaler-head-svc:10001"
           resources:
             requests:
               cpu: 1000m

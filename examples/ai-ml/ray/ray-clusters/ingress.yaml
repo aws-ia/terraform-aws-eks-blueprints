@@ -14,14 +14,14 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: example-cluster-ray-head
+            name: raycluster-autoscaler-head-svc
             port:
               number: 8265
       - path: /serve(/|$)(.*)
         pathType: Prefix
         backend:
           service:
-            name: example-cluster-ray-head
+            name: raycluster-autoscaler-head-svc
             port:
               number: 8000
     %{ if hostname != "" }

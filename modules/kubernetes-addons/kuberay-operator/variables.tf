@@ -1,5 +1,5 @@
 variable "helm_config" {
-  description = "Helm Config for Ray"
+  description = "Helm Config for KubeRay Operator"
   type        = any
   default     = {}
 }

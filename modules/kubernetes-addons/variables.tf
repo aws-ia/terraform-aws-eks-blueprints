@@ -977,15 +977,15 @@ variable "grafana_irsa_policies" {
   default     = []
 }
 
-#-----------RAY OPERATOR-------------
-variable "enable_ray_operator" {
-  description = "Enable Ray Operator add-on"
+#-----------KUBERAY OPERATOR-------------
+variable "enable_kuberay_operator" {
+  description = "Enable KubeRay Operator add-on"
   type        = bool
   default     = false
 }
 
-variable "ray_operator_helm_config" {
-  description = "Ray Operator Helm Chart config"
+variable "kuberay_operator_helm_config" {
+  description = "KubeRay Operator Helm Chart config"
   type        = any
   default     = {}
 }

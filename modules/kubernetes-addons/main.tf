@@ -471,10 +471,10 @@ module "adot_collector_nginx" {
   ]
 }
 
-module "ray_operator" {
-  count         = var.enable_ray_operator ? 1 : 0
-  source        = "./ray-operator"
-  helm_config   = var.ray_operator_helm_config
+module "kuberay_operator" {
+  count         = var.enable_kuberay_operator ? 1 : 0
+  source        = "./kuberay-operator"
+  helm_config   = var.kuberay_operator_helm_config
   addon_context = local.addon_context
 }
 

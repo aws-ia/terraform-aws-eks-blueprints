@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2022-08-02T22:35:30Z"
+  labels:
+    app.kubernetes.io/created-by: kuberay-operator
+    app.kubernetes.io/name: kuberay
+    ray.io/cluster: raycluster-autoscaler
+    ray.io/identifier: raycluster-autoscaler-head
+    ray.io/node-type: head
+  name: raycluster-autoscaler-head-svc
+  namespace: ray-cluster
+  ownerReferences:
+  - apiVersion: ray.io/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: RayCluster
+    name: raycluster-autoscaler
+    uid: 58a87e71-554c-4683-bca2-3e3ef1e778da
+  resourceVersion: "318092"
+  uid: 016e5ac6-1892-4760-80e5-65013b6906da
+spec:
+  clusterIP: 172.20.224.65
+  clusterIPs:
+  - 172.20.224.65
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: dashboard
+    port: 8265
+    protocol: TCP
+    targetPort: 8265
+  - name: client
+    port: 10001
+    protocol: TCP
+    targetPort: 10001
+  - name: gcs
+    port: 6379
+    protocol: TCP
+    targetPort: 6379
+  - name: metrics
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/created-by: kuberay-operator
+    app.kubernetes.io/name: kuberay
+    ray.io/cluster: raycluster-autoscaler
+    ray.io/identifier: raycluster-autoscaler-head
+    ray.io/node-type: head
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
