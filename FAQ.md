@@ -128,7 +128,7 @@ Sample code snippet for using IRSA module directly
 ```hcl
 
 locals {
-  eks_oidc_issuer_url = "oidc.eks.eu-west-1.amazonaws.com/id/E6CAB5CSOMEUNIQUEID55B9D01F7"
+  eks_oidc_issuer_url = "<ENTER_OIDC_ISSUER_URL>" # e.g., "oidc.eks.eu-west-1.amazonaws.com/id/E6CAB5CSOMEUNIQUEID55B9D01F7"
 }
 
 module "irsa" {
