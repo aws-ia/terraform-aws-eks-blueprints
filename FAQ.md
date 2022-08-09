@@ -133,6 +133,5 @@ module "irsa" {
     irsa_iam_policies          = ["<ENTER_IAM_POLICY_ARN>"]
     eks_cluster_id             = module.eks_blueprints.eks_cluster_id
     eks_oidc_provider_arn      = module.eks_blueprints.eks_oidc_provider_arn
-    eks_oidc_issuer_url        = module.eks_blueprints.eks_oidc_issuer_url
 }
 ```
