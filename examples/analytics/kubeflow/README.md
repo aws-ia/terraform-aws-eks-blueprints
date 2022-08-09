@@ -6,8 +6,7 @@ Anywhere you are running Kubernetes, you should be able to run Kubeflow.
 This example deploys the following resources
 
 - Creates EKS Cluster Control plane with public endpoint (for demo purpose only) with a managed node group
-- Deploys application load balancer and EBS CSI driver
-- Deploy Kubeflow on the EKS cluster
+- Deploys EBS/EFS CSI driver and Kubeflow pipeline on the EKS cluster
 
 Note: we use EKS 1.21 here which is the latest EKS version supported by Kubeflow. see reference below <br>
 https://awslabs.github.io/kubeflow-manifests/docs/about/eks-compatibility/
@@ -19,7 +18,6 @@ Ensure that you have installed the following tools on your machine.
 1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
-4. [Kustomize](https://kubectl.docs.kubernetes.io/installation/kustomize/)
 
 
 
@@ -44,7 +42,7 @@ Run Terraform plan to verify the resources created by this execution.
 terraform plan
 ```
 
-**Deploy the EKS cluster**
+**Deploy the EKS cluster with kubeflow pipeline feature**
 
 ```sh
 terraform apply
@@ -52,53 +50,6 @@ terraform apply
 
 Enter `yes` to apply.
 
-**Deploy kubeflow**
-* clone kubeflow source code
-```sh
-export KUBEFLOW_RELEASE_VERSION=v1.5.1
-export AWS_RELEASE_VERSION=v1.5.1-aws-b1.0.0
-git clone https://github.com/awslabs/kubeflow-manifests.git && cd kubeflow-manifests
-git checkout ${AWS_RELEASE_VERSION}
-git clone --branch ${KUBEFLOW_RELEASE_VERSION} https://github.com/kubeflow/manifests.git upstream
-```
-
-If you install kubeflow in non-prod env and would like to access with http
-
-modify /kubeflow-manifests/upstream/apps/pipeline/upstream/base/installs/multi-user/istio-authorization-config.yaml <br>
-change<br>
-
-    tls:
-      mode: ISTIO_MUTUAL
-to:
-
-    tls:
-      mode: DISABLE
-
-Modify  
-/kubeflow-manifests/upstream/apps/jupyter/jupyter-web-app/upstream/base/deployment.yaml <br>
-/kubeflow-manifests/upstream/apps/volumes-web-app/upstream/base/deployment.yaml <br>
-by adding the attribute value under env:
-
-        - name: APP_SECURE_COOKIES
-          value: "false"
-
-* install kubeflow using kustomize
-```sh
-cd kubeflow-manifests
-while ! kustomize build deployments/vanilla | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 30; done
-```
-
-**Set ALB and default storage class**
-```sh
-aws eks --region <REGION> update-kubeconfig --name <CLSUTER_NAME>
-cd ..
-kubectl apply -f ebs-sc.yaml
-
-kubectl patch storageclass ebs-sc -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
-kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
-
-kubectl apply -f ingress.yaml -n istio-system
-```
 
 
 ## Verify the resources
@@ -111,21 +62,18 @@ kubectl get nodes # Output shows the EKS Managed Node group nodes
 
 kubectl get ns | kubeflow # Output shows kubeflow namespace
 
-kubectl get pods --namespace=kubeflow # Output shows kubeflow pods
+kubectl get pods --namespace=kubeflow-pipelines # Output shows kubeflow pods
 
 
 
 ## Execute Machine learning jobs on Kubeflow
-log into Kubeflow UI with default username and password <br>
-get URL by running command below
-```
-kubectl get ingress -n istio-system
+log into Kubeflow pipeline UI by creating a port-forward to the ml-pipeline-ui service<br>
 
-username: user@example.com
-password: 12341234
+```sh
+kubectl port-forward svc/ml-pipeline-ui 9000:80 -n =kubeflow-pipelines
 ```
-please change the default username and password by using https://awslabs.github.io/kubeflow-manifests/docs/deployment/vanilla/guide/#change-default-user-password
-
+and open this browser: http://localhost:9000/#/pipelines
+more pipeline examples can be found at https://www.kubeflow.org/docs/components/pipelines/tutorials/
 
 ## Cleanup
 
