@@ -15,6 +15,10 @@ env:
   TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
   TFLINT_VERSION: v0.38.1
 
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   collectInputs:
     name: Collect workflow inputs
