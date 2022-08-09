@@ -44,11 +44,6 @@ variable "irsa_iam_permissions_boundary" {
   default     = ""
 }
 
-variable "eks_oidc_issuer_url" {
-  description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
-  type        = string
-}
-
 variable "eks_oidc_provider_arn" {
   description = "EKS OIDC Provider ARN e.g., arn:aws:iam::<ACCOUNT-ID>:oidc-provider/<var.eks_oidc_provider>"
   type        = string

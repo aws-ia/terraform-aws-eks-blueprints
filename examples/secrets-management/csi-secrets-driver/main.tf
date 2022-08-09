@@ -140,18 +140,9 @@ resource "aws_iam_policy" "this" {
 # Creating IAM Role for Service Account
 #---------------------------------------------------------------
 module "iam_role_service_account" {
-  source = "../../../modules/irsa"
-  addon_context = {
-    aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
-    aws_caller_identity_arn        = data.aws_caller_identity.current.arn
-    aws_eks_cluster_endpoint       = module.eks_blueprints.eks_cluster_endpoint
-    aws_partition_id               = data.aws_partition.current.partition
-    aws_region_name                = local.region
-    eks_cluster_id                 = module.eks_blueprints.eks_cluster_id
-    eks_oidc_issuer_url            = module.eks_blueprints.eks_oidc_issuer_url
-    eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${module.eks_blueprints.eks_oidc_issuer_url}"
-    tags                           = {}
-  }
+  source                     = "../../../modules/irsa"
+  eks_cluster_id             = module.eks_blueprints.eks_cluster_id
+  eks_oidc_provider_arn      = module.eks_blueprints.eks_oidc_provider_arn
   kubernetes_namespace       = local.application
   kubernetes_service_account = "${local.application}-sa"
   irsa_iam_policies          = [aws_iam_policy.this.arn]

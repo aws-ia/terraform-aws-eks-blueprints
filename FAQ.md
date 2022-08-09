@@ -126,19 +126,13 @@ provider "kubectl" {
 Sample code snippet for using IRSA module directly
 
 ```hcl
-
-locals {
-  eks_oidc_issuer_url = "<ENTER_OIDC_ISSUER_URL>" # e.g., "oidc.eks.eu-west-1.amazonaws.com/id/E6CAB5CSOMEUNIQUEID55B9D01F7"
-}
-
 module "irsa" {
     source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/irsa"
-    kubernetes_namespace       = "dev"
-    kubernetes_service_account = "spark"
+    kubernetes_namespace       = "<ENTER_NAMESPACE>"
+    kubernetes_service_account = "<ENTER_SERVICE_ACCOUNT_NAME>"
     irsa_iam_policies          = ["<ENTER_IAM_POLICY_ARN>"]
-    eks_cluster_id             = "my-test-cluster"
-    eks_oidc_provider_arn      = "arn:aws:iam::<YOUR_ACCOUNT_ID>:oidc-provider/${local.eks_oidc_issuer_url}"
-    eks_oidc_issuer_url        = local.eks_oidc_issuer_url
+    eks_cluster_id             = module.eks_blueprints.eks_cluster_id
+    eks_oidc_provider_arn      = module.eks_blueprints.eks_oidc_provider_arn
+    eks_oidc_issuer_url        = module.eks_blueprints.eks_oidc_issuer_url
 }
-
 ```

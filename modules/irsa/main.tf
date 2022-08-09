@@ -1,3 +1,7 @@
+locals {
+  eks_oidc_issuer_url = "${replace(var.eks_oidc_provider_arn, "/^(.*provider/)/", "")}:sub"
+}
+
 resource "kubernetes_namespace_v1" "irsa" {
   count = var.create_kubernetes_namespace && var.kubernetes_namespace != "kube-system" ? 1 : 0
   metadata {
@@ -33,8 +37,8 @@ resource "aws_iam_role" "irsa" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringLike" : {
-            "${var.eks_oidc_issuer_url}:sub" : "system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}",
-            "${var.eks_oidc_issuer_url}:aud" : "sts.amazonaws.com"
+            "${local.eks_oidc_issuer_url}:sub" : "system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}",
+            "${local.eks_oidc_issuer_url}:aud" : "sts.amazonaws.com"
           }
         }
       }

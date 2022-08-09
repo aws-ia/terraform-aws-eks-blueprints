@@ -30,7 +30,6 @@ module "irsa_addon" {
   irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
   eks_cluster_id                    = var.addon_context.eks_cluster_id
   eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn
-  eks_oidc_issuer_url               = var.addon_context.eks_oidc_issuer_url
 }
 
 resource "aws_iam_policy" "aws_ebs_csi_driver" {

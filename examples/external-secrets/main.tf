@@ -182,18 +182,8 @@ module "cluster_secretstore_role" {
   create_kubernetes_namespace = false
   kubernetes_service_account  = local.cluster_secretstore_sa
   irsa_iam_policies           = [aws_iam_policy.cluster_secretstore.arn]
-
-  addon_context = {
-    aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
-    aws_caller_identity_arn        = data.aws_caller_identity.current.arn
-    aws_eks_cluster_endpoint       = module.eks_blueprints.eks_cluster_endpoint
-    aws_partition_id               = data.aws_partition.current.partition
-    aws_region_name                = data.aws_region.current.name
-    eks_cluster_id                 = module.eks_blueprints.eks_cluster_id
-    eks_oidc_issuer_url            = module.eks_blueprints.eks_oidc_issuer_url
-    eks_oidc_provider_arn          = module.eks_blueprints.eks_oidc_provider_arn
-    tags                           = {}
-  }
+  eks_cluster_id              = module.eks_blueprints.eks_cluster_id
+  eks_oidc_provider_arn       = module.eks_blueprints.eks_oidc_provider_arn
 
   depends_on = [module.eks_blueprints_kubernetes_addons]
 }
@@ -288,20 +278,9 @@ module "secretstore_role" {
   create_kubernetes_namespace = false
   kubernetes_service_account  = local.secretstore_sa
   irsa_iam_policies           = [aws_iam_policy.secretstore.arn]
-
-  addon_context = {
-    aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
-    aws_caller_identity_arn        = data.aws_caller_identity.current.arn
-    aws_eks_cluster_endpoint       = module.eks_blueprints.eks_cluster_endpoint
-    aws_partition_id               = data.aws_partition.current.partition
-    aws_region_name                = data.aws_region.current.name
-    eks_cluster_id                 = module.eks_blueprints.eks_cluster_id
-    eks_oidc_issuer_url            = module.eks_blueprints.eks_oidc_issuer_url
-    eks_oidc_provider_arn          = module.eks_blueprints.eks_oidc_provider_arn
-    tags                           = {}
-  }
-
-  depends_on = [module.eks_blueprints_kubernetes_addons]
+  eks_cluster_id              = module.eks_blueprints.eks_cluster_id
+  eks_oidc_provider_arn       = module.eks_blueprints.eks_oidc_provider_arn
+  depends_on                  = [module.eks_blueprints_kubernetes_addons]
 }
 
 resource "aws_iam_policy" "secretstore" {

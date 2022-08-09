@@ -54,7 +54,6 @@ module "aws_provider_irsa" {
   irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
   eks_cluster_id                    = var.addon_context.eks_cluster_id
   eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn
-  eks_oidc_issuer_url               = var.addon_context.eks_oidc_issuer_url
   depends_on                        = [kubectl_manifest.aws_provider]
 }
 
@@ -109,7 +108,6 @@ module "jet_aws_provider_irsa" {
   irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
   eks_cluster_id                    = var.addon_context.eks_cluster_id
   eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn
-  eks_oidc_issuer_url               = var.addon_context.eks_oidc_issuer_url
   depends_on                        = [kubectl_manifest.jet_aws_provider]
 }
 
