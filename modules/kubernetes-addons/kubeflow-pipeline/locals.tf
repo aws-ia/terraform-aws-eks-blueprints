@@ -16,10 +16,10 @@ locals {
     local.default_helm_config,
     var.helm_config
   )
-  
+
   default_helm_values = [templatefile("${path.module}/values.yaml", {
   })]
-  
+
   argocd_gitops_config = {
     enable = true
   }
