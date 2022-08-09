@@ -75,6 +75,13 @@ data "aws_eks_cluster_auth" "this" {
 
 ### `exec()` Example
 
+Usage of exec plugin for AWS credentials
+
+Links to References related to this issue
+
+- https://github.com/hashicorp/terraform/issues/29182
+- https://github.com/aws/aws-cli/pull/6476
+
 ```hcl
 provider "kubernetes" {
   host                   = module.eks_blueprints.eks_cluster_endpoint
@@ -114,7 +121,24 @@ provider "kubectl" {
 }
 ```
 
-### References
+### How to use IRSA module
 
-- https://github.com/hashicorp/terraform/issues/29182
-- https://github.com/aws/aws-cli/pull/6476
+Sample code snippet for using IRSA module directly
+
+```hcl
+
+locals {
+  eks_oidc_issuer_url = "oidc.eks.eu-west-1.amazonaws.com/id/E6CAB5CSOMEUNIQUEID55B9D01F7"
+}
+
+module "irsa" {
+    source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/irsa"
+    kubernetes_namespace       = "dev"
+    kubernetes_service_account = "spark"
+    irsa_iam_policies          = ["<ENTER_IAM_POLICY_ARN>"]
+    eks_cluster_id             = "my-test-cluster"
+    eks_oidc_provider_arn      = "arn:aws:iam::<YOUR_ACCOUNT_ID>:oidc-provider/${local.eks_oidc_issuer_url}"
+    eks_oidc_issuer_url        = local.eks_oidc_issuer_url
+}
+
+```

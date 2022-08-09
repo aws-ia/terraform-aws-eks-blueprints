@@ -26,7 +26,11 @@ module "irsa_addon" {
   kubernetes_namespace              = "kube-system"
   kubernetes_service_account        = "ebs-csi-controller-sa"
   irsa_iam_policies                 = concat([aws_iam_policy.aws_ebs_csi_driver[0].arn], try(var.addon_config.additional_iam_policies, []))
-  addon_context                     = var.addon_context
+  irsa_iam_role_path                = var.addon_context.irsa_iam_role_path
+  irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
+  eks_cluster_id                    = var.addon_context.eks_cluster_id
+  eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn
+  eks_oidc_issuer_url               = var.addon_context.eks_oidc_issuer_url
 }
 
 resource "aws_iam_policy" "aws_ebs_csi_driver" {

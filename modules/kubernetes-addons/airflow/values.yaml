@@ -1,0 +1,57 @@
+#----------------------------------------------------
+# Default security context for airflow
+#----------------------------------------------------
+securityContext:
+  fsGroup: 65534
+
+executor: "KubernetesExecutor"
+#----------------------------------------------------
+# Ingress configuration
+#----------------------------------------------------
+ingress:
+  web:
+    enabled: false
+#----------------------------------------------------
+# Airflow scheduler settings
+#----------------------------------------------------
+scheduler:
+  replicas: 2
+#----------------------------------------------------
+# Airflow webserver settings
+#----------------------------------------------------
+webserver:
+  # Number of webservers
+  replicas: 2
+#----------------------------------------------------
+# Airflow Triggerer Config
+#----------------------------------------------------
+triggerer:
+  enabled: true
+#----------------------------------------------------
+# Airflow Dag Processor Config
+#----------------------------------------------------
+dagProcessor:
+  enabled: false
+#----------------------------------------------------
+# StatsD settings
+#----------------------------------------------------
+statsd:
+  enabled: true
+#----------------------------------------------------
+# PgBouncer settings
+#----------------------------------------------------
+pgbouncer:
+  enabled: true
+  auth_type: scram-sha-256
+#----------------------------------------------------
+# Disable local postgresql for external RDS implementation
+#----------------------------------------------------
+postgresql:
+  enabled: true
+#----------------------------------------------------
+# Git sync
+# Move this to example
+#----------------------------------------------------
+dags:
+  persistence:
+    enabled: true
