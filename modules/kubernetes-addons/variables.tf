@@ -537,6 +537,19 @@ variable "spark_k8s_operator_helm_config" {
   default     = {}
 }
 
+#-----------KUBEFLOW PIPELINE-------------
+variable "enable_kubeflow_pipeline" {
+  description = "Enable kubeflow pipeline add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kubeflow_pipeline_helm_config" {
+  description = "kubeflow pipeline Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------AWS FOR FLUENT BIT-------------
 variable "enable_aws_for_fluentbit" {
   description = "Enable AWS for FluentBit add-on"

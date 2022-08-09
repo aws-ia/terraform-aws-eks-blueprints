@@ -1,0 +1,7 @@
+platform:
+  # -- Configures the target cloud, possible: `aws`, `gcp`
+  cloud: gcp
+  managedStorage:
+    enabled: false
+  gcp:
+    proxyEnabled: false

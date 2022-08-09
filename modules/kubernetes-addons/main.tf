@@ -301,6 +301,14 @@ module "spark_k8s_operator" {
   addon_context     = local.addon_context
 }
 
+module "kubeflow_pipeline" {
+  count             = var.enable_kubeflow_pipeline ? 1 : 0
+  source            = "./kubeflow-pipeline"
+  helm_config       = var.kubeflow_pipeline_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "tetrate_istio" {
   count                = var.enable_tetrate_istio ? 1 : 0
   source               = "tetratelabs/tetrate-istio-addon/eksblueprints"
