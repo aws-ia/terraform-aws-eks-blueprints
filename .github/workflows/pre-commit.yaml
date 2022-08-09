@@ -4,6 +4,10 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - '**.tf'
+      - '**.yml'
+      - '**.yaml'
 
 env:
   TERRAFORM_DOCS_VERSION: v0.16.0
@@ -37,34 +41,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            dir:
+              - '${{ matrix.directory }}/**'
+
       - name: Config Terraform plugin cache
+        if: steps.changes.outputs.dir == 'true'
         run: mkdir --parents ${{ env.TERRAFORM_DOCS_VERSION }}
 
       - name: Cache Terraform
         uses: actions/cache@v3
+        if: steps.changes.outputs.dir == 'true'
         with:
           path: ${{ env.TERRAFORM_DOCS_VERSION }}
           key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
           restore-keys: ${{ runner.os }}-terraform-
 
       - name: Terraform min/max versions
-        id: minMax
         uses: clowdhaus/terraform-min-max@v1.0.7
+        if: steps.changes.outputs.dir == 'true'
+        id: minMax
         with:
           directory: ${{ matrix.directory }}
 
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
-        # Run only validate pre-commit check on min version supported
-        if: ${{ matrix.directory !=  '.' }}
         uses: clowdhaus/terraform-composite-actions/pre-commit@v1.6.0
+        # Run only validate pre-commit check on min version supported
+        if: ${{ matrix.directory !=  '.' }} && steps.changes.outputs.dir == 'true'
         with:
           terraform-version: ${{ steps.minMax.outputs.minVersion }}
           args: 'terraform_validate --color=always --show-diff-on-failure --files ${{ matrix.directory }}/*'
 
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
-        # Run only validate pre-commit check on min version supported
-        if: ${{ matrix.directory ==  '.' }}
         uses: clowdhaus/terraform-composite-actions/pre-commit@v1.6.0
+        # Run only validate pre-commit check on min version supported
+        if: ${{ matrix.directory ==  '.' }} && steps.changes.outputs.dir == 'true'
         with:
           terraform-version: ${{ steps.minMax.outputs.minVersion }}
           args: 'terraform_validate --color=always --show-diff-on-failure --files $(ls *.tf)'
