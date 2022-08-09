@@ -115,7 +115,6 @@ module "irsa_amp_ingest" {
   eks_cluster_id                = var.addon_context.eks_cluster_id
   eks_oidc_provider_arn         = var.addon_context.eks_oidc_provider_arn
   eks_oidc_issuer_url           = var.addon_context.eks_oidc_issuer_url
-  #  addon_context              = var.addon_context
 }
 
 # ------------------------------------------
@@ -160,5 +159,4 @@ module "irsa_amp_query" {
   eks_cluster_id                = var.addon_context.eks_cluster_id
   eks_oidc_provider_arn         = var.addon_context.eks_oidc_provider_arn
   eks_oidc_issuer_url           = var.addon_context.eks_oidc_issuer_url
-  #  addon_context              = var.addon_context
 }
