@@ -1187,6 +1187,11 @@
 <p>External DNS can optionally leverage the <code>eks_cluster_domain</code> global property of the <code>kubernetes_addon</code> submodule. The value for this property should be a Route53 domain managed by your account. ExternalDNS will leverage the value supplied for its <code>zoneIdFilters</code> property, which will restrict ExternalDNS to only create records for this domain. See docs <a href="https://github.com/bitnami/charts/tree/master/bitnami/external-dns">here</a>.</p>
 <div class="highlight"><pre><span></span><code>eks_cluster_domain = &lt;cluster_domain&gt;
 </code></pre></div>
+<p>Alternatively, you can supply a list of Route53 zone ARNs which external-dns will have access to create/manage records:</p>
+<div class="highlight"><pre><span></span><code>  external_dns_route53_zone_arns = [
+    &quot;arn:aws:route53::123456789012:hostedzone/Z1234567890&quot;
+  ]
+</code></pre></div>
 <p>You can optionally customize the Helm chart that deploys <code>external-dns</code> via the following configuration.</p>
 <div class="highlight"><pre><span></span><code>  enable_external_dns = true
   external_dns_helm_config = {
