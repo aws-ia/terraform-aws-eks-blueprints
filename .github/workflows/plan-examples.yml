@@ -53,14 +53,7 @@ jobs:
         directory: ${{ fromJson(needs.getExampleDirectories.outputs.directories) }}
 
     steps:
-      # - name: checkout-merge
-      #   if: "contains(github.event_name, 'pull_request')"
-      #   uses: actions/checkout@v3
-      #   with:
-      #     ref: refs/pull/${{github.event.pull_request.number}}/merge
-
       - name: checkout
-        # if: "!contains(github.event_name, 'pull_request')"
         uses: actions/checkout@v3
 
       - uses: dorny/paths-filter@v2

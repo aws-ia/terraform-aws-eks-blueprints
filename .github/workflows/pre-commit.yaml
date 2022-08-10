@@ -26,7 +26,6 @@ jobs:
     outputs:
       directories: ${{ steps.dirs.outputs.directories }}
     steps:
-      - run: aws --version
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -97,29 +96,38 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - uses: dorny/paths-filter@v2
+        id: changes
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{github.event.pull_request.head.repo.full_name}}
+          filters: |
+            src:
+              - '**/*.tf'
 
       - name: Config Terraform plugin cache
+        if: steps.changes.outputs.src== 'true'
         run: mkdir --parents ${{ env.TERRAFORM_DOCS_VERSION }}
 
       - name: Cache Terraform
         uses: actions/cache@v3
+        if: steps.changes.outputs.src== 'true'
         with:
           path: ${{ env.TF_PLUGIN_CACHE_DIR }}
           key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
           restore-keys: ${{ runner.os }}-terraform-
 
       - name: Install tfsec
+        if: steps.changes.outputs.src== 'true'
         run: curl -sSLo ./tfsec https://github.com/aquasecurity/tfsec/releases/download/${{ env.TFSEC_VERSION }}/tfsec-$(uname)-amd64 && chmod +x tfsec && sudo mv tfsec /usr/bin/
 
       - name: Terraform min/max versions
         id: minMax
         uses: clowdhaus/terraform-min-max@v1.0.7
+        if: steps.changes.outputs.src== 'true'
 
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.maxVersion }}
         uses: clowdhaus/terraform-composite-actions/pre-commit@v1.6.0
+        if: steps.changes.outputs.src== 'true'
         with:
           terraform-version: ${{ steps.minMax.outputs.maxVersion }}
           terraform-docs-version: ${{ env.TERRAFORM_DOCS_VERSION }}
