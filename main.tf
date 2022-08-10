@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 module "aws_eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "v18.26.3"
+  version = "v18.26.6"
 
   create = var.create_eks
 

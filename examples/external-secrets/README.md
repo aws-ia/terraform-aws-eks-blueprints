@@ -25,7 +25,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 Initialize a working directory with configuration files
 
 ```sh
-cd examples/external-secrets-kubernetes-addon/
+cd examples/external-secrets/
 terraform init
 ```
 
