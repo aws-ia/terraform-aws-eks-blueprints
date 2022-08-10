@@ -1,4 +1,3 @@
 provider: aws
-zoneIdFilters: ${zone_filter_ids}
 aws:
   region: ${aws_region}
