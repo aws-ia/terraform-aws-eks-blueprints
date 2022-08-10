@@ -1,5 +1,5 @@
 locals {
-  eks_oidc_issuer_url = "${replace(var.eks_oidc_provider_arn, "/^(.*provider/)/", "")}:sub"
+  eks_oidc_issuer_url = "${replace(var.eks_oidc_provider_arn, "/^(.*provider/)/", "")}"
 }
 
 resource "kubernetes_namespace_v1" "irsa" {
