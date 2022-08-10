@@ -16,14 +16,20 @@ variable "irsa_policies" {
 }
 
 variable "domain_name" {
-  description = "Domain name of the Route53 hosted zone to use with External DNS."
+  description = "[Deprecated - use `route53_zone_arns`] Domain name of the Route53 hosted zone to use with External DNS."
   type        = string
 }
 
 variable "private_zone" {
+  description = "[Deprecated - use `route53_zone_arns`] Determines if referenced Route53 hosted zone is private."
   type        = bool
-  description = "Determines if referenced Route53 hosted zone is private."
   default     = false
+}
+
+variable "route53_zone_arns" {
+  description = "List of Route53 zones ARNs which external-dns will have access to create/manage records"
+  type        = list(string)
+  default     = []
 }
 
 variable "addon_context" {
