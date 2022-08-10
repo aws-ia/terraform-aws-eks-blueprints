@@ -18,6 +18,14 @@ External DNS can optionally leverage the `eks_cluster_domain` global property of
 eks_cluster_domain = <cluster_domain>
 ```
 
+Alternatively, you can supply a list of Route53 zone ARNs which external-dns will have access to create/manage records:
+
+```hcl
+  external_dns_route53_zone_arns = [
+    "arn:aws:route53::123456789012:hostedzone/Z1234567890"
+  ]
+```
+
 You can optionally customize the Helm chart that deploys `external-dns` via the following configuration.
 
 ```hcl

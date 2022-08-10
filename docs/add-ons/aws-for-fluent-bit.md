@@ -22,6 +22,7 @@ You can optionally customize the Helm chart that deploys `aws_for_fluentbit` via
 ```hcl
   enable_aws_for_fluentbit = true
   aws_for_fluentbit_irsa_policies = ["IAM Policies"] # Add list of additional policies to IRSA to enable access to Kinesis, OpenSearch etc.
+  aws_for_fluentbit_cw_log_group_retention = 90
   aws_for_fluentbit_helm_config = {
     name                                      = "aws-for-fluent-bit"
     chart                                     = "aws-for-fluent-bit"
@@ -29,7 +30,6 @@ You can optionally customize the Helm chart that deploys `aws_for_fluentbit` via
     version                                   = "0.1.0"
     namespace                                 = "logging"
     aws_for_fluent_bit_cw_log_group           = "/${local.cluster_id}/worker-fluentbit-logs" # Optional
-    aws_for_fluentbit_cwlog_retention_in_days = 90
     create_namespace                          = true
     values = [templatefile("${path.module}/values.yaml", {
       region                          = data.aws_region.current.name,
