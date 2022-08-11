@@ -64,13 +64,12 @@ module "agones" {
 }
 
 module "argocd" {
-  count                      = var.enable_argocd ? 1 : 0
-  source                     = "./argocd"
-  helm_config                = var.argocd_helm_config
-  applications               = var.argocd_applications
-  admin_password_secret_name = var.argocd_admin_password_secret_name
-  addon_config               = { for k, v in local.argocd_addon_config : k => v if v != null }
-  addon_context              = local.addon_context
+  count         = var.enable_argocd ? 1 : 0
+  source        = "./argocd"
+  helm_config   = var.argocd_helm_config
+  applications  = var.argocd_applications
+  addon_config  = { for k, v in local.argocd_addon_config : k => v if v != null }
+  addon_context = local.addon_context
 }
 
 module "argo_rollouts" {
@@ -85,6 +84,16 @@ module "aws_efs_csi_driver" {
   count             = var.enable_aws_efs_csi_driver ? 1 : 0
   source            = "./aws-efs-csi-driver"
   helm_config       = var.aws_efs_csi_driver_helm_config
+  irsa_policies     = var.aws_efs_csi_driver_irsa_policies
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "aws_fsx_csi_driver" {
+  count             = var.enable_aws_fsx_csi_driver ? 1 : 0
+  source            = "./aws-fsx-csi-driver"
+  helm_config       = var.aws_fsx_csi_driver_helm_config
+  irsa_policies     = var.aws_fsx_csi_driver_irsa_policies
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
@@ -178,14 +187,18 @@ module "crossplane" {
 }
 
 module "external_dns" {
-  count             = var.enable_external_dns ? 1 : 0
-  source            = "./external-dns"
+  source = "./external-dns"
+
+  count = var.enable_external_dns ? 1 : 0
+
   helm_config       = var.external_dns_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   irsa_policies     = var.external_dns_irsa_policies
   addon_context     = local.addon_context
+
   domain_name       = var.eks_cluster_domain
   private_zone      = var.external_dns_private_zone
+  route53_zone_arns = var.external_dns_route53_zone_arns
 }
 
 module "fargate_fluentbit" {
@@ -196,13 +209,12 @@ module "fargate_fluentbit" {
 }
 
 module "grafana" {
-  count                              = var.enable_grafana ? 1 : 0
-  source                             = "./grafana"
-  helm_config                        = var.grafana_helm_config
-  irsa_policies                      = var.grafana_irsa_policies
-  grafana_admin_password_secret_name = var.grafana_admin_password_secret_name
-  manage_via_gitops                  = var.argocd_manage_add_ons
-  addon_context                      = local.addon_context
+  count             = var.enable_grafana ? 1 : 0
+  source            = "./grafana"
+  helm_config       = var.grafana_helm_config
+  irsa_policies     = var.grafana_irsa_policies
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "ingress_nginx" {
@@ -263,6 +275,13 @@ module "ondat" {
   etcd_key          = var.ondat_etcd_key
   admin_username    = var.ondat_admin_username
   admin_password    = var.ondat_admin_password
+}
+
+module "kube_prometheus_stack" {
+  count         = var.enable_kube_prometheus_stack ? 1 : 0
+  source        = "./kube-prometheus-stack"
+  helm_config   = var.kube_prometheus_stack_helm_config
+  addon_context = local.addon_context
 }
 
 module "prometheus" {

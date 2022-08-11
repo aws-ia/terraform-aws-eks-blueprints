@@ -31,6 +31,12 @@ resource "kubernetes_role" "emr_containers" {
   }
 
   rule {
+    verbs      = ["create", "delete", "deletecollection", "get", "list", "patch", "update", "watch"]
+    api_groups = [""]
+    resources  = ["persistentvolumeclaims"]
+  }
+
+  rule {
     verbs      = ["create", "patch", "delete", "watch"]
     api_groups = [""]
     resources  = ["secrets"]

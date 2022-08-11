@@ -8,22 +8,18 @@ You can add more data sources using the [values.yaml](https://github.com/grafana
 
 ## Usage
 
-[Grafana](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/spark-k8s-operator) can be deployed by enabling the add-on via the following.
+[Grafana](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/spark-k8s-operator) can be deployed by enabling the add-on via the following. This example shows the usage of the Secrets Manager to create a new secret for Grafana adminPassword.
 
-`grafana_admin_password_secret_name` is an optional parameter however it's recommended for security best practise.
-Checkout the above usage example to create secrets on the fly using Terraform.
-You can leave this blank and pass `adminPassword` chart value through `values.yaml` when you use secrets other than Secrets manager.
-
+This option sets a default `adminPassword` by the helm chart which can be extracted from kubernetes `secrets` with the name as `grafana`.  
 ```
 enable_grafana = true
-grafana_admin_password_secret_name = <aws_secrets_manager_secret_name> # optional
 ```
 
 You can optionally customize the Helm chart that deploys `Grafana` via the following configuration.
+Also, provide the `adminPassword` using set_sensitive values as shown in the example
 
 ```
   enable_grafana = true
-  grafana_admin_password_secret_name = "<aws_secrets_manager_secret_name>"
   grafana_irsa_policies = [] # Optional to add additional policies to IRSA
 
 # Optional  karpenter_helm_config
@@ -35,6 +31,12 @@ You can optionally customize the Helm chart that deploys `Grafana` via the follo
     namespace   = "grafana"
     description = "Grafana Helm Chart deployment configuration"
     values = [templatefile("${path.module}/values.yaml", {})]
+    set_sensitive = [
+      {
+        name  = "adminPassword"
+        value = "<YOUR_SECURE_PASSWORD_FOR_GARFANA_ADMIN>"
+      }
+    ]
   }
 
 ```

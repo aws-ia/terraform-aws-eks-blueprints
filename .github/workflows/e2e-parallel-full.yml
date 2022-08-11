@@ -29,7 +29,6 @@ jobs:
         include:
           - example_path: examples/analytics/emr-on-eks
           - example_path: examples/analytics/spark-k8s-operator
-          - example_path: examples/aws-efs-csi-driver
           - example_path: examples/crossplane
           - example_path: examples/eks-cluster-with-new-vpc
           - example_path: examples/fargate-serverless
@@ -45,6 +44,7 @@ jobs:
           - example_path: examples/node-groups/self-managed-node-groups
           - example_path: examples/node-groups/windows-node-groups
           - example_path: examples/stateful
+          - example_path: examples/vpc-cni-custom-networking
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -61,14 +61,14 @@ jobs:
           role-duration-seconds: 3600
           role-session-name: GithubActions-Session
 
-      - name: Iamlive Setup
+      - name: Iamlive Setup & Run
         run: |
           #!/bin/bash
           set -eox pipefail
           wget -O iamlive.tar.gz "https://github.com/iann0036/iamlive/releases/download/${{ env.IAMLIVE_VERSION }}/iamlive-${{ env.IAMLIVE_VERSION }}-linux-amd64.tar.gz"
           tar -xzf iamlive.tar.gz
           chmod +x iamlive
-          IAMLIVE_PID=$(./iamlive --mode proxy --bind-addr 0.0.0.0:10080 --output-file ${HOME}/policy.json --refresh-rate 1 --sort-alphabetical --force-wildcard-resource --background)
+          IAMLIVE_PID=$(./iamlive --mode csm --output-file ${HOME}/policy.json --refresh-rate 1 --sort-alphabetical --force-wildcard-resource --background)
           echo "iamlive_pid=$IAMLIVE_PID" >> $GITHUB_ENV
 
       - name: Setup Terraform
@@ -81,10 +81,9 @@ jobs:
         working-directory: ${{ matrix.example_path }}
         run: |
           terraform init -upgrade=true
-          export HTTP_PROXY=http://127.0.0.1:10080
-          export HTTPS_PROXY=http://127.0.0.1:10080
-          export AWS_CA_BUNDLE="${HOME}/.iamlive/ca.pem"
-          export NO_PROXY=eks.amazonaws.com,github.io,fairwinds.com,crossplane.io,github.com,agones.dev,karpenter.sh,githubusercontent.com,storage.googleapis.com
+          export AWS_CSM_ENABLED=true
+          export AWS_CSM_PORT=31000
+          export AWS_CSM_HOST=127.0.0.1
           terraform apply -target=module.vpc -no-color -input=false -auto-approve
           terraform apply -target=module.eks_blueprints -no-color -input=false -auto-approve
           terraform apply -target=module.eks_blueprints_kubernetes_addons -no-color -input=false -auto-approve
@@ -95,10 +94,9 @@ jobs:
         working-directory: ${{ matrix.example_path }}
         run: |
           terraform init -upgrade=true
-          export HTTP_PROXY=http://127.0.0.1:10080
-          export HTTPS_PROXY=http://127.0.0.1:10080
-          export AWS_CA_BUNDLE="${HOME}/.iamlive/ca.pem"
-          export NO_PROXY=eks.amazonaws.com,github.io,fairwinds.com,crossplane.io,github.com,agones.dev,karpenter.sh,githubusercontent.com,storage.googleapis.com
+          export AWS_CSM_ENABLED=true
+          export AWS_CSM_PORT=31000
+          export AWS_CSM_HOST=127.0.0.1
           terraform destroy -target=module.eks_blueprints_kubernetes_addons  -no-color -input=false -auto-approve
           terraform destroy -target=module.eks_blueprints  -no-color -input=false -auto-approve
           terraform destroy -no-color -input=false -auto-approve

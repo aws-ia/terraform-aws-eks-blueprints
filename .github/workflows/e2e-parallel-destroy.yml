@@ -25,7 +25,6 @@ jobs:
         include:
           - example_path: examples/analytics/emr-on-eks
           - example_path: examples/analytics/spark-k8s-operator
-          - example_path: examples/aws-efs-csi-driver
           - example_path: examples/crossplane
           - example_path: examples/eks-cluster-with-new-vpc
           - example_path: examples/fargate-serverless
@@ -41,6 +40,7 @@ jobs:
           - example_path: examples/node-groups/self-managed-node-groups
           - example_path: examples/node-groups/windows-node-groups
           - example_path: examples/stateful
+          - example_path: examples/vpc-cni-custom-networking
     steps:
       - name: Checkout
         uses: actions/checkout@v3

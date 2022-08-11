@@ -6,7 +6,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://aws.github.io/eks-charts"
-    version     = "1.4.2"
+    version     = "1.4.3"
     namespace   = "kube-system"
     timeout     = "1200"
     values      = local.default_helm_values
@@ -24,16 +24,19 @@ locals {
     repository     = "${var.addon_context.default_repository}/amazon/aws-load-balancer-controller"
   })]
 
-  set_values = [
-    {
-      name  = "serviceAccount.name"
-      value = local.service_account_name
-    },
-    {
-      name  = "serviceAccount.create"
-      value = false
-    }
-  ]
+  set_values = concat(
+    [
+      {
+        name  = "serviceAccount.name"
+        value = local.service_account_name
+      },
+      {
+        name  = "serviceAccount.create"
+        value = false
+      }
+    ],
+    try(var.helm_config.set_values, [])
+  )
 
   argocd_gitops_config = {
     enable             = true
