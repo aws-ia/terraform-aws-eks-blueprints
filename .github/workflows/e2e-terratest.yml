@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '**.tf'
+      - '**.yml'
+      - '**.yaml'
+      - 'test/*'
   workflow_dispatch:
 
 concurrency: e2e-terratest
