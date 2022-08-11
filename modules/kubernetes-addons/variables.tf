@@ -57,6 +57,12 @@ variable "eks_cluster_version" {
   default     = null
 }
 
+variable "kubernetes_timeouts" {
+  description = "Define maximum timeout for creating, updating, and deleting kubernetes resources"
+  type        = map(string)
+  default     = {}
+}
+
 #-----------EKS MANAGED ADD-ONS------------
 variable "enable_ipv6" {
   description = "Enable Ipv6 network. Attaches new VPC CNI policy to the IRSA role"
