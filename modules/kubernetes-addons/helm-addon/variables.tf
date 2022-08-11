@@ -56,8 +56,8 @@ variable "addon_context" {
   })
 }
 
-variable "timeouts" {
-  description = "Define maximum timeout for creating, updating, and deleting resources"
+variable "kubernetes_timeouts" {
+  description = "Define maximum timeout for creating, updating, and deleting kubernetes resources"
   type        = map(string)
   default     = {}
 }
