@@ -7,6 +7,10 @@ resource "kubernetes_namespace_v1" "irsa" {
   metadata {
     name = var.kubernetes_namespace
   }
+
+  timeouts {
+    delete = local.kubernetes_timeouts.delete
+  }
 }
 
 resource "kubernetes_service_account_v1" "irsa" {
@@ -18,6 +22,10 @@ resource "kubernetes_service_account_v1" "irsa" {
   }
 
   automount_service_account_token = true
+
+  timeouts {
+    create = local.kubernetes_timeouts.create
+  }
 }
 
 # NOTE: Don't change the condition from StringLike to StringEquals. We are using wild characters for service account hence StringLike is required.
