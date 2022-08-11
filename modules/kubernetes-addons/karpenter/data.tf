@@ -10,6 +10,7 @@ data "aws_iam_policy_document" "karpenter" {
       "ec2:CreateTags",
       "ec2:DeleteLaunchTemplate",
       "ec2:DescribeAvailabilityZones",
+      "ec2:DescribeImages",
       "ec2:DescribeInstances",
       "ec2:DescribeInstanceTypeOfferings",
       "ec2:DescribeInstanceTypes",
