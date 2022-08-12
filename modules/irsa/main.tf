@@ -18,6 +18,17 @@ resource "kubernetes_service_account_v1" "irsa" {
   }
 
   automount_service_account_token = true
+
+  secret {
+    name = ""
+  }
+
+  lifecycle {
+    ignore_changes = [
+      image_pull_secret,
+      secret
+    ]
+  }
 }
 
 # NOTE: Don't change the condition from StringLike to StringEquals. We are using wild characters for service account hence StringLike is required.
