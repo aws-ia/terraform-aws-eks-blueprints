@@ -67,7 +67,7 @@ module "aws_eks" {
   kms_key_users                     = var.kms_key_users
   kms_key_source_policy_documents   = var.kms_key_source_policy_documents
   kms_key_override_policy_documents = var.kms_key_override_policy_documents
-  kms_key_aliases                   = length(var.kms_key_aliases) > 0 ? var.kms_key_aliases : ["alias/${var.cluster_name}"]
+  kms_key_aliases                   = length(var.kms_key_aliases) > 0 ? var.kms_key_aliases : ["${var.cluster_name}"]
   attach_cluster_encryption_policy  = false
   cluster_encryption_config         = var.cluster_encryption_config
 
