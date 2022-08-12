@@ -1,29 +1,17 @@
-variable "tenant" {
+variable "eks_cluster_domain" {
+  description = "Route53 domain for the cluster."
   type        = string
-  description = "Account Name or unique account unique id e.g., apps or management or aws007"
-  default     = "pca001"
-}
-
-variable "environment" {
-  type        = string
-  default     = "preprod"
-  description = "Environment area, e.g. prod or preprod "
-}
-
-variable "zone" {
-  type        = string
-  description = "zone, e.g. dev or qa or load or ops etc..."
-  default     = "dev"
+  default     = "example.com"
 }
 
 variable "certificate_name" {
-  type        = string
   description = "name for the certificate"
+  type        = string
   default     = "example"
 }
 
 variable "certificate_dns" {
-  type        = string
   description = "CommonName used in the Certificate, usually DNS "
+  type        = string
   default     = "example.com"
 }

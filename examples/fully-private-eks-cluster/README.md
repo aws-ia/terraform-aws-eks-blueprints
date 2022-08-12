@@ -110,7 +110,7 @@ rm -vf ${HOME}/.aws/credentials
 aws sts get-caller-identity --query Arn
 ```
 The output should look something like `"arn:aws:sts::<AccountId>:assumed-role/<RoleName>/<instanceId>"`
-   
+
 > You can find your instanceId on the Cloud9 instance with this command `curl -s http://169.254.169.254/latest/meta-data/instance-id`
 
 ### Deployment Steps

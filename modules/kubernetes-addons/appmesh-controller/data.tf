@@ -1,4 +1,9 @@
-data "aws_region" "current" {}
+data "aws_partition" "current" {}
+
+locals {
+  partition  = data.aws_partition.current.partition
+  dns_suffix = data.aws_partition.current.dns_suffix
+}
 
 data "aws_iam_policy_document" "appmesh" {
   statement {
@@ -48,13 +53,13 @@ data "aws_iam_policy_document" "appmesh" {
   statement {
     sid       = "CreateServiceLinkedRole"
     effect    = "Allow"
-    resources = ["arn:aws:iam::*:role/aws-service-role/appmesh.amazonaws.com/AWSServiceRoleForAppMesh"]
+    resources = ["arn:${local.partition}:iam::*:role/aws-service-role/appmesh.${local.dns_suffix}/AWSServiceRoleForAppMesh"]
     actions   = ["iam:CreateServiceLinkedRole"]
 
     condition {
       test     = "StringLike"
       variable = "iam:AWSServiceName"
-      values   = ["appmesh.amazonaws.com"]
+      values   = ["appmesh.${local.dns_suffix}"]
     }
   }
 
