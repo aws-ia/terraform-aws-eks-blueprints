@@ -16,6 +16,7 @@ Application definitions, configurations, and environments should be declarative 
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
 | <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | >= 1.14 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
+| <a name="requirement_merge"></a> [merge](#requirement\_merge) | >= 0.1.1 |
 
 ## Providers
 
@@ -25,6 +26,7 @@ Application definitions, configurations, and environments should be declarative 
 | <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.4.1 |
 | <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | >= 1.14 |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
+| <a name="provider_merge"></a> [merge](#provider\_merge) | >= 0.1.1 |
 
 ## Modules
 
@@ -42,6 +44,7 @@ Application definitions, configurations, and environments should be declarative 
 | [kubernetes_secret.argocd_gitops](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
 | [aws_secretsmanager_secret.ssh_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret) | data source |
 | [aws_secretsmanager_secret_version.ssh_key_version](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret_version) | data source |
+| [merge_merge.source_helm_values](https://registry.terraform.io/providers/LukeCarrier/merge/latest/docs/data-sources/merge) | data source |
 
 ## Inputs
 

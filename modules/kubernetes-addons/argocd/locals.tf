@@ -38,4 +38,7 @@ locals {
     clusterName = var.addon_context.eks_cluster_id
   }
 
+  addon_config = {
+    for k, v in var.addon_config : k => yamldecode(v)
+  }
 }

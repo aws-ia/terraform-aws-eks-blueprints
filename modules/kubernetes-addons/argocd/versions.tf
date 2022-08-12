@@ -18,5 +18,9 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = ">= 1.14"
     }
+    merge = {
+      source  = "LukeCarrier/merge"
+      version = ">= 0.1.1"
+    }
   }
 }

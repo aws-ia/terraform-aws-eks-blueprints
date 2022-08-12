@@ -64,14 +64,9 @@ resource "helm_release" "argocd_application" {
   }
 
   set {
-    name = "source.helm.values"
-    value = yamlencode(merge(
-      { repoUrl = each.value.repo_url },
-      each.value.values,
-      local.global_application_values,
-      each.value.add_on_application ? var.addon_config : {}
-    ))
-    type = "auto"
+    name  = "source.helm.values"
+    value = data.merge_merge.source_helm_values[each.key].output
+    type  = "auto"
   }
 
   # Destination Config.
@@ -126,4 +121,33 @@ resource "kubernetes_secret" "argocd_gitops" {
   }
 
   depends_on = [module.helm_addon]
+}
+
+data "merge_merge" "source_helm_values" {
+  for_each = { for k, v in var.applications : k => merge(local.default_argocd_application, v) if merge(local.default_argocd_application, v).type == "helm" }
+
+  dynamic "input" {
+    for_each = each.value.add_on_application ? ["merge_addon"] : []
+    content {
+      format = "yaml"
+      data   = yamlencode(local.addon_config)
+    }
+  }
+
+  input {
+    format = "yaml"
+    data   = yamlencode({ repoUrl = each.value.repo_url })
+  }
+
+  input {
+    format = "yaml"
+    data   = yamlencode(each.value.values)
+  }
+
+  input {
+    format = "yaml"
+    data   = yamlencode(local.global_application_values)
+  }
+
+  output_format = "yaml"
 }
