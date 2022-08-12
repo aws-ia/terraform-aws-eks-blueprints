@@ -62,12 +62,14 @@ Here is the link to get the AWS ELB [service annotations](https://kubernetes-sig
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
+| <a name="requirement_merge"></a> [merge](#requirement\_merge) | >= 0.1.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
+| <a name="provider_merge"></a> [merge](#provider\_merge) | >= 0.1.1 |
 
 ## Modules
 
@@ -81,6 +83,7 @@ Here is the link to get the AWS ELB [service annotations](https://kubernetes-sig
 |------|------|
 | [aws_iam_policy.aws_load_balancer_controller](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy_document.aws_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [merge_merge.helm_values](https://registry.terraform.io/providers/LukeCarrier/merge/latest/docs/data-sources/merge) | data source |
 
 ## Inputs
 
