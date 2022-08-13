@@ -18,6 +18,11 @@ variable "create_kubernetes_service_account" {
 variable "kubernetes_service_account" {
   description = "Kubernetes Service Account Name"
   type        = string
+
+  validation {
+    condition     = length(var.kubernetes_service_account) < 27
+    error_message = "Max length of `kubernetes_service_account` is 26"
+  }
 }
 
 variable "irsa_iam_policies" {

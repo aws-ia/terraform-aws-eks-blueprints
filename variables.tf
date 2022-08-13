@@ -49,6 +49,11 @@ variable "cluster_name" {
   description = "EKS Cluster Name"
   type        = string
   default     = ""
+
+  validation {
+    condition     = length(var.cluster_name) < 33
+    error_message = "Max length of `cluster_name` is 32"
+  }
 }
 
 variable "cluster_version" {
