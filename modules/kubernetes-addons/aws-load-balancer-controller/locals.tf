@@ -1,6 +1,6 @@
 locals {
-  name                 = "aws-load-balancer-ctrl"
-  service_account_name = "${local.name}-sa"
+  name                 = "aws-load-balancer-controller"
+  service_account_name = "aws-load-balancer-ctrl-sa"
 
   default_helm_config = {
     name        = local.name

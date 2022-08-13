@@ -1,7 +1,7 @@
 locals {
   namespace            = "kube-system"
-  name                 = "aws-node-term-hndlr"
-  service_account_name = "${local.name}-sa"
+  name                 = "aws-node-termination-handler"
+  service_account_name = "aws-node-term-hndlr-sa"
 
   default_helm_config = {
     name             = local.name
