@@ -1,21 +1,19 @@
 locals {
   name                 = "external-dns"
   service_account_name = "${local.name}-sa"
-  zone_filter_ids      = jsonencode([data.aws_route53_zone.selected.zone_id])
 
   default_helm_config = {
     description = "ExternalDNS Helm Chart"
     name        = local.name
     chart       = local.name
     repository  = "https://charts.bitnami.com/bitnami"
-    version     = "6.5.6"
+    version     = "6.7.5"
     namespace   = local.name
     values      = local.default_helm_values
   }
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
-    aws_region      = var.addon_context.aws_region_name
-    zone_filter_ids = local.zone_filter_ids
+    aws_region = var.addon_context.aws_region_name
   })]
 
   helm_config = merge(
@@ -23,16 +21,19 @@ locals {
     var.helm_config
   )
 
-  set_values = [
-    {
-      name  = "serviceAccount.name"
-      value = local.service_account_name
-    },
-    {
-      name  = "serviceAccount.create"
-      value = false
-    }
-  ]
+  set_values = concat(
+    [
+      {
+        name  = "serviceAccount.name"
+        value = local.service_account_name
+      },
+      {
+        name  = "serviceAccount.create"
+        value = false
+      }
+    ],
+    try(var.helm_config.set_values, [])
+  )
 
   irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
@@ -44,7 +45,6 @@ locals {
 
   argocd_gitops_config = {
     enable             = true
-    zoneIdFilter       = data.aws_route53_zone.selected.zone_id
     serviceAccountName = local.service_account_name
   }
 }
