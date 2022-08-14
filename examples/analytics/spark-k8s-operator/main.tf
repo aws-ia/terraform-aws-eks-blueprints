@@ -48,8 +48,8 @@ locals {
   name   = var.name
   region = var.region
 
-  vpc_cidr = var.vpc_cidr
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  vpc_cidr   = var.vpc_cidr
+  azs        = slice(data.aws_availability_zones.available.names, 0, 3)
   spark_team = "spark-team-a"
 
   tags = {
@@ -313,7 +313,7 @@ module "eks_blueprints_kubernetes_addons" {
     namespace        = "spark-operator"
     timeout          = "300"
     create_namespace = true
-    values           = [templatefile("${path.module}/helm-values/spark-k8s-operator-values.yaml", {
+    values = [templatefile("${path.module}/helm-values/spark-k8s-operator-values.yaml", {
       operating_system = "linux"
       node_group_type  = "core"
     })]
@@ -328,12 +328,12 @@ module "eks_blueprints_kubernetes_addons" {
     repository = "https://apache.github.io/yunikorn-release"
     chart      = "yunikorn"
     version    = "0.12.2"
-    values     = [templatefile("${path.module}/helm-values/yunikorn-values.yaml", {
-      image_version = "0.12.2"
+    values = [templatefile("${path.module}/helm-values/yunikorn-values.yaml", {
+      image_version    = "0.12.2"
       operating_system = "linux"
       node_group_type  = "core"
     })]
-    timeout    = "300"
+    timeout = "300"
   }
 
   #---------------------------------------------------------------
@@ -386,11 +386,11 @@ module "eks_blueprints_kubernetes_addons" {
     repository                      = "https://aws.github.io/eks-charts"
     version                         = "0.1.19"
     namespace                       = "logging"
-    timeout    = "300"
+    timeout                         = "300"
     aws_for_fluent_bit_cw_log_group = "/${module.eks_blueprints.eks_cluster_id}/worker-fluentbit-logs" # Optional
     create_namespace                = true
     values = [templatefile("${path.module}/helm-values/aws-for-fluentbit-values.yaml", {
-      region                          = "${data.aws_region.current.id}"
+      region                    = "${data.aws_region.current.id}"
       aws_for_fluent_bit_cw_log = "/${module.eks_blueprints.eks_cluster_id}/worker-fluentbit-logs"
     })]
     set = [
@@ -547,14 +547,14 @@ module "vpc" {
       from_port   = 0
       to_port     = 0
       cidr_blocks = local.vpc_cidr
-    }]
+  }]
   default_security_group_egress = [
     {
       from_port   = 0
       to_port     = 0
       protocol    = -1
       cidr_blocks = "0.0.0.0/0"
-    }]
+  }]
 
   tags = local.tags
 }
@@ -602,16 +602,16 @@ module "vpc_endpoints" {
         Name = "${local.name}-s3"
       }
     }
-  },
+    },
     { for service in toset(["autoscaling", "ecr.api", "ecr.dkr", "ec2", "ec2messages", "elasticloadbalancing", "sts", "kms", "logs", "ssm", "ssmmessages"]) :
-    replace(service, ".", "_") =>
-    {
-      service             = service
-      subnet_ids          = module.vpc.private_subnets
-      private_dns_enabled = true
-      tags                = { Name = "${local.name}-${service}" }
-    }
-    })
+      replace(service, ".", "_") =>
+      {
+        service             = service
+        subnet_ids          = module.vpc.private_subnets
+        private_dns_enabled = true
+        tags                = { Name = "${local.name}-${service}" }
+      }
+  })
 
   tags = local.tags
 }

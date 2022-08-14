@@ -11,11 +11,11 @@ spec:
   pythonVersion: "3"
   mode: cluster
   image: "public.ecr.aws/r1l5w1y9/spark-operator:3.2.1-hadoop-3.3.1-java-11-scala-2.12-python-3.8-latest"
-  imagePullPolicy: IfNotPresent                                                                   
+  imagePullPolicy: IfNotPresent
   mainApplicationFile: "s3a://<ENTER_YOUR_BUCKET>/spark-catalog-sales.py"  # MainFile is the path to a bundled JAR, Python, or R file of the application
   arguments:
     - "s3a://<ENTER_YOUR_BUCKET>/TPCDS-TEST-1T/catalog_sales/" # Copy your Input parquet sample data before executing the job
-    - "s3a://<ENTER_YOUR_BUCKET>/output/catalog_sales/" 
+    - "s3a://<ENTER_YOUR_BUCKET>/output/catalog_sales/"
   hadoopConf:
     "fs.s3a.aws.credentials.provider": "com.amazonaws.auth.WebIdentityTokenCredentialsProvider" # or  "com.amazonaws.auth.InstanceProfileCredentialsProvider"
     "fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem"
@@ -92,4 +92,3 @@ spec:
       version: 3.1.1
     nodeSelector:
       "NodeGroupType": "spark"
-
