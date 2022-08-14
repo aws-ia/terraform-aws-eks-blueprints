@@ -1,0 +1,162 @@
+global:
+  ## Override the deployment namespace
+  namespaceOverride: logging
+
+image:
+  repository: amazon/aws-for-fluent-bit
+  tag: 2.21.5
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+#hostNetwork and dnsPolicy are critical for enabling large clusters to avoid making calls to API server
+# see this link https://docs.fluentbit.io/manual/pipeline/filters/kubernetes#optional-feature-using-kubelet-to-get-metadata
+hostNetwork: true
+dnsPolicy: ClusterFirstWithHostNet
+
+service:
+  parsersFiles:
+    - /fluent-bit/parsers/parsers.conf
+  # extraParsers: |
+  #   [PARSER]
+  #       Name   logfmt
+  #       Format logfmt
+
+input:
+  tag: "kube.*"
+  path: "/var/log/containers/*.log"
+  db: "/var/log/flb_kube.db"
+  parser: docker
+  dockerMode: "On"
+  memBufLimit: 5MB
+  skipLongLines: "On"
+  refreshInterval: 10
+
+# extraInputs: |
+#   [INPUT]
+#       Name         winlog
+#       Channels     Setup,Windows PowerShell
+#       Interval_Sec 1
+#       DB           winlog.sqlite
+
+# NOTE: extraFilters config for using Kubelet to get the Metadata instead of talking to API server for large clusters
+filter:
+  name: "kubernetes"
+  match: "kube.*"
+  kubeURL: "https://kubernetes.default.svc.cluster.local:443"
+  mergeLog: "On"
+  mergeLogKey: "log_processed"
+  keepLog: "On"
+  k8sLoggingParser: "On"
+  k8sLoggingExclude: "Off"
+  bufferSize: "0"
+  extraFilters: |
+    Kube_Tag_Prefix     application.var.log.containers.
+    Labels              Off
+    Annotations         Off
+    Use_Kubelet         true
+    Kubelet_Port        10250
+    Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+
+cloudWatch:
+  enabled: true
+  match: "*"
+  region: ${region}
+  logGroupName: ${aws_for_fluent_bit_cw_log}
+  logStreamName:
+  logStreamPrefix: "fluentbit-"
+  logKey:
+  logFormat:
+  roleArn:
+  autoCreateGroup: true
+  endpoint:
+  credentialsEndpoint:  {}
+
+firehose:
+  enabled: false
+  match: "*"
+  region: ${region}
+  deliveryStream: "my-stream"
+  dataKeys:
+  roleArn:
+  endpoint:
+  timeKey:
+
+kinesis:
+  enabled: false
+  match: "*"
+  region: ${region}
+  stream: "my-kinesis-stream-name"
+  partitionKey: "container_id"
+  appendNewline:
+  dataKeys:
+  roleArn:
+  timeKey:
+  timeKeyFormat:
+
+elasticsearch:
+  enabled: false
+  match: "*"
+  host:
+  awsRegion: ${region}
+  awsAuth: "On"
+  tls: "On"
+  port: "443"
+  retryLimit: 6
+  replaceDots: "On"
+
+# extraOutputs: |
+#   [OUTPUT]
+#     Name file
+#     Format template
+#     Template {time} used={Mem.used} free={Mem.free} total={Mem.total}
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name:
+
+# Resource config for large clusters
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1500Mi
+  requests:
+    cpu: 500m
+    memory: 500Mi
+
+## Assign a PriorityClassName to pods if set
+priorityClassName: system-node-critical
+
+updateStrategy:
+  type: RollingUpdate
+
+nodeSelector:
+  kubernetes.io/os: linux
+
+tolerations: []
+
+affinity: {}
+
+annotations: {}
+# iam.amazonaws.com/role: arn:aws:iam::123456789012:role/role-for-fluent-bit
+
+env: []
+
+volumes:
+  - name: varlog
+    hostPath:
+      path: /var/log
+  - name: varlibdockercontainers
+    hostPath:
+      path: /var/lib/docker/containers
+
+volumeMounts:
+  - name: varlog
+    mountPath: /var/log
+  - name: varlibdockercontainers
+    mountPath: /var/lib/docker/containers
+    readOnly: true

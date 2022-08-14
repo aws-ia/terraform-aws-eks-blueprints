@@ -2,7 +2,7 @@ apiVersion: "sparkoperator.k8s.io/v1beta2"
 kind: SparkApplication
 metadata:
   name: tpcds-benchmark-data-generation-1t
-  namespace: spark-ns
+  namespace: spark-team-a
   labels:
     yunikorn.apache.org/username: "vara"
     queue: "root.spark"
@@ -15,12 +15,10 @@ spec:
   imagePullPolicy: Always
   mainClass: com.amazonaws.eks.tpcds.DataGeneration
   mainApplicationFile: local:///opt/spark/examples/jars/eks-spark-benchmark-assembly-1.0.jar
-  restartPolicy:
-    type: Never
   batchScheduler: "yunikorn"
   arguments:
     # TPC-DS data location
-    - "s3://dev-aws-raw-zone/TPCDS-TEST-1G"
+    - "s3://<ENTER_YOUR_BUCKET_NAME>/TPCDS-TEST-1G"
     # Path to kit in the docker image
     - "/opt/tpcds-kit/tools"
     # Data Format
@@ -56,23 +54,58 @@ spec:
     "spark.sql.execution.arrow.pyspark.enabled": "true"
     "spark.sql.execution.arrow.pyspark.fallback.enabled": "true"
     # "spark.eventLog.enabled": "true"
-    # "spark.eventLog.dir": "s3a://dev-aws-raw-zone/spark-event-logs/"
+    # "spark.eventLog.dir": "s3a://<ENTER_YOUR_BUCKET_NAME>/spark-event-logs/"
     # "spark.kubernetes.driver.label.queue": "root.spark"
     # "spark.kubernetes.driver.label.yunikorn.apache.org/username": "vara"
     # "spark.kubernetes.executor.label.queue": "root.spark"
     # "spark.kubernetes.executor.label.yunikorn.apache.org/username": "vara"
+  restartPolicy:
+    type: OnFailure
+    onFailureRetries: 3
+    onFailureRetryInterval: 10
+    onSubmissionFailureRetries: 5
+    onSubmissionFailureRetryInterval: 20
+  volumes:  # using NVMe instance storage mounted on /local1
+    - name: spark-local-dir-1
+      hostPath:
+        path: /local1/datagen
+        type: DirectoryOrCreate
   driver:
-    cores: 2
-    memory: "1g"
-#    memoryOverhead: "1g"
-    labels:
-      version: 3.1.2
-    serviceAccount: spark-sa
-  executor:
-    cores: 3
-    instances: 3
-    memory: "20g"
+    volumeMounts: # Points to InstanceStore 150GB NVMe SSD for shuffle spill over from memory
+      - name: spark-local-dir-1
+        mountPath: /local1/datagen
+    initContainers:
+      - name: volume-permissions
+        image: public.ecr.aws/y4g4v0z7/busybox
+        command: [ 'sh', '-c', 'chown -R 185 /local1/datagen' ]
+        volumeMounts:
+          - mountPath: "/local1/datagen"
+            name: "spark-local-dir-1"
+    cores: 1
+    memory: "10g"
     memoryOverhead: "2g"
-    serviceAccount: spark-sa
+    serviceAccount: spark-team-a
     labels:
-      version: 3.1.2
+      version: 3.1.1
+    nodeSelector:
+      "NodeGroupType": "spark"
+  executor:
+    volumeMounts:
+      - name: spark-local-dir-1
+        mountPath: /local1/datagen
+    initContainers:
+      - name: volume-permissions
+        image: public.ecr.aws/y4g4v0z7/busybox
+        command: [ 'sh', '-c', 'chown -R 185 /local1/datagen' ]
+        volumeMounts:
+          - mountPath: "/local1/datagen"
+            name: "spark-local-dir-1"
+    cores: 1
+    instances: 10
+    memory: "6g"
+    memoryOverhead: "2g"
+    serviceAccount: spark-team-a
+    labels:
+      version: 3.1.1
+    nodeSelector:
+      "NodeGroupType": "spark"

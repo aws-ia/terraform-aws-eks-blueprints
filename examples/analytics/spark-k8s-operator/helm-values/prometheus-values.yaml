@@ -1,0 +1,65 @@
+server:
+  retention: 1h
+  remoteWrite:
+    - queue_config:
+        max_samples_per_send: 1000
+        max_shards: 200
+        capacity: 2500
+  global:
+    evaluation_interval: 30s
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+
+  verticalAutoscaler:
+    enabled: true
+    updateMode: "Auto"
+    containerPolicies:
+      - containerName: "prometheus-server"
+        minAllowed:
+          cpu: 500m
+          memory: 1Gi
+        maxAllowed:
+          cpu: 1000m
+          memory: 4Gi
+
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+    NodeGroupType: ${node_group_type}
+  persistentVolume:
+    accessModes:
+      - ReadWriteOnce
+    enabled: true
+    mountPath: /data
+    size: 20Gi
+    storageClass: gp2
+
+alertmanager:
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+    NodeGroupType: ${node_group_type}
+
+kube-state-metrics:
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+    NodeGroupType: ${node_group_type}
+
+pushgateway:
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+    NodeGroupType: ${node_group_type}
+
+nodeExporter:
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}
+
+  # Additional scrape config for Apache YuniKorn Scheduler metrics
+  #      - job_name: 'yunikorn'
+  #        metrics_path: '/ws/v1/metrics'
+  #        static_configs:
+  #          - targets:
+  #              - yunikorn-service.yunikorn.svc.cluster.local:9080

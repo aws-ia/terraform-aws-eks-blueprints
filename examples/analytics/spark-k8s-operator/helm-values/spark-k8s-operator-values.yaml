@@ -23,6 +23,11 @@ nameOverride: ""
 # -- String to override release name
 fullnameOverride: ""
 
+# nodeSelector -- Node labels for pod assignment
+nodeSelector:
+  NodeGroupType: ${node_group_type}
+  kubernetes.io/os: ${operating_system}
+
 rbac:
   # -- **DEPRECATED** use `createRole` and `createClusterRole`
   create: false
@@ -82,7 +87,7 @@ volumeMounts: []
 
 webhook:
   # -- Enable webhook server
-  enable: false
+  enable: true
   # -- Webhook service port
   port: 8080
   # -- The webhook server will only operate on namespaces with this label, specified in the form key1=value1,key2=value2.
@@ -124,9 +129,6 @@ podMonitor:
     scheme: http
     interval: 5s
 
-# nodeSelector -- Node labels for pod assignment
-nodeSelector: {}
-
 # tolerations -- List of node taints to tolerate
 tolerations: []
 
@@ -143,17 +145,17 @@ podLabels: {}
 # Note, that each job submission will spawn a JVM within the Spark Operator Pod using "/usr/local/openjdk-11/bin/java -Xmx128m".
 # Kubernetes may kill these Java processes at will to enforce resource limits. When that happens, you will see the following error:
 # 'failed to run spark-submit for SparkApplication [...]: signal: killed' - when this happens, you may want to increase memory limits.
-resources: {}
-  # limits:
-  #   cpu: 100m
-  #   memory: 300Mi
-  # requests:
-  #   cpu: 100m
-#   memory: 300Mi
+resources:
+   limits:
+     cpu: 200m
+     memory: 1Gi
+   requests:
+     cpu: 100m
+     memory: 512Mi
 
 batchScheduler:
   # -- Enable batch scheduler for spark jobs scheduling. If enabled, users can specify batch scheduler name in spark application
-  enable: false
+  enable: true
 
 resourceQuotaEnforcement:
   # -- Whether to enable the ResourceQuota enforcement for SparkApplication resources.
