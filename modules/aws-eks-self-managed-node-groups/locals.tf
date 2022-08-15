@@ -40,6 +40,7 @@ locals {
     subnet_ids              = []
     additional_tags         = {}
     additional_iam_policies = []
+    target_group_arns       = []
   }
 
   needs_mixed_instances_policy = length(local.self_managed_node_group["instance_types"]) > 1 ? true : false
