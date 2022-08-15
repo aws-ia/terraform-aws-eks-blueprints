@@ -61,10 +61,6 @@ module "eks_blueprints" {
   private_subnet_ids       = slice(module.vpc.private_subnets, 0, 3)
   control_plane_subnet_ids = module.vpc.intra_subnets
 
-  # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/485
-  # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/494
-  cluster_kms_key_additional_admin_arns = [data.aws_caller_identity.current.arn]
-
   managed_node_groups = {
     custom_networking = {
       node_group_name = "custom-net"
