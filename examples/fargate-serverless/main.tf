@@ -42,7 +42,22 @@ locals {
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 
-  default_profiles = {
+  sample_app_namespace = "game-2048"
+}
+
+#---------------------------------------------------------------
+# EKS Blueprints
+#---------------------------------------------------------------
+module "eks_blueprints" {
+  source = "../.."
+
+  cluster_name    = local.name
+  cluster_version = "1.22"
+
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
+
+  fargate_profiles = {
     # Providing compute for default namespace
     default = {
       fargate_profile_name = "default"
@@ -71,23 +86,6 @@ locals {
       subnet_ids = module.vpc.private_subnets
     }
   }
-
-  fargate_profiles = var.deploy_sample_app ? merge(local.default_profiles, local.sample_app_profile) : local.default_profiles
-}
-
-#---------------------------------------------------------------
-# EKS Blueprints
-#---------------------------------------------------------------
-module "eks_blueprints" {
-  source = "../.."
-
-  cluster_name    = local.name
-  cluster_version = "1.22"
-
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
-
-  fargate_profiles = local.fargate_profiles
 
   tags = local.tags
 }
