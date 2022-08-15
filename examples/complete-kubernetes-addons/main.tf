@@ -185,7 +185,7 @@ module "eks_blueprints_kubernetes_addons" {
     name                            = "aws-for-fluent-bit"
     chart                           = "aws-for-fluent-bit"
     repository                      = "https://aws.github.io/eks-charts"
-    version                         = "0.1.16"
+    version                         = "0.1.18"
     namespace                       = "logging"
     aws_for_fluent_bit_cw_log_group = "/${module.eks_blueprints.eks_cluster_id}/worker-fluentbit-logs" # Optional
     create_namespace                = true

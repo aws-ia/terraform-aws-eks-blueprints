@@ -81,6 +81,16 @@ module "eks_blueprints_kubernetes_addons" {
   enable_cluster_autoscaler           = true
   enable_aws_cloudwatch_metrics       = true
 
+  enable_cert_manager = true
+  cert_manager_helm_config = {
+    set_values = [
+      {
+        name  = "extraArgs[0]"
+        value = "--enable-certificate-owner-ref=false"
+      },
+    ]
+  }
+
   tags = local.tags
 }
 
