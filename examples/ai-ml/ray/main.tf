@@ -295,7 +295,9 @@ resource "grafana_folder" "ray" {
 }
 
 resource "grafana_dashboard" "ray" {
-  config_json = file("monitoring/dashboard_default.json")
+  for_each = fileset("${path.module}/monitoring", "*.json")
+
+  config_json = file("${path.module}/monitoring/${each.value}")
   folder      = grafana_folder.ray.id
 }
 

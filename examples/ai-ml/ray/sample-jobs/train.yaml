@@ -15,8 +15,7 @@ spec:
           imagePullPolicy: Always
           command: [ "/bin/bash", "-c", "--" ]
           args:
-            #- "python /opt/train.py"
-            - "python /opt/train.py --address ray://example-cluster-ray-head:10001"
+            - "python /opt/train.py"
           resources:
             requests:
               cpu: 1000m

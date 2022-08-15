@@ -93,6 +93,8 @@ spec:
             name: client
           - containerPort: 8080
             name: metrics
+          - containerPort: 8000
+            name: serve
           lifecycle:
             preStop:
               exec:

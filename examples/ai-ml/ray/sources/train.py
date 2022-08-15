@@ -1,182 +1,284 @@
-import argparse
-from typing import Dict
-
 import ray
-from ray.air import session
-from ray.air import Checkpoint
-
+import argparse
+import logging
+import math
+import os
+os.environ["TOKENIZERS_PARALLELISM"] = "true"
+from ray import train
+from typing import Dict, Any
+import random
 import torch
-from torch import nn
-from torch.utils.data import DataLoader
-from torchvision import datasets
-from torchvision.transforms import ToTensor
-
-import ray.train as train
+import datasets
+import ray
+import transformers
+from accelerate import Accelerator
+from datasets import load_dataset, load_metric
+from torch.utils.data.dataloader import DataLoader
+import tempfile
+from ray.air import session, Checkpoint
+from tqdm.auto import tqdm
 from ray.train.torch import TorchTrainer
-from ray.air.config import ScalingConfig
-import s3fs
+from ray.train.huggingface import HuggingFaceTrainer
+from ray.air.config import ScalingConfig, RunConfig
+from ray.tune import SyncConfig
 
-#ray.shutdown()
-
-# Download training data from open datasets.
-training_data = datasets.FashionMNIST(
-    root="~/data",
-    train=True,
-    download=True,
-    transform=ToTensor(),
+from transformers import (
+    AdamW,
+    AutoConfig,
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+    DataCollatorWithPadding,
+    PretrainedConfig,
+    SchedulerType,
+    default_data_collator,
+    get_scheduler,
+    set_seed,
 )
+from transformers.utils.versions import require_version    
 
-# Download test data from open datasets.
-test_data = datasets.FashionMNIST(
-    root="~/data",
-    train=False,
-    download=True,
-    transform=ToTensor(),
-)
+def train_func():    
+    model_name_or_path = "roberta-base"
+    use_slow_tokenizer = False
+    per_device_train_batch_size = 64
+    learning_rate = 5e-5
+    weight_decay = 0.0
+    num_train_epochs = 1
+    max_train_steps = 1
+    gradient_accumulation_steps = 1
+    lr_scheduler_type = "linear"
+    num_warmup_steps = 0
+    output_dir = None
+    seed = None
+    num_workers = 20
+    use_gpu = False   
+    max_length = 64
 
+    accelerator = Accelerator()
+    
+    import s3fs
 
-# Define model
-class NeuralNetwork(nn.Module):
-    def __init__(self):
-        super(NeuralNetwork, self).__init__()
-        self.flatten = nn.Flatten()
-        self.linear_relu_stack = nn.Sequential(
-            nn.Linear(28 * 28, 512),
-            nn.ReLU(),
-            nn.Linear(512, 512),
-            nn.ReLU(),
-            nn.Linear(512, 10),
-            nn.ReLU(),
+    s3_file = s3fs.S3FileSystem()
+    s3_path = "s3://ray-demo-models-20220801234005040500000001/data"
+    data_path = tempfile.mkdtemp()
+    s3_file.get(s3_path, data_path, recursive=True)
+
+    data_files = {}
+    data_files["train"] = f"{data_path}/test/part-algo-1-womens_clothing_ecommerce_reviews.csv"
+    extension = "csv"
+
+    raw_datasets = load_dataset(extension, data_files=data_files)
+
+    label_list = raw_datasets["train"].unique("sentiment")
+
+    # Sort for determinism
+    label_list.sort()  
+    
+    num_labels = len(label_list)
+
+    config = AutoConfig.from_pretrained(
+        model_name_or_path, num_labels=num_labels, 
+    )
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_name_or_path, use_fast=not use_slow_tokenizer
+    )
+    model = AutoModelForSequenceClassification.from_pretrained(
+        model_name_or_path,
+        config=config,
+    )
+
+    sentence1_key, sentence2_key = "review_body", None
+
+    label_to_id = None
+    label_to_id = {v: i for i, v in enumerate(label_list)}
+
+    if label_to_id is not None:
+        model.config.label2id = label_to_id
+        model.config.id2label = {id: label for label, id in config.label2id.items()}
+
+    def preprocess_function(examples):
+        texts = (
+            (examples[sentence1_key],)
+            if sentence2_key is None
+            else (examples[sentence1_key], examples[sentence2_key])
+        )
+        result = tokenizer(
+            *texts, padding="max_length", max_length=max_length, truncation=True
         )
 
-    def forward(self, x):
-        x = self.flatten(x)
-        logits = self.linear_relu_stack(x)
-        return logits
+        if "sentiment" in examples:
+            if label_to_id is not None:
+                result["labels"] = [
+                    label_to_id[l] for l in examples["sentiment"]
+                ]
+            else:
+                result["labels"] = examples["sentiment"]
 
+        return result
 
-def train_epoch(dataloader, model, loss_fn, optimizer):
-    size = len(dataloader.dataset) // session.get_world_size()
-    model.train()
-    for batch, (X, y) in enumerate(dataloader):
-        # Compute prediction error
-        pred = model(X)
-        loss = loss_fn(pred, y)
+    processed_datasets = raw_datasets.map(
+        preprocess_function,
+        batched=True,
+        remove_columns=raw_datasets["train"].column_names,
+        desc="Running tokenizer on dataset",
+    )
 
-        # Backpropagation
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+    train_dataset = processed_datasets["train"]
 
-        if batch % 100 == 0:
-            loss, current = loss.item(), batch * len(X)
-            print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+    train_dataloader = DataLoader(
+        train_dataset,
+        shuffle=True,
+        collate_fn=default_data_collator,
+        batch_size=per_device_train_batch_size,
+    )
 
+    no_decay = ["bias", "LayerNorm.weight"]
+    optimizer_grouped_parameters = [
+        {
+            "params": [
+                p
+                for n, p in model.named_parameters()
+                if not any(nd in n for nd in no_decay)
+            ],
+            "weight_decay": weight_decay,
+        },
+        {
+            "params": [
+                p
+                for n, p in model.named_parameters()
+                if any(nd in n for nd in no_decay)
+            ],
+            "weight_decay": 0.0,
+        },
+    ]
+    
+    optimizer = AdamW(optimizer_grouped_parameters, lr=learning_rate)
 
-def validate_epoch(dataloader, model, loss_fn):
-    size = len(dataloader.dataset) // session.get_world_size()
-    num_batches = len(dataloader)
-    model.eval()
-    test_loss, correct = 0, 0
-    with torch.no_grad():
-        for X, y in dataloader:
-            pred = model(X)
-            test_loss += loss_fn(pred, y).item()
-            correct += (pred.argmax(1) == y).type(torch.float).sum().item()
-    test_loss /= num_batches
-    correct /= size
+    model, optimizer, train_dataloader = accelerator.prepare(
+       model, optimizer, train_dataloader
+    )
+
+    num_update_steps_per_epoch = math.ceil(
+        len(train_dataloader) / gradient_accumulation_steps
+    )
+    if max_train_steps is None:
+        max_train_steps = num_train_epochs * num_update_steps_per_epoch
+    else:
+        num_train_epochs = math.ceil(
+            max_train_steps / num_update_steps_per_epoch
+        )
+
+    lr_scheduler = get_scheduler(
+        name=lr_scheduler_type,
+        optimizer=optimizer,
+        num_warmup_steps=num_warmup_steps,
+        num_training_steps=max_train_steps,
+    )
+
+    metric = load_metric("accuracy")
+
+    total_batch_size = (
+        per_device_train_batch_size
+        * accelerator.num_processes
+        * gradient_accumulation_steps
+    )
+
+    print("***** Training *****")
+    print(f"  Num examples = {len(train_dataset)}")
+    print(f"  Num epochs = {num_train_epochs}")
     print(
-        f"Test Error: \n "
-        f"Accuracy: {(100 * correct):>0.1f}%, "
-        f"Avg loss: {test_loss:>8f} \n"
+        f"  Instantaneous batch size per device ="
+        f" {per_device_train_batch_size}"
     )
-    return test_loss
+    print(
+        f"  Total train batch size (w. parallel, distributed & accumulation) "
+        f"= {total_batch_size}"
+    )
+    print(f"  Gradient Accumulation steps = {gradient_accumulation_steps}")
+    print(f"  Total optimization steps = {max_train_steps}")
 
+    progress_bar = tqdm(
+        range(max_train_steps), disable=not accelerator.is_local_main_process
+    )
+    completed_steps = 0
 
-def train_func(config: Dict):
-    batch_size = config["batch_size"]
-    lr = config["lr"]
-    epochs = config["epochs"]
-
-    worker_batch_size = batch_size // session.get_world_size()
-
-    # Create data loaders.
-    train_dataloader = DataLoader(training_data, batch_size=worker_batch_size)
-    test_dataloader = DataLoader(test_data, batch_size=worker_batch_size)
-
-    train_dataloader = train.torch.prepare_data_loader(train_dataloader)
-    test_dataloader = train.torch.prepare_data_loader(test_dataloader)
-
-    # Create model.
-    model = NeuralNetwork()
+    running_train_loss = 0.0
+    
     model = train.torch.prepare_model(model)
+        
+    for epoch in range(num_train_epochs):
+        model.train()
+        for step, batch in enumerate(train_dataloader):
+            outputs = model(**batch)
+            loss = outputs.loss
+            
+            running_train_loss += loss
 
-    loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=lr)
+            loss = loss / gradient_accumulation_steps
+            accelerator.backward(loss)
+            if (
+                step % gradient_accumulation_steps == 0
+                or step == len(train_dataloader) - 1
+            ):
+                optimizer.step()
+                lr_scheduler.step()
+                optimizer.zero_grad()
+                progress_bar.update(1)
+                completed_steps += 1
 
-    loss_results = []
-
-    for epoch in range(epochs):
-        train_epoch(train_dataloader, model, loss_fn, optimizer)
-        loss = validate_epoch(test_dataloader, model, loss_fn)
-        loss_results.append(loss)
-
-        checkpoint = Checkpoint.from_dict(
-            dict(epoch=epoch, model=model.module.state_dict())
+            if completed_steps >= max_train_steps:
+                break
+                
+        session.report(
+            {
+                "running_train_loss": running_train_loss,
+            },
+            checkpoint=Checkpoint.from_dict(dict(model=model.module.state_dict()))
         )
-        session.report(dict(loss=loss), checkpoint=checkpoint)
         
-    return loss_results
+    if output_dir is not None:
+        accelerator.wait_for_everyone()
+        unwrapped_model = accelerator.unwrap_model(model)
+        unwrapped_model.save_pretrained(output_dir, save_function=accelerator.save)
 
 
-def train_fashion_mnist(num_workers=2, use_gpu=False):
-    trainer = TorchTrainer(
-        train_func,
-        train_loop_config={"lr": 1e-3, "batch_size": 64, "epochs": 1},
-        scaling_config=ScalingConfig(num_workers=num_workers, use_gpu=use_gpu),
+ray.shutdown()
+ray.init(address="ray://raycluster-autoscaler-head-svc:10001",
+         runtime_env={"pip": [
+                                "torch", 
+                                "scikit-learn",
+                                "transformers",
+                                "pandas",
+                                "datasets",
+                                "accelerate",
+                                "scikit-learn",
+                                "mlflow", 
+                                "tensorboard",
+                                "s3fs",
+                             ]
+                     }
+        )
+
+s3_checkpoint_prefix="s3://ray-demo-models-20220801234005040500000001/ray_output"
+
+
+trainer = TorchTrainer(
+    train_loop_per_worker=train_func,
+    train_loop_config={
+                        "batch_size": 64,
+                        "epochs": 10
+                      },
+    # Increase num_workers to scale out the cluster
+    scaling_config=ScalingConfig(num_workers=2),
+    run_config = RunConfig(
+        sync_config=SyncConfig(
+            # This will store checkpoints in S3.
+            upload_dir=s3_checkpoint_prefix
+        )
     )
-
-    result = trainer.fit()
-        
-    model_path = result.checkpoint._local_path    
-
-    return model_path
-
-
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--address", required=False, type=str, help="the address to use for Ray"
-)
-parser.add_argument(
-    "--num-workers",
-    "-n",
-    type=int,
-    default=2,
-    help="Sets number of workers for training.",
-)
-parser.add_argument(
-    "--use-gpu", action="store_true", default=False, help="Enables GPU training"
 )
 
-args, _ = parser.parse_known_args()
+results = trainer.fit()
+print(results.metrics)
 
-ray.init(address=args.address, runtime_env={"pip": [
-                                            "torch", 
-                                            "scikit-learn",
-                                            "transformers",
-                                            "pandas",
-                                            "datasets",
-                                            "accelerate",
-                                            "scikit-learn",
-                                            "mlflow", 
-                                            "tensorboard"                         
-                                         ]
-                                 })
-
-model_path = train_fashion_mnist(num_workers=args.num_workers, use_gpu=args.use_gpu)
-
-print('model_path: {}'.format(model_path))
-
-s3_file = s3fs.S3FileSystem()
-s3_path = "ray-demo-models-20220729044638883100000001/model"
-s3_file.put(model_path, s3_path, recursive=True)
+s3_uri = f"{s3_checkpoint_prefix}/{results.log_dir.as_posix().split('/')[-2]}/{results.log_dir.as_posix().split('/')[-1]}/checkpoint_000000/"
+print(s3_uri)
