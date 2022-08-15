@@ -20,7 +20,7 @@ Please consult the `examples` directory for reference example configurations. If
 
 ### Removed
 
-- Local implementation of KMS module 
+- Local implementation of KMS module
 
 ### Variable and output changes
 
