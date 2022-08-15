@@ -12,7 +12,7 @@ Please consult the `examples` directory for reference example configurations. If
 
 ### Added
 
--
+- Usage of KMS module provided by upstreams ([terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks) and [terraform-aws-kms](https://github.com/terraform-aws-modules/terraform-aws-kms))
 
 ### Modified
 
@@ -20,7 +20,7 @@ Please consult the `examples` directory for reference example configurations. If
 
 ### Removed
 
--
+- Local implementation of KMS module 
 
 ### Variable and output changes
 
@@ -87,6 +87,10 @@ module "eks_blueprints" {
 
 In conjunction with the changes above, users can elect to move their external capacity provider(s) under this module using the following move command. Command is shown using the values from the example shown above, please update to suit your configuration names:
 
+KMS:
 ```sh
-terraform state mv 'xxx' 'yyy'
+terraform state mv 'module.eks_blueprints.module.kms[0].aws_kms_alias.this' 'module.eks_blueprints.module.aws_eks.module.kms.aws_kms_alias.this["ipv4-prefix-delegation"]'
+# Make sure to replace the alias from "ipv4-prefix-delegation" to what you have. You can verify it by checking the output of  the terraform plan, in examples format, it should be the example name.
+
+terraform state mv 'module.eks_blueprints.module.kms[0].aws_kms_key.this' 'module.eks_blueprints.module.aws_eks.module.kms.aws_kms_key.this[0]'
 ```
