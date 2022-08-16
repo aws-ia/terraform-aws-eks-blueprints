@@ -73,9 +73,9 @@ module "eks_blueprints" {
   cluster_endpoint_private_access = true # if true, Kubernetes API requests within your cluster's VPC (such as node to control plane communication) use the private VPC endpoint
   cluster_endpoint_public_access  = true # if true, Your cluster API server is accessible from the internet. You can, optionally, limit the CIDR blocks that can access the public endpoint.
 
-  #---------------------------------------
+  #---------------------------------------------------------------
   # Note: This can further restricted to specific required for each Add-on and your application
-  #---------------------------------------
+  #---------------------------------------------------------------
   node_security_group_additional_rules = {
     # Extend node-to-node security group rules. Recommended and required for the Add-ons
     ingress_self_all = {
@@ -150,11 +150,11 @@ module "eks_blueprints" {
         "k8s.io/cluster-autoscaler/enabled"                              = "true"
       }
     },
-    #---------------------------------------
+    #---------------------------------------------------------------
     # Note: This example only uses ON_DEMAND node group for both Spark Driver and Executors.
     #   If you want to leverage SPOT nodes for Spark executors then create ON_DEMAND node group for placing your driver pods and SPOT nodegroup for executors.
     #   Use NodeSelectors to place your driver/executor pods with the help of Pod Templates.
-    #---------------------------------------
+    #---------------------------------------------------------------
     mng2 = {
       node_group_name = "spark-node-grp"
       subnet_ids      = [element(module.vpc.private_subnets, 0)] # Single AZ node group for Spark workloads
@@ -221,9 +221,9 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-  #---------------------------------------
+  #---------------------------------------------------------------
   # Amazon EKS Managed Add-ons
-  #---------------------------------------
+  #---------------------------------------------------------------
   # EKS Addons
   enable_amazon_eks_vpc_cni = true
   amazon_eks_vpc_cni_config = {
@@ -245,10 +245,10 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_amazon_eks_aws_ebs_csi_driver = true
 
-  #---------------------------------------------------------
+  #---------------------------------------------------------------
   # CoreDNS Autoscaler helps to scale for large EKS Clusters
   #   Further tuning for CoreDNS is to leverage NodeLocal DNSCache -> https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/
-  #---------------------------------------------------------
+  #---------------------------------------------------------------
   enable_coredns_autoscaler = true
   coredns_autoscaler_helm_config = {
     name       = "cluster-proportional-autoscaler"
@@ -265,9 +265,9 @@ module "eks_blueprints_kubernetes_addons" {
     description = "Cluster Proportional Autoscaler for CoreDNS Service"
   }
 
-  #---------------------------------------
+  #---------------------------------------------------------------
   # Metrics Server
-  #---------------------------------------
+  #---------------------------------------------------------------
   enable_metrics_server = true
   metrics_server_helm_config = {
     name       = "metrics-server"
@@ -282,9 +282,9 @@ module "eks_blueprints_kubernetes_addons" {
     })]
   }
 
-  #---------------------------------------
+  #---------------------------------------------------------------
   # Cluster Autoscaler
-  #---------------------------------------
+  #---------------------------------------------------------------
   enable_cluster_autoscaler = true
   cluster_autoscaler_helm_config = {
     name       = "cluster-autoscaler"
@@ -401,15 +401,15 @@ module "eks_blueprints_kubernetes_addons" {
     ]
   }
 
-  #---------------------------------------
+  #---------------------------------------------------------------
   # Amazon Managed Prometheus
-  #---------------------------------------
+  #---------------------------------------------------------------
   enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
 
-  #---------------------------------------
+  #---------------------------------------------------------------
   # Prometheus Server Add-on
-  #---------------------------------------
+  #---------------------------------------------------------------
   enable_prometheus = true
   prometheus_helm_config = {
     name       = "prometheus"
@@ -424,9 +424,9 @@ module "eks_blueprints_kubernetes_addons" {
     })]
   }
 
-  #---------------------------------------
+  #---------------------------------------------------------------
   # Vertical Pod Autoscaling for Prometheus Server
-  #---------------------------------------
+  #---------------------------------------------------------------
   enable_vpa = true
   vpa_helm_config = {
     name       = "vpa"
@@ -660,9 +660,9 @@ resource "aws_s3_object" "this" {
   ]
 }
 
-#---------------------------------------
+#---------------------------------------------------------------
 # Creates IAM Role for Service Account. Provides IAM permissions for Spark driver/executor pods
-#---------------------------------------
+#---------------------------------------------------------------
 module "irsa" {
   source = "../../../modules/irsa"
 
@@ -673,18 +673,18 @@ module "irsa" {
   kubernetes_service_account = local.spark_team
 }
 
-#---------------------------------------
+#---------------------------------------------------------------
 # Creates IAM policy for IRSA. Provides IAM permissions for Spark driver/executor pods
-#---------------------------------------
+#---------------------------------------------------------------
 resource "aws_iam_policy" "spark" {
   description = "IAM role policy for Spark Job execution"
   name        = "${local.name}-spark-irsa"
   policy      = data.aws_iam_policy_document.spark_operator.json
 }
 
-#---------------------------------------
+#---------------------------------------------------------------
 # Kubernetes Cluster role for service Account spark-k8s-data-team-a
-#---------------------------------------
+#---------------------------------------------------------------
 resource "kubernetes_cluster_role" "spark_role" {
   metadata {
     name = "spark-cluster-role"
@@ -739,9 +739,9 @@ resource "kubernetes_cluster_role" "spark_role" {
 
   depends_on = [module.irsa]
 }
-#---------------------------------------
+#---------------------------------------------------------------
 # Kubernetes Cluster Role binding role for service Account spark-k8s-data-team-a
-#---------------------------------------
+#---------------------------------------------------------------
 resource "kubernetes_cluster_role_binding" "spark_role_binding" {
   metadata {
     name = "spark-cluster-role-bind"
