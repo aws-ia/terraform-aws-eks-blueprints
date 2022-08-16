@@ -10,7 +10,7 @@ spec:
   type: Scala
 #  pythonVersion: "3"
   mode: cluster
-  image: ghcr.io/abin-tiger/spark-tpc-ds:3.1.2
+  image: ghcr.io/aws-samples/eks-spark-benchmark:3.1.2
   sparkVersion: "3.1.2"
   imagePullPolicy: Always
   mainClass: com.amazonaws.eks.tpcds.DataGeneration

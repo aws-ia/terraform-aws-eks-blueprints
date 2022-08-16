@@ -11,7 +11,7 @@ spec:
   pythonVersion: "3"
   sparkVersion: "3.1.2"
   mode: cluster
-  image: ghcr.io/abin-tiger/spark-tpc-ds:3.1.2
+  image: ghcr.io/aws-samples/eks-spark-benchmark:3.1.2
   imagePullPolicy: Always
   mainClass: com.amazonaws.eks.tpcds.BenchmarkSQL
   mainApplicationFile: local:///opt/spark/examples/jars/eks-spark-benchmark-assembly-1.0.jar

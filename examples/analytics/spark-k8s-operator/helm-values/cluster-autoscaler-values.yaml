@@ -1,11 +1,5 @@
 autoDiscovery:
   clusterName: ${eks_cluster_id}
-  tags:
-    - k8s.io/cluster-autoscaler/enabled
-    - k8s.io/cluster-autoscaler/{{ .Values.autoDiscovery.clusterName }}
-
-  roles:
-    - worker
 
 awsRegion: ${aws_region}
 
@@ -20,11 +14,6 @@ extraArgs:
 nodeSelector:
   NodeGroupType: ${node_group_type}
   kubernetes.io/os: ${operating_system}
-
-podDisruptionBudget:
-  maxUnavailable: 1
-
-priorityClassName: "system-cluster-critical"
 
 rbac:
   create: true

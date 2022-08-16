@@ -1,18 +1,7 @@
 # HA config for metrics-server
-image:
-  repository: k8s.gcr.io/metrics-server/metrics-server
-  pullPolicy: IfNotPresent
-
 serviceAccount:
   create: true
   name: metrics-server
-
-rbac:
-  create: true
-  pspEnabled: false
-
-apiService:
-  create: true
 
 podLabels:
   k8s-app: metrics-server
@@ -29,12 +18,6 @@ updateStrategy:
 podDisruptionBudget:
   enabled: true
   minAvailable: 1
-
-defaultArgs:
-  - --cert-dir=/tmp
-  - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
-  - --kubelet-use-node-status-port
-  - --metric-resolution=15s
 
 resources:
   requests:
