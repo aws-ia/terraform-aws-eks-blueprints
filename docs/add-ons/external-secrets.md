@@ -19,7 +19,7 @@ You can optionally customize the Helm chart that deploys the operator via the fo
     name                       = "external-secrets"
     chart                      = "external-secrets"
     repository                 = "https://charts.external-secrets.io/"
-    version                    = "0.5.6"
+    version                    = "0.5.9"
     namespace                  = "external-secrets"
   }
 ```
