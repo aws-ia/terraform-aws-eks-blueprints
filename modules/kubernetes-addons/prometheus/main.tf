@@ -108,9 +108,12 @@ module "irsa_amp_ingest" {
   create_kubernetes_namespace = false
   kubernetes_namespace        = local.namespace
 
-  kubernetes_service_account = local.ingest_service_account
-  irsa_iam_policies          = [aws_iam_policy.ingest[0].arn]
-  addon_context              = var.addon_context
+  kubernetes_service_account    = local.ingest_service_account
+  irsa_iam_policies             = [aws_iam_policy.ingest[0].arn]
+  irsa_iam_role_path            = var.addon_context.irsa_iam_role_path
+  irsa_iam_permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
+  eks_cluster_id                = var.addon_context.eks_cluster_id
+  eks_oidc_provider_arn         = var.addon_context.eks_oidc_provider_arn
 }
 
 # ------------------------------------------
@@ -148,7 +151,10 @@ module "irsa_amp_query" {
   create_kubernetes_namespace = false
   kubernetes_namespace        = local.namespace
 
-  kubernetes_service_account = "amp-query"
-  irsa_iam_policies          = [aws_iam_policy.query[0].arn]
-  addon_context              = var.addon_context
+  kubernetes_service_account    = "amp-query"
+  irsa_iam_policies             = [aws_iam_policy.query[0].arn]
+  irsa_iam_role_path            = var.addon_context.irsa_iam_role_path
+  irsa_iam_permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
+  eks_cluster_id                = var.addon_context.eks_cluster_id
+  eks_oidc_provider_arn         = var.addon_context.eks_oidc_provider_arn
 }

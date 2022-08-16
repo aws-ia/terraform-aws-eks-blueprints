@@ -36,7 +36,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 #### Step1: Clone the repo using the command below
 
 ```shell script
-git clone git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
+git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 #### Step2: Review and update the base.tfvars
@@ -94,13 +94,24 @@ We will deploy the EKS cluster from the Cloud9 instance that was deployed to the
 
 1. Launch the "EKS-Cloud9" Cloud9 instance.
 2. Install Kubernetes tools on the Cloud9 instance.
-    - [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
-3. Create an IAM role for the Cloud9 workspace and attach the IAM role to your workspace. This IAM role should have enough permissions to provision an EKS cluster.
+   - [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
+3. Create an IAM role for the Cloud9 workspace and attach the IAM role to your workspace. This IAM role should have enough permissions to provision an EKS cluster:
+   - [Create an IAM role for your Workspace](https://www.eksworkshop.com/020_prerequisites/iamrole/)
+   - [Attach the IAM role to your Workspace](https://www.eksworkshop.com/020_prerequisites/ec2instance/)
 4. Update IAM settings for your workspace to disable Cloud9 managing IAM credentials.
 ```shell script
 aws cloud9 update-environment  --environment-id $C9_PID --managed-credentials-action DISABLE
 rm -vf ${HOME}/.aws/credentials
 ```
+> This page ([Update IAM settings for your Workspace](https://www.eksworkshop.com/020_prerequisites/workspaceiam/)) contains the above step and also some useful addition steps to save the AccountId and default Region into your bash_profile.
+
+5. From the Cloud9 bash teminal, ensure that your Cloud9 instance ARN shows the assumed-role that matches the IAM role you assigned to the EC2 instance:
+```shell script
+aws sts get-caller-identity --query Arn
+```
+The output should look something like `"arn:aws:sts::<AccountId>:assumed-role/<RoleName>/<instanceId>"`
+
+> You can find your instanceId on the Cloud9 instance with this command `curl -s http://169.254.169.254/latest/meta-data/instance-id`
 
 ### Deployment Steps
 #### Step1: Clone the repo using the command below
@@ -171,7 +182,6 @@ The EKS Terraform stack outputs the command you have to execute to update the  `
 #### Step8: List all the pods running in `kube-system` namespace
 
     $ kubectl get pods -n kube-system
-
 
 
 ### How to Destroy

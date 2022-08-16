@@ -7,6 +7,10 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
 jobs:
   getExampleDirectories:
     name: Get example directories
@@ -42,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        tf_working_dir: ${{ fromJson(needs.getExampleDirectories.outputs.directories) }}
+        directory: ${{ fromJson(needs.getExampleDirectories.outputs.directories) }}
 
     steps:
       - name: checkout-merge
@@ -55,8 +59,21 @@ jobs:
         if: "!contains(github.event_name, 'pull_request')"
         uses: actions/checkout@v3
 
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          # Need to check not only the example directory
+          # but also the supporting module(s) code
+          # for plans (not for pre-commit)
+          filters: |
+            src:
+              - '${{ matrix.directory }}/**/*.(tf|yml|yaml)'
+              - 'modules/**/*.(tf|yml|yaml)'
+              - '*.tf'
+
       - name: Configure AWS credentials from Test account
         uses: aws-actions/configure-aws-credentials@v1
+        if: steps.changes.outputs.src== 'true'
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
           aws-region: us-west-2
@@ -65,15 +82,16 @@ jobs:
 
       - name: Terraform Job
         uses: hashicorp/setup-terraform@v2
+        if: steps.changes.outputs.src== 'true'
         with:
           terraform_version: 1.0.0
 
       - name: Terraform Init
-        id: init
+        if: steps.changes.outputs.src== 'true'
         run: terraform init -reconfigure
-        working-directory: ${{ matrix.tf_working_dir }}
+        working-directory: ${{ matrix.directory }}
 
       - name: Terraform Plan
-        id: plan
-        working-directory: ${{ matrix.tf_working_dir }}
+        if: steps.changes.outputs.src== 'true'
+        working-directory: ${{ matrix.directory }}
         run: terraform plan -no-color

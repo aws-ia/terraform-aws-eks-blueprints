@@ -21,6 +21,12 @@ variable "manage_via_gitops" {
   default     = false
 }
 
+variable "irsa_iam_role_name" {
+  type        = string
+  description = "IAM role name for IRSA"
+  default     = ""
+}
+
 variable "irsa_config" {
   description = "Input configuration for IRSA module"
   type = object({

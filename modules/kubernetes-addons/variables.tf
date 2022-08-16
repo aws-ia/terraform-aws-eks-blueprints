@@ -285,6 +285,12 @@ variable "external_dns_private_zone" {
   default     = false
 }
 
+variable "external_dns_route53_zone_arns" {
+  description = "List of Route53 zones ARNs which external-dns will have access to create/manage records"
+  type        = list(string)
+  default     = []
+}
+
 #-----------Amazon Managed Service for Prometheus-------------
 variable "enable_amazon_prometheus" {
   description = "Enable AWS Managed Prometheus service"
@@ -313,6 +319,19 @@ variable "enable_prometheus" {
 
 variable "prometheus_helm_config" {
   description = "Community Prometheus Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------KUBE-PROMETHEUS-STACK-------------
+variable "enable_kube_prometheus_stack" {
+  description = "Enable Community kube-prometheus-stack add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kube_prometheus_stack_helm_config" {
+  description = "Community kube-prometheus-stack Helm Chart config"
   type        = any
   default     = {}
 }

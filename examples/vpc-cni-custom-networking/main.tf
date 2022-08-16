@@ -35,60 +35,65 @@ locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
-  vpc_cidr = "10.0.0.0/16"
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  cluster_version = "1.22"
+
+  azs                = slice(data.aws_availability_zones.available.names, 0, 3)
+  vpc_cidr           = "10.0.0.0/16"
+  secondary_vpc_cidr = "10.99.0.0/16"
 
   tags = {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
-
-  sample_app_namespace = "game-2048"
 }
 
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
+
 module "eks_blueprints" {
   source = "../.."
 
   cluster_name    = local.name
-  cluster_version = "1.22"
+  cluster_version = local.cluster_version
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
+  vpc_id                   = module.vpc.vpc_id
+  private_subnet_ids       = slice(module.vpc.private_subnets, 0, 3)
+  control_plane_subnet_ids = module.vpc.intra_subnets
 
   # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/485
   # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/494
   cluster_kms_key_additional_admin_arns = [data.aws_caller_identity.current.arn]
 
-  fargate_profiles = {
-    # Providing compute for default namespace
-    default = {
-      fargate_profile_name = "default"
-      fargate_profile_namespaces = [
-        {
-          namespace = "default"
-      }]
-      subnet_ids = module.vpc.private_subnets
-    }
-    # Providing compute for kube-system namespace where core addons reside
-    kube_system = {
-      fargate_profile_name = "kube-system"
-      fargate_profile_namespaces = [
-        {
-          namespace = "kube-system"
-      }]
-      subnet_ids = module.vpc.private_subnets
-    }
-    # Sample application
-    alb_sample_app = {
-      fargate_profile_name = "alb-sample-app"
-      fargate_profile_namespaces = [
-        {
-          namespace = local.sample_app_namespace
-      }]
-      subnet_ids = module.vpc.private_subnets
+  managed_node_groups = {
+    custom_networking = {
+      node_group_name = "custom-net"
+
+      min_size     = 1
+      max_size     = 3
+      desired_size = 2
+
+      custom_ami_id  = data.aws_ssm_parameter.eks_optimized_ami.value
+      instance_types = ["m5.xlarge"]
+
+      create_launch_template = true
+      launch_template_os     = "amazonlinux2eks"
+
+      # https://docs.aws.amazon.com/eks/latest/userguide/choosing-instance-type.html#determine-max-pods
+      pre_userdata = <<-EOT
+        MAX_PODS=$(/etc/eks/max-pods-calculator.sh \
+        --instance-type-from-imds \
+        --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} \
+        --cni-prefix-delegation-enabled \
+        --cni-custom-networking-enabled \
+        )
+      EOT
+
+      # These settings opt out of the default behavior and use the maximum number of pods, with a cap of 110 due to
+      # Kubernetes guidance https://kubernetes.io/docs/setup/best-practices/cluster-large/
+      # See more info here https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
+      kubelet_extra_args   = "--max-pods=$${MAX_PODS}"
+      bootstrap_extra_args = "--use-max-pods false"
     }
   }
 
@@ -105,47 +110,23 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_amazon_eks_vpc_cni = true
   amazon_eks_vpc_cni_config = {
+    # Version 1.6.3-eksbuild.2 or later of the Amazon VPC CNI is required for custom networking
+    # Version 1.9.0 or later (for version 1.20 or earlier clusters or 1.21 or later clusters configured for IPv4)
+    # or 1.10.1 or later (for version 1.21 or later clusters configured for IPv6) of the Amazon VPC CNI for prefix delegation
     addon_version     = data.aws_eks_addon_version.latest["vpc-cni"].version
     resolve_conflicts = "OVERWRITE"
-  }
-
-  enable_amazon_eks_kube_proxy = true
-  amazon_eks_kube_proxy_config = {
-    addon_version     = data.aws_eks_addon_version.latest["kube-proxy"].version
-    resolve_conflicts = "OVERWRITE"
-  }
-
-  enable_self_managed_coredns = true
-  self_managed_coredns_helm_config = {
-    # Sets the correct annotations to ensure the Fargate provisioner is used and not the EC2 provisioner
-    compute_type       = "fargate"
-    kubernetes_version = module.eks_blueprints.eks_cluster_version
   }
 
   tags = local.tags
 
   depends_on = [
-    # CoreDNS provided by EKS needs to be updated before applying self-managed CoreDNS Helm addon
-    null_resource.modify_kube_dns
+    # Modify VPC CNI ahead of addons
+    null_resource.kubectl_set_env
   ]
-
-  enable_aws_load_balancer_controller = true
-  aws_load_balancer_controller_helm_config = {
-    set_values = [
-      {
-        name  = "vpcId"
-        value = module.vpc.vpc_id
-      },
-      {
-        name  = "podDisruptionBudget.maxUnavailable"
-        value = 1
-      },
-    ]
-  }
 }
 
 data "aws_eks_addon_version" "latest" {
-  for_each = toset(["kube-proxy", "vpc-cni"])
+  for_each = toset(["vpc-cni"])
 
   addon_name         = each.value
   kubernetes_version = module.eks_blueprints.eks_cluster_version
@@ -153,7 +134,7 @@ data "aws_eks_addon_version" "latest" {
 }
 
 #---------------------------------------------------------------
-# Modifying CoreDNS for Fargate
+# Modify VPC CNI deployment
 #---------------------------------------------------------------
 
 locals {
@@ -184,8 +165,7 @@ locals {
   })
 }
 
-# Separate resource so that this is only ever executed once
-resource "null_resource" "remove_default_coredns_deployment" {
+resource "null_resource" "kubectl_set_env" {
   triggers = {}
 
   provisioner "local-exec" {
@@ -194,40 +174,52 @@ resource "null_resource" "remove_default_coredns_deployment" {
       KUBECONFIG = base64encode(local.kubeconfig)
     }
 
-    # We are removing the deployment provided by the EKS service and replacing it through the self-managed CoreDNS Helm addon
-    # However, we are maintaing the existing kube-dns service and annotating it for Helm to assume control
+    # Reference https://aws.github.io/aws-eks-best-practices/reliability/docs/networkmanagement/#cni-custom-networking
+    # Reference https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
     command = <<-EOT
-      kubectl --namespace kube-system delete deployment coredns --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+      # Custom networking
+      kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=true --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+      kubectl set env daemonset aws-node -n kube-system ENI_CONFIG_LABEL_DEF=failure-domain.beta.kubernetes.io/zone --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+
+
+      # Prefix delegation
+      kubectl set env daemonset aws-node -n kube-system ENABLE_PREFIX_DELEGATION=true --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+      kubectl set env daemonset aws-node -n kube-system WARM_PREFIX_TARGET=1 --kubeconfig <(echo $KUBECONFIG | base64 --decode)
     EOT
   }
 }
 
-resource "null_resource" "modify_kube_dns" {
-  triggers = {}
+#---------------------------------------------------------------
+# VPC-CNI Custom Networking ENIConfig
+#---------------------------------------------------------------
 
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    environment = {
-      KUBECONFIG = base64encode(local.kubeconfig)
+resource "kubectl_manifest" "eni_config" {
+  for_each = zipmap(local.azs, slice(module.vpc.private_subnets, 3, 6))
+
+  yaml_body = yamlencode({
+    apiVersion = "crd.k8s.amazonaws.com/v1alpha1"
+    kind       = "ENIConfig"
+    metadata = {
+      name = each.key
     }
-
-    # We are maintaing the existing kube-dns service and annotating it for Helm to assume control
-    command = <<-EOT
-      echo "Setting implicit dependency on ${module.eks_blueprints.fargate_profiles["kube_system"].eks_fargate_profile_arn}"
-      kubectl --namespace kube-system annotate --overwrite service kube-dns meta.helm.sh/release-name=coredns --kubeconfig <(echo $KUBECONFIG | base64 --decode)
-      kubectl --namespace kube-system annotate --overwrite service kube-dns meta.helm.sh/release-namespace=kube-system --kubeconfig <(echo $KUBECONFIG | base64 --decode)
-      kubectl --namespace kube-system label --overwrite service kube-dns app.kubernetes.io/managed-by=Helm --kubeconfig <(echo $KUBECONFIG | base64 --decode)
-    EOT
-  }
-
-  depends_on = [
-    null_resource.remove_default_coredns_deployment
-  ]
+    spec = {
+      securityGroups = [
+        module.eks_blueprints.cluster_primary_security_group_id,
+        module.eks_blueprints.worker_node_security_group_id,
+      ]
+      subnet = each.value
+    }
+  })
 }
 
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
+data "aws_ssm_parameter" "eks_optimized_ami" {
+  name = "/aws/service/eks/optimized-ami/${local.cluster_version}/amazon-linux-2/recommended/image_id"
+}
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
@@ -235,9 +227,15 @@ module "vpc" {
   name = local.name
   cidr = local.vpc_cidr
 
-  azs             = local.azs
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+  secondary_cidr_blocks = [local.secondary_vpc_cidr] # can add up to 5 total CIDR blocks
+
+  azs = local.azs
+  private_subnets = concat(
+    [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)],
+    [for k, v in local.azs : cidrsubnet(local.secondary_vpc_cidr, 2, k)]
+  )
+  public_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
+  intra_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 52)]
 
   enable_nat_gateway   = true
   single_nat_gateway   = true
@@ -262,21 +260,4 @@ module "vpc" {
   }
 
   tags = local.tags
-}
-
-#---------------------------------------------------------------
-# Sample App
-#---------------------------------------------------------------
-
-resource "kubernetes_namespace_v1" "sample_app" {
-  metadata {
-    name = local.sample_app_namespace
-  }
-}
-
-resource "kubectl_manifest" "sample_app" {
-  yaml_body = templatefile("sample_app.yaml", {
-    name      = "game-2048"
-    namespace = kubernetes_namespace_v1.sample_app.metadata[0].name
-  })
 }
