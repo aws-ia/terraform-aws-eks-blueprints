@@ -10,7 +10,7 @@ To enable and modify the EKS managed addon for CoreDNS, you can reference the fo
   enable_amazon_eks_coredns = true
   amazon_eks_coredns_config = {
     most_recent        = true
-    kubernetes_version = "1.21"
+    kubernetes_version = "1.23"
     resolve_conflicts  = "OVERWRITE"
     ...
   }
@@ -35,7 +35,7 @@ To provision the self managed addon for CoreDNS, you can reference the following
   enable_self_managed_coredns = true
   self_managed_coredns_helm_config = {
     compute_type       = "fargate"
-    kubernetes_version = "1.22"
+    kubernetes_version = "1.23"
   }
 ```
 

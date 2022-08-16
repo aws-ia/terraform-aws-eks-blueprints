@@ -16,7 +16,7 @@ The current version of the upgrade documentation while writing this [README](htt
 1. Change the version in Terraform to the desired Kubernetes cluster version. See the example below
 
    ```hcl-terraform
-   cluster_version      = "1.21"
+   cluster_version      = "1.23"
    ```
 
 2. If you are specifying a version for EKS managed addons, you will need to ensure the version used is compatible with the new cluster version, or use a data source to pull the appropriate version. If you are not specifying a version for EKS managed addons, no changes are required since the EKS service will update the default addon version based on the cluster version specified.
@@ -28,7 +28,7 @@ data "aws_eks_addon_version" "default" {
   for_each = toset(["coredns", "aws-ebs-csi-driver", "kube-proxy", "vpc-cni"])
 
   addon_name         = each.value
-  kubernetes_version = "1.21" # ensure this matches whats set on the cluster
+  kubernetes_version = "1.23" # ensure this matches whats set on the cluster
   most_recent        = false # can also set to `true` to use latest version for the specified cluster version
 }
 

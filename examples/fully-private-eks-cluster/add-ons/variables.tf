@@ -9,5 +9,5 @@ variable "eks_cluster_id" {
 variable "cluster_version" {
   description = "Kubernetes `<major>.<minor>` version to use for the EKS cluster (i.e.: `1.22`)"
   type        = string
-  default     = "1.22"
+  default     = "1.23"
 }

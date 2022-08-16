@@ -18,7 +18,7 @@ module "eks_blueprints" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints"
 
   # EKS CLUSTER
-  cluster_version    = "1.21"                                         # EKS Cluster Version
+  cluster_version    = "1.23"                                         # EKS Cluster Version
   vpc_id             = "<vpcid>"                                      # Enter VPC ID
   private_subnet_ids = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]     # Enter Private Subnet IDs
 
@@ -448,7 +448,7 @@ The below example demonstrates the minimum configuration required to deploy a ma
       capacity_type   = "SPOT"
       instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
       subnet_ids      = []  # Mandatory Public or Private Subnet IDs
-      disk_size       = 100 # disk_size will be ignored when using Launch Templates  
+      disk_size       = 100 # disk_size will be ignored when using Launch Templates
       k8s_taints      = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }] // Avoid scheduling stateful workloads in SPOT nodes
     }
 ```
