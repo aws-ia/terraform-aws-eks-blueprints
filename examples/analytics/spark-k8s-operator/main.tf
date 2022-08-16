@@ -47,8 +47,6 @@ data "aws_eks_addon_version" "default" {
 locals {
   name   = var.name
   region = var.region
-
-  vpc_cidr   = var.vpc_cidr
   azs        = slice(data.aws_availability_zones.available.names, 0, 3)
   spark_team = "spark-team-a"
 
@@ -511,7 +509,7 @@ module "vpc" {
   version = "~> 3.0"
 
   name = local.name
-  cidr = local.vpc_cidr
+  cidr = var.vpc_cidr
 
   azs             = local.azs
   public_subnets  = var.public_subnets  # Two Subnets. 4094 IPs per Subnet
@@ -546,7 +544,7 @@ module "vpc" {
       protocol    = -1
       from_port   = 0
       to_port     = 0
-      cidr_blocks = local.vpc_cidr
+      cidr_blocks = var.vpc_cidr
   }]
   default_security_group_egress = [
     {
