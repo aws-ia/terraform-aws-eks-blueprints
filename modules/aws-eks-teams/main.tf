@@ -13,7 +13,7 @@ resource "kubernetes_namespace" "team" {
 # Quotas
 # ---------------------------------------------------------------------------------------------------------------------
 resource "kubernetes_resource_quota" "this" {
-  for_each = var.application_teams
+  for_each = { for team_name, team_data in var.application_teams : team_name => team_data if lookup(team_data, "quota", "") != "" }
 
   metadata {
     name      = "quotas"
