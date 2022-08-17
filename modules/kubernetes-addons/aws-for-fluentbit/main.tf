@@ -23,10 +23,14 @@ resource "aws_iam_policy" "aws_for_fluent_bit" {
 
 module "kms" {
   source  = "terraform-aws-modules/kms/aws"
-  version = "1.0.3"
+  version = "1.1.0"
 
-  description             = "EKS Workers FluentBit CloudWatch Log group KMS Key"
-  aliases                 = ["${var.addon_context.eks_cluster_id}-cw-fluent-bit"]
+  description = "EKS Workers FluentBit CloudWatch Log group KMS Key"
+  computed_aliases = {
+    fluent-bit = {
+      name = "${var.addon_context.eks_cluster_id}-cw-fluent-bit"
+    }
+  }
   source_policy_documents = [data.aws_iam_policy_document.kms.json]
 
   tags = var.addon_context.tags
