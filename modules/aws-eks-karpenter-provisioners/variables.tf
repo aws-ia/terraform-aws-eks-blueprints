@@ -23,16 +23,13 @@ variable "kubelet_configuration" {
   default = {}
 }
 
-variable "cpu_limit" {
-  description = "Karpenter will not provision new instances for this provisioner once CPU limit is hit"
-  type        = string
-  default     = "1000"
-}
-
-variable "memory_limit" {
-  description = "Karpenter will not provision new instances for this provisioner once Memory limit is hit"
-  type        = string
-  default     = "1000Gi"
+variable "resource_limits" {
+  description = "Karpenter will not provision new instances for this provisioner once limits are hit"
+  type = object({
+    cpu    = optional(string)
+    memory = optional(string)
+  })
+  default = {}
 }
 
 variable "labels" {
@@ -138,7 +135,7 @@ variable "taints" {
 variable "ttl_seconds_after_empty" {
   description = "How long after a node is empty will it be scaled down due to low utilization. If null, the feature is disabled."
   type        = number
-  default     = 30
+  default     = null
 }
 
 variable "ttl_seconds_until_expired" {

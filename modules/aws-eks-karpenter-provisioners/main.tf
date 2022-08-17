@@ -12,10 +12,7 @@ resource "kubectl_manifest" "provisioner" {
     "spec" = {
       "kubeletConfiguration" = var.kubelet_configuration
       "limits" = {
-        "resources" = {
-          "cpu"    = var.cpu_limit
-          "memory" = var.memory_limit
-        }
+        "resources" = var.resource_limits
       }
       "labels" = var.labels
       "providerRef" = {

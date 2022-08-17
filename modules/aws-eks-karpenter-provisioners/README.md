@@ -10,3 +10,8 @@ Karpenter provisioners set constraints on the nodes that can be created by Karpe
 * Set defaults for node expiration
 
 This module allows you to create Karpenter provisioners and manage them from code.
+
+# Prerequisites
+
+* Ensure the tag `karpenter.sh/discovery = <eks_cluster_id>` exists on subnets you wish to use with your provisioners that are either using or not using launch templates.
+* Ensure the tag `karpenter.sh/discovery = <eks_cluster_id>` exists on security groups you wish to use with provisioners not using launch templates.

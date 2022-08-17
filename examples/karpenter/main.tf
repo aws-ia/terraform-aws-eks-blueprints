@@ -100,7 +100,7 @@ module "eks_blueprints" {
 
   # Add karpenter.sh/discovery tag so that we can use this as securityGroupSelector in karpenter provisioner
   node_security_group_tags = {
-    "karpenter.sh/discovery/${local.name}" = local.name
+    "karpenter.sh/discovery" = local.name
   }
 
   # EKS MANAGED NODE GROUPS
@@ -185,22 +185,150 @@ module "karpenter_launch_templates" {
   tags = merge(local.tags, { Name = "karpenter" })
 }
 
-# Deploying default provisioner and default-lt (using launch template) for Karpenter autoscaler
-data "kubectl_path_documents" "karpenter_provisioners" {
-  pattern = "${path.module}/provisioners/default_provisioner*.yaml" # without launch template
-  vars = {
-    azs                     = join(",", local.azs)
-    iam-instance-profile-id = "${local.name}-${local.node_group_name}"
-    eks-cluster-id          = local.name
-    eks-vpc_name            = local.name
+module "default_provisioner" {
+  source = "../../modules/aws-eks-karpenter-provisioners"
+
+  eks_cluster_id   = module.eks_blueprints.eks_cluster_id
+  provisioner_name = "default"
+  requirements = [
+    {
+      key      = "topology.kubernetes.io/zone"
+      operator = "In"
+      values   = local.azs
+    },
+    {
+      key      = "karpenter.sh/capacity-type"
+      operator = "In"
+      values = [
+        "spot",
+        "on-demand"
+      ]
+    }
+  ]
+  resource_limits = {
+    cpu = "1000"
   }
+  iam_instance_profile = "${local.name}-${local.node_group_name}"
+  extra_subnet_selectors = {
+    Name = "${local.name}-private*"
+  }
+  labels = {
+    type        = "karpenter"
+    provisioner = "default"
+  }
+  taints = [
+    {
+      key    = "default"
+      value  = "true"
+      effect = "NoSchedule"
+    }
+  ]
+  ttl_seconds_after_empty = 120
 }
 
-resource "kubectl_manifest" "karpenter_provisioner" {
-  for_each  = toset(data.kubectl_path_documents.karpenter_provisioners.documents)
-  yaml_body = each.value
+module "default_provisioner_lt" {
+  source = "../../modules/aws-eks-karpenter-provisioners"
 
-  depends_on = [module.eks_blueprints_kubernetes_addons]
+  eks_cluster_id   = module.eks_blueprints.eks_cluster_id
+  provisioner_name = "default-lt"
+  requirements = [
+    {
+      key      = "topology.kubernetes.io/zone"
+      operator = "In"
+      values   = local.azs
+    },
+    {
+      key      = "karpenter.sh/capacity-type"
+      operator = "In"
+      values = [
+        "spot",
+        "on-demand"
+      ]
+    },
+    {
+      key      = "node.kubernetes.io/instance-type"
+      operator = "In"
+      values = [
+        "m5.2xlarge",
+        "m5.4xlarge"
+      ]
+    },
+    {
+      key      = "kubernetes.io/arch"
+      operator = "In"
+      values = [
+        "arm64",
+        "amd64"
+      ]
+    }
+  ]
+  resource_limits = {
+    cpu = "1000"
+  }
+  launch_template = "karpenter-${local.name}"
+  extra_subnet_selectors = {
+    Name = "${local.name}-private*"
+  }
+  labels = {
+    type        = "karpenter"
+    provisioner = "default-lt"
+  }
+  taints = [
+    {
+      key    = "default-lt"
+      value  = "true"
+      effect = "NoSchedule"
+    }
+  ]
+  ttl_seconds_after_empty = 120
+}
+
+module "custom_userdata_provisioner" {
+  source = "../../modules/aws-eks-karpenter-provisioners"
+
+  eks_cluster_id   = module.eks_blueprints.eks_cluster_id
+  provisioner_name = "custom-userdata"
+  ami_family       = "Bottlerocket"
+  requirements = [
+    {
+      key      = "topology.kubernetes.io/zone"
+      operator = "In"
+      values   = local.azs
+    },
+    {
+      key      = "karpenter.sh/capacity-type"
+      operator = "In"
+      values = [
+        "spot",
+        "on-demand"
+      ]
+    }
+  ]
+  resource_limits = {
+    cpu = "1000"
+  }
+  iam_instance_profile = "${local.name}-${local.node_group_name}"
+  extra_subnet_selectors = {
+    Name = "${local.name}-private*"
+  }
+  labels = {
+    type        = "karpenter"
+    provisioner = "custom-userdata"
+  }
+  taints = [
+    {
+      key    = "custom-userdata"
+      value  = "true"
+      effect = "NoSchedule"
+    }
+  ]
+  ttl_seconds_after_empty = 120
+  user_data               = <<EOT
+    [settings.kubernetes]
+    kube-api-qps = 30
+    [settings.kubernetes.eviction-hard]
+    "memory.available" = "20%"
+EOT
 }
 
 #---------------------------------------------------------------
@@ -231,11 +359,13 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
+    "karpenter.sh/discovery"              = local.name
     "kubernetes.io/cluster/${local.name}" = "shared"
     "kubernetes.io/role/elb"              = 1
   }
 
   private_subnet_tags = {
+    "karpenter.sh/discovery"              = local.name
     "kubernetes.io/cluster/${local.name}" = "shared"
     "kubernetes.io/role/internal-elb"     = 1
   }
