@@ -346,8 +346,15 @@ variable "worker_additional_security_group_ids" {
 #-------------------------------
 # Fargate
 #-------------------------------
+
 variable "fargate_profiles" {
-  description = "Fargate profile configuration"
+  description = "Map of Fargate Profile definitions to create"
+  type        = any
+  default     = {}
+}
+
+variable "fargate_profile_defaults" {
+  description = "Map of Fargate Profile default configurations"
   type        = any
   default     = {}
 }
