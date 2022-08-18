@@ -1,18 +1,4 @@
 # ---------------------------------------------------------------------------------------------------------------------
-# CLUSTER KMS KEY
-# ---------------------------------------------------------------------------------------------------------------------
-module "kms" {
-  count  = var.create_eks && var.cluster_kms_key_arn == null ? 1 : 0
-  source = "./modules/aws-kms"
-
-  alias                   = "alias/${var.cluster_name}"
-  description             = "${var.cluster_name} EKS cluster secret encryption key"
-  policy                  = data.aws_iam_policy_document.eks_key.json
-  deletion_window_in_days = var.cluster_kms_key_deletion_window_in_days
-  tags                    = var.tags
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
 # EKS CONTROL PLANE
 # ---------------------------------------------------------------------------------------------------------------------
 module "aws_eks" {
@@ -21,9 +7,10 @@ module "aws_eks" {
 
   create = var.create_eks
 
-  cluster_name     = var.cluster_name
-  cluster_version  = var.cluster_version
-  cluster_timeouts = var.cluster_timeouts
+  cluster_name               = var.cluster_name
+  cluster_version            = var.cluster_version
+  cluster_timeouts           = var.cluster_timeouts
+  cluster_identity_providers = var.cluster_identity_providers
 
   # IAM Role
   create_iam_role = var.create_iam_role
@@ -64,9 +51,6 @@ module "aws_eks" {
   openid_connect_audiences = var.openid_connect_audiences
   custom_oidc_thumbprints  = var.custom_oidc_thumbprints
 
-  # TAGS
-  tags = var.tags
-
   # CLUSTER LOGGING
   create_cloudwatch_log_group            = var.create_cloudwatch_log_group
   cluster_enabled_log_types              = var.cluster_enabled_log_types # no change
@@ -74,15 +58,20 @@ module "aws_eks" {
   cloudwatch_log_group_kms_key_id        = var.cloudwatch_log_group_kms_key_id
 
   # CLUSTER ENCRYPTION
-  attach_cluster_encryption_policy = false
-  cluster_encryption_config = length(var.cluster_encryption_config) == 0 ? [
-    {
-      provider_key_arn = try(module.kms[0].key_arn, var.cluster_kms_key_arn)
-      resources        = ["secrets"]
-    }
-  ] : var.cluster_encryption_config
+  create_kms_key                    = var.create_kms_key
+  kms_key_description               = var.kms_key_description
+  kms_key_deletion_window_in_days   = var.kms_key_deletion_window_in_days
+  kms_key_enable_default_policy     = var.kms_key_enable_default_policy
+  kms_key_owners                    = var.kms_key_owners
+  kms_key_administrators            = var.kms_key_administrators
+  kms_key_users                     = var.kms_key_users
+  kms_key_source_policy_documents   = var.kms_key_source_policy_documents
+  kms_key_override_policy_documents = var.kms_key_override_policy_documents
+  kms_key_aliases                   = length(var.kms_key_aliases) > 0 ? var.kms_key_aliases : ["${var.cluster_name}"]
+  attach_cluster_encryption_policy  = false
+  cluster_encryption_config         = var.cluster_encryption_config
 
-  cluster_identity_providers = var.cluster_identity_providers
+  tags = var.tags
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

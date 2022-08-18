@@ -5,6 +5,7 @@ on:
   pull_request_target:
     branches:
       - main
+      - refactor/v5
   workflow_dispatch:
 
 concurrency:

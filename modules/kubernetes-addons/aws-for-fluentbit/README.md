@@ -25,7 +25,7 @@ See this [Helm Chart](https://github.com/aws/eks-charts/tree/master/stable/aws-f
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_helm_addon"></a> [helm\_addon](#module\_helm\_addon) | ../helm-addon | n/a |
-| <a name="module_kms"></a> [kms](#module\_kms) | ../../../modules/aws-kms | n/a |
+| <a name="module_kms"></a> [kms](#module\_kms) | terraform-aws-modules/kms/aws | 1.1.0 |
 
 ## Resources
 
@@ -35,7 +35,6 @@ See this [Helm Chart](https://github.com/aws/eks-charts/tree/master/stable/aws-f
 | [aws_iam_policy.aws_for_fluent_bit](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy_document.irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.kms](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_session_context.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_session_context) | data source |
 
 ## Inputs
 
