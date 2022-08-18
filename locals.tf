@@ -143,5 +143,4 @@ locals {
   ] : []
 
   cluster_iam_role_name = var.iam_role_name == null ? "${var.cluster_name}-cluster-role" : var.iam_role_name
-  cluster_iam_role_arn  = var.create_iam_role ? "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${local.cluster_iam_role_name}" : var.iam_role_arn
 }

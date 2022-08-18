@@ -114,31 +114,73 @@ variable "cluster_endpoint_public_access_cidrs" {
 #-------------------------------
 # EKS Cluster ENCRYPTION
 #-------------------------------
-variable "cluster_kms_key_arn" {
-  description = "A valid EKS Cluster KMS Key ARN to encrypt Kubernetes secrets"
+
+variable "cluster_encryption_config" {
+  description = "Configuration block with encryption configuration for the cluster"
+  type        = list(any)
+  default = [{
+    resources = ["secrets"]
+  }]
+}
+
+variable "create_kms_key" {
+  description = "Controls if a KMS key for cluster encryption should be created"
+  type        = bool
+  default     = true
+}
+
+variable "kms_key_description" {
+  description = "The description of the key as viewed in AWS console"
   type        = string
   default     = null
 }
 
-variable "cluster_kms_key_deletion_window_in_days" {
-  description = "The waiting period, specified in number of days (7 - 30). After the waiting period ends, AWS KMS deletes the KMS key"
+variable "kms_key_deletion_window_in_days" {
+  description = "The waiting period, specified in number of days. After the waiting period ends, AWS KMS deletes the KMS key. If you specify a value, it must be between `7` and `30`, inclusive. If you do not specify a value, it defaults to `30`"
   type        = number
-  default     = 30
+  default     = null
 }
 
-variable "cluster_kms_key_additional_admin_arns" {
-  description = "A list of additional IAM ARNs that should have FULL access (kms:*) in the KMS key policy"
+variable "kms_key_enable_default_policy" {
+  description = "Specifies whether to enable the default key policy. Defaults to `true`"
+  type        = bool
+  default     = false
+}
+
+variable "kms_key_owners" {
+  description = "A list of IAM ARNs for those who will have full key permissions (`kms:*`)"
   type        = list(string)
   default     = []
 }
 
-variable "cluster_encryption_config" {
-  description = "Configuration block with encryption configuration for the cluster"
-  type = list(object({
-    provider_key_arn = string
-    resources        = list(string)
-  }))
-  default = []
+variable "kms_key_administrators" {
+  description = "A list of IAM ARNs for [key administrators](https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#key-policy-default-allow-administrators). If no value is provided, the current caller identity is used to ensure at least one key admin is available"
+  type        = list(string)
+  default     = []
+}
+
+variable "kms_key_users" {
+  description = "A list of IAM ARNs for [key users](https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#key-policy-default-allow-users)"
+  type        = list(string)
+  default     = []
+}
+
+variable "kms_key_source_policy_documents" {
+  description = "List of IAM policy documents that are merged together into the exported document. Statements must have unique `sid`s"
+  type        = list(string)
+  default     = []
+}
+
+variable "kms_key_override_policy_documents" {
+  description = "List of IAM policy documents that are merged together into the exported document. In merging, statements with non-blank `sid`s will override statements with the same `sid`"
+  type        = list(string)
+  default     = []
+}
+
+variable "kms_key_aliases" {
+  description = "A list of aliases to create. Note - due to the use of `toset()`, values must be static strings and not computed values"
+  type        = list(string)
+  default     = []
 }
 
 #-------------------------------
