@@ -27,6 +27,8 @@ resource "aws_launch_template" "managed_node_groups" {
 
   ebs_optimized = true
 
+  key_name = try(var.managed_ng.key_name, null)
+
   image_id = local.managed_node_group["custom_ami_id"]
 
   monitoring {
