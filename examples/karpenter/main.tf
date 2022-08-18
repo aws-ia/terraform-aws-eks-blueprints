@@ -223,7 +223,7 @@ module "default_provisioner" {
       effect = "NoSchedule"
     }
   ]
-  ttl_seconds_after_empty = 120
+  ttl_seconds_after_empty = 300
 }
 
 module "default_provisioner_lt" {
@@ -280,7 +280,7 @@ module "default_provisioner_lt" {
       effect = "NoSchedule"
     }
   ]
-  ttl_seconds_after_empty = 120
+  ttl_seconds_after_empty = 300
 }
 
 module "custom_userdata_provisioner" {
@@ -288,7 +288,10 @@ module "custom_userdata_provisioner" {
 
   eks_cluster_id   = module.eks_blueprints.eks_cluster_id
   provisioner_name = "custom-userdata"
-  ami_family       = "Bottlerocket"
+  ami_selector = {
+    aws-ids = data.aws_ami.bottlerocket.id
+  }
+  ami_family = "Bottlerocket"
   requirements = [
     {
       key      = "topology.kubernetes.io/zone"
@@ -322,7 +325,7 @@ module "custom_userdata_provisioner" {
       effect = "NoSchedule"
     }
   ]
-  ttl_seconds_after_empty = 120
+  ttl_seconds_after_empty = 300
   user_data               = <<EOT
     [settings.kubernetes]
     kube-api-qps = 30
