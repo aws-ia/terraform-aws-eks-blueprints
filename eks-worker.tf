@@ -27,18 +27,3 @@ module "aws_eks_self_managed_node_groups" {
 
   depends_on = [kubernetes_config_map.aws_auth]
 }
-
-# ---------------------------------------------------------------------------------------------------------------------
-# FARGATE PROFILES
-# ---------------------------------------------------------------------------------------------------------------------
-
-module "aws_eks_fargate_profiles" {
-  source = "./modules/aws-eks-fargate-profiles"
-
-  for_each = var.fargate_profiles
-
-  fargate_profile = each.value
-  context         = local.fargate_context
-
-  depends_on = [kubernetes_config_map.aws_auth]
-}

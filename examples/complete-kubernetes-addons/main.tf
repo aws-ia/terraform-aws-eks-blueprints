@@ -108,18 +108,19 @@ module "eks_blueprints" {
 
   fargate_profiles = {
     default = {
-      fargate_profile_name = "default"
-      fargate_profile_namespaces = [
+      name = "default"
+      selectors = [
         {
           namespace = "default"
-          k8s_labels = {
+          labels = {
             Environment = "preprod"
             Zone        = "dev"
             env         = "fargate"
           }
-      }]
-      subnet_ids = module.vpc.private_subnets
-      additional_tags = {
+        }
+      ]
+
+      tags = {
         ExtraTag = "Fargate"
       }
     }

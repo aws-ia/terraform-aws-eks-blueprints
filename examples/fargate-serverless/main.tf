@@ -34,6 +34,8 @@ locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
+  sample_app_namespace = "game-2048"
+
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
@@ -41,13 +43,12 @@ locals {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
-
-  sample_app_namespace = "game-2048"
 }
 
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
+
 module "eks_blueprints" {
   source = "../.."
 
@@ -60,30 +61,30 @@ module "eks_blueprints" {
   fargate_profiles = {
     # Providing compute for default namespace
     default = {
-      fargate_profile_name = "default"
-      fargate_profile_namespaces = [
+      name = "default"
+      selectors = [
         {
           namespace = "default"
-      }]
-      subnet_ids = module.vpc.private_subnets
+        }
+      ]
     }
     # Providing compute for kube-system namespace where core addons reside
     kube_system = {
-      fargate_profile_name = "kube-system"
-      fargate_profile_namespaces = [
+      name = "kube-system"
+      selectors = [
         {
           namespace = "kube-system"
-      }]
-      subnet_ids = module.vpc.private_subnets
+        }
+      ]
     }
-    # Sample application
+
     alb_sample_app = {
-      fargate_profile_name = "alb-sample-app"
-      fargate_profile_namespaces = [
+      name = "alb-sample-app"
+      selectors = [
         {
           namespace = local.sample_app_namespace
-      }]
-      subnet_ids = module.vpc.private_subnets
+        }
+      ]
     }
   }
 
@@ -117,13 +118,6 @@ module "eks_blueprints_kubernetes_addons" {
     kubernetes_version = module.eks_blueprints.eks_cluster_version
   }
 
-  tags = local.tags
-
-  depends_on = [
-    # CoreDNS provided by EKS needs to be updated before applying self-managed CoreDNS Helm addon
-    null_resource.modify_kube_dns
-  ]
-
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller_helm_config = {
     set_values = [
@@ -137,6 +131,13 @@ module "eks_blueprints_kubernetes_addons" {
       },
     ]
   }
+
+  tags = local.tags
+
+  depends_on = [
+    # CoreDNS provided by EKS needs to be updated before applying self-managed CoreDNS Helm addon
+    null_resource.modify_kube_dns
+  ]
 }
 
 data "aws_eks_addon_version" "latest" {
@@ -223,6 +224,7 @@ resource "null_resource" "modify_kube_dns" {
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"

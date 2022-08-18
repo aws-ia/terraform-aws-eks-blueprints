@@ -49,14 +49,6 @@ locals {
     tags = var.tags
   }
 
-  fargate_context = {
-    eks_cluster_id                = local.eks_cluster_id
-    aws_partition_id              = local.context.aws_partition_id
-    iam_role_path                 = var.iam_role_path
-    iam_role_permissions_boundary = var.iam_role_permissions_boundary
-    tags                          = var.tags
-  }
-
   # Managed node IAM Roles for aws-auth
   managed_node_group_aws_auth_config_map = length(var.managed_node_groups) > 0 == true ? [
     for key, node in var.managed_node_groups : {
@@ -95,9 +87,9 @@ locals {
   ] : []
 
   # Fargate node IAM Roles for aws-auth
-  fargate_profiles_aws_auth_config_map = length(var.fargate_profiles) > 0 ? [
-    for key, node in var.fargate_profiles : {
-      rolearn : try(node.iam_role_arn, "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${module.aws_eks.cluster_id}-${node.fargate_profile_name}")
+  fargate_profiles_aws_auth_config_map = [
+    for role in distinct(compact([for profile in module.aws_eks.fargate_profiles : profile.fargate_profile_pod_execution_role_arn])) : {
+      rolearn : role
       username : "system:node:{{SessionName}}"
       groups : [
         "system:bootstrappers",
@@ -105,7 +97,7 @@ locals {
         "system:node-proxier"
       ]
     }
-  ] : []
+  ]
 
   # EMR on EKS IAM Roles for aws-auth
   emr_on_eks_config_map = var.enable_emr_on_eks == true ? [
