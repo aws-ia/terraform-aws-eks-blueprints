@@ -7,6 +7,9 @@ resource "aws_autoscaling_group" "self_managed_ng" {
 
   capacity_rebalance = local.self_managed_node_group["capacity_rebalance"]
   target_group_arns  = try(local.self_managed_node_group["target_group_arns"], null)
+  instance_refresh {
+    strategy = "Rolling"
+  }
 
   dynamic "launch_template" {
     for_each = !local.needs_mixed_instances_policy ? [1] : []
