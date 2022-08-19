@@ -1,8 +1,7 @@
-# Job to submit a Ray program from a pod outside a running Ray cluster.
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: ray-fashion-mnist-job-
+  generateName: ray-fashion-mnist-serve-job-
   namespace: ray-cluster
 spec:
   template:
@@ -15,7 +14,7 @@ spec:
           imagePullPolicy: Always
           command: [ "/bin/bash", "-c", "--" ]
           args:
-            - "python /opt/train.py"
+            - "python /opt/serve_fashion_mnist.py"
           resources:
             requests:
               cpu: 1000m

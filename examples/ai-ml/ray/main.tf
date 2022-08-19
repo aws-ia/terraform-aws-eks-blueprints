@@ -47,7 +47,7 @@ data "aws_acm_certificate" "issued" {
 locals {
   name      = basename(path.cwd)
   namespace = "ray-cluster"
-  region    = "us-east-1"
+  region    = var.region
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -181,6 +181,19 @@ data "aws_iam_policy_document" "irsa_policy" {
   statement {
     actions   = ["s3:*Object"]
     resources = ["${module.s3_bucket.s3_bucket_arn}/*"]
+  }
+  statement {
+    actions   = [
+      "ssm:PutParameter",
+      "ssm:DeleteParameter",
+      "ssm:GetParameterHistory",
+      "ssm:GetParametersByPath",
+      "ssm:GetParameters",
+      "ssm:GetParameter",
+      "ssm:DeleteParameters",
+      "ssm:DescribeParameters"
+    ]
+    resources = ["*"]
   }
 }
 

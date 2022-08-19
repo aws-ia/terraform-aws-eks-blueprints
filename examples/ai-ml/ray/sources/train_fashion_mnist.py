@@ -21,6 +21,7 @@ from ray.train.torch import TorchTrainer
 from ray.train.huggingface import HuggingFaceTrainer
 from ray.air.config import ScalingConfig, RunConfig
 from ray.tune import SyncConfig
+import boto3
 
 from transformers import (
     AdamW,
@@ -34,9 +35,11 @@ from transformers import (
     get_scheduler,
     set_seed,
 )
-from transformers.utils.versions import require_version    
+from transformers.utils.versions import require_version
 
-def train_func():    
+S3_BUCKET=os.environ["S3_BUCKET"]
+
+def train_func():
     model_name_or_path = "roberta-base"
     use_slow_tokenizer = False
     per_device_train_batch_size = 64
@@ -50,15 +53,15 @@ def train_func():
     output_dir = None
     seed = None
     num_workers = 20
-    use_gpu = False   
+    use_gpu = False
     max_length = 64
 
     accelerator = Accelerator()
-    
+
     import s3fs
 
     s3_file = s3fs.S3FileSystem()
-    s3_path = "s3://ray-demo-models-20220801234005040500000001/data"
+    s3_path = f"{S3_BUCKET}/data"
     data_path = tempfile.mkdtemp()
     s3_file.get(s3_path, data_path, recursive=True)
 
@@ -71,12 +74,12 @@ def train_func():
     label_list = raw_datasets["train"].unique("sentiment")
 
     # Sort for determinism
-    label_list.sort()  
-    
+    label_list.sort()
+
     num_labels = len(label_list)
 
     config = AutoConfig.from_pretrained(
-        model_name_or_path, num_labels=num_labels, 
+        model_name_or_path, num_labels=num_labels,
     )
     tokenizer = AutoTokenizer.from_pretrained(
         model_name_or_path, use_fast=not use_slow_tokenizer
@@ -150,7 +153,7 @@ def train_func():
             "weight_decay": 0.0,
         },
     ]
-    
+
     optimizer = AdamW(optimizer_grouped_parameters, lr=learning_rate)
 
     model, optimizer, train_dataloader = accelerator.prepare(
@@ -202,15 +205,15 @@ def train_func():
     completed_steps = 0
 
     running_train_loss = 0.0
-    
+
     model = train.torch.prepare_model(model)
-        
+
     for epoch in range(num_train_epochs):
         model.train()
         for step, batch in enumerate(train_dataloader):
             outputs = model(**batch)
             loss = outputs.loss
-            
+
             running_train_loss += loss
 
             loss = loss / gradient_accumulation_steps
@@ -227,14 +230,14 @@ def train_func():
 
             if completed_steps >= max_train_steps:
                 break
-                
+
         session.report(
             {
                 "running_train_loss": running_train_loss,
             },
             checkpoint=Checkpoint.from_dict(dict(model=model.module.state_dict()))
         )
-        
+
     if output_dir is not None:
         accelerator.wait_for_everyone()
         unwrapped_model = accelerator.unwrap_model(model)
@@ -244,21 +247,21 @@ def train_func():
 ray.shutdown()
 ray.init(address="ray://raycluster-autoscaler-head-svc:10001",
          runtime_env={"pip": [
-                                "torch", 
+                                "torch",
                                 "scikit-learn",
                                 "transformers",
                                 "pandas",
                                 "datasets",
                                 "accelerate",
                                 "scikit-learn",
-                                "mlflow", 
+                                "mlflow",
                                 "tensorboard",
                                 "s3fs",
                              ]
                      }
         )
 
-s3_checkpoint_prefix="s3://ray-demo-models-20220801234005040500000001/ray_output"
+s3_checkpoint_prefix=f"{S3_BUCKET}/ray_output"
 
 
 trainer = TorchTrainer(
@@ -280,5 +283,13 @@ trainer = TorchTrainer(
 results = trainer.fit()
 print(results.metrics)
 
+ssm = boto3.client('ssm')
 s3_uri = f"{s3_checkpoint_prefix}/{results.log_dir.as_posix().split('/')[-2]}/{results.log_dir.as_posix().split('/')[-1]}/checkpoint_000000/"
+ssm.put_parameter(
+    Name="/ray-demo/model_checkpoint",
+    Type="String",
+    Overwrite=True,
+    Value=s3_uri
+)
+
 print(s3_uri)

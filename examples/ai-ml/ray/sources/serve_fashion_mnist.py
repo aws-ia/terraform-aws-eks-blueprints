@@ -5,6 +5,8 @@ from ray.train.torch import TorchPredictor, TorchCheckpoint
 from transformers import AutoConfig, AutoModelForSequenceClassification, AutoTokenizer
 import tempfile
 import s3fs
+import boto3
+
 
 @serve.deployment(route_prefix="/predict", version="0.1.0")
 class Predictor:
@@ -17,8 +19,8 @@ class Predictor:
         ]
 
         s3_file = s3fs.S3FileSystem()
-
-        s3_path = "s3://ray-demo-models-20220801234005040500000001/ray_output/TorchTrainer_2022-08-14_18-38-40/TorchTrainer_fda93_00000_0_2022-08-14_18-38-42/checkpoint_000000/"
+        ssm = boto3.client("ssm")
+        s3_path = ssm.get_parameter(Name="/ray-demo/model_checkpoint")["Parameter"]["Value"]
         model_path = tempfile.mkdtemp()
         s3_file.get(s3_path, model_path, recursive=True)
         print(model_path)
@@ -57,7 +59,7 @@ class Predictor:
             pred = self.model(input_ids)
             predicted_class = self.classes[pred[0].argmax()]
             return predicted_class
-            
+
 ray.shutdown()
 ray.init(address="ray://raycluster-autoscaler-head-svc:10001", namespace="serve",
          runtime_env={"pip": [

@@ -1,5 +1,8 @@
 # Ray with Amazon EKS
 
+> 🛑 This blueprint should be considered as experimental and should only be used for proof of concept.
+
+
 This example deploys an EKS Cluster running the Ray Operator.
 
 - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
@@ -102,6 +105,12 @@ s3_bucket = "ray-demo-models-20220719224423900800000001"
 
 Enter `yes` to apply.
 
+Export the s3_bucket to your local environment.
+
+```sh
+export S3_BUCKET="s3://ray-demo-models-20220719224423900800000001"
+```
+
 ### Verify Deployment
 
 Update kubeconfig
@@ -113,34 +122,47 @@ aws eks update-kubeconfig --name ray
 Verify all pods are running.
 
 ```sh
-kubectl get pods -A
-
-NAMESPACE       NAME                                            READY   STATUS    RESTARTS   AGE
-external-dns    external-dns-99dd9564f-s7c4p                    1/1     Running   0          8h
-ingress-nginx   ingress-nginx-controller-5756658855-6ctgt       1/1     Running   0          8h
-kube-system     aws-load-balancer-controller-67b5dd7d69-rpxm4   1/1     Running   0          8h
-kube-system     aws-load-balancer-controller-67b5dd7d69-znjj5   1/1     Running   0          8h
-kube-system     aws-node-9wmbs                                  1/1     Running   0          9h
-kube-system     aws-node-qj8rj                                  1/1     Running   0          9h
-kube-system     aws-node-wlfbg                                  1/1     Running   0          9h
-kube-system     coredns-7f5998f4c-9mwrr                         1/1     Running   0          9h
-kube-system     coredns-7f5998f4c-wmd9m                         1/1     Running   0          9h
-kube-system     kube-proxy-c8rrq                                1/1     Running   0          9h
-kube-system     kube-proxy-hh965                                1/1     Running   0          9h
-kube-system     kube-proxy-qlt9b                                1/1     Running   0          9h
-ray-cluster     example-cluster-ray-head-j6vwh                  1/1     Running   0          8h
-ray-cluster     example-cluster-ray-worker-jdkjd                1/1     Running   0          8h
-ray-cluster     example-cluster-ray-worker-rwplm                1/1     Running   0          8h
-ray-operator    ray-operator-5b985c9d77-4rtq6                   1/1     Running   0          8h
+NAMESPACE               NAME                                                        READY   STATUS    RESTARTS        AGE
+external-dns            external-dns-99dd9564f-8fsvd                                1/1     Running   2 (6h21m ago)   16d
+ingress-nginx           ingress-nginx-controller-659678ccb9-dlc5r                   1/1     Running   2 (6h20m ago)   16d
+kube-prometheus-stack   alertmanager-kube-prometheus-stack-alertmanager-0           2/2     Running   4 (6h21m ago)   16d
+kube-prometheus-stack   kube-prometheus-stack-grafana-68d4b6d7f4-h97j4              3/3     Running   6 (6h21m ago)   15d
+kube-prometheus-stack   kube-prometheus-stack-kube-state-metrics-6d6b967d6d-fc62f   1/1     Running   2 (6h21m ago)   16d
+kube-prometheus-stack   kube-prometheus-stack-operator-7c8bffbd9b-5rv59             1/1     Running   2 (6h21m ago)   14d
+kube-prometheus-stack   kube-prometheus-stack-prometheus-node-exporter-4hj6g        1/1     Running   2 (6h20m ago)   16d
+kube-prometheus-stack   kube-prometheus-stack-prometheus-node-exporter-9pgqc        1/1     Running   2 (6h21m ago)   16d
+kube-prometheus-stack   kube-prometheus-stack-prometheus-node-exporter-v46pf        1/1     Running   2 (6h21m ago)   16d
+kube-prometheus-stack   prometheus-kube-prometheus-stack-prometheus-0               2/2     Running   4 (6h21m ago)   14d
+kube-system             aws-load-balancer-controller-67b5dd7d69-jjq4r               1/1     Running   2 (6h21m ago)   16d
+kube-system             aws-load-balancer-controller-67b5dd7d69-pthpn               1/1     Running   2 (6h20m ago)   16d
+kube-system             aws-node-7bcvh                                              1/1     Running   3 (6h19m ago)   16d
+kube-system             aws-node-csshj                                              1/1     Running   3 (6h19m ago)   16d
+kube-system             aws-node-htcmn                                              1/1     Running   4 (6h19m ago)   16d
+kube-system             coredns-7f5998f4c-m4lxr                                     1/1     Running   2 (6h21m ago)   16d
+kube-system             coredns-7f5998f4c-t78m9                                     1/1     Running   2 (6h20m ago)   16d
+kube-system             kube-proxy-4v4pr                                            1/1     Running   2 (6h21m ago)   16d
+kube-system             kube-proxy-7rkb7                                            1/1     Running   2 (6h20m ago)   16d
+kube-system             kube-proxy-v76mj                                            1/1     Running   2 (6h21m ago)   16d
+kuberay-operator        kuberay-operator-7b88c9c4fb-kdhlz                           1/1     Running   2 (6h21m ago)   16d
+ray-cluster             raycluster-autoscaler-head-wxbgw                            1/1     Running   0               10m
+ray-cluster             raycluster-autoscaler-worker-large-group-twtld              1/1     Running   0               10m
 ```
 
-### Sample Jobs
+#### Ray Dashboard
 
-#### Ray Serve - Summarize
+The Ray Dashboard can be opened at the following url "https://ray-demo.bar.com/dashboard"
 
-As a sample deployment, we will use [Ray Serve](https://docs.ray.io/en/latest/serve/index.html) to deploy a sample machine learning model and expose it to the outside world via the Ingress configuration. The code for this deployment can be found [here](sources/hface_t5_summarize_serve.py). We use the [Hugging Face T5](https://huggingface.co/docs/transformers/model_doc/t5) model to serve an endpoint to summarize an arbitrary block of text. This model is deployed as Kubernetes [Job](sample-jobs/summarize-serve-job.yaml).
+![](../../../images/Ray-Dashboard.png)
 
-Create the Job to deploy the model to the Ray Cluster
+### Examples
+
+#### Hugging Face
+
+##### Ray Serve
+
+As a sample, we will use [Ray Serve](https://docs.ray.io/en/latest/serve/index.html) to deploy a sample machine learning model and expose it to the outside world via the Ingress configuration. The code for this deployment can be found [here](sources/hface_t5_summarize_serve.py). We use the [Hugging Face T5](https://huggingface.co/docs/transformers/model_doc/t5) model to serve an endpoint to summarize an arbitrary block of text. This model is deployed as Kubernetes [Job](sample-jobs/summarize-serve-job.yaml).
+
+Create a Job to deploy the model to the Ray Cluster
 
 ```sh
 envsubst < sample-jobs/summarize-serve-job.yaml | kubectl create -f -
@@ -217,7 +239,65 @@ The client code uses python `requests` module to invoke the `/summarize` endpoin
 python sources/summarize_client.py
 
 two astronauts steered their fragile lunar module safely and smoothly to the historic landing . the first men to reach the moon -- Armstrong and his co-pilot, col. Edwin E. Aldrin Jr. of the air force -- brought their ship to rest on a level, rock-strewn plain .
+
+
+#### Fashion MNIST
+
+##### Ray Train
+
+As a sample, we will use [Ray Train](https://docs.ray.io/en/latest/train/train.html) to train a machine learning model using a sample dataset from the Fashion MNIST dataset. See the code for model training [here](sources/train_fashion_mnist.py)
+
+Create a Job to submit the training job to the Ray Cluster
+
+```sh
+envsubst < sample-jobs/train-fashion-mnist.yaml | kubectl create -f -
+
+job.batch/ray-fashion-mnist-train-job-plkzf created
 ```
+
+Tail the logs to see the training in progress:
+
+```sh
+kubectl logs -n ray-cluster job.batch/ray-fashion-mnist-train-job-plkzf -f
+
+...
+...
+{'running_train_loss': tensor(1.1093, requires_grad=True), '_timestamp': 1660890352, '_time_this_iter_s': 32.8163115978241, '_training_iteration': 1, 'time_this_iter_s': 37.8390429019928, 'should_checkpoint': True, 'done': True, 'timesteps_total': None, 'episodes_total': None, 'training_iteration': 1, 'trial_id': 'af450_00000', 'experiment_id': '5a41dbb6558648d29ff5070c391167ea', 'date': '2022-08-18_23-25-54', 'timestamp': 1660890354, 'time_total_s': 37.8390429019928, 'pid': 1469, 'hostname': 'raycluster-autoscaler-head-wxbgw', 'node_ip': '10.0.11.68', 'config': {}, 'time_since_restore': 37.8390429019928, 'timesteps_since_restore': 0, 'iterations_since_restore': 1, 'warmup_time': 0.002658843994140625, 'experiment_tag': '0'}
+s3://ray-demo-models-20220801234005040500000001/ray_output/TorchTrainer_2022-08-18_23-25-13/TorchTrainer_af450_00000_0_2022-08-18_23-25-14/checkpoint_000000/
+
+```
+
+As shown above a model checkpoint is written to an S3 location so that it can be retrived for model serving. The location of the checkpoint is stored in the SSM Parameter Store.
+
+##### Ray Serve
+
+To create an inference endpoint which will be served using Ray Serve, create a Job to submit the Ray [deployment](sources/serve_fashion_mnist.py)
+
+
+```sh
+envsubst < sample-jobs/serve-fashion-mnist.yaml | kubectl create -f -
+
+```
+
+##### Test Deployment
+
+A sample [script](sources/fashion_mnist_client.py) is provided that uses the requests library to test the inference endpoint.
+
+
+```sh
+python sources/fashion_mnist_client.py                                                                           
+
+Positive
+```
+
+### Monitoring
+
+This blueprint uses the [kube-prometheus-stack](../../../docs/add-ons/kube-prometheus-stack.md) to create a monitoring stack for getting visibility into your RayCluster.
+
+Open the Grafana dashboard using the url "https://ray-demo.bar.com/monitoring". The sample Ray dashboard can be accessed by browsing to the Ray grafana folder.
+
+
+![](../../../images/Ray-Grafana.png)
 
 ## Cleanup
 
