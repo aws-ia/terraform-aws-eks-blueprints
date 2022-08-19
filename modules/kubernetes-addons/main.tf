@@ -179,14 +179,18 @@ module "crossplane" {
 }
 
 module "external_dns" {
-  count             = var.enable_external_dns ? 1 : 0
-  source            = "./external-dns"
+  source = "./external-dns"
+
+  count = var.enable_external_dns ? 1 : 0
+
   helm_config       = var.external_dns_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   irsa_policies     = var.external_dns_irsa_policies
   addon_context     = local.addon_context
+
   domain_name       = var.eks_cluster_domain
   private_zone      = var.external_dns_private_zone
+  route53_zone_arns = var.external_dns_route53_zone_arns
 }
 
 module "fargate_fluentbit" {

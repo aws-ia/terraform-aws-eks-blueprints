@@ -1,3 +1,7 @@
+locals {
+  eks_oidc_issuer_url = replace(var.eks_oidc_provider_arn, "/^(.*provider/)/", "")
+}
+
 resource "kubernetes_namespace_v1" "irsa" {
   count = var.create_kubernetes_namespace && var.kubernetes_namespace != "kube-system" ? 1 : 0
   metadata {
@@ -20,7 +24,7 @@ resource "kubernetes_service_account_v1" "irsa" {
 resource "aws_iam_role" "irsa" {
   count = var.irsa_iam_policies != null ? 1 : 0
 
-  name        = try(var.addon_context.irsa_iam_role_name, format("%s-%s-%s", var.addon_context.eks_cluster_id, trim(var.kubernetes_service_account, "-*"), "irsa"))
+  name        = try(coalesce(var.irsa_iam_role_name, format("%s-%s-%s", var.eks_cluster_id, trim(var.kubernetes_service_account, "-*"), "irsa")), null)
   description = "AWS IAM Role for the Kubernetes service account ${var.kubernetes_service_account}."
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
@@ -28,23 +32,23 @@ resource "aws_iam_role" "irsa" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${var.addon_context.eks_oidc_provider_arn}"
+          "Federated" : "${var.eks_oidc_provider_arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringLike" : {
-            "${var.addon_context.eks_oidc_issuer_url}:sub" : "system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}",
-            "${var.addon_context.eks_oidc_issuer_url}:aud" : "sts.amazonaws.com"
+            "${local.eks_oidc_issuer_url}:sub" : "system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}",
+            "${local.eks_oidc_issuer_url}:aud" : "sts.amazonaws.com"
           }
         }
       }
     ]
   })
-  path                  = var.addon_context.irsa_iam_role_path
+  path                  = var.irsa_iam_role_path
   force_detach_policies = true
-  permissions_boundary  = var.addon_context.irsa_iam_permissions_boundary
+  permissions_boundary  = var.irsa_iam_permissions_boundary
 
-  tags = var.addon_context.tags
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "irsa" {

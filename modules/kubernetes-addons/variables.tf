@@ -285,6 +285,12 @@ variable "external_dns_private_zone" {
   default     = false
 }
 
+variable "external_dns_route53_zone_arns" {
+  description = "List of Route53 zones ARNs which external-dns will have access to create/manage records"
+  type        = list(string)
+  default     = []
+}
+
 #-----------Amazon Managed Service for Prometheus-------------
 variable "enable_amazon_prometheus" {
   description = "Enable AWS Managed Prometheus service"
