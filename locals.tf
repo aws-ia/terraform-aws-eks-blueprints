@@ -62,29 +62,29 @@ locals {
   ] : []
 
   # Self Managed node IAM Roles for aws-auth
-  self_managed_node_group_aws_auth_config_map = length(var.self_managed_node_groups) > 0 ? [
-    for key, node in var.self_managed_node_groups : {
-      rolearn : try(node.iam_role_arn, "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${module.aws_eks.cluster_id}-${node.node_group_name}")
+  self_managed_node_group_aws_auth_config_map = [
+    for role_arn in distinct(compact([for group in module.aws_eks.self_managed_node_groups : group.iam_role_arn if group.platform != "windows"])) : {
+      rolearn : role_arn
       username : "system:node:{{EC2PrivateDNSName}}"
       groups : [
         "system:bootstrappers",
         "system:nodes"
       ]
-    } if node.launch_template_os != "windows"
-  ] : []
+    }
+  ]
 
   # Self Managed Windows node IAM Roles for aws-auth
-  windows_node_group_aws_auth_config_map = length(var.self_managed_node_groups) > 0 && var.enable_windows_support ? [
-    for key, node in var.self_managed_node_groups : {
-      rolearn : "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${module.aws_eks.cluster_id}-${node.node_group_name}"
+  windows_node_group_aws_auth_config_map = [
+    for role_arn in distinct(compact([for group in module.aws_eks.self_managed_node_groups : group.iam_role_arn if group.platform == "windows"])) : {
+      rolearn : role_arn
       username : "system:node:{{EC2PrivateDNSName}}"
       groups : [
         "system:bootstrappers",
         "system:nodes",
         "eks:kube-proxy-windows"
       ]
-    } if node.launch_template_os == "windows"
-  ] : []
+    }
+  ]
 
   # Fargate node IAM Roles for aws-auth
   fargate_profiles_aws_auth_config_map = [

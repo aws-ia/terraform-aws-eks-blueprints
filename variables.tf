@@ -305,7 +305,13 @@ variable "managed_node_groups" {
 }
 
 variable "self_managed_node_groups" {
-  description = "Self-managed node groups configuration"
+  description = "Map of self-managed node group definitions to create"
+  type        = any
+  default     = {}
+}
+
+variable "self_managed_node_group_defaults" {
+  description = "Map of self-managed node group default configurations"
   type        = any
   default     = {}
 }
