@@ -1,7 +1,3 @@
-data "aws_iam_session_context" "current" {
-  arn = var.addon_context.aws_caller_identity_arn
-}
-
 data "aws_iam_policy_document" "irsa" {
   statement {
     sid       = "PutLogEvents"
@@ -25,19 +21,6 @@ data "aws_iam_policy_document" "irsa" {
 }
 
 data "aws_iam_policy_document" "kms" {
-  statement {
-    sid       = "Enable IAM User Permissions"
-    effect    = "Allow"
-    resources = ["*"]
-    actions   = ["kms:*"]
-
-    principals {
-      type = "AWS"
-      identifiers = ["arn:${var.addon_context.aws_partition_id}:iam::${var.addon_context.aws_caller_identity_account_id}:root",
-      data.aws_iam_session_context.current.issuer_arn]
-    }
-  }
-
   statement {
     sid       = "Enable Encryption for LogGroup"
     effect    = "Allow"
