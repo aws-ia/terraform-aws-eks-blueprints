@@ -239,7 +239,7 @@ The client code uses python `requests` module to invoke the `/summarize` endpoin
 python sources/summarize_client.py
 
 two astronauts steered their fragile lunar module safely and smoothly to the historic landing . the first men to reach the moon -- Armstrong and his co-pilot, col. Edwin E. Aldrin Jr. of the air force -- brought their ship to rest on a level, rock-strewn plain .
-
+```
 
 #### Fashion MNIST
 
