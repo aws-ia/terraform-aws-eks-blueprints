@@ -78,7 +78,7 @@ module "eks_blueprints_kubernetes_addons" {
   argocd_applications = {
     workloads = {
       path     = "envs/dev"
-      repo_url = "https://github.com/aws-samples/eks_blueprints-workloads.git"
+      repo_url = "https://github.com/aws-samples/eks-blueprints-workloads.git"
       values = {
         spec = {
           ingress = {
