@@ -166,12 +166,13 @@ module "eks_blueprints_kubernetes_addons" {
 # Deploy Ray Cluster Resources
 #---------------------------------------------------------------
 resource "aws_kms_key" "objects" {
+  enable_key_rotation     = true
   description             = "KMS key is used to encrypt bucket objects"
   deletion_window_in_days = 7
 }
 
 
-#tfsec:ignore:aws-s3-enable-bucket-logging,aws-s3-enable-versioning
+#tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
 module "s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "v3.3.0"
