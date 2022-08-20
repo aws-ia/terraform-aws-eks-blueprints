@@ -285,7 +285,7 @@ A sample [script](sources/fashion_mnist_client.py) is provided that uses the req
 
 
 ```sh
-python sources/fashion_mnist_client.py                                                                           
+python sources/fashion_mnist_client.py  
 
 Positive
 ```
