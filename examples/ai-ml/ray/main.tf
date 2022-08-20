@@ -165,12 +165,31 @@ module "eks_blueprints_kubernetes_addons" {
 #---------------------------------------------------------------
 # Deploy Ray Cluster Resources
 #---------------------------------------------------------------
+resource "aws_kms_key" "objects" {
+  description             = "KMS key is used to encrypt bucket objects"
+  deletion_window_in_days = 7
+}
+
+
+#tfsec:ignore:aws-s3-enable-bucket-logging,aws-s3-enable-versioning
 module "s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "v3.3.0"
 
-  bucket_prefix = "ray-demo-models-"
-  acl           = "private"
+  bucket_prefix           = "ray-demo-models-"
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        kms_master_key_id = aws_kms_key.objects.arn
+        sse_algorithm     = "aws:kms"
+      }
+    }
+  }
 }
 
 data "aws_iam_policy_document" "irsa_policy" {
