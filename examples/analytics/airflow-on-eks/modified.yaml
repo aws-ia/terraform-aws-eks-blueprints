@@ -1,9 +1,8 @@
-# Airflow home directory
-# Used for mount paths
-airflowHome: /opt/airflow
-
-# Default airflow repository -- overrides all the specific images below
-defaultAirflowRepository: apache/airflow
+# Default security context for airflow
+securityContext:
+  #  runAsUser: 50000
+  fsGroup: 65534
+#  runAsGroup: 0
 
 # Default airflow tag to deploy
 defaultAirflowTag: "2.3.3"
@@ -11,84 +10,46 @@ defaultAirflowTag: "2.3.3"
 # Airflow version (Used to make some decisions based on Airflow Version being deployed)
 airflowVersion: "2.3.3"
 
-# Airflow executor
-# One of: LocalExecutor, LocalKubernetesExecutor, CeleryExecutor, KubernetesExecutor, CeleryKubernetesExecutor
 executor: "KubernetesExecutor"
 
-# Extra annotations to apply to all
-# Airflow pods
-airflowPodAnnotations: {}
-
-# Extra annotations to apply to
 # main Airflow configmap
 airflowConfigAnnotations: {}
 
-# Network policy configuration
-networkPolicies:
-  # Enabled network policies
-  enabled: false
+# Select certain nodes for airflow pods.
+nodeSelector:
+  NodeGroupType: core
 
+#----------------------------------------------------
 # Ingress configuration
+#----------------------------------------------------
 ingress:
-  # Enable all ingress resources (deprecated - use ingress.web.enabled and ingress.flower.enabled)
-  enabled: ~
-
-  # Configs for the Ingress of the web Service
   web:
-    # Enable web ingress resource
     enabled: true
-
-    # Annotations for the web Ingress
-    annotations: {}
-
-    # The path for the web Ingress
-    path: "/"
-
+    annotations:
+      alb.ingress.kubernetes.io/group.name: "dev"
+      alb.ingress.kubernetes.io/target-type : "instance"
+      #      alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:....................."
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+      alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    path: "/dev"
     # The pathType for the above path (used only with Kubernetes v1.19 and above)
-    pathType: "ImplementationSpecific"
-
-    # The hostname for the web Ingress (Deprecated - renamed to `ingress.web.hosts`)
-    host: ""
-
+    pathType: "Prefix"
     # The hostnames or hosts configuration for the web Ingress
     hosts:
-      - name: airflow.eksblueprints.com
+      - name: ""
         # configs for web Ingress TLS
         tls:
           # Enable TLS termination for the web Ingress
-          enabled: true
+          enabled: false
           # the name of a pre-created Secret containing a TLS private key and certificate
-          secretName: "letsencrypt"
-
+          secretName: ""
     # The Ingress Class for the web Ingress (used only with Kubernetes v1.19 and above)
-    ingressClassName: ""
+    ingressClassName: "alb"
 
-    # configs for web Ingress TLS (Deprecated - renamed to `ingress.web.hosts[*].tls`)
-    tls:
-      # Enable TLS termination for the web Ingress
-      enabled: false
-      # the name of a pre-created Secret containing a TLS private key and certificate
-      secretName: ""
-
-    # HTTP paths to add to the web Ingress before the default path
-    precedingPaths: []
-
-    # Http paths to add to the web Ingress after the default path
-    succeedingPaths: []
 #----------------------------------------------------
 # Airflow database & redis config
+#----------------------------------------------------
 data:
-  # If secret names are provided, use those secrets
-  # These secrets must be created manually, eg:
-  #
-  # kind: Secret
-  # apiVersion: v1
-  # metadata:
-  #   name: custom-airflow-metadata-secret
-  # type: Opaque
-  # data:
-  #   connection: base64_encoded_connection_string
-
   #  kubectl create secret generic mydatabase --from-literal=connection=postgresql://user:pass@host:5432/db
   #  metadataSecretName: ~
 
@@ -101,462 +62,98 @@ data:
     port: 5432
     db: airflow
     sslmode: disable
-
 #----------------------------------------------------
 # Airflow Worker Config
-workers:
-  # Number of airflow celery workers in StatefulSet
+#----------------------------------------------------
+#workers:
+#  replicas: 2
+#  serviceAccount:
+#    create: false # change this to false provide the name created by Terraform
+#    name: airflow-worker
+#    annotations:
+#      eks.amazonaws.com/role-arn: arn:aws:iam::327949925549:role/eksctl-emr-eks-fsx-lustre-addon-iamserviceac-Role1-PCTHU9ZJKHRW
+#  persistence:
+#    enabled: false
+#  resources:
+#    limits:
+#     cpu: 200m
+#     memory: 256Mi
+#    requests:
+#     cpu: 200m
+#     memory: 256Mi
+
+#----------------------------------------------------
+# Airflow scheduler settings
+#----------------------------------------------------
+scheduler:
   replicas: 2
-  # Max number of old replicasets to retain
-  #  revisionHistoryLimit: ~
-
-  # Command to use when running Airflow workers (templated).
-  command: ~
-  # Args to use when running Airflow workers (templated).
-  args:
-    - "bash"
-    - "-c"
-    # The format below is necessary to get `helm lint` happy
-    - |-
-      exec \
-      airflow {{ semverCompare ">=2.0.0" .Values.airflowVersion | ternary "celery worker" "worker" }}
-
-  # Update Strategy when worker is deployed as a StatefulSet
-  updateStrategy: ~
-  # Update Strategy when worker is deployed as a Deployment
-  strategy:
-    rollingUpdate:
-      maxSurge: "100%"
-      maxUnavailable: "50%"
-
-  # When not set, the values defined in the global securityContext will be used
-  securityContext:
-    #  runAsUser: 50000
-    fsGroup: 65534
-  #  runAsGroup: 0
-
-  # Create ServiceAccount
   serviceAccount:
-    # Specifies whether a ServiceAccount should be created
     create: false
-    # The name of the ServiceAccount to use.
-    # If not set and create is true, a name is generated using the release name
-    name: airflow-worker
-
-    # Annotations to add to worker kubernetes service account.
+    name: airflow
     annotations:
       eks.amazonaws.com/role-arn: arn:aws:iam::327949925549:role/eksctl-emr-eks-fsx-lustre-addon-iamserviceac-Role1-PCTHU9ZJKHRW
-
-  persistence:
-    # Enable persistent volumes
-    enabled: false
-    # Volume size for worker StatefulSet
-    size: 100Gi
-    # If using a custom storageClass, pass name ref to all statefulSets here
-    storageClassName: gp2
-    # Execute init container to chown log directory.
-    # This is currently only needed in kind, due to usage
-    # of local-path provisioner.
-    fixPermissions: false
-    # Annotations to add to worker volumes
-    annotations: {}
-
-  kerberosSidecar:
-    # Enable kerberos sidecar
-    enabled: false
-    resources: {}
-    #  limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    #  requests:
-    #   cpu: 100m
-    #   memory: 128Mi
-
   resources:
     limits:
       cpu: 200m
-      memory: 256Mi
+      memory: 512Mi
     requests:
       cpu: 200m
-      memory: 256Mi
+      memory: 512Mi
 
-  # Grace period for tasks to finish after SIGTERM is sent from kubernetes
-  terminationGracePeriodSeconds: 600
-
-  # This setting tells kubernetes that its ok to evict
-  # when it wants to scale a node down.
-  safeToEvict: true
-
-  # Launch additional containers into worker.
-  # Note: If used with KubernetesExecutor, you are responsible for signaling sidecars to exit when the main
-  # container finishes so Airflow can continue the worker shutdown process!
-  extraContainers: []
-  # Add additional init containers into workers.
-  extraInitContainers: []
-
-  # Mount additional volumes into worker.
-  extraVolumes: []
-  extraVolumeMounts: []
-
-  # Select certain nodes for airflow worker pods.
-  nodeSelector:
-    NodeGroupType: core
-  priorityClassName: ~
-  affinity: {}
-  # default worker affinity is:
-  #  podAntiAffinity:
-  #    preferredDuringSchedulingIgnoredDuringExecution:
-  #    - podAffinityTerm:
-  #        labelSelector:
-  #          matchLabels:
-  #            component: worker
-  #        topologyKey: kubernetes.io/hostname
-  #      weight: 100
-  tolerations: []
-  topologySpreadConstraints: []
-  # hostAliases to use in worker pods.
-  # See:
-  # https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
-  hostAliases: []
-  # - ip: "127.0.0.2"
-  #   hostnames:
-  #   - "test.hostname.one"
-  # - ip: "127.0.0.3"
-  #   hostnames:
-  #   - "test.hostname.two"
-
-  podAnnotations: {}
-
-  logGroomerSidecar:
-    # Command to use when running the Airflow worker log groomer sidecar (templated).
-    command: ~
-    # Args to use when running the Airflow worker log groomer sidecar (templated).
-    args: ["bash", "/clean-logs"]
-    # Number of days to retain logs
-    retentionDays: 15
-    resources: {}
-    #  limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    #  requests:
-    #   cpu: 100m
-    #   memory: 128Mi
-
-# Airflow scheduler settings
-scheduler:
-  # If the scheduler stops heartbeating for 5 minutes (5*60s) kill the
-  # scheduler and let Kubernetes restart it
-  livenessProbe:
-    initialDelaySeconds: 10
-    timeoutSeconds: 20
-    failureThreshold: 5
-    periodSeconds: 60
-    command: ~
-  # Airflow 2.0 allows users to run multiple schedulers,
-  # However this feature is only recommended for MySQL 8+ and Postgres
-  replicas: 2
-  # Max number of old replicasets to retain
-  #  revisionHistoryLimit: ~
-
-  # Command to use when running the Airflow scheduler (templated).
-  command: ~
-  # Args to use when running the Airflow scheduler (templated).
-  args: ["bash", "-c", "exec airflow scheduler"]
-
-  # Update Strategy when scheduler is deployed as a StatefulSet
-  # (when using LocalExecutor and workers.persistence)
-  updateStrategy: ~
-  # Update Strategy when scheduler is deployed as a Deployment
-  # (when not using LocalExecutor and workers.persistence)
-  strategy: ~
-
-  # When not set, the values defined in the global securityContext will be used
-  securityContext:
-    #  runAsUser: 50000
-    fsGroup: 65534
-  #  runAsGroup: 0
-
-  # Create ServiceAccount
-  serviceAccount:
-    # Specifies whether a ServiceAccount should be created
-    create: true
-    # The name of the ServiceAccount to use.
-    # If not set and create is true, a name is generated using the release name
-    name: ~
-
-    # Annotations to add to scheduler kubernetes service account.
-    annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::327949925549:role/eksctl-emr-eks-fsx-lustre-addon-iamserviceac-Role1-PCTHU9ZJKHRW
-
-
-  # Scheduler pod disruption budget
-  podDisruptionBudget:
-    enabled: false
-
-    # PDB configuration
-    config:
-      maxUnavailable: 1
-
-  resources: {}
-  #  limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  #  requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-  # This setting tells kubernetes that its ok to evict
-  # when it wants to scale a node down.
-  safeToEvict: true
-
-  # Launch additional containers into scheduler.
-  extraContainers: []
-  # Add additional init containers into scheduler.
-  extraInitContainers: []
-
-  # Mount additional volumes into scheduler.
-  extraVolumes: []
-  extraVolumeMounts: []
-
-  # Select certain nodes for airflow scheduler pods.
-  nodeSelector:
-    NodeGroupType: core
-  affinity: {}
-  # default scheduler affinity is:
-  #  podAntiAffinity:
-  #    preferredDuringSchedulingIgnoredDuringExecution:
-  #    - podAffinityTerm:
-  #        labelSelector:
-  #          matchLabels:
-  #            component: scheduler
-  #        topologyKey: kubernetes.io/hostname
-  #      weight: 100
-  tolerations: []
-  topologySpreadConstraints: []
-
-  priorityClassName: ~
-
-  podAnnotations: {}
-
-  logGroomerSidecar:
-    # Whether to deploy the Airflow scheduler log groomer sidecar.
-    enabled: true
-    # Command to use when running the Airflow scheduler log groomer sidecar (templated).
-    command: ~
-    # Args to use when running the Airflow scheduler log groomer sidecar (templated).
-    args: ["bash", "/clean-logs"]
-    # Number of days to retain logs
-    retentionDays: 15
-    resources: {}
-    #  limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    #  requests:
-    #   cpu: 100m
-    #   memory: 128Mi
-
-  waitForMigrations:
-    # Whether to create init container to wait for db migrations
-    enabled: true
-
-# Airflow create user job settings
-createUserJob:
-  # Command to use when running the create user job (templated).
-  command: ~
-  # Args to use when running the create user job (templated).
-  args:
-    - "bash"
-    - "-c"
-    # The format below is necessary to get `helm lint` happy
-    - |-
-      exec \
-      airflow {{ semverCompare ">=2.0.0" .Values.airflowVersion | ternary "users create" "create_user" }} "$@"
-    - --
-    - "-r"
-    - "{{ .Values.webserver.defaultUser.role }}"
-    - "-u"
-    - "{{ .Values.webserver.defaultUser.username }}"
-    - "-e"
-    - "{{ .Values.webserver.defaultUser.email }}"
-    - "-f"
-    - "{{ .Values.webserver.defaultUser.firstName }}"
-    - "-l"
-    - "{{ .Values.webserver.defaultUser.lastName }}"
-    - "-p"
-    - "{{ .Values.webserver.defaultUser.password }}"
-
-  # Annotations on the create user job pod
-  annotations: {}
-  # jobAnnotations are annotations on the create user job
-  jobAnnotations: {}
-
-  # When not set, the values defined in the global securityContext will be used
-  securityContext:
-    #  runAsUser: 50000
-    fsGroup: 65534
-  #  runAsGroup: 0
-
-  # Create ServiceAccount
-  serviceAccount:
-    # Specifies whether a ServiceAccount should be created
-    create: true
-    # The name of the ServiceAccount to use.
-    # If not set and create is true, a name is generated using the release name
-    name: ~
-
-    # Annotations to add to create user kubernetes service account.
-    annotations: {}
-
-  # Launch additional containers into user creation job
-  extraContainers: []
-
-  # Mount additional volumes into user creation job
-  extraVolumes: []
-  extraVolumeMounts: []
-
-  nodeSelector:
-    NodeGroupType: core
-  affinity: {}
-  tolerations: []
-  topologySpreadConstraints: []
-  # In case you need to disable the helm hooks that create the jobs after install.
-  # Disable this if you are using ArgoCD for example
-  useHelmHooks: true
-
-  resources: {}
-  #  limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  #  requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
+#----------------------------------------------------
 # Airflow database migration job settings
+#----------------------------------------------------
 migrateDatabaseJob:
   enabled: true
-  # Command to use when running the migrate database job (templated).
-  command: ~
-  # Args to use when running the migrate database job (templated).
-  args:
-    - "bash"
-    - "-c"
-    # The format below is necessary to get `helm lint` happy
-    - |-
-      exec \
-      airflow {{ semverCompare ">=2.0.0" .Values.airflowVersion | ternary "db upgrade" "upgradedb" }}
 
-  # Annotations on the database migration pod
-  annotations: {}
-  # jobAnnotations are annotations on the database migration job
-  jobAnnotations: {}
-
-  # When not set, the values defined in the global securityContext will be used
-  securityContext:
-    #  runAsUser: 50000
-    fsGroup: 65534
-  #  runAsGroup: 0
-
-  # Create ServiceAccount
-  serviceAccount:
-    # Specifies whether a ServiceAccount should be created
-    create: true
-    # The name of the ServiceAccount to use.
-    # If not set and create is true, a name is generated using the release name
-    name: ~
-
-    # Annotations to add to migrate database job kubernetes service account.
-    annotations: {}
-
-  resources:
-    limits:
-     cpu: 100m
-     memory: 128Mi
-    requests:
-     cpu: 100m
-     memory: 128Mi
-
-  # Launch additional containers into database migration job
-  extraContainers: []
-
-  # Mount additional volumes into database migration job
-  extraVolumes: []
-  extraVolumeMounts: []
-
-  nodeSelector:
-    NodeGroupType: core
-  affinity: {}
-  tolerations: []
-  topologySpreadConstraints: []
-  # In case you need to disable the helm hooks that create the jobs after install.
-  # Disable this if you are using ArgoCD for example
-  useHelmHooks: true
-
+#----------------------------------------------------
 # Airflow webserver settings
+#----------------------------------------------------
 webserver:
-  allowPodLogReading: true
-  livenessProbe:
-    initialDelaySeconds: 15
-    timeoutSeconds: 30
-    failureThreshold: 20
-    periodSeconds: 5
-  #    scheme: HTTP
-
-  readinessProbe:
-    initialDelaySeconds: 15
-    timeoutSeconds: 30
-    failureThreshold: 20
-    periodSeconds: 5
-  #    scheme: HTTP
-
   # Number of webservers
   replicas: 2
-  # Max number of old replicasets to retain
-  #  revisionHistoryLimit: ~
-
-  # Command to use when running the Airflow webserver (templated).
-  command: ~
-  # Args to use when running the Airflow webserver (templated).
-  args: ["bash", "-c", "exec airflow webserver"]
-
-  # Create ServiceAccount
   serviceAccount:
-    # Specifies whether a ServiceAccount should be created
-    create: false
-    # The name of the ServiceAccount to use.
-    # If not set and create is true, a name is generated using the release name
-    name: airflow-worker
-
-    # Annotations to add to webserver kubernetes service account.
+    create: true
+    name: airflow
     annotations:
       eks.amazonaws.com/role-arn: arn:aws:iam::327949925549:role/eksctl-emr-eks-fsx-lustre-addon-iamserviceac-Role1-PCTHU9ZJKHRW
+  resources:
+    limits:
+      cpu: 200m
+      memory: 1Gi
+    requests:
+      cpu: 200m
+      memory: 1Gi
+  allowPodLogReading: true
+#  livenessProbe:
+#    initialDelaySeconds: 60
+#    timeoutSeconds: 30
+#    failureThreshold: 20
+#    periodSeconds: 5
+#
+#  readinessProbe:
+#    initialDelaySeconds: 60
+#    timeoutSeconds: 30
+#    failureThreshold: 20
+#    periodSeconds: 5
 
-  # Webserver pod disruption budget
-  podDisruptionBudget:
-    enabled: false
+#----------------------------------------------------
+# Airflow Triggerer Config
+#----------------------------------------------------
+triggerer:
+  enabled: true
 
-    # PDB configuration
-    config:
-      maxUnavailable: 1
+#----------------------------------------------------
+# Airflow Dag Processor Config
+#----------------------------------------------------
+dagProcessor:
+  enabled: false
 
-  # Allow overriding Update Strategy for Webserver
-  strategy: ~
-
-  # When not set, the values defined in the global securityContext will be used
-  securityContext:
-    #  runAsUser: 50000
-    fsGroup: 65534
-  #  runAsGroup: 0
-
-  # Additional network policies as needed (Deprecated - renamed to `webserver.networkPolicy.ingress.from`)
-  extraNetworkPolicies: []
-  networkPolicy:
-    ingress:
-      # Peers for webserver NetworkPolicy ingress
-      from: []
-      # Ports for webserver NetworkPolicy ingress (if `from` is set)
-      ports:
-        - port: "{{ .Values.ports.airflowUI }}"
-
+#----------------------------------------------------
+# StatsD settings
+#----------------------------------------------------
+statsd:
+  enabled: true
   resources:
     limits:
       cpu: 100m
@@ -564,314 +161,16 @@ webserver:
     requests:
       cpu: 100m
       memory: 128Mi
-
-  # Create initial user.
-  defaultUser:
-    enabled: true
-    role: Admin
-    username: admin
-    email: admin@example.com
-    firstName: admin
-    lastName: user
-    password: admin
-
-  # Launch additional containers into webserver.
-  extraContainers: []
-  # Add additional init containers into webserver.
-  extraInitContainers: []
-
-  # Mount additional volumes into webserver.
-  extraVolumes: []
-  extraVolumeMounts: []
-
-  # This string (can be templated) will be mounted into the Airflow Webserver as a custom
-  # webserver_config.py. You can bake a webserver_config.py in to your image instead.
-  webserverConfig: ~
-  # webserverConfig: |
-  #   from airflow import configuration as conf
-
-  #   # The SQLAlchemy connection string.
-  #   SQLALCHEMY_DATABASE_URI = conf.get('database', 'SQL_ALCHEMY_CONN')
-
-  #   # Flask-WTF flag for CSRF
-  #   CSRF_ENABLED = True
-
-  service:
-    type: ClusterIP
-    ## service annotations
-    annotations: {}
-    ports:
-      - name: airflow-ui
-        port: "{{ .Values.ports.airflowUI }}"
-    # To change the port used to access the webserver:
-    # ports:
-    #   - name: airflow-ui
-    #     port: 80
-    #     targetPort: airflow-ui
-    # To only expose a sidecar, not the webserver directly:
-    # ports:
-    #   - name: only_sidecar
-    #     port: 80
-    #     targetPort: 8888
-    loadBalancerIP: ~
-    ## Limit load balancer source ips to list of CIDRs
-    # loadBalancerSourceRanges:
-    #   - "10.123.0.0/16"
-    loadBalancerSourceRanges: []
-
-  # Select certain nodes for airflow webserver pods.
-  nodeSelector:
-    NodeGroupType: core
-  priorityClassName: ~
-  affinity: {}
-  # default webserver affinity is:
-  #  podAntiAffinity:
-  #    preferredDuringSchedulingIgnoredDuringExecution:
-  #    - podAffinityTerm:
-  #        labelSelector:
-  #          matchLabels:
-  #            component: webserver
-  #        topologyKey: kubernetes.io/hostname
-  #      weight: 100
-  tolerations: []
-  topologySpreadConstraints: []
-
-  podAnnotations: {}
-
-  waitForMigrations:
-    # Whether to create init container to wait for db migrations
-    enabled: true
-
-# Airflow Triggerer Config
-triggerer:
+#----------------------------------------------------
+# PgBouncer settings
+#----------------------------------------------------
+pgbouncer:
   enabled: true
-  # Number of airflow triggerers in the deployment
-  replicas: 1
-  # Max number of old replicasets to retain
-  #  revisionHistoryLimit: ~
+  auth_type: scram-sha-256
 
-  # Command to use when running Airflow triggerers (templated).
-  command: ~
-  # Args to use when running Airflow triggerer (templated).
-  args: ["bash", "-c", "exec airflow triggerer"]
-
-  # Update Strategy for triggerers
-  strategy:
-    rollingUpdate:
-      maxSurge: "100%"
-      maxUnavailable: "50%"
-
-  # If the triggerer stops heartbeating for 5 minutes (5*60s) kill the
-  # triggerer and let Kubernetes restart it
-  livenessProbe:
-    initialDelaySeconds: 10
-    timeoutSeconds: 20
-    failureThreshold: 5
-    periodSeconds: 60
-
-  # Create ServiceAccount
-  serviceAccount:
-    # Specifies whether a ServiceAccount should be created
-    create: true
-    # The name of the ServiceAccount to use.
-    # If not set and create is true, a name is generated using the release name
-    name: ~
-
-    # Annotations to add to triggerer kubernetes service account.
-    annotations: {}
-
-  # When not set, the values defined in the global securityContext will be used
-  securityContext:
-    #  runAsUser: 50000
-    fsGroup: 65534
-  #  runAsGroup: 0
-
-  resources: {}
-  #  limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  #  requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-  # Grace period for triggerer to finish after SIGTERM is sent from kubernetes
-  terminationGracePeriodSeconds: 60
-
-  # This setting tells kubernetes that its ok to evict
-  # when it wants to scale a node down.
-  safeToEvict: true
-
-  # Launch additional containers into triggerer.
-  extraContainers: []
-  # Add additional init containers into triggerers.
-  extraInitContainers: []
-
-  # Mount additional volumes into triggerer.
-  extraVolumes: []
-  extraVolumeMounts: []
-
-  # Select certain nodes for airflow triggerer pods.
-  nodeSelector:
-    NodeGroupType: core
-  affinity: {}
-  # default triggerer affinity is:
-  #  podAntiAffinity:
-  #    preferredDuringSchedulingIgnoredDuringExecution:
-  #    - podAffinityTerm:
-  #        labelSelector:
-  #          matchLabels:
-  #            component: triggerer
-  #        topologyKey: kubernetes.io/hostname
-  #      weight: 100
-  tolerations: []
-  topologySpreadConstraints: []
-
-  priorityClassName: ~
-
-  podAnnotations: {}
-
-  waitForMigrations:
-    # Whether to create init container to wait for db migrations
-    enabled: true
-
-# Airflow Dag Processor Config
-dagProcessor:
-  enabled: false
-  # Number of airflow dag processors in the deployment
-  replicas: 1
-
-  # Args to use when running Airflow dag processor (templated).
-  args: ["bash", "-c", "exec airflow dag-processor"]
-
-  # Update Strategy for dag processors
-  strategy:
-    rollingUpdate:
-      maxSurge: "100%"
-      maxUnavailable: "50%"
-
-  # If the dag processor stops heartbeating for 5 minutes (5*60s) kill the
-  # dag processor and let Kubernetes restart it
-  livenessProbe:
-    initialDelaySeconds: 10
-    timeoutSeconds: 20
-    failureThreshold: 5
-    periodSeconds: 60
-    command: ~
-
-  # Create ServiceAccount
-  serviceAccount:
-    # Specifies whether a ServiceAccount should be created
-    create: true
-    # The name of the ServiceAccount to use.
-    # If not set and create is true, a name is generated using the release name
-    name: ~
-
-    # Annotations to add to dag processor kubernetes service account.
-    annotations: {}
-
-  # When not set, the values defined in the global securityContext will be used
-  securityContext:
-    #  runAsUser: 50000
-    fsGroup: 65534
-  #  runAsGroup: 0
-
-  resources: {}
-  #  limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  #  requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-  # Grace period for dag processor to finish after SIGTERM is sent from kubernetes
-  terminationGracePeriodSeconds: 60
-
-  # This setting tells kubernetes that its ok to evict
-  # when it wants to scale a node down.
-  safeToEvict: true
-
-  # Launch additional containers into dag processor.
-  extraContainers: []
-  # Add additional init containers into dag processors.
-  extraInitContainers: []
-
-  # Mount additional volumes into dag processor.
-  extraVolumes: []
-  extraVolumeMounts: []
-
-  # Select certain nodes for airflow dag processor pods.
-  nodeSelector:
-    NodeGroupType: core
-  affinity: {}
-  # default dag processor affinity is:
-  #  podAntiAffinity:
-  #    preferredDuringSchedulingIgnoredDuringExecution:
-  #    - podAffinityTerm:
-  #        labelSelector:
-  #          matchLabels:
-  #            component: dag-processor
-  #        topologyKey: kubernetes.io/hostname
-  #      weight: 100
-  tolerations: []
-  topologySpreadConstraints: []
-
-  priorityClassName: ~
-
-  podAnnotations: {}
-
-  waitForMigrations:
-    # Whether to create init container to wait for db migrations
-    enabled: true
-
-# StatsD settings
-statsd:
-  enabled: true
-
-  # Create ServiceAccount
-  serviceAccount:
-    # Specifies whether a ServiceAccount should be created
-    create: true
-    # The name of the ServiceAccount to use.
-    # If not set and create is true, a name is generated using the release name
-    name: ~
-
-    # Annotations to add to worker kubernetes service account.
-    annotations: {}
-
-  uid: 65534
-  # When not set, `statsd.uid` will be used
-  securityContext:
-    #  runAsUser: 65534
-    fsGroup: 65534
-  #  runAsGroup: 0
-
-  # Additional network policies as needed
-  extraNetworkPolicies: []
-  resources: {}
-  #   limits:
-  #     cpu: 100m
-  #     memory: 128Mi
-  #   requests:
-  #     cpu: 100m
-  #     memory: 128Mi
-
-  service:
-    extraAnnotations: {}
-
-  # Select certain nodes for StatsD pods.
-  nodeSelector:
-    NodeGroupType: core
-  affinity: {}
-  tolerations: []
-  topologySpreadConstraints: []
-
-  priorityClassName: ~
-
-  # Additional mappings for StatsD exporter.
-  extraMappings: []
-
-
+#----------------------------------------------------
 # All ports used by chart
+#----------------------------------------------------
 ports:
   flowerUI: 5555
   airflowUI: 8080
@@ -882,78 +181,17 @@ ports:
   pgbouncer: 6543
   pgbouncerScrape: 9127
 
-# Define any ResourceQuotas for namespace
-quotas: {}
-
-# Define default/max/min values for pods and containers in namespace
-limits: []
-
-# This runs as a CronJob to cleanup old pods.
-cleanup:
-  enabled: false
-  # Run every 15 minutes
-  schedule: "*/15 * * * *"
-  # Command to use when running the cleanup cronjob (templated).
-  command: ~
-  # Args to use when running the cleanup cronjob (templated).
-  args: ["bash", "-c", "exec airflow kubernetes cleanup-pods --namespace={{ .Release.Namespace }}"]
-
-
-  # Select certain nodes for airflow cleanup pods.
-  nodeSelector:
-    NodeGroupType: core
-  affinity: {}
-  tolerations: []
-  topologySpreadConstraints: []
-
-  podAnnotations: {}
-
-  resources: {}
-  #  limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  #  requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-  # Create ServiceAccount
-  serviceAccount:
-    # Specifies whether a ServiceAccount should be created
-    create: true
-    # The name of the ServiceAccount to use.
-    # If not set and create is true, a name is generated using the release name
-    name: ~
-
-    # Annotations to add to cleanup cronjob kubernetes service account.
-    annotations: {}
-
-  # When not set, the values defined in the global securityContext will be used
-  securityContext: {}
-  #  runAsUser: 50000
-  #  runAsGroup: 0
-
-# Configuration for postgresql subchart
-# Not recommended for production
+#----------------------------------------------------
+# Disable local postgresql for external RDS implementation
+#----------------------------------------------------
 postgresql:
   enabled: false
 
-# Config settings to go into the mounted airflow.cfg
-#
-# Please note that these values are passed through the `tpl` function, so are
-# all subject to being rendered as go templates. If you need to include a
-# literal `{{` in a value, it must be expressed like this:
-#
-#    a: '{{ "{{ not a template }}" }}'
-#
-# Do not set config containing secrets via plain text values, use Env Var or k8s secret object
-# yamllint disable rule:line-length
 config:
   core:
     dags_folder: '{{ include "airflow_dags" . }}'
-    # This is ignored when used with the official Docker image
     load_examples: 'False'
     executor: '{{ .Values.executor }}'
-    # For Airflow 1.10, backward compatibility; moved to [logging] in 2.0
     colored_console_log: 'True'
     remote_logging: 'True'
   logging:
@@ -963,7 +201,6 @@ config:
     remote_base_log_folder: 's3://dev-aws-raw-zone/airflow-logs'
     remote_log_conn_id: 'aws_s3_conn'
     delete_worker_pods: 'False'
-    # Use server-side encryption for logs stored in S3
     encrypt_s3_logs: 'True'
   metrics:
     statsd_on: '{{ ternary "True" "False" .Values.statsd.enabled }}'
@@ -972,33 +209,14 @@ config:
     statsd_host: '{{ printf "%s-statsd" .Release.Name }}'
   webserver:
     enable_proxy_fix: 'True'
-    # For Airflow 1.10
     rbac: 'True'
-  #  celery:
-  #    worker_concurrency: 16
   scheduler:
     standalone_dag_processor: '{{ ternary "True" "False" .Values.dagProcessor.enabled }}'
-    # statsd params included for Airflow 1.10 backward compatibility; moved to [metrics] in 2.0
     statsd_on: '{{ ternary "True" "False" .Values.statsd.enabled }}'
     statsd_port: 9125
     statsd_prefix: airflow
     statsd_host: '{{ printf "%s-statsd" .Release.Name }}'
-    # `run_duration` included for Airflow 1.10 backward compatibility; removed in 2.0.
     run_duration: 41460
-  #  elasticsearch:
-  #    json_format: 'True'
-  #    log_id_template: "{dag_id}_{task_id}_{execution_date}_{try_number}"
-  #  elasticsearch_configs:
-  #    max_retries: 3
-  #    timeout: 30
-  #    retry_timeout: 'True'
-  #  kerberos:
-  #    keytab: '{{ .Values.kerberos.keytabPath }}'
-  #    reinit_frequency: '{{ .Values.kerberos.reinitFrequency }}'
-  #    principal: '{{ .Values.kerberos.principal }}'
-  #    ccache: '{{ .Values.kerberos.ccacheMountPath }}/{{ .Values.kerberos.ccacheFileName }}'
-  #  celery_kubernetes_executor:
-  #    kubernetes_queue: 'kubernetes'
   kubernetes:
     namespace: '{{ .Release.Namespace }}'
     airflow_configmap: '{{ include "airflow_config" . }}'
@@ -1007,87 +225,32 @@ config:
     worker_container_repository: '{{ .Values.images.airflow.repository | default .Values.defaultAirflowRepository }}'
     worker_container_tag: '{{ .Values.images.airflow.tag | default .Values.defaultAirflowTag }}'
     multi_namespace_mode: '{{ ternary "True" "False" .Values.multiNamespaceMode }}'
-# yamllint enable rule:line-length
 
-# Whether Airflow can launch workers and/or pods in multiple namespaces
-# If true, it creates ClusterRole/ClusterRolebinding (with access to entire cluster)
-multiNamespaceMode: false
-
-# `podTemplate` is a templated string containing the contents of `pod_template_file.yaml` used for
-# KubernetesExecutor workers. The default `podTemplate` will use normal `workers` configuration parameters
-# (e.g. `workers.resources`). As such, you normally won't need to override this directly, however,
-# you can still provide a completely custom `pod256Mi_template_file.yaml` if desired.
-# If not set, a default one is created using `files/pod-template-file.kubernetes-helm-yaml`.
-podTemplate: ~
-
-
+#----------------------------------------------------
 # Git sync
+# Move this to example
+#----------------------------------------------------
 dags:
   persistence:
-    # Enable persistent volume for storing dags
     enabled: false
-    # Volume size for dags
-    size: 10Gi
-    # If using a custom storageClass, pass name here
-    storageClassName: gp2
-    # access mode of the persistent volume
-    accessMode: ReadWriteOnce
-    ## the name of an existing PVC to use
-    existingClaim:
-    ## optional subpath for dag volume mount
-  #    subPath: ~
   gitSync:
     enabled: true
     repo: git@github.com:Hyper-Mesh/airflow-dags.git
     branch: main
     rev: HEAD
     depth: 1
-    # the number of consecutive failures allowed before aborting
     maxFailures: 0
     subPath: "dags"
-
-    # If you are using an ssh clone url, you can load
-    # the ssh private key to a k8s secret like the one below
-    #       ---
-    #       apiVersion: v1
-    #       kind: Secret
-    #       metadata:
-    #         name: airflow-ssh-secret
-    #       data:
-    #         # key needs to be gitSshKey
-    #         gitSshKey: <base64_encoded_data>
-    #     and specify the name of the secret below
     sshKeySecret: airflow-git-ssh-secret
-    #
-    # If you are using an ssh private key, you can additionally
-    # specify the content of your known_hosts file, example:
-    #
+
     knownHosts: |
       github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
-    #    <host2>,<ip2> <key2>
-    #    # interval between git sync attempts in seconds
-    wait: 60
-    containerName: git-sync
-    uid: 65533
 
-    # When not set, the values defined in the global securityContext will be used
-    securityContext: {}
-    #  runAsUser: 65533
-    #  runAsGroup: 0
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
 
-    extraVolumeMounts: []
-    env: []
-    resources: {}
-    #  limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    #  requests:
-    #   cpu: 100m
-    #   memory: 128Mi
-
-
-# Flask secret key for Airflow Webserver: `[webserver] secret_key` in airflow.cfg
-#  python3 -c 'import secrets; print(secrets.token_hex(16))'
-webserverSecretKey: ~
-#  kubectl create secret generic my-webserver-secret --from-literal="webserver-secret-key=$(python3 -c 'import secrets; print(secrets.token_hex(16))')"
-webserverSecretKeySecretName: ~
