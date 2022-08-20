@@ -48,6 +48,32 @@ output "configure_kubectl" {
   value       = module.eks_blueprints.configure_kubectl
 }
 
+output "db_instance_username" {
+  value = module.db.db_instance_username
+  sensitive = true
+}
+
+output "db_instance_password" {
+  value = module.db.db_instance_password
+  sensitive = true
+}
+
+output "db_instance_name" {
+  value = module.db.db_instance_name
+}
+
+output "db_instance_engine" {
+  value = module.db.db_instance_engine
+}
+
+output "db_instance_port" {
+  value = module.db.db_instance_port
+}
+
+output "db_instance_endpoint" {
+  value = element(split(":", module.db.db_instance_endpoint), 0)
+}
+
 # Region used for Terratest
 output "region" {
   description = "AWS region"

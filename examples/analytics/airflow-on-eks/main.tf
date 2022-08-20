@@ -29,8 +29,10 @@ locals {
 
   vpc_cidr                          = "10.0.0.0/16"
   azs                               = slice(data.aws_availability_zones.available.names, 0, 3)
-  airflow_namespace                 = "airflow"
+  airflow_name                 = "airflow"
   airflow_webserver_service_account = "airflow-webserver-sa"
+  airflow_webserver_secret_name = "airflow-webserver-secret"
+  airflow_git_ssh_secret            = "airflow-git-ssh-secret"
 
   tags = {
     Blueprint  = local.name
@@ -155,13 +157,41 @@ module "eks_blueprints_kubernetes_addons" {
   enable_aws_efs_csi_driver           = true
   enable_aws_for_fluentbit            = true
   enable_aws_load_balancer_controller = true
+  enable_prometheus = true
+
   enable_airflow                      = true
   airflow_helm_config = {
+    name        = local.airflow_name
+    chart       = local.airflow_name
+    repository  = "https://airflow.apache.org"
+    version     = "1.6.0"
+    namespace   = local.airflow_name
     create_namespace = false
-    timeout          = "180"
+    timeout        = 240
+    description = "Apache Airflow v2 Helm chart deployment configuration"
+    values      = [templatefile("${path.module}/values.yaml", {
+      airflow_db_name = module.db.db_instance_name
+      airflow_db_port            = module.db.db_instance_port
+      airflow_db_host = element(split(":", module.db.db_instance_endpoint), 0)
+      #S3 bucket config
+      s3_bucket_name  = aws_s3_bucket.this.id
+      webserver_secret_name = local.airflow_webserver_secret_name
+      airflow_git_ssh_secret = local.airflow_git_ssh_secret
+    })]
+
+    set_sensitive = [
+      {
+        name  = "data.metadataConnection.user"
+        value = module.db.db_instance_username
+      },
+      {
+        name  = "data.metadataConnection.pass"
+        value = data.aws_secretsmanager_secret_version.postgres.secret_string
+      }
+    ]
   }
-  enable_prometheus = true
-  #  enable_prometheus_statsd = true # add this add-on
+
+#  value = data.aws_secretsmanager_secret_version.postgres.secret_string
   tags = local.tags
 }
 
@@ -172,7 +202,7 @@ module "db" {
   source  = "terraform-aws-modules/rds/aws"
   version = "~> 5.0"
 
-  identifier = local.name
+  identifier = local.airflow_name
 
   # All available versions: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html#PostgreSQL.Concepts
   engine               = "postgres"
@@ -185,8 +215,8 @@ module "db" {
   allocated_storage = 100
   iops              = 3000
 
-  db_name  = "airflow"
-  username = "airflow"
+  db_name  = local.airflow_name
+  username = local.airflow_name
   password = sensitive(data.aws_secretsmanager_secret_version.postgres.secret_string)
   port     = 5432
 
@@ -317,9 +347,6 @@ data "aws_secretsmanager_secret_version" "airflow_webserver" {
 #---------------------------------------------------------------
 # Webserver Secret Key
 #---------------------------------------------------------------
-# You should set a static webserver secret key when deploying with this chart as it will help ensure your Airflow components only restart when necessary
-# webserverSecretKeySecretName: my-webserver-secret
-
 resource "kubectl_manifest" "airflow_webserver" {
   sensitive_fields = [
     "data.webserver-secret-key"
@@ -329,7 +356,7 @@ resource "kubectl_manifest" "airflow_webserver" {
 apiVersion: v1
 kind: Secret
 metadata:
-   name: airflow-webserver-secret
+   name: ${local.airflow_webserver_secret_name}
    namespace: ${module.airflow_irsa.namespace}
 type: Opaque
 data:
@@ -342,19 +369,6 @@ YAML
 #---------------------------------------------------------------
 # Managing DAG files with GitSync
 #---------------------------------------------------------------
-# set the following
-#dags.gitSync.sshKeySecret
-#dags.gitSync.knownHosts
-
-# ssh-keyscan -t rsa github.com > github_public_key
-# ssh-keygen -lf github_public_key
-
-#dags:
-#  gitSync:
-#    knownHosts: |
-#      github.com ssh-rsa AAAA...FAaQ==
-#  sshKeySecret: airflow-ssh-secret
-
 resource "kubectl_manifest" "git_ssh_secret" {
   sensitive_fields = [
     "data.gitSshKey"
@@ -364,11 +378,11 @@ resource "kubectl_manifest" "git_ssh_secret" {
 apiVersion: v1
 kind: Secret
 metadata:
-   name: airflow-ssh-secret
+   name: ${local.airflow_git_ssh_secret}
    namespace: ${module.airflow_irsa.namespace}
 type: Opaque
 data:
-  gitSshKey: ${base64encode(data.aws_secretsmanager_secret_version.airflow_webserver.secret_string)}
+  gitSshKey: LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUNGd0FBQUFkemMyZ3RjbgpOaEFBQUFBd0VBQVFBQUFnRUFtb3hLQ09LMUJ5U1E4aDBMK3BvODY0OHJGcEVibkJrUzRqZ3ZMemYrb3lpNzhFWUt5L1lyCkt6RjNTeVlMYXZLc1FGZFdNRVVpR3VybEhCVjd5ekpBYXkvanlwSHhEUWxoa2VaYkhZNVE0ejIrcUZxazFEaE9rUEdlWlUKbU14SVBvdUtnTkVTd0hjV3ZYQng0U2FCUDNvZWdzN2Z5ZytVdXpjWmhUWTNMTE1MWmplQnNGZ1hVRWh4dk1pa01YQVU5eQpCRDYrRm5sMm5OMmt4VEw2V29DNWhiQlZFVE50Ulg5RnBDTmdxN2tGWnVqZDNDemZDTFBwN2JINGNoTUVMWThvWGF0WlNUCnB6Zmpsb2EyRlJhOGdMTzhiMTFXK3ZNU1paQitsSzIvMWQ2SW9veVMwYkZiT1oyRzc3TzhBZHVQWG1VWmNCYktkY0pFRWUKc2Q3QjJzYUR6WWZCc21OZkMyVTJML1RaZ1NYbmtiOW1hQkl6bnJjUG1JL0l2Y0NYMlVxc0tRTGxSODAvWWtZVXBHbHBqbApQNWRhb3ZmbE85bWNtWTJvdHhXMXdMbkdRbTV3UTk0aTFDbTlwRXhFOFBXbzd6RkhUNnVRbW5IcEJIVDJQbVJSTlNBRTdNClBZUG05UDA2MDNWbkxHdHVqbWZXTDdSMzh1c1hkL205NUNyVW55S1gxU0x2Y29lTWNQZHNhKzFkcytnL3dSWjI0SVkvaEIKM1cxTDhiZmhXVldaUjVORXhpYktnTDVSVS9QUUs1TUNQSHgveU5lckJhU21PMC9KaExlQnpoTFhJcldKS2RnN1h1ZTRJeQpMR280SUdDR0FkU3VUR3BDc3lnOTJmRmhRSWtHMFBJNTgyY0xvZ1k1UzhqeWFVSXg2OHJUWVo4WDBkWXpmVFVEYWJSTExWClVBQUFkUWlWZVkySWxYbU5nQUFBQUhjM05vTFhKellRQUFBZ0VBbW94S0NPSzFCeVNROGgwTCtwbzg2NDhyRnBFYm5Ca1MKNGpndkx6ZitveWk3OEVZS3kvWXJLekYzU3lZTGF2S3NRRmRXTUVVaUd1cmxIQlY3eXpKQWF5L2p5cEh4RFFsaGtlWmJIWQo1UTR6MitxRnFrMURoT2tQR2VaVW1NeElQb3VLZ05FU3dIY1d2WEJ4NFNhQlAzb2VnczdmeWcrVXV6Y1poVFkzTExNTFpqCmVCc0ZnWFVFaHh2TWlrTVhBVTl5QkQ2K0ZubDJuTjJreFRMNldvQzVoYkJWRVROdFJYOUZwQ05ncTdrRlp1amQzQ3pmQ0wKUHA3Ykg0Y2hNRUxZOG9YYXRaU1RwemZqbG9hMkZSYThnTE84YjExVyt2TVNaWkIrbEsyLzFkNklvb3lTMGJGYk9aMkc3NwpPOEFkdVBYbVVaY0JiS2RjSkVFZXNkN0Iyc2FEellmQnNtTmZDMlUyTC9UWmdTWG5rYjltYUJJem5yY1BtSS9JdmNDWDJVCnFzS1FMbFI4MC9Za1lVcEdscGpsUDVkYW92ZmxPOW1jbVkyb3R4VzF3TG5HUW01d1E5NGkxQ205cEV4RThQV283ekZIVDYKdVFtbkhwQkhUMlBtUlJOU0FFN01QWVBtOVAwNjAzVm5MR3R1am1mV0w3UjM4dXNYZC9tOTVDclVueUtYMVNMdmNvZU1jUApkc2ErMWRzK2cvd1JaMjRJWS9oQjNXMUw4YmZoV1ZXWlI1TkV4aWJLZ0w1UlUvUFFLNU1DUEh4L3lOZXJCYVNtTzAvSmhMCmVCemhMWElyV0pLZGc3WHVlNEl5TEdvNElHQ0dBZFN1VEdwQ3N5ZzkyZkZoUUlrRzBQSTU4MmNMb2dZNVM4anlhVUl4NjgKclRZWjhYMGRZemZUVURhYlJMTFZVQUFBQURBUUFCQUFBQ0FESUU4N1U2Z3JLa0lCRnNXME1waGt3TEV6d0RqUGNSbW00RApGeXBtS2hEdWp4MHQzakt6SXJlaEUrWUxreWh6RUZMbXNXdUFCSkRIczQxS1dyMmlMdjFDQzZ5MVhWb0Z6a0ZsVjlvU0JKClgzbHV4d0llYlpybnYwNTNvS3V2ZWpaYi9XREJ5aHJtc0VKeDBUbTR0NTR1elE4ekczVVBZK2pQNVgrYTAzS3hKQ0JhR0sKeFZabjVDWkNWZ250dXRWZXZCMHBuV1l5dTdQN2ZHZWlueXFKZlFJSzF3MXhJbzJhcXBSOEtyNkpiSGtwSngwcW5LajVhZAozWGV2eVlzUUo1MGV1M0dIZTk1a0ZWSFRtYnpybGVqbHd6Z2I4cG5YNy8xVkxkSzdCVnFYNG9zUmlqYzUrcmVFQjNjdktjCnRFSDN2Q3B1QURVRldhb1dOWFFHRDZIYUhDLzVVK0ptN203MlpkZ1VCR29na20xb1d4NGJvdVF2OExIekl5cGkwZVRma0gKdUpMWXg4RW9sSm9kS05sbmEydnQrTUNHZWo5L3h2Z3VIQjA2dko2TUhpN01ZLy9HQm5KVVlqQno3M2liYlQ2WE9uVkpnVQoxcUFWSXN2QW1uaFRPMUhGblUvWGphTFdDenA1OTgzUlcxb2ZIQlg1R3hXSldXcVN2NjlXSUdISm5aWXN5ZmNoSWpFLzdoCnFZUEFXdGFWZ3A2NlVPWVJjVlRMc29NbytrMUZkbW10NjVoajNyT2VHMzN6ZXM4a1FyUXE5WHEvMElsTkNtMmprZ0tGaW0KTjBmQXVQaU9WUVJrNjRRYUdEREh4UXBKNXNRL1NXZjB2Q2hnVTBnNGw0Q2F6RE1DQ3YzRnl2aU1lWTMxMDB4ekE1WTNmeApIMStFZUFIM09NcE9DdDM3RGxBQUFCQUJqc2drb2dBNHhrS0hNMGRycDg0RUpmYWlRR2crQUJnWXRKM1pZSUYwQ2w5QlpVClFETVQzZnRUVXgvRS8xdUdINXlEYVQxU1VUTTQ3dG4vZHJMbVpwTTVRU3NjTlRsYTFGKytrNmdvTENsdUVlc3lHWTZwVXAKREJvdFlXSnY0RnIzUVZWbTJhVHFRblVvMEwxeU1hNU5PTm9PRkFoZnlJNFZQQ2djMitRRUhNN2FwbUc2RzVnRE9kY0lsQwo2dXlCbE5SWWYvMGtXN3dHbmVWOUdKS0E1SkZDUVNmdkVZd3NVNzhza1NIRzJQd2hMU0YzZlVMNUhqeC96bVMvOEZNb0NXClloY0czbHJwZlorUnlLRFAyclRva3hIMUhxclVBaTg1Mjh3bWlQaVZzVmRDQ1Iyb0dFRC9GZDBVbU9UTi95V25oVGFnU2EKclF5VUJWMVdNd2dhMmZZQUFBRUJBTXZtdTNLcllzaDVJREpEQkhvRmV0WWtOU1V6WHlRWDV1eDAvczVuUnRZOWFFUjhRMApJN3lHZ3puMWE5dnNVTlZ4S3FOT3AwdXo5dXpwUDNaNm1ia29wYnlsaTdyMUF2bFVuNjBBRmlBWVBXOVlDVWZMaW83ejRtCnB2cllVVHIraXUwbzlDNmVnSFZNRDE4UnQ3MVU3RkFGUFlNNm1XUmRrYmNMQklETjFQRVd5eTFDNVdwQTFEdjQ3cDhkYVgKWlNLUG5FaDRaMEtCdjViM2VWOWZ1NlNEVUJQKzVQcjc5cWFabTloREkyaGl1VEJCazcycmhmellDR2I0TWh2cE12c01qNwp1MkJkWlY4K2RHWVBQL3BGVHZRSmNwYmpMYlUyQUJkaU9JbExXN2RWdzZJRjFhc2dHVkdXU3YxaWkraTJCNmgxUE5NckJICitBbzloK1pDKysrMDhBQUFFQkFNSUpWbmhpeGFjZTBRQjhJRWdpOHgzVFlzdVUwb3I2cWd4cGo0blM2ekcxc2N0TWt4OEUKdmtjSlk1c3BZQXhmNjRjM09pQ01TNHIwL0wwbkhSQXlYZ1ozTkdtNVRWQWZOazVIR3lVT1YvbEh2b2xSZnVpMzdsR2xjZApRZUpuZUY3cEd5U0hFUGdncFF5U3AvZ2VzR0FMdjBkdm00ZU5jMFNEeUVKQU91RlFqWnRzTVhISHUrdjNRd3RFYmVrVVlrCkNBMENUbk5PbUNybkFsK0JxK0dwWTJKRDdxcUNCZE5DTld4MUN1dGFZQ0xHcG9nRitvZDFoTCtkaWpHTFNGSm50VkJQeVkKWFkwa3FTT29lSmFyU3laMnV0WUxDV2ZzbmJCWEhISGtuSWQ2eHl5ZytNZ0U1UGd0N3REZlZGSVBnMHAraHJoZUY5WXJQTgpGRlNWd2ZVVGxCc0FBQUFWZG1GeVlTNWliMjUwYUhWQVoyMWhhV3d1WTI5dEFRSURCQVVHCi0tLS0tRU5EIE9QRU5TU0ggUFJJVkFURSBLRVktLS0tLQ==
 YAML
 
   depends_on = [module.eks_blueprints.eks_cluster_id]
@@ -383,7 +397,7 @@ module "airflow_irsa" {
   eks_cluster_id             = local.name
   eks_oidc_provider_arn      = module.eks_blueprints.eks_oidc_provider_arn
   irsa_iam_policies          = [aws_iam_policy.airflow.arn]
-  kubernetes_namespace       = local.airflow_namespace
+  kubernetes_namespace       = local.airflow_name
   kubernetes_service_account = local.airflow_webserver_service_account
 }
 

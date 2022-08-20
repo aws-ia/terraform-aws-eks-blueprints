@@ -10,18 +10,105 @@ executor: "KubernetesExecutor"
 #----------------------------------------------------
 ingress:
   web:
+    enabled: true
+    path: "/"
+    pathType: "ImplementationSpecific"
+
+  ingressClassName: "alb"
+
+#----------------------------------------------------
+# Airflow database
+#----------------------------------------------------
+data:
+  metadataConnection:
+    user: ""
+    pass: ""
+    protocol: postgresql
+    host: ${airflow_db_host}
+    port: ${airflow_db_port}
+    db: ${airflow_db_name}
+    sslmode: disable
+
+#----------------------------------------------------
+# Airflow Worker Config
+workers:
+  replicas: 2
+  serviceAccount:
+    create: false
+    name: airflow-webserver-sa
+
+  persistence:
     enabled: false
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
 #----------------------------------------------------
 # Airflow scheduler settings
 #----------------------------------------------------
 scheduler:
   replicas: 2
+  serviceAccount:
+    create: false
+    name: airflow-webserver-sa
 #----------------------------------------------------
 # Airflow webserver settings
 #----------------------------------------------------
+#webserverSecretKeySecretName: ${webserver_secret_name}
+
 webserver:
   # Number of webservers
   replicas: 2
+  serviceAccount:
+    create: false
+    name: airflow-webserver-sa
+
+  allowPodLogReading: true
+  livenessProbe:
+    initialDelaySeconds: 15
+    timeoutSeconds: 30
+    failureThreshold: 20
+    periodSeconds: 5
+
+  readinessProbe:
+    initialDelaySeconds: 15
+    timeoutSeconds: 30
+    failureThreshold: 20
+    periodSeconds: 5
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # Create initial user.
+  defaultUser:
+    enabled: true
+    role: Admin
+    username: admin
+    email: admin@example.com
+    firstName: admin
+    lastName: user
+    password: admin
+
+  service:
+    type: ClusterIP
+    ## service annotations
+    annotations: { }
+    ports:
+      - name: airflow-ui
+        port: "{{ .Values.ports.airflowUI }}"
+    loadBalancerIP: ~
+    ## Limit load balancer source ips to list of CIDRs
+    # loadBalancerSourceRanges:
+    #   - "10.123.0.0/16"
+    loadBalancerSourceRanges: [ ]
 #----------------------------------------------------
 # Airflow Triggerer Config
 #----------------------------------------------------
@@ -47,11 +134,80 @@ pgbouncer:
 # Disable local postgresql for external RDS implementation
 #----------------------------------------------------
 postgresql:
-  enabled: true
+  enabled: false
+
+config:
+  core:
+    dags_folder: '{{ include "airflow_dags" . }}'
+    # This is ignored when used with the official Docker image
+    load_examples: 'False'
+    executor: '{{ .Values.executor }}'
+    colored_console_log: 'True'
+    remote_logging: 'True'
+  logging:
+    remote_logging: 'True'
+    logging_level: 'INFO'
+    colored_console_log: 'True'
+    remote_base_log_folder: "s3://${s3_bucket_name}/airflow-logs"
+    remote_log_conn_id: 'aws_s3_conn' # Create the connection using WebUI
+    delete_worker_pods: 'False'
+    encrypt_s3_logs: 'True'
+  metrics:
+    statsd_on: '{{ ternary "True" "False" .Values.statsd.enabled }}'
+    statsd_port: 9125
+    statsd_prefix: airflow
+    statsd_host: '{{ printf "%s-statsd" .Release.Name }}'
+  webserver:
+    enable_proxy_fix: 'True'
+    rbac: 'True'
+  scheduler:
+    standalone_dag_processor: '{{ ternary "True" "False" .Values.dagProcessor.enabled }}'
+    # statsd params included for Airflow 1.10 backward compatibility; moved to [metrics] in 2.0
+    statsd_on: '{{ ternary "True" "False" .Values.statsd.enabled }}'
+    statsd_port: 9125
+    statsd_prefix: airflow
+    statsd_host: '{{ printf "%s-statsd" .Release.Name }}'
+    # `run_duration` included for Airflow 1.10 backward compatibility; removed in 2.0.
+    run_duration: 41460
+  kubernetes:
+    namespace: '{{ .Release.Namespace }}'
+    airflow_configmap: '{{ include "airflow_config" . }}'
+    airflow_local_settings_configmap: '{{ include "airflow_config" . }}'
+    pod_template_file: '{{ include "airflow_pod_template_file" . }}/pod_template_file.yaml'
+    worker_container_repository: '{{ .Values.images.airflow.repository | default .Values.defaultAirflowRepository }}'
+    worker_container_tag: '{{ .Values.images.airflow.tag | default .Values.defaultAirflowTag }}'
+    multi_namespace_mode: '{{ ternary "True" "False" .Values.multiNamespaceMode }}'
 #----------------------------------------------------
 # Git sync
-# Move this to example
+# Mounting DAGs using Git-Sync sidecar with EFS Persistence enabled
+# ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+# base64 <my-private-ssh-key> -w 0 > temp.txt
+#
 #----------------------------------------------------
 dags:
   persistence:
-    enabled: true
+    enabled: false
+    size: 100Gi
+    storageClassName: efs-sc
+    accessMode: ReadWriteMany
+
+gitSync:
+  enabled: true
+  repo: git@github.com:Hyper-Mesh/airflow-dags.git
+  branch: main
+  rev: HEAD
+  depth: 1
+  subPath: "dags"
+  sshKeySecret: ${airflow_git_ssh_secret}
+  knownHosts: |
+    github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
+
+  wait: 60
+  containerName: git-sync
+  uid: 65533
+# This runs as a CronJob to cleanup old pods.
+cleanup:
+  enabled: false
+
+migrateDatabaseJob:
+  enabled: true
