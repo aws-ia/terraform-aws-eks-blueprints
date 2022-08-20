@@ -183,7 +183,7 @@ data "aws_iam_policy_document" "irsa_policy" {
     resources = ["${module.s3_bucket.s3_bucket_arn}/*"]
   }
   statement {
-    actions   = [
+    actions = [
       "ssm:PutParameter",
       "ssm:DeleteParameter",
       "ssm:GetParameterHistory",
@@ -208,18 +208,8 @@ module "cluster_irsa" {
   kubernetes_namespace       = local.namespace
   kubernetes_service_account = "${local.namespace}-sa"
   irsa_iam_policies          = [aws_iam_policy.irsa_policy.arn]
-
-  addon_context = {
-    aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
-    aws_caller_identity_arn        = data.aws_caller_identity.current.arn
-    aws_eks_cluster_endpoint       = module.eks_blueprints.eks_cluster_endpoint
-    aws_partition_id               = data.aws_partition.current.partition
-    aws_region_name                = local.region
-    eks_cluster_id                 = module.eks_blueprints.eks_cluster_id
-    eks_oidc_issuer_url            = module.eks_blueprints.eks_oidc_issuer_url
-    eks_oidc_provider_arn          = module.eks_blueprints.eks_oidc_provider_arn
-    tags                           = {}
-  }
+  eks_cluster_id             = module.eks_blueprints.eks_cluster_id
+  eks_oidc_provider_arn      = module.eks_blueprints.eks_oidc_provider_arn
 
   depends_on = [module.s3_bucket]
 }
