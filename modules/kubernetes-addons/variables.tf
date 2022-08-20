@@ -983,3 +983,16 @@ variable "grafana_irsa_policies" {
   type        = list(string)
   default     = []
 }
+
+#-----------Apache Airflow ADDON-------------
+variable "enable_airflow" {
+  description = "Enable Airflow add-on"
+  type        = bool
+  default     = false
+}
+
+variable "airflow_helm_config" {
+  description = "Apache Airflow v2 Helm Chart config"
+  type        = any
+  default     = {}
+}
