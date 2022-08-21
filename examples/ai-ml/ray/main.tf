@@ -35,7 +35,6 @@ provider "grafana" {
 
 data "aws_availability_zones" "available" {}
 data "aws_caller_identity" "current" {}
-data "aws_partition" "current" {}
 
 data "aws_acm_certificate" "issued" {
   count = var.acm_certificate_domain == null ? 0 : 1

@@ -22,6 +22,10 @@ terraform {
       source  = "grafana/grafana"
       version = ">= 1.13.3"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.0.0"
+    }
   }
 
   # ##  Used for end-to-end testing on project; update to suit your needs
