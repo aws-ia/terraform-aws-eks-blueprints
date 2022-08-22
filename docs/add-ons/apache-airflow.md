@@ -1,14 +1,14 @@
 # Apache Airflow add-on
 
-Apache Airflow is used for the scheduling and orchestration of data pipelines or workflows. 
-Orchestration of data pipelines refers to the sequencing, coordination, scheduling, and managing complex data pipelines from diverse sources. 
-A workflow is represented as a [DAG](https://airflow.apache.org/docs/apache-airflow/stable/concepts/dags.html) (a Directed Acyclic Graph), and contains individual pieces of work called [Tasks](https://airflow.apache.org/docs/apache-airflow/stable/concepts/tasks.html), arranged with dependencies and data flows taken into account. 
+Apache Airflow is used for the scheduling and orchestration of data pipelines or workflows.
+Orchestration of data pipelines refers to the sequencing, coordination, scheduling, and managing complex data pipelines from diverse sources.
+A workflow is represented as a [DAG](https://airflow.apache.org/docs/apache-airflow/stable/concepts/dags.html) (a Directed Acyclic Graph), and contains individual pieces of work called [Tasks](https://airflow.apache.org/docs/apache-airflow/stable/concepts/tasks.html), arranged with dependencies and data flows taken into account.
 
 This document describes the details of the best practices for building and deploying *Highly Scalable Apache Airflow cluster on Kubernetes(Amazon EKS) Cluster.*
 
 ## Production considerations for running Apache Airflow on EKS
 
-### Airflow Metadata Database 
+### Airflow Metadata Database
 It is advised to set up an external database for the Airflow metastore. The default Helm chart deploys a Postgres database running in a container but this should be used only for development.
 Apache Airflow recommends to use MySQL or Postgres. This deployment configures the highly available Amazon RDS Postgres database as external database.
 
@@ -21,16 +21,16 @@ You should set a static webserver secret key when deploying with this chart as i
 This deployment creates Kubernetes secret for Webserver Secret Key and applies to Airflow
 
 ### Managing DAG Files with GitHub and EFS
-It's recommended to Mounting DAGs using Git-Sync sidecar with Persistence enabled. 
+It's recommended to Mounting DAGs using Git-Sync sidecar with Persistence enabled.
 Developers can create a repo to store the DAGs and configure to sync with Airflow servers.
-This deployment provisions EFS(Amazon Elastic File System) through Persistent Volume Claim with an access mode of ReadWriteMany. 
-The Airflow scheduler pod will sync DAGs from a git repository onto the PVC every configured number of seconds. 
-The other pods will read the synced DAGs. 
+This deployment provisions EFS(Amazon Elastic File System) through Persistent Volume Claim with an access mode of ReadWriteMany.
+The Airflow scheduler pod will sync DAGs from a git repository onto the PVC every configured number of seconds.
+The other pods will read the synced DAGs.
 
 GitSync is configured with a sample repo with this example. This can be replaced with your internal GitHub repo
 
 ### Managing Log Files with S3 with IRSA
-Airflow writes logs for tasks in a way that allows you to see the logs for each task separately in the Airflow UI. 
+Airflow writes logs for tasks in a way that allows you to see the logs for each task separately in the Airflow UI.
 Core Airflow implements writing and serving logs locally. However, you can also write logs to remote services via community providers, or write your own loggers.
 This example configures S3 bucket to store the Airflow logs. IAM roles for server account(IRSA) is configured for Airflow pods to access this S3 bucket.
 
@@ -38,8 +38,8 @@ This example configures S3 bucket to store the Airflow logs. IAM roles for serve
 This example configures to send the metrics to an existing StatsD to Prometheus endpoint. This can be configured to send it to external StatsD instance
 
 ### Airflow Executors (Celery Vs Kubernetes)
-This deployment uses Kubernetes Executor. With KubernetesExecutor, each task runs in its own pod. 
-The pod is created when the task is queued, and terminates when the task completes. 
+This deployment uses Kubernetes Executor. With KubernetesExecutor, each task runs in its own pod.
+The pod is created when the task is queued, and terminates when the task completes.
 With KubernetesExecutor, the workers (pods) talk directly to the same Postgres backend as the Scheduler and can to a large degree take on the labor of task monitoring.
 
 * KubernetesExecutor can work well when your tasks are not very uniform with respect to resource requirements or images.
@@ -52,12 +52,12 @@ With KubernetesExecutor, the workers (pods) talk directly to the same Postgres b
 
 ### Airflow Schedulers
 The Airflow scheduler monitors all tasks and DAGs, then triggers the task instances once their dependencies are complete.
-Ths deployment uses *HA scheduler* with two replicas to take advantage of the existing metadata database. 
+Ths deployment uses *HA scheduler* with two replicas to take advantage of the existing metadata database.
 
 ### Accessing Airflow Web UI
-This deployment example uses internet facing Load Balancer to easily access the WebUI however it's not recommended for Production. 
-You can modify the `values.yaml` to set the Load Balancer to `internal` and upload certificate to use HTTPS. 
-Ensure access to the WebUI using internal domain and network. 
+This deployment example uses internet facing Load Balancer to easily access the WebUI however it's not recommended for Production.
+You can modify the `values.yaml` to set the Load Balancer to `internal` and upload certificate to use HTTPS.
+Ensure access to the WebUI using internal domain and network.
 
 
 Checkout the [examples](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/analytics/airflow-on-eks) of deploying and using Apache Airflow on Amazon EKS.
@@ -94,7 +94,7 @@ For production workloads, you can use this [example](https://github.com/aws-ia/t
         webserver_secret_name   = local.airflow_webserver_secret_name
         airflow_service_account = local.airflow_service_account
       })]
-    
+
       set_sensitive = [
         {
           name  = "data.metadataConnection.pass"
