@@ -17,7 +17,7 @@ module "helm_addon" {
       name        = local.name
       chart       = "${path.module}/kuberay-operator-config"
       version     = "0.1.0"
-      namespace   = local.namespace
+      namespace   = kubernetes_namespace_v1.this.metadata[0].name
       description = "KubeRay Operator Helm Chart deployment configuration"
     },
     var.helm_config
@@ -25,6 +25,4 @@ module "helm_addon" {
 
   irsa_config   = null
   addon_context = var.addon_context
-
-  depends_on = [kubernetes_namespace_v1.this]
 }

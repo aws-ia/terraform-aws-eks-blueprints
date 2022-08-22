@@ -32,6 +32,6 @@ terraform {
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"
   #   region = "us-west-2"
-  #   key    = "e2e/spark-k8s-operator/terraform.tfstate"
+  #   key    = "e2e/ray/terraform.tfstate"
   # }
 }

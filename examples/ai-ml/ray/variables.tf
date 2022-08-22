@@ -1,17 +1,17 @@
 variable "eks_cluster_domain" {
   default     = null
-  description = "Optional Route53 domain for the cluster."
   type        = string
+  description = "Optional Route53 domain for the cluster."
 }
 
 variable "acm_certificate_domain" {
   default     = null
-  description = "Optional Route53 certificate domain"
   type        = string
+  description = "Optional Route53 certificate domain"
 }
 
 variable "region" {
   default     = "us-west-2"
-  description = "AWS Region"
   type        = string
+  description = "AWS Region"
 }
