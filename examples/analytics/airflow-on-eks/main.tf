@@ -214,7 +214,7 @@ module "db" {
   identifier = local.airflow_name
 
   engine               = "postgres"
-  engine_version       = "14.4"
+  engine_version       = "14.3"
   family               = "postgres14"
   major_engine_version = "14"
   instance_class       = "db.m6i.xlarge"
