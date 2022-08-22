@@ -43,13 +43,6 @@ ingress:
 #----------------------------------------------------
 data:
   metadataConnection:
-#    user: airflow
-#    pass: AirflowMetastore
-#    protocol: postgresql
-#    host: airflow.cru3ngo5qdjr.eu-west-1.rds.amazonaws.com
-#    port: 5432
-#    db: airflow
-#    sslmode: disable
     user: ${airflow_db_user}
     pass:
     protocol: postgresql
