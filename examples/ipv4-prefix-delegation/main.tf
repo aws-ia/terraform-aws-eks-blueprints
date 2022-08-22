@@ -49,21 +49,35 @@ module "eks_blueprints" {
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
+  eks_managed_node_group_defaults = {
+    create_security_group = false
+    # Backwards compatibility
+    launch_template_use_name_prefix = false
+    iam_role_use_name_prefix        = false
+    use_name_prefix                 = false
 
-  # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/485
-  # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/494
-  cluster_kms_key_additional_admin_arns = [data.aws_caller_identity.current.arn]
-
+  }
   eks_managed_node_groups = {
     prefix = {
-      name = "prefix" # Max 40 characters for node group name
-
-      min_size     = 1
-      max_size     = 1
-      desired_size = 1
-
+      launch_template_name = "ipv4-prefix-delegation-custom-ami" # Max 40 characters for node group name
+      name                 = "custom-ami-2022082220021145790000000a"
+      iam_role_name        = "ipv4-prefix-delegation-custom-ami"
+      # iam_role_arn         = "arn:aws:iam::528591701539:role/ipv4-prefix-delegation-custom-ami"
+      create_iam_role = true
+      min_size        = 1
+      max_size        = 1
+      desired_size    = 1
+      # ami_id          = data.aws_ami.eks_default.image_id
+      iam_role_additional_policies = [
+        "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+      ]
+      tags = {
+        "k8s.io/cluster-autoscaler/enabled"                = "TRUE"
+        "k8s.io/cluster-autoscaler/ipv4-prefix-delegation" = "owned"
+        "kubernetes.io/cluster/ipv4-prefix-delegation"     = "owned"
+      }
       instance_types = ["m5.xlarge"]
-
+      # enable_bootstrap_user_data = true
       # https://docs.aws.amazon.com/eks/latest/userguide/choosing-instance-type.html#determine-max-pods
       # These settings opt out of the default behavior and use the maximum number of pods, with a cap of 110 due to
       # Kubernetes guidance https://kubernetes.io/docs/setup/best-practices/cluster-large/
@@ -90,6 +104,16 @@ module "eks_blueprints" {
   }
 
   tags = local.tags
+}
+
+data "aws_ami" "eks_default" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amazon-eks-node-${local.cluster_version}-v*"]
+  }
 }
 
 module "eks_blueprints_kubernetes_addons" {
