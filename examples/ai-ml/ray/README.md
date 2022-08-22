@@ -47,6 +47,10 @@ aws ecr create-repository --repository-name ray-demo
 Login to the ECR repository
 
 ```sh
+export AWS_REGION=<enter-your-region>
+export ACCOUNT_ID=$(aws sts get-caller-identity | jq -r '.Account')
+echo $ACCOUNT_ID
+
 aws ecr get-login-password \
   --region $AWS_REGION | docker login \
   --username AWS \
@@ -78,11 +82,6 @@ terraform init
 
 Run Terraform plan to verify the resources created by this execution.
 
-```sh
-export AWS_REGION=<enter-your-region>
-export ACCOUNT_ID=$(aws sts get-caller-identity | jq -r '.Account')
-```
-
 **Optional** - provide a Route53 Hosted Zone hostname and a corresponding ACM Certificate;
 
 ```sh
@@ -99,7 +98,7 @@ terraform apply
 
 Outputs:
 
-configure_kubectl = "aws eks --region us-east-1 update-kubeconfig --name ray"
+configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name ray"
 s3_bucket = "ray-demo-models-20220719224423900800000001"
 ```
 
@@ -116,7 +115,7 @@ export S3_BUCKET="s3://ray-demo-models-20220719224423900800000001"
 Update kubeconfig
 
 ```sh
-aws eks update-kubeconfig --name ray
+aws eks --region us-west-2 update-kubeconfig --name ray
 ```
 
 Verify all pods are running.

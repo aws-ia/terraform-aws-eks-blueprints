@@ -5,6 +5,7 @@ provider "aws" {
 provider "kubernetes" {
   host                   = module.eks_blueprints.eks_cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.this.token
 
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
@@ -18,6 +19,7 @@ provider "helm" {
   kubernetes {
     host                   = module.eks_blueprints.eks_cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    token                  = data.aws_eks_cluster_auth.this.token
 
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
@@ -29,8 +31,8 @@ provider "helm" {
 }
 
 provider "grafana" {
-  url  = "https://ray-demo.${var.eks_cluster_domain}/monitoring"
-  auth = "admin:${data.aws_secretsmanager_secret_version.admin_password_version.secret_string}"
+  url  = var.eks_cluster_domain == null ? data.kubernetes_ingress_v1.ingress.status[0].load_balancer[0].ingress[0].hostname : "https://ray-demo.${var.eks_cluster_domain}/monitoring"
+  auth = "admin:${aws_secretsmanager_secret_version.grafana.secret_string}"
 }
 
 data "aws_availability_zones" "available" {}
@@ -41,6 +43,10 @@ data "aws_acm_certificate" "issued" {
 
   domain   = var.acm_certificate_domain
   statuses = ["ISSUED"]
+}
+
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks_blueprints.eks_cluster_id
 }
 
 locals {
@@ -153,12 +159,22 @@ module "eks_blueprints_kubernetes_addons" {
     set_sensitive = [
       {
         name  = "grafana.adminPassword"
-        value = data.aws_secretsmanager_secret_version.admin_password_version.secret_string
+        value = aws_secretsmanager_secret_version.grafana.secret_string
       }
     ]
   }
 
   tags = local.tags
+}
+
+data "kubernetes_ingress_v1" "ingress" {
+  metadata {
+    name      = "ray-cluster-ingress"
+    namespace = local.namespace
+  }
+  depends_on = [
+    kubectl_manifest.cluster_provisioner
+  ]
 }
 
 #---------------------------------------------------------------
@@ -169,7 +185,6 @@ resource "aws_kms_key" "objects" {
   description             = "KMS key is used to encrypt bucket objects"
   deletion_window_in_days = 7
 }
-
 
 #tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
 module "s3_bucket" {
@@ -212,7 +227,15 @@ data "aws_iam_policy_document" "irsa_policy" {
       "ssm:DeleteParameters",
       "ssm:DescribeParameters"
     ]
-    resources = ["*"]
+    resources = ["arn:aws:ssm:${local.region}:${data.aws_caller_identity.current.account_id}:parameter/ray-*"]
+  }
+
+  statement {
+    actions = [
+      "kms:GenerateDataKey",
+      "kms:Decrypt"
+    ]
+    resources = [aws_kms_key.objects.arn]
   }
 }
 
@@ -233,34 +256,14 @@ module "cluster_irsa" {
   depends_on = [module.s3_bucket]
 }
 
-
-data "kubectl_path_documents" "docs" {
-  pattern = "${path.module}/ray-clusters/*.yaml"
-  vars = {
+resource "kubectl_manifest" "cluster_provisioner" {
+  yaml_body = templatefile("ray-clusters/example-cluster.yaml", {
     namespace       = local.namespace
     hostname        = var.eks_cluster_domain == null ? "" : var.eks_cluster_domain
     account_id      = data.aws_caller_identity.current.account_id
     region          = local.region
     service_account = "${local.namespace}-sa"
-  }
-}
-
-# Ugly Terraform issue:
-# See https://github.com/gavinbunney/terraform-provider-kubectl/issues/58#issuecomment-718174177
-data "kubectl_path_documents" "count_hack" {
-  pattern = "${path.module}/ray-clusters/*.yaml"
-  vars = {
-    namespace       = ""
-    hostname        = ""
-    account_id      = ""
-    region          = ""
-    service_account = ""
-  }
-}
-
-resource "kubectl_manifest" "cluster_provisioner" {
-  count     = length(data.kubectl_path_documents.count_hack.documents)
-  yaml_body = element(data.kubectl_path_documents.docs.documents, count.index)
+  })
 
   depends_on = [
     module.cluster_irsa,
@@ -268,19 +271,13 @@ resource "kubectl_manifest" "cluster_provisioner" {
   ]
 }
 
-
 #---------------------------------------------------------------
 # Monitoring
 #---------------------------------------------------------------
-data "kubectl_path_documents" "prometheus" {
-  pattern = "${path.module}/monitoring/monitor.yaml"
-  vars = {
-    namespace = local.namespace
-  }
-}
-
 resource "kubectl_manifest" "prometheus" {
-  yaml_body = data.kubectl_path_documents.prometheus.documents[0]
+  yaml_body = templatefile("monitoring/monitor.yaml", {
+    namespace = local.namespace
+  })
 
   depends_on = [
     module.eks_blueprints_kubernetes_addons,
@@ -296,7 +293,7 @@ resource "random_password" "grafana" {
 
 #tfsec:ignore:aws-ssm-secret-use-customer-key
 resource "aws_secretsmanager_secret" "grafana" {
-  name                    = "grafana"
+  name_prefix             = "grafana-"
   recovery_window_in_days = 0 # Set to zero for this example to force delete during Terraform destroy
 }
 
@@ -305,15 +302,12 @@ resource "aws_secretsmanager_secret_version" "grafana" {
   secret_string = random_password.grafana.result
 }
 
-data "aws_secretsmanager_secret_version" "admin_password_version" {
-  secret_id = aws_secretsmanager_secret.grafana.id
-
-  depends_on = [aws_secretsmanager_secret_version.grafana]
-}
-
-
 resource "grafana_folder" "ray" {
   title = "ray"
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
+  ]
 }
 
 resource "grafana_dashboard" "ray" {
@@ -322,8 +316,6 @@ resource "grafana_dashboard" "ray" {
   config_json = file("${path.module}/monitoring/${each.value}")
   folder      = grafana_folder.ray.id
 }
-
-
 
 #---------------------------------------------------------------
 # Supporting Resources
