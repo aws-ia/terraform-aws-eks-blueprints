@@ -1050,6 +1050,17 @@ variable "airflow_helm_config" {
   description = "Apache Airflow v2 Helm Chart config"
   type        = any
   default     = {}
+
+#-----------Datadog Operator-------------
+variable "enable_datadog_operator" {
+  description = "Enable Datadog Operator add-on"
+  type        = bool
+  default     = false
+}
+variable "datadog_operator_helm_config" {
+  description = "Datadog Operator Helm Chart config"
+  type        = any
+  default     = null
 }
 
 #-----------Promtail ADDON-------------
