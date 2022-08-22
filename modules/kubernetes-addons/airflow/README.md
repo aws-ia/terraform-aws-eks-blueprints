@@ -9,9 +9,7 @@ No requirements.
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
+No providers.
 
 ## Modules
 
@@ -21,9 +19,7 @@ No requirements.
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [kubernetes_namespace_v1.airflow](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace_v1) | resource |
+No resources.
 
 ## Inputs
 
