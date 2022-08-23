@@ -984,6 +984,19 @@ variable "grafana_irsa_policies" {
   default     = []
 }
 
+#-----------KUBERAY OPERATOR-------------
+variable "enable_kuberay_operator" {
+  description = "Enable KubeRay Operator add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kuberay_operator_helm_config" {
+  description = "KubeRay Operator Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------Apache Airflow ADDON-------------
 variable "enable_airflow" {
   description = "Enable Airflow add-on"
