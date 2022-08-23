@@ -301,7 +301,7 @@ module "airflow_s3_bucket" {
 #---------------------------------------------------------------
 # Apache Airflow Postgres Metastore DB Master password
 #---------------------------------------------------------------
-resource "random_password" "postgress" {
+resource "random_password" "postgres" {
   length           = 16
   special          = true
   override_special = "![]{}"
@@ -314,7 +314,7 @@ resource "aws_secretsmanager_secret" "postgres" {
 
 resource "aws_secretsmanager_secret_version" "postgres" {
   secret_id     = aws_secretsmanager_secret.postgres.id
-  secret_string = random_password.postgress.result
+  secret_string = random_password.postgres.result
 }
 
 #---------------------------------------------------------------

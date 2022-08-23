@@ -10,10 +10,10 @@ output "irsa_iam_role_name" {
 
 output "namespace" {
   description = "IRSA Namespace"
-  value       = try(kubernetes_namespace_v1.irsa.metadata[0].name, var.kubernetes_namespace)
+  value       = try(kubernetes_namespace_v1.irsa[0].id, var.kubernetes_namespace)
 }
 
 output "service_account" {
   description = "IRSA Service Account"
-  value       = try(kubernetes_service_account_v1.irsa[0].metadata[0].name, var.kubernetes_service_account)
+  value       = try(kubernetes_service_account_v1.irsa[0].id, var.kubernetes_service_account)
 }

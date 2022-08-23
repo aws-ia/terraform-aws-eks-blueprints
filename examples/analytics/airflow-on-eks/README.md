@@ -1,6 +1,6 @@
 # Self-managed Apache Airflow deployment for EKS
 
-This example deploys the production ready **Self-managed Apache Airflow** deployment on EKS. 
+This example deploys the production ready **Self-managed Apache Airflow** deployment on EKS.
 The following resources created by this example
 
 - VPC, 3 Private Subnets, 3 Public Subnets for Public ALB, 3 Database Subnets for RDS
