@@ -24,3 +24,10 @@ variable "addon_context" {
   })
   description = "Input configuration for the addon"
 }
+
+variable "datadog_api_key" {
+  type        = string
+  description = "API keyfor sending metrics to Datadog"
+  default     = ""
+  sensitive   = true
+}

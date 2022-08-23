@@ -143,6 +143,10 @@ module "eks_blueprints_kubernetes_addons" {
   enable_aws_node_termination_handler = true
   enable_kubecost                     = true
 
+  enable_datadog_operator      = true
+  datadog_api_key              = var.datadog_api_key
+  datadog_operator_helm_config = var.datadog_operator_helm_config
+
   tags = local.tags
 
 }

@@ -1063,6 +1063,12 @@ variable "datadog_operator_helm_config" {
   default     = null
 }
 
+variable "datadog_api_key" {
+  description = "Datadog Operator API key"
+  type        = string
+  default     = ""
+}
+
 #-----------Promtail ADDON-------------
 variable "enable_promtail" {
   description = "Enable Promtail add-on"
@@ -1153,4 +1159,3 @@ variable "gatekeeper_helm_config" {
   description = "Gatekeeper Helm Chart config"
   type        = any
   default     = {}
-}

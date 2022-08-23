@@ -4,17 +4,25 @@ module "helm_addon" {
   helm_config       = local.helm_config
   irsa_config       = null
   addon_context     = var.addon_context
-
-  depends_on = [kubernetes_namespace_v1.this]
 }
 
-resource "kubernetes_namespace_v1" "this" {
-  count = try(local.helm_config["create_namespace"], true) && local.helm_config["namespace"] != "kube-system" ? 1 : 0
-  metadata {
-    name = local.helm_config["namespace"]
+resource "kubernetes_secret_v1" "datadog_api_key" {
+  count = var.datadog_api_key != "" ? 1 : 0
 
-    labels = {
-      "app.kubernetes.io/managed-by" = "terraform-aws-eks-blueprints"
-    }
+  metadata {
+    name      = "datadog-secret"
+    namespace = local.helm_config["namespace"]
   }
+  data = {
+    # This will reveal a secret in the Terraform state
+    api-key = var.datadog_api_key
+  }
+
+  depends_on = [module.helm_addon]
+}
+
+resource "kubectl_manifest" "datadog_agent" {
+  yaml_body = yamlencode(local.datadog_agent)
+
+  depends_on = [module.helm_addon, kubernetes_secret_v1.datadog_api_key]
 }
