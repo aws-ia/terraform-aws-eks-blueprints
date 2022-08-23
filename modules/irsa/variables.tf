@@ -21,7 +21,7 @@ variable "kubernetes_service_account" {
 
   validation {
     condition     = length(var.kubernetes_service_account) < 27
-    error_message = "Max length of `kubernetes_service_account` is 26"
+    error_message = "Max length of `kubernetes_service_account` is 26."
   }
 }
 
