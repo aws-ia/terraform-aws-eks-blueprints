@@ -1,6 +1,6 @@
 # External Secrets Operator Kubernetes addon
 
-This example deploys an EKS Cluster with the External Secrets Operator. The cluster is populated with a ClusterSecretStore and SecretStore example using SecretManager and Parameter Store respectively. A secret for each store is also created. Both stores use IRSA to retrieve the secret values from AWS.
+This example deploys an EKS Cluster with the Datadog Operator. The cluster is populated with a secret containing the Datadog API key and a DatadogAgent custom resource is created using this key.
 
 ## How to Deploy
 
@@ -25,7 +25,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 Initialize a working directory with configuration files
 
 ```sh
-cd examples/external-secrets/
+cd examples/datadog/
 terraform init
 ```
 
@@ -35,7 +35,7 @@ Verify the resources created by this execution
 
 ```sh
 export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
-terraform plan
+terraform plan -var datadog_api_key="<your-api-key-here>"
 ```
 
 #### Step 4: Finally, Terraform APPLY
@@ -43,7 +43,7 @@ terraform plan
 **Deploy the pattern**
 
 ```sh
-terraform apply
+terraform apply -var datadog_api_key="<your-api-key-here>"
 ```
 
 Enter `yes` to apply.
@@ -59,10 +59,9 @@ This following command used to update the `kubeconfig` in your local machine whe
 
     $ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 
-### Step 6: List the secret resources in the `external-secrets` namespace
+### Step 6: List the datadog agent resources in the `datadog-operator` namespace
 
-    $ kubectl get externalsecrets -n external-secrets
-    $ kubectl get secrets -n external-secrets
+    $ kubectl get datadogagent -n datadog-operator
 
 ## Cleanup
 
