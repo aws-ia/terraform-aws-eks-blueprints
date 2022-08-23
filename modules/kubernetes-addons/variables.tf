@@ -971,7 +971,6 @@ variable "enable_grafana" {
   type        = bool
   default     = false
 }
-
 variable "grafana_helm_config" {
   description = "Kubernetes Grafana Helm Chart config"
   type        = any
