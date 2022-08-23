@@ -1,0 +1,69 @@
+replicaCount: 1
+admissionControllerReplicaCount: 1
+
+# nodeSelector -- Node labels for pod assignment
+nodeSelector:
+  NodeGroupType: ${node_group_type}
+  kubernetes.io/os: ${operating_system}
+
+imagePullSecrets:
+
+userLabelKey: "yunikorn.apache.org/username"
+
+operatorPlugins: "general,spark-k8s-operator"
+
+serviceAccount: yunikorn-admin
+admissionControllerServiceAccount: yunikorn-admission-controller
+
+image:
+  repository: apache/yunikorn
+  tag: scheduler-${image_version}
+  pullPolicy: Always
+
+admissionControllerImage:
+  repository: apache/yunikorn
+  tag: admission-${image_version}
+  pullPolicy: Always
+
+webImage:
+  repository: apache/yunikorn
+  tag: web-${image_version}
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 9080
+  portWeb: 9889
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 1Gi
+  limits:
+    cpu: 4
+    memory: 2Gi
+
+# When this flag is true, the admission controller will be installed along with the scheduler.
+# When this flag is false, the admission controller will not be installed.
+# Once the admission controller is installed, all traffic will be routing to yunikorn.
+embedAdmissionController: true
+
+#
+# ------------------------------------------------------------------------
+# Please choose one configuration from following two for yunikorn
+# Use "CMD + /" to comment-out or uncomment a block before the deployment
+# ------------------------------------------------------------------------
+#
+
+# Use this configuration to automatically map K8s namespaces to yunikorn queues
+configuration: |
+  partitions:
+    -
+      name: default
+      placementrules:
+        - name: tag
+          value: namespace
+          create: true
+      queues:
+        - name: root
+          submitacl: '*'

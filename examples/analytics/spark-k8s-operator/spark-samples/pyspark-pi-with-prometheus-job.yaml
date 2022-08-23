@@ -3,7 +3,7 @@ apiVersion: "sparkoperator.k8s.io/v1beta2"
 kind: SparkApplication
 metadata:
   name: spark-pi
-  namespace: spark-ns
+  namespace: spark-team-a
 spec:
   type: Scala
   mode: cluster
@@ -26,7 +26,7 @@ spec:
     memory: "512m"
     labels:
       version: 3.0.0
-    serviceAccount: spark-sa
+    serviceAccount: spark-team-a
   executor:
     cores: 1
     instances: 1
