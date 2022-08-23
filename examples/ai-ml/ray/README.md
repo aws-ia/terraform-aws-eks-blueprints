@@ -280,7 +280,7 @@ envsubst < sample-jobs/serve-pytorch-huggingface-clothing.yaml | kubectl create 
 
 ##### Test Deployment
 
-A sample [script](sources/pytorch_hugging_face_clothing_client.py) is provided that uses the requests library to test the inference endpoint.
+A sample [script](sources/pytorch_huggingface_clothing_client.py) is provided that uses the requests library to test the inference endpoint.
 
 
 ```sh
