@@ -137,7 +137,7 @@ module "eks_blueprints" {
         WorkerType    = "ON_DEMAND"
         NodeGroupType = "core"
       }
-
+      # Checkout the docs for more details on node-template labels https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#how-can-i-scale-a-node-group-to-0
       additional_tags = {
         Name                                                             = "core-node-grp"
         subnet_type                                                      = "private"
@@ -195,6 +195,7 @@ module "eks_blueprints" {
         NodeGroupType = "spark"
       }
 
+      # Checkout the docs for more details on node-template labels https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#how-can-i-scale-a-node-group-to-0
       additional_tags = {
         Name                                                             = "spark-node-grp"
         subnet_type                                                      = "private"
