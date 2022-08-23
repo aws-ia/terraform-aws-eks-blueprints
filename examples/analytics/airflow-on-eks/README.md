@@ -145,7 +145,6 @@ Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
 ```sh
 terraform destroy -target="module.db" -auto-approve
 terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
-terraform destroy -target="module.airflow_irsa" -auto-approve
 terraform destroy -target="module.eks_blueprints" -auto-approve
 terraform destroy -target="module.vpc" -auto-approve
 ```

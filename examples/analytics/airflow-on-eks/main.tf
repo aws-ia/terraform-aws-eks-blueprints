@@ -48,7 +48,7 @@ locals {
   azs                           = slice(data.aws_availability_zones.available.names, 0, 3)
   airflow_name                  = "airflow"
   airflow_service_account       = "airflow-webserver-sa"
-  airflow_webserver_secret_name = "airflow-webserver-secret"
+  airflow_webserver_secret_name = "airflow-webserver-secret-key"
   efs_storage_class             = "efs-sc"
   efs_pvc                       = "airflowdags-pvc"
 
@@ -320,20 +320,19 @@ resource "aws_secretsmanager_secret_version" "postgres" {
 #---------------------------------------------------------------
 # Apache Airflow Webserver Secret
 #---------------------------------------------------------------
-resource "random_password" "airflow_webserver" {
-  length           = 16
-  special          = true
-  override_special = "![]{}"
+resource "random_id" "airflow_webserver" {
+  byte_length = 16
 }
+
 #tfsec:ignore:aws-ssm-secret-use-customer-key
 resource "aws_secretsmanager_secret" "airflow_webserver" {
-  name                    = "airflow_webserver"
+  name                    = "airflow_webserver_secret_key"
   recovery_window_in_days = 0 # Set to zero for this example to force delete during Terraform destroy
 }
 
 resource "aws_secretsmanager_secret_version" "airflow_webserver" {
   secret_id     = aws_secretsmanager_secret.airflow_webserver.id
-  secret_string = random_password.airflow_webserver.result
+  secret_string = random_id.airflow_webserver.hex
 }
 
 #---------------------------------------------------------------
