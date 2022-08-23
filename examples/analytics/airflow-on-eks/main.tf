@@ -242,7 +242,7 @@ module "db" {
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
   create_cloudwatch_log_group     = true
 
-  backup_retention_period = 1
+  backup_retention_period = 5
   skip_final_snapshot     = true
   deletion_protection     = false
 
@@ -426,14 +426,6 @@ resource "aws_security_group" "efs" {
     from_port   = 2049
     to_port     = 2049
     protocol    = "tcp"
-  }
-
-  ingress {
-    description = "Allow NFS 2049/udp"
-    cidr_blocks = module.vpc.private_subnets_cidr_blocks
-    from_port   = 2049
-    to_port     = 2049
-    protocol    = "udp"
   }
 
   tags = local.tags
