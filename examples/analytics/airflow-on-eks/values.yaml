@@ -15,7 +15,6 @@ ingress:
   web:
     enabled: true
     annotations:
-#      kubernetes.io/ingress.class: alb
       alb.ingress.kubernetes.io/group.name: dataengineering
       alb.ingress.kubernetes.io/target-type: instance
       alb.ingress.kubernetes.io/scheme: internet-facing
