@@ -971,7 +971,6 @@ variable "enable_grafana" {
   type        = bool
   default     = false
 }
-
 variable "grafana_helm_config" {
   description = "Kubernetes Grafana Helm Chart config"
   type        = any
@@ -982,4 +981,17 @@ variable "grafana_irsa_policies" {
   description = "IAM policy ARNs for grafana IRSA"
   type        = list(string)
   default     = []
+}
+
+#-----------KUBERAY OPERATOR-------------
+variable "enable_kuberay_operator" {
+  description = "Enable KubeRay Operator add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kuberay_operator_helm_config" {
+  description = "KubeRay Operator Helm Chart config"
+  type        = any
+  default     = {}
 }

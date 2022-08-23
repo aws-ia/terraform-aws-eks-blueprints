@@ -50,6 +50,6 @@ output "configure_kubectl" {
 
 # Region used for Terratest
 output "region" {
-  value       = local.region
   description = "AWS region"
+  value       = local.region
 }
