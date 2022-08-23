@@ -228,6 +228,7 @@ dags:
     size: 10Gi
     storageClassName: efs-sc
     accessMode: ReadWriteMany
+    existingClaim: ${efs_pvc}
 
   # This example using a sample airflow-dags repo(airflow-dags.git) to demonstrate the GitSync Feature
   # You can replace this with your own internal private repo and provide subPath for your DAGS folder

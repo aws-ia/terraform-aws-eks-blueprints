@@ -49,6 +49,8 @@ locals {
   airflow_name                  = "airflow"
   airflow_service_account       = "airflow-webserver-sa"
   airflow_webserver_secret_name = "airflow-webserver-secret"
+  efs_storage_class             = "efs-sc"
+  efs_pvc                       = "airflowdags-pvc"
 
   tags = {
     Blueprint  = local.name
@@ -192,6 +194,7 @@ module "eks_blueprints_kubernetes_addons" {
       s3_bucket_name          = aws_s3_bucket.this.id
       webserver_secret_name   = local.airflow_webserver_secret_name
       airflow_service_account = local.airflow_service_account
+      efs_pvc                 = local.efs_pvc
     })]
 
     set_sensitive = [
@@ -383,7 +386,7 @@ resource "kubectl_manifest" "efs_sc" {
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: efs-sc
+  name: ${local.efs_storage_class}
 provisioner: efs.csi.aws.com
 parameters:
   provisioningMode: efs-ap
@@ -391,6 +394,28 @@ parameters:
   directoryPerms: "700"
   gidRangeStart: "1000"
   gidRangeEnd: "2000"
+YAML
+
+  depends_on = [module.eks_blueprints.eks_cluster_id]
+}
+
+#---------------------------------------------------------------
+# Persistent Volume Claim for EFS
+#---------------------------------------------------------------
+resource "kubectl_manifest" "efs_pvc" {
+  yaml_body = <<YAML
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ${local.efs_pvc}
+  namespace: ${module.airflow_irsa.namespace}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ${local.efs_storage_class}
+  resources:
+    requests:
+      storage: 10Gi
 YAML
 
   depends_on = [module.eks_blueprints.eks_cluster_id]
