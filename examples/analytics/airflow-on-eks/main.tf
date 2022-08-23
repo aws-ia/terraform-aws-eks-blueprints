@@ -304,8 +304,7 @@ module "airflow_s3_bucket" {
 #---------------------------------------------------------------
 resource "random_password" "postgres" {
   length           = 16
-  special          = true
-  override_special = "![]{}"
+  special          = false
 }
 #tfsec:ignore:aws-ssm-secret-use-customer-key
 resource "aws_secretsmanager_secret" "postgres" {
