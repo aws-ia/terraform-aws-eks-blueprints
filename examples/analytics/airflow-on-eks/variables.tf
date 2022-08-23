@@ -1,7 +1,7 @@
 variable "name" {
   description = "Name of the VPC and EKS Cluster"
-  default     = "airflow-on-eks"
   type        = string
+  default     = "airflow-on-eks"
 }
 
 variable "region" {
@@ -12,12 +12,12 @@ variable "region" {
 
 variable "eks_cluster_version" {
   description = "EKS Cluster version"
-  default     = "1.22"
   type        = string
+  default     = "1.22"
 }
 
 variable "vpc_cidr" {
   description = "VPC CIDR"
-  default     = "10.0.0.0/16"
   type        = string
+  default     = "10.0.0.0/16"
 }

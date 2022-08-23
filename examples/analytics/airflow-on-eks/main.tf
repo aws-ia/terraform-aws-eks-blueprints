@@ -169,6 +169,8 @@ module "eks_blueprints_kubernetes_addons" {
   enable_amazon_eks_coredns    = true
   enable_amazon_eks_kube_proxy = true
 
+  enable_metrics_server               = true
+  enable_cluster_autoscaler           = true
   enable_aws_efs_csi_driver           = true
   enable_aws_for_fluentbit            = true
   enable_aws_load_balancer_controller = true
@@ -191,7 +193,7 @@ module "eks_blueprints_kubernetes_addons" {
       airflow_db_name = module.db.db_instance_name
       airflow_db_host = element(split(":", module.db.db_instance_endpoint), 0)
       # S3 bucket config for Logs
-      s3_bucket_name          = aws_s3_bucket.this.id
+      s3_bucket_name          = module.airflow_s3_bucket.s3_bucket_id
       webserver_secret_name   = local.airflow_webserver_secret_name
       airflow_service_account = local.airflow_service_account
       efs_pvc                 = local.efs_pvc
@@ -200,7 +202,7 @@ module "eks_blueprints_kubernetes_addons" {
     set_sensitive = [
       {
         name  = "data.metadataConnection.pass"
-        value = data.aws_secretsmanager_secret_version.postgres.secret_string
+        value = aws_secretsmanager_secret_version.postgres.secret_string
       }
     ]
   }
@@ -228,7 +230,7 @@ module "db" {
 
   db_name  = local.airflow_name
   username = local.airflow_name
-  password = sensitive(data.aws_secretsmanager_secret_version.postgres.secret_string)
+  password = sensitive(aws_secretsmanager_secret_version.postgres.secret_string)
   port     = 5432
 
   multi_az               = true
@@ -264,46 +266,36 @@ module "db" {
   ]
 
   tags = local.tags
-  db_option_group_tags = {
-    "Sensitive" = "low"
-  }
-  db_parameter_group_tags = {
-    "Sensitive" = "low"
-  }
 }
 
-#---------------------------------------------------------------
-# S3 bucket for Airflow Logs
-#---------------------------------------------------------------
-#tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
-resource "aws_s3_bucket" "this" {
-  bucket_prefix = format("%s-%s", "airflow-logs", data.aws_caller_identity.current.account_id)
-  tags          = local.tags
-}
+#tfsec:ignore:*
+module "airflow_s3_bucket" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "~> 3.0"
 
-resource "aws_s3_bucket_acl" "this" {
-  bucket = aws_s3_bucket.this.id
+  bucket = "airflow-logs-${data.aws_caller_identity.current.account_id}"
   acl    = "private"
-}
 
-#tfsec:ignore:aws-s3-encryption-customer-key
-resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
-  bucket = aws_s3_bucket.this.bucket
+  # For example only - please evaluate for your environment
+  force_destroy = true
 
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
-    }
-  }
-}
-
-resource "aws_s3_bucket_public_access_block" "this" {
-  bucket = aws_s3_bucket.this.id
+  attach_deny_insecure_transport_policy = true
+  attach_require_latest_tls_policy      = true
 
   block_public_acls       = true
   block_public_policy     = true
-  restrict_public_buckets = true
   ignore_public_acls      = true
+  restrict_public_buckets = true
+
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
+  tags = local.tags
 }
 
 #---------------------------------------------------------------
@@ -325,12 +317,6 @@ resource "aws_secretsmanager_secret_version" "postgres" {
   secret_string = random_password.postgress.result
 }
 
-data "aws_secretsmanager_secret_version" "postgres" {
-  secret_id = aws_secretsmanager_secret.postgres.id
-
-  depends_on = [aws_secretsmanager_secret_version.postgres]
-}
-
 #---------------------------------------------------------------
 # Apache Airflow Webserver Secret
 #---------------------------------------------------------------
@@ -350,12 +336,6 @@ resource "aws_secretsmanager_secret_version" "airflow_webserver" {
   secret_string = random_password.airflow_webserver.result
 }
 
-data "aws_secretsmanager_secret_version" "airflow_webserver" {
-  secret_id = aws_secretsmanager_secret.airflow_webserver.id
-
-  depends_on = [aws_secretsmanager_secret_version.airflow_webserver]
-}
-
 #---------------------------------------------------------------
 # Webserver Secret Key
 #---------------------------------------------------------------
@@ -364,7 +344,7 @@ resource "kubectl_manifest" "airflow_webserver" {
     "data.webserver-secret-key"
   ]
 
-  yaml_body = <<YAML
+  yaml_body = <<-YAML
 apiVersion: v1
 kind: Secret
 metadata:
@@ -372,17 +352,15 @@ metadata:
    namespace: ${module.airflow_irsa.namespace}
 type: Opaque
 data:
-  webserver-secret-key: ${base64encode(data.aws_secretsmanager_secret_version.airflow_webserver.secret_string)}
+  webserver-secret-key: ${base64encode(aws_secretsmanager_secret_version.airflow_webserver.secret_string)}
 YAML
-
-  depends_on = [module.eks_blueprints.eks_cluster_id]
 }
 
 #---------------------------------------------------------------
 # Managing DAG files with GitSync - EFS Storage Class
 #---------------------------------------------------------------
 resource "kubectl_manifest" "efs_sc" {
-  yaml_body = <<YAML
+  yaml_body = <<-YAML
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -403,7 +381,7 @@ YAML
 # Persistent Volume Claim for EFS
 #---------------------------------------------------------------
 resource "kubectl_manifest" "efs_pvc" {
-  yaml_body = <<YAML
+  yaml_body = <<-YAML
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -418,7 +396,7 @@ spec:
       storage: 10Gi
 YAML
 
-  depends_on = [module.eks_blueprints.eks_cluster_id]
+  depends_on = [kubectl_manifest.efs_sc]
 }
 #---------------------------------------------------------------
 # EFS Filesystem for Airflow DAGs
@@ -451,6 +429,14 @@ resource "aws_security_group" "efs" {
     protocol    = "tcp"
   }
 
+  ingress {
+    description = "Allow NFS 2049/udp"
+    cidr_blocks = module.vpc.private_subnets_cidr_blocks
+    from_port   = 2049
+    to_port     = 2049
+    protocol    = "udp"
+  }
+
   tags = local.tags
 }
 
@@ -480,7 +466,7 @@ data "aws_iam_policy_document" "airflow_s3_logs" {
   statement {
     sid       = ""
     effect    = "Allow"
-    resources = ["arn:${data.aws_partition.current.partition}:s3:::${aws_s3_bucket.this.id}"]
+    resources = ["arn:${data.aws_partition.current.partition}:s3:::${module.airflow_s3_bucket.s3_bucket_id}"]
 
     actions = [
       "s3:ListBucket"
@@ -490,7 +476,7 @@ data "aws_iam_policy_document" "airflow_s3_logs" {
   statement {
     sid       = ""
     effect    = "Allow"
-    resources = ["arn:${data.aws_partition.current.partition}:s3:::${aws_s3_bucket.this.id}/*"]
+    resources = ["arn:${data.aws_partition.current.partition}:s3:::${module.airflow_s3_bucket.s3_bucket_id}/*"]
 
     actions = [
       "s3:GetObject",
