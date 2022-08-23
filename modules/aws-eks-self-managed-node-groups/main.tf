@@ -6,6 +6,7 @@ resource "aws_autoscaling_group" "self_managed_ng" {
   vpc_zone_identifier = length(local.self_managed_node_group["subnet_ids"]) == 0 ? (local.self_managed_node_group["subnet_type"] == "public" ? var.context.public_subnet_ids : var.context.private_subnet_ids) : local.self_managed_node_group["subnet_ids"]
 
   capacity_rebalance = local.self_managed_node_group["capacity_rebalance"]
+  target_group_arns  = try(local.self_managed_node_group["target_group_arns"], null)
 
   dynamic "launch_template" {
     for_each = !local.needs_mixed_instances_policy ? [1] : []

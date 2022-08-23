@@ -475,6 +475,13 @@ module "adot_collector_nginx" {
   ]
 }
 
+module "kuberay_operator" {
+  count         = var.enable_kuberay_operator ? 1 : 0
+  source        = "./kuberay-operator"
+  helm_config   = var.kuberay_operator_helm_config
+  addon_context = local.addon_context
+}
+
 module "external_secrets" {
   count         = var.enable_external_secrets ? 1 : 0
   source        = "./external-secrets"
