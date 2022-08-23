@@ -240,24 +240,24 @@ python sources/summarize_client.py
 two astronauts steered their fragile lunar module safely and smoothly to the historic landing . the first men to reach the moon -- Armstrong and his co-pilot, col. Edwin E. Aldrin Jr. of the air force -- brought their ship to rest on a level, rock-strewn plain .
 ```
 
-#### Fashion MNIST
+#### Pytorch HuggingFace Clothing
 
 ##### Ray Train
 
-As a sample, we will use [Ray Train](https://docs.ray.io/en/latest/train/train.html) to train a machine learning model using a sample dataset from the Fashion MNIST dataset. See the code for model training [here](sources/train_fashion_mnist.py)
+As a sample, we will use [Ray Train](https://docs.ray.io/en/latest/train/train.html) to train a machine learning model using a sample dataset. See the code for model training [here](sources/train_pytorch_huggingface_clothing.py)
 
 Create a Job to submit the training job to the Ray Cluster
 
 ```sh
-envsubst < sample-jobs/train-fashion-mnist.yaml | kubectl create -f -
+envsubst < sample-jobs/train-pytorch-huggingface-clothing.yaml | kubectl create -f -
 
-job.batch/ray-fashion-mnist-train-job-plkzf created
+job.batch/ray-train-pytorch-huggingface-clothing-plkzf created
 ```
 
 Tail the logs to see the training in progress:
 
 ```sh
-kubectl logs -n ray-cluster job.batch/ray-fashion-mnist-train-job-plkzf -f
+kubectl logs -n ray-cluster job.batch/ray-train-pytorch-huggingface-clothing-plkzf -f
 
 ...
 ...
@@ -270,21 +270,21 @@ As shown above a model checkpoint is written to an S3 location so that it can be
 
 ##### Ray Serve
 
-To create an inference endpoint which will be served using Ray Serve, create a Job to submit the Ray [deployment](sources/serve_fashion_mnist.py)
+To create an inference endpoint which will be served using Ray Serve, create a Job to submit the Ray [deployment](sources/serve_pytorch_huggingface_clothing.py)
 
 
 ```sh
-envsubst < sample-jobs/serve-fashion-mnist.yaml | kubectl create -f -
+envsubst < sample-jobs/serve-pytorch-huggingface-clothing.yaml | kubectl create -f -
 
 ```
 
 ##### Test Deployment
 
-A sample [script](sources/fashion_mnist_client.py) is provided that uses the requests library to test the inference endpoint.
+A sample [script](sources/pytorch_hugging_face_clothing_client.py) is provided that uses the requests library to test the inference endpoint.
 
 
 ```sh
-python sources/fashion_mnist_client.py
+python sources/pytorch_hugging_face_clothing_client.py
 
 Positive
 ```
