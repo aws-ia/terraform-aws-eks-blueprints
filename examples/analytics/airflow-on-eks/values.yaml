@@ -43,7 +43,7 @@ ingress:
 data:
   metadataConnection:
     user: ${airflow_db_user}
-    pass:
+    pass: 'bVXOFmEnmK5TmSam'
     protocol: postgresql
     host: ${airflow_db_host}
     port: 5432

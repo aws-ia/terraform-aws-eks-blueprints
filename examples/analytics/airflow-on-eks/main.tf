@@ -186,6 +186,7 @@ module "eks_blueprints_kubernetes_addons" {
     namespace        = module.airflow_irsa.namespace
     create_namespace = false
     timeout          = 360
+    wait             = false # This is critical setting. Check this issue -> https://github.com/hashicorp/terraform-provider-helm/issues/683
     description      = "Apache Airflow v2 Helm chart deployment configuration"
     values = [templatefile("${path.module}/values.yaml", {
       # Airflow Postgres RDS Config
@@ -317,9 +318,9 @@ resource "aws_secretsmanager_secret_version" "postgres" {
   secret_string = random_password.postgres.result
 }
 
-#---------------------------------------------------------------
-# Apache Airflow Webserver Secret
-#---------------------------------------------------------------
+##---------------------------------------------------------------
+## Apache Airflow Webserver Secret
+##---------------------------------------------------------------
 resource "random_id" "airflow_webserver" {
   byte_length = 16
 }
