@@ -49,28 +49,19 @@ terraform apply
 
 Enter `yes` to apply.
 
-## Execute Sample Spark Job on EKS Cluster with Spark-k8s-operator:
-
-- Create Spark Namespace, Service Account and ClusterRole and ClusterRole Binding for the jobs
+## Execute Sample Spark Job on EKS Cluster with Spark-k8s-operator
 
 ```sh
-   cd examples/analytics/spark-k8s-operator/k8s-schedular
-   kubectl apply -f spark-teams-setup.yaml
-```
-
-- Execute first spark job with simple example
-
-```sh
-  cd examples/analytics/spark-k8s-operator/k8s-schedular
+  cd examples/analytics/spark-k8s-operator/spark-samples
   kubectl apply -f pyspark-pi-job.yaml
 ```
 
 - Verify the Spark job status
 
 ```sh
-  kubectl get sparkapplications -n spark-ns
+  kubectl get sparkapplications -n spark-team-a
 
-  kubectl describe sparkapplication pyspark-pi -n spark-ns
+  kubectl describe sparkapplication pyspark-pi -n spark-team-a
 ```
 
 ## Cleanup
