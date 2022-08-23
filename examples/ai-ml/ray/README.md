@@ -284,7 +284,7 @@ A sample [script](sources/pytorch_huggingface_clothing_client.py) is provided th
 
 
 ```sh
-python sources/pytorch_hugging_face_clothing_client.py
+python sources/pytorch_huggingface_clothing_client.py
 
 Positive
 ```
