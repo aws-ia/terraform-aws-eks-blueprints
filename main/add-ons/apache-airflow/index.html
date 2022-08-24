@@ -13,7 +13,7 @@
     
     
       
-        <title>aws-privateca-issuer - Amazon EKS Blueprints for Terraform</title>
+        <title>Apache Airflow add-on - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#aws-privateca-issuer" class="md-skip">
+        <a href="#apache-airflow-add-on" class="md-skip">
           Skip to content
         </a>
       
@@ -99,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              aws-privateca-issuer
+              Apache Airflow add-on
             
           </span>
         </div>
@@ -434,11 +434,128 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../apache-airflow/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Apache Airflow add-on
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Apache Airflow add-on
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#production-considerations-for-running-apache-airflow-on-eks" class="md-nav__link">
+    Production considerations for running Apache Airflow on EKS
+  </a>
+  
+    <nav class="md-nav" aria-label="Production considerations for running Apache Airflow on EKS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#airflow-metadata-database" class="md-nav__link">
+    Airflow Metadata Database
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pgbouncer-for-amazon-postgres-rds" class="md-nav__link">
+    PgBouncer for Amazon Postgres RDS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webserver-secret-key" class="md-nav__link">
+    Webserver Secret Key
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#managing-dag-files-with-github-and-efs" class="md-nav__link">
+    Managing DAG Files with GitHub and EFS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#managing-log-files-with-s3-with-irsa" class="md-nav__link">
+    Managing Log Files with S3 with IRSA
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#airflow-statsd-metrics" class="md-nav__link">
+    Airflow StatsD Metrics
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#airflow-executors-celery-vs-kubernetes" class="md-nav__link">
+    Airflow Executors (Celery Vs Kubernetes)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#airflow-schedulers" class="md-nav__link">
+    Airflow Schedulers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#accessing-airflow-web-ui" class="md-nav__link">
+    Accessing Airflow Web UI
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -546,52 +663,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          aws-privateca-issuer
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../aws-privateca-issuer/" class="md-nav__link">
         aws-privateca-issuer
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1155,6 +1231,82 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#production-considerations-for-running-apache-airflow-on-eks" class="md-nav__link">
+    Production considerations for running Apache Airflow on EKS
+  </a>
+  
+    <nav class="md-nav" aria-label="Production considerations for running Apache Airflow on EKS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#airflow-metadata-database" class="md-nav__link">
+    Airflow Metadata Database
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pgbouncer-for-amazon-postgres-rds" class="md-nav__link">
+    PgBouncer for Amazon Postgres RDS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webserver-secret-key" class="md-nav__link">
+    Webserver Secret Key
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#managing-dag-files-with-github-and-efs" class="md-nav__link">
+    Managing DAG Files with GitHub and EFS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#managing-log-files-with-s3-with-irsa" class="md-nav__link">
+    Managing Log Files with S3 with IRSA
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#airflow-statsd-metrics" class="md-nav__link">
+    Airflow StatsD Metrics
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#airflow-executors-celery-vs-kubernetes" class="md-nav__link">
+    Airflow Executors (Celery Vs Kubernetes)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#airflow-schedulers" class="md-nav__link">
+    Airflow Schedulers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#accessing-airflow-web-ui" class="md-nav__link">
+    Accessing Airflow Web UI
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#usage" class="md-nav__link">
     Usage
   </a>
@@ -1173,100 +1325,106 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/aws-privateca-issuer.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/apache-airflow.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-<h1 id="aws-privateca-issuer">aws-privateca-issuer<a class="headerlink" href="#aws-privateca-issuer" title="Permanent link">&para;</a></h1>
-<p>AWS ACM Private CA is a module of the <a href="https://aws.amazon.com/certificate-manager/">AWS Certificate Manager</a> that can setup and manage private CAs. <code>cert-manager</code> is a Kubernetes add-on to automate the management and issuance of TLS certificates from various issuing sources. It will ensure certificates are valid and up to date periodically, and attempt to renew certificates at an appropriate time before expiry. This module <code>aws-pca-issuer</code> is a addon for <code>cert-manager</code> that issues certificates using AWS ACM PCA.</p>
-<p>See the <a href="https://cert-manager.github.io/aws-privateca-issuer/">aws-privateca-issuer documentation</a>.</p>
+<h1 id="apache-airflow-add-on">Apache Airflow add-on<a class="headerlink" href="#apache-airflow-add-on" title="Permanent link">&para;</a></h1>
+<p>This document describes the details of the best practices for building and deploying Self-managed <strong>Highly Scalable Apache Airflow cluster on Kubernetes(Amazon EKS) Cluster</strong>.
+Alternatively, Amazon also provides a fully managed Apache Airflow service(MWAA). Please see this <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/managed-workflow-apache-airflow">example</a> if you are looking to build Amazon MWAA.</p>
+<p>Apache Airflow is used for the scheduling and orchestration of data pipelines or workflows.
+Orchestration of data pipelines refers to the sequencing, coordination, scheduling, and managing complex data pipelines from diverse sources.
+A workflow is represented as a <a href="https://airflow.apache.org/docs/apache-airflow/stable/concepts/dags.html">DAG</a> (a Directed Acyclic Graph), and contains individual pieces of work called <a href="https://airflow.apache.org/docs/apache-airflow/stable/concepts/tasks.html">Tasks</a>, arranged with dependencies and data flows taken into account.</p>
+<h2 id="production-considerations-for-running-apache-airflow-on-eks">Production considerations for running Apache Airflow on EKS<a class="headerlink" href="#production-considerations-for-running-apache-airflow-on-eks" title="Permanent link">&para;</a></h2>
+<h3 id="airflow-metadata-database">Airflow Metadata Database<a class="headerlink" href="#airflow-metadata-database" title="Permanent link">&para;</a></h3>
+<p>It is advised to set up an external database for the Airflow metastore. The default Helm chart deploys a Postgres database running in a container but this should be used only for development.
+Apache Airflow recommends to use MySQL or Postgres. This deployment configures the highly available Amazon RDS Postgres database as external database.</p>
+<h3 id="pgbouncer-for-amazon-postgres-rds">PgBouncer for Amazon Postgres RDS<a class="headerlink" href="#pgbouncer-for-amazon-postgres-rds" title="Permanent link">&para;</a></h3>
+<p>Airflow can open a lot of database connections due to its distributed nature and using a connection pooler can significantly reduce the number of open connections on the database.
+This deployment enables the PgBouncer for Postgres</p>
+<h3 id="webserver-secret-key">Webserver Secret Key<a class="headerlink" href="#webserver-secret-key" title="Permanent link">&para;</a></h3>
+<p>You should set a static webserver secret key when deploying with this chart as it will help ensure your Airflow components only restart when necessary.
+This deployment creates Kubernetes secret for Webserver Secret Key and applies to Airflow</p>
+<h3 id="managing-dag-files-with-github-and-efs">Managing DAG Files with GitHub and EFS<a class="headerlink" href="#managing-dag-files-with-github-and-efs" title="Permanent link">&para;</a></h3>
+<p>It's recommended to Mounting DAGs using Git-Sync sidecar with Persistence enabled.
+Developers can create a repo to store the DAGs and configure to sync with Airflow servers.
+This deployment provisions EFS(Amazon Elastic File System) through Persistent Volume Claim with an access mode of ReadWriteMany.
+The Airflow scheduler pod will sync DAGs from a git repository onto the PVC every configured number of seconds.
+The other pods will read the synced DAGs.</p>
+<p>GitSync is configured with a sample repo with this example. This can be replaced with your internal GitHub repo</p>
+<h3 id="managing-log-files-with-s3-with-irsa">Managing Log Files with S3 with IRSA<a class="headerlink" href="#managing-log-files-with-s3-with-irsa" title="Permanent link">&para;</a></h3>
+<p>Airflow writes logs for tasks in a way that allows you to see the logs for each task separately in the Airflow UI.
+Core Airflow implements writing and serving logs locally. However, you can also write logs to remote services via community providers, or write your own loggers.
+This example configures S3 bucket to store the Airflow logs. IAM roles for server account(IRSA) is configured for Airflow pods to access this S3 bucket.</p>
+<h3 id="airflow-statsd-metrics">Airflow StatsD Metrics<a class="headerlink" href="#airflow-statsd-metrics" title="Permanent link">&para;</a></h3>
+<p>This example configures to send the metrics to an existing StatsD to Prometheus endpoint. This can be configured to send it to external StatsD instance</p>
+<h3 id="airflow-executors-celery-vs-kubernetes">Airflow Executors (Celery Vs Kubernetes)<a class="headerlink" href="#airflow-executors-celery-vs-kubernetes" title="Permanent link">&para;</a></h3>
+<p>This deployment uses Kubernetes Executor. With KubernetesExecutor, each task runs in its own pod.
+The pod is created when the task is queued, and terminates when the task completes.
+With KubernetesExecutor, the workers (pods) talk directly to the same Postgres backend as the Scheduler and can to a large degree take on the labor of task monitoring.</p>
+<ul>
+<li>KubernetesExecutor can work well when your tasks are not very uniform with respect to resource requirements or images.</li>
+<li>Each task on the Kubernetes executor gets its own pod, which allows you to pass an executor_config in your task params. This lets you assign resources at the task level by passing an executor_config. e.g, the first task may be a sensor that only requires a few resources, but the downstream tasks have to run on your GPU node pool with a higher CPU request. See the code snippet below</li>
+<li>Since each task is a pod, it is managed independently of the code deploys. This is great for longer running tasks or environments with a lot of users, as users can push new code without fear of interrupting that task.</li>
+<li>This makes the <em>k8s executor the most fault-tolerant</em> option, as running tasks won’t be affected when code is pushed</li>
+<li>In contrast to CeleryExecutor, KubernetesExecutor does not require additional components such as Redis, but does require access to Kubernetes cluster.</li>
+<li>Pod monitoring can be done with native Kubernetes tools</li>
+<li>A Kubernetes watcher is a thread that can subscribe to every change that occurs in Kubernetes’ database. It is alerted when pods start, run, end, and fail. By monitoring this stream, the KubernetesExecutor can discover that the worker crashed and correctly report the task as failed</li>
+</ul>
+<h3 id="airflow-schedulers">Airflow Schedulers<a class="headerlink" href="#airflow-schedulers" title="Permanent link">&para;</a></h3>
+<p>The Airflow scheduler monitors all tasks and DAGs, then triggers the task instances once their dependencies are complete.
+Ths deployment uses <em>HA scheduler</em> with two replicas to take advantage of the existing metadata database.</p>
+<h3 id="accessing-airflow-web-ui">Accessing Airflow Web UI<a class="headerlink" href="#accessing-airflow-web-ui" title="Permanent link">&para;</a></h3>
+<p>This deployment example uses internet facing Load Balancer to easily access the WebUI however it's not recommended for Production.
+You can modify the <code>values.yaml</code> to set the Load Balancer to <code>internal</code> and upload certificate to use HTTPS.
+Ensure access to the WebUI using internal domain and network.</p>
+<p>Checkout the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/analytics/airflow-on-eks">examples</a> of deploying and using Apache Airflow on Amazon EKS.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p>aws_privateca_issuer can be deployed by enabling the add-on via the following.</p>
-<div class="highlight"><pre><span></span><code>enable_cert_manager   = true
-enable_aws_privateca_issuer = true
+<p>The <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/analytics/airflow-on-eks">Apache Airflow</a> can be deployed by enabling the add-on via the following.</p>
+<div class="highlight"><pre><span></span><code>  enable_airflow = true
 </code></pre></div>
-<p>Create <code>AWSPCAClusterIssuer</code> custom resource definition (CRD). It is a Kubernetes resources that represent certificate authorities (CAs) from AWS ACM and are able to generate signed certificates by honoring certificate signing requests. For more details on external <code>Issuer</code> types, please check <a href="https://github.com/cert-manager/aws-privateca-issuer">aws-privateca-issuer</a></p>
-<div class="highlight"><pre><span></span><code>resource &quot;kubernetes_manifest&quot; &quot;cluster-pca-issuer&quot; {
-  manifest = {
-    apiVersion = &quot;awspca.cert-manager.io/v1beta1&quot;
-    kind       = &quot;AWSPCAClusterIssuer&quot;
+<p>For production workloads, you can use this <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/analytics/airflow-on-eks">example</a> with custom Helm Config.</p>
+<div class="highlight"><pre><span></span><code>    enable_airflow = true
+    airflow_helm_config = {
+      name             = &quot;airflow&quot;
+      chart            = &quot;airflow&quot;
+      repository       = &quot;https://airflow.apache.org&quot;
+      version          = &quot;1.6.0&quot;
+      namespace        = module.airflow_irsa.namespace
+      create_namespace = false
+      timeout          = 360
+      description      = &quot;Apache Airflow v2 Helm chart deployment configuration&quot;
+      # Check the example for `values.yaml` file
+      values = [templatefile(&quot;${path.module}/values.yaml&quot;, {
+        # Airflow Postgres RDS Config
+        airflow_db_user = &quot;airflow&quot;
+        airflow_db_name = module.db.db_instance_name
+        airflow_db_host = element(split(&quot;:&quot;, module.db.db_instance_endpoint), 0)
+        # S3 bucket config for Logs
+        s3_bucket_name          = aws_s3_bucket.this.id
+        webserver_secret_name   = local.airflow_webserver_secret_name
+        airflow_service_account = local.airflow_service_account
+      })]
 
-    metadata = {
-      name = &quot;logical.name.of.this.issuer&quot;
-    }
-
-    spec = {
-      arn = &quot;ARN for AWS PCA&quot;
-      region: &quot;data.aws_region.current.id OR AWS region of the AWS PCA&quot;
-
-    }
-  }
-}
-</code></pre></div>
-<p>Create <code>Certificate</code> CRD. Certificates define a desired X.509 certificate which will be renewed and kept up to date. For more details on how to specify and request Certificate resources, please check <a href="https://cert-manager.io/docs/usage/certificate/">Certificate Resources guide</a>.</p>
-<p>A Certificate is a namespaced resource that references <code>AWSPCAClusterIssuer</code> (created in above step) that determine what will be honoring the certificate request.</p>
-<div class="highlight"><pre><span></span><code>resource &quot;kubernetes_manifest&quot; &quot;example_pca_certificate&quot; {
-  manifest = {
-    apiVersion = &quot;cert-manager.io/v1&quot;
-    kind       = &quot;Certificate&quot;
-
-    metadata = {
-      name = &quot;name of the certificate&quot;
-      namespace = &quot;default or any namespace&quot;
-    }
-
-    spec = {
-      commonName = &quot;common name for your certificate&quot;
-      duration = &quot;duration&quot;
-      issuerRef = {
-          group = &quot;awspca.cert-manager.io&quot;
-          kind = &quot;AWSPCAClusterIssuer&quot;
-          name: &quot;name of AWSPCAClusterIssuer created above&quot;
-      }
-      renewBefore = &quot;360h0m0s&quot;
-      secretName = &quot;name of the secret where certificate will be mounted&quot;
-      usages = [
-          &quot;server auth&quot;,
-          &quot;client auth&quot;
-      ]
-      privateKey = {
-          algorithm: &quot;RSA&quot;
-          size: 2048
+      set_sensitive = [
+        {
+          name  = &quot;data.metadataConnection.pass&quot;
+          value = data.aws_secretsmanager_secret_version.postgres.secret_string
         }
+      ]
     }
-  }
-
-}
 </code></pre></div>
-<p>When a Certificate is created, a corresponding CertificateRequest resource is created by <code>cert-manager</code> containing the encoded X.509 certificate request, Issuer reference, and other options based upon the specification of the Certificate resource.</p>
-<p>This Certificate CRD will tell cert-manager to attempt to use the Issuer (as AWS ACM) to obtain a certificate key pair for the specified domains. If successful, the resulting TLS key and certificate will be stored in a kubernetes secret named , with keys of tls.key, and tls.crt respectively. This secret will live in the same namespace as the Certificate resource.</p>
-<p>Now, you may run <code>kubectl get Certificate</code> to view the status of Certificate Request from AWS PCA.</p>
-<div class="highlight"><pre><span></span><code>NAME      READY   SECRET                                 AGE
-example   True    aws001-preprod-dev-eks-clusterissuer   3h35m
-</code></pre></div>
-<p>If the status is <code>True</code>, that means, the <code>tls.crt</code>, <code>tls.key</code> and <code>ca.crt</code> will all be available in <a href="https://kubernetes.io/docs/concepts/configuration/secret/">Kubernetes Secret</a></p>
-<div class="highlight"><pre><span></span><code>aws001-preprod-dev-eks-clusterissuer
-Name:         aws001-preprod-dev-eks-clusterissuer
-Namespace:    default
-Labels:       &lt;none&gt;
-Annotations:  cert-manager.io/alt-names:
-              cert-manager.io/certificate-name: example
-              cert-manager.io/common-name: example.com
-              cert-manager.io/ip-sans:
-              cert-manager.io/issuer-group: awspca.cert-manager.io
-              cert-manager.io/issuer-kind: AWSPCAClusterIssuer
-              cert-manager.io/issuer-name: aws001-preprod-dev-eks
-              cert-manager.io/uri-sans:
+<p>Once deployed, you will be able to see the deployment status</p>
+<div class="highlight"><pre><span></span><code>kubectl get deployment -n airflow
 
-Type:  kubernetes.io/tls
-
-Data
-====
-ca.crt:   1785 bytes
-tls.crt:  1517 bytes
-tls.key:  1679 bytes
+NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+airflow-pgbouncer   <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           77m
+airflow-scheduler   <span class="m">2</span>/2     <span class="m">2</span>            <span class="m">2</span>           77m
+airflow-statsd      <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           77m
+airflow-triggerer   <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           77m
+airflow-webserver   <span class="m">2</span>/2     <span class="m">2</span>            <span class="m">2</span>           77m
 </code></pre></div>
 
               
@@ -1283,7 +1441,7 @@ tls.key:  1679 bytes
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../aws-node-termination-handler/" class="md-footer__link md-footer__link--prev" aria-label="Previous: AWS Node Termination Handler" rel="prev">
+        <a href="../agones/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Agones" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1292,20 +1450,20 @@ tls.key:  1679 bytes
               <span class="md-footer__direction">
                 Previous
               </span>
-              AWS Node Termination Handler
+              Agones
             </div>
           </div>
         </a>
       
       
         
-        <a href="../cert-manager/" class="md-footer__link md-footer__link--next" aria-label="Next: cert-manager" rel="next">
+        <a href="../argocd/" class="md-footer__link md-footer__link--next" aria-label="Next: ArgoCD" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              cert-manager
+              ArgoCD
             </div>
           </div>
           <div class="md-footer__button md-icon">
