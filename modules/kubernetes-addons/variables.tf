@@ -946,6 +946,12 @@ variable "external_secrets_helm_config" {
   description = "External Secrets operator Helm Chart config"
 }
 
+variable "external_secrets_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
+}
+
 #-----------Grafana ADDON-------------
 variable "enable_grafana" {
   description = "Enable Grafana add-on"

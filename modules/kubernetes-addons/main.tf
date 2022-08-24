@@ -469,4 +469,5 @@ module "external_secrets" {
   source        = "./external-secrets"
   helm_config   = var.external_secrets_helm_config
   addon_context = local.addon_context
+  irsa_policies = var.external_secrets_irsa_policies
 }
