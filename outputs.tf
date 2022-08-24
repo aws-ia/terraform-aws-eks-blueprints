@@ -83,36 +83,17 @@ output "worker_node_security_group_id" {
 }
 
 #-------------------------------
-# Managed Node Groups Outputs
+# Self-Managed Node Groups Outputs
 #-------------------------------
+
 output "self_managed_node_groups" {
-  description = "Outputs from EKS Self-managed node groups "
-  value       = var.create_eks && length(var.self_managed_node_groups) > 0 ? module.aws_eks_self_managed_node_groups.* : []
+  description = "Map of attribute maps for all self managed node groups created"
+  value       = module.aws_eks.self_managed_node_groups
 }
 
-output "self_managed_node_group_iam_role_arns" {
-  description = "IAM role arn's of self managed node groups"
-  value       = var.create_eks && length(var.self_managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_nodegroup_iam_role_arns) }) : []
-}
-
-output "self_managed_node_group_autoscaling_groups" {
-  description = "Autoscaling group names of self managed node groups"
-  value       = var.create_eks && length(var.self_managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_asg_names) }) : []
-}
-
-output "self_managed_node_group_iam_instance_profile_id" {
-  description = "IAM instance profile id of managed node groups"
-  value       = var.create_eks && length(var.self_managed_node_groups) > 0 ? values({ for nodes in sort(keys(var.self_managed_node_groups)) : nodes => join(",", module.aws_eks_self_managed_node_groups[nodes].self_managed_nodegroup_iam_instance_profile_id) }) : []
-}
-
-output "self_managed_node_group_aws_auth_config_map" {
-  description = "Self managed node groups AWS auth map"
-  value       = local.self_managed_node_group_aws_auth_config_map.*
-}
-
-output "windows_node_group_aws_auth_config_map" {
-  description = "Windows node groups AWS auth map"
-  value       = local.windows_node_group_aws_auth_config_map.*
+output "self_managed_node_groups_autoscaling_group_names" {
+  description = "List of the autoscaling group names created by self-managed node groups"
+  value       = [for group in module.aws_eks.self_managed_node_groups : group.autoscaling_group_name]
 }
 
 #-------------------------------

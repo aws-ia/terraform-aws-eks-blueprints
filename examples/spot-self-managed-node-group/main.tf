@@ -38,8 +38,9 @@ locals {
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
+
 module "eks_blueprints" {
-  source = "../../.."
+  source = "../.."
 
   cluster_name    = local.name
   cluster_version = "1.22"
@@ -47,13 +48,14 @@ module "eks_blueprints" {
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
-  eks_managed_node_groups = {
+  managed_node_groups = {
     mng_spot_medium = {
-      names = "mng-spot-med"
-
-      capacity_type  = "SPOT"
-      instance_types = ["t3.large", "t3.xlarge"]
-      desired_size   = 2
+      node_group_name = "mng-spot-med"
+      capacity_type   = "SPOT"
+      instance_types  = ["t3.large", "t3.xlarge"]
+      subnet_ids      = module.vpc.private_subnets
+      desired_size    = 2
+      disk_size       = 30
     }
   }
 
@@ -72,54 +74,50 @@ module "eks_blueprints" {
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "../../../modules/kubernetes-addons"
+  source = "../../modules/kubernetes-addons"
 
   eks_cluster_id       = module.eks_blueprints.eks_cluster_id
   eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-  # EKS Managed Add-ons
+  enable_amazon_eks_vpc_cni    = true
   enable_amazon_eks_coredns    = true
   enable_amazon_eks_kube_proxy = true
 
-  # Add-ons
-  enable_aws_load_balancer_controller = true
-  aws_load_balancer_controller_helm_config = {
-    set = [
-      {
-        name  = "nodeSelector.kubernetes\\.io/os"
-        value = "linux"
-      }
-    ]
-  }
-
-  enable_metrics_server = true
-  metrics_server_helm_config = {
-    set = [
-      {
-        name  = "nodeSelector.kubernetes\\.io/os"
-        value = "linux"
-      }
-    ]
-  }
+  enable_metrics_server               = true
+  enable_aws_node_termination_handler = true
+  auto_scaling_group_names            = module.eks_blueprints.self_managed_node_groups_autoscaling_group_names
 
   enable_cluster_autoscaler = true
   cluster_autoscaler_helm_config = {
     set = [
       {
-        name  = "nodeSelector.kubernetes\\.io/os"
-        value = "linux"
+        name  = "extraArgs.expander"
+        value = "priority"
+      },
+      {
+        name  = "expanderPriorities"
+        value = <<-EOT
+          100:
+            - .*-spot-2vcpu-8mem.*
+          90:
+            - .*-spot-4vcpu-16mem.*
+          10:
+            - .*
+        EOT
       }
     ]
   }
 
   tags = local.tags
+
 }
 
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"

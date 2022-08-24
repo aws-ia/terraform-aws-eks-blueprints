@@ -34,8 +34,6 @@ locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
-  node_group_name = "managed-ondemand"
-
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
@@ -93,6 +91,10 @@ module "eks_blueprints" {
       update_config = [{
         max_unavailable_percentage = 30
       }]
+
+      # Launch template configuration
+      create_launch_template = true              # false will use the default launch template
+      launch_template_os     = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
     }
   }
 
@@ -144,7 +146,7 @@ module "karpenter_launch_templates" {
       ami                    = data.aws_ami.bottlerocket.id
       launch_template_os     = "bottlerocket"
       launch_template_prefix = "bottle"
-      iam_instance_profile   = aws_iam_instance_profile.karpenter.name
+      iam_instance_profile   = module.eks_blueprints.managed_node_group_iam_instance_profile_id[0]
       vpc_security_group_ids = [module.eks_blueprints.worker_node_security_group_id]
       block_device_mappings = [
         {
@@ -215,24 +217,4 @@ module "vpc" {
   }
 
   tags = local.tags
-}
-
-data "aws_ami" "eks" {
-  owners      = ["amazon"]
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["amazon-eks-node-${module.eks_blueprints.eks_cluster_version}-*"]
-  }
-}
-
-data "aws_ami" "bottlerocket" {
-  owners      = ["amazon"]
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["bottlerocket-aws-k8s-${module.eks_blueprints.eks_cluster_version}-x86_64-*"]
-  }
 }
