@@ -24,9 +24,13 @@ Note: if your configuration utilizes explicit `depends_on` configurations, it mi
 
 - The local KMS module has been replaced by what is provided by [terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks) and [terraform-aws-kms](https://github.com/terraform-aws-modules/terraform-aws-kms)
 
+- The local managed node group module has been replaced with what is provided by by [terraform-aws-eks](hhttps://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/eks-managed-node-group).
+
 ### Removed
 
 - Local implementation of KMS module
+
+- Local managed node modules
 
 ### Variable and output changes
 
@@ -167,6 +171,33 @@ module "eks_blueprints" {
       min_size           = 1
       subnet_ids         = module.vpc.private_subnets
       launch_template_os = "amazonlinux2eks"
+    }
+  }
+  # Managed Node Group(s)
+  managed_node_groups = {
+    custom_ami = {
+      node_group_name = "custom-ami" # Max 40 characters for node group name
+
+      min_size     = 1
+      max_size     = 1
+      desired_size = 1
+
+      custom_ami_id  = data.aws_ssm_parameter.eks_optimized_ami.value
+      instance_types = ["m5.xlarge"]
+
+      create_launch_template = true
+      launch_template_os     = "amazonlinux2eks"
+
+      # https://docs.aws.amazon.com/eks/latest/userguide/choosing-instance-type.html#determine-max-pods
+      pre_userdata = <<-EOT
+        MAX_PODS=$(/etc/eks/max-pods-calculator.sh --instance-type-from-imds --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} --cni-prefix-delegation-enabled)
+      EOT
+
+      # These settings opt out of the default behavior and use the maximum number of pods, with a cap of 110 due to
+      # Kubernetes guidance https://kubernetes.io/docs/setup/best-practices/cluster-large/
+      # See more info here https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
+      kubelet_extra_args   = "--max-pods=$${MAX_PODS}"
+      bootstrap_extra_args = "--use-max-pods false"
     }
   }
 }
@@ -321,6 +352,46 @@ module "eks_blueprints" {
           { instance_type = "m5d.xlarge" },
         ]
       }
+    }
+  }
+
+  eks_managed_node_groups = {
+    prefix = {
+      min_size        = 1
+      max_size        = 1
+      desired_size    = 1
+      iam_role_additional_policies = [
+        "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+      ]
+      tags = {
+        "k8s.io/cluster-autoscaler/enabled"                = "TRUE"
+        "k8s.io/cluster-autoscaler/ipv4-prefix-delegation" = "owned"
+        "kubernetes.io/cluster/ipv4-prefix-delegation"     = "owned"
+      }
+      instance_types = ["m5.xlarge"]
+      # enable_bootstrap_user_data = true
+      # https://docs.aws.amazon.com/eks/latest/userguide/choosing-instance-type.html#determine-max-pods
+      # These settings opt out of the default behavior and use the maximum number of pods, with a cap of 110 due to
+      # Kubernetes guidance https://kubernetes.io/docs/setup/best-practices/cluster-large/
+      # See more info here https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
+      # Ref issue https://github.com/awslabs/amazon-eks-ami/issues/844
+      pre_bootstrap_user_data = <<-EOT
+        #!/bin/bash
+        set -ex
+
+        MAX_PODS=$(/etc/eks/max-pods-calculator.sh \
+          --instance-type-from-imds \
+          --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} \
+          --cni-prefix-delegation-enabled \
+        )
+
+        cat <<-EOF > /etc/profile.d/bootstrap.sh
+        export USE_MAX_PODS=false
+        export KUBELET_EXTRA_ARGS="--max-pods=$${MAX_PODS}"
+        EOF
+        # Source extra environment variables in bootstrap script
+        sed -i '/^set -o errexit/a\\nsource /etc/profile.d/bootstrap.sh' /etc/eks/bootstrap.sh
+      EOT
     }
   }
 }
