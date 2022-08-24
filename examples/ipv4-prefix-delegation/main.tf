@@ -59,11 +59,6 @@ module "eks_blueprints" {
   }
   eks_managed_node_groups = {
     prefix = {
-      launch_template_name = "ipv4-prefix-delegation-custom-ami" # Max 40 characters for node group name
-      name                 = "custom-ami-2022082220021145790000000a"
-      iam_role_name        = "ipv4-prefix-delegation-custom-ami"
-      # iam_role_arn         = "arn:aws:iam::528591701539:role/ipv4-prefix-delegation-custom-ami"
-      create_iam_role = true
       min_size        = 1
       max_size        = 1
       desired_size    = 1
