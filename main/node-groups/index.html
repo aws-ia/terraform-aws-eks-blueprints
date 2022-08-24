@@ -1766,6 +1766,10 @@ The authenticator gets its configuration information from the <code>aws-auth</co
     ]
   }
 </code></pre></div>
+<p><em>NOTE</em>:</p>
+<ul>
+<li>You should not set to true both <code>create_launch_template</code> and <code>remote_access</code> or you'll end-up with new managed nodegroups that won't be able to join the cluster.</li>
+</ul>
 <h2 id="self-managed-node-groups">Self-managed Node Groups<a class="headerlink" href="#self-managed-node-groups" title="Permanent link">&para;</a></h2>
 <p>The below example demonstrates the minimum configuration required to deploy a Self-managed node group.</p>
 <div class="highlight"><pre><span></span><code>    # EKS SELF MANAGED NODE GROUPS
