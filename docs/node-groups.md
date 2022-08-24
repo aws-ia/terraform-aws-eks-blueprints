@@ -507,6 +507,10 @@ Cluser autoscaler has the ability to set priorities on which node groups to scal
   }
 ```
 
+_NOTE_:
+
+- You should not set to true both `create_launch_template` and `remote_access` or you'll end-up with new managed nodegroups that won't be able to join the cluster.
+
 ## Self-managed Node Groups
 
 The below example demonstrates the minimum configuration required to deploy a Self-managed node group.
