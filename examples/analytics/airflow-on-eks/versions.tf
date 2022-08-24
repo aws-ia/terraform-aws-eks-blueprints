@@ -20,7 +20,7 @@ terraform {
     }
     random = {
       source  = "hashicorp/random"
-      version = "3.3.2"
+      version = ">= 3.1"
     }
   }
 
@@ -28,6 +28,6 @@ terraform {
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"
   #   region = "us-west-2"
-  #   key    = "e2e/emr-eks-fsx-lustre/terraform.tfstate"
+  #   key    = "e2e/airflow-on-eks/terraform.tfstate"
   # }
 }

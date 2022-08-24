@@ -63,6 +63,13 @@ module "agones" {
   addon_context                = local.addon_context
 }
 
+module "airflow" {
+  count         = var.enable_airflow ? 1 : 0
+  source        = "./airflow"
+  helm_config   = var.airflow_helm_config
+  addon_context = local.addon_context
+}
+
 module "argocd" {
   count         = var.enable_argocd ? 1 : 0
   source        = "./argocd"
