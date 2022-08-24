@@ -1,0 +1,44 @@
+nameOverride: kube-dns-autoscaler
+
+# Formula for controlling the replicas. Adjust according to your needs
+#  replicas = max( ceil( cores * 1/coresPerReplica ) , ceil( nodes * 1/nodesPerReplica ) )
+#  replicas = min(replicas, max)
+#  replicas = max(replicas, min)
+config:
+  linear:
+    coresPerReplica: 256
+    nodesPerReplica: 16
+    min: 1
+    max: 100
+    preventSinglePointFailure: true
+    includeUnschedulableNodes: true
+
+# Target to scale. In format: deployment/*, replicationcontroller/* or replicaset/* (not case sensitive).
+options:
+  target: ${target}
+
+serviceAccount:
+  create: true
+  name: kube-dns-autoscaler
+
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+  supplementalGroups: [ 65534 ]
+  fsGroup: 65534
+
+nodeSelector:
+  kubernetes.io/os: ${operating_system}
+  NodeGroupType: ${node_group_type}
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+tolerations:
+  - key: "CriticalAddonsOnly"
+    operator: "Exists"

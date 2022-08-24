@@ -1,0 +1,95 @@
+---
+apiVersion: "sparkoperator.k8s.io/v1beta2"
+kind: SparkApplication
+metadata:
+  name: catalog-sales-test1
+  namespace: spark-team-a
+spec:
+  batchScheduler: "yunikorn"
+  type: Python
+  sparkVersion: "3.1.1"
+  pythonVersion: "3"
+  mode: cluster
+  # Public docker image used from datamechanics/spark:3.2.1-hadoop-3.3.1-java-11-scala-2.12-python-3.8-latest and pushed to ECR repo
+  image: "public.ecr.aws/r1l5w1y9/spark-operator:3.2.1-hadoop-3.3.1-java-11-scala-2.12-python-3.8-latest"
+  imagePullPolicy: IfNotPresent
+  mainApplicationFile: "s3a://<ENTER_YOUR_BUCKET>/spark-catalog-sales.py"  # MainFile is the path to a bundled JAR, Python, or R file of the application
+  arguments:
+    - "s3a://<ENTER_YOUR_BUCKET>/TPCDS-TEST-1T/catalog_sales/" # Copy your Input parquet sample data before executing the job
+    - "s3a://<ENTER_YOUR_BUCKET>/output/catalog_sales/"
+  hadoopConf:
+    "fs.s3a.aws.credentials.provider": "com.amazonaws.auth.WebIdentityTokenCredentialsProvider" # or  "com.amazonaws.auth.InstanceProfileCredentialsProvider"
+    "fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem"
+    "mapreduce.fileoutputcommitter.algorithm.version": "2"
+  sparkConf:
+    "spark.speculation": "false"
+    "spark.network.timeout": "2400"
+    "spark.hadoop.fs.s3a.connection.timeout": "1200000"
+    "spark.hadoop.fs.s3a.path.style.access": "true"
+    "spark.hadoop.fs.s3a.connection.maximum": "200"
+    "spark.hadoop.fs.s3a.fast.upload": "true"
+    "spark.hadoop.fs.s3a.readahead.range": "256K"
+    "spark.hadoop.fs.s3a.input.fadvise": "random"
+    "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem"
+    # YuniKorn Config
+    "spark.kubernetes.driver.label.queue": "root.spark-team-a"
+    "spark.kubernetes.driver.label.yunikorn.apache.org/username": "vara"
+    "spark.kubernetes.executor.label.queue": "root.spark-team-a"
+    "spark.kubernetes.executor.label.yunikorn.apache.org/username": "vara"
+    #Event logs
+    "spark.local.dir": "/local1/catalog-sales1"
+    "spark.eventLog.enabled": "true"
+    "spark.eventLog.dir": "s3a://<ENTER_YOUR_BUCKET>/spark-event-logs"
+  #    "spark.eventLog.rolling.enabled": "true"
+  #    "spark.eventLog.rolling.maxFileSize": "128m"
+  restartPolicy:
+    type: OnFailure
+    onFailureRetries: 3
+    onFailureRetryInterval: 10
+    onSubmissionFailureRetries: 5
+    onSubmissionFailureRetryInterval: 20
+  volumes:  # using NVMe instance storage mounted on /local1
+    - name: spark-local-dir-1
+      hostPath:
+        path: /local1/catalog-sales1
+        type: DirectoryOrCreate
+
+  driver:
+    volumeMounts: # Points to InstanceStore 150GB NVMe SSD for shuffle spill over from memory
+      - name: spark-local-dir-1
+        mountPath: /local1/catalog-sales1
+    initContainers:
+      - name: volume-permissions
+        image: public.ecr.aws/y4g4v0z7/busybox
+        command: [ 'sh', '-c', 'chown -R 185 /local1/catalog-sales1' ]
+        volumeMounts:
+          - mountPath: "/local1/catalog-sales1"
+            name: "spark-local-dir-1"
+    cores: 1
+    memory: "10g"
+    memoryOverhead: "2g"
+    serviceAccount: spark-team-a
+    labels:
+      version: 3.1.1
+    nodeSelector:
+      "NodeGroupType": "spark"
+  executor:
+    volumeMounts:
+      - name: spark-local-dir-1
+        mountPath: /local1/catalog-sales1
+    initContainers:
+      - name: volume-permissions
+        image: public.ecr.aws/y4g4v0z7/busybox
+        command: [ 'sh', '-c', 'chown -R 185 /local1/catalog-sales1' ]
+        volumeMounts:
+          - mountPath: "/local1/catalog-sales1"
+            name: "spark-local-dir-1"
+    cores: 1
+    instances: 10
+    memory: "6g"
+    memoryOverhead: "2g"
+    serviceAccount: spark-team-a
+    labels:
+      version: 3.1.1
+    nodeSelector:
+      "NodeGroupType": "spark"
