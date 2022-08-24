@@ -285,6 +285,12 @@ variable "external_dns_private_zone" {
   default     = false
 }
 
+variable "external_dns_route53_zone_arns" {
+  description = "List of Route53 zones ARNs which external-dns will have access to create/manage records"
+  type        = list(string)
+  default     = []
+}
+
 #-----------Amazon Managed Service for Prometheus-------------
 variable "enable_amazon_prometheus" {
   description = "Enable AWS Managed Prometheus service"
@@ -313,6 +319,19 @@ variable "enable_prometheus" {
 
 variable "prometheus_helm_config" {
   description = "Community Prometheus Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------KUBE-PROMETHEUS-STACK-------------
+variable "enable_kube_prometheus_stack" {
+  description = "Enable Community kube-prometheus-stack add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kube_prometheus_stack_helm_config" {
+  description = "Community kube-prometheus-stack Helm Chart config"
   type        = any
   default     = {}
 }
@@ -958,7 +977,6 @@ variable "enable_grafana" {
   type        = bool
   default     = false
 }
-
 variable "grafana_helm_config" {
   description = "Kubernetes Grafana Helm Chart config"
   type        = any
@@ -969,4 +987,30 @@ variable "grafana_irsa_policies" {
   description = "IAM policy ARNs for grafana IRSA"
   type        = list(string)
   default     = []
+}
+
+#-----------KUBERAY OPERATOR-------------
+variable "enable_kuberay_operator" {
+  description = "Enable KubeRay Operator add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kuberay_operator_helm_config" {
+  description = "KubeRay Operator Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------Apache Airflow ADDON-------------
+variable "enable_airflow" {
+  description = "Enable Airflow add-on"
+  type        = bool
+  default     = false
+}
+
+variable "airflow_helm_config" {
+  description = "Apache Airflow v2 Helm Chart config"
+  type        = any
+  default     = {}
 }

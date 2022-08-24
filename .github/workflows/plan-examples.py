@@ -13,7 +13,8 @@ def get_examples():
         'examples/ci-cd/gitlab-ci-cd',  # excluded since GitLab auth, backend, etc. required
         'examples/fully-private-eks-cluster/vpc', # skipping until issue #711 is addressed
         'examples/fully-private-eks-cluster/eks',
-        'examples/fully-private-eks-cluster/add-ons'
+        'examples/fully-private-eks-cluster/add-ons',
+        'examples/ai-ml/ray' # excluded until #887 is fixed
     }
 
     projects = {

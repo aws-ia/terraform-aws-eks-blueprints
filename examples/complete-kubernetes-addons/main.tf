@@ -179,16 +179,16 @@ module "eks_blueprints_kubernetes_addons" {
   enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
 
-  enable_aws_for_fluentbit = true
+  enable_aws_for_fluentbit                 = true
+  aws_for_fluentbit_cw_log_group_retention = 30
   aws_for_fluentbit_helm_config = {
-    name                                      = "aws-for-fluent-bit"
-    chart                                     = "aws-for-fluent-bit"
-    repository                                = "https://aws.github.io/eks-charts"
-    version                                   = "0.1.16"
-    namespace                                 = "logging"
-    aws_for_fluent_bit_cw_log_group           = "/${module.eks_blueprints.eks_cluster_id}/worker-fluentbit-logs" # Optional
-    aws_for_fluentbit_cwlog_retention_in_days = 90
-    create_namespace                          = true
+    name                            = "aws-for-fluent-bit"
+    chart                           = "aws-for-fluent-bit"
+    repository                      = "https://aws.github.io/eks-charts"
+    version                         = "0.1.18"
+    namespace                       = "logging"
+    aws_for_fluent_bit_cw_log_group = "/${module.eks_blueprints.eks_cluster_id}/worker-fluentbit-logs" # Optional
+    create_namespace                = true
     values = [templatefile("${path.module}/helm_values/aws-for-fluentbit-values.yaml", {
       region                          = local.region
       aws_for_fluent_bit_cw_log_group = "/${module.eks_blueprints.eks_cluster_id}/worker-fluentbit-logs"
