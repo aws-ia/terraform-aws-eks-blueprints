@@ -5,6 +5,11 @@ module "helm_addon" {
   set_values        = local.set_values
   irsa_config       = local.irsa_config
   addon_context     = var.addon_context
+
+  depends_on = [
+    kubectl_manifest.karpenter_crd_provisioners,
+    kubectl_manifest.karpenter_crd_awsnodetemplates,
+  ]
 }
 
 resource "aws_iam_policy" "karpenter" {
@@ -20,9 +25,7 @@ data "http" "karpenter_crd_provisioners" {
 }
 
 resource "kubectl_manifest" "karpenter_crd_provisioners" {
-  yaml_body         = data.http.karpenter_crd_provisioners.response_body
-  force_new         = true
-  server_side_apply = true
+  yaml_body = data.http.karpenter_crd_provisioners.response_body
 }
 
 data "http" "karpenter_crd_awsnodetemplates" {
@@ -30,7 +33,5 @@ data "http" "karpenter_crd_awsnodetemplates" {
 }
 
 resource "kubectl_manifest" "karpenter_crd_awsnodetemplates" {
-  yaml_body         = data.http.karpenter_crd_awsnodetemplates.response_body
-  force_new         = true
-  server_side_apply = true
+  yaml_body = data.http.karpenter_crd_awsnodetemplates.response_body
 }
