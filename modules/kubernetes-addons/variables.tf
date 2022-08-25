@@ -965,6 +965,24 @@ variable "external_secrets_helm_config" {
   description = "External Secrets operator Helm Chart config"
 }
 
+variable "external_secrets_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
+}
+
+variable "external_secrets_ssm_parameter_arns" {
+  description = "List of Systems Manager Parameter ARNs that contain secrets to mount using External Secrets"
+  type        = list(string)
+  default     = ["arn:aws:ssm:*:*:parameter/*"]
+}
+
+variable "external_secrets_secrets_manager_arns" {
+  description = "List of Secrets Manager ARNs that contain secrets to mount using External Secrets"
+  type        = list(string)
+  default     = ["arn:aws:secretsmanager:*:*:secret:*"]
+}
+
 #-----------Grafana ADDON-------------
 variable "enable_grafana" {
   description = "Enable Grafana add-on"
