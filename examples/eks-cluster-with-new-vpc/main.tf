@@ -50,9 +50,30 @@ module "eks_blueprints" {
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
+  eks_managed_node_group_defaults = {
+    create_security_group = false
+    # Backwards compatibility
+    launch_template_use_name_prefix = false
+    iam_role_use_name_prefix        = false
+    use_name_prefix                 = false
+
+  }
+  
   eks_managed_node_groups = {
     mg_5 = {
-      name = "managed-ondemand"
+      name = "managed-ondemand-20220824202819530300000011"
+      iam_role_name = "eks-cluster-with-new-vpc-managed-ondemand"
+      create_launch_template = false
+      launch_template_name   = ""
+
+      iam_role_additional_policies = [
+        "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+      ]
+      tags = {
+        "k8s.io/cluster-autoscaler/enabled"                = "TRUE"
+        "k8s.io/cluster-autoscaler/ipv4-prefix-delegation" = "owned"
+        "kubernetes.io/cluster/ipv4-prefix-delegation"     = "owned"
+      }
 
       instance_types = ["m5.large"]
       min_size       = 2

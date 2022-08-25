@@ -187,7 +187,9 @@ module "eks_blueprints" {
 
       create_launch_template = true
       launch_template_os     = "amazonlinux2eks"
-
+      update_config = [{
+        max_unavailable_percentage = 33
+      }]
       # https://docs.aws.amazon.com/eks/latest/userguide/choosing-instance-type.html#determine-max-pods
       pre_userdata = <<-EOT
         MAX_PODS=$(/etc/eks/max-pods-calculator.sh --instance-type-from-imds --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} --cni-prefix-delegation-enabled)
@@ -369,6 +371,9 @@ module "eks_blueprints" {
         "kubernetes.io/cluster/ipv4-prefix-delegation"     = "owned"
       }
       instance_types = ["m5.xlarge"]
+      update_config = {
+        max_unavailable_percentage = 33
+      }
       # enable_bootstrap_user_data = true
       # https://docs.aws.amazon.com/eks/latest/userguide/choosing-instance-type.html#determine-max-pods
       # These settings opt out of the default behavior and use the maximum number of pods, with a cap of 110 due to

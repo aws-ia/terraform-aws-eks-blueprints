@@ -127,9 +127,9 @@ module "eks_blueprints" {
       }
     }
 
-    update_config = [{
+    update_config = {
       max_unavailable_percentage = 50
-    }]
+    }
 
     labels = {
       Environment = "preprod"
