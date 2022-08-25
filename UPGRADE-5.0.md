@@ -24,7 +24,7 @@ Note: if your configuration utilizes explicit `depends_on` configurations, it mi
 
 - The local KMS module has been replaced by what is provided by [terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks) and [terraform-aws-kms](https://github.com/terraform-aws-modules/terraform-aws-kms)
 
-- The local managed node group module has been replaced with what is provided by by [terraform-aws-eks](hhttps://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/eks-managed-node-group).
+- The local managed node group module has been replaced with what is provided by by [terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/eks-managed-node-group).
 
 ### Removed
 
@@ -51,7 +51,7 @@ Note: if your configuration utilizes explicit `depends_on` configurations, it mi
     - Fargate profile:
       - `fargate_profile_defaults` to allow setting common parameters once across all Fargate profiles created (and can be overriden by individual Fargate profile definitions)
       - `self_managed_node_group_defaults` to allow setting common parameters once across all self-managed node groups created (and can be overriden by individual self-managed node group definitions)
-
+      - `eks_managed_node_group_defaults` to allow setting common parameters once across all managed node groups created (and can be overriden by individual managed node group definitions)
 4. Removed outputs:
 
     - Fargate profile:
@@ -465,4 +465,73 @@ tf state mv 'module.eks_blueprints.module.aws_eks_self_managed_node_groups["self
 tf state mv 'module.eks_blueprints.module.aws_eks_self_managed_node_groups["self_mg5"].aws_iam_instance_profile.self_managed_ng[0]' 'module.eks_blueprints.module.aws_eks.module.self_managed_node_group["self_mg5"].aws_iam_instance_profile.this[0]'
 tf state mv 'module.eks_blueprints.module.aws_eks_self_managed_node_groups["self_mg5"].aws_autoscaling_group.self_managed_ng' 'module.eks_blueprints.module.aws_eks.module.self_managed_node_group["self_mg5"].aws_autoscaling_group.this[0]'
 tf state mv 'module.eks_blueprints.module.aws_eks_self_managed_node_groups["self_mg5"].aws_iam_role_policy_attachment.self_managed_ng["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]' ' module.eks_blueprints.module.aws_eks.module.self_managed_node_group["self_mg5"].aws_iam_role_policy_attachment.this["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]'
+```
+
+#### Managed Node Groups
+```sh
+
+# MNG
+terraform state mv 'module.eks_blueprints.module.aws_eks_managed_node_groups["mg_5"].aws_eks_node_group.managed_ng' 'module.eks_blueprints.module.aws_eks.module.eks_managed_node_group["mg_5"].aws_eks_node_group.this[0]'
+# Roles & Policies
+terraform state mv 'module.eks_blueprints.module.aws_eks_managed_node_groups["mg_5"].aws_iam_role.managed_ng[0]' 'module.eks_blueprints.module.aws_eks.module.eks_managed_node_group["mg_5"].aws_iam_role.this[0]'
+terraform state mv 'module.eks_blueprints.module.aws_eks_managed_node_groups["mg_5"].aws_iam_role_policy_attachment.managed_ng["arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"]' 'module.eks_blueprints.module.aws_eks.module.eks_managed_node_group["mg_5"].aws_iam_role_policy_attachment.this["arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"]'
+terraform state mv 'module.eks_blueprints.module.aws_eks_managed_node_groups["mg_5"].aws_iam_role_policy_attachment.managed_ng["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"]' 'module.eks_blueprints.module.aws_eks.module.eks_managed_node_group["mg_5"].aws_iam_role_policy_attachment.this["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"]'
+terraform state mv 'module.eks_blueprints.module.aws_eks_managed_node_groups["mg_5"].aws_iam_role_policy_attachment.managed_ng["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"]' 'module.eks_blueprints.module.aws_eks.module.eks_managed_node_group["mg_5"].aws_iam_role_policy_attachment.this["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"]'
+terraform state mv 'module.eks_blueprints.module.aws_eks_managed_node_groups["mg_5"].aws_iam_role_policy_attachment.managed_ng["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]' 'module.eks_blueprints.module.aws_eks.module.eks_managed_node_group["mg_5"].aws_iam_role_policy_attachment.this["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]'
+
+```
+When running `terraform plan` after this, you may still see that `aws_eks_node_group` will need to be replaced, check which attribute is causing it and make additional migration changes if needed, for example, you may need to set the previous `node_group_name`:
+
+```sh
+#Terraform plan result shows that the eks node group must be replaced because of different node group name
+  
+# module.eks_blueprints.module.aws_eks.module.eks_managed_node_group["mg_5"].aws_eks_node_group.this[0] must be replaced
++/- resource "aws_eks_node_group" "this" {
+      ~ ami_type               = "AL2_x86_64" -> (known after apply)
+      ~ arn                    = "arn:aws:eks:us-west-2:528591701539:nodegroup/eks-cluster-with-new-vpc/managed-ondemand-20220825170439498600000011/90c16afb-4398-8967-2422-4c6bb427c019" -> (known after apply)
+      ~ capacity_type          = "ON_DEMAND" -> (known after apply)
+      ~ disk_size              = 50 -> (known after apply)
+      ~ id                     = "eks-cluster-with-new-vpc:managed-ondemand-20220825170439498600000011" -> (known after apply)
+      - labels                 = {} -> null
+      ~ node_group_name        = "managed-ondemand-20220825170439498600000011" -> "managed-ondemand-20220824202819530300000011" # forces replacement
+```
+
+What you can do in this case is to pass the current node group name, in your relevant .tf file:
+```hcl
+ eks_managed_node_groups = {
+    mg_5 = {
+      name = "managed-ondemand-20220825170439498600000011"
+      ...
+      ...
+      ...
+      }
+    }
+
+```
+
+Since we're also migrating the IAM role and launch template, you may need to also add the following code:
+
+```hcl
+  eks_managed_node_groups = {
+    mg_5 = {
+      name = "managed-ondemand-20220824202819530300000011"
+      # Pass the old IAM role name as with the new module it may decide to choose default name
+      iam_role_name = "eks-cluster-with-new-vpc-managed-ondemand"
+      # Upstream default to create launch template where you may not had one before, add the following lines to keep them disabled
+      create_launch_template = false
+      # This is also required to be empty string to prevent upstream from creating launch template
+      launch_template_name   = ""
+      }
+    }
+```
+You can also set the defaults for the managed node groups for backward compatibility with v4: 
+```hcl
+  eks_managed_node_group_defaults = {
+    create_security_group = false
+    # Backwards compatibility
+    launch_template_use_name_prefix = false
+    iam_role_use_name_prefix        = false
+    use_name_prefix                 = false
+
+  }
 ```
