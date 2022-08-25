@@ -13,7 +13,7 @@ variable "manage_via_gitops" {
 variable "irsa_policies" {
   description = "Additional IAM policies for a IAM role for service accounts"
   type        = list(string)
-  #default     = []
+  default     = []
 }
 
 variable "addon_context" {
@@ -31,4 +31,16 @@ variable "addon_context" {
     irsa_iam_role_path             = string
     irsa_iam_permissions_boundary  = string
   })
+}
+
+variable "external_secrets_ssm_parameter_arns" {
+  description = "List of Systems Manager Parameter ARNs that contain secrets to mount using External Secrets"
+  type        = list(string)
+  default     = ["arn:aws:ssm:*:*:parameter/*"]
+}
+
+variable "external_secrets_secrets_manager_arns" {
+  description = "List of Secrets Manager ARNs that contain secrets to mount using External Secrets"
+  type        = list(string)
+  default     = ["arn:aws:secretsmanager:*:*:secret:*"]
 }
