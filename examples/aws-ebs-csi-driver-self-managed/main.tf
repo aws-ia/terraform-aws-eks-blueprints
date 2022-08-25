@@ -122,12 +122,12 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_self_managed_aws_ebs_csi_driver = true
   self_managed_aws_ebs_csi_driver_helm_config = {
-    values = [templatefile("${path.module}/helm-values/aws-ebs-csi-driver.yaml", {
+    values = [templatefile("${path.module}/helm_values/aws-ebs-csi-driver.yaml", {
       region = local.region
     })]
   }
 
-   tags = local.tags
+  tags = local.tags
 
 }
 #---------------------------------------------------------------

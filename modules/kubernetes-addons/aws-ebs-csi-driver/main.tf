@@ -72,21 +72,21 @@ module "helm_addon" {
     var.helm_config
   )
 
-    set_values = [
+  set_values = [
     {
       name  = "controller.serviceAccount.create"
       value = "false"
     }
-    ]
+  ]
 
-    irsa_config = {
+  irsa_config = {
     create_kubernetes_namespace       = try(var.helm_config.create_namespace, false)
     kubernetes_namespace              = local.namespace
     create_kubernetes_service_account = true
     kubernetes_service_account        = "ebs-csi-controller-sa"
     irsa_iam_policies                 = concat([aws_iam_policy.aws_ebs_csi_driver[0].arn], try(var.helm_config.additional_iam_policies, []))
   }
-  
+
   # Blueprints
   addon_context = var.addon_context
 }
