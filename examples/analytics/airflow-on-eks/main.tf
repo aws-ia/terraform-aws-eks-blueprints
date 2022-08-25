@@ -303,8 +303,8 @@ module "airflow_s3_bucket" {
 # Apache Airflow Postgres Metastore DB Master password
 #---------------------------------------------------------------
 resource "random_password" "postgres" {
-  length           = 16
-  special          = false
+  length  = 16
+  special = false
 }
 #tfsec:ignore:aws-ssm-secret-use-customer-key
 resource "aws_secretsmanager_secret" "postgres" {
