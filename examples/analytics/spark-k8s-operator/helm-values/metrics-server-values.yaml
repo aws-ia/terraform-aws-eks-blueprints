@@ -1,0 +1,39 @@
+# HA config for metrics-server
+serviceAccount:
+  create: true
+  name: metrics-server
+
+podLabels:
+  k8s-app: metrics-server
+
+# HA enabled by enabling replicas to 2, updateStrategy and podDisruptionBudget to true
+replicas: 2
+
+updateStrategy:
+   type: RollingUpdate
+   rollingUpdate:
+     maxSurge: 0
+     maxUnavailable: 1
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+
+nodeSelector:
+  NodeGroupType: ${node_group_type}
+  kubernetes.io/os: ${operating_system}
+
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            k8s-app: metrics-server
+        namespaces:
+          - kube-system
+        topologyKey: kubernetes.io/hostname

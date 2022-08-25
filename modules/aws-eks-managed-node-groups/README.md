@@ -10,6 +10,7 @@ _NOTE_:
 
 - You can't create managed nodes in an AWS Region where you have AWS Outposts, AWS Wavelength, or AWS Local Zones enabled.
 - You can create self-managed nodes in an AWS Region where you have AWS Outposts, AWS Wavelength, or AWS Local Zones enabled
+- You should not set to true both `create_launch_template` and `remote_access` or you'll end-up with new managed nodegroups that won't be able to join the cluster.
 
 Checkout the usage docs for Managed Node groups [examples](https://aws-ia.github.io/terraform-aws-eks-blueprints/node-groups/)
 
