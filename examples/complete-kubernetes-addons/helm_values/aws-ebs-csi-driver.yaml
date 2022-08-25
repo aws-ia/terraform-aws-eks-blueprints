@@ -1,0 +1,226 @@
+# Default values for aws-ebs-csi-driver.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver
+  # Overrides the image tag whose default is v{{ .Chart.AppVersion }}
+  tag: ""
+  pullPolicy: IfNotPresent
+
+# -- Custom labels to add into metadata
+customLabels:
+  {}
+  # k8s-app: aws-ebs-csi-driver
+
+sidecars:
+  provisioner:
+    env: []
+    image:
+      pullPolicy: IfNotPresent
+      repository: k8s.gcr.io/sig-storage/csi-provisioner
+      tag: "v3.1.0"
+    logLevel: 2
+    resources: {}
+    securityContext:
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+  attacher:
+    env: []
+    image:
+      pullPolicy: IfNotPresent
+      repository: k8s.gcr.io/sig-storage/csi-attacher
+      tag: "v3.4.0"
+    logLevel: 2
+    resources: {}
+    securityContext:
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+  snapshotter:
+    env: []
+    image:
+      pullPolicy: IfNotPresent
+      repository: k8s.gcr.io/sig-storage/csi-snapshotter
+      tag: "v6.0.1"
+    logLevel: 2
+    resources: {}
+    securityContext:
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+  livenessProbe:
+    image:
+      pullPolicy: IfNotPresent
+      repository: k8s.gcr.io/sig-storage/livenessprobe
+      tag: "v2.6.0"
+    resources: {}
+    securityContext:
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+  resizer:
+    env: []
+    image:
+      pullPolicy: IfNotPresent
+      repository: k8s.gcr.io/sig-storage/csi-resizer
+      tag: "v1.4.0"
+    logLevel: 2
+    resources: {}
+    securityContext:
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+  nodeDriverRegistrar:
+    env: []
+    image:
+      pullPolicy: IfNotPresent
+      repository: k8s.gcr.io/sig-storage/csi-node-driver-registrar
+      tag: "v2.5.1"
+    logLevel: 2
+    resources: {}
+    securityContext:
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+
+proxy:
+  http_proxy:
+  no_proxy:
+
+imagePullSecrets: []
+nameOverride:
+fullnameOverride:
+
+controller:
+  # If arbitrary args like "--aws-sdk-debug-log=true" need to be passed, use this value
+  additionalArgs: []
+  affinity: {}
+  # The default filesystem type of the volume to provision when fstype is unspecified in the StorageClass.
+  # If the default is not set and fstype is unset in the StorageClass, then no fstype will be set
+  defaultFsType: ext4
+  env: []
+  # Use envFrom to reference ConfigMaps and Secrets across all containers in the deployment
+  envFrom: []
+  # If set, add pv/pvc metadata to plugin create requests as parameters.
+  extraCreateMetadata: true
+  # Extra volume tags to attach to each dynamically provisioned volume.
+  # ---
+  # extraVolumeTags:
+  #   key1: value1
+  #   key2: value2
+  extraVolumeTags: {}
+  httpEndpoint:
+  # ID of the Kubernetes cluster used for tagging provisioned EBS volumes (optional).
+  k8sTagClusterId:
+  logLevel: 2
+  nodeSelector: {}
+  podAnnotations: {}
+  podLabels: {}
+  priorityClassName: system-cluster-critical
+  # AWS region to use. If not specified then the region will be looked up via the AWS EC2 metadata
+  # service.
+  # ---
+  # region: us-east-1
+  region: ${region}
+  replicaCount: 2
+  updateStrategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 0
+  #   maxUnavailable: 1
+  resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # Note that you will need to set resource requests if you want the cluster autoscaler to
+  # scale your nodes when you increase/decrease the number of ebs-csi-controller replicas.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  serviceAccount:
+    create: true # A service account will be created for you if set to true. Set to false if you want to use your own.
+    name: ebs-csi-controller-sa # Name of the service-account to be used/created.
+    annotations: {}
+  tolerations: []
+  # TSCs without the label selector stanza
+  #
+  # Example:
+  #
+  # topologySpreadConstraints:
+  #  - maxSkew: 1
+  #    topologyKey: topology.kubernetes.io/zone
+  #    whenUnsatisfiable: ScheduleAnyway
+  #  - maxSkew: 1
+  #    topologyKey: kubernetes.io/hostname
+  #    whenUnsatisfiable: ScheduleAnyway
+  topologySpreadConstraints: []
+  # securityContext on the controller pod
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+  # securityContext on the controller container (see sidecars for securityContext on sidecar containers)
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+
+node:
+  env: []
+  envFrom: []
+  kubeletPath: /var/lib/kubelet
+  logLevel: 2
+  priorityClassName:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: eks.amazonaws.com/compute-type
+            operator: NotIn
+            values:
+            - fargate
+  nodeSelector: {}
+  podAnnotations: {}
+  podLabels: {}
+  tolerateAllTaints: true
+  tolerations: []
+  resources: {}
+  serviceAccount:
+    create: true
+    name: ebs-csi-node-sa
+    annotations: {}
+  enableWindows: false
+  # The "maximum number of attachable volumes" per node
+  volumeAttachLimit:
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: "10%"
+  # securityContext on the node pod
+  securityContext:
+    # The node pod must be run as root to bind to the registration/driver sockets
+    runAsNonRoot: false
+    runAsUser: 0
+    runAsGroup: 0
+    fsGroup: 0
+  # securityContext on the node container (see sidecars for securityContext on sidecar containers)
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    privileged: true
+
+storageClasses: []
+# Add StorageClass resources like:
+# - name: ebs-sc
+#   # annotation metadata
+#   annotations:
+#     storageclass.kubernetes.io/is-default-class: "true"
+#   # label metadata
+#   labels:
+#     my-label-is: supercool
+#   # defaults to WaitForFirstConsumer
+#   volumeBindingMode: WaitForFirstConsumer
+#   # defaults to Delete
+#   reclaimPolicy: Retain
+#   parameters:
+#     encrypted: "true"
