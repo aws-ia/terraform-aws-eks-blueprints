@@ -40,7 +40,7 @@ output "eks_managed_nodegroup_role_name" {
 
 output "eks_managed_nodegroup_status" {
   description = "EKS managed node group status"
-  value       = [for grp in module.eks_blueprints.eks_managed_node_groups : grp.status]
+  value       = [for grp in module.eks_blueprints.eks_managed_node_groups : grp.node_group_status]
 }
 
 output "configure_kubectl" {
