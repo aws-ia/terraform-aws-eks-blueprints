@@ -40,7 +40,7 @@ locals {
 #---------------------------------------------------------------
 
 module "eks_blueprints" {
-  source = "../../.."
+  source = "../.."
 
   cluster_name    = local.name
   cluster_version = "1.23"
@@ -49,11 +49,24 @@ module "eks_blueprints" {
   private_subnet_ids = module.vpc.private_subnets
 
   managed_node_groups = {
-    mg_5 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m5.large"]
-      min_size        = 2
+    mng_spot_medium = {
+      node_group_name = "mng-spot-med"
+      capacity_type   = "SPOT"
+      instance_types  = ["t3.large", "t3.xlarge"]
       subnet_ids      = module.vpc.private_subnets
+      desired_size    = 2
+      disk_size       = 30
+    }
+  }
+
+  enable_windows_support = true
+  self_managed_node_groups = {
+    ng_od_windows = {
+      node_group_name    = "ng-od-windows"
+      launch_template_os = "windows"
+      instance_type      = "m5.large"
+      subnet_ids         = module.vpc.private_subnets
+      min_size           = 2
     }
   }
 
@@ -61,29 +74,44 @@ module "eks_blueprints" {
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "../../../modules/kubernetes-addons"
+  source = "../../modules/kubernetes-addons"
 
   eks_cluster_id       = module.eks_blueprints.eks_cluster_id
   eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-  # EKS Managed Add-ons
+  enable_amazon_eks_vpc_cni    = true
   enable_amazon_eks_coredns    = true
   enable_amazon_eks_kube_proxy = true
 
-  # Add-ons
   enable_metrics_server               = true
-  enable_cluster_autoscaler           = true
-  enable_aws_load_balancer_controller = true
+  enable_aws_node_termination_handler = true
+  auto_scaling_group_names            = module.eks_blueprints.self_managed_node_groups_autoscaling_group_names
 
-  enable_ingress_nginx = true
-  ingress_nginx_helm_config = {
-    version = "4.0.17"
-    values  = [templatefile("${path.module}/nginx_values.yaml", {})]
+  enable_cluster_autoscaler = true
+  cluster_autoscaler_helm_config = {
+    set = [
+      {
+        name  = "extraArgs.expander"
+        value = "priority"
+      },
+      {
+        name  = "expanderPriorities"
+        value = <<-EOT
+          100:
+            - .*-spot-2vcpu-8mem.*
+          90:
+            - .*-spot-4vcpu-16mem.*
+          10:
+            - .*
+        EOT
+      }
+    ]
   }
 
   tags = local.tags
+
 }
 
 #---------------------------------------------------------------
