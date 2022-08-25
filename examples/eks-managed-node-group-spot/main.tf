@@ -42,7 +42,7 @@ locals {
 #---------------------------------------------------------------
 
 module "eks_blueprints" {
-  source = "../../.."
+  source = "../.."
 
   cluster_name    = local.name
   cluster_version = local.cluster_version
