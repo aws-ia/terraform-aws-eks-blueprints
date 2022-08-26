@@ -5,9 +5,17 @@ module "aws_eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "v18.28.0"
 
-  cluster_name     = var.cluster_name
-  cluster_version  = var.cluster_version
-  cluster_timeouts = var.cluster_timeouts
+  create                     = var.create_eks
+  cluster_name               = var.cluster_name
+  cluster_version            = var.cluster_version
+  cluster_timeouts           = var.cluster_timeouts
+  cluster_identity_providers = var.cluster_identity_providers
+
+  fargate_profiles         = var.fargate_profiles
+  fargate_profile_defaults = var.fargate_profile_defaults
+
+  self_managed_node_groups         = var.self_managed_node_groups
+  self_managed_node_group_defaults = var.self_managed_node_group_defaults
 
   # IAM Role
   create_iam_role = var.create_iam_role
