@@ -129,10 +129,6 @@ module "eks_blueprints_kubernetes_addons" {
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
   enable_metrics_server     = true
-  enable_cluster_autoscaler = true
-
-  enable_amazon_prometheus             = true
-  amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
 
   #---------------------------------------------------------------
   # Cluster Autoscaler

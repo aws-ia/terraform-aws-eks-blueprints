@@ -50,10 +50,6 @@ module "eks_blueprints" {
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
-  # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/485
-  # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/494
-  cluster_kms_key_additional_admin_arns = [data.aws_caller_identity.current.arn]
-
   eks_managed_node_groups = {
     prefix = {
       name = "prefix" # Max 40 characters for node group name
