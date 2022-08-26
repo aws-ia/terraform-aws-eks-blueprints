@@ -489,7 +489,7 @@ When running `terraform plan` after this, you may still see that `aws_eks_node_g
 
 ```sh
 #Terraform plan result shows that the eks node group must be replaced because of different node group name
-  
+
 # module.eks_blueprints.module.aws_eks.module.eks_managed_node_group["mg_5"].aws_eks_node_group.this[0] must be replaced
 +/- resource "aws_eks_node_group" "this" {
       ~ ami_type               = "AL2_x86_64" -> (known after apply)
@@ -529,7 +529,7 @@ Since we're also migrating the IAM role and launch template, you may need to als
       }
     }
 ```
-You can also set the defaults for the managed node groups for backward compatibility with v4: 
+You can also set the defaults for the managed node groups for backward compatibility with v4:
 ```hcl
   eks_managed_node_group_defaults = {
     create_security_group = false
