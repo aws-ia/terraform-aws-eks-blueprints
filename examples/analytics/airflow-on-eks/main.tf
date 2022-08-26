@@ -109,8 +109,8 @@ module "eks_blueprints" {
   eks_managed_node_groups = {
     # Core node group for deploying all the critical add-ons
     mng1 = {
-      name = "core-node-grp"
-      subnet_ids      = module.vpc.private_subnets
+      name       = "core-node-grp"
+      subnet_ids = module.vpc.private_subnets
 
       instance_types = ["m5.xlarge"]
       ami_type       = "AL2_x86_64"

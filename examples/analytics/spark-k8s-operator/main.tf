@@ -128,7 +128,7 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-  enable_metrics_server     = true
+  enable_metrics_server = true
 
   #---------------------------------------------------------------
   # Cluster Autoscaler

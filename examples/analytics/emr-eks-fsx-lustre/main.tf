@@ -136,16 +136,16 @@ module "eks_blueprints" {
       WorkerType  = "ON_DEMAND"
     }
 
-      additional_tags = {
-        Name                                                             = "core-node-grp"
-        subnet_type                                                      = "private"
-        "k8s.io/cluster-autoscaler/node-template/label/arch"             = "x86"
-        "k8s.io/cluster-autoscaler/node-template/label/kubernetes.io/os" = "linux"
-        "k8s.io/cluster-autoscaler/node-template/label/noderole"         = "core"
-        "k8s.io/cluster-autoscaler/node-template/label/node-lifecycle"   = "on-demand"
-        "k8s.io/cluster-autoscaler/experiments"                          = "owned"
-        "k8s.io/cluster-autoscaler/enabled"                              = "true"
-      }
+    additional_tags = {
+      Name                                                             = "core-node-grp"
+      subnet_type                                                      = "private"
+      "k8s.io/cluster-autoscaler/node-template/label/arch"             = "x86"
+      "k8s.io/cluster-autoscaler/node-template/label/kubernetes.io/os" = "linux"
+      "k8s.io/cluster-autoscaler/node-template/label/noderole"         = "core"
+      "k8s.io/cluster-autoscaler/node-template/label/node-lifecycle"   = "on-demand"
+      "k8s.io/cluster-autoscaler/experiments"                          = "owned"
+      "k8s.io/cluster-autoscaler/enabled"                              = "true"
+    }
   }
 
   eks_managed_node_groups = {
