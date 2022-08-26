@@ -106,11 +106,11 @@ module "eks_blueprints" {
     }
   }
 
-  managed_node_groups = {
+  eks_managed_node_groups = {
     # Core node group for deploying all the critical add-ons
     mng1 = {
-      node_group_name = "core-node-grp"
-      subnet_ids      = module.vpc.private_subnets
+      name       = "core-node-grp"
+      subnet_ids = module.vpc.private_subnets
 
       instance_types = ["m5.xlarge"]
       ami_type       = "AL2_x86_64"
@@ -125,9 +125,9 @@ module "eks_blueprints" {
       create_launch_template = true
       launch_template_os     = "amazonlinux2eks"
 
-      update_config = [{
+      update_config = {
         max_unavailable_percentage = 50
-      }]
+      }
 
       k8s_labels = {
         Environment   = "preprod"

@@ -114,12 +114,12 @@ module "eks_blueprints" {
     }
   }
 
-  managed_node_groups = {
+  eks_managed_node_groups = {
     mg_5 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m5.8xlarge"]
-      min_size        = 3
-      subnet_ids      = module.vpc.private_subnets
+      name           = "managed-ondemand"
+      instance_types = ["m5.8xlarge"]
+      min_size       = 3
+      subnet_ids     = module.vpc.private_subnets
     }
   }
 

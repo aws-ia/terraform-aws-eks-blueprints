@@ -18,12 +18,6 @@ variable "private_subnet_ids" {
   default     = []
 }
 
-variable "public_subnet_ids" {
-  description = "List of public subnets Ids for the worker nodes"
-  type        = list(string)
-  default     = []
-}
-
 variable "control_plane_subnet_ids" {
   description = "A list of subnet IDs where the EKS cluster control plane (ENIs) will be provisioned. Used for expanding the pool of subnets used by nodes/node groups without replacing the EKS control plane"
   type        = list(string)
@@ -198,10 +192,10 @@ variable "cluster_service_ipv4_cidr" {
   default     = null
 }
 
-variable "cluster_service_ipv6_cidr" {
-  description = "The IPV6 Service CIDR block to assign Kubernetes service IP addresses"
-  type        = string
-  default     = null
+variable "create_cni_ipv6_iam_policy" {
+  description = "Determines whether to create an [`AmazonEKS_CNI_IPv6_Policy`](https://docs.aws.amazon.com/eks/latest/userguide/cni-iam-role.html#cni-iam-role-create-ipv6-policy)"
+  type        = bool
+  default     = false
 }
 
 #-------------------------------
@@ -298,8 +292,15 @@ variable "cluster_identity_providers" {
 #-------------------------------
 # Node Groups
 #-------------------------------
-variable "managed_node_groups" {
-  description = "Managed node groups configuration"
+
+variable "eks_managed_node_groups" {
+  description = "Map of EKS managed node group definitions to create"
+  type        = any
+  default     = {}
+}
+
+variable "eks_managed_node_group_defaults" {
+  description = "Map of EKS managed node group default configurations"
   type        = any
   default     = {}
 }
@@ -341,12 +342,6 @@ variable "node_security_group_tags" {
   description = "A map of additional tags to add to the node security group created"
   type        = map(string)
   default     = {}
-}
-
-variable "worker_additional_security_group_ids" {
-  description = "A list of additional security group ids to attach to worker instances"
-  type        = list(string)
-  default     = []
 }
 
 #-------------------------------

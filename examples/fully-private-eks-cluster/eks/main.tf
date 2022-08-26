@@ -44,11 +44,10 @@ module "eks_blueprints" {
   cluster_endpoint_private_access = true
 
   # EKS MANAGED NODE GROUPS
-  managed_node_groups = {
+  eks_managed_node_groups = {
     mg_5 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m5.large"]
-      subnet_ids      = local.private_subnet_ids
+      name           = "managed-ondemand"
+      instance_types = ["m5.large"]
     }
   }
 

@@ -105,18 +105,24 @@ module "eks_blueprints" {
   # We recommend to have a MNG to place your critical workloads and add-ons
   # Then rely on Karpenter to scale your workloads
   # You can also make uses on nodeSelector and Taints/tolerations to spread workloads on MNG or Karpenter provisioners
-  managed_node_groups = {
-    mg_5 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m5.large"]
+  eks_managed_node_groups = {
+    karpenter = {
+      name = "karpenter"
 
-      subnet_ids   = module.vpc.private_subnets
+      instance_types = ["m5.large"]
+
       max_size     = 2
       desired_size = 1
       min_size     = 1
-      update_config = [{
+
+      iam_role_additional_policies = [
+        # Required by Karpenter
+        "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+      ]
+
+      update_config = {
         max_unavailable_percentage = 30
-      }]
+      }
 
       # Launch template configuration
       create_launch_template = true              # false will use the default launch template

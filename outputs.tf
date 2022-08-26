@@ -74,12 +74,12 @@ output "cluster_security_group_arn" {
 #-------------------------------
 output "worker_node_security_group_arn" {
   description = "Amazon Resource Name (ARN) of the worker node shared security group"
-  value       = try(module.aws_eks.node_security_group_arn, "EKS Node groups not enabled")
+  value       = module.aws_eks.node_security_group_arn
 }
 
 output "worker_node_security_group_id" {
   description = "ID of the worker node shared security group"
-  value       = try(module.aws_eks.node_security_group_id, "EKS Node groups not enabled")
+  value       = module.aws_eks.node_security_group_id
 }
 
 #-------------------------------
@@ -97,51 +97,17 @@ output "self_managed_node_groups_autoscaling_group_names" {
 }
 
 #-------------------------------
-# Managed Node Groups Outputs
+# EKS Managed Node Groups
 #-------------------------------
-output "managed_node_groups" {
-  description = "Outputs from EKS Managed node groups "
-  value       = var.create_eks && length(var.managed_node_groups) > 0 ? module.aws_eks_managed_node_groups.* : []
+
+output "eks_managed_node_groups" {
+  description = "Map of attribute maps for all EKS managed node groups created"
+  value       = module.aws_eks.eks_managed_node_groups
 }
 
-output "managed_node_groups_id" {
-  description = "EKS Managed node groups id"
-  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in keys(var.managed_node_groups) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_id) }) : []
-}
-
-output "managed_node_groups_status" {
-  description = "EKS Managed node groups status"
-  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in keys(var.managed_node_groups) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_status) }) : []
-}
-
-output "managed_node_group_arn" {
-  description = "Managed node group arn"
-  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in keys(var.managed_node_groups) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_arn) }) : []
-}
-
-output "managed_node_group_iam_role_names" {
-  description = "IAM role names of managed node groups"
-  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in keys(var.managed_node_groups) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_role_name) }) : []
-}
-
-output "managed_node_group_iam_role_arns" {
-  description = "IAM role arn's of managed node groups"
-  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in keys(var.managed_node_groups) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_role_arn) }) : []
-}
-
-output "managed_node_group_iam_instance_profile_id" {
-  description = "IAM instance profile id of managed node groups"
-  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in keys(var.managed_node_groups) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_instance_profile_id) }) : []
-}
-
-output "managed_node_group_iam_instance_profile_arns" {
-  description = "IAM instance profile arn's of managed node groups"
-  value       = var.create_eks && length(var.managed_node_groups) > 0 ? values({ for nodes in keys(var.managed_node_groups) : nodes => join(",", module.aws_eks_managed_node_groups[nodes].managed_nodegroup_iam_instance_profile_arn) }) : []
-}
-
-output "managed_node_group_aws_auth_config_map" {
-  description = "Managed node groups AWS auth map"
-  value       = local.managed_node_group_aws_auth_config_map.*
+output "eks_managed_node_groups_autoscaling_group_names" {
+  description = "List of the autoscaling group names created by EKS managed node groups"
+  value       = flatten([for group in module.aws_eks.eks_managed_node_groups : group.node_group_autoscaling_group_names])
 }
 
 #-------------------------------

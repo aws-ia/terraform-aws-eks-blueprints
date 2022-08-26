@@ -20,27 +20,27 @@ output "eks_cluster_id" {
 
 output "eks_managed_nodegroups" {
   description = "EKS managed node groups"
-  value       = module.eks_blueprints.managed_node_groups
+  value       = module.eks_blueprints.eks_managed_node_groups
 }
 
 output "eks_managed_nodegroup_ids" {
   description = "EKS managed node group ids"
-  value       = module.eks_blueprints.managed_node_groups_id
+  value       = [for grp in module.eks_blueprints.eks_managed_node_groups : grp.node_group_id]
 }
 
 output "eks_managed_nodegroup_arns" {
   description = "EKS managed node group arns"
-  value       = module.eks_blueprints.managed_node_group_arn
+  value       = [for grp in module.eks_blueprints.eks_managed_node_groups : grp.node_group_arn]
 }
 
 output "eks_managed_nodegroup_role_name" {
   description = "EKS managed node group role name"
-  value       = module.eks_blueprints.managed_node_group_iam_role_names
+  value       = [for grp in module.eks_blueprints.eks_managed_node_groups : grp.iam_role_name]
 }
 
 output "eks_managed_nodegroup_status" {
   description = "EKS managed node group status"
-  value       = module.eks_blueprints.managed_node_groups_status
+  value       = [for grp in module.eks_blueprints.eks_managed_node_groups : grp.node_group_status]
 }
 
 output "configure_kubectl" {

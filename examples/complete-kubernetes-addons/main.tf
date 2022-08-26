@@ -87,11 +87,11 @@ module "eks_blueprints" {
     }
   }
 
-  managed_node_groups = {
+  eks_managed_node_groups = {
     mg_5 = {
-      node_group_name      = "managed-ondemand"
+      name = "managed-ondemand"
+
       instance_types       = ["m5.large"]
-      subnet_ids           = module.vpc.private_subnets
       force_update_version = true
     }
   }

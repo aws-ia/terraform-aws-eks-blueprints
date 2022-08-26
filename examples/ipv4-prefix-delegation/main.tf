@@ -50,30 +50,38 @@ module "eks_blueprints" {
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
-  managed_node_groups = {
-    custom_ami = {
-      node_group_name = "custom-ami" # Max 40 characters for node group name
+  eks_managed_node_groups = {
+    prefix = {
+      name = "prefix" # Max 40 characters for node group name
 
       min_size     = 1
       max_size     = 1
       desired_size = 1
 
-      custom_ami_id  = data.aws_ssm_parameter.eks_optimized_ami.value
       instance_types = ["m5.xlarge"]
 
-      create_launch_template = true
-      launch_template_os     = "amazonlinux2eks"
-
       # https://docs.aws.amazon.com/eks/latest/userguide/choosing-instance-type.html#determine-max-pods
-      pre_userdata = <<-EOT
-        MAX_PODS=$(/etc/eks/max-pods-calculator.sh --instance-type-from-imds --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} --cni-prefix-delegation-enabled)
-      EOT
-
       # These settings opt out of the default behavior and use the maximum number of pods, with a cap of 110 due to
       # Kubernetes guidance https://kubernetes.io/docs/setup/best-practices/cluster-large/
       # See more info here https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
-      kubelet_extra_args   = "--max-pods=$${MAX_PODS}"
-      bootstrap_extra_args = "--use-max-pods false"
+      # Ref issue https://github.com/awslabs/amazon-eks-ami/issues/844
+      pre_bootstrap_user_data = <<-EOT
+        #!/bin/bash
+        set -ex
+
+        MAX_PODS=$(/etc/eks/max-pods-calculator.sh \
+          --instance-type-from-imds \
+          --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} \
+          --cni-prefix-delegation-enabled \
+        )
+
+        cat <<-EOF > /etc/profile.d/bootstrap.sh
+        export USE_MAX_PODS=false
+        export KUBELET_EXTRA_ARGS="--max-pods=$${MAX_PODS}"
+        EOF
+        # Source extra environment variables in bootstrap script
+        sed -i '/^set -o errexit/a\\nsource /etc/profile.d/bootstrap.sh' /etc/eks/bootstrap.sh
+      EOT
     }
   }
 
@@ -164,10 +172,6 @@ resource "null_resource" "kubectl_set_env" {
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
-
-data "aws_ssm_parameter" "eks_optimized_ami" {
-  name = "/aws/service/eks/optimized-ami/${local.cluster_version}/amazon-linux-2/recommended/image_id"
-}
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"

@@ -5,8 +5,7 @@ module "aws_eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "v18.28.0"
 
-  create = var.create_eks
-
+  create                     = var.create_eks
   cluster_name               = var.cluster_name
   cluster_version            = var.cluster_version
   cluster_timeouts           = var.cluster_timeouts
@@ -17,6 +16,9 @@ module "aws_eks" {
 
   self_managed_node_groups         = var.self_managed_node_groups
   self_managed_node_group_defaults = var.self_managed_node_group_defaults
+
+  eks_managed_node_groups         = var.eks_managed_node_groups
+  eks_managed_node_group_defaults = var.eks_managed_node_group_defaults
 
   # IAM Role
   create_iam_role = var.create_iam_role
@@ -36,8 +38,9 @@ module "aws_eks" {
   cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
 
   # Kubernetes Network Config
-  cluster_ip_family         = var.cluster_ip_family
-  cluster_service_ipv4_cidr = var.cluster_service_ipv4_cidr
+  cluster_ip_family          = var.cluster_ip_family
+  cluster_service_ipv4_cidr  = var.cluster_service_ipv4_cidr
+  create_cni_ipv6_iam_policy = var.create_cni_ipv6_iam_policy
 
   # Cluster Security Group
   create_cluster_security_group           = var.create_cluster_security_group
