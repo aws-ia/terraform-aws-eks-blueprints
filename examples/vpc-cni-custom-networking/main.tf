@@ -60,9 +60,9 @@ module "eks_blueprints" {
   private_subnet_ids       = slice(module.vpc.private_subnets, 0, 3)
   control_plane_subnet_ids = module.vpc.intra_subnets
 
-  managed_node_groups = {
+  eks_managed_node_groups = {
     custom_networking = {
-      node_group_name = "custom-net"
+      name = "custom-net"
 
       min_size     = 1
       max_size     = 3

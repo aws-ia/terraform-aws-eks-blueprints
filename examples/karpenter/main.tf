@@ -88,9 +88,9 @@ module "eks_blueprints" {
         "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
       ]
 
-      update_config = [{
+      update_config = {
         max_unavailable_percentage = 30
-      }]
+      }
 
       # Launch template configuration
       create_launch_template = true              # false will use the default launch template
