@@ -1,10 +1,10 @@
 # PROMTAIL
 
-Promtail is an agent which ships the contents of local logs to a Loki instance
+Promtail is an agent which ships the contents of local logs to a Loki instance.
 
 [PROMTAIL](https://github.com/grafana/helm-charts/tree/main/charts/promtail) chart bootstraps Promtail infrastructure on a Kubernetes cluster using the Helm package manager.
 
-For complete project documentation, please visit the [PROMTAIL documentation site](https://grafana.com/docs/loki/latest/clients/promtail/).
+For complete project documentation, please visit the [Promtail documentation site](https://grafana.com/docs/loki/latest/clients/promtail/).
 
 ## Usage
 
@@ -34,6 +34,6 @@ The following properties are made available for use when managing the add-on via
 
 ```
 promtail = {
-  enable             = true
+  enable = true
 }
 ```
