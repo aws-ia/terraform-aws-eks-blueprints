@@ -11,16 +11,6 @@ locals {
     aws_partition_dns_suffix = data.aws_partition.current.dns_suffix
   }
 
-  eks_cluster_id     = module.aws_eks.cluster_id
-  cluster_ca_base64  = module.aws_eks.cluster_certificate_authority_data
-  cluster_endpoint   = module.aws_eks.cluster_endpoint
-  vpc_id             = var.vpc_id
-  private_subnet_ids = var.private_subnet_ids
-  public_subnet_ids  = var.public_subnet_ids
-
-  enable_workers            = length(var.self_managed_node_groups) > 0 || length(var.eks_managed_node_groups) > 0 ? true : false
-  worker_security_group_ids = local.enable_workers ? compact(flatten([[module.aws_eks.node_security_group_id], var.worker_additional_security_group_ids])) : []
-
   # Managed node IAM Roles for aws-auth
   managed_node_group_aws_auth_config_map = [
     for role_arn in distinct(compact([for group in module.aws_eks.eks_managed_node_groups : group.iam_role_arn])) : {
