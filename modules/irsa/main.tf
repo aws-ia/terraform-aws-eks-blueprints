@@ -32,7 +32,7 @@ resource "aws_iam_role" "irsa" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${var.eks_oidc_provider_arn}"
+          "Federated" : var.eks_oidc_provider_arn
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {

@@ -6,23 +6,23 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks_blueprints.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
 
 provider "kubectl" {
   apply_retry_count      = 10
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
   load_config_file       = false
 }
@@ -31,7 +31,7 @@ provider "kubectl" {
 # Data resources
 #---------------------------------------------------------------
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
+  name = module.eks_blueprints.cluster_id
 }
 data "aws_availability_zones" "available" {}
 data "aws_caller_identity" "current" {}
@@ -67,8 +67,8 @@ module "eks_blueprints" {
   cluster_name    = local.name
   cluster_version = var.eks_cluster_version
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
   #---------------------------------------
   # Note: This can further restricted to specific required for each Add-on and your application
@@ -156,13 +156,14 @@ module "eks_blueprints" {
 #---------------------------------------------------------------
 # Kubernetes Add-ons
 #---------------------------------------------------------------
+
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../modules/kubernetes-addons"
 
-  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
+  eks_cluster_id       = module.eks_blueprints.cluster_id
+  eks_cluster_endpoint = module.eks_blueprints.cluster_endpoint
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
-  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
+  eks_cluster_version  = module.eks_blueprints.cluster_version
 
   # EKS Addons
   enable_amazon_eks_vpc_cni    = true
@@ -207,6 +208,7 @@ module "eks_blueprints_kubernetes_addons" {
       }
     ]
   }
+
   tags = local.tags
 }
 
@@ -373,7 +375,7 @@ parameters:
   gidRangeEnd: "2000"
 YAML
 
-  depends_on = [module.eks_blueprints.eks_cluster_id]
+  depends_on = [module.eks_blueprints.cluster_id]
 }
 
 #---------------------------------------------------------------
@@ -437,8 +439,8 @@ resource "aws_security_group" "efs" {
 module "airflow_irsa" {
   source = "../../../modules/irsa"
 
-  eks_cluster_id             = module.eks_blueprints.eks_cluster_id
-  eks_oidc_provider_arn      = module.eks_blueprints.eks_oidc_provider_arn
+  eks_cluster_id             = module.eks_blueprints.cluster_id
+  eks_oidc_provider_arn      = module.eks_blueprints.oidc_provider_arn
   irsa_iam_policies          = [aws_iam_policy.airflow.arn]
   kubernetes_namespace       = "airflow"
   kubernetes_service_account = local.airflow_service_account
@@ -531,13 +533,11 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = local.tags

@@ -12,7 +12,9 @@ Note: if your configuration utilizes explicit `depends_on` configurations, it mi
 - Fargate profile variable `var.fargate_profiles` definition has been updated to match that used by [`terraform-aws-eks/modules/fargate-profile](https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/fargate-profile)
 - Self-managed node group sub-module has been replaced with the implementation provided by [`terraform-aws-eks/modules/self-managed-node-group](https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/self-managed-node-group)
 - Self-managed node group variable `var.self_managed_node_groups` definition has been updated to match that used by [`terraform-aws-eks/modules/self-managed-node-group](https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/self-managed-node-group)
-
+- EKS managed node group sub-module has been replaced with the implementation provided by [`terraform-aws-eks/modules/eks-managed-node-group](https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/eks-managed-node-group)
+- EKS managed node group variable `var.eks_managed_node_groups` definition has been updated to match that used by [`terraform-aws-eks/modules/eks-managed-node-group](https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/eks-managed-node-group)
+- The EKS module has been renamed from `aws_eks` to `eks` to follow the naming convention of the module itself
 
 ## Additional changes
 
@@ -24,13 +26,9 @@ Note: if your configuration utilizes explicit `depends_on` configurations, it mi
 
 - The local KMS module has been replaced by what is provided by [terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks) and [terraform-aws-kms](https://github.com/terraform-aws-modules/terraform-aws-kms)
 
-- The local managed node group module has been replaced with what is provided by by [terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/eks-managed-node-group).
-
 ### Removed
 
-- Local implementation of KMS module
-
-- Local managed node modules
+-
 
 ### Variable and output changes
 
@@ -41,17 +39,43 @@ Note: if your configuration utilizes explicit `depends_on` configurations, it mi
       - `context`
     - Self managed node group:
       - `context`
+    - EKS managed node group:
+      - `context`
 
 2. Renamed variables:
 
-    -
+    - `create_eks` -> `create`
+    - `private_subnet_ids` -> `subnet_ids`
 
 3. Added variables:
 
-    - Fargate profile:
-      - `fargate_profile_defaults` to allow setting common parameters once across all Fargate profiles created (and can be overriden by individual Fargate profile definitions)
-      - `self_managed_node_group_defaults` to allow setting common parameters once across all self-managed node groups created (and can be overriden by individual self-managed node group definitions)
-      - `eks_managed_node_group_defaults` to allow setting common parameters once across all managed node groups created (and can be overriden by individual managed node group definitions)
+    - `iam_role_use_name_prefix`
+    - `iam_role_description`
+    - `iam_role_tags`
+    - `cluster_iam_role_dns_suffix`
+    - `cluster_security_group_name`
+    - `cluster_security_group_use_name_prefix`
+    - `cluster_security_group_description`
+    - `cluster_tags`
+    - `create_cluster_primary_security_group_tags`
+    - `node_security_group_id`
+    - `node_security_group_name`
+    - `node_security_group_use_name_prefix`
+    - `node_security_group_description`
+    - `node_security_group_ntp_ipv4_cidr_block`
+    - `node_security_group_ntp_ipv6_cidr_block`
+    - `cluster_encryption_policy_name`
+    - `cluster_encryption_policy_use_name_prefix`
+    - `cluster_encryption_policy_description`
+    - `cluster_encryption_policy_path`
+    - `cluster_encryption_policy_tags`
+    - `enable_kms_key_rotation`
+    - `kms_key_service_users`
+
+    - `fargate_profile_defaults` to allow setting common parameters once across all Fargate profiles created (and can be overriden by individual Fargate profile definitions)
+    - `self_managed_node_group_defaults` to allow setting common parameters once across all self-managed node groups created (and can be overriden by individual self-managed node group definitions)
+    - `eks_managed_node_group_defaults` to allow setting common parameters once across all managed node groups created (and can be overriden by individual managed node group definitions)
+
 4. Removed outputs:
 
     - Fargate profile:
@@ -66,11 +90,29 @@ Note: if your configuration utilizes explicit `depends_on` configurations, it mi
 
 5. Renamed outputs:
 
-    -
+    - `eks_cluster_arn` -> `cluster_arn`
+    - `eks_cluster_id` -> `cluster_id`
+    - `eks_cluster_certificate_authority_data` -> `cluster_certificate_authority_data`
+    - `eks_cluster_endpoint` -> `cluster_endpoint`
+    - `eks_oidc_issuer_url` -> `cluster_oidc_issuer_url`
+    - `eks_oidc_provider_arn` -> `oidc_provider_arn`
+    - `eks_cluster_status` -> `cluster_status`
+    - `eks_cluster_version` -> `cluster_version`
+    - `worker_node_security_group_arn` -> `node_security_group_arn`
+    - `worker_node_security_group_id` -> `node_security_group_id`
 
 6. Added outputs:
 
-    -
+    - `cluster_platform_version`
+    - `kms_key_arn`
+    - `kms_key_id`
+    - `kms_key_policy`
+    - `cluster_iam_role_name`
+    - `cluster_iam_role_arn`
+    - `cluster_iam_role_unique_id`
+    - `cluster_identity_providers`
+    - `cloudwatch_log_group_name`
+    - `cloudwatch_log_group_arn`
 
 ## Upgrade Migrations
 
@@ -78,10 +120,10 @@ Note: if your configuration utilizes explicit `depends_on` configurations, it mi
 
 ```hcl
 module "eks_blueprints" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.7.0"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.8.0"
 
   cluster_name    = "upgrade"
-  cluster_version = "1.20"
+  cluster_version = "1.23"
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
@@ -212,10 +254,10 @@ module "eks_blueprints" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v5.0.0"
 
   cluster_name    = local.cluster_name
-  cluster_version = "1.22"
+  cluster_version = "1.23"
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
   # Fargate
   fargate_profile_defaults = {
@@ -406,6 +448,13 @@ module "eks_blueprints" {
 
 In conjunction with the changes above, users can elect to move their external capacity provider(s) under this module using the following move command. Command is shown using the values from the example shown above, please update to suit your configuration names:
 
+#### EKS Cluster
+
+```sh
+# TODO - look at making this a migration instead?
+terraform state mv 'module.eks_blueprints.module.aws_eks' 'module.eks_blueprints.module.eks'
+```
+
 #### KMS Key
 
 ```sh
@@ -472,7 +521,7 @@ tf state mv 'module.eks_blueprints.module.aws_eks_self_managed_node_groups["self
 tf state mv 'module.eks_blueprints.module.aws_eks_self_managed_node_groups["self_mg5"].aws_iam_role_policy_attachment.self_managed_ng["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]' ' module.eks_blueprints.module.aws_eks.module.self_managed_node_group["self_mg5"].aws_iam_role_policy_attachment.this["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]'
 ```
 
-#### Managed Node Groups
+#### EKS Managed Node Groups
 ```sh
 
 # MNG
@@ -483,12 +532,12 @@ terraform state mv 'module.eks_blueprints.module.aws_eks_managed_node_groups["mg
 terraform state mv 'module.eks_blueprints.module.aws_eks_managed_node_groups["mg_5"].aws_iam_role_policy_attachment.managed_ng["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"]' 'module.eks_blueprints.module.aws_eks.module.eks_managed_node_group["mg_5"].aws_iam_role_policy_attachment.this["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"]'
 terraform state mv 'module.eks_blueprints.module.aws_eks_managed_node_groups["mg_5"].aws_iam_role_policy_attachment.managed_ng["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"]' 'module.eks_blueprints.module.aws_eks.module.eks_managed_node_group["mg_5"].aws_iam_role_policy_attachment.this["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"]'
 terraform state mv 'module.eks_blueprints.module.aws_eks_managed_node_groups["mg_5"].aws_iam_role_policy_attachment.managed_ng["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]' 'module.eks_blueprints.module.aws_eks.module.eks_managed_node_group["mg_5"].aws_iam_role_policy_attachment.this["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]'
-
 ```
+
 When running `terraform plan` after this, you may still see that `aws_eks_node_group` will need to be replaced, check which attribute is causing it and make additional migration changes if needed, for example, you may need to set the previous `node_group_name`:
 
 ```sh
-#Terraform plan result shows that the eks node group must be replaced because of different node group name
+# Terraform plan result shows that the eks node group must be replaced because of different node group name
 
 # module.eks_blueprints.module.aws_eks.module.eks_managed_node_group["mg_5"].aws_eks_node_group.this[0] must be replaced
 +/- resource "aws_eks_node_group" "this" {
@@ -511,7 +560,6 @@ What you can do in this case is to pass the current node group name, in your rel
       ...
       }
     }
-
 ```
 
 Since we're also migrating the IAM role and launch template, you may need to also add the following code:
@@ -529,7 +577,9 @@ Since we're also migrating the IAM role and launch template, you may need to als
       }
     }
 ```
+
 You can also set the defaults for the managed node groups for backward compatibility with v4:
+
 ```hcl
   eks_managed_node_group_defaults = {
     create_security_group = false
@@ -537,6 +587,5 @@ You can also set the defaults for the managed node groups for backward compatibi
     launch_template_use_name_prefix = false
     iam_role_use_name_prefix        = false
     use_name_prefix                 = false
-
   }
 ```

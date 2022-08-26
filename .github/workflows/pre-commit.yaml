@@ -14,7 +14,7 @@ env:
   TERRAFORM_DOCS_VERSION: v0.16.0
   TFSEC_VERSION: v1.22.0
   TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
-  TFLINT_VERSION: v0.38.1
+  TFLINT_VERSION: v0.39.3
 
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'

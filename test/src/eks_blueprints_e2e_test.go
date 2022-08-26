@@ -52,8 +52,7 @@ var (
 		{"vpc_cidr", "10.0.0.0/16", "equal"},
 		{"vpc_private_subnet_cidr", "[10.0.10.0/24 10.0.11.0/24 10.0.12.0/24]", "equal"},
 		{"vpc_public_subnet_cidr", "[10.0.0.0/24 10.0.1.0/24 10.0.2.0/24]", "equal"},
-		{"eks_cluster_id", "aws-terra-test-eks", "equal"},
-		{"eks_managed_nodegroup_status", "[ACTIVE]", "equal"},
+		{"cluster_id", "aws-terra-test-eks", "equal"},
 	}
 
 	/*EKS API Validation*/
@@ -205,7 +204,7 @@ func TestEksBlueprintsE2E(t *testing.T) {
 				/*EKS and Addon Validation*/
 				test_structure.RunTestStage(t, "eks_addon_validation", func() {
 					terraformOptions := test_structure.LoadTerraformOptions(t, tempExampleFolder)
-					eksClusterName := terraform.Output(t, terraformOptions, "eks_cluster_id")
+					eksClusterName := terraform.Output(t, terraformOptions, "cluster_id")
 					awsRegion := terraform.Output(t, terraformOptions, "region")
 					eksAddonValidation(t, eksClusterName, awsRegion)
 				})

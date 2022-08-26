@@ -35,7 +35,6 @@ jobs:
           - example_path: examples/ipv6-eks-cluster
           - example_path: examples/karpenter
           - example_path: examples/multi-tenancy-with-teams
-          - example_path: examples/node-groups/managed-node-groups
           - example_path: examples/stateful
           - example_path: examples/vpc-cni-custom-networking
     steps:

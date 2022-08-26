@@ -3,21 +3,21 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks_blueprints.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
+  name = module.eks_blueprints.cluster_id
 }
 
 data "aws_availability_zones" "available" {}
@@ -48,8 +48,8 @@ module "eks_blueprints" {
   cluster_name    = local.cluster_name
   cluster_version = "1.23"
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_groups = {
     mg_5 = {
@@ -66,10 +66,10 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../modules/kubernetes-addons"
 
-  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
+  eks_cluster_id       = module.eks_blueprints.cluster_id
+  eks_cluster_endpoint = module.eks_blueprints.cluster_endpoint
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
-  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
+  eks_cluster_version  = module.eks_blueprints.cluster_version
 
   #K8s Add-ons
   enable_secrets_store_csi_driver              = true
@@ -130,7 +130,7 @@ data "aws_iam_policy_document" "secrets_management_policy" {
 #---------------------------------------------------------------
 resource "aws_iam_policy" "this" {
   description = "Sample application IAM Policy for IRSA"
-  name        = "${module.eks_blueprints.eks_cluster_id}-${local.application}-irsa"
+  name        = "${module.eks_blueprints.cluster_id}-${local.application}-irsa"
   policy      = data.aws_iam_policy_document.secrets_management_policy.json
 }
 
@@ -139,8 +139,8 @@ resource "aws_iam_policy" "this" {
 #---------------------------------------------------------------
 module "iam_role_service_account" {
   source                     = "../../../modules/irsa"
-  eks_cluster_id             = module.eks_blueprints.eks_cluster_id
-  eks_oidc_provider_arn      = module.eks_blueprints.eks_oidc_provider_arn
+  eks_cluster_id             = module.eks_blueprints.cluster_id
+  eks_oidc_provider_arn      = module.eks_blueprints.oidc_provider_arn
   kubernetes_namespace       = local.application
   kubernetes_service_account = "${local.application}-sa"
   irsa_iam_policies          = [aws_iam_policy.this.arn]
@@ -247,13 +247,11 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = local.tags

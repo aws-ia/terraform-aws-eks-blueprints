@@ -3,27 +3,25 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks_blueprints.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
+  name = module.eks_blueprints.cluster_id
 }
 
 data "aws_availability_zones" "available" {}
-
 data "aws_region" "current" {}
-
 data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 
@@ -31,7 +29,7 @@ data "aws_eks_addon_version" "latest" {
   for_each = toset(["vpc-cni", "coredns"])
 
   addon_name         = each.value
-  kubernetes_version = module.eks_blueprints.eks_cluster_version
+  kubernetes_version = module.eks_blueprints.cluster_version
   most_recent        = true
 }
 
@@ -39,7 +37,7 @@ data "aws_eks_addon_version" "default" {
   for_each = toset(["kube-proxy"])
 
   addon_name         = each.value
-  kubernetes_version = module.eks_blueprints.eks_cluster_version
+  kubernetes_version = module.eks_blueprints.cluster_version
   most_recent        = false
 }
 
@@ -66,8 +64,8 @@ module "eks_blueprints" {
   cluster_name    = local.name
   cluster_version = var.eks_cluster_version
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
   cluster_endpoint_private_access = true # if true, Kubernetes API requests within your cluster's VPC (such as node to control plane communication) use the private VPC endpoint
   cluster_endpoint_public_access  = true # if true, Your cluster API server is accessible from the internet. You can, optionally, limit the CIDR blocks that can access the public endpoint.
@@ -123,10 +121,10 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../modules/kubernetes-addons"
 
-  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
+  eks_cluster_id       = module.eks_blueprints.cluster_id
+  eks_cluster_endpoint = module.eks_blueprints.cluster_endpoint
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
-  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
+  eks_cluster_version  = module.eks_blueprints.cluster_version
 
   #---------------------------------------------------------------
   # Amazon EKS Managed Add-ons
@@ -294,11 +292,11 @@ module "eks_blueprints_kubernetes_addons" {
     version                         = "0.1.19"
     namespace                       = "logging"
     timeout                         = "300"
-    aws_for_fluent_bit_cw_log_group = "/${module.eks_blueprints.eks_cluster_id}/worker-fluentbit-logs" # Optional
+    aws_for_fluent_bit_cw_log_group = "/${module.eks_blueprints.cluster_id}/worker-fluentbit-logs" # Optional
     create_namespace                = true
     values = [templatefile("${path.module}/helm-values/aws-for-fluentbit-values.yaml", {
-      region                    = "${data.aws_region.current.id}"
-      aws_for_fluent_bit_cw_log = "/${module.eks_blueprints.eks_cluster_id}/worker-fluentbit-logs"
+      region                    = data.aws_region.current.id
+      aws_for_fluent_bit_cw_log = "/${module.eks_blueprints.cluster_id}/worker-fluentbit-logs"
     })]
     set = [
       {
@@ -437,13 +435,11 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   default_security_group_name = "${local.name}-endpoint-secgrp"
@@ -574,7 +570,7 @@ module "irsa" {
   source = "../../../modules/irsa"
 
   eks_cluster_id             = local.name
-  eks_oidc_provider_arn      = module.eks_blueprints.eks_oidc_provider_arn
+  eks_oidc_provider_arn      = module.eks_blueprints.oidc_provider_arn
   irsa_iam_policies          = [aws_iam_policy.spark.arn]
   kubernetes_namespace       = local.spark_team
   kubernetes_service_account = local.spark_team

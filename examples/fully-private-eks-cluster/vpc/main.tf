@@ -18,7 +18,6 @@ locals {
     Blueprint  = local.vpc_name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
-
 }
 
 #---------------------------------------------------------------
@@ -71,8 +70,7 @@ module "aws_vpc" {
   default_security_group_tags   = { Name = "${local.vpc_name}-default" }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.vpc_name}" = "shared"
-    "kubernetes.io/role/internal-elb"         = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = local.tags

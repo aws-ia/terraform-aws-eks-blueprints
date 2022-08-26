@@ -3,21 +3,21 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks_blueprints.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
+  name = module.eks_blueprints.cluster_id
 }
 
 data "aws_availability_zones" "available" {}
@@ -48,8 +48,8 @@ module "eks_blueprints" {
   cluster_name    = local.name
   cluster_version = var.eks_cluster_version
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
   cluster_endpoint_private_access = true # if true, Kubernetes API requests within your cluster's VPC (such as node to control plane communication) use the private VPC endpoint
   cluster_endpoint_public_access  = true # if true, Your cluster API server is accessible from the internet. You can, optionally, limit the CIDR blocks that can access the public endpoint.
@@ -216,10 +216,10 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../modules/kubernetes-addons"
 
-  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
+  eks_cluster_id       = module.eks_blueprints.cluster_id
+  eks_cluster_endpoint = module.eks_blueprints.cluster_endpoint
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
-  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
+  eks_cluster_version  = module.eks_blueprints.cluster_version
 
   #---------------------------------------
   # Amazon EKS Managed Add-ons
@@ -350,17 +350,14 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   default_security_group_name = "${local.name}-endpoint-secgrp"
-
   default_security_group_ingress = [
     {
       protocol    = -1
@@ -432,10 +429,10 @@ resource "aws_prometheus_workspace" "amp" {
 # Create EMR on EKS Virtual Cluster
 #---------------------------------------------------------------
 resource "aws_emrcontainers_virtual_cluster" "this" {
-  name = format("%s-%s", module.eks_blueprints.eks_cluster_id, "emr-data-team-a")
+  name = format("%s-%s", module.eks_blueprints.cluster_id, "emr-data-team-a")
 
   container_provider {
-    id   = module.eks_blueprints.eks_cluster_id
+    id   = module.eks_blueprints.cluster_id
     type = "EKS"
 
     info {

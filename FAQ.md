@@ -47,29 +47,29 @@ The following examples demonstrate either method that users can utilize - please
 
 ```hcl
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks_blueprints.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
 
 provider "kubectl" {
   apply_retry_count      = 10
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
   load_config_file       = false
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
+  name = module.eks_blueprints.cluster_id
 }
 ```
 
@@ -84,39 +84,39 @@ Links to References related to this issue
 
 ```hcl
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
 
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.cluster_id]
   }
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks_blueprints.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
 
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
       command     = "aws"
-      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
+      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.cluster_id]
     }
   }
 }
 
 provider "kubectl" {
   apply_retry_count      = 10
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
   load_config_file       = false
 
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.cluster_id]
   }
 }
 ```
@@ -131,7 +131,7 @@ module "irsa" {
     kubernetes_namespace       = "<ENTER_NAMESPACE>"
     kubernetes_service_account = "<ENTER_SERVICE_ACCOUNT_NAME>"
     irsa_iam_policies          = ["<ENTER_IAM_POLICY_ARN>"]
-    eks_cluster_id             = module.eks_blueprints.eks_cluster_id
-    eks_oidc_provider_arn      = module.eks_blueprints.eks_oidc_provider_arn
+    eks_cluster_id             = module.eks_blueprints.cluster_id
+    eks_oidc_provider_arn      = module.eks_blueprints.oidc_provider_arn
 }
 ```

@@ -3,21 +3,21 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks_blueprints.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
+  name = module.eks_blueprints.cluster_id
 }
 
 data "aws_availability_zones" "available" {}
@@ -47,8 +47,8 @@ module "eks_blueprints" {
   cluster_name    = local.name
   cluster_version = local.cluster_version
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_groups = {
     prefix = {
@@ -91,10 +91,10 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
+  eks_cluster_id       = module.eks_blueprints.cluster_id
+  eks_cluster_endpoint = module.eks_blueprints.cluster_endpoint
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
-  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
+  eks_cluster_version  = module.eks_blueprints.cluster_version
 
   enable_amazon_eks_vpc_cni = true
   amazon_eks_vpc_cni_config = {
@@ -116,7 +116,7 @@ data "aws_eks_addon_version" "latest" {
   for_each = toset(["vpc-cni"])
 
   addon_name         = each.value
-  kubernetes_version = module.eks_blueprints.eks_cluster_version
+  kubernetes_version = module.eks_blueprints.cluster_version
   most_recent        = true
 }
 
@@ -130,16 +130,16 @@ locals {
     kind            = "Config"
     current-context = "terraform"
     clusters = [{
-      name = module.eks_blueprints.eks_cluster_id
+      name = module.eks_blueprints.cluster_id
       cluster = {
-        certificate-authority-data = module.eks_blueprints.eks_cluster_certificate_authority_data
-        server                     = module.eks_blueprints.eks_cluster_endpoint
+        certificate-authority-data = module.eks_blueprints.cluster_certificate_authority_data
+        server                     = module.eks_blueprints.cluster_endpoint
       }
     }]
     contexts = [{
       name = "terraform"
       context = {
-        cluster = module.eks_blueprints.eks_cluster_id
+        cluster = module.eks_blueprints.cluster_id
         user    = "terraform"
       }
     }]
@@ -197,13 +197,11 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = local.tags

@@ -3,30 +3,16 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-  }
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks_blueprints.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
-
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-    }
   }
 }
 
@@ -46,7 +32,7 @@ data "aws_acm_certificate" "issued" {
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
+  name = module.eks_blueprints.cluster_id
 }
 
 locals {
@@ -72,8 +58,8 @@ module "eks_blueprints" {
   cluster_name    = local.name
   cluster_version = "1.23"
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
   #----------------------------------------------------------------------------------------------------------#
   # Security groups used in this module created by the upstream modules terraform-aws-eks (https://github.com/terraform-aws-modules/terraform-aws-eks).
@@ -132,10 +118,10 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../modules/kubernetes-addons"
 
-  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
+  eks_cluster_id       = module.eks_blueprints.cluster_id
+  eks_cluster_endpoint = module.eks_blueprints.cluster_endpoint
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
-  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
+  eks_cluster_version  = module.eks_blueprints.cluster_version
   eks_cluster_domain   = var.eks_cluster_domain
 
   # Add-Ons
@@ -172,6 +158,7 @@ data "kubernetes_ingress_v1" "ingress" {
     name      = "ray-cluster-ingress"
     namespace = local.namespace
   }
+
   depends_on = [
     kubectl_manifest.cluster_provisioner
   ]
@@ -189,7 +176,7 @@ resource "aws_kms_key" "objects" {
 #tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
 module "s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "v3.3.0"
+  version = "~> 3.0"
 
   bucket_prefix           = "ray-demo-models-"
   block_public_acls       = true
@@ -210,7 +197,7 @@ module "s3_bucket" {
 data "aws_iam_policy_document" "irsa_policy" {
   statement {
     actions   = ["s3:ListBucket"]
-    resources = ["${module.s3_bucket.s3_bucket_arn}"]
+    resources = [module.s3_bucket.s3_bucket_arn]
   }
   statement {
     actions   = ["s3:*Object"]
@@ -241,7 +228,7 @@ data "aws_iam_policy_document" "irsa_policy" {
 
 resource "aws_iam_policy" "irsa_policy" {
   description = "IAM Policy for IRSA"
-  name_prefix = substr("${module.eks_blueprints.eks_cluster_id}-${local.namespace}-access", 0, 127)
+  name_prefix = substr("${module.eks_blueprints.cluster_id}-${local.namespace}-access", 0, 127)
   policy      = data.aws_iam_policy_document.irsa_policy.json
 }
 
@@ -250,8 +237,8 @@ module "cluster_irsa" {
   kubernetes_namespace       = local.namespace
   kubernetes_service_account = "${local.namespace}-sa"
   irsa_iam_policies          = [aws_iam_policy.irsa_policy.arn]
-  eks_cluster_id             = module.eks_blueprints.eks_cluster_id
-  eks_oidc_provider_arn      = module.eks_blueprints.eks_oidc_provider_arn
+  eks_cluster_id             = module.eks_blueprints.cluster_id
+  eks_oidc_provider_arn      = module.eks_blueprints.oidc_provider_arn
 
   depends_on = [module.s3_bucket]
 }
@@ -344,13 +331,11 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = local.tags

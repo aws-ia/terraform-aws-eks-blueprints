@@ -84,8 +84,8 @@ The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/fully-private-eks-cluster/vpc
-terraform destroy -var-file base.tfvars -auto-approve  
-```  
+terraform destroy -var-file base.tfvars -auto-approve
+```
 
 # Provision the Private EKS cluster using the EKS stack.
 
@@ -125,9 +125,9 @@ Create a Terraform variable definition file called base.tfvars and update the va
 
 ```shell script
 region             = "us-west-2"
-cluster_version    = "1.22"
+cluster_version    = "1.23"
 vpc_id             = "<vpc-id>"
-private_subnet_ids = ["<private-subnet-1>", "<private-subnet-2>", "<private-subnet-3>"]
+subnet_ids         = ["<private-subnet-1>", "<private-subnet-2>", "<private-subnet-3>"]
 cluster_security_group_additional_rules = {
   ingress_from_cloud9_host = {
     description = "Ingress from  Cloud9 Host"
@@ -189,7 +189,7 @@ The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/fully-private-eks-cluster/eks
-terraform destroy -var-file base.tfvars -auto-approve  
+terraform destroy -var-file base.tfvars -auto-approve
 ```
 
 # Provision the Managed Add-ons using the add-ons stack.
@@ -202,7 +202,7 @@ Create a Terraform variable definition file called base.tfvars and update the va
 ```shell script
 region         = "us-west-2"
 eks_cluster_id = "eks"
-cluster_version= "1.22"
+cluster_version= "1.23"
 
 ```
 #### Step2: Run Terraform INIT
@@ -233,6 +233,5 @@ The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/fully-private-eks-cluster/add-ons
-terraform destroy -var-file base.tfvars -auto-approve  
+terraform destroy -var-file base.tfvars -auto-approve
 ```
-<!--- END_TF_DOCS --->

@@ -3,27 +3,27 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks_blueprints.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
 
 provider "kubectl" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
+  name = module.eks_blueprints.cluster_id
 }
 
 data "aws_availability_zones" "available" {}
@@ -59,8 +59,8 @@ module "eks_blueprints" {
   cluster_name    = local.name
   cluster_version = "1.23"
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
   #----------------------------------------------------------------------------------------------------------#
   # Security groups used in this module created by the upstream modules terraform-aws-eks (https://github.com/terraform-aws-modules/terraform-aws-eks).
@@ -116,11 +116,11 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id               = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint         = module.eks_blueprints.eks_cluster_endpoint
+  eks_cluster_id               = module.eks_blueprints.cluster_id
+  eks_cluster_endpoint         = module.eks_blueprints.cluster_endpoint
   eks_oidc_provider            = module.eks_blueprints.oidc_provider
-  eks_cluster_version          = module.eks_blueprints.eks_cluster_version
-  eks_worker_security_group_id = module.eks_blueprints.worker_node_security_group_id
+  eks_cluster_version          = module.eks_blueprints.cluster_version
+  eks_worker_security_group_id = module.eks_blueprints.node_security_group_id
 
   enable_external_secrets = true
 
@@ -155,13 +155,11 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = local.tags
@@ -181,8 +179,8 @@ module "cluster_secretstore_role" {
   create_kubernetes_namespace = false
   kubernetes_service_account  = local.cluster_secretstore_sa
   irsa_iam_policies           = [aws_iam_policy.cluster_secretstore.arn]
-  eks_cluster_id              = module.eks_blueprints.eks_cluster_id
-  eks_oidc_provider_arn       = module.eks_blueprints.eks_oidc_provider_arn
+  eks_cluster_id              = module.eks_blueprints.cluster_id
+  eks_oidc_provider_arn       = module.eks_blueprints.oidc_provider_arn
 
   depends_on = [module.eks_blueprints_kubernetes_addons]
 }
@@ -277,9 +275,10 @@ module "secretstore_role" {
   create_kubernetes_namespace = false
   kubernetes_service_account  = local.secretstore_sa
   irsa_iam_policies           = [aws_iam_policy.secretstore.arn]
-  eks_cluster_id              = module.eks_blueprints.eks_cluster_id
-  eks_oidc_provider_arn       = module.eks_blueprints.eks_oidc_provider_arn
-  depends_on                  = [module.eks_blueprints_kubernetes_addons]
+  eks_cluster_id              = module.eks_blueprints.cluster_id
+  eks_oidc_provider_arn       = module.eks_blueprints.oidc_provider_arn
+
+  depends_on = [module.eks_blueprints_kubernetes_addons]
 }
 
 resource "aws_iam_policy" "secretstore" {
