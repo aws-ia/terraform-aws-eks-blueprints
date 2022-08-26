@@ -21,34 +21,6 @@ locals {
   enable_workers            = length(var.self_managed_node_groups) > 0 || length(var.eks_managed_node_groups) > 0 ? true : false
   worker_security_group_ids = local.enable_workers ? compact(flatten([[module.aws_eks.node_security_group_id], var.worker_additional_security_group_ids])) : []
 
-  node_group_context = {
-    # EKS Cluster Config
-    eks_cluster_id    = local.eks_cluster_id
-    cluster_ca_base64 = local.cluster_ca_base64
-    cluster_endpoint  = local.cluster_endpoint
-    cluster_version   = var.cluster_version
-    # VPC Config
-    vpc_id             = local.vpc_id
-    private_subnet_ids = local.private_subnet_ids
-    public_subnet_ids  = local.public_subnet_ids
-
-    # Worker Security Group
-    worker_security_group_ids = local.worker_security_group_ids
-
-    # Data sources
-    aws_partition_dns_suffix = local.context.aws_partition_dns_suffix
-    aws_partition_id         = local.context.aws_partition_id
-
-    iam_role_path                 = var.iam_role_path
-    iam_role_permissions_boundary = var.iam_role_permissions_boundary
-
-    # Service IPv4/IPv6 CIDR range
-    service_ipv6_cidr = var.cluster_service_ipv6_cidr
-    service_ipv4_cidr = var.cluster_service_ipv4_cidr
-
-    tags = var.tags
-  }
-
   # Managed node IAM Roles for aws-auth
   managed_node_group_aws_auth_config_map = [
     for role_arn in distinct(compact([for group in module.aws_eks.eks_managed_node_groups : group.iam_role_arn])) : {

@@ -11,6 +11,9 @@ module "aws_eks" {
   cluster_timeouts           = var.cluster_timeouts
   cluster_identity_providers = var.cluster_identity_providers
 
+  eks_managed_node_groups         = var.eks_managed_node_groups
+  eks_managed_node_group_defaults = var.eks_managed_node_group_defaults
+  
   fargate_profiles         = var.fargate_profiles
   fargate_profile_defaults = var.fargate_profile_defaults
 
