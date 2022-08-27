@@ -13,7 +13,7 @@
     
     
       
-        <title>Horizontal cluster-proportional-autoscaler container - Amazon EKS Blueprints for Terraform</title>
+        <title>Calico - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#horizontal-cluster-proportional-autoscaler-container" class="md-skip">
+        <a href="#calico" class="md-skip">
           Skip to content
         </a>
       
@@ -99,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Horizontal cluster-proportional-autoscaler container
+              Calico
             
           </span>
         </div>
@@ -560,48 +560,6 @@
               
   
   
-  
-    <li class="md-nav__item">
-      <a href="../calico/" class="md-nav__link">
-        Calico
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cert-manager/" class="md-nav__link">
-        cert-manager
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cluster-autoscaler/" class="md-nav__link">
-        Cluster Autoscaler
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
     
   
   
@@ -614,12 +572,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Horizontal cluster-proportional-autoscaler container
+          Calico
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Horizontal cluster-proportional-autoscaler container
+        Calico
       </a>
       
         
@@ -661,6 +619,48 @@
   
 </nav>
       
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cert-manager/" class="md-nav__link">
+        cert-manager
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cluster-autoscaler/" class="md-nav__link">
+        Cluster Autoscaler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cluster-proportional-autoscaler/" class="md-nav__link">
+        Horizontal cluster-proportional-autoscaler container
+      </a>
     </li>
   
 
@@ -1227,79 +1227,37 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/cluster-proportional-autoscaler.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/calico.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-<h1 id="horizontal-cluster-proportional-autoscaler-container">Horizontal cluster-proportional-autoscaler container<a class="headerlink" href="#horizontal-cluster-proportional-autoscaler-container" title="Permanent link">&para;</a></h1>
-<p>Horizontal cluster-proportional-autoscaler watches over the number of schedulable nodes and cores of the cluster and resizes the number of replicas for the required resource. This functionality may be desirable for applications that need to be autoscaled with the size of the cluster, such as CoreDNS and other services that scale with the number of nodes/pods in the cluster.</p>
-<p>The <a href="https://github.com/kubernetes-sigs/cluster-proportional-autoscaler">cluster-proportional-autoscaler</a> helps to scale the applications using deployment or replicationcontroller or replicaset. This is an alternative solution to Horizontal Pod Autoscaling.
-It is typically installed as a <strong>Deployment</strong> in your cluster.</p>
+<h1 id="calico">Calico<a class="headerlink" href="#calico" title="Permanent link">&para;</a></h1>
+<p>Calico is a widely adopted, battle-tested open source networking and network security solution for Kubernetes, virtual machines, and bare-metal workloads
+Calico provides two major services for Cloud Native applications: network connectivity between workloads and network security policy enforcement between workloads.
+<a href="https://projectcalico.docs.tigera.io/getting-started/kubernetes/helm#download-the-helm-chart">Calico</a> docs chart bootstraps Calico infrastructure on a Kubernetes cluster using the Helm package manager.</p>
+<p>For complete project documentation, please visit the <a href="https://www.tigera.io/calico-documentation/">Calico documentation site</a>.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p>This add-on requires both <code>enable_coredns_autoscaler</code> and <code>coredns_autoscaler_helm_config</code> as mandatory fields.</p>
-<p><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/cluster-proportional-autoscaler">cluster-proportional-autoscaler</a> can be deployed by enabling the add-on via the following.</p>
-<p>The example shows how to enable <code>cluster-proportional-autoscaler</code> for <code>CoreDNS Deployment</code>. CoreDNS deployment is not configured with HPA. So, this add-on helps to scale CoreDNS Add-on according to the size of the nodes and cores.</p>
-<p>This Add-on can be used to scale any application with Deployment objects.</p>
-<div class="highlight"><pre><span></span><code>enable_coredns_autoscaler = true
-coredns_autoscaler_helm_config = {
-  name        = &quot;cluster-proportional-autoscaler&quot;
-  chart       = &quot;cluster-proportional-autoscaler&quot;
-  repository  = &quot;https://kubernetes-sigs.github.io/cluster-proportional-autoscaler&quot;
-  version     = &quot;1.0.0&quot;
-  namespace   = &quot;kube-system&quot;
-  timeout     = &quot;300&quot;
-  values = [
-    &lt;&lt;-EOT
-    nameOverride: kube-dns-autoscaler
-
-     # Formula for controlling the replicas. Adjust according to your needs
-     #  replicas = max( ceil( cores * 1/coresPerReplica ) , ceil( nodes * 1/nodesPerReplica ) )
-    config:
-      linear:
-      coresPerReplica: 256
-      nodesPerReplica: 16
-      min: 1
-      max: 100
-      preventSinglePointFailure: true
-      includeUnschedulableNodes: true
-
-    # Target to scale. In format: deployment/*, replicationcontroller/* or replicaset/* (not case sensitive).
-    options:
-      target: deployment/coredns # Notice the target as `deployment/coredns`
-
-    serviceAccount:
-      create: true
-      name: kube-dns-autoscaler
-
-    podSecurityContext:
-      seccompProfile:
-      type: RuntimeDefault
-      supplementalGroups: [ 65534 ]
-      fsGroup: 65534
-
-    resources:
-      limits:
-        cpu: 100m
-        memory: 128Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
-
-    tolerations:
-      - key: &quot;CriticalAddonsOnly&quot;
-        operator: &quot;Exists&quot;
-        description = &quot;Cluster Proportional Autoscaler for CoreDNS Service&quot;
-    EOT
-  ]
-}
+<p>Calico can be deployed by enabling the add-on via the following.</p>
+<div class="highlight"><pre><span></span><code>enable_calico = true
+</code></pre></div>
+<p>Deploy Calico with custom <code>values.yaml</code></p>
+<div class="highlight"><pre><span></span><code>  # Optional Map value; pass calico-values.yaml from consumer module
+   calico_helm_config = {
+    name       = &quot;calico&quot;                                               # (Required) Release name.
+    repository = &quot;https://docs.projectcalico.org/charts&quot;                # (Optional) Repository URL where to locate the requested chart.
+    chart      = &quot;tigera-operator&quot;                                      # (Required) Chart name to be installed.
+    version    = &quot;v3.24.1&quot;                                              # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/calico/locals.tf
+    namespace  = &quot;tigera-operator&quot;                                      # (Optional) The namespace to install the release into.
+    values = [templatefile(&quot;${path.module}/calico-values.yaml&quot;, {})]
+  }
 </code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p>The following properties are made available for use when managing the add-on via GitOps.</p>
-<div class="highlight"><pre><span></span><code>corednsAutoscaler = {
-  enable = true
-}
+<div class="highlight"><pre><span></span><code><span class="nv">calico</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="nb">enable</span>  <span class="o">=</span> <span class="nb">true</span>
+<span class="o">}</span>
 </code></pre></div>
 
               
@@ -1316,7 +1274,7 @@ coredns_autoscaler_helm_config = {
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../cluster-autoscaler/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Cluster Autoscaler" rel="prev">
+        <a href="../aws-privateca-issuer/" class="md-footer__link md-footer__link--prev" aria-label="Previous: aws-privateca-issuer" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1325,20 +1283,20 @@ coredns_autoscaler_helm_config = {
               <span class="md-footer__direction">
                 Previous
               </span>
-              Cluster Autoscaler
+              aws-privateca-issuer
             </div>
           </div>
         </a>
       
       
         
-        <a href="../crossplane/" class="md-footer__link md-footer__link--next" aria-label="Next: Crossplane" rel="next">
+        <a href="../cert-manager/" class="md-footer__link md-footer__link--next" aria-label="Next: cert-manager" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Crossplane
+              cert-manager
             </div>
           </div>
           <div class="md-footer__button md-icon">
