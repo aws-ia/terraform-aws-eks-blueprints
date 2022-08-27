@@ -1,10 +1,9 @@
 locals {
-  name = "calico"
   default_helm_config = {
-    name             = local.name
-    chart            = local.name
-    repository       = "https://projectcalico.docs.tigera.io/charts"
-    version          = "v3.24.0"
+    name             = "calico"
+    chart            = "tigera-operator"
+    repository       = "https://docs.projectcalico.org/charts"
+    version          = "v3.24.1"
     namespace        = "tigera-operator"
     values           = local.default_helm_values
     create_namespace = true
