@@ -5,8 +5,7 @@ locals {
     chart            = local.name
     repository       = "https://grafana.github.io/helm-charts"
     version          = "6.3.0"
-    namespace        = try(var.helm_config["namespace"], local.name)
-    timeout          = "1200"
+    namespace        = local.name
     values           = []
     create_namespace = true
     description      = "Promtail helm Chart deployment configuration"
