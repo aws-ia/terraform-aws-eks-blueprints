@@ -68,6 +68,7 @@ module "eks_blueprints_kubernetes_addons" {
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
   enable_promtail = true
+  enable_calico   = true
 
   tags = local.tags
 }
