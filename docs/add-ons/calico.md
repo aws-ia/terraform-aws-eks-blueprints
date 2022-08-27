@@ -1,4 +1,4 @@
-# CALICO
+# Calico
 
 Calico is a widely adopted, battle-tested open source networking and network security solution for Kubernetes, virtual machines, and bare-metal workloads
 Calico provides two major services for Cloud Native applications: network connectivity between workloads and network security policy enforcement between workloads.
@@ -32,7 +32,7 @@ Deploy Calico with custom `values.yaml`
 
 The following properties are made available for use when managing the add-on via GitOps.
 
-```
+```sh
 calico = {
   enable  = true
 }

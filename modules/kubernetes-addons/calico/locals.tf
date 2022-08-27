@@ -6,7 +6,6 @@ locals {
     repository       = "https://projectcalico.docs.tigera.io/charts"
     version          = "v3.24.0"
     namespace        = "tigera-operator"
-    timeout          = "1200"
     values           = local.default_helm_values
     create_namespace = true
     description      = "calico helm Chart deployment configuration"

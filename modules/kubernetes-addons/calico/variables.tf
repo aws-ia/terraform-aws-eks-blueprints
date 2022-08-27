@@ -1,7 +1,7 @@
 variable "helm_config" {
+  description = "Helm Config for calico"
   type        = any
   default     = {}
-  description = "Helm Config for calico"
 }
 
 variable "manage_via_gitops" {
