@@ -2,7 +2,7 @@
 
 Kubecost provides real-time cost visibility and insights for teams using Kubernetes, helping you continuously reduce your cloud costs.
 Amazon EKS supports Kubecost, which you can use to monitor your costs broken down by Kubernetes resources including pods, nodes, namespaces, and labels.
-[Cost monitoring](https://docs.aws.amazon.com/eks/latest/userguide/cost-monitoring.html) docs provide steps to bootstrap Kubecost infrastructure on a EKS cluster using the Helm package manager.
+[Cost monitoring](https://docs.aws.amazon.com/eks/latest/userguide/cost-monitoring.html) docs provides steps to bootstrap Kubecost infrastructure on a EKS cluster using the Helm package manager.
 
 For complete project documentation, please visit the [Kubecost documentation site](https://guide.kubecost.com/hc/en-us/articles/4407595950359).
 

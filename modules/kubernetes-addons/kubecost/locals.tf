@@ -2,13 +2,14 @@ locals {
   name = "kubecost"
 
   default_helm_config = {
-    name        = local.name
-    chart       = "cost-analyzer"
-    repository  = "oci://public.ecr.aws/kubecost/cost-analyzer"
-    version     = "1.96.0"
-    namespace   = local.name
-    values      = local.default_helm_values
-    description = "Kubecost Helm Chart deployment configuration"
+    name             = local.name
+    chart            = "cost-analyzer"
+    repository       = "oci://public.ecr.aws/kubecost/cost-analyzer"
+    version          = "1.96.0"
+    namespace        = local.name
+    values           = local.default_helm_values
+    create_namespace = true
+    description      = "Kubecost Helm Chart deployment configuration"
   }
 
   helm_config = merge(
