@@ -24,6 +24,6 @@ terraform {
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"
   #   region = "us-west-2"
-  #   key    = "e2e/stateful/terraform.tfstate"
+  #   key    = "e2e/grafana-loki/terraform.tfstate"
   # }
 }
