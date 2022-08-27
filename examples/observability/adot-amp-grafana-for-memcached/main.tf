@@ -53,6 +53,9 @@ module "eks_blueprints" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
+  # Cluster name is long
+  iam_role_use_name_prefix = false
+
   eks_managed_node_groups = {
     adot = {
       name = "adot"

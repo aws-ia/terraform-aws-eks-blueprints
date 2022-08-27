@@ -145,7 +145,6 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   tags = local.tags
-
 }
 
 #---------------------------------------------------------------

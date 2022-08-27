@@ -184,7 +184,8 @@ output "self_managed_node_groups" {
 
 output "self_managed_node_groups_autoscaling_group_names" {
   description = "List of the autoscaling group names created by self-managed node groups"
-  value       = module.eks.self_managed_node_groups_autoscaling_group_names
+  # This representation allows for the names to be lazily evaluated which means they can be passed in as inputs to `count()`
+  value = values({ for group in sort(keys(var.self_managed_node_groups)) : group => module.eks.self_managed_node_groups[group].autoscaling_group_name })
 }
 
 #-------------------------------

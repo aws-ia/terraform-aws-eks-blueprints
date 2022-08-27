@@ -15,7 +15,7 @@ output "vpc_cidr" {
 
 output "eks_cluster_id" {
   description = "EKS cluster ID"
-  value       = module.eks_blueprints.eks_cluster_id
+  value       = module.eks_blueprints.cluster_id
 }
 
 output "eks_managed_nodegroups" {

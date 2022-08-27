@@ -135,7 +135,7 @@ module "aws_load_balancer_controller" {
 }
 
 module "aws_node_termination_handler" {
-  count                   = var.enable_aws_node_termination_handler && (length(var.auto_scaling_group_names) > 0 || var.enable_karpenter) ? 1 : 0
+  count                   = var.enable_aws_node_termination_handler ? 1 : 0
   source                  = "./aws-node-termination-handler"
   helm_config             = var.aws_node_termination_handler_helm_config
   irsa_policies           = var.aws_node_termination_handler_irsa_policies
