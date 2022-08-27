@@ -1,0 +1,181 @@
+global:
+  grafana:
+    enabled: false
+    proxy: false
+
+pricingCsv:
+  enabled: false
+  location:
+    provider: "AWS"
+    region: "us-east-1"
+    URI: s3://kc-csv-test/pricing_schema.csv # a valid file URI
+    csvAccessCredentials: pricing-schema-access-secret
+
+nodeSelector: {}
+
+tolerations: []
+#  - key: "key"
+#    operator: "Equal|Exists"
+#    value: "value"
+#    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+affinity: {}
+
+# If true, creates a PriorityClass to be used by the cost-analyzer pod
+priority:
+  enabled: false
+  # value: 1000000
+
+# If true, enable creation of NetworkPolicy resources.
+networkPolicy:
+  enabled: false
+
+podSecurityPolicy:
+  enabled: false
+
+imageVersion: prod-1.96.0
+kubecostFrontend:
+  image: public.ecr.aws/kubecost/frontend
+  imagePullPolicy: Always
+  resources:
+    requests:
+      cpu: "10m"
+      memory: "55Mi"
+    #limits:
+    #  cpu: "100m"
+    #  memory: "256Mi"
+
+kubecostModel:
+  image: public.ecr.aws/kubecost/cost-model
+  imagePullPolicy: Always
+  warmCache: true
+  warmSavingsCache: true
+  etl: true
+  # The total number of days the ETL storage will build
+  etlStoreDurationDays: 120
+  maxQueryConcurrency: 5
+  # utcOffset represents a timezone in hours and minutes east (+) or west (-)
+  # of UTC, itself, which is defined as +00:00.
+  # See the tz database of timezones to look up your local UTC offset:
+  # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  utcOffset: "+00:00"
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "55Mi"
+    #limits:
+    #  cpu: "800m"
+    #  memory: "256Mi"
+
+serviceAccount:
+  create: true # Set this to false if you're bringing your own service account.
+  annotations: {}
+  # name: kc-test
+
+# Define persistence volume for cost-analyzer
+persistentVolume:
+  size: 32Gi
+  dbSize: 32.0Gi
+  enabled: true # Note that setting this to false means configurations will be wiped out on pod restart.
+  # storageClass: "-" #
+  # existingClaim: kubecost-cost-analyzer # a claim in the same namespace as kubecost
+
+ingress:
+  enabled: false
+  # className: nginx
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  paths: ["/"] # There's no need to route specifically to the pods-- we have an nginx deployed that handles routing
+  hosts:
+    - cost-analyzer.local
+  tls: []
+  #  - secretName: cost-analyzer-tls
+  #    hosts:
+  #      - cost-analyzer.local
+
+service:
+  type: ClusterIP
+  port: 9090
+  targetPort: 9090
+  # nodePort:
+  labels: {}
+  annotations: {}
+
+prometheus:
+  server:
+    # If clusterIDConfigmap is defined, instead use user-generated configmap with key CLUSTER_ID
+    # to use as unique cluster ID in kubecost cost-analyzer deployment.
+    # This overrides the cluster_id set in prometheus.server.global.external_labels.
+    # NOTE: This does not affect the external_labels set in prometheus config.
+    # clusterIDConfigmap: cluster-id-configmap
+    image:
+      repository: public.ecr.aws/kubecost/prometheus
+      tag: v2.35.0
+    resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 500m
+    #   memory: 512Mi
+    global:
+      scrape_interval: 1m
+      scrape_timeout: 10s
+      evaluation_interval: 1m
+      external_labels:
+        cluster_id: cluster-one # Each cluster should have a unique ID
+    persistentVolume:
+      size: 32Gi
+      enabled: true
+    extraArgs:
+      query.max-concurrency: 1
+      query.max-samples: 100000000
+    tolerations: []
+    #  - key: "key"
+    #    operator: "Equal|Exists"
+    #    value: "value"
+    #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+  configmapReload:
+    prometheus:
+      ## If false, the configmap-reload container will not be deployed
+      ##
+      enabled: true
+
+      ## configmap-reload container name
+      ##
+      name: configmap-reload
+      ## configmap-reload container image
+      ##
+      image:
+        repository: public.ecr.aws/bitnami/configmap-reload
+        tag: 0.7.1
+        pullPolicy: IfNotPresent
+      ## Additional configmap-reload container arguments
+      ##
+      extraArgs: {}
+      ## Additional configmap-reload volume directories
+      ##
+      extraVolumeDirs: []
+      ## Additional configmap-reload mounts
+      ##
+      extraConfigmapMounts: []
+        # - name: prometheus-alerts
+        #   mountPath: /etc/alerts.d
+        #   subPath: ""
+        #   configMap: prometheus-alerts
+        #   readOnly: true
+      ## configmap-reload resource requests and limits
+      ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      ##
+      resources: {}
+
+  kube-state-metrics:
+    disabled: false
+  nodeExporter:
+    enabled: false
+
+
+reporting:
+  productAnalytics: false
