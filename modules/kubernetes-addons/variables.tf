@@ -1027,7 +1027,20 @@ variable "airflow_helm_config" {
   default     = {}
 }
 
-#-----------CALICO ADDON-------------
+#-----------Promtail ADDON-------------
+variable "enable_promtail" {
+  description = "Enable Promtail add-on"
+  type        = bool
+  default     = false
+}
+
+variable "promtail_helm_config" {
+  description = "Promtail Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------Calico ADDON-------------
 variable "enable_calico" {
   description = "Enable Calico add-on"
   type        = bool

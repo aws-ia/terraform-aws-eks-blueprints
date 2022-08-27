@@ -499,6 +499,14 @@ module "external_secrets" {
   external_secrets_secrets_manager_arns = var.external_secrets_secrets_manager_arns
 }
 
+module "promtail" {
+  count             = var.enable_promtail ? 1 : 0
+  source            = "./promtail"
+  helm_config       = var.promtail_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "calico" {
   count             = var.enable_calico ? 1 : 0
   source            = "./calico"
