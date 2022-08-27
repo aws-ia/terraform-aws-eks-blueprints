@@ -1039,3 +1039,16 @@ variable "promtail_helm_config" {
   type        = any
   default     = {}
 }
+
+#-----------Calico ADDON-------------
+variable "enable_calico" {
+  description = "Enable Calico add-on"
+  type        = bool
+  default     = false
+}
+
+variable "calico_helm_config" {
+  description = "Calico add-on config"
+  type        = any
+  default     = {}
+}

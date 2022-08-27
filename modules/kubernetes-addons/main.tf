@@ -506,3 +506,11 @@ module "promtail" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
+
+module "calico" {
+  count             = var.enable_calico ? 1 : 0
+  source            = "./calico"
+  helm_config       = var.calico_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
