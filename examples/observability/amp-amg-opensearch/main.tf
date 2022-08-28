@@ -93,6 +93,7 @@ module "eks_blueprints_kubernetes_addons" {
     })]
   }
 
+  enable_amazon_eks_aws_ebs_csi_driver = true
   enable_prometheus                    = true
   enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
