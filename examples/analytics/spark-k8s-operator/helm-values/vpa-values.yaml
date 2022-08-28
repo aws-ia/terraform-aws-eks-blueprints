@@ -1,0 +1,20 @@
+# Default values for vertical-pod-autoscaler.
+serviceAccount:
+  name: vpa
+
+recommender:
+  enabled: true
+  extraArgs:
+    v: "4"
+    pod-recommendation-min-cpu-millicores: 15
+    pod-recommendation-min-memory-mb: 100
+    # Best practise to use Prometheus as a history provider for the VPA recommender. Not required for this example
+#   storage: prometheus
+#   prometheus-address: http://prometheus-server.prometheus.svc.cluster.local:9090
+  nodeSelector:
+    NodeGroupType: ${node_group_type}
+    kubernetes.io/os: ${operating_system}
+updater:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/os: ${operating_system}

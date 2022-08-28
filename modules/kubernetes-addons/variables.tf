@@ -965,13 +965,30 @@ variable "external_secrets_helm_config" {
   description = "External Secrets operator Helm Chart config"
 }
 
+variable "external_secrets_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
+}
+
+variable "external_secrets_ssm_parameter_arns" {
+  description = "List of Systems Manager Parameter ARNs that contain secrets to mount using External Secrets"
+  type        = list(string)
+  default     = ["arn:aws:ssm:*:*:parameter/*"]
+}
+
+variable "external_secrets_secrets_manager_arns" {
+  description = "List of Secrets Manager ARNs that contain secrets to mount using External Secrets"
+  type        = list(string)
+  default     = ["arn:aws:secretsmanager:*:*:secret:*"]
+}
+
 #-----------Grafana ADDON-------------
 variable "enable_grafana" {
   description = "Enable Grafana add-on"
   type        = bool
   default     = false
 }
-
 variable "grafana_helm_config" {
   description = "Kubernetes Grafana Helm Chart config"
   type        = any
@@ -982,4 +999,56 @@ variable "grafana_irsa_policies" {
   description = "IAM policy ARNs for grafana IRSA"
   type        = list(string)
   default     = []
+}
+
+#-----------KUBERAY OPERATOR-------------
+variable "enable_kuberay_operator" {
+  description = "Enable KubeRay Operator add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kuberay_operator_helm_config" {
+  description = "KubeRay Operator Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------Apache Airflow ADDON-------------
+variable "enable_airflow" {
+  description = "Enable Airflow add-on"
+  type        = bool
+  default     = false
+}
+
+variable "airflow_helm_config" {
+  description = "Apache Airflow v2 Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------Promtail ADDON-------------
+variable "enable_promtail" {
+  description = "Enable Promtail add-on"
+  type        = bool
+  default     = false
+}
+
+variable "promtail_helm_config" {
+  description = "Promtail Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------Calico ADDON-------------
+variable "enable_calico" {
+  description = "Enable Calico add-on"
+  type        = bool
+  default     = false
+}
+
+variable "calico_helm_config" {
+  description = "Calico add-on config"
+  type        = any
+  default     = {}
 }
