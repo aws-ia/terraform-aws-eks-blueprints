@@ -136,12 +136,12 @@ module "irsa" {
 }
 ```
 
-### Upgrade requirements for EKS Cluster from v1.22 to v1.23 
+### Upgrade requirements for EKS Cluster from v1.22 to v1.23
 
 It's mandatory to deploy EBS CSI Driver from EKS Cluster v1.23 as it's not installed when you create a cluster.
 For more details check this [link](https://docs.aws.amazon.com/eks/latest/userguide/ebs-csi.html)
 
-Ensure you deploy EBS CSI driver Add-on before upgrading your cluster from 1.22 to 1.23. 
+Ensure you deploy EBS CSI driver Add-on before upgrading your cluster from 1.22 to 1.23.
 
 Enable the following add-on in EKS Cluster v1.22 and then upgrade to v1.23 to avoid any interruptions to your workload
 
