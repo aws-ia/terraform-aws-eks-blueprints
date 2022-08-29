@@ -3,6 +3,37 @@
 [aws-ebs-csi-driver](https://docs.aws.amazon.com/eks/latest/userguide/managing-ebs-csi.html)
 The EBS CSI driver provides a CSI interface used by container orchestrators to manage the lifecycle of Amazon EBS volumes. Availability in EKS add-ons in preview enables a simple experience for attaching persistent storage to an EKS cluster. The EBS CSI driver can now be installed, managed, and updated directly through the EKS console, CLI, and API
 
+This addons supports managing AWS-EBS-CSI-DRIVER through either the EKS managed addon or a self-managed addon via Helm.
+
+## EKS Managed AWS-EBS-CSI-DRIVER Addon
+
+To enable and modify the EKS managed addon for aws-ebs-csi-driver, you can reference the following configuration and tailor to suit:
+
+```hcl
+  enable_amazon_eks_aws_ebs_csi_driver = true
+  amazon_eks_aws_ebs_csi_driver_config = {
+    resolve_conflicts = "OVERWRITE"
+    ...
+  }
+```
+
+## Self Managed AWS-EBS-CSI-DRIVER Addon
+
+Official [aws-ebs-csi-driver](https://github.com/kubernetes-sigs/aws-ebs-csi-driver) helm chart will be deploy in this mode
+
+you must use this mode if you need to change the configuration of the ebs-csi-driver as this is not possible with the EKS managed mode
+
+See the [`stateful`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/stateful) example where the self-managed aws-ebs-csi-driver addon is used to provision the ebs-csi-driver on a EKS cluster 
+
+To provision the self managed addon for aws-ebs-csi-driver, you can reference the following configuration and tailor to suit:
+
+ ```hcl
+   enable_self_managed_aws_ebs_csi_driver = true
+   self_managed_aws_ebs_csi_driver_helm_config = {
+    ...
+   }
+  ```
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
