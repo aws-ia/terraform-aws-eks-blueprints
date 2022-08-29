@@ -36,7 +36,7 @@ module "irsa_addon" {
 }
 
 resource "aws_iam_policy" "aws_ebs_csi_driver" {
-  count = local.create_irsa && var.enable_amazon_eks_aws_ebs_csi_driver || var.enable_self_managed_aws_ebs_csi_driver ? 1 : 0
+  count = local.create_irsa || var.enable_self_managed_aws_ebs_csi_driver ? 1 : 0
 
   name        = "${var.addon_context.eks_cluster_id}-aws-ebs-csi-driver-irsa"
   description = "IAM Policy for AWS EBS CSI Driver"
