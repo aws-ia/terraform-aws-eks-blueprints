@@ -1143,3 +1143,41 @@ variable "gatekeeper_helm_config" {
   type        = any
   default     = {}
 }
+
+
+#-----------Kubernetes Portworx ADDON-------------
+variable "enable_portworx" {
+  description = "Enable Kubernetes Dashboard add-on"
+  type        = bool
+  default     = false
+}
+
+variable "portworx_irsa_policies" {
+  description = "IAM policy ARNs for Portworx IRSA"
+  type        = list(string)
+  default     = []
+}
+
+variable "portworx_set_values" {
+  description = "Set values for portworx helm chart"
+  type        = any
+  default     = []
+}
+
+variable "portworx_set_sensitive_values" {
+  description = "Set sensitive values for portworx helm chart which wont show in plan's diff"
+  type        = any
+  default     = []
+}
+
+variable "portworx_helm_config" {
+  description = "Kubernetes Portworx Helm Chart config"
+  type        = any
+  default     = null
+}
+
+variable "portworx_chart_values" {
+  description = "Custom values for portworx helm chart"
+  type        = any
+  default     = {}
+}
