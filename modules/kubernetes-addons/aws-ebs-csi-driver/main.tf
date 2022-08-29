@@ -22,7 +22,7 @@ resource "aws_eks_addon" "aws_ebs_csi_driver" {
 module "irsa_addon" {
   source = "../../../modules/irsa"
 
-  count = local.create_irsa && var.enable_amazon_eks_aws_ebs_csi_driver && !var.enable_self_managed_aws_ebs_csi_driver ? 1 : 0
+  count = local.create_irsa && !var.enable_self_managed_aws_ebs_csi_driver ? 1 : 0
 
   create_kubernetes_namespace       = false
   create_kubernetes_service_account = false
