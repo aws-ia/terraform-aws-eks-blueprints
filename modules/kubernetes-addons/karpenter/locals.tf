@@ -17,7 +17,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://charts.karpenter.sh"
-    version     = "0.14.0"
+    version     = "0.16.0"
     namespace   = local.name
     timeout     = "300"
     values      = local.default_helm_values
