@@ -29,8 +29,9 @@ You can optionally customize the Helm chart that deploys `aws_for_fluentbit` via
     repository                                = "https://aws.github.io/eks-charts"
     version                                   = "0.1.0"
     namespace                                 = "logging"
-    aws_for_fluent_bit_cw_log_group           = "/${local.cluster_id}/worker-fluentbit-logs" # Optional
+    aws_for_fluent_bit_cw_log_group           = "/${local.cluster_id}/worker-fluentbit-logs" # (Optional)
     create_namespace                          = true
+    irsa_iam_role_name                        = "<optional-irsa-role-name>"                  # (Optional) The name of IRSA role to be created
     values = [templatefile("${path.module}/values.yaml", {
       region                          = data.aws_region.current.name,
       aws_for_fluent_bit_cw_log_group = "/${local.cluster_id}/worker-fluentbit-logs"
@@ -48,7 +49,7 @@ You can optionally customize the Helm chart that deploys `aws_for_fluentbit` via
 
 The following properties are made available for use when managing the add-on via GitOps.
 
-```
+```hcl
 awsForFluentBit = {
   enable       = true
   logGroupName = "<log_group_name>"

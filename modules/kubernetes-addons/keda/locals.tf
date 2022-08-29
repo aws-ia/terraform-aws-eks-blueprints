@@ -35,6 +35,7 @@ locals {
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
     create_kubernetes_service_account = true
+    irsa_iam_role_name                = try(var.helm_config.irsa_iam_role_name, "")
     irsa_iam_policies                 = concat([aws_iam_policy.keda_irsa.arn], var.irsa_policies)
   }
 

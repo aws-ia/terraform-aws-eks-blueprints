@@ -42,6 +42,7 @@ locals {
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = try(var.helm_config.create_namespace, false)
     create_kubernetes_service_account = true
+    irsa_iam_role_name                = try(var.helm_config.irsa_iam_role_name, "")
     irsa_iam_policies                 = concat([aws_iam_policy.aws_efs_csi_driver.arn], var.irsa_policies)
     tags                              = var.addon_context.tags
   }

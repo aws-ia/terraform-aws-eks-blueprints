@@ -15,8 +15,6 @@ variable "addon_context" {
     eks_cluster_id                 = string
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
-    irsa_iam_permissions_boundary  = string
-    irsa_iam_role_path             = string
     tags                           = map(string)
   })
 }

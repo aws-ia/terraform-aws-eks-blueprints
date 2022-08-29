@@ -17,13 +17,14 @@ You can optionally customize the Helm chart that deploys `aws_cloudwatch_metrics
 ```hcl
   enable_aws_cloudwatch_metrics        = true
   aws_cloudwatch_metrics_irsa_policies = ["IAM Policies"]
-  aws_cloudwatch_metrics_helm_config   = {
-    name       = "aws-cloudwatch-metrics"
-    chart      = "aws-cloudwatch-metrics"
-    repository = "https://aws.github.io/eks-charts"
-    version    = "0.0.7"
-    namespace  = "amazon-cloudwatch"
-    values     = [templatefile("${path.module}/values.yaml", {
+  aws_cloudwatch_metrics_helm_config = {
+    name               = "aws-cloudwatch-metrics"
+    chart              = "aws-cloudwatch-metrics"
+    repository         = "https://aws.github.io/eks-charts"
+    version            = "0.0.7"
+    irsa_iam_role_name = "<optional-irsa-role-name>"        # (Optional) The name of IRSA role to be created
+    namespace          = "amazon-cloudwatch"
+    values = [templatefile("${path.module}/values.yaml", {
       eks_cluster_id = var.addon_context.eks_cluster_id
     })]
   }

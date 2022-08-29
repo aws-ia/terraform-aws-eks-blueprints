@@ -17,7 +17,7 @@ spark_history_server_s3a_path = "s3a://<ENTER_S3_BUCKET_NAME>/<PREFIX_FOR_SPARK_
 
 ### Advanced Example
 
-```
+```hcl
 enable_spark_history_server = true
 
 # IAM policy used by IRSA role. It's recommended to create a dedicated IAM policy to access your s3 bucket
@@ -27,12 +27,13 @@ spark_history_server_irsa_policies = ["<IRSA_POLICY_ARN>"]
 # spark_history_server_s3a_path won't be used when you pass custom `values.yaml`. s3a path is passed via `sparkHistoryOpts` in `values.yaml`
 
 spark_history_server_helm_config = {
-    name             = "spark-history-server"
-    chart            = "spark-history-server"
-    repository       = "https://hyper-mesh.github.io/spark-history-server"
-    version          = "1.0.0"
-    namespace        = "spark-history-server"
-    timeout          = "300"
+    name               = "spark-history-server"
+    chart              = "spark-history-server"
+    repository         = "https://hyper-mesh.github.io/spark-history-server"
+    version            = "1.0.0"
+    namespace          = "spark-history-server"
+    timeout            = "300"
+    irsa_iam_role_name = "<optional-irsa-role-name>" # (Optional) The name of IRSA role to be created
     values = [
         <<-EOT
         serviceAccount:
@@ -66,7 +67,7 @@ spark_history_server_helm_config = {
 
 The following properties are made available for use when managing the add-on via GitOps
 
-```
+```hcl
 sparkHistoryServer = {
   enable = true
 }

@@ -21,6 +21,7 @@ You can optionally customize the Helm chart that deploys the operator via the fo
     repository                 = "https://charts.external-secrets.io/"
     version                    = "0.5.9"
     namespace                  = "external-secrets"
+    irsa_iam_role_name         = "<optional-irsa-role-name>"        # (Optional) The name of IRSA role to be created
   }
 ```
 

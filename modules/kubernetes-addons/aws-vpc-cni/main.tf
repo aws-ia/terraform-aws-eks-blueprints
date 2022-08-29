@@ -28,6 +28,7 @@ module "irsa_addon" {
   kubernetes_namespace              = "kube-system"
   kubernetes_service_account        = "aws-node"
   irsa_iam_role_path                = var.addon_context.irsa_iam_role_path
+  irsa_iam_role_name                = try(var.addon_config.irsa_iam_role_name, "")
   irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
   eks_cluster_id                    = var.addon_context.eks_cluster_id
   eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn

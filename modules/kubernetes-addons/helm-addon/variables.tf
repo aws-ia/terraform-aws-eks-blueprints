@@ -35,6 +35,7 @@ variable "irsa_config" {
     kubernetes_service_account        = string
     create_kubernetes_service_account = optional(bool)
     irsa_iam_policies                 = optional(list(string))
+    irsa_iam_role_name                = optional(string)
   })
   default = null
 }

@@ -41,13 +41,12 @@ module "helm_addon" {
   ]
 
   irsa_config = {
-    create_kubernetes_namespace = true
-    kubernetes_namespace        = local.namespace
-
+    create_kubernetes_namespace       = true
+    kubernetes_namespace              = local.namespace
     create_kubernetes_service_account = true
     kubernetes_service_account        = try(var.helm_config.namespace, local.name)
-
-    irsa_iam_policies = concat([aws_iam_policy.velero.arn], var.irsa_policies)
+    irsa_iam_role_name                = try(var.helm_config.irsa_iam_role_name, "")
+    irsa_iam_policies                 = concat([aws_iam_policy.velero.arn], var.irsa_policies)
   }
 
   # Blueprints

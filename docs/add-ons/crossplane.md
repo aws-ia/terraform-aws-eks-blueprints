@@ -29,6 +29,7 @@ You can optionally customize the Helm chart that deploys `Crossplane` via the fo
     repository                = "https://charts.crossplane.io/stable/"
     version                   = "1.6.2"
     namespace                 = "crossplane-system"
+    irsa_iam_role_name        = "<optional-irsa-role-name>"            # (Optional) The name of IRSA role to be created
     values = [templatefile("${path.module}/values.yaml", {
          service_account_name = var.service_account_name,
          operating_system     = "linux"

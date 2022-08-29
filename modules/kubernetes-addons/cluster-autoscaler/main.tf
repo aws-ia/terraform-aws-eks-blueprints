@@ -41,6 +41,7 @@ module "helm_addon" {
     kubernetes_namespace              = local.namespace
     create_kubernetes_service_account = true
     kubernetes_service_account        = local.service_account
+    irsa_iam_role_name                = try(var.helm_config.irsa_iam_role_name, "")
     irsa_iam_policies                 = [aws_iam_policy.cluster_autoscaler.arn]
   }
 

@@ -33,8 +33,9 @@ You can optionally customize the Helm chart that deploys the driver via the foll
 
   # Optional aws_efs_csi_driver_helm_config
   aws_efs_csi_driver_helm_config = {
-    repository  = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
-    version     = "2.2.3"
+    repository         = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
+    version            = "2.2.3"
+    irsa_iam_role_name = "<optional-irsa-role-name>"                             # (Optional) The name of IRSA role to be created
   }
   aws_efs_csi_driver_irsa_policies = ["<ADDITIONAL_IAM_POLICY_ARN>"]
 ```

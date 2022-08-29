@@ -20,7 +20,7 @@ There is no downtime while deleting EKS managed Add-ons when `preserve=true`. Th
 
 Checkout this [doc](https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html#updating-vpc-cni-eks-add-on) for more details.
 
-```
+```hcl
 # EKS Addons
   enable_amazon_eks_vpc_cni = true # default is false
   #Optional
@@ -30,6 +30,7 @@ Checkout this [doc](https://docs.aws.amazon.com/eks/latest/userguide/managing-vp
     service_account          = "aws-node"
     resolve_conflicts        = "OVERWRITE"
     namespace                = "kube-system"
+    irsa_iam_role_name       = ""
     service_account_role_arn = ""
     preserve                 = true
     additional_iam_policies  = []
@@ -73,6 +74,7 @@ Checkout this [doc](https://docs.aws.amazon.com/eks/latest/userguide/managing-vp
     resolve_conflicts        = "OVERWRITE"
     namespace                = "kube-system"
     additional_iam_policies  = []
+    irsa_iam_role_name       = ""
     service_account_role_arn = ""
     tags                     = {}
   }

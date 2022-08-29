@@ -23,6 +23,7 @@ You can optionally customize the Helm chart that deploys `Karpenter` via the fol
     repository                 = "https://charts.karpenter.sh"
     version                    = "0.6.3"
     namespace                  = "karpenter"
+    irsa_iam_role_name         = "<optional-irsa-role-name>" # (Optional) The name of IRSA role to be created
     values = [templatefile("${path.module}/values.yaml", {
          eks_cluster_id       = var.eks_cluster_id,
          eks_cluster_endpoint = var.eks_cluster_endpoint,

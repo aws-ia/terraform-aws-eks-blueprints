@@ -24,6 +24,7 @@ You can optionally customize the Helm chart that deploys `aws-lb-ingress-control
     repository                 = "https://aws.github.io/eks-charts"
     version                    = "1.3.1"
     namespace                  = "kube-system"
+    irsa_iam_role_name         = "<optional-irsa-role-name>"        # (Optional) The name of IRSA role to be created
     values = [templatefile("${path.module}/values.yaml", {})]
   }
 ```
@@ -44,7 +45,7 @@ Here is the link to get the AWS ELB [service annotations](https://kubernetes-sig
 
 The following properties are made available for use when managing the add-on via GitOps.
 
-```
+```hcl
 awsLoadBalancerController = {
   enable             = true
   serviceAccountName = "<service_account_name>"

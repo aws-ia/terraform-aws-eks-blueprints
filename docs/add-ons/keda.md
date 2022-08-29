@@ -21,12 +21,13 @@ Deploy KEDA with custom `values.yaml`
 ```hcl
   # Optional Map value; pass keda-values.yaml from consumer module
   keda_helm_config = {
-    name       = "keda"                                               # (Required) Release name.
-    repository = "https://kedacore.github.io/charts"                  # (Optional) Repository URL where to locate the requested chart.
-    chart      = "keda"                                               # (Required) Chart name to be installed.
-    version    = "2.6.2"                                              # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/keda/locals.tf
-    namespace  = "keda"                                               # (Optional) The namespace to install the release into.
-    values = [templatefile("${path.module}/keda-values.yaml", {})]
+    name               = "keda"                                               # (Required) Release name.
+    repository         = "https://kedacore.github.io/charts"                  # (Optional) Repository URL where to locate the requested chart.
+    chart              = "keda"                                               # (Required) Chart name to be installed.
+    version            = "2.6.2"                                              # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/keda/locals.tf
+    namespace          = "keda"                                               # (Optional) The namespace to install the release into.
+    irsa_iam_role_name = "<optional-irsa-role-name>"                          # (Optional) The name of IRSA role to be created
+    values             = [templatefile("${path.module}/keda-values.yaml", {})]
   }
 ```
 

@@ -61,7 +61,6 @@ module "helm_addon" {
     }
   ] : []
 
-  irsa_config   = null
   addon_context = var.addon_context
 }
 
@@ -154,6 +153,7 @@ module "irsa_amp_query" {
   kubernetes_service_account    = "amp-query"
   irsa_iam_policies             = [aws_iam_policy.query[0].arn]
   irsa_iam_role_path            = var.addon_context.irsa_iam_role_path
+  irsa_iam_role_name            = try(var.helm_config.irsa_iam_role_name, "")
   irsa_iam_permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
   eks_cluster_id                = var.addon_context.eks_cluster_id
   eks_oidc_provider_arn         = var.addon_context.eks_oidc_provider_arn

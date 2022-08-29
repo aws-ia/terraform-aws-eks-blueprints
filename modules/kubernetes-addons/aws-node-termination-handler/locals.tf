@@ -43,6 +43,7 @@ locals {
     kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = false
     create_kubernetes_service_account = true
+    irsa_iam_role_name                = try(var.helm_config.irsa_iam_role_name, "")
     irsa_iam_policies                 = concat([aws_iam_policy.aws_node_termination_handler_irsa.arn], var.irsa_policies)
   }
 

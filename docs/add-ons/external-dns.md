@@ -36,6 +36,7 @@ You can optionally customize the Helm chart that deploys `external-dns` via the 
     repository                 = "https://charts.bitnami.com/bitnami"
     version                    = "6.1.6"
     namespace                  = "external-dns"
+    irsa_iam_role_name         = "<optional-irsa-role-name>"        # (Optional) The name of IRSA role to be created
   }
 ```
 
@@ -43,7 +44,7 @@ You can optionally customize the Helm chart that deploys `external-dns` via the 
 
 The following properties are made available for use when managing the add-on via GitOps.
 
-```
+```hcl
 external_dns = {
   enable            = true
   zoneFilterIds     = local.zone_filter_ids

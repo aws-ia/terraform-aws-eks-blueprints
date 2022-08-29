@@ -17,14 +17,15 @@ velero_backup_s3_bucket = "<YOUR_BUCKET_NAME>"
 You can also customize the Helm chart that deploys `velero` via the following configuration:
 
 ```hcl
-enable_velero           = true
+enable_velero = true
 velero_helm_config = {
-  name        = "velero"
-  description = "A Helm chart for velero"
-  chart       = "velero"
-  version     = "2.30.0"
-  repository  = "https://vmware-tanzu.github.io/helm-charts/"
-  namespace   = "velero"
+  name               = "velero"
+  description        = "A Helm chart for velero"
+  chart              = "velero"
+  version            = "2.30.0"
+  repository         = "https://vmware-tanzu.github.io/helm-charts/"
+  namespace          = "velero"
+  irsa_iam_role_name = "<optional-irsa-role-name>"                   # (Optional) The name of IRSA role to be created
   values = [templatefile("${path.module}/values.yaml", {
     bucket = "<YOUR_BUCKET_NAME>",
     region = "<YOUR_BUCKET_REGION>"

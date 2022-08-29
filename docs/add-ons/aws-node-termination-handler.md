@@ -28,6 +28,7 @@ You can optionally customize the Helm chart that deploys `aws-node-termination-h
     chart                      = "aws-node-termination-handler"
     repository                 = "https://aws.github.io/eks-charts"
     version                    = "0.16.0"
+    irsa_iam_role_name         = "<optional-irsa-role-name>"        # (Optional) The name of IRSA role to be created
     timeout                    = "1200"
   }
 ```

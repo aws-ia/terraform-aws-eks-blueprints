@@ -8,7 +8,6 @@ resource "kubernetes_namespace_v1" "crossplane" {
 module "helm_addon" {
   source        = "../helm-addon"
   helm_config   = local.helm_config
-  irsa_config   = null
   addon_context = var.addon_context
 
   depends_on = [kubernetes_namespace_v1.crossplane]
@@ -51,6 +50,7 @@ module "aws_provider_irsa" {
   kubernetes_service_account        = "${local.aws_provider_sa}-*"
   irsa_iam_policies                 = concat([aws_iam_policy.aws_provider[0].arn], var.aws_provider.additional_irsa_policies)
   irsa_iam_role_path                = var.addon_context.irsa_iam_role_path
+  irsa_iam_role_name                = try(var.helm_config.irsa_iam_role_name, "")
   irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
   eks_cluster_id                    = var.addon_context.eks_cluster_id
   eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn
@@ -105,6 +105,7 @@ module "jet_aws_provider_irsa" {
   kubernetes_service_account        = "${local.jet_aws_provider_sa}-*"
   irsa_iam_policies                 = concat([aws_iam_policy.jet_aws_provider[0].arn], var.jet_aws_provider.additional_irsa_policies)
   irsa_iam_role_path                = var.addon_context.irsa_iam_role_path
+  irsa_iam_role_name                = try(var.helm_config.irsa_iam_role_name, "")
   irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
   eks_cluster_id                    = var.addon_context.eks_cluster_id
   eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn

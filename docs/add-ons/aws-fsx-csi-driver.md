@@ -23,6 +23,7 @@ You can optionally customize the Helm chart that deploys `enable_aws_fsx_csi_dri
     repository                 = "https://kubernetes-sigs.github.io/aws-fsx-csi-driver/"
     version                    = "1.4.2"
     namespace                  = "kube-system"
+    irsa_iam_role_name         = "<optional-irsa-role-name>"                     # (Optional) The name of IRSA role to be created
     values = [templatefile("${path.module}/aws-fsx-csi-driver-values.yaml", {})] # Create this `aws-fsx-csi-driver-values.yaml` file with your own custom values
   }
   aws_fsx_csi_driver_irsa_policies = ["<ADDITIONAL_IAM_POLICY_ARN>"]
