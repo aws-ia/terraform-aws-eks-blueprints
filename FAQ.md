@@ -131,6 +131,7 @@ module "irsa" {
     kubernetes_namespace       = "<ENTER_NAMESPACE>"
     kubernetes_service_account = "<ENTER_SERVICE_ACCOUNT_NAME>"
     irsa_iam_policies          = ["<ENTER_IAM_POLICY_ARN>"]
+    irsa_iam_role_name         = "<ENTER_IAM_ROLE_NAME>"                          #(Optional)
     eks_cluster_id             = module.eks_blueprints.eks_cluster_id
     eks_oidc_provider_arn      = module.eks_blueprints.eks_oidc_provider_arn
 }
