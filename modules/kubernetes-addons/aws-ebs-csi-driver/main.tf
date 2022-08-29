@@ -56,7 +56,7 @@ module "helm_addon" {
   helm_config = merge({
     name        = local.name
     description = "The Amazon Elastic Block Store Container Storage Interface (CSI) Driver provides a CSI interface used by Container Orchestrators to manage the lifecycle of Amazon EBS volumes."
-    chart       = local.name
+    chart       = "aws-ebs-csi-driver"
     version     = "2.10.1"
     repository  = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
     namespace   = local.namespace
