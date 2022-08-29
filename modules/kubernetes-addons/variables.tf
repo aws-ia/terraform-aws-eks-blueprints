@@ -119,9 +119,21 @@ variable "enable_amazon_eks_kube_proxy" {
 }
 
 variable "enable_amazon_eks_aws_ebs_csi_driver" {
-  description = "Enable EKS Managed AWS EBS CSI Driver add-on"
+  description = "Enable EKS Managed AWS EBS CSI Driver add-on; enable_amazon_eks_aws_ebs_csi_driver and enable_self_managed_aws_ebs_csi_driver are mutually exclusive"
   type        = bool
   default     = false
+}
+
+variable "enable_self_managed_aws_ebs_csi_driver" {
+  description = "Enable self-managed aws-ebs-csi-driver add-on; enable_self_managed_aws_ebs_csi_driver and enable_amazon_eks_aws_ebs_csi_driver are mutually exclusive"
+  type        = bool
+  default     = false
+}
+
+variable "self_managed_aws_ebs_csi_driver_helm_config" {
+  description = "Self-managed aws-ebs-csi-driver Helm chart config"
+  type        = any
+  default     = {}
 }
 
 variable "custom_image_registry_uri" {
@@ -1049,6 +1061,19 @@ variable "enable_calico" {
 
 variable "calico_helm_config" {
   description = "Calico add-on config"
+  type        = any
+  default     = {}
+}
+
+#-----------Kubecost ADDON-------------
+variable "enable_kubecost" {
+  description = "Enable Kubecost add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kubecost_helm_config" {
+  description = "Kubecost Helm Chart config"
   type        = any
   default     = {}
 }
