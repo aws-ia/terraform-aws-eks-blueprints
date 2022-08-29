@@ -46,10 +46,18 @@ module "aws_kube_proxy" {
 }
 
 module "aws_ebs_csi_driver" {
-  count         = var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
-  source        = "./aws-ebs-csi-driver"
-  addon_config  = var.amazon_eks_aws_ebs_csi_driver_config
-  addon_context = local.addon_context
+  source = "./aws-ebs-csi-driver"
+
+  count = var.enable_amazon_eks_aws_ebs_csi_driver || var.enable_self_managed_aws_ebs_csi_driver ? 1 : 0
+
+  # Amazon EKS aws-ebs-csi-driver addon
+  enable_amazon_eks_aws_ebs_csi_driver = var.enable_amazon_eks_aws_ebs_csi_driver
+  addon_config                         = var.amazon_eks_aws_ebs_csi_driver_config
+  addon_context                        = local.addon_context
+
+  # Self-managed aws-ebs-csi-driver addon via Helm chart
+  enable_self_managed_aws_ebs_csi_driver = var.enable_self_managed_aws_ebs_csi_driver
+  helm_config                            = var.self_managed_aws_ebs_csi_driver_helm_config
 }
 
 #-----------------Kubernetes Add-ons----------------------
