@@ -1064,3 +1064,16 @@ variable "calico_helm_config" {
   type        = any
   default     = {}
 }
+
+#-----------Kubecost ADDON-------------
+variable "enable_kubecost" {
+  description = "Enable Kubecost add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kubecost_helm_config" {
+  description = "Kubecost Helm Chart config"
+  type        = any
+  default     = {}
+}
