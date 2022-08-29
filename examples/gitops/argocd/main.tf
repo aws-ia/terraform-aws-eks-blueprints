@@ -97,17 +97,18 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   # Add-ons
-  enable_aws_for_fluentbit  = true
-  enable_cert_manager       = true
-  enable_cluster_autoscaler = true
-  enable_karpenter          = true
-  enable_keda               = true
-  enable_metrics_server     = true
-  enable_prometheus         = true
-  enable_traefik            = true
-  enable_vpa                = true
-  enable_yunikorn           = true
-  enable_argo_rollouts      = true
+  enable_amazon_eks_aws_ebs_csi_driver = true
+  enable_aws_for_fluentbit             = true
+  enable_cert_manager                  = true
+  enable_cluster_autoscaler            = true
+  enable_karpenter                     = true
+  enable_keda                          = true
+  enable_metrics_server                = true
+  enable_prometheus                    = true
+  enable_traefik                       = true
+  enable_vpa                           = true
+  enable_yunikorn                      = true
+  enable_argo_rollouts                 = true
 
   tags = local.tags
 }
