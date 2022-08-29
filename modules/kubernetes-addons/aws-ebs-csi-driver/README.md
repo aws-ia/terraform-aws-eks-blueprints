@@ -23,7 +23,7 @@ Official [aws-ebs-csi-driver](https://github.com/kubernetes-sigs/aws-ebs-csi-dri
 
 you must use this mode if you need to change the configuration of the ebs-csi-driver as this is not possible with the EKS managed mode
 
-See the [`stateful`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/stateful) example where the self-managed aws-ebs-csi-driver addon is used to provision the ebs-csi-driver on a EKS cluster 
+See the [`stateful`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/stateful) example where the self-managed aws-ebs-csi-driver addon is used to provision the ebs-csi-driver on a EKS cluster
 
 To provision the self managed addon for aws-ebs-csi-driver, you can reference the following configuration and tailor to suit:
 

@@ -79,7 +79,7 @@ module "eks_blueprints_kubernetes_addons" {
       {
         name  = "node.tolerateAllTaints"
         value = "true"
-      }]
+    }]
   }
 
   tags = local.tags
