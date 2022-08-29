@@ -75,9 +75,11 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_self_managed_aws_ebs_csi_driver = true
   self_managed_aws_ebs_csi_driver_helm_config = {
-    values = [templatefile("${path.module}/helm_values/aws-ebs-csi-driver.yaml", {
-      region = local.region
-    })]
+    set_values = [
+      {
+        name  = "node.tolerateAllTaints"
+        value = "true"
+      }]
   }
 
   tags = local.tags
