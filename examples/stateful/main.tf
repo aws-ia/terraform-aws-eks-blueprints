@@ -53,6 +53,7 @@ module "eks_blueprints" {
       node_group_name    = "velero"
       launch_template_os = "amazonlinux2eks"
       subnet_ids         = module.vpc.private_subnets
+      k8s_taints         = [{ key = "VeleroOnly", value = "true", effect = "NO_SCHEDULE" }]
     }
   }
 
@@ -71,6 +72,15 @@ module "eks_blueprints_kubernetes_addons" {
   velero_backup_s3_bucket = module.velero_backup_s3_bucket.s3_bucket_id
 
   enable_aws_efs_csi_driver = true
+
+  enable_self_managed_aws_ebs_csi_driver = true
+  self_managed_aws_ebs_csi_driver_helm_config = {
+    set_values = [
+      {
+        name  = "node.tolerateAllTaints"
+        value = "true"
+    }]
+  }
 
   tags = local.tags
 }
@@ -190,4 +200,20 @@ resource "aws_security_group" "efs" {
   }
 
   tags = local.tags
+}
+
+resource "kubernetes_storage_class" "storage_class" {
+  metadata {
+    name = "gp3"
+  }
+
+  storage_provisioner    = "ebs.csi.aws.com"
+  allow_volume_expansion = true
+  reclaim_policy         = "Delete"
+  volume_binding_mode    = "WaitForFirstConsumer"
+  parameters = {
+    encrypted = true
+    fsType    = "ext4"
+    type      = "gp3"
+  }
 }

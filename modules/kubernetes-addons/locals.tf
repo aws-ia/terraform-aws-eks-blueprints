@@ -35,6 +35,7 @@ locals {
     velero                    = var.enable_velero ? module.velero[0].argocd_gitops_config : null
     promtail                  = var.enable_promtail ? module.promtail[0].argocd_gitops_config : null
     calico                    = var.enable_calico ? module.calico[0].argocd_gitops_config : null
+    kubecost                  = var.enable_kubecost ? module.kubecost[0].argocd_gitops_config : null
   }
 
   addon_context = {
