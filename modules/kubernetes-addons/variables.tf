@@ -1092,4 +1092,3 @@ variable "kyverno_helm_config" {
   default     = null
   description = "Kyverno Helm Chart config"
 }
-

@@ -37,5 +37,3 @@ module "kyverno_ui_helm_addon" {
 
   depends_on = [kubernetes_namespace_v1.this, module.kyverno_helm_addon, module.kyverno_policies_helm_addon]
 }
-
-
