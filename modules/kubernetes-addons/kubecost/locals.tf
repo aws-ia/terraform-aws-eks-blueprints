@@ -4,7 +4,7 @@ locals {
   default_helm_config = {
     name             = local.name
     chart            = "cost-analyzer"
-    repository       = "oci://public.ecr.aws/kubecost/cost-analyzer"
+    repository       = "oci://public.ecr.aws/kubecost"
     version          = "1.96.0"
     namespace        = local.name
     values           = local.default_helm_values
