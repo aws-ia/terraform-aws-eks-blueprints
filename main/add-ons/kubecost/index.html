@@ -1261,7 +1261,7 @@ Amazon EKS supports Kubecost, which you can use to monitor your costs broken dow
 <div class="highlight"><pre><span></span><code>  # Optional Map value; pass kubecost-values.yaml from consumer module
     kubecost_helm_config = {
     name       = &quot;kubecost&quot;                                             # (Required) Release name.
-    repository = &quot;oci://public.ecr.aws/kubecost/cost-analyzer&quot;          # (Optional) Repository URL where to locate the requested chart.
+    repository = &quot;oci://public.ecr.aws/kubecost&quot;                        # (Optional) Repository URL where to locate the requested chart.
     chart      = &quot;cost-analyzer&quot;                                        # (Required) Chart name to be installed.
     version    = &quot;1.96.0&quot;                                               # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/kubecost/locals.tf
     namespace  = &quot;kubecost&quot;                                             # (Optional) The namespace to install the release into.
