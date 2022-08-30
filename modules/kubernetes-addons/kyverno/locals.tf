@@ -1,11 +1,11 @@
 locals {
-  kyverno_chart_name = "kyverno"
+  kyverno_chart_name          = "kyverno"
   kyverno_policies_chart_name = "kyverno-policies"
-  kyverno_ui_chart_name = "policy-reporter"
+  kyverno_ui_chart_name       = "policy-reporter"
 
-  default_kyverno_values = [templatefile("${path.module}/kyverno-values.yaml", {})]
+  default_kyverno_values          = [templatefile("${path.module}/kyverno-values.yaml", {})]
   default_kyverno_policies_values = [templatefile("${path.module}/kyverno-policies-values.yaml", {})]
-  default_kyverno_ui_values = [templatefile("${path.module}/kyverno-ui-values.yaml", {})]
+  default_kyverno_ui_values       = [templatefile("${path.module}/kyverno-ui-values.yaml", {})]
 
   default_kyverno_controller_helm_config = {
     name        = local.kyverno_chart_name
