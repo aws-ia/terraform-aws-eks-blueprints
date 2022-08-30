@@ -1077,3 +1077,19 @@ variable "kubecost_helm_config" {
   type        = any
   default     = {}
 }
+
+
+#-----------Kyverno ADDON-------------
+
+variable "enable_kyverno" {
+  type        = bool
+  default     = false
+  description = "Enable Kyverno add-on"
+}
+
+variable "kyverno_helm_config" {
+  type        = any
+  default     = null
+  description = "Kyverno Helm Chart config"
+}
+

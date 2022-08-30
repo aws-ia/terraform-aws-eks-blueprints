@@ -1,0 +1,11 @@
+ui:
+  enabled: true
+
+kyvernoPlugin:
+  enabled: true
+
+global:
+  # available plugins
+  plugins:
+    # enable kyverno for Policy Reporter UI and monitoring
+    kyverno: true

@@ -530,3 +530,12 @@ module "kubecost" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
+
+
+module "kyverno" {
+  count             = var.enable_kyverno ? 1 : 0
+  source            = "./kyverno"
+  addon_context     = local.addon_context
+  helm_config       = var.kyverno_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+}
