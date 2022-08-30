@@ -30,7 +30,7 @@ var (
 			"us-west-2",
 			"aws-terra-test-eks",
 			map[string]string{
-				"rootFolder":        "../..",
+				"rootFolder":        "examples/eks-cluster-with-new-vpc",
 				"exampleFolderPath": "examples/eks-cluster-with-new-vpc"},
 		},
 	}
