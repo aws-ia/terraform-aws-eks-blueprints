@@ -1,8 +1,8 @@
 locals {
-  kyverno_chart_name          = "kyverno"
-  kyverno_policies_chart_name = "kyverno-policies"
-  kyverno_ui_chart_name       = "policy-reporter"
-  namespace                   = "kyverno"
+  kyverno_chart_name              = "kyverno"
+  kyverno_policies_chart_name     = "kyverno-policies"
+  kyverno_ui_chart_name           = "policy-reporter"
+  namespace                       = "kyverno"
   default_kyverno_values          = [templatefile("${path.module}/kyverno-values.yaml", {})]
   default_kyverno_policies_values = [templatefile("${path.module}/kyverno-policies-values.yaml", {})]
   default_kyverno_ui_values       = [templatefile("${path.module}/kyverno-ui-values.yaml", {})]
