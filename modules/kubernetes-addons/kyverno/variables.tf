@@ -1,6 +1,18 @@
-variable "helm_config" {
+variable "kyverno_helm_config" {
   type        = any
   description = "Helm provider config for the Kyverno"
+  default     = {}
+}
+
+variable "kyverno_policies_helm_config" {
+  type        = any
+  description = "Helm provider config for the Kyverno baseline policies"
+  default     = {}
+}
+
+variable "kyverno_ui_helm_config" {
+  type        = any
+  description = "Helm provider config for the Kyverno policy reporter UI"
   default     = {}
 }
 

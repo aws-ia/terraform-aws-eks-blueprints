@@ -1092,3 +1092,15 @@ variable "kyverno_helm_config" {
   default     = null
   description = "Kyverno Helm Chart config"
 }
+
+variable "kyverno_policies_helm_config" {
+  type        = any
+  default     = null
+  description = "Kyverno policies Helm Chart config"
+}
+
+variable "kyverno_ui_helm_config" {
+  type        = any
+  default     = null
+  description = "Kyverno UI Helm Chart config"
+}
