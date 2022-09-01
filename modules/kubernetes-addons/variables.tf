@@ -1089,18 +1089,18 @@ variable "enable_kyverno" {
 
 variable "kyverno_helm_config" {
   type        = any
-  default     = null
+  default     = {}
   description = "Kyverno Helm Chart config"
 }
 
 variable "kyverno_policies_helm_config" {
   type        = any
-  default     = null
+  default     = {}
   description = "Kyverno policies Helm Chart config"
 }
 
 variable "kyverno_ui_helm_config" {
   type        = any
-  default     = null
+  default     = {}
   description = "Kyverno UI Helm Chart config"
 }
