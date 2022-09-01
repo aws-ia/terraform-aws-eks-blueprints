@@ -1077,3 +1077,16 @@ variable "kubecost_helm_config" {
   type        = any
   default     = {}
 }
+
+#-----------Cilium ADDON-------------
+variable "enable_cilium" {
+  description = "Enable Cilium add-on"
+  type        = bool
+  default     = false
+}
+
+variable "cilium_helm_config" {
+  description = "Cilium Helm Chart config"
+  type        = any
+  default     = {}
+}
