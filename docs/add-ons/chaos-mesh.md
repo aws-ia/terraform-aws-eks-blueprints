@@ -33,7 +33,7 @@ Deploy Chaos Mesh with custom `values.yaml`
 The following properties are made available for use when managing the add-on via GitOps.
 
 ```sh
-chaos_mesh = {
+chaosMesh = {
   enable  = true
 }
 ```
