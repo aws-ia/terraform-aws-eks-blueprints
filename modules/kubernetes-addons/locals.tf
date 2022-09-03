@@ -64,6 +64,7 @@ locals {
       ap-south-1     = "602401143452.dkr.ecr.ap-south-1.amazonaws.com",
       ap-southeast-1 = "602401143452.dkr.ecr.ap-southeast-1.amazonaws.com",
       ap-southeast-2 = "602401143452.dkr.ecr.ap-southeast-2.amazonaws.com",
+      ap-southeast-3 = "296578399912.dkr.ecr.ap-southeast-3.amazonaws.com",
       ca-central-1   = "602401143452.dkr.ecr.ca-central-1.amazonaws.com",
       cn-north-1     = "918309763551.dkr.ecr.cn-north-1.amazonaws.com.cn",
       cn-northwest-1 = "961992271922.dkr.ecr.cn-northwest-1.amazonaws.com.cn",
