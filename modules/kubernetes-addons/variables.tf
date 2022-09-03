@@ -1077,3 +1077,17 @@ variable "kubecost_helm_config" {
   type        = any
   default     = {}
 }
+
+
+#-----------Chaos Mesh ADDON-------------
+variable "enable_chaos_mesh" {
+  description = "Enable Chaos Mesh add-on"
+  type        = bool
+  default     = false
+}
+
+variable "chaos_mesh_helm_config" {
+  description = "Chaos Mesh Helm Chart config"
+  type        = any
+  default     = {}
+}

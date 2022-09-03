@@ -530,3 +530,11 @@ module "kubecost" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
+
+module "chaos_mesh" {
+  count             = var.enable_chaos_mesh ? 1 : 0
+  source            = "./chaos-mesh"
+  helm_config       = var.chaos_mesh_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
