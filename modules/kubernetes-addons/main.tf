@@ -530,3 +530,10 @@ module "kubecost" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
+
+module "local_volume_provisioner" {
+  count         = var.enable_local_volume_provisioner ? 1 : 0
+  source        = "./local-volume-provisioner"
+  helm_config   = var.local_volume_provisioner_helm_config
+  addon_context = local.addon_context
+}

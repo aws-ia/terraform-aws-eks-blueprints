@@ -1077,3 +1077,17 @@ variable "kubecost_helm_config" {
   type        = any
   default     = {}
 }
+
+
+#-----------Local volume provisioner ADDON-------------
+variable "enable_local_volume_provisioner" {
+  description = "Enable Local volume provisioner add-on"
+  type        = bool
+  default     = false
+}
+
+variable "local_volume_provisioner_helm_config" {
+  description = "Local volume provisioner Helm Chart config"
+  type        = any
+  default     = {}
+}
