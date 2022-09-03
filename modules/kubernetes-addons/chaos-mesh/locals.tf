@@ -4,7 +4,7 @@ locals {
     name             = local.name
     chart            = local.name
     repository       = "https://charts.chaos-mesh.org"
-    version          = "2.3.0"
+    version          = "2.3.1"
     namespace        = "chaos-testing"
     create_namespace = true
     description      = "chaos mesh helm Chart deployment configuration"
