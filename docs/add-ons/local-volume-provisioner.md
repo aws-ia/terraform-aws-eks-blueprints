@@ -11,7 +11,7 @@ Local volume provisioner can be deployed by enabling the add-on via the followin
 enable_local_volume_provisioner = true
 ```
 
-Deploy Calico with custom `values.yaml`
+Deploy Local volume provisioner with custom `values.yaml`
 
 ```hcl
   # Optional Map value; pass local-volume-provisioner-values.yaml from consumer module
