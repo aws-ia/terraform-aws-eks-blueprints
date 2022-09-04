@@ -1082,7 +1082,7 @@ variable "kubecost_helm_config" {
 variable "enable_smb_csi_driver" {
   description = "Enable SMB CSI driver add-on"
   type        = bool
-  default     = falsecd
+  default     = false
 }
 
 variable "smb_csi_driver_helm_config" {
