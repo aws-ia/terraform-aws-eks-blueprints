@@ -2,13 +2,14 @@ locals {
   name = "reloader"
 
   default_helm_config = {
-    name        = local.name
-    chart       = local.name
-    repository  = "https://stakater.github.io/stakater-charts"
-    version     = "v0.0.118"
-    namespace   = local.name
-    values      = []
-    description = "Reloader Helm Chart deployment configuration"
+    name             = local.name
+    chart            = local.name
+    repository       = "https://stakater.github.io/stakater-charts"
+    version          = "v0.0.118"
+    namespace        = local.name
+    create_namespace = true
+    values           = []
+    description      = "Reloader Helm Chart deployment configuration"
   }
 
   helm_config = merge(
