@@ -302,6 +302,14 @@ module "prometheus" {
   addon_context                        = local.addon_context
 }
 
+module "reloader" {
+  count             = var.enable_reloader ? 1 : 0
+  source            = "./reloader"
+  helm_config       = var.reloader_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "spark_history_server" {
   count             = var.enable_spark_history_server ? 1 : 0
   source            = "./spark-history-server"
