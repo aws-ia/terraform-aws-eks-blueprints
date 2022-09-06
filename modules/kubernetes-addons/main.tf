@@ -530,3 +530,11 @@ module "kubecost" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
+
+module "smb_csi_driver" {
+  count             = var.enable_smb_csi_driver ? 1 : 0
+  source            = "./smb-csi-driver"
+  helm_config       = var.smb_csi_driver_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
