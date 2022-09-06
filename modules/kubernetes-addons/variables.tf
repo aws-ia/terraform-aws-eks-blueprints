@@ -1026,6 +1026,19 @@ variable "kuberay_operator_helm_config" {
   default     = {}
 }
 
+#----------- Reloader Addon-------------
+variable "enable_reloader" {
+  description = "Enable Reloader add-on"
+  type        = bool
+  default     = false
+}
+
+variable "reloader_helm_config" {
+  description = "Reloader Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------Apache Airflow ADDON-------------
 variable "enable_airflow" {
   description = "Enable Airflow add-on"
