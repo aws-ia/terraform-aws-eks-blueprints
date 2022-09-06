@@ -1078,6 +1078,19 @@ variable "kubecost_helm_config" {
   default     = {}
 }
 
+#-----------SMB CSI driver ADDON-------------
+variable "enable_smb_csi_driver" {
+  description = "Enable SMB CSI driver add-on"
+  type        = bool
+  default     = false
+}
+
+variable "smb_csi_driver_helm_config" {
+  description = "SMB CSI driver Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 
 #-----------Chaos Mesh ADDON-------------
 variable "enable_chaos_mesh" {

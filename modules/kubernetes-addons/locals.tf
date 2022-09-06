@@ -36,6 +36,7 @@ locals {
     promtail                  = var.enable_promtail ? module.promtail[0].argocd_gitops_config : null
     calico                    = var.enable_calico ? module.calico[0].argocd_gitops_config : null
     kubecost                  = var.enable_kubecost ? module.kubecost[0].argocd_gitops_config : null
+    smb_csi_driver            = var.enable_smb_csi_driver ? module.smb_csi_driver[0].argocd_gitops_config : null
     chaos_mesh                = var.enable_chaos_mesh ? module.chaos_mesh[0].argocd_gitops_config : null
   }
 
