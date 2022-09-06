@@ -1,5 +1,5 @@
 # Chaos Mesh Helm Chart
-Calico is a  powerful Chaos Engineering Platform for Kubernetes
+Chaos Mesh is a  powerful Chaos Engineering Platform for Kubernetes
 
 For more details checkout [Chaos Mesh](https://chaos-mesh.org/docs/production-installation-using-helm/) docs
 
