@@ -13,7 +13,7 @@
     
     
       
-        <title>secrets-store-csi-driver - Amazon EKS Blueprints for Terraform</title>
+        <title>Chaos Mesh - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#secrets-store-csi-driver" class="md-skip">
+        <a href="#chaos-mesh" class="md-skip">
           Skip to content
         </a>
       
@@ -99,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              secrets-store-csi-driver
+              Chaos Mesh
             
           </span>
         </div>
@@ -588,11 +588,65 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../chaos-mesh/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Chaos Mesh
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Chaos Mesh
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitops-configuration" class="md-nav__link">
+    GitOps Configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -882,52 +936,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          secrets-store-csi-driver
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../secrets-store-csi-driver/" class="md-nav__link">
         secrets-store-csi-driver
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1229,6 +1242,19 @@
     Usage
   </a>
   
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitops-configuration" class="md-nav__link">
+    GitOps Configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -1243,19 +1269,36 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/secrets-store-csi-driver.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/chaos-mesh.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-<h1 id="secrets-store-csi-driver">secrets-store-csi-driver<a class="headerlink" href="#secrets-store-csi-driver" title="Permanent link">&para;</a></h1>
-<p>Secrets Store CSI Driver for Kubernetes secrets - Integrates secrets stores with Kubernetes via a <a href="https://kubernetes-csi.github.io/docs/">Container Storage Interface (CSI)</a> volume.</p>
-<p>The Secrets Store CSI Driver <code>secrets-store.csi.k8s.io</code> allows Kubernetes to mount multiple secrets, keys, and certs stored in enterprise-grade external secrets stores into their pods as a volume. Once the Volume is attached, the data in it is mounted into the container’s file system.</p>
-<p>For more details, refer <a href="https://secrets-store-csi-driver.sigs.k8s.io/">Secrets Store CSI Driver</a></p>
+<h1 id="chaos-mesh">Chaos Mesh<a class="headerlink" href="#chaos-mesh" title="Permanent link">&para;</a></h1>
+<p>Chaos Mesh is an open source cloud-native Chaos Engineering platform. It offers various types of fault simulation and has an enormous capability to orchestrate fault scenarios</p>
+<p><a href="https://chaos-mesh.org/docs/production-installation-using-helm/">Chaos Mesh</a> docs chart bootstraps Chaos Mesh infrastructure on a Kubernetes cluster using the Helm package manager.</p>
+<p>For complete project documentation, please visit the <a href="https://chaos-mesh.org/docs/">Chaos Mesh site</a>.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p>secrets-store-csi-driver can be deployed by enabling the add-ons via the following.</p>
-<div class="highlight"><pre><span></span><code>enable_secrets_store_csi_driver = true
+<p>Chaos Mesh can be deployed by enabling the add-on via the following.</p>
+<div class="highlight"><pre><span></span><code>enable_chaos_mesh = true
+</code></pre></div>
+<p>Deploy Chaos Mesh with custom <code>values.yaml</code></p>
+<div class="highlight"><pre><span></span><code>  # Optional Map value; pass chaos-mesh-values.yaml from consumer module
+   chaos_mesh_helm_config = {
+    name       = &quot;chaos-mesh&quot;                                               # (Required) Release name.
+    repository = &quot;https://charts.chaos-mesh.org&quot;                            # (Optional) Repository URL where to locate the requested chart.
+    chart      = &quot;chaos-mesh&quot;                                               # (Required) Chart name to be installed.
+    version    = &quot;2.3.0&quot;                                                    # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/chaos-mesh/locals.tf
+    namespace  = &quot;chaos-testing&quot;                                            # (Optional) The namespace to install the release into.
+    values = [templatefile(&quot;${path.module}/chaos-mesh-values.yaml&quot;, {})]
+  }
+</code></pre></div>
+<h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
+<p>The following properties are made available for use when managing the add-on via GitOps.</p>
+<div class="highlight"><pre><span></span><code><span class="nv">chaosMesh</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="nb">enable</span>  <span class="o">=</span> <span class="nb">true</span>
+<span class="o">}</span>
 </code></pre></div>
 
               
@@ -1272,7 +1315,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../promtail/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Promtail" rel="prev">
+        <a href="../cert-manager/" class="md-footer__link md-footer__link--prev" aria-label="Previous: cert-manager" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1281,20 +1324,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Promtail
+              cert-manager
             </div>
           </div>
         </a>
       
       
         
-        <a href="../smb-csi-driver/" class="md-footer__link md-footer__link--next" aria-label="Next: SMB CSI Driver Helm Chart" rel="next">
+        <a href="../cluster-autoscaler/" class="md-footer__link md-footer__link--next" aria-label="Next: Cluster Autoscaler" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              SMB CSI Driver Helm Chart
+              Cluster Autoscaler
             </div>
           </div>
           <div class="md-footer__button md-icon">
