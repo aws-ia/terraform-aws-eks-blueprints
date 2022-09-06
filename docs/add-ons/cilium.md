@@ -34,18 +34,6 @@ Deploy Cilium with custom `values.yaml`
 Refer to the [cilium default values file](https://github.com/cilium/cilium/blob/master/install/kubernetes/cilium/values.yaml) for complete values options for the chart
 
 
-### Custom helm chart configuration
-You can optionally customize the Helm chart that deploys `cilium` via the following configuration.
-
-```hcl
-  cilium_helm_config = {
-    name                       = "cilium"                        # (Required) Release name.
-    chart                      = "cilium"                        # (Required) Chart name to be installed
-    repository                 = "https://helm.cilium.io/"       # (Optional) Repository URL where to locate the requested chart.
-    version                    = "1.12.1"                        # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/cilium/locals.tf
-  }
-```
-
 ### GitOps Configuration
 
 The following properties are made available for use when managing the add-on via GitOps.
