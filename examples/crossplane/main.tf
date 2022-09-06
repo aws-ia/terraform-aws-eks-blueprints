@@ -97,6 +97,9 @@ module "eks_blueprints_kubernetes_addons" {
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
   }
 
+  # Enable configmap reloader
+  enable_reloader = true
+
   tags = local.tags
 }
 
