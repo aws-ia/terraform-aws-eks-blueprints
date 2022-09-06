@@ -12,22 +12,26 @@ For complete project documentation, please visit the [Cilium documentation site]
 
 ## Usage
 
-### Cilium in combination with the Amazon VPC CNI plugin
-Cilium can be deployed in combination with the `Amazon VPC CNI plugin` by enabling the add-on via the following.
+By Cilium in combination with the `Amazon VPC CNI plugin` by enabling the add-on via the following.
 
 ```hcl
 enable_cilium = true
 ```
 
-### Cilium as a replacement of Amazon VPC CNI
-If you aim to install cilium as a replacement of `Amazon VPC CNI` for default CNI in your cluster, below is the configuration.
+Deploy Cilium with custom `values.yaml`
+
 ```hcl
-  enable_cilium = true
-  cilium_helm_config = {
-    default_cni = true  
- }
+  # Optional Map value; pass cilium-values.yaml from consumer module
+   cilium_helm_config = {
+    name       = "cilium"                                               # (Required) Release name.
+    repository = "https://helm.cilium.io/"                              # (Optional) Repository URL where to locate the requested chart.
+    chart      = "cilium"                                               # (Required) Chart name to be installed.
+    version    = "1.12.1"                                               # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/cilium/locals.tf
+    values = [templatefile("${path.module}/cilium-values.yaml", {})]
+  }
 ```
-Refer to the additional required steps in the [Cilium as a replacement of Amazon VPC CNI](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-helm/) to complete the installation
+
+Refer to the [cilium default values file](https://github.com/cilium/cilium/blob/master/install/kubernetes/cilium/values.yaml) for complete values options for the chart
 
 
 ### Custom helm chart configuration
