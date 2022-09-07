@@ -1,6 +1,8 @@
-# AWS CloudWatch Metrics
+# Gatekeeper
 
-This add-on configures [Gatekeeper](https://github.com/open-policy-agent/gatekeeper/tree/master/charts/gatekeeper) used for defining policy as code using [Gatekeeper](https://open-policy-agent.github.io/gatekeeper/website/docs/). 
+Gatekeeper is an admission controller that validates requests to create and update Pods on Kubernetes clusters, using the Open Policy Agent (OPA). Using Gatekeeper allows administrators to define policies with a constraint, which is a set of conditions that permit or deny deployment behaviors in Kubernetes.
+[Gatekeeper](https://open-policy-agent.github.io/gatekeeper/website/docs/)
+(Templates)(https://github.com/open-policy-agent/gatekeeper/tree/master/charts/gatekeeper/templates)
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
