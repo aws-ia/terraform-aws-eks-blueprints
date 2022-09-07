@@ -1,16 +1,16 @@
 locals {
-  name                 = "gatekeeper"
-  namespace            = "gatekeeper-system"
+  name      = "gatekeeper"
+  namespace = "gatekeeper-system"
 
   default_helm_config = {
-    name              = local.name
-    chart             = local.name
-    repository        = "https://open-policy-agent.github.io/gatekeeper/charts"
-    version           = "3.9.0"
-    namespace         = local.namespace
-    values            = local.default_helm_values
-    description       = "gatekeeper Helm Chart deployment configuration"
-     create_namespace = true
+    name             = local.name
+    chart            = local.name
+    repository       = "https://open-policy-agent.github.io/gatekeeper/charts"
+    version          = "3.9.0"
+    namespace        = local.namespace
+    values           = local.default_helm_values
+    description      = "gatekeeper Helm Chart deployment configuration"
+    create_namespace = true
   }
 
   helm_config = merge(
@@ -24,6 +24,6 @@ locals {
 
 
   argocd_gitops_config = {
-    enable             = true
+    enable = true
   }
 }
