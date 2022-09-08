@@ -1130,3 +1130,16 @@ variable "cilium_helm_config" {
   type        = any
   default     = {}
 }
+
+#-----------Gatekeeper ADDON-------------
+variable "enable_gatekeeper" {
+  description = "Enable Gatekeeper add-on"
+  type        = bool
+  default     = false
+}
+
+variable "gatekeeper_helm_config" {
+  description = "Gatekeeper Helm Chart config"
+  type        = any
+  default     = {}
+}

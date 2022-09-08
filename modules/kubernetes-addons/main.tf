@@ -562,3 +562,11 @@ module "cilium" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
+
+module "gatekeeper" {
+  count             = var.enable_gatekeeper ? 1 : 0
+  source            = "./gatekeeper"
+  helm_config       = var.gatekeeper_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
