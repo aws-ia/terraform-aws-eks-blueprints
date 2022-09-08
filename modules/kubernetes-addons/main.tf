@@ -550,6 +550,7 @@ module "kyverno" {
   kyverno_policies_helm_config = var.kyverno_policies_helm_config
   enable_kyverno_ui            = var.enable_kyverno_ui
   kyverno_ui_helm_config       = var.kyverno_ui_helm_config
+}
 
 module "smb_csi_driver" {
   count             = var.enable_smb_csi_driver ? 1 : 0
