@@ -13,7 +13,7 @@
     
     
       
-        <title>kube-prometheus-stack - Amazon EKS Blueprints for Terraform</title>
+        <title>Gatekeeper - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#kube-prometheus-stack" class="md-skip">
+        <a href="#gatekeeper" class="md-skip">
           Skip to content
         </a>
       
@@ -99,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              kube-prometheus-stack
+              Gatekeeper
             
           </span>
         </div>
@@ -714,11 +714,65 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../gatekeeper/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Gatekeeper
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Gatekeeper
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitops-configuration" class="md-nav__link">
+    GitOps Configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -770,59 +824,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          kube-prometheus-stack
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../kube-prometheus-stack/" class="md-nav__link">
         kube-prometheus-stack
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#upgrading-the-chart" class="md-nav__link">
-    Upgrading the Chart
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1264,12 +1270,18 @@
     Usage
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#upgrading-the-chart" class="md-nav__link">
-    Upgrading the Chart
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitops-configuration" class="md-nav__link">
+    GitOps Configuration
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1285,45 +1297,43 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/kube-prometheus-stack.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/gatekeeper.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-<h1 id="kube-prometheus-stack">kube-prometheus-stack<a class="headerlink" href="#kube-prometheus-stack" title="Permanent link">&para;</a></h1>
-<p><a href="https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack">kube-prometheus-stack</a>is a a collection of Kubernetes manifests, Grafana dashboards, and Prometheus rules combined with documentation and scripts to provide easy to operate end-to-end Kubernetes cluster monitoring with Prometheus using the Prometheus Operator.</p>
-<p>Components installed by this chart in this package by default:</p>
-<ul>
-<li><a href="https://github.com/prometheus-operator/prometheus-operator">The Prometheus Operator</a></li>
-<li>Highly available <a href="https://github.com/prometheus/prometheus">Prometheus</a></li>
-<li>Highly available <a href="https://github.com/prometheus/alertmanager">Alertmanager</a></li>
-<li><a href="https://github.com/prometheus/node_exporter">Prometheus node-exporter</a></li>
-<li><a href="https://github.com/kubernetes/kube-state-metrics">kube-state-metrics</a></li>
-<li><a href="https://github.com/grafana/grafana">Grafana</a></li>
-</ul>
+<h1 id="gatekeeper">Gatekeeper<a class="headerlink" href="#gatekeeper" title="Permanent link">&para;</a></h1>
+<p>Gatekeeper is an admission controller that validates requests to create and update Pods on Kubernetes clusters, using the Open Policy Agent (OPA). Using Gatekeeper allows administrators to define policies with a constraint, which is a set of conditions that permit or deny deployment behaviors in Kubernetes.</p>
+<p>For complete project documentation, please visit the <a href="https://open-policy-agent.github.io/gatekeeper/website/docs/">Gatekeeper</a>.
+For reference templates refer <a href="https://github.com/open-policy-agent/gatekeeper/tree/master/charts/gatekeeper/templates">Templates</a></p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p>The default values.yaml file in this add-on has disabled the components that are unreachable in EKS environments, and an EBS Volume for Persistent Storage.</p>
-<p>You can override the defaults using the <code>set</code> helm_config key, and set the admin password with <code>set_sensitive</code>:</p>
-<div class="highlight"><pre><span></span><code>  enable_kube_prometheus_stack      = true
-  kube_prometheus_stack_helm_config = {
-    set = [
-      {
-        name  = &quot;kubeProxy.enabled&quot;
-        value = false
-      }
-    ],
-    set_sensitive = [
-      {
-        name  = &quot;grafana.adminPassword&quot;
-        value = data.aws_secretsmanager_secret_version.admin_password_version.secret_string
-      }
+<p>Gatekeeper can be deployed by enabling the add-on via the following.</p>
+<div class="highlight"><pre><span></span><code>enable_gatekeeper = true
+</code></pre></div>
+<p>You can optionally customize the Helm chart that deploys <code>Gatekeeper</code> via the following configuration.</p>
+<div class="highlight"><pre><span></span><code>  enable_gatekeeper = true
+  # Optional  gatekeeper_helm_config
+  gatekeeper_helm_config = {
+    name                       = &quot;gatekeeper&quot;
+    chart                      = &quot;gatekeeper&quot;
+    repository                 = &quot;https://open-policy-agent.github.io/gatekeeper/charts&quot;
+    version                    = &quot;3.9.0&quot;
+    namespace                  = &quot;gatekeeper-system&quot;
+    values = [
+      &lt;&lt;-EOT
+        clusterName: ${var.eks_cluster_id}
+      EOT
     ]
   }
 </code></pre></div>
-<h2 id="upgrading-the-chart">Upgrading the Chart<a class="headerlink" href="#upgrading-the-chart" title="Permanent link">&para;</a></h2>
-<p>Be aware that it is likely necessary to update the CRDs when updating the Chart version. Refer to the Project documentation on upgrades for your specific versions: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack#upgrading-chart</p>
-<p>For complete project documentation, please visit the <a href="https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack">kube-prometheus-stack Github repository</a>.</p>
+<h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
+<p>The following properties are made available for use when managing the add-on via GitOps.</p>
+<div class="highlight"><pre><span></span><code>  argocd_gitops_config = {
+    enable          = true
+    clusterName     = var.eks_cluster_id
+  }
+</code></pre></div>
 
               
             </article>
@@ -1339,7 +1349,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../keda/" class="md-footer__link md-footer__link--prev" aria-label="Previous: KEDA" rel="prev">
+        <a href="../fargate-fluent-bit/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Fargate fluent bit" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1348,20 +1358,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              KEDA
+              Fargate fluent bit
             </div>
           </div>
         </a>
       
       
         
-        <a href="../kube-state-metrics/" class="md-footer__link md-footer__link--next" aria-label="Next: Kube-State-Metrics" rel="next">
+        <a href="../grafana/" class="md-footer__link md-footer__link--next" aria-label="Next: Grafana" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Kube-State-Metrics
+              Grafana
             </div>
           </div>
           <div class="md-footer__button md-icon">
