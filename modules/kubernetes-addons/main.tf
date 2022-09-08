@@ -531,13 +531,15 @@ module "kubecost" {
   addon_context     = local.addon_context
 }
 
-
 module "kyverno" {
-  count                        = var.enable_kyverno ? 1 : 0
+  count                        = var.enable_kyverno || var.enable_kyverno_policies || var.enable_kyverno_ui ? 1 : 0
   source                       = "./kyverno"
   addon_context                = local.addon_context
-  kyverno_helm_config          = var.kyverno_helm_config
-  kyverno_policies_helm_config = var.kyverno_policies_helm_config
-  kyverno_ui_helm_config       = var.kyverno_ui_helm_config
   manage_via_gitops            = var.argocd_manage_add_ons
+  enable_kyverno               = var.enable_kyverno
+  kyverno_helm_config          = var.kyverno_helm_config
+  enable_kyverno_policies      = var.enable_kyverno_policies
+  kyverno_policies_helm_config = var.kyverno_policies_helm_config
+  enable_kyverno_ui            = var.enable_kyverno_ui
+  kyverno_ui_helm_config       = var.kyverno_ui_helm_config
 }

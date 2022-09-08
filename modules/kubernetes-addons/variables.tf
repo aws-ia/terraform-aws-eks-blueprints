@@ -1087,6 +1087,18 @@ variable "enable_kyverno" {
   description = "Enable Kyverno add-on"
 }
 
+variable "enable_kyverno_policies" {
+  type        = bool
+  default     = false
+  description = "Enable Kyverno policies"
+}
+
+variable "enable_kyverno_ui" {
+  type        = bool
+  default     = false
+  description = "Enable Kyverno UI"
+}
+
 variable "kyverno_helm_config" {
   type        = any
   default     = {}

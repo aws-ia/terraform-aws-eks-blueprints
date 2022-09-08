@@ -234,8 +234,10 @@ module "eks_blueprints_kubernetes_addons" {
       Decode_Field_As json message
     EOF
   }
-  enable_kyverno = true
-  tags           = local.tags
+  enable_kyverno          = true
+  enable_kyverno_policies = true
+  enable_kyverno_ui       = false
+  tags                    = local.tags
 }
 
 #---------------------------------------------------------------
