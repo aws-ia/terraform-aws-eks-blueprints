@@ -24,12 +24,11 @@ You can optionally customize the Helm chart that deploys `Gatekeeper` via the fo
     repository                 = "https://open-policy-agent.github.io/gatekeeper/charts"
     version                    = "3.9.0"
     namespace                  = "gatekeeper-system"
-    values = [templatefile("${path.module}/values.yaml", {
-         eks_cluster_id       = var.eks_cluster_id,
-         eks_cluster_endpoint = var.eks_cluster_endpoint,
-         service_account_name = var.service_account_name,
-         operating_system     = "linux"
-    })]
+    values = [
+      <<-EOT
+        clusterName: ${var.eks_cluster_id}
+      EOT
+    ]
   }
 ```
 
@@ -38,10 +37,7 @@ The following properties are made available for use when managing the add-on via
 
 ```hcl
   argocd_gitops_config = {
-    enable                    = true
-    serviceAccountName        = local.service_account_name
-    controllerClusterName     = var.eks_cluster_id
-    controllerClusterEndpoint = local.eks_cluster_endpoint
-    awsDefaultInstanceProfile = var.node_iam_instance_profile
+    enable          = true
+    clusterName     = var.eks_cluster_id
   }
 ```
