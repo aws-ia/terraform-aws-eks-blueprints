@@ -1129,6 +1129,7 @@ variable "kyverno_ui_helm_config" {
   type        = any
   default     = {}
   description = "Kyverno UI Helm Chart config"
+}
 
 #-----------SMB CSI driver ADDON-------------
 variable "enable_smb_csi_driver" {
