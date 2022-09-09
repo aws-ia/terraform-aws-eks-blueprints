@@ -163,6 +163,14 @@ module "cert_manager" {
   letsencrypt_email           = var.cert_manager_letsencrypt_email
 }
 
+module "cert_manager_csi_driver" {
+  count             = var.enable_cert_manager_csi_driver ? 1 : 0
+  source            = "./cert-manager-csi-driver"
+  helm_config       = var.cert_manager_csi_driver_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "cluster_autoscaler" {
   source = "./cluster-autoscaler"
 
