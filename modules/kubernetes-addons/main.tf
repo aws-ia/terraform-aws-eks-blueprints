@@ -329,7 +329,7 @@ module "spark_k8s_operator" {
 }
 
 module "sysdig_agent" {
-  count             = var.sysdig_agent ? 1 : 0
+  count             = var.enable_sysdig_agent ? 1 : 0
   source            = "sysdiglabs/sysdig-addon/eksblueprints"
   helm_config       = var.sysdig_agent_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
