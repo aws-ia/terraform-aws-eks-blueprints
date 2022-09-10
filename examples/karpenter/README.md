@@ -35,7 +35,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 to initialize a working directory with configuration files
 
 ```sh
-cd examples/eks-cluster-with-karpenter/
+cd examples/karpenter/
 terraform init
 ```
 
