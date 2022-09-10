@@ -29,7 +29,7 @@ Also, provide the `adminPassword` using set_sensitive values as shown in the exa
     repository         = "https://grafana.github.io/helm-charts"
     version            = "6.32.1"
     namespace          = "grafana"
-    irsa_iam_role_name = "<optional-irsa-role-name>" # (Optional) The name of IRSA role to be created
+    irsa_iam_role_name = "<optional-irsa-role-name>"                      # (Optional) The name of IRSA role to be created
     description        = "Grafana Helm Chart deployment configuration"
     values             = [templatefile("${path.module}/values.yaml", {})]
     set_sensitive = [
