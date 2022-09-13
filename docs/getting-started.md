@@ -53,6 +53,8 @@ terraform plan
 
 We will leverage Terraform's [target](https://learn.hashicorp.com/tutorials/terraform/resource-targeting?in=terraform/cli) functionality to deploy a VPC, an EKS Cluster, and Kubernetes add-ons in separate steps.
 
+The default region to deploy into is us-west-2. To override it, in this case to eu-west-1, append `-var="region=uk-west-1"` to each of the following terraform commands:
+
 **Deploy the VPC**. This step will take roughly 3 minutes to complete.
 
 ```
