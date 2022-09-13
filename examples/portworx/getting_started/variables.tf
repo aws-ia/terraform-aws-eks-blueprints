@@ -6,11 +6,13 @@ variable "cluster_name" {
 }
 
 variable "aws_access_key_id" {
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
+  description = "Access key to your AWS account"
 }
 
 variable "aws_secret_access_key" {
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
+  description = "Secret key to your AWS account"
 }

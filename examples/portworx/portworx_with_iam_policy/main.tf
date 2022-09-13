@@ -80,8 +80,8 @@ module "vpc" {
 # Custom IAM roles for Node Groups
 #---------------------------------------------------------------
 
-resource "aws_iam_policy" "portworx_eksblueprint_volumeAccess" {
-  name = "portworx_eksblueprint_volumeAccess_1"
+resource "aws_iam_policy" "portworx_eksblueprint_volume_access" {
+  name = "portworx_eksblueprint_volume_access_1"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -131,13 +131,13 @@ module "eks_blueprints" {
       min_size                = 3
       max_size                = 3
       subnet_ids              = module.vpc.private_subnets
-      additional_iam_policies = [aws_iam_policy.portworx_eksblueprint_volumeAccess.arn]
+      additional_iam_policies = [aws_iam_policy.portworx_eksblueprint_volume_access.arn]
     }
   }
   tags = local.tags
 
   depends_on = [
-    aws_iam_policy.portworx_eksblueprint_volumeAccess
+    aws_iam_policy.portworx_eksblueprint_volume_access
   ]
 }
 

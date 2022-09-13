@@ -53,7 +53,7 @@ terraform apply -target="module.vpc"
 ```
 Deploy custom IAM policy.
 ```
-terraform apply -target="aws_iam_policy.portworx_eksblueprint_volumeAccess"
+terraform apply -target="aws_iam_policy.portworx_eksblueprint_volume_access"
 ```
 Deploy the EKS cluster. This step will take roughly 14 minutes to complete.
 ```
@@ -157,7 +157,7 @@ terraform destroy -target="module.eks_blueprints"
 #### Destroy the IAM policy.
 
 ```hcl
-terraform destroy -target="aws_iam_policy.portworx_eksblueprint_volumeAccess"
+terraform destroy -target="aws_iam_policy.portworx_eksblueprint_volume_access"
 ```
 
 #### Destroy the VPC.
