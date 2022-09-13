@@ -285,10 +285,11 @@ module "ondat" {
 }
 
 module "kube_prometheus_stack" {
-  count         = var.enable_kube_prometheus_stack ? 1 : 0
-  source        = "./kube-prometheus-stack"
-  helm_config   = var.kube_prometheus_stack_helm_config
-  addon_context = local.addon_context
+  count             = var.enable_kube_prometheus_stack ? 1 : 0
+  source            = "./kube-prometheus-stack"
+  helm_config       = var.kube_prometheus_stack_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "prometheus" {

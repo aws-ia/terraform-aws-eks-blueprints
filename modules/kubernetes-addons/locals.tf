@@ -40,6 +40,7 @@ locals {
     chaos_mesh                = var.enable_chaos_mesh ? module.chaos_mesh[0].argocd_gitops_config : null
     cilium                    = var.enable_cilium ? module.cilium[0].argocd_gitops_config : null
     gatekeeper                = var.enable_gatekeeper ? module.gatekeeper[0].argocd_gitops_config : null
+    kubePrometheusStack       = var.enable_kube_prometheus_stack ? module.kube_prometheus_stack[0].argocd_gitops_config : null
   }
 
   addon_context = {
