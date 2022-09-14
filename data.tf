@@ -106,7 +106,7 @@ data "aws_iam_policy_document" "eks_key" {
     principals {
       type = "AWS"
       identifiers = [
-        local.cluster_iam_role_arn
+        local.cluster_iam_role_pathed_arn
       ]
     }
   }
@@ -126,7 +126,7 @@ data "aws_iam_policy_document" "eks_key" {
     principals {
       type = "AWS"
       identifiers = [
-        local.cluster_iam_role_arn
+        local.cluster_iam_role_pathed_arn
       ]
     }
 
