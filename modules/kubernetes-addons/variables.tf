@@ -361,6 +361,13 @@ variable "metrics_server_helm_config" {
   default     = {}
 }
 
+#-----------SYSDIG-------------
+variable "enable_sysdig_agent" {
+  description = "Enable Sysdig Agent add-on"
+  type        = bool
+  default     = false
+}
+
 #-----------TETRATE ISTIO-------------
 variable "enable_tetrate_istio" {
   description = "Enable Tetrate Istio add-on"
