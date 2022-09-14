@@ -33,9 +33,11 @@ module "helm_addon" {
       description = "Prometheus helm Chart deployment configuration"
     },
     var.helm_config,
-    { values = distinct(concat(try(var.helm_config["values"], []), [templatefile("${path.module}/values.yaml", {
-      operating_system = try(var.helm_config.operating_system, "linux")
-    })])) }
+    {
+      values = distinct(concat(try(var.helm_config["values"], []), [templatefile("${path.module}/values.yaml", {
+        operating_system = try(var.helm_config.operating_system, "linux")
+      })]))
+    }
   )
 
   set_values = var.enable_amazon_prometheus ? [

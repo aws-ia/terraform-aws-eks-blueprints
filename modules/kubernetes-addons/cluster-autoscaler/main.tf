@@ -9,20 +9,23 @@ module "helm_addon" {
 
   manage_via_gitops = var.manage_via_gitops
 
-  helm_config = merge({
-    name        = local.name
-    chart       = local.name
-    version     = "9.19.1"
-    repository  = "https://kubernetes.github.io/autoscaler"
-    namespace   = local.namespace
-    description = "Cluster AutoScaler helm Chart deployment configuration."
+  helm_config = merge(
+    {
+      name        = local.name
+      chart       = local.name
+      version     = "9.19.1"
+      repository  = "https://kubernetes.github.io/autoscaler"
+      namespace   = local.namespace
+      description = "Cluster AutoScaler helm Chart deployment configuration."
     },
     var.helm_config,
-    { values = distinct(concat(try(var.helm_config["values"], []), [templatefile("${path.module}/values.yaml", {
-      aws_region     = var.addon_context.aws_region_name
-      eks_cluster_id = var.addon_context.eks_cluster_id
-      image_tag      = "v${var.eks_cluster_version}.0"
-    })])) }
+    {
+      values = distinct(concat(try(var.helm_config["values"], []), [templatefile("${path.module}/values.yaml", {
+        aws_region     = var.addon_context.aws_region_name
+        eks_cluster_id = var.addon_context.eks_cluster_id
+        image_tag      = "v${var.eks_cluster_version}.0"
+      })]))
+    }
   )
 
   set_values = [

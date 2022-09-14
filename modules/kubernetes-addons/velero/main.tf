@@ -14,19 +14,22 @@ module "helm_addon" {
   source = "../helm-addon"
 
   # https://github.com/vmware-tanzu/helm-charts/tree/main/charts/velero
-  helm_config = merge({
-    name        = local.name
-    description = "A Helm chart for velero"
-    chart       = local.name
-    version     = "2.30.0"
-    repository  = "https://vmware-tanzu.github.io/helm-charts/"
-    namespace   = local.namespace
+  helm_config = merge(
+    {
+      name        = local.name
+      description = "A Helm chart for velero"
+      chart       = local.name
+      version     = "2.30.0"
+      repository  = "https://vmware-tanzu.github.io/helm-charts/"
+      namespace   = local.namespace
     },
     var.helm_config,
-    { values = distinct(concat(try(var.helm_config["values"], []), [templatefile("${path.module}/values.yaml", {
-      bucket = var.backup_s3_bucket,
-      region = data.aws_region.current.name
-    })])) }
+    {
+      values = distinct(concat(try(var.helm_config["values"], []), [templatefile("${path.module}/values.yaml", {
+        bucket = var.backup_s3_bucket,
+        region = data.aws_region.current.name
+      })]))
+    }
   )
 
   set_values = [

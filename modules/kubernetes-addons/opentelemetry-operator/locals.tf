@@ -22,6 +22,8 @@ locals {
   helm_config = merge(
     local.default_helm_config,
     var.helm_config,
-    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
+    {
+      values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values))
+    }
   )
 }

@@ -46,15 +46,18 @@ module "helm_addon" {
   source = "../helm-addon"
   count  = var.enable_self_managed_coredns ? 1 : 0
 
-  helm_config = merge({
-    name        = local.name
-    description = "CoreDNS is a DNS server that chains plugins and provides Kubernetes DNS Services"
-    chart       = local.name
-    repository  = "https://coredns.github.io/helm"
-    namespace   = "kube-system"
+  helm_config = merge(
+    {
+      name        = local.name
+      description = "CoreDNS is a DNS server that chains plugins and provides Kubernetes DNS Services"
+      chart       = local.name
+      repository  = "https://coredns.github.io/helm"
+      namespace   = "kube-system"
     },
     var.helm_config,
-    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
+    {
+      values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values))
+    }
   )
 
   set_values = [

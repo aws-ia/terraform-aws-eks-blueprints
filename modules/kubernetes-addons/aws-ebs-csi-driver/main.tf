@@ -61,16 +61,19 @@ module "helm_addon" {
   source = "../helm-addon"
   count  = var.enable_self_managed_aws_ebs_csi_driver && !var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
 
-  helm_config = merge({
-    name        = local.name
-    description = "The Amazon Elastic Block Store Container Storage Interface (CSI) Driver provides a CSI interface used by Container Orchestrators to manage the lifecycle of Amazon EBS volumes."
-    chart       = "aws-ebs-csi-driver"
-    version     = "2.10.1"
-    repository  = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
-    namespace   = local.namespace
+  helm_config = merge(
+    {
+      name        = local.name
+      description = "The Amazon Elastic Block Store Container Storage Interface (CSI) Driver provides a CSI interface used by Container Orchestrators to manage the lifecycle of Amazon EBS volumes."
+      chart       = "aws-ebs-csi-driver"
+      version     = "2.10.1"
+      repository  = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
+      namespace   = local.namespace
     },
     var.helm_config,
-    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
+    {
+      values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values))
+    }
   )
 
   set_values = [
