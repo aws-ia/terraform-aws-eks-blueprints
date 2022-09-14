@@ -18,16 +18,21 @@ Deploy Cluster autoscaler with custom `values.yaml`
 
 ```hcl
   # Optional Map value; pass cluster-autoscaler-values.yaml from consumer module
-   cilium_helm_config = {
-    name       = "cluster-autoscaler"                                               # (Required) Release name.
-    repository = "https://kubernetes.github.io/autoscaler"                          # (Optional) Repository URL where to locate the requested chart.
-    chart      = "cluster-autoscaler"                                               # (Required) Chart name to be installed.
-    version    = "9.19.1"                                                           # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/cilium/locals.tf
-    values = [templatefile("${path.module}/cluster-autoscaler-values.yaml", {}),    # (Optional) Pass one or multiple values to the chart using terraform yaml related functions
-              file("cluster-autoscaler-custom-values.yaml"),
-              templatefile("cluster-autoscaler-additional.yaml", {}),
-              yamlencode({"awsRegion": "us-east-1"})
-    ]  
+  cluster_autoscaler_helm_config = {
+    name       = "cluster-autoscaler"                      # (Required) Release name.
+    repository = "https://kubernetes.github.io/autoscaler" # (Optional) Repository URL where to locate the requested chart.
+    chart      = "cluster-autoscaler"                      # (Required) Chart name to be installed.
+    version    = "9.19.1"                                  # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/cluster-autoscaler/locals.tf
+    values = [                                             # (Optional) Pass one or multiple values to the chart using terraform yaml related functions
+      templatefile("${path.module}/cluster-autoscaler-values.yaml", {}),
+      file("cluster-autoscaler-custom-values.yaml"),
+      templatefile("cluster-autoscaler-additional.yaml", {}),
+      yamlencode(
+        {
+          "awsRegion" : "us-east-1"
+        }
+      )
+    ]
   }
 ```
 

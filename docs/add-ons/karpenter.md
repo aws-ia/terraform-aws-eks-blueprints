@@ -23,7 +23,7 @@ You can optionally customize the Helm chart that deploys `Karpenter` via the fol
     repository = "https://charts.karpenter.sh"
     version    = "0.6.3"
     namespace  = "karpenter"
-    values     = [
+    values = [
       templatefile("${path.module}/values.yaml", {
         eks_cluster_id       = var.eks_cluster_id,
         eks_cluster_endpoint = var.eks_cluster_endpoint,
@@ -32,7 +32,11 @@ You can optionally customize the Helm chart that deploys `Karpenter` via the fol
       }),
       file("karpenter-custom-values.yaml"),
       templatefile("karpenter-additional.yaml", {}),
-      yamlencode({ "nodeSelector" : { "kubernetes.io/os" : "linux" } })
+      yamlencode({
+        "nodeSelector" : {
+          "kubernetes.io/os" : "linux"
+        }
+      })
     ]
   }
 

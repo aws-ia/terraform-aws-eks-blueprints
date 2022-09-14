@@ -18,16 +18,21 @@ Deploy Calico with custom `values.yaml`
 
 ```hcl
   # Optional Map value; pass  calico-values.yaml from consumer module
-  calico_helm_config = {
-    name       = "calico"                                            # (Required) Release name.
-    repository = "https://docs.projectcalico.org/charts"             # (Optional) Repository URL where to locate the requested chart.
-    chart      = "tigera-operator"                                   # (Required) Chart name to be installed.
-    version    = "v3.24.1"                                           # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/calico/locals.tf
-    namespace  = "tigera-operator"                                   # (Optional) The namespace to install the release into.
-    values = [templatefile("${path.module}/calico-values.yaml", {}), # (Optional) Pass one or multiple values to the chart using terraform yaml  related functions
+    calico_helm_config = {
+    name       = "calico"                                # (Required) Release name.
+    repository = "https://docs.projectcalico.org/charts" # (Optional) Repository URL where to locate the requested chart.
+    chart      = "tigera-operator"                       # (Required) Chart name to be installed.
+    version    = "v3.24.1"                               # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/calico/locals.tf
+    namespace  = "tigera-operator"                       # (Optional) The namespace to install the release into.
+    values = [                                           # (Optional) Pass one or multiple values to the chart using terraform yaml  related functions
+      templatefile("${path.module}/calico-values.yaml", {}),
       file("calico-custom-values.yaml"),
       templatefile("calico-additional.yaml", {}),
-      yamlencode({ "installation" : { "kubernetesProvider" : "EKS" } })
+      yamlencode(
+        {
+          "installation" : { "kubernetesProvider" : "EKS" }
+        }
+      )
     ]
   }
 ```
