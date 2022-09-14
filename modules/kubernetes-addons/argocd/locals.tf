@@ -12,14 +12,14 @@ locals {
     namespace        = local.namespace
     timeout          = 1200
     create_namespace = true
-    values           = local.default_helm_values
     description      = "The ArgoCD Helm Chart deployment configuration"
     wait             = false
   }
 
   helm_config = merge(
     local.default_helm_config,
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 
   default_argocd_application = {

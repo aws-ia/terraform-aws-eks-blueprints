@@ -2,6 +2,14 @@ locals {
   create_irsa = try(var.addon_config.service_account_role_arn == "", true)
   name        = try(var.helm_config.name, "aws-ebs-csi-driver")
   namespace   = try(var.helm_config.namespace, "kube-system")
+  default_helm_values = [
+    <<-EOT
+      image:
+        repository: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver
+      controller:
+        k8sTagClusterId: ${var.addon_context.eks_cluster_id}
+      EOT
+  ]
 }
 
 resource "aws_eks_addon" "aws_ebs_csi_driver" {
@@ -60,16 +68,9 @@ module "helm_addon" {
     version     = "2.10.1"
     repository  = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
     namespace   = local.namespace
-    values = [
-      <<-EOT
-      image:
-        repository: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver
-      controller:
-        k8sTagClusterId: ${var.addon_context.eks_cluster_id}
-      EOT
-    ]
     },
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 
   set_values = [

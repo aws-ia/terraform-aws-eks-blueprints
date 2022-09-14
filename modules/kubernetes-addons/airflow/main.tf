@@ -8,11 +8,11 @@ locals {
     version          = "1.6.0"
     namespace        = local.name
     create_namespace = true
-    values           = [templatefile("${path.module}/values.yaml", {})]
     description      = "Apache Airflow v2 Helm chart deployment configuration"
   }
-
-  helm_config = merge(local.default_helm_config, var.helm_config)
+  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
+  helm_config = merge(local.default_helm_config, var.helm_config,
+  { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) })
 }
 
 #-------------------------------------------------

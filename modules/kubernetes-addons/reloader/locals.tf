@@ -8,13 +8,15 @@ locals {
     version          = "v0.0.118"
     namespace        = local.name
     create_namespace = true
-    values           = []
     description      = "Reloader Helm Chart deployment configuration"
   }
 
+  default_helm_values = []
+
   helm_config = merge(
     local.default_helm_config,
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 
 

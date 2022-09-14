@@ -31,11 +31,11 @@ module "helm_addon" {
       repository  = "https://prometheus-community.github.io/helm-charts"
       namespace   = local.namespace_name
       description = "Prometheus helm Chart deployment configuration"
-      values = [templatefile("${path.module}/values.yaml", {
-        operating_system = try(var.helm_config.operating_system, "linux")
-      })]
     },
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), [templatefile("${path.module}/values.yaml", {
+      operating_system = try(var.helm_config.operating_system, "linux")
+    })])) }
   )
 
   set_values = var.enable_amazon_prometheus ? [

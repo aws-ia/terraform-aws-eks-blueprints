@@ -8,13 +8,13 @@ locals {
     version     = "1.0.0"
     namespace   = local.name
     description = "Helm chart for deploying Spark WebUI with Spark History Server in EKS using S3 Spark Event logs"
-    values      = local.default_helm_values
     timeout     = "300"
   }
 
   helm_config = merge(
     local.default_helm_config,
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 
   set_values = [{

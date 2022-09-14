@@ -16,13 +16,13 @@ module "helm_addon" {
     repository  = "https://kubernetes.github.io/autoscaler"
     namespace   = local.namespace
     description = "Cluster AutoScaler helm Chart deployment configuration."
-    values = [templatefile("${path.module}/values.yaml", {
+    },
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), [templatefile("${path.module}/values.yaml", {
       aws_region     = var.addon_context.aws_region_name
       eks_cluster_id = var.addon_context.eks_cluster_id
       image_tag      = "v${var.eks_cluster_version}.0"
-    })]
-    },
-    var.helm_config
+    })])) }
   )
 
   set_values = [

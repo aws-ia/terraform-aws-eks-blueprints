@@ -7,13 +7,13 @@ locals {
     repository  = "https://grafana.github.io/helm-charts"
     version     = "6.32.1"
     namespace   = local.name
-    values      = local.default_helm_values
     description = "Grafana Helm Chart deployment configuration"
   }
 
   helm_config = merge(
     local.default_helm_config,
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {

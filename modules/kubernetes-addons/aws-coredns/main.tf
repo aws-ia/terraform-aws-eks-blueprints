@@ -1,5 +1,22 @@
 locals {
   name = "coredns"
+  default_helm_values = [
+    <<-EOT
+      image:
+        repository: ${var.helm_config.image_registry}/eks/coredns
+        tag: ${data.aws_eks_addon_version.this.version}
+      deployment:
+        name: coredns
+        annotations:
+          eks.amazonaws.com/compute-type: ${try(var.helm_config.compute_type, "ec2")}
+      service:
+        name: kube-dns
+        annotations:
+          eks.amazonaws.com/compute-type: ${try(var.helm_config.compute_type, "ec2")}
+      podAnnotations:
+        eks.amazonaws.com/compute-type: ${try(var.helm_config.compute_type, "ec2")}
+      EOT
+  ]
 }
 
 data "aws_eks_addon_version" "this" {
@@ -35,25 +52,9 @@ module "helm_addon" {
     chart       = local.name
     repository  = "https://coredns.github.io/helm"
     namespace   = "kube-system"
-    values = [
-      <<-EOT
-      image:
-        repository: ${var.helm_config.image_registry}/eks/coredns
-        tag: ${data.aws_eks_addon_version.this.version}
-      deployment:
-        name: coredns
-        annotations:
-          eks.amazonaws.com/compute-type: ${try(var.helm_config.compute_type, "ec2")}
-      service:
-        name: kube-dns
-        annotations:
-          eks.amazonaws.com/compute-type: ${try(var.helm_config.compute_type, "ec2")}
-      podAnnotations:
-        eks.amazonaws.com/compute-type: ${try(var.helm_config.compute_type, "ec2")}
-      EOT
-    ]
     },
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 
   set_values = [

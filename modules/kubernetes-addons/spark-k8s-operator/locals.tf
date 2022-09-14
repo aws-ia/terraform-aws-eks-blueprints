@@ -8,14 +8,17 @@ locals {
     version     = "1.1.25"
     namespace   = local.name
     description = "The spark_k8s_operator HelmChart Ingress Controller deployment configuration"
-    values      = null
     timeout     = "1200"
   }
 
+  default_helm_values = []
+
   helm_config = merge(
     local.default_helm_config,
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
+
 
   argocd_gitops_config = {
     enable = true

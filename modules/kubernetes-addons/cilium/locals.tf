@@ -6,13 +6,13 @@ locals {
     repository  = "https://helm.cilium.io/"
     version     = "1.12.1"
     namespace   = "kube-system"
-    values      = local.default_helm_values
     description = "cilium helm Chart deployment configuration"
   }
 
   helm_config = merge(
     local.default_helm_config,
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {})]

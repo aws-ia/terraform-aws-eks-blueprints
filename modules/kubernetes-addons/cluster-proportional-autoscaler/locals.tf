@@ -8,7 +8,6 @@ locals {
     version     = "1.0.0"
     namespace   = "kube-system"
     timeout     = "300"
-    values      = local.default_helm_values
     set         = []
     description = "Cluster Proportional Autoscaler Helm Chart"
   }
@@ -17,7 +16,8 @@ locals {
 
   helm_config = merge(
     local.default_helm_config,
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {

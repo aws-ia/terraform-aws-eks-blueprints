@@ -15,11 +15,13 @@ locals {
     namespace   = local.namespace
     timeout     = "1200"
     description = "ADOT Operator helm chart"
-    values      = []
   }
+
+  default_helm_values = []
 
   helm_config = merge(
     local.default_helm_config,
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 }

@@ -20,14 +20,14 @@ locals {
     version     = "0.16.0"
     namespace   = local.name
     timeout     = "300"
-    values      = local.default_helm_values
     set         = []
     description = "karpenter Helm Chart for Node Autoscaling"
   }
 
   helm_config = merge(
     local.default_helm_config,
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 
   irsa_config = {

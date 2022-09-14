@@ -8,12 +8,12 @@ locals {
     version     = "1.8.1"
     namespace   = local.namespace
     description = "Crossplane Helm chart"
-    values      = local.default_helm_values
   }
 
   helm_config = merge(
     local.default_helm_config,
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {

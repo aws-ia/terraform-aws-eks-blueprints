@@ -10,7 +10,6 @@ locals {
     namespace          = local.namespace
     timeout            = "1200"
     description        = "Agones Gaming Server Helm Chart deployment configuration"
-    values             = local.default_helm_values
     gameserver_minport = 7000
     gameserver_maxport = 8000
   }
@@ -19,7 +18,8 @@ locals {
 
   helm_config = merge(
     local.default_helm_config,
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 
   argocd_gitops_config = {

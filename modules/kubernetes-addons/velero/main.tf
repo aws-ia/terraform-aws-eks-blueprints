@@ -21,12 +21,12 @@ module "helm_addon" {
     version     = "2.30.0"
     repository  = "https://vmware-tanzu.github.io/helm-charts/"
     namespace   = local.namespace
-    values = [templatefile("${path.module}/values.yaml", {
+    },
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), [templatefile("${path.module}/values.yaml", {
       bucket = var.backup_s3_bucket,
       region = data.aws_region.current.name
-    })]
-    },
-    var.helm_config
+    })])) }
   )
 
   set_values = [

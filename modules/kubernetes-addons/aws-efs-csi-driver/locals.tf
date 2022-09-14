@@ -9,13 +9,15 @@ locals {
     repository  = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
     version     = "2.2.6"
     namespace   = local.namespace
-    values      = []
     description = "The AWS EFS CSI driver Helm chart deployment configuration"
   }
 
+  default_helm_values = []
+
   helm_config = merge(
     local.default_helm_config,
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 
   set_values = [

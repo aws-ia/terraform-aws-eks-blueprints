@@ -7,7 +7,6 @@ locals {
     version     = "1.0.0"
     namespace   = local.name
     description = "Apache YuniKorn (Incubating) is a light-weight, universal resource scheduler for container orchestrator systems"
-    values      = local.default_helm_values
     timeout     = "1200"
   }
 
@@ -15,7 +14,8 @@ locals {
 
   helm_config = merge(
     local.default_helm_config,
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 
   argocd_gitops_config = {

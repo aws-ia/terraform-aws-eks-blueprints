@@ -8,7 +8,6 @@ locals {
     version     = "1.4.0"
     namespace   = local.name
     description = "Kubernetes Vertical Pod Autoscaler"
-    values      = local.default_helm_values
     timeout     = "1200"
   }
 
@@ -16,7 +15,8 @@ locals {
 
   helm_config = merge(
     local.default_helm_config,
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 
   argocd_gitops_config = {

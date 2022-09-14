@@ -18,17 +18,22 @@ You can optionally customize the Helm chart that deploys `Karpenter` via the fol
   enable_karpenter = true
   # Optional  karpenter_helm_config
   karpenter_helm_config = {
-    name                       = "karpenter"
-    chart                      = "karpenter"
-    repository                 = "https://charts.karpenter.sh"
-    version                    = "0.6.3"
-    namespace                  = "karpenter"
-    values = [templatefile("${path.module}/values.yaml", {
-         eks_cluster_id       = var.eks_cluster_id,
-         eks_cluster_endpoint = var.eks_cluster_endpoint,
-         service_account_name = var.service_account_name,
-         operating_system     = "linux"
-    })]
+    name       = "karpenter"
+    chart      = "karpenter"
+    repository = "https://charts.karpenter.sh"
+    version    = "0.6.3"
+    namespace  = "karpenter"
+    values     = [
+      templatefile("${path.module}/values.yaml", {
+        eks_cluster_id       = var.eks_cluster_id,
+        eks_cluster_endpoint = var.eks_cluster_endpoint,
+        service_account_name = var.service_account_name,
+        operating_system     = "linux"
+      }),
+      file("karpenter-custom-values.yaml"),
+      templatefile("karpenter-additional.yaml", {}),
+      yamlencode({ "nodeSelector" : { "kubernetes.io/os" : "linux" } })
+    ]
   }
 
   karpenter_irsa_policies = [] # Optional to add additional policies to IRSA

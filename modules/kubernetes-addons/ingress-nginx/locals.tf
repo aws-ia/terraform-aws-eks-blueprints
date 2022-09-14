@@ -8,7 +8,6 @@ locals {
     version          = "4.1.4"
     namespace        = local.name
     create_namespace = true
-    values           = local.default_helm_values
     set              = []
     description      = "The NGINX HelmChart Ingress Controller deployment configuration"
     wait             = false
@@ -18,7 +17,8 @@ locals {
 
   helm_config = merge(
     local.default_helm_config,
-    var.helm_config
+    var.helm_config,
+    { values = distinct(concat(try(var.helm_config["values"], []), local.default_helm_values)) }
   )
 
   argocd_gitops_config = {
