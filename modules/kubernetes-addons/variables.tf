@@ -661,6 +661,18 @@ variable "cert_manager_letsencrypt_email" {
   default     = ""
 }
 
+variable "enable_cert_manager_csi_driver" {
+  description = "Enable Cert Manager CSI Driver add-on"
+  type        = bool
+  default     = false
+}
+
+variable "cert_manager_csi_driver_helm_config" {
+  description = "Cert Manager CSI Driver Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------Argo Rollouts ADDON-------------
 variable "enable_argo_rollouts" {
   description = "Enable Argo Rollouts add-on"
