@@ -1026,6 +1026,19 @@ variable "kuberay_operator_helm_config" {
   default     = {}
 }
 
+#----------- Reloader Addon-------------
+variable "enable_reloader" {
+  description = "Enable Reloader add-on"
+  type        = bool
+  default     = false
+}
+
+variable "reloader_helm_config" {
+  description = "Reloader Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------Apache Airflow ADDON-------------
 variable "enable_airflow" {
   description = "Enable Airflow add-on"
@@ -1074,6 +1087,59 @@ variable "enable_kubecost" {
 
 variable "kubecost_helm_config" {
   description = "Kubecost Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------SMB CSI driver ADDON-------------
+variable "enable_smb_csi_driver" {
+  description = "Enable SMB CSI driver add-on"
+  type        = bool
+  default     = false
+}
+
+variable "smb_csi_driver_helm_config" {
+  description = "SMB CSI driver Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+
+#-----------Chaos Mesh ADDON-------------
+variable "enable_chaos_mesh" {
+  description = "Enable Chaos Mesh add-on"
+  type        = bool
+  default     = false
+}
+
+variable "chaos_mesh_helm_config" {
+  description = "Chaos Mesh Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------Cilium ADDON-------------
+variable "enable_cilium" {
+  description = "Enable Cilium add-on"
+  type        = bool
+  default     = false
+}
+
+variable "cilium_helm_config" {
+  description = "Cilium Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------Gatekeeper ADDON-------------
+variable "enable_gatekeeper" {
+  description = "Enable Gatekeeper add-on"
+  type        = bool
+  default     = false
+}
+
+variable "gatekeeper_helm_config" {
+  description = "Gatekeeper Helm Chart config"
   type        = any
   default     = {}
 }

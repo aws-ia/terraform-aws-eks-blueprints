@@ -302,6 +302,14 @@ module "prometheus" {
   addon_context                        = local.addon_context
 }
 
+module "reloader" {
+  count             = var.enable_reloader ? 1 : 0
+  source            = "./reloader"
+  helm_config       = var.reloader_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "spark_history_server" {
   count             = var.enable_spark_history_server ? 1 : 0
   source            = "./spark-history-server"
@@ -527,6 +535,38 @@ module "kubecost" {
   count             = var.enable_kubecost ? 1 : 0
   source            = "./kubecost"
   helm_config       = var.kubecost_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "smb_csi_driver" {
+  count             = var.enable_smb_csi_driver ? 1 : 0
+  source            = "./smb-csi-driver"
+  helm_config       = var.smb_csi_driver_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "chaos_mesh" {
+  count             = var.enable_chaos_mesh ? 1 : 0
+  source            = "./chaos-mesh"
+  helm_config       = var.chaos_mesh_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "cilium" {
+  count             = var.enable_cilium ? 1 : 0
+  source            = "./cilium"
+  helm_config       = var.cilium_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "gatekeeper" {
+  count             = var.enable_gatekeeper ? 1 : 0
+  source            = "./gatekeeper"
+  helm_config       = var.gatekeeper_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
