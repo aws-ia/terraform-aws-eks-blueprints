@@ -6,6 +6,7 @@ This example deploys the following
 - Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
 - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
 - Enables cert-manager module
+- Enables cert-manager CSI driver module
 - Enables aws-privateca-issuer module
 - Creates AWS Certificate Manager Private Certificate Authority, enables and activates it
 - Creates the CRDs to fetch `tls.crt`, `tls.key` and `ca.crt` , which will be available as Kubernetes Secret. Now you may mount the secret in the application for end to end TLS.
