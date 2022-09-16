@@ -14,9 +14,7 @@ For more details checkout [kyverno](https://kyverno.io/)
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
+No providers.
 
 ## Modules
 
@@ -24,13 +22,11 @@ For more details checkout [kyverno](https://kyverno.io/)
 |------|--------|---------|
 | <a name="module_kyverno_helm_addon"></a> [kyverno\_helm\_addon](#module\_kyverno\_helm\_addon) | ../helm-addon | n/a |
 | <a name="module_kyverno_policies_helm_addon"></a> [kyverno\_policies\_helm\_addon](#module\_kyverno\_policies\_helm\_addon) | ../helm-addon | n/a |
-| <a name="module_kyverno_ui_helm_addon"></a> [kyverno\_ui\_helm\_addon](#module\_kyverno\_ui\_helm\_addon) | ../helm-addon | n/a |
+| <a name="module_kyverno_policy_reporter_helm_addon"></a> [kyverno\_policy\_reporter\_helm\_addon](#module\_kyverno\_policy\_reporter\_helm\_addon) | ../helm-addon | n/a |
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [kubernetes_namespace_v1.this](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace_v1) | resource |
+No resources.
 
 ## Inputs
 
@@ -39,10 +35,10 @@ For more details checkout [kyverno](https://kyverno.io/)
 | <a name="input_addon_context"></a> [addon\_context](#input\_addon\_context) | Input configuration for the addon | <pre>object({<br>    aws_caller_identity_account_id = string<br>    aws_caller_identity_arn        = string<br>    aws_eks_cluster_endpoint       = string<br>    aws_partition_id               = string<br>    aws_region_name                = string<br>    eks_cluster_id                 = string<br>    eks_oidc_issuer_url            = string<br>    eks_oidc_provider_arn          = string<br>    tags                           = map(string)<br>  })</pre> | n/a | yes |
 | <a name="input_enable_kyverno"></a> [enable\_kyverno](#input\_enable\_kyverno) | Enable Kyverno | `bool` | `false` | no |
 | <a name="input_enable_kyverno_policies"></a> [enable\_kyverno\_policies](#input\_enable\_kyverno\_policies) | Enable Kyverno policies | `bool` | `false` | no |
-| <a name="input_enable_kyverno_ui"></a> [enable\_kyverno\_ui](#input\_enable\_kyverno\_ui) | Enable Kyverno UI | `bool` | `false` | no |
+| <a name="input_enable_kyverno_policy_reporter"></a> [enable\_kyverno\_policy\_reporter](#input\_enable\_kyverno\_policy\_reporter) | Enable Kyverno UI | `bool` | `false` | no |
 | <a name="input_kyverno_helm_config"></a> [kyverno\_helm\_config](#input\_kyverno\_helm\_config) | Helm provider config for the Kyverno | `any` | `{}` | no |
 | <a name="input_kyverno_policies_helm_config"></a> [kyverno\_policies\_helm\_config](#input\_kyverno\_policies\_helm\_config) | Helm provider config for the Kyverno baseline policies | `any` | `{}` | no |
-| <a name="input_kyverno_ui_helm_config"></a> [kyverno\_ui\_helm\_config](#input\_kyverno\_ui\_helm\_config) | Helm provider config for the Kyverno policy reporter UI | `any` | `{}` | no |
+| <a name="input_kyverno_policy_reporter_helm_config"></a> [kyverno\_policy\_reporter\_helm\_config](#input\_kyverno\_policy\_reporter\_helm\_config) | Helm provider config for the Kyverno policy reporter UI | `any` | `{}` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
 
 ## Outputs

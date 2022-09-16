@@ -84,7 +84,7 @@ Deploy Kyverno Policy reporter UI with custom `values.yaml`
     chart      = "policy-reporter"                                        # (Required) Chart name to be installed.
     version    = "v2.5.2"                                               # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/kyverno/locals.tf
     namespace  = "kyverno"                                             # (Optional) The namespace to install the release into.
-    values = [templatefile("${path.module}/kyverno-ui-values.yaml", {})]
+    values = [templatefile("${path.module}/kyverno-policy-reporter-values.yaml", {})]
   }
 ```
 ### GitOps Configuration

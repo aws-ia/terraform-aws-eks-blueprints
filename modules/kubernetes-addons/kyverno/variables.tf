@@ -1,39 +1,47 @@
 variable "kyverno_helm_config" {
-  type        = any
   description = "Helm provider config for the Kyverno"
+  type        = any
   default     = {}
 }
+
 variable "kyverno_policies_helm_config" {
-  type        = any
   description = "Helm provider config for the Kyverno baseline policies"
-  default     = {}
-}
-variable "kyverno_ui_helm_config" {
   type        = any
-  description = "Helm provider config for the Kyverno policy reporter UI"
   default     = {}
 }
+
+variable "kyverno_policy_reporter_helm_config" {
+  description = "Helm provider config for the Kyverno policy reporter UI"
+  type        = any
+  default     = {}
+}
+
 variable "enable_kyverno" {
-  type        = bool
   default     = false
+  type        = bool
   description = "Enable Kyverno"
 }
+
 variable "enable_kyverno_policies" {
-  type        = bool
-  default     = false
   description = "Enable Kyverno policies"
-}
-variable "enable_kyverno_ui" {
   type        = bool
   default     = false
+}
+
+variable "enable_kyverno_policy_reporter" {
   description = "Enable Kyverno UI"
-}
-variable "manage_via_gitops" {
   type        = bool
   default     = false
-  description = "Determines if the add-on should be managed via GitOps."
 }
+
+variable "manage_via_gitops" {
+  description = "Determines if the add-on should be managed via GitOps."
+  type        = bool
+  default     = false
+}
+
 variable "addon_context" {
+  description = "Input configuration for the addon"
   type = object({
     aws_caller_identity_account_id = string
     aws_caller_identity_arn        = string
@@ -45,5 +53,4 @@ variable "addon_context" {
     eks_oidc_provider_arn          = string
     tags                           = map(string)
   })
-  description = "Input configuration for the addon"
 }

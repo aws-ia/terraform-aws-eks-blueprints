@@ -1,17 +1,10 @@
 # -- Pod Security Standard profile (`baseline`, `restricted`, `privileged`, `custom`).
+
+# Check here for the list of default chart values - https://github.com/kyverno/kyverno/tree/main/charts/kyverno-policies
+
 # For more info https://kyverno.io/policies/pod-security.
 podSecurityStandard: restricted
-
-# -- Pod Security Standard (`low`, `medium`, `high`).
-podSecuritySeverity: medium
-
-# -- Validation failure action (`audit`, `enforce`).
-# For more info https://kyverno.io/docs/writing-policies/validate.
-validationFailureAction: audit
 
 # -- API server behavior if the webhook fails to respond ('Ignore', 'Fail')
 # For more info: https://kyverno.io/docs/writing-policies/policy-settings/
 failurePolicy: Ignore
-
-# -- Policies background mode
-background: true

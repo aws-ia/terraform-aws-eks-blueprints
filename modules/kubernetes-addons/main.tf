@@ -549,16 +549,16 @@ module "kubecost" {
 }
 
 module "kyverno" {
-  count                        = var.enable_kyverno || var.enable_kyverno_policies || var.enable_kyverno_ui ? 1 : 0
-  source                       = "./kyverno"
-  addon_context                = local.addon_context
-  manage_via_gitops            = var.argocd_manage_add_ons
-  enable_kyverno               = var.enable_kyverno
-  kyverno_helm_config          = var.kyverno_helm_config
-  enable_kyverno_policies      = var.enable_kyverno_policies
-  kyverno_policies_helm_config = var.kyverno_policies_helm_config
-  enable_kyverno_ui            = var.enable_kyverno_ui
-  kyverno_ui_helm_config       = var.kyverno_ui_helm_config
+  count                               = var.enable_kyverno ? 1 : 0
+  source                              = "./kyverno"
+  addon_context                       = local.addon_context
+  manage_via_gitops                   = var.argocd_manage_add_ons
+  enable_kyverno                      = var.enable_kyverno
+  kyverno_helm_config                 = var.kyverno_helm_config
+  enable_kyverno_policies             = var.enable_kyverno_policies
+  kyverno_policies_helm_config        = var.kyverno_policies_helm_config
+  enable_kyverno_policy_reporter      = var.enable_kyverno_policy_reporter
+  kyverno_policy_reporter_helm_config = var.kyverno_policy_reporter_helm_config
 }
 
 module "smb_csi_driver" {

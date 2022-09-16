@@ -1103,44 +1103,42 @@ variable "kubecost_helm_config" {
   default     = {}
 }
 
-
-
 #-----------Kyverno ADDON-------------
 
 variable "enable_kyverno" {
+  description = "Enable Kyverno add-on"
   type        = bool
   default     = false
-  description = "Enable Kyverno add-on"
 }
 
 variable "enable_kyverno_policies" {
+  description = "Enable Kyverno policies"
   type        = bool
   default     = false
-  description = "Enable Kyverno policies"
 }
 
-variable "enable_kyverno_ui" {
+variable "enable_kyverno_policy_reporter" {
+  description = "Enable Kyverno UI"
   type        = bool
   default     = false
-  description = "Enable Kyverno UI"
 }
 
 variable "kyverno_helm_config" {
+  description = "Kyverno Helm Chart config"
   type        = any
   default     = {}
-  description = "Kyverno Helm Chart config"
 }
 
 variable "kyverno_policies_helm_config" {
+  description = "Kyverno policies Helm Chart config"
   type        = any
   default     = {}
-  description = "Kyverno policies Helm Chart config"
 }
 
-variable "kyverno_ui_helm_config" {
+variable "kyverno_policy_reporter_helm_config" {
+  description = "Kyverno UI Helm Chart config"
   type        = any
   default     = {}
-  description = "Kyverno UI Helm Chart config"
 }
 
 #-----------SMB CSI driver ADDON-------------
