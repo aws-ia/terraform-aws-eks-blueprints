@@ -16,12 +16,6 @@ enable_argocd = true
 
 ArgoCD has a built-in `admin` user that has full access to the ArgoCD instance. By default, Argo will create a password for the admin user.
 
-You can optionally provide a custom password for the admin user by specifying the name of an AWS Secrets Manager secret. The value for the secret should be a [bcrypt hash](https://github.com/argoproj/argo-helm/blob/master/charts/argo-cd/values.yaml#L1785) of your admin password. The hashed value will be stored as a Kubernetes Secret and will be used to configure the admin password for Argo.
-
-```
-argocd_admin_password_secret_name = <secret_name>
-```
-
 See the [ArgoCD documentation](https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/) for additional details on managing users.
 
 ### Customizing the Helm Chart
@@ -112,7 +106,6 @@ The following demonstrates a complete example for configuring ArgoCD.
 ```hcl
 enable_argocd                       = true
 argocd_manage_add_ons               = true
-argocd_admin_password_secret_name   = <secret_name>
 
 argocd_helm_config = {
   name             = "argo-cd"

@@ -39,6 +39,7 @@ locals {
     smb_csi_driver            = var.enable_smb_csi_driver ? module.smb_csi_driver[0].argocd_gitops_config : null
     chaos_mesh                = var.enable_chaos_mesh ? module.chaos_mesh[0].argocd_gitops_config : null
     cilium                    = var.enable_cilium ? module.cilium[0].argocd_gitops_config : null
+    gatekeeper                = var.enable_gatekeeper ? module.gatekeeper[0].argocd_gitops_config : null
   }
 
   addon_context = {
