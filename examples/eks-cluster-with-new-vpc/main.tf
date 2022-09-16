@@ -79,10 +79,20 @@ module "eks_blueprints_kubernetes_addons" {
   # Add-ons
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
-  enable_cluster_autoscaler           = true
   enable_aws_cloudwatch_metrics       = true
   enable_kubecost                     = true
   enable_gatekeeper                   = true
+
+  enable_cluster_autoscaler = true
+  cluster_autoscaler_helm_config = {
+    set = [
+      {
+        name  = "podLabels.prometheus\\.io/scrape",
+        value = "true",
+        type  = "string",
+      }
+    ]
+  }
 
   enable_cert_manager = true
   cert_manager_helm_config = {
@@ -93,6 +103,7 @@ module "eks_blueprints_kubernetes_addons" {
       },
     ]
   }
+  enable_cert_manager_csi_driver = true
 
   tags = local.tags
 }

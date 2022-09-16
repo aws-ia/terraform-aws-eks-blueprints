@@ -163,6 +163,14 @@ module "cert_manager" {
   letsencrypt_email           = var.cert_manager_letsencrypt_email
 }
 
+module "cert_manager_csi_driver" {
+  count             = var.enable_cert_manager_csi_driver ? 1 : 0
+  source            = "./cert-manager-csi-driver"
+  helm_config       = var.cert_manager_csi_driver_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "cluster_autoscaler" {
   source = "./cluster-autoscaler"
 
@@ -509,6 +517,7 @@ module "external_secrets" {
   count                                 = var.enable_external_secrets ? 1 : 0
   source                                = "./external-secrets"
   helm_config                           = var.external_secrets_helm_config
+  manage_via_gitops                     = var.argocd_manage_add_ons
   addon_context                         = local.addon_context
   irsa_policies                         = var.external_secrets_irsa_policies
   external_secrets_ssm_parameter_arns   = var.external_secrets_ssm_parameter_arns
@@ -569,4 +578,11 @@ module "gatekeeper" {
   helm_config       = var.gatekeeper_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+}
+
+module "local_volume_provisioner" {
+  count         = var.enable_local_volume_provisioner ? 1 : 0
+  source        = "./local-volume-provisioner"
+  helm_config   = var.local_volume_provisioner_helm_config
+  addon_context = local.addon_context
 }
