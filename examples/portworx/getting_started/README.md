@@ -83,6 +83,11 @@ kubectl get stc -n kube-system
 
 Result: A storage cluster with set name becomes active which implies Portworx cluster is online.
 
+```
+NAMESPACE     NAME            CLUSTER UUID         STATUS   VERSION   AGE
+kube-system   portworx-ir7e   79608dd3-e6b2-4a0a   Online   2.11.0    3m17s
+```
+
 ## Portworx Configuration
 
 The following table lists the configurable parameters of the Portworx chart and their default values:
@@ -91,7 +96,7 @@ The following table lists the configurable parameters of the Portworx chart and 
 |-----------|-------------| --------|
 | `imageVersion` | The image tag to pull | "2.11.0" |
 | `useAWSMarketplace` | Set this variable to true if you intend to use AWS marketplace license for Portworx | "false" |
-| `clusterName` | Portworx Cluster Name| mycluster |
+| `clusterName` | Portworx Cluster Name| portworx-\<random_string\> |
 | `drives` | Semicolon separated list of drives to be used for storage. (example: "/dev/sda;/dev/sdb" or "type=gp2,size=200;type=gp3,size=500")  |  "type=gp2,size=200"|
 | `useInternalKVDB` | Boolean variable to set internal KVDB on/off | true |
 | `kvdbDevice` | specify a separate device to store KVDB data, only used when internalKVDB is set to true | type=gp2,size=150 |

@@ -81,7 +81,7 @@ module "vpc" {
 #---------------------------------------------------------------
 
 resource "aws_iam_policy" "portworx_eksblueprint_volume_access" {
-  name = "portworx_eksblueprint_volume_access_1"
+  name = "portworx_eksblueprint_volume_access"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -125,8 +125,8 @@ module "eks_blueprints" {
   private_subnet_ids = module.vpc.private_subnets
 
   managed_node_groups = {
-    eksblueprint_nodegroup_med_2 = {
-      node_group_name         = "eksblueprint_nodegroup_med_2"
+    eksblueprint_nodegroup_med = {
+      node_group_name         = "eksblueprint_nodegroup_med"
       instance_types          = ["t2.medium"]
       min_size                = 3
       max_size                = 3

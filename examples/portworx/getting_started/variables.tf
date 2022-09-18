@@ -6,13 +6,15 @@ variable "cluster_name" {
 }
 
 variable "aws_access_key_id" {
+  description = "Access key to a new IAM user with required policy attached"
   type        = string
   default     = ""
-  description = "Access key to your AWS account"
+  sensitive   = true
 }
 
 variable "aws_secret_access_key" {
+  description = "Secret key to a new IAM user with required policy attached"
   type        = string
   default     = ""
-  description = "Secret key to your AWS account"
+  sensitive   = true
 }

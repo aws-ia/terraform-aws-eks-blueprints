@@ -94,9 +94,9 @@ export TF_VAR_aws_secret_access_key=<access-key-secret>
 2. To use Portworx add-on with this method, along with ```enable_portworx``` variable, pass these credentials in the following manner:
 
 ```
-  enable_portworx                     = true
+  enable_portworx = true
 
-  portworx_chart_values ={
+  portworx_chart_values = {
     awsAccessKeyId = var.aws_access_key_id
     awsSecretAccessKey = var.aws_secret_access_key
 
@@ -112,11 +112,13 @@ export TF_VAR_aws_secret_access_key=<access-key-secret>
 variable "aws_access_key_id" {
   type = string
   default = ""
+  sensitive=true
 }
 
 variable "aws_secret_access_key" {
   type = string
   default = ""
+  sensitive=true
 }
 ```
 
@@ -134,7 +136,7 @@ To customize Portworx installation, pass the configuration parameter as an objec
 
 ```
   enable_portworx         = true
-  portworx_chart_values   ={
+  portworx_chart_values   = {
     clusterName="testCluster"
     imageVersion="2.11.1"
   }
