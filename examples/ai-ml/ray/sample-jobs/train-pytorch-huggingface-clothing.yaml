@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: ray-fashion-mnist-train-job-
+  generateName: ray-train-pytorch-huggingface-clothing-
   namespace: ray-cluster
 spec:
   template:
@@ -10,12 +10,12 @@ spec:
       serviceAccountName: ray-cluster-sa
       restartPolicy: Never
       containers:
-        - name: mnist
+        - name: hface
           image: $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/ray-demo:latest
           imagePullPolicy: Always
           command: [ "/bin/bash", "-c", "--" ]
           args:
-            - "python /opt/train_fashion_mnist.py"
+            - "python /opt/train_pytorch_huggingface_clothing.py"
           resources:
             requests:
               cpu: 1000m
