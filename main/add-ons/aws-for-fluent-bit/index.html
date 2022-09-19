@@ -547,6 +547,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#externally-created-cloudwatch-log-groups" class="md-nav__link">
+    Externally-Created CloudWatch Log Group(s)
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1322,6 +1329,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#externally-created-cloudwatch-log-groups" class="md-nav__link">
+    Externally-Created CloudWatch Log Group(s)
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1385,6 +1399,16 @@ See this <a href="https://github.com/aws/eks-charts/tree/master/stable/aws-for-f
   enable       = true
   logGroupName = &quot;&lt;log_group_name&gt;&quot;
 }
+</code></pre></div>
+<h3 id="externally-created-cloudwatch-log-groups">Externally-Created CloudWatch Log Group(s)<a class="headerlink" href="#externally-created-cloudwatch-log-groups" title="Permanent link">&para;</a></h3>
+<p>If the CloudWatch log group FluentBit puts logs to is required to be encrypted by an existing KMS
+customer-managed key, then the CloudWatch log group needs to be created external to the
+kubernetes-addons module and passed in. Creating the CloudWatch log group externally is also useful
+if FluentBit is putting logs to multiple log groups because all the log groups can be created in
+the same code file. To do this, set the create log group flag to false and supply the
+previously-created log group name.</p>
+<div class="highlight"><pre><span></span><code>aws_for_fluentbit_create_cw_log_group = false
+aws_for_fluentbit_cw_log_group_name   = aws_cloudwatch_log_group.application.name
 </code></pre></div>
 
               
