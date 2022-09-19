@@ -574,6 +574,12 @@ variable "aws_for_fluentbit_irsa_policies" {
   default     = []
 }
 
+variable "aws_for_fluentbit_create_cw_log_group" {
+  description = "Set to false to use existing CloudWatch log group supplied via the cw_log_group_name variable."
+  type        = bool
+  default     = true
+}
+
 variable "aws_for_fluentbit_cw_log_group_name" {
   description = "FluentBit CloudWatch Log group name"
   type        = string
