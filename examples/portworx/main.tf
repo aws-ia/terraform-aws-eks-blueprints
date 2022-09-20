@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 locals {
-  name         = "portworx-eks-credentials"
+  name         = "portworx-enterprise-1"
   cluster_name = coalesce(var.cluster_name, local.name)
   region       = "us-east-1"
 
@@ -35,7 +35,6 @@ data "aws_eks_cluster_auth" "this" {
 }
 
 data "aws_availability_zones" "available" {}
-
 
 #---------------------------------------------------------------
 # Supporting Resources
@@ -77,13 +76,47 @@ module "vpc" {
   tags = local.tags
 }
 
+#---------------------------------------------------------------
+# Custom IAM roles for Node Groups
+#---------------------------------------------------------------
+
+resource "aws_iam_policy" "portworx_eksblueprint_volume_access" {
+  name = "portworx_eksblueprint_volume_access"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ec2:AttachVolume",
+          "ec2:ModifyVolume",
+          "ec2:DetachVolume",
+          "ec2:CreateTags",
+          "ec2:CreateVolume",
+          "ec2:DeleteTags",
+          "ec2:DeleteVolume",
+          "ec2:DescribeTags",
+          "ec2:DescribeVolumeAttribute",
+          "ec2:DescribeVolumesModifications",
+          "ec2:DescribeVolumeStatus",
+          "ec2:DescribeVolumes",
+          "ec2:DescribeInstances",
+          "autoscaling:DescribeAutoScalingGroups"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
 
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
 
 module "eks_blueprints" {
-  source = "../../.."
+  source = "../.."
 
   cluster_name    = local.cluster_name
   cluster_version = "1.22"
@@ -92,36 +125,35 @@ module "eks_blueprints" {
   private_subnet_ids = module.vpc.private_subnets
 
   managed_node_groups = {
-    eksblueprint_nodegroup_med_1 = {
-      node_group_name = "eksblueprint_nodegroup_med_1"
-      instance_types  = ["t2.medium"]
-      min_size        = 3
-      desired_size    = 3
-      max_size        = 3
-      subnet_ids      = module.vpc.private_subnets
+    eksblueprint_nodegroup_med = {
+      node_group_name         = "eksblueprint_nodegroup_med"
+      instance_types          = ["t2.medium"]
+      min_size                = 3
+      desired_size            = 3
+      max_size                = 3
+      subnet_ids              = module.vpc.private_subnets
+      additional_iam_policies = [aws_iam_policy.portworx_eksblueprint_volume_access.arn]
     }
   }
   tags = local.tags
+
+  depends_on = [
+    aws_iam_policy.portworx_eksblueprint_volume_access
+  ]
 }
 
-
-
 module "eks_blueprints_kubernetes_addons" {
-
-  source               = "../../../modules/kubernetes-addons"
+  source               = "../../modules/kubernetes-addons"
   eks_cluster_id       = module.eks_blueprints.eks_cluster_id
   eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-
-
   enable_portworx = true
-  portworx_chart_values = {
-    awsAccessKeyId     = var.aws_access_key_id
-    awsSecretAccessKey = var.aws_secret_access_key
-    # other custom values
-  }
 
+  portworx_chart_values = {
+    clusterName  = "portworx-example"
+    imageVersion = "2.11.2"
+  }
   tags = local.tags
 }
