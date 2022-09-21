@@ -34,6 +34,7 @@ variable "irsa_config" {
     create_kubernetes_namespace       = optional(bool)
     kubernetes_service_account        = string
     create_kubernetes_service_account = optional(bool)
+    kubernetes_svc_image_pull_secrets = optional(list(string))
     irsa_iam_policies                 = optional(list(string))
   })
   default = null
