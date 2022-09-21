@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "opensearch_access_policy" {
     sid       = "WriteDomainLevelAccessToOpenSearch"
     effect    = "Allow"
     resources = ["${aws_elasticsearch_domain.opensearch.arn}/*"] # this can be an index prefix like '/foo-*'
-    actions   = [ #ref: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html#ac-reference
+    actions = [                                                  #ref: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html#ac-reference
       "es:ESHttpPost",
       "es:ESHttpPut"
     ]
@@ -37,13 +37,13 @@ data "aws_iam_policy_document" "opensearch_access_policy" {
   }
 
   statement {
-    sid       = "AdminDomainLevelAccessToOpenSearch"
-    effect    = "Allow"
+    sid    = "AdminDomainLevelAccessToOpenSearch"
+    effect = "Allow"
     resources = [
       "${aws_elasticsearch_domain.opensearch.arn}",
       "${aws_elasticsearch_domain.opensearch.arn}/*",
     ]
-    actions   = ["es:*"]
+    actions = ["es:*"]
     principals {
       type        = "*"
       identifiers = ["*"] # must be set to wildcard when clients can't sign sigv4 or pass IAM to OpenSearch (aka browsers)
