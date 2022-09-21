@@ -118,6 +118,7 @@ module "aws_for_fluent_bit" {
   source                   = "./aws-for-fluentbit"
   helm_config              = var.aws_for_fluentbit_helm_config
   irsa_policies            = var.aws_for_fluentbit_irsa_policies
+  create_cw_log_group      = var.aws_for_fluentbit_create_cw_log_group
   cw_log_group_name        = var.aws_for_fluentbit_cw_log_group_name
   cw_log_group_retention   = var.aws_for_fluentbit_cw_log_group_retention
   cw_log_group_kms_key_arn = var.aws_for_fluentbit_cw_log_group_kms_key_arn
@@ -161,6 +162,14 @@ module "cert_manager" {
   domain_names                = var.cert_manager_domain_names
   install_letsencrypt_issuers = var.cert_manager_install_letsencrypt_issuers
   letsencrypt_email           = var.cert_manager_letsencrypt_email
+}
+
+module "cert_manager_csi_driver" {
+  count             = var.enable_cert_manager_csi_driver ? 1 : 0
+  source            = "./cert-manager-csi-driver"
+  helm_config       = var.cert_manager_csi_driver_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "cluster_autoscaler" {
@@ -509,6 +518,7 @@ module "external_secrets" {
   count                                 = var.enable_external_secrets ? 1 : 0
   source                                = "./external-secrets"
   helm_config                           = var.external_secrets_helm_config
+  manage_via_gitops                     = var.argocd_manage_add_ons
   addon_context                         = local.addon_context
   irsa_policies                         = var.external_secrets_irsa_policies
   external_secrets_ssm_parameter_arns   = var.external_secrets_ssm_parameter_arns
@@ -569,4 +579,11 @@ module "gatekeeper" {
   helm_config       = var.gatekeeper_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+}
+
+module "local_volume_provisioner" {
+  count         = var.enable_local_volume_provisioner ? 1 : 0
+  source        = "./local-volume-provisioner"
+  helm_config   = var.local_volume_provisioner_helm_config
+  addon_context = local.addon_context
 }

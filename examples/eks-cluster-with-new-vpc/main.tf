@@ -54,7 +54,9 @@ module "eks_blueprints" {
     mg_5 = {
       node_group_name = "managed-ondemand"
       instance_types  = ["m5.large"]
-      min_size        = 2
+      min_size        = 3
+      max_size        = 3
+      desired_size    = 3
       subnet_ids      = module.vpc.private_subnets
     }
   }
@@ -103,6 +105,7 @@ module "eks_blueprints_kubernetes_addons" {
       },
     ]
   }
+  enable_cert_manager_csi_driver = true
 
   tags = local.tags
 }
