@@ -51,7 +51,7 @@ module "eks_blueprints" {
   source = "../.."
 
   cluster_name    = local.name
-  cluster_version = "1.22"
+  cluster_version = "1.23"
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
@@ -96,6 +96,9 @@ module "eks_blueprints_kubernetes_addons" {
     # This example config uses AmazonS3FullAccess for demo purpose only, but you should select a policy with the minimum permissions required to provision your resources.
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
   }
+
+  # Enable configmap reloader
+  enable_reloader = true
 
   tags = local.tags
 }

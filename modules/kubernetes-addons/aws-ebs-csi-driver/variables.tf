@@ -20,3 +20,21 @@ variable "addon_context" {
     irsa_iam_permissions_boundary  = string
   })
 }
+
+variable "enable_amazon_eks_aws_ebs_csi_driver" {
+  description = "Enable EKS Managed AWS EBS CSI Driver add-on"
+  type        = bool
+  default     = false
+}
+
+variable "enable_self_managed_aws_ebs_csi_driver" {
+  description = "Enable self-managed aws-ebs-csi-driver add-on"
+  type        = bool
+  default     = false
+}
+
+variable "helm_config" {
+  description = "Self-managed aws-ebs-csi-driver Helm chart config"
+  type        = any
+  default     = {}
+}
