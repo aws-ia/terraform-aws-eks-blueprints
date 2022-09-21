@@ -46,10 +46,18 @@ module "aws_kube_proxy" {
 }
 
 module "aws_ebs_csi_driver" {
-  count         = var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
-  source        = "./aws-ebs-csi-driver"
-  addon_config  = var.amazon_eks_aws_ebs_csi_driver_config
-  addon_context = local.addon_context
+  source = "./aws-ebs-csi-driver"
+
+  count = var.enable_amazon_eks_aws_ebs_csi_driver || var.enable_self_managed_aws_ebs_csi_driver ? 1 : 0
+
+  # Amazon EKS aws-ebs-csi-driver addon
+  enable_amazon_eks_aws_ebs_csi_driver = var.enable_amazon_eks_aws_ebs_csi_driver
+  addon_config                         = var.amazon_eks_aws_ebs_csi_driver_config
+  addon_context                        = local.addon_context
+
+  # Self-managed aws-ebs-csi-driver addon via Helm chart
+  enable_self_managed_aws_ebs_csi_driver = var.enable_self_managed_aws_ebs_csi_driver
+  helm_config                            = var.self_managed_aws_ebs_csi_driver_helm_config
 }
 
 #-----------------Kubernetes Add-ons----------------------
@@ -110,6 +118,7 @@ module "aws_for_fluent_bit" {
   source                   = "./aws-for-fluentbit"
   helm_config              = var.aws_for_fluentbit_helm_config
   irsa_policies            = var.aws_for_fluentbit_irsa_policies
+  create_cw_log_group      = var.aws_for_fluentbit_create_cw_log_group
   cw_log_group_name        = var.aws_for_fluentbit_cw_log_group_name
   cw_log_group_retention   = var.aws_for_fluentbit_cw_log_group_retention
   cw_log_group_kms_key_arn = var.aws_for_fluentbit_cw_log_group_kms_key_arn
@@ -153,6 +162,14 @@ module "cert_manager" {
   domain_names                = var.cert_manager_domain_names
   install_letsencrypt_issuers = var.cert_manager_install_letsencrypt_issuers
   letsencrypt_email           = var.cert_manager_letsencrypt_email
+}
+
+module "cert_manager_csi_driver" {
+  count             = var.enable_cert_manager_csi_driver ? 1 : 0
+  source            = "./cert-manager-csi-driver"
+  helm_config       = var.cert_manager_csi_driver_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "cluster_autoscaler" {
@@ -292,6 +309,14 @@ module "prometheus" {
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
   manage_via_gitops                    = var.argocd_manage_add_ons
   addon_context                        = local.addon_context
+}
+
+module "reloader" {
+  count             = var.enable_reloader ? 1 : 0
+  source            = "./reloader"
+  helm_config       = var.reloader_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "spark_history_server" {
@@ -493,8 +518,72 @@ module "external_secrets" {
   count                                 = var.enable_external_secrets ? 1 : 0
   source                                = "./external-secrets"
   helm_config                           = var.external_secrets_helm_config
+  manage_via_gitops                     = var.argocd_manage_add_ons
   addon_context                         = local.addon_context
   irsa_policies                         = var.external_secrets_irsa_policies
   external_secrets_ssm_parameter_arns   = var.external_secrets_ssm_parameter_arns
   external_secrets_secrets_manager_arns = var.external_secrets_secrets_manager_arns
+}
+
+module "promtail" {
+  count             = var.enable_promtail ? 1 : 0
+  source            = "./promtail"
+  helm_config       = var.promtail_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "calico" {
+  count             = var.enable_calico ? 1 : 0
+  source            = "./calico"
+  helm_config       = var.calico_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "kubecost" {
+  count             = var.enable_kubecost ? 1 : 0
+  source            = "./kubecost"
+  helm_config       = var.kubecost_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "smb_csi_driver" {
+  count             = var.enable_smb_csi_driver ? 1 : 0
+  source            = "./smb-csi-driver"
+  helm_config       = var.smb_csi_driver_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "chaos_mesh" {
+  count             = var.enable_chaos_mesh ? 1 : 0
+  source            = "./chaos-mesh"
+  helm_config       = var.chaos_mesh_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "cilium" {
+  count             = var.enable_cilium ? 1 : 0
+  source            = "./cilium"
+  helm_config       = var.cilium_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "gatekeeper" {
+  count             = var.enable_gatekeeper ? 1 : 0
+  source            = "./gatekeeper"
+  helm_config       = var.gatekeeper_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "local_volume_provisioner" {
+  count         = var.enable_local_volume_provisioner ? 1 : 0
+  source        = "./local-volume-provisioner"
+  helm_config   = var.local_volume_provisioner_helm_config
+  addon_context = local.addon_context
 }

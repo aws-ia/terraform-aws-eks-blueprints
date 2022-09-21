@@ -165,9 +165,10 @@ module "eks_blueprints_kubernetes_addons" {
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
   # EKS Addons
-  enable_amazon_eks_vpc_cni    = true
-  enable_amazon_eks_coredns    = true
-  enable_amazon_eks_kube_proxy = true
+  enable_amazon_eks_vpc_cni            = true
+  enable_amazon_eks_coredns            = true
+  enable_amazon_eks_kube_proxy         = true
+  enable_amazon_eks_aws_ebs_csi_driver = true
 
   enable_metrics_server               = true
   enable_cluster_autoscaler           = true
@@ -229,10 +230,11 @@ module "db" {
   allocated_storage = 100
   iops              = 3000
 
-  db_name  = local.airflow_name
-  username = local.airflow_name
-  password = sensitive(aws_secretsmanager_secret_version.postgres.secret_string)
-  port     = 5432
+  db_name                = local.airflow_name
+  username               = local.airflow_name
+  create_random_password = false
+  password               = sensitive(aws_secretsmanager_secret_version.postgres.secret_string)
+  port                   = 5432
 
   multi_az               = true
   db_subnet_group_name   = module.vpc.database_subnet_group

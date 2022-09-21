@@ -1,0 +1,4 @@
+cni:
+  chainingMode: aws-cni
+enableIPv4Masquerade: false
+tunnel: disabled
