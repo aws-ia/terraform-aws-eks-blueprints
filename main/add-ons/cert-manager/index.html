@@ -1348,6 +1348,9 @@
 <p>You can set an email address for expiration emails with:</p>
 <div class="highlight"><pre><span></span><code>cert_manager_letsencrypt_email = &quot;user@example.com&quot;
 </code></pre></div>
+<p>You can pass previously created secrets for use as <code>imagePullSecrets</code> on the Service Account</p>
+<div class="highlight"><pre><span></span><code>cert_manager_kubernetes_svc_image_pull_secrets = [&quot;regcred&quot;]
+</code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p>The following properties are made available for use when managing the add-on via GitOps.</p>
 <div class="highlight"><pre><span></span><code>certManager = {
