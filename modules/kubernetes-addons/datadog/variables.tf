@@ -1,6 +1,6 @@
 variable "enable_datadog" {
-  default = false
-  type = bool
+  default     = false
+  type        = bool
   description = "enable datadog"
 }
 
