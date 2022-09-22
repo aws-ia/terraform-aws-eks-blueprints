@@ -20,6 +20,12 @@ variable "kubernetes_service_account" {
   type        = string
 }
 
+variable "kubernetes_svc_image_pull_secrets" {
+  description = "list(string) of kubernetes imagePullSecrets"
+  type        = list(string)
+  default     = []
+}
+
 variable "irsa_iam_policies" {
   type        = list(string)
   description = "IAM Policies for IRSA IAM role"
