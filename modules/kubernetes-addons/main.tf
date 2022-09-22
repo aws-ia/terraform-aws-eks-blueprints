@@ -587,3 +587,11 @@ module "local_volume_provisioner" {
   helm_config   = var.local_volume_provisioner_helm_config
   addon_context = local.addon_context
 }
+
+module "datadog" {
+  count             = var.enable_datadog ? 1 : 0
+  source            = "./datadog-agent"
+  helm_config       = var.datadog_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}

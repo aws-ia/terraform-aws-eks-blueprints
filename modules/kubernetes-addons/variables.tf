@@ -1175,3 +1175,17 @@ variable "local_volume_provisioner_helm_config" {
   type        = any
   default     = {}
 }
+
+#-----------Datadog Agent ADDON-------------
+variable "enable_datadog" {
+  description = "Enable Datadog Agent add-on"
+  type        = bool
+  default     = false
+}
+
+variable "datadog_helm_config" {
+  description = "Datadog Agent Helm Chart config"
+  type        = any
+  default     = {}
+}
+#-----------Datadog Agent ADDON-------------
