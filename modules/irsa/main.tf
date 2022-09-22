@@ -17,6 +17,13 @@ resource "kubernetes_service_account_v1" "irsa" {
     annotations = var.irsa_iam_policies != null ? { "eks.amazonaws.com/role-arn" : aws_iam_role.irsa[0].arn } : null
   }
 
+  dynamic "image_pull_secret" {
+    for_each = var.kubernetes_svc_image_pull_secrets != null ? var.kubernetes_svc_image_pull_secrets : []
+    content {
+      name = image_pull_secret.value
+    }
+  }
+
   automount_service_account_token = true
 }
 

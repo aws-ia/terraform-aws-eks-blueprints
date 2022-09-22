@@ -574,6 +574,12 @@ variable "aws_for_fluentbit_irsa_policies" {
   default     = []
 }
 
+variable "aws_for_fluentbit_create_cw_log_group" {
+  description = "Set to false to use existing CloudWatch log group supplied via the cw_log_group_name variable."
+  type        = bool
+  default     = true
+}
+
 variable "aws_for_fluentbit_cw_log_group_name" {
   description = "FluentBit CloudWatch Log group name"
   type        = string
@@ -659,6 +665,24 @@ variable "cert_manager_letsencrypt_email" {
   description = "Email address for expiration emails from Let's Encrypt"
   type        = string
   default     = ""
+}
+
+variable "enable_cert_manager_csi_driver" {
+  description = "Enable Cert Manager CSI Driver add-on"
+  type        = bool
+  default     = false
+}
+
+variable "cert_manager_csi_driver_helm_config" {
+  description = "Cert Manager CSI Driver Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "cert_manager_kubernetes_svc_image_pull_secrets" {
+  description = "list(string) of kubernetes imagePullSecrets"
+  type        = list(string)
+  default     = []
 }
 
 #-----------Argo Rollouts ADDON-------------
@@ -1145,6 +1169,7 @@ variable "gatekeeper_helm_config" {
 }
 
 
+
 #-----------Kubernetes Portworx ADDON-------------
 variable "enable_portworx" {
   description = "Enable Kubernetes Dashboard add-on"
@@ -1178,6 +1203,19 @@ variable "portworx_helm_config" {
 
 variable "portworx_chart_values" {
   description = "Custom values for portworx helm chart"
+  type        = any
+  default     = {}
+}
+
+#-----------Local volume provisioner ADDON-------------
+variable "enable_local_volume_provisioner" {
+  description = "Enable Local volume provisioner add-on"
+  type        = bool
+  default     = false
+}
+
+variable "local_volume_provisioner_helm_config" {
+  description = "Local volume provisioner Helm Chart config"
   type        = any
   default     = {}
 }
