@@ -13,7 +13,7 @@
     
     
       
-        <title>Vertical Pod Autoscaler - Amazon EKS Blueprints for Terraform</title>
+        <title>Kyverno - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#vertical-pod-autoscaler" class="md-skip">
+        <a href="#kyverno" class="md-skip">
           Skip to content
         </a>
       
@@ -99,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Vertical Pod Autoscaler
+              Kyverno
             
           </span>
         </div>
@@ -854,11 +854,65 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../kyverno/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Kyverno
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Kyverno
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitops-configuration" class="md-nav__link">
+    GitOps Configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1064,52 +1118,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Vertical Pod Autoscaler
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../vpa/" class="md-nav__link">
         Vertical Pod Autoscaler
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1299,6 +1312,19 @@
     Usage
   </a>
   
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitops-configuration" class="md-nav__link">
+    GitOps Configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -1313,30 +1339,37 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/vpa.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/kyverno.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-<h1 id="vertical-pod-autoscaler">Vertical Pod Autoscaler<a class="headerlink" href="#vertical-pod-autoscaler" title="Permanent link">&para;</a></h1>
-<p><a href="https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler">VPA</a> Vertical Pod Autoscaler (VPA) automatically adjusts the CPU and memory reservations for your pods to help "right size" your applications. When configured, it will automatically request the necessary reservations based on usage and thus allow proper scheduling onto nodes so that the appropriate resource amount is available for each pod. It will also maintain ratios between limits and requests that were specified in initial container configuration.</p>
-<p>NOTE: Metrics Server add-on is a dependency for this addon</p>
+<h1 id="kyverno">Kyverno<a class="headerlink" href="#kyverno" title="Permanent link">&para;</a></h1>
+<p>Kyverno is a policy engine that can help kubernetes clusters to enforce security and governance policies.</p>
+<p>This addon provides support for:
+1. <a href="https://github.com/kyverno/kyverno/tree/main/charts/kyverno">Kyverno</a>
+2. <a href="https://github.com/kyverno/kyverno/tree/main/charts/kyverno-policies">Kyverno policies</a>
+3. <a href="https://github.com/kyverno/policy-reporter/tree/main/charts/policy-reporter">Kyverno policy reporter</a></p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p>This step deploys the Vertical Pod Autoscaler with default Helm Chart config</p>
-<div class="highlight"><pre><span></span><code>  enable_vpa = true
+<p>Kyverno can be deployed by enabling the respective add-on(s) via the following.</p>
+<div class="highlight"><pre><span></span><code>enable_kyverno                 = true
+enable_kyverno_policies        = true
+enable_kyverno_policy_reporter = true
 </code></pre></div>
-<p>Alternatively, you can override the helm values by using the code snippet below</p>
-<div class="highlight"><pre><span></span><code>  vpa_enable = true
+<h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
+<p>The following properties are made available for use when managing the add-on via GitOps.</p>
+<div class="highlight"><pre><span></span><code><span class="nv">kyverno</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="nb">enable</span> <span class="o">=</span> <span class="nb">true</span>
+<span class="o">}</span>
 
-  vpa_helm_config = {
-    name       = &quot;vpa&quot;                                 # (Required) Release name.
-    repository = &quot;https://charts.fairwinds.com/stable&quot; # (Optional) Repository URL where to locate the requested chart.
-    chart      = &quot;vpa&quot;                                 # (Required) Chart name to be installed.
-    version    = &quot;1.0.0&quot;                               # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/vpa/locals.tf
-    namespace  = &quot;vpa&quot;                              # (Optional) The namespace to install the release into.
-    values     = [templatefile(&quot;${path.module}/values.yaml&quot;, {})]
-  }
+<span class="nv">kyverno_policies</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="nb">enable</span> <span class="o">=</span> <span class="nb">true</span>
+<span class="o">}</span>
+
+<span class="nv">kyverno_policy_reporter</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="nb">enable</span> <span class="o">=</span> <span class="nb">true</span>
+<span class="o">}</span>
 </code></pre></div>
 
               
@@ -1353,7 +1386,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../velero/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Velero" rel="prev">
+        <a href="../kubernetes-dashboard/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Kubernetes Dashboard" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1362,20 +1395,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Velero
+              Kubernetes Dashboard
             </div>
           </div>
         </a>
       
       
         
-        <a href="../yunikorn/" class="md-footer__link md-footer__link--next" aria-label="Next: Apache YuniKorn" rel="next">
+        <a href="../local-volume-provisioner/" class="md-footer__link md-footer__link--next" aria-label="Next: Local volume provisioner" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Apache YuniKorn
+              Local volume provisioner
             </div>
           </div>
           <div class="md-footer__button md-icon">
