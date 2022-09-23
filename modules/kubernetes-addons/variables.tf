@@ -574,6 +574,12 @@ variable "aws_for_fluentbit_irsa_policies" {
   default     = []
 }
 
+variable "aws_for_fluentbit_create_cw_log_group" {
+  description = "Set to false to use existing CloudWatch log group supplied via the cw_log_group_name variable."
+  type        = bool
+  default     = true
+}
+
 variable "aws_for_fluentbit_cw_log_group_name" {
   description = "FluentBit CloudWatch Log group name"
   type        = string
@@ -671,6 +677,12 @@ variable "cert_manager_csi_driver_helm_config" {
   description = "Cert Manager CSI Driver Helm Chart config"
   type        = any
   default     = {}
+}
+
+variable "cert_manager_kubernetes_svc_image_pull_secrets" {
+  description = "list(string) of kubernetes imagePullSecrets"
+  type        = list(string)
+  default     = []
 }
 
 #-----------Argo Rollouts ADDON-------------
