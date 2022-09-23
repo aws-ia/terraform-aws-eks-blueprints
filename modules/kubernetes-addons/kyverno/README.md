@@ -1,8 +1,11 @@
-
 # Kyverno
 
-Kyverno is a policy engine that can help kubernetes clusters to enforce security and governance policies
-For more details checkout [kyverno](https://kyverno.io/)
+Kyverno is a policy engine that can help kubernetes clusters to enforce security and governance policies.
+
+This addon provides support for:
+1. [Kyverno](https://github.com/kyverno/kyverno/tree/main/charts/kyverno)
+2. [Kyverno policies](https://github.com/kyverno/kyverno/tree/main/charts/kyverno-policies)
+3. [Kyverno policy reporter](https://github.com/kyverno/policy-reporter/tree/main/charts/policy-reporter)
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -43,7 +46,5 @@ No resources.
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
+No outputs.
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
