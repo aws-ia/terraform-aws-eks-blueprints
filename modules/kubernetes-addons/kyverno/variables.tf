@@ -17,19 +17,19 @@ variable "kyverno_policy_reporter_helm_config" {
 }
 
 variable "enable_kyverno" {
+  description = "Enable Kyverno"
   default     = false
   type        = bool
-  description = "Enable Kyverno"
 }
 
 variable "enable_kyverno_policies" {
-  description = "Enable Kyverno policies"
+  description = "Enable Kyverno policies. Requires `enable_kyverno` to be `true`"
   type        = bool
   default     = false
 }
 
 variable "enable_kyverno_policy_reporter" {
-  description = "Enable Kyverno UI"
+  description = "Enable Kyverno UI. Requires `enable_kyverno` to be `true`"
   type        = bool
   default     = false
 }
