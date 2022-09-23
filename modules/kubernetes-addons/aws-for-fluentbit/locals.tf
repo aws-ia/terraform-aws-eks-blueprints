@@ -33,13 +33,13 @@ locals {
 
   default_helm_values = [templatefile("${path.module}/values.yaml", {
     aws_region           = var.addon_context.aws_region_name,
-    log_group_name       = aws_cloudwatch_log_group.aws_for_fluent_bit.name,
+    log_group_name       = local.log_group_name,
     service_account_name = local.service_account_name
   })]
 
   argocd_gitops_config = {
     enable             = true
-    logGroupName       = aws_cloudwatch_log_group.aws_for_fluent_bit.name
+    logGroupName       = local.log_group_name
     serviceAccountName = local.service_account_name
   }
 

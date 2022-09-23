@@ -118,6 +118,7 @@ module "aws_for_fluent_bit" {
   source                   = "./aws-for-fluentbit"
   helm_config              = var.aws_for_fluentbit_helm_config
   irsa_policies            = var.aws_for_fluentbit_irsa_policies
+  create_cw_log_group      = var.aws_for_fluentbit_create_cw_log_group
   cw_log_group_name        = var.aws_for_fluentbit_cw_log_group_name
   cw_log_group_retention   = var.aws_for_fluentbit_cw_log_group_retention
   cw_log_group_kms_key_arn = var.aws_for_fluentbit_cw_log_group_kms_key_arn
@@ -152,15 +153,16 @@ module "aws_node_termination_handler" {
 }
 
 module "cert_manager" {
-  count                       = var.enable_cert_manager ? 1 : 0
-  source                      = "./cert-manager"
-  helm_config                 = var.cert_manager_helm_config
-  manage_via_gitops           = var.argocd_manage_add_ons
-  irsa_policies               = var.cert_manager_irsa_policies
-  addon_context               = local.addon_context
-  domain_names                = var.cert_manager_domain_names
-  install_letsencrypt_issuers = var.cert_manager_install_letsencrypt_issuers
-  letsencrypt_email           = var.cert_manager_letsencrypt_email
+  count                             = var.enable_cert_manager ? 1 : 0
+  source                            = "./cert-manager"
+  helm_config                       = var.cert_manager_helm_config
+  manage_via_gitops                 = var.argocd_manage_add_ons
+  irsa_policies                     = var.cert_manager_irsa_policies
+  addon_context                     = local.addon_context
+  domain_names                      = var.cert_manager_domain_names
+  install_letsencrypt_issuers       = var.cert_manager_install_letsencrypt_issuers
+  letsencrypt_email                 = var.cert_manager_letsencrypt_email
+  kubernetes_svc_image_pull_secrets = var.cert_manager_kubernetes_svc_image_pull_secrets
 }
 
 module "cert_manager_csi_driver" {
