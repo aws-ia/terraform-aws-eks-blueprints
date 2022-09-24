@@ -16,26 +16,20 @@ variable "kyverno_policy_reporter_helm_config" {
   default     = {}
 }
 
-variable "enable_kyverno" {
-  description = "Enable Kyverno"
-  default     = false
-  type        = bool
-}
-
 variable "enable_kyverno_policies" {
-  description = "Enable Kyverno policies. Requires `enable_kyverno` to be `true`"
+  description = "Enable Kyverno policies"
   type        = bool
   default     = false
 }
 
 variable "enable_kyverno_policy_reporter" {
-  description = "Enable Kyverno UI. Requires `enable_kyverno` to be `true`"
+  description = "Enable Kyverno UI"
   type        = bool
   default     = false
 }
 
 variable "manage_via_gitops" {
-  description = "Determines if the add-on should be managed via GitOps."
+  description = "Determines if the add-on should be managed via GitOps"
   type        = bool
   default     = false
 }
