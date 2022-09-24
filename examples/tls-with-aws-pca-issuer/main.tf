@@ -77,9 +77,10 @@ module "eks_blueprints_kubernetes_addons" {
   enable_amazon_eks_kube_proxy = true
 
   # Add-ons
-  enable_cert_manager         = true
-  enable_aws_privateca_issuer = true
-  aws_privateca_acmca_arn     = aws_acmpca_certificate_authority.example.arn
+  enable_cert_manager            = true
+  enable_cert_manager_csi_driver = true
+  enable_aws_privateca_issuer    = true
+  aws_privateca_acmca_arn        = aws_acmpca_certificate_authority.example.arn
 
   tags = local.tags
 }
