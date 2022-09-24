@@ -572,7 +572,6 @@ module "kyverno" {
   addon_context     = local.addon_context
   manage_via_gitops = var.argocd_manage_add_ons
 
-  enable_kyverno      = var.enable_kyverno
   kyverno_helm_config = var.kyverno_helm_config
 
   enable_kyverno_policies      = var.enable_kyverno_policies
