@@ -32,6 +32,12 @@ You can set an email address for expiration emails with:
 cert_manager_letsencrypt_email = "user@example.com"
 ```
 
+You can pass previously created secrets for use as `imagePullSecrets` on the Service Account
+
+```
+cert_manager_kubernetes_svc_image_pull_secrets = ["regcred"]
+```
+
 ### GitOps Configuration
 
 The following properties are made available for use when managing the add-on via GitOps.
