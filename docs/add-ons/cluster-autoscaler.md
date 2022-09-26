@@ -40,8 +40,9 @@ Deploy Cluster autoscaler with custom `values.yaml`
 
 The following properties are made available for use when managing the add-on via GitOps.
 
-```
+```hcl
 clusterAutoscaler = {
   enable = true
+  serviceAccountName = "<service_account_name>"
 }
 ```
