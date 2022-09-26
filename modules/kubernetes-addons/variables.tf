@@ -1220,3 +1220,16 @@ variable "local_volume_provisioner_helm_config" {
   type        = any
   default     = {}
 }
+
+#-----------NVIDIA DEVICE PLUGIN-----------------------
+variable "enable_nvidia_device_plugin" {
+  description = "Enable NVIDIA device plugin add-on"
+  type        = bool
+  default     = false
+}
+
+variable "nvidia_device_plugin_helm_config" {
+  description = "NVIDIA device plugin Helm Chart config"
+  type        = any
+  default     = {}
+}
