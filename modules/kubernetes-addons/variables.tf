@@ -1181,3 +1181,55 @@ variable "local_volume_provisioner_helm_config" {
   type        = any
   default     = {}
 }
+
+#----------------Nops ADDON--------------------
+
+variable "nops_helm_config" {
+  description = "Kubernetes nOps Helm Chart config"
+  type        = any
+  default     = null
+}
+
+variable "enable_nops_k8s_agent" {
+  description = "Enable nOps add-on"
+  type        = bool
+  default     = false
+}
+
+variable "nops_irsa_policies" {
+  description = "IAM policy ARNs for nOps IRSA"
+  type        = list(string)
+  default     = []
+}
+
+variable "app_nops_k8s_collector_aws_account_number" {
+  description = "AWS account number for nOps"
+  type        = number
+  default     = null
+}
+variable "app_nops_k8s_collector_api_key" {
+  description = "API Key of nOps"
+  type        = string
+  default     = null
+}
+
+variable "app_prometheus_server_endpoint" {
+  description = "Prometheus server endpoint"
+  default     = ""
+  type        = string
+}
+variable "app_nops_k8s_agent_clusterid" {
+  description = "NOPS agent cluster id"
+  default     = ""
+  type        = any
+}
+variable "app_nops_k8s_collector_skip_ssl" {
+  description = "NOPS collector aws account number"
+  default     = ""
+  type        = any
+}
+variable "app_nops_k8s_agent_prom_token" {
+  description = "App nops agent prometheus token"
+  default     = {}
+  type        = any
+}

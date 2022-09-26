@@ -277,6 +277,20 @@ module "metrics_server" {
   addon_context     = local.addon_context
 }
 
+module "nops-k8s-agent" {
+  count         = var.enable_nops_k8s_agent ? 1 : 0
+  source        = "./nops-k8s-agent"
+  helm_config   = var.nops_helm_config
+  irsa_policies     = var.nops_irsa_policies
+  addon_context     = local.addon_context
+  app_nops_k8s_collector_api_key = var.app_nops_k8s_collector_api_key
+  app_nops_k8s_collector_aws_account_number = var.app_nops_k8s_collector_aws_account_number
+  app_prometheus_server_endpoint = var.app_prometheus_server_endpoint
+  app_nops_k8s_agent_clusterid  = var.app_nops_k8s_agent_clusterid
+  app_nops_k8s_collector_skip_ssl = var.app_nops_k8s_collector_skip_ssl
+  app_nops_k8s_agent_prom_token = var.app_nops_k8s_agent_prom_token
+}
+
 module "ondat" {
   count             = var.enable_ondat ? 1 : 0
   source            = "ondat/ondat-addon/eksblueprints"
