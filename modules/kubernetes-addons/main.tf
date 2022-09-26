@@ -638,3 +638,5 @@ module "nvidia_device_plugin" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
+
+# whitespace noise
