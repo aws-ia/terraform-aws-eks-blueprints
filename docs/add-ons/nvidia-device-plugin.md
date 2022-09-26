@@ -43,6 +43,6 @@ Refer to [locals.tf](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob
 
 ```hcl
   argocd_gitops_config = {
-    enable                    = true
+    enable = true
   }
 ```
