@@ -118,6 +118,7 @@ module "aws_for_fluent_bit" {
   source                   = "./aws-for-fluentbit"
   helm_config              = var.aws_for_fluentbit_helm_config
   irsa_policies            = var.aws_for_fluentbit_irsa_policies
+  create_cw_log_group      = var.aws_for_fluentbit_create_cw_log_group
   cw_log_group_name        = var.aws_for_fluentbit_cw_log_group_name
   cw_log_group_retention   = var.aws_for_fluentbit_cw_log_group_retention
   cw_log_group_kms_key_arn = var.aws_for_fluentbit_cw_log_group_kms_key_arn
@@ -152,15 +153,16 @@ module "aws_node_termination_handler" {
 }
 
 module "cert_manager" {
-  count                       = var.enable_cert_manager ? 1 : 0
-  source                      = "./cert-manager"
-  helm_config                 = var.cert_manager_helm_config
-  manage_via_gitops           = var.argocd_manage_add_ons
-  irsa_policies               = var.cert_manager_irsa_policies
-  addon_context               = local.addon_context
-  domain_names                = var.cert_manager_domain_names
-  install_letsencrypt_issuers = var.cert_manager_install_letsencrypt_issuers
-  letsencrypt_email           = var.cert_manager_letsencrypt_email
+  count                             = var.enable_cert_manager ? 1 : 0
+  source                            = "./cert-manager"
+  helm_config                       = var.cert_manager_helm_config
+  manage_via_gitops                 = var.argocd_manage_add_ons
+  irsa_policies                     = var.cert_manager_irsa_policies
+  addon_context                     = local.addon_context
+  domain_names                      = var.cert_manager_domain_names
+  install_letsencrypt_issuers       = var.cert_manager_install_letsencrypt_issuers
+  letsencrypt_email                 = var.cert_manager_letsencrypt_email
+  kubernetes_svc_image_pull_secrets = var.cert_manager_kubernetes_svc_image_pull_secrets
 }
 
 module "cert_manager_csi_driver" {
@@ -447,8 +449,9 @@ module "opentelemetry_operator" {
 }
 
 module "adot_collector_java" {
-  count  = var.enable_adot_collector_java ? 1 : 0
   source = "./adot-collector-java"
+
+  count = var.enable_adot_collector_java ? 1 : 0
 
   helm_config   = var.adot_collector_java_helm_config
   addon_context = local.addon_context
@@ -462,8 +465,9 @@ module "adot_collector_java" {
 }
 
 module "adot_collector_haproxy" {
-  count  = var.enable_adot_collector_haproxy ? 1 : 0
   source = "./adot-collector-haproxy"
+
+  count = var.enable_adot_collector_haproxy ? 1 : 0
 
   helm_config   = var.adot_collector_haproxy_helm_config
   addon_context = local.addon_context
@@ -477,8 +481,9 @@ module "adot_collector_haproxy" {
 }
 
 module "adot_collector_memcached" {
-  count  = var.enable_adot_collector_memcached ? 1 : 0
   source = "./adot-collector-memcached"
+
+  count = var.enable_adot_collector_memcached ? 1 : 0
 
   helm_config   = var.adot_collector_memcached_helm_config
   addon_context = local.addon_context
@@ -492,8 +497,9 @@ module "adot_collector_memcached" {
 }
 
 module "adot_collector_nginx" {
-  count  = var.enable_adot_collector_nginx ? 1 : 0
   source = "./adot-collector-nginx"
+
+  count = var.enable_adot_collector_nginx ? 1 : 0
 
   helm_config   = var.adot_collector_nginx_helm_config
   addon_context = local.addon_context
@@ -507,15 +513,19 @@ module "adot_collector_nginx" {
 }
 
 module "kuberay_operator" {
-  count         = var.enable_kuberay_operator ? 1 : 0
-  source        = "./kuberay-operator"
+  source = "./kuberay-operator"
+
+  count = var.enable_kuberay_operator ? 1 : 0
+
   helm_config   = var.kuberay_operator_helm_config
   addon_context = local.addon_context
 }
 
 module "external_secrets" {
-  count                                 = var.enable_external_secrets ? 1 : 0
-  source                                = "./external-secrets"
+  source = "./external-secrets"
+
+  count = var.enable_external_secrets ? 1 : 0
+
   helm_config                           = var.external_secrets_helm_config
   manage_via_gitops                     = var.argocd_manage_add_ons
   addon_context                         = local.addon_context
@@ -525,57 +535,100 @@ module "external_secrets" {
 }
 
 module "promtail" {
-  count             = var.enable_promtail ? 1 : 0
-  source            = "./promtail"
+  source = "./promtail"
+
+  count = var.enable_promtail ? 1 : 0
+
   helm_config       = var.promtail_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
 
 module "calico" {
-  count             = var.enable_calico ? 1 : 0
-  source            = "./calico"
+  source = "./calico"
+
+  count = var.enable_calico ? 1 : 0
+
   helm_config       = var.calico_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
 
 module "kubecost" {
-  count             = var.enable_kubecost ? 1 : 0
-  source            = "./kubecost"
+  source = "./kubecost"
+
+  count = var.enable_kubecost ? 1 : 0
+
   helm_config       = var.kubecost_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
 
+module "kyverno" {
+  source = "./kyverno"
+
+  count = var.enable_kyverno ? 1 : 0
+
+  addon_context     = local.addon_context
+  manage_via_gitops = var.argocd_manage_add_ons
+
+  kyverno_helm_config = var.kyverno_helm_config
+
+  enable_kyverno_policies      = var.enable_kyverno_policies
+  kyverno_policies_helm_config = var.kyverno_policies_helm_config
+
+  enable_kyverno_policy_reporter      = var.enable_kyverno_policy_reporter
+  kyverno_policy_reporter_helm_config = var.kyverno_policy_reporter_helm_config
+}
+
 module "smb_csi_driver" {
-  count             = var.enable_smb_csi_driver ? 1 : 0
-  source            = "./smb-csi-driver"
+  source = "./smb-csi-driver"
+
+  count = var.enable_smb_csi_driver ? 1 : 0
+
   helm_config       = var.smb_csi_driver_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
 
 module "chaos_mesh" {
-  count             = var.enable_chaos_mesh ? 1 : 0
-  source            = "./chaos-mesh"
+  source = "./chaos-mesh"
+
+  count = var.enable_chaos_mesh ? 1 : 0
+
   helm_config       = var.chaos_mesh_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
 
 module "cilium" {
-  count             = var.enable_cilium ? 1 : 0
-  source            = "./cilium"
+  source = "./cilium"
+
+  count = var.enable_cilium ? 1 : 0
+
   helm_config       = var.cilium_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+
 }
 
 module "gatekeeper" {
-  count             = var.enable_gatekeeper ? 1 : 0
-  source            = "./gatekeeper"
+  source = "./gatekeeper"
+
+  count = var.enable_gatekeeper ? 1 : 0
+
   helm_config       = var.gatekeeper_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
+
+module "local_volume_provisioner" {
+  source = "./local-volume-provisioner"
+
+  count = var.enable_local_volume_provisioner ? 1 : 0
+
+  helm_config   = var.local_volume_provisioner_helm_config
+  addon_context = local.addon_context
+}
+
+# whitespace noise

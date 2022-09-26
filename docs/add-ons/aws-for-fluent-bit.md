@@ -55,3 +55,17 @@ awsForFluentBit = {
   logGroupName = "<log_group_name>"
 }
 ```
+
+### Externally-Created CloudWatch Log Group(s)
+
+If the CloudWatch log group FluentBit puts logs to is required to be encrypted by an existing KMS
+customer-managed key, then the CloudWatch log group needs to be created external to the
+kubernetes-addons module and passed in. Creating the CloudWatch log group externally is also useful
+if FluentBit is putting logs to multiple log groups because all the log groups can be created in
+the same code file. To do this, set the create log group flag to false and supply the
+previously-created log group name.
+
+```hcl
+aws_for_fluentbit_create_cw_log_group = false
+aws_for_fluentbit_cw_log_group_name   = aws_cloudwatch_log_group.application.name
+```
