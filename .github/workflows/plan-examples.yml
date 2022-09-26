@@ -49,6 +49,13 @@ jobs:
         directory: ${{ fromJson(needs.getExampleDirectories.outputs.directories) }}
 
     steps:
+      - name: Remove default Terraform
+        run: rm -rf $(which terraform)
+
+      - name: Should fail
+        continue-on-error: true
+        run: terraform version
+
       - name: checkout-merge
         if: "contains(github.event_name, 'pull_request')"
         uses: actions/checkout@v3
@@ -85,6 +92,8 @@ jobs:
         if: steps.changes.outputs.src== 'true'
         with:
           terraform_version: 1.0.0
+
+      - run: terraform version
 
       - name: Terraform Init
         if: steps.changes.outputs.src== 'true'
