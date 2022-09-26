@@ -679,6 +679,12 @@ variable "cert_manager_csi_driver_helm_config" {
   default     = {}
 }
 
+variable "cert_manager_kubernetes_svc_image_pull_secrets" {
+  description = "list(string) of kubernetes imagePullSecrets"
+  type        = list(string)
+  default     = []
+}
+
 #-----------Argo Rollouts ADDON-------------
 variable "enable_argo_rollouts" {
   description = "Enable Argo Rollouts add-on"
@@ -1109,6 +1115,44 @@ variable "kubecost_helm_config" {
   default     = {}
 }
 
+#-----------Kyverno ADDON-------------
+
+variable "enable_kyverno" {
+  description = "Enable Kyverno add-on"
+  type        = bool
+  default     = false
+}
+
+variable "enable_kyverno_policies" {
+  description = "Enable Kyverno policies. Requires `enable_kyverno` to be `true`"
+  type        = bool
+  default     = false
+}
+
+variable "enable_kyverno_policy_reporter" {
+  description = "Enable Kyverno UI. Requires `enable_kyverno` to be `true`"
+  type        = bool
+  default     = false
+}
+
+variable "kyverno_helm_config" {
+  description = "Kyverno Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "kyverno_policies_helm_config" {
+  description = "Kyverno policies Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "kyverno_policy_reporter_helm_config" {
+  description = "Kyverno UI Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------SMB CSI driver ADDON-------------
 variable "enable_smb_csi_driver" {
   description = "Enable SMB CSI driver add-on"
@@ -1147,6 +1191,7 @@ variable "cilium_helm_config" {
   description = "Cilium Helm Chart config"
   type        = any
   default     = {}
+
 }
 
 #-----------Gatekeeper ADDON-------------

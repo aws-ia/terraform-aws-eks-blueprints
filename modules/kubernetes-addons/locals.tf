@@ -40,6 +40,9 @@ locals {
     chaos_mesh                = var.enable_chaos_mesh ? module.chaos_mesh[0].argocd_gitops_config : null
     cilium                    = var.enable_cilium ? module.cilium[0].argocd_gitops_config : null
     gatekeeper                = var.enable_gatekeeper ? module.gatekeeper[0].argocd_gitops_config : null
+    kyverno                   = var.enable_kyverno ? { enable = true } : null
+    kyverno_policies          = var.enable_kyverno ? { enable = true } : null
+    kyverno_policy_reporter   = var.enable_kyverno ? { enable = true } : null
   }
 
   addon_context = {
