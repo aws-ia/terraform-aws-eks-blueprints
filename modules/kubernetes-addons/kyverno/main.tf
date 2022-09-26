@@ -11,13 +11,15 @@ module "kyverno_helm_addon" {
       namespace        = "kyverno"
       create_namespace = true
       description      = "Kubernetes Native Policy Management"
-      values = [
+    },
+    var.kyverno_helm_config,
+    {
+      values = distinct(concat(try(var.kyverno_helm_config["values"], []), [
         <<-EOT
           replicaCount: 3
         EOT
-      ]
-    },
-    var.kyverno_helm_config
+      ]))
+    }
   )
 
   addon_context = var.addon_context
@@ -37,14 +39,17 @@ module "kyverno_policies_helm_addon" {
       version     = "v2.5.5"
       namespace   = module.kyverno_helm_addon.helm_release[0].namespace
       description = "Kubernetes Pod Security Standards implemented as Kyverno policies"
-      values = [
+    },
+    var.kyverno_policies_helm_config,
+    {
+      values = distinct(concat(try(var.kyverno_policies_helm_config["values"], []), [
         <<-EOT
           podSecurityStandard: restricted
         EOT
 
-      ]
-    },
-    var.kyverno_policies_helm_config
+        ]
+      ))
+    }
   )
 
   addon_context = var.addon_context
@@ -65,7 +70,10 @@ module "kyverno_policy_reporter_helm_addon" {
       namespace   = module.kyverno_helm_addon.helm_release[0].namespace
       description = "Policy Reporter watches for PolicyReport Resources"
     },
-    var.kyverno_policy_reporter_helm_config
+    var.kyverno_policy_reporter_helm_config,
+    {
+      values = try(var.kyverno_policy_reporter_helm_config["values"], [])
+    }
   )
 
   addon_context = var.addon_context
