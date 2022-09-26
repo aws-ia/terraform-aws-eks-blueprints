@@ -93,7 +93,8 @@ jobs:
         with:
           terraform_version: 1.0.0
 
-      - run: terraform version
+      - if: steps.changes.outputs.src== 'true'
+        run: terraform version
 
       - name: Terraform Init
         if: steps.changes.outputs.src== 'true'
