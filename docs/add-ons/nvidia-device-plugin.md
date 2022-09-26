@@ -9,6 +9,8 @@ The NVIDIA device plugin for Kubernetes is a Daemonset that allows you to automa
 
 For complete project documentation, please visit the [NVIDIA Device Plugin](https://github.com/NVIDIA/k8s-device-plugin#readme).
 
+Additionally, refer to this AWS [blog](https://aws.amazon.com/blogs/compute/running-gpu-accelerated-kubernetes-workloads-on-p3-and-p2-ec2-instances-with-amazon-eks/) for more information on how the add-on can be tested.
+
 ## Usage
 
 NVIDIA device plugin can be deployed by enabling the add-on via the following.
