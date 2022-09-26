@@ -8,6 +8,7 @@ module "helm_addon" {
 }
 
 resource "aws_cloudwatch_log_group" "aws_for_fluent_bit" {
+  count             = var.create_cw_log_group ? 1 : 0
   name              = local.log_group_name
   retention_in_days = var.cw_log_group_retention
   kms_key_id        = var.cw_log_group_kms_key_arn == null ? module.kms[0].key_arn : var.cw_log_group_kms_key_arn
@@ -22,7 +23,7 @@ resource "aws_iam_policy" "aws_for_fluent_bit" {
 }
 
 module "kms" {
-  count       = var.cw_log_group_kms_key_arn == null ? 1 : 0
+  count       = var.cw_log_group_kms_key_arn == null && var.create_cw_log_group ? 1 : 0
   source      = "../../../modules/aws-kms"
   description = "EKS Workers FluentBit CloudWatch Log group KMS Key"
   alias       = "alias/${var.addon_context.eks_cluster_id}-cw-fluent-bit"

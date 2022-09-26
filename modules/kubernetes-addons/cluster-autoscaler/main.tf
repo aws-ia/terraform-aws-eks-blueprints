@@ -12,7 +12,7 @@ module "helm_addon" {
   helm_config = merge({
     name        = local.name
     chart       = local.name
-    version     = "9.19.1"
+    version     = "9.21.0"
     repository  = "https://kubernetes.github.io/autoscaler"
     namespace   = local.namespace
     description = "Cluster AutoScaler helm Chart deployment configuration."
@@ -74,6 +74,7 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
       "ec2:DescribeInstanceTypes",
       "eks:DescribeNodegroup",
     ]
+
     condition {
       test     = "StringEquals"
       variable = "autoscaling:ResourceTag/k8s.io/cluster-autoscaler/${var.addon_context.eks_cluster_id}"

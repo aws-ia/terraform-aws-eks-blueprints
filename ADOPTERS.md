@@ -13,3 +13,4 @@ If you are using EKS Blueprints for Terraform please consider adding yourself as
 
 | Organization | Description | Contacts | Link |
 | --- | --- | --- | --- |
+| Swyft Logistics | Swyft is an award-winning, tech-enabled last-mile e-Parcel delivery service provider, primarily operating in the fashion, electronics, and personal care industries. Swyft aspires to reinvent logistics in Pakistan and connecting people beyond possibilities. Our focus is on innovation, development of technologies and processes. | abdul.rauf@swyftlogistics.com, haider.aslam@swyftlogistics.com, osama.maruf@swyftlogistics.com,   | https://www.swyftlogistics.com/ |
