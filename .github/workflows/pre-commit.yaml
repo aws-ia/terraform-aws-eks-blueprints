@@ -54,17 +54,17 @@ jobs:
             src:
               - '${{ matrix.directory }}/*.tf'
 
-      - name: Config Terraform plugin cache
-        if: steps.changes.outputs.src== 'true'
-        run: mkdir --parents ${{ env.TERRAFORM_DOCS_VERSION }}
+      #- name: Config Terraform plugin cache
+      #  if: steps.changes.outputs.src== 'true'
+      #  run: mkdir --parents ${{ env.TERRAFORM_DOCS_VERSION }}
 
-      - name: Cache Terraform
-        uses: actions/cache@v3
-        if: steps.changes.outputs.src== 'true'
-        with:
-          path: ${{ env.TERRAFORM_DOCS_VERSION }}
-          key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
-          restore-keys: ${{ runner.os }}-terraform-
+      #- name: Cache Terraform
+      #  uses: actions/cache@v3
+      #  if: steps.changes.outputs.src== 'true'
+      #  with:
+      #    path: ${{ env.TERRAFORM_DOCS_VERSION }}
+      #    key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
+      #    restore-keys: ${{ runner.os }}-terraform-
 
       - name: Terraform min/max versions
         uses: clowdhaus/terraform-min-max@v1.0.7
@@ -104,17 +104,17 @@ jobs:
             src:
               - '**/*.tf'
 
-      - name: Config Terraform plugin cache
-        if: steps.changes.outputs.src== 'true'
-        run: mkdir --parents ${{ env.TERRAFORM_DOCS_VERSION }}
+      #- name: Config Terraform plugin cache
+      #  if: steps.changes.outputs.src== 'true'
+      #  run: mkdir --parents ${{ env.TERRAFORM_DOCS_VERSION }}
 
-      - name: Cache Terraform
-        uses: actions/cache@v3
-        if: steps.changes.outputs.src== 'true'
-        with:
-          path: ${{ env.TF_PLUGIN_CACHE_DIR }}
-          key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
-          restore-keys: ${{ runner.os }}-terraform-
+      #- name: Cache Terraform
+      #  uses: actions/cache@v3
+      #  if: steps.changes.outputs.src== 'true'
+      #  with:
+      #    path: ${{ env.TF_PLUGIN_CACHE_DIR }}
+      #    key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
+      #    restore-keys: ${{ runner.os }}-terraform-
 
       - name: Install tfsec
         if: steps.changes.outputs.src== 'true'
