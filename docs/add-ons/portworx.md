@@ -12,7 +12,7 @@ To get started look at these sample [blueprints](../../examples/portworx).
 
 ## Requirements
 
-For the add-on to work, Portworx needs additional permission to AWS resources which can be provided in the following way. For an example blueprint, click [here](../../examples/portworx). 
+For the add-on to work, Portworx needs additional permission to AWS resources which can be provided in the following way. For an example blueprint, click [here](../../examples/portworx).
 
 Note: Portworx currently does not support obtaining these permissions with an IRSA. Its support will be added with future releases.
 

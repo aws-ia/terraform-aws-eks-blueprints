@@ -28,13 +28,13 @@ Ensure that the following components are installed on your local system:
 #### Step 1. Clone the repository:
 
 ```shell
-git clone https://github.com/portworx/terraform-eksblueprints-portworx-addon.git
+git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
 #### Step 2. Initialize the Terraform module:
 
 ```shell
-cd blueprints/getting_started
+cd examples/portworx
 terraform init
 ```
 
