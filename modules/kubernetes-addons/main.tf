@@ -631,4 +631,12 @@ module "local_volume_provisioner" {
   addon_context = local.addon_context
 }
 
+module "nvidia_device_plugin" {
+  count             = var.enable_nvidia_device_plugin ? 1 : 0
+  source            = "./nvidia-device-plugin"
+  helm_config       = var.nvidia_device_plugin_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 # whitespace noise
