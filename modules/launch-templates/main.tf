@@ -22,8 +22,8 @@ resource "aws_launch_template" "this" {
       eks_cluster_id         = var.eks_cluster_id
       cluster_ca_base64      = data.aws_eks_cluster.eks.certificate_authority[0].data
       cluster_endpoint       = data.aws_eks_cluster.eks.endpoint
-      service_ipv6_cidr      = try(each.value.service_ipv6_cidr, "") == null ? "" : each.value.service_ipv6_cidr
-      service_ipv4_cidr      = try(each.value.service_ipv4_cidr, "") == null ? "" : each.value.service_ipv4_cidr
+      service_ipv6_cidr      = try(each.value.service_ipv6_cidr, "") == null ? "" : try(each.value.service_ipv6_cidr, "")
+      service_ipv4_cidr      = try(each.value.service_ipv4_cidr, "") == null ? "" : try(each.value.service_ipv4_cidr, "")
       format_mount_nvme_disk = try(each.value.format_mount_nvme_disk, false)
   }))
 
@@ -36,7 +36,7 @@ resource "aws_launch_template" "this" {
   }
 
   dynamic "instance_market_options" {
-    for_each = trimspace(lower(try(each.value.capacity_type, null))) == "spot" ? { enabled = true } : {}
+    for_each = trimspace(lower(try(each.value.capacity_type, ""))) == "spot" ? { enabled = true } : {}
 
     content {
       market_type = each.value.capacity_type
