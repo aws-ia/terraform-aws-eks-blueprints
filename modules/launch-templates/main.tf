@@ -2,6 +2,7 @@ data "aws_eks_cluster" "eks" {
   name = var.eks_cluster_id
 }
 
+#tfsec:ignore:aws-autoscaling-enforce-http-token-imds
 resource "aws_launch_template" "this" {
   for_each = var.launch_template_config
 
