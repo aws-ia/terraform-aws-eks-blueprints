@@ -9,6 +9,8 @@ First, ensure that you have installed the following tools locally.
 1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+> **_NOTE:_** Use terraform versions after version 1.0.0 and before version 1.3.0.  
+Support for 1.3.x and above [here](https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/988)
 
 ## Deployment Steps
 

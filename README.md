@@ -105,6 +105,9 @@ If you are interested in contributing to EKS Blueprints, see the [Contribution g
 
 ---
 
+> **_NOTE:_** Use terraform versions after version 1.0.0 and before version 1.3.0.  
+Support for 1.3.x and above [here](https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/988)
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
