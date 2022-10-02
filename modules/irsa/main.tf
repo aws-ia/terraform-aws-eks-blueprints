@@ -17,7 +17,7 @@ resource "kubernetes_service_account_v1" "irsa" {
   count = var.create_kubernetes_service_account ? 1 : 0
   metadata {
     name        = var.kubernetes_service_account
-    namespace   = var.kubernetes_namespace
+    namespace   = try(kubernetes_namespace_v1.irsa[count.index].id, var.kubernetes_namespace)
     annotations = var.irsa_iam_policies != null ? { "eks.amazonaws.com/role-arn" : aws_iam_role.irsa[0].arn } : null
   }
 
