@@ -6,7 +6,7 @@ resource "helm_release" "addon" {
   version                    = try(var.helm_config["version"], null)
   timeout                    = try(var.helm_config["timeout"], 1200)
   values                     = try(var.helm_config["values"], null)
-  create_namespace           = var.irsa_config != null ? false : try(var.helm_config["create_namespace"], false)
+  create_namespace           = var.irsa_config != {} ? false : try(var.helm_config["create_namespace"], false)
   namespace                  = var.helm_config["namespace"]
   lint                       = try(var.helm_config["lint"], false)
   description                = try(var.helm_config["description"], "")
