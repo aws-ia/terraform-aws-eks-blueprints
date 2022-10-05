@@ -60,9 +60,98 @@ module "helm_addon" {
     {
       name  = "serviceAccount.create"
       value = true
+    },
+    {
+      name  = "blueprints.connection"
+      value = try(null_resource.remove_default_coredns_deployment[0].id, "none")
     }
   ]
 
   # Blueprints
   addon_context = var.addon_context
+}
+
+#---------------------------------------------------------------
+# Modifying CoreDNS for Fargate
+#---------------------------------------------------------------
+
+data "aws_eks_cluster_auth" "this" {
+  name = time_sleep.profile_creation.triggers["eks_cluster_id"]
+}
+
+locals {
+  kubeconfig = yamlencode({
+    apiVersion      = "v1"
+    kind            = "Config"
+    current-context = "terraform"
+    clusters = [{
+      name = time_sleep.profile_creation.triggers["eks_cluster_id"]
+      cluster = {
+        certificate-authority-data = var.eks_cluster_certificate_authority_data
+        server                     = var.addon_context.aws_eks_cluster_endpoint
+      }
+    }]
+    contexts = [{
+      name = "terraform"
+      context = {
+        cluster = time_sleep.profile_creation.triggers["eks_cluster_id"]
+        user    = "terraform"
+      }
+    }]
+    users = [{
+      name = "terraform"
+      user = {
+        token = data.aws_eks_cluster_auth.this.token
+      }
+    }]
+  })
+}
+
+resource "time_sleep" "profile_creation" {
+  create_duration = "1m"
+
+  triggers = {
+    eks_cluster_id = var.addon_context.eks_cluster_id
+  }
+}
+
+# Separate resource so that this is only ever executed once
+resource "null_resource" "remove_default_coredns_deployment" {
+  count = var.enable_self_managed_coredns && var.remove_default_coredns_deployment ? 1 : 0
+
+  triggers = {}
+
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    environment = {
+      KUBECONFIG = base64encode(local.kubeconfig)
+    }
+
+    # We are removing the deployment provided by the EKS service and replacing it through the self-managed CoreDNS Helm addon
+    # However, we are maintaing the existing kube-dns service and annotating it for Helm to assume control
+    command = <<-EOT
+      kubectl --namespace kube-system delete deployment coredns --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+    EOT
+  }
+}
+
+resource "null_resource" "modify_kube_dns" {
+  count = var.enable_self_managed_coredns && var.remove_default_coredns_deployment ? 1 : 0
+
+  triggers = {}
+
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    environment = {
+      KUBECONFIG = base64encode(local.kubeconfig)
+      CONNECTION = null_resource.remove_default_coredns_deployment[0].id
+    }
+
+    # We are maintaing the existing kube-dns service and annotating it for Helm to assume control
+    command = <<-EOT
+      kubectl --namespace kube-system annotate --overwrite service kube-dns meta.helm.sh/release-name=coredns --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+      kubectl --namespace kube-system annotate --overwrite service kube-dns meta.helm.sh/release-namespace=kube-system --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+      kubectl --namespace kube-system label --overwrite service kube-dns app.kubernetes.io/managed-by=Helm --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+    EOT
+  }
 }

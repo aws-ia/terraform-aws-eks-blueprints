@@ -36,6 +36,9 @@ module "aws_coredns" {
       image_registry = local.amazon_container_image_registry_uris[data.aws_region.current.name]
     }
   )
+
+  remove_default_coredns_deployment      = var.remove_default_coredns_deployment
+  eks_cluster_certificate_authority_data = data.aws_eks_cluster.eks_cluster.certificate_authority[0].data
 }
 
 module "aws_kube_proxy" {
@@ -185,8 +188,10 @@ module "cluster_autoscaler" {
 }
 
 module "coredns_autoscaler" {
-  count             = var.enable_amazon_eks_coredns && var.enable_coredns_autoscaler && length(var.coredns_autoscaler_helm_config) > 0 ? 1 : 0
-  source            = "./cluster-proportional-autoscaler"
+  source = "./cluster-proportional-autoscaler"
+
+  count = var.enable_amazon_eks_coredns && var.enable_coredns_autoscaler && length(var.coredns_autoscaler_helm_config) > 0 ? 1 : 0
+
   helm_config       = var.coredns_autoscaler_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context

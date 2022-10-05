@@ -36,3 +36,15 @@ variable "helm_config" {
   default     = {}
   type        = any
 }
+
+variable "remove_default_coredns_deployment" {
+  description = "Determines whether the default deployment of CoreDNS is removed and ownership of kube-dns passed to Helm"
+  type        = bool
+  default     = false
+}
+
+variable "eks_cluster_certificate_authority_data" {
+  description = "The base64 encoded certificate data required to communicate with your cluster"
+  type        = string
+  default     = ""
+}
