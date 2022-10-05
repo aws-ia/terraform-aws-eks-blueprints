@@ -9,7 +9,10 @@ locals {
     namespace        = local.name
     create_namespace = true
     description      = "Consul helm Chart deployment configuration"
+    values           = local.default_helm_values
   }
+
+  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
 
   helm_config = merge(
     local.default_helm_config,
