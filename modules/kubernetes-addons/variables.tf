@@ -1233,3 +1233,16 @@ variable "nvidia_device_plugin_helm_config" {
   type        = any
   default     = {}
 }
+
+#-----------Consul addon-----------------------
+variable "enable_consul" {
+  description = "Enable consul add-on"
+  type        = bool
+  default     = false
+}
+
+variable "consul_helm_config" {
+  description = "Consul Helm Chart config"
+  type        = any
+  default     = {}
+}

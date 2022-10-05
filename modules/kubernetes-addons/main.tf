@@ -639,4 +639,12 @@ module "nvidia_device_plugin" {
   addon_context     = local.addon_context
 }
 
+module "consul" {
+  count             = var.enable_consul ? 1 : 0
+  source            = "./consul"
+  helm_config       = var.consul_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 # whitespace noise
