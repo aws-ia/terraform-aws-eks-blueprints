@@ -181,6 +181,7 @@ module "ingress_nginx" {
   helm_config       = var.ingress_nginx_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+  depends_on        = [module.aws_load_balancer_controller]
 }
 
 module "karpenter" {
