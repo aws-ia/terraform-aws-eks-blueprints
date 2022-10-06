@@ -48,3 +48,15 @@ variable "eks_cluster_certificate_authority_data" {
   type        = string
   default     = ""
 }
+
+variable "enable_cluster_proportional_autoscaler" {
+  description = "Enable cluster-proportional-autoscaler"
+  type        = bool
+  default     = true
+}
+
+variable "cluster_proportional_autoscaler_helm_config" {
+  description = "Helm provider config for the CoreDNS cluster-proportional-autoscaler"
+  default     = {}
+  type        = any
+}

@@ -15,7 +15,7 @@ variable "eks_worker_security_group_id" {
   default     = ""
 }
 
-variable "wait_on_data_plane" {
+variable "data_plane_wait_arn" {
   description = "Addon deployment will not proceed until this value is known. Set to node group/Fargate profile ARN to wait for data plane to be ready before provisioning addons"
   type        = string
   default     = ""
@@ -105,6 +105,19 @@ variable "remove_default_coredns_deployment" {
   type        = bool
   default     = false
 }
+
+variable "enable_coredns_cluster_proportional_autoscaler" {
+  description = "Enable cluster-proportional-autoscaler for CoreDNS"
+  type        = bool
+  default     = true
+}
+
+variable "coredns_cluster_proportional_autoscaler_helm_config" {
+  description = "Helm provider config for the CoreDNS cluster-proportional-autoscaler"
+  default     = {}
+  type        = any
+}
+
 
 variable "amazon_eks_kube_proxy_config" {
   description = "ConfigMap for Amazon EKS Kube-Proxy add-on"
@@ -1244,4 +1257,11 @@ variable "nvidia_device_plugin_helm_config" {
   description = "NVIDIA device plugin Helm Chart config"
   type        = any
   default     = {}
+}
+
+#-----------App 2048-----------------------
+variable "enable_app_2048" {
+  description = "Enable sample app 2048"
+  type        = bool
+  default     = false
 }

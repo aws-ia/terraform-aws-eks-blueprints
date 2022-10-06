@@ -155,3 +155,47 @@ resource "null_resource" "modify_kube_dns" {
     EOT
   }
 }
+
+#---------------------------------------------------------------
+# Cluster proportional autoscaler
+#---------------------------------------------------------------
+
+module "cluster_proportional_autoscaler" {
+  source = "../cluster-proportional-autoscaler"
+
+  count = var.enable_cluster_proportional_autoscaler ? 1 : 0
+
+  helm_config = merge({
+    values = [
+      <<-EOT
+        nameOverride: coredns
+
+        config:
+          linear:
+            coresPerReplica: 256
+            nodesPerReplica: 16
+            min: 1
+            max: 100
+            preventSinglePointFailure: true
+            includeUnschedulableNodes: true
+
+        options:
+          target: "deployment/coredns"
+
+        podSecurityContext:
+          seccompProfile:
+            type: RuntimeDefault
+          supplementalGroups: [ 65534 ]
+          fsGroup: 65534
+
+        tolerations:
+          - key: "CriticalAddonsOnly"
+            operator: "Exists"
+      EOT
+    ]
+    },
+    var.cluster_proportional_autoscaler_helm_config
+  )
+
+  addon_context = var.addon_context
+}

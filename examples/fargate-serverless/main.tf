@@ -16,14 +16,6 @@ provider "helm" {
   }
 }
 
-provider "kubectl" {
-  apply_retry_count      = 10
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-  load_config_file       = false
-  token                  = data.aws_eks_cluster_auth.this.token
-}
-
 data "aws_eks_cluster_auth" "this" {
   name = module.eks_blueprints.eks_cluster_id
 }
@@ -42,8 +34,6 @@ locals {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
-
-  sample_app_namespace = "game-2048"
 }
 
 #---------------------------------------------------------------
@@ -82,11 +72,11 @@ module "eks_blueprints" {
       subnet_ids = module.vpc.private_subnets
     }
     # Sample application
-    alb_sample_app = {
-      fargate_profile_name = "alb-sample-app"
+    app = {
+      fargate_profile_name = "app-wildcard"
       fargate_profile_namespaces = [
         {
-          namespace = local.sample_app_namespace
+          namespace = "app-*"
       }]
       subnet_ids = module.vpc.private_subnets
     }
@@ -104,7 +94,7 @@ module "eks_blueprints_kubernetes_addons" {
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
   # Wait on the `kube-system` profile before provisioning addons
-  wait_on_data_plane = module.eks_blueprints.fargate_profiles["kube_system"].eks_fargate_profile_arn
+  data_plane_wait_arn = module.eks_blueprints.fargate_profiles["kube_system"].eks_fargate_profile_arn
 
   enable_amazon_eks_vpc_cni = true
   amazon_eks_vpc_cni_config = {
@@ -118,13 +108,20 @@ module "eks_blueprints_kubernetes_addons" {
     resolve_conflicts = "OVERWRITE"
   }
 
-  enable_self_managed_coredns       = true
-  remove_default_coredns_deployment = true
+  enable_self_managed_coredns                    = true
+  remove_default_coredns_deployment              = true
+  enable_coredns_cluster_proportional_autoscaler = true
   self_managed_coredns_helm_config = {
     # Sets the correct annotations to ensure the Fargate provisioner is used and not the EC2 provisioner
     compute_type       = "fargate"
     kubernetes_version = module.eks_blueprints.eks_cluster_version
   }
+
+  # Sample application
+  enable_app_2048 = true
+
+  # Enable Fargate logging
+  enable_fargate_fluentbit = true
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller_helm_config = {
@@ -188,21 +185,4 @@ module "vpc" {
   }
 
   tags = local.tags
-}
-
-#---------------------------------------------------------------
-# Sample App
-#---------------------------------------------------------------
-
-resource "kubernetes_namespace_v1" "sample_app" {
-  metadata {
-    name = local.sample_app_namespace
-  }
-}
-
-resource "kubectl_manifest" "sample_app" {
-  yaml_body = templatefile("sample_app.yaml", {
-    name      = "game-2048"
-    namespace = kubernetes_namespace_v1.sample_app.metadata[0].name
-  })
 }

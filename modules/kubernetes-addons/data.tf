@@ -6,8 +6,8 @@ resource "time_sleep" "dataplane" {
   create_duration = "10s"
 
   triggers = {
-    wait_on_data_plane = var.wait_on_data_plane # this waits for the data plane to be ready
-    eks_cluster_id     = var.eks_cluster_id     # this ties it to downstream resources
+    data_plane_wait_arn = var.data_plane_wait_arn # this waits for the data plane to be ready
+    eks_cluster_id      = var.eks_cluster_id      # this ties it to downstream resources
   }
 }
 

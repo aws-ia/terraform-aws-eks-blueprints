@@ -37,6 +37,10 @@ module "aws_coredns" {
     }
   )
 
+  # CoreDNS cluster proportioanl autoscaler
+  enable_cluster_proportional_autoscaler      = var.enable_coredns_cluster_proportional_autoscaler
+  cluster_proportional_autoscaler_helm_config = var.coredns_cluster_proportional_autoscaler_helm_config
+
   remove_default_coredns_deployment      = var.remove_default_coredns_deployment
   eks_cluster_certificate_authority_data = data.aws_eks_cluster.eks_cluster.certificate_authority[0].data
 }
@@ -644,4 +648,9 @@ module "nvidia_device_plugin" {
   addon_context     = local.addon_context
 }
 
-# whitespace noise
+# Sample app for demo purposes
+module "app_2048" {
+  source = "./app-2048"
+
+  count = var.enable_app_2048 ? 1 : 0
+}
