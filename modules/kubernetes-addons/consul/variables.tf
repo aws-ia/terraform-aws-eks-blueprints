@@ -1,5 +1,5 @@
 variable "helm_config" {
-  description = "Helm Config for kubecost."
+  description = "Helm Config for consul."
   type        = any
   default     = {}
 }
