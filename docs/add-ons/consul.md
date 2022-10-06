@@ -32,7 +32,7 @@ You can optionally customize the Helm chart via the following configuration.
 ### GitOps Configuration
 The following properties are made available for use when managing the add-on via GitOps.
 
-Refer to [locals.tf](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/consul/locals.tf) for latest config. GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/values.yaml)
+GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/values.yaml)
 
 ```hcl
   consul = {
