@@ -62,6 +62,8 @@ module "helm_addon" {
       value = true
     },
     {
+      # This simply maps a dependency for Terraform to ensure the default deployment is
+      # removed first (if enabled) before provisioning self-managed version (if enabled)
       name  = "blueprints.connection"
       value = try(null_resource.remove_default_coredns_deployment[0].id, "none")
     }
@@ -76,7 +78,7 @@ module "helm_addon" {
 #---------------------------------------------------------------
 
 data "aws_eks_cluster_auth" "this" {
-  name = time_sleep.profile_creation.triggers["eks_cluster_id"]
+  name = time_sleep.this.triggers["eks_cluster_id"]
 }
 
 locals {
@@ -85,7 +87,7 @@ locals {
     kind            = "Config"
     current-context = "terraform"
     clusters = [{
-      name = time_sleep.profile_creation.triggers["eks_cluster_id"]
+      name = time_sleep.this.triggers["eks_cluster_id"]
       cluster = {
         certificate-authority-data = var.eks_cluster_certificate_authority_data
         server                     = var.addon_context.aws_eks_cluster_endpoint
@@ -94,7 +96,7 @@ locals {
     contexts = [{
       name = "terraform"
       context = {
-        cluster = time_sleep.profile_creation.triggers["eks_cluster_id"]
+        cluster = time_sleep.this.triggers["eks_cluster_id"]
         user    = "terraform"
       }
     }]
@@ -107,7 +109,7 @@ locals {
   })
 }
 
-resource "time_sleep" "profile_creation" {
+resource "time_sleep" "this" {
   create_duration = "1m"
 
   triggers = {

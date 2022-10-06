@@ -39,6 +39,23 @@ To provision the self managed addon for CoreDNS, you can reference the following
   }
 ```
 
+## Removing Default CoreDNS Deployment
+
+Setting `remove_default_coredns_deployment = true` will remove the default CoreDNS deployment provided by EKS and update the labels and and annotations for kube-dns to allow Helm to manage it. These changes will allow for CoreDNS to be deployed via a Helm chart into a cluster either through self-managed addon (`enable_self_managed_coredns = true`) or some other means (i.e. - GitOps approach).
+
+```hcl
+  remove_default_coredns_deployment = true
+```
+
+# CoreDNS [Cluster Proportional Autoscaler](https://github.com/kubernetes-sigs/cluster-proportional-autoscaler)
+
+By default, EKS provisions CoreDNS with a replica count of 2. As the cluster size increases and more traffic is flowing through the cluster, it is recommended to scale CoreDNS to meet this demand. The cluster proportional autoscaler is recommended to scale the CoreDNS deployment and therefore is provided by default when enabling CoreDNS through EKS Blueprints (either using EKS managed addon for CoreDNS, or self-managed addon for CoreDNS). A set of default settings for scaling CoreDNS is provided but users can provide their own settings as well to override the defaults via `cluster_proportional_autoscaler_helm_config = {}`. In addition, users have the ability to opt out of this default enablement and either not use the cluster proportional autoscaler for CoreDNS or provide a separate implementation of cluster proportional autoscaler.
+
+```hcl
+  enable_cluster_proportional_autoscaler      = true
+  cluster_proportional_autoscaler_helm_config = { ... }
+```
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -71,7 +88,7 @@ To provision the self managed addon for CoreDNS, you can reference the following
 | [aws_eks_addon.coredns](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_addon) | resource |
 | [null_resource.modify_kube_dns](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.remove_default_coredns_deployment](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
-| [time_sleep.profile_creation](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
+| [time_sleep.this](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [aws_eks_addon_version.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_addon_version) | data source |
 | [aws_eks_cluster_auth.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
 
