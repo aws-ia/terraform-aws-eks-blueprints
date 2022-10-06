@@ -88,8 +88,6 @@ The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/ingress-controllers/nginx
-terraform destroy -target="module.eks_blueprints_kubernetes_addons.module.ingress_nginx[0]" -auto-approve
-terraform destroy -target="module.eks_blueprints_kubernetes_addons.module.aws_load_balancer_controller[0]" -auto-approve
 terraform destroy -target="module.eks-blueprints-kubernetes-addons" -auto-approve
 terraform destroy -target="module.eks-blueprints" -auto-approve
 terraform destroy -auto-approve
