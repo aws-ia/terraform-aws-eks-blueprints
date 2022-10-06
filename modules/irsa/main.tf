@@ -7,13 +7,17 @@ resource "kubernetes_namespace_v1" "irsa" {
   metadata {
     name = var.kubernetes_namespace
   }
+
+  timeouts {
+    delete = "15m"
+  }
 }
 
 resource "kubernetes_service_account_v1" "irsa" {
   count = var.create_kubernetes_service_account ? 1 : 0
   metadata {
     name        = var.kubernetes_service_account
-    namespace   = var.kubernetes_namespace
+    namespace   = try(kubernetes_namespace_v1.irsa[0].metadata[0].name, var.kubernetes_namespace)
     annotations = var.irsa_iam_policies != null ? { "eks.amazonaws.com/role-arn" : aws_iam_role.irsa[0].arn } : null
   }
 
