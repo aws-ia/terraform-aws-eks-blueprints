@@ -93,10 +93,6 @@ module "eks_blueprints_kubernetes_addons" {
       path               = "envs/dev"
       repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
       add_on_application = false
-      values = {
-        key1 = "value1"
-        key = "value1,value2"
-      }      
     }
   }
 
