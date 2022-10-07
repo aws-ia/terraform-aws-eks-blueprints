@@ -43,8 +43,13 @@ locals {
     irsa_iam_policies                 = concat([aws_iam_policy.external_dns.arn], var.irsa_policies)
   }
 
-  argocd_gitops_config = {
+  default_argocd_gitops_config = {
     enable             = true
     serviceAccountName = local.service_account_name
   }
+
+   argocd_gitops_config = merge(
+      local.default_argocd_gitops_config,
+      var.helm_config
+   )
 }
