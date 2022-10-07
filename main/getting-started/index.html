@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.0, mkdocs-material-8.3.2">
     
     
       
@@ -1502,7 +1502,11 @@
 <ol>
 <li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
 <li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
-<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
+<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a><blockquote>
+<p><strong><em>NOTE:</em></strong> Use terraform versions after version 1.0.0 and before version 1.3.0.<br />
+Support for 1.3.x and above <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/988">here</a></p>
+</blockquote>
+</li>
 </ol>
 <h2 id="deployment-steps">Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permanent link">&para;</a></h2>
 <p>The following steps will walk you through the deployment of an <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/eks-cluster-with-new-vpc/main.tf">example blueprint</a>. This example will deploy a new VPC, a private EKS cluster with public and private subnets, and one managed node group that will be placed in the private subnets. The example will also deploy the following add-ons into the EKS cluster:</p>
