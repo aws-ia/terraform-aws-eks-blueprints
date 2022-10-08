@@ -23,10 +23,10 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_base"></a> [base](#module\_base) | github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon | n/a |
-| <a name="module_cni"></a> [cni](#module\_cni) | github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon | n/a |
-| <a name="module_gateway"></a> [gateway](#module\_gateway) | github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon | n/a |
-| <a name="module_istiod"></a> [istiod](#module\_istiod) | github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon | n/a |
+| <a name="module_base"></a> [base](#module\_base) | ../helm-addon | n/a |
+| <a name="module_cni"></a> [cni](#module\_cni) | ../helm-addon | n/a |
+| <a name="module_gateway"></a> [gateway](#module\_gateway) | ../helm-addon | n/a |
+| <a name="module_istiod"></a> [istiod](#module\_istiod) | ../helm-addon | n/a |
 
 ## Resources
 
