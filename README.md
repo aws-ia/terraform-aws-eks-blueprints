@@ -28,10 +28,10 @@ The below demonstrates how you can leverage EKS Blueprints to deploy an EKS clus
 
 ```hcl
 module "eks_blueprints" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.0.2"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.12.0"
 
   # EKS CLUSTER
-  cluster_version           = "1.21"
+  cluster_version           = "1.23"
   vpc_id                    = "<vpcid>"                                      # Enter VPC ID
   private_subnet_ids        = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]     # Enter Private Subnet IDs
 
@@ -46,7 +46,7 @@ module "eks_blueprints" {
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.0.2"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.12.0"
 
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
@@ -102,11 +102,6 @@ To post feedback, submit feature ideas, or report bugs, please use the [Issues s
 For architectural details, step-by-step instructions, and customization options, see our [documentation site](https://aws-ia.github.io/terraform-aws-eks-blueprints/).
 
 If you are interested in contributing to EKS Blueprints, see the [Contribution guide](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/CONTRIBUTING.md).
-
----
-
-> **_NOTE:_** Use terraform versions after version 1.0.0 and before version 1.3.0.  
-Support for 1.3.x and above [here](https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/988)
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
