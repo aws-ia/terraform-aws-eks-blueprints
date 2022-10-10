@@ -62,7 +62,7 @@
 | <a name="module_metrics_server"></a> [metrics\_server](#module\_metrics\_server) | ./metrics-server | n/a |
 | <a name="module_ondat"></a> [ondat](#module\_ondat) | ondat/ondat-addon/eksblueprints | 0.1.1 |
 | <a name="module_opentelemetry_operator"></a> [opentelemetry\_operator](#module\_opentelemetry\_operator) | ./opentelemetry-operator | n/a |
-| <a name="module_portworx"></a> [portworx](#module\_portworx) | portworx/portworx-addon/eksblueprints | 0.0.3 |
+| <a name="module_portworx"></a> [portworx](#module\_portworx) | portworx/portworx-addon/eksblueprints | 0.0.4 |
 | <a name="module_prometheus"></a> [prometheus](#module\_prometheus) | ./prometheus | n/a |
 | <a name="module_promtail"></a> [promtail](#module\_promtail) | ./promtail | n/a |
 | <a name="module_reloader"></a> [reloader](#module\_reloader) | ./reloader | n/a |
@@ -248,11 +248,7 @@
 | <a name="input_ondat_helm_config"></a> [ondat\_helm\_config](#input\_ondat\_helm\_config) | Ondat Helm Chart config | `any` | `{}` | no |
 | <a name="input_ondat_irsa_policies"></a> [ondat\_irsa\_policies](#input\_ondat\_irsa\_policies) | IAM policy ARNs for Ondat IRSA | `list(string)` | `[]` | no |
 | <a name="input_opentelemetry_operator_helm_config"></a> [opentelemetry\_operator\_helm\_config](#input\_opentelemetry\_operator\_helm\_config) | Opentelemetry Operator Helm Chart config | `any` | `{}` | no |
-| <a name="input_portworx_chart_values"></a> [portworx\_chart\_values](#input\_portworx\_chart\_values) | Custom values for portworx helm chart | `any` | `{}` | no |
 | <a name="input_portworx_helm_config"></a> [portworx\_helm\_config](#input\_portworx\_helm\_config) | Kubernetes Portworx Helm Chart config | `any` | `null` | no |
-| <a name="input_portworx_irsa_policies"></a> [portworx\_irsa\_policies](#input\_portworx\_irsa\_policies) | IAM policy ARNs for Portworx IRSA | `list(string)` | `[]` | no |
-| <a name="input_portworx_set_sensitive_values"></a> [portworx\_set\_sensitive\_values](#input\_portworx\_set\_sensitive\_values) | Set sensitive values for portworx helm chart which wont show in plan's diff | `any` | `[]` | no |
-| <a name="input_portworx_set_values"></a> [portworx\_set\_values](#input\_portworx\_set\_values) | Set values for portworx helm chart | `any` | `[]` | no |
 | <a name="input_prometheus_helm_config"></a> [prometheus\_helm\_config](#input\_prometheus\_helm\_config) | Community Prometheus Helm Chart config | `any` | `{}` | no |
 | <a name="input_promtail_helm_config"></a> [promtail\_helm\_config](#input\_promtail\_helm\_config) | Promtail Helm Chart config | `any` | `{}` | no |
 | <a name="input_reloader_helm_config"></a> [reloader\_helm\_config](#input\_reloader\_helm\_config) | Reloader Helm Chart config | `any` | `{}` | no |

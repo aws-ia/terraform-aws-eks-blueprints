@@ -151,9 +151,14 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_portworx = true
 
-  portworx_chart_values = {
-    clusterName  = "portworx-example"
-    imageVersion = "2.11.2"
+  # Custom values for parameters can be passed as shown below
+  portworx_helm_config = {
+    set = [
+      {
+        name  = "imageVersion"
+        value = "2.11.2"
+      }
+    ]
   }
   tags = local.tags
 }
