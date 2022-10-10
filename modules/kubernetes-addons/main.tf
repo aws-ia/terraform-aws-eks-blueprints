@@ -278,12 +278,8 @@ module "metrics_server" {
 }
 
 module "ondat" {
-  # source  = "ondat/ondat-addon/eksblueprints"
-  # version = "0.1.1"
-
-  # TODO - remove local source and revert to remote once
-  # https://github.com/ondat/terraform-eksblueprints-ondat-addon/pull/12  is merged
-  source = "./ondat"
+  source  = "ondat/ondat-addon/eksblueprints"
+  version = "0.1.2"
 
   count = var.enable_ondat ? 1 : 0
 
@@ -649,5 +645,3 @@ module "nvidia_device_plugin" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
-
-# whitespace noise
