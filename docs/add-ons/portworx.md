@@ -135,5 +135,5 @@ The following tables lists the configurable parameters of the Portworx chart and
 | `monitoring` | Enable Monitoring on Portworx cluster | false  |
 | `enableCSI` | Enable CSI | false  |
 | `enableAutopilot` | Enable Autopilot | false  |
-| `KVDBauthSecretName` | Refer https://docs.portworx.com/reference/etcd/securing-with-certificates-in-kubernetes to  create a kvdb secret and specify the name of the secret here| none |
+| `KVDBauthSecretName` | Refer [Securing with certificates in Kubernetes](https://docs.portworx.com/operations/etcd/#securing-with-certificates-in-kubernetes) to  create a kvdb secret and specify the name of the secret here| none |
 | `deleteType` | Specify which strategy to use while Uninstalling Portworx. "Uninstall" values only removes Portworx but with "UninstallAndWipe" value all data from your disks including the Portworx metadata is also wiped permanently | UninstallAndWipe |
