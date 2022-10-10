@@ -1502,11 +1502,7 @@
 <ol>
 <li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
 <li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
-<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a><blockquote>
-<p><strong><em>NOTE:</em></strong> Use terraform versions after version 1.0.0 and before version 1.3.0.<br />
-Support for 1.3.x and above <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/988">here</a></p>
-</blockquote>
-</li>
+<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
 </ol>
 <h2 id="deployment-steps">Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permanent link">&para;</a></h2>
 <p>The following steps will walk you through the deployment of an <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/eks-cluster-with-new-vpc/main.tf">example blueprint</a>. This example will deploy a new VPC, a private EKS cluster with public and private subnets, and one managed node group that will be placed in the private subnets. The example will also deploy the following add-ons into the EKS cluster:</p>
@@ -1523,7 +1519,7 @@ Support for 1.3.x and above <a href="https://github.com/aws-ia/terraform-aws-eks
 </code></pre></div>
 <h3 id="terraform-init">Terraform INIT<a class="headerlink" href="#terraform-init" title="Permanent link">&para;</a></h3>
 <p>CD into the example directory:</p>
-<div class="highlight"><pre><span></span><code>cd examples/eks-cluster-with-new-vpc/
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> examples/eks-cluster-with-new-vpc/
 </code></pre></div>
 <p>Initialize the working directory with the following:</p>
 <div class="highlight"><pre><span></span><code>terraform init
@@ -1535,17 +1531,17 @@ Support for 1.3.x and above <a href="https://github.com/aws-ia/terraform-aws-eks
 <h3 id="terraform-apply">Terraform APPLY<a class="headerlink" href="#terraform-apply" title="Permanent link">&para;</a></h3>
 <p>We will leverage Terraform's <a href="https://learn.hashicorp.com/tutorials/terraform/resource-targeting?in=terraform/cli">target</a> functionality to deploy a VPC, an EKS Cluster, and Kubernetes add-ons in separate steps.</p>
 <p><strong>Deploy the VPC</strong>. This step will take roughly 3 minutes to complete.</p>
-<div class="highlight"><pre><span></span><code>terraform apply -target=&quot;module.vpc&quot;
+<div class="highlight"><pre><span></span><code>terraform apply -target<span class="o">=</span><span class="s2">&quot;module.vpc&quot;</span>
 </code></pre></div>
 <p><strong>Deploy the EKS cluster</strong>. This step will take roughly 14 minutes to complete.</p>
-<div class="highlight"><pre><span></span><code>terraform apply -target=&quot;module.eks_blueprints&quot;
+<div class="highlight"><pre><span></span><code>terraform apply -target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints&quot;</span>
 </code></pre></div>
 <p><strong>Deploy the add-ons</strong>. This step will take rough 5 minutes to complete.</p>
-<div class="highlight"><pre><span></span><code>terraform apply -target=&quot;module.eks_blueprints_kubernetes_addons&quot;
+<div class="highlight"><pre><span></span><code>terraform apply
 </code></pre></div>
 <h2 id="configure-kubectl">Configure kubectl<a class="headerlink" href="#configure-kubectl" title="Permanent link">&para;</a></h2>
 <p>Terraform output will display a command in your console that you can use to bootstrap your local <code>kubeconfig</code>.</p>
-<div class="highlight"><pre><span></span><code>configure_kubectl = &quot;aws eks --region &lt;region&gt; update-kubeconfig --name &lt;cluster-name&gt;&quot;
+<div class="highlight"><pre><span></span><code><span class="nv">configure_kubectl</span> <span class="o">=</span> <span class="s2">&quot;aws eks --region &lt;region&gt; update-kubeconfig --name &lt;cluster-name&gt;&quot;</span>
 </code></pre></div>
 <p>Run the command in your terminal.</p>
 <div class="highlight"><pre><span></span><code>aws eks --region &lt;region&gt; update-kubeconfig --name &lt;cluster-name&gt;
@@ -1580,14 +1576,9 @@ metrics-server-694d47d564-hzd8h                             1/1     Running   1 
 </code></pre></div>
 <h2 id="cleanup">Cleanup<a class="headerlink" href="#cleanup" title="Permanent link">&para;</a></h2>
 <p>To clean up your environment, destroy the Terraform modules in reverse order.</p>
-<p>Destroy the add-ons.</p>
-<div class="highlight"><pre><span></span><code>terraform destroy -target=&quot;module.eks_blueprints_kubernetes_addons&quot;
-</code></pre></div>
-<p>Destroy the EKS cluster.</p>
-<div class="highlight"><pre><span></span><code>terraform destroy -target=&quot;module.eks_blueprints&quot;
-</code></pre></div>
-<p>Destroy the VPC.</p>
-<div class="highlight"><pre><span></span><code>terraform destroy -target=&quot;module.vpc&quot;
+<div class="highlight"><pre><span></span><code>terraform destroy -target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_kubernetes_addons&quot;</span> -auto-approve
+terraform destroy -target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints&quot;</span> -auto-approve
+terraform destroy -auto-approve
 </code></pre></div>
 
               
