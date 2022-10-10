@@ -39,7 +39,7 @@ module "helm_addon" {
       <<-EOT
       image:
         repository: ${var.helm_config.image_registry}/eks/coredns
-        tag: ${data.aws_eks_addon_version.this.version}
+        tag: ${try(var.helm_config.addon_version, data.aws_eks_addon_version.this.version)}
       deployment:
         name: coredns
         annotations:

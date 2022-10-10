@@ -1,11 +1,19 @@
 #-----------------AWS Managed EKS Add-ons----------------------
 
 module "aws_vpc_cni" {
-  count         = var.enable_amazon_eks_vpc_cni ? 1 : 0
-  source        = "./aws-vpc-cni"
-  addon_config  = var.amazon_eks_vpc_cni_config
+  source = "./aws-vpc-cni"
+
+  count = var.enable_amazon_eks_vpc_cni ? 1 : 0
+
+  enable_ipv6 = var.enable_ipv6
+  addon_config = merge(
+    {
+      kubernetes_version = local.eks_cluster_version
+    },
+    var.amazon_eks_vpc_cni_config,
+  )
+
   addon_context = local.addon_context
-  enable_ipv6   = var.enable_ipv6
 }
 
 module "aws_coredns" {
@@ -39,9 +47,17 @@ module "aws_coredns" {
 }
 
 module "aws_kube_proxy" {
-  count         = var.enable_amazon_eks_kube_proxy ? 1 : 0
-  source        = "./aws-kube-proxy"
-  addon_config  = var.amazon_eks_kube_proxy_config
+  source = "./aws-kube-proxy"
+
+  count = var.enable_amazon_eks_kube_proxy ? 1 : 0
+
+  addon_config = merge(
+    {
+      kubernetes_version = local.eks_cluster_version
+    },
+    var.amazon_eks_kube_proxy_config,
+  )
+
   addon_context = local.addon_context
 }
 
@@ -52,12 +68,23 @@ module "aws_ebs_csi_driver" {
 
   # Amazon EKS aws-ebs-csi-driver addon
   enable_amazon_eks_aws_ebs_csi_driver = var.enable_amazon_eks_aws_ebs_csi_driver
-  addon_config                         = var.amazon_eks_aws_ebs_csi_driver_config
-  addon_context                        = local.addon_context
+  addon_config = merge(
+    {
+      kubernetes_version = local.eks_cluster_version
+    },
+    var.amazon_eks_aws_ebs_csi_driver_config,
+  )
+
+  addon_context = local.addon_context
 
   # Self-managed aws-ebs-csi-driver addon via Helm chart
   enable_self_managed_aws_ebs_csi_driver = var.enable_self_managed_aws_ebs_csi_driver
-  helm_config                            = var.self_managed_aws_ebs_csi_driver_helm_config
+  helm_config = merge(
+    {
+      kubernetes_version = local.eks_cluster_version
+    },
+    var.self_managed_aws_ebs_csi_driver_helm_config,
+  )
 }
 
 #-----------------Kubernetes Add-ons----------------------
