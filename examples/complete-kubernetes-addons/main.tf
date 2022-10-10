@@ -235,6 +235,10 @@ module "eks_blueprints_kubernetes_addons" {
     EOF
   }
 
+  enable_kyverno                 = true
+  enable_kyverno_policies        = true
+  enable_kyverno_policy_reporter = true
+
   tags = local.tags
 }
 
