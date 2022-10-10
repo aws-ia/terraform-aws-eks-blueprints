@@ -285,9 +285,11 @@ module "metrics_server" {
 }
 
 module "ondat" {
-  count             = var.enable_ondat ? 1 : 0
-  source            = "ondat/ondat-addon/eksblueprints"
-  version           = "0.1.1"
+  source  = "ondat/ondat-addon/eksblueprints"
+  version = "0.1.2"
+
+  count = var.enable_ondat ? 1 : 0
+
   helm_config       = var.ondat_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
@@ -346,9 +348,15 @@ module "spark_k8s_operator" {
 }
 
 module "tetrate_istio" {
-  count                = var.enable_tetrate_istio ? 1 : 0
-  source               = "tetratelabs/tetrate-istio-addon/eksblueprints"
-  version              = "0.0.7"
+  # source  = "tetratelabs/tetrate-istio-addon/eksblueprints"
+  # version = "0.0.7"
+
+  # TODO - remove local source and revert to remote once
+  # https://github.com/tetratelabs/terraform-eksblueprints-tetrate-istio-addon/pull/12  is merged
+  source = "./tetrate-istio"
+
+  count = var.enable_tetrate_istio ? 1 : 0
+
   distribution         = var.tetrate_istio_distribution
   distribution_version = var.tetrate_istio_version
   install_base         = var.tetrate_istio_install_base
@@ -376,11 +384,10 @@ module "vault" {
 
   # See https://registry.terraform.io/modules/hashicorp/hashicorp-vault-eks-addon/aws/
   source  = "hashicorp/hashicorp-vault-eks-addon/aws"
-  version = "0.9.0"
+  version = "1.0.0-rc1"
 
   helm_config       = var.vault_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = local.addon_context
 }
 
 module "vpa" {
