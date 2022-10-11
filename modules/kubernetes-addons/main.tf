@@ -36,6 +36,13 @@ module "aws_coredns" {
       image_registry = local.amazon_container_image_registry_uris[data.aws_region.current.name]
     }
   )
+
+  # CoreDNS cluster proportioanl autoscaler
+  enable_cluster_proportional_autoscaler      = var.enable_coredns_cluster_proportional_autoscaler
+  cluster_proportional_autoscaler_helm_config = var.coredns_cluster_proportional_autoscaler_helm_config
+
+  remove_default_coredns_deployment      = var.remove_default_coredns_deployment
+  eks_cluster_certificate_authority_data = data.aws_eks_cluster.eks_cluster.certificate_authority[0].data
 }
 
 module "aws_kube_proxy" {
@@ -644,4 +651,11 @@ module "nvidia_device_plugin" {
   helm_config       = var.nvidia_device_plugin_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+}
+
+# Sample app for demo purposes
+module "app_2048" {
+  source = "./app-2048"
+
+  count = var.enable_app_2048 ? 1 : 0
 }

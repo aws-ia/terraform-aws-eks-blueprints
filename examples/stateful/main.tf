@@ -53,7 +53,6 @@ module "eks_blueprints" {
       node_group_name    = "velero"
       launch_template_os = "amazonlinux2eks"
       subnet_ids         = module.vpc.private_subnets
-      k8s_taints         = [{ key = "VeleroOnly", value = "true", effect = "NO_SCHEDULE" }]
     }
   }
 
