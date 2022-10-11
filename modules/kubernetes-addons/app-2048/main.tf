@@ -63,7 +63,7 @@ resource "kubernetes_service_v1" "this" {
       protocol    = "TCP"
     }
 
-    type = "NodePort"
+    type = "ClusterIp"
   }
 }
 

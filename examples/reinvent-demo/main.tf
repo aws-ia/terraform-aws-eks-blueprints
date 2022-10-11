@@ -66,7 +66,7 @@ locals {
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 
-  sample_app_namespace = "game-2048"
+  sample_app_namespace = "app-2048"
 }
 #endregion
 
@@ -96,7 +96,7 @@ module "eks_cluster" {
 
   fargate_profiles = {
     alb_sample_app = {
-      fargate_profile_name = "alb-sample-app"
+      fargate_profile_name = "app-2048"
       fargate_profile_namespaces = [
         {
           namespace = local.sample_app_namespace
