@@ -292,7 +292,6 @@ module "helm_addon" {
   count  = var.enable_opentelemetry_operator ? 1 : 0
 
   helm_config   = local.helm_config
-  irsa_config   = null
   addon_context = var.addon_context
 
   depends_on = [module.cert_manager]

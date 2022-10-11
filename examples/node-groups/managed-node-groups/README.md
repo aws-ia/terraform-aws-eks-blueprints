@@ -71,9 +71,43 @@ This following command used to update the `kubeconfig` in your local machine whe
 
     $ kubectl get pods -n kube-system
 
+#### Step 8: Deploy a pod on the spots nodegroups (spot_2vcpu_8mem and spot_4vcpu_16mem)
+
+Remember:
+
+- we created the spot_2vcpu_8mem nodegroup with a desired of 1 a min of 1 and a max of 2.
+- we created the spot_4vcpu_16mem nodegroup with a desired of 0 a min of 0 and a max of 3.
+- cluster-autoscaler is configured with priority expander with a priority on spot_2vcpu_8mem and then on spot_4vcpu_16mem and then any matching nodegroup
+
+Create a deployment with kubernetes/nginx-spot.yaml, which request spot instance through it's node selector and tolerate them:
+
+```bash
+kubectl apply -f kubernetes/nginx-spot.yaml
+```
+
+If we scale the deployment, it will fullfill first the 2 nodes in the nodegroup spot_2vcpu_8mem
+
+```bash
+kubectl scale deployment/nginx-spot --replicas=10
+```
+
+If we scale again, it will need more nodes and will scale the nodegroup spot_4vcpu_16mem from 0.
+
+```bash
+kubectl scale deployment/nginx-spot --replicas=20
+```
+
 ## Cleanup
 
-To clean up your environment, destroy the Terraform modules in reverse order.
+To clean up your environment, first remove your workloads:
+
+```bash
+kubectl delete -f kubernetes/nginx-spot.yaml
+```
+
+Node group spot_2vcpu_8mem will scale down to 1 and node group spot_2vcpu_16mem will scale down to 0.
+
+then destroy the Terraform modules in reverse order.
 
 Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
 
