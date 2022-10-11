@@ -40,6 +40,14 @@ data "aws_eks_cluster_auth" "this" {
 data "aws_caller_identity" "current" {}
 
 data "aws_availability_zones" "available" {}
+
+data "aws_eks_addon_version" "latest" {
+  for_each = toset(["kube-proxy", "vpc-cni"])
+
+  addon_name         = each.value
+  kubernetes_version = module.eks_cluster.eks_cluster_version
+  most_recent        = true
+}
 #endregion
 
 #region Locals
@@ -113,13 +121,27 @@ module "addons" {
   eks_oidc_provider    = module.eks_cluster.oidc_provider
   eks_cluster_version  = module.eks_cluster.eks_cluster_version
 
-  enable_amazon_eks_vpc_cni           = true
-  enable_amazon_eks_kube_proxy        = true
-  enable_amazon_eks_coredns           = true
+  # Wait on the `kube-system` profile before provisioning addons
+  data_plane_wait_arn = module.eks_cluster.managed_node_group_arn[0]
+
+  enable_amazon_eks_vpc_cni = true
+  amazon_eks_vpc_cni_config = {
+    addon_version     = data.aws_eks_addon_version.latest["vpc-cni"].version
+    resolve_conflicts = "OVERWRITE"
+  }
+
+  enable_amazon_eks_kube_proxy = true
+  amazon_eks_kube_proxy_config = {
+    addon_version     = data.aws_eks_addon_version.latest["kube-proxy"].version
+    resolve_conflicts = "OVERWRITE"
+  }
   enable_aws_load_balancer_controller = true
   enable_aws_for_fluentbit            = true
   enable_aws_cloudwatch_metrics       = true
   enable_fargate_fluentbit            = true
+
+  # Sample application
+  enable_app_2048 = true
 
   tags = local.tags
 }
@@ -162,30 +184,6 @@ module "vpc" {
   }
 
   tags = local.tags
-}
-#endregion
-
-#region Sample App
-###############################################################################
-## Sample App
-###############################################################################
-resource "kubernetes_namespace_v1" "sample_app" {
-  metadata {
-    name = local.sample_app_namespace
-  }
-}
-
-data "kubectl_path_documents" "docs" {
-  pattern = "sample_app.yaml"
-  vars = {
-    name      = "game-2048"
-    namespace = kubernetes_namespace_v1.sample_app.metadata[0].name
-  }
-}
-
-resource "kubectl_manifest" "sample_app" {
-  for_each  = toset(data.kubectl_path_documents.docs.documents)
-  yaml_body = each.value
 }
 #endregion
 
