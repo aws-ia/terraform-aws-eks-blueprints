@@ -393,6 +393,12 @@ variable "enable_sysdig_agent" {
   default     = false
 }
 
+variable "sysdig_agent_helm_config" {
+  description = "Sysdig Helm Chart config"
+  type        = any
+  default     = null
+}
+
 #-----------TETRATE ISTIO-------------
 variable "enable_tetrate_istio" {
   description = "Enable Tetrate Istio add-on"
