@@ -52,10 +52,6 @@ jobs:
       - name: Remove default Terraform
         run: rm -rf $(which terraform)
 
-      - name: Should fail
-        continue-on-error: true
-        run: terraform version
-
       - name: checkout-merge
         if: "contains(github.event_name, 'pull_request')"
         uses: actions/checkout@v3

@@ -95,17 +95,18 @@ resource "aws_launch_template" "this" {
     }
   }
 
+  dynamic "tag_specifications" {
+    for_each = toset(["instance", "volume", "network-interface"])
+
+    content {
+      resource_type = tag_specifications.value
+      tags          = var.tags
+    }
+  }
+
+  tags = var.tags
+
   lifecycle {
     create_before_destroy = true
-  }
-
-  tag_specifications {
-    resource_type = "instance"
-    tags          = length(var.tags) > 0 ? var.tags : { Name = "eks" }
-  }
-
-  tag_specifications {
-    resource_type = "volume"
-    tags          = length(var.tags) > 0 ? var.tags : { Name = "eks-volume" }
   }
 }
