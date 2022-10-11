@@ -67,7 +67,7 @@ locals {
 ## EKS Cluster Provisioning
 ###############################################################################
 module "eks_cluster" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.12.0"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints"
 
   cluster_name    = local.name
   cluster_version = "1.23"
@@ -106,7 +106,7 @@ module "eks_cluster" {
 ## Kubernetes AddOns
 ###############################################################################
 module "addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.12.0"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
 
   eks_cluster_id       = module.eks_cluster.eks_cluster_id
   eks_cluster_endpoint = module.eks_cluster.eks_cluster_endpoint
