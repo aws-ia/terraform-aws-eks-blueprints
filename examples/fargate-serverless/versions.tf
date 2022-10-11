@@ -14,14 +14,6 @@ terraform {
       source  = "hashicorp/helm"
       version = ">= 2.4.1"
     }
-    null = {
-      source  = "hashicorp/null"
-      version = ">= 3.0"
-    }
-    kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.14"
-    }
   }
 
   # ##  Used for end-to-end testing on project; update to suit your needs
