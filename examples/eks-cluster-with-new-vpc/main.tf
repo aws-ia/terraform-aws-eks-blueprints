@@ -105,7 +105,8 @@ module "eks_blueprints_kubernetes_addons" {
       },
     ]
   }
-  enable_cert_manager_csi_driver = true
+  # TODO - requires dependency on `cert-manager` for namespace
+  # enable_cert_manager_csi_driver = true
 
   tags = local.tags
 }

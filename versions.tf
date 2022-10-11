@@ -32,5 +32,3 @@ terraform {
     }
   }
 }
-
-# modify something for CI to run
