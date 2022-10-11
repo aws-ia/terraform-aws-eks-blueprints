@@ -356,7 +356,6 @@ module "sysdig_agent" {
   addon_context     = local.addon_context
 }
 
-
 module "tetrate_istio" {
   # source  = "tetratelabs/tetrate-istio-addon/eksblueprints"
   # version = "0.0.7"
