@@ -36,6 +36,13 @@ module "aws_coredns" {
       image_registry = local.amazon_container_image_registry_uris[data.aws_region.current.name]
     }
   )
+
+  # CoreDNS cluster proportioanl autoscaler
+  enable_cluster_proportional_autoscaler      = var.enable_coredns_cluster_proportional_autoscaler
+  cluster_proportional_autoscaler_helm_config = var.coredns_cluster_proportional_autoscaler_helm_config
+
+  remove_default_coredns_deployment      = var.remove_default_coredns_deployment
+  eks_cluster_certificate_authority_data = data.aws_eks_cluster.eks_cluster.certificate_authority[0].data
 }
 
 module "aws_kube_proxy" {
@@ -278,9 +285,11 @@ module "metrics_server" {
 }
 
 module "ondat" {
-  count             = var.enable_ondat ? 1 : 0
-  source            = "ondat/ondat-addon/eksblueprints"
-  version           = "0.1.1"
+  source  = "ondat/ondat-addon/eksblueprints"
+  version = "0.1.2"
+
+  count = var.enable_ondat ? 1 : 0
+
   helm_config       = var.ondat_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
@@ -339,9 +348,15 @@ module "spark_k8s_operator" {
 }
 
 module "tetrate_istio" {
-  count                = var.enable_tetrate_istio ? 1 : 0
-  source               = "tetratelabs/tetrate-istio-addon/eksblueprints"
-  version              = "0.0.7"
+  # source  = "tetratelabs/tetrate-istio-addon/eksblueprints"
+  # version = "0.0.7"
+
+  # TODO - remove local source and revert to remote once
+  # https://github.com/tetratelabs/terraform-eksblueprints-tetrate-istio-addon/pull/12  is merged
+  source = "./tetrate-istio"
+
+  count = var.enable_tetrate_istio ? 1 : 0
+
   distribution         = var.tetrate_istio_distribution
   distribution_version = var.tetrate_istio_version
   install_base         = var.tetrate_istio_install_base
@@ -369,11 +384,10 @@ module "vault" {
 
   # See https://registry.terraform.io/modules/hashicorp/hashicorp-vault-eks-addon/aws/
   source  = "hashicorp/hashicorp-vault-eks-addon/aws"
-  version = "0.9.0"
+  version = "1.0.0-rc1"
 
   helm_config       = var.vault_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = local.addon_context
 }
 
 module "vpa" {
@@ -639,4 +653,9 @@ module "nvidia_device_plugin" {
   addon_context     = local.addon_context
 }
 
-# whitespace noise
+# Sample app for demo purposes
+module "app_2048" {
+  source = "./app-2048"
+
+  count = var.enable_app_2048 ? 1 : 0
+}
