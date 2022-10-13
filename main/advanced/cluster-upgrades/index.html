@@ -1429,51 +1429,27 @@
 <li>If you are specifying a version for EKS managed addons, you will need to ensure the version used is compatible with the new cluster version, or use a data source to pull the appropriate version. If you are not specifying a version for EKS managed addons, no changes are required since the EKS service will update the default addon version based on the cluster version specified.</li>
 </ol>
 <p>To ensure the correct addon version is used, it is recommended to use the addon version data source which will pull the appropriate version for a given cluster version:</p>
-<div class="highlight"><pre><span></span><code>data &quot;aws_eks_addon_version&quot; &quot;default&quot; {
-  for_each = toset([&quot;coredns&quot;, &quot;aws-ebs-csi-driver&quot;, &quot;kube-proxy&quot;, &quot;vpc-cni&quot;])
-
-  addon_name         = each.value
-  kubernetes_version = &quot;1.21&quot; # ensure this matches whats set on the cluster
-  most_recent        = false # can also set to `true` to use latest version for the specified cluster version
-}
-
-module &quot;eks_blueprints_kubernetes_addons&quot; {
+<div class="highlight"><pre><span></span><code>module &quot;eks_blueprints_kubernetes_addons&quot; {
   # Essential inputs are not shown for brevity
 
   enable_amazon_eks_coredns = true
   amazon_eks_coredns_config = {
-    addon_version            = data.aws_eks_addon_version.default[&quot;coredns&quot;].version
-    resolve_conflicts        = &quot;OVERWRITE&quot;
-    service_account_role_arn = &quot;&quot;
-    additional_iam_policies  = []
-    tags                     = {}
+    most_recent = true
   }
 
   enable_amazon_eks_aws_ebs_csi_driver = true
   amazon_eks_aws_ebs_csi_driver_config = {
-    addon_version            = data.aws_eks_addon_version.default[&quot;aws-ebs-csi-driver&quot;].version
-    resolve_conflicts        = &quot;OVERWRITE&quot;
-    additional_iam_policies  = []
-    service_account_role_arn = &quot;&quot;
-    tags                     = {}
+    most_recent = true
   }
 
   enable_amazon_eks_kube_proxy = true
   amazon_eks_kube_proxy_config = {
-    addon_version            = data.aws_eks_addon_version.default[&quot;kube-proxy&quot;].version
-    resolve_conflicts        = &quot;OVERWRITE&quot;
-    additional_iam_policies  = []
-    service_account_role_arn = &quot;&quot;
-    tags                     = {}
+    most_recent = true
   }
 
   enable_amazon_eks_vpc_cni = true
   amazon_eks_vpc_cni_config = {
-    addon_version            = data.aws_eks_addon_version.default[&quot;vpc-cni&quot;].version
-    resolve_conflicts        = &quot;OVERWRITE&quot;
-    additional_iam_policies  = []
-    service_account_role_arn = &quot;&quot;
-    tags                     = {}
+    most_recent = true
   }
 }
 </code></pre></div>
