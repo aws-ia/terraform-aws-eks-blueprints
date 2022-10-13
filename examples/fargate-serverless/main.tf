@@ -99,14 +99,12 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_amazon_eks_vpc_cni = true
   amazon_eks_vpc_cni_config = {
-    addon_version     = data.aws_eks_addon_version.latest["vpc-cni"].version
-    resolve_conflicts = "OVERWRITE"
+    most_recent = true
   }
 
   enable_amazon_eks_kube_proxy = true
   amazon_eks_kube_proxy_config = {
-    addon_version     = data.aws_eks_addon_version.latest["kube-proxy"].version
-    resolve_conflicts = "OVERWRITE"
+    most_recent = true
   }
 
   enable_self_managed_coredns                    = true
@@ -139,14 +137,6 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   tags = local.tags
-}
-
-data "aws_eks_addon_version" "latest" {
-  for_each = toset(["kube-proxy", "vpc-cni"])
-
-  addon_name         = each.value
-  kubernetes_version = module.eks_blueprints.eks_cluster_version
-  most_recent        = true
 }
 
 #---------------------------------------------------------------
