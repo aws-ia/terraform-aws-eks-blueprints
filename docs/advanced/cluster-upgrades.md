@@ -24,51 +24,27 @@ The current version of the upgrade documentation while writing this [README](htt
 To ensure the correct addon version is used, it is recommended to use the addon version data source which will pull the appropriate version for a given cluster version:
 
 ```hcl-terraform
-data "aws_eks_addon_version" "default" {
-  for_each = toset(["coredns", "aws-ebs-csi-driver", "kube-proxy", "vpc-cni"])
-
-  addon_name         = each.value
-  kubernetes_version = "1.21" # ensure this matches whats set on the cluster
-  most_recent        = false # can also set to `true` to use latest version for the specified cluster version
-}
-
 module "eks_blueprints_kubernetes_addons" {
   # Essential inputs are not shown for brevity
 
   enable_amazon_eks_coredns = true
   amazon_eks_coredns_config = {
-    addon_version            = data.aws_eks_addon_version.default["coredns"].version
-    resolve_conflicts        = "OVERWRITE"
-    service_account_role_arn = ""
-    additional_iam_policies  = []
-    tags                     = {}
+    most_recent = true
   }
 
   enable_amazon_eks_aws_ebs_csi_driver = true
   amazon_eks_aws_ebs_csi_driver_config = {
-    addon_version            = data.aws_eks_addon_version.default["aws-ebs-csi-driver"].version
-    resolve_conflicts        = "OVERWRITE"
-    additional_iam_policies  = []
-    service_account_role_arn = ""
-    tags                     = {}
+    most_recent = true
   }
 
   enable_amazon_eks_kube_proxy = true
   amazon_eks_kube_proxy_config = {
-    addon_version            = data.aws_eks_addon_version.default["kube-proxy"].version
-    resolve_conflicts        = "OVERWRITE"
-    additional_iam_policies  = []
-    service_account_role_arn = ""
-    tags                     = {}
+    most_recent = true
   }
 
   enable_amazon_eks_vpc_cni = true
   amazon_eks_vpc_cni_config = {
-    addon_version            = data.aws_eks_addon_version.default["vpc-cni"].version
-    resolve_conflicts        = "OVERWRITE"
-    additional_iam_policies  = []
-    service_account_role_arn = ""
-    tags                     = {}
+    most_recent = true
   }
 }
 ```

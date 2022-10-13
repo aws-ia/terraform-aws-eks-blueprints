@@ -23,7 +23,7 @@ The following steps will walk you through the deployment of an [example blueprin
 
 ### Clone the repo
 
-```
+```sh
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 ```
 
@@ -31,13 +31,13 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 
 CD into the example directory:
 
-```
+```sh
 cd examples/eks-cluster-with-new-vpc/
 ```
 
 Initialize the working directory with the following:
 
-```
+```sh
 terraform init
 ```
 
@@ -45,7 +45,7 @@ terraform init
 
 Verify the resources that will be created by this execution:
 
-```
+```sh
 terraform plan
 ```
 
@@ -55,33 +55,33 @@ We will leverage Terraform's [target](https://learn.hashicorp.com/tutorials/terr
 
 **Deploy the VPC**. This step will take roughly 3 minutes to complete.
 
-```
+```sh
 terraform apply -target="module.vpc"
 ```
 
 **Deploy the EKS cluster**. This step will take roughly 14 minutes to complete.
 
-```
+```sh
 terraform apply -target="module.eks_blueprints"
 ```
 
 **Deploy the add-ons**. This step will take rough 5 minutes to complete.
 
-```
-terraform apply -target="module.eks_blueprints_kubernetes_addons"
+```sh
+terraform apply
 ```
 
 ## Configure kubectl
 
 Terraform output will display a command in your console that you can use to bootstrap your local `kubeconfig`.
 
-```
+```sh
 configure_kubectl = "aws eks --region <region> update-kubeconfig --name <cluster-name>"
 ```
 
 Run the command in your terminal.
 
-```
+```sh
 aws eks --region <region> update-kubeconfig --name <cluster-name>
 ```
 
@@ -89,7 +89,7 @@ aws eks --region <region> update-kubeconfig --name <cluster-name>
 
 ### List worker nodes
 
-```
+```sh
 kubectl get nodes
 ```
 
@@ -104,7 +104,7 @@ ip-10-0-12-48.us-west-2.compute.internal    Ready    <none>   4h18m   v1.21.5-ek
 
 ### List pods
 
-```
+```sh
 kubectl get pods -n kube-system
 ```
 
@@ -130,20 +130,8 @@ metrics-server-694d47d564-hzd8h                             1/1     Running   1 
 
 To clean up your environment, destroy the Terraform modules in reverse order.
 
-Destroy the add-ons.
-
-```
-terraform destroy -target="module.eks_blueprints_kubernetes_addons"
-```
-
-Destroy the EKS cluster.
-
-```
-terraform destroy -target="module.eks_blueprints"
-```
-
-Destroy the VPC.
-
-```
-terraform destroy -target="module.vpc"
+```sh
+terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
+terraform destroy -target="module.eks_blueprints" -auto-approve
+terraform destroy -auto-approve
 ```

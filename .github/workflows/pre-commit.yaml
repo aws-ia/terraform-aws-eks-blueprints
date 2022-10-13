@@ -44,10 +44,6 @@ jobs:
       - name: Remove default Terraform
         run: rm -rf $(which terraform)
 
-      - name: Should fail
-        continue-on-error: true
-        run: terraform version
-
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -96,9 +92,6 @@ jobs:
           terraform-version: ${{ steps.minMax.outputs.minVersion }}
           args: 'terraform_validate --color=always --show-diff-on-failure --files $(ls *.tf)'
 
-      - if: steps.changes.outputs.src== 'true'
-        run: terraform version
-
   preCommitMaxVersion:
     name: Max TF pre-commit
     runs-on: ubuntu-latest
@@ -106,10 +99,6 @@ jobs:
     steps:
       - name: Remove default Terraform
         run: rm -rf $(which terraform)
-
-      - name: Should fail
-        continue-on-error: true
-        run: terraform version
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -142,14 +131,10 @@ jobs:
         uses: clowdhaus/terraform-min-max@v1.0.7
         if: steps.changes.outputs.src== 'true'
 
-      # TODO - remove hardcoded version once optional attributes are resolved/removed
-      - name: Pre-commit Terraform 1.2.9 # ${{ steps.minMax.outputs.maxVersion }}
+      - name: Pre-commit Terraform ${{ steps.minMax.outputs.maxVersion }}
         uses: clowdhaus/terraform-composite-actions/pre-commit@v1.6.0
         if: steps.changes.outputs.src== 'true'
         with:
-          terraform-version: 1.2.9 # ${{ steps.minMax.outputs.maxVersion }}
+          terraform-version: ${{ steps.minMax.outputs.maxVersion }}
           terraform-docs-version: ${{ env.TERRAFORM_DOCS_VERSION }}
           tflint-version: ${{ env.TFLINT_VERSION }}
-
-      - if: steps.changes.outputs.src== 'true'
-        run: terraform version

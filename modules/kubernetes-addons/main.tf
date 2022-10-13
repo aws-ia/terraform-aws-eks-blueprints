@@ -1,11 +1,19 @@
 #-----------------AWS Managed EKS Add-ons----------------------
 
 module "aws_vpc_cni" {
-  count         = var.enable_amazon_eks_vpc_cni ? 1 : 0
-  source        = "./aws-vpc-cni"
-  addon_config  = var.amazon_eks_vpc_cni_config
+  source = "./aws-vpc-cni"
+
+  count = var.enable_amazon_eks_vpc_cni ? 1 : 0
+
+  enable_ipv6 = var.enable_ipv6
+  addon_config = merge(
+    {
+      kubernetes_version = local.eks_cluster_version
+    },
+    var.amazon_eks_vpc_cni_config,
+  )
+
   addon_context = local.addon_context
-  enable_ipv6   = var.enable_ipv6
 }
 
 module "aws_coredns" {
@@ -36,12 +44,27 @@ module "aws_coredns" {
       image_registry = local.amazon_container_image_registry_uris[data.aws_region.current.name]
     }
   )
+
+  # CoreDNS cluster proportioanl autoscaler
+  enable_cluster_proportional_autoscaler      = var.enable_coredns_cluster_proportional_autoscaler
+  cluster_proportional_autoscaler_helm_config = var.coredns_cluster_proportional_autoscaler_helm_config
+
+  remove_default_coredns_deployment      = var.remove_default_coredns_deployment
+  eks_cluster_certificate_authority_data = data.aws_eks_cluster.eks_cluster.certificate_authority[0].data
 }
 
 module "aws_kube_proxy" {
-  count         = var.enable_amazon_eks_kube_proxy ? 1 : 0
-  source        = "./aws-kube-proxy"
-  addon_config  = var.amazon_eks_kube_proxy_config
+  source = "./aws-kube-proxy"
+
+  count = var.enable_amazon_eks_kube_proxy ? 1 : 0
+
+  addon_config = merge(
+    {
+      kubernetes_version = local.eks_cluster_version
+    },
+    var.amazon_eks_kube_proxy_config,
+  )
+
   addon_context = local.addon_context
 }
 
@@ -52,12 +75,23 @@ module "aws_ebs_csi_driver" {
 
   # Amazon EKS aws-ebs-csi-driver addon
   enable_amazon_eks_aws_ebs_csi_driver = var.enable_amazon_eks_aws_ebs_csi_driver
-  addon_config                         = var.amazon_eks_aws_ebs_csi_driver_config
-  addon_context                        = local.addon_context
+  addon_config = merge(
+    {
+      kubernetes_version = local.eks_cluster_version
+    },
+    var.amazon_eks_aws_ebs_csi_driver_config,
+  )
+
+  addon_context = local.addon_context
 
   # Self-managed aws-ebs-csi-driver addon via Helm chart
   enable_self_managed_aws_ebs_csi_driver = var.enable_self_managed_aws_ebs_csi_driver
-  helm_config                            = var.self_managed_aws_ebs_csi_driver_helm_config
+  helm_config = merge(
+    {
+      kubernetes_version = local.eks_cluster_version
+    },
+    var.self_managed_aws_ebs_csi_driver_helm_config,
+  )
 }
 
 #-----------------Kubernetes Add-ons----------------------
@@ -278,9 +312,11 @@ module "metrics_server" {
 }
 
 module "ondat" {
-  count             = var.enable_ondat ? 1 : 0
-  source            = "ondat/ondat-addon/eksblueprints"
-  version           = "0.1.1"
+  source  = "ondat/ondat-addon/eksblueprints"
+  version = "0.1.2"
+
+  count = var.enable_ondat ? 1 : 0
+
   helm_config       = var.ondat_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
@@ -301,6 +337,13 @@ module "kube_prometheus_stack" {
   addon_context = local.addon_context
 }
 
+module "portworx" {
+  count         = var.enable_portworx ? 1 : 0
+  source        = "portworx/portworx-addon/eksblueprints"
+  version       = "0.0.6"
+  helm_config   = var.portworx_helm_config
+  addon_context = local.addon_context
+}
 module "prometheus" {
   count       = var.enable_prometheus ? 1 : 0
   source      = "./prometheus"
@@ -339,9 +382,15 @@ module "spark_k8s_operator" {
 }
 
 module "tetrate_istio" {
-  count                = var.enable_tetrate_istio ? 1 : 0
-  source               = "tetratelabs/tetrate-istio-addon/eksblueprints"
-  version              = "0.0.7"
+  # source  = "tetratelabs/tetrate-istio-addon/eksblueprints"
+  # version = "0.0.7"
+
+  # TODO - remove local source and revert to remote once
+  # https://github.com/tetratelabs/terraform-eksblueprints-tetrate-istio-addon/pull/12  is merged
+  source = "./tetrate-istio"
+
+  count = var.enable_tetrate_istio ? 1 : 0
+
   distribution         = var.tetrate_istio_distribution
   distribution_version = var.tetrate_istio_version
   install_base         = var.tetrate_istio_install_base
@@ -369,11 +418,10 @@ module "vault" {
 
   # See https://registry.terraform.io/modules/hashicorp/hashicorp-vault-eks-addon/aws/
   source  = "hashicorp/hashicorp-vault-eks-addon/aws"
-  version = "0.9.0"
+  version = "1.0.0-rc1"
 
   helm_config       = var.vault_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = local.addon_context
 }
 
 module "vpa" {
@@ -639,4 +687,9 @@ module "nvidia_device_plugin" {
   addon_context     = local.addon_context
 }
 
-# whitespace noise
+# Sample app for demo purposes
+module "app_2048" {
+  source = "./app-2048"
+
+  count = var.enable_app_2048 ? 1 : 0
+}
