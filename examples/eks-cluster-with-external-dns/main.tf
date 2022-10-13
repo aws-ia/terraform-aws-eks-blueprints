@@ -25,14 +25,27 @@ data "aws_acm_certificate" "issued" {
   statuses = ["ISSUED"]
 }
 
+data "aws_route53_zone" "sub" {
+  name = var.eks_cluster_domain
+}
+
 data "aws_availability_zones" "available" {}
 
 locals {
   name   = "dns"
-  region = "us-west-2"
+  region = "eu-west-1"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+
+  env                    = "dev"
+  #workload_repo_url      = "https://github.com/seb-tmp/eks-blueprints-workloads.git"
+  #workload_repo_revision = "blue-green-demo"
+  workload_repo_url      = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+  workload_repo_revision = "main"
+  workload_repo_path     = "envs/dev"
+
+  route53_weight = "100"
 
   tags = {
     Blueprint  = local.name
@@ -75,14 +88,26 @@ module "eks_blueprints_kubernetes_addons" {
   eks_cluster_domain   = var.eks_cluster_domain
 
   enable_argocd = true
+
   argocd_applications = {
     workloads = {
-      path     = "envs/dev"
-      repo_url = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+      path               = local.workload_repo_path
+      repo_url           = local.workload_repo_url
+      target_revision    = local.workload_repo_revision
+      add_on_application = false
       values = {
         spec = {
+          source = {
+            repoURL        = local.workload_repo_url
+            targetRevision = local.workload_repo_revision
+          }
+          blueprint   = "terraform"
+          clusterName = local.name
+          env         = local.env
           ingress = {
-            host = var.eks_cluster_domain
+            type           = "alb"
+            host           = var.eks_cluster_domain
+            route53_weight = local.route53_weight # <-- You can control the weight of the route53 weighted records between clusters
           }
         }
       }
@@ -99,6 +124,12 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_aws_load_balancer_controller = true
   enable_external_dns                 = true
+  external_dns_helm_config = {
+    values = [templatefile("${path.module}/external_dns-values.yaml", {
+      txtOwnerId   = local.name
+      zoneIdFilter = var.eks_cluster_domain
+    })]
+  }
 
   tags = local.tags
 }
