@@ -46,5 +46,4 @@ For more details checkout [Karpenter](https://karpenter.sh/docs/getting-started/
 | Name | Description |
 |------|-------------|
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
-
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

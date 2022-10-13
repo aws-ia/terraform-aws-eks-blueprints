@@ -17,7 +17,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "oci://public.ecr.aws/karpenter"
-    version     = "v0.17.0"
+    version     = "v0.18.0"
     namespace   = local.name
     timeout     = "300"
     values      = local.default_helm_values
