@@ -48,8 +48,8 @@ locals {
     serviceAccountName = local.service_account_name
   }
 
-   argocd_gitops_config = merge(
-      local.default_argocd_gitops_config,
-      var.helm_config
-   )
+  argocd_gitops_config = merge(
+    local.default_argocd_gitops_config,
+    var.helm_config
+  )
 }

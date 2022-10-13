@@ -39,10 +39,13 @@ locals {
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   env                    = "dev"
-  #workload_repo_url      = "https://github.com/seb-tmp/eks-blueprints-workloads.git"
-  #workload_repo_revision = "blue-green-demo"
-  workload_repo_url      = "https://github.com/aws-samples/eks-blueprints-workloads.git"
-  workload_repo_revision = "main"
+
+  # Can be changed to default aws-samples configuration once PR https://github.com/aws-samples/eks-blueprints-workloads/pull/22 is merged
+  workload_repo_url      = "https://github.com/seb-tmp/eks-blueprints-workloads.git"
+  workload_repo_revision = "blue-green-demo"
+  #workload_repo_url      = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+  #workload_repo_revision = "main"
+
   workload_repo_path     = "envs/dev"
 
   route53_weight = "100"
