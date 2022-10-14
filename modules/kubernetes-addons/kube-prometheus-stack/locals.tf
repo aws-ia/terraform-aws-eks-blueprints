@@ -1,5 +1,7 @@
 locals {
-  name = "kube-prometheus-stack"
+  name             = "kube-prometheus-stack"
+  namespace_name   = try(var.helm_config.namespace, "prometheus")
+  create_namespace = try(var.helm_config.create_namespace, true) && local.namespace_name != "kube-system"
   default_helm_config = {
     name        = local.name
     chart       = local.name
