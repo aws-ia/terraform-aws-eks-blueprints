@@ -25,22 +25,6 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 
-data "aws_eks_addon_version" "latest" {
-  for_each = toset(["vpc-cni", "coredns"])
-
-  addon_name         = each.value
-  kubernetes_version = module.eks_blueprints.eks_cluster_version
-  most_recent        = true
-}
-
-data "aws_eks_addon_version" "default" {
-  for_each = toset(["kube-proxy"])
-
-  addon_name         = each.value
-  kubernetes_version = module.eks_blueprints.eks_cluster_version
-  most_recent        = false
-}
-
 locals {
   name          = var.name
   region        = var.region
@@ -224,22 +208,15 @@ module "eks_blueprints_kubernetes_addons" {
   # EKS Addons
   enable_amazon_eks_vpc_cni = true
   amazon_eks_vpc_cni_config = {
-    addon_version     = data.aws_eks_addon_version.latest["vpc-cni"].version
-    resolve_conflicts = "OVERWRITE"
+    most_recent = true
   }
 
   enable_amazon_eks_coredns = true
   amazon_eks_coredns_config = {
-    addon_version     = data.aws_eks_addon_version.latest["coredns"].version
-    resolve_conflicts = "OVERWRITE"
+    most_recent = true
   }
 
-  enable_amazon_eks_kube_proxy = true
-  amazon_eks_kube_proxy_config = {
-    addon_version     = data.aws_eks_addon_version.default["kube-proxy"].version
-    resolve_conflicts = "OVERWRITE"
-  }
-
+  enable_amazon_eks_kube_proxy         = true
   enable_amazon_eks_aws_ebs_csi_driver = true
 
   #---------------------------------------------------------------

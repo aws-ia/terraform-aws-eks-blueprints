@@ -11,10 +11,11 @@ def get_examples():
     exclude = {
         'examples/eks-cluster-with-external-dns',  # excluded until Rout53 is setup
         'examples/ci-cd/gitlab-ci-cd',  # excluded since GitLab auth, backend, etc. required
-        'examples/fully-private-eks-cluster/vpc', # skipping until issue #711 is addressed
+        'examples/fully-private-eks-cluster/vpc',  # skipping until issue #711 is addressed
         'examples/fully-private-eks-cluster/eks',
         'examples/fully-private-eks-cluster/add-ons',
-        'examples/ai-ml/ray' # excluded until #887 is fixed
+        'examples/ai-ml/ray',  # excluded until #887 is fixed
+        'examples/portworx',  # excluded due to policy not known at plan/apply time
     }
 
     projects = {

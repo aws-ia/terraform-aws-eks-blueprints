@@ -1246,6 +1246,20 @@ variable "gatekeeper_helm_config" {
 }
 
 
+
+#-----------Kubernetes Portworx ADDON-------------
+variable "enable_portworx" {
+  description = "Enable Kubernetes Dashboard add-on"
+  type        = bool
+  default     = false
+}
+
+variable "portworx_helm_config" {
+  description = "Kubernetes Portworx Helm Chart config"
+  type        = any
+  default     = null
+}
+
 #-----------Local volume provisioner ADDON-------------
 variable "enable_local_volume_provisioner" {
   description = "Enable Local volume provisioner add-on"

@@ -16,8 +16,8 @@ locals {
   default_helm_config = {
     name        = local.name
     chart       = local.name
-    repository  = "https://charts.karpenter.sh"
-    version     = "0.16.2"
+    repository  = "oci://public.ecr.aws/karpenter"
+    version     = "v0.18.0"
     namespace   = local.name
     timeout     = "300"
     values      = local.default_helm_values

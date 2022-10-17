@@ -1,6 +1,5 @@
 provider "aws" {
   region = var.region
-  alias  = "default"
 }
 
 provider "kubernetes" {
@@ -20,8 +19,12 @@ provider "helm" {
   }
 }
 
-locals {
-  cluster_version = var.cluster_version
+data "aws_eks_cluster" "cluster" {
+  name = var.eks_cluster_id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = var.eks_cluster_id
 }
 
 module "eks_blueprints_kubernetes_addons" {
@@ -32,29 +35,9 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = replace(data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer, "https://", "")
   eks_cluster_version  = data.aws_eks_cluster.cluster.version
 
-
   # EKS Addons
-  enable_amazon_eks_vpc_cni = true
-  amazon_eks_vpc_cni_config = {
-    addon_version     = data.aws_eks_addon_version.latest["vpc-cni"].version
-    resolve_conflicts = "OVERWRITE"
-  }
-
-  enable_amazon_eks_coredns = true
-  amazon_eks_coredns_config = {
-    addon_version     = data.aws_eks_addon_version.latest["coredns"].version
-    resolve_conflicts = "OVERWRITE"
-  }
-
-  enable_amazon_eks_kube_proxy = true
-  amazon_eks_kube_proxy_config = {
-    addon_version     = data.aws_eks_addon_version.latest["kube-proxy"].version
-    resolve_conflicts = "OVERWRITE"
-  }
-
+  enable_amazon_eks_vpc_cni            = true
+  enable_amazon_eks_coredns            = true
+  enable_amazon_eks_kube_proxy         = true
   enable_amazon_eks_aws_ebs_csi_driver = true
-  amazon_eks_aws_ebs_csi_driver_config = {
-    addon_version     = data.aws_eks_addon_version.latest["aws-ebs-csi-driver"].version
-    resolve_conflicts = "OVERWRITE"
-  }
 }
