@@ -1069,11 +1069,6 @@ variable "nops_irsa_policies" {
   type        = list(string)
   default     = []
 }
-
-variable "app_nops_k8s_collector_aws_account_number" {
-  description = "AWS account number for nOps"
-  type        = number
-}
 variable "app_nops_k8s_collector_api_key" {
   description = "API Key of nOps"
   type        = string

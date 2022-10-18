@@ -248,7 +248,6 @@
 | <a name="input_metrics_server_helm_config"></a> [metrics\_server\_helm\_config](#input\_metrics\_server\_helm\_config) | Metrics Server Helm Chart config | `any` | `{}` | no |
 | <a name="input_nops_helm_config"></a> [nops\_helm\_config](#input\_nops\_helm\_config) | Nops k8s agent Helm Chart config | `any` | `{}` | no |
 | <a name="input_nops_irsa_policies"></a> [nops\_irsa\_policies](#input\_nops\_irsa\_policies) | IAM policy ARNs for nOps IRSA | `list(string)` | `[]` | no |
-| <a name="input_app_nops_k8s_collector_aws_account_number"></a> [app\_nops\_k8s\_collector\_aws\_account\_number](#input\app\_nops\_k8s\_collector\_aws\_account\_number) | AWS account number for nOps| `number` | `{}`| yes |
 | <a name="input_app_nops_k8s_collector_api_key"></a> [app\_nops\_k8s\_collector\_api\_key](#input\app\_nops\_k8s\_collector\_api\_key) | API Key of nOps| `string` | `""` | yes |
 | <a name="input_app_prometheus_server_endpoint"></a> [app\_prometheus\_server\_endpoint](#input\app\_prometheus\_server\_endpoint) | Prometheus server endpoint| `string` | `""` | yes |
 | <a name="input_app_nops_k8s_agent_clusterid"></a> [app\_nops\_k8s\_agent\_clusterid](#input\app\_nops\_k8s\_agent\_clusterid) | NOPS agent cluster id| `any` | `{}` | yes |
