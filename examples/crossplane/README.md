@@ -101,10 +101,10 @@ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
 kubectl get nodes
 ```
 
-#### Step 7: List all the pods running in `crossplane` namespace
+#### Step 7: List all the pods running in `crossplane-system` namespace
 
 ```sh
-kubectl get pods -n crossplane
+kubectl get pods -n crossplane-system
 ```
 
 ### AWS Provider for Crossplane
