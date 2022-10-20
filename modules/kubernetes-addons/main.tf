@@ -611,6 +611,14 @@ module "kubecost" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
+  
+module "kong" {
+  count             = var.enable_kong ? 1 : 0
+  source            = "./kong"
+  helm_config       = var.kong_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
 
 module "kyverno" {
   source = "./kyverno"
