@@ -1140,6 +1140,21 @@ variable "kubecost_helm_config" {
   default     = {}
 }
 
+#-----------Kong-Ingress-------------
+variable "enable_kong" {
+  description = "Enable Kong Ingress add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kong_helm_config" {
+  description = "Kong Ingress Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+
+
 #-----------Kyverno ADDON-------------
 
 variable "enable_kyverno" {
