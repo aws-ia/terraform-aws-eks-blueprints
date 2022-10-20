@@ -381,6 +381,15 @@ module "spark_k8s_operator" {
   addon_context     = local.addon_context
 }
 
+module "sysdig_agent" {
+  count             = var.enable_sysdig_agent ? 1 : 0
+  source            = "sysdiglabs/sysdig-addon/eksblueprints"
+  version           = "0.0.1"
+  helm_config       = var.sysdig_agent_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "tetrate_istio" {
   # source  = "tetratelabs/tetrate-istio-addon/eksblueprints"
   # version = "0.0.7"
