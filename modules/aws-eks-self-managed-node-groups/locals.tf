@@ -12,12 +12,14 @@ locals {
     capacity_rebalance       = false
     spot_allocation_strategy = "capacity-optimized-prioritized"
     launch_template_os       = "amazonlinux2eks" # amazonlinux2eks/bottlerocket/windows # Used to identify the launch template
+    windows_server_version   = "2022"            # 2016/2019/2022
     pre_userdata             = ""
     post_userdata            = ""
     kubelet_extra_args       = ""
     bootstrap_extra_args     = ""
     enable_monitoring        = false
     public_ip                = false
+
 
     # IAM Roles for Nodegroup
     create_iam_role           = true
@@ -49,12 +51,14 @@ locals {
     var.self_managed_ng
   )
 
+  # WINDOWS CONFIGURATION
   enable_windows_support = local.self_managed_node_group["launch_template_os"] == "windows"
+  windows_server_version = local.self_managed_node_group["launch_template_os"]
 
   predefined_ami_names = {
     amazonlinux2eks = "amazon-eks-node-${var.context.cluster_version}-*"
     bottlerocket    = "bottlerocket-aws-k8s-${var.context.cluster_version}-x86_64-*"
-    windows         = "Windows_Server-2019-English-Core-EKS_Optimized-${var.context.cluster_version}-*"
+    windows         = "Windows_Server-${local.windows_server_version}-English-Core-EKS_Optimized-${var.context.cluster_version}-*"
   }
 
   predefined_ami_types  = keys(local.predefined_ami_names)
