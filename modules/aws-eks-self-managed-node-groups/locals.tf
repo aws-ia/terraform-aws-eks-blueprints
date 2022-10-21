@@ -59,6 +59,7 @@ locals {
 
   predefined_ami_types  = keys(local.predefined_ami_names)
   default_custom_ami_id = contains(local.predefined_ami_types, local.self_managed_node_group["launch_template_os"]) ? data.aws_ami.predefined[local.self_managed_node_group["launch_template_os"]].id : ""
+  # add logic to decide the default_custom_ami_id based on another variable windows_server_version
   custom_ami_id         = local.self_managed_node_group["custom_ami_id"] == "" ? local.default_custom_ami_id : local.self_managed_node_group["custom_ami_id"]
 
   policy_arn_prefix = "arn:${var.context.aws_partition_id}:iam::aws:policy"
