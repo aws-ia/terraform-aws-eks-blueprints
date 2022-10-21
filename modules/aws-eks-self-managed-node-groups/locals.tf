@@ -53,7 +53,7 @@ locals {
 
   # WINDOWS CONFIGURATION
   enable_windows_support = local.self_managed_node_group["launch_template_os"] == "windows"
-  windows_server_version = local.self_managed_node_group["launch_template_os"]
+  windows_server_version = local.self_managed_node_group["windows_server_version"]
 
   predefined_ami_names = {
     amazonlinux2eks = "amazon-eks-node-${var.context.cluster_version}-*"
