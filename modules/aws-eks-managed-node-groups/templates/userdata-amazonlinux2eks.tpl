@@ -6,6 +6,9 @@ Content-Type: text/x-shellscript; charset="us-ascii"
 #!/bin/bash
 set -ex
 
+# Fetch my instance id to be referenced later in bootstrap.sh call
+INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+
 %{ if length(pre_userdata) > 0 ~}
 # User-supplied pre userdata
 ${pre_userdata}
@@ -35,7 +38,9 @@ export SERVICE_IPV6_CIDR=${service_ipv6_cidr}
 %{ if length(custom_ami_id) > 0 ~}
 B64_CLUSTER_CA=${cluster_ca_base64}
 API_SERVER_URL=${cluster_endpoint}
-/etc/eks/bootstrap.sh ${eks_cluster_id} --kubelet-extra-args "${kubelet_extra_args}" ${bootstrap_extra_args}
+/etc/eks/bootstrap.sh ${eks_cluster_id} --kubelet-extra-args \
+    "${kubelet_extra_args/--node-labels=/--node-labels=instance=\$INSTANCE_ID,}" \
+    ${bootstrap_extra_args}
 %{ endif ~}
 %{ if length(post_userdata) > 0 ~}
 # User-supplied post userdata
