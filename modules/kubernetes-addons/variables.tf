@@ -1219,6 +1219,12 @@ variable "cilium_helm_config" {
 
 }
 
+variable "cilium_enable_wireguard" {
+  description = "Enable wiregaurd encryption"
+  type        = bool
+  default     = false 
+}
+
 #-----------Gatekeeper ADDON-------------
 variable "enable_gatekeeper" {
   description = "Enable Gatekeeper add-on"
