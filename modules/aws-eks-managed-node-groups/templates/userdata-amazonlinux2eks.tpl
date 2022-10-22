@@ -3,11 +3,9 @@ Content-Type: multipart/mixed; boundary="//"
 
 --//
 Content-Type: text/x-shellscript; charset="us-ascii"
-#!/bin/bash
-set -ex
-
-# Fetch my instance id to be referenced later in bootstrap.sh call
-INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+#!/bin/bash -xe
+# Log stdout/err to file and console
+exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
 %{ if length(pre_userdata) > 0 ~}
 # User-supplied pre userdata
@@ -38,6 +36,8 @@ export SERVICE_IPV6_CIDR=${service_ipv6_cidr}
 %{ if length(custom_ami_id) > 0 ~}
 B64_CLUSTER_CA=${cluster_ca_base64}
 API_SERVER_URL=${cluster_endpoint}
+EC2_METADATA_API_TOKEN=$(curl --silent -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $EC2_METADATA_API_TOKEN" --silent http://169.254.169.254/latest/meta-data/instance-id)
 /etc/eks/bootstrap.sh ${eks_cluster_id} --kubelet-extra-args \\
     "$${kubelet_extra_args/--node-labels=/--node-labels=instance=$${INSTANCE_ID},}" \\
     ${bootstrap_extra_args}
