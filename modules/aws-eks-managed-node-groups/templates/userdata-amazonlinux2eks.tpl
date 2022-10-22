@@ -39,7 +39,7 @@ export SERVICE_IPV6_CIDR=${service_ipv6_cidr}
 B64_CLUSTER_CA=${cluster_ca_base64}
 API_SERVER_URL=${cluster_endpoint}
 /etc/eks/bootstrap.sh ${eks_cluster_id} --kubelet-extra-args \\
-    "${kubelet_extra_args/--node-labels=/--node-labels=instance=$${INSTANCE_ID},}" \\
+    "$${kubelet_extra_args/--node-labels=/--node-labels=instance=$${INSTANCE_ID},}" \\
     ${bootstrap_extra_args}
 %{ endif ~}
 %{ if length(post_userdata) > 0 ~}
