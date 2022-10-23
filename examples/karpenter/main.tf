@@ -51,8 +51,9 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 18.30"
 
-  cluster_name    = local.name
-  cluster_version = "1.23"
+  cluster_name              = local.name
+  cluster_version           = "1.23"
+  cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -96,7 +97,23 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_amazon_eks_aws_ebs_csi_driver = true
 
-  enable_karpenter                    = true
+  enable_karpenter = true
+  karpenter_helm_config = {
+    set = [
+      {
+        name  = "clusterName"
+        value = module.eks.cluster_id
+      },
+      {
+        name  = "clusterEndpoint"
+        value = module.eks.cluster_endpoint
+      },
+      {
+        name  = "aws.defaultInstanceProfile"
+        value = aws_iam_instance_profile.karpenter.name
+      }
+    ]
+  }
   enable_aws_node_termination_handler = true
   enable_kubecost                     = true
 
@@ -110,14 +127,12 @@ resource "aws_iam_instance_profile" "karpenter" {
   tags = local.tags
 }
 
-# Deploying default provisioner and default-lt (using launch template) for Karpenter autoscaler
 data "kubectl_path_documents" "karpenter_provisioners" {
-  pattern = "${path.module}/provisioners/default_provisioner*.yaml" # without launch template
+  pattern = "${path.module}/provisioners/*_provisioner.yaml"
   vars = {
-    azs                     = join(",", local.azs)
-    iam-instance-profile-id = aws_iam_instance_profile.karpenter.id
-    eks-cluster-id          = local.name
-    eks-vpc_name            = local.name
+    azs            = join(",", local.azs)
+    eks-cluster-id = local.name
+    eks-vpc_name   = local.name
   }
 }
 

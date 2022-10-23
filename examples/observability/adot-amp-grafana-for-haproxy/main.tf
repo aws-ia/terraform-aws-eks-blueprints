@@ -28,7 +28,7 @@ data "aws_eks_cluster_auth" "this" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = basename(path.cwd)
+  name   = "adot-haproxy"
   region = var.aws_region
 
   vpc_cidr = "10.0.0.0/16"
@@ -48,8 +48,9 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 18.30"
 
-  cluster_name    = local.name
-  cluster_version = "1.23"
+  cluster_name              = local.name
+  cluster_version           = "1.23"
+  cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets

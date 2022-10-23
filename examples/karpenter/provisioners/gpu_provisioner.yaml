@@ -12,7 +12,10 @@ spec:
       value: true
       effect: “NoSchedule”
   provider:
-    instanceProfile: ${iam-instance-profile-id}
+    subnetSelector:
+      Name: "${eks-vpc_name}-private*"
+    securityGroupSelector:
+      karpenter.sh/discovery/${eks-cluster-id}: '${eks-cluster-id}'
   labels:
     type: karpenter
     provisioner: gpu

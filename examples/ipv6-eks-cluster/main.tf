@@ -43,8 +43,9 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 18.30"
 
-  cluster_name    = local.name
-  cluster_version = "1.23"
+  cluster_name              = local.name
+  cluster_version           = "1.23"
+  cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
   # IPV6
   cluster_ip_family          = "ipv6"

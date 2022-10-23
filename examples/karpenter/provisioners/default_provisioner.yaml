@@ -17,7 +17,6 @@ spec:
     resources:
       cpu: 1000
   provider:
-    instanceProfile: ${iam-instance-profile-id}
     subnetSelector:
       Name: "${eks-vpc_name}-private*"
     securityGroupSelector:
