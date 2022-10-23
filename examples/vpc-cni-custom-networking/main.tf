@@ -3,39 +3,36 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
 
 provider "kubectl" {
   apply_retry_count      = 10
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   load_config_file       = false
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
+  name = module.eks.cluster_id
 }
 
-data "aws_caller_identity" "current" {}
 data "aws_availability_zones" "available" {}
 
 locals {
   name   = basename(path.cwd)
   region = "us-west-2"
-
-  cluster_version = "1.23"
 
   azs                = slice(data.aws_availability_zones.available.names, 0, 3)
   vpc_cidr           = "10.0.0.0/16"
@@ -51,49 +48,53 @@ locals {
 # EKS Blueprints
 #---------------------------------------------------------------
 
-module "eks_blueprints" {
-  source = "../.."
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 18.30"
 
   cluster_name    = local.name
-  cluster_version = local.cluster_version
+  cluster_version = "1.23"
 
-  vpc_id                   = module.vpc.vpc_id
-  private_subnet_ids       = slice(module.vpc.private_subnets, 0, 3)
-  control_plane_subnet_ids = module.vpc.intra_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
-  # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/485
-  # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/494
-  cluster_kms_key_additional_admin_arns = [data.aws_caller_identity.current.arn]
-
-  managed_node_groups = {
-    custom_networking = {
-      node_group_name = "custom-net"
+  eks_managed_node_groups = {
+    default = {
+      instance_types = ["m5.large"]
 
       min_size     = 1
       max_size     = 3
-      desired_size = 2
-
-      custom_ami_id  = data.aws_ssm_parameter.eks_optimized_ami.value
-      instance_types = ["m5.xlarge"]
-
-      create_launch_template = true
-      launch_template_os     = "amazonlinux2eks"
+      desired_size = 1
 
       # https://docs.aws.amazon.com/eks/latest/userguide/choosing-instance-type.html#determine-max-pods
-      pre_userdata = <<-EOT
+      # These settings opt out of the default behavior and use the maximum number of pods, with a cap of 110 due to
+      # Kubernetes guidance https://kubernetes.io/docs/setup/best-practices/cluster-large/
+      # See more info here https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
+      # See issue https://github.com/awslabs/amazon-eks-ami/issues/844
+      pre_bootstrap_user_data = <<-EOT
+        #!/bin/bash
+        set -ex
+
         MAX_PODS=$(/etc/eks/max-pods-calculator.sh \
         --instance-type-from-imds \
         --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} \
         --cni-prefix-delegation-enabled \
         --cni-custom-networking-enabled \
         )
+
+        cat <<-EOF > /etc/profile.d/bootstrap.sh
+        export CONTAINER_RUNTIME="containerd"
+        export USE_MAX_PODS=false
+        export KUBELET_EXTRA_ARGS="--max-pods=$${MAX_PODS}"
+        EOF
+
+        # Source extra environment variables in bootstrap script
+        sed -i '/^set -o errexit/a\\nsource /etc/profile.d/bootstrap.sh' /etc/eks/bootstrap.sh
       EOT
 
-      # These settings opt out of the default behavior and use the maximum number of pods, with a cap of 110 due to
-      # Kubernetes guidance https://kubernetes.io/docs/setup/best-practices/cluster-large/
-      # See more info here https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
-      kubelet_extra_args   = "--max-pods=$${MAX_PODS}"
-      bootstrap_extra_args = "--use-max-pods false"
+      update_config = {
+        max_unavailable_percentage = 33
+      }
     }
   }
 
@@ -103,10 +104,10 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
-  eks_oidc_provider    = module.eks_blueprints.oidc_provider
-  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
+  eks_cluster_id       = module.eks.cluster_id
+  eks_cluster_endpoint = module.eks.cluster_endpoint
+  eks_oidc_provider    = module.eks.oidc_provider
+  eks_cluster_version  = module.eks.cluster_version
 
   enable_amazon_eks_vpc_cni = true
   amazon_eks_vpc_cni_config = {
@@ -129,7 +130,7 @@ data "aws_eks_addon_version" "latest" {
   for_each = toset(["vpc-cni"])
 
   addon_name         = each.value
-  kubernetes_version = module.eks_blueprints.eks_cluster_version
+  kubernetes_version = module.eks.cluster_version
   most_recent        = true
 }
 
@@ -143,16 +144,16 @@ locals {
     kind            = "Config"
     current-context = "terraform"
     clusters = [{
-      name = module.eks_blueprints.eks_cluster_id
+      name = module.eks.cluster_id
       cluster = {
-        certificate-authority-data = module.eks_blueprints.eks_cluster_certificate_authority_data
-        server                     = module.eks_blueprints.eks_cluster_endpoint
+        certificate-authority-data = module.eks.cluster_certificate_authority_data
+        server                     = module.eks.cluster_endpoint
       }
     }]
     contexts = [{
       name = "terraform"
       context = {
-        cluster = module.eks_blueprints.eks_cluster_id
+        cluster = module.eks.cluster_id
         user    = "terraform"
       }
     }]
@@ -204,8 +205,8 @@ resource "kubectl_manifest" "eni_config" {
     }
     spec = {
       securityGroups = [
-        module.eks_blueprints.cluster_primary_security_group_id,
-        module.eks_blueprints.worker_node_security_group_id,
+        module.eks.cluster_primary_security_group_id,
+        module.eks.node_security_group_id,
       ]
       subnet = each.value
     }
@@ -215,10 +216,6 @@ resource "kubectl_manifest" "eni_config" {
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
-
-data "aws_ssm_parameter" "eks_optimized_ami" {
-  name = "/aws/service/eks/optimized-ami/${local.cluster_version}/amazon-linux-2/recommended/image_id"
-}
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
@@ -241,7 +238,6 @@ module "vpc" {
   single_nat_gateway   = true
   enable_dns_hostnames = true
 
-  # Manage so we can name
   manage_default_network_acl    = true
   default_network_acl_tags      = { Name = "${local.name}-default" }
   manage_default_route_table    = true
@@ -250,13 +246,11 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = local.tags

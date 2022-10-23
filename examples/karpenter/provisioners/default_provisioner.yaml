@@ -10,6 +10,9 @@ spec:
     - key: "karpenter.sh/capacity-type"
       operator: In
       values: ["spot", "on-demand"]
+    - key: "kubernetes.io/arch"
+      operator: In
+      values: ["arm64", "amd64"]
   limits:
     resources:
       cpu: 1000

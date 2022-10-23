@@ -3,36 +3,26 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-  }
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
-
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-    }
   }
 }
 
 provider "grafana" {
   url  = var.eks_cluster_domain == null ? data.kubernetes_ingress_v1.ingress.status[0].load_balancer[0].ingress[0].hostname : "https://ray-demo.${var.eks_cluster_domain}/monitoring"
   auth = "admin:${aws_secretsmanager_secret_version.grafana.secret_string}"
+}
+
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks.cluster_id
 }
 
 data "aws_availability_zones" "available" {}
@@ -43,10 +33,6 @@ data "aws_acm_certificate" "issued" {
 
   domain   = var.acm_certificate_domain
   statuses = ["ISSUED"]
-}
-
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
 }
 
 locals {
@@ -66,14 +52,16 @@ locals {
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
-module "eks_blueprints" {
-  source = "../../.."
+
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 18.30"
 
   cluster_name    = local.name
   cluster_version = "1.23"
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
   #----------------------------------------------------------------------------------------------------------#
   # Security groups used in this module created by the upstream modules terraform-aws-eks (https://github.com/terraform-aws-modules/terraform-aws-eks).
@@ -114,12 +102,13 @@ module "eks_blueprints" {
     }
   }
 
-  managed_node_groups = {
-    mg_5 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m5.8xlarge"]
-      min_size        = 3
-      subnet_ids      = module.vpc.private_subnets
+  eks_managed_node_groups = {
+    default = {
+      instance_types = ["m5.large"]
+
+      min_size     = 1
+      max_size     = 3
+      desired_size = 1
     }
   }
 
@@ -132,10 +121,10 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../modules/kubernetes-addons"
 
-  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
-  eks_oidc_provider    = module.eks_blueprints.oidc_provider
-  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
+  eks_cluster_id       = module.eks.cluster_id
+  eks_cluster_endpoint = module.eks.cluster_endpoint
+  eks_oidc_provider    = module.eks.oidc_provider
+  eks_cluster_version  = module.eks.cluster_version
   eks_cluster_domain   = var.eks_cluster_domain
 
   # Add-Ons
@@ -210,7 +199,7 @@ module "s3_bucket" {
 data "aws_iam_policy_document" "irsa_policy" {
   statement {
     actions   = ["s3:ListBucket"]
-    resources = ["${module.s3_bucket.s3_bucket_arn}"]
+    resources = [module.s3_bucket.s3_bucket_arn]
   }
   statement {
     actions   = ["s3:*Object"]
@@ -241,7 +230,7 @@ data "aws_iam_policy_document" "irsa_policy" {
 
 resource "aws_iam_policy" "irsa_policy" {
   description = "IAM Policy for IRSA"
-  name_prefix = substr("${module.eks_blueprints.eks_cluster_id}-${local.namespace}-access", 0, 127)
+  name_prefix = substr("${module.eks.cluster_id}-${local.namespace}-access", 0, 127)
   policy      = data.aws_iam_policy_document.irsa_policy.json
 }
 
@@ -250,8 +239,8 @@ module "cluster_irsa" {
   kubernetes_namespace       = local.namespace
   kubernetes_service_account = "${local.namespace}-sa"
   irsa_iam_policies          = [aws_iam_policy.irsa_policy.arn]
-  eks_cluster_id             = module.eks_blueprints.eks_cluster_id
-  eks_oidc_provider_arn      = module.eks_blueprints.eks_oidc_provider_arn
+  eks_cluster_id             = module.eks.cluster_id
+  eks_oidc_provider_arn      = module.eks.oidc_provider_arn
 
   depends_on = [module.s3_bucket]
 }
@@ -335,7 +324,6 @@ module "vpc" {
   single_nat_gateway   = true
   enable_dns_hostnames = true
 
-  # Manage so we can name
   manage_default_network_acl    = true
   default_network_acl_tags      = { Name = "${local.name}-default" }
   manage_default_route_table    = true
@@ -344,13 +332,11 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = local.tags

@@ -7,6 +7,18 @@ module "helm_addon" {
   addon_context     = var.addon_context
 }
 
+data "aws_iam_policy_document" "aws_privateca_issuer" {
+  statement {
+    effect    = "Allow"
+    resources = [var.aws_privateca_acmca_arn]
+    actions = [
+      "acm-pca:DescribeCertificateAuthority",
+      "acm-pca:GetCertificate",
+      "acm-pca:IssueCertificate",
+    ]
+  }
+}
+
 resource "aws_iam_policy" "aws_privateca_issuer" {
   description = "AWS PCA issuer IAM policy"
   name        = "${var.addon_context.eks_cluster_id}-${local.helm_config["name"]}-irsa"

@@ -1,57 +1,49 @@
 provider "aws" {
-  region = var.region
-  alias  = "default"
+  region = local.region
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.this.token
+}
 
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-  }
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks.cluster_id
 }
 
 locals {
-  name               = basename(path.cwd)
-  vpc_id             = var.vpc_id
-  private_subnet_ids = var.private_subnet_ids
+  name   = basename(path.cwd)
+  region = "us-west-2"
+
   tags = {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 }
 
-module "eks_blueprints" {
-  source = "../../.."
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 18.30"
 
-  cluster_name = local.name
-
-  # EKS Cluster VPC and Subnets
-  vpc_id             = local.vpc_id
-  private_subnet_ids = local.private_subnet_ids
-
-  # Cluster Security Group
-  cluster_security_group_additional_rules = var.cluster_security_group_additional_rules
-
-  # EKS CONTROL PLANE VARIABLES
-  cluster_version = var.cluster_version
+  cluster_name    = local.name
+  cluster_version = "1.23"
 
   cluster_endpoint_public_access  = false
   cluster_endpoint_private_access = true
 
-  # EKS MANAGED NODE GROUPS
-  managed_node_groups = {
-    mg_5 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m5.large"]
-      subnet_ids      = local.private_subnet_ids
+  vpc_id     = var.vpc_id
+  subnet_ids = var.private_subnet_ids
+
+  eks_managed_node_groups = {
+    default = {
+      instance_types = ["m5.large"]
+
+      min_size     = 1
+      max_size     = 3
+      desired_size = 1
     }
   }
 
-  #Custom Tags.
   tags = local.tags
 }

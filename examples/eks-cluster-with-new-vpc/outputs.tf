@@ -15,37 +15,37 @@ output "vpc_cidr" {
 
 output "eks_cluster_id" {
   description = "EKS cluster ID"
-  value       = module.eks_blueprints.eks_cluster_id
+  value       = module.eks.cluster_id
 }
 
 output "eks_managed_nodegroups" {
   description = "EKS managed node groups"
-  value       = module.eks_blueprints.managed_node_groups
+  value       = module.eks.eks_managed_node_groups
 }
 
 output "eks_managed_nodegroup_ids" {
   description = "EKS managed node group ids"
-  value       = module.eks_blueprints.managed_node_groups_id
+  value       = [for grp in module.eks.eks_managed_node_groups : grp.node_group_id]
 }
 
 output "eks_managed_nodegroup_arns" {
   description = "EKS managed node group arns"
-  value       = module.eks_blueprints.managed_node_group_arn
+  value       = [for grp in module.eks.eks_managed_node_groups : grp.node_group_arn]
 }
 
 output "eks_managed_nodegroup_role_name" {
   description = "EKS managed node group role name"
-  value       = module.eks_blueprints.managed_node_group_iam_role_names
+  value       = [for grp in module.eks.eks_managed_node_groups : grp.iam_role_name]
 }
 
 output "eks_managed_nodegroup_status" {
   description = "EKS managed node group status"
-  value       = module.eks_blueprints.managed_node_groups_status
+  value       = [for grp in module.eks.eks_managed_node_groups : grp.node_group_status]
 }
 
 output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.eks_blueprints.configure_kubectl
+  value       = "aws eks --region ${local.region} update-kubeconfig --name ${module.eks.cluster_id}"
 }
 
 # Region used for Terratest

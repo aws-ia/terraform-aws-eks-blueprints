@@ -1,11 +1,3 @@
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
-}
-
-data "aws_availability_zones" "available" {}
-
-data "aws_caller_identity" "current" {}
-
 data "aws_iam_policy_document" "fluentbit_opensearch_access" {
   # Identity Based Policy specifies a list of IAM permissions
   # that principal has against OpenSearch service API
@@ -40,7 +32,7 @@ data "aws_iam_policy_document" "opensearch_access_policy" {
     sid    = "AdminDomainLevelAccessToOpenSearch"
     effect = "Allow"
     resources = [
-      "${aws_elasticsearch_domain.opensearch.arn}",
+      aws_elasticsearch_domain.opensearch.arn,
       "${aws_elasticsearch_domain.opensearch.arn}/*",
     ]
     actions = ["es:*"]

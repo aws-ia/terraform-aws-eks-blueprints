@@ -3,24 +3,23 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
+  name = module.eks.cluster_id
 }
 
-data "aws_caller_identity" "current" {}
 data "aws_availability_zones" "available" {}
 
 locals {
@@ -40,48 +39,46 @@ locals {
 # EKS Blueprints
 #---------------------------------------------------------------
 
-module "eks_blueprints" {
-  source = "../.."
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 18.30"
 
   cluster_name    = local.name
   cluster_version = "1.23"
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
-
-  # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/485
-  # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/494
-  cluster_kms_key_additional_admin_arns = [data.aws_caller_identity.current.arn]
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
   fargate_profiles = {
     # Providing compute for default namespace
     default = {
-      fargate_profile_name = "default"
-      fargate_profile_namespaces = [
+      name = "default"
+      selectors = [
         {
           namespace = "default"
-      }]
-      subnet_ids = module.vpc.private_subnets
+        }
+      ]
     }
     # Providing compute for kube-system namespace where core addons reside
     kube_system = {
-      fargate_profile_name = "kube-system"
-      fargate_profile_namespaces = [
+      name = "kube-system"
+      selectors = [
         {
           namespace = "kube-system"
-      }]
-      subnet_ids = module.vpc.private_subnets
+        }
+      ]
     }
-    # Sample application
+
     app = {
-      fargate_profile_name = "app-wildcard"
-      fargate_profile_namespaces = [
+      name = "app-wildcard"
+      selectors = [
         {
           namespace = "app-*"
-      }]
-      subnet_ids = module.vpc.private_subnets
+        }
+      ]
     }
   }
+
 
   tags = local.tags
 }
@@ -89,13 +86,13 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
-  eks_oidc_provider    = module.eks_blueprints.oidc_provider
-  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
+  eks_cluster_id       = module.eks.cluster_id
+  eks_cluster_endpoint = module.eks.cluster_endpoint
+  eks_oidc_provider    = module.eks.oidc_provider
+  eks_cluster_version  = module.eks.cluster_version
 
   # Wait on the `kube-system` profile before provisioning addons
-  data_plane_wait_arn = module.eks_blueprints.fargate_profiles["kube_system"].eks_fargate_profile_arn
+  data_plane_wait_arn = module.eks.fargate_profiles["kube_system"].fargate_profile_arn
 
   enable_amazon_eks_vpc_cni = true
   amazon_eks_vpc_cni_config = {
@@ -113,7 +110,7 @@ module "eks_blueprints_kubernetes_addons" {
   self_managed_coredns_helm_config = {
     # Sets the correct annotations to ensure the Fargate provisioner is used and not the EC2 provisioner
     compute_type       = "fargate"
-    kubernetes_version = module.eks_blueprints.eks_cluster_version
+    kubernetes_version = module.eks.cluster_version
   }
 
   # Sample application
@@ -121,6 +118,38 @@ module "eks_blueprints_kubernetes_addons" {
 
   # Enable Fargate logging
   enable_fargate_fluentbit = true
+  fargate_fluentbit_addon_config = {
+    output_conf = <<-EOF
+        [OUTPUT]
+          Name cloudwatch_logs
+          Match *
+          region ${local.region}
+          log_group_name /${module.eks.cluster_id}/fargate-fluentbit-logs
+          log_stream_prefix "fargate-logs-"
+          auto_create_group true
+      EOF
+
+    filters_conf = <<-EOF
+        [FILTER]
+          Name parser
+          Match *
+          Key_Name log
+          Parser regex
+          Preserve_Key True
+          Reserve_Data True
+      EOF
+
+    parsers_conf = <<-EOF
+        [PARSER]
+          Name regex
+          Format regex
+          Regex ^(?<time>[^ ]+) (?<stream>[^ ]+) (?<logtag>[^ ]+) (?<message>.+)$
+          Time_Key time
+          Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+          Time_Keep On
+          Decode_Field_As json message
+      EOF
+  }
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller_helm_config = {
@@ -158,7 +187,6 @@ module "vpc" {
   single_nat_gateway   = true
   enable_dns_hostnames = true
 
-  # Manage so we can name
   manage_default_network_acl    = true
   default_network_acl_tags      = { Name = "${local.name}-default" }
   manage_default_route_table    = true

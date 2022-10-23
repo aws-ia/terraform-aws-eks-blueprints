@@ -1,23 +1,27 @@
+provider "gitlab" {
+  # Configuration options - the GitLab token that this provider requires is pulled from the variables set in the CI/CD settings of the GitLab repository
+}
+
 provider "aws" {
   region = local.region
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
+  name = module.eks.cluster_id
 }
 
 data "aws_availability_zones" "available" {}
@@ -39,48 +43,24 @@ locals {
 # EKS Blueprints
 #---------------------------------------------------------------
 
-module "eks_blueprints" {
-  source = "../../.."
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 18.30"
 
   cluster_name    = local.name
   cluster_version = "1.23"
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
-  managed_node_groups = {
-    mg_5 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m5.large"]
-      min_size        = 2
-      subnet_ids      = module.vpc.private_subnets
+  eks_managed_node_groups = {
+    default = {
+      instance_types = ["m5.large"]
+
+      min_size     = 1
+      max_size     = 3
+      desired_size = 1
     }
-  }
-
-  tags = local.tags
-}
-
-module "eks_blueprints_kubernetes_addons" {
-  source = "../../../modules/kubernetes-addons"
-
-  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
-  eks_oidc_provider    = module.eks_blueprints.oidc_provider
-  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
-
-  # EKS Managed Add-ons
-  enable_amazon_eks_coredns    = true
-  enable_amazon_eks_kube_proxy = true
-
-  # Add-ons
-  enable_metrics_server               = true
-  enable_cluster_autoscaler           = true
-  enable_aws_load_balancer_controller = true
-
-  enable_ingress_nginx = true
-  ingress_nginx_helm_config = {
-    version = "4.0.17"
-    values  = [templatefile("${path.module}/nginx_values.yaml", {})]
   }
 
   tags = local.tags
@@ -105,7 +85,6 @@ module "vpc" {
   single_nat_gateway   = true
   enable_dns_hostnames = true
 
-  # Manage so we can name
   manage_default_network_acl    = true
   default_network_acl_tags      = { Name = "${local.name}-default" }
   manage_default_route_table    = true
@@ -114,13 +93,11 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = local.tags
