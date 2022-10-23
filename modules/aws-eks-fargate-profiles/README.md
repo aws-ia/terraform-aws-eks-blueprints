@@ -4,8 +4,6 @@
 
 The Fargate profile allows you to declare which pods run on Fargate for Amazon EKS Cluster. This declaration is done through the profile’s selectors. Each profile can have up to five selectors that contain a namespace and optional labels. You must define a namespace for every selector. The label field consists of multiple optional key-value pairs
 
-Checkout the usage docs for Fargate Profiles [examples](https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/node-groups/)
-
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
