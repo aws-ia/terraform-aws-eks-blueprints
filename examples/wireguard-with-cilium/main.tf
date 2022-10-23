@@ -33,8 +33,9 @@ data "aws_availability_zones" "available" {}
 locals {
   name = basename(path.cwd)
   # var.cluster_name is for Terratest
-  cluster_name = coalesce(var.cluster_name, local.name)
-  region       = "us-west-2"
+  cluster_name    = coalesce(var.cluster_name, local.name)
+  cluster_version = "1.23"
+  region          = "us-east-1"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -53,20 +54,66 @@ module "eks_blueprints" {
   source = "../.."
 
   cluster_name    = local.cluster_name
-  cluster_version = "1.23"
+  cluster_version = local.cluster_version
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
   managed_node_groups = {
-    # The Amazon EKS Optmized Amazon Linux AMI uses a Linux 5.4 kernel 
-    # which doesn’t include WireGuard. While you could install a back-ported kernel module, 
-    # we’ve chosen to use the Amazon EKS Optmized Bottlerocket AMI
-    mg5 = {
+    # BottleRocket ships with kernel 5.10 so there is no need
+    # to do anything special
+    bottlerocket = {
       node_group_name = "mg5"
       instance_types  = ["m5.large"]
       min_size        = 2
+      desired_size    = 2
+      max_size        = 2
       ami_type        = "BOTTLEROCKET_x86_64"
+    }
+    # As of 10/23/2022, AL2 EKS AMI ships with kernel 5.4 therefore
+    # we need to run a user-data script to update to 5.10, reboot
+    # and then re-run the bootstrap.sh for worker node to join the
+    # cluster
+    amznlinux = {
+      node_group_name        = "mng-lt"
+      create_launch_template = true
+      launch_template_os     = "amazonlinux2eks"
+      ami_type               = "AL2_x86_64"
+      pre_userdata           = <<-EOT
+        --//
+        Content-Type: text/x-shellscript; charset="us-ascii"
+        MIME-Version: 1.0
+        Content-Transfer-Encoding: 7bit
+        Content-Disposition: attachment; filename="userdata1.txt"
+
+        #x-shellscript-per-instance
+        #!/bin/bash -ex
+        yum install -y amazon-ssm-agent
+        systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
+        amazon-linux-extras disable kernel-5.4
+        amazon-linux-extras install kernel-5.10 -y
+        reboot
+
+        --//
+        Content-Type: text/x-shellscript; charset="us-ascii"
+        MIME-Version: 1.0
+        Content-Transfer-Encoding: 7bit
+        Content-Disposition: attachment; filename="userdata2.txt"
+
+        #x-shellscript-per-boot
+        #!/bin/bash -ex
+        sudo /etc/eks/bootstrap.sh ${local.cluster_name}
+
+        --//
+        Content-Type: text/x-shellscript-per-boot; charset="us-ascii"
+        MIME-Version: 1.0
+        Content-Transfer-Encoding: 7bit
+        Content-Disposition: attachment; filename="userdata.txt"
+      EOT
+      desired_size           = 2
+      max_size               = 2
+      min_size               = 2
+      instance_types         = ["m5.large"]
     }
   }
 
