@@ -1,15 +1,23 @@
 locals {
+  name = "aws-ebs-csi-driver"
+
   create_irsa = try(var.addon_config.service_account_role_arn == "", true)
-  name        = try(var.helm_config.name, "aws-ebs-csi-driver")
   namespace   = try(var.helm_config.namespace, "kube-system")
+}
+
+data "aws_eks_addon_version" "this" {
+  addon_name = local.name
+  # Need to allow both config routes - for managed and self-managed configs
+  kubernetes_version = try(var.addon_config.kubernetes_version, var.helm_config.kubernetes_version)
+  most_recent        = try(var.addon_config.most_recent, var.helm_config.most_recent, false)
 }
 
 resource "aws_eks_addon" "aws_ebs_csi_driver" {
   count                    = var.enable_amazon_eks_aws_ebs_csi_driver && !var.enable_self_managed_aws_ebs_csi_driver ? 1 : 0
   cluster_name             = var.addon_context.eks_cluster_id
-  addon_name               = "aws-ebs-csi-driver"
-  addon_version            = try(var.addon_config.addon_version, null)
-  resolve_conflicts        = try(var.addon_config.resolve_conflicts, null)
+  addon_name               = local.name
+  addon_version            = try(var.addon_config.addon_version, data.aws_eks_addon_version.this.version)
+  resolve_conflicts        = try(var.addon_config.resolve_conflicts, "OVERWRITE")
   service_account_role_arn = local.create_irsa ? module.irsa_addon[0].irsa_iam_role_arn : try(var.addon_config.service_account_role_arn, null)
   preserve                 = try(var.addon_config.preserve, true)
 
@@ -17,6 +25,49 @@ resource "aws_eks_addon" "aws_ebs_csi_driver" {
     var.addon_context.tags,
     try(var.addon_config.tags, {})
   )
+}
+
+module "helm_addon" {
+  source = "../helm-addon"
+  count  = var.enable_self_managed_aws_ebs_csi_driver && !var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
+
+  helm_config = merge({
+    name        = local.name
+    description = "The Amazon Elastic Block Store Container Storage Interface (CSI) Driver provides a CSI interface used by Container Orchestrators to manage the lifecycle of Amazon EBS volumes."
+    chart       = local.name
+    version     = "2.12.0"
+    repository  = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
+    namespace   = local.namespace
+    values = [
+      <<-EOT
+      image:
+        repository: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver
+        tag: ${try(var.helm_config.addon_version, replace(data.aws_eks_addon_version.this.version, "/-eksbuild.*/", ""))}
+      controller:
+        k8sTagClusterId: ${var.addon_context.eks_cluster_id}
+      EOT
+    ]
+    },
+    var.helm_config
+  )
+
+  set_values = [
+    {
+      name  = "controller.serviceAccount.create"
+      value = "false"
+    }
+  ]
+
+  irsa_config = {
+    create_kubernetes_namespace       = try(var.helm_config.create_namespace, false)
+    kubernetes_namespace              = local.namespace
+    create_kubernetes_service_account = true
+    kubernetes_service_account        = "ebs-csi-controller-sa"
+    irsa_iam_policies                 = concat([aws_iam_policy.aws_ebs_csi_driver[0].arn], try(var.helm_config.additional_iam_policies, []))
+  }
+
+  # Blueprints
+  addon_context = var.addon_context
 }
 
 module "irsa_addon" {
@@ -47,46 +98,4 @@ resource "aws_iam_policy" "aws_ebs_csi_driver" {
     var.addon_context.tags,
     try(var.addon_config.tags, {})
   )
-}
-
-module "helm_addon" {
-  source = "../helm-addon"
-  count  = var.enable_self_managed_aws_ebs_csi_driver && !var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
-
-  helm_config = merge({
-    name        = local.name
-    description = "The Amazon Elastic Block Store Container Storage Interface (CSI) Driver provides a CSI interface used by Container Orchestrators to manage the lifecycle of Amazon EBS volumes."
-    chart       = "aws-ebs-csi-driver"
-    version     = "2.10.1"
-    repository  = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
-    namespace   = local.namespace
-    values = [
-      <<-EOT
-      image:
-        repository: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver
-      controller:
-        k8sTagClusterId: ${var.addon_context.eks_cluster_id}
-      EOT
-    ]
-    },
-    var.helm_config
-  )
-
-  set_values = [
-    {
-      name  = "controller.serviceAccount.create"
-      value = "false"
-    }
-  ]
-
-  irsa_config = {
-    create_kubernetes_namespace       = try(var.helm_config.create_namespace, false)
-    kubernetes_namespace              = local.namespace
-    create_kubernetes_service_account = true
-    kubernetes_service_account        = "ebs-csi-controller-sa"
-    irsa_iam_policies                 = concat([aws_iam_policy.aws_ebs_csi_driver[0].arn], try(var.helm_config.additional_iam_policies, []))
-  }
-
-  # Blueprints
-  addon_context = var.addon_context
 }

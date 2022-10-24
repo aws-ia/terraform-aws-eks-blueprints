@@ -21,12 +21,6 @@ provider "grafana" {
   auth = var.grafana_api_key
 }
 
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
-}
-
-data "aws_availability_zones" "available" {}
-
 locals {
   name   = basename(path.cwd)
   region = "us-west-2"
@@ -124,7 +118,7 @@ resource "grafana_data_source" "prometheus" {
 #tfsec:ignore:aws-elastic-search-enable-domain-logging
 resource "aws_elasticsearch_domain" "opensearch" {
   domain_name           = "opensearch"
-  elasticsearch_version = "OpenSearch_1.1"
+  elasticsearch_version = "OpenSearch_1.3"
 
   cluster_config {
     instance_type          = "m6g.large.elasticsearch"
@@ -155,7 +149,7 @@ resource "aws_elasticsearch_domain" "opensearch" {
   }
 
   advanced_security_options {
-    enabled                        = true
+    enabled                        = false
     internal_user_database_enabled = true
 
     master_user_options {

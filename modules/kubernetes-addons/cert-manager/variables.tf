@@ -50,3 +50,9 @@ variable "addon_context" {
     irsa_iam_permissions_boundary  = string
   })
 }
+
+variable "kubernetes_svc_image_pull_secrets" {
+  description = "list(string) of kubernetes imagePullSecrets"
+  type        = list(string)
+  default     = []
+}
