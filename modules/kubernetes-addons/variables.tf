@@ -396,7 +396,7 @@ variable "enable_sysdig_agent" {
 variable "sysdig_agent_helm_config" {
   description = "Sysdig Helm Chart config"
   type        = any
-  default     = null
+  default     = {}
 }
 
 #-----------TETRATE ISTIO-------------
