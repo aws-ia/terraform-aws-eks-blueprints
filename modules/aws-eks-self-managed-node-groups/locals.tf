@@ -12,7 +12,7 @@ locals {
     capacity_rebalance       = false
     spot_allocation_strategy = "capacity-optimized-prioritized"
     launch_template_os       = "amazonlinux2eks" # amazonlinux2eks/bottlerocket/windows # Used to identify the launch template
-    windows_server_version   = "2022"            # 2016/2019/2022
+    windows_server_version   = local.compatible_with_windows_server_2022 ? "2022" : "2019"
     pre_userdata             = ""
     post_userdata            = ""
     kubelet_extra_args       = ""
@@ -52,6 +52,7 @@ locals {
   )
 
   # WINDOWS CONFIGURATION
+  compatible_with_windows_server_2022 = var.context.cluster_version >= "1.22" ? true : false 
   enable_windows_support = local.self_managed_node_group["launch_template_os"] == "windows"
   windows_server_version = local.self_managed_node_group["windows_server_version"]
 
