@@ -214,7 +214,7 @@ resource "kubectl_manifest" "karpenter_provisioner" {
 resource "kubernetes_secret_v1" "datadog_api_key" {
   metadata {
     name      = "datadog-secret"
-    namespace = local.helm_config["namespace"]
+    namespace = "datadog-operator"
   }
 
   data = {
