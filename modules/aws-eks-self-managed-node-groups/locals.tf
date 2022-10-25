@@ -12,14 +12,13 @@ locals {
     capacity_rebalance       = false
     spot_allocation_strategy = "capacity-optimized-prioritized"
     launch_template_os       = "amazonlinux2eks" # amazonlinux2eks/bottlerocket/windows # Used to identify the launch template
-    windows_server_version   = local.compatible_with_windows_server_2022 ? "2022" : "2019"
+    windows_server_version   = "2019"
     pre_userdata             = ""
     post_userdata            = ""
     kubelet_extra_args       = ""
     bootstrap_extra_args     = ""
     enable_monitoring        = false
     public_ip                = false
-
 
     # IAM Roles for Nodegroup
     create_iam_role           = true
@@ -51,8 +50,6 @@ locals {
     var.self_managed_ng
   )
 
-  # WINDOWS CONFIGURATION
-  compatible_with_windows_server_2022 = var.context.cluster_version >= "1.22" ? true : false 
   enable_windows_support = local.self_managed_node_group["launch_template_os"] == "windows"
   windows_server_version = local.self_managed_node_group["windows_server_version"]
 
@@ -64,7 +61,6 @@ locals {
 
   predefined_ami_types  = keys(local.predefined_ami_names)
   default_custom_ami_id = contains(local.predefined_ami_types, local.self_managed_node_group["launch_template_os"]) ? data.aws_ami.predefined[local.self_managed_node_group["launch_template_os"]].id : ""
-  # add logic to decide the default_custom_ami_id based on another variable windows_server_version
   custom_ami_id         = local.self_managed_node_group["custom_ami_id"] == "" ? local.default_custom_ami_id : local.self_managed_node_group["custom_ami_id"]
 
   policy_arn_prefix = "arn:${var.context.aws_partition_id}:iam::aws:policy"
