@@ -8,25 +8,4 @@ The Datadog Operator can be deployed by enabling the add-on via the following.
 enable_datadog_operator = true
 ```
 
-An API key is required, this can be passed as a variable:
-
-```hcl
-datadog_api_key = <key>
-```
-
-or by creating a secret external to the Terraform and passing in the secret name:
-
-```hcl
-datadog_operator_helm_config = {
-  datadog_agent = {
-    spec = {
-      credentials = {
-        apiSecret = {
-          secretName = "<secret-name>"
-          keyName = "<secret-key-name>"
-        }  
-      }
-    }
-  }
-}
-```
+Once the operator is provisioned, the Datadog Agent can be deployed by creating a `DatadogAgent` resource and supplying an API key.

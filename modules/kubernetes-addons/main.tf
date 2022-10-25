@@ -245,8 +245,6 @@ module "datadog_operator" {
   helm_config       = var.datadog_operator_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
-
-  datadog_api_key = var.datadog_api_key
 }
 
 module "external_dns" {
