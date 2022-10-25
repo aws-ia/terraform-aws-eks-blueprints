@@ -17,7 +17,7 @@ if ($disks_to_adjust -ne $null) {
   }
 }
 
-# Redirect Docker files to new the disk
+# Redirecting Docker files to secondary disk to avoid concurrent I/O during node startup.
 Stop-Service -Name "docker" -Force -NoWait
 
 $dockerdataredirect = @'
@@ -34,11 +34,11 @@ Add-Content $daemon_file $dockerdataredirect
 
 Start-Service -Name "docker"
 
-# Bootstrap and join the cluster
+# Bootstrap, apply kubelet Windows best practice and join the cluster
 [string]$EKSBinDir = "$env:ProgramFiles\Amazon\EKS"
 [string]$EKSBootstrapScriptName = 'Start-EKSBootstrap.ps1'
 [string]$EKSBootstrapScriptFile = "$EKSBinDir\$EKSBootstrapScriptName"
-& $EKSBootstrapScriptFile -EKSClusterName ${eks_cluster_id} -KubeletExtraArgs '${kubelet_extra_args}' 3>&1 4>&1 5>&1 6>&1
+& $EKSBootstrapScriptFile -EKSClusterName ${eks_cluster_id} -KubeletExtraArgs --kube-reserved memory=0.5Gi --system-reserved memory=1.5Gi --windows-priorityclass=ABOVE_NORMAL_PRIORITY_CLASS --eviction-hard memory.available<200Mi,nodefs.available<10% 3>&1 4>&1 5>&1 6>&1
 $LastError = if ($?) { 0 } else { $Error[0].Exception.HResult }
 
 ${post_userdata}
