@@ -16,4 +16,3 @@ variable "cluster_version" {
   description = "EKS K8s version 1.22"
   default     = "1.23"
 }
-
