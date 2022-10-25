@@ -16,3 +16,9 @@ variable "cluster_version" {
   description = "EKS K8s version 1.22"
   default     = "1.23"
 }
+
+variable "instance_types" {
+  type        = list(string)
+  description = "EC2 worker node instance types"
+  default     = ["m5.large"]
+}

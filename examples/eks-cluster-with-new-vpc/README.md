@@ -43,6 +43,7 @@ This example deploys the following Basic EKS Cluster with VPC
 |------|-------------|------|---------|:--------:|
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Name of cluster - used by Terratest for e2e test automation | `string` | `""` | no |
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | EKS K8s version 1.22 | `string` | `"1.23"` | no |
+| <a name="input_instance_types"></a> [instance\_types](#input\_instance\_types) | EC2 worker node instance types | `list(string)` | <pre>[<br>  "m5.large"<br>]</pre> | no |
 | <a name="input_region"></a> [region](#input\_region) | The AWS Region | `string` | `"us-west-2"` | no |
 
 ## Outputs

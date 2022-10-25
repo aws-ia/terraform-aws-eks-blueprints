@@ -53,7 +53,7 @@ module "eks_blueprints" {
   managed_node_groups = {
     mg_5 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["m5.large"]
+      instance_types  = var.instance_types
       min_size        = 3
       max_size        = 3
       desired_size    = 3
