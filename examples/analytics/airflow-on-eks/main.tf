@@ -362,18 +362,18 @@ YAML
 #---------------------------------------------------------------
 resource "kubectl_manifest" "efs_sc" {
   yaml_body = <<-YAML
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: ${local.efs_storage_class}
-provisioner: efs.csi.aws.com
-parameters:
-  provisioningMode: efs-ap
-  fileSystemId: ${aws_efs_file_system.efs.id}
-  directoryPerms: "700"
-  gidRangeStart: "1000"
-  gidRangeEnd: "2000"
-YAML
+    apiVersion: storage.k8s.io/v1
+    kind: StorageClass
+    metadata:
+      name: ${local.efs_storage_class}
+    provisioner: efs.csi.aws.com
+    parameters:
+      provisioningMode: efs-ap
+      fileSystemId: ${module.efs.id}
+      directoryPerms: "700"
+      gidRangeStart: "1000"
+      gidRangeEnd: "2000"
+  YAML
 
   depends_on = [module.eks_blueprints.eks_cluster_id]
 }
@@ -383,51 +383,45 @@ YAML
 #---------------------------------------------------------------
 resource "kubectl_manifest" "efs_pvc" {
   yaml_body = <<-YAML
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: ${local.efs_pvc}
-  namespace: ${module.airflow_irsa.namespace}
-spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: ${local.efs_storage_class}
-  resources:
-    requests:
-      storage: 10Gi
-YAML
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: ${local.efs_pvc}
+      namespace: ${module.airflow_irsa.namespace}
+    spec:
+      accessModes:
+        - ReadWriteMany
+      storageClassName: ${local.efs_storage_class}
+      resources:
+        requests:
+          storage: 10Gi
+  YAML
 
   depends_on = [kubectl_manifest.efs_sc]
 }
 #---------------------------------------------------------------
 # EFS Filesystem for Airflow DAGs
 #---------------------------------------------------------------
-resource "aws_efs_file_system" "efs" {
-  creation_token = "efs"
-  encrypted      = true
 
-  tags = local.tags
-}
+module "efs" {
+  source  = "terraform-aws-modules/efs/aws"
+  version = "~> 1.0"
 
-resource "aws_efs_mount_target" "efs_mt" {
-  count = length(module.vpc.private_subnets)
+  creation_token = local.name
+  name           = local.name
 
-  file_system_id  = aws_efs_file_system.efs.id
-  subnet_id       = module.vpc.private_subnets[count.index]
-  security_groups = [aws_security_group.efs.id]
-}
-
-resource "aws_security_group" "efs" {
-  name        = "${local.name}-efs"
-  description = "Allow inbound NFS traffic from private subnets of the VPC"
-  vpc_id      = module.vpc.vpc_id
-
-  ingress {
-    description = "Allow NFS 2049/tcp"
-    cidr_blocks = module.vpc.private_subnets_cidr_blocks
-    from_port   = 2049
-    to_port     = 2049
-    protocol    = "tcp"
+  # Mount targets / security group
+  mount_targets = { for k, v in toset(range(length(local.azs))) :
+    element(local.azs, k) => { subnet_id = element(module.vpc.private_subnets, k) }
+  }
+  security_group_description = "${local.name} EFS security group"
+  security_group_vpc_id      = module.vpc.vpc_id
+  security_group_rules = {
+    vpc = {
+      # relying on the defaults provdied for EFS/NFS (2049/TCP + ingress)
+      description = "NFS ingress from VPC private subnets"
+      cidr_blocks = module.vpc.private_subnets_cidr_blocks
+    }
   }
 
   tags = local.tags

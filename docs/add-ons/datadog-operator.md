@@ -24,7 +24,7 @@ datadog_operator_helm_config = {
         apiSecret = {
           secretName = "<secret-name>"
           keyName = "<secret-key-name>"
-        }      
+        }  
       }
     }
   }

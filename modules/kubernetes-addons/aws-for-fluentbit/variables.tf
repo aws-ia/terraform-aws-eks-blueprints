@@ -4,6 +4,12 @@ variable "helm_config" {
   default     = {}
 }
 
+variable "create_cw_log_group" {
+  description = "Set to false to use existing CloudWatch log group supplied via the cw_log_group_name variable."
+  type        = bool
+  default     = true
+}
+
 variable "cw_log_group_name" {
   description = "FluentBit CloudWatch Log group name"
   type        = string
