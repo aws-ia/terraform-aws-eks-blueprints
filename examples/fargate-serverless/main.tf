@@ -126,7 +126,7 @@ module "eks_blueprints_kubernetes_addons" {
           Match *
           region ${local.region}
           log_group_name /${module.eks.cluster_id}/fargate-fluentbit-logs
-          log_stream_prefix "fargate-logs-"
+          log_stream_prefix fargate-logs-
           auto_create_group true
       EOF
 
