@@ -1114,6 +1114,19 @@ variable "airflow_helm_config" {
   default     = {}
 }
 
+#-----------Datadog Operator-------------
+variable "enable_datadog_operator" {
+  description = "Enable Datadog Operator add-on"
+  type        = bool
+  default     = false
+}
+
+variable "datadog_operator_helm_config" {
+  description = "Datadog Operator Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------Promtail ADDON-------------
 variable "enable_promtail" {
   description = "Enable Promtail add-on"
@@ -1244,8 +1257,6 @@ variable "gatekeeper_helm_config" {
   type        = any
   default     = {}
 }
-
-
 
 #-----------Kubernetes Portworx ADDON-------------
 variable "enable_portworx" {
