@@ -29,10 +29,10 @@ $dockerdataredirect = @'
 $daemon_file = "C:\ProgramData\docker\config\daemon.json"
 $directory = "D:\ProgramData\docker"
 New-Item $directory -ItemType Directory
-New-Item $daemon_file -ItemType File 
+New-Item $daemon_file -ItemType File
 Add-Content $daemon_file $dockerdataredirect
 
-Start-Service -Name "docker" 
+Start-Service -Name "docker"
 
 # Bootstrap and join the cluster
 [string]$EKSBinDir = "$env:ProgramFiles\Amazon\EKS"
