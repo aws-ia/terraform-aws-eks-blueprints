@@ -286,6 +286,13 @@ module "ingress_nginx" {
   addon_context     = local.addon_context
 }
 
+module "kafka" {
+  count         = var.enable_kafka ? 1 : 0
+  source        = "./kafka"
+  helm_config   = var.kafka_helm_config
+  addon_context = local.addon_context
+}
+
 module "karpenter" {
   count                     = var.enable_karpenter ? 1 : 0
   source                    = "./karpenter"
