@@ -5,7 +5,7 @@ locals {
     name       = local.name
     chart      = local.name
     repository = "https://open-policy-agent.github.io/gatekeeper/charts"
-    version    = "3.9.0"
+    version    = "3.10.0"
     namespace  = "gatekeeper-system"
     values = [
       <<-EOT
