@@ -5,6 +5,7 @@ locals {
 module "helm_addon" {
   source = "../helm-addon"
 
+  # https://github.com/DataDog/helm-charts/blob/main/charts/datadog-operator/Chart.yaml
   helm_config = merge(
     {
       name             = local.name

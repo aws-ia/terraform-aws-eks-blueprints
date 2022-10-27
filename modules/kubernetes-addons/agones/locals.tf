@@ -2,13 +2,13 @@ locals {
   name      = "agones"
   namespace = "agones-system"
 
+  # https://github.com/googleforgames/agones/blob/main/install/helm/agones/Chart.yaml
   default_helm_config = {
     name               = local.name
     chart              = local.name
     repository         = "https://agones.dev/chart/stable"
-    version            = "1.23.0"
+    version            = "1.27.0"
     namespace          = local.namespace
-    timeout            = "1200"
     description        = "Agones Gaming Server Helm Chart deployment configuration"
     values             = local.default_helm_values
     gameserver_minport = 7000
