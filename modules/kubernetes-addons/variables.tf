@@ -723,6 +723,18 @@ variable "cert_manager_kubernetes_svc_image_pull_secrets" {
   default     = []
 }
 
+variable "enable_cert_manager_istio_csr" {
+  description = "Enable Cert Manager istio-csr add-on"
+  type        = bool
+  default     = false
+}
+
+variable "cert_manager_istio_csr_helm_config" {
+  description = "Cert Manager Istio CSR Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------Argo Rollouts ADDON-------------
 variable "enable_argo_rollouts" {
   description = "Enable Argo Rollouts add-on"

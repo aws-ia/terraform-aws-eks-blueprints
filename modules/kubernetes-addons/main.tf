@@ -207,6 +207,14 @@ module "cert_manager_csi_driver" {
   addon_context     = local.addon_context
 }
 
+module "cert_manager_istio_csr" {
+  count             = var.enable_cert_manager_istio_csr ? 1 : 0
+  source            = "./cert-manager-istio-csr"
+  helm_config       = var.cert_manager_istio_csr_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "cluster_autoscaler" {
   source = "./cluster-autoscaler"
 
