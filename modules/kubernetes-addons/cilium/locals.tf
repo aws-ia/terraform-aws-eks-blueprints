@@ -4,7 +4,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://helm.cilium.io/"
-    version     = "1.12.1"
+    version     = "1.12.3"
     namespace   = "kube-system"
     values      = local.default_helm_values
     description = "cilium helm Chart deployment configuration"
