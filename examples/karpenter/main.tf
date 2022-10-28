@@ -171,7 +171,7 @@ resource "kubectl_manifest" "datadog_agent" {
       name: datadog
       namespace: datadog-operator
     spec:
-      clusterName: ${module.eks_blueprints.eks_cluster_id}
+      clusterName: ${module.eks.cluster_id}
       credentials:
         apiSecret:
           secretName: ${kubernetes_secret_v1.datadog_api_key.metadata[0].name}

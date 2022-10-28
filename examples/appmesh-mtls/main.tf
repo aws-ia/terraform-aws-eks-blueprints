@@ -3,29 +3,29 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
 
 provider "kubectl" {
   apply_retry_count      = 10
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   load_config_file       = false
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
+  name = module.eks.cluster_id
 }
 
 data "aws_availability_zones" "available" {}
@@ -48,28 +48,24 @@ locals {
 # EKS Blueprints
 #---------------------------------------------------------------
 
-module "eks_blueprints" {
-  source = "../.."
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 18.30"
 
-  cluster_name    = local.name
-  cluster_version = "1.23"
+  cluster_name              = local.name
+  cluster_version           = "1.23"
+  cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
-  managed_node_groups = {
-    this = {
-      node_group_name = local.name
-      instance_types  = ["m5.large"]
-      subnet_ids      = module.vpc.private_subnets
+  eks_managed_node_groups = {
+    default = {
+      instance_types = ["m5.large"]
 
       min_size     = 1
-      max_size     = 2
+      max_size     = 3
       desired_size = 1
-
-      update_config = [{
-        max_unavailable_percentage = 30
-      }]
     }
   }
 
@@ -79,10 +75,10 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
-  eks_oidc_provider    = module.eks_blueprints.oidc_provider
-  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
+  eks_cluster_id       = module.eks.cluster_id
+  eks_cluster_endpoint = module.eks.cluster_endpoint
+  eks_oidc_provider    = module.eks.oidc_provider
+  eks_cluster_version  = module.eks.cluster_version
   eks_cluster_domain   = var.eks_cluster_domain
 
   enable_amazon_eks_vpc_cni    = true
@@ -141,7 +137,7 @@ resource "kubectl_manifest" "cluster_pca_issuer" {
     kind       = "AWSPCAClusterIssuer"
 
     metadata = {
-      name = module.eks_blueprints.eks_cluster_id
+      name = module.eks.cluster_id
     }
 
     spec = {
@@ -169,7 +165,7 @@ resource "kubectl_manifest" "example_pca_certificate" {
       issuerRef = {
         group = "awspca.cert-manager.io"
         kind  = "AWSPCAClusterIssuer"
-        name : module.eks_blueprints.eks_cluster_id
+        name : module.eks.cluster_id
       }
       renewBefore = "360h0m0s"
       # This is the name with which the K8 Secret will be available
@@ -218,13 +214,11 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = local.tags

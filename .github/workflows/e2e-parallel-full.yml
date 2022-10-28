@@ -34,7 +34,6 @@ jobs:
           - example_path: examples/fargate-serverless
           # - example_path: examples/fully-private-eks-cluster # skipping until issue #711
           - example_path: examples/gitops/argocd
-          # - example_path: examples/ingress-controllers/nginx # ignoring due to https://github.com/kubernetes-sigs/aws-load-balancer-controller/issues/1629
           - example_path: examples/ipv6-eks-cluster
           - example_path: examples/karpenter
           - example_path: examples/multi-tenancy-with-teams

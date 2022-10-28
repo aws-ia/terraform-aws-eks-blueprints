@@ -1,6 +1,5 @@
 provider "aws" {
   region = var.region
-  alias  = "default"
 }
 
 data "aws_availability_zones" "available" {}
@@ -18,12 +17,12 @@ locals {
     Blueprint  = local.vpc_name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
-
 }
 
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
 module "cloud9_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
@@ -71,7 +70,6 @@ module "aws_vpc" {
   default_security_group_tags   = { Name = "${local.vpc_name}-default" }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.vpc_name}" = "shared"
     "kubernetes.io/role/internal-elb"         = 1
   }
 
@@ -97,7 +95,6 @@ module "aws_vpc" {
       protocol    = -1
       cidr_blocks = "0.0.0.0/0"
   }]
-
 }
 
 module "vpc_endpoints_sg" {
