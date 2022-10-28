@@ -237,6 +237,16 @@ module "crossplane" {
   addon_context    = local.addon_context
 }
 
+module "datadog_operator" {
+  source = "./datadog-operator"
+
+  count = var.enable_datadog_operator ? 1 : 0
+
+  helm_config       = var.datadog_operator_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "external_dns" {
   source = "./external-dns"
 
@@ -379,6 +389,15 @@ module "spark_k8s_operator" {
   helm_config       = var.spark_k8s_operator_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+}
+
+module "sysdig_agent" {
+  source  = "sysdiglabs/sysdig-addon/eksblueprints"
+  version = "0.0.1"
+
+  count         = var.enable_sysdig_agent ? 1 : 0
+  helm_config   = var.sysdig_agent_helm_config
+  addon_context = local.addon_context
 }
 
 module "tetrate_istio" {
@@ -680,8 +699,10 @@ module "local_volume_provisioner" {
 }
 
 module "nvidia_device_plugin" {
-  count             = var.enable_nvidia_device_plugin ? 1 : 0
-  source            = "./nvidia-device-plugin"
+  source = "./nvidia-device-plugin"
+
+  count = var.enable_nvidia_device_plugin ? 1 : 0
+
   helm_config       = var.nvidia_device_plugin_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
