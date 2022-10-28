@@ -24,6 +24,6 @@ terraform {
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"
   #   region = "us-west-2"
-  #   key    = "e2e/crossplane/terraform.tfstate"
+  #   key    = "e2e/appmesh-mtls/terraform.tfstate"
   # }
 }
