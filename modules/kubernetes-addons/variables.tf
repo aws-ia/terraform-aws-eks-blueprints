@@ -193,6 +193,25 @@ variable "coredns_autoscaler_helm_config" {
   default     = {}
 }
 
+#-----------AWS Appmesh-------------
+variable "enable_appmesh_controller" {
+  description = "Enable AppMesh add-on"
+  type        = bool
+  default     = false
+}
+
+variable "appmesh_helm_config" {
+  description = "AppMesh Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "appmesh_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
+}
+
 #-----------Crossplane ADDON-------------
 variable "enable_crossplane" {
   description = "Enable Crossplane add-on"

@@ -9,6 +9,7 @@ def get_examples():
     returning a string formatted json array of the example directories minus those that are excluded
     """
     exclude = {
+        'examples/appmesh-mtls',  # excluded until Rout53 is setup
         'examples/eks-cluster-with-external-dns',  # excluded until Rout53 is setup
         'examples/ci-cd/gitlab-ci-cd',  # excluded since GitLab auth, backend, etc. required
         'examples/fully-private-eks-cluster/vpc',  # skipping until issue #711 is addressed
