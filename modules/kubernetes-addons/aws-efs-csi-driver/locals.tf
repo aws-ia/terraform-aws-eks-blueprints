@@ -3,13 +3,13 @@ locals {
   service_account_name = "efs-csi-sa"
   namespace            = "kube-system"
 
+  # https://github.com/kubernetes-sigs/aws-efs-csi-driver/blob/master/charts/aws-efs-csi-driver/Chart.yaml
   default_helm_config = {
     name        = local.name
     chart       = local.name
     repository  = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
-    version     = "2.2.6"
+    version     = "2.2.9"
     namespace   = local.namespace
-    values      = []
     description = "The AWS EFS CSI driver Helm chart deployment configuration"
   }
 

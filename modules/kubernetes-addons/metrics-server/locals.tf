@@ -1,6 +1,7 @@
 locals {
   name = "metrics-server"
 
+  # https://github.com/kubernetes-sigs/metrics-server/blob/master/charts/metrics-server/Chart.yaml
   default_helm_config = {
     name        = local.name
     chart       = local.name
@@ -8,8 +9,6 @@ locals {
     version     = "3.8.2"
     namespace   = "kube-system"
     description = "Metric server helm Chart deployment configuration"
-    values      = []
-    timeout     = "1200"
   }
 
   helm_config = merge(
