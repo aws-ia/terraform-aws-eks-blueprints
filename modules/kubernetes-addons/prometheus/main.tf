@@ -61,7 +61,6 @@ module "helm_addon" {
     }
   ] : []
 
-  irsa_config   = null
   addon_context = var.addon_context
 }
 

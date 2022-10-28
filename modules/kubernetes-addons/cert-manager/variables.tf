@@ -47,5 +47,12 @@ variable "addon_context" {
     eks_oidc_provider_arn          = string
     tags                           = map(string)
     irsa_iam_role_path             = string
+    irsa_iam_permissions_boundary  = string
   })
+}
+
+variable "kubernetes_svc_image_pull_secrets" {
+  description = "list(string) of kubernetes imagePullSecrets"
+  type        = list(string)
+  default     = []
 }

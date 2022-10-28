@@ -12,7 +12,7 @@ This project leverages the community [terraform-aws-eks](https://github.com/terr
 
 ## Getting Started
 
-The easiest way to get started with EKS Blueprints is to follow our [Getting Started guide](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/).
+The easiest way to get started with EKS Blueprints is to follow our [Getting Started guide](https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/getting-started/).
 
 ## Documentation
 
@@ -28,10 +28,10 @@ The below demonstrates how you can leverage EKS Blueprints to deploy an EKS clus
 
 ```hcl
 module "eks_blueprints" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.0.2"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.12.0"
 
   # EKS CLUSTER
-  cluster_version           = "1.21"
+  cluster_version           = "1.23"
   vpc_id                    = "<vpcid>"                                      # Enter VPC ID
   private_subnet_ids        = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]     # Enter Private Subnet IDs
 
@@ -45,11 +45,8 @@ module "eks_blueprints" {
   }
 }
 
-#--------------------------------------------
-# Deploy Kubernetes Add-ons with sub module
-#--------------------------------------------
-module "eks-blueprints-kubernetes-addons" {
-    source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
+module "eks_blueprints_kubernetes_addons" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.12.0"
 
     eks_cluster_id                        = module.eks-blueprints.eks_cluster_id
 
@@ -86,12 +83,12 @@ The code above will provision the following:
 
 EKS Blueprints makes it easy to provision a wide range of popular Kubernetes add-ons into an EKS cluster. By default, the [Terraform Helm provider](https://github.com/hashicorp/terraform-provider-helm) is used to deploy add-ons with publicly available [Helm Charts](https://artifacthub.io/).EKS Blueprints provides support for leveraging self-hosted Helm Chart as well.
 
-For complete documentation on deploying add-ons, please visit our [add-on documentation](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/)
+For complete documentation on deploying add-ons, please visit our [add-on documentation](https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/add-ons/)
 
 ## Submodules
 
 The root module calls into several submodules which provides support for deploying and integrating a number of external AWS services that can be used in concert with Amazon EKS.
-This includes Amazon Managed Prometheus and EMR on EKS. For complete documentation on deploying external services, please visit our [submodules documentation](https://aws-ia.github.io/terraform-aws-eks-blueprints/modules/).
+This includes Amazon Managed Prometheus and EMR on EKS. For complete documentation on deploying external services, please visit our [submodules documentation](https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/modules/emr-on-eks/).
 
 ## Motivation
 
@@ -108,8 +105,6 @@ To post feedback, submit feature ideas, or report bugs, please use the [Issues s
 For architectural details, step-by-step instructions, and customization options, see our [documentation site](https://aws-ia.github.io/terraform-aws-eks-blueprints/).
 
 If you are interested in contributing to EKS Blueprints, see the [Contribution guide](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/CONTRIBUTING.md).
-
----
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -185,7 +180,7 @@ If you are interested in contributing to EKS Blueprints, see the [Contribution g
 | <a name="input_cluster_service_ipv4_cidr"></a> [cluster\_service\_ipv4\_cidr](#input\_cluster\_service\_ipv4\_cidr) | The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks | `string` | `null` | no |
 | <a name="input_cluster_service_ipv6_cidr"></a> [cluster\_service\_ipv6\_cidr](#input\_cluster\_service\_ipv6\_cidr) | The IPV6 Service CIDR block to assign Kubernetes service IP addresses | `string` | `null` | no |
 | <a name="input_cluster_timeouts"></a> [cluster\_timeouts](#input\_cluster\_timeouts) | Create, update, and delete timeout configurations for the cluster | `map(string)` | `{}` | no |
-| <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Kubernetes `<major>.<minor>` version to use for the EKS cluster (i.e.: `1.22`) | `string` | `"1.22"` | no |
+| <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Kubernetes `<major>.<minor>` version to use for the EKS cluster (i.e.: `1.23`) | `string` | `"1.23"` | no |
 | <a name="input_control_plane_subnet_ids"></a> [control\_plane\_subnet\_ids](#input\_control\_plane\_subnet\_ids) | A list of subnet IDs where the EKS cluster control plane (ENIs) will be provisioned. Used for expanding the pool of subnets used by nodes/node groups without replacing the EKS control plane | `list(string)` | `[]` | no |
 | <a name="input_create_cloudwatch_log_group"></a> [create\_cloudwatch\_log\_group](#input\_create\_cloudwatch\_log\_group) | Determines whether a log group is created by this module for the cluster logs. If not, AWS will automatically create one if logging is enabled | `bool` | `false` | no |
 | <a name="input_create_cluster_security_group"></a> [create\_cluster\_security\_group](#input\_create\_cluster\_security\_group) | Toggle to create or assign cluster security group | `bool` | `true` | no |

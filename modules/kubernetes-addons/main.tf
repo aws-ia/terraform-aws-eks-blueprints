@@ -1,11 +1,19 @@
 #-----------------AWS Managed EKS Add-ons----------------------
 
 module "aws_vpc_cni" {
-  count         = var.enable_amazon_eks_vpc_cni ? 1 : 0
-  source        = "./aws-vpc-cni"
-  addon_config  = var.amazon_eks_vpc_cni_config
+  source = "./aws-vpc-cni"
+
+  count = var.enable_amazon_eks_vpc_cni ? 1 : 0
+
+  enable_ipv6 = var.enable_ipv6
+  addon_config = merge(
+    {
+      kubernetes_version = local.eks_cluster_version
+    },
+    var.amazon_eks_vpc_cni_config,
+  )
+
   addon_context = local.addon_context
-  enable_ipv6   = var.enable_ipv6
 }
 
 module "aws_coredns" {
@@ -36,20 +44,54 @@ module "aws_coredns" {
       image_registry = local.amazon_container_image_registry_uris[data.aws_region.current.name]
     }
   )
+
+  # CoreDNS cluster proportioanl autoscaler
+  enable_cluster_proportional_autoscaler      = var.enable_coredns_cluster_proportional_autoscaler
+  cluster_proportional_autoscaler_helm_config = var.coredns_cluster_proportional_autoscaler_helm_config
+
+  remove_default_coredns_deployment      = var.remove_default_coredns_deployment
+  eks_cluster_certificate_authority_data = data.aws_eks_cluster.eks_cluster.certificate_authority[0].data
 }
 
 module "aws_kube_proxy" {
-  count         = var.enable_amazon_eks_kube_proxy ? 1 : 0
-  source        = "./aws-kube-proxy"
-  addon_config  = var.amazon_eks_kube_proxy_config
+  source = "./aws-kube-proxy"
+
+  count = var.enable_amazon_eks_kube_proxy ? 1 : 0
+
+  addon_config = merge(
+    {
+      kubernetes_version = local.eks_cluster_version
+    },
+    var.amazon_eks_kube_proxy_config,
+  )
+
   addon_context = local.addon_context
 }
 
 module "aws_ebs_csi_driver" {
-  count         = var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
-  source        = "./aws-ebs-csi-driver"
-  addon_config  = var.amazon_eks_aws_ebs_csi_driver_config
+  source = "./aws-ebs-csi-driver"
+
+  count = var.enable_amazon_eks_aws_ebs_csi_driver || var.enable_self_managed_aws_ebs_csi_driver ? 1 : 0
+
+  # Amazon EKS aws-ebs-csi-driver addon
+  enable_amazon_eks_aws_ebs_csi_driver = var.enable_amazon_eks_aws_ebs_csi_driver
+  addon_config = merge(
+    {
+      kubernetes_version = local.eks_cluster_version
+    },
+    var.amazon_eks_aws_ebs_csi_driver_config,
+  )
+
   addon_context = local.addon_context
+
+  # Self-managed aws-ebs-csi-driver addon via Helm chart
+  enable_self_managed_aws_ebs_csi_driver = var.enable_self_managed_aws_ebs_csi_driver
+  helm_config = merge(
+    {
+      kubernetes_version = local.eks_cluster_version
+    },
+    var.self_managed_aws_ebs_csi_driver_helm_config,
+  )
 }
 
 #-----------------Kubernetes Add-ons----------------------
@@ -61,6 +103,13 @@ module "agones" {
   eks_worker_security_group_id = var.eks_worker_security_group_id
   manage_via_gitops            = var.argocd_manage_add_ons
   addon_context                = local.addon_context
+}
+
+module "airflow" {
+  count         = var.enable_airflow ? 1 : 0
+  source        = "./airflow"
+  helm_config   = var.airflow_helm_config
+  addon_context = local.addon_context
 }
 
 module "argocd" {
@@ -103,6 +152,7 @@ module "aws_for_fluent_bit" {
   source                   = "./aws-for-fluentbit"
   helm_config              = var.aws_for_fluentbit_helm_config
   irsa_policies            = var.aws_for_fluentbit_irsa_policies
+  create_cw_log_group      = var.aws_for_fluentbit_create_cw_log_group
   cw_log_group_name        = var.aws_for_fluentbit_cw_log_group_name
   cw_log_group_retention   = var.aws_for_fluentbit_cw_log_group_retention
   cw_log_group_kms_key_arn = var.aws_for_fluentbit_cw_log_group_kms_key_arn
@@ -145,15 +195,24 @@ module "appmesh_controller" {
 }
 
 module "cert_manager" {
-  count                       = var.enable_cert_manager ? 1 : 0
-  source                      = "./cert-manager"
-  helm_config                 = var.cert_manager_helm_config
-  manage_via_gitops           = var.argocd_manage_add_ons
-  irsa_policies               = var.cert_manager_irsa_policies
-  addon_context               = local.addon_context
-  domain_names                = var.cert_manager_domain_names
-  install_letsencrypt_issuers = var.cert_manager_install_letsencrypt_issuers
-  letsencrypt_email           = var.cert_manager_letsencrypt_email
+  count                             = var.enable_cert_manager ? 1 : 0
+  source                            = "./cert-manager"
+  helm_config                       = var.cert_manager_helm_config
+  manage_via_gitops                 = var.argocd_manage_add_ons
+  irsa_policies                     = var.cert_manager_irsa_policies
+  addon_context                     = local.addon_context
+  domain_names                      = var.cert_manager_domain_names
+  install_letsencrypt_issuers       = var.cert_manager_install_letsencrypt_issuers
+  letsencrypt_email                 = var.cert_manager_letsencrypt_email
+  kubernetes_svc_image_pull_secrets = var.cert_manager_kubernetes_svc_image_pull_secrets
+}
+
+module "cert_manager_csi_driver" {
+  count             = var.enable_cert_manager_csi_driver ? 1 : 0
+  source            = "./cert-manager-csi-driver"
+  helm_config       = var.cert_manager_csi_driver_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "cluster_autoscaler" {
@@ -184,6 +243,16 @@ module "crossplane" {
   account_id       = data.aws_caller_identity.current.account_id
   aws_partition    = data.aws_partition.current.id
   addon_context    = local.addon_context
+}
+
+module "datadog_operator" {
+  source = "./datadog-operator"
+
+  count = var.enable_datadog_operator ? 1 : 0
+
+  helm_config       = var.datadog_operator_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "external_dns" {
@@ -261,9 +330,11 @@ module "metrics_server" {
 }
 
 module "ondat" {
-  count             = var.enable_ondat ? 1 : 0
-  source            = "ondat/ondat-addon/eksblueprints"
-  version           = "0.1.1"
+  source  = "ondat/ondat-addon/eksblueprints"
+  version = "0.1.2"
+
+  count = var.enable_ondat ? 1 : 0
+
   helm_config       = var.ondat_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
@@ -284,6 +355,13 @@ module "kube_prometheus_stack" {
   addon_context = local.addon_context
 }
 
+module "portworx" {
+  count         = var.enable_portworx ? 1 : 0
+  source        = "portworx/portworx-addon/eksblueprints"
+  version       = "0.0.6"
+  helm_config   = var.portworx_helm_config
+  addon_context = local.addon_context
+}
 module "prometheus" {
   count       = var.enable_prometheus ? 1 : 0
   source      = "./prometheus"
@@ -293,6 +371,14 @@ module "prometheus" {
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
   manage_via_gitops                    = var.argocd_manage_add_ons
   addon_context                        = local.addon_context
+}
+
+module "reloader" {
+  count             = var.enable_reloader ? 1 : 0
+  source            = "./reloader"
+  helm_config       = var.reloader_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "spark_history_server" {
@@ -313,10 +399,25 @@ module "spark_k8s_operator" {
   addon_context     = local.addon_context
 }
 
+module "sysdig_agent" {
+  source  = "sysdiglabs/sysdig-addon/eksblueprints"
+  version = "0.0.1"
+
+  count         = var.enable_sysdig_agent ? 1 : 0
+  helm_config   = var.sysdig_agent_helm_config
+  addon_context = local.addon_context
+}
+
 module "tetrate_istio" {
-  count                = var.enable_tetrate_istio ? 1 : 0
-  source               = "tetratelabs/tetrate-istio-addon/eksblueprints"
-  version              = "0.0.7"
+  # source  = "tetratelabs/tetrate-istio-addon/eksblueprints"
+  # version = "0.0.7"
+
+  # TODO - remove local source and revert to remote once
+  # https://github.com/tetratelabs/terraform-eksblueprints-tetrate-istio-addon/pull/12  is merged
+  source = "./tetrate-istio"
+
+  count = var.enable_tetrate_istio ? 1 : 0
+
   distribution         = var.tetrate_istio_distribution
   distribution_version = var.tetrate_istio_version
   install_base         = var.tetrate_istio_install_base
@@ -344,11 +445,10 @@ module "vault" {
 
   # See https://registry.terraform.io/modules/hashicorp/hashicorp-vault-eks-addon/aws/
   source  = "hashicorp/hashicorp-vault-eks-addon/aws"
-  version = "0.9.0"
+  version = "1.0.0-rc2"
 
   helm_config       = var.vault_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = local.addon_context
 }
 
 module "vpa" {
@@ -424,8 +524,9 @@ module "opentelemetry_operator" {
 }
 
 module "adot_collector_java" {
-  count  = var.enable_adot_collector_java ? 1 : 0
   source = "./adot-collector-java"
+
+  count = var.enable_adot_collector_java ? 1 : 0
 
   helm_config   = var.adot_collector_java_helm_config
   addon_context = local.addon_context
@@ -439,8 +540,9 @@ module "adot_collector_java" {
 }
 
 module "adot_collector_haproxy" {
-  count  = var.enable_adot_collector_haproxy ? 1 : 0
   source = "./adot-collector-haproxy"
+
+  count = var.enable_adot_collector_haproxy ? 1 : 0
 
   helm_config   = var.adot_collector_haproxy_helm_config
   addon_context = local.addon_context
@@ -454,8 +556,9 @@ module "adot_collector_haproxy" {
 }
 
 module "adot_collector_memcached" {
-  count  = var.enable_adot_collector_memcached ? 1 : 0
   source = "./adot-collector-memcached"
+
+  count = var.enable_adot_collector_memcached ? 1 : 0
 
   helm_config   = var.adot_collector_memcached_helm_config
   addon_context = local.addon_context
@@ -469,8 +572,9 @@ module "adot_collector_memcached" {
 }
 
 module "adot_collector_nginx" {
-  count  = var.enable_adot_collector_nginx ? 1 : 0
   source = "./adot-collector-nginx"
+
+  count = var.enable_adot_collector_nginx ? 1 : 0
 
   helm_config   = var.adot_collector_nginx_helm_config
   addon_context = local.addon_context
@@ -483,9 +587,138 @@ module "adot_collector_nginx" {
   ]
 }
 
-module "external_secrets" {
-  count         = var.enable_external_secrets ? 1 : 0
-  source        = "./external-secrets"
-  helm_config   = var.external_secrets_helm_config
+module "kuberay_operator" {
+  source = "./kuberay-operator"
+
+  count = var.enable_kuberay_operator ? 1 : 0
+
+  helm_config   = var.kuberay_operator_helm_config
   addon_context = local.addon_context
+}
+
+module "external_secrets" {
+  source = "./external-secrets"
+
+  count = var.enable_external_secrets ? 1 : 0
+
+  helm_config                           = var.external_secrets_helm_config
+  manage_via_gitops                     = var.argocd_manage_add_ons
+  addon_context                         = local.addon_context
+  irsa_policies                         = var.external_secrets_irsa_policies
+  external_secrets_ssm_parameter_arns   = var.external_secrets_ssm_parameter_arns
+  external_secrets_secrets_manager_arns = var.external_secrets_secrets_manager_arns
+}
+
+module "promtail" {
+  source = "./promtail"
+
+  count = var.enable_promtail ? 1 : 0
+
+  helm_config       = var.promtail_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "calico" {
+  source = "./calico"
+
+  count = var.enable_calico ? 1 : 0
+
+  helm_config       = var.calico_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "kubecost" {
+  source = "./kubecost"
+
+  count = var.enable_kubecost ? 1 : 0
+
+  helm_config       = var.kubecost_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "kyverno" {
+  source = "./kyverno"
+
+  count = var.enable_kyverno ? 1 : 0
+
+  addon_context     = local.addon_context
+  manage_via_gitops = var.argocd_manage_add_ons
+
+  kyverno_helm_config = var.kyverno_helm_config
+
+  enable_kyverno_policies      = var.enable_kyverno_policies
+  kyverno_policies_helm_config = var.kyverno_policies_helm_config
+
+  enable_kyverno_policy_reporter      = var.enable_kyverno_policy_reporter
+  kyverno_policy_reporter_helm_config = var.kyverno_policy_reporter_helm_config
+}
+
+module "smb_csi_driver" {
+  source = "./smb-csi-driver"
+
+  count = var.enable_smb_csi_driver ? 1 : 0
+
+  helm_config       = var.smb_csi_driver_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "chaos_mesh" {
+  source = "./chaos-mesh"
+
+  count = var.enable_chaos_mesh ? 1 : 0
+
+  helm_config       = var.chaos_mesh_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "cilium" {
+  source = "./cilium"
+
+  count = var.enable_cilium ? 1 : 0
+
+  helm_config       = var.cilium_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+
+}
+
+module "gatekeeper" {
+  source = "./gatekeeper"
+
+  count = var.enable_gatekeeper ? 1 : 0
+
+  helm_config       = var.gatekeeper_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "local_volume_provisioner" {
+  source = "./local-volume-provisioner"
+
+  count = var.enable_local_volume_provisioner ? 1 : 0
+
+  helm_config   = var.local_volume_provisioner_helm_config
+  addon_context = local.addon_context
+}
+
+module "nvidia_device_plugin" {
+  source = "./nvidia-device-plugin"
+
+  count = var.enable_nvidia_device_plugin ? 1 : 0
+
+  helm_config       = var.nvidia_device_plugin_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+# Sample app for demo purposes
+module "app_2048" {
+  source = "./app-2048"
+
+  count = var.enable_app_2048 ? 1 : 0
 }

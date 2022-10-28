@@ -43,7 +43,7 @@ module "eks_blueprints" {
   source = "../.."
 
   cluster_name    = local.name
-  cluster_version = "1.22"
+  cluster_version = "1.23"
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
@@ -71,6 +71,15 @@ module "eks_blueprints_kubernetes_addons" {
   velero_backup_s3_bucket = module.velero_backup_s3_bucket.s3_bucket_id
 
   enable_aws_efs_csi_driver = true
+
+  enable_self_managed_aws_ebs_csi_driver = true
+  self_managed_aws_ebs_csi_driver_helm_config = {
+    set_values = [
+      {
+        name  = "node.tolerateAllTaints"
+        value = "true"
+    }]
+  }
 
   tags = local.tags
 }
@@ -161,33 +170,55 @@ module "velero_backup_s3_bucket" {
   tags = local.tags
 }
 
-resource "aws_efs_file_system" "efs" {
-  creation_token = "efs"
-  encrypted      = true
+module "efs" {
+  source  = "terraform-aws-modules/efs/aws"
+  version = "~> 1.0"
 
-  tags = local.tags
-}
+  creation_token = local.name
+  name           = local.name
 
-resource "aws_efs_mount_target" "efs_mt" {
-  count = length(module.vpc.private_subnets)
-
-  file_system_id  = aws_efs_file_system.efs.id
-  subnet_id       = module.vpc.private_subnets[count.index]
-  security_groups = [aws_security_group.efs.id]
-}
-
-resource "aws_security_group" "efs" {
-  name        = "${local.name}-efs"
-  description = "Allow inbound NFS traffic from private subnets of the VPC"
-  vpc_id      = module.vpc.vpc_id
-
-  ingress {
-    description = "Allow NFS 2049/tcp"
-    cidr_blocks = module.vpc.private_subnets_cidr_blocks
-    from_port   = 2049
-    to_port     = 2049
-    protocol    = "tcp"
+  # Mount targets / security group
+  mount_targets = { for k, v in toset(range(length(local.azs))) :
+    element(local.azs, k) => { subnet_id = element(module.vpc.private_subnets, k) }
+  }
+  security_group_description = "${local.name} EFS security group"
+  security_group_vpc_id      = module.vpc.vpc_id
+  security_group_rules = {
+    vpc = {
+      # relying on the defaults provdied for EFS/NFS (2049/TCP + ingress)
+      description = "NFS ingress from VPC private subnets"
+      cidr_blocks = module.vpc.private_subnets_cidr_blocks
+    }
   }
 
   tags = local.tags
+}
+
+resource "kubernetes_storage_class_v1" "gp3" {
+  metadata {
+    name = "gp3"
+  }
+
+  storage_provisioner    = "ebs.csi.aws.com"
+  allow_volume_expansion = true
+  reclaim_policy         = "Delete"
+  volume_binding_mode    = "WaitForFirstConsumer"
+  parameters = {
+    encrypted = true
+    fsType    = "ext4"
+    type      = "gp3"
+  }
+}
+
+resource "kubernetes_storage_class_v1" "efs" {
+  metadata {
+    name = "efs"
+  }
+
+  storage_provisioner = "efs.csi.aws.com"
+  parameters = {
+    provisioningMode = "efs-ap" # Dynamic provisioning
+    fileSystemId     = module.efs.id
+    directoryPerms   = "700"
+  }
 }

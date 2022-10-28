@@ -7,7 +7,7 @@ locals {
     repository       = "https://kubernetes.github.io/ingress-nginx"
     version          = "4.1.4"
     namespace        = local.name
-    create_namespace = false
+    create_namespace = true
     values           = local.default_helm_values
     set              = []
     description      = "The NGINX HelmChart Ingress Controller deployment configuration"

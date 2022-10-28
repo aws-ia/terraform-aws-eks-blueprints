@@ -46,7 +46,7 @@ module "eks_blueprints" {
   source = "../.."
 
   cluster_name    = local.name
-  cluster_version = "1.22"
+  cluster_version = "1.23"
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
@@ -77,9 +77,10 @@ module "eks_blueprints_kubernetes_addons" {
   enable_amazon_eks_kube_proxy = true
 
   # Add-ons
-  enable_cert_manager         = true
-  enable_aws_privateca_issuer = true
-  aws_privateca_acmca_arn     = aws_acmpca_certificate_authority.example.arn
+  enable_cert_manager            = true
+  enable_cert_manager_csi_driver = true
+  enable_aws_privateca_issuer    = true
+  aws_privateca_acmca_arn        = aws_acmpca_certificate_authority.example.arn
 
   tags = local.tags
 }

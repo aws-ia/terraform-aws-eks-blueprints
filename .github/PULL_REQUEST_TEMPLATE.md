@@ -8,6 +8,7 @@ Consult the [CONTRIBUTING](https://github.com/aws-ia/terraform-aws-eks-blueprint
 ### Motivation
 
 <!-- What inspired you to submit this pull request? -->
+- Resolves #<issue-number>
 
 ### More
 
@@ -17,7 +18,9 @@ Consult the [CONTRIBUTING](https://github.com/aws-ia/terraform-aws-eks-blueprint
 - [ ] Yes, I have updated the [docs](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/docs) for this feature
 - [ ] Yes, I ran `pre-commit run -a` with this PR
 
-**Note**: Not all the PRs required examples and docs except a new pattern or add-on added.
+**Note**: Not all the PRs require a new example and/or doc page. In general:
+- Use an existing example when possible to demonstrate a new addons usage
+- A new docs page under `docs/add-ons/*` is required for new a new addon
 
 ### For Moderators
 

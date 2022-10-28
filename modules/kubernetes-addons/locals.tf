@@ -32,7 +32,19 @@ locals {
     kubernetesDashboard       = var.enable_kubernetes_dashboard ? module.kubernetes_dashboard[0].argocd_gitops_config : null
     awsCloudWatchMetrics      = var.enable_aws_cloudwatch_metrics ? module.aws_cloudwatch_metrics[0].argocd_gitops_config : null
     externalDns               = var.enable_external_dns ? module.external_dns[0].argocd_gitops_config : null
+    externalSecrets           = var.enable_external_secrets ? module.external_secrets[0].argocd_gitops_config : null
     velero                    = var.enable_velero ? module.velero[0].argocd_gitops_config : null
+    promtail                  = var.enable_promtail ? module.promtail[0].argocd_gitops_config : null
+    calico                    = var.enable_calico ? module.calico[0].argocd_gitops_config : null
+    kubecost                  = var.enable_kubecost ? module.kubecost[0].argocd_gitops_config : null
+    smb_csi_driver            = var.enable_smb_csi_driver ? module.smb_csi_driver[0].argocd_gitops_config : null
+    chaos_mesh                = var.enable_chaos_mesh ? module.chaos_mesh[0].argocd_gitops_config : null
+    cilium                    = var.enable_cilium ? module.cilium[0].argocd_gitops_config : null
+    gatekeeper                = var.enable_gatekeeper ? module.gatekeeper[0].argocd_gitops_config : null
+    kyverno                   = var.enable_kyverno ? { enable = true } : null
+    kyverno_policies          = var.enable_kyverno ? { enable = true } : null
+    kyverno_policy_reporter   = var.enable_kyverno ? { enable = true } : null
+    nvidiaDevicePlugin        = var.enable_nvidia_device_plugin ? module.nvidia_device_plugin[0].argocd_gitops_config : null
   }
 
   addon_context = {
@@ -61,6 +73,7 @@ locals {
       ap-south-1     = "602401143452.dkr.ecr.ap-south-1.amazonaws.com",
       ap-southeast-1 = "602401143452.dkr.ecr.ap-southeast-1.amazonaws.com",
       ap-southeast-2 = "602401143452.dkr.ecr.ap-southeast-2.amazonaws.com",
+      ap-southeast-3 = "296578399912.dkr.ecr.ap-southeast-3.amazonaws.com",
       ca-central-1   = "602401143452.dkr.ecr.ca-central-1.amazonaws.com",
       cn-north-1     = "918309763551.dkr.ecr.cn-north-1.amazonaws.com.cn",
       cn-northwest-1 = "961992271922.dkr.ecr.cn-northwest-1.amazonaws.com.cn",

@@ -44,7 +44,7 @@ module "eks" {
   version = "~> 18.0"
 
   cluster_name                    = local.name
-  cluster_version                 = "1.22"
+  cluster_version                 = "1.23"
   cluster_endpoint_private_access = true
 
   vpc_id     = module.vpc.vpc_id

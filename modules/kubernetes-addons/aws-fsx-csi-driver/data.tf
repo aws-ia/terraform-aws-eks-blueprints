@@ -34,6 +34,7 @@ data "aws_iam_policy_document" "aws_fsx_csi_driver" {
       "fsx:CreateFileSystem",
       "fsx:DeleteFileSystem",
       "fsx:DescribeFileSystems",
+      "fsx:UpdateFileSystem",
       "fsx:TagResource",
     ]
   }

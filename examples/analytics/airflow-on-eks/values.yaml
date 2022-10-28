@@ -1,0 +1,264 @@
+#----------------------------------------------------
+# Security context for airflow
+#----------------------------------------------------
+securityContext:
+  fsGroup: 65534
+
+airflowVersion: "2.3.3"
+
+executor: "KubernetesExecutor"
+#----------------------------------------------------
+# Ingress configuration with AWS LB Controller
+# Checkout this doc for more annotations https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/guide/ingress/annotations/
+#----------------------------------------------------
+ingress:
+  web:
+    enabled: true
+    annotations:
+      alb.ingress.kubernetes.io/group.name: dataengineering
+      alb.ingress.kubernetes.io/target-type: instance
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+      alb.ingress.kubernetes.io/healthcheck-path: '/health'
+      # Enable the following if you have public/internal domain e.g., https://mycompany.com/
+      # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+      # alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:....................."
+
+    path: '/'
+    # The pathType for the above path (used only with Kubernetes v1.19 and above)
+    pathType: "Prefix"
+    # The hostnames or hosts configuration for the web Ingress
+    hosts:
+      - name: ""
+        tls:
+          # Enable TLS termination for the web Ingress
+          enabled: false
+          # the name of a pre-created Secret containing a TLS private key and certificate
+          secretName: ""
+    ingressClassName: alb
+
+#----------------------------------------------------
+# Airflow database
+#----------------------------------------------------
+data:
+  metadataConnection:
+    user: ${airflow_db_user}
+    pass:
+    protocol: postgresql
+    host: ${airflow_db_host}
+    port: 5432
+    db: ${airflow_db_name}
+    sslmode: disable
+#----------------------------------------------------
+# Airflow Worker Config
+#----------------------------------------------------
+workers:
+  serviceAccount:
+    create: false
+    name: ${airflow_service_account}
+  persistence:
+    enabled: false
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+#----------------------------------------------------
+# Airflow scheduler settings
+#----------------------------------------------------
+scheduler:
+  replicas: 2
+  serviceAccount:
+    create: false
+    name: ${airflow_service_account}
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 512Mi
+
+#----------------------------------------------------
+# Airflow database migration job settings
+# Use -> airflow db reset -y for migration issues
+#----------------------------------------------------
+migrateDatabaseJob:
+  enabled: true
+  command: ~
+  args:
+    - "bash"
+    - "-c"
+    # The format below is necessary to get `helm lint` happy
+    - |-
+      exec \
+      airflow {{ semverCompare ">=2.0.0" .Values.airflowVersion | ternary "db upgrade" "upgradedb" }}
+#----------------------------------------------------
+# Airflow webserver settings
+#----------------------------------------------------
+webserverSecretKeySecretName: ${webserver_secret_name}
+
+webserver:
+  # Number of webservers
+  replicas: 2
+  serviceAccount:
+    create: false
+    name: ${airflow_service_account}
+  resources:
+    limits:
+      cpu: 200m
+      memory: 1Gi
+    requests:
+      cpu: 200m
+      memory: 1Gi
+  allowPodLogReading: true
+  livenessProbe:
+    initialDelaySeconds: 15
+    timeoutSeconds: 30
+    failureThreshold: 20
+    periodSeconds: 5
+
+  readinessProbe:
+    initialDelaySeconds: 15
+    timeoutSeconds: 30
+    failureThreshold: 20
+    periodSeconds: 5
+
+  # Configuring Ingress for Airflow WebUi hence the service type is changed to NodePort
+  service:
+    type: NodePort
+    ports:
+      - name: airflow-ui
+        port: "{{ .Values.ports.airflowUI }}"
+#----------------------------------------------------
+# Airflow Triggerer Config
+#----------------------------------------------------
+triggerer:
+  enabled: true
+
+#----------------------------------------------------
+# Airflow Dag Processor Config
+#----------------------------------------------------
+dagProcessor:
+  enabled: false
+
+#----------------------------------------------------
+# StatsD settings
+#----------------------------------------------------
+statsd:
+  enabled: true
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+#----------------------------------------------------
+# PgBouncer settings
+#----------------------------------------------------
+pgbouncer:
+  enabled: true
+  auth_type: scram-sha-256
+
+#----------------------------------------------------
+# Disable local postgresql for external RDS implementation
+#----------------------------------------------------
+postgresql:
+  enabled: false
+
+#----------------------------------------------------
+# Config for S3 remote logging
+#----------------------------------------------------
+config:
+  core:
+    dags_folder: '{{ include "airflow_dags" . }}'
+    load_examples: 'False'
+    executor: '{{ .Values.executor }}'
+    colored_console_log: 'True'
+    remote_logging: 'True'
+
+  # Logging configured to S3 bucket. You can replace the bucket name with your own
+  logging:
+    remote_logging: 'True'
+    logging_level: 'INFO'
+    colored_console_log: 'True'
+    remote_base_log_folder: "s3://${s3_bucket_name}/airflow-logs"
+    # aws_s3_conn is the name of the connection that needs to be created using Airflow admin UI once the deployment is complete
+    # Steps can be seen in the docs link here -> https://github.com/apache/airflow/issues/25322
+    remote_log_conn_id: 'aws_s3_conn'
+    delete_worker_pods: 'False'
+    encrypt_s3_logs: 'True'
+  metrics:
+    statsd_on: '{{ ternary "True" "False" .Values.statsd.enabled }}'
+    statsd_port: 9125
+    statsd_prefix: airflow
+    statsd_host: '{{ printf "%s-statsd" .Release.Name }}'
+  webserver:
+    enable_proxy_fix: 'True'
+    rbac: 'True'
+  scheduler:
+    standalone_dag_processor: '{{ ternary "True" "False" .Values.dagProcessor.enabled }}'
+    statsd_on: '{{ ternary "True" "False" .Values.statsd.enabled }}'
+    statsd_port: 9125
+    statsd_prefix: airflow
+    statsd_host: '{{ printf "%s-statsd" .Release.Name }}'
+    run_duration: 41460
+  kubernetes:
+    namespace: '{{ .Release.Namespace }}'
+    airflow_configmap: '{{ include "airflow_config" . }}'
+    airflow_local_settings_configmap: '{{ include "airflow_config" . }}'
+    pod_template_file: '{{ include "airflow_pod_template_file" . }}/pod_template_file.yaml'
+    worker_container_repository: '{{ .Values.images.airflow.repository | default .Values.defaultAirflowRepository }}'
+    worker_container_tag: '{{ .Values.images.airflow.tag | default .Values.defaultAirflowTag }}'
+    multi_namespace_mode: '{{ ternary "True" "False" .Values.multiNamespaceMode }}'
+
+#----------------------------------------------------
+# Git sync
+#----------------------------------------------------
+# Mounting DAGs using Git-Sync sidecar with Persistence enabled with EFS
+# This option will use a EFS Persistent Volume Claim with an access mode of ReadWriteMany.
+# The scheduler pod will sync DAGs from a git repository onto the PVC every configured number of seconds. The other pods will read the synced DAGs.
+dags:
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClassName: efs-sc
+    accessMode: ReadWriteMany
+    existingClaim: ${efs_pvc}
+
+  # This example using a sample airflow-dags repo(airflow-dags.git) to demonstrate the GitSync Feature
+  # You can replace this with your own internal private repo and provide subPath for your DAGS folder
+  # Multiple folders can be created for each sub tenant under DAGS folder
+  gitSync:
+    enabled: true
+    repo: git@github.com:Hyper-Mesh/airflow-dags.git
+    branch: main
+    rev: HEAD
+    depth: 1
+    maxFailures: 0
+    subPath: "dags"
+    sshKeySecret: airflow-ssh-secret
+
+# This is mandatory for gitSync feature
+# Checkout the docs for creating knownHosts key for Github https://airflow.apache.org/docs/helm-chart/stable/production-guide.html#knownhosts
+    knownHosts: |
+      github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
+
+    # Adjust the resources according to your workloads
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+
+# This is a READONLY gitSshKey for the sample workflow repo(https://github.com/Hyper-Mesh/airflow-dags) used for demo only
+# For production workloads, users can store and retrieve the private SSH Key in AWS Secrets manager for your own private repos
+extraSecrets:
+  airflow-ssh-secret:
+    data: |
+      gitSshKey: 'LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUNGd0FBQUFkemMyZ3RjbgpOaEFBQUFBd0VBQVFBQUFnRUF1NGdNMW1VQkhoSSt5a0xLMGM0c0hxUTVtVUpqYVY4QVAwSktDTTk5MFRzNG9nWWJiQW8yClBzNE8ram1NMVhESXNUUDNXcmZPNHZkSEhUUG96QUpPOTI4S1BLMTBsQ3lybVBUUVZmVGpxaHR4Z2dldWs2djFjVURNNHkKVFlsb3ZTWERxQTZvTFN2TlMwS2lhRjhKQmtrUkdlRzc0MERhUTF0Y2svRGVyT0N4YWVsQ1NWbWJsYjc1RXhQektkYmRjdQpWMEJwcVJWZHh4UGp2ZGtNbUpmZmtKT0lpS2FmUVVLc3lkUjNpVFNEUjkxUVlIS2dJbUNzcm1oVjBwY25GRGFubnFDQUh3CloraTZubFlRbmdyZGRHUVg1NTZDakpBRXl3QXg0cDJyQ0NBdlJyV1V2SEJiZVNIU2lQVGdKelFpNlhyRlFsdlhrRjZBMmsKSzBsdDJkNXVhMGhKRi95dnlLeHBTczQzeWVTK2tZZGkxOUhFMVBXdEZaNDFkMjZoYkZlZWY3bmw1MGpwT3IreG5oMjZmagp2OERROEs4RFV0RmhUTk1vVmhERWM2UDBFaTNiQ2R6VHFaYjZVdFY0KzU0UitCRCtQQURHSXpra3RmV0IwbG1pQjZ3MVpvCksxNndEUjZ5cWpFYklUeVR6UXZnbkZOcG9pNndraWhPeXAzVjc1cmZmUkx6QTZQd2pvQWxNTGN3VXIzVHhqM29ORTN0eVMKYVFvcGJNMVBHU3dqQTFtRW4rdTFSU3NyOHhmT1dJTk41TDJNc2Fwa3VlYUlBZlgzZEZTaW5STlFNS2FwWjdrUU9WMjRYYgpPeHBlRm94aVo1ZTFQQjA0UG5Oc1dMS0htaGJJRHVFeGNyTU4vMUhqRERYODF5bXp2UnEyNkNLZjBvcGh1d0NnMVE0Yi96CkVBQUFkUWRhc25sSFdySjVRQUFBQUhjM05vTFhKellRQUFBZ0VBdTRnTTFtVUJIaEkreWtMSzBjNHNIcVE1bVVKamFWOEEKUDBKS0NNOTkwVHM0b2dZYmJBbzJQczRPK2ptTTFYRElzVFAzV3JmTzR2ZEhIVFBvekFKTzkyOEtQSzEwbEN5cm1QVFFWZgpUanFodHhnZ2V1azZ2MWNVRE00eVRZbG92U1hEcUE2b0xTdk5TMEtpYUY4SkJra1JHZUc3NDBEYVExdGNrL0Rlck9DeGFlCmxDU1ZtYmxiNzVFeFB6S2RiZGN1VjBCcHFSVmR4eFBqdmRrTW1KZmZrSk9JaUthZlFVS3N5ZFIzaVRTRFI5MVFZSEtnSW0KQ3NybWhWMHBjbkZEYW5ucUNBSHdaK2k2bmxZUW5ncmRkR1FYNTU2Q2pKQUV5d0F4NHAyckNDQXZScldVdkhCYmVTSFNpUApUZ0p6UWk2WHJGUWx2WGtGNkEya0swbHQyZDV1YTBoSkYveXZ5S3hwU3M0M3llUytrWWRpMTlIRTFQV3RGWjQxZDI2aGJGCmVlZjdubDUwanBPcit4bmgyNmZqdjhEUThLOERVdEZoVE5Nb1ZoREVjNlAwRWkzYkNkelRxWmI2VXRWNCs1NFIrQkQrUEEKREdJemtrdGZXQjBsbWlCNncxWm9LMTZ3RFI2eXFqRWJJVHlUelF2Z25GTnBvaTZ3a2loT3lwM1Y3NXJmZlJMekE2UHdqbwpBbE1MY3dVcjNUeGozb05FM3R5U2FRb3BiTTFQR1N3akExbUVuK3UxUlNzcjh4Zk9XSU5ONUwyTXNhcGt1ZWFJQWZYM2RGClNpblJOUU1LYXBaN2tRT1YyNFhiT3hwZUZveGlaNWUxUEIwNFBuTnNXTEtIbWhiSUR1RXhjck1OLzFIakREWDgxeW16dlIKcTI2Q0tmMG9waHV3Q2cxUTRiL3pFQUFBQURBUUFCQUFBQ0FIUWtFaTlGWnFmRkRQWWUzNVdJWm5LanFyaHNFVDFWQk1Zbwp1OGt4Ris3WkNuM3Q0bFhMRFVWZ1FJNWZ6Z1R5VUpqT1lrYmd4MVJ4YUsyQlZJL2tiaHQzdlpOT3FZQ0xHY3NrODFJSTFHCmFwa0diRGN5OHB0Rnhya1hpcmZTZmZlR3grSHhFZDdIM2VEYVo5TFQ2TGJuMFp1QjNlY2tad2lJTUpHKy8ybDV6dWFVKysKU0pobjM3UkM2NGtFUTlPZkRLZ2swRXRUWER6SzZLVFBJNm50aFJ2NUF2bitsMnJIYkZPakxsVGZITjhKQlpwMTR3N25hSQpxck8xdXRHUnEvcnBmak52WUFBNmRqbFJmQUVsSVhuUDg2NFMwUzlVa21OV3Y0NWxyMkxjNitxUzBvYlIzeFRxQ1lXZ2dxCkpFKzhvMXFxMHFUQnF4TElRQUErL2JXTXVEelFRS0lpRWVsa0VwYWIvSHJPQThJcUFaZXlwNG5ES3doOUtaL3lqU2NOY2gKV2NPUTdJUXptck1kbm5pb1dsZmNHYURSU2x0K3FIcHNxN29SSHEyb1pDMllLTldjMWlpckM2clhsR2hHU3BBaUhkT1F6QQpnYnlsWklxQVlwM3ExUEdNbGVlOHVmUC93S05GbWdWb1VVNW03ZEF0RjBmdTVtWHAxOWcrN3FtQ0E4WloxdFpaQzZsWWxmClFVNHFQWWEvbFV3Sm9ndjVDL1Z1QmZwcGJjeTlCaXgyWnU1QzliRmd4SmVSVE8ySUJvcGRjeGY5dlBYTCtUZFZyRkRmOGwKVDlFMXNTTFNFd3ZnSmZ1dURiZlRNb1pQdEVRY3hnUjN2MjJCb2dxbnkwbmlOOTVHeHZKVUNpS3RWL2twaHdwUGxUcFc5RgpwTDhlOGtLZ3AzRCtJQ3lWTUJBQUFCQUJldVhhRUF2U3BUL3F4Q01uVkRhUVFXbjhvYzI5TVFpTkxKS1g3cTVDaGlxR2w1CjZHNjN1SzdNTXg1QStERmlWRHlFOU1EYWorejU0TkVId1A1WXZOcWt0a0RjMlpkbjVnNWdScVFNYUFlOUJQRldQdkZ6RzkKN1NxM2lDbk1COTRhbjNVTzR0VzlVUTVIM1AxWCs3RWtvanV3djlCTlpjd3k1SFVDV1pDS3dsR2dXUjl0MFY0dVNva0psTQpyb3Q2dy84eWN3emlVQmxnMDB0VWc4UUZKODhwU2VPdWxyc3k5QWNEY2FHb2txUDRLMGR4ZkZpWXRzQkNlNzd0ZHMxbUQ5CjYrRXBDVk0wNEZzNlQ4NlZOcWtQYzNCcm9TbW1EQWEzeTZYZGw1bjZ1Y0VmTFRZVTVhYmJZRlRkWUs4Q1NIVTdEdzYrT2oKVncxR1F0Qm84ZGIwVWRzQUFBRUJBUEorbk0vL1lUNDRHbWxPZ3FraFBvRG5IRi90WDM0Mk1zMms0OXozSFIvWjVOYmduRwptY2lLSHhNU1BsWU05QUl5QXp3OTRsRWt2NENlRExuOUFEa2FOSmg1eE5hd3B1WUhjaDUwWmZ6TjU2d1dEbllGZEk3SmxMCkJlWVNUeFBnZ0VNWlJaSERLWEljeHhrRUlkNGhxUnhNVTdEdlhQUDg3UEFaMUV3OUVlZVh6MEJRNXlvMDNNd0c5TVZqd1gKRldxUG9rdy8remZkVXpaM2FRb3VSNldKYUs1Z0JoYTNkaVFmbXZDY2RVZmFzMDJPakErM3BIWDJyVWJYRDRTTGFlK1VGUApmNmd0eHREYTZkWFFlZ0ZEaG5STEZRdlJVOUpCdG9xa2oxa2Mza0U2WlhTOTlCT3VoSFRRbFc2RWJtSExhbVVpcFo4eGJYCmhmclV6RGNDamp4VmtBQUFFQkFNWDV5OE84VU1tU2V4dE1Zc3JtWEkwQnNDcHNPMytPMUtKN3A0eWpRcW1lc1F4MGp5akIKRU1rdng3ZGdVbUZ2WmtuZ0kwUGFobXgxNE9hMTRrTFBWU2VUaExYQXd4ZFJLTzRnR2dEQjA1VTR6QnNWOTJScDhqaVg5NgpsMUNxRlBiaFRad2J0QkdZQ2JheDJPY0VFcHR6SmlkanNLcG5sT1JRVDBsdWp0cUluTGt4aFBBVnJkZ3Vib3BLMlA5bXhOCnhmNFg5cDN3NnlCRlNsSzVwT1hseTUvUzlGa2puaURmVnRCVEFTaVFIQUlIdktjWHo1dFNKZEZldkhramxBS24xZktjQWoKOWc1clpRVFRmK05CeWxjSkdnK1VkN0RCdG9JVGhVcWdkQ05JVld3cFhyalpiK2RQQWc3Z0NwM0FMU0NKdzA5aVNYN1g4SwpkcVlab25BSTFaa0FBQUFWZG1GeVlTNWliMjUwYUhWQVoyMWhhV3d1WTI5dEFRSURCQVVHCi0tLS0tRU5EIE9QRU5TU0ggUFJJVkFURSBLRVktLS0tLQo='
