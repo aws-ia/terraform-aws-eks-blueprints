@@ -3,6 +3,7 @@ locals {
   namespace            = "amazon-cloudwatch"
   service_account_name = "cloudwatch-agent"
 
+  # https://github.com/aws/eks-charts/blob/master/stable/aws-cloudwatch-metrics/Chart.yaml
   default_helm_config = {
     name        = local.name
     chart       = local.name

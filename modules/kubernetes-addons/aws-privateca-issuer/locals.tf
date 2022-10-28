@@ -2,18 +2,15 @@ locals {
   name                 = "aws-privateca-issuer"
   service_account_name = "${local.name}-sa"
 
+  # https://github.com/cert-manager/aws-privateca-issuer/blob/main/charts/aws-pca-issuer/Chart.yaml
   default_helm_config = {
     name        = local.name
     chart       = local.name
     repository  = "https://cert-manager.github.io/aws-privateca-issuer"
     version     = "1.2.2"
     namespace   = local.name
-    description = "AWS PCA Issuer helm Chart deployment configuration."
-    values      = local.default_helm_values
-    timeout     = "1200"
+    description = "AWS PCA Issuer helm Chart deployment configuration"
   }
-
-  default_helm_values = []
 
   helm_config = merge(
     local.default_helm_config,

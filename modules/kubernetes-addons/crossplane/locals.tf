@@ -1,11 +1,12 @@
 locals {
   namespace = "crossplane-system"
 
+  # https://github.com/crossplane/crossplane/blob/master/cluster/charts/crossplane/Chart.yaml
   default_helm_config = {
     name        = "crossplane"
     chart       = "crossplane"
     repository  = "https://charts.crossplane.io/stable/"
-    version     = "1.8.1"
+    version     = "1.10.0"
     namespace   = local.namespace
     description = "Crossplane Helm chart"
     values      = local.default_helm_values
