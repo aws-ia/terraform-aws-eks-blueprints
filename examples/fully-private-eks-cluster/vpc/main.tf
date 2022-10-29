@@ -70,7 +70,7 @@ module "aws_vpc" {
   default_security_group_tags   = { Name = "${local.vpc_name}-default" }
 
   private_subnet_tags = {
-    "kubernetes.io/role/internal-elb"         = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = local.tags
