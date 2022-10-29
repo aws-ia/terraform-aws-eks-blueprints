@@ -1,6 +1,0 @@
-nodeSelector:
-  kubernetes.io/os: ${operating_system}
-clusterName: ${eks_cluster_id}
-clusterEndpoint: ${eks_cluster_endpoint}
-aws:
-  defaultInstanceProfile: ${node_iam_instance_profile}

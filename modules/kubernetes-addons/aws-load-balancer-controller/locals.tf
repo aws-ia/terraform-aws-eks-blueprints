@@ -2,13 +2,13 @@ locals {
   name                 = "aws-load-balancer-controller"
   service_account_name = "${local.name}-sa"
 
+  # https://github.com/aws/eks-charts/blob/master/stable/aws-load-balancer-controller/Chart.yaml
   default_helm_config = {
     name        = local.name
     chart       = local.name
     repository  = "https://aws.github.io/eks-charts"
-    version     = "1.4.3"
+    version     = "1.4.5"
     namespace   = "kube-system"
-    timeout     = "1200"
     values      = local.default_helm_values
     description = "aws-load-balancer-controller Helm Chart for ingress resources"
   }

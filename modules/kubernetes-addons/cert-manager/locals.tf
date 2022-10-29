@@ -2,11 +2,12 @@ locals {
   name                 = "cert-manager"
   service_account_name = "cert-manager" # AWS PrivateCA is expecting the service account name as `cert-manager`
 
+  # https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/Chart.template.yaml
   default_helm_config = {
     name        = local.name
     chart       = local.name
     repository  = "https://charts.jetstack.io"
-    version     = "v1.9.1"
+    version     = "v1.10.0"
     namespace   = local.name
     description = "Cert Manager Add-on"
     values      = local.default_helm_values
