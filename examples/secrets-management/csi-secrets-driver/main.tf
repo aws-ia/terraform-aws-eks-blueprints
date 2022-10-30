@@ -75,6 +75,9 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks.oidc_provider
   eks_cluster_version  = module.eks.cluster_version
 
+  # Wait on the `kube-system` profile before provisioning addons
+  data_plane_wait_arn = module.eks.eks_managed_node_groups["default"].node_group_arn
+
   #K8s Add-ons
   enable_secrets_store_csi_driver              = true
   enable_secrets_store_csi_driver_provider_aws = true

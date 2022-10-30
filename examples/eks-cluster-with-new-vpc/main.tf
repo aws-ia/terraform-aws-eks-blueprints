@@ -60,13 +60,37 @@ module "eks" {
   subnet_ids = module.vpc.private_subnets
 
   node_security_group_additional_rules = {
-    ingress_nodes_alb_controller_port = {
-      description                   = "Cluster API to Node group for ALB controller webhook"
+    ingress_gatekeeper_webhook = {
+      description                   = "Gatekeeper webhook"
+      protocol                      = "tcp"
+      from_port                     = 8443
+      to_port                       = 8443
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
+    ingress_alb_controller_webhook = {
+      description                   = "ALB controller webhook"
       protocol                      = "tcp"
       from_port                     = 9443
       to_port                       = 9443
       type                          = "ingress"
       source_cluster_security_group = true
+    }
+    ingress_nodes_ephemeral = {
+      description = "Node-to-node on ephemeral ports"
+      protocol    = "tcp"
+      from_port   = 1025
+      to_port     = 65535
+      type        = "ingress"
+      self        = true
+    }
+    egress_all = {
+      description = "Allow all egress"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "egress"
+      cidr_blocks = ["0.0.0.0/0"]
     }
   }
 
@@ -90,6 +114,9 @@ module "eks_blueprints_kubernetes_addons" {
   eks_cluster_endpoint = module.eks.cluster_endpoint
   eks_oidc_provider    = module.eks.oidc_provider
   eks_cluster_version  = module.eks.cluster_version
+
+  # Wait on the `kube-system` profile before provisioning addons
+  data_plane_wait_arn = module.eks.eks_managed_node_groups["default"].node_group_arn
 
   # EKS Managed Add-ons
   enable_amazon_eks_vpc_cni            = true

@@ -81,6 +81,9 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks.oidc_provider
   eks_cluster_version  = module.eks.cluster_version
 
+  # Wait on the `kube-system` profile before provisioning addons
+  data_plane_wait_arn = module.eks.eks_managed_node_groups["default"].node_group_arn
+
   enable_crossplane = true
 
   # You can choose to install either of crossplane_aws_provider or crossplane_jet_aws_provider to work with AWS

@@ -76,6 +76,9 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks.oidc_provider
   eks_cluster_version  = module.eks.cluster_version
 
+  # Wait on the `kube-system` profile before provisioning addons
+  data_plane_wait_arn = module.eks.eks_managed_node_groups["default"].node_group_arn
+
   # EKS Managed Add-ons
   enable_amazon_eks_vpc_cni    = true
   enable_amazon_eks_coredns    = true
