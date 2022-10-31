@@ -1,6 +1,9 @@
 resource "kubernetes_namespace" "istio_system" {
   metadata {
     name = "istio-system"
+    labels = {
+      istio-injection = "enabled"
+    }
   }
 }
 
@@ -107,15 +110,6 @@ module "istiod" {
   depends_on = [module.istio-cni]
 }
 
-resource "kubernetes_namespace" "istio_ingress" {
-  metadata {
-    name = "istio-ingress"
-    labels = {
-      istio-injection = "enabled"
-    }
-  }
-}
-
 module "istio-ingressgateway" {
   source = "../helm-addon"
   count  = var.install_istio-ingressgateway ? 1 : 0
@@ -126,7 +120,7 @@ module "istio-ingressgateway" {
       chart           = "gateway"
       repository      = "https://istio-release.storage.googleapis.com/charts"
       version         = var.istio_version
-      namespace       = kubernetes_namespace.istio_ingress.metadata.0.name
+      namespace       = kubernetes_namespace.istio_system.metadata.0.name
       timeout         = 120
       cleanup_on_fail = var.cleanup_on_fail
       force_update    = var.force_update
@@ -140,5 +134,5 @@ module "istio-ingressgateway" {
   manage_via_gitops = var.manage_via_gitops
   addon_context     = var.addon_context
 
-  depends_on = [kubernetes_namespace.istio_ingress, module.istiod]
+  depends_on = [module.istiod]
 }
