@@ -294,6 +294,18 @@ module "ingress_nginx" {
   addon_context     = local.addon_context
 }
 
+module "istio" {
+  source                       = "./istio"
+  count                        = var.enable_istio ? 1 : 0
+  istio_version                = var.istio_version
+  install_istio-base           = var.install_istio-base
+  install_istio-cni            = var.install_istio-cni
+  install_istiod               = var.install_istiod
+  install_istio-ingressgateway = var.install_istio-ingressgateway
+  manage_via_gitops            = var.argocd_manage_add_ons
+  addon_context                = local.addon_context
+}
+
 module "karpenter" {
   count                     = var.enable_karpenter ? 1 : 0
   source                    = "./karpenter"

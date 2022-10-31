@@ -253,6 +253,43 @@ variable "crossplane_jet_aws_provider" {
   }
 }
 
+#-----------ISTIO ADDON------------------
+variable "enable_istio" {
+  description = "Enable Istio add-on"
+  type        = bool
+  default     = false
+}
+
+variable "istio_version" {
+  description = "Istio version"
+  type        = string
+  default     = ""
+}
+
+variable "install_istio-base" {
+  description = "Install Istio `base` Helm Chart"
+  type        = bool
+  default     = true
+}
+
+variable "install_istio-cni" {
+  description = "Install Istio `cni` Helm Chart"
+  type        = bool
+  default     = true
+}
+
+variable "install_istiod" {
+  description = "Install Istio `istiod` Helm Chart"
+  type        = bool
+  default     = true
+}
+
+variable "install_istio-ingressgateway" {
+  description = "Install Istio `gateway` Helm Chart"
+  type        = bool
+  default     = true
+}
+
 #-----------ONDAT ADDON-------------
 variable "enable_ondat" {
   description = "Enable Ondat add-on"
