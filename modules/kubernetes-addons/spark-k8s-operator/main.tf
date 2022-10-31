@@ -1,16 +1,32 @@
-module "helm_addon" {
-  source = "../helm-addon"
-
-  manage_via_gitops = var.manage_via_gitops
-  helm_config       = local.helm_config
-  addon_context     = var.addon_context
-
-  depends_on = [kubernetes_namespace_v1.this]
+locals {
+  name      = try(var.helm_config.name, "spark-operator")
+  namespace = try(var.helm_config.namespace, local.name)
 }
 
 resource "kubernetes_namespace_v1" "this" {
-  count = try(local.helm_config["create_namespace"], true) && local.helm_config["namespace"] != "kube-system" ? 1 : 0
+  count = try(var.helm_config.create_namespace, true) && local.namespace != "kube-system" ? 1 : 0
+
   metadata {
-    name = local.helm_config["namespace"]
+    name = local.namespace
   }
+}
+
+module "helm_addon" {
+  source = "../helm-addon"
+
+  # https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/charts/spark-operator-chart/Chart.yaml
+  helm_config = merge(
+    {
+      name        = local.name
+      chart       = local.name
+      repository  = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
+      version     = "1.1.26"
+      namespace   = try(kubernetes_namespace_v1.this[0].metadata[0].name, local.namespace)
+      description = "The spark_k8s_operator HelmChart Ingress Controller deployment configuration"
+    },
+    var.helm_config
+  )
+
+  manage_via_gitops = var.manage_via_gitops
+  addon_context     = var.addon_context
 }

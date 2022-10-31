@@ -9,6 +9,7 @@ module "helm_addon" {
 
   manage_via_gitops = var.manage_via_gitops
 
+  # https://github.com/kubernetes/autoscaler/blob/master/charts/cluster-autoscaler/Chart.yaml
   helm_config = merge({
     name        = local.name
     chart       = local.name

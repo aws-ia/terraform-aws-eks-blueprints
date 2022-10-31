@@ -1,16 +1,32 @@
-module "helm_addon" {
-  source = "../helm-addon"
-
-  manage_via_gitops = var.manage_via_gitops
-  helm_config       = local.helm_config
-  addon_context     = var.addon_context
-
-  depends_on = [kubernetes_namespace_v1.vpa]
+locals {
+  name      = try(var.helm_config.name, "vpa")
+  namespace = try(var.helm_config.namespace, local.name)
 }
 
 resource "kubernetes_namespace_v1" "vpa" {
-  count = try(local.helm_config["create_namespace"], true) && local.helm_config["namespace"] != "kube-system" ? 1 : 0
+  count = try(var.helm_config.create_namespace, true) && local.namespace != "kube-system" ? 1 : 0
+
   metadata {
-    name = local.helm_config["namespace"]
+    name = local.namespace
   }
+}
+
+module "helm_addon" {
+  source = "../helm-addon"
+
+  # https://github.com/FairwindsOps/charts/blob/master/stable/vpa/Chart.yaml
+  helm_config = merge(
+    {
+      name        = local.name
+      chart       = local.name
+      repository  = "https://charts.fairwinds.com/stable"
+      version     = "1.5.0"
+      namespace   = try(kubernetes_namespace_v1.vpa[0].metadata[0].name, local.namespace)
+      description = "Kubernetes Vertical Pod Autoscaler"
+    },
+    var.helm_config
+  )
+
+  manage_via_gitops = var.manage_via_gitops
+  addon_context     = var.addon_context
 }

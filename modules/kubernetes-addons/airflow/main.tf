@@ -1,11 +1,12 @@
 locals {
   name = "airflow"
 
+  # https://github.com/apache/airflow/blob/main/chart/Chart.yaml
   default_helm_config = {
     name             = local.name
     chart            = local.name
     repository       = "https://airflow.apache.org"
-    version          = "1.6.0"
+    version          = "1.7.0"
     namespace        = local.name
     create_namespace = true
     values           = [templatefile("${path.module}/values.yaml", {})]

@@ -3,13 +3,13 @@ locals {
   service_account_name = "fsx-csi-sa"
   namespace            = "kube-system"
 
+  # https://github.com/kubernetes-sigs/aws-fsx-csi-driver/blob/master/charts/aws-fsx-csi-driver/Chart.yaml
   default_helm_config = {
     name        = local.name
     chart       = local.name
     repository  = "https://kubernetes-sigs.github.io/aws-fsx-csi-driver/"
-    version     = "1.4.2"
+    version     = "1.4.4"
     namespace   = local.namespace
-    values      = []
     description = "The Amazon FSx for Lustre CSI driver Helm chart deployment configuration"
   }
 
