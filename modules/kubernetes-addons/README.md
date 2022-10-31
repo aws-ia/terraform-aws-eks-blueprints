@@ -27,6 +27,7 @@
 | <a name="module_agones"></a> [agones](#module\_agones) | ./agones | n/a |
 | <a name="module_airflow"></a> [airflow](#module\_airflow) | ./airflow | n/a |
 | <a name="module_app_2048"></a> [app\_2048](#module\_app\_2048) | ./app-2048 | n/a |
+| <a name="module_appmesh_controller"></a> [appmesh\_controller](#module\_appmesh\_controller) | ./appmesh-controller | n/a |
 | <a name="module_argo_rollouts"></a> [argo\_rollouts](#module\_argo\_rollouts) | ./argo-rollouts | n/a |
 | <a name="module_argocd"></a> [argocd](#module\_argocd) | ./argocd | n/a |
 | <a name="module_aws_cloudwatch_metrics"></a> [aws\_cloudwatch\_metrics](#module\_aws\_cloudwatch\_metrics) | ./aws-cloudwatch-metrics | n/a |
@@ -112,6 +113,8 @@
 | <a name="input_amazon_eks_vpc_cni_config"></a> [amazon\_eks\_vpc\_cni\_config](#input\_amazon\_eks\_vpc\_cni\_config) | ConfigMap of Amazon EKS VPC CNI add-on | `any` | `{}` | no |
 | <a name="input_amazon_prometheus_workspace_endpoint"></a> [amazon\_prometheus\_workspace\_endpoint](#input\_amazon\_prometheus\_workspace\_endpoint) | AWS Managed Prometheus WorkSpace Endpoint | `string` | `null` | no |
 | <a name="input_amazon_prometheus_workspace_region"></a> [amazon\_prometheus\_workspace\_region](#input\_amazon\_prometheus\_workspace\_region) | AWS Managed Prometheus WorkSpace Region | `string` | `null` | no |
+| <a name="input_appmesh_helm_config"></a> [appmesh\_helm\_config](#input\_appmesh\_helm\_config) | AppMesh Helm Chart config | `any` | `{}` | no |
+| <a name="input_appmesh_irsa_policies"></a> [appmesh\_irsa\_policies](#input\_appmesh\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
 | <a name="input_argo_rollouts_helm_config"></a> [argo\_rollouts\_helm\_config](#input\_argo\_rollouts\_helm\_config) | Argo Rollouts Helm Chart config | `any` | `null` | no |
 | <a name="input_argocd_applications"></a> [argocd\_applications](#input\_argocd\_applications) | Argo CD Applications config to bootstrap the cluster | `any` | `{}` | no |
 | <a name="input_argocd_helm_config"></a> [argocd\_helm\_config](#input\_argocd\_helm\_config) | Argo CD Kubernetes add-on config | `any` | `{}` | no |
@@ -175,6 +178,7 @@
 | <a name="input_enable_amazon_eks_vpc_cni"></a> [enable\_amazon\_eks\_vpc\_cni](#input\_enable\_amazon\_eks\_vpc\_cni) | Enable VPC CNI add-on | `bool` | `false` | no |
 | <a name="input_enable_amazon_prometheus"></a> [enable\_amazon\_prometheus](#input\_enable\_amazon\_prometheus) | Enable AWS Managed Prometheus service | `bool` | `false` | no |
 | <a name="input_enable_app_2048"></a> [enable\_app\_2048](#input\_enable\_app\_2048) | Enable sample app 2048 | `bool` | `false` | no |
+| <a name="input_enable_appmesh_controller"></a> [enable\_appmesh\_controller](#input\_enable\_appmesh\_controller) | Enable AppMesh add-on | `bool` | `false` | no |
 | <a name="input_enable_argo_rollouts"></a> [enable\_argo\_rollouts](#input\_enable\_argo\_rollouts) | Enable Argo Rollouts add-on | `bool` | `false` | no |
 | <a name="input_enable_argocd"></a> [enable\_argocd](#input\_enable\_argocd) | Enable Argo CD Kubernetes add-on | `bool` | `false` | no |
 | <a name="input_enable_aws_cloudwatch_metrics"></a> [enable\_aws\_cloudwatch\_metrics](#input\_enable\_aws\_cloudwatch\_metrics) | Enable AWS CloudWatch Metrics add-on for Container Insights | `bool` | `false` | no |
