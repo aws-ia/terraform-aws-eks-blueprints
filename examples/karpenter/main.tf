@@ -68,6 +68,22 @@ module "eks" {
       to_port                       = 8443
       type                          = "ingress"
       source_cluster_security_group = true
+      ingress_nodes_ephemeral = {
+        description = "Node-to-node on ephemeral ports"
+        protocol    = "tcp"
+        from_port   = 1025
+        to_port     = 65535
+        type        = "ingress"
+        self        = true
+      }
+      egress_all = {
+        description = "Allow all egress"
+        protocol    = "-1"
+        from_port   = 0
+        to_port     = 0
+        type        = "egress"
+        cidr_blocks = ["0.0.0.0/0"]
+      }
     }
   }
 
