@@ -1,5 +1,5 @@
 locals {
-  namespace = "crossplane-system"
+  namespace = try(var.helm_config.namespace, "crossplane-system")
 
   # https://github.com/crossplane/crossplane/blob/master/cluster/charts/crossplane/Chart.yaml
   default_helm_config = {
