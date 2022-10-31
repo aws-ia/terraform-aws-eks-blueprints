@@ -1,4 +1,10 @@
 <!-- BEGIN_TF_DOCS -->
+# Istio Helm Chart
+
+Istio is an open source service mesh that layers transparently onto existing distributed applications.
+
+For more details checkout [istio](https://istio.io/latest/docs/) docs
+
 ## Requirements
 
 | Name | Version |
