@@ -243,14 +243,15 @@ module "coredns_autoscaler" {
 }
 
 module "crossplane" {
-  count            = var.enable_crossplane ? 1 : 0
-  source           = "./crossplane"
-  helm_config      = var.crossplane_helm_config
-  aws_provider     = var.crossplane_aws_provider
-  jet_aws_provider = var.crossplane_jet_aws_provider
-  account_id       = data.aws_caller_identity.current.account_id
-  aws_partition    = data.aws_partition.current.id
-  addon_context    = local.addon_context
+  count               = var.enable_crossplane ? 1 : 0
+  source              = "./crossplane"
+  helm_config         = var.crossplane_helm_config
+  aws_provider        = var.crossplane_aws_provider
+  jet_aws_provider    = var.crossplane_jet_aws_provider
+  kubernetes_provider = var.crossplane_kubernetes_provider
+  account_id          = data.aws_caller_identity.current.account_id
+  aws_partition       = data.aws_partition.current.id
+  addon_context       = local.addon_context
 }
 
 module "datadog_operator" {
