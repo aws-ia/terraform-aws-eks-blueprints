@@ -4,6 +4,12 @@ variable "helm_config" {
   default     = {}
 }
 
+variable "manage_via_gitops" {
+  description = "Determines if the add-on should be managed via GitOps."
+  type        = bool
+  default     = false
+}
+
 variable "addon_context" {
   description = "Input configuration for the addon"
   type = object({

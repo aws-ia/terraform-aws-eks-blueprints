@@ -1158,7 +1158,7 @@ variable "airflow_helm_config" {
   default     = {}
 }
 
-#-----------Apache Kafka Strimzi ADDON-------------
+#-----Apache Kafka Strimzi Operator------
 variable "enable_kafka" {
   description = "Enable Kafka add-on"
   type        = bool

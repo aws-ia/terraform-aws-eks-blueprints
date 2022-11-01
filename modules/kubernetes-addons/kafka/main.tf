@@ -19,8 +19,8 @@ locals {
 # Strimzi Kafka Helm Add-on
 #-------------------------------------------------
 module "helm_addon" {
-  source        = "../helm-addon"
-  helm_config   = local.helm_config
-#  irsa_config   = {}
-  addon_context = var.addon_context
+  source            = "../helm-addon"
+  helm_config       = local.helm_config
+  addon_context     = var.addon_context
+  manage_via_gitops = var.manage_via_gitops
 }
