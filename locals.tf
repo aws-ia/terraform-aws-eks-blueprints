@@ -124,7 +124,7 @@ locals {
   platform_teams_config_map = length(var.platform_teams) > 0 ? [
     for platform_team_name, platform_team_data in var.platform_teams : {
       rolearn : "arn:${local.partition}:iam::${local.account_id}:role/${module.aws_eks.cluster_id}-${platform_team_name}-access"
-      username : "${platform_team_name}"
+      username : platform_team_name
       groups : [
         "system:masters"
       ]
@@ -135,13 +135,14 @@ locals {
   application_teams_config_map = length(var.application_teams) > 0 ? [
     for team_name, team_data in var.application_teams : {
       rolearn : "arn:${local.partition}:iam::${local.account_id}:role/${module.aws_eks.cluster_id}-${team_name}-access"
-      username : "${team_name}"
+      username : team_name
       groups : [
         "${team_name}-group"
       ]
     }
   ] : []
 
-  cluster_iam_role_name = var.iam_role_name == null ? "${var.cluster_name}-cluster-role" : var.iam_role_name
-  cluster_iam_role_arn  = var.create_iam_role ? "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${local.cluster_iam_role_name}" : var.iam_role_arn
+  cluster_iam_role_name        = var.iam_role_name == null ? "${var.cluster_name}-cluster-role" : var.iam_role_name
+  cluster_iam_role_pathed_name = var.iam_role_path == null ? local.cluster_iam_role_name : "${trimprefix(var.iam_role_path, "/")}${local.cluster_iam_role_name}"
+  cluster_iam_role_pathed_arn  = var.create_iam_role ? "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${local.cluster_iam_role_pathed_name}" : var.iam_role_arn
 }

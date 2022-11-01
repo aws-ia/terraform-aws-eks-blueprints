@@ -193,6 +193,25 @@ variable "coredns_autoscaler_helm_config" {
   default     = {}
 }
 
+#-----------AWS Appmesh-------------
+variable "enable_appmesh_controller" {
+  description = "Enable AppMesh add-on"
+  type        = bool
+  default     = false
+}
+
+variable "appmesh_helm_config" {
+  description = "AppMesh Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "appmesh_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
+}
+
 #-----------Crossplane ADDON-------------
 variable "enable_crossplane" {
   description = "Enable Crossplane add-on"
@@ -721,6 +740,31 @@ variable "cert_manager_kubernetes_svc_image_pull_secrets" {
   description = "list(string) of kubernetes imagePullSecrets"
   type        = list(string)
   default     = []
+}
+
+variable "enable_cert_manager_istio_csr" {
+  description = "Enable Cert Manager istio-csr add-on"
+  type        = bool
+  default     = false
+}
+
+variable "cert_manager_istio_csr_helm_config" {
+  description = "Cert Manager Istio CSR Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------Argo workflows ADDON-------------
+variable "enable_argo_workflows" {
+  description = "Enable Argo workflows add-on"
+  type        = bool
+  default     = false
+}
+
+variable "argo_workflows_helm_config" {
+  description = "Argo workflows Helm Chart config"
+  type        = any
+  default     = null
 }
 
 #-----------Argo Rollouts ADDON-------------

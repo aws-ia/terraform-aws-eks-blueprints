@@ -22,70 +22,11 @@ For complete project documentation, please visit our [documentation site](https:
 
 To view examples for how you can leverage EKS Blueprints, please see the [examples](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples) directory.
 
-## Usage
-
-The below demonstrates how you can leverage EKS Blueprints to deploy an EKS cluster, a managed node group, and various Kubernetes add-ons.
-
-```hcl
-module "eks_blueprints" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.12.0"
-
-  # EKS CLUSTER
-  cluster_version           = "1.23"
-  vpc_id                    = "<vpcid>"                                      # Enter VPC ID
-  private_subnet_ids        = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]     # Enter Private Subnet IDs
-
-  # EKS MANAGED NODE GROUPS
-  managed_node_groups = {
-    mg_m5 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m5.large"]
-      subnet_ids      = ["<subnet-a>", "<subnet-b>", "<subnet-c>"]
-    }
-  }
-}
-
-module "eks_blueprints_kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.12.0"
-
-  eks_cluster_id = module.eks_blueprints.eks_cluster_id
-
-  # EKS Addons
-  enable_amazon_eks_vpc_cni            = true
-  enable_amazon_eks_coredns            = true
-  enable_amazon_eks_kube_proxy         = true
-  enable_amazon_eks_aws_ebs_csi_driver = true
-
-  #K8s Add-ons
-  enable_argocd                       = true
-  enable_aws_for_fluentbit            = true
-  enable_aws_load_balancer_controller = true
-  enable_cluster_autoscaler           = true
-  enable_metrics_server               = true
-  enable_prometheus                   = true
-}
-```
-
-The code above will provision the following:
-
-- ✅ A new EKS Cluster with a managed node group.
-- ✅ Amazon EKS add-ons `vpc-cni`, `CoreDNS`, `kube-proxy`, and `aws-ebs-csi-driver`.
-- ✅ `Cluster Autoscaler` and `Metrics Server` for scaling your workloads.
-- ✅ `Fluent Bit` for routing logs.
-- ✅ `AWS Load Balancer Controller` for distributing traffic.
-- ✅ `Argocd` for declarative GitOps CD for Kubernetes.
-- ✅ `Prometheus` for observability.
-
 ## Add-ons
 
 EKS Blueprints makes it easy to provision a wide range of popular Kubernetes add-ons into an EKS cluster. By default, the [Terraform Helm provider](https://github.com/hashicorp/terraform-provider-helm) is used to deploy add-ons with publicly available [Helm Charts](https://artifacthub.io/).EKS Blueprints provides support for leveraging self-hosted Helm Chart as well.
 
 For complete documentation on deploying add-ons, please visit our [add-on documentation](https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/add-ons/)
-
-## Submodules
-
-The root module calls into several submodules which provides support for deploying and integrating a number of external AWS services that can be used in concert with Amazon EKS.
-This includes Amazon Managed Prometheus and EMR on EKS. For complete documentation on deploying external services, please visit our [submodules documentation](https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/modules/emr-on-eks/).
 
 ## Motivation
 
@@ -98,8 +39,6 @@ AWS customers have asked for examples that demonstrate how to integrate the land
 EKS Blueprints for Terraform is maintained by AWS Solution Architects. It is not part of an AWS service and support is provided best-effort by the EKS Blueprints community.
 
 To post feedback, submit feature ideas, or report bugs, please use the [Issues section](https://github.com/aws-ia/terraform-aws-eks-blueprints/issues) of this GitHub repo.
-
-For architectural details, step-by-step instructions, and customization options, see our [documentation site](https://aws-ia.github.io/terraform-aws-eks-blueprints/).
 
 If you are interested in contributing to EKS Blueprints, see the [Contribution guide](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/CONTRIBUTING.md).
 

@@ -1,6 +1,6 @@
 output "self_managed_nodegroup_name" {
   description = "EKS Self Managed node group id"
-  value       = local.self_managed_node_group["node_group_name"].*
+  value       = local.self_managed_node_group["node_group_name"][*]
 }
 
 output "self_managed_nodegroup_iam_role_arns" {
