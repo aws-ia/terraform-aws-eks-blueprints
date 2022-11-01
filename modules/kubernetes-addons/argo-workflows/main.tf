@@ -13,15 +13,12 @@ locals {
   }
 
   helm_config = merge(local.default_helm_config, var.helm_config)
-  
+
   argocd_gitops_config = {
     enable = true
   }
 }
 
-#-------------------------------------------------
-# Apache Airflow Helm Add-on
-#-------------------------------------------------
 module "helm_addon" {
   source = "../helm-addon"
 
