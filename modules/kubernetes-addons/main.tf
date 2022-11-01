@@ -186,6 +186,14 @@ module "aws_node_termination_handler" {
   addon_context           = local.addon_context
 }
 
+module "appmesh_controller" {
+  count         = var.enable_appmesh_controller ? 1 : 0
+  source        = "./appmesh-controller"
+  helm_config   = var.appmesh_helm_config
+  irsa_policies = var.appmesh_irsa_policies
+  addon_context = local.addon_context
+}
+
 module "cert_manager" {
   count                             = var.enable_cert_manager ? 1 : 0
   source                            = "./cert-manager"
@@ -203,6 +211,14 @@ module "cert_manager_csi_driver" {
   count             = var.enable_cert_manager_csi_driver ? 1 : 0
   source            = "./cert-manager-csi-driver"
   helm_config       = var.cert_manager_csi_driver_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "cert_manager_istio_csr" {
+  count             = var.enable_cert_manager_istio_csr ? 1 : 0
+  source            = "./cert-manager-istio-csr"
+  helm_config       = var.cert_manager_istio_csr_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
@@ -235,6 +251,16 @@ module "crossplane" {
   account_id       = data.aws_caller_identity.current.account_id
   aws_partition    = data.aws_partition.current.id
   addon_context    = local.addon_context
+}
+
+module "datadog_operator" {
+  source = "./datadog-operator"
+
+  count = var.enable_datadog_operator ? 1 : 0
+
+  helm_config       = var.datadog_operator_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "external_dns" {
@@ -381,6 +407,15 @@ module "spark_k8s_operator" {
   addon_context     = local.addon_context
 }
 
+module "sysdig_agent" {
+  source  = "sysdiglabs/sysdig-addon/eksblueprints"
+  version = "0.0.1"
+
+  count         = var.enable_sysdig_agent ? 1 : 0
+  helm_config   = var.sysdig_agent_helm_config
+  addon_context = local.addon_context
+}
+
 module "tetrate_istio" {
   # source  = "tetratelabs/tetrate-istio-addon/eksblueprints"
   # version = "0.0.7"
@@ -418,7 +453,7 @@ module "vault" {
 
   # See https://registry.terraform.io/modules/hashicorp/hashicorp-vault-eks-addon/aws/
   source  = "hashicorp/hashicorp-vault-eks-addon/aws"
-  version = "1.0.0-rc1"
+  version = "1.0.0-rc2"
 
   helm_config       = var.vault_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
@@ -680,8 +715,10 @@ module "local_volume_provisioner" {
 }
 
 module "nvidia_device_plugin" {
-  count             = var.enable_nvidia_device_plugin ? 1 : 0
-  source            = "./nvidia-device-plugin"
+  source = "./nvidia-device-plugin"
+
+  count = var.enable_nvidia_device_plugin ? 1 : 0
+
   helm_config       = var.nvidia_device_plugin_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
