@@ -1,6 +1,5 @@
 locals {
   name = "strimzi"
-
   default_helm_config = {
     name             = local.name
     chart            = "strimzi-kafka-operator"
@@ -11,7 +10,6 @@ locals {
     values           = [templatefile("${path.module}/values.yaml", {})]
     description      = "Strimzi - Apache Kafka on Kubernetes"
   }
-
   helm_config = merge(local.default_helm_config, var.helm_config)
 }
 

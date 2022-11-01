@@ -1,5 +1,4 @@
 # Apache Kafka on Kubernetes
-
 Deploying Kafka Operator using [Strimzi Operator](https://strimzi.io/downloads/). Strimzi makes it really easy to spin up a Kafka cluster in minutes.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
