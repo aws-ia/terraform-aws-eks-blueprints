@@ -13,7 +13,7 @@
     
     
       
-        <title>Spark History Server - Amazon EKS Blueprints for Terraform</title>
+        <title>Argo Workflows - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#spark-history-server" class="md-skip">
+        <a href="#argo-workflows" class="md-skip">
           Skip to content
         </a>
       
@@ -99,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Spark History Server
+              Argo Workflows
             
           </span>
         </div>
@@ -448,11 +448,52 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../argo-workflows/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Argo Workflows
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Argo Workflows
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1050,79 +1091,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Spark History Server
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../spark-history-server/" class="md-nav__link">
         Spark History Server
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-    <nav class="md-nav" aria-label="Usage">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#basic-example" class="md-nav__link">
-    Basic Example
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#advanced-example" class="md-nav__link">
-    Advanced Example
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gitops-configuration" class="md-nav__link">
-    GitOps Configuration
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1396,33 +1369,6 @@
     Usage
   </a>
   
-    <nav class="md-nav" aria-label="Usage">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#basic-example" class="md-nav__link">
-    Basic Example
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#advanced-example" class="md-nav__link">
-    Advanced Example
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gitops-configuration" class="md-nav__link">
-    GitOps Configuration
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
     </ul>
@@ -1437,72 +1383,28 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/spark-history-server.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/argo-workflows.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-<h1 id="spark-history-server">Spark History Server<a class="headerlink" href="#spark-history-server" title="Permanent link">&para;</a></h1>
-<p><a href="https://spark.apache.org/docs/latest/web-ui.html#web-ui">Spark Web UI</a> can be enabled by this Add-on.
-This Add-on deploys Spark History Server and fetches the Spark Event logs stored in S3. Spark Web UI can be exposed via Ingress and LoadBalancer with <code>values.yaml</code>.
-Alternatively, you can port-forward on spark-history-server service. e.g.,  <code>kubectl port-forward services/spark-history-server 18085:80 -n spark-history-server</code></p>
+<h1 id="argo-workflows">Argo Workflows<a class="headerlink" href="#argo-workflows" title="Permanent link">&para;</a></h1>
+<p><a href="https://argoproj.github.io/argo-workflows/">Argo Workflows</a> is an open source container-native workflow engine for orchestrating parallel jobs on Kubernetes. It is implemented as a Kubernetes CRD (Custom Resource Definition). As a result, Argo workflows can be managed using kubectl and natively integrates with other Kubernetes services such as volumes, secrets, and RBAC.</p>
+<p>For complete project documentation, please visit the <a href="https://argoproj.github.io/argo-workflows/">Argo Workflows documentation site</a>.</p>
+<p>[DoEKS has an example demonstrates how to use Argo Workflows to assign jobs to Amazon EKS] (https://awslabs.github.io/data-on-eks/docs/job-schedulers-eks/argo-workflows-eks)</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/spark-k8s-operator">Spark History Server</a> can be deployed by enabling the add-on via the following.</p>
-<h3 id="basic-example">Basic Example<a class="headerlink" href="#basic-example" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>enable_spark_history_server   = true
-spark_history_server_s3a_path = &quot;s3a://&lt;ENTER_S3_BUCKET_NAME&gt;/&lt;PREFIX_FOR_SPARK_EVENT_LOGS&gt;/&quot;
+<p>Argo Workflows can be deployed by enabling the add-on via the following.</p>
+<div class="highlight"><pre><span></span><code>enable_argo_workflows = true
 </code></pre></div>
-<h3 id="advanced-example">Advanced Example<a class="headerlink" href="#advanced-example" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>enable_spark_history_server = true
+<p><div class="highlight"><pre><span></span><code>### GitOps Configuration
 
-# IAM policy used by IRSA role. It&#39;s recommended to create a dedicated IAM policy to access your s3 bucket
-spark_history_server_irsa_policies = [&quot;&lt;IRSA_POLICY_ARN&gt;&quot;]
-
-# NOTE: This block requires passing the helm values.yaml
-# spark_history_server_s3a_path won&#39;t be used when you pass custom `values.yaml`. s3a path is passed via `sparkHistoryOpts` in `values.yaml`
-
-spark_history_server_helm_config = {
-    name             = &quot;spark-history-server&quot;
-    chart            = &quot;spark-history-server&quot;
-    repository       = &quot;https://hyper-mesh.github.io/spark-history-server&quot;
-    version          = &quot;1.0.0&quot;
-    namespace        = &quot;spark-history-server&quot;
-    timeout          = &quot;300&quot;
-    values = [
-        &lt;&lt;-EOT
-        serviceAccount:
-          create: false
-
-        # Enter S3 bucket with Spark Event logs location.
-        # Ensure IRSA roles has permissions to read the files for the given S3 bucket
-        sparkHistoryOpts: &quot;-Dspark.history.fs.logDirectory=s3a://&lt;ENTER_S3_BUCKET_NAME&gt;/&lt;PREFIX_FOR_SPARK_EVENT_LOGS&gt;/&quot;
-
-        # Update spark conf according to your needs
-        sparkConf: |-
-          spark.hadoop.fs.s3a.aws.credentials.provider=com.amazonaws.auth.WebIdentityTokenCredentialsProvider
-          spark.history.fs.eventLog.rolling.maxFilesToRetain=5
-          spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
-          spark.eventLog.enabled=true
-          spark.history.ui.port=18080
-
-        resources:
-          limits:
-            cpu: 200m
-            memory: 2G
-          requests:
-            cpu: 100m
-            memory: 1G
-        EOT
-    ]
+The following properties are made available for use when managing the add-on via GitOps.
+</code></pre></div>
+argoWorkflows = {
+  enable             = true
 }
-</code></pre></div>
-<h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
-<p>The following properties are made available for use when managing the add-on via GitOps</p>
-<div class="highlight"><pre><span></span><code>sparkHistoryServer = {
-  enable = true
-}
-</code></pre></div>
+```</p>
 
               
             </article>
@@ -1518,7 +1420,7 @@ spark_history_server_helm_config = {
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../smb-csi-driver/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SMB CSI Driver Helm Chart" rel="prev">
+        <a href="../apache-airflow/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Apache Airflow add-on" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1527,20 +1429,20 @@ spark_history_server_helm_config = {
               <span class="md-footer__direction">
                 Previous
               </span>
-              SMB CSI Driver Helm Chart
+              Apache Airflow add-on
             </div>
           </div>
         </a>
       
       
         
-        <a href="../spark-on-k8s-operator/" class="md-footer__link md-footer__link--next" aria-label="Next: Spark K8S Operator" rel="next">
+        <a href="../argocd/" class="md-footer__link md-footer__link--next" aria-label="Next: ArgoCD" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Spark K8S Operator
+              ArgoCD
             </div>
           </div>
           <div class="md-footer__button md-icon">
