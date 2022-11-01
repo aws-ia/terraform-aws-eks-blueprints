@@ -1,9 +1,4 @@
-output "repo_url" {
-  description = "Github repository url."
-  value = try(data.terraform_remote_state.state_file[0].outputs.repo_url, github_repository.repository[0].html_url, null)
-
-  depends_on = [
-    data.terraform_remote_state.state_file,
-    github_repository.repository
-  ]
+output "created_repository" {
+  description = "The github repository that had been created."
+  value = try(github_repository.loosely_coupled[0], github_repository.tightly_coupled[0])
 }

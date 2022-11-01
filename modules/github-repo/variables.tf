@@ -10,7 +10,7 @@ variable "description" {
 }
 
 variable "visibility" {
-  description = "The visibility of the GitHub repository that will be created.."
+  description = "The visibility of the GitHub repository that will be created."
   type = string
   default = "public"
 }
@@ -22,7 +22,7 @@ variable "template_owner" {
 }
 
 variable "template_repo_name" {
-  description = "GitHub template repository name. Will not use a template, if not set."
+  description = "GitHub template repository name. (Will not use a template, if not set)"
   type = string
   default = ""
 }
@@ -41,4 +41,5 @@ variable "provider_token" {
 variable "loose_coupling" {
   description = "If true, the repository will not be delited on 'terraform destory'."
   type        = bool
+  default     = false
 }
