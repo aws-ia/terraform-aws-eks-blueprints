@@ -1,10 +1,4 @@
 <!-- BEGIN_TF_DOCS -->
-# Istio Helm Chart
-
-Istio is an open source service mesh that layers transparently onto existing distributed applications.
-
-For more details checkout [istio](https://istio.io/latest/docs/) docs
-
 ## Requirements
 
 | Name | Version |
@@ -22,9 +16,9 @@ For more details checkout [istio](https://istio.io/latest/docs/) docs
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_istio-base"></a> [istio-base](#module\_istio-base) | ../helm-addon | n/a |
-| <a name="module_istio-cni"></a> [istio-cni](#module\_istio-cni) | ../helm-addon | n/a |
-| <a name="module_istio-ingressgateway"></a> [istio-ingressgateway](#module\_istio-ingressgateway) | ../helm-addon | n/a |
+| <a name="module_istio_base"></a> [istio\_base](#module\_istio\_base) | ../helm-addon | n/a |
+| <a name="module_istio_cni"></a> [istio\_cni](#module\_istio\_cni) | ../helm-addon | n/a |
+| <a name="module_istio_ingressgateway"></a> [istio\_ingressgateway](#module\_istio\_ingressgateway) | ../helm-addon | n/a |
 | <a name="module_istiod"></a> [istiod](#module\_istiod) | ../helm-addon | n/a |
 
 ## Resources
@@ -41,9 +35,9 @@ For more details checkout [istio](https://istio.io/latest/docs/) docs
 | <a name="input_cleanup_on_fail"></a> [cleanup\_on\_fail](#input\_cleanup\_on\_fail) | Allow deletion of new resources created in this upgrade when upgrade fails | `bool` | `true` | no |
 | <a name="input_force_update"></a> [force\_update](#input\_force\_update) | Force resource update through delete/recreate if needed | `bool` | `false` | no |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | Helm Config for Istio | `any` | `{}` | no |
-| <a name="input_install_istio-base"></a> [install\_istio-base](#input\_install\_istio-base) | Install Istio `base` Helm Chart | `bool` | `true` | no |
-| <a name="input_install_istio-cni"></a> [install\_istio-cni](#input\_install\_istio-cni) | Install Istio `cni` Helm Chart | `bool` | `true` | no |
-| <a name="input_install_istio-ingressgateway"></a> [install\_istio-ingressgateway](#input\_install\_istio-ingressgateway) | Install Istio `gateway` Helm Chart | `bool` | `true` | no |
+| <a name="input_install_istio_base"></a> [install\_istio\_base](#input\_install\_istio\_base) | Install Istio `base` Helm Chart | `bool` | `true` | no |
+| <a name="input_install_istio_cni"></a> [install\_istio\_cni](#input\_install\_istio\_cni) | Install Istio `cni` Helm Chart | `bool` | `true` | no |
+| <a name="input_install_istio_ingressgateway"></a> [install\_istio\_ingressgateway](#input\_install\_istio\_ingressgateway) | Install Istio `gateway` Helm Chart | `bool` | `true` | no |
 | <a name="input_install_istiod"></a> [install\_istiod](#input\_install\_istiod) | Install Istio `istiod` Helm Chart | `bool` | `true` | no |
 | <a name="input_istio_base_settings"></a> [istio\_base\_settings](#input\_istio\_base\_settings) | Additional settings which will be passed to the Helm chart values | `map(any)` | `{}` | no |
 | <a name="input_istio_gateway_settings"></a> [istio\_gateway\_settings](#input\_istio\_gateway\_settings) | Additional settings which will be passed to the Helm chart values | `map(any)` | `{}` | no |

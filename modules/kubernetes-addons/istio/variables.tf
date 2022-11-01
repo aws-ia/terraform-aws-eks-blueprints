@@ -4,13 +4,13 @@ variable "istio_version" {
   default     = "1.15.2"
 }
 
-variable "install_istio-base" {
+variable "install_istio_base" {
   description = "Install Istio `base` Helm Chart"
   type        = bool
   default     = true
 }
 
-variable "install_istio-cni" {
+variable "install_istio_cni" {
   description = "Install Istio `cni` Helm Chart"
   type        = bool
   default     = true
@@ -22,7 +22,7 @@ variable "install_istiod" {
   default     = true
 }
 
-variable "install_istio-ingressgateway" {
+variable "install_istio_ingressgateway" {
   description = "Install Istio `gateway` Helm Chart"
   type        = bool
   default     = true

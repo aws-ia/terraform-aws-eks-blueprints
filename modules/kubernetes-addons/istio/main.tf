@@ -7,9 +7,9 @@ resource "kubernetes_namespace" "istio_system" {
   }
 }
 
-module "istio-base" {
+module "istio_base" {
   source = "../helm-addon"
-  count  = var.install_istio-base ? 1 : 0
+  count  = var.install_istio_base ? 1 : 0
 
   helm_config = merge(
     {
@@ -34,9 +34,9 @@ module "istio-base" {
   depends_on = [kubernetes_namespace.istio_system]
 }
 
-module "istio-cni" {
+module "istio_cni" {
   source = "../helm-addon"
-  count  = var.install_istio-cni ? 1 : 0
+  count  = var.install_istio_cni ? 1 : 0
 
   helm_config = merge(
     {
@@ -52,7 +52,7 @@ module "istio-cni" {
         yamlencode(
           {
             istio_cni = {
-              enabled = var.install_istio-cni
+              enabled = var.install_istio_cni
             }
           }
         )
@@ -64,7 +64,7 @@ module "istio-cni" {
   manage_via_gitops = var.manage_via_gitops
   addon_context     = var.addon_context
 
-  depends_on = [module.istio-base]
+  depends_on = [module.istio_base]
 }
 
 module "istiod" {
@@ -107,12 +107,12 @@ module "istiod" {
   manage_via_gitops = var.manage_via_gitops
   addon_context     = var.addon_context
 
-  depends_on = [module.istio-cni]
+  depends_on = [module.istio_cni]
 }
 
-module "istio-ingressgateway" {
+module "istio_ingressgateway" {
   source = "../helm-addon"
-  count  = var.install_istio-ingressgateway ? 1 : 0
+  count  = var.install_istio_ingressgateway ? 1 : 0
 
   helm_config = merge(
     {
