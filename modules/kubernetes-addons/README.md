@@ -61,7 +61,7 @@
 | <a name="module_kyverno"></a> [kyverno](#module\_kyverno) | ./kyverno | n/a |
 | <a name="module_local_volume_provisioner"></a> [local\_volume\_provisioner](#module\_local\_volume\_provisioner) | ./local-volume-provisioner | n/a |
 | <a name="module_metrics_server"></a> [metrics\_server](#module\_metrics\_server) | ./metrics-server | n/a |
-| <a name="module_nops-k8s-agent"></a> [nops\_k8s\_agent](#module\_nops_\k8s\_agent) | ./nops-k8s-agent | n/a |
+| <a name="module_nops_k8s_agent"></a> [nops\_k8s\_agent](#module\_nops_\k8s\_agent) | https://github.com/nops-io/eksblueprint-nops-k8s-agent-addon | n/a |
 | <a name="module_nvidia_device_plugin"></a> [nvidia\_device\_plugin](#module\_nvidia\_device\_plugin) | ./nvidia-device-plugin | n/a |
 | <a name="module_ondat"></a> [ondat](#module\_ondat) | ondat/ondat-addon/eksblueprints | 0.1.1 |
 | <a name="module_opentelemetry_operator"></a> [opentelemetry\_operator](#module\_opentelemetry\_operator) | ./opentelemetry-operator | n/a |

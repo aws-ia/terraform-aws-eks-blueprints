@@ -277,7 +277,7 @@ module "metrics_server" {
   addon_context     = local.addon_context
 }
 
-module "nops-k8s-agent" {
+module "nops_k8s_agent" {
   count         = var.enable_nops_k8s_agent ? 1 : 0
   source        = "https://github.com/nops-io/eksblueprint-nops-k8s-agent-addon.git"
   helm_config   = var.nops_helm_config
