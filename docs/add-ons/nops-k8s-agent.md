@@ -7,7 +7,7 @@ Worker contains database to keep users entries and pulls metadata from their acc
 
 ## Usage
 
-[nOps Agent](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/nops-k8s-agent) can be deployed by enabling the add-on via the following.
+[nOps Agent](https://github.com/nops-io/eksblueprint-nops-k8s-agent-addon.git) can be deployed by enabling the add-on via the following.
 
 ```hcl
 enable_nops_k8s_agent = true
@@ -33,8 +33,7 @@ These are required variables defination:
 
     APP_PROMETHEUS_SERVER_ENDPOINT - Depends on your Prometheus stack installation (different for every person and every cluster).
     APP_NOPS_K8S_AGENT_CLUSTER_ID - needs to match with your cluster id
-    APP_NOPS_K8S_COLLECTOR_API_KEY - See, nOps Developer API to learn how to get your API key. https://docs.nops.io/en/articles/5955764-getting-started-with-the-nops-developer-api
-    APP_NOPS_K8S_COLLECTOR_AWS_ACCOUNT_NUMBER - The 12-digit unique account number of the AWS account, which is configured within nOps.
+    APP_NOPS_K8S_COLLECTOR_API_KEY - See, nOps Developer API to learn how to get your API key. https://docs.nops.io/en/articles/5955764-getting-started-with-the-nops-developer-api.
 
 
 ```
