@@ -310,14 +310,6 @@ module "ingress_nginx" {
   addon_context     = local.addon_context
 }
 
-module "kafka" {
-  count             = var.enable_kafka ? 1 : 0
-  source            = "./kafka"
-  helm_config       = var.kafka_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = local.addon_context
-}
-
 module "karpenter" {
   count                     = var.enable_karpenter ? 1 : 0
   source                    = "./karpenter"
@@ -419,6 +411,14 @@ module "spark_k8s_operator" {
   count             = var.enable_spark_k8s_operator ? 1 : 0
   source            = "./spark-k8s-operator"
   helm_config       = var.spark_k8s_operator_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "strimzi_kafka_operator" {
+  count             = var.enable_strimzi_kafka_operator ? 1 : 0
+  source            = "./strimzi-kafka-operator"
+  helm_config       = var.strimzi_kafka_operator_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }

@@ -1159,13 +1159,13 @@ variable "airflow_helm_config" {
 }
 
 #-----Apache Kafka Strimzi Operator------
-variable "enable_kafka" {
+variable "enable_strimzi_kafka_operator" {
   description = "Enable Kafka add-on"
   type        = bool
   default     = false
 }
 
-variable "kafka_helm_config" {
+variable "strimzi_kafka_operator_helm_config" {
   description = "Kafka Strimzi Helm Chart config"
   type        = any
   default     = {}
