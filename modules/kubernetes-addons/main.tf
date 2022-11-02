@@ -415,6 +415,14 @@ module "spark_k8s_operator" {
   addon_context     = local.addon_context
 }
 
+module "strimzi_kafka_operator" {
+  count             = var.enable_strimzi_kafka_operator ? 1 : 0
+  source            = "./strimzi-kafka-operator"
+  helm_config       = var.strimzi_kafka_operator_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "sysdig_agent" {
   source  = "sysdiglabs/sysdig-addon/eksblueprints"
   version = "0.0.1"
