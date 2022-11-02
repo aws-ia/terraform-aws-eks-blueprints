@@ -1158,6 +1158,19 @@ variable "airflow_helm_config" {
   default     = {}
 }
 
+#-----Apache Kafka Strimzi Operator------
+variable "enable_strimzi_kafka_operator" {
+  description = "Enable Kafka add-on"
+  type        = bool
+  default     = false
+}
+
+variable "strimzi_kafka_operator_helm_config" {
+  description = "Kafka Strimzi Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------Datadog Operator-------------
 variable "enable_datadog_operator" {
   description = "Enable Datadog Operator add-on"
