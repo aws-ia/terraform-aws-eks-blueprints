@@ -77,7 +77,16 @@ module "eks_blueprints_kubernetes_addons" {
     set_sensitive = [
       {
         name  = "configs.secret.argocdServerAdminPassword"
-        value = bcrypt(data.aws_secretsmanager_secret_version.admin_password_version.secret_string)
+        value = random_password.argocd.result
+      }
+    ]
+  }
+
+  keda_helm_config = {
+    set_sensitive = [
+      {
+        name  = "serviceAccount.create"
+        value = "false"
       }
     ]
   }
@@ -132,12 +141,6 @@ resource "aws_secretsmanager_secret" "arogcd" {
 resource "aws_secretsmanager_secret_version" "arogcd" {
   secret_id     = aws_secretsmanager_secret.arogcd.id
   secret_string = random_password.argocd.result
-}
-
-data "aws_secretsmanager_secret_version" "admin_password_version" {
-  secret_id = aws_secretsmanager_secret.arogcd.id
-
-  depends_on = [aws_secretsmanager_secret_version.arogcd]
 }
 
 #---------------------------------------------------------------
