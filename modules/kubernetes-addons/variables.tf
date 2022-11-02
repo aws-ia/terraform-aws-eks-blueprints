@@ -766,6 +766,19 @@ variable "cert_manager_istio_csr_helm_config" {
   default     = {}
 }
 
+#-----------Argo workflows ADDON-------------
+variable "enable_argo_workflows" {
+  description = "Enable Argo workflows add-on"
+  type        = bool
+  default     = false
+}
+
+variable "argo_workflows_helm_config" {
+  description = "Argo workflows Helm Chart config"
+  type        = any
+  default     = null
+}
+
 #-----------Argo Rollouts ADDON-------------
 variable "enable_argo_rollouts" {
   description = "Enable Argo Rollouts add-on"
@@ -1153,6 +1166,19 @@ variable "enable_airflow" {
 
 variable "airflow_helm_config" {
   description = "Apache Airflow v2 Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----Apache Kafka Strimzi Operator------
+variable "enable_strimzi_kafka_operator" {
+  description = "Enable Kafka add-on"
+  type        = bool
+  default     = false
+}
+
+variable "strimzi_kafka_operator_helm_config" {
+  description = "Kafka Strimzi Helm Chart config"
   type        = any
   default     = {}
 }
