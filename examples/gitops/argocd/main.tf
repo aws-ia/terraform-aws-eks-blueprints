@@ -83,7 +83,7 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   keda_helm_config = {
-    set_sensitive = [
+    values = [
       {
         name  = "serviceAccount.create"
         value = "false"
