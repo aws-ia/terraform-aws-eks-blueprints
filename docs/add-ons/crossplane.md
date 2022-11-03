@@ -75,7 +75,7 @@ Config to deploy [Kubernetes provider](https://github.com/crossplane-contrib/pro
 # Creates ProviderConfig -> kubernetes-provider
 crossplane_kubernetes_provider = {
   enable                   = true
-  provider_kubernetes_version     = "main"  # Get the latest version from  https://github.com/crossplane-contrib/provider-jet-aws
+  provider_kubernetes_version     = "v0.4.1"  # Get the latest version from  https://github.com/crossplane-contrib/provider-jet-aws
 }
 ```
 

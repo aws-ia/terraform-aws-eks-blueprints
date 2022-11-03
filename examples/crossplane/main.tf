@@ -98,10 +98,10 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   # Creates ProviderConfig -> kbuernetes-provider
-  kubernetes_provider = {
+  crossplane_kubernetes_provider = {
     # NOTE: Crossplane requires cluster-admin permissions to create and update resources.
     enable                      = true
-    provider_kubernetes_version = "main"
+    provider_kubernetes_version = "v0.4.1"
   }
 
   # Enable configmap reloader

@@ -261,7 +261,7 @@ variable "crossplane_kubernetes_provider" {
   })
   default = {
     enable                      = false
-    provider_kubernetes_version = "main"
+    provider_kubernetes_version = "v0.4.1"
   }
 }
 
