@@ -22,8 +22,7 @@ No modules
 
 | Name | Type |
 |------|------|
-| [github_repository.loosely_coupled](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository) | resource |
-| [github_repository.tightly_coupled](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository) | resource |
+| [github_repository.repository](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository) | resource |
 
 ## Inputs
 
@@ -36,11 +35,10 @@ No modules
 | <a name="input_template_repo_name"></a> [template_repo_name](#input\_template_repo_name) | GitHub template repository name. (Will not use a template, if not set) | `string` | `""` | no |
 | <a name="input_provider_owner"></a> [provider_owner](#input\_provider_owner) | Github provider account/organisation. | `string` | n/a | yes |
 | <a name="input_provider_token"></a> [provider_token](#input\_provider_token) | Github provider token. | `string` | n/a | yes |
-| <a name="input_loose_coupling"></a> [loose_coupling](#input\_loose_coupling) | If true, the repository will not be delited on 'terraform destory'. | `bool` | `false` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_created_repository"></a> [created_repository](#output\_created\_repository) | The github repository that had been created. |
+| <a name="output_url"></a> [url](#output\_url) | Created repository's url. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -1,3 +1,7 @@
+locals {
+  template_owner = var.template_owner == "" ? var.provider_owner : var.template_owner
+}
+
 # Current version of integrations/github has a bug.
 # The "provider" block needs to be set in the module.
 provider "github" {
@@ -5,12 +9,7 @@ provider "github" {
   token = var.provider_token
 }
 
-# Using 2 separate resources, because 
-# variable usage in lifecycle block is not available yet.
-
-resource "github_repository" "loosely_coupled" {
-  count = var.loose_coupling ? 1 : 0
-
+resource "github_repository" "repository" {
   name        = var.name
   description = var.description
 
@@ -23,31 +22,5 @@ resource "github_repository" "loosely_coupled" {
       owner      = local.template_owner
       repository = var.template_repo_name
     }
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "github_repository" "tightly_coupled" {
-  count = !var.loose_coupling ? 1 : 0
-
-  name        = var.name
-  description = var.description
-
-  visibility = var.visibility
-
-  dynamic "template" {
-    for_each = var.template_repo_name != "" ? [1] : []
-
-    content {
-      owner      = local.template_owner
-      repository = var.template_repo_name
-    }
-  }
-
-  lifecycle {
-    prevent_destroy = false
   }
 }

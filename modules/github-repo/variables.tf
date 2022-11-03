@@ -37,9 +37,3 @@ variable "provider_token" {
   type        = string
   sensitive   = true
 }
-
-variable "loose_coupling" {
-  description = "If true, the repository will not be delited on 'terraform destory'."
-  type        = bool
-  default     = false
-}
