@@ -137,6 +137,14 @@ module "argo_workflows" {
   addon_context     = local.addon_context
 }
 
+module "argocd_application" {
+  count             = var.enable_argocd_application ? 1 : 0
+  source            = "./argocd-apps"
+  helm_config       = var.argocd_application_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "aws_efs_csi_driver" {
   count             = var.enable_aws_efs_csi_driver ? 1 : 0
   source            = "./aws-efs-csi-driver"
