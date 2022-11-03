@@ -38,7 +38,6 @@ locals {
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
-
 module "eks_blueprints" {
   source = "../../.."
 
@@ -49,14 +48,24 @@ module "eks_blueprints" {
   private_subnet_ids = module.vpc.private_subnets
 
   managed_node_groups = {
-    mg_5 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m5.large"]
+    mng_spot_medium = {
+      node_group_name = "mng-spot-med"
+      capacity_type   = "SPOT"
+      instance_types  = ["t3.large", "t3.xlarge"]
       subnet_ids      = module.vpc.private_subnets
+      desired_size    = 2
+      disk_size       = 30
+    }
+  }
 
-      desired_size = 5
-      max_size     = 10
-      min_size     = 3
+  enable_windows_support = true
+  self_managed_node_groups = {
+    ng_od_windows = {
+      node_group_name    = "ng-od-windows"
+      launch_template_os = "windows"
+      instance_type      = "m5.large"
+      subnet_ids         = module.vpc.private_subnets
+      min_size           = 2
     }
   }
 
@@ -71,82 +80,48 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-  enable_argocd = true
-  # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.
-  argocd_helm_config = {
-    set_sensitive = [
-      {
-        name  = "configs.secret.argocdServerAdminPassword"
-        value = random_password.argocd.result
-      }
-    ]
-  }
-
-  keda_helm_config = {
-    values = [
-      {
-        name  = "serviceAccount.create"
-        value = "false"
-      }
-    ]
-  }
-
-  argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying add-ons
-  argocd_applications = {
-    addons = {
-      path               = "chart"
-      repo_url           = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
-      add_on_application = true
-    }
-    workloads = {
-      path               = "envs/dev"
-      repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
-      add_on_application = false
-    }
-  }
+  # EKS Managed Add-ons
+  enable_amazon_eks_coredns    = true
+  enable_amazon_eks_kube_proxy = true
 
   # Add-ons
-  enable_amazon_eks_aws_ebs_csi_driver = true
-  enable_aws_for_fluentbit             = true
-  enable_cert_manager                  = true
-  enable_cluster_autoscaler            = true
-  enable_karpenter                     = true
-  enable_keda                          = true
-  enable_metrics_server                = true
-  enable_prometheus                    = true
-  enable_traefik                       = true
-  enable_vpa                           = true
-  enable_yunikorn                      = true
-  enable_argo_rollouts                 = true
+  enable_aws_load_balancer_controller = true
+  aws_load_balancer_controller_helm_config = {
+    set = [
+      {
+        name  = "nodeSelector.kubernetes\\.io/os"
+        value = "linux"
+      }
+    ]
+  }
+
+  enable_metrics_server = true
+  metrics_server_helm_config = {
+    set = [
+      {
+        name  = "nodeSelector.kubernetes\\.io/os"
+        value = "linux"
+      }
+    ]
+  }
+
+  enable_cluster_autoscaler = true
+  cluster_autoscaler_helm_config = {
+    set = [
+      {
+        name  = "nodeSelector.kubernetes\\.io/os"
+        value = "linux"
+      }
+    ]
+  }
 
   tags = local.tags
-}
 
-#---------------------------------------------------------------
-# ArgoCD Admin Password credentials with Secrets Manager
-# Login to AWS Secrets manager with the same role as Terraform to extract the ArgoCD admin password with the secret name as "argocd"
-#---------------------------------------------------------------
-resource "random_password" "argocd" {
-  length           = 16
-  special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
-}
-
-#tfsec:ignore:aws-ssm-secret-use-customer-key
-resource "aws_secretsmanager_secret" "arogcd" {
-  name                    = "argocd"
-  recovery_window_in_days = 0 # Set to zero for this example to force delete during Terraform destroy
-}
-
-resource "aws_secretsmanager_secret_version" "arogcd" {
-  secret_id     = aws_secretsmanager_secret.arogcd.id
-  secret_string = random_password.argocd.result
 }
 
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
-
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
