@@ -178,13 +178,13 @@ resource "null_resource" "kubectl_set_env" {
     # Reference https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
     command = <<-EOT
       # Custom networking
-      kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=true --kubeconfig <(echo $KUBECONFIG | base64 --decode)
-      kubectl set env daemonset aws-node -n kube-system ENI_CONFIG_LABEL_DEF=failure-domain.beta.kubernetes.io/zone --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+      kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=true --kubeconfig <(echo $KUBECONFIG | base64 -d)
+      kubectl set env daemonset aws-node -n kube-system ENI_CONFIG_LABEL_DEF=failure-domain.beta.kubernetes.io/zone --kubeconfig <(echo $KUBECONFIG | base64 -d)
 
 
       # Prefix delegation
-      kubectl set env daemonset aws-node -n kube-system ENABLE_PREFIX_DELEGATION=true --kubeconfig <(echo $KUBECONFIG | base64 --decode)
-      kubectl set env daemonset aws-node -n kube-system WARM_PREFIX_TARGET=1 --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+      kubectl set env daemonset aws-node -n kube-system ENABLE_PREFIX_DELEGATION=true --kubeconfig <(echo $KUBECONFIG | base64 -d)
+      kubectl set env daemonset aws-node -n kube-system WARM_PREFIX_TARGET=1 --kubeconfig <(echo $KUBECONFIG | base64 -d)
     EOT
   }
 }

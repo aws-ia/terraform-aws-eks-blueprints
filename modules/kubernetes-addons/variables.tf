@@ -779,6 +779,31 @@ variable "cert_manager_kubernetes_svc_image_pull_secrets" {
   default     = []
 }
 
+variable "enable_cert_manager_istio_csr" {
+  description = "Enable Cert Manager istio-csr add-on"
+  type        = bool
+  default     = false
+}
+
+variable "cert_manager_istio_csr_helm_config" {
+  description = "Cert Manager Istio CSR Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------Argo workflows ADDON-------------
+variable "enable_argo_workflows" {
+  description = "Enable Argo workflows add-on"
+  type        = bool
+  default     = false
+}
+
+variable "argo_workflows_helm_config" {
+  description = "Argo workflows Helm Chart config"
+  type        = any
+  default     = null
+}
+
 #-----------Argo Rollouts ADDON-------------
 variable "enable_argo_rollouts" {
   description = "Enable Argo Rollouts add-on"
@@ -1166,6 +1191,19 @@ variable "enable_airflow" {
 
 variable "airflow_helm_config" {
   description = "Apache Airflow v2 Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----Apache Kafka Strimzi Operator------
+variable "enable_strimzi_kafka_operator" {
+  description = "Enable Kafka add-on"
+  type        = bool
+  default     = false
+}
+
+variable "strimzi_kafka_operator_helm_config" {
+  description = "Kafka Strimzi Helm Chart config"
   type        = any
   default     = {}
 }

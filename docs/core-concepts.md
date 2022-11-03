@@ -14,8 +14,6 @@ This document provides a high level overview of the Core Concepts that are embed
 
 A `cluster` is simply an EKS cluster. EKS Blueprints provides for customizing the compute options you leverage with your `clusters`. The framework currently supports `EC2`, `Fargate` and `BottleRocket` instances. It also supports managed and self-managed node groups. To specify the type of compute you want to use for your `cluster`, you use the `managed_node_groups`, `self_managed_nodegroups`, or `fargate_profiles` variables.
 
-See our [Node Groups](https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/node-groups/) documentation and our [Node Group example directory](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/node-groups) for detailed information.
-
 ## Add-on
 
 `Add-ons` allow you to configure the operational tools that you would like to deploy into your EKS cluster. When you configure `add-ons` for a `cluster`, the `add-ons` will be provisioned at deploy time by leveraging the Terraform Helm provider. Add-ons can deploy both Kubernetes specific resources and AWS resources needed to support add-on functionality.
