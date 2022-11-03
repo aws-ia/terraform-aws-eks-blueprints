@@ -1,0 +1,138 @@
+# -- Deploy Argo CD Applications within this helm release
+# @default -- `[]` (See [values.yaml])
+## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/
+applications: 
+- name: argoacd-pps
+  namespace: argocd
+  additionalLabels: {}
+  additionalAnnotations: {}
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  project: default
+  source:
+    repoURL: https://github.com/argoproj/argocd-example-apps.git
+    targetRevision: HEAD
+    path: /
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: 
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+  # ignoreDifferences:
+  # - group: apps
+  #   kind: Deployment
+  #   jsonPointers:
+  #   - /spec/replicas
+  # info:
+  # - name: url
+  #   value: https://argoproj.github.io/
+
+# -- Deploy Argo CD Projects within this helm release
+# @default -- `[]` (See [values.yaml])
+## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/
+projects: []
+# - name: guestbook
+#   namespace: argocd
+#   additionalLabels: {}
+#   additionalAnnotations: {}
+#   finalizers:
+#   - resources-finalizer.argocd.argoproj.io
+#   description: Example Project
+#   sourceRepos:
+#   - '*'
+#   destinations:
+#   - namespace: guestbook
+#     server: https://kubernetes.default.svc
+#   clusterResourceWhitelist: []
+#   clusterResourceBlacklist: []
+#   namespaceResourceBlacklist:
+#   - group: ''
+#     kind: ResourceQuota
+#   - group: ''
+#     kind: LimitRange
+#   - group: ''
+#     kind: NetworkPolicy
+#     orphanedResources: {}
+#     roles: []
+#   namespaceResourceWhitelist:
+#   - group: 'apps'
+#     kind: Deployment
+#   - group: 'apps'
+#     kind: StatefulSet
+#   orphanedResources: {}
+#   roles: []
+#   syncWindows:
+#   - kind: allow
+#     schedule: '10 1 * * *'
+#     duration: 1h
+#     applications:
+#     - '*-prod'
+#     manualSync: true
+#   signatureKeys:
+#   - keyID: ABCDEF1234567890
+
+# -- Deploy Argo CD ApplicationSets within this helm release
+# @default -- `[]` (See [values.yaml])
+## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/
+applicationsets: []
+# - name: guestbook
+#   namespace: argocd
+#   additionalLabels: {}
+#   additionalAnnotations: {}
+#   # See PR #10026 (ArgoCD v2.5 or later)
+#   # goTemplate: false
+#   generators:
+#   - git:
+#       repoURL: https://github.com/argoproj/argocd-example-apps.git
+#       revision: HEAD
+#       directories:
+#       - path: guestbook
+#       - path: kustomize-*
+#   template:
+#     metadata:
+#       name: '{{path.basename}}'
+#       labels: {}
+#       annotations: {}
+#     spec:
+#       project: default
+#       source:
+#         repoURL: https://github.com/argoproj/argocd-example-apps.git
+#         targetRevision: HEAD
+#         path: '{{path}}'
+#       destination:
+#         server: https://kubernetes.default.svc
+#         namespace: default
+#       syncPolicy:
+#         automated:
+#           prune: false
+#           selfHeal: false
+#       ignoreDifferences:
+#       - group: apps
+#         kind: Deployment
+#         jsonPointers:
+#         - /spec/replicas
+#       info:
+#       - name: url
+#         value: https://argoproj.github.io/
+#   syncPolicy:
+#     # Set Application finalizer
+#     preserveResourcesOnDeletion: false
+
+# -- Deploy Argo UI Extensions within this helm release
+# @default -- `[]` (See [values.yaml])
+## This function in tech preview stage, do expect unstability or breaking changes in newer versions. Bump image.tag if necessary.
+## Ref: https://github.com/argoproj-labs/argocd-extensions
+extensions: []
+  # - name: example
+  #   namespace: argocd
+  #   additionalLabels: {}
+  #   additionalAnnotations: {}
+  #   sources:
+  #     - git:
+  #         url: https://github.com/argoproj-labs/argocd-example-extension.git
+  #     - web:
+  #         url: https://github.com/argoproj-labs/argocd-example-extension/releases/download/v0.1.0/extension.tar
