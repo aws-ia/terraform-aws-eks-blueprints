@@ -70,51 +70,6 @@ module "eks_blueprints" {
       max_size        = 2
       ami_type        = "BOTTLEROCKET_x86_64"
     }
-    # As of 10/23/2022, AL2 EKS AMI ships with kernel 5.4 therefore
-    # we need to run a user-data script to update to 5.10, reboot
-    # and then re-run the bootstrap.sh for worker node to join the
-    # cluster
-    amznlinux = {
-      node_group_name        = "mng-lt"
-      create_launch_template = true
-      launch_template_os     = "amazonlinux2eks"
-      ami_type               = "AL2_x86_64"
-      pre_userdata           = <<-EOT
-        --//
-        Content-Type: text/x-shellscript; charset="us-ascii"
-        MIME-Version: 1.0
-        Content-Transfer-Encoding: 7bit
-        Content-Disposition: attachment; filename="userdata1.txt"
-
-        #x-shellscript-per-instance
-        #!/bin/bash -ex
-        yum install -y amazon-ssm-agent
-        systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
-        amazon-linux-extras disable kernel-5.4
-        amazon-linux-extras install kernel-5.10 -y
-        reboot
-
-        --//
-        Content-Type: text/x-shellscript; charset="us-ascii"
-        MIME-Version: 1.0
-        Content-Transfer-Encoding: 7bit
-        Content-Disposition: attachment; filename="userdata2.txt"
-
-        #x-shellscript-per-boot
-        #!/bin/bash -ex
-        sudo /etc/eks/bootstrap.sh ${local.cluster_name}
-
-        --//
-        Content-Type: text/x-shellscript-per-boot; charset="us-ascii"
-        MIME-Version: 1.0
-        Content-Transfer-Encoding: 7bit
-        Content-Disposition: attachment; filename="userdata.txt"
-      EOT
-      desired_size           = 2
-      max_size               = 2
-      min_size               = 2
-      instance_types         = ["m5.large"]
-    }
   }
 
   tags = local.tags
@@ -181,6 +136,8 @@ module "vpc" {
 #---------------------------------------------------------------
 
 resource "kubectl_manifest" "server" {
+  count = var.enable_example ? 1 : 0
+
   yaml_body = yamlencode({
     apiVersion = "v1"
     kind       = "Pod"
@@ -212,12 +169,15 @@ resource "kubectl_manifest" "server" {
       ]
     }
   })
+
   depends_on = [
     module.eks_blueprints_kubernetes_addons
   ]
 }
 
 resource "kubectl_manifest" "service" {
+  count = var.enable_example ? 1 : 0
+
   yaml_body = yamlencode({
     apiVersion = "v1"
     kind       = "Service"
@@ -238,6 +198,8 @@ resource "kubectl_manifest" "service" {
 }
 
 resource "kubectl_manifest" "client" {
+  count = var.enable_example ? 1 : 0
+
   yaml_body = yamlencode({
     apiVersion = "v1"
     kind       = "Pod"
@@ -270,7 +232,8 @@ resource "kubectl_manifest" "client" {
       ]
     }
   })
+
   depends_on = [
-    kubectl_manifest.server
+    kubectl_manifest.server[0]
   ]
 }

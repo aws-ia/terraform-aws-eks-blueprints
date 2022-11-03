@@ -4,3 +4,9 @@ variable "cluster_name" {
   type        = string
   default     = ""
 }
+
+variable "enable_example" {
+  description = "Enable example to test this blueprint"
+  type        = bool
+  default     = true
+}
