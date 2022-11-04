@@ -33,7 +33,7 @@ data "aws_availability_zones" "available" {}
 locals {
   name = basename(path.cwd)
   # var.cluster_name is for Terratest
-  cluster_name    = coalesce(var.cluster_name, local.name)
+  cluster_name    = local.name
   cluster_version = "1.23"
   region          = "us-west-2"
 
