@@ -97,6 +97,13 @@ module "eks_blueprints_kubernetes_addons" {
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
   }
 
+  # Creates ProviderConfig -> kbuernetes-provider
+  crossplane_kubernetes_provider = {
+    # NOTE: Crossplane requires cluster-admin permissions to create and update resources.
+    enable                      = true
+    provider_kubernetes_version = "v0.4.1"
+  }
+
   # Enable configmap reloader
   enable_reloader = true
 

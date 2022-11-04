@@ -253,6 +253,18 @@ variable "crossplane_jet_aws_provider" {
   }
 }
 
+variable "crossplane_kubernetes_provider" {
+  description = "Kubernetes Provider config for Crossplane"
+  type = object({
+    enable                      = bool
+    provider_kubernetes_version = string
+  })
+  default = {
+    enable                      = false
+    provider_kubernetes_version = "v0.4.1"
+  }
+}
+
 #-----------ONDAT ADDON-------------
 variable "enable_ondat" {
   description = "Enable Ondat add-on"
