@@ -707,9 +707,9 @@ module "cilium" {
   count = var.enable_cilium ? 1 : 0
 
   helm_config       = var.cilium_helm_config
+  enable_wireguard  = var.cilium_enable_wireguard
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
-
 }
 
 module "gatekeeper" {
