@@ -125,3 +125,52 @@ resource "kubectl_manifest" "jet_aws_provider_config" {
 
   depends_on = [kubectl_manifest.jet_aws_provider]
 }
+
+resource "kubernetes_service_account_v1" "kubernetes_controller" {
+  metadata {
+    name      = local.kubernetes_provider_sa
+    namespace = local.namespace
+  }
+
+  depends_on = [module.helm_addon]
+}
+
+resource "kubectl_manifest" "kubernetes_controller_clusterolebinding" {
+  count = var.kubernetes_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-controller-clusterrolebinding.yaml", {
+    kubernetes-serviceaccount-name = local.kubernetes_provider_sa
+    namespace                      = local.namespace
+  })
+  wait = true
+
+  depends_on = [module.helm_addon]
+}
+
+resource "kubectl_manifest" "kubernetes_controller_config" {
+  count = var.kubernetes_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-controller-config.yaml", {
+    kubernetes-serviceaccount-name = local.kubernetes_provider_sa
+    namespace                      = local.namespace
+  })
+  wait = true
+
+  depends_on = [module.helm_addon]
+}
+
+resource "kubectl_manifest" "kubernetes_provider" {
+  count = var.kubernetes_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-provider.yaml", {
+    provider-kubernetes-version = var.kubernetes_provider.provider_kubernetes_version
+    kubernetes-provider-name    = local.kubernetes_provider_sa
+  })
+  wait = true
+
+  depends_on = [kubectl_manifest.kubernetes_controller_config]
+}
+
+resource "kubectl_manifest" "kubernetes_provider_config" {
+  count     = var.kubernetes_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-provider-config.yaml", {})
+
+  depends_on = [kubectl_manifest.kubernetes_provider]
+}

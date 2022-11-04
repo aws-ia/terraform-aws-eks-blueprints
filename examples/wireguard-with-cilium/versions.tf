@@ -10,13 +10,13 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = ">= 2.10"
     }
-    kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.14"
-    }
     helm = {
       source  = "hashicorp/helm"
       version = ">= 2.4.1"
+    }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.14"
     }
   }
 
@@ -24,6 +24,6 @@ terraform {
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"
   #   region = "us-west-2"
-  #   key    = "e2e/tls-with-aws-pca-issuer/terraform.tfstate"
+  #   key    = "e2e/wireguard-with-cilium/terraform.tfstate"
   # }
 }

@@ -23,6 +23,7 @@ locals {
 
   aws_provider_sa        = "aws-provider"
   jet_aws_provider_sa    = "jet-aws-provider"
+  kubernetes_provider_sa = "kubernetes-provider"
   aws_current_account_id = var.account_id
   aws_current_partition  = var.aws_partition
 }

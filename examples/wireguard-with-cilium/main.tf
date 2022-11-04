@@ -17,7 +17,7 @@ provider "helm" {
 }
 
 provider "kubectl" {
-  apply_retry_count      = 30
+  apply_retry_count      = 10
   host                   = module.eks_blueprints.eks_cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
   load_config_file       = false
@@ -31,8 +31,11 @@ data "aws_eks_cluster_auth" "this" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = basename(path.cwd)
-  region = "us-west-2"
+  name = basename(path.cwd)
+  # var.cluster_name is for Terratest
+  cluster_name    = local.name
+  cluster_version = "1.23"
+  region          = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -50,17 +53,22 @@ locals {
 module "eks_blueprints" {
   source = "../.."
 
-  cluster_name    = local.name
-  cluster_version = "1.23"
+  cluster_name    = local.cluster_name
+  cluster_version = local.cluster_version
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
   managed_node_groups = {
-    mg_5 = {
-      node_group_name = "managed-ondemand"
+    # BottleRocket ships with kernel 5.10 so there is no need
+    # to do anything special
+    bottlerocket = {
+      node_group_name = "mg5"
       instance_types  = ["m5.large"]
       min_size        = 2
+      desired_size    = 2
+      max_size        = 2
+      ami_type        = "BOTTLEROCKET_x86_64"
       subnet_ids      = module.vpc.private_subnets
     }
   }
@@ -76,36 +84,12 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-  enable_crossplane = true
+  # Wait on the `kube-system` profile before provisioning addons
+  data_plane_wait_arn = module.eks_blueprints.managed_node_group_arn[0]
 
-  # You can choose to install either of crossplane_aws_provider or crossplane_jet_aws_provider to work with AWS
-  # Creates ProviderConfig -> aws-provider
-  crossplane_aws_provider = {
-    enable               = true
-    provider_aws_version = "v0.24.1"
-    # NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
-    # This example config uses AmazonS3FullAccess for demo purpose only, but you should select a policy with the minimum permissions required to provision your resources.
-    additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
-  }
-
-  # Creates ProviderConfig -> jet-aws-provider
-  crossplane_jet_aws_provider = {
-    enable               = true
-    provider_aws_version = "v0.4.1"
-    # NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
-    # This example config uses AmazonS3FullAccess for demo purpose only, but you should select a policy with the minimum permissions required to provision your resources.
-    additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
-  }
-
-  # Creates ProviderConfig -> kbuernetes-provider
-  crossplane_kubernetes_provider = {
-    # NOTE: Crossplane requires cluster-admin permissions to create and update resources.
-    enable                      = true
-    provider_kubernetes_version = "v0.4.1"
-  }
-
-  # Enable configmap reloader
-  enable_reloader = true
+  # Add-ons
+  enable_cilium           = true
+  cilium_enable_wireguard = true
 
   tags = local.tags
 }
@@ -138,14 +122,119 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Sample App for Testing
+#---------------------------------------------------------------
+
+resource "kubectl_manifest" "server" {
+  count = var.enable_example ? 1 : 0
+
+  yaml_body = yamlencode({
+    apiVersion = "v1"
+    kind       = "Pod"
+    metadata = {
+      name = "server"
+      labels = {
+        blog = "wireguard"
+        name = "server"
+      }
+    }
+    spec = {
+      containers = [
+        {
+          name  = "server"
+          image = "nginx"
+        }
+      ]
+      topologySpreadConstraints = [
+        {
+          maxSkew           = 1
+          topologyKey       = "kubernetes.io/hostname"
+          whenUnsatisfiable = "DoNotSchedule"
+          labelSelector = {
+            matchLabels = {
+              blog = "wireguard"
+            }
+          }
+        }
+      ]
+    }
+  })
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
+  ]
+}
+
+resource "kubectl_manifest" "service" {
+  count = var.enable_example ? 1 : 0
+
+  yaml_body = yamlencode({
+    apiVersion = "v1"
+    kind       = "Service"
+    metadata = {
+      name = "server"
+    }
+    spec = {
+      selector = {
+        name = "server"
+      }
+      ports = [
+        {
+          port = 80
+        }
+      ]
+    }
+  })
+}
+
+resource "kubectl_manifest" "client" {
+  count = var.enable_example ? 1 : 0
+
+  yaml_body = yamlencode({
+    apiVersion = "v1"
+    kind       = "Pod"
+    metadata = {
+      name = "client"
+      labels = {
+        blog = "wireguard"
+        name = "client"
+      }
+    }
+    spec = {
+      containers = [
+        {
+          name    = "client"
+          image   = "busybox"
+          command = ["watch", "wget", "server"]
+        }
+      ]
+      topologySpreadConstraints = [
+        {
+          maxSkew           = 1
+          topologyKey       = "kubernetes.io/hostname"
+          whenUnsatisfiable = "DoNotSchedule"
+          labelSelector = {
+            matchLabels = {
+              blog = "wireguard"
+            }
+          }
+        }
+      ]
+    }
+  })
+
+  depends_on = [
+    kubectl_manifest.server[0]
+  ]
 }
