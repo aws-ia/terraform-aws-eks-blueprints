@@ -69,6 +69,7 @@ module "eks_blueprints" {
       desired_size    = 2
       max_size        = 2
       ami_type        = "BOTTLEROCKET_x86_64"
+      subnet_ids      = module.vpc.private_subnets
     }
   }
 
