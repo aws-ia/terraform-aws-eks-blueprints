@@ -220,7 +220,7 @@ resource "kubectl_manifest" "client" {
       ]
       topologySpreadConstraints = [
         {
-          maxSkew : 1
+          maxSkew           = 1
           topologyKey       = "kubernetes.io/hostname"
           whenUnsatisfiable = "DoNotSchedule"
           labelSelector = {
