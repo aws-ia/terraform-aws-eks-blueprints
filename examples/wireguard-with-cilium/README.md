@@ -121,7 +121,7 @@ exit
 To teardown and remove the resources created in this example:
 
 ```sh
-terraform destroy -target=kubectl_manifest.eni_config -target=module.eks_blueprints_kubernetes_addons -auto-approve
+terraform destroy -target=module.eks_blueprints_kubernetes_addons -auto-approve
 terraform destroy -target=module.eks_blueprints -auto-approve
 terraform destroy -auto-approve
 ```
