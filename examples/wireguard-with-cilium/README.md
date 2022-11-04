@@ -48,7 +48,7 @@ aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
 2. List the daemonsets
 
 ```sh
-kubectl get ds -n kube-system 
+kubectl get ds -n kube-system
 
 # Output should look something similar
 NAME         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
