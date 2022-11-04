@@ -1479,6 +1479,7 @@
 <ul>
 <li><a href="https://github.com/crossplane/provider-aws">AWS Provider</a></li>
 <li><a href="https://github.com/crossplane-contrib/provider-jet-aws">Terrajet AWS Provider</a></li>
+<li><a href="https://github.com/crossplane-contrib/provider-kubernetes">Kubernetes Provider</a></li>
 </ul>
 <p><em>NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
 This example config uses AdministratorAccess, but you should select a policy with the minimum permissions required to provision your resources.</em></p>
@@ -1496,6 +1497,14 @@ crossplane_jet_aws_provider = {
   enable                   = true
   provider_aws_version     = &quot;v0.4.1&quot;  # Get the latest version from  https://github.com/crossplane-contrib/provider-jet-aws
   additional_irsa_policies = [&quot;arn:aws:iam::aws:policy/AdministratorAccess&quot;]
+}
+</code></pre></div></p>
+<p><em>NOTE: Crossplane requires cluster-admin permissions to create and update Kubernetes resources.</em></p>
+<p>Config to deploy <a href="https://github.com/crossplane-contrib/provider-kubernetes">Kubernetes provider</a>
+<div class="highlight"><pre><span></span><code># Creates ProviderConfig -&gt; kubernetes-provider
+crossplane_kubernetes_provider = {
+  enable                   = true
+  provider_kubernetes_version     = &quot;v0.4.1&quot;  # Get the latest version from  https://github.com/crossplane-contrib/provider-jet-aws
 }
 </code></pre></div></p>
 <p>Checkout the full <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/crossplane">example</a> to deploy Crossplane with <code>kubernetes-addons</code> module</p>
