@@ -50,14 +50,12 @@ aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
 ```sh
 kubectl get ds -n kube-system 
 
-# output should look something similar
+# Output should look something similar
 NAME         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
 aws-node     2         2         2       2            2           <none>                   156m
 cilium       2         2         2       2            2           kubernetes.io/os=linux   152m
 kube-proxy   2         2         2       2            2           <none>                   156m
 ```
-
-**Note**: Skip the next steps if you set `enable_example=false` during `terraform apply`
 
 3. Open a shell inside the cilium container
 
@@ -65,14 +63,23 @@ kube-proxy   2         2         2       2            2           <none>        
 kubectl -n kube-system exec -ti ds/cilium -- bash
 ```
 
-4. Install tcpdump
+4. Verify Encryption is enabled
+
+```sh
+cilium status | grep Encryption
+
+# Output should look something similar
+Encryption:              Wireguard   [cilium_wg0 (Pubkey: b2krgbHgaCsVWALMnFLiS/RekhhcE36PXEjQ7T8+mW0=, Port: 51871, Peers: 1)]
+```
+
+5. Install tcpdump
 
 ```sh
 apt-get update
 apt-get install -y tcpdump
 ```
 
-5. Start a packet capture and verify you don't see payload in clear text
+6. Start a packet capture and verify you don't see payload in clear text
 
 ```sh
 tcpdump -A -c 3 -i cilium_wg0
@@ -103,7 +110,7 @@ E..4].@.?...
 9 packets received by filter
 1 packet dropped by kernel
 ```
-6. Exit the container shell
+7. Exit the container shell
 
 ```sh
 exit
