@@ -66,6 +66,7 @@ resource "aws_iam_policy" "external_dns" {
   name        = "${var.addon_context.eks_cluster_id}-${local.name}-irsa"
   path        = var.addon_context.irsa_iam_role_path
   policy      = data.aws_iam_policy_document.external_dns_iam_policy_document.json
+  tags        = var.addon_context.tags
 }
 
 # TODO - remove at next breaking change
