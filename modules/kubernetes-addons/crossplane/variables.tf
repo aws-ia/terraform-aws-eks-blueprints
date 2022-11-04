@@ -39,6 +39,14 @@ variable "jet_aws_provider" {
   })
 }
 
+variable "kubernetes_provider" {
+  description = "Kubernetes Provider config for Crossplane"
+  type = object({
+    enable                      = bool
+    provider_kubernetes_version = string
+  })
+}
+
 variable "account_id" {
   description = "Current AWS Account ID"
   type        = string
