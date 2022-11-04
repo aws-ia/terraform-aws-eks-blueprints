@@ -24,6 +24,6 @@ terraform {
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"
   #   region = "us-west-2"
-  #   key    = "e2e/eks-cluster-with-new-vpc/terraform.tfstate"
+  #   key    = "e2e/wireguard-with-cilium/terraform.tfstate"
   # }
 }
