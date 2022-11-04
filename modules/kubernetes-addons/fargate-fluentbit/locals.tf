@@ -32,7 +32,7 @@ locals {
       Time_Keep On
       Decode_Field_As json message
     EOF
-    flb_log_cw = false
+    flb_log_cw   = false
   }
 
   config = merge(

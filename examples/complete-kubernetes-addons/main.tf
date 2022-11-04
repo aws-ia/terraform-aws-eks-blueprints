@@ -210,7 +210,7 @@ module "eks_blueprints_kubernetes_addons" {
       Time_Keep On
       Decode_Field_As json message
     EOF
-    flb_log_cw = true
+    flb_log_cw   = true
   }
 
   enable_kyverno                 = true
