@@ -15,7 +15,7 @@ locals {
     var.helm_config
   )
 
-  default_helm_values = [templatefile("${path.module}/values.yaml.tmpl", {
+  default_helm_values = [templatefile("${path.module}/values.yaml", {
     enable_wireguard = var.enable_wireguard
   })]
 
