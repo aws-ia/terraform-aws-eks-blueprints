@@ -3,7 +3,7 @@ module "launch_template_self_managed_ng" {
 
   eks_cluster_id = var.context.eks_cluster_id
   launch_template_config = {
-    "${local.lt_self_managed_group_map_key}" = {
+    (local.lt_self_managed_group_map_key) = {
       ami                    = local.custom_ami_id
       launch_template_os     = local.self_managed_node_group["launch_template_os"]
       launch_template_prefix = local.self_managed_node_group["node_group_name"]

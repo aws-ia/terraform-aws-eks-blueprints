@@ -7,15 +7,14 @@ locals {
   create_namespace = var.enable_opentelemetry_operator ? true : try(var.helm_config.create_namespace, true)
   namespace        = local.create_namespace ? kubernetes_namespace_v1.adot[0].metadata[0].name : try(var.helm_config.namespace, local.addon_namespace)
 
+  # https://github.com/open-telemetry/opentelemetry-helm-charts/blob/main/charts/opentelemetry-operator/Chart.yaml
   default_helm_config = {
     name        = "opentelemetry"
     repository  = "https://open-telemetry.github.io/opentelemetry-helm-charts"
     chart       = "opentelemetry-operator"
-    version     = "0.8.2"
+    version     = "0.16.0"
     namespace   = local.namespace
-    timeout     = "1200"
     description = "ADOT Operator helm chart"
-    values      = []
   }
 
   helm_config = merge(

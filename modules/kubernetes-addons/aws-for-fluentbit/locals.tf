@@ -14,11 +14,12 @@ locals {
     }
   ]
 
+  # https://github.com/aws/eks-charts/blob/master/stable/aws-for-fluent-bit/Chart.yaml
   default_helm_config = {
     name        = local.name
     chart       = local.name
     repository  = "https://aws.github.io/eks-charts"
-    version     = "0.1.18"
+    version     = "0.1.21"
     namespace   = local.name
     values      = local.default_helm_values
     description = "aws-for-fluentbit Helm Chart deployment configuration"

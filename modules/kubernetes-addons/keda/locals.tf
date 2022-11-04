@@ -1,21 +1,17 @@
 locals {
   name                 = "keda"
   service_account_name = "keda-operator-sa"
-  default_helm_config = {
-    name        = local.name
-    chart       = local.name
-    repository  = "https://kedacore.github.io/charts"
-    version     = "2.7.2"
-    namespace   = local.name
-    description = "Keda Event-based autoscaler for workloads on Kubernetes"
-    values      = local.default_helm_values
-    timeout     = "1200"
-  }
 
-  default_helm_values = []
-
+  # https://github.com/kedacore/charts/blob/main/keda/Chart.yaml
   helm_config = merge(
-    local.default_helm_config,
+    {
+      name        = local.name
+      chart       = local.name
+      repository  = "https://kedacore.github.io/charts"
+      version     = "2.8.2"
+      namespace   = local.name
+      description = "Keda Event-based autoscaler for workloads on Kubernetes"
+    },
     var.helm_config
   )
 

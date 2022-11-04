@@ -7,7 +7,6 @@ locals {
     repository       = "https://istio-release.storage.googleapis.com/charts"
     version          = local.default_version
     namespace        = "istio-system"
-    timeout          = "1200"
     create_namespace = true
     description      = "Istio service mesh"
   }
