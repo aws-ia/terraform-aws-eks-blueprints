@@ -35,7 +35,7 @@ locals {
   # var.cluster_name is for Terratest
   cluster_name    = coalesce(var.cluster_name, local.name)
   cluster_version = "1.23"
-  region          = "us-east-1"
+  region          = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
