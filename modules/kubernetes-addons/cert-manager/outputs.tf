@@ -8,9 +8,9 @@ output "eks_cluster_id" {
   value       = var.addon_context.eks_cluster_id
 }
 
-output "helm_release" {
-  description = "Map of attributes of the Helm release created without sensitive outputs"
-  value       = module.helm_addon.helm_release
+output "release_metadata" {
+  description = "Map of attributes of the Helm release metadata"
+  value       = module.helm_addon.release_metadata
 }
 
 output "irsa_arn" {

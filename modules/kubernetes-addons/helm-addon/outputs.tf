@@ -3,6 +3,11 @@ output "helm_release" {
   value       = try({ for k, v in helm_release.addon : k => v if k != "repository_password" }, {})
 }
 
+output "release_metadata" {
+  description = "Map of attributes of the Helm release metadata"
+  value       = try(helm_release.addon[0].metadata, null)
+}
+
 output "irsa_arn" {
   description = "IAM role ARN for the service account"
   value       = try(module.irsa[0].irsa_iam_role_arn, null)

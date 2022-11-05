@@ -1,6 +1,6 @@
-output "helm_release" {
-  description = "Map of attributes of the Helm release created without sensitive outputs"
-  value       = module.kyverno_helm_addon.helm_release
+output "release_metadata" {
+  description = "Map of attributes of the Helm release metadata"
+  value       = module.kyverno_helm_addon.release_metadata
 }
 
 output "irsa_arn" {

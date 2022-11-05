@@ -1,6 +1,6 @@
-output "helm_release" {
-  description = "Map of attributes of the Helm release created without sensitive outputs"
-  value       = try(module.helm_addon[0].helm_release, {})
+output "release_metadata" {
+  description = "Map of attributes of the Helm release metadata"
+  value       = try(module.helm_addon[0].release_metadata, null)
 }
 
 output "irsa_arn" {
