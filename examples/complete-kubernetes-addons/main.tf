@@ -130,16 +130,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_aws_for_fluentbit                 = true
   aws_for_fluentbit_cw_log_group_retention = 30
   aws_for_fluentbit_helm_config = {
-    values = [templatefile("${path.module}/helm_values/aws-for-fluentbit-values.yaml", {
-      region                          = local.region
-      aws_for_fluent_bit_cw_log_group = "/${module.eks_blueprints.eks_cluster_id}/worker-fluentbit-logs"
-    })]
-    set = [
-      {
-        name  = "nodeSelector.kubernetes\\.io/os"
-        value = "linux"
-      }
-    ]
+    create_namespace = true
   }
 
   enable_kyverno                 = true
