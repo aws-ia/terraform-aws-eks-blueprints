@@ -42,5 +42,8 @@ The Amazon VPC CNI plugin for Kubernetes is the networking plugin for pod networ
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_irsa_arn"></a> [irsa\_arn](#output\_irsa\_arn) | IAM role ARN for the service account |
+| <a name="output_irsa_name"></a> [irsa\_name](#output\_irsa\_name) | IAM role name for the service account |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
