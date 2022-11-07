@@ -111,7 +111,7 @@ module "eks_blueprints_kubernetes_addons" {
   # Add-ons
   enable_amazon_eks_aws_ebs_csi_driver = true
   enable_aws_for_fluentbit             = true
-  # Let fluentbit create the cw log group 
+  # Let fluentbit create the cw log group
   aws_for_fluentbit_create_cw_log_group = false
   enable_cert_manager                   = true
   enable_cluster_autoscaler             = true
@@ -137,8 +137,8 @@ resource "random_password" "argocd" {
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
-# Argo requires the password to be bcrypt, we use custom provider of bcrypt, 
-# as the default bcrypt function generates diff for each terraform plan  
+# Argo requires the password to be bcrypt, we use custom provider of bcrypt,
+# as the default bcrypt function generates diff for each terraform plan
 resource "bcrypt_hash" "argo" {
   cleartext = random_password.argocd.result
 }
