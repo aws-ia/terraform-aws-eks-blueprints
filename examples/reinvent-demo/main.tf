@@ -106,8 +106,72 @@ module "eks_cluster" {
   }
 
   tags = local.tags
+
+  # Adding the current user as the admin user for the Platform Team configuration
+  # Uncomment the below `platform_teams` and `application_teams` code block
+
+  # platform_teams = {
+  #   admin = {
+  #     users = [
+  #       data.aws_caller_identity.current.arn
+  #     ]
+  #   }
+  # }
+
+  # application_teams = {
+  #   core-services = {
+  #     "labels" = {
+  #       "app.kubernetes.io/name" = "core-services",
+  #       "environment"            = "dev",
+  #     }
+  #     "quota" = {
+  #       "requests.cpu"    = "10000m",
+  #       "requests.memory" = "20Gi",
+  #       "limits.cpu"      = "20000m",
+  #       "limits.memory"   = "50Gi",
+  #       "pods"            = "15",
+  #       "secrets"         = "10",
+  #       "services"        = "10"
+  #     }
+  #     ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the core-services namespace.
+  #     manifests_dir = "./core-services"
+  #     users         = [data.aws_caller_identity.current.arn]
+  #   }
+  # }
+
 }
 #endregion
+
+# Uncomment this section after you've uncommented the above core-services team, to demonstrate a deployment of a component into the newly created namespace
+#
+# resource "helm_release" "core-services-copmonent-a" {
+#   name = "copmonent-a"
+
+#   repository = "https://charts.bitnami.com/bitnami"
+#   chart      = "nginx"
+#   version    = "13.2.13"
+#   namespace  = "core-services"
+#   values = [
+#     <<YAML
+# nameOverride: "copmonent-a"
+# commonLabels:
+#   app.kubernetes.io/component: "component-a"
+#   app.kubernetes.io/instance: "dev"
+#   app.kubernetes.io/part-of: "core-services"
+# resources:
+#   limits:
+#     cpu: 100m
+#     memory: 128Mi
+#   requests:
+#     cpu: 100m
+#     memory: 128Mi
+# YAML
+#   ]
+
+#   depends_on = [
+#     module.eks_cluster
+#   ]
+# }
 
 #region AddOns
 ###############################################################################
