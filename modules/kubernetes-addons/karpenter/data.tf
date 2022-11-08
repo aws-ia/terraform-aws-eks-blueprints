@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "karpenter" {
   statement {
     sid       = "KarpenterEventPolicyEvents"
     effect    = "Allow"
-    resources = ["arn:aws:events:us-east-1:360093697111:rule/Karpenter-*"]
+    resources = ["arn:aws:events:${var.addon_context["aws_region_name"]}:${var.addon_context["aws_caller_identity_account_id"]}:rule/Karpenter-*"]
 
     actions = [
       "events:TagResource",
@@ -55,7 +55,7 @@ data "aws_iam_policy_document" "karpenter" {
     condition {
       test     = "StringEquals"
       variable = "aws:ResourceTag/karpenter.sh/discovery"
-      values   = ["${ClusterName}"]
+      values   = ["${var.addon_context["eks_cluster_id"]}"]
     }
   }
 
@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "karpenter" {
   statement {
     sid       = "KarpenterEventPolicySQS"
     effect    = "Allow"
-    resources = ["arn:aws:sqs:us-east-1:360093697111:${ClusterName}"]
+    resources = ["arn:aws:sqs:${var.addon_context["aws_region_name"]}:${var.addon_context["aws_caller_identity_account_id"]}:${var.addon_context["eks_cluster_id"]}"]
 
     actions = [
       "sqs:DeleteMessage",
