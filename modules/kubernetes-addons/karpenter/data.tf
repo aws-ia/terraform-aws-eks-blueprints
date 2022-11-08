@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "karpenter" {
   statement {
-    sid       = "Karpenter"
+    sid       = "KarpenterControllerPolicy"
     effect    = "Allow"
     resources = ["*"]
 
@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "karpenter" {
   }
 
   statement {
-    sid       = "ConditionalEC2Termination"
+    sid       = "KarpenterConditionalEC2Termination"
     effect    = "Allow"
     resources = ["*"]
     actions   = ["ec2:TerminateInstances"]
@@ -36,5 +36,50 @@ data "aws_iam_policy_document" "karpenter" {
       variable = "ec2:ResourceTag/Name"
       values   = ["*karpenter*"]
     }
+  }
+
+  statement {
+    sid       = "KarpenterEventPolicyEvents"
+    effect    = "Allow"
+    resources = ["arn:aws:events:us-east-1:360093697111:rule/Karpenter-*"]
+
+    actions = [
+      "events:TagResource",
+      "events:DeleteRule",
+      "events:PutTargets",
+      "events:PutRule",
+      "events:ListTagsForResource",
+      "events:RemoveTargets",
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/karpenter.sh/discovery"
+      values   = ["${ClusterName}"]
+    }
+  }
+
+  statement {
+    sid       = "KarpenterEventPolicyListRules"
+    effect    = "Allow"
+    resources = ["*"]
+    actions   = ["events:ListRules"]
+  }
+
+  statement {
+    sid       = "KarpenterEventPolicySQS"
+    effect    = "Allow"
+    resources = ["arn:aws:sqs:us-east-1:360093697111:${ClusterName}"]
+
+    actions = [
+      "sqs:DeleteMessage",
+      "sqs:TagQueue",
+      "sqs:GetQueueUrl",
+      "sqs:ReceiveMessage",
+      "sqs:DeleteQueue",
+      "sqs:GetQueueAttributes",
+      "sqs:CreateQueue",
+      "sqs:SetQueueAttributes",
+    ]
   }
 }
