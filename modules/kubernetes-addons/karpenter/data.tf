@@ -55,7 +55,7 @@ data "aws_iam_policy_document" "karpenter" {
     condition {
       test     = "StringEquals"
       variable = "aws:ResourceTag/karpenter.sh/discovery"
-      values   = ["${var.addon_context["eks_cluster_id"]}"]
+      values   = [var.addon_context["eks_cluster_id"]]
     }
   }
 
