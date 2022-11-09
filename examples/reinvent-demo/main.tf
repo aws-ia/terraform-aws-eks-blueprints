@@ -199,10 +199,14 @@ module "addons" {
     addon_version     = data.aws_eks_addon_version.latest["kube-proxy"].version
     resolve_conflicts = "OVERWRITE"
   }
-  enable_aws_load_balancer_controller = true
-  enable_aws_for_fluentbit            = true
-  enable_aws_cloudwatch_metrics       = true
-  enable_fargate_fluentbit            = true
+
+  enable_amazon_eks_coredns                      = true
+  enable_coredns_cluster_proportional_autoscaler = true
+  enable_amazon_eks_aws_ebs_csi_driver           = true
+  enable_aws_load_balancer_controller            = true
+  enable_aws_for_fluentbit                       = true
+  enable_aws_cloudwatch_metrics                  = true
+  enable_fargate_fluentbit                       = true
 
   # Sample application
   enable_app_2048 = true
