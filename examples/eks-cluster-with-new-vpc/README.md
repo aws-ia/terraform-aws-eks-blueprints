@@ -20,7 +20,7 @@ Ensure that you have installed the following tools in your Mac or Windows Laptop
 
 > **Note**: The policy resource is set as `*` to allow all resources, this is not a recommended practice.
 
-You can find the policy [here](min-iam-policy.json)
+You can find the policy [here](../../docs/iam/min-iam-policy.json)
 
 
 ### Deployment Steps
