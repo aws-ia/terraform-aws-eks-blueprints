@@ -96,7 +96,7 @@ variable "dns_region" {
 variable "common_name" {
   description = "Common name to be used on the Certificate."
   type        = string
-  default     = "somename"
+  default     = ""
 }
 
 variable "is_ca" {
@@ -111,20 +111,8 @@ variable "dns_names" {
   default     = []
 }
 
-variable "access_keyID_secret_ref_key" {
-  description = "The SecretAccessKey is used for authentication. The key of the entry in the Secret resource's `data` field to be used."
-  type        = string
-  default     = ""
-}
-
 variable "hosted_zone_id" {
   description = "If set, the provider will manage only this zone in Route53 and will not do an lookup using the route53:ListHostedZonesByName api call."
-  type        = string
-  default     = ""
-}
-
-variable "role" {
-  description = "Role is a Role ARN which the Route53 provider will assume using the explicit credentials AccessKeyID/SecretAccessKey"
   type        = string
   default     = ""
 }
