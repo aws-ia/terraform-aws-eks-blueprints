@@ -724,7 +724,7 @@ variable "cert_manager_kubernetes_svc_image_pull_secrets" {
 }
 
 variable "cert_manager_cluster_issuer_name" {
-  description = "Name of cluster issuer release"
+  description = "Prefix of cluster issuer release"
   type        = string
   default     = ""
 }

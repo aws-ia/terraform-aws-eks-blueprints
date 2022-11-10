@@ -58,9 +58,9 @@ variable "kubernetes_svc_image_pull_secrets" {
 }
 
 variable "cluster_issuer_name" {
-  description = "Name of cluster issuer and release"
+  description = "Prefix of cluster issuer and release"
   type        = string
-  default     = "malmo"
+  default     = ""
 }
 
 variable "external_account_keyID" {

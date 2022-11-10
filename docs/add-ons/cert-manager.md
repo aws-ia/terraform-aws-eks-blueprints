@@ -18,24 +18,78 @@ cert-manger can optionally leverage the `cert_manager_domain_names` global prope
 cert_manager_domain_names = [<cluster_domain>, <another_cluster_domain>]
 ```
 
-With this add-on self-signed CA and Let's Encrypt cluster issuers will be installed.
+With this add-on self-signed CA and ACME cluster issuers will be installed.
 
-You can disable Let's Encrypt cluster issuers with:
+You can disable ACME cluster issuers with:
 
 ```
-cert_manager_install_letsencrypt_issuers = false
+cert_manager_install_acme_issuers = false
 ```
 
 You can set an email address for expiration emails with:
 
 ```
-cert_manager_letsencrypt_email = "user@example.com"
+cert_manager_email = "user@example.com"
 ```
 
 You can pass previously created secrets for use as `imagePullSecrets` on the Service Account
 
 ```
 cert_manager_kubernetes_svc_image_pull_secrets = ["regcred"]
+```
+
+You can create prefix of cluster issuer and release
+
+```
+cert_manager_cluster_issuer_name = "example"
+```
+
+You can pass ID of the CA key that the External Account is bound to.
+
+```
+cert_manager_external_account_keyID = "exampleKey"
+```
+
+You can pass Secret key of the CA that the External Account is bound to.
+
+```
+cert_manager_external_account_secret_key = "exampleSecret"
+```
+
+You can pass preferred chain to use, if the ACME server outputs multiple.
+
+```
+cert_manager_preferred_chain = "Example CHAIN"
+```
+
+You can pass the URL to access the ACME server's  endpoint.
+
+```
+cert_manager_acme_server_url = "https://example.com"
+```
+
+You can pass your AWS DNS Region.
+
+```
+cert_manager_dns_region = "example-region"
+```
+
+You can pass common name to be included in the Certificate.
+
+```
+cert_manager_certificate_common_name = "example.com"
+```
+
+You can give bool value that will mark this Certificate as valid for certificate signing.
+
+```
+cert_manager_certificate_is_ca = true
+```
+
+You can pass the hosted zone of your route53 domain for managing only that zone.
+
+```
+cert_manager_hosted_zone_id = "example zone"
 ```
 
 ### GitOps Configuration
