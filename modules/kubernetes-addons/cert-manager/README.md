@@ -58,7 +58,7 @@ cert-manager docker image is available at this repo:
 | <a name="input_install_acme_issuers"></a> [install\_acme\_issuers](#input\_install\_acme\_issuers) | Install ACME Cluster Issuers. | `bool` | `true` | no |
 | <a name="input_irsa_policies"></a> [irsa\_policies](#input\_irsa\_policies) | Additional IAM policies used for the add-on service account. | `list(string)` | `[]` | no |
 | <a name="input_kubernetes_svc_image_pull_secrets"></a> [kubernetes\_svc\_image\_pull\_secrets](#input\_kubernetes\_svc\_image\_pull\_secrets) | list(string) of kubernetes imagePullSecrets | `list(string)` | `[]` | no |
-| <a name="input_email"></a> [_email](#input\_email) | Email address for expiration. | `string` | `""` | no |
+| <a name="input_email"></a> [email](#input\_email) | Email address for expiration. | `string` | `""` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
 | <a name="input_cluster_issuer_name"></a> [cluster\_issuer\_name](#input\_cluster\_issuer\_name) | Prefix for cluster issuer and other resources. | `string` | `""` | no |
 | <a name="input_external_account_keyID"></a> [external\_account\_keyID](#input\_external\_account\_keyID) | ID of the CA key that the External Account is bound to. | `"string"` | `""` | no |
