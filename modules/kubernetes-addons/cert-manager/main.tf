@@ -17,16 +17,16 @@ resource "helm_release" "cert_manager_ca" {
   depends_on = [module.helm_addon]
 }
 
-resource "helm_release" "cert_manager_letsencrypt" {
-  count     = var.manage_via_gitops || !var.install_letsencrypt_issuers ? 0 : 1
-  name      = "cert-manager-letsencrypt"
-  chart     = "${path.module}/cert-manager-letsencrypt"
-  version   = "0.1.0"
+resource "helm_release" "cert_manager_acme" {
+  count     = var.manage_via_gitops || !var.install_acme_issuers ? 0 : 1
+  name      = "cert-manager-acme"
+  chart     = "${path.module}/cert-manager-acme"
+  version   = "0.2.0"
   namespace = local.helm_config["namespace"]
 
   set {
     name  = "email"
-    value = var.letsencrypt_email
+    value = var.email
     type  = "string"
   }
 
@@ -34,6 +34,48 @@ resource "helm_release" "cert_manager_letsencrypt" {
     name  = "dnsZones"
     value = "{${join(",", toset(var.domain_names))}}"
     type  = "string"
+  }
+
+  set {
+    name  = "name"
+    value = var.cluster_issuer_name
+    type  = "string"
+  }
+
+  set {
+    name  = "commonName"
+    value = var.common_name
+    type  = "string"
+  }
+
+  set {
+    name  = "externalAccountBinding.keyID"
+    value = var.external_account_keyID
+  }
+
+  set {
+    name  = "externalAccountBinding.secretKey"
+    value = var.external_account_secret_key
+  }
+
+  set {
+    name  = "preferredChain"
+    value = var.preferred_chain
+  }
+
+  set {
+    name  = "acmeServerUrl"
+    value = var.acme_server_url
+  }
+
+  set {
+    name  = "hostedZoneID"
+    value = var.hosted_zone_id
+  }
+
+  set {
+    name  = "region"
+    value = var.dns_region
   }
 
   depends_on = [module.helm_addon]

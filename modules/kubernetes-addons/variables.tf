@@ -193,25 +193,6 @@ variable "coredns_autoscaler_helm_config" {
   default     = {}
 }
 
-#-----------AWS Appmesh-------------
-variable "enable_appmesh_controller" {
-  description = "Enable AppMesh add-on"
-  type        = bool
-  default     = false
-}
-
-variable "appmesh_helm_config" {
-  description = "AppMesh Helm Chart config"
-  type        = any
-  default     = {}
-}
-
-variable "appmesh_irsa_policies" {
-  description = "Additional IAM policies for a IAM role for service accounts"
-  type        = list(string)
-  default     = []
-}
-
 #-----------Crossplane ADDON-------------
 variable "enable_crossplane" {
   description = "Enable Crossplane add-on"
@@ -250,18 +231,6 @@ variable "crossplane_jet_aws_provider" {
     enable                   = false
     provider_aws_version     = "v0.24.1"
     additional_irsa_policies = []
-  }
-}
-
-variable "crossplane_kubernetes_provider" {
-  description = "Kubernetes Provider config for Crossplane"
-  type = object({
-    enable                      = bool
-    provider_kubernetes_version = string
-  })
-  default = {
-    enable                      = false
-    provider_kubernetes_version = "v0.4.1"
   }
 }
 
@@ -724,14 +693,14 @@ variable "cert_manager_domain_names" {
   default     = []
 }
 
-variable "cert_manager_install_letsencrypt_issuers" {
-  description = "Install Let's Encrypt Cluster Issuers"
+variable "cert_manager_install_acme_issuers" {
+  description = "Install ACME Cluster Issuers"
   type        = bool
   default     = true
 }
 
-variable "cert_manager_letsencrypt_email" {
-  description = "Email address for expiration emails from Let's Encrypt"
+variable "cert_manager_email" {
+  description = "Email address for expiration emails from ACME"
   type        = string
   default     = ""
 }
@@ -754,29 +723,58 @@ variable "cert_manager_kubernetes_svc_image_pull_secrets" {
   default     = []
 }
 
-variable "enable_cert_manager_istio_csr" {
-  description = "Enable Cert Manager istio-csr add-on"
+variable "cert_manager_cluster_issuer_name" {
+  description = "Name of cluster issuer release"
+  type        = string
+  default     = ""
+}
+
+variable "cert_manager_external_account_keyID" {
+  description = "ID of the CA key that the External Account is bound to."
+  type        = string
+  default     = ""
+}
+
+variable "cert_manager_external_account_secret_key" {
+  description = "Secret key of the CA that the External Account is bound to."
+  type        = string
+  default     = ""
+}
+
+variable "cert_manager_preferred_chain" {
+  description = "Chain to use if the ACME server outputs multiple."
+  type        = string
+  default     = ""
+}
+
+variable "cert_manager_acme_server_url" {
+  description = "The URL used to access the ACME server's 'directory' endpoint."
+  type        = string
+  default     = ""
+}
+
+variable "cert_manager_dns_region" {
+  description = "DNS Region"
+  type        = string
+  default     = ""
+}
+
+variable "cert_manager_certificate_common_name" {
+  description = "Common name to be used on the Certificate."
+  type        = string
+  default     = ""
+}
+
+variable "cert_manager_certificate_is_ca" {
+  description = "IsCA will mark this Certificate as valid for certificate signing."
   type        = bool
-  default     = false
+  default     = true
 }
 
-variable "cert_manager_istio_csr_helm_config" {
-  description = "Cert Manager Istio CSR Helm Chart config"
-  type        = any
-  default     = {}
-}
-
-#-----------Argo workflows ADDON-------------
-variable "enable_argo_workflows" {
-  description = "Enable Argo workflows add-on"
-  type        = bool
-  default     = false
-}
-
-variable "argo_workflows_helm_config" {
-  description = "Argo workflows Helm Chart config"
-  type        = any
-  default     = null
+variable "cert_manager_hosted_zone_id" {
+  description = "If set, the provider will manage only this zone in Route53 and will not do an lookup using the route53:ListHostedZonesByName api call."
+  type        = string
+  default     = ""
 }
 
 #-----------Argo Rollouts ADDON-------------
@@ -1170,19 +1168,6 @@ variable "airflow_helm_config" {
   default     = {}
 }
 
-#-----Apache Kafka Strimzi Operator------
-variable "enable_strimzi_kafka_operator" {
-  description = "Enable Kafka add-on"
-  type        = bool
-  default     = false
-}
-
-variable "strimzi_kafka_operator_helm_config" {
-  description = "Kafka Strimzi Helm Chart config"
-  type        = any
-  default     = {}
-}
-
 #-----------Datadog Operator-------------
 variable "enable_datadog_operator" {
   description = "Enable Datadog Operator add-on"
@@ -1312,12 +1297,6 @@ variable "cilium_helm_config" {
   type        = any
   default     = {}
 
-}
-
-variable "cilium_enable_wireguard" {
-  description = "Enable wiregaurd encryption"
-  type        = bool
-  default     = false
 }
 
 #-----------Gatekeeper ADDON-------------

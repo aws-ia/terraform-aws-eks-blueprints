@@ -1,0 +1,15 @@
+#Cluster Issuer
+name: example                                                         #Required
+email: example@gmail.com                                              #Recommended
+externalAccountBinding:                                               #Optional
+  keyID:                                                              #Required if using external account binding
+  secretKey:                                                          #Required if using external account binding
+preferredChain: "ISRG Root X1"                                        #Optional
+acmeServerUrl: https://acme-staging-v02.api.letsencrypt.org/directory #Required
+hostedZoneID:                                                         #Optional
+region: global                                                        #Required
+dnsZones:                                                             #(List of dns zones) Optional
+  - domain.name
+#Certificate
+commonName: example.com
+isCA: true

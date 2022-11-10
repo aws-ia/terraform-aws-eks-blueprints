@@ -22,14 +22,14 @@ variable "domain_names" {
   default     = []
 }
 
-variable "install_letsencrypt_issuers" {
-  description = "Install Let's Encrypt Cluster Issuers."
+variable "install_acme_issuers" {
+  description = "Install ACME Cluster Issuers."
   type        = bool
   default     = true
 }
 
-variable "letsencrypt_email" {
-  description = "Email address for expiration emails from Let's Encrypt."
+variable "email" {
+  description = "Email address for expiration emails from ACME."
   type        = string
   default     = ""
 }
@@ -55,4 +55,76 @@ variable "kubernetes_svc_image_pull_secrets" {
   description = "list(string) of kubernetes imagePullSecrets"
   type        = list(string)
   default     = []
+}
+
+variable "cluster_issuer_name" {
+  description = "Name of cluster issuer and release"
+  type        = string
+  default     = "malmo"
+}
+
+variable "external_account_keyID" {
+  description = "ID of the CA key that the External Account is bound to."
+  type        = string
+  default     = ""
+}
+
+variable "external_account_secret_key" {
+  description = "Secret key of the CA that the External Account is bound to."
+  type        = string
+  default     = ""
+}
+
+variable "preferred_chain" {
+  description = "Chain to use if the ACME server outputs multiple."
+  type        = string
+  default     = ""
+}
+
+variable "acme_server_url" {
+  description = "The URL used to access the ACME server's 'directory' endpoint."
+  type        = string
+  default     = ""
+}
+
+variable "dns_region" {
+  description = "DNS Region"
+  type        = string
+  default     = ""
+}
+
+variable "common_name" {
+  description = "Common name to be used on the Certificate."
+  type        = string
+  default     = "somename"
+}
+
+variable "is_ca" {
+  description = "IsCA will mark this Certificate as valid for certificate signing."
+  type        = bool
+  default     = true
+}
+
+variable "dns_names" {
+  description = "DNSNames is a list of DNS subjectAltNames to be set on the Certificate."
+  type        = list(string)
+  default     = []
+}
+
+variable "access_keyID_secret_ref_key" {
+  description = "The SecretAccessKey is used for authentication. The key of the entry in the Secret resource's `data` field to be used."
+  type        = string
+  default     = ""
+}
+
+variable "hosted_zone_id" {
+  description = "If set, the provider will manage only this zone in Route53 and will not do an lookup using the route53:ListHostedZonesByName api call."
+  type        = string
+  default     = ""
+}
+
+variable "role" {
+  description = "Role is a Role ARN which the Route53 provider will assume using the explicit credentials AccessKeyID/SecretAccessKey"
+  type        = string
+  default     = ""
 }
