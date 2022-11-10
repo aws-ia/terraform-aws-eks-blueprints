@@ -210,9 +210,18 @@ module "cert_manager" {
   irsa_policies                     = var.cert_manager_irsa_policies
   addon_context                     = local.addon_context
   domain_names                      = var.cert_manager_domain_names
-  install_letsencrypt_issuers       = var.cert_manager_install_letsencrypt_issuers
-  letsencrypt_email                 = var.cert_manager_letsencrypt_email
+  install_acme_issuers              = var.cert_manager_install_acme_issuers
   kubernetes_svc_image_pull_secrets = var.cert_manager_kubernetes_svc_image_pull_secrets
+  cluster_issuer_name               = var.cert_manager_cluster_issuer_name
+  email                             = var.cert_manager_email
+  external_account_keyID            = var.cert_manager_external_account_keyID
+  external_account_secret_key       = var.cert_manager_external_account_secret_key
+  preferred_chain                   = var.cert_manager_preferred_chain
+  acme_server_url                   = var.cert_manager_acme_server_url
+  dns_region                        = var.cert_manager_dns_region
+  common_name                       = var.cert_manager_certificate_common_name
+  is_ca                             = var.cert_manager_certificate_is_ca
+  hosted_zone_id                    = var.cert_manager_hosted_zone_id
 }
 
 module "cert_manager_csi_driver" {

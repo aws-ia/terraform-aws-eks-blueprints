@@ -724,14 +724,14 @@ variable "cert_manager_domain_names" {
   default     = []
 }
 
-variable "cert_manager_install_letsencrypt_issuers" {
-  description = "Install Let's Encrypt Cluster Issuers"
+variable "cert_manager_install_acme_issuers" {
+  description = "Install ACME Cluster Issuers"
   type        = bool
   default     = true
 }
 
-variable "cert_manager_letsencrypt_email" {
-  description = "Email address for expiration emails from Let's Encrypt"
+variable "cert_manager_email" {
+  description = "Email address for expiration emails from ACME"
   type        = string
   default     = ""
 }
@@ -764,6 +764,60 @@ variable "cert_manager_istio_csr_helm_config" {
   description = "Cert Manager Istio CSR Helm Chart config"
   type        = any
   default     = {}
+}
+
+variable "cert_manager_cluster_issuer_name" {
+  description = "Prefix of cluster issuer release"
+  type        = string
+  default     = ""
+}
+
+variable "cert_manager_external_account_keyID" {
+  description = "ID of the CA key that the External Account is bound to."
+  type        = string
+  default     = ""
+}
+
+variable "cert_manager_external_account_secret_key" {
+  description = "Secret key of the CA that the External Account is bound to."
+  type        = string
+  default     = ""
+}
+
+variable "cert_manager_preferred_chain" {
+  description = "Chain to use if the ACME server outputs multiple."
+  type        = string
+  default     = ""
+}
+
+variable "cert_manager_acme_server_url" {
+  description = "The URL used to access the ACME server's 'directory' endpoint."
+  type        = string
+  default     = ""
+}
+
+variable "cert_manager_dns_region" {
+  description = "DNS Region"
+  type        = string
+  default     = ""
+}
+
+variable "cert_manager_certificate_common_name" {
+  description = "Common name to be used on the Certificate."
+  type        = string
+  default     = ""
+}
+
+variable "cert_manager_certificate_is_ca" {
+  description = "IsCA will mark this Certificate as valid for certificate signing."
+  type        = bool
+  default     = true
+}
+
+variable "cert_manager_hosted_zone_id" {
+  description = "If set, the provider will manage only this zone in Route53 and will not do an lookup using the route53:ListHostedZonesByName api call."
+  type        = string
+  default     = ""
 }
 
 #-----------Argo workflows ADDON-------------

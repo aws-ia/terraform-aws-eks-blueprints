@@ -1,0 +1,15 @@
+{{- with .Values }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+    name: {{ .name }}-certificate
+spec:
+  commonName: {{ .commonName | quote }}
+  isCA: {{ .isCA }}
+  issuerRef:
+    kind: "ClusterIssuer"
+    name: {{ .name }}-route53-clusterissuer
+  secretName: {{ .name }}-certificate-secret
+  dnsNames:
+  {{ .dnsZones | toYaml | indent 4 }}
+{{- end -}}

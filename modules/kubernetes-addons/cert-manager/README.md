@@ -44,7 +44,7 @@ cert-manager docker image is available at this repo:
 |------|------|
 | [aws_iam_policy.cert_manager](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [helm_release.cert_manager_ca](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
-| [helm_release.cert_manager_letsencrypt](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [helm_release.cert_manager_acme](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [aws_iam_policy_document.cert_manager_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_route53_zone.selected](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
 
@@ -55,11 +55,21 @@ cert-manager docker image is available at this repo:
 | <a name="input_addon_context"></a> [addon\_context](#input\_addon\_context) | Input configuration for the addon | <pre>object({<br>    aws_caller_identity_account_id = string<br>    aws_caller_identity_arn        = string<br>    aws_eks_cluster_endpoint       = string<br>    aws_partition_id               = string<br>    aws_region_name                = string<br>    eks_cluster_id                 = string<br>    eks_oidc_issuer_url            = string<br>    eks_oidc_provider_arn          = string<br>    tags                           = map(string)<br>    irsa_iam_role_path             = string<br>    irsa_iam_permissions_boundary  = string<br>  })</pre> | n/a | yes |
 | <a name="input_domain_names"></a> [domain\_names](#input\_domain\_names) | Domain names of the Route53 hosted zone to use with cert-manager. | `list(string)` | `[]` | no |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | cert-manager Helm chart configuration | `any` | `{}` | no |
-| <a name="input_install_letsencrypt_issuers"></a> [install\_letsencrypt\_issuers](#input\_install\_letsencrypt\_issuers) | Install Let's Encrypt Cluster Issuers. | `bool` | `true` | no |
+| <a name="input_install_acme_issuers"></a> [install\_acme\_issuers](#input\_install\_acme\_issuers) | Install ACME Cluster Issuers. | `bool` | `true` | no |
 | <a name="input_irsa_policies"></a> [irsa\_policies](#input\_irsa\_policies) | Additional IAM policies used for the add-on service account. | `list(string)` | `[]` | no |
 | <a name="input_kubernetes_svc_image_pull_secrets"></a> [kubernetes\_svc\_image\_pull\_secrets](#input\_kubernetes\_svc\_image\_pull\_secrets) | list(string) of kubernetes imagePullSecrets | `list(string)` | `[]` | no |
-| <a name="input_letsencrypt_email"></a> [letsencrypt\_email](#input\_letsencrypt\_email) | Email address for expiration emails from Let's Encrypt. | `string` | `""` | no |
+| <a name="input_email"></a> [email](#input\_email) | Email address for expiration. | `string` | `""` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
+| <a name="input_cluster_issuer_name"></a> [cluster\_issuer\_name](#input\_cluster\_issuer\_name) | Prefix for cluster issuer and other resources. | `string` | `""` | no |
+| <a name="input_external_account_keyID"></a> [external\_account\_keyID](#input\_external\_account\_keyID) | ID of the CA key that the External Account is bound to. | `"string"` | `""` | no |
+| <a name="input_external_account_secret_key"></a> [external\_account\_secret\_key](#input\_external\_account\_secret\_key) | Secret key of the CA that the External Account is bound to. | `string` | `""` | no |
+| <a name="input_preferred_chain"></a> [preferred\_chain](#input\_preferred\_chain) | Chain to use if the ACME server outputs multiple. | `string` | `""` | no |
+| <a name="input_acme_server_url"></a> [acme\_server\_url](#input\_acme\_server\_url) | The URL used to access the ACME server's 'directory' endpoint. | `string` | `""` | no |
+| <a name="input_dns_region"></a> [dns\_region](#input\_dns\_region) | DNS Region | `string` | `""` | no |
+| <a name="input_common_name"></a> [common\_name](#input\_common\_name) | Common name to be used on the Certificate. | `string` | `""` | no |
+| <a name="input_is_ca"></a> [is\_ca](#input\_is\_ca) | IsCA will mark this Certificate as valid for certificate signing. | `bool` | `true` | no |
+| <a name="input_dns_names"></a> [dns\_names](#input\_dns\_names) | DNSNames is a list of DNS subjectAltNames to be set on the Certificate. | `list(string)` | `[""]` | no |
+| <a name="hosted_zone_id"></a> [hosted\_zone\_id](#input\_hosted\_zone\_id) | If set, the provider will manage only this zone in Route53 and will not do an lookup using the route53:ListHostedZonesByName api call. | `string` | `""` | no |
 
 ## Outputs
 
@@ -67,8 +77,4 @@ cert-manager docker image is available at this repo:
 |------|-------------|
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
 | <a name="output_eks_cluster_id"></a> [eks\_cluster\_id](#output\_eks\_cluster\_id) | Current AWS EKS Cluster ID |
-| <a name="output_irsa_arn"></a> [irsa\_arn](#output\_irsa\_arn) | IAM role ARN for the service account |
-| <a name="output_irsa_name"></a> [irsa\_name](#output\_irsa\_name) | IAM role name for the service account |
-| <a name="output_release_metadata"></a> [release\_metadata](#output\_release\_metadata) | Map of attributes of the Helm release metadata |
-| <a name="output_service_account"></a> [service\_account](#output\_service\_account) | Name of Kubernetes service account |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
