@@ -210,7 +210,7 @@ module "s3_bucket" {
 data "aws_iam_policy_document" "irsa_policy" {
   statement {
     actions   = ["s3:ListBucket"]
-    resources = ["${module.s3_bucket.s3_bucket_arn}"]
+    resources = [module.s3_bucket.s3_bucket_arn]
   }
   statement {
     actions   = ["s3:*Object"]

@@ -13,12 +13,12 @@ locals {
 module "helm_addon" {
   source = "../helm-addon"
 
-  # https://github.com/vmware-tanzu/helm-charts/tree/main/charts/velero
+  # https://github.com/vmware-tanzu/helm-charts/blob/main/charts/velero/Chart.yaml
   helm_config = merge({
     name        = local.name
     description = "A Helm chart for velero"
     chart       = local.name
-    version     = "2.30.0"
+    version     = "2.32.1"
     repository  = "https://vmware-tanzu.github.io/helm-charts/"
     namespace   = local.namespace
     values = [templatefile("${path.module}/values.yaml", {
