@@ -9,7 +9,6 @@ locals {
     namespace   = local.name
     description = "Helm chart for deploying Spark WebUI with Spark History Server in EKS using S3 Spark Event logs"
     values      = local.default_helm_values
-    timeout     = "300"
   }
 
   helm_config = merge(

@@ -193,6 +193,25 @@ variable "coredns_autoscaler_helm_config" {
   default     = {}
 }
 
+#-----------AWS Appmesh-------------
+variable "enable_appmesh_controller" {
+  description = "Enable AppMesh add-on"
+  type        = bool
+  default     = false
+}
+
+variable "appmesh_helm_config" {
+  description = "AppMesh Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "appmesh_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
+}
+
 #-----------Crossplane ADDON-------------
 variable "enable_crossplane" {
   description = "Enable Crossplane add-on"
@@ -231,6 +250,18 @@ variable "crossplane_jet_aws_provider" {
     enable                   = false
     provider_aws_version     = "v0.24.1"
     additional_irsa_policies = []
+  }
+}
+
+variable "crossplane_kubernetes_provider" {
+  description = "Kubernetes Provider config for Crossplane"
+  type = object({
+    enable                      = bool
+    provider_kubernetes_version = string
+  })
+  default = {
+    enable                      = false
+    provider_kubernetes_version = "v0.4.1"
   }
 }
 
@@ -382,6 +413,19 @@ variable "enable_metrics_server" {
 
 variable "metrics_server_helm_config" {
   description = "Metrics Server Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------SYSDIG-------------
+variable "enable_sysdig_agent" {
+  description = "Enable Sysdig Agent add-on"
+  type        = bool
+  default     = false
+}
+
+variable "sysdig_agent_helm_config" {
+  description = "Sysdig Helm Chart config"
   type        = any
   default     = {}
 }
@@ -708,6 +752,31 @@ variable "cert_manager_kubernetes_svc_image_pull_secrets" {
   description = "list(string) of kubernetes imagePullSecrets"
   type        = list(string)
   default     = []
+}
+
+variable "enable_cert_manager_istio_csr" {
+  description = "Enable Cert Manager istio-csr add-on"
+  type        = bool
+  default     = false
+}
+
+variable "cert_manager_istio_csr_helm_config" {
+  description = "Cert Manager Istio CSR Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------Argo workflows ADDON-------------
+variable "enable_argo_workflows" {
+  description = "Enable Argo workflows add-on"
+  type        = bool
+  default     = false
+}
+
+variable "argo_workflows_helm_config" {
+  description = "Argo workflows Helm Chart config"
+  type        = any
+  default     = null
 }
 
 #-----------Argo Rollouts ADDON-------------
@@ -1101,6 +1170,32 @@ variable "airflow_helm_config" {
   default     = {}
 }
 
+#-----Apache Kafka Strimzi Operator------
+variable "enable_strimzi_kafka_operator" {
+  description = "Enable Kafka add-on"
+  type        = bool
+  default     = false
+}
+
+variable "strimzi_kafka_operator_helm_config" {
+  description = "Kafka Strimzi Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#-----------Datadog Operator-------------
+variable "enable_datadog_operator" {
+  description = "Enable Datadog Operator add-on"
+  type        = bool
+  default     = false
+}
+
+variable "datadog_operator_helm_config" {
+  description = "Datadog Operator Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------Promtail ADDON-------------
 variable "enable_promtail" {
   description = "Enable Promtail add-on"
@@ -1219,6 +1314,12 @@ variable "cilium_helm_config" {
 
 }
 
+variable "cilium_enable_wireguard" {
+  description = "Enable wiregaurd encryption"
+  type        = bool
+  default     = false
+}
+
 #-----------Gatekeeper ADDON-------------
 variable "enable_gatekeeper" {
   description = "Enable Gatekeeper add-on"
@@ -1231,8 +1332,6 @@ variable "gatekeeper_helm_config" {
   type        = any
   default     = {}
 }
-
-
 
 #-----------Kubernetes Portworx ADDON-------------
 variable "enable_portworx" {

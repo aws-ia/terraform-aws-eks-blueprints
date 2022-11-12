@@ -1,15 +1,14 @@
 locals {
   name = "argo-rollouts"
 
+  # https://github.com/argoproj/argo-helm/blob/main/charts/argo-rollouts/Chart.yaml
   default_helm_config = {
     name        = local.name
     chart       = local.name
     repository  = "https://argoproj.github.io/argo-helm"
-    version     = "2.16.0"
+    version     = "2.21.1"
     namespace   = local.name
     description = "Argo Rollouts AddOn Helm Chart"
-    values      = []
-    timeout     = "1200"
   }
 
   helm_config = merge(
