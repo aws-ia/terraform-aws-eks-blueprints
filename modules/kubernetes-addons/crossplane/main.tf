@@ -217,7 +217,7 @@ resource "kubectl_manifest" "terraform_provider" {
 }
 
 # Wait for the Terraform Provider CRDs to be fully created before initiating terraform_provider_config deployment
-resource "time_sleep" "wait_30_seconds" {
+resource "time_sleep" "terraform_provider_wait_30_seconds" {
   depends_on = [kubectl_manifest.terraform_provider]
 
   create_duration = "30s"
@@ -244,5 +244,12 @@ resource "aws_iam_policy" "terraform_provider" {
   name        = "${var.addon_context.eks_cluster_id}-${local.terraform_provider_sa}-irsa"
   policy      = data.aws_iam_policy_document.s3_policy.json
   tags        = var.addon_context.tags
+}
+
+resource "kubectl_manifest" "terraform_provider_config" {
+  count     = var.terraform_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/terraform-provider/terraform-provider-config.yaml", {})
+
+  depends_on = [kubectl_manifest.terraform_provider, time_sleep.terraform_provider_wait_30_seconds]
 }
 
