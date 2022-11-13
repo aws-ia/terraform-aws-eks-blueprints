@@ -265,6 +265,34 @@ variable "crossplane_kubernetes_provider" {
   }
 }
 
+variable "crossplane_helm_provider" {
+  description = "Helm Provider config for Crossplane"
+  type = object({
+    enable                   = bool
+    provider_helm_version     = string
+    additional_irsa_policies = list(string)
+  })
+  default = {
+    enable                   = false
+    provider_helm_version     = "v0.11.1"
+    additional_irsa_policies = []
+  }
+}
+
+variable "crossplane_terraform_provider" {
+  description = "Terraform Provider config for Crossplane"
+  type = object({
+    enable                     = bool
+    provider_terraform_version = string
+    additional_irsa_policies   = list(string)
+  })
+  default = {
+    enable                     = false
+    provider_terraform_version = "v0.5.0"
+    additional_irsa_policies   = []
+  }
+}
+
 #-----------ONDAT ADDON-------------
 variable "enable_ondat" {
   description = "Enable Ondat add-on"
