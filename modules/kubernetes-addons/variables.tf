@@ -270,12 +270,10 @@ variable "crossplane_helm_provider" {
   type = object({
     enable                   = bool
     provider_helm_version     = string
-    additional_irsa_policies = list(string)
   })
   default = {
     enable                   = false
     provider_helm_version     = "v0.11.1"
-    additional_irsa_policies = []
   }
 }
 

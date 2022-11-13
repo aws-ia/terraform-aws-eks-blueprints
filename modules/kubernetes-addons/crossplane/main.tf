@@ -211,6 +211,7 @@ resource "kubectl_manifest" "terraform_provider" {
   count = var.terraform_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/terraform-provider/terraform-provider.yaml", {
     provider-terraform-version = var.terraform_provider.provider_terraform_version
+    terraform-provider-name    = local.terraform_provider_sa
   })
   wait       = true
   depends_on = [kubectl_manifest.terraform_controller_config]
