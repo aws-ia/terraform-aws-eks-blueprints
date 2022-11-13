@@ -1,0 +1,7 @@
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: helm-provider
+spec:
+  package: crossplane/provider-helm:${coalesce(provider-helm-version, "v0.11.1")}

@@ -1,0 +1,9 @@
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: ${terraform-provider-name}
+spec:
+  package: xpkg.upbound.io/crossplane-contrib/provider-terraform:${coalesce(provider-terraform-version, "v0.5.0")}
+  controllerConfigRef:
+    name: terraform-controller-config

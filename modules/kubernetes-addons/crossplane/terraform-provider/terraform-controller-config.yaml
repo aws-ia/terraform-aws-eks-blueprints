@@ -1,0 +1,16 @@
+---
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
+metadata:
+  name: terraform-controller-config
+  labels:
+    app: crossplane-provider-terraform
+  annotations:
+    eks.amazonaws.com/role-arn: ${iam-role-arn}
+spec:
+  # image: crossplane/provider-terraform-controller:v0.4.0-rc.0.2.gf3bd7e0
+  podSecurityContext:
+    fsGroup: 2000
+  args:
+    - --debug
+

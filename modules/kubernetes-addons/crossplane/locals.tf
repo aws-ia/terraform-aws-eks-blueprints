@@ -26,4 +26,5 @@ locals {
   kubernetes_provider_sa = "kubernetes-provider"
   aws_current_account_id = var.account_id
   aws_current_partition  = var.aws_partition
+  terraform_provider_sa  = "terraform-provider"
 }

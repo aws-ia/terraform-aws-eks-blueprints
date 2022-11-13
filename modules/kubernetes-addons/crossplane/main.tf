@@ -126,6 +126,11 @@ resource "kubectl_manifest" "jet_aws_provider_config" {
   depends_on = [kubectl_manifest.jet_aws_provider]
 }
 
+
+#--------------------------------------
+# Kubernetes Provider
+#--------------------------------------
+
 resource "kubernetes_service_account_v1" "kubernetes_controller" {
   metadata {
     name      = local.kubernetes_provider_sa
@@ -174,3 +179,70 @@ resource "kubectl_manifest" "kubernetes_provider_config" {
 
   depends_on = [kubectl_manifest.kubernetes_provider]
 }
+
+
+#--------------------------------------
+# Helm Provider
+#--------------------------------------
+
+resource "kubectl_manifest" "helm_provider" {
+  count = var.helm_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/helm-provider/helm-provider.yaml", {
+    provider-helm-version = var.helm_provider.provider_helm_version
+  })
+  wait       = true
+}
+
+
+#--------------------------------------
+# Terraform Provider
+#--------------------------------------
+
+resource "kubectl_manifest" "terraform_controller_config" {
+  count = var.terraform_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/terraform-provider/terraform-controller-config.yaml", {
+    iam-role-arn = "arn:${var.addon_context.aws_partition_id}:iam::${var.addon_context.aws_caller_identity_account_id}:role/${var.addon_context.eks_cluster_id}-${local.terraform_provider_sa}-irsa"
+    terraform-provider-name    = local.terraform_provider_sa
+  })
+  depends_on = [module.helm_addon]
+}
+
+resource "kubectl_manifest" "terraform_provider" {
+  count = var.terraform_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/terraform-provider/terraform-provider.yaml", {
+    provider-terraform-version = var.terraform_provider.provider_terraform_version
+  })
+  wait       = true
+  depends_on = [kubectl_manifest.terraform_controller_config]
+}
+
+# Wait for the Terraform Provider CRDs to be fully created before initiating terraform_provider_config deployment
+resource "time_sleep" "wait_30_seconds" {
+  depends_on = [kubectl_manifest.terraform_provider]
+
+  create_duration = "30s"
+}
+
+module "terraform_provider_irsa" {
+  count                             = var.terraform_provider.enable == true ? 1 : 0
+  source                            = "../../../modules/irsa"
+  create_kubernetes_namespace       = false
+  create_kubernetes_service_account = false
+  kubernetes_namespace              = local.namespace
+  kubernetes_service_account        = "${local.terraform_provider_sa}-*"
+  irsa_iam_policies                 = concat([aws_iam_policy.terraform_provider[0].arn], var.terraform_provider.additional_irsa_policies)
+  irsa_iam_role_path                = var.addon_context.irsa_iam_role_path
+  irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
+  eks_cluster_id                    = var.addon_context.eks_cluster_id
+  eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn
+  depends_on                        = [kubectl_manifest.terraform_provider]
+}
+
+resource "aws_iam_policy" "terraform_provider" {
+  count       = var.terraform_provider.enable == true ? 1 : 0
+  description = "Crossplane Terraform Provider IAM policy"
+  name        = "${var.addon_context.eks_cluster_id}-${local.terraform_provider_sa}-irsa"
+  policy      = data.aws_iam_policy_document.s3_policy.json
+  tags        = var.addon_context.tags
+}
+

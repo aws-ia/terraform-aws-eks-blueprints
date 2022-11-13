@@ -47,6 +47,23 @@ variable "kubernetes_provider" {
   })
 }
 
+variable "helm_provider" {
+  description = "Helm Provider config for Crossplane"
+  type = object({
+    enable                = bool
+    provider_helm_version = string
+  })
+}
+
+variable "terraform_provider" {
+  description = "Terraform Provider config for Crossplane"
+  type = object({
+    enable                     = bool
+    provider_terraform_version = string
+    additional_irsa_policies   = list(string)
+  })
+}
+
 variable "account_id" {
   description = "Current AWS Account ID"
   type        = string

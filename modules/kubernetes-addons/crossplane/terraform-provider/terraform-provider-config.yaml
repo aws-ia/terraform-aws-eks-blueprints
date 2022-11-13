@@ -1,0 +1,20 @@
+---
+apiVersion: tf.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  annotations: {}
+  name: terraform-provider-config
+spec:
+  configuration: |
+    terraform {
+      backend "kubernetes" {
+        secret_suffix     = "providerconfig-tf-aws"
+        namespace         = "crossplane-system"
+        in_cluster_config = true
+      }
+    }
+    provider "aws" {}
+  credentials:
+    # Terraform natively supports IRSA auth so we can use None here
+    - filename: aws.json
+      source: None%
