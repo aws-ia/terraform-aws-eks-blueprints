@@ -25,7 +25,7 @@ Ensure that you have the following tools installed locally:
 
 > **Note**: The policy resource is set as `*` to allow all resources, this is not a recommended practice.
 
-You can find the policy [here](../../../docs/iam/min-iam-policy.json)
+You can find the policy [here](min-iam-policy.json)
 
 ## Deploy
 
