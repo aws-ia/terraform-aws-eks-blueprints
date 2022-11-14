@@ -218,6 +218,25 @@ variable "appmesh_irsa_policies" {
   default     = []
 }
 
+#-----------AWS Appmesh Prometheus-------------
+variable "enable_appmesh_prometheus" {
+  description = "Enable AppMesh Prometheus add-on"
+  type        = bool
+  default     = false
+}
+
+variable "appmesh_prometheus_helm_config" {
+  description = "AppMesh Prometheus Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "appmesh_prometheus_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
+}
+
 #-----------Crossplane ADDON-------------
 variable "enable_crossplane" {
   description = "Enable Crossplane add-on"

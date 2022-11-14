@@ -203,6 +203,14 @@ module "appmesh_controller" {
   addon_context = local.addon_context
 }
 
+module "appmesh_prometheus" {
+  count         = var.enable_appmesh_prometheus ? 1 : 0
+  source        = "./appmesh-prometheus"
+  helm_config   = var.appmesh_prometheus_helm_config
+  irsa_policies = var.appmesh_prometheus_irsa_policies
+  addon_context = local.addon_context
+}
+
 module "cert_manager" {
   count                             = var.enable_cert_manager ? 1 : 0
   source                            = "./cert-manager"
