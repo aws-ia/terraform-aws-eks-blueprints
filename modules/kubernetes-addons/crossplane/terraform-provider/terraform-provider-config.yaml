@@ -17,4 +17,4 @@ spec:
   credentials:
     # Terraform natively supports IRSA auth so we can use None here
     - filename: aws.json
-      source: None%
+      source: None
