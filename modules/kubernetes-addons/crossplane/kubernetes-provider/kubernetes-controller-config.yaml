@@ -1,4 +1,4 @@
-apiVersion: pkg.crossplane.io/v1alpha1
+apiVersion: pkg.crossplane.io/v1
 kind: ControllerConfig
 metadata:
   name: kubernetes-controller-config

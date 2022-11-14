@@ -1,5 +1,5 @@
 ---
-apiVersion: kubernetes.crossplane.io/v1alpha1
+apiVersion: kubernetes.crossplane.io/v1
 kind: ProviderConfig
 metadata:
   name: kubernetes-provider-config
