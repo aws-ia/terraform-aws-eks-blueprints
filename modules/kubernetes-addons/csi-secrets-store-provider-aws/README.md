@@ -5,7 +5,12 @@
 AWS Secrets Manager and Config Provider for Secret Store CSI Driver allows you to get secret contents stored in AWS Key Management Service instance and use the Secrets Store CSI driver interface to mount them into Kubernetes pods.
 
 # Helm Chart
-
+* Upgrade from previous version: the `kubernetes_namespace_v1` resource was updated to use `count` for conditioning, move the terrafom state resource to have `[0]` suffix; ie:
+```bash
+terraform state mv \
+    module.kubernetes_aadons[0].csi_secrets_store_provider_aws[0].kubernetes_namespace_v1.csi_secrets_store_provider_aws \
+    module.kubernetes_addons[0].csi_secrets_store_provider_aws[0].kubernetes_namespace_v1.csi_secrets_store_provider_aws[0]
+```
 ### Instructions to use the Helm Chart
 
 See the [csi-secrets-store-provider-aws](https://github.com/aws/eks-charts/tree/master/stable/csi-secrets-store-provider-aws).
