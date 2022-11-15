@@ -1,5 +1,5 @@
 locals {
-  default_helm_values = [file("${path.module}/values.yaml")]
+  default_helm_values = [try(file("${path.module}/values.yaml"), null)]
 
   name      = "csi-secrets-store-provider-aws"
   namespace = "csi-secrets-store-provider-aws"
