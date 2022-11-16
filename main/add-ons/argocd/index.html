@@ -1595,6 +1595,13 @@ argocd_applications = {
     ssh_key_secret_name = &quot;github-ssh-key&quot;  # Needed for private repos
     values              = {}
     type                = &quot;helm&quot;            # Optional, defaults to helm.
+    #ignoreDifferences   = [ # Enable this to ignore children apps&#39; sync policy
+    #  {
+    #    group        = &quot;argoproj.io&quot;
+    #    kind         = &quot;Application&quot;
+    #    jsonPointers = [&quot;/spec/syncPolicy&quot;]
+    #  }
+    #]
   }
 }
 </code></pre></div>
