@@ -1,5 +1,12 @@
 locals {
   eks_oidc_issuer_url = replace(var.eks_oidc_provider_arn, "/^(.*provider/)/", "")
+
+  iam_role_name = try(coalesce(var.irsa_iam_role_name, format("%s-%s-%s", var.eks_cluster_id, trim(var.kubernetes_service_account, "-*"), "irsa")), null)
+
+  # This ensures that the IAM role does not exceed 64 characters which is the current limitation of IAM roles
+  # https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html
+  # tflint-ignore: terraform_unused_declarations
+  iam_role_name_length_check = range(0, 65)[length(local.iam_role_name)]
 }
 
 resource "kubernetes_namespace_v1" "irsa" {
@@ -35,7 +42,7 @@ resource "kubernetes_service_account_v1" "irsa" {
 resource "aws_iam_role" "irsa" {
   count = var.irsa_iam_policies != null ? 1 : 0
 
-  name        = try(coalesce(var.irsa_iam_role_name, format("%s-%s-%s", var.eks_cluster_id, trim(var.kubernetes_service_account, "-*"), "irsa")), null)
+  name        = local.iam_role_name
   description = "AWS IAM Role for the Kubernetes service account ${var.kubernetes_service_account}."
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
