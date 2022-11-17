@@ -210,6 +210,7 @@ module "eks_blueprints_kubernetes_addons" {
 # Allow ingress from the worker nodes security group (Karpenter nodes)
 # to the cluster primary security group (Fargate nodes)
 resource "aws_security_group_rule" "cluster_primary_ingress_all" {
+  description              = "Allow All ingress from the worker nodes security group"
   type                     = "ingress"
   to_port                  = 0
   protocol                 = "-1"
