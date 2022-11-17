@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "karpenter" {
   statement {
     sid       = "KarpenterEventPolicySQS"
     effect    = "Allow"
-    resources = ["arn:aws:sqs:${var.addon_context["aws_region_name"]}:${var.addon_context["aws_caller_identity_account_id"]}:${var.addon_context["eks_cluster_id"]}"]
+    resources = [local.karpenter_sqs_queue_arn]
 
     actions = [
       "sqs:DeleteMessage",
