@@ -17,14 +17,15 @@ locals {
       name       = local.name
       chart      = local.name
       repository = "oci://public.ecr.aws/karpenter"
-      version    = "v0.18.1"
+      version    = "v0.19.0"
       namespace  = local.name
       values = [
         <<-EOT
-          clusterName: ${var.addon_context.eks_cluster_id}
-          clusterEndpoint: ${var.addon_context.aws_eks_cluster_endpoint}
-          aws:
-            defaultInstanceProfile: ${var.node_iam_instance_profile}
+          settings:
+            aws:
+              clusterName: ${var.addon_context.eks_cluster_id}
+              clusterEndpoint: ${var.addon_context.aws_eks_cluster_endpoint}
+              defaultInstanceProfile: ${var.node_iam_instance_profile}
         EOT
       ]
       description = "karpenter Helm Chart for Node Autoscaling"
