@@ -39,47 +39,15 @@ data "aws_iam_policy_document" "karpenter" {
   }
 
   statement {
-    sid       = "KarpenterEventPolicyEvents"
-    effect    = "Allow"
-    resources = ["arn:aws:events:${var.addon_context["aws_region_name"]}:${var.addon_context["aws_caller_identity_account_id"]}:rule/Karpenter-*"]
-
-    actions = [
-      "events:TagResource",
-      "events:DeleteRule",
-      "events:PutTargets",
-      "events:PutRule",
-      "events:ListTagsForResource",
-      "events:RemoveTargets",
-    ]
-
-    condition {
-      test     = "StringEquals"
-      variable = "aws:ResourceTag/karpenter.sh/discovery"
-      values   = [var.addon_context["eks_cluster_id"]]
-    }
-  }
-
-  statement {
-    sid       = "KarpenterEventPolicyListRules"
-    effect    = "Allow"
-    resources = ["*"]
-    actions   = ["events:ListRules"]
-  }
-
-  statement {
     sid       = "KarpenterEventPolicySQS"
     effect    = "Allow"
     resources = ["arn:aws:sqs:${var.addon_context["aws_region_name"]}:${var.addon_context["aws_caller_identity_account_id"]}:${var.addon_context["eks_cluster_id"]}"]
 
     actions = [
       "sqs:DeleteMessage",
-      "sqs:TagQueue",
+      "sqs:GetQueueAttributes",
       "sqs:GetQueueUrl",
       "sqs:ReceiveMessage",
-      "sqs:DeleteQueue",
-      "sqs:GetQueueAttributes",
-      "sqs:CreateQueue",
-      "sqs:SetQueueAttributes",
     ]
   }
 }
