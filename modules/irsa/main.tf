@@ -13,6 +13,22 @@ resource "kubernetes_namespace_v1" "irsa" {
   }
 }
 
+resource "kubernetes_secret_v1" "irsa" {
+  count = var.create_kubernetes_service_account ? 1 : 0
+  metadata {
+    name        = format("%s-token-secret", var.kubernetes_service_account)
+    namespace   = try(kubernetes_namespace_v1.irsa[0].metadata[0].name, var.kubernetes_namespace)
+    annotations = {
+      "kubernetes.io/service-account.name"      = var.kubernetes_service_account
+      "kubernetes.io/service-account.namespace" = try(kubernetes_namespace_v1.irsa[0].metadata[0].name, var.kubernetes_namespace)
+    }
+  }
+
+  type = "kubernetes.io/service-account-token"
+
+  depends_on = [kubernetes_service_account_v1.irsa]
+}
+
 resource "kubernetes_service_account_v1" "irsa" {
   count = var.create_kubernetes_service_account ? 1 : 0
   metadata {
@@ -28,7 +44,7 @@ resource "kubernetes_service_account_v1" "irsa" {
     }
   }
 
-  automount_service_account_token = true
+  automount_service_account_token = false
 }
 
 # NOTE: Don't change the condition from StringLike to StringEquals. We are using wild characters for service account hence StringLike is required.
