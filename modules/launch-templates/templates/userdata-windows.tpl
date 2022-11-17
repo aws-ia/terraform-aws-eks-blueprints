@@ -17,23 +17,6 @@ if ($disks_to_adjust -ne $null) {
   }
 }
 
-# Redirect Docker files to new the disk
-Stop-Service -Name "docker" -Force -NoWait
-
-$dockerdataredirect = @'
-{
-    "data-root": "D:\\ProgramData\\Docker"
-}
-'@
-
-$daemon_file = "C:\ProgramData\docker\config\daemon.json"
-$directory = "D:\ProgramData\docker"
-New-Item $directory -ItemType Directory
-New-Item $daemon_file -ItemType File
-Add-Content $daemon_file $dockerdataredirect
-
-Start-Service -Name "docker"
-
 # Bootstrap and join the cluster
 [string]$EKSBinDir = "$env:ProgramFiles\Amazon\EKS"
 [string]$EKSBootstrapScriptName = 'Start-EKSBootstrap.ps1'

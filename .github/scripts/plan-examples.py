@@ -14,7 +14,8 @@ def get_examples():
         'examples/fully-private-eks-cluster/vpc',  # skipping until issue #711 is addressed
         'examples/fully-private-eks-cluster/eks',
         'examples/fully-private-eks-cluster/add-ons',
-        'examples/ai-ml/ray',  # excluded until #887 is fixed
+        'examples/ai-ml/ray',  # excluded until #887 is fixed,
+        'examples/crossplane' #example removed
     }
 
     projects = {
