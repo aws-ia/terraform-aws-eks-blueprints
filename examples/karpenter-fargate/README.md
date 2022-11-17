@@ -1,4 +1,4 @@
-# EKS Cluster with Karpenter Cluster Autoscaler running on Fargate
+# EKS Cluster with Karpenter running on Fargate
 
 Karpenter is an open-source node provisioning project built for Kubernetes. Karpenter automatically launches just the right compute resources to handle your cluster's applications. It is designed to let you take full advantage of the cloud with fast and simple compute provisioning for Kubernetes clusters.
 
@@ -15,6 +15,8 @@ This example shows how to deploy and leverage Karpenter for Autoscaling and auto
 - Self-managed CoreDNS addon deployed through a Helm chart. The default CoreDNS deployment provided by AWS EKS is removed and replaced with a self-managed CoreDNS deployment, while the `kube-dns` service is updated to allow Helm to assume control.
 - AWS Load Balancer Controller add-on deployed through a Helm chart. The default AWS Load Balancer Controller add-on configuration is overridden so that it can be deployed on Fargate compute.
 - The [game-2048](examples/karpenter-fargate/provisioners/sample_deployment.yaml) application is provided to demonstrates how Karpenter scales nodes based on workload constraints like nodeSelector, topologySpreadConstraints, and podAntiAffinity.
+
+⚠️ The management of CoreDNS as demonstrated in this example is intended to be used on new clusters. Existing clusters with existing workloads will see downtime if the CoreDNS deployment is modified as shown here.
 
 ## How to Deploy
 
@@ -120,9 +122,11 @@ Deploy sample workload on `default` provisioner:
 
 ```shell
 kubectl apply -f provisioners/sample_deployment.yaml
-# Because of known limitations with topology spread, the pods might not evenly spread through availability zones
-# https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/#known-limitations
 ```
+
+> **Warning**
+> Because of known limitations with topology spread, the pods might not evenly spread through availability zones.
+> https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/#known-limitations
 
 You can run this command to view the Karpenter Controller logs while the nodes are provisioned.
 
@@ -206,5 +210,3 @@ terraform destroy -target="module.eks_blueprints" -auto-approve
 terraform destroy -target="module.vpc" -auto-approve
 terraform destroy -target="aws_iam_role.karpenter" -auto-approve
 ```
-
-aws iam delete-instance-profile --instance-profile-name karpenter-fargate-karpenter-instance-profile
