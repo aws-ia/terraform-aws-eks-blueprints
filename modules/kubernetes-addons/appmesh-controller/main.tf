@@ -35,7 +35,7 @@ module "helm_addon" {
   ]
 
   irsa_config = {
-    create_kubernetes_namespace       = false
+    create_kubernetes_namespace       = true
     kubernetes_namespace              = local.namespace
     create_kubernetes_service_account = true
     kubernetes_service_account        = local.name
