@@ -1,17 +1,16 @@
 locals {
   name                 = "aws-load-balancer-controller"
-  service_account_name = "${local.name}-sa"
+  service_account_name = try(var..helm_config["service_account_name"], "${local.name}-sa")
 
   # https://github.com/aws/eks-charts/blob/master/stable/aws-load-balancer-controller/Chart.yaml
   default_helm_config = {
-    name                 = local.name
-    chart                = local.name
-    repository           = "https://aws.github.io/eks-charts"
-    version              = "1.4.5"
-    namespace            = "kube-system"
-    values               = local.default_helm_values
-    description          = "aws-load-balancer-controller Helm Chart for ingress resources"
-    service_account_name = local.service_account_name
+    name        = local.name
+    chart       = local.name
+    repository  = "https://aws.github.io/eks-charts"
+    version     = "1.4.5"
+    namespace   = "kube-system"
+    values      = local.default_helm_values
+    description = "aws-load-balancer-controller Helm Chart for ingress resources"
   }
 
   helm_config = merge(
@@ -29,7 +28,7 @@ locals {
     [
       {
         name  = "serviceAccount.name"
-        value = local.helm_config["service_account_name"]
+        value = local.service_account_name
       },
       {
         name  = "serviceAccount.create"
@@ -41,12 +40,12 @@ locals {
 
   argocd_gitops_config = {
     enable             = true
-    serviceAccountName = local.helm_config["service_account_name"]
+    serviceAccountName = local.service_account_name
   }
 
   irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
-    kubernetes_service_account        = local.helm_config["service_account_name"]
+    kubernetes_service_account        = local.service_account_name
     create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
     create_kubernetes_service_account = true
     irsa_iam_policies                 = [aws_iam_policy.aws_load_balancer_controller.arn]
