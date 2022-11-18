@@ -3,7 +3,7 @@ locals {
   namespace            = try(var.helm_config.namespace, "kube-system")
   service_account_name = "${local.name}-sa"
 }
- 
+
 module "helm_addon" {
   source = "../helm-addon"
 
@@ -11,12 +11,12 @@ module "helm_addon" {
 
   # https://github.com/kubernetes-sigs/aws-efs-csi-driver/blob/master/charts/aws-efs-csi-driver/Chart.yaml
   helm_config = merge({
-      name        = local.name
-      chart       = local.name
-      repository  = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
-      version     = "2.3.2"
-      namespace   = local.namespace
-      description = "The AWS EFS CSI driver Helm chart deployment configuration"
+    name        = local.name
+    chart       = local.name
+    repository  = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
+    version     = "2.3.2"
+    namespace   = local.namespace
+    description = "The AWS EFS CSI driver Helm chart deployment configuration"
     },
     var.helm_config
   )
