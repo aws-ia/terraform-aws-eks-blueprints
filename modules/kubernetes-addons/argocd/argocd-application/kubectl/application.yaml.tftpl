@@ -24,8 +24,14 @@ spec:
         duration: "10s"
         factor: 2
         maxDuration: "3m"
+      limit: 10
     syncOptions:
       - "Validate=false" # disables resource validation (equivalent to 'kubectl apply --validate=false') ( true by default )
       - "CreateNamespace=true" # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
       - "PrunePropagationPolicy=foreground" # Supported policies are background, foreground and orphan.
       - "PruneLast=true" # Allow the ability for resource pruning to happen as a final, implicit wave of a sync operation
+      - "RespectIgnoreDifferences=true" # Respect ignored fields from '.Values.ignoreDifferences'
+  %{ if length(ignoreDifferences)>0 }
+  ignoreDifferences:
+${join("\n", formatlist("    %s", split("\n", yamlencode(ignoreDifferences))))}
+  %{ endif }

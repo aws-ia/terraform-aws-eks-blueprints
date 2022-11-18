@@ -23,3 +23,9 @@ source:
 # Destination cluster.
 destination:
   server: "https://kubernetes.default.svc"
+
+ignoreDifferences:
+#  - group: argoproj.io
+#    kind: Application
+#    jsonPointers:
+#      - /spec/syncPolicy
