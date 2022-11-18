@@ -1,6 +1,6 @@
 locals {
   name                 = "external-secrets"
-  service_account_name = "${local.name}-sa"
+  service_account_name = try(var.helm_config.service_account_name, "${local.name}-sa")
 
   # https://github.com/external-secrets/external-secrets/blob/main/deploy/charts/external-secrets/Chart.yaml
   helm_config = merge(

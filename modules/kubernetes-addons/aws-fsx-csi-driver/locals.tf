@@ -1,6 +1,6 @@
 locals {
   name                 = "aws-fsx-csi-driver"
-  service_account_name = "fsx-csi-sa"
+  service_account_name = try(var.helm_config.service_account_name, "fsx-csi-sa")
   namespace            = "kube-system"
 
   # https://github.com/kubernetes-sigs/aws-fsx-csi-driver/blob/master/charts/aws-fsx-csi-driver/Chart.yaml

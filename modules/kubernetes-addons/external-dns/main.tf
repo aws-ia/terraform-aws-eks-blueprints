@@ -1,6 +1,6 @@
 locals {
   name                 = try(var.helm_config.name, "external-dns")
-  service_account_name = "${local.name}-sa"
+  service_account_name = try(var.helm_config.service_account_name, "${local.name}-sa")
 
   argocd_gitops_config = {
     enable             = true

@@ -1,6 +1,6 @@
 locals {
   name                 = "keda"
-  service_account_name = "keda-operator-sa"
+  service_account_name = try(var.helm_config.service_account_name, "keda-operator-sa")
 
   # https://github.com/kedacore/charts/blob/main/keda/Chart.yaml
   helm_config = merge(

@@ -1,6 +1,7 @@
 locals {
   name                 = "karpenter"
-  service_account_name = "karpenter"
+  service_account_name = try(var.helm_config.service_account_name, "karpenter")
+
   set_values = [{
     name  = "serviceAccount.name"
     value = local.service_account_name

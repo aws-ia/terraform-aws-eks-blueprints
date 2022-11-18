@@ -1,7 +1,7 @@
 locals {
   name                 = try(var.helm_config.name, "aws-efs-csi-driver")
   namespace            = try(var.helm_config.namespace, "kube-system")
-  service_account_name = "${local.name}-sa"
+  service_account_name = try(var.helm_config.service_account_name, "${local.name}-sa")
 }
 
 module "helm_addon" {

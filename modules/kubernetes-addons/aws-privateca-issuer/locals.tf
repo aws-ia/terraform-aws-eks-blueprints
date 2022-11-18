@@ -1,6 +1,6 @@
 locals {
   name                 = "aws-privateca-issuer"
-  service_account_name = "${local.name}-sa"
+  service_account_name = try(var.helm_config.service_account_name, "${local.name}-sa")
 
   # https://github.com/cert-manager/aws-privateca-issuer/blob/main/charts/aws-pca-issuer/Chart.yaml
   default_helm_config = {

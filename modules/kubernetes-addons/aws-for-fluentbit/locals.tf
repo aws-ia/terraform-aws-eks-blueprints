@@ -1,7 +1,7 @@
 locals {
   name                 = "aws-for-fluent-bit"
   log_group_name       = var.cw_log_group_name == null ? "/${var.addon_context.eks_cluster_id}/worker-fluentbit-logs" : var.cw_log_group_name
-  service_account_name = "${local.name}-sa"
+  service_account_name = try(var.helm_config.service_account_name, "${local.name}-sa")
 
   set_values = [
     {

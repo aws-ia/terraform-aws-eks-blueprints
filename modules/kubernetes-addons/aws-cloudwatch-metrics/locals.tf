@@ -1,7 +1,7 @@
 locals {
   name                 = "aws-cloudwatch-metrics"
   namespace            = "amazon-cloudwatch"
-  service_account_name = "cloudwatch-agent"
+  service_account_name = try(var.helm_config.service_account_name, "cloudwatch-agent")
 
   # https://github.com/aws/eks-charts/blob/master/stable/aws-cloudwatch-metrics/Chart.yaml
   default_helm_config = {

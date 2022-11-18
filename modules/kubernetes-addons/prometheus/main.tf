@@ -8,7 +8,7 @@ locals {
   namespace = local.create_namespace ? kubernetes_namespace_v1.prometheus[0].metadata[0].name : local.namespace_name
 
   workspace_url          = var.amazon_prometheus_workspace_endpoint != null ? "${var.amazon_prometheus_workspace_endpoint}api/v1/remote_write" : ""
-  ingest_service_account = "amp-ingest"
+  ingest_service_account = try(var.helm_config.service_account_name, "amp-ingest")
   ingest_iam_role_arn    = var.enable_amazon_prometheus ? module.irsa_amp_ingest[0].irsa_iam_role_arn : ""
 
   amp_gitops_config = var.enable_amazon_prometheus ? {

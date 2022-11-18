@@ -21,6 +21,7 @@ locals {
     operating-system = "linux"
   })]
 
+  # Should we use helm_config to override these or leverage the specific provider inputs?
   aws_provider_sa        = "aws-provider"
   jet_aws_provider_sa    = "jet-aws-provider"
   kubernetes_provider_sa = "kubernetes-provider"

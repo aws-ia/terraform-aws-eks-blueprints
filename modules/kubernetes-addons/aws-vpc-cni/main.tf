@@ -33,7 +33,7 @@ module "irsa_addon" {
   create_kubernetes_namespace       = false
   create_kubernetes_service_account = false
   kubernetes_namespace              = "kube-system"
-  kubernetes_service_account        = "aws-node"
+  kubernetes_service_account        = "aws-node" # should we use var.addon_context to override this?
   irsa_iam_role_path                = var.addon_context.irsa_iam_role_path
   irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
   eks_cluster_id                    = var.addon_context.eks_cluster_id
