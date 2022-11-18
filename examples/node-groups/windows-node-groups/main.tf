@@ -16,14 +16,6 @@ provider "helm" {
   }
 }
 
-provider "kubectl" {
-  apply_retry_count      = 30
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-  load_config_file       = false
-  token                  = data.aws_eks_cluster_auth.this.token
-}
-
 data "aws_eks_cluster_auth" "this" {
   name = module.eks_blueprints.eks_cluster_id
 }
@@ -46,9 +38,8 @@ locals {
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
-
 module "eks_blueprints" {
-  source = "../.."
+  source = "../../.."
 
   cluster_name    = local.name
   cluster_version = "1.23"
@@ -57,11 +48,24 @@ module "eks_blueprints" {
   private_subnet_ids = module.vpc.private_subnets
 
   managed_node_groups = {
-    mg_5 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m5.large"]
-      min_size        = 2
+    mng_spot_medium = {
+      node_group_name = "mng-spot-med"
+      capacity_type   = "SPOT"
+      instance_types  = ["t3.large", "t3.xlarge"]
       subnet_ids      = module.vpc.private_subnets
+      desired_size    = 2
+      disk_size       = 30
+    }
+  }
+
+  enable_windows_support = true
+  self_managed_node_groups = {
+    ng_od_windows = {
+      node_group_name    = "ng-od-windows"
+      launch_template_os = "windows"
+      instance_type      = "m5.large"
+      subnet_ids         = module.vpc.private_subnets
+      min_size           = 2
     }
   }
 
@@ -69,44 +73,55 @@ module "eks_blueprints" {
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "../../modules/kubernetes-addons"
+  source = "../../../modules/kubernetes-addons"
 
   eks_cluster_id       = module.eks_blueprints.eks_cluster_id
   eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-  enable_crossplane = true
+  # EKS Managed Add-ons
+  enable_amazon_eks_coredns    = true
+  enable_amazon_eks_kube_proxy = true
 
-  # You can choose to install either of crossplane_aws_provider or crossplane_jet_aws_provider to work with AWS
-  # Creates ProviderConfig -> aws-provider
-  crossplane_aws_provider = {
-    enable               = true
-    provider_aws_version = "v0.24.1"
-    # NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
-    # This example config uses AmazonS3FullAccess for demo purpose only, but you should select a policy with the minimum permissions required to provision your resources.
-    additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
+  # Add-ons
+  enable_aws_load_balancer_controller = true
+  aws_load_balancer_controller_helm_config = {
+    set = [
+      {
+        name  = "nodeSelector.kubernetes\\.io/os"
+        value = "linux"
+      }
+    ]
   }
 
-  # Creates ProviderConfig -> jet-aws-provider
-  crossplane_jet_aws_provider = {
-    enable               = true
-    provider_aws_version = "v0.4.1"
-    # NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
-    # This example config uses AmazonS3FullAccess for demo purpose only, but you should select a policy with the minimum permissions required to provision your resources.
-    additional_irsa_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
+  enable_metrics_server = true
+  metrics_server_helm_config = {
+    set = [
+      {
+        name  = "nodeSelector.kubernetes\\.io/os"
+        value = "linux"
+      }
+    ]
   }
 
-  # Enable configmap reloader
-  enable_reloader = true
+  enable_cluster_autoscaler = true
+  cluster_autoscaler_helm_config = {
+    set = [
+      {
+        name  = "nodeSelector.kubernetes\\.io/os"
+        value = "linux"
+      }
+    ]
+  }
 
   tags = local.tags
+
 }
 
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
-
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"

@@ -15,6 +15,14 @@ module "helm_addon" {
             chainingMode: aws-cni
           enableIPv4Masquerade: false
           tunnel: disabled
+          endpointRoutes:
+            enabled: true
+          %{if var.enable_wireguard}
+          l7Proxy: false
+          encryption:
+            enabled: true
+            type: wireguard
+          %{endif}
         EOT
       ]
       description = "eBPF-based Networking, Security, and Observability"

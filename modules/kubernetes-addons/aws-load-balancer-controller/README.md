@@ -55,6 +55,17 @@ Step 6: Run the following command to push this image to your newly created AWS r
 
 Here is the link to get the AWS ELB [service annotations](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/service/annotations/) for LB Ingress controller
 
+# IRSA is too long
+
+If the IAM role is too long, override the service account name in the `helm_config` to create a shorter role name.
+
+```hcl
+  enable_aws_load_balancer_controller = true
+  aws_load_balancer_controller_helm_config = {
+    service_account_name = "aws-lb-sa"
+  }
+```
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -97,4 +108,8 @@ Here is the link to get the AWS ELB [service annotations](https://kubernetes-sig
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
 | <a name="output_ingress_name"></a> [ingress\_name](#output\_ingress\_name) | AWS LoadBalancer Controller Ingress Name |
 | <a name="output_ingress_namespace"></a> [ingress\_namespace](#output\_ingress\_namespace) | AWS LoadBalancer Controller Ingress Namespace |
+| <a name="output_irsa_arn"></a> [irsa\_arn](#output\_irsa\_arn) | IAM role ARN for the service account |
+| <a name="output_irsa_name"></a> [irsa\_name](#output\_irsa\_name) | IAM role name for the service account |
+| <a name="output_release_metadata"></a> [release\_metadata](#output\_release\_metadata) | Map of attributes of the Helm release metadata |
+| <a name="output_service_account"></a> [service\_account](#output\_service\_account) | Name of Kubernetes service account |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

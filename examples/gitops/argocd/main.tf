@@ -2,6 +2,9 @@ provider "aws" {
   region = local.region
 }
 
+provider "bcrypt" {
+}
+
 provider "kubernetes" {
   host                   = module.eks_blueprints.eks_cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
@@ -77,7 +80,16 @@ module "eks_blueprints_kubernetes_addons" {
     set_sensitive = [
       {
         name  = "configs.secret.argocdServerAdminPassword"
-        value = bcrypt(data.aws_secretsmanager_secret_version.admin_password_version.secret_string)
+        value = bcrypt_hash.argo.id
+      }
+    ]
+  }
+
+  keda_helm_config = {
+    values = [
+      {
+        name  = "serviceAccount.create"
+        value = "false"
       }
     ]
   }
@@ -99,16 +111,18 @@ module "eks_blueprints_kubernetes_addons" {
   # Add-ons
   enable_amazon_eks_aws_ebs_csi_driver = true
   enable_aws_for_fluentbit             = true
-  enable_cert_manager                  = true
-  enable_cluster_autoscaler            = true
-  enable_karpenter                     = true
-  enable_keda                          = true
-  enable_metrics_server                = true
-  enable_prometheus                    = true
-  enable_traefik                       = true
-  enable_vpa                           = true
-  enable_yunikorn                      = true
-  enable_argo_rollouts                 = true
+  # Let fluentbit create the cw log group
+  aws_for_fluentbit_create_cw_log_group = false
+  enable_cert_manager                   = true
+  enable_cluster_autoscaler             = true
+  enable_karpenter                      = true
+  enable_keda                           = true
+  enable_metrics_server                 = true
+  enable_prometheus                     = true
+  enable_traefik                        = true
+  enable_vpa                            = true
+  enable_yunikorn                       = true
+  enable_argo_rollouts                  = true
 
   tags = local.tags
 }
@@ -123,6 +137,12 @@ resource "random_password" "argocd" {
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
+# Argo requires the password to be bcrypt, we use custom provider of bcrypt,
+# as the default bcrypt function generates diff for each terraform plan
+resource "bcrypt_hash" "argo" {
+  cleartext = random_password.argocd.result
+}
+
 #tfsec:ignore:aws-ssm-secret-use-customer-key
 resource "aws_secretsmanager_secret" "arogcd" {
   name                    = "argocd"
@@ -132,12 +152,6 @@ resource "aws_secretsmanager_secret" "arogcd" {
 resource "aws_secretsmanager_secret_version" "arogcd" {
   secret_id     = aws_secretsmanager_secret.arogcd.id
   secret_string = random_password.argocd.result
-}
-
-data "aws_secretsmanager_secret_version" "admin_password_version" {
-  secret_id = aws_secretsmanager_secret.arogcd.id
-
-  depends_on = [aws_secretsmanager_secret_version.arogcd]
 }
 
 #---------------------------------------------------------------

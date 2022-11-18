@@ -148,3 +148,34 @@ Enable the following add-on in EKS Cluster v1.22 and then upgrade to v1.23 to av
 ```hcl
   enable_amazon_eks_aws_ebs_csi_driver = true
 ```
+
+## Unable to destroy namespace created by Terraform
+
+In some cases, when you try to run terraform destroy on kubernetes resources created by Terraform such as namespace, you may end up seeing failures such as timeout and context deadline exceeded failures.
+Namespace one of those resources we've seen before, the main reason this happens is because orphaned resources created through CRDs of addons (such as ArgoCD, AWS LBC and more) are left behind after the addons are being deleted, this is case by case scenario.
+For example, with namespaces:
+
+1. Confirm the namespace is hanging in status `Terminating`
+
+```sh
+kubectl get namespaces
+```
+
+2. Check for any orphaned resources in the namesapce, make sure to replace <namespace_name> with your namespace:
+
+```sh
+kubectl api-resources --verbs=list --namespaced -o name   | xargs -n 1 kubectl get  \
+--show-kind --ignore-not-found -n <namespace_name>
+```
+
+3. For any of the above output, patch the resource finalize:
+
+```sh
+kubectl patch RESOURCE NAME -p '{"metadata":{"finalizers":[]}}' --type=merge
+```
+
+4. Check the status of the namespace, if needed you may need to patch the namespace finalizers as-well
+
+```sh
+kubectl patch ns <ns-name> -p '{"spec":{"finalizers":null}}'
+```
