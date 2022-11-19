@@ -1,7 +1,7 @@
 locals {
-  name                 = try(var.helm_config.name, "aws-efs-csi-driver")
-  namespace            = try(var.helm_config.namespace, "kube-system")
-  service_account_name = try(var.helm_config.service_account_name, "${local.name}-sa")
+  name            = try(var.helm_config.name, "aws-efs-csi-driver")
+  namespace       = try(var.helm_config.namespace, "kube-system")
+  service_account = try(var.helm_config.service_account, "${local.name}-sa")
 }
 
 module "helm_addon" {
@@ -23,7 +23,7 @@ module "helm_addon" {
 
   irsa_config = {
     kubernetes_namespace              = local.namespace
-    kubernetes_service_account        = local.service_account_name
+    kubernetes_service_account        = local.service_account
     create_kubernetes_namespace       = try(var.helm_config.create_namespace, false)
     create_kubernetes_service_account = true
     irsa_iam_policies                 = concat([aws_iam_policy.aws_efs_csi_driver.arn], var.irsa_policies)
@@ -32,7 +32,7 @@ module "helm_addon" {
   set_values = [
     {
       name  = "controller.serviceAccount.name"
-      value = local.service_account_name
+      value = local.service_account
     },
     {
       name  = "controller.serviceAccount.create"
@@ -40,7 +40,7 @@ module "helm_addon" {
     },
     {
       name  = "node.serviceAccount.name"
-      value = local.service_account_name
+      value = local.service_account
     },
     {
       name  = "node.serviceAccount.create"

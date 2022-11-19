@@ -22,6 +22,6 @@ The following properties are made available for use when managing the add-on via
 ```hcl
 clusterAutoscaler = {
   enable = true
-  serviceAccountName = "<service_account_name>"
+  serviceAccountName = "<service_account>"
 }
 ```

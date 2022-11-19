@@ -1,8 +1,6 @@
 locals {
   name = "spark-history-server"
 
-  service_account_name = try(var.helm_config.service_account_name, local.name)
-
   default_helm_config = {
     name        = local.name
     chart       = local.name
@@ -18,10 +16,9 @@ locals {
     var.helm_config
   )
 
-  set_values = [
-    {
-      name  = "serviceAccount.name"
-      value = local.service_account_name
+  set_values = [{
+    name  = "serviceAccount.name"
+    value = local.name
     },
     {
       name  = "serviceAccount.create"
@@ -31,7 +28,7 @@ locals {
 
   irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
-    kubernetes_service_account        = local.service_account_name
+    kubernetes_service_account        = try(var.helm_config.service_account, local.name)
     create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
     create_kubernetes_service_account = true
     irsa_iam_policies                 = length(var.irsa_policies) > 0 ? var.irsa_policies : ["arn:${var.addon_context.aws_partition_id}:iam::aws:policy/AmazonS3ReadOnlyAccess"]

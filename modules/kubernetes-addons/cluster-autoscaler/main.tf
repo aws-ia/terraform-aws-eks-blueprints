@@ -1,7 +1,7 @@
 locals {
-  name                 = try(var.helm_config.name, "cluster-autoscaler")
-  namespace            = try(var.helm_config.namespace, "kube-system")
-  service_account_name = try(var.helm_config.service_account_name, "${local.name}-sa")
+  name            = try(var.helm_config.name, "cluster-autoscaler")
+  namespace       = try(var.helm_config.namespace, "kube-system")
+  service_account = try(var.helm_config.service_account, "${local.name}-sa")
 }
 
 module "helm_addon" {
@@ -33,7 +33,7 @@ module "helm_addon" {
     },
     {
       name  = "rbac.serviceAccount.name"
-      value = local.service_account_name
+      value = local.service_account
     }
   ]
 
@@ -41,7 +41,7 @@ module "helm_addon" {
     create_kubernetes_namespace       = try(var.helm_config.create_namespace, false)
     kubernetes_namespace              = local.namespace
     create_kubernetes_service_account = true
-    kubernetes_service_account        = local.service_account_name
+    kubernetes_service_account        = local.service_account
     irsa_iam_policies                 = [aws_iam_policy.cluster_autoscaler.arn]
   }
 

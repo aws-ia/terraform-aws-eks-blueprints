@@ -1,9 +1,8 @@
 data "aws_region" "current" {}
 
 locals {
-  name                 = "velero"
-  namespace            = try(var.helm_config.namespace, local.name)
-  service_account_name = try(var.helm_config.service_account_name, var.helm_config.namespace, local.name)
+  name      = "velero"
+  namespace = try(var.helm_config.namespace, local.name)
 
   argocd_gitops_config = {
     enable             = true
@@ -33,7 +32,7 @@ module "helm_addon" {
   set_values = [
     {
       name  = "serviceAccount.server.name"
-      value = local.service_account_name
+      value = local.name
     },
     {
       name  = "serviceAccount.server.create"
@@ -46,7 +45,7 @@ module "helm_addon" {
     kubernetes_namespace        = local.namespace
 
     create_kubernetes_service_account = true
-    kubernetes_service_account        = local.service_account_name
+    kubernetes_service_account        = try(var.helm_config.service_account, local.name)
 
     irsa_iam_policies = concat([aws_iam_policy.velero.arn], var.irsa_policies)
   }

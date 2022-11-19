@@ -1,7 +1,6 @@
 locals {
-  name                 = try(var.helm_config.name, "appmesh-controller")
-  namespace            = try(var.helm_config.namespace, "appmesh-system")
-  service_account_name = try(var.helm_config.service_account_name, local.name)
+  name      = try(var.helm_config.name, "appmesh-controller")
+  namespace = try(var.helm_config.namespace, "appmesh-system")
 
   partition  = data.aws_partition.current.partition
   dns_suffix = data.aws_partition.current.dns_suffix
@@ -27,7 +26,7 @@ module "helm_addon" {
   set_values = [
     {
       name  = "serviceAccount.name"
-      value = local.service_account_name
+      value = local.name
     },
     {
       name  = "serviceAccount.create"
@@ -39,7 +38,7 @@ module "helm_addon" {
     create_kubernetes_namespace       = true
     kubernetes_namespace              = local.namespace
     create_kubernetes_service_account = true
-    kubernetes_service_account        = local.service_account_name
+    kubernetes_service_account        = try(var.helm_config.service_account, local.name)
     irsa_iam_policies                 = concat([aws_iam_policy.this.arn], var.irsa_policies)
   }
 
