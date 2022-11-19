@@ -1,10 +1,10 @@
 locals {
-  name                 = try(var.helm_config.name, "external-dns")
-  service_account_name = "${local.name}-sa"
+  name            = try(var.helm_config.name, "external-dns")
+  service_account = try(var.helm_config.service_account, "${local.name}-sa")
 
   argocd_gitops_config = {
     enable             = true
-    serviceAccountName = local.service_account_name
+    serviceAccountName = local.service_account
   }
 }
 
@@ -35,7 +35,7 @@ module "helm_addon" {
     [
       {
         name  = "serviceAccount.name"
-        value = local.service_account_name
+        value = local.service_account
       },
       {
         name  = "serviceAccount.create"
@@ -49,7 +49,7 @@ module "helm_addon" {
     create_kubernetes_namespace       = try(var.helm_config.create_namespace, true)
     kubernetes_namespace              = try(var.helm_config.namespace, local.name)
     create_kubernetes_service_account = true
-    kubernetes_service_account        = local.service_account_name
+    kubernetes_service_account        = local.service_account
     irsa_iam_policies                 = concat([aws_iam_policy.external_dns.arn], var.irsa_policies)
   }
 

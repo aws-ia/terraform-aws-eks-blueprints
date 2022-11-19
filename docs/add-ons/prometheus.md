@@ -49,6 +49,6 @@ prometheus = {
   enable             = true
   ampWorkspaceUrl    = "<workspace_url>"
   roleArn            = "<role_arn>"
-  serviceAccountName = "<service_account_name>"
+  serviceAccountName = "<service_account>"
 }
 ```

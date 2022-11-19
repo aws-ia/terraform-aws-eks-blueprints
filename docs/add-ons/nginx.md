@@ -46,6 +46,6 @@ GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/
 ``` hcl
 argocd_gitops_config = {
     enable             = true
-    serviceAccountName = local.service_account_name
+    serviceAccountName = local.service_account
   }
 ```
