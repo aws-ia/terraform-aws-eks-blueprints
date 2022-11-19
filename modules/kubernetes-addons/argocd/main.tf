@@ -81,6 +81,13 @@ resource "helm_release" "argocd_application" {
     type  = "string"
   }
 
+  values = [
+    # Application ignoreDifferences
+    yamlencode({
+      "ignoreDifferences" = lookup(each.value, "ignoreDifferences", [])
+    })
+  ]
+
   depends_on = [module.helm_addon]
 }
 
@@ -99,6 +106,7 @@ resource "kubectl_manifest" "argocd_kustomize_application" {
       sourceTargetRevision = each.value.target_revision
       sourcePath           = each.value.path
       destinationServer    = each.value.destination
+      ignoreDifferences    = lookup(each.value, "ignoreDifferences", [])
     }
   )
 
