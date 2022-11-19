@@ -30,8 +30,8 @@ You can optionally customize the Helm chart that deploys `Crossplane` via the fo
     version                   = "1.6.2"
     namespace                 = "crossplane-system"
     values = [templatefile("${path.module}/values.yaml", {
-         service_account_name = var.service_account_name,
-         operating_system     = "linux"
+         service_account  = var.service_account,
+         operating_system = "linux"
     })]
   }
 
@@ -43,6 +43,7 @@ This module provides options to deploy the following AWS providers for Crossplan
 
  - [AWS Provider](https://github.com/crossplane/provider-aws)
  - [Terrajet AWS Provider](https://github.com/crossplane-contrib/provider-jet-aws)
+ - [Kubernetes Provider](https://github.com/crossplane-contrib/provider-kubernetes)
 
 _NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
 This example config uses AdministratorAccess, but you should select a policy with the minimum permissions required to provision your resources._
@@ -55,7 +56,7 @@ crossplane_aws_provider = {
   provider_aws_version     = "v0.24.1"  # Get the latest version from https://github.com/crossplane/provider-aws
   additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
 }
-```  
+```
 
 Config to deploy [Terrajet AWS Provider](https://github.com/crossplane-contrib/provider-jet-aws)
 ```hcl
@@ -64,6 +65,17 @@ crossplane_jet_aws_provider = {
   enable                   = true
   provider_aws_version     = "v0.4.1"  # Get the latest version from  https://github.com/crossplane-contrib/provider-jet-aws
   additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+}
+```
+
+_NOTE: Crossplane requires cluster-admin permissions to create and update Kubernetes resources._
+
+Config to deploy [Kubernetes provider](https://github.com/crossplane-contrib/provider-kubernetes)
+```hcl
+# Creates ProviderConfig -> kubernetes-provider
+crossplane_kubernetes_provider = {
+  enable                   = true
+  provider_kubernetes_version     = "v0.4.1"  # Get the latest version from  https://github.com/crossplane-contrib/provider-jet-aws
 }
 ```
 

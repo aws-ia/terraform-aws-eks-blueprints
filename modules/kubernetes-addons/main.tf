@@ -129,6 +129,14 @@ module "argo_rollouts" {
   addon_context     = local.addon_context
 }
 
+module "argo_workflows" {
+  count             = var.enable_argo_workflows ? 1 : 0
+  source            = "./argo-workflows"
+  helm_config       = var.argo_workflows_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "aws_efs_csi_driver" {
   count             = var.enable_aws_efs_csi_driver ? 1 : 0
   source            = "./aws-efs-csi-driver"
@@ -186,6 +194,14 @@ module "aws_node_termination_handler" {
   addon_context           = local.addon_context
 }
 
+module "appmesh_controller" {
+  count         = var.enable_appmesh_controller ? 1 : 0
+  source        = "./appmesh-controller"
+  helm_config   = var.appmesh_helm_config
+  irsa_policies = var.appmesh_irsa_policies
+  addon_context = local.addon_context
+}
+
 module "cert_manager" {
   count                             = var.enable_cert_manager ? 1 : 0
   source                            = "./cert-manager"
@@ -203,6 +219,14 @@ module "cert_manager_csi_driver" {
   count             = var.enable_cert_manager_csi_driver ? 1 : 0
   source            = "./cert-manager-csi-driver"
   helm_config       = var.cert_manager_csi_driver_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "cert_manager_istio_csr" {
+  count             = var.enable_cert_manager_istio_csr ? 1 : 0
+  source            = "./cert-manager-istio-csr"
+  helm_config       = var.cert_manager_istio_csr_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
@@ -227,14 +251,15 @@ module "coredns_autoscaler" {
 }
 
 module "crossplane" {
-  count            = var.enable_crossplane ? 1 : 0
-  source           = "./crossplane"
-  helm_config      = var.crossplane_helm_config
-  aws_provider     = var.crossplane_aws_provider
-  jet_aws_provider = var.crossplane_jet_aws_provider
-  account_id       = data.aws_caller_identity.current.account_id
-  aws_partition    = data.aws_partition.current.id
-  addon_context    = local.addon_context
+  count               = var.enable_crossplane ? 1 : 0
+  source              = "./crossplane"
+  helm_config         = var.crossplane_helm_config
+  aws_provider        = var.crossplane_aws_provider
+  jet_aws_provider    = var.crossplane_jet_aws_provider
+  kubernetes_provider = var.crossplane_kubernetes_provider
+  account_id          = data.aws_caller_identity.current.account_id
+  aws_partition       = data.aws_partition.current.id
+  addon_context       = local.addon_context
 }
 
 module "datadog_operator" {
@@ -387,6 +412,14 @@ module "spark_k8s_operator" {
   count             = var.enable_spark_k8s_operator ? 1 : 0
   source            = "./spark-k8s-operator"
   helm_config       = var.spark_k8s_operator_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "strimzi_kafka_operator" {
+  count             = var.enable_strimzi_kafka_operator ? 1 : 0
+  source            = "./strimzi-kafka-operator"
+  helm_config       = var.strimzi_kafka_operator_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
@@ -674,9 +707,9 @@ module "cilium" {
   count = var.enable_cilium ? 1 : 0
 
   helm_config       = var.cilium_helm_config
+  enable_wireguard  = var.cilium_enable_wireguard
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
-
 }
 
 module "gatekeeper" {

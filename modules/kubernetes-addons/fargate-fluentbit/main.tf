@@ -22,5 +22,6 @@ resource "kubernetes_config_map" "aws_logging" {
     "parsers.conf" = local.config["parsers_conf"]
     "filters.conf" = local.config["filters_conf"]
     "output.conf"  = local.config["output_conf"]
+    "flb_log_cw"   = local.config["flb_log_cw"]
   }
 }

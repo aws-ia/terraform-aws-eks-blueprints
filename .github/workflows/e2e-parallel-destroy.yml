@@ -23,22 +23,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - example_path: examples/agones-game-controller
           - example_path: examples/analytics/emr-on-eks
           - example_path: examples/analytics/spark-k8s-operator
-          - example_path: examples/crossplane
+          - example_path: examples/complete-kubernetes-addons
           - example_path: examples/eks-cluster-with-new-vpc
           - example_path: examples/fargate-serverless
-          # - example_path: examples/fully-private-eks-cluster # skipping until issue #711 is addressed
-          - example_path: examples/game-tech/agones-game-controller
           - example_path: examples/gitops/argocd
-          # - example_path: examples/ingress-controllers/nginx # ignoring due to https://github.com/kubernetes-sigs/aws-load-balancer-controller/issues/1629
+          - example_path: examples/grafana-loki
+          - example_path: examples/ipv4-prefix-delegation
           - example_path: examples/ipv6-eks-cluster
           - example_path: examples/karpenter
           - example_path: examples/multi-tenancy-with-teams
-          - example_path: examples/node-groups/fargate-profiles
-          - example_path: examples/node-groups/managed-node-groups
-          - example_path: examples/node-groups/self-managed-node-groups
-          - example_path: examples/node-groups/windows-node-groups
           - example_path: examples/stateful
           - example_path: examples/vpc-cni-custom-networking
     steps:

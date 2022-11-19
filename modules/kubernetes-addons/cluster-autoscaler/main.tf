@@ -1,7 +1,7 @@
 locals {
   name            = try(var.helm_config.name, "cluster-autoscaler")
   namespace       = try(var.helm_config.namespace, "kube-system")
-  service_account = "${local.name}-sa"
+  service_account = try(var.helm_config.service_account, "${local.name}-sa")
 }
 
 module "helm_addon" {
@@ -9,6 +9,7 @@ module "helm_addon" {
 
   manage_via_gitops = var.manage_via_gitops
 
+  # https://github.com/kubernetes/autoscaler/blob/master/charts/cluster-autoscaler/Chart.yaml
   helm_config = merge({
     name        = local.name
     chart       = local.name

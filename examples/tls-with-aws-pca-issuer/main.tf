@@ -10,6 +10,12 @@ provider "kubectl" {
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
+provider "kubernetes" {
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.this.token
+}
+
 provider "helm" {
   kubernetes {
     host                   = module.eks_blueprints.eks_cluster_endpoint
@@ -145,6 +151,10 @@ resource "kubectl_manifest" "cluster_pca_issuer" {
       region : local.region
     }
   })
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
+  ]
 }
 
 #-------------------------------
@@ -185,7 +195,6 @@ resource "kubectl_manifest" "example_pca_certificate" {
   })
 
   depends_on = [
-    module.eks_blueprints_kubernetes_addons,
     kubectl_manifest.cluster_pca_issuer,
   ]
 }

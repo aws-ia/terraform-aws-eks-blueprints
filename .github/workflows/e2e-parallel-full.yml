@@ -15,9 +15,34 @@ env:
   BUCKET_NAME: terraform-eks-blueprints-iam-policies-examples
 
 jobs:
+  prereq-cleanup:
+    name: Prerequisite Cleanup
+    runs-on: ubuntu-latest
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Auth AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          aws-region: us-west-2
+          role-duration-seconds: 3600
+          role-session-name: GithubActions-Session
+
+      - name: Ensure log groups are removed
+        run: |
+          pip3 install boto3
+          python3 .github/scripts/delete-log-groups.py
+
   deploy:
     name: Run e2e test
     runs-on: ubuntu-latest
+    needs: prereq-cleanup
 
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
@@ -27,22 +52,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - example_path: examples/agones-game-controller
           - example_path: examples/analytics/emr-on-eks
           - example_path: examples/analytics/spark-k8s-operator
-          - example_path: examples/crossplane
+          - example_path: examples/complete-kubernetes-addons
           - example_path: examples/eks-cluster-with-new-vpc
           - example_path: examples/fargate-serverless
-          # - example_path: examples/fully-private-eks-cluster # skipping until issue #711
-          - example_path: examples/game-tech/agones-game-controller
           - example_path: examples/gitops/argocd
-          # - example_path: examples/ingress-controllers/nginx # ignoring due to https://github.com/kubernetes-sigs/aws-load-balancer-controller/issues/1629
+          - example_path: examples/grafana-loki
+          - example_path: examples/ipv4-prefix-delegation
           - example_path: examples/ipv6-eks-cluster
           - example_path: examples/karpenter
           - example_path: examples/multi-tenancy-with-teams
-          - example_path: examples/node-groups/fargate-profiles
-          - example_path: examples/node-groups/managed-node-groups
-          - example_path: examples/node-groups/self-managed-node-groups
-          - example_path: examples/node-groups/windows-node-groups
           - example_path: examples/stateful
           - example_path: examples/vpc-cni-custom-networking
     steps:
@@ -144,4 +165,4 @@ jobs:
         id: dirs
         run: |
           pip3 install boto3
-          python3 .github/workflows/iam-policy-generator.py
+          python3 .github/scripts/iam-policy-generator.py

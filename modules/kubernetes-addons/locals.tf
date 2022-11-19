@@ -28,6 +28,7 @@ locals {
     vpa                       = var.enable_vpa ? module.vpa[0].argocd_gitops_config : null
     yunikorn                  = var.enable_yunikorn ? module.yunikorn[0].argocd_gitops_config : null
     argoRollouts              = var.enable_argo_rollouts ? module.argo_rollouts[0].argocd_gitops_config : null
+    argoWorkflows             = var.enable_argo_workflows ? module.argo_workflows[0].argocd_gitops_config : null
     karpenter                 = var.enable_karpenter ? module.karpenter[0].argocd_gitops_config : null
     kubernetesDashboard       = var.enable_kubernetes_dashboard ? module.kubernetes_dashboard[0].argocd_gitops_config : null
     awsCloudWatchMetrics      = var.enable_aws_cloudwatch_metrics ? module.aws_cloudwatch_metrics[0].argocd_gitops_config : null
@@ -37,6 +38,7 @@ locals {
     promtail                  = var.enable_promtail ? module.promtail[0].argocd_gitops_config : null
     calico                    = var.enable_calico ? module.calico[0].argocd_gitops_config : null
     kubecost                  = var.enable_kubecost ? module.kubecost[0].argocd_gitops_config : null
+    strimziKafkaOperator      = var.enable_strimzi_kafka_operator ? module.strimzi_kafka_operator[0].argocd_gitops_config : null
     smb_csi_driver            = var.enable_smb_csi_driver ? module.smb_csi_driver[0].argocd_gitops_config : null
     chaos_mesh                = var.enable_chaos_mesh ? module.chaos_mesh[0].argocd_gitops_config : null
     cilium                    = var.enable_cilium ? module.cilium[0].argocd_gitops_config : null
@@ -84,6 +86,7 @@ locals {
       eu-west-2      = "602401143452.dkr.ecr.eu-west-2.amazonaws.com",
       eu-west-3      = "602401143452.dkr.ecr.eu-west-3.amazonaws.com",
       me-south-1     = "558608220178.dkr.ecr.me-south-1.amazonaws.com",
+      me-central-1   = "759879836304.dkr.ecr.me-central-1.amazonaws.com",
       sa-east-1      = "602401143452.dkr.ecr.sa-east-1.amazonaws.com",
       us-east-1      = "602401143452.dkr.ecr.us-east-1.amazonaws.com",
       us-east-2      = "602401143452.dkr.ecr.us-east-2.amazonaws.com",

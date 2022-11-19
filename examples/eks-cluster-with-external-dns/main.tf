@@ -38,7 +38,7 @@ locals {
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  env                    = "dev"
+  env = "dev"
 
   # Can be changed to default aws-samples configuration once PR https://github.com/aws-samples/eks-blueprints-workloads/pull/22 is merged
   workload_repo_url      = "https://github.com/seb-tmp/eks-blueprints-workloads.git"
@@ -46,7 +46,7 @@ locals {
   #workload_repo_url      = "https://github.com/aws-samples/eks-blueprints-workloads.git"
   #workload_repo_revision = "main"
 
-  workload_repo_path     = "envs/dev"
+  workload_repo_path = "envs/dev"
 
   route53_weight = "100"
 
