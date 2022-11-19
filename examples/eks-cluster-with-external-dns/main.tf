@@ -25,10 +25,6 @@ data "aws_acm_certificate" "issued" {
   statuses = ["ISSUED"]
 }
 
-data "aws_route53_zone" "sub" {
-  name = var.eks_cluster_domain
-}
-
 data "aws_availability_zones" "available" {}
 
 locals {
@@ -37,18 +33,6 @@ locals {
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
-
-  env = "dev"
-
-  # Can be changed to default aws-samples configuration once PR https://github.com/aws-samples/eks-blueprints-workloads/pull/22 is merged
-  workload_repo_url      = "https://github.com/seb-tmp/eks-blueprints-workloads.git"
-  workload_repo_revision = "blue-green-demo"
-  #workload_repo_url      = "https://github.com/aws-samples/eks-blueprints-workloads.git"
-  #workload_repo_revision = "main"
-
-  workload_repo_path = "envs/dev"
-
-  route53_weight = "100"
 
   tags = {
     Blueprint  = local.name
@@ -91,26 +75,25 @@ module "eks_blueprints_kubernetes_addons" {
   eks_cluster_domain   = var.eks_cluster_domain
 
   enable_argocd = true
-
   argocd_applications = {
     workloads = {
-      path               = local.workload_repo_path
-      repo_url           = local.workload_repo_url
-      target_revision    = local.workload_repo_revision
+      path               = "envs/dev"
+      repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+      target_revision    = "main"
       add_on_application = false
       values = {
         spec = {
           source = {
-            repoURL        = local.workload_repo_url
-            targetRevision = local.workload_repo_revision
+            repoURL        = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+            targetRevision = "main"
           }
           blueprint   = "terraform"
-          clusterName = local.name
-          env         = local.env
+          clusterName = module.eks_blueprints.eks_cluster_id
+          env         = "dev"
           ingress = {
             type           = "alb"
             host           = var.eks_cluster_domain
-            route53_weight = local.route53_weight # <-- You can control the weight of the route53 weighted records between clusters
+            route53_weight = "100" # <-- You can control the weight of the route53 weighted records between clusters
           }
         }
       }
