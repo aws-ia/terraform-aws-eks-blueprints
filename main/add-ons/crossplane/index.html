@@ -1452,8 +1452,8 @@
     version                   = &quot;1.6.2&quot;
     namespace                 = &quot;crossplane-system&quot;
     values = [templatefile(&quot;${path.module}/values.yaml&quot;, {
-         service_account_name = var.service_account_name,
-         operating_system     = &quot;linux&quot;
+         service_account  = var.service_account,
+         operating_system = &quot;linux&quot;
     })]
   }
 

@@ -1440,7 +1440,7 @@
 </code></pre></div>
 <p>You can optionally customize the Helm chart that deploys <code>aws-lb-ingress-controller</code> via the following configuration.</p>
 <div class="highlight"><pre><span></span><code>  enable_aws_load_balancer_controller = true
-  # Optional  
+  # Optional
   aws_load_balancer_controller_helm_config = {
     name                       = &quot;aws-load-balancer-controller&quot;
     chart                      = &quot;aws-load-balancer-controller&quot;
@@ -1462,7 +1462,7 @@ aws-load-balancer-controller                               <span class="m">2</sp
 <p>The following properties are made available for use when managing the add-on via GitOps.</p>
 <div class="highlight"><pre><span></span><code>awsLoadBalancerController = {
   enable             = true
-  serviceAccountName = &quot;&lt;service_account_name&gt;&quot;
+  serviceAccountName = &quot;&lt;service_account&gt;&quot;
 }
 </code></pre></div>
 
