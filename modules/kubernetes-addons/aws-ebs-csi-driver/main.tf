@@ -1,8 +1,9 @@
 locals {
   name = "aws-ebs-csi-driver"
 
-  create_irsa = try(var.addon_config.service_account_role_arn == "", true)
-  namespace   = try(var.helm_config.namespace, "kube-system")
+  create_irsa     = try(var.addon_config.service_account_role_arn == "", true)
+  namespace       = try(var.helm_config.namespace, "kube-system")
+  service_account = try(var.helm_config.service_account, "ebs-csi-controller-sa")
 }
 
 data "aws_eks_addon_version" "this" {
@@ -63,7 +64,7 @@ module "helm_addon" {
     create_kubernetes_namespace       = try(var.helm_config.create_namespace, false)
     kubernetes_namespace              = local.namespace
     create_kubernetes_service_account = true
-    kubernetes_service_account        = "ebs-csi-controller-sa"
+    kubernetes_service_account        = local.service_account
     irsa_iam_policies                 = concat([aws_iam_policy.aws_ebs_csi_driver[0].arn], lookup(var.helm_config, "additional_iam_policies", []))
   }
 
@@ -79,7 +80,7 @@ module "irsa_addon" {
   create_kubernetes_namespace       = false
   create_kubernetes_service_account = false
   kubernetes_namespace              = local.namespace
-  kubernetes_service_account        = "ebs-csi-controller-sa"
+  kubernetes_service_account        = local.service_account
   irsa_iam_policies                 = concat([aws_iam_policy.aws_ebs_csi_driver[0].arn], lookup(var.addon_config, "additional_iam_policies", []))
   irsa_iam_role_path                = var.addon_context.irsa_iam_role_path
   irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary

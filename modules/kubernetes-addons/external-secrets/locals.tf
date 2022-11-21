@@ -1,6 +1,6 @@
 locals {
-  name                 = "external-secrets"
-  service_account_name = "${local.name}-sa"
+  name            = "external-secrets"
+  service_account = try(var.helm_config.service_account, "${local.name}-sa")
 
   # https://github.com/external-secrets/external-secrets/blob/main/deploy/charts/external-secrets/Chart.yaml
   helm_config = merge(
@@ -18,7 +18,7 @@ locals {
   set_values = [
     {
       name  = "serviceAccount.name"
-      value = local.service_account_name
+      value = local.service_account
     },
     {
       name  = "serviceAccount.create"
@@ -26,7 +26,7 @@ locals {
     },
     {
       name  = "webhook.serviceAccount.name"
-      value = local.service_account_name
+      value = local.service_account
     },
     {
       name  = "webhook.serviceAccount.create"
@@ -34,7 +34,7 @@ locals {
     },
     {
       name  = "certController.serviceAccount.name"
-      value = local.service_account_name
+      value = local.service_account
     },
     {
       name  = "certController.serviceAccount.create"
@@ -44,7 +44,7 @@ locals {
 
   irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
-    kubernetes_service_account        = local.service_account_name
+    kubernetes_service_account        = local.service_account
     create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
     create_kubernetes_service_account = true
     irsa_iam_policies                 = concat([aws_iam_policy.external_secrets.arn], var.irsa_policies)
@@ -52,6 +52,6 @@ locals {
 
   argocd_gitops_config = {
     enable             = true
-    serviceAccountName = local.service_account_name
+    serviceAccountName = local.service_account
   }
 }
