@@ -45,7 +45,7 @@ module "helm_addon" {
     kubernetes_namespace        = local.namespace
 
     create_kubernetes_service_account = true
-    kubernetes_service_account        = try(var.helm_config.namespace, local.name)
+    kubernetes_service_account        = try(var.helm_config.service_account, local.name)
 
     irsa_iam_policies = concat([aws_iam_policy.velero.arn], var.irsa_policies)
   }

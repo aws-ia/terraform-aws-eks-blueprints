@@ -28,7 +28,7 @@ data "aws_acm_certificate" "issued" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = basename(path.cwd)
+  name   = "external-dns"
   region = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
@@ -77,12 +77,23 @@ module "eks_blueprints_kubernetes_addons" {
   enable_argocd = true
   argocd_applications = {
     workloads = {
-      path     = "envs/dev"
-      repo_url = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+      path               = "envs/dev"
+      repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+      target_revision    = "main"
+      add_on_application = false
       values = {
         spec = {
+          source = {
+            repoURL        = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+            targetRevision = "main"
+          }
+          blueprint   = "terraform"
+          clusterName = module.eks_blueprints.eks_cluster_id
+          env         = "dev"
           ingress = {
-            host = var.eks_cluster_domain
+            type           = "alb"
+            host           = var.eks_cluster_domain
+            route53_weight = "100" # <-- You can control the weight of the route53 weighted records between clusters
           }
         }
       }
@@ -99,6 +110,12 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_aws_load_balancer_controller = true
   enable_external_dns                 = true
+  external_dns_helm_config = {
+    values = [templatefile("${path.module}/external_dns-values.yaml", {
+      txtOwnerId   = local.name
+      zoneIdFilter = var.eks_cluster_domain
+    })]
+  }
 
   tags = local.tags
 }
