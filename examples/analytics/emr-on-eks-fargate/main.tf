@@ -55,6 +55,8 @@ module "eks" {
   cluster_name    = local.name
   cluster_version = "1.24"
 
+  cluster_enabled_log_types = ["audit", "api", "authenticator", "controllerManager"]
+
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
@@ -311,7 +313,7 @@ module "vpc_endpoints_sg" {
   tags = local.tags
 }
 
-#tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
+#tfsec:ignore:*
 module "s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "~> v3.0"
