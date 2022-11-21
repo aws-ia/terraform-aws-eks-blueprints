@@ -30,7 +30,7 @@ jobs:
         id: dirs
         run: |
           DIRS=$(python3 .github/scripts/plan-examples.py)
-          echo "::set-output name=directories::$DIRS"
+          echo "directories=$DIRS" >> $GITHUB_OUTPUT
 
   plan:
     name: Plan examples
@@ -75,7 +75,7 @@ jobs:
               - '*.tf'
 
       - name: Configure AWS credentials from Test account
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         if: steps.changes.outputs.src== 'true'
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
