@@ -15,5 +15,5 @@ output "kyverno_addon" {
 
 output "kyverno_values" {
   description = "Values used in the Kyverno Helm release"
-  value       = jsondecode(module.eks_blueprints_kubernetes_addons.kyverno.release_metadata[0].values)
+  value       = try(jsondecode(module.eks_blueprints_kubernetes_addons.kyverno.release_metadata[0].values), null)
 }

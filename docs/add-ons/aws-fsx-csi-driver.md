@@ -57,6 +57,6 @@ The following is configured to ArgoCD App of Apps for this Add-on.
 ```hcl
   argocd_gitops_config = {
     enable             = true
-    serviceAccountName = local.service_account_name
+    serviceAccountName = local.service_account
   }
 ```
