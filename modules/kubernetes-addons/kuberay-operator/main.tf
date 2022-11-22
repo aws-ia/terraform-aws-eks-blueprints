@@ -16,7 +16,7 @@ module "helm_addon" {
   helm_config = merge(
     {
       name        = local.name
-      chart       = "kuberay/${local.name}"
+      chart       = local.name
       repository  = "https://ray-project.github.io/kuberay-helm/"
       version     = "0.4.0"
       namespace   = kubernetes_namespace_v1.this.metadata[0].name
