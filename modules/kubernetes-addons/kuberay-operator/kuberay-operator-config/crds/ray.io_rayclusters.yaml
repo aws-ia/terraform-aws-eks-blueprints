@@ -38,6 +38,135 @@ spec:
                 description: AutoscalerOptions specifies optional configuration for
                   the Ray autoscaler.
                 properties:
+                  env:
+                    description: Optional list of environment variables to set in
+                      the autoscaler container.
+                    items:
+                      description: EnvVar represents an environment variable present
+                        in a Container.
+                      properties:
+                        name:
+                          description: Name of the environment variable. Must be a
+                            C_IDENTIFIER.
+                          type: string
+                        value:
+                          description: Variable references $(VAR_NAME) are expanded
+                            using the previously defined environment variables in
+                            t
+                          type: string
+                        valueFrom:
+                          description: Source for the environment variable's value.
+                            Cannot be used if value is not empty.
+                          properties:
+                            configMapKeyRef:
+                              description: Selects a key of a ConfigMap.
+                              properties:
+                                key:
+                                  description: The key to select.
+                                  type: string
+                                name:
+                                  description: 'Name of the referent. More info: https://kubernetes.'
+                                  type: string
+                                optional:
+                                  description: Specify whether the ConfigMap or its
+                                    key must be defined
+                                  type: boolean
+                              required:
+                              - key
+                              type: object
+                            fieldRef:
+                              description: 'Selects a field of the pod: supports metadata.name,
+                                metadata.namespace, `metadata.'
+                              properties:
+                                apiVersion:
+                                  description: Version of the schema the FieldPath
+                                    is written in terms of, defaults to "v1".
+                                  type: string
+                                fieldPath:
+                                  description: Path of the field to select in the
+                                    specified API version.
+                                  type: string
+                              required:
+                              - fieldPath
+                              type: object
+                            resourceFieldRef:
+                              description: 'Selects a resource of the container: only
+                                resources limits and requests (limits.cpu, limits.'
+                              properties:
+                                containerName:
+                                  description: 'Container name: required for volumes,
+                                    optional for env vars'
+                                  type: string
+                                divisor:
+                                  anyOf:
+                                  - type: integer
+                                  - type: string
+                                  description: Specifies the output format of the
+                                    exposed resources, defaults to "1"
+                                  pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                  x-kubernetes-int-or-string: true
+                                resource:
+                                  description: 'Required: resource to select'
+                                  type: string
+                              required:
+                              - resource
+                              type: object
+                            secretKeyRef:
+                              description: Selects a key of a secret in the pod's
+                                namespace
+                              properties:
+                                key:
+                                  description: The key of the secret to select from.  Must
+                                    be a valid secret key.
+                                  type: string
+                                name:
+                                  description: 'Name of the referent. More info: https://kubernetes.'
+                                  type: string
+                                optional:
+                                  description: Specify whether the Secret or its key
+                                    must be defined
+                                  type: boolean
+                              required:
+                              - key
+                              type: object
+                          type: object
+                      required:
+                      - name
+                      type: object
+                    type: array
+                  envFrom:
+                    description: Optional list of sources to populate environment
+                      variables in the autoscaler container.
+                    items:
+                      description: EnvFromSource represents the source of a set of
+                        ConfigMaps
+                      properties:
+                        configMapRef:
+                          description: The ConfigMap to select from
+                          properties:
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.'
+                              type: string
+                            optional:
+                              description: Specify whether the ConfigMap must be defined
+                              type: boolean
+                          type: object
+                        prefix:
+                          description: An optional identifier to prepend to each key
+                            in the ConfigMap. Must be a C_IDENTIFIER.
+                          type: string
+                        secretRef:
+                          description: The Secret to select from
+                          properties:
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.'
+                              type: string
+                            optional:
+                              description: Specify whether the Secret must be defined
+                              type: boolean
+                          type: object
+                      type: object
+                    type: array
                   idleTimeoutSeconds:
                     description: IdleTimeoutSeconds is the number of seconds to wait
                       before scaling down a worker pod which is not us
@@ -52,8 +181,8 @@ spec:
                       container's image pull policy.
                     type: string
                   resources:
-                    description: Resources specifies resource requests and limits
-                      for the autoscaler container.
+                    description: Resources specifies optional resource request and
+                      limit overrides for the autoscaler container.
                     properties:
                       limits:
                         additionalProperties:
@@ -77,10 +206,11 @@ spec:
                         type: object
                     type: object
                   upscalingMode:
-                    description: UpscalineMode is "Default" or "Aggressive.
+                    description: UpscalingMode is "Conservative", "Default", or "Aggressive.
                     enum:
                     - Default
                     - Aggressive
+                    - Conservative
                     type: string
                 type: object
               enableInTreeAutoscaling:
@@ -5513,7 +5643,7 @@ spec:
                           type: array
                       type: object
                     template:
-                      description: Template a pod template for the worker
+                      description: Template is a pod template for the worker
                       properties:
                         metadata:
                           description: 'Standard object''s metadata. More info: https://git.k8s.'
@@ -10991,6 +11121,14 @@ spec:
                 additionalProperties:
                   type: string
                 description: Service Endpoints
+                type: object
+              head:
+                description: Head info
+                properties:
+                  podIP:
+                    type: string
+                  serviceIP:
+                    type: string
                 type: object
               lastUpdateTime:
                 description: LastUpdateTime indicates last update timestamp for this

@@ -1,7 +1,4 @@
-# Make sure to increase resource requests and limits before using this example in production.
-# For examples with more realistic resource configuration, see
-# ray-cluster.complete.large.yaml and
-# ray-cluster.autoscaler.large.yaml.
+
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
@@ -5909,7 +5906,7 @@ spec:
                               type: array
                           type: object
                         template:
-                          description: Template a pod template for the worker
+                          description: Template is a pod template for the worker
                           properties:
                             metadata:
                               description: 'Standard object''s metadata. More info:
@@ -11682,6 +11679,14 @@ spec:
                     additionalProperties:
                       type: string
                     description: Service Endpoints
+                    type: object
+                  head:
+                    description: Head info
+                    properties:
+                      podIP:
+                        type: string
+                      serviceIP:
+                        type: string
                     type: object
                   lastUpdateTime:
                     description: LastUpdateTime indicates last update timestamp for

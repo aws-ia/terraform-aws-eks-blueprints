@@ -128,13 +128,39 @@ rules:
 - apiGroups:
   - ray.io
   resources:
-  - rayclusters/finalizer
+  - rayclusters/finalizers
   verbs:
   - update
 - apiGroups:
   - ray.io
   resources:
   - rayclusters/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - ray.io
+  resources:
+  - rayjobs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ray.io
+  resources:
+  - rayjobs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - ray.io
+  resources:
+  - rayjobs/status
   verbs:
   - get
   - patch
@@ -161,53 +187,6 @@ rules:
   - ray.io
   resources:
   - rayservices/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
-  - rolebindings
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - watch
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
-  - roles
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - update
-  - watch
-- apiGroups:
-  - ray.io
-  resources:
-  - rayjobs
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - ray.io
-  resources:
-  - rayjobs/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - ray.io
-  resources:
-  - rayjobs/status
   verbs:
   - get
   - patch

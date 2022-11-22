@@ -2,8 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
-
 image:
   repository: kuberay/operator
   tag: nightly
@@ -38,10 +36,12 @@ resources:
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
     cpu: 100m
-    memory: 128Mi
+    # Anecdotally, managing 500 Ray pods requires roughly 500MB memory.
+    # Monitor memory usage and adjust as needed.
+    memory: 512Mi
   # requests:
   #   cpu: 100m
-  #   memory: 128Mi
+  #   memory: 512Mi
 
 livenessProbe:
   initialDelaySeconds: 10

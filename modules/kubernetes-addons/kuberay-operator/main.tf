@@ -1,6 +1,6 @@
 locals {
   name      = "kuberay-operator"
-  namespace = try(var.helm_config.namespace, local.name)
+  namespace = try(var.helm_config.namespace, "ray-system")
 }
 
 resource "kubernetes_namespace_v1" "this" {
