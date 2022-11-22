@@ -15,8 +15,9 @@ module "helm_addon" {
   # https://github.com/ray-project/kuberay/blob/master/helm-chart/kuberay-operator/Chart.yaml
   helm_config = merge(
     {
-      name        = "kuberay/${local.name}"
-      chart       = "https://ray-project.github.io/kuberay-helm/"
+      name        = local.name
+      chart       = "kuberay/${local.name}"
+      repository  = "https://ray-project.github.io/kuberay-helm/"
       version     = "0.4.0"
       namespace   = kubernetes_namespace_v1.this.metadata[0].name
       description = "KubeRay Operator Helm Chart deployment configuration"
