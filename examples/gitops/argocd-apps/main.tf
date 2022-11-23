@@ -43,10 +43,11 @@ module "eks_blueprints_kubernetes_addons" {
       {
         name  = "applications.source.repoUrl"
         value = var.github_repository_url
-      }
+      },
       {
-	name  = "applications.source.path"
-	value = var.var.github_directory_path 
+	      name  = "applications.source.path"
+	      value = var.var.github_directory_path 
+      }
     ]
   }
 }
