@@ -55,7 +55,7 @@ module "eks" {
   cluster_name    = local.name
   cluster_version = "1.24"
 
-  cluster_enabled_log_types = ["audit", "api", "authenticator", "controllerManager"]
+  cluster_enabled_log_types = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
