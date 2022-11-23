@@ -1,11 +1,14 @@
 locals {
-  name                 = try(var.helm_config.name, "external-dns")
-  service_account_name = "${local.name}-sa"
+  name            = try(var.helm_config.name, "external-dns")
+  service_account = try(var.helm_config.service_account, "${local.name}-sa")
 
-  argocd_gitops_config = {
-    enable             = true
-    serviceAccountName = local.service_account_name
-  }
+  argocd_gitops_config = merge(
+    {
+      enable             = true
+      serviceAccountName = local.service_account
+    },
+    var.helm_config
+  )
 }
 
 module "helm_addon" {
@@ -35,7 +38,7 @@ module "helm_addon" {
     [
       {
         name  = "serviceAccount.name"
-        value = local.service_account_name
+        value = local.service_account
       },
       {
         name  = "serviceAccount.create"
@@ -49,7 +52,7 @@ module "helm_addon" {
     create_kubernetes_namespace       = try(var.helm_config.create_namespace, true)
     kubernetes_namespace              = try(var.helm_config.namespace, local.name)
     create_kubernetes_service_account = true
-    kubernetes_service_account        = local.service_account_name
+    kubernetes_service_account        = local.service_account
     irsa_iam_policies                 = concat([aws_iam_policy.external_dns.arn], var.irsa_policies)
   }
 
@@ -66,6 +69,7 @@ resource "aws_iam_policy" "external_dns" {
   name        = "${var.addon_context.eks_cluster_id}-${local.name}-irsa"
   path        = var.addon_context.irsa_iam_role_path
   policy      = data.aws_iam_policy_document.external_dns_iam_policy_document.json
+  tags        = var.addon_context.tags
 }
 
 # TODO - remove at next breaking change

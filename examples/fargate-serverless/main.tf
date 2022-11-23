@@ -121,6 +121,9 @@ module "eks_blueprints_kubernetes_addons" {
 
   # Enable Fargate logging
   enable_fargate_fluentbit = true
+  fargate_fluentbit_addon_config = {
+    flb_log_cw = true
+  }
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller_helm_config = {
