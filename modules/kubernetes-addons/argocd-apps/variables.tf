@@ -1,5 +1,5 @@
 variable "helm_config" {
-  description = "Helm provider config for the Argo Rollouts"
+  description = "Helm provider config for the Argocd application"
   type        = any
   default     = {}
 }

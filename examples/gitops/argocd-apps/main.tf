@@ -38,16 +38,7 @@ module "eks_blueprints_kubernetes_addons" {
   argocd_application_helm_config = {
 	repository                 = var.chart_repository
 	version                    = var.chart_version
-#	values = ["${file("values.yaml")}"]
-	set = [
-      {
-        name  = "applications.source.repoUrl"
-        value = var.github_repository_url
-      },
-      {
-	      name  = "applications.source.path"
-	      value = var.var.github_directory_path 
-      }
-    ]
+	values = ["${file("values.yaml")}"]
+	
   }
 }
