@@ -315,22 +315,37 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../node-groups/" class="md-nav__link">
+        Node Groups
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
     
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_4">
+        <label class="md-nav__link" for="__nav_5">
           IAM
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="IAM" data-md-level="1">
-        <label class="md-nav__title" for="__nav_4">
+        <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           IAM
         </label>
@@ -382,18 +397,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_6">
+        <label class="md-nav__link" for="__nav_7">
           Modules
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Modules" data-md-level="1">
-        <label class="md-nav__title" for="__nav_6">
+        <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Modules
         </label>
@@ -430,18 +445,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_7">
+        <label class="md-nav__link" for="__nav_8">
           Add-ons
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Add-ons" data-md-level="1">
-        <label class="md-nav__title" for="__nav_7">
+        <label class="md-nav__title" for="__nav_8">
           <span class="md-nav__icon md-icon"></span>
           Add-ons
         </label>
@@ -1234,18 +1249,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_8">
+        <label class="md-nav__link" for="__nav_9">
           Advanced
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Advanced" data-md-level="1">
-        <label class="md-nav__title" for="__nav_8">
+        <label class="md-nav__title" for="__nav_9">
           <span class="md-nav__icon md-icon"></span>
           Advanced
         </label>
@@ -1462,6 +1477,7 @@
 </table>
 <h2 id="cluster">Cluster<a class="headerlink" href="#cluster" title="Permanent link">&para;</a></h2>
 <p>A <code>cluster</code> is simply an EKS cluster. EKS Blueprints provides for customizing the compute options you leverage with your <code>clusters</code>. The framework currently supports <code>EC2</code>, <code>Fargate</code> and <code>BottleRocket</code> instances. It also supports managed and self-managed node groups. To specify the type of compute you want to use for your <code>cluster</code>, you use the <code>managed_node_groups</code>, <code>self_managed_nodegroups</code>, or <code>fargate_profiles</code> variables.</p>
+<p>See our <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/node-groups/">Node Groups</a> documentation and our <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/node-groups">Node Group example directory</a> for detailed information.</p>
 <h2 id="add-on">Add-on<a class="headerlink" href="#add-on" title="Permanent link">&para;</a></h2>
 <p><code>Add-ons</code> allow you to configure the operational tools that you would like to deploy into your EKS cluster. When you configure <code>add-ons</code> for a <code>cluster</code>, the <code>add-ons</code> will be provisioned at deploy time by leveraging the Terraform Helm provider. Add-ons can deploy both Kubernetes specific resources and AWS resources needed to support add-on functionality.</p>
 <p>For example, the <code>metrics-server</code> add-on only deploys the Kubernetes manifests that are needed to run the Kubernetes Metrics Server. By contrast, the <code>aws-load-balancer-controller</code> add-on deploys both Kubernetes YAML, in addition to creating resources via AWS APIs that are needed to support the AWS Load Balancer Controller functionality.</p>
@@ -1503,13 +1519,13 @@
       
       
         
-        <a href="../iam/minimum-iam-policy/" class="md-footer__link md-footer__link--next" aria-label="Next: Minimum IAM policy" rel="next">
+        <a href="../node-groups/" class="md-footer__link md-footer__link--next" aria-label="Next: Node Groups" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Minimum IAM policy
+              Node Groups
             </div>
           </div>
           <div class="md-footer__button md-icon">
