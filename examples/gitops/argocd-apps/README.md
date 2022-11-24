@@ -46,7 +46,7 @@ The following command will update the `kubeconfig` on your local machine and all
     ```sh
     kubectl get pods -A
 
-    NAMESPACE            NAME                                                         READY   STATUS    RESTARTS   AGE
+    NAMESPACE            NAME                                                 READY   STATUS    RESTARTS   AGE
     argocd        argo-cd-argocd-application-controller-0                     1/1     Running   0          18m
     argocd        argo-cd-argocd-applicationset-controller-68854c9dd5-9ndnx   1/1     Running   0          18m
     argocd        argo-cd-argocd-dex-server-786d589d48-pf298                  1/1     Running   0          18m

@@ -24,4 +24,3 @@ You can customize the Helm chart that deploys `ArgoCD Applications` via the foll
     values     = ["${file("values.yaml")}"]
   }
 ```
-

@@ -1,7 +1,7 @@
 # -- Deploy Argo CD Applications within this helm release
 # @default -- `[]` (See [values.yaml])
 ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/
-applications: 
+applications:
 - name: argoacd-pps
   namespace: argocd
   additionalLabels: {}
@@ -17,7 +17,7 @@ applications:
       recurse: true
   destination:
     server: https://kubernetes.default.svc
-    namespace: 
+    namespace:
   syncPolicy:
     automated:
       prune: false
@@ -30,7 +30,6 @@ applications:
   # info:
   # - name: url
   #   value: https://argoproj.github.io/
-
 # -- Deploy Argo CD Projects within this helm release
 # @default -- `[]` (See [values.yaml])
 ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/

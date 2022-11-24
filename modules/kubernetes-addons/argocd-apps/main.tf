@@ -6,5 +6,3 @@ module "helm_addon" {
   addon_context     = var.addon_context
 
 }
-
-
