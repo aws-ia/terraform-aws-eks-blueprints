@@ -1,4 +1,18 @@
+provider "aws" {
+}
+provider "kubernetes" {
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.this.token
+}
 
+provider "helm" {
+  kubernetes {
+    host                   = module.eks_blueprints.eks_cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    token                  = data.aws_eks_cluster_auth.this.token
+  }
+}
 
 data "aws_eks_cluster_auth" "this" {
   name = module.eks_blueprints.eks_cluster_id
@@ -8,7 +22,6 @@ data "aws_availability_zones" "available" {}
 
 locals {
   name   = basename(path.cwd)
-  region = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -63,7 +76,7 @@ module "eks_blueprints_kubernetes_addons" {
   argocd_application_helm_config = {
     repository = var.chart_repository
     version    = var.chart_version
-    values     = ["${file("values.yaml")}"]
+    values     = [file("values.yaml")]
 
   }
 }
