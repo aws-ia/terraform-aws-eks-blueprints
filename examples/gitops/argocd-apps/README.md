@@ -47,35 +47,29 @@ The following command will update the `kubeconfig` on your local machine and all
     kubectl get pods -A
 
     NAMESPACE            NAME                                                         READY   STATUS    RESTARTS   AGE
-    argocd               argo-cd-argocd-application-controller-0                      1/1     Running   0          15m
-    argocd               argo-cd-argocd-applicationset-controller-9f66b8d6b-bnvqk     1/1     Running   0          15m
-    argocd               argo-cd-argocd-dex-server-66c5769c46-kxns4                   1/1     Running   0          15m
-    argocd               argo-cd-argocd-notifications-controller-74c78485d-fgh4w      1/1     Running   0          15m
-    argocd               argo-cd-argocd-repo-server-77b8c98d6f-kcq6j                  1/1     Running   0          15m
-    argocd               argo-cd-argocd-repo-server-77b8c98d6f-mt7nf                  1/1     Running   0          15m
-    argocd               argo-cd-argocd-server-849d775f7b-t2crt                       1/1     Running   0          15m
-    argocd               argo-cd-argocd-server-849d775f7b-vnwtq                       1/1     Running   0          15m
-    argocd               argo-cd-redis-ha-haproxy-578979d984-5chwx                    1/1     Running   0          15m
-    argocd               argo-cd-redis-ha-haproxy-578979d984-74qdg                    1/1     Running   0          15m
-    argocd               argo-cd-redis-ha-haproxy-578979d984-9dwf2                    1/1     Running   0          15m
-    argocd               argo-cd-redis-ha-server-0                                    4/4     Running   0          15m
-    argocd               argo-cd-redis-ha-server-1                                    4/4     Running   0          12m
-    argocd               argo-cd-redis-ha-server-2                                    4/4     Running   0          11m
-    kube-system          aws-node-66dl8                                               1/1     Running   0          14m
-    kube-system          aws-node-7fgks                                               1/1     Running   0          14m
-    kube-system          aws-node-828t9                                               1/1     Running   0          14m
-    kube-system          aws-node-k7phx                                               1/1     Running   0          14m
-    kube-system          aws-node-rptsc                                               1/1     Running   0          14m
-    kube-system          cluster-autoscaler-aws-cluster-autoscaler-74456d5cc9-hfqlz   1/1     Running   0          7m24s
-    kube-system          coredns-657694c6f4-kp6sm                                     1/1     Running   0          19m
-    kube-system          coredns-657694c6f4-wcqh2                                     1/1     Running   0          19m
-    kube-system          kube-proxy-6zwcj                                             1/1     Running   0          14m
-    kube-system          kube-proxy-9kkg7                                             1/1     Running   0          14m
-    kube-system          kube-proxy-q9bgv                                             1/1     Running   0          14m
-    kube-system          kube-proxy-rzndg                                             1/1     Running   0          14m
-    kube-system          kube-proxy-w86mz                                             1/1     Running   0          14m
-    kube-system          metrics-server-694d47d564-psr4s                              1/1     Running   0          6m37s
-    
+    argocd        argo-cd-argocd-application-controller-0                     1/1     Running   0          18m
+    argocd        argo-cd-argocd-applicationset-controller-68854c9dd5-9ndnx   1/1     Running   0          18m
+    argocd        argo-cd-argocd-dex-server-786d589d48-pf298                  1/1     Running   0          18m
+    argocd        argo-cd-argocd-notifications-controller-5c6dccfbd7-fh4ch    1/1     Running   0          18m
+    argocd        argo-cd-argocd-repo-server-7f4699495c-8m5px                 1/1     Running   0          18m
+    argocd        argo-cd-argocd-repo-server-7f4699495c-rwqsg                 1/1     Running   0          18m
+    argocd        argo-cd-argocd-server-b77c6f499-4t2df                       1/1     Running   0          18m
+    argocd        argo-cd-argocd-server-b77c6f499-7l244                       1/1     Running   0          18m
+    argocd        argo-cd-redis-ha-haproxy-6f9889946f-4jzx4                   1/1     Running   0          18m
+    argocd        argo-cd-redis-ha-haproxy-6f9889946f-98tnb                   1/1     Running   0          18m
+    argocd        argo-cd-redis-ha-haproxy-6f9889946f-kp2rb                   1/1     Running   0          18m
+    argocd        argo-cd-redis-ha-server-0                                   4/4     Running   0          18m
+    argocd        argo-cd-redis-ha-server-1                                   4/4     Running   0          15m
+    argocd        argo-cd-redis-ha-server-2                                   4/4     Running   0          14m
+    kube-system   aws-node-6cw9m                                              1/1     Running   0          17m
+    kube-system   aws-node-94c5q                                              1/1     Running   0          17m
+    kube-system   aws-node-mlrh9                                              1/1     Running   0          17m
+    kube-system   coredns-5f77864c74-ds6nh                                    1/1     Running   0          21m
+    kube-system   coredns-5f77864c74-n96lw                                    1/1     Running   0          21m
+    kube-system   kube-proxy-jdg29                                            1/1     Running   0          17m
+    kube-system   kube-proxy-nbdtr                                            1/1     Running   0          17m
+    kube-system   kube-proxy-qh2zr                                            1/1     Running   0          17m
+
     ```
 
 3. You can access the ArgoCD UI by running the following command:
@@ -87,16 +81,13 @@ The following command will update the `kubeconfig` on your local machine and all
     Then, open your browser and navigate to `https://localhost:8080/`
     Username should be `admin`.
 
-    The password will be the generated password by `random_password` resource, stored in AWS Secrets Manager.
+    
     You can easily retrieve the password by running the following command:
 
     ```sh
-    aws secretsmanager get-secret-value --secret-id <SECRET_NAME>--region <REGION>
+    kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
     ```
 
-    Replace `<SECRET_NAME>` with the name of the secret name, if you haven't changed it then it should be `argocd`, also, make sure to replace `<REGION>` with the region you are using.
-
-    Pickup the the secret from the `SecretString`.
 
 ## Destroy
 
