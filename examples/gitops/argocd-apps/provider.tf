@@ -13,4 +13,3 @@ provider "helm" {
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
-

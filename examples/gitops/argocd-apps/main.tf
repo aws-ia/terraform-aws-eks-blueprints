@@ -57,8 +57,8 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
-  enable_argocd             = true
-  
+  enable_argocd = true
+
   enable_argocd_application = true
   argocd_application_helm_config = {
     repository = var.chart_repository
