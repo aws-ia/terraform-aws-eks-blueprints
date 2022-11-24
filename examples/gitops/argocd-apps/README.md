@@ -69,7 +69,6 @@ The following command will update the `kubeconfig` on your local machine and all
     kube-system   kube-proxy-jdg29                                            1/1     Running   0          17m
     kube-system   kube-proxy-nbdtr                                            1/1     Running   0          17m
     kube-system   kube-proxy-qh2zr                                            1/1     Running   0          17m
-
     ```
 
 3. You can access the ArgoCD UI by running the following command:
@@ -81,7 +80,7 @@ The following command will update the `kubeconfig` on your local machine and all
     Then, open your browser and navigate to `https://localhost:8080/`
     Username should be `admin`.
 
-    
+
     You can easily retrieve the password by running the following command:
 
     ```sh
