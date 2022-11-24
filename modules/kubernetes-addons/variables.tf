@@ -779,14 +779,14 @@ variable "argo_workflows_helm_config" {
   default     = null
 }
 
-#-----------Argocd application ADDON-------------
-variable "enable_argocd_application" {
+#-----------Argocd apps ADDON-------------
+variable "enable_argocd_apps" {
   description = "Enable Argocd application add-on"
   type        = bool
   default     = false
 }
 
-variable "argocd_application_helm_config" {
+variable "argocd_apps_helm_config" {
   description = "Argocd application Helm Chart config"
   type        = any
   default     = null

@@ -48,6 +48,11 @@ output "argo_workflows" {
   value       = try(module.argo_workflows[0], null)
 }
 
+output "argocd_apps" {
+  description = "Map of attributes of the Helm release and IRSA created"
+  value       = try(module.argocd_apps[0], null)
+}
+
 output "aws_cloudwatch_metrics" {
   description = "Map of attributes of the Helm release and IRSA created"
   value       = try(module.aws_cloudwatch_metrics[0], null)

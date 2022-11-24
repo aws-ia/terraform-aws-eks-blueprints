@@ -137,10 +137,10 @@ module "argo_workflows" {
   addon_context     = local.addon_context
 }
 
-module "argocd_application" {
-  count             = var.enable_argocd_application ? 1 : 0
+module "argocd_apps" {
+  count             = var.enable_argocd_apps ? 1 : 0
   source            = "./argocd-apps"
-  helm_config       = var.argocd_application_helm_config
+  helm_config       = var.argocd_apps_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }

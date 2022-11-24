@@ -72,8 +72,8 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_argocd = true
 
-  enable_argocd_application = true
-  argocd_application_helm_config = {
+  enable_argocd_apps = true
+  argocd_apps_helm_config = {
     repository = var.chart_repository
     version    = var.chart_version
     values     = [file("values.yaml")]
