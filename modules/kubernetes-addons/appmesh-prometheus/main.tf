@@ -18,7 +18,7 @@ locals {
     values = [templatefile("${path.module}/values.yaml", {
       operating_system = try(var.helm_config.operating_system, "linux")
     })]
-    version     = "1.0.1"
+    version = "1.0.1"
   }
 
   helm_config = merge(
@@ -45,7 +45,7 @@ locals {
 }
 
 module "helm_addon" {
-  source = "../helm-addon"
+  source            = "../helm-addon"
   manage_via_gitops = var.manage_via_gitops
   set_values        = local.set_values
   helm_config       = local.helm_config
