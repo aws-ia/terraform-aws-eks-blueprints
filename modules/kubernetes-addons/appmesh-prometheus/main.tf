@@ -10,8 +10,8 @@ locals {
   namespace = local.create_namespace ? kubernetes_namespace_v1.prometheus[0].metadata[0].name : local.namespace_name
 
   default_helm_config = {
-    name        = "${local.name}2"
-    chart       = local.name
+    name        = local.name
+    chart       = "appmesh-prometheus"
     repository  = "https://aws.github.io/eks-charts"
     namespace   = local.namespace_name
     description = "App Mesh Prometheus helm Chart deployment configuration"
@@ -33,7 +33,7 @@ locals {
     },
     {
       name  = "serviceAccount.create"
-      value = truegit 
+      value = true
     }
   ]
 
@@ -42,13 +42,6 @@ locals {
     serviceAccountName = local.service_account_name
   }
 
-  # irsa_config = {
-  #   kubernetes_namespace              = local.helm_config["namespace"]
-  #   kubernetes_service_account        = local.service_account_name
-  #   create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
-  #   create_kubernetes_service_account = true
-  #   irsa_iam_policies                 = concat([aws_iam_policy.aws_for_fluent_bit.arn], var.irsa_policies)
-  # }
 }
 
 module "helm_addon" {
@@ -56,7 +49,6 @@ module "helm_addon" {
   manage_via_gitops = var.manage_via_gitops
   set_values        = local.set_values
   helm_config       = local.helm_config
-  #irsa_config       = local.irsa_config
   addon_context     = var.addon_context
 }
 
