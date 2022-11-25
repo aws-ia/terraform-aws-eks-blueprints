@@ -2,34 +2,34 @@
 # @default -- `[]` (See [values.yaml])
 ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/
 applications:
-- name: argoacd-pps
-  namespace: argocd
-  additionalLabels: {}
-  additionalAnnotations: {}
-  finalizers:
-  - resources-finalizer.argocd.argoproj.io
-  project: default
-  source:
-    repoURL: https://github.com/argoproj/argocd-example-apps.git
-    targetRevision: HEAD
-    path: /
-    directory:
-      recurse: true
-  destination:
-    server: https://kubernetes.default.svc
-    namespace:
-  syncPolicy:
-    automated:
-      prune: false
-      selfHeal: false
-  # ignoreDifferences:
-  # - group: apps
-  #   kind: Deployment
-  #   jsonPointers:
-  #   - /spec/replicas
-  # info:
-  # - name: url
-  #   value: https://argoproj.github.io/
+  - name: argocd-pps
+    namespace: argocd
+    additionalLabels: {}
+    additionalAnnotations: {}
+    finalizers:
+      - resources-finalizer.argocd.argoproj.io
+    project: default
+    source:
+      repoURL: https://github.com/argoproj/argocd-example-apps.git
+      targetRevision: HEAD
+      path: /
+      directory:
+        recurse: true
+    destination:
+      server: https://kubernetes.default.svc
+      namespace:
+    syncPolicy:
+      automated:
+        prune: false
+        selfHeal: false
+    # ignoreDifferences:
+    # - group: apps
+    #   kind: Deployment
+    #   jsonPointers:
+    #   - /spec/replicas
+    # info:
+    # - name: url
+    #   value: https://argoproj.github.io/
 # -- Deploy Argo CD Projects within this helm release
 # @default -- `[]` (See [values.yaml])
 ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/
@@ -125,7 +125,8 @@ applicationsets: []
 # @default -- `[]` (See [values.yaml])
 ## This function in tech preview stage, do expect unstability or breaking changes in newer versions. Bump image.tag if necessary.
 ## Ref: https://github.com/argoproj-labs/argocd-extensions
-extensions: []
+extensions:
+  []
   # - name: example
   #   namespace: argocd
   #   additionalLabels: {}
