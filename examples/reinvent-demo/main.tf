@@ -105,6 +105,14 @@ module "eks_cluster" {
     }
   }
 
+  map_roles = [
+    {
+      rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/WSParticipantRole" 
+      username = "ops-role"                                       
+      groups   = ["system:masters"]                               
+    }
+  ]
+
   tags = local.tags
 
   # Adding the current user as the admin user for the Platform Team configuration
@@ -186,7 +194,7 @@ module "addons" {
   eks_cluster_version  = module.eks_cluster.eks_cluster_version
 
   # Wait on the `kube-system` profile before provisioning addons
-  data_plane_wait_arn = module.eks_cluster.managed_node_group_arn[0]
+  data_plane_wait_arn = join(",", [module.eks_cluster.managed_node_group_arn[0],module.eks_cluster.fargate_profiles["alb_sample_app"].eks_fargate_profile_arn])
 
   enable_amazon_eks_vpc_cni = true
   amazon_eks_vpc_cni_config = {
@@ -264,3 +272,13 @@ output "configure_kubectl" {
   value       = module.eks_cluster.configure_kubectl
 }
 #endregion
+
+output "platform_teams_configure_kubectl" {
+  description = "Configure kubectl for each Platform Team: make sure you're logged in with the correct AWS CLI profile and run the following command to update your kubeconfig"
+  value       = try(module.eks_cluster.teams[0].platform_teams_configure_kubectl["admin"], null)
+}
+
+output "application_teams_configure_kubectl" {
+  description = "Configure kubectl for each Application Teams: make sure you're logged in with the correct AWS CLI profile and run the following command to update your kubeconfig"
+  value       = try(module.eks_cluster.teams[0].application_teams_configure_kubectl["core-services"], null)
+}
