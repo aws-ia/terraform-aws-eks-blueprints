@@ -135,3 +135,23 @@ resource "kubernetes_secret" "argocd_gitops" {
 
   depends_on = [module.helm_addon]
 }
+
+resource "kubernetes_secret" "argocd_gitops_https" {
+  for_each = { for k, v in var.applications : k => v if try(v.username, null) && try(v.password, null) != null }
+
+  metadata {
+    name      = "${each.key}-repo-secret"
+    namespace = local.helm_config["namespace"]
+    labels    = { "argocd.argoproj.io/secret-type" : "repository" }
+  }
+
+  data = {
+    insecure = lookup(each.value, "insecure", false)
+    type     = "git"
+    url      = each.value.repo_url
+    username = each.value.username
+    password = each.value.password
+  }
+
+  depends_on = [module.helm_addon]
+}
