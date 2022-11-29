@@ -9,7 +9,6 @@ locals {
     namespace   = local.name
     description = "Helm chart for deploying Spark WebUI with Spark History Server in EKS using S3 Spark Event logs"
     values      = local.default_helm_values
-    timeout     = "300"
   }
 
   helm_config = merge(
@@ -29,7 +28,7 @@ locals {
 
   irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
-    kubernetes_service_account        = local.name
+    kubernetes_service_account        = try(var.helm_config.service_account, local.name)
     create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
     create_kubernetes_service_account = true
     irsa_iam_policies                 = length(var.irsa_policies) > 0 ? var.irsa_policies : ["arn:${var.addon_context.aws_partition_id}:iam::aws:policy/AmazonS3ReadOnlyAccess"]

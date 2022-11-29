@@ -1,15 +1,15 @@
 locals {
-  name                 = "aws-fsx-csi-driver"
-  service_account_name = "fsx-csi-sa"
-  namespace            = "kube-system"
+  name            = "aws-fsx-csi-driver"
+  service_account = try(var.helm_config.service_account, "fsx-csi-sa")
+  namespace       = "kube-system"
 
+  # https://github.com/kubernetes-sigs/aws-fsx-csi-driver/blob/master/charts/aws-fsx-csi-driver/Chart.yaml
   default_helm_config = {
     name        = local.name
     chart       = local.name
     repository  = "https://kubernetes-sigs.github.io/aws-fsx-csi-driver/"
-    version     = "1.4.2"
+    version     = "1.4.4"
     namespace   = local.namespace
-    values      = []
     description = "The Amazon FSx for Lustre CSI driver Helm chart deployment configuration"
   }
 
@@ -18,7 +18,7 @@ locals {
   set_values = [
     {
       name  = "controller.serviceAccount.name"
-      value = local.service_account_name
+      value = local.service_account
     },
     {
       name  = "controller.serviceAccount.create"
@@ -26,7 +26,7 @@ locals {
     },
     {
       name  = "node.serviceAccount.name"
-      value = local.service_account_name
+      value = local.service_account
     },
     {
       name  = "node.serviceAccount.create"
@@ -36,7 +36,7 @@ locals {
 
   irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
-    kubernetes_service_account        = local.service_account_name
+    kubernetes_service_account        = local.service_account
     create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
     create_kubernetes_service_account = true
     irsa_iam_policies                 = concat([aws_iam_policy.aws_fsx_csi_driver.arn], var.irsa_policies)
@@ -45,6 +45,6 @@ locals {
 
   argocd_gitops_config = {
     enable             = true
-    serviceAccountName = local.service_account_name
+    serviceAccountName = local.service_account
   }
 }

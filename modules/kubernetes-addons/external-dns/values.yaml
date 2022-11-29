@@ -1,3 +1,0 @@
-provider: aws
-aws:
-  region: ${aws_region}

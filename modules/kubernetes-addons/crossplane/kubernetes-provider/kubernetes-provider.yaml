@@ -1,0 +1,9 @@
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: ${kubernetes-provider-name}
+spec:
+  package: xpkg.upbound.io/crossplane-contrib/provider-kubernetes:${coalesce(provider-kubernetes-version, "v0.5.0")}
+  controllerConfigRef:
+    name: kubernetes-controller-config

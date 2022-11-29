@@ -56,6 +56,7 @@ Please find the updated configuration from [AWS Docs](https://docs.aws.amazon.co
   Time_Keep On
   Decode_Field_As json message
     EOF
+  flb_log_cw: true
   }
 ```
 

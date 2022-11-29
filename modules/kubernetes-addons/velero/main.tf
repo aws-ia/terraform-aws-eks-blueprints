@@ -13,12 +13,12 @@ locals {
 module "helm_addon" {
   source = "../helm-addon"
 
-  # https://github.com/vmware-tanzu/helm-charts/tree/main/charts/velero
+  # https://github.com/vmware-tanzu/helm-charts/blob/main/charts/velero/Chart.yaml
   helm_config = merge({
     name        = local.name
     description = "A Helm chart for velero"
     chart       = local.name
-    version     = "2.30.0"
+    version     = "2.32.1"
     repository  = "https://vmware-tanzu.github.io/helm-charts/"
     namespace   = local.namespace
     values = [templatefile("${path.module}/values.yaml", {
@@ -45,7 +45,7 @@ module "helm_addon" {
     kubernetes_namespace        = local.namespace
 
     create_kubernetes_service_account = true
-    kubernetes_service_account        = try(var.helm_config.namespace, local.name)
+    kubernetes_service_account        = try(var.helm_config.service_account, local.name)
 
     irsa_iam_policies = concat([aws_iam_policy.velero.arn], var.irsa_policies)
   }

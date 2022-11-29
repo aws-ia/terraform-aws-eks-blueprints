@@ -40,7 +40,7 @@ data "aws_iam_policy_document" "opensearch_access_policy" {
     sid    = "AdminDomainLevelAccessToOpenSearch"
     effect = "Allow"
     resources = [
-      "${aws_elasticsearch_domain.opensearch.arn}",
+      aws_elasticsearch_domain.opensearch.arn,
       "${aws_elasticsearch_domain.opensearch.arn}/*",
     ]
     actions = ["es:*"]

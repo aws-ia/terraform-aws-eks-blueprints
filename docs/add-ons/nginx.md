@@ -6,7 +6,7 @@ Other than handling Kubernetes ingress objects, this ingress controller can faci
 
 ## Usage
 
-Nginx Ingress Controller can be deployed by enabling the add-on via the following. Check out the full [example](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/ingress-controllers/nginx/main.tf) to deploy the EKS Cluster with Nginx Ingress Controller.
+Nginx Ingress Controller can be deployed by enabling the add-on via the following.
 
 ```hcl
 enable_ingress_nginx = true
@@ -41,11 +41,11 @@ You can optionally customize the Helm chart that deploys `nginx` via the followi
 
 The following properties are made available for use when managing the add-on via GitOps.
 
-Refer to [locals.tf](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/ingress-nginx/locals.tf) for latest config. GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/values.yaml)
+GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/values.yaml)
 
 ``` hcl
 argocd_gitops_config = {
     enable             = true
-    serviceAccountName = local.service_account_name
+    serviceAccountName = local.service_account
   }
 ```

@@ -17,7 +17,7 @@ You can optionally customize the Helm chart that deploys `aws-lb-ingress-control
 
 ```hcl
   enable_aws_load_balancer_controller = true
-  # Optional  
+  # Optional
   aws_load_balancer_controller_helm_config = {
     name                       = "aws-load-balancer-controller"
     chart                      = "aws-load-balancer-controller"
@@ -47,6 +47,6 @@ The following properties are made available for use when managing the add-on via
 ```
 awsLoadBalancerController = {
   enable             = true
-  serviceAccountName = "<service_account_name>"
+  serviceAccountName = "<service_account>"
 }
 ```

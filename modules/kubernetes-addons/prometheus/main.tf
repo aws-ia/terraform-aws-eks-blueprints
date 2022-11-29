@@ -23,11 +23,12 @@ module "helm_addon" {
 
   manage_via_gitops = var.manage_via_gitops
 
+  # https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus/Chart.yaml
   helm_config = merge(
     {
       name        = local.name
       chart       = local.name
-      version     = "15.10.1"
+      version     = "15.17.0"
       repository  = "https://prometheus-community.github.io/helm-charts"
       namespace   = local.namespace_name
       description = "Prometheus helm Chart deployment configuration"
@@ -108,7 +109,7 @@ module "irsa_amp_ingest" {
   kubernetes_namespace        = local.namespace
 
   kubernetes_service_account    = local.ingest_service_account
-  irsa_iam_policies             = [aws_iam_policy.ingest[0].arn]
+  irsa_iam_policies             = [try(aws_iam_policy.ingest[0].arn, "")]
   irsa_iam_role_path            = var.addon_context.irsa_iam_role_path
   irsa_iam_permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
   eks_cluster_id                = var.addon_context.eks_cluster_id

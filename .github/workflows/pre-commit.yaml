@@ -13,7 +13,7 @@ env:
   TERRAFORM_DOCS_VERSION: v0.16.0
   TFSEC_VERSION: v1.22.0
   TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
-  TFLINT_VERSION: v0.38.1
+  TFLINT_VERSION: v0.42.1
 
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
@@ -31,7 +31,7 @@ jobs:
 
       - name: Get root directories
         id: dirs
-        uses: clowdhaus/terraform-composite-actions/directories@v1.4.1
+        uses: clowdhaus/terraform-composite-actions/directories@v1.8.0
 
   preCommitMinVersions:
     name: Min TF pre-commit
@@ -43,10 +43,6 @@ jobs:
     steps:
       - name: Remove default Terraform
         run: rm -rf $(which terraform)
-
-      - name: Should fail
-        continue-on-error: true
-        run: terraform version
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -74,14 +70,14 @@ jobs:
           restore-keys: ${{ runner.os }}-terraform-
 
       - name: Terraform min/max versions
-        uses: clowdhaus/terraform-min-max@v1.0.7
+        uses: clowdhaus/terraform-min-max@v1.2.0
         if: steps.changes.outputs.src== 'true'
         id: minMax
         with:
           directory: ${{ matrix.directory }}
 
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
-        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.6.0
+        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.8.0
         # Run only validate pre-commit check on min version supported
         if: ${{ matrix.directory !=  '.' && steps.changes.outputs.src== 'true' }}
         with:
@@ -89,15 +85,12 @@ jobs:
           args: 'terraform_validate --color=always --show-diff-on-failure --files ${{ matrix.directory }}/*'
 
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
-        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.6.0
+        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.8.0
         # Run only validate pre-commit check on min version supported
         if: ${{ matrix.directory ==  '.' && steps.changes.outputs.src== 'true' }}
         with:
           terraform-version: ${{ steps.minMax.outputs.minVersion }}
           args: 'terraform_validate --color=always --show-diff-on-failure --files $(ls *.tf)'
-
-      - if: steps.changes.outputs.src== 'true'
-        run: terraform version
 
   preCommitMaxVersion:
     name: Max TF pre-commit
@@ -106,10 +99,6 @@ jobs:
     steps:
       - name: Remove default Terraform
         run: rm -rf $(which terraform)
-
-      - name: Should fail
-        continue-on-error: true
-        run: terraform version
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -139,17 +128,13 @@ jobs:
 
       - name: Terraform min/max versions
         id: minMax
-        uses: clowdhaus/terraform-min-max@v1.0.7
+        uses: clowdhaus/terraform-min-max@v1.2.0
         if: steps.changes.outputs.src== 'true'
 
-      # TODO - remove hardcoded version once optional attributes are resolved/removed
-      - name: Pre-commit Terraform 1.2.9 # ${{ steps.minMax.outputs.maxVersion }}
-        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.6.0
+      - name: Pre-commit Terraform ${{ steps.minMax.outputs.maxVersion }}
+        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.8.0
         if: steps.changes.outputs.src== 'true'
         with:
-          terraform-version: 1.2.9 # ${{ steps.minMax.outputs.maxVersion }}
+          terraform-version: ${{ steps.minMax.outputs.maxVersion }}
           terraform-docs-version: ${{ env.TERRAFORM_DOCS_VERSION }}
           tflint-version: ${{ env.TFLINT_VERSION }}
-
-      - if: steps.changes.outputs.src== 'true'
-        run: terraform version

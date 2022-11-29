@@ -16,14 +16,6 @@ provider "helm" {
   }
 }
 
-provider "kubectl" {
-  apply_retry_count      = 10
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-  load_config_file       = false
-  token                  = data.aws_eks_cluster_auth.this.token
-}
-
 data "aws_eks_cluster_auth" "this" {
   name = module.eks_blueprints.eks_cluster_id
 }
@@ -42,13 +34,12 @@ locals {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
-
-  sample_app_namespace = "game-2048"
 }
 
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
+
 module "eks_blueprints" {
   source = "../.."
 
@@ -82,11 +73,11 @@ module "eks_blueprints" {
       subnet_ids = module.vpc.private_subnets
     }
     # Sample application
-    alb_sample_app = {
-      fargate_profile_name = "alb-sample-app"
+    app = {
+      fargate_profile_name = "app-wildcard"
       fargate_profile_namespaces = [
         {
-          namespace = local.sample_app_namespace
+          namespace = "app-*"
       }]
       subnet_ids = module.vpc.private_subnets
     }
@@ -103,31 +94,36 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks_blueprints.oidc_provider
   eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
+  # Wait on the `kube-system` profile before provisioning addons
+  data_plane_wait_arn = module.eks_blueprints.fargate_profiles["kube_system"].eks_fargate_profile_arn
+
   enable_amazon_eks_vpc_cni = true
   amazon_eks_vpc_cni_config = {
-    addon_version     = data.aws_eks_addon_version.latest["vpc-cni"].version
-    resolve_conflicts = "OVERWRITE"
+    most_recent = true
   }
 
   enable_amazon_eks_kube_proxy = true
   amazon_eks_kube_proxy_config = {
-    addon_version     = data.aws_eks_addon_version.latest["kube-proxy"].version
-    resolve_conflicts = "OVERWRITE"
+    most_recent = true
   }
 
-  enable_self_managed_coredns = true
+  enable_self_managed_coredns                    = true
+  remove_default_coredns_deployment              = true
+  enable_coredns_cluster_proportional_autoscaler = true
   self_managed_coredns_helm_config = {
     # Sets the correct annotations to ensure the Fargate provisioner is used and not the EC2 provisioner
     compute_type       = "fargate"
     kubernetes_version = module.eks_blueprints.eks_cluster_version
   }
 
-  tags = local.tags
+  # Sample application
+  enable_app_2048 = true
 
-  depends_on = [
-    # CoreDNS provided by EKS needs to be updated before applying self-managed CoreDNS Helm addon
-    null_resource.modify_kube_dns
-  ]
+  # Enable Fargate logging
+  enable_fargate_fluentbit = true
+  fargate_fluentbit_addon_config = {
+    flb_log_cw = true
+  }
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller_helm_config = {
@@ -142,92 +138,14 @@ module "eks_blueprints_kubernetes_addons" {
       },
     ]
   }
-}
 
-data "aws_eks_addon_version" "latest" {
-  for_each = toset(["kube-proxy", "vpc-cni"])
-
-  addon_name         = each.value
-  kubernetes_version = module.eks_blueprints.eks_cluster_version
-  most_recent        = true
-}
-
-#---------------------------------------------------------------
-# Modifying CoreDNS for Fargate
-#---------------------------------------------------------------
-
-locals {
-  kubeconfig = yamlencode({
-    apiVersion      = "v1"
-    kind            = "Config"
-    current-context = "terraform"
-    clusters = [{
-      name = module.eks_blueprints.eks_cluster_id
-      cluster = {
-        certificate-authority-data = module.eks_blueprints.eks_cluster_certificate_authority_data
-        server                     = module.eks_blueprints.eks_cluster_endpoint
-      }
-    }]
-    contexts = [{
-      name = "terraform"
-      context = {
-        cluster = module.eks_blueprints.eks_cluster_id
-        user    = "terraform"
-      }
-    }]
-    users = [{
-      name = "terraform"
-      user = {
-        token = data.aws_eks_cluster_auth.this.token
-      }
-    }]
-  })
-}
-
-# Separate resource so that this is only ever executed once
-resource "null_resource" "remove_default_coredns_deployment" {
-  triggers = {}
-
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    environment = {
-      KUBECONFIG = base64encode(local.kubeconfig)
-    }
-
-    # We are removing the deployment provided by the EKS service and replacing it through the self-managed CoreDNS Helm addon
-    # However, we are maintaing the existing kube-dns service and annotating it for Helm to assume control
-    command = <<-EOT
-      kubectl --namespace kube-system delete deployment coredns --kubeconfig <(echo $KUBECONFIG | base64 --decode)
-    EOT
-  }
-}
-
-resource "null_resource" "modify_kube_dns" {
-  triggers = {}
-
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    environment = {
-      KUBECONFIG = base64encode(local.kubeconfig)
-    }
-
-    # We are maintaing the existing kube-dns service and annotating it for Helm to assume control
-    command = <<-EOT
-      echo "Setting implicit dependency on ${module.eks_blueprints.fargate_profiles["kube_system"].eks_fargate_profile_arn}"
-      kubectl --namespace kube-system annotate --overwrite service kube-dns meta.helm.sh/release-name=coredns --kubeconfig <(echo $KUBECONFIG | base64 --decode)
-      kubectl --namespace kube-system annotate --overwrite service kube-dns meta.helm.sh/release-namespace=kube-system --kubeconfig <(echo $KUBECONFIG | base64 --decode)
-      kubectl --namespace kube-system label --overwrite service kube-dns app.kubernetes.io/managed-by=Helm --kubeconfig <(echo $KUBECONFIG | base64 --decode)
-    EOT
-  }
-
-  depends_on = [
-    null_resource.remove_default_coredns_deployment
-  ]
+  tags = local.tags
 }
 
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
@@ -252,31 +170,12 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = local.tags
-}
-
-#---------------------------------------------------------------
-# Sample App
-#---------------------------------------------------------------
-
-resource "kubernetes_namespace_v1" "sample_app" {
-  metadata {
-    name = local.sample_app_namespace
-  }
-}
-
-resource "kubectl_manifest" "sample_app" {
-  yaml_body = templatefile("sample_app.yaml", {
-    name      = "game-2048"
-    namespace = kubernetes_namespace_v1.sample_app.metadata[0].name
-  })
 }

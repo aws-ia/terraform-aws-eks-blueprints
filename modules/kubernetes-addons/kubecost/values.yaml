@@ -1,9 +1,10 @@
+# https://github.com/kubecost/cost-analyzer-helm-chart/blob/master/cost-analyzer/values-eks-cost-monitoring.yaml
 global:
   grafana:
     enabled: false
     proxy: false
 
-imageVersion: prod-1.96.0
+imageVersion: prod-1.97.0
 kubecostFrontend:
   image: public.ecr.aws/kubecost/frontend
 

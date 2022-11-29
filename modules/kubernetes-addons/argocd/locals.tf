@@ -1,16 +1,16 @@
 locals {
-  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
+  default_helm_values = [file("${path.module}/values.yaml")]
 
   name      = "argo-cd"
   namespace = "argocd"
 
+  # https://github.com/argoproj/argo-helm/blob/main/charts/argo-cd/Chart.yaml
   default_helm_config = {
     name             = local.name
     chart            = local.name
     repository       = "https://argoproj.github.io/argo-helm"
-    version          = "4.9.14"
+    version          = "5.13.8"
     namespace        = local.namespace
-    timeout          = 1200
     create_namespace = true
     values           = local.default_helm_values
     description      = "The ArgoCD Helm Chart deployment configuration"
