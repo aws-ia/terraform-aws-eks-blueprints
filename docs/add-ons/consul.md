@@ -2,7 +2,7 @@
 
 HashiCorp Consul is a service networking solution that enables teams to manage secure network connectivity between services and across on-prem and multi-cloud environments and runtimes. Consul offers service discovery, service mesh, traffic management, and automated updates to network infrastructure device.
 
-For complete project documentation, please visit the [consul](https://www.consul.io/docs/k8s/installation/install).
+For complete project documentation, please visit the [consul](https://developer.hashicorp.com/consul/docs/k8s/installation/install).
 
 ## Usage
 
@@ -21,7 +21,7 @@ You can optionally customize the Helm chart via the following configuration.
     name                       = "consul"
     chart                      = "consul"
     repository                 = "https://helm.releases.hashicorp.com"
-    version                    = "0.49.0"
+    version                    = "1.0.1"
     namespace                  = "consul"
     values = [templatefile("${path.module}/values.yaml", {
       ...
