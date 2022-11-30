@@ -62,6 +62,8 @@ resource "aws_launch_template" "managed_node_groups" {
     create_before_destroy = true
   }
 
+  tags = var.context.tags
+
   depends_on = [
     aws_iam_role.managed_ng,
     aws_iam_role_policy_attachment.managed_ng
