@@ -781,3 +781,11 @@ module "emr_on_eks" {
 
   tags = merge(var.tags, try(each.value.tags, {}))
 }
+
+module "consul" {
+  count             = var.enable_consul ? 1 : 0
+  source            = "./consul"
+  helm_config       = var.consul_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
