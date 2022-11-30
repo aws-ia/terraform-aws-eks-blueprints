@@ -20,7 +20,8 @@ module "helm_addon" {
 resource "kubectl_manifest" "aws_controller_config" {
   count = var.aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-controller-config.yaml", {
-    iam-role-arn = "arn:${var.addon_context.aws_partition_id}:iam::${var.addon_context.aws_caller_identity_account_id}:role/${var.addon_context.eks_cluster_id}-${local.aws_provider_sa}-irsa"
+    iam-role-arn          = "arn:${var.addon_context.aws_partition_id}:iam::${var.addon_context.aws_caller_identity_account_id}:role/${var.addon_context.eks_cluster_id}-${local.aws_provider_sa}-irsa"
+    aws-controller-config = var.aws_provider.controller_config
   })
   depends_on = [module.helm_addon]
 }
@@ -28,8 +29,9 @@ resource "kubectl_manifest" "aws_controller_config" {
 resource "kubectl_manifest" "aws_provider" {
   count = var.aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-provider.yaml", {
-    provider-aws-version = var.aws_provider.provider_aws_version
-    aws-provider-name    = local.aws_provider_sa
+    provider-aws-version  = var.aws_provider.provider_aws_version
+    aws-provider-name     = var.aws_provider.name
+    aws-controller-config = var.aws_provider.controller_config
   })
   wait       = true
   depends_on = [kubectl_manifest.aws_controller_config]
@@ -46,10 +48,10 @@ module "aws_provider_irsa" {
   count                             = var.aws_provider.enable == true ? 1 : 0
   source                            = "../../../modules/irsa"
   create_kubernetes_namespace       = false
-  create_kubernetes_service_account = false
+  create_kubernetes_service_account = true
   kubernetes_namespace              = local.namespace
-  kubernetes_service_account        = "${local.aws_provider_sa}-*"
-  irsa_iam_policies                 = concat([aws_iam_policy.aws_provider[0].arn], var.aws_provider.additional_irsa_policies)
+  kubernetes_service_account        = var.aws_provider.service_account
+  irsa_iam_policies                 = var.aws_provider.additional_irsa_policies
   irsa_iam_role_path                = var.addon_context.irsa_iam_role_path
   irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
   eks_cluster_id                    = var.addon_context.eks_cluster_id
@@ -57,78 +59,23 @@ module "aws_provider_irsa" {
   depends_on                        = [kubectl_manifest.aws_provider]
 }
 
-resource "aws_iam_policy" "aws_provider" {
-  count       = var.aws_provider.enable == true ? 1 : 0
-  description = "Crossplane AWS Provider IAM policy"
-  name        = "${var.addon_context.eks_cluster_id}-${local.aws_provider_sa}-irsa"
-  policy      = data.aws_iam_policy_document.s3_policy.json
-  tags        = var.addon_context.tags
-}
-
 resource "kubectl_manifest" "aws_provider_config" {
   count     = var.aws_provider.enable == true ? 1 : 0
-  yaml_body = templatefile("${path.module}/aws-provider/aws-provider-config.yaml", {})
+  yaml_body = templatefile("${path.module}/aws-provider/aws-provider-config.yaml", {
+    aws-provider-config          = var.aws_provider.provider_config
+    aws-provider-service-account = var.aws_provider.service_account
+
+  })
 
   depends_on = [kubectl_manifest.aws_provider, time_sleep.wait_30_seconds]
 }
 
 #--------------------------------------
-# Terrajet AWS Provider
+# Kubernetes Provider
 #--------------------------------------
-resource "kubectl_manifest" "jet_aws_controller_config" {
-  count = var.jet_aws_provider.enable == true ? 1 : 0
-  yaml_body = templatefile("${path.module}/aws-provider/jet-aws-controller-config.yaml", {
-    iam-role-arn = "arn:${local.aws_current_partition}:iam::${local.aws_current_account_id}:role/${var.addon_context.eks_cluster_id}-${local.jet_aws_provider_sa}-irsa"
-  })
-
-  depends_on = [module.helm_addon]
-}
-
-resource "kubectl_manifest" "jet_aws_provider" {
-  count = var.jet_aws_provider.enable == true ? 1 : 0
-  yaml_body = templatefile("${path.module}/aws-provider/jet-aws-provider.yaml", {
-    provider-aws-version = var.jet_aws_provider.provider_aws_version
-    aws-provider-name    = local.jet_aws_provider_sa
-  })
-  wait = true
-
-  depends_on = [kubectl_manifest.jet_aws_controller_config]
-}
-
-module "jet_aws_provider_irsa" {
-  count = var.jet_aws_provider.enable == true ? 1 : 0
-
-  source                            = "../../../modules/irsa"
-  create_kubernetes_namespace       = false
-  create_kubernetes_service_account = false
-  kubernetes_namespace              = local.namespace
-  kubernetes_service_account        = "${local.jet_aws_provider_sa}-*"
-  irsa_iam_policies                 = concat([aws_iam_policy.jet_aws_provider[0].arn], var.jet_aws_provider.additional_irsa_policies)
-  irsa_iam_role_path                = var.addon_context.irsa_iam_role_path
-  irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
-  eks_cluster_id                    = var.addon_context.eks_cluster_id
-  eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn
-  depends_on                        = [kubectl_manifest.jet_aws_provider]
-}
-
-resource "aws_iam_policy" "jet_aws_provider" {
-  count       = var.jet_aws_provider.enable == true ? 1 : 0
-  description = "Crossplane Jet AWS Provider IAM policy"
-  name        = "${var.addon_context.eks_cluster_id}-${local.jet_aws_provider_sa}-irsa"
-  policy      = data.aws_iam_policy_document.s3_policy.json
-  tags        = var.addon_context.tags
-}
-
-resource "kubectl_manifest" "jet_aws_provider_config" {
-  count     = var.jet_aws_provider.enable == true ? 1 : 0
-  yaml_body = templatefile("${path.module}/aws-provider/jet-aws-provider-config.yaml", {})
-
-  depends_on = [kubectl_manifest.jet_aws_provider]
-}
-
 resource "kubernetes_service_account_v1" "kubernetes_controller" {
   metadata {
-    name      = local.kubernetes_provider_sa
+    name      = var.kubernetes_provider.service_account
     namespace = local.namespace
   }
 
@@ -138,8 +85,9 @@ resource "kubernetes_service_account_v1" "kubernetes_controller" {
 resource "kubectl_manifest" "kubernetes_controller_clusterolebinding" {
   count = var.kubernetes_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-controller-clusterrolebinding.yaml", {
-    kubernetes-serviceaccount-name = local.kubernetes_provider_sa
+    kubernetes-serviceaccount-name = var.kubernetes_provider.service_account
     namespace                      = local.namespace
+    cluster-role                   = var.kubernetes_provider.cluster_role
   })
   wait = true
 
@@ -149,8 +97,8 @@ resource "kubectl_manifest" "kubernetes_controller_clusterolebinding" {
 resource "kubectl_manifest" "kubernetes_controller_config" {
   count = var.kubernetes_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-controller-config.yaml", {
-    kubernetes-serviceaccount-name = local.kubernetes_provider_sa
-    namespace                      = local.namespace
+    kubernetes-serviceaccount-name = var.kubernetes_provider.service_account
+    kubernetes-controller-config   = var.kubernetes_provider.controller_config
   })
   wait = true
 
@@ -160,8 +108,9 @@ resource "kubectl_manifest" "kubernetes_controller_config" {
 resource "kubectl_manifest" "kubernetes_provider" {
   count = var.kubernetes_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-provider.yaml", {
-    provider-kubernetes-version = var.kubernetes_provider.provider_kubernetes_version
-    kubernetes-provider-name    = local.kubernetes_provider_sa
+    provider-kubernetes-version  = var.kubernetes_provider.provider_kubernetes_version
+    kubernetes-provider-name     = var.kubernetes_provider.name
+    kubernetes-controller-config = var.kubernetes_provider.controller_config
   })
   wait = true
 
@@ -170,7 +119,9 @@ resource "kubectl_manifest" "kubernetes_provider" {
 
 resource "kubectl_manifest" "kubernetes_provider_config" {
   count     = var.kubernetes_provider.enable == true ? 1 : 0
-  yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-provider-config.yaml", {})
+  yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-provider-config.yaml", {
+    kubernetes-provider-config     = var.kubernetes_provider.provider_config
+  })
 
   depends_on = [kubectl_manifest.kubernetes_provider]
 }

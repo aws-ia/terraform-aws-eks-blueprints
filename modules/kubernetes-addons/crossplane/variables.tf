@@ -4,15 +4,6 @@ variable "helm_config" {
   default     = {}
 }
 
-variable "aws_provider" {
-  description = "AWS Provider config for Crossplane"
-  type = object({
-    enable                   = bool
-    provider_aws_version     = string
-    additional_irsa_policies = list(string)
-  })
-}
-
 variable "addon_context" {
   description = "Input configuration for the addon"
   type = object({
@@ -30,12 +21,16 @@ variable "addon_context" {
   })
 }
 
-variable "jet_aws_provider" {
-  description = "AWS Provider Jet AWS config for Crossplane"
+variable "aws_provider" {
+  description = "AWS Provider config for Crossplane"
   type = object({
     enable                   = bool
     provider_aws_version     = string
     additional_irsa_policies = list(string)
+    name                     = string
+    service_account          = string
+    provider_config          = string
+    controller_config        = string
   })
 }
 
@@ -44,6 +39,11 @@ variable "kubernetes_provider" {
   type = object({
     enable                      = bool
     provider_kubernetes_version = string
+    name                        = string
+    service_account             = string
+    provider_config             = string
+    controller_config           = string
+    cluster_role                = string
   })
 }
 
