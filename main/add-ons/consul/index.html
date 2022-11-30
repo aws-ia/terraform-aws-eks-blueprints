@@ -13,7 +13,7 @@
     
     
       
-        <title>ArgoCD - Amazon EKS Blueprints for Terraform</title>
+        <title>Consul - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#argocd" class="md-skip">
+        <a href="#consul" class="md-skip">
           Skip to content
         </a>
       
@@ -99,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ArgoCD
+              Consul
             
           </span>
         </div>
@@ -462,100 +462,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          ArgoCD
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../argocd/" class="md-nav__link">
         ArgoCD
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-    <nav class="md-nav" aria-label="Usage">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#admin-password" class="md-nav__link">
-    Admin Password
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#customizing-the-helm-chart" class="md-nav__link">
-    Customizing the Helm Chart
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#bootstrapping" class="md-nav__link">
-    Bootstrapping
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#add-ons" class="md-nav__link">
-    Add-ons
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#private-repositories" class="md-nav__link">
-    Private Repositories
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#complete-example" class="md-nav__link">
-    Complete Example
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -775,11 +686,65 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../consul/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Consul
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Consul
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitops-configuration" class="md-nav__link">
+    GitOps Configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1449,43 +1414,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#admin-password" class="md-nav__link">
-    Admin Password
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#customizing-the-helm-chart" class="md-nav__link">
-    Customizing the Helm Chart
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#bootstrapping" class="md-nav__link">
-    Bootstrapping
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#add-ons" class="md-nav__link">
-    Add-ons
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#private-repositories" class="md-nav__link">
-    Private Repositories
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#complete-example" class="md-nav__link">
-    Complete Example
+  <a href="#gitops-configuration" class="md-nav__link">
+    GitOps Configuration
   </a>
   
 </li>
@@ -1507,132 +1437,39 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/argocd.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/consul.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-<h1 id="argocd">ArgoCD<a class="headerlink" href="#argocd" title="Permanent link">&para;</a></h1>
-<p><a href="https://argo-cd.readthedocs.io/en/stable/">ArgoCD</a> Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes.</p>
-<p>Application definitions, configurations, and environments should be declarative and version controlled. Application deployment and lifecycle management should be automated, auditable, and easy to understand.</p>
+<h1 id="consul">Consul<a class="headerlink" href="#consul" title="Permanent link">&para;</a></h1>
+<p>HashiCorp Consul is a service networking solution that enables teams to manage secure network connectivity between services and across on-prem and multi-cloud environments and runtimes. Consul offers service discovery, service mesh, traffic management, and automated updates to network infrastructure device.</p>
+<p>For complete project documentation, please visit the <a href="https://developer.hashicorp.com/consul/docs/k8s/installation/install">consul</a>.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p>ArgoCD can be deployed by enabling the add-on via the following.</p>
-<div class="highlight"><pre><span></span><code>enable_argocd = true
+<p>Consul can be deployed by enabling the add-on via the following.</p>
+<div class="highlight"><pre><span></span><code>enable_consul = true
 </code></pre></div>
-<h3 id="admin-password">Admin Password<a class="headerlink" href="#admin-password" title="Permanent link">&para;</a></h3>
-<p>ArgoCD has a built-in <code>admin</code> user that has full access to the ArgoCD instance. By default, Argo will create a password for the admin user.</p>
-<p>See the <a href="https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/">ArgoCD documentation</a> for additional details on managing users.</p>
-<h3 id="customizing-the-helm-chart">Customizing the Helm Chart<a class="headerlink" href="#customizing-the-helm-chart" title="Permanent link">&para;</a></h3>
-<p>You can customize the Helm chart that deploys <code>ArgoCD</code> via the following configuration:</p>
-<div class="highlight"><pre><span></span><code>argocd_helm_config = {
-  name             = &quot;argo-cd&quot;
-  chart            = &quot;argo-cd&quot;
-  repository       = &quot;https://argoproj.github.io/argo-helm&quot;
-  version          = &quot;&lt;chart_version&gt;&quot;
-  namespace        = &quot;argocd&quot;
-  timeout          = &quot;1200&quot;
-  create_namespace = true
-  values = [templatefile(&quot;${path.module}/argocd-values.yaml&quot;, {})]
-}
+<p>You can optionally customize the Helm chart via the following configuration.</p>
+<div class="highlight"><pre><span></span><code>  enable_consul = true
+  # Optional consul_helm_config
+  consul_helm_config = {
+    name                       = &quot;consul&quot;
+    chart                      = &quot;consul&quot;
+    repository                 = &quot;https://helm.releases.hashicorp.com&quot;
+    version                    = &quot;1.0.1&quot;
+    namespace                  = &quot;consul&quot;
+    values = [templatefile(&quot;${path.module}/values.yaml&quot;, {
+      ...
+    })]
+  }
 </code></pre></div>
-<h3 id="bootstrapping">Bootstrapping<a class="headerlink" href="#bootstrapping" title="Permanent link">&para;</a></h3>
-<p>The framework provides an approach to bootstrapping workloads and/or additional add-ons by leveraging the ArgoCD <a href="https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/">App of Apps</a> pattern.</p>
-<p>The following code example demonstrates how you can supply information for a repository in order to bootstrap multiple workloads in a new EKS cluster. The example leverages a <a href="https://github.com/aws-samples/eks-blueprints-workloads.git">sample App of Apps repository</a>.</p>
-<div class="highlight"><pre><span></span><code>argocd_applications = {
-  addons = {
-    path                = &quot;chart&quot;
-    repo_url            = &quot;https://github.com/aws-samples/eks-blueprints-add-ons.git&quot;
-    add_on_application  = true # Indicates the root add-on application.
+<h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
+<p>The following properties are made available for use when managing the add-on via GitOps.</p>
+<p>GitOps with ArgoCD Add-on repo is located <a href="https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/values.yaml">here</a></p>
+<div class="highlight"><pre><span></span><code>  consul = {
+    enable = true
   }
-}
-</code></pre></div>
-<h3 id="add-ons">Add-ons<a class="headerlink" href="#add-ons" title="Permanent link">&para;</a></h3>
-<p>A common operational pattern for EKS customers is to leverage Infrastructure as Code to provision EKS clusters (in addition to other AWS resources), and ArgoCD to manage cluster add-ons. This can present a challenge when add-ons managed by ArgoCD depend on AWS resource values which are created via Terraform execution (such as an IAM ARN for an add-on that leverages IRSA), to function properly. The framework provides an approach to bridging the gap between Terraform and ArgoCD by leveraging the ArgoCD <a href="https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/">App of Apps</a> pattern.</p>
-<p>To indicate that ArgoCD should responsible for managing cluster add-ons (applying add-on Helm charts to a cluster), you can set the <code>argocd_manage_add_ons</code> property to true. When this flag is set, the framework will still provision all AWS resources necessary to support add-on functionality, but it will not apply Helm charts directly via the Terraform Helm provider.</p>
-<p>Next, identify which ArgoCD Application will serve as the add-on configuration repository by setting the <code>add_on_application</code> flag to true. When this flag is set, the framework will aggregate AWS resource values that are needed for each add-on into an object. It will then pass that object to ArgoCD via the values map of the Application resource. <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/locals.tf#L4">See here</a> for the values object that gets passed to the ArgoCD add-ons Application.</p>
-<p>Sample configuration can be found below:</p>
-<div class="highlight"><pre><span></span><code>enable_argocd           = true
-argocd_manage_add_ons   = true
-argocd_applications     = {
-  addons = {
-    path                = &quot;chart&quot;
-    repo_url            = &quot;https://github.com/aws-samples/eks-blueprints-add-ons.git&quot;
-    add_on_application  = true # Indicates the root add-on application.
-  }
-}
-</code></pre></div>
-<h3 id="private-repositories">Private Repositories<a class="headerlink" href="#private-repositories" title="Permanent link">&para;</a></h3>
-<p>In order to leverage ArgoCD with private Git repositories, you must supply a private SSH key to Argo. The framework provides support for doing so via an integration with AWS Secrets Manager.</p>
-<p>To leverage private repositories, do the following:</p>
-<ol>
-<li>Create a new secret in AWS Secrets Manager for your desired region. The value for the secret should be a private SSH key for your Git provider.</li>
-<li>Set the <code>ssh_key_secret_name</code> in each Application's configuration as the name of the secret.</li>
-</ol>
-<p>Internally, the framework will create a Kubernetes Secret, which ArgoCD will leverage when making requests to your Git provider. See the example configuration below.</p>
-<div class="highlight"><pre><span></span><code>enable_argocd           = true
-argocd_manage_add_ons   = true
-argocd_applications     = {
-  addons = {
-    path                = &quot;chart&quot;
-    repo_url            = &quot;git@github.com:aws-samples/eks-blueprints-add-ons.git&quot;
-    project             = &quot;default&quot;
-    add_on_application  = true              # Indicates the root add-on application.
-    ssh_key_secret_name = &quot;github-ssh-key&quot;  # Needed for private repos
-    insecure            = false # Set to true to disable the server&#39;s certificate verification
-  }
-}
-</code></pre></div>
-<h3 id="complete-example">Complete Example<a class="headerlink" href="#complete-example" title="Permanent link">&para;</a></h3>
-<p>The following demonstrates a complete example for configuring ArgoCD.</p>
-<div class="highlight"><pre><span></span><code>enable_argocd                       = true
-argocd_manage_add_ons               = true
-
-argocd_helm_config = {
-  name             = &quot;argo-cd&quot;
-  chart            = &quot;argo-cd&quot;
-  repository       = &quot;https://argoproj.github.io/argo-helm&quot;
-  version          = &quot;3.29.5&quot;
-  namespace        = &quot;argocd&quot;
-  timeout          = &quot;1200&quot;
-  create_namespace = true
-  values = [templatefile(&quot;${path.module}/argocd-values.yaml&quot;, {})]
-}
-
-argocd_applications = {
-  workloads = {
-    path                = &quot;envs/dev&quot;
-    repo_url            = &quot;https://github.com/aws-samples/eks-blueprints-workloads.git&quot;
-    values              = {}
-    type                = &quot;helm&quot;            # Optional, defaults to helm.
-  }
-  kustomize_apps = {
-    /*
-      This points to a single application with no overlays, but it could easily
-      point to a a specific overlay for an environment like &quot;dev&quot;, and/or utilize
-      the ArgoCD app of apps model to install many additional ArgoCD apps.
-    */
-    path                = &quot;argocd-example-apps/kustomize-guestbook/&quot;
-    repo_url            = &quot;https://github.com/argoproj/argocd-example-apps.git&quot;
-    type                = &quot;kustomize&quot;
-  }
-  addons = {
-    path                = &quot;chart&quot;
-    repo_url            = &quot;git@github.com:aws-samples/eks-blueprints-add-ons.git&quot;
-    add_on_application  = true              # Indicates the root add-on application.
-                                            # If provided, the type must be set to &quot;helm&quot; for the root add-on application.
-    ssh_key_secret_name = &quot;github-ssh-key&quot;  # Needed for private repos
-    values              = {}
-    type                = &quot;helm&quot;            # Optional, defaults to helm.
-    #ignoreDifferences   = [ # Enable this to ignore children apps&#39; sync policy
-    #  {
-    #    group        = &quot;argoproj.io&quot;
-    #    kind         = &quot;Application&quot;
-    #    jsonPointers = [&quot;/spec/syncPolicy&quot;]
-    #  }
-    #]
-  }
-}
 </code></pre></div>
 
               
@@ -1649,7 +1486,7 @@ argocd_applications = {
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../argo-workflows/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Argo Workflows" rel="prev">
+        <a href="../cluster-proportional-autoscaler/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Horizontal cluster-proportional-autoscaler container" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1658,20 +1495,20 @@ argocd_applications = {
               <span class="md-footer__direction">
                 Previous
               </span>
-              Argo Workflows
+              Horizontal cluster-proportional-autoscaler container
             </div>
           </div>
         </a>
       
       
         
-        <a href="../aws-cloudwatch-metrics/" class="md-footer__link md-footer__link--next" aria-label="Next: AWS CloudWatch Metrics" rel="next">
+        <a href="../crossplane/" class="md-footer__link md-footer__link--next" aria-label="Next: Crossplane" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              AWS CloudWatch Metrics
+              Crossplane
             </div>
           </div>
           <div class="md-footer__button md-icon">
