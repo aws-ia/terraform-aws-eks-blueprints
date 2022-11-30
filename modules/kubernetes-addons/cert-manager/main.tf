@@ -44,4 +44,5 @@ resource "aws_iam_policy" "cert_manager" {
   name        = "${var.addon_context.eks_cluster_id}-${local.helm_config["name"]}-irsa"
   path        = var.addon_context.irsa_iam_role_path
   policy      = data.aws_iam_policy_document.cert_manager_iam_policy_document.json
+  tags        = var.addon_context.tags
 }
