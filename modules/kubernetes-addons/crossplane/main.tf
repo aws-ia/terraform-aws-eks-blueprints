@@ -33,8 +33,8 @@ resource "kubectl_manifest" "aws_provider" {
     aws-provider-name     = local.aws_provider.name
     aws-controller-config = local.aws_provider.controller_config
   })
-  wait {
-    condition {
+  wait = {
+    condition = {
       type   = "Healthy"
       status = "True"
     }
