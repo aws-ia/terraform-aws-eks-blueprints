@@ -279,6 +279,7 @@ variable "crossplane_helm_provider" {
   })
   default = {
     enable                   = false
+    # TODO: upgrade to v0.12.0 out since Oct 10
     provider_helm_version     = "v0.11.1"
   }
 }
