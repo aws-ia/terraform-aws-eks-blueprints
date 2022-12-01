@@ -18,20 +18,20 @@ module "helm_addon" {
 # AWS Provider
 #--------------------------------------
 resource "kubectl_manifest" "aws_controller_config" {
-  count = var.aws_provider.enable == true ? 1 : 0
+  count = local.aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-controller-config.yaml", {
-    iam-role-arn          = "arn:${var.addon_context.aws_partition_id}:iam::${var.addon_context.aws_caller_identity_account_id}:role/${var.addon_context.eks_cluster_id}-${var.aws_provider.service_account}-irsa"
-    aws-controller-config = var.aws_provider.controller_config
+    iam-role-arn          = "arn:${var.addon_context.aws_partition_id}:iam::${var.addon_context.aws_caller_identity_account_id}:role/${var.addon_context.eks_cluster_id}-${local.aws_provider.service_account}-irsa"
+    aws-controller-config = local.aws_provider.controller_config
   })
   depends_on = [module.helm_addon]
 }
 
 resource "kubectl_manifest" "aws_provider" {
-  count = var.aws_provider.enable == true ? 1 : 0
+  count = local.aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-provider.yaml", {
-    provider-aws-version  = var.aws_provider.provider_aws_version
-    aws-provider-name     = var.aws_provider.name
-    aws-controller-config = var.aws_provider.controller_config
+    provider-aws-version  = local.aws_provider.provider_aws_version
+    aws-provider-name     = local.aws_provider.name
+    aws-controller-config = local.aws_provider.controller_config
   })
   wait       = true
   depends_on = [kubectl_manifest.aws_controller_config]
@@ -45,13 +45,13 @@ resource "time_sleep" "wait_30_seconds" {
 }
 
 module "aws_provider_irsa" {
-  count                             = var.aws_provider.enable == true ? 1 : 0
+  count                             = local.aws_provider.enable == true ? 1 : 0
   source                            = "../../../modules/irsa"
   create_kubernetes_namespace       = false
   create_kubernetes_service_account = true
   kubernetes_namespace              = local.namespace
-  kubernetes_service_account        = var.aws_provider.service_account
-  irsa_iam_policies                 = var.aws_provider.additional_irsa_policies
+  kubernetes_service_account        = local.aws_provider.service_account
+  irsa_iam_policies                 = local.aws_provider.additional_irsa_policies
   irsa_iam_role_path                = var.addon_context.irsa_iam_role_path
   irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
   eks_cluster_id                    = var.addon_context.eks_cluster_id
@@ -60,10 +60,10 @@ module "aws_provider_irsa" {
 }
 
 resource "kubectl_manifest" "aws_provider_config" {
-  count     = var.aws_provider.enable == true ? 1 : 0
+  count = local.aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-provider-config.yaml", {
-    aws-provider-config          = var.aws_provider.provider_config
-    aws-provider-service-account = var.aws_provider.service_account
+    aws-provider-config          = local.aws_provider.provider_config
+    aws-provider-service-account = local.aws_provider.service_account
 
   })
 
@@ -75,7 +75,7 @@ resource "kubectl_manifest" "aws_provider_config" {
 #--------------------------------------
 resource "kubernetes_service_account_v1" "kubernetes_controller" {
   metadata {
-    name      = var.kubernetes_provider.service_account
+    name      = local.kubernetes_provider.service_account
     namespace = local.namespace
   }
 
@@ -83,11 +83,11 @@ resource "kubernetes_service_account_v1" "kubernetes_controller" {
 }
 
 resource "kubectl_manifest" "kubernetes_controller_clusterolebinding" {
-  count = var.kubernetes_provider.enable == true ? 1 : 0
+  count = local.kubernetes_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-controller-clusterrolebinding.yaml", {
-    kubernetes-serviceaccount-name = var.kubernetes_provider.service_account
+    kubernetes-serviceaccount-name = local.kubernetes_provider.service_account
     namespace                      = local.namespace
-    cluster-role                   = var.kubernetes_provider.cluster_role
+    cluster-role                   = local.kubernetes_provider.cluster_role
   })
   wait = true
 
@@ -95,10 +95,10 @@ resource "kubectl_manifest" "kubernetes_controller_clusterolebinding" {
 }
 
 resource "kubectl_manifest" "kubernetes_controller_config" {
-  count = var.kubernetes_provider.enable == true ? 1 : 0
+  count = local.kubernetes_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-controller-config.yaml", {
-    kubernetes-serviceaccount-name = var.kubernetes_provider.service_account
-    kubernetes-controller-config   = var.kubernetes_provider.controller_config
+    kubernetes-serviceaccount-name = local.kubernetes_provider.service_account
+    kubernetes-controller-config   = local.kubernetes_provider.controller_config
   })
   wait = true
 
@@ -106,11 +106,11 @@ resource "kubectl_manifest" "kubernetes_controller_config" {
 }
 
 resource "kubectl_manifest" "kubernetes_provider" {
-  count = var.kubernetes_provider.enable == true ? 1 : 0
+  count = local.kubernetes_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-provider.yaml", {
-    provider-kubernetes-version  = var.kubernetes_provider.provider_kubernetes_version
-    kubernetes-provider-name     = var.kubernetes_provider.name
-    kubernetes-controller-config = var.kubernetes_provider.controller_config
+    provider-kubernetes-version  = local.kubernetes_provider.provider_kubernetes_version
+    kubernetes-provider-name     = local.kubernetes_provider.name
+    kubernetes-controller-config = local.kubernetes_provider.controller_config
   })
   wait = true
 
@@ -118,9 +118,9 @@ resource "kubectl_manifest" "kubernetes_provider" {
 }
 
 resource "kubectl_manifest" "kubernetes_provider_config" {
-  count     = var.kubernetes_provider.enable == true ? 1 : 0
+  count = local.kubernetes_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-provider-config.yaml", {
-    kubernetes-provider-config     = var.kubernetes_provider.provider_config
+    kubernetes-provider-config = local.kubernetes_provider.provider_config
   })
 
   depends_on = [kubectl_manifest.kubernetes_provider]

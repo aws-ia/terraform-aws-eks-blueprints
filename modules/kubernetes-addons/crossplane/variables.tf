@@ -23,36 +23,10 @@ variable "addon_context" {
 
 variable "aws_provider" {
   description = "AWS Provider config for Crossplane"
-  type = object({
-    enable                   = bool
-    provider_aws_version     = string
-    additional_irsa_policies = list(string)
-    name                     = string
-    service_account          = string
-    provider_config          = string
-    controller_config        = string
-  })
+  type        = any
 }
 
 variable "kubernetes_provider" {
   description = "Kubernetes Provider config for Crossplane"
-  type = object({
-    enable                      = bool
-    provider_kubernetes_version = string
-    name                        = string
-    service_account             = string
-    provider_config             = string
-    controller_config           = string
-    cluster_role                = string
-  })
-}
-
-variable "account_id" {
-  description = "Current AWS Account ID"
-  type        = string
-}
-
-variable "aws_partition" {
-  description = "AWS Identifier of the current partition e.g., aws or aws-cn"
-  type        = string
+  type        = any
 }

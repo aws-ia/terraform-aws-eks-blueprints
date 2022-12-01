@@ -233,45 +233,17 @@ variable "crossplane_helm_config" {
 
 variable "crossplane_aws_provider" {
   description = "AWS Provider config for Crossplane"
-  type = object({
-    enable                   = bool
-    provider_aws_version     = string
-    additional_irsa_policies = list(string)
-    name                     = string
-    service_account          = string
-    provider_config          = string
-    controller_config        = string
-  })
+  type        = any
   default = {
-    enable                   = false
-    provider_aws_version     = "v0.34.0"
-    additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
-    name                     = "aws-provider"
-    service_account          = "aws-provider"
-    provider_config          = "default"
-    controller_config        = "aws-controller-config"
+    enable = false
   }
 }
 
 variable "crossplane_kubernetes_provider" {
   description = "Kubernetes Provider config for Crossplane"
-  type = object({
-    enable                      = bool
-    provider_kubernetes_version = string
-    name                        = string
-    service_account             = string
-    provider_config             = string
-    controller_config           = string
-    cluster_role                = string
-  })
+  type        = any
   default = {
-    enable                      = false
-    provider_kubernetes_version = "v0.5.0"
-    name                        = "kubernetes-provider"
-    service_account             = "kubernetes-provider"
-    provider_config             = "default"
-    controller_config           = "kubernetes-controller-config"
-    cluster_role                = "cluster-admin"
+    enable = false
   }
 }
 

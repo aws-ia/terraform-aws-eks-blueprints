@@ -256,8 +256,6 @@ module "crossplane" {
   helm_config         = var.crossplane_helm_config
   aws_provider        = var.crossplane_aws_provider
   kubernetes_provider = var.crossplane_kubernetes_provider
-  account_id          = data.aws_caller_identity.current.account_id
-  aws_partition       = data.aws_partition.current.id
   addon_context       = local.addon_context
 }
 
