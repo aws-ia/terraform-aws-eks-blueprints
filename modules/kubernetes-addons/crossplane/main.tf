@@ -26,29 +26,21 @@ resource "kubectl_manifest" "aws_controller_config" {
   depends_on = [module.helm_addon]
 }
 
-resource "kubernetes_manifest" "aws_provider" {
-  count = local.aws_provider.enable == true ? 1 : 0
-  manifest = yamldecode(templatefile("${path.module}/aws-provider/aws-provider.yaml", {
-    provider-aws-version  = local.aws_provider.provider_aws_version
-    aws-provider-name     = local.aws_provider.name
-    aws-controller-config = local.aws_provider.controller_config
-  }))
-
-  wait {
-    condition {
-      type   = "Healthy"
-      status = "True"
-    }
-  }
-  
+resource "kubectl_manifest" "aws_provider" {
+  count = var.aws_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/aws-provider/aws-provider.yaml", {
+    provider-aws-version = var.aws_provider.provider_aws_version
+    aws-provider-name    = local.aws_provider_sa
+  })
+  wait       = true
   depends_on = [kubectl_manifest.aws_controller_config]
 }
 
 # Wait for the AWS Provider CRDs to be fully created before initiating aws_provider_config deployment
 resource "time_sleep" "wait_30_seconds" {
-  depends_on = [kubernetes_manifest.aws_provider]
+  depends_on = [kubectl_manifest.aws_provider]
 
-  create_duration = "30s"
+  create_duration = "60s"
 }
 
 module "aws_provider_irsa" {
@@ -63,7 +55,7 @@ module "aws_provider_irsa" {
   irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
   eks_cluster_id                    = var.addon_context.eks_cluster_id
   eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn
-  depends_on                        = [kubernetes_manifest.aws_provider]
+  depends_on                        = [kubectl_manifest.aws_provider]
 }
 
 resource "kubectl_manifest" "aws_provider_config" {
@@ -72,7 +64,7 @@ resource "kubectl_manifest" "aws_provider_config" {
     aws-provider-config          = local.aws_provider.provider_config
   })
 
-  depends_on = [kubernetes_manifest.aws_provider, time_sleep.wait_30_seconds]
+  depends_on = [kubectl_manifest.aws_provider, time_sleep.wait_30_seconds]
 }
 
 #--------------------------------------
