@@ -137,7 +137,7 @@ resource "kubernetes_secret" "argocd_gitops" {
 }
 
 resource "kubernetes_secret" "argocd_gitops_https" {
-  for_each = { for k, v in var.applications : k => v if(try(v.username, null) != null)}
+  for_each = { for k, v in var.applications : k => v if(try(v.username, null) != null) }
 
   metadata {
     name      = "${each.key}-repo-secret"
