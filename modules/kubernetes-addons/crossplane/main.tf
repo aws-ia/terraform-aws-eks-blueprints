@@ -26,18 +26,18 @@ resource "kubectl_manifest" "aws_controller_config" {
   depends_on = [module.helm_addon]
 }
 
-resource "kubectl_manifest" "aws_provider" {
+resource "kubernetes_manifest" "aws_provider" {
   count = local.aws_provider.enable == true ? 1 : 0
-  yaml_body = templatefile("${path.module}/aws-provider/aws-provider.yaml", {
+  manifest = yamldecode(templatefile("${path.module}/aws-provider/aws-provider.yaml", {
     provider-aws-version  = local.aws_provider.provider_aws_version
     aws-provider-name     = local.aws_provider.name
     aws-controller-config = local.aws_provider.controller_config
-  })
+  }))
 
-  wait_for = {
-    fields = {
-      # Check a provider status
-      "status.condition[*].status" = "True"
+  wait {
+    condition {
+      type   = "Healthy"
+      status = "True"
     }
   }
   
