@@ -20,9 +20,8 @@ module "helm_addon" {
 resource "kubectl_manifest" "aws_controller_config" {
   count = local.aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-controller-config.yaml", {
-    iam-role-arn          = "arn:${var.addon_context.aws_partition_id}:iam::${var.addon_context.aws_caller_identity_account_id}:role/${var.addon_context.eks_cluster_id}-${local.aws_provider.service_account}-irsa"
+    iam-role-arn          = "arn:${var.addon_context.aws_partition_id}:iam::${var.addon_context.aws_caller_identity_account_id}:role/${var.addon_context.eks_cluster_id}-${local.aws_provider.name}-irsa"
     aws-controller-config = local.aws_provider.controller_config
-    aws-provider-service-account = local.aws_provider.service_account
   })
   depends_on = [module.helm_addon]
 }
@@ -49,9 +48,9 @@ module "aws_provider_irsa" {
   count                             = local.aws_provider.enable == true ? 1 : 0
   source                            = "../../../modules/irsa"
   create_kubernetes_namespace       = false
-  create_kubernetes_service_account = true
+  create_kubernetes_service_account = false
   kubernetes_namespace              = local.namespace
-  kubernetes_service_account        = local.aws_provider.service_account
+  kubernetes_service_account        = "${local.aws_provider.name}-*"
   irsa_iam_policies                 = local.aws_provider.additional_irsa_policies
   irsa_iam_role_path                = var.addon_context.irsa_iam_role_path
   irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary

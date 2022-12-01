@@ -7,7 +7,6 @@ spec:
   metadata:
     annotations:
       eks.amazonaws.com/role-arn: ${iam-role-arn}
-  serviceAccountName: ${aws-provider-service-account}
   podSecurityContext:
     fsGroup: 2000
   args:
