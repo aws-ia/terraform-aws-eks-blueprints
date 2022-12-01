@@ -30,7 +30,8 @@ resource "kubectl_manifest" "aws_provider" {
   count = var.aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-provider.yaml", {
     provider-aws-version = var.aws_provider.provider_aws_version
-    aws-provider-name    = local.aws_provider_sa
+    aws-provider-name    = local.aws_provider.name
+    aws-controller-config = local.aws_provider.controller_config
   })
   wait       = true
   depends_on = [kubectl_manifest.aws_controller_config]
