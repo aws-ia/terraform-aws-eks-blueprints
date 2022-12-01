@@ -46,7 +46,7 @@ resource "kubernetes_manifest" "aws_provider" {
 
 # Wait for the AWS Provider CRDs to be fully created before initiating aws_provider_config deployment
 resource "time_sleep" "wait_30_seconds" {
-  depends_on = [kubectl_manifest.aws_provider]
+  depends_on = [kubernetes_manifest.aws_provider]
 
   create_duration = "30s"
 }
@@ -63,7 +63,7 @@ module "aws_provider_irsa" {
   irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
   eks_cluster_id                    = var.addon_context.eks_cluster_id
   eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn
-  depends_on                        = [kubectl_manifest.aws_provider]
+  depends_on                        = [kubernetes_manifest.aws_provider]
 }
 
 resource "kubectl_manifest" "aws_provider_config" {
