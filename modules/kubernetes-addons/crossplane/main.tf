@@ -72,7 +72,7 @@ resource "kubectl_manifest" "aws_provider_config" {
     aws-provider-config          = local.aws_provider.provider_config
   })
 
-  depends_on = [kubectl_manifest.aws_provider, time_sleep.wait_30_seconds]
+  depends_on = [kubernetes_manifest.aws_provider, time_sleep.wait_30_seconds]
 }
 
 #--------------------------------------
