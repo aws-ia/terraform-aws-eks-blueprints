@@ -19,9 +19,9 @@ module "kms" {
 }
 
 module "aws_eks" {
-  source = "github.com/timblaktu/terraform-aws-eks?ref=568-redux"
-  # source  = "terraform-aws-modules/eks/aws"
-  # version = "v18.30.2"
+  # source = "github.com/timblaktu/terraform-aws-eks?ref=568-redux"
+  source  = "terraform-aws-modules/eks/aws"
+  version = "v18.31.2"
 
   create = var.create_eks
 
