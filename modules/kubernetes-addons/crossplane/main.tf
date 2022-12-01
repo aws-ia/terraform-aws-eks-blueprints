@@ -22,7 +22,7 @@ resource "kubectl_manifest" "aws_controller_config" {
   yaml_body = templatefile("${path.module}/aws-provider/aws-controller-config.yaml", {
     iam-role-arn          = "arn:${var.addon_context.aws_partition_id}:iam::${var.addon_context.aws_caller_identity_account_id}:role/${var.addon_context.eks_cluster_id}-${local.aws_provider.service_account}-irsa"
     aws-controller-config = local.aws_provider.controller_config
-    kubernetes-serviceaccount-name = local.kubernetes_provider.service_account
+    aws-provider-service-account = local.aws_provider.service_account
   })
   depends_on = [module.helm_addon]
 }
@@ -64,8 +64,6 @@ resource "kubectl_manifest" "aws_provider_config" {
   count = local.aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-provider-config.yaml", {
     aws-provider-config          = local.aws_provider.provider_config
-    aws-provider-service-account = local.aws_provider.service_account
-
   })
 
   depends_on = [kubectl_manifest.aws_provider, time_sleep.wait_30_seconds]
