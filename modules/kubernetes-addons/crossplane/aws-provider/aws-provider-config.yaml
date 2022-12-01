@@ -6,4 +6,3 @@ metadata:
 spec:
   credentials:
     source: InjectedIdentity
-  serviceAccountName: ${aws-provider-service-account}
