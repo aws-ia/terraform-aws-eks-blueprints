@@ -47,6 +47,7 @@ locals {
     kyverno_policies          = var.enable_kyverno ? { enable = true } : null
     kyverno_policy_reporter   = var.enable_kyverno ? { enable = true } : null
     nvidiaDevicePlugin        = var.enable_nvidia_device_plugin ? module.nvidia_device_plugin[0].argocd_gitops_config : null
+    consul                    = var.enable_consul ? module.consul[0].argocd_gitops_config : null
   }
 
   addon_context = {
@@ -55,7 +56,7 @@ locals {
     aws_eks_cluster_endpoint       = local.eks_cluster_endpoint
     aws_partition_id               = data.aws_partition.current.partition
     aws_region_name                = data.aws_region.current.name
-    eks_cluster_id                 = var.eks_cluster_id
+    eks_cluster_id                 = data.aws_eks_cluster.eks_cluster.id
     eks_oidc_issuer_url            = local.eks_oidc_issuer_url
     eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.eks_oidc_issuer_url}"
     tags                           = var.tags
@@ -86,6 +87,7 @@ locals {
       eu-west-2      = "602401143452.dkr.ecr.eu-west-2.amazonaws.com",
       eu-west-3      = "602401143452.dkr.ecr.eu-west-3.amazonaws.com",
       me-south-1     = "558608220178.dkr.ecr.me-south-1.amazonaws.com",
+      me-central-1   = "759879836304.dkr.ecr.me-central-1.amazonaws.com",
       sa-east-1      = "602401143452.dkr.ecr.sa-east-1.amazonaws.com",
       us-east-1      = "602401143452.dkr.ecr.us-east-1.amazonaws.com",
       us-east-2      = "602401143452.dkr.ecr.us-east-2.amazonaws.com",

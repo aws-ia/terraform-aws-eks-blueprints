@@ -1,2 +1,0 @@
-kubernetes==11.0.0
-apache-airflow-providers-cncf-kubernetes==2.0.2

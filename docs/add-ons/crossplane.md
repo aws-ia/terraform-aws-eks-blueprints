@@ -30,8 +30,8 @@ You can optionally customize the Helm chart that deploys `Crossplane` via the fo
     version                   = "1.6.2"
     namespace                 = "crossplane-system"
     values = [templatefile("${path.module}/values.yaml", {
-         service_account_name = var.service_account_name,
-         operating_system     = "linux"
+         service_account  = var.service_account,
+         operating_system = "linux"
     })]
   }
 
@@ -56,7 +56,7 @@ crossplane_aws_provider = {
   provider_aws_version     = "v0.24.1"  # Get the latest version from https://github.com/crossplane/provider-aws
   additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
 }
-```  
+```
 
 Config to deploy [Terrajet AWS Provider](https://github.com/crossplane-contrib/provider-jet-aws)
 ```hcl
