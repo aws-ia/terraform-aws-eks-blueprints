@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "karpenter" {
   statement {
-    sid       = "KarpenterControllerPolicy"
+    sid       = "Karpenter"
     effect    = "Allow"
     resources = ["*"]
 
@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "karpenter" {
   }
 
   statement {
-    sid       = "KarpenterConditionalEC2Termination"
+    sid       = "ConditionalEC2Termination"
     effect    = "Allow"
     resources = ["*"]
     actions   = ["ec2:TerminateInstances"]
@@ -38,16 +38,17 @@ data "aws_iam_policy_document" "karpenter" {
     }
   }
 
-  statement {
-    sid       = "KarpenterEventPolicySQS"
-    effect    = "Allow"
-    resources = [local.karpenter_sqs_queue_arn]
+  dynamic "statement" {
+    for_each = var.sqs_queue_arn != "" ? [1] : []
 
-    actions = [
-      "sqs:DeleteMessage",
-      "sqs:GetQueueAttributes",
-      "sqs:GetQueueUrl",
-      "sqs:ReceiveMessage",
-    ]
+    content {
+      actions = [
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes",
+        "sqs:GetQueueUrl",
+        "sqs:ReceiveMessage",
+      ]
+      resources = [var.sqs_queue_arn]
+    }
   }
 }

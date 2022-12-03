@@ -313,11 +313,14 @@ module "ingress_nginx" {
 }
 
 module "karpenter" {
-  count                     = var.enable_karpenter ? 1 : 0
-  source                    = "./karpenter"
+  source = "./karpenter"
+
+  count = var.enable_karpenter ? 1 : 0
+
   helm_config               = var.karpenter_helm_config
   irsa_policies             = var.karpenter_irsa_policies
   node_iam_instance_profile = var.karpenter_node_iam_instance_profile
+  sqs_queue_arn             = var.karpenter_sqs_queue_arn
   manage_via_gitops         = var.argocd_manage_add_ons
   addon_context             = local.addon_context
 }

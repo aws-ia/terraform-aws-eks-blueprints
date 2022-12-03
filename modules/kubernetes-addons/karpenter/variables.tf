@@ -22,10 +22,10 @@ variable "node_iam_instance_profile" {
   default     = ""
 }
 
-variable "karpenter_sqs_queue_arn" {
-  description = "(Optional) SQS ARN to be used in Karpenter NSTH"
+variable "sqs_queue_arn" {
+  description = "(Optional) ARN of SQS used by Karpenter when native node termination handling is enabled"
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "addon_context" {

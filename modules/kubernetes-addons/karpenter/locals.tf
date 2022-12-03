@@ -10,7 +10,6 @@ locals {
       value = false
     }
   ]
-  karpenter_sqs_queue_arn = var.karpenter_sqs_queue_arn != null ? var.karpenter_sqs_queue_arn : "arn:aws:sqs:${var.addon_context["aws_region_name"]}:${var.addon_context["aws_caller_identity_account_id"]}:${var.addon_context["eks_cluster_id"]}"
 
   # https://github.com/aws/karpenter/blob/main/charts/karpenter/Chart.yaml
   helm_config = merge(
@@ -18,7 +17,7 @@ locals {
       name       = local.name
       chart      = local.name
       repository = "oci://public.ecr.aws/karpenter"
-      version    = "v0.19.2"
+      version    = "v0.19.3"
       namespace  = local.name
       values = [
         <<-EOT
@@ -27,6 +26,7 @@ locals {
               clusterName: ${var.addon_context.eks_cluster_id}
               clusterEndpoint: ${var.addon_context.aws_eks_cluster_endpoint}
               defaultInstanceProfile: ${var.node_iam_instance_profile}
+              interruptionQueueName: ${var.sqs_queue_arn}
         EOT
       ]
       description = "karpenter Helm Chart for Node Autoscaling"
