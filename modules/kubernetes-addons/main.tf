@@ -189,6 +189,7 @@ module "aws_node_termination_handler" {
   count                   = var.enable_aws_node_termination_handler && (length(var.auto_scaling_group_names) > 0 || var.enable_karpenter) ? 1 : 0
   source                  = "./aws-node-termination-handler"
   helm_config             = var.aws_node_termination_handler_helm_config
+  manage_via_gitops       = var.argocd_manage_add_ons
   irsa_policies           = var.aws_node_termination_handler_irsa_policies
   autoscaling_group_names = var.auto_scaling_group_names
   addon_context           = local.addon_context
