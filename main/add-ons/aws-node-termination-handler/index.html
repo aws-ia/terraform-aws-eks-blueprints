@@ -586,6 +586,19 @@
     Usage
   </a>
   
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitops-configuration" class="md-nav__link">
+    GitOps Configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -1397,6 +1410,19 @@
     Usage
   </a>
   
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitops-configuration" class="md-nav__link">
+    GitOps Configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -1446,6 +1472,18 @@
 <div class="highlight"><pre><span></span><code><span class="c1"># Assuming controller is installed in kube-system namespace</span>
 $ kubectl get deployments -n kube-system
 aws-node-termination-handler  <span class="m">1</span>/1   <span class="m">1</span>   <span class="m">1</span>   5d9h
+</code></pre></div>
+<h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
+<p>The following properties are made available for use when managing the add-on via GitOps.</p>
+<p>GitOps with ArgoCD Add-on repo is located <a href="https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/values.yaml">here</a></p>
+<p>When enabling NTH for GitOps, be sure that you are using <code>self_managed_node_groups</code> as this module will check to ensure that it finds valid backing autoscaling groups.</p>
+<p>If you're using <code>managed_node_groups</code>, NTH isn't required as per the following - https://github.com/aws/aws-node-termination-handler/issues/186
+<div class="highlight"><pre><span></span><code>Amazon EKS automatically drains nodes using the Kubernetes API during terminations or updates. Updates respect the pod disruption budgets that you set for your pods.
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code>  awsNodeTerminationHandler = {
+    enable             = true
+    serviceAccountName = &quot;&lt;service_account&gt;&quot;
+  }
 </code></pre></div>
 
               

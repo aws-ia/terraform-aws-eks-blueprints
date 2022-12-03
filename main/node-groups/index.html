@@ -1524,7 +1524,7 @@
 
 
 <h1 id="node-groups">Node Groups<a class="headerlink" href="#node-groups" title="Permanent link">&para;</a></h1>
-<p>The framework uses dedicated sub modules for creating <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/aws-eks-managed-node-groups">AWS Managed Node Groups</a>, <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/aws-eks-self-managed-node-groups">Self-managed Node groups</a> and <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/aws-eks-fargate-profiles">Fargate profiles</a>. These modules provide flexibility to add or remove managed/self-managed node groups/fargate profiles by simply adding/removing map of values to input config. See <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/eks-cluster-with-new-vpc">example</a>.</p>
+<p>The framework uses dedicated sub modules for creating AWS Managed Node Groups, Self-managed Node groups and Fargate profiles. These modules provide flexibility to add or remove managed/self-managed node groups/fargate profiles by simply adding/removing map of values to input config.</p>
 <p>The <code>aws-auth</code> ConfigMap handled by this module allow your nodes to join your cluster, and you also use this ConfigMap to add RBAC access to IAM users and roles.
 Each Node Group can have dedicated IAM role, Launch template and Security Group to improve the security.</p>
 <h2 id="additional-iam-roles-users-and-accounts">Additional IAM Roles, Users and Accounts<a class="headerlink" href="#additional-iam-roles-users-and-accounts" title="Permanent link">&para;</a></h2>
@@ -1952,7 +1952,7 @@ The authenticator gets its configuration information from the <code>aws-auth</co
       capacity_type   = &quot;SPOT&quot;
       instance_types  = [&quot;m5.large&quot;, &quot;m4.large&quot;, &quot;m6a.large&quot;, &quot;m5a.large&quot;, &quot;m5d.large&quot;] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
       subnet_ids      = []  # Mandatory Public or Private Subnet IDs
-      disk_size       = 100 # disk_size will be ignored when using Launch Templates  
+      disk_size       = 100 # disk_size will be ignored when using Launch Templates
       k8s_taints      = [{ key = &quot;spotInstance&quot;, value = &quot;true&quot;, effect = &quot;NO_SCHEDULE&quot; }] // Avoid scheduling stateful workloads in SPOT nodes
     }
 </code></pre></div>
