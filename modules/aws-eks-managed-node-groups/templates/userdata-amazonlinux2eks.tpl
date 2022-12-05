@@ -36,11 +36,12 @@ export SERVICE_IPV6_CIDR=${service_ipv6_cidr}
 %{ if length(custom_ami_id) > 0 ~}
 B64_CLUSTER_CA=${cluster_ca_base64}
 API_SERVER_URL=${cluster_endpoint}
+%{ if set_node_instance_label_to_ec2_instance_id }
 EC2_METADATA_API_TOKEN=$(curl --silent -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $EC2_METADATA_API_TOKEN" --silent http://169.254.169.254/latest/meta-data/instance-id)
-/etc/eks/bootstrap.sh ${eks_cluster_id} --kubelet-extra-args \\
-    "$${kubelet_extra_args/--node-labels=/--node-labels=instance=$${INSTANCE_ID},}" \\
-    ${bootstrap_extra_args}
+INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $${EC2_METADATA_API_TOKEN}" --silent http://169.254.169.254/latest/meta-data/instance-id)
+kubelet_extra_args=$${kubelet_extra_args/--node-labels=/--node-labels=instance=$${INSTANCE_ID},}
+%{ endif ~}
+/etc/eks/bootstrap.sh ${eks_cluster_id} --kubelet-extra-args "${kubelet_extra_args}" ${bootstrap_extra_args}
 %{ endif ~}
 %{ if length(post_userdata) > 0 ~}
 # User-supplied post userdata

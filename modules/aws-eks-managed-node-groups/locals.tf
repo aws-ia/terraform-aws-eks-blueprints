@@ -54,6 +54,7 @@ locals {
     kubelet_extra_args     = ""
     bootstrap_extra_args   = ""
     public_ip              = false
+    set_node_instance_label_to_ec2_instance_id = false
 
     # EBS Block Device config only used with Launch Templates
     block_device_mappings = [{
