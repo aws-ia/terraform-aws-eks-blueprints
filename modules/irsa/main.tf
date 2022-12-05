@@ -29,6 +29,10 @@ resource "kubernetes_service_account_v1" "irsa" {
   }
 
   automount_service_account_token = true
+
+  depends_on = [
+    kubernetes_namespace_v1.irsa
+  ]
 }
 
 # NOTE: Don't change the condition from StringLike to StringEquals. We are using wild characters for service account hence StringLike is required.
