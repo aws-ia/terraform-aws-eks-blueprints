@@ -26,7 +26,7 @@ You can optionally customize the Helm chart that deploys `Karpenter` via the fol
     values = [templatefile("${path.module}/values.yaml", {
          eks_cluster_id       = var.eks_cluster_id,
          eks_cluster_endpoint = var.eks_cluster_endpoint,
-         service_account_name = var.service_account_name,
+         service_account      = var.service_account,
          operating_system     = "linux"
     })]
   }
@@ -42,7 +42,7 @@ Refer to [locals.tf](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob
 ```hcl
   argocd_gitops_config = {
     enable                    = true
-    serviceAccountName        = local.service_account_name
+    serviceAccountName        = local.service_account
     controllerClusterName     = var.eks_cluster_id
     controllerClusterEndpoint = local.eks_cluster_endpoint
     awsDefaultInstanceProfile = var.node_iam_instance_profile

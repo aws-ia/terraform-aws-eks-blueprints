@@ -55,6 +55,17 @@ Step 6: Run the following command to push this image to your newly created AWS r
 
 Here is the link to get the AWS ELB [service annotations](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/service/annotations/) for LB Ingress controller
 
+# IRSA is too long
+
+If the IAM role is too long, override the service account name in the `helm_config` to create a shorter role name.
+
+```hcl
+  enable_aws_load_balancer_controller = true
+  aws_load_balancer_controller_helm_config = {
+    service_account = "aws-lb-sa"
+  }
+```
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 

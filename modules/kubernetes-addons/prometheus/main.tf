@@ -109,7 +109,7 @@ module "irsa_amp_ingest" {
   kubernetes_namespace        = local.namespace
 
   kubernetes_service_account    = local.ingest_service_account
-  irsa_iam_policies             = [aws_iam_policy.ingest[0].arn]
+  irsa_iam_policies             = [try(aws_iam_policy.ingest[0].arn, "")]
   irsa_iam_role_path            = var.addon_context.irsa_iam_role_path
   irsa_iam_permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
   eks_cluster_id                = var.addon_context.eks_cluster_id

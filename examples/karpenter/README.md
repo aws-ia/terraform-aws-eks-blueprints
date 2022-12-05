@@ -8,8 +8,8 @@ This example shows how to deploy and leverage Karpenter for Autoscaling. The fol
 - Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
 - Creates EKS Cluster Control plane with one Managed node group with Max ASG of 1
 - Deploys Karpenter Helm Chart
-- Deploys default Karpenter Provisioner (with dedicated node labels ant taint)
-- Deploys default-lt Karpenter Provisioner using Launch Template (with dedicated node labels ant taint)
+- Deploys default Karpenter Provisioner (with dedicated node labels and taint)
+- Deploys default-lt Karpenter Provisioner using Launch Template (with dedicated node labels and taint)
 
 # How to Deploy
 
