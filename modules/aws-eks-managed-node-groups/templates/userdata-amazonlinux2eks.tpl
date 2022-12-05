@@ -5,7 +5,7 @@ Content-Type: multipart/mixed; boundary="//"
 Content-Type: text/x-shellscript; charset="us-ascii"
 #!/bin/bash -xe
 # Log stdout/err to file and console
-exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+# exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
 %{ if length(pre_userdata) > 0 ~}
 # User-supplied pre userdata
