@@ -37,6 +37,11 @@ locals {
     }
   ]
 
+  argocd_gitops_config = {
+    enable             = true
+    serviceAccountName = local.service_account
+  }
+
   irsa_config = {
     kubernetes_namespace              = local.namespace
     kubernetes_service_account        = local.service_account
