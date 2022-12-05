@@ -1,6 +1,6 @@
 # Node Groups
 
-The framework uses dedicated sub modules for creating [AWS Managed Node Groups](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/aws-eks-managed-node-groups), [Self-managed Node groups](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/aws-eks-self-managed-node-groups) and [Fargate profiles](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/aws-eks-fargate-profiles). These modules provide flexibility to add or remove managed/self-managed node groups/fargate profiles by simply adding/removing map of values to input config. See [example](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/eks-cluster-with-new-vpc).
+The framework uses dedicated sub modules for creating AWS Managed Node Groups, Self-managed Node groups and Fargate profiles. These modules provide flexibility to add or remove managed/self-managed node groups/fargate profiles by simply adding/removing map of values to input config.
 
 The `aws-auth` ConfigMap handled by this module allow your nodes to join your cluster, and you also use this ConfigMap to add RBAC access to IAM users and roles.
 Each Node Group can have dedicated IAM role, Launch template and Security Group to improve the security.
@@ -448,7 +448,7 @@ The below example demonstrates the minimum configuration required to deploy a ma
       capacity_type   = "SPOT"
       instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
       subnet_ids      = []  # Mandatory Public or Private Subnet IDs
-      disk_size       = 100 # disk_size will be ignored when using Launch Templates  
+      disk_size       = 100 # disk_size will be ignored when using Launch Templates
       k8s_taints      = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }] // Avoid scheduling stateful workloads in SPOT nodes
     }
 ```
