@@ -30,4 +30,6 @@ module "helm_addon" {
 
   manage_via_gitops = var.manage_via_gitops
   addon_context     = var.addon_context
+
+  depends_on = [kubernetes_namespace_v1.this]
 }
