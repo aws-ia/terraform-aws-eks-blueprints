@@ -137,6 +137,8 @@ resource "kubernetes_role_binding_v1" "adot" {
     kind      = "Role"
     name      = local.eks_addon_role_name
   }
+
+  depends_on = [kubernetes_namespace_v1.adot]
 }
 
 resource "kubernetes_cluster_role_v1" "adot" {
@@ -265,6 +267,8 @@ resource "kubernetes_cluster_role_v1" "adot" {
     resources  = ["subjectaccessreviews"]
     verbs      = ["create"]
   }
+
+  depends_on = [kubernetes_namespace_v1.adot]
 }
 
 resource "kubernetes_cluster_role_binding_v1" "adot" {
@@ -294,5 +298,8 @@ module "helm_addon" {
   helm_config   = local.helm_config
   addon_context = var.addon_context
 
-  depends_on = [module.cert_manager]
+  depends_on = [
+    module.cert_manager,
+    kubernetes_namespace_v1.adot
+  ]
 }
