@@ -63,6 +63,8 @@ module "helm_addon" {
   ] : []
 
   addon_context = var.addon_context
+
+  depends_on = [kubernetes_namespace_v1.prometheus]
 }
 
 resource "kubernetes_namespace_v1" "prometheus" {
