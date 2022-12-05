@@ -91,6 +91,7 @@ locals {
     service_ipv6_cidr      = var.context.service_ipv6_cidr == null ? "" : var.context.service_ipv6_cidr
     service_ipv4_cidr      = var.context.service_ipv4_cidr == null ? "" : var.context.service_ipv4_cidr
     format_mount_nvme_disk = local.managed_node_group["format_mount_nvme_disk"]
+    set_node_instance_label_to_ec2_instance_id = local.managed_node_group["set_node_instance_label_to_ec2_instance_id"]
   }
 
   userdata_base64 = base64encode(
