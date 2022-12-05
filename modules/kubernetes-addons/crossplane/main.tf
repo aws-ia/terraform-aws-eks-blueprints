@@ -41,7 +41,7 @@ resource "kubectl_manifest" "aws_provider" {
 resource "time_sleep" "wait_30_seconds" {
   depends_on = [kubectl_manifest.aws_provider]
 
-  create_duration = "60s"
+  create_duration = "30s"
 }
 
 module "aws_provider_irsa" {
