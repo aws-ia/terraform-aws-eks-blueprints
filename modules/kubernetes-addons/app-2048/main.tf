@@ -43,6 +43,8 @@ resource "kubernetes_deployment_v1" "this" {
       }
     }
   }
+
+  depends_on = [kubernetes_namespace_v1.this]
 }
 
 resource "kubernetes_service_v1" "this" {
@@ -65,6 +67,8 @@ resource "kubernetes_service_v1" "this" {
 
     type = "NodePort"
   }
+
+  depends_on = [kubernetes_namespace_v1.this]
 }
 
 resource "kubernetes_ingress_v1" "this" {
@@ -99,4 +103,6 @@ resource "kubernetes_ingress_v1" "this" {
       }
     }
   }
+
+  depends_on = [kubernetes_namespace_v1.this]
 }
