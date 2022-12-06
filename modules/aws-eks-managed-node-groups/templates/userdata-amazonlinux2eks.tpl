@@ -3,11 +3,9 @@ Content-Type: multipart/mixed; boundary="//"
 
 --//
 Content-Type: text/x-shellscript; charset="us-ascii"
-#!/bin/bash -xe
-# Log stdout/err to file and console
-# exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+#!/bin/bash
+set -ex
 echo "bootstrap.sh: entered"
-logger -t user-data "bootstrap.sh: entered"
 
 %{ if length(pre_userdata) > 0 ~}
 # User-supplied pre userdata
@@ -39,6 +37,7 @@ export SERVICE_IPV6_CIDR=${service_ipv6_cidr}
 B64_CLUSTER_CA=${cluster_ca_base64}
 API_SERVER_URL=${cluster_endpoint}
 %{ if set_node_instance_label_to_ec2_instance_id ~}
+# Fetch instance_id from metadata and insert "instance=${instance_id}" into --node-labels
 EC2_METADATA_API_TOKEN=$(curl --silent -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
 INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $${EC2_METADATA_API_TOKEN}" --silent http://169.254.169.254/latest/meta-data/instance-id)
 kubelet_extra_args=$${kubelet_extra_args/--node-labels=/--node-labels=instance=$${INSTANCE_ID},}
@@ -50,5 +49,4 @@ kubelet_extra_args=$${kubelet_extra_args/--node-labels=/--node-labels=instance=$
 ${post_userdata}
 %{ endif ~}
 echo "bootstrap.sh: exiting"
-logger -t user-data "bootstrap.sh: exiting"
 --//--
