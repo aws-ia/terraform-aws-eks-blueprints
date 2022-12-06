@@ -44,6 +44,12 @@ variable "irsa_iam_role_name" {
   default     = ""
 }
 
+variable "irsa_iam_role_arn" {
+  type        = string
+  description = "Existing IAM role name for IRSA"
+  default     = ""
+}
+
 variable "irsa_iam_role_path" {
   description = "IAM role path for IRSA roles"
   type        = string

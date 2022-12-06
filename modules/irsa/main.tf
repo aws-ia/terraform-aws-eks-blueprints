@@ -30,9 +30,12 @@ resource "kubernetes_secret_v1" "irsa" {
 resource "kubernetes_service_account_v1" "irsa" {
   count = var.create_kubernetes_service_account ? 1 : 0
   metadata {
-    name        = var.kubernetes_service_account
-    namespace   = try(kubernetes_namespace_v1.irsa[0].metadata[0].name, var.kubernetes_namespace)
-    annotations = var.irsa_iam_policies != null ? { "eks.amazonaws.com/role-arn" : aws_iam_role.irsa[0].arn } : null
+    name      = var.kubernetes_service_account
+    namespace = try(kubernetes_namespace_v1.irsa[0].metadata[0].name, var.kubernetes_namespace)
+
+    annotations = var.irsa_iam_policies != null || var.irsa_iam_role_arn != "" ? {
+      "eks.amazonaws.com/role-arn" : (var.irsa_iam_policies != null ? one(aws_iam_role.irsa[*].arn) : (var.irsa_iam_role_arn != "" ? var.irsa_iam_role_arn : null))
+    } : null
   }
 
   dynamic "image_pull_secret" {
