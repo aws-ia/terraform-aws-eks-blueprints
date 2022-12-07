@@ -10,6 +10,8 @@ First, ensure that you have installed the following tools locally.
 2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
+**Note: The execution of this blueprint will fail on Windows operating systems because of maximum filename constraints during the Git clone operation.**
+
 ## Deployment Steps
 
 The following steps will walk you through the deployment of an [example blueprint](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/eks-cluster-with-new-vpc/main.tf). This example will deploy a new VPC, a private EKS cluster with public and private subnets, and one managed node group that will be placed in the private subnets. The example will also deploy the following add-ons into the EKS cluster:
