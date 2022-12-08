@@ -51,6 +51,12 @@ variable "eks_oidc_provider" {
   default     = null
 }
 
+variable "eks_oidc_provider_arn" {
+  description = "The OpenID Connect identity provider ARN"
+  type        = string
+  default     = null
+}
+
 variable "eks_cluster_endpoint" {
   description = "Endpoint for your Kubernetes API server"
   type        = string
@@ -861,6 +867,12 @@ variable "karpenter_node_iam_instance_profile" {
   default     = ""
 }
 
+variable "karpenter_sqs_queue_arn" {
+  description = "(Optional) ARN of SQS used by Karpenter when native node termination handling is enabled"
+  type        = string
+  default     = ""
+}
+
 #-----------KEDA ADDON-------------
 variable "enable_keda" {
   description = "Enable KEDA Event-based autoscaler add-on"
@@ -1377,4 +1389,30 @@ variable "enable_app_2048" {
   description = "Enable sample app 2048"
   type        = bool
   default     = false
+}
+
+#----------- EMR on EKS -----------------------
+variable "enable_emr_on_eks" {
+  description = "Enable EMR on EKS add-on"
+  type        = bool
+  default     = false
+}
+
+variable "emr_on_eks_config" {
+  description = "EMR on EKS Helm configuration values"
+  type        = any
+  default     = {}
+}
+
+#-----------Consul addon-----------------------
+variable "enable_consul" {
+  description = "Enable consul add-on"
+  type        = bool
+  default     = false
+}
+
+variable "consul_helm_config" {
+  description = "Consul Helm Chart config"
+  type        = any
+  default     = {}
 }

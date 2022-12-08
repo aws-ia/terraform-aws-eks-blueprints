@@ -208,6 +208,10 @@ resource "kubernetes_storage_class_v1" "gp3" {
     fsType    = "ext4"
     type      = "gp3"
   }
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
+  ]
 }
 
 resource "kubernetes_storage_class_v1" "efs" {
@@ -221,4 +225,12 @@ resource "kubernetes_storage_class_v1" "efs" {
     fileSystemId     = module.efs.id
     directoryPerms   = "700"
   }
+
+  mount_options = [
+    "iam"
+  ]
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
+  ]
 }
