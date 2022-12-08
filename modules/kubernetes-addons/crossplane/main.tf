@@ -95,7 +95,7 @@ resource "kubectl_manifest" "kubernetes_controller_clusterolebinding" {
 resource "kubectl_manifest" "kubernetes_controller_config" {
   count = local.kubernetes_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-controller-config.yaml", {
-    kubernetes-serviceaccount-name = local.kubernetes_provider.service_account
+    kubernetes-serviceaccount-name = kubernetes_service_account_v1.kubernetes_controller[0].metadata[0].name
     kubernetes-controller-config   = local.kubernetes_provider.controller_config
   })
   wait = true
