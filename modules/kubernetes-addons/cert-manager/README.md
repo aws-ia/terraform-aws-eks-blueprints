@@ -15,9 +15,11 @@ As you can notice the folder name changed from `cert-manager-letsencrypt` to `ce
 Path:
 [terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-acme/Chart.yaml](https://github.com/hakmkoyan/terraform-aws-eks-blueprints/blob/feat/cert-manager/modules/kubernetes-addons/cert-manager/cert-manager-acme/Chart.yaml).<br>
 Everything that was connected with the word 'lets encrypt' changed to `acme`, the version for chart changed from `0.1.0` to `0.2.0`.
+
 <details>
 <summary>File content</summary>
 <p>
+  
 ```yaml
 apiVersion: v2
 name: cert-manager-acme
@@ -28,6 +30,7 @@ appVersion: v0.1.0
 ```
 </p>
 </details>
+
 <br><br>
 
 Path:
