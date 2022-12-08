@@ -11,6 +11,7 @@ locals {
     awsFSxCsiDriver           = var.enable_aws_fsx_csi_driver ? module.aws_fsx_csi_driver[0].argocd_gitops_config : null
     awsForFluentBit           = var.enable_aws_for_fluentbit ? module.aws_for_fluent_bit[0].argocd_gitops_config : null
     awsLoadBalancerController = var.enable_aws_load_balancer_controller ? module.aws_load_balancer_controller[0].argocd_gitops_config : null
+    awsNodeTerminationHandler = var.enable_aws_node_termination_handler ? module.aws_node_termination_handler[0].argocd_gitops_config : null
     certManager               = var.enable_cert_manager ? module.cert_manager[0].argocd_gitops_config : null
     clusterAutoscaler         = var.enable_cluster_autoscaler ? module.cluster_autoscaler[0].argocd_gitops_config : null
     corednsAutoscaler         = var.enable_amazon_eks_coredns && var.enable_coredns_autoscaler && length(var.coredns_autoscaler_helm_config) > 0 ? module.coredns_autoscaler[0].argocd_gitops_config : null
@@ -47,6 +48,7 @@ locals {
     kyverno_policies          = var.enable_kyverno ? { enable = true } : null
     kyverno_policy_reporter   = var.enable_kyverno ? { enable = true } : null
     nvidiaDevicePlugin        = var.enable_nvidia_device_plugin ? module.nvidia_device_plugin[0].argocd_gitops_config : null
+    consul                    = var.enable_consul ? module.consul[0].argocd_gitops_config : null
   }
 
   addon_context = {
@@ -55,7 +57,7 @@ locals {
     aws_eks_cluster_endpoint       = local.eks_cluster_endpoint
     aws_partition_id               = data.aws_partition.current.partition
     aws_region_name                = data.aws_region.current.name
-    eks_cluster_id                 = var.eks_cluster_id
+    eks_cluster_id                 = data.aws_eks_cluster.eks_cluster.id
     eks_oidc_issuer_url            = local.eks_oidc_issuer_url
     eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.eks_oidc_issuer_url}"
     tags                           = var.tags
@@ -86,6 +88,7 @@ locals {
       eu-west-2      = "602401143452.dkr.ecr.eu-west-2.amazonaws.com",
       eu-west-3      = "602401143452.dkr.ecr.eu-west-3.amazonaws.com",
       me-south-1     = "558608220178.dkr.ecr.me-south-1.amazonaws.com",
+      me-central-1   = "759879836304.dkr.ecr.me-central-1.amazonaws.com",
       sa-east-1      = "602401143452.dkr.ecr.sa-east-1.amazonaws.com",
       us-east-1      = "602401143452.dkr.ecr.us-east-1.amazonaws.com",
       us-east-2      = "602401143452.dkr.ecr.us-east-2.amazonaws.com",

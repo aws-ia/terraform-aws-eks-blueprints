@@ -1,7 +1,7 @@
 locals {
-  namespace            = "kube-system"
-  name                 = "aws-node-termination-handler"
-  service_account_name = "${local.name}-sa"
+  namespace       = "kube-system"
+  name            = "aws-node-termination-handler"
+  service_account = try(var.helm_config.service_account, "${local.name}-sa")
 
   # https://github.com/aws/eks-charts/blob/master/stable/aws-node-termination-handler/Chart.yaml
   default_helm_config = {
@@ -26,7 +26,7 @@ locals {
   set_values = [
     {
       name  = "serviceAccount.name"
-      value = local.service_account_name
+      value = local.service_account
     },
     {
       name  = "serviceAccount.create"
@@ -37,9 +37,14 @@ locals {
     }
   ]
 
+  argocd_gitops_config = {
+    enable             = true
+    serviceAccountName = local.service_account
+  }
+
   irsa_config = {
     kubernetes_namespace              = local.namespace
-    kubernetes_service_account        = local.service_account_name
+    kubernetes_service_account        = local.service_account
     create_kubernetes_namespace       = false
     create_kubernetes_service_account = true
     irsa_iam_policies                 = concat([aws_iam_policy.aws_node_termination_handler_irsa.arn], var.irsa_policies)

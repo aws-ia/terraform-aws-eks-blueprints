@@ -4,6 +4,12 @@ variable "helm_config" {
   default     = {}
 }
 
+variable "manage_via_gitops" {
+  description = "Determines if the add-on should be managed via GitOps."
+  type        = bool
+  default     = false
+}
+
 variable "autoscaling_group_names" {
   description = "EKS Node Group ASG names"
   type        = list(string)

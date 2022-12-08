@@ -18,8 +18,14 @@ variable "manage_via_gitops" {
 
 variable "node_iam_instance_profile" {
   description = "Karpenter Node IAM Instance profile id"
-  default     = ""
   type        = string
+  default     = ""
+}
+
+variable "sqs_queue_arn" {
+  description = "(Optional) ARN of SQS used by Karpenter when native node termination handling is enabled"
+  type        = string
+  default     = ""
 }
 
 variable "addon_context" {

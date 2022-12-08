@@ -24,10 +24,7 @@ jobs:
       matrix:
         include:
           - example_path: examples/agones-game-controller
-          - example_path: examples/analytics/emr-on-eks
-          - example_path: examples/analytics/spark-k8s-operator
           - example_path: examples/complete-kubernetes-addons
-          - example_path: examples/crossplane
           - example_path: examples/eks-cluster-with-new-vpc
           - example_path: examples/fargate-serverless
           - example_path: examples/gitops/argocd
@@ -38,6 +35,7 @@ jobs:
           - example_path: examples/multi-tenancy-with-teams
           - example_path: examples/stateful
           - example_path: examples/vpc-cni-custom-networking
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -47,7 +45,7 @@ jobs:
         run: sed -i "s/# //g" ${{ matrix.example_path }}/versions.tf
 
       - name: Auth AWS
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
           aws-region: us-west-2

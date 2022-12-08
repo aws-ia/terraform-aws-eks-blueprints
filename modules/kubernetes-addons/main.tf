@@ -189,6 +189,7 @@ module "aws_node_termination_handler" {
   count                   = var.enable_aws_node_termination_handler && (length(var.auto_scaling_group_names) > 0 || var.enable_karpenter) ? 1 : 0
   source                  = "./aws-node-termination-handler"
   helm_config             = var.aws_node_termination_handler_helm_config
+  manage_via_gitops       = var.argocd_manage_add_ons
   irsa_policies           = var.aws_node_termination_handler_irsa_policies
   autoscaling_group_names = var.auto_scaling_group_names
   addon_context           = local.addon_context
@@ -321,11 +322,14 @@ module "ingress_nginx" {
 }
 
 module "karpenter" {
-  count                     = var.enable_karpenter ? 1 : 0
-  source                    = "./karpenter"
+  source = "./karpenter"
+
+  count = var.enable_karpenter ? 1 : 0
+
   helm_config               = var.karpenter_helm_config
   irsa_policies             = var.karpenter_irsa_policies
   node_iam_instance_profile = var.karpenter_node_iam_instance_profile
+  sqs_queue_arn             = var.karpenter_sqs_queue_arn
   manage_via_gitops         = var.argocd_manage_add_ons
   addon_context             = local.addon_context
 }
@@ -755,4 +759,46 @@ module "app_2048" {
   source = "./app-2048"
 
   count = var.enable_app_2048 ? 1 : 0
+}
+
+module "emr_on_eks" {
+  source = "./emr-on-eks"
+
+  for_each = { for k, v in var.emr_on_eks_config : k => v if var.enable_emr_on_eks }
+
+  # Kubernetes Namespace + Role/Role Binding
+  create_namespace       = try(each.value.create_namespace, true)
+  namespace              = try(each.value.namespace, each.value.name, each.key)
+  create_kubernetes_role = try(each.value.create_kubernetes_role, true)
+
+  # Job Execution Role
+  create_iam_role               = try(each.value.create_iam_role, true)
+  oidc_provider_arn             = var.eks_oidc_provider_arn
+  s3_bucket_arns                = try(each.value.s3_bucket_arns, ["*"])
+  role_name                     = try(each.value.role_name, each.value.name, each.key)
+  iam_role_use_name_prefix      = try(each.value.iam_role_use_name_prefix, true)
+  iam_role_path                 = try(each.value.iam_role_path, null)
+  iam_role_description          = try(each.value.iam_role_description, null)
+  iam_role_permissions_boundary = try(each.value.iam_role_permissions_boundary, null)
+  iam_role_additional_policies  = try(each.value.iam_role_additional_policies, {})
+
+  # Cloudwatch Log Group
+  create_cloudwatch_log_group            = try(each.value.create_cloudwatch_log_group, true)
+  cloudwatch_log_group_arn               = try(each.value.cloudwatch_log_group_arn, "arn:aws:logs:*:*:*")
+  cloudwatch_log_group_retention_in_days = try(each.value.cloudwatch_log_group_retention_in_days, 7)
+  cloudwatch_log_group_kms_key_id        = try(each.value.cloudwatch_log_group_kms_key_id, null)
+
+  # EMR Virtual Cluster
+  name           = try(each.value.name, each.key)
+  eks_cluster_id = data.aws_eks_cluster.eks_cluster.id # Data source is tied to `sleep` to ensure data plane is ready first
+
+  tags = merge(var.tags, try(each.value.tags, {}))
+}
+
+module "consul" {
+  count             = var.enable_consul ? 1 : 0
+  source            = "./consul"
+  helm_config       = var.consul_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
