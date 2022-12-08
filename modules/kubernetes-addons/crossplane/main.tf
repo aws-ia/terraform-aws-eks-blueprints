@@ -45,7 +45,7 @@ resource "time_sleep" "wait_30_seconds" {
 }
 
 module "aws_provider_irsa" {
-  count                             = local.aws_provider.enable == true ? 1 : 0
+  count                             = try(local.aws_provider.enable, true) ? 1 : 0
   source                            = "../../../modules/irsa"
   create_kubernetes_namespace       = false
   create_kubernetes_service_account = false
