@@ -4,7 +4,7 @@ kind: ControllerConfig
 metadata:
   name: ${aws-controller-config}
   annotations:
-      eks.amazonaws.com/role-arn: ${iam-role-arn}
+    eks.amazonaws.com/role-arn: ${iam-role-arn}
 spec:
   podSecurityContext:
     fsGroup: 2000
