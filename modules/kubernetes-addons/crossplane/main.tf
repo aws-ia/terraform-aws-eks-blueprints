@@ -85,7 +85,7 @@ resource "kubectl_manifest" "kubernetes_controller_clusterolebinding" {
   yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-controller-clusterrolebinding.yaml", {
     namespace                      = local.namespace
     cluster-role                   = local.kubernetes_provider.cluster_role
-    kubernetes-serviceaccount-name = local.kubernetes_provider.service_account
+    kubernetes-serviceaccount-name = kubernetes_service_account_v1.kubernetes_controller[0].metadata[0].name
   })
   wait = true
 
