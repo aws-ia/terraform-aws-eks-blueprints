@@ -1,8 +1,34 @@
 # Cert Manager Deployment Guide
 
+
 ## Introduction
 
 Cert Manager adds certificates and certificate issuers as resource types in Kubernetes clusters, and simplifies the process of obtaining, renewing and using those certificates.
+
+## Global Changes
+The old version of a chart was only creating `ClusterIssuer` resource with custom chart, path: `terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-letsencrypt`, so the `Certificate` resource should have been built by a user manually. Also the chart was based only on specific ACME Certificate Authority `Let's Encrypt`, based on some searches appeared that there are a bunch of ACME Certificate Authorities that can replace `Let's Encrypt`, such as `ZeroSSL`. Below will be the details of changes.
+#### *Chart*:
+Path: 
+`terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/`**`cert-manager-acme.`** <br>
+As you can notice the folder name changed from `cert-manager-letsencrypt` to `cert-manager-acme`, as now the chart is not only based on `Let's Encrypt`, but the user should determine what `ACME CA` it want to use.<br><br>
+Path:
+`terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-acme/Chart.yaml`.<br>
+Everything that was connected with the word 'lets encrypt' changed to `acme`, the version for chart changed from `0.1.0` to `0.2.0`.<br><br>
+Path:
+`terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-acme/values.yaml`.<br>
+The values `email, region & dnsZones` *REMAINED* the same, the values `name, externalAccountBinding: {keyID: "", secretKey: ""}, preferredChain, acmeServerUrl, hostedZoneID, commonName, isCA` were *ADDED*.<br><br>
+Path:
+`terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-letsencrypt/templates`.<br>
+As you can notice the files `clusterissuer-staging.yaml & clusterissuer-production.yaml` disappeared, *BUT* actually one of them was modified to generic `ACME` template. Now the `ClusterIssuer` template's `ACME CA endpoint` is not hardcoded to `lets encrypt's endpoint`, it will take its value from the user's variable.If now the user is able to choose its own `ACME CA`, from this there is the second problem that in some cases of ACME usage, like `ZeroSSL`, there would have been a problem to pass a credentials of `ACME CA` to `ClusterIssuer`. So the user is now able to pass a credentials of `ACME CA` to the chart with `externalAccountBinding`. Also the user now is able to select specific `hosted zone` for its Route53. More detailed keys are below.<br><br>
+Path: `terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-acme/templates/acme-server-secretkey-secret.yaml`.<br>
+This is the `Secret` template of the `externalAccountBinding`, so the user could be able to deploy the `ACME CA's` credentials, with encoded `Secret` resource.<br><br>
+Path: `terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-acme/templates/certificate.yaml`.<br>
+In the previous version the `Certificate` resource was not deployed, it remained on the user to deploy that manifest manually, but now the user can pass the parameters of the `Certificate` resource and it will be created automatically with the chart, and will request the certificate.
+#### *Terraform Module*:
+Path: `terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/variables.tf`. <br>
+The `install_letsencrypt_issuers & letsencrypt_email` *CHANGED* to `install_acme_issuers & email`, the `cluster_issuer_name, external_account_keyID, external_account_secret_key, preferred_chain, acme_server_url, dns_region, common_name, is_ca, dns_names, hosted_zone_id` were *ADDED*. More details of variables below.<br><br>
+Path: `terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/main.tf`. <br>
+In the resource block `cert_manager_letsencrypt` everything named `letsencrypt` changed to `acme`. Added `set` blocks which will change the values of `cert-manager-acme` folder's `values.yaml` file. By default these variables matching to values with `set` block are empty `""` or if boolean, by default `false`.
 
 ## Helm Chart
 
