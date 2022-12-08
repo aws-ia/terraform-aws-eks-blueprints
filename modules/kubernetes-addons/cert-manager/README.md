@@ -35,17 +35,129 @@ appVersion: v0.1.0
 
 Path:
 [terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-acme/values.yaml](https://github.com/hakmkoyan/terraform-aws-eks-blueprints/blob/feat/cert-manager/modules/kubernetes-addons/cert-manager/cert-manager-acme/values.yaml).<br>
-The values `email, region & dnsZones` *REMAINED* the same, the values `name, externalAccountBinding: {keyID: "", secretKey: ""}, preferredChain, acmeServerUrl, hostedZoneID, commonName, isCA` were *ADDED*.<br><br>
+The values `email, region & dnsZones` *REMAINED* the same, the values `name, externalAccountBinding: {keyID: "", secretKey: ""}, preferredChain, acmeServerUrl, hostedZoneID, commonName, isCA` were *ADDED*.
+
+<details>
+<summary>File content</summary>
+<p>
+  
+```yaml
+#Cluster Issuer
+name: example                                                         #Required
+email: example@gmail.com                                              #Recommended
+externalAccountBinding:                                               #Optional
+  keyID:                                                              #Required if using external account binding
+  secretKey:                                                          #Required if using external account binding
+preferredChain: "ISRG Root X1"                                        #Optional
+acmeServerUrl: https://acme-staging-v02.api.letsencrypt.org/directory #Required
+hostedZoneID:                                                         #Optional
+region: global                                                        #Required
+dnsZones:                                                             #(List of dns zones) Optional
+  - domain.name
+#Certificate
+commonName: example.com
+isCA: true
+```
+</p>
+</details>
+
+<br><br>
 
 Path:
 [terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-letsencrypt/templates](https://github.com/hakmkoyan/terraform-aws-eks-blueprints/tree/feat/cert-manager/modules/kubernetes-addons/cert-manager/cert-manager-acme/templates).<br>
-As you can notice the files `clusterissuer-staging.yaml & clusterissuer-production.yaml` disappeared, *BUT* actually one of them was modified to generic `ACME` template. Now the `ClusterIssuer` template's `ACME CA endpoint` is not hardcoded to `lets encrypt's endpoint`, it will take its value from the user's variable.If now the user is able to choose its own `ACME CA`, from this there is the second problem that in some cases of ACME usage, like `ZeroSSL`, there would have been a problem to pass a credentials of `ACME CA` to `ClusterIssuer`. So the user is now able to pass a credentials of `ACME CA` to the chart with `externalAccountBinding`. Also the user now is able to select specific `hosted zone` for its Route53. More detailed keys are below.<br><br>
+As you can notice the files `clusterissuer-staging.yaml & clusterissuer-production.yaml` disappeared, *BUT* actually one of them was modified to generic `ACME` template. Now the `ClusterIssuer` template's `ACME CA endpoint` is not hardcoded to `lets encrypt's endpoint`, it will take its value from the user's variable.If now the user is able to choose its own `ACME CA`, from this there is the second problem that in some cases of ACME usage, like `ZeroSSL`, there would have been a problem to pass a credentials of `ACME CA` to `ClusterIssuer`. So the user is now able to pass a credentials of `ACME CA` to the chart with `externalAccountBinding`. Also the user now is able to select specific `hosted zone` for its Route53. More detailed keys are below.
+<details>
+<summary>Cluster Issuer File: clusterissuer-acme.yaml</summary>
+<p>
+  
+```yaml
+{{- with .Values }}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ required "Prefix of certificate and cluster issuer is required." .name }}-route53-clusterissuer
+spec:
+  acme:
+    {{- if .email }}
+    email: {{ .email | quote }}
+    {{- end }}
+    {{- if .preferredChain }}
+    preferredChain: {{ .preferredChain | quote }}
+    {{- end }}
+    {{- if .externalAccountBinding.keyID }}
+    externalAccountBinding:
+      keyID: {{ .externalAccountBinding.keyID | quote }}
+      keySecretRef:
+        key: secret
+        name: {{ .name }}-acme-server-secretkey
+    {{- end }}
+    privateKeySecretRef:
+      name: {{ .name }}-route53-secretkeyref
+    server: {{ .acmeServerUrl | quote }}
+    solvers:
+    - dns01:
+        route53:
+          {{- if .hostedZoneID }}
+          hostedZoneID: {{ .hostedZoneID }}
+          {{- end }}
+          region: {{ .region | default "global" | quote }}
+      {{- if .dnsZones }}
+      selector:
+        dnsZones:
+        {{- .dnsZones | toYaml | nindent 12 }}
+      {{- end }}
+{{- end }}
+```
+</p>
+</details>
+<br><br>
 
 Path: [terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-acme/templates/acme-server-secretkey-secret.yaml](https://github.com/hakmkoyan/terraform-aws-eks-blueprints/blob/feat/cert-manager/modules/kubernetes-addons/cert-manager/cert-manager-acme/templates/acme-server-secretkey-secret.yaml).<br>
-This is the `Secret` template of the `externalAccountBinding`, so the user could be able to deploy the `ACME CA's` credentials, with encoded `Secret` resource.<br><br>
+This is the `Secret` template of the `externalAccountBinding`, so the user could be able to deploy the `ACME CA's` credentials, with encoded `Secret` resource.
+<details>
+<summary>File content</summary>
+<p>
+  
+```yaml
+{{- if .Values.externalAccountBinding.secretKey }}
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: cert-manager
+  name: {{ .Values.name }}-acme-server-secretkey
+stringData:
+  secret: {{ .Values.externalAccountBinding.secretKey | quote }}
+{{- end }}
+```
+</p>
+</details>
+<br><br>
 
 Path: [terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-acme/templates/certificate.yaml](https://github.com/hakmkoyan/terraform-aws-eks-blueprints/blob/feat/cert-manager/modules/kubernetes-addons/cert-manager/cert-manager-acme/templates/certificate.yaml).<br>
 In the previous version the `Certificate` resource was not deployed, it remained on the user to deploy that manifest manually, but now the user can pass the parameters of the `Certificate` resource and it will be created automatically with the chart, and will request the certificate.
+<details>
+<summary>File content</summary>
+<p>
+  
+```yaml
+{{- with .Values }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+    name: {{ .name }}-certificate
+spec:
+  commonName: {{ .commonName | quote }}
+  isCA: {{ .isCA }}
+  issuerRef:
+    kind: "ClusterIssuer"
+    name: {{ .name }}-route53-clusterissuer
+  secretName: {{ .name }}-certificate-secret
+  dnsNames:
+  {{ .dnsZones | toYaml | indent 4 }}
+{{- end -}}
+```
+</p>
+</details>
 
 #### *Terraform Module*:
 Path: [terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/variables.tf](https://github.com/hakmkoyan/terraform-aws-eks-blueprints/blob/feat/cert-manager/modules/kubernetes-addons/cert-manager/variables.tf). <br>
