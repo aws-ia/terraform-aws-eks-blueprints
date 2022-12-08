@@ -10,7 +10,7 @@ The older version of a chart was only creating `ClusterIssuer` resource with cus
 
 Path: 
 [terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-acme.](https://github.com/hakmkoyan/terraform-aws-eks-blueprints/tree/feat/cert-manager/modules/kubernetes-addons/cert-manager/cert-manager-acme) <br>
-As you can notice the folder name changed from `cert-manager-letsencrypt` to `cert-manager-acme`, as now the chart is not only based on `Let's Encrypt`, but the user should determine what `ACME CA` it want to use.<br><br>
+As you can notice the folder name changed from `cert-manager-letsencrypt` to `cert-manager-acme`, as now the chart is not only based on `Let's Encrypt`, but the user should determine what `ACME CA` it want to use.<br>
 
 Path:
 [terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-acme/Chart.yaml](https://github.com/hakmkoyan/terraform-aws-eks-blueprints/blob/feat/cert-manager/modules/kubernetes-addons/cert-manager/cert-manager-acme/Chart.yaml).<br>
@@ -31,7 +31,7 @@ appVersion: v0.1.0
 </p>
 </details>
 
-<br><br>
+<br>
 
 Path:
 [terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-acme/values.yaml](https://github.com/hakmkoyan/terraform-aws-eks-blueprints/blob/feat/cert-manager/modules/kubernetes-addons/cert-manager/cert-manager-acme/values.yaml).<br>
@@ -61,7 +61,7 @@ isCA: true
 </p>
 </details>
 
-<br><br>
+<br>
 
 Path:
 [terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-letsencrypt/templates](https://github.com/hakmkoyan/terraform-aws-eks-blueprints/tree/feat/cert-manager/modules/kubernetes-addons/cert-manager/cert-manager-acme/templates).<br>
@@ -110,7 +110,7 @@ spec:
 ```
 </p>
 </details>
-<br><br>
+<br>
 
 Path: [terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-acme/templates/acme-server-secretkey-secret.yaml](https://github.com/hakmkoyan/terraform-aws-eks-blueprints/blob/feat/cert-manager/modules/kubernetes-addons/cert-manager/cert-manager-acme/templates/acme-server-secretkey-secret.yaml).<br>
 This is the `Secret` template of the `externalAccountBinding`, so the user could be able to deploy the `ACME CA's` credentials, with encoded `Secret` resource.
@@ -131,7 +131,7 @@ stringData:
 ```
 </p>
 </details>
-<br><br>
+<br>
 
 Path: [terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/cert-manager-acme/templates/certificate.yaml](https://github.com/hakmkoyan/terraform-aws-eks-blueprints/blob/feat/cert-manager/modules/kubernetes-addons/cert-manager/cert-manager-acme/templates/certificate.yaml).<br>
 In the previous version the `Certificate` resource was not deployed, it remained on the user to deploy that manifest manually, but now the user can pass the parameters of the `Certificate` resource and it will be created automatically with the chart, and will request the certificate.
@@ -289,7 +289,7 @@ variable "hosted_zone_id" {
 </p>
 </details>
 
-<br><br>
+<br>
 
 Path: [terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/main.tf](https://github.com/hakmkoyan/terraform-aws-eks-blueprints/blob/feat/cert-manager/modules/kubernetes-addons/cert-manager/main.tf). <br>
 In the resource block `cert_manager_letsencrypt` everything named `letsencrypt` changed to `acme`. Added `set` blocks which will change the values of `cert-manager-acme` folder's `values.yaml` file. By default these variables matching to values with `set` block are empty `""` or if boolean, by default `false`.
