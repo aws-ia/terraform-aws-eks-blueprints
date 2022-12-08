@@ -18,7 +18,7 @@ module "helm_addon" {
 # AWS Provider
 #--------------------------------------
 resource "kubectl_manifest" "aws_controller_config" {
-  count = local.aws_provider.enable == true ? 1 : 0
+  count = try(local.aws_provider.enable, true) ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-controller-config.yaml", {
     iam-role-arn          = "arn:${var.addon_context.aws_partition_id}:iam::${var.addon_context.aws_caller_identity_account_id}:role/${var.addon_context.eks_cluster_id}-${local.aws_provider.name}-irsa"
     aws-controller-config = local.aws_provider.controller_config
