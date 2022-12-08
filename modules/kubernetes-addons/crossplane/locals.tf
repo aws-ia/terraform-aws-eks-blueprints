@@ -23,7 +23,7 @@ locals {
 
   aws_provider = merge({
     provider_aws_version     = "v0.34.0"
-    additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+    additional_irsa_policies = ["arn:${var.addon_context.aws_partition_id}:iam::aws:policy/AdministratorAccess"]
     name                     = "aws-provider"
     service_account          = "aws-provider"
     provider_config          = "default"
