@@ -294,7 +294,7 @@ variable "hosted_zone_id" {
 Path: [terraform-aws-eks-blueprints/modules/kubernetes-addons/cert-manager/main.tf](https://github.com/hakmkoyan/terraform-aws-eks-blueprints/blob/feat/cert-manager/modules/kubernetes-addons/cert-manager/main.tf). <br>
 In the resource block `cert_manager_letsencrypt` everything named `letsencrypt` changed to `acme`. Added `set` blocks which will change the values of `cert-manager-acme` folder's `values.yaml` file. By default these variables matching to values with `set` block are empty `""` or if boolean, by default `false`.
 <details>
-<summary>Changed content</summary>
+<summary>File content</summary>
 <p>
   
 ```yaml
