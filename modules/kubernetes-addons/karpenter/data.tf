@@ -37,4 +37,18 @@ data "aws_iam_policy_document" "karpenter" {
       values   = ["*karpenter*"]
     }
   }
+
+  dynamic "statement" {
+    for_each = var.sqs_queue_arn != "" ? [1] : []
+
+    content {
+      actions = [
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes",
+        "sqs:GetQueueUrl",
+        "sqs:ReceiveMessage",
+      ]
+      resources = [var.sqs_queue_arn]
+    }
+  }
 }

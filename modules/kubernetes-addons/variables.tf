@@ -503,6 +503,25 @@ variable "tetrate_istio_gateway_helm_config" {
   default     = {}
 }
 
+#-----------THANOS-------------
+variable "enable_thanos" {
+  description = "Enable Thanos add-on"
+  type        = bool
+  default     = false
+}
+
+variable "thanos_helm_config" {
+  description = "Thanos Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "thanos_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
+}
+
 #-----------TRAEFIK-------------
 variable "enable_traefik" {
   description = "Enable Traefik add-on"
@@ -863,6 +882,12 @@ variable "karpenter_irsa_policies" {
 
 variable "karpenter_node_iam_instance_profile" {
   description = "Karpenter Node IAM Instance profile id"
+  type        = string
+  default     = ""
+}
+
+variable "karpenter_sqs_queue_arn" {
+  description = "(Optional) ARN of SQS used by Karpenter when native node termination handling is enabled"
   type        = string
   default     = ""
 }
@@ -1394,6 +1419,19 @@ variable "enable_emr_on_eks" {
 
 variable "emr_on_eks_config" {
   description = "EMR on EKS Helm configuration values"
+  type        = any
+  default     = {}
+}
+
+#-----------Consul addon-----------------------
+variable "enable_consul" {
+  description = "Enable consul add-on"
+  type        = bool
+  default     = false
+}
+
+variable "consul_helm_config" {
+  description = "Consul Helm Chart config"
   type        = any
   default     = {}
 }
