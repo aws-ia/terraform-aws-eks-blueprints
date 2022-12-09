@@ -35,7 +35,7 @@ module "aws_provider_irsa" {
 resource "kubectl_manifest" "aws_controller_config" {
   count = try(local.aws_provider.enable, true) ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-controller-config.yaml", {
-    iam-role-arn          = module.aws_provider_irsa.irsa_iam_role_arn
+    iam-role-arn          = module.aws_provider_irsa[0].irsa_iam_role_arn
     aws-controller-config = local.aws_provider.controller_config
   })
 }
