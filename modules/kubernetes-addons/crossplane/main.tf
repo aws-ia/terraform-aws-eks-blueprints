@@ -30,7 +30,7 @@ module "aws_provider_irsa" {
   eks_cluster_id                    = var.addon_context.eks_cluster_id
   eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn
 
-  depends_on                        = [kubectl_manifest.aws_provider]
+  depends_on = [kubectl_manifest.aws_provider]
 }
 
 resource "kubectl_manifest" "aws_controller_config" {
@@ -45,11 +45,11 @@ resource "kubectl_manifest" "aws_controller_config" {
 resource "kubectl_manifest" "aws_provider" {
   count = try(var.aws_provider.enable, true) ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-provider.yaml", {
-    provider-aws-version = local.aws_provider.provider_aws_version
-    aws-provider-name    = local.aws_provider.name
+    provider-aws-version  = local.aws_provider.provider_aws_version
+    aws-provider-name     = local.aws_provider.name
     aws-controller-config = local.aws_provider.controller_config
   })
-  wait       = true
+  wait = true
 
   depends_on = [kubectl_manifest.aws_controller_config]
 }
@@ -64,7 +64,7 @@ resource "time_sleep" "wait_30_seconds" {
 resource "kubectl_manifest" "aws_provider_config" {
   count = local.aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-provider-config.yaml", {
-    aws-provider-config          = local.aws_provider.provider_config
+    aws-provider-config = local.aws_provider.provider_config
   })
 
   depends_on = [kubectl_manifest.aws_provider, time_sleep.wait_30_seconds]

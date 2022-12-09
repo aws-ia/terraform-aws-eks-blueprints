@@ -64,6 +64,7 @@ Refer to [docs](../../../docs/add-ons/crossplane.md) on how to deploy AWS Provid
 | [kubernetes_namespace_v1.crossplane](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace_v1) | resource |
 | [kubernetes_service_account_v1.kubernetes_controller](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account_v1) | resource |
 | [time_sleep.wait_30_seconds](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
+| [time_sleep.wait_30_seconds_kubernetes](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 
 ## Inputs
 
