@@ -36,7 +36,7 @@ module "aws_provider_irsa" {
 resource "kubectl_manifest" "aws_controller_config" {
   count = try(local.aws_provider.enable, true) ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-controller-config.yaml", {
-    iam-role-arn          = aws_provider_irsa.irsa_iam_role_arn
+    iam-role-arn          = module.aws_provider_irsa.irsa_iam_role_arn
     aws-controller-config = local.aws_provider.controller_config
   })
   depends_on = [module.helm_addon]
@@ -87,7 +87,7 @@ resource "kubectl_manifest" "kubernetes_controller_clusterolebinding" {
   yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-controller-clusterrolebinding.yaml", {
     namespace                      = local.namespace
     cluster-role                   = local.kubernetes_provider.cluster_role
-    kubernetes-serviceaccount-name = kubernetes_service_account_v1.kubernetes_controller.metadata.name
+    kubernetes-serviceaccount-name = kubernetes_service_account_v1.kubernetes_controller.metadata[0].name
   })
   wait = true
 
@@ -97,7 +97,7 @@ resource "kubectl_manifest" "kubernetes_controller_clusterolebinding" {
 resource "kubectl_manifest" "kubernetes_controller_config" {
   count = local.kubernetes_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-controller-config.yaml", {
-    kubernetes-serviceaccount-name = kubernetes_service_account_v1.kubernetes_controller.metadata.name
+    kubernetes-serviceaccount-name = kubernetes_service_account_v1.kubernetes_controller.metadata[0].name
     kubernetes-controller-config   = local.kubernetes_provider.controller_config
   })
   wait = true
@@ -130,5 +130,5 @@ resource "kubectl_manifest" "kubernetes_provider_config" {
     kubernetes-provider-config = local.kubernetes_provider.provider_config
   })
 
-  depends_on = [kubectl_manifest.kubernetes_provider, wait_30_seconds_kubernetes]
+  depends_on = [kubectl_manifest.kubernetes_provider, time_sleep.wait_30_seconds_kubernetes]
 }
