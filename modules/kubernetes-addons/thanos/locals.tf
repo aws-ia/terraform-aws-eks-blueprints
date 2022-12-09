@@ -20,6 +20,22 @@ locals {
     {
       name  = "serviceAccount.create"
       value = false
+    },
+    {
+    name  = "queryFrontend.serviceAccount.name"
+    value = local.service_account
+    },
+    {
+      name  = "queryFrontend.serviceAccount.create"
+      value = false
+    },
+    {
+    name  = "bucketweb.serviceAccount.name"
+    value = local.service_account
+    },
+    {
+      name  = "bucketweb.serviceAccount.create"
+      value = false
     }
   ]
   irsa_config = {
