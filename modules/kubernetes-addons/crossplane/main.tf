@@ -17,10 +17,26 @@ module "helm_addon" {
 #--------------------------------------
 # AWS Provider
 #--------------------------------------
+module "aws_provider_irsa" {
+  count                             = try(local.aws_provider.enable, true) ? 1 : 0
+  source                            = "../../../modules/irsa"
+  create_kubernetes_namespace       = false
+  create_kubernetes_service_account = false
+  kubernetes_namespace              = local.namespace
+  kubernetes_service_account        = "${local.aws_provider.name}-*"
+  irsa_iam_policies                 = local.aws_provider.additional_irsa_policies
+  irsa_iam_role_path                = var.addon_context.irsa_iam_role_path
+  irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
+  eks_cluster_id                    = var.addon_context.eks_cluster_id
+  eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn
+
+  depends_on                        = [kubectl_manifest.aws_provider]
+}
+
 resource "kubectl_manifest" "aws_controller_config" {
   count = try(local.aws_provider.enable, true) ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-controller-config.yaml", {
-    iam-role-arn          = "arn:${var.addon_context.aws_partition_id}:iam::${var.addon_context.aws_caller_identity_account_id}:role/${var.addon_context.eks_cluster_id}-${local.aws_provider.name}-irsa"
+    iam-role-arn          = aws_provider_irsa.irsa_iam_role_arn
     aws-controller-config = local.aws_provider.controller_config
   })
   depends_on = [module.helm_addon]
@@ -34,29 +50,15 @@ resource "kubectl_manifest" "aws_provider" {
     aws-controller-config = local.aws_provider.controller_config
   })
   wait       = true
+
   depends_on = [kubectl_manifest.aws_controller_config]
 }
 
 # Wait for the AWS Provider CRDs to be fully created before initiating aws_provider_config deployment
 resource "time_sleep" "wait_30_seconds" {
-  depends_on = [kubectl_manifest.aws_provider]
-
   create_duration = "30s"
-}
 
-module "aws_provider_irsa" {
-  count                             = try(local.aws_provider.enable, true) ? 1 : 0
-  source                            = "../../../modules/irsa"
-  create_kubernetes_namespace       = false
-  create_kubernetes_service_account = false
-  kubernetes_namespace              = local.namespace
-  kubernetes_service_account        = "${local.aws_provider.name}-*"
-  irsa_iam_policies                 = local.aws_provider.additional_irsa_policies
-  irsa_iam_role_path                = var.addon_context.irsa_iam_role_path
-  irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
-  eks_cluster_id                    = var.addon_context.eks_cluster_id
-  eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn
-  depends_on                        = [kubectl_manifest.aws_provider]
+  depends_on = [kubectl_manifest.aws_provider]
 }
 
 resource "kubectl_manifest" "aws_provider_config" {
@@ -115,11 +117,18 @@ resource "kubectl_manifest" "kubernetes_provider" {
   depends_on = [kubectl_manifest.kubernetes_controller_config]
 }
 
+# Wait for the AWS Provider CRDs to be fully created before initiating aws_provider_config deployment
+resource "time_sleep" "wait_30_seconds_kubernetes" {
+  create_duration = "30s"
+
+  depends_on = [kubectl_manifest.kubernetes_provider]
+}
+
 resource "kubectl_manifest" "kubernetes_provider_config" {
   count = local.kubernetes_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-provider-config.yaml", {
     kubernetes-provider-config = local.kubernetes_provider.provider_config
   })
 
-  depends_on = [kubectl_manifest.kubernetes_provider]
+  depends_on = [kubectl_manifest.kubernetes_provider, wait_30_seconds_kubernetes]
 }
