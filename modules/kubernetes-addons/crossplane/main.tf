@@ -30,7 +30,6 @@ module "aws_provider_irsa" {
   eks_cluster_id                    = var.addon_context.eks_cluster_id
   eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn
 
-  depends_on = [kubectl_manifest.aws_provider]
 }
 
 resource "kubectl_manifest" "aws_controller_config" {
