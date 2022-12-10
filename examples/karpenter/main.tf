@@ -114,7 +114,7 @@ module "eks_blueprints" {
 
       subnet_ids   = module.vpc.private_subnets
       max_size     = 2
-      desired_size = 1
+      desired_size = 2
       min_size     = 1
       update_config = [{
         max_unavailable_percentage = 30
