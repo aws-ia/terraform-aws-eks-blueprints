@@ -109,12 +109,12 @@ module "eks_blueprints" {
   # You can also make uses on nodeSelector and Taints/tolerations to spread workloads on MNG or Karpenter provisioners
   managed_node_groups = {
     mg_5 = {
-      node_group_name = "managed-ondemand"
+      node_group_name = local.node_group_name
       instance_types  = ["m5.large"]
 
       subnet_ids   = module.vpc.private_subnets
-      max_size     = 2
-      desired_size = 1
+      max_size     = 5
+      desired_size = 2
       min_size     = 1
       update_config = [{
         max_unavailable_percentage = 30
