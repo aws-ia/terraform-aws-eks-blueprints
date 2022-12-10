@@ -1,5 +1,7 @@
-data "aws_sqs_queue" "karpenter" {
-  name = var.sqs_queue_name
+data "aws_arn" "karpenter" {
+  for_each = var.sqs_queue_arn != "" ? 1 : 0
+
+  arn = var.sqs_queue_arn
 }
 
 data "aws_iam_policy_document" "karpenter" {
@@ -43,7 +45,7 @@ data "aws_iam_policy_document" "karpenter" {
   }
 
   dynamic "statement" {
-    for_each = var.sqs_queue_name != "" ? [1] : []
+    for_each = var.sqs_queue_arn != "" ? [1] : []
 
     content {
       actions = [
@@ -52,7 +54,7 @@ data "aws_iam_policy_document" "karpenter" {
         "sqs:GetQueueUrl",
         "sqs:ReceiveMessage",
       ]
-      resources = [data.aws_sqs_queue.karpenter.arn]
+      resources = [var.sqs_queue_arn]
     }
   }
 }
