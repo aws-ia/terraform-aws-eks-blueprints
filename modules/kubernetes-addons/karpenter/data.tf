@@ -52,7 +52,7 @@ data "aws_iam_policy_document" "karpenter" {
         "sqs:GetQueueUrl",
         "sqs:ReceiveMessage",
       ]
-      resources = [data.sqs_queue_arn.karpenter.arn]
+      resources = [data.aws_sqs_queue.karpenter.arn]
     }
   }
 }
