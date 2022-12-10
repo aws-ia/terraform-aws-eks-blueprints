@@ -1,5 +1,5 @@
 data "aws_arn" "queue" {
-  for_each = var.sqs_queue_arn != "" ? 1 : 0
+  count = var.sqs_queue_arn != "" ? 1 : 0
 
   arn = var.sqs_queue_arn
 }
