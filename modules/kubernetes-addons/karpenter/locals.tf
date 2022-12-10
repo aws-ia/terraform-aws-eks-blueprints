@@ -26,7 +26,7 @@ locals {
               clusterName: ${var.addon_context.eks_cluster_id}
               clusterEndpoint: ${var.addon_context.aws_eks_cluster_endpoint}
               defaultInstanceProfile: ${var.node_iam_instance_profile}
-              interruptionQueueName: ${data.aws_arn.karpenter.resource}
+              interruptionQueueName: ${data.aws_arn.karpenter[0].resource}
         EOT
       ]
       description = "karpenter Helm Chart for Node Autoscaling"
