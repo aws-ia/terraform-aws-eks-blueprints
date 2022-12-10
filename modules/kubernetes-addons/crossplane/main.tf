@@ -38,6 +38,8 @@ resource "kubectl_manifest" "aws_controller_config" {
     iam-role-arn          = module.aws_provider_irsa[0].irsa_iam_role_arn
     aws-controller-config = local.aws_provider.controller_config
   })
+
+  depends_on = [module.helm_addon]
 }
 
 resource "kubectl_manifest" "aws_provider" {
