@@ -22,8 +22,8 @@ variable "node_iam_instance_profile" {
   default     = ""
 }
 
-variable "sqs_queue_arn" {
-  description = "(Optional) ARN of SQS used by Karpenter when native node termination handling is enabled"
+variable "sqs_queue_name" {
+  description = "(Optional) Name of SQS used by Karpenter when native node termination handling is enabled"
   type        = string
   default     = ""
 }
