@@ -16,6 +16,8 @@ You can optionally customize the Helm chart that deploys `Karpenter` via the fol
 
 ```hcl
   enable_karpenter = true
+  # Optional  karpenter_sqs_queue_name
+  karpenter_sqs_queue_name = "karpenter-node-termination-handler"
   # Optional  karpenter_helm_config
   karpenter_helm_config = {
     name                       = "karpenter"
