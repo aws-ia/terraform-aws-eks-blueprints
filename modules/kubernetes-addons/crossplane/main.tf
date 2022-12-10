@@ -71,6 +71,60 @@ resource "kubectl_manifest" "aws_provider_config" {
 }
 
 #--------------------------------------
+# Terrajet AWS Provider (Deprecated)
+#--------------------------------------
+resource "kubectl_manifest" "jet_aws_controller_config" {
+  count = var.jet_aws_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/aws-provider/jet-aws-controller-config.yaml", {
+    iam-role-arn = module.jet_aws_provider_irsa[0].irsa_iam_role_arn
+  })
+
+  depends_on = [module.helm_addon]
+}
+
+resource "kubectl_manifest" "jet_aws_provider" {
+  count = var.jet_aws_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/aws-provider/jet-aws-provider.yaml", {
+    provider-aws-version = var.jet_aws_provider.provider_aws_version
+    aws-provider-name    = local.jet_aws_provider_sa
+  })
+  wait = true
+
+  depends_on = [kubectl_manifest.jet_aws_controller_config]
+}
+
+module "jet_aws_provider_irsa" {
+  count = var.jet_aws_provider.enable == true ? 1 : 0
+
+  source                            = "../../../modules/irsa"
+  create_kubernetes_namespace       = false
+  create_kubernetes_service_account = false
+  kubernetes_namespace              = local.namespace
+  kubernetes_service_account        = "${local.jet_aws_provider_sa}-*"
+  irsa_iam_policies                 = concat([aws_iam_policy.jet_aws_provider[0].arn], var.jet_aws_provider.additional_irsa_policies)
+  irsa_iam_role_path                = var.addon_context.irsa_iam_role_path
+  irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
+  eks_cluster_id                    = var.addon_context.eks_cluster_id
+  eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn
+
+}
+
+resource "aws_iam_policy" "jet_aws_provider" {
+  count       = var.jet_aws_provider.enable == true ? 1 : 0
+  description = "Crossplane Jet AWS Provider IAM policy"
+  name        = "${var.addon_context.eks_cluster_id}-${local.jet_aws_provider_sa}-irsa"
+  policy      = data.aws_iam_policy_document.s3_policy.json
+  tags        = var.addon_context.tags
+}
+
+resource "kubectl_manifest" "jet_aws_provider_config" {
+  count     = var.jet_aws_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/aws-provider/jet-aws-provider-config.yaml", {})
+
+  depends_on = [kubectl_manifest.jet_aws_provider]
+}
+
+#--------------------------------------
 # Kubernetes Provider
 #--------------------------------------
 resource "kubernetes_service_account_v1" "kubernetes_controller" {

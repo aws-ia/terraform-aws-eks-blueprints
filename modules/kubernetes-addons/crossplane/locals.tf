@@ -39,5 +39,7 @@ locals {
     controller_config           = "kubernetes-controller-config"
     cluster_role                = "cluster-admin"
     },
-  var.kubernetes_provider)
+    var.kubernetes_provider
+  )
+  jet_aws_provider_sa = "jet-aws-provider"
 }

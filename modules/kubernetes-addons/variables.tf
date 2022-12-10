@@ -239,6 +239,20 @@ variable "crossplane_aws_provider" {
   }
 }
 
+variable "crossplane_jet_aws_provider" {
+  description = "AWS Provider Jet AWS config for Crossplane"
+  type = object({
+    enable                   = bool
+    provider_aws_version     = string
+    additional_irsa_policies = list(string)
+  })
+  default = {
+    enable                   = false
+    provider_aws_version     = "v0.24.1"
+    additional_irsa_policies = []
+  }
+}
+
 variable "crossplane_kubernetes_provider" {
   description = "Kubernetes Provider config for Crossplane"
   type        = any

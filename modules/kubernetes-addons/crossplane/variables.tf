@@ -30,3 +30,12 @@ variable "kubernetes_provider" {
   description = "Kubernetes Provider config for Crossplane"
   type        = any
 }
+
+variable "jet_aws_provider" {
+  description = "AWS Provider Jet AWS config for Crossplane"
+  type = object({
+    enable                   = bool
+    provider_aws_version     = string
+    additional_irsa_policies = list(string)
+  })
+}
