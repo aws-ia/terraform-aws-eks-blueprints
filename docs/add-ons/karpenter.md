@@ -16,7 +16,7 @@ You can optionally customize the Helm chart that deploys `Karpenter` via the fol
 
 ```hcl
   enable_karpenter = true
-  # Queue optional for native handling of instance termination events 
+  # Queue optional for native handling of instance termination events
   karpenter_sqs_queue_arn = "arn:aws:sqs:us-west-2:444455556666:queue1"
   # Optional  karpenter_helm_config
   karpenter_helm_config = {
