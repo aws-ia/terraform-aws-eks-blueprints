@@ -1,4 +1,4 @@
-data "aws_arn" "karpenter" {
+data "aws_arn" "queue" {
   for_each = var.sqs_queue_arn != "" ? 1 : 0
 
   arn = var.sqs_queue_arn
