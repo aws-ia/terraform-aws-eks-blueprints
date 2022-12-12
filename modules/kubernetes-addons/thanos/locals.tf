@@ -1,7 +1,9 @@
 locals {
-  name            = try(var.helm_config.name, "thanos")
-  namespace       = try(var.helm_config.namespace, local.name)
-  service_account = try(var.helm_config.service_account, local.name)
+  name             = try(var.helm_config.name, "thanos")
+  namespace_name   = try(var.helm_config.namespace, local.name)
+  create_namespace = try(var.helm_config.create_namespace, true) && local.namespace_name != "kube-system"
+  namespace        = local.create_namespace ? kubernetes_namespace_v1.thanos[0].metadata[0].name : local.namespace_name
+  service_account  = try(var.helm_config.service_account, local.name)
   helm_config = merge(
     {
       name        = local.name

@@ -6,3 +6,11 @@ module "helm_addon" {
   manage_via_gitops = var.manage_via_gitops
   addon_context     = var.addon_context
 }
+
+resource "kubernetes_namespace_v1" "thanos" {
+  count = local.create_namespace ? 1 : 0
+
+  metadata {
+    name = local.namespace_name
+  }
+}
