@@ -22,7 +22,7 @@ variable "addon_context" {
 }
 
 variable "addon_config" {
-  description = "Amazon EKS Managed CoreDNS Add-on config"
+  description = "Amazon EKS Managed ADOT Add-on config"
   type        = any
   default     = {}
 }
