@@ -35,9 +35,12 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = replace(data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer, "https://", "")
   eks_cluster_version  = data.aws_eks_cluster.cluster.version
 
-  # EKS Addons
+  # EKS Managed Addons
   enable_amazon_eks_vpc_cni            = true
   enable_amazon_eks_coredns            = true
   enable_amazon_eks_kube_proxy         = true
   enable_amazon_eks_aws_ebs_csi_driver = true
+
+  # Disable coredns_cluster_proportional_autoscaler, it is enabled by default
+  enable_coredns_cluster_proportional_autoscaler = false
 }
