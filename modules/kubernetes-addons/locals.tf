@@ -49,6 +49,7 @@ locals {
     kyverno_policy_reporter   = var.enable_kyverno ? { enable = true } : null
     nvidiaDevicePlugin        = var.enable_nvidia_device_plugin ? module.nvidia_device_plugin[0].argocd_gitops_config : null
     consul                    = var.enable_consul ? module.consul[0].argocd_gitops_config : null
+    thanos                    = var.enable_thanos ? module.thanos[0].argocd_gitops_config : null
   }
 
   addon_context = {

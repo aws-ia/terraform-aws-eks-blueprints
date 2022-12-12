@@ -31,4 +31,10 @@ locals {
     create_kubernetes_service_account = true
     irsa_iam_policies                 = var.irsa_policies
   }
+
+  argocd_gitops_config = {
+    enable             = true
+    serviceAccountName = local.service_account
+  }
+
 }
