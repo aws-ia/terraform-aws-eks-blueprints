@@ -461,6 +461,15 @@ module "tetrate_istio" {
   addon_context        = local.addon_context
 }
 
+module "thanos" {
+  count             = var.enable_thanos ? 1 : 0
+  source            = "./thanos"
+  helm_config       = var.thanos_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+  irsa_policies     = var.thanos_irsa_policies
+}
+
 module "traefik" {
   count             = var.enable_traefik ? 1 : 0
   source            = "./traefik"
