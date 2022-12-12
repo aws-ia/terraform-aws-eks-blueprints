@@ -1,3 +1,9 @@
+data "aws_arn" "queue" {
+  count = var.sqs_queue_arn != "" ? 1 : 0
+
+  arn = var.sqs_queue_arn
+}
+
 data "aws_iam_policy_document" "karpenter" {
   statement {
     sid       = "Karpenter"
