@@ -27,7 +27,7 @@ locals {
   irsa_config = {
     kubernetes_namespace              = local.namespace
     kubernetes_service_account        = local.service_account
-    create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
+    create_kubernetes_namespace       = false
     create_kubernetes_service_account = true
     irsa_iam_policies                 = var.irsa_policies
   }
