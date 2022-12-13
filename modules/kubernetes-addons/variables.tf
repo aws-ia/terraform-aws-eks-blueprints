@@ -503,6 +503,25 @@ variable "tetrate_istio_gateway_helm_config" {
   default     = {}
 }
 
+#-----------THANOS-------------
+variable "enable_thanos" {
+  description = "Enable Thanos add-on"
+  type        = bool
+  default     = false
+}
+
+variable "thanos_helm_config" {
+  description = "Thanos Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "thanos_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
+}
+
 #-----------TRAEFIK-------------
 variable "enable_traefik" {
   description = "Enable Traefik add-on"

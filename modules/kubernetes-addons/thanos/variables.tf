@@ -1,7 +1,13 @@
 variable "helm_config" {
-  description = "Helm provider config for ADOT Operator AddOn"
+  description = "Helm Config for kube-prometheus-stack"
   type        = any
   default     = {}
+}
+
+variable "manage_via_gitops" {
+  description = "Determines if the add-on should be managed via GitOps"
+  type        = bool
+  default     = false
 }
 
 variable "addon_context" {
@@ -15,26 +21,14 @@ variable "addon_context" {
     eks_cluster_id                 = string
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
+    tags                           = map(string)
     irsa_iam_role_path             = string
     irsa_iam_permissions_boundary  = string
-    tags                           = map(string)
   })
 }
 
-variable "addon_config" {
-  description = "Amazon EKS Managed ADOT Add-on config"
-  type        = any
-  default     = {}
-}
-
-variable "enable_amazon_eks_adot" {
-  description = "Enable Amazon EKS ADOT add-on"
-  type        = bool
-  default     = true
-}
-
-variable "enable_opentelemetry_operator" {
-  description = "Enable opentelemetry operator addon"
-  type        = bool
-  default     = false
+variable "irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
 }
