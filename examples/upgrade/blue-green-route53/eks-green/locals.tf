@@ -98,7 +98,7 @@ locals {
                 "alb.ingress.kubernetes.io/listen-ports"          = "[{\\\"HTTPS\\\": 443}]"
                 "alb.ingress.kubernetes.io/ssl-redirect"          = "443"
                 "alb.ingress.kubernetes.io/target-type"           = "ip"
-                "external-dns.alpha.kubernetes.io/set-identifier" = "${local.name}"
+                "external-dns.alpha.kubernetes.io/set-identifier" = local.name
                 "external-dns.alpha.kubernetes.io/aws-weight"     = local.ecsfrontend_route53_weight
               }
               hosts = [
