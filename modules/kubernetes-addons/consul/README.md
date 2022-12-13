@@ -1,6 +1,6 @@
 # Consul
 Deploying  Consul on EKS cluster
-For more details checkout [Consul](https://https://developer.hashicorp.com/consul/tutorials/get-started-kubernetes/kubernetes-gs-deploy) docs
+For more details checkout [Consul](https://developer.hashicorp.com/consul/tutorials/get-started-kubernetes/kubernetes-gs-deploy) docs
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
