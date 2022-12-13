@@ -331,7 +331,7 @@ Why doing this ? when we remove an ingress object, we want the associated Kubern
 #### TL;DR
 
 ```bash
-./tear-down.sh
+../tear-down.sh
 ```
 
 #### Manual
