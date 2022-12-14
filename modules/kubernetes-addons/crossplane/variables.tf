@@ -11,6 +11,11 @@ variable "aws_provider" {
     provider_aws_version     = string
     additional_irsa_policies = list(string)
   })
+  default = {
+    enable = true
+    provider_aws_version = "v0.33.0"
+    additional_irsa_policies = []
+  }
 }
 
 variable "addon_context" {
@@ -37,6 +42,11 @@ variable "jet_aws_provider" {
     provider_aws_version     = string
     additional_irsa_policies = list(string)
   })
+  default = {
+    enable = true
+    provider_aws_version = "v0.4.1"
+    additional_irsa_policies = []
+  }
 }
 
 variable "kubernetes_provider" {
@@ -45,6 +55,10 @@ variable "kubernetes_provider" {
     enable                      = bool
     provider_kubernetes_version = string
   })
+  default = {
+    enable = true
+    provider_kubernetes_version = "v0.5.0"
+  }
 }
 
 variable "helm_provider" {
@@ -53,6 +67,10 @@ variable "helm_provider" {
     enable                = bool
     provider_helm_version = string
   })
+  default = {
+    enable = true
+    provider_helm_version = "v0.12.0"
+  }
 }
 
 variable "terraform_provider" {
@@ -62,6 +80,11 @@ variable "terraform_provider" {
     provider_terraform_version = string
     additional_irsa_policies   = list(string)
   })
+  default = {
+    enable = false
+    provider_terraform_version = "v0.5.0"
+    additional_irsa_policies = []
+  }
 }
 
 variable "account_id" {
