@@ -1,9 +1,9 @@
 locals {
-  name                 = "karpenter"
-  service_account_name = "karpenter"
+  name            = "karpenter"
+  service_account = try(var.helm_config.service_account, "karpenter")
   set_values = [{
     name  = "serviceAccount.name"
-    value = local.service_account_name
+    value = local.service_account
     },
     {
       name  = "serviceAccount.create"
@@ -17,14 +17,16 @@ locals {
       name       = local.name
       chart      = local.name
       repository = "oci://public.ecr.aws/karpenter"
-      version    = "v0.18.1"
+      version    = "v0.20.0"
       namespace  = local.name
       values = [
         <<-EOT
-          clusterName: ${var.addon_context.eks_cluster_id}
-          clusterEndpoint: ${var.addon_context.aws_eks_cluster_endpoint}
-          aws:
-            defaultInstanceProfile: ${var.node_iam_instance_profile}
+          settings:
+            aws:
+              clusterName: ${var.addon_context.eks_cluster_id}
+              clusterEndpoint: ${var.addon_context.aws_eks_cluster_endpoint}
+              defaultInstanceProfile: ${var.node_iam_instance_profile}
+              interruptionQueueName: ${try(data.aws_arn.queue[0].resource, "")}
         EOT
       ]
       description = "karpenter Helm Chart for Node Autoscaling"
@@ -34,7 +36,7 @@ locals {
 
   irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
-    kubernetes_service_account        = local.service_account_name
+    kubernetes_service_account        = local.service_account
     create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
     create_kubernetes_service_account = true
     irsa_iam_policies                 = concat([aws_iam_policy.karpenter.arn], var.irsa_policies)
@@ -42,7 +44,7 @@ locals {
 
   argocd_gitops_config = {
     enable                    = true
-    serviceAccountName        = local.service_account_name
+    serviceAccountName        = local.service_account
     controllerClusterEndpoint = var.addon_context.aws_eks_cluster_endpoint
     awsDefaultInstanceProfile = var.node_iam_instance_profile
   }

@@ -16,17 +16,19 @@ You can optionally customize the Helm chart that deploys `Karpenter` via the fol
 
 ```hcl
   enable_karpenter = true
+  # Queue optional for native handling of instance termination events
+  karpenter_sqs_queue_arn = "arn:aws:sqs:us-west-2:444455556666:queue1"
   # Optional  karpenter_helm_config
   karpenter_helm_config = {
     name                       = "karpenter"
     chart                      = "karpenter"
     repository                 = "https://charts.karpenter.sh"
-    version                    = "0.6.3"
+    version                    = "0.19.3"
     namespace                  = "karpenter"
     values = [templatefile("${path.module}/values.yaml", {
          eks_cluster_id       = var.eks_cluster_id,
          eks_cluster_endpoint = var.eks_cluster_endpoint,
-         service_account_name = var.service_account_name,
+         service_account      = var.service_account,
          operating_system     = "linux"
     })]
   }
@@ -42,7 +44,7 @@ Refer to [locals.tf](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob
 ```hcl
   argocd_gitops_config = {
     enable                    = true
-    serviceAccountName        = local.service_account_name
+    serviceAccountName        = local.service_account
     controllerClusterName     = var.eks_cluster_id
     controllerClusterEndpoint = local.eks_cluster_endpoint
     awsDefaultInstanceProfile = var.node_iam_instance_profile

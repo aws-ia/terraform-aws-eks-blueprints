@@ -1,6 +1,6 @@
 locals {
-  name                 = "cert-manager"
-  service_account_name = "cert-manager" # AWS PrivateCA is expecting the service account name as `cert-manager`
+  name            = "cert-manager"
+  service_account = "cert-manager" # AWS PrivateCA is expecting the service account name as `cert-manager`
 
   # https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/Chart.template.yaml
   default_helm_config = {
@@ -24,7 +24,7 @@ locals {
     [
       {
         name  = "serviceAccount.name"
-        value = local.service_account_name
+        value = local.service_account
       },
       {
         name  = "serviceAccount.create"
@@ -36,7 +36,7 @@ locals {
 
   irsa_config = {
     kubernetes_namespace              = local.helm_config["namespace"]
-    kubernetes_service_account        = local.service_account_name
+    kubernetes_service_account        = local.service_account
     create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
     create_kubernetes_service_account = true
     kubernetes_svc_image_pull_secrets = var.kubernetes_svc_image_pull_secrets
@@ -45,6 +45,6 @@ locals {
 
   argocd_gitops_config = {
     enable             = true
-    serviceAccountName = local.service_account_name
+    serviceAccountName = local.service_account
   }
 }

@@ -8,5 +8,5 @@ subjects:
     namespace: ${namespace}
 roleRef:
   kind: ClusterRole
-  name: cluster-admin
+  name: ${cluster-role}
   apiGroup: rbac.authorization.k8s.io

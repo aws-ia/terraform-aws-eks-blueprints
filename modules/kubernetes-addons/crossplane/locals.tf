@@ -21,9 +21,25 @@ locals {
     operating-system = "linux"
   })]
 
-  aws_provider_sa        = "aws-provider"
-  jet_aws_provider_sa    = "jet-aws-provider"
-  kubernetes_provider_sa = "kubernetes-provider"
-  aws_current_account_id = var.account_id
-  aws_current_partition  = var.aws_partition
+  aws_provider = merge({
+    provider_aws_version     = "v0.34.0"
+    additional_irsa_policies = ["arn:${var.addon_context.aws_partition_id}:iam::aws:policy/AdministratorAccess"]
+    name                     = "aws-provider"
+    service_account          = "aws-provider"
+    provider_config          = "default"
+    controller_config        = "aws-controller-config"
+    },
+    var.aws_provider
+  )
+  kubernetes_provider = merge({
+    provider_kubernetes_version = "v0.5.0"
+    name                        = "kubernetes-provider"
+    service_account             = "kubernetes-provider"
+    provider_config             = "default"
+    controller_config           = "kubernetes-controller-config"
+    cluster_role                = "cluster-admin"
+    },
+    var.kubernetes_provider
+  )
+  jet_aws_provider_sa = "jet-aws-provider"
 }

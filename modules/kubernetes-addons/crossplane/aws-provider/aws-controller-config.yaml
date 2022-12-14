@@ -2,7 +2,7 @@
 apiVersion: pkg.crossplane.io/v1alpha1
 kind: ControllerConfig
 metadata:
-  name: aws-controller-config
+  name: ${aws-controller-config}
   annotations:
     eks.amazonaws.com/role-arn: ${iam-role-arn}
 spec:
