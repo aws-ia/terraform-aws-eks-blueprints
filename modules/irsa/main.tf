@@ -19,7 +19,7 @@ resource "kubernetes_secret_v1" "irsa" {
     name      = format("%s-token-secret", var.kubernetes_service_account)
     namespace = try(kubernetes_namespace_v1.irsa[0].metadata[0].name, var.kubernetes_namespace)
     annotations = {
-      "kubernetes.io/service-account.name"      = var.kubernetes_service_account
+      "kubernetes.io/service-account.name"      = try(kubernetes_service_account_v1.irsa[0].metadata[0].name, var.kubernetes_service_account)
       "kubernetes.io/service-account.namespace" = try(kubernetes_namespace_v1.irsa[0].metadata[0].name, var.kubernetes_namespace)
     }
   }
