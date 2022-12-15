@@ -43,6 +43,14 @@ locals {
   }
 }
 
+#tfsec:ignore:aws-sqs-enable-queue-encryption
+resource "aws_sqs_queue" "karpenter_interruption_queue" {
+  name_prefix               = "karpenter"
+  message_retention_seconds = "300"
+  sqs_managed_sse_enabled   = true
+  tags                      = local.tags
+}
+
 #---------------------------------------------------------------
 # EKS Blueprints
 #---------------------------------------------------------------
@@ -119,23 +127,10 @@ module "eks_blueprints" {
   # We filter the kube-system pods with labels since not all add-ons can run on Fargate (e.g. aws-node-termination-handler)
   fargate_profiles = {
     # Providing compute for the kube-system namespace where addons that can run on Fargate reside
-    coredns = {
-      fargate_profile_name = "coredns"
+    kube_system = {
+      fargate_profile_name = "kube-system"
       fargate_profile_namespaces = [{
-        namespace = "kube-system",
-        k8s_labels = {
-          "app.kubernetes.io/name" = "coredns"
-        }
-      }]
-      subnet_ids = module.vpc.private_subnets
-    },
-    aws_load_balancer_controller = {
-      fargate_profile_name = "aws-load-balancer-controller"
-      fargate_profile_namespaces = [{
-        namespace = "kube-system",
-        k8s_labels = {
-          "app.kubernetes.io/name" = "aws-load-balancer-controller"
-        }
+        namespace = "kube-system"
       }]
       subnet_ids = module.vpc.private_subnets
     },
@@ -181,14 +176,8 @@ module "eks_blueprints_kubernetes_addons" {
   }
   enable_coredns_cluster_proportional_autoscaler = true
 
-  enable_karpenter = true
-
-  enable_aws_node_termination_handler = true
-  aws_node_termination_handler_helm_config = {
-    # We do not wait for the helm chart status since NTH cannot run on Fargate and the Karpenter provioner is not created yet
-    # When Karpenter will be running, it will detect the NTH unschedulable pods and provision nodes for them
-    wait = false
-  }
+  karpenter_sqs_queue_arn = aws_sqs_queue.karpenter_interruption_queue.arn
+  enable_karpenter        = true
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller_helm_config = {
@@ -207,17 +196,17 @@ module "eks_blueprints_kubernetes_addons" {
   tags = local.tags
 }
 
-# Allow ingress from the worker nodes security group (Karpenter nodes)
-# to the cluster primary security group (Fargate nodes)
-resource "aws_security_group_rule" "cluster_primary_ingress_all" {
-  description              = "Allow All ingress from the worker nodes security group"
-  type                     = "ingress"
-  to_port                  = 0
-  protocol                 = "-1"
-  from_port                = 0
-  security_group_id        = module.eks_blueprints.cluster_primary_security_group_id
-  source_security_group_id = module.eks_blueprints.worker_node_security_group_id
-}
+# # Allow ingress from the worker nodes security group (Karpenter nodes)
+# # to the cluster primary security group (Fargate nodes)
+# resource "aws_security_group_rule" "cluster_primary_ingress_all" {
+#   description              = "Allow All ingress from the worker nodes security group"
+#   type                     = "ingress"
+#   to_port                  = 0
+#   protocol                 = "-1"
+#   from_port                = 0
+#   security_group_id        = module.eks_blueprints.cluster_primary_security_group_id
+#   source_security_group_id = module.eks_blueprints.worker_node_security_group_id
+# }
 
 # Add the Karpenter Provisioners IAM Role
 # https://karpenter.sh/v0.19.0/getting-started/getting-started-with-terraform/#create-the-karpentercontroller-iam-role

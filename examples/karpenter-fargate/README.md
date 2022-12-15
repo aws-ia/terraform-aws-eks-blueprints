@@ -39,22 +39,38 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 
 #### Step 2: Run Terraform INIT
 
-to initialize a working directory with configuration files
+To initialize a working directory with configuration files
 
 ```sh
 cd examples/karpenter-fargate/
 terraform init
 ```
 
-#### Step 3: Run Terraform PLAN
+#### Step 3: Run Terraform PLAN for the SQS Queue
 
-to verify the resources created by this execution
+To verify the resources created by this execution
+
+```sh
+terraform plan -target aws_sqs_queue.karpenter_interruption_queue
+```
+
+#### Step 4: Run Terraform APPLY for the SQS Queue
+
+```shell
+terraform apply -target aws_sqs_queue.karpenter_interruption_queue
+```
+
+Enter `yes` to apply.
+
+#### Step 5: Run Terraform PLAN for everything
+
+To verify the resources created by this execution
 
 ```sh
 terraform plan
 ```
 
-#### Step 4: Finally, Terraform APPLY
+#### Step 6: Finally, Terraform APPLY for everything
 
 ```shell
 terraform apply
@@ -90,7 +106,6 @@ fargate-ip-10-0-12-148.us-west-2.compute.internal   Ready    <none>   53s    v1.
 fargate-ip-10-0-12-187.us-west-2.compute.internal   Ready    <none>   109s   v1.23.12-eks-1558457
 fargate-ip-10-0-12-188.us-west-2.compute.internal   Ready    <none>   15s    v1.23.12-eks-1558457
 fargate-ip-10-0-12-54.us-west-2.compute.internal    Ready    <none>   113s   v1.23.12-eks-1558457
-ip-10-0-10-9.us-west-2.compute.internal             Ready    <none>   83s    v1.23.13-eks-6022eca
 ```
 
 #### Step 7: List all the pods running in karpenter namespace
@@ -102,6 +117,11 @@ kubectl get pods -n karpenter
 NAME                        READY   STATUS    RESTARTS   AGE
 karpenter-cc495bbd6-kclbd   2/2     Running   0          1m
 karpenter-cc495bbd6-x6t5m   2/2     Running   0          1m
+
+# Get the sqs queue arn from the karpenter configmap
+kubectl get configmap karpenter-global-settings \
+  -o=jsonpath="{.data.aws\.interruptionQueueName}" \
+  -n karpenter
 ```
 
 #### Step 8: List the karpenter provisioner deployed
@@ -146,12 +166,11 @@ kubectl get node \
 
 # Output should look like below
 NAME                                        STATUS   ROLES    AGE     VERSION                PROVISIONER-NAME   ZONE         CAPACITY-TYPE   INSTANCE-FAMILY
-ip-10-0-10-47.us-west-2.compute.internal    Ready    <none>   73s     v1.23.13-eks-6022eca   default            us-west-2a   on-demand       c6a
-ip-10-0-10-9.us-west-2.compute.internal     Ready    <none>   4m      v1.23.13-eks-6022eca   default            us-west-2a   spot            t3
-ip-10-0-11-132.us-west-2.compute.internal   Ready    <none>   72s     v1.23.13-eks-6022eca   default            us-west-2b   on-demand       c6a
-ip-10-0-11-161.us-west-2.compute.internal   Ready    <none>   72s     v1.23.13-eks-6022eca   default            us-west-2b   on-demand       c6a
-ip-10-0-11-163.us-west-2.compute.internal   Ready    <none>   72s     v1.23.13-eks-6022eca   default            us-west-2b   on-demand       c6a
-ip-10-0-12-12.us-west-2.compute.internal    Ready    <none>   3m59s   v1.23.13-eks-6022eca   default            us-west-2c   on-demand       c6a
+ip-10-0-10-47.us-west-2.compute.internal    Ready    <none>   73s     v1.23.13-eks-6022eca   default            us-west-2a   spot            c5d
+ip-10-0-11-132.us-west-2.compute.internal   Ready    <none>   72s     v1.23.13-eks-6022eca   default            us-west-2b   spot            c5
+ip-10-0-11-161.us-west-2.compute.internal   Ready    <none>   72s     v1.23.13-eks-6022eca   default            us-west-2b   spot            c6id
+ip-10-0-11-163.us-west-2.compute.internal   Ready    <none>   72s     v1.23.13-eks-6022eca   default            us-west-2b   spot            c6in
+ip-10-0-12-12.us-west-2.compute.internal    Ready    <none>   73s     v1.23.13-eks-6022eca   default            us-west-2c   spot            c5d
 ```
 
 Test by listing the game-2048 pods. You should see that all the pods are running on different nodes because of the pod anti-affinity rule.
@@ -185,7 +204,7 @@ Open the browser to access the application via the ALB address http://k8s-defaul
 We now have :
 
 - 7 Fargate instances
-- 6 instances from the default Karpenter provisioner
+- 5 instances from the default Karpenter provisioner
 
 ## How to Destroy
 
@@ -209,4 +228,5 @@ terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approv
 terraform destroy -target="module.eks_blueprints" -auto-approve
 terraform destroy -target="module.vpc" -auto-approve
 terraform destroy -target="aws_iam_role.karpenter" -auto-approve
+terraform destroy -target="aws_sqs_queue.karpenter_interruption_queue" -auto-approve
 ```

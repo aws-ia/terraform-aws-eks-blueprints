@@ -20,7 +20,7 @@ spec:
         ports:
         - containerPort: 80
       nodeSelector:
-        karpenter.sh/capacity-type: on-demand
+        karpenter.sh/capacity-type: spot
         karpenter.k8s.aws/instance-category: c
       topologySpreadConstraints:
       - maxSkew: 1
