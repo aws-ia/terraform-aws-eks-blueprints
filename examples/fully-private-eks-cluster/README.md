@@ -125,7 +125,7 @@ Create a Terraform variable definition file called base.tfvars and update the va
 
 ```shell script
 region             = "us-west-2"
-cluster_version    = "1.23"
+cluster_version    = "1.24"
 vpc_id             = "<vpc-id>"
 private_subnet_ids = ["<private-subnet-1>", "<private-subnet-2>", "<private-subnet-3>"]
 cluster_security_group_additional_rules = {
