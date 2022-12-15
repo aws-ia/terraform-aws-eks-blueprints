@@ -2,7 +2,7 @@
 
 Karpenter is an open-source node provisioning project built for Kubernetes. Karpenter automatically launches just the right compute resources to handle your cluster's applications. It is designed to let you take full advantage of the cloud with fast and simple compute provisioning for Kubernetes clusters.
 
-This example shows how to deploy and leverage Karpenter for Autoscaling and automatic nodes updating. Karpenter and other Add-ons are deployed on Fargate to avoid using any node groups. The Add-ons that cannot be deployed on Fargate (e.g. NTH) are deployed on nodes provisioned by Karpenter. The following resources will be deployed by this example.
+This example shows how to deploy and leverage Karpenter for Autoscaling and automatic nodes updating. Karpenter and other Add-ons are deployed on Fargate to avoid using any node groups. The following resources will be deployed by this example.
 
 - VPC, 3 Private Subnets and 3 Public Subnets.
 - Internet gateway for Public Subnets and NAT Gateway for Private Subnets.
@@ -10,7 +10,7 @@ This example shows how to deploy and leverage Karpenter for Autoscaling and auto
 - AWS EKS Fargate Profiles for the `kube-system` namespace with Pod Labels used by the `coredns`, `karpenter`, and `aws-load-balancer-controller` addons, while additional profiles can be added as needed.
 - AWS EKS managed addons `vpc-cni` and `kube-proxy`.
 - Karpenter Helm Chart.
-- AWS Node Termination Handler Helm Chart. Karpenter does not handle the Spot Interruption Termination Notice (ITN) two-minute warning. In lieu of this, you can install AWS Node Termination Handler to gracefully cordon and drain your spot nodes when they are interrupted. Pods that require checkpointing or other forms of graceful draining, requiring the 2-mins before shutdown, will need NTH.
+- AWS SQS Queue to enable interruption handling to gracefully cordon and drain your spot nodes when they are interrupted. Pods that require checkpointing or other forms of graceful draining, requiring the 2-mins before shutdown, will need this.
 - A default Karpenter Provisioner that uses the Bottlerocket AMI and refreshes nodes every 24 hours.
 - Self-managed CoreDNS addon deployed through a Helm chart. The default CoreDNS deployment provided by AWS EKS is removed and replaced with a self-managed CoreDNS deployment, while the `kube-dns` service is updated to allow Helm to assume control.
 - AWS Load Balancer Controller add-on deployed through a Helm chart. The default AWS Load Balancer Controller add-on configuration is overridden so that it can be deployed on Fargate compute.
