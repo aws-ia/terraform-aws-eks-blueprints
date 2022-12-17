@@ -1,0 +1,2307 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+    
+    
+      
+        <title>Node Groups - Amazon EKS Blueprints for Terraform</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.5d38496d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.cbb835fc.min.css">
+        
+      
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#node-groups" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-component="outdated" hidden>
+        <aside class="md-banner md-banner--warning">
+          
+        </aside>
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Amazon EKS Blueprints for Terraform
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Node Groups
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    aws-ia/terraform-aws-eks-blueprints
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Amazon EKS Blueprints for Terraform
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    aws-ia/terraform-aws-eks-blueprints
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core-concepts/" class="md-nav__link">
+        Core Concepts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Node Groups
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Node Groups
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#additional-iam-roles-users-and-accounts" class="md-nav__link">
+    Additional IAM Roles, Users and Accounts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#managed-node-groups" class="md-nav__link">
+    Managed Node Groups
+  </a>
+  
+    <nav class="md-nav" aria-label="Managed Node Groups">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#managed-node-groups-with-ec2-spot-instances" class="md-nav__link">
+    Managed Node Groups with EC2 Spot Instances
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-managed-node-groups" class="md-nav__link">
+    Self-managed Node Groups
+  </a>
+  
+    <nav class="md-nav" aria-label="Self-managed Node Groups">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#self-managed-node-groups-with-ec2-spot-instances" class="md-nav__link">
+    Self-Managed Node Groups with EC2 Spot Instances
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fargate-profile" class="md-nav__link">
+    Fargate Profile
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows-self-managed-node-groups" class="md-nav__link">
+    Windows Self-Managed Node Groups
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          IAM
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="IAM" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          IAM
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iam/minimum-iam-policy/" class="md-nav__link">
+        Minimum IAM policy
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../teams/" class="md-nav__link">
+        Teams
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          Modules
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Modules" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Modules
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modules/emr-on-eks/" class="md-nav__link">
+        EMR on EKS
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          Add-ons
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Add-ons" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Add-ons
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/agones/" class="md-nav__link">
+        Agones
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/apache-airflow/" class="md-nav__link">
+        Apache Airflow add-on
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/argo-workflows/" class="md-nav__link">
+        Argo Workflows
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/argocd/" class="md-nav__link">
+        ArgoCD
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/aws-cloudwatch-metrics/" class="md-nav__link">
+        AWS CloudWatch Metrics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/aws-efs-csi-driver/" class="md-nav__link">
+        AWS EFS CSI Driver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/aws-for-fluent-bit/" class="md-nav__link">
+        AWS for Fluent Bit
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/aws-fsx-csi-driver/" class="md-nav__link">
+        Amazon FSx for Lustre CSI Driver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/aws-load-balancer-controller/" class="md-nav__link">
+        AWS Load Balancer Controller
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/aws-node-termination-handler/" class="md-nav__link">
+        AWS Node Termination Handler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/aws-privateca-issuer/" class="md-nav__link">
+        aws-privateca-issuer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/calico/" class="md-nav__link">
+        Calico
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/cert-manager-csi-driver/" class="md-nav__link">
+        cert-manager-csi-driver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/cert-manager-istio-csr/" class="md-nav__link">
+        cert-manager-istio-csr
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/cert-manager/" class="md-nav__link">
+        cert-manager
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/chaos-mesh/" class="md-nav__link">
+        Chaos Mesh
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/cilium/" class="md-nav__link">
+        Cilium
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/cluster-autoscaler/" class="md-nav__link">
+        Cluster Autoscaler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/cluster-proportional-autoscaler/" class="md-nav__link">
+        Horizontal cluster-proportional-autoscaler container
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/consul/" class="md-nav__link">
+        Consul
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/crossplane/" class="md-nav__link">
+        Crossplane
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/csi-secrets-store-provider-aws/" class="md-nav__link">
+        secrets-store-csi-driver-provider-aws
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/datadog-operator/" class="md-nav__link">
+        Datadog Operator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/external-dns/" class="md-nav__link">
+        ExternalDNS
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/external-secrets/" class="md-nav__link">
+        External Secrets Operator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/fargate-fluent-bit/" class="md-nav__link">
+        Fargate fluent bit
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/gatekeeper/" class="md-nav__link">
+        Gatekeeper
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/grafana/" class="md-nav__link">
+        Grafana
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/kafka/" class="md-nav__link">
+        Strimzi Operator for Apache Kafka
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/karpenter/" class="md-nav__link">
+        Karpenter
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/keda/" class="md-nav__link">
+        KEDA
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/kube-prometheus-stack/" class="md-nav__link">
+        kube-prometheus-stack
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/kube-state-metrics/" class="md-nav__link">
+        Kube-State-Metrics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/kubecost/" class="md-nav__link">
+        Kubecost
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/kuberay-operator/" class="md-nav__link">
+        KubeRay Operator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/kubernetes-dashboard/" class="md-nav__link">
+        Kubernetes Dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/kyverno/" class="md-nav__link">
+        Kyverno
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/local-volume-provisioner/" class="md-nav__link">
+        Local volume provisioner
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/managed-add-ons/" class="md-nav__link">
+        Amazon EKS Add-ons
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/metrics-server/" class="md-nav__link">
+        Metrics Server
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/nginx/" class="md-nav__link">
+        Nginx
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/nvidia-device-plugin/" class="md-nav__link">
+        NVIDIA Device Plugin
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/portworx/" class="md-nav__link">
+        Portworx add-on for EKS Blueprints
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/prometheus/" class="md-nav__link">
+        Prometheus
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/promtail/" class="md-nav__link">
+        Promtail
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/secrets-store-csi-driver/" class="md-nav__link">
+        secrets-store-csi-driver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/smb-csi-driver/" class="md-nav__link">
+        SMB CSI Driver Helm Chart
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/spark-history-server/" class="md-nav__link">
+        Spark History Server
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/spark-on-k8s-operator/" class="md-nav__link">
+        Spark K8S Operator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/tetrate-istio/" class="md-nav__link">
+        Tetrate Istio Distro
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/thanos/" class="md-nav__link">
+        Thanos
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/traefik/" class="md-nav__link">
+        Traefik
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/vault/" class="md-nav__link">
+        HashiCorp Vault
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/velero/" class="md-nav__link">
+        Velero
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/vpa/" class="md-nav__link">
+        Vertical Pod Autoscaler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/yunikorn/" class="md-nav__link">
+        Apache YuniKorn
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9">
+          Advanced
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Advanced" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          Advanced
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/bottlerocket/" class="md-nav__link">
+        Bottlerocket
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/cluster-upgrades/" class="md-nav__link">
+        Cluster Upgrades
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/ecr-instructions/" class="md-nav__link">
+        ECR Instructions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/gitops-with-flux/" class="md-nav__link">
+        GitOps with Flux
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/multi-cluster/" class="md-nav__link">
+        Multi-cluster
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/private-clusters/" class="md-nav__link">
+        Private Clusters
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extensibility/" class="md-nav__link">
+        Extensibility
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#additional-iam-roles-users-and-accounts" class="md-nav__link">
+    Additional IAM Roles, Users and Accounts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#managed-node-groups" class="md-nav__link">
+    Managed Node Groups
+  </a>
+  
+    <nav class="md-nav" aria-label="Managed Node Groups">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#managed-node-groups-with-ec2-spot-instances" class="md-nav__link">
+    Managed Node Groups with EC2 Spot Instances
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-managed-node-groups" class="md-nav__link">
+    Self-managed Node Groups
+  </a>
+  
+    <nav class="md-nav" aria-label="Self-managed Node Groups">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#self-managed-node-groups-with-ec2-spot-instances" class="md-nav__link">
+    Self-Managed Node Groups with EC2 Spot Instances
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fargate-profile" class="md-nav__link">
+    Fargate Profile
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows-self-managed-node-groups" class="md-nav__link">
+    Windows Self-Managed Node Groups
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/node-groups.md" title="Edit this page" class="md-content__button md-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
+
+<h1 id="node-groups">Node Groups<a class="headerlink" href="#node-groups" title="Permanent link">&para;</a></h1>
+<p>The framework uses dedicated sub modules for creating AWS Managed Node Groups, Self-managed Node groups and Fargate profiles. These modules provide flexibility to add or remove managed/self-managed node groups/fargate profiles by simply adding/removing map of values to input config.</p>
+<p>The <code>aws-auth</code> ConfigMap handled by this module allow your nodes to join your cluster, and you also use this ConfigMap to add RBAC access to IAM users and roles.
+Each Node Group can have dedicated IAM role, Launch template and Security Group to improve the security.</p>
+<h2 id="additional-iam-roles-users-and-accounts">Additional IAM Roles, Users and Accounts<a class="headerlink" href="#additional-iam-roles-users-and-accounts" title="Permanent link">&para;</a></h2>
+<p>Access to EKS cluster using AWS IAM entities is enabled by the <a href="https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html">AWS IAM Authenticator</a> for Kubernetes, which runs on the Amazon EKS control plane.
+The authenticator gets its configuration information from the <code>aws-auth</code> <a href="https://kubernetes.io/docs/concepts/configuration/configmap/">ConfigMap</a>.</p>
+<p>The following config grants additional AWS IAM users or roles the ability to interact with your cluster. However, the best practice is to leverage <a href="https://aws.github.io/aws-eks-best-practices/security/docs/multitenancy/">soft-multitenancy</a> with the help of <a href="../teams/">Teams</a> module. Teams feature helps to manage users with dedicated namespaces, RBAC, IAM roles and register users with <code>aws-auth</code> to provide access to the EKS Cluster.</p>
+<p>The below example demonstrates adding additional IAM Roles, IAM Users and Accounts using EKS Blueprints module</p>
+<div class="highlight"><pre><span></span><code>module &quot;eks_blueprints&quot; {
+  source = &quot;github.com/aws-ia/terraform-aws-eks-blueprints&quot;
+
+  # EKS CLUSTER
+  cluster_version    = &quot;1.21&quot;                                         # EKS Cluster Version
+  vpc_id             = &quot;&lt;vpcid&gt;&quot;                                      # Enter VPC ID
+  private_subnet_ids = [&quot;&lt;subnet-a&gt;&quot;, &quot;&lt;subnet-b&gt;&quot;, &quot;&lt;subnet-c&gt;&quot;]     # Enter Private Subnet IDs
+
+  # List of map_roles
+  map_roles          = [
+    {
+      rolearn  = &quot;arn:aws:iam::&lt;aws-account-id&gt;:role/&lt;role-name&gt;&quot;     # The ARN of the IAM role
+      username = &quot;ops-role&quot;                                           # The user name within Kubernetes to map to the IAM role
+      groups   = [&quot;system:masters&quot;]                                   # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
+    }
+  ]
+
+  # List of map_users
+  map_users = [
+    {
+      userarn  = &quot;arn:aws:iam::&lt;aws-account-id&gt;:user/&lt;username&gt;&quot;      # The ARN of the IAM user to add.
+      username = &quot;opsuser&quot;                                            # The user name within Kubernetes to map to the IAM role
+      groups   = [&quot;system:masters&quot;]                                   # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
+    }
+  ]
+
+  map_accounts = [&quot;123456789&quot;, &quot;9876543321&quot;]                          # List of AWS account ids
+}
+</code></pre></div>
+<h2 id="managed-node-groups">Managed Node Groups<a class="headerlink" href="#managed-node-groups" title="Permanent link">&para;</a></h2>
+<p>The below example demonstrates the minimum configuration required to deploy a managed node group.</p>
+<div class="highlight"><pre><span></span><code>    # EKS MANAGED NODE GROUPS
+    managed_node_groups = {
+      mng = {
+        node_group_name = &quot;mng-ondemand&quot;
+        instance_types  = [&quot;m5.large&quot;]
+        subnet_ids      = []  # Mandatory Public or Private Subnet IDs
+        disk_size       = 100 # disk_size will be ignored when using Launch Templates
+      }
+    }
+</code></pre></div>
+<p>The below example demonstrates advanced configuration options for a managed node group with launch templates.</p>
+<div class="highlight"><pre><span></span><code>    managed_node_groups = {
+      # Managed Node groups with Launch templates using AMI TYPE
+      mng_lt = {
+        # Node Group configuration
+        node_group_name        = &quot;mng-lt&quot;
+        create_launch_template = true              # false will use the default launch template
+        launch_template_os     = &quot;amazonlinux2eks&quot; # amazonlinux2eks or windows or bottlerocket
+        public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+        enable_monitoring      = true
+        create_iam_role        = false # default is true; set to false to bring your own IAM Role with iam_role_arn option
+        iam_role_arn           = &quot;&lt;ENTER-YOUR-IAM-ROLE&gt;&quot; # Node groups creates a new IAM role if `iam_role_arn` is not specified
+        pre_userdata           = &lt;&lt;-EOT
+                    yum install -y amazon-ssm-agent
+                    systemctl enable amazon-ssm-agent &amp;&amp; systemctl start amazon-ssm-agent
+                EOT
+        # Node Group scaling configuration
+        desired_size    = 3
+        max_size        = 3
+        min_size        = 3
+
+        # Node Group update configuration. Set the maximum number or percentage of unavailable nodes to be tolerated during the node group version update.
+        update_config   = [{
+          max_unavailable_percentage = 30
+        }]
+
+        # Node Group compute configuration
+        ami_type        = &quot;AL2_x86_64&quot; # Amazon Linux 2(AL2_x86_64), AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
+        release_version = &quot;&quot;           # Enter AMI release version to deploy the latest AMI released by AWS. Used only when you specify ami_type
+        capacity_type   = &quot;ON_DEMAND&quot;  # ON_DEMAND or SPOT
+        instance_types  = [&quot;m5.large&quot;] # List of instances to get capacity from multipe pools
+
+        block_device_mappings = [
+          {
+            device_name = &quot;/dev/xvda&quot;
+            volume_type = &quot;gp3&quot;
+            volume_size = 100
+          },
+          {
+            device_name           = &quot;/dev/xvdf&quot; # mount point to /local1 (it could be local2, depending upon the disks are attached during boot)
+            volume_type           = &quot;gp3&quot; # The volume type. Can be standard, gp2, gp3, io1, io2, sc1 or st1 (Default: gp3).
+            volume_size           = 100
+            delete_on_termination = true
+            encrypted             = true
+            kms_key_id            = &quot;&quot; # Custom KMS Key can be used to encrypt the disk
+            iops                  = 3000
+            throughput            = 125
+          }
+        ]
+
+        # Node Group network configuration
+        subnet_ids = [] # Mandatory - # Define private/public subnets list with comma separated [&quot;subnet1&quot;,&quot;subnet2&quot;,&quot;subnet3&quot;]
+
+        additional_iam_policies = [] # Attach additional IAM policies to the IAM role attached to this worker group
+        # SSH ACCESS Optional - Recommended to use SSM Session manager
+        remote_access         = false
+        ec2_ssh_key           = &quot;&quot;
+        ssh_security_group_id = &quot;&quot;
+
+        # Taints can be applied through EKS API or through Bootstrap script using kubelet_extra_args
+        # e.g., k8s_taints = [{key= &quot;spot&quot;, value=&quot;true&quot;, &quot;effect&quot;=&quot;NO_SCHEDULE&quot;}]
+        k8s_taints = [{key= &quot;purpose&quot;, value=&quot;execution&quot;, effect=&quot;NO_SCHEDULE&quot;}]
+
+        # Node Labels can be applied through EKS API or through Bootstrap script using kubelet_extra_args
+        k8s_labels = {
+          Environment = &quot;preprod&quot;
+          Zone        = &quot;dev&quot;
+          WorkerType  = &quot;ON_DEMAND&quot;
+        }
+        additional_tags = {
+          ExtraTag    = &quot;m4-on-demand&quot;
+          Name        = &quot;m4-on-demand&quot;
+          subnet_type = &quot;private&quot;
+        }
+        launch_template_tags = {
+          SomeAwsProviderDefaultTag1: &quot;TRUE&quot;
+          SomeAwsProviderDefaultTag2: &quot;TRUE&quot;
+        }
+      }
+    }
+</code></pre></div>
+<p>The below example demonstrates advanced configuration options using GPU instances/ARM instances/Bottlerocket and custom AMIs managed node groups.</p>
+<div class="highlight"><pre><span></span><code>    #---------------------------------------------------------#
+    # GPU instance type Worker Group
+    #---------------------------------------------------------#
+    gpu = {
+      # 1&gt; Node Group configuration - Part1
+      node_group_name        = &quot;gpu-mg5&quot;         # Max 40 characters for node group name
+      create_launch_template = true              # false will use the default launch template
+      launch_template_os     = &quot;amazonlinux2eks&quot; # amazonlinux2eks or bottlerocket
+      public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+      pre_userdata           = &lt;&lt;-EOT
+            yum install -y amazon-ssm-agent
+            systemctl enable amazon-ssm-agent &amp;&amp; systemctl start amazon-ssm-agent
+        EOT
+      # 2&gt; Node Group scaling configuration
+      desired_size    = 2
+      max_size        = 2
+      min_size        = 2
+      max_unavailable = 1 # or percentage = 20
+
+      # 3&gt; Node Group compute configuration
+      ami_type       = &quot;AL2_x86_64_GPU&quot; # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
+      capacity_type  = &quot;ON_DEMAND&quot;      # ON_DEMAND or SPOT
+      instance_types = [&quot;m5.large&quot;]     # List of instances to get capacity from multipe pools
+      block_device_mappings = [
+        {
+          device_name = &quot;/dev/xvda&quot;
+           volume_type = &quot;gp3&quot;
+           volume_size = 100
+        }
+      ]
+
+      # 4&gt; Node Group network configuration
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+
+      k8s_taints = []
+
+      k8s_labels = {
+        Environment = &quot;preprod&quot;
+        Zone        = &quot;dev&quot;
+        WorkerType  = &quot;ON_DEMAND&quot;
+      }
+      additional_tags = {
+        ExtraTag    = &quot;m5x-on-demand&quot;
+        Name        = &quot;m5x-on-demand&quot;
+        subnet_type = &quot;private&quot;
+      }
+      launch_template_tags = {
+        SomeAwsProviderDefaultTag1: &quot;TRUE&quot;
+        SomeAwsProviderDefaultTag2: &quot;TRUE&quot;
+      }
+    }
+
+    #---------------------------------------------------------#
+    # ARM instance type Worker Group
+    #---------------------------------------------------------#
+    arm = {
+      # 1&gt; Node Group configuration - Part1
+      node_group_name        = &quot;arm-m6g-2vcpu-8gb&quot;         # Max 40 characters for node group name
+      create_launch_template = true              # false will use the default launch template
+      launch_template_os     = &quot;amazonlinux2eks&quot; # amazonlinux2eks or bottlerocket
+      public_ip              = false             # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+      pre_userdata           = &lt;&lt;-EOT
+            yum install -y amazon-ssm-agent
+            systemctl enable amazon-ssm-agent &amp;&amp; systemctl start amazon-ssm-agent
+        EOT
+      # 2&gt; Node Group scaling configuration
+      desired_size    = 2
+      max_size        = 2
+      min_size        = 2
+      max_unavailable = 1 # or percentage = 20
+
+      # 3&gt; Node Group compute configuration
+      ami_type       = &quot;AL2_ARM_64&quot; # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
+      capacity_type  = &quot;ON_DEMAND&quot;  # ON_DEMAND or SPOT
+      instance_types = [&quot;m6g.large&quot;] # List of instances to get capacity from multipe pools
+      block_device_mappings = [
+        {
+          device_name = &quot;/dev/xvda&quot;
+          volume_type = &quot;gp3&quot;
+          volume_size = 100
+        }
+      ]
+      # 4&gt; Node Group network configuration
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+
+      k8s_taints = []
+
+      k8s_labels = {
+        Environment = &quot;preprod&quot;
+        Zone        = &quot;dev&quot;
+        WorkerType  = &quot;ON_DEMAND&quot;
+      }
+      additional_tags = {
+        ExtraTag    = &quot;m6g-on-demand&quot;
+        Name        = &quot;m6g-on-demand&quot;
+        subnet_type = &quot;private&quot;
+      }
+      launch_template_tags = {
+        SomeAwsProviderDefaultTag1: &quot;TRUE&quot;
+        SomeAwsProviderDefaultTag2: &quot;TRUE&quot;
+      }
+    }
+
+    #---------------------------------------------------------#
+    # Bottlerocket ARM instance type Worker Group
+    #---------------------------------------------------------#
+    # Checkout this doc https://github.com/bottlerocket-os/bottlerocket for configuring userdata for Launch Templates
+    bottlerocket_arm = {
+      # 1&gt; Node Group configuration
+      node_group_name        = &quot;btl-arm&quot;      # Max 40 characters for node group name
+      create_launch_template = true           # false will use the default launch template
+      launch_template_os     = &quot;bottlerocket&quot; # amazonlinux2eks or bottlerocket
+      public_ip              = false          # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+      # 2&gt; Node Group scaling configuration
+      desired_size    = 2
+      max_size        = 2
+      min_size        = 2
+      max_unavailable = 1 # or percentage = 20
+
+      # 3&gt; Node Group compute configuration
+      ami_type       = &quot;BOTTLEROCKET_ARM_64&quot; # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
+      capacity_type  = &quot;ON_DEMAND&quot;           # ON_DEMAND or SPOT
+      instance_types = [&quot;m6g.large&quot;]          # List of instances to get capacity from multipe pools
+      disk_size      = 50
+
+      # 4&gt; Node Group network configuration
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+
+      k8s_taints = []
+
+      k8s_labels = {
+        Environment = &quot;preprod&quot;
+        Zone        = &quot;dev&quot;
+        WorkerType  = &quot;ON_DEMAND&quot;
+      }
+      additional_tags = {
+        ExtraTag    = &quot;m6g-on-demand&quot;
+        Name        = &quot;m6g-on-demand&quot;
+        subnet_type = &quot;private&quot;
+      }
+      launch_template_tags = {
+        SomeAwsProviderDefaultTag1: &quot;TRUE&quot;
+        SomeAwsProviderDefaultTag2: &quot;TRUE&quot;
+      }
+    }
+
+    #---------------------------------------------------------#
+    # Bottlerocket instance type Worker Group
+    #---------------------------------------------------------#
+    # Checkout this doc https://github.com/bottlerocket-os/bottlerocket for configuring userdata for Launch Templates
+    bottlerocket_x86 = {
+      # 1&gt; Node Group configuration - Part1
+      node_group_name        = &quot;btl-x86&quot;      # Max 40 characters for node group name
+      create_launch_template = true           # false will use the default launch template
+      launch_template_os     = &quot;bottlerocket&quot; # amazonlinux2eks or bottlerocket
+      public_ip              = false          # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates ;
+      # 2&gt; Node Group scaling configuration
+      desired_size    = 2
+      max_size        = 2
+      min_size        = 2
+      max_unavailable = 1 # or percentage = 20
+
+      # 3&gt; Node Group compute configuration
+      ami_type       = &quot;BOTTLEROCKET_x86_64&quot; # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
+      capacity_type  = &quot;ON_DEMAND&quot;           # ON_DEMAND or SPOT
+      instance_types = [&quot;m5.large&quot;]          # List of instances to get capacity from multipe pools
+      block_device_mappings = [
+        {
+          device_name = &quot;/dev/xvda&quot;
+          volume_type = &quot;gp3&quot;
+          volume_size = 100
+        }
+      ]
+
+      # 4&gt; Node Group network configuration
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+
+      k8s_taints = []
+
+      k8s_labels = {
+        Environment = &quot;preprod&quot;
+        Zone        = &quot;dev&quot;
+        WorkerType  = &quot;ON_DEMAND&quot;
+      }
+      additional_tags = {
+        ExtraTag    = &quot;m5x-on-demand&quot;
+        Name        = &quot;m5x-on-demand&quot;
+        subnet_type = &quot;private&quot;
+      }
+      launch_template_tags = {
+        SomeAwsProviderDefaultTag1: &quot;TRUE&quot;
+        SomeAwsProviderDefaultTag2: &quot;TRUE&quot;
+      }
+    }
+
+    #---------------------------------------------------------#
+    # Managed Node groups with Launch templates using CUSTOM AMI with ContainerD runtime
+    #---------------------------------------------------------#
+    mng_custom_ami = {
+      # Node Group configuration
+      node_group_name = &quot;mng_custom_ami&quot; # Max 40 characters for node group name
+
+      # custom_ami_id is optional when you provide ami_type. Enter the Custom AMI id if you want to use your own custom AMI
+      custom_ami_id  = data.aws_ami.amazonlinux2eks.id
+      capacity_type  = &quot;ON_DEMAND&quot;  # ON_DEMAND or SPOT
+      instance_types = [&quot;m5.large&quot;] # List of instances to get capacity from multipe pools
+
+      # Launch template configuration
+      create_launch_template = true              # false will use the default launch template
+      launch_template_os     = &quot;amazonlinux2eks&quot; # amazonlinux2eks or bottlerocket
+
+      # pre_userdata will be applied by using custom_ami_id or ami_type
+      pre_userdata = &lt;&lt;-EOT
+            yum install -y amazon-ssm-agent
+            systemctl enable amazon-ssm-agent &amp;&amp; systemctl start amazon-ssm-agent
+        EOT
+
+      # post_userdata will be applied only by using custom_ami_id
+      post_userdata = &lt;&lt;-EOT
+            echo &quot;Bootstrap successfully completed! You can further apply config or install to run after bootstrap if needed&quot;
+      EOT
+
+      # kubelet_extra_args used only when you pass custom_ami_id;
+      # --node-labels is used to apply Kubernetes Labels to Nodes
+      # --register-with-taints used to apply taints to Nodes
+      # e.g., kubelet_extra_args=&#39;--node-labels=WorkerType=ON_DEMAND,noderole=spark --register-with-taints=ON_DEMAND=true:NoSchedule --max-pods=58&#39;,
+      kubelet_extra_args = &quot;--node-labels=WorkerType=ON_DEMAND,noderole=spark --register-with-taints=test=true:NoSchedule --max-pods=20&quot;
+
+      # bootstrap_extra_args used only when you pass custom_ami_id. Allows you to change the Container Runtime for Nodes
+      # e.g., bootstrap_extra_args=&quot;--use-max-pods false --container-runtime containerd&quot;
+      bootstrap_extra_args = &quot;--use-max-pods false --container-runtime containerd&quot;
+
+      # Taints can be applied through EKS API or through Bootstrap script using kubelet_extra_args
+      k8s_taints = []
+
+      # Node Labels can be applied through EKS API or through Bootstrap script using kubelet_extra_args
+      k8s_labels = {
+        Environment = &quot;preprod&quot;
+        Zone        = &quot;dev&quot;
+        Runtime     = &quot;containerd&quot;
+      }
+
+      enable_monitoring = true
+      eni_delete        = true
+      public_ip         = false # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates
+
+      # Node Group scaling configuration
+      desired_size    = 2
+      max_size        = 2
+      min_size        = 2
+      max_unavailable = 1 # or percentage = 20
+
+      block_device_mappings = [
+        {
+          device_name = &quot;/dev/xvda&quot;
+          volume_type = &quot;gp3&quot;
+          volume_size = 150
+        }
+      ]
+
+      # Node Group network configuration
+      subnet_type = &quot;private&quot; # public or private - Default uses the private subnets used in control plane if you don&#39;t pass the &quot;subnet_ids&quot;
+      subnet_ids  = []        # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+
+      additional_iam_policies = [] # Attach additional IAM policies to the IAM role attached to this worker group
+
+      # SSH ACCESS Optional - Recommended to use SSM Session manager
+      remote_access         = false
+      ec2_ssh_key           = &quot;&quot;
+      ssh_security_group_id = &quot;&quot;
+
+      additional_tags = {
+        ExtraTag    = &quot;mng-custom-ami&quot;
+        Name        = &quot;mng-custom-ami&quot;
+        subnet_type = &quot;private&quot;
+      }
+      launch_template_tags = {
+        SomeAwsProviderDefaultTag1: &quot;TRUE&quot;
+        SomeAwsProviderDefaultTag2: &quot;TRUE&quot;
+      }
+    }
+</code></pre></div>
+<h3 id="managed-node-groups-with-ec2-spot-instances">Managed Node Groups with EC2 Spot Instances<a class="headerlink" href="#managed-node-groups-with-ec2-spot-instances" title="Permanent link">&para;</a></h3>
+<p>We recommend you to use managed-node groups (MNG) when using EC2 Spot instances. MNG creates the ASG for you following the Spot best practices:</p>
+<ul>
+<li>Configure the <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-capacity-rebalancing.html">capacity_rebalance</a> feature to <code>true</code></li>
+<li>Manage the rebalance notification notice by launching a new instance proactively when there's an instance with a high-risk of being interrupted. This is instance is <a href="https://jamesdefabia.github.io/docs/user-guide/kubectl/kubectl_cordon/">cordoned</a> automatically so no new pods are scheduled there.</li>
+<li>Use <a href="https://aws.amazon.com/about-aws/whats-new/2019/08/new-capacity-optimized-allocation-strategy-for-provisioning-amazon-ec2-spot-instances/">capacity-optimized</a> allocation strategy to launch an instance from the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html#spot-features">pool</a> with more spare capacity</li>
+<li>Manage the instance interruption notice by draining the pods automatically to other nodes in the cluster.</li>
+</ul>
+<p>The below example demonstrates the minimum configuration required to deploy a managed node group using EC2 Spot instances. Notice how we're including more than one instance type for diversification purposes. Diversification is key, is how you'll get access to more spare capacity in EC2. You can use the <a href="https://github.com/aws/amazon-ec2-instance-selector">Amazon EC2 Instance Selector CLI</a> to get a list of instances that match your workload.</p>
+<div class="highlight"><pre><span></span><code>    # EKS MANAGED NODE GROUPS WITH SPOT INSTANCES
+    spot_2vcpu_8mem = {
+      node_group_name = &quot;mng-spot-2vcpu-8mem&quot;
+      capacity_type   = &quot;SPOT&quot;
+      instance_types  = [&quot;m5.large&quot;, &quot;m4.large&quot;, &quot;m6a.large&quot;, &quot;m5a.large&quot;, &quot;m5d.large&quot;] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
+      subnet_ids      = []  # Mandatory Public or Private Subnet IDs
+      disk_size       = 100 # disk_size will be ignored when using Launch Templates
+      k8s_taints      = [{ key = &quot;spotInstance&quot;, value = &quot;true&quot;, effect = &quot;NO_SCHEDULE&quot; }] // Avoid scheduling stateful workloads in SPOT nodes
+    }
+</code></pre></div>
+<p>The below example demonstrates advanced configuration options for a managed node group with a custom launch templates. This is important if you decide to add the ability to scale-down to zero nodes. Cluster autoscaler needs to be able to identify which nodes to scale-down, and you do it by adding custom tags.</p>
+<div class="highlight"><pre><span></span><code>    # EKS MANAGED NODE GROUPS WITH SPOT INSTANCES
+    spot_2vcpu_8mem = {
+      node_group_name = &quot;mng-spot-2vcpu-8mem&quot;
+      capacity_type   = &quot;SPOT&quot;
+      instance_types  = [&quot;m5.large&quot;, &quot;m4.large&quot;, &quot;m6a.large&quot;, &quot;m5a.large&quot;, &quot;m5d.large&quot;] // Instances with same specs for memory and CPU
+
+      # Node Group network configuration
+      subnet_type = &quot;private&quot; # public or private - Default uses the private subnets used in control plane if you don&#39;t pass the &quot;subnet_ids&quot;
+      subnet_ids  = []        # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+
+      k8s_taints = [{ key = &quot;spotInstance&quot;, value = &quot;true&quot;, effect = &quot;NO_SCHEDULE&quot; }] // Avoid scheduling stateful workloads in SPOT nodes
+
+      min_size = 0 // Scale-down to zero nodes when no workloads are running, useful for pre-production environments
+
+      # Launch template configuration
+      create_launch_template = true              # false will use the default launch template
+      launch_template_os     = &quot;amazonlinux2eks&quot; # amazonlinux2eks or bottlerocket
+
+      # This is so cluster autoscaler can identify which node (using ASGs tags) to scale-down to zero nodes
+      additional_tags = {
+        &quot;k8s.io/cluster-autoscaler/node-template/label/eks.amazonaws.com/capacityType&quot; = &quot;SPOT&quot;
+        &quot;k8s.io/cluster-autoscaler/node-template/label/eks/node_group_name&quot;            = &quot;mng-spot-2vcpu-8mem&quot;
+      }
+    }
+</code></pre></div>
+<p>Cluser autoscaler has the ability to set priorities on which node groups to scale by using the <code>priority</code> expander. To configure it, you need to add the following configuration in the <code>eks_blueprints_kubernetes_addons</code> block, like this:</p>
+<div class="highlight"><pre><span></span><code>  enable_cluster_autoscaler = true
+  cluster_autoscaler_helm_config = {
+    set = [
+      {
+        name  = &quot;extraArgs.expander&quot;
+        value = &quot;priority&quot;
+      },
+      {
+        name  = &quot;expanderPriorities&quot;
+        value = &lt;&lt;-EOT
+                  100:
+                    - .*-spot-2vcpu-8mem.*
+                  90:
+                    - .*-spot-4vcpu-16mem.*
+                  10:
+                    - .*
+                EOT
+      }
+    ]
+  }
+</code></pre></div>
+<p><em>NOTE</em>:</p>
+<ul>
+<li>You should not set to true both <code>create_launch_template</code> and <code>remote_access</code> or you'll end-up with new managed nodegroups that won't be able to join the cluster.</li>
+</ul>
+<h2 id="self-managed-node-groups">Self-managed Node Groups<a class="headerlink" href="#self-managed-node-groups" title="Permanent link">&para;</a></h2>
+<p>The below example demonstrates the minimum configuration required to deploy a Self-managed node group.</p>
+<div class="highlight"><pre><span></span><code>    # EKS SELF MANAGED NODE GROUPS
+    self_managed_node_groups = {
+        self_mg_5 = {
+          node_group_name    = &quot;self-managed-ondemand&quot;
+          launch_template_os = &quot;amazonlinux2eks&quot;
+          subnet_ids         = module.vpc.private_subnets
+        }
+    }
+</code></pre></div>
+<p>The below example demonstrates advanced configuration options for a self-managed node group.
+ - <code>--node-labels</code> parameter is used to apply labels to Nodes for self-managed node groups. e.g., <code>kubelet_extra_args="--node-labels=WorkerType=SPOT,noderole=spark</code>
+ - <code>--register-with-taints</code> is used to apply taints to Nodes for self-managed node groups. e.g., <code>kubelet_extra_args='--register-with-taints=spot=true:NoSchedule --max-pods=58'</code>,</p>
+<div class="highlight"><pre><span></span><code>    self_managed_node_groups = {
+      self_mg_5 = {
+        node_group_name      = &quot;self-managed-ondemand&quot;
+        instance_type        = &quot;m5.large&quot;
+        custom_ami_id        = &quot;ami-0dfaa019a300f219c&quot; # Bring your own custom AMI generated by Packer/ImageBuilder/Puppet etc.
+        capacity_type        = &quot;&quot;                      # Optional Use this only for SPOT capacity as capacity_type = &quot;spot&quot;
+        launch_template_os   = &quot;amazonlinux2eks&quot;       # amazonlinux2eks  or bottlerocket or windows
+        pre_userdata         = &lt;&lt;-EOT
+            yum install -y amazon-ssm-agent
+            systemctl enable amazon-ssm-agent &amp;&amp; systemctl start amazon-ssm-agent
+        EOT
+        post_userdata        = &quot;&quot;
+
+        create_iam_role = false # Changing `create_iam_role=false` to bring your own IAM Role
+        iam_role_arn              = &quot;&lt;ENTER_IAM_ROLE_ARN&gt;&quot; # custom IAM role for aws-auth mapping; used when create_iam_role = false
+        iam_instance_profile_name = &quot;&lt;ENTER_IAM_INSTANCE_PROFILE_NAME&gt;&quot; # IAM instance profile name for Launch templates; used when create_iam_role = false
+
+        kubelet_extra_args   = &quot;--node-labels=WorkerType=ON_DEMAND,noderole=spark --register-with-taints=test=true:NoSchedule --max-pods=20&quot;
+        bootstrap_extra_args = &quot;&quot;
+        block_device_mapping = [
+          {
+            device_name = &quot;/dev/xvda&quot; # mount point to /
+            volume_type = &quot;gp3&quot;
+            volume_size = 20
+          },
+          {
+            device_name = &quot;/dev/xvdf&quot; # mount point to /local1 (it could be local2, depending upon the disks are attached during boot)
+            volume_type = &quot;gp3&quot;
+            volume_size = 50
+            iops        = 3000
+            throughput  = 125
+          },
+          {
+            device_name = &quot;/dev/xvdg&quot; # mount point to /local2 (it could be local1, depending upon the disks are attached during boot)
+            volume_type = &quot;gp3&quot;
+            volume_size = 100
+            iops        = 3000
+            throughput  = 125
+          }
+        ]
+        enable_monitoring = false
+        public_ip         = false # Enable only for public subnets
+
+        # AUTOSCALING
+        max_size   = 3
+        min_size   = 1
+        subnet_ids = [] # Mandatory Public or Private Subnet IDs
+        additional_tags = {
+          ExtraTag    = &quot;m5x-on-demand&quot;
+          Name        = &quot;m5x-on-demand&quot;
+          subnet_type = &quot;private&quot;
+        }
+        launch_template_tags = {
+          SomeAwsProviderDefaultTag1: &quot;TRUE&quot;
+          SomeAwsProviderDefaultTag2: &quot;TRUE&quot;
+        }
+        additional_iam_policies = []
+      },
+    }
+</code></pre></div>
+<p>With the previous described example at <code>block_device_mapping</code>, in case you choose an instance that has local NVMe storage, you will achieve the three specified EBS disks plus all local NVMe disks that instance brings.</p>
+<p>For example, for an <code>m5d.large</code> you will end up with the following mount points: <code>/</code> for device named <code>/dev/xvda</code>, <code>/local1</code> for device named <code>/dev/xvdf</code>, <code>/local2</code> for device named <code>/dev/xvdg</code>, and <code>/local3</code> for instance storage (in such case a disk with 70GB).</p>
+<p>Check the following references as you may desire:</p>
+<ul>
+<li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nvme-ebs-volumes.html">Amazon EBS and NVMe on Linux instances</a>.</li>
+<li><a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/aws-nvme-drivers.html">AWS NVMe drivers for Windows instances</a></li>
+<li><a href="https://aws.amazon.com/blogs/aws/ec2-instance-update-m5-instances-with-local-nvme-storage-m5d/">EC2 Instance Update – M5 Instances with Local NVMe Storage (M5d)</a></li>
+</ul>
+<h3 id="self-managed-node-groups-with-ec2-spot-instances">Self-Managed Node Groups with EC2 Spot Instances<a class="headerlink" href="#self-managed-node-groups-with-ec2-spot-instances" title="Permanent link">&para;</a></h3>
+<p>We recommend you to use managed-node groups (MNG) when using EC2 Spot instances. However, if you need to use self-managed node groups, you need to configure the ASG with the following Spot best practices:</p>
+<ul>
+<li>Configure the <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-capacity-rebalancing.html">capacity_rebalance</a> feature to <code>true</code></li>
+<li>Use the <a href="https://aws.amazon.com/about-aws/whats-new/2019/08/new-capacity-optimized-allocation-strategy-for-provisioning-amazon-ec2-spot-instances/">capacity-optimized</a> allocation strategy to launch an instance from the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html#spot-features">pool</a> with more spare capacity</li>
+<li>Deploy the <a href="https://github.com/aws/aws-node-termination-handler">Node Termination Handler (NTH)</a> to manage the rebalance recommendation and instance termination notice</li>
+</ul>
+<p>The below example demonstrates the minimum configuration required to deploy a self-managed node group. Notice how we're including more than one instance type for diversification purposes. Diversification is key, is how you'll get access to more spare capacity in EC2. You can use the <a href="https://github.com/aws/amazon-ec2-instance-selector">Amazon EC2 Instance Selector CLI</a> to get a list of instances that match your workload.</p>
+<div class="highlight"><pre><span></span><code>    spot_2vcpu_8mem = {
+      node_group_name    = &quot;smng-spot-2vcpu-8mem&quot;
+      capacity_type      = &quot;spot&quot;
+      capacity_rebalance = true
+      instance_types     = [&quot;m5.large&quot;, &quot;m4.large&quot;, &quot;m6a.large&quot;, &quot;m5a.large&quot;, &quot;m5d.large&quot;]
+      min_size           = 0
+      subnet_ids         = module.vpc.private_subnets
+      launch_template_os = &quot;amazonlinux2eks&quot; # amazonlinux2eks or bottlerocket
+      k8s_taints         = [{ key = &quot;spotInstance&quot;, value = &quot;true&quot;, effect = &quot;NO_SCHEDULE&quot; }]
+    }
+</code></pre></div>
+<p>You need to deploy the NTH as an add-on, so make sure you include the following within the <code>eks_blueprints_kubernetes_addons</code> block:</p>
+<div class="highlight"><pre><span></span><code>  auto_scaling_group_names = module.eks_blueprints.self_managed_node_group_autoscaling_groups
+  enable_aws_node_termination_handler = true
+</code></pre></div>
+<p>Cluser autoscaler has the ability to set priorities on which node groups to scale by using the <code>priority</code> expander. To configure it, you need to add the following configuration in the <code>eks_blueprints_kubernetes_addons</code> block, like this:</p>
+<div class="highlight"><pre><span></span><code>  enable_cluster_autoscaler = true
+  cluster_autoscaler_helm_config = {
+    set = [
+      {
+        name  = &quot;extraArgs.expander&quot;
+        value = &quot;priority&quot;
+      },
+      {
+        name  = &quot;expanderPriorities&quot;
+        value = &lt;&lt;-EOT
+                  100:
+                    - .*-spot-2vcpu-8mem.*
+                  90:
+                    - .*-spot-4vcpu-16mem.*
+                  10:
+                    - .*
+                EOT
+      }
+    ]
+  }
+</code></pre></div>
+<h3 id="fargate-profile">Fargate Profile<a class="headerlink" href="#fargate-profile" title="Permanent link">&para;</a></h3>
+<p>The example below demonstrates how you can customize a Fargate profile for your cluster.</p>
+<div class="highlight"><pre><span></span><code>  fargate_profiles = {
+    default = {
+      fargate_profile_name = &quot;default&quot;
+      fargate_profile_namespaces = [{
+        namespace = &quot;default&quot;
+        k8s_labels = {
+          Environment = &quot;preprod&quot;
+          Zone        = &quot;dev&quot;
+          env         = &quot;fargate&quot;
+        }
+      }]
+
+      subnet_ids = [] # Provide list of private subnets
+
+      additional_tags = {
+        ExtraTag = &quot;Fargate&quot;
+      }
+    },
+    multi = {
+      fargate_profile_name = &quot;multi-namespaces&quot;
+      create_iam_role = false # Changing `create_iam_role=false` to bring your own IAM Role
+      iam_role_arn    = &quot;&lt;ENTER_YOUR_IAM_ROLE&gt;&quot; # custom IAM role for aws-auth mapping; used when `create_iam_role = false`
+      additional_iam_policies    = [] # additional IAM policies
+      fargate_profile_namespaces = [{
+        namespace = &quot;default&quot;
+        k8s_labels = {
+          Environment = &quot;preprod&quot;
+          Zone        = &quot;dev&quot;
+          OS          = &quot;Fargate&quot;
+          WorkerType  = &quot;FARGATE&quot;
+          Namespace   = &quot;default&quot;
+        }
+        },
+        {
+          namespace = &quot;sales&quot;
+          k8s_labels = {
+            Environment = &quot;preprod&quot;
+            Zone        = &quot;dev&quot;
+            OS          = &quot;Fargate&quot;
+            WorkerType  = &quot;FARGATE&quot;
+            Namespace   = &quot;default&quot;
+          }
+      }]
+
+      subnet_ids = [] # Provide list of private subnets
+
+      additional_tags = {
+        ExtraTag = &quot;Fargate&quot;
+      }
+    },
+  }
+</code></pre></div>
+<h3 id="windows-self-managed-node-groups">Windows Self-Managed Node Groups<a class="headerlink" href="#windows-self-managed-node-groups" title="Permanent link">&para;</a></h3>
+<p>The example below demonstrates the minimum configuration required to deploy a Self-managed node group of Windows nodes. Refer to the <a href="https://docs.aws.amazon.com/eks/latest/userguide/windows-support.html">AWS EKS user guide</a> for more information about Windows support in EKS.</p>
+<div class="highlight"><pre><span></span><code>  # SELF-MANAGED NODE GROUP with Windows support
+  enable_windows_support = true
+
+  self_managed_node_groups = {
+    ng_od_windows = {
+      node_group_name    = &quot;ng-od-windows&quot;
+      launch_template_os = &quot;windows&quot;
+      instance_type      = &quot;m5n.large&quot;
+      subnet_ids         = module.vpc.private_subnets
+      min_size           = 2
+    }
+  }
+</code></pre></div>
+<p>In clusters where Windows support is enabled, workloads should have explicit node assignments configured using <code>nodeSelector</code> or <code>affinity</code>, as described in the Kubernetes document <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/">Assigning Pods to Nodes</a>.
+For example, if you are enabling the <code>metrics-server</code> Kubernetes add-on (Helm chart), use the following configuration to ensure its pods are assigned to Linux nodes. See the <a href="../examples/node-groups/windows-node-groups/">EKS Cluster with Windows Support example</a> for full Terraform configuration and workload deployment samples.</p>
+<div class="highlight"><pre><span></span><code>  enable_metrics_server = true
+  metrics_server_helm_config = {
+    set = [
+      {
+        name  = &quot;nodeSelector.kubernetes\\.io/os&quot;
+        value = &quot;linux&quot;
+      }
+    ]
+  }
+</code></pre></div>
+
+              
+            </article>
+            
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../core-concepts/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Core Concepts" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Core Concepts
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../iam/minimum-iam-policy/" class="md-footer__link md-footer__link--next" aria-label="Next: Minimum IAM policy" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Minimum IAM policy
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["tabs"], "search": "../assets/javascripts/workers/search.b028fd86.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.7f366e99.min.js"></script>
+      
+    
+  </body>
+</html>
