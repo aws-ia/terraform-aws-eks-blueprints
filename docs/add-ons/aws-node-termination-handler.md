@@ -40,3 +40,22 @@ To validate that controller is running, ensure that controller deployment is in 
 $ kubectl get deployments -n kube-system
 aws-node-termination-handler  1/1   1   1   5d9h
 ```
+
+### GitOps Configuration
+The following properties are made available for use when managing the add-on via GitOps.
+
+GitOps with ArgoCD Add-on repo is located [here](https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/values.yaml)
+
+When enabling NTH for GitOps, be sure that you are using `self_managed_node_groups` as this module will check to ensure that it finds valid backing autoscaling groups.
+
+If you're using `managed_node_groups`, NTH isn't required as per the following - https://github.com/aws/aws-node-termination-handler/issues/186
+```
+Amazon EKS automatically drains nodes using the Kubernetes API during terminations or updates. Updates respect the pod disruption budgets that you set for your pods.
+```
+
+```hcl
+  awsNodeTerminationHandler = {
+    enable             = true
+    serviceAccountName = "<service_account>"
+  }
+```
