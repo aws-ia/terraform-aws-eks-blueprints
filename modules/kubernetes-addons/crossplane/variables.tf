@@ -4,15 +4,6 @@ variable "helm_config" {
   default     = {}
 }
 
-variable "aws_provider" {
-  description = "AWS Provider config for Crossplane"
-  type = object({
-    enable                   = bool
-    provider_aws_version     = string
-    additional_irsa_policies = list(string)
-  })
-}
-
 variable "addon_context" {
   description = "Input configuration for the addon"
   type = object({
@@ -30,6 +21,16 @@ variable "addon_context" {
   })
 }
 
+variable "aws_provider" {
+  description = "AWS Provider config for Crossplane"
+  type        = any
+}
+
+variable "kubernetes_provider" {
+  description = "Kubernetes Provider config for Crossplane"
+  type        = any
+}
+
 variable "jet_aws_provider" {
   description = "AWS Provider Jet AWS config for Crossplane"
   type = object({
@@ -37,22 +38,4 @@ variable "jet_aws_provider" {
     provider_aws_version     = string
     additional_irsa_policies = list(string)
   })
-}
-
-variable "kubernetes_provider" {
-  description = "Kubernetes Provider config for Crossplane"
-  type = object({
-    enable                      = bool
-    provider_kubernetes_version = string
-  })
-}
-
-variable "account_id" {
-  description = "Current AWS Account ID"
-  type        = string
-}
-
-variable "aws_partition" {
-  description = "AWS Identifier of the current partition e.g., aws or aws-cn"
-  type        = string
 }
