@@ -50,7 +50,7 @@ In the GitOps workload repository, we have configured our applications deploymen
 
 We have configured ExternalDNS add-ons in our two clusters to share the same Route53 Hosted Zone. The workloads in both clusters also share the same Route 53 DNS records, we rely on AWS Route53 weighted records to allow us to configure canary workload migration between our two EKS clusters.
 
-Here we uses the same GitOps workload configuration repository and adapts parameters with the `values.yaml`.We could also uses different ArgoCD repository for each cluster, or uses a new directory if we want to validate or test new deployment manifests with maybe additional features, configurations or to use with different Kubernetes add-ons (like changing ingress controller).
+Here we use the same GitOps workload configuration repository and adapt parameters with the `values.yaml`. We could also use different ArgoCD repository for each cluster, or use a new directory if we want to validate or test new deployment manifests with maybe additional features, configurations or to use with different Kubernetes add-ons (like changing ingress controller).
 
 Our objective here is to show you how Application teams and Platform teams can configured their infrastructure and workloads so that application teams are able to deploy autonomously their workloads to the EKS clusters thanks to ArgoCD, and platform team can keep the control of migrating production workloads from one cluster to another without having to synchronized operations with applications teams, or asking them to build a complicated CD pipeline.
 
