@@ -326,7 +326,7 @@ In this sample, we uses a simple terraform variable to control the weight for al
 
 In order to properly destroy the Cluster, we need first to remove the ArgoCD workloads, while keeping the ArgoCD addons.
 
-Why doing this ? when we remove an ingress object, we want the associated Kubernetes add-ons like aws load balancer controller and External DNS to freed correctly associated AWS ressources. If we directly ask terraform to destroy everything, it can remove first theses controllers without letting them the time to remove associated aws ressources that will be still existing in AWS, preventing us to clean completely our VPC.
+Why doing this? When we remove an ingress object, we want the associated Kubernetes add-ons like aws load balancer controller and External DNS to correctly free the associated AWS ressources. If we directly ask terraform to destroy everything, it can remove first theses controllers without allowing them the time to remove associated aws ressources that will still existing in AWS, preventing us to completely delete our cluster.
 
 #### TL;DR
 
