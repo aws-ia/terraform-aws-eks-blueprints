@@ -105,12 +105,6 @@ variable "is_ca" {
   default     = true
 }
 
-variable "dns_names" {
-  description = "DNSNames is a list of DNS subjectAltNames to be set on the Certificate."
-  type        = list(string)
-  default     = []
-}
-
 variable "hosted_zone_id" {
   description = "If set, the provider will manage only this zone in Route53 and will not do an lookup using the route53:ListHostedZonesByName api call."
   type        = string

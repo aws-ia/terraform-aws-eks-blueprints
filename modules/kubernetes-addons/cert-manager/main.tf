@@ -78,6 +78,11 @@ resource "helm_release" "cert_manager_acme" {
     value = var.dns_region
   }
 
+  set {
+    name  = "is_ca"
+    value = var.is_ca
+  }
+
   depends_on = [module.helm_addon]
 }
 
