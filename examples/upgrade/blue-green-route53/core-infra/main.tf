@@ -2,6 +2,22 @@ provider "aws" {
   region = local.region
 }
 
+locals {
+  name   = var.core_stack_name
+  region = var.aws_region
+
+  vpc_cidr       = var.vpc_cidr
+  num_of_subnets = min(length(data.aws_availability_zones.available.names), 3)
+  azs            = slice(data.aws_availability_zones.available.names, 0, local.num_of_subnets)
+
+  argocd_secret_manager_name = var.argocd_secret_manager_name_suffix
+
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
+  }
+}
+
 data "aws_availability_zones" "available" {}
 
 module "vpc" {
@@ -63,34 +79,22 @@ resource "aws_route53_record" "ns" {
   records = aws_route53_zone.sub.name_servers
 }
 
-# Create wildcard certificate four our zone
-resource "aws_acm_certificate" "sub" {
-  domain_name               = "${local.name}.${var.hosted_zone_name}"
-  subject_alternative_names = ["*.${local.name}.${var.hosted_zone_name}"]
-  validation_method         = "DNS"
-}
+module "acm" {
+  source  = "terraform-aws-modules/acm/aws"
+  version = "~> 4.0"
 
-# Validate Certificate records for the new HostedZone
-resource "aws_route53_record" "validation" {
-  for_each = {
-    for dvo in aws_acm_certificate.sub.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      record = dvo.resource_record_value
-      type   = dvo.resource_record_type
-    }
+  domain_name  = "${local.name}.${var.hosted_zone_name}"
+  zone_id      = aws_route53_zone.sub.zone_id
+
+  subject_alternative_names = [
+    "*.${local.name}.${var.hosted_zone_name}"
+  ]
+
+  wait_for_validation = true
+
+  tags = {
+    Name = "${local.name}.${var.hosted_zone_name}"
   }
-
-  allow_overwrite = true
-  name            = each.value.name
-  records         = [each.value.record]
-  ttl             = 60
-  type            = each.value.type
-  zone_id         = aws_route53_zone.sub.zone_id
-}
-
-resource "aws_acm_certificate_validation" "sub" {
-  certificate_arn         = aws_acm_certificate.sub.arn
-  validation_record_fqdns = [for record in aws_route53_record.validation : record.fqdn]
 }
 
 #---------------------------------------------------------------

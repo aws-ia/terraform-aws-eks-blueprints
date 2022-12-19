@@ -10,5 +10,5 @@ output "aws_route53_zone" {
 
 output "aws_acm_certificate_status" {
   description = "Status of Certificate"
-  value       = aws_acm_certificate.sub.status
+  value       = module.acm.acm_certificate_status
 }
