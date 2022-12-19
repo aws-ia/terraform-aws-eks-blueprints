@@ -1,11 +1,9 @@
-
-
 locals {
   core_stack_name   = var.core_stack_name
   suffix_stack_name = var.suffix_stack_name
 
-  env               = "dev" # use to suffix some kubernetes objects
-  name              = "${var.core_stack_name}-${local.suffix_stack_name}"
+  env  = "dev" # use to suffix some kubernetes objects
+  name = "${var.core_stack_name}-${local.suffix_stack_name}"
 
   eks_cluster_domain = "${local.core_stack_name}.${var.hosted_zone_name}" # for external-dns
 
@@ -172,10 +170,6 @@ data "aws_partition" "current" {}
 
 # Find the user currently in use by AWS
 data "aws_caller_identity" "current" {}
-
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
-}
 
 data "aws_vpc" "vpc" {
   filter {

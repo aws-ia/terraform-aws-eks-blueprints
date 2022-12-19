@@ -1,8 +1,3 @@
-variable "aws_region" {
-  description = "AWS Region"
-  type        = string
-}
-
 variable "core_stack_name" {
   description = "The name of Core Infrastructure stack, feel free to rename it. Used for cluster and VPC names."
   type        = string

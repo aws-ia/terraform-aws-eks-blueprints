@@ -37,7 +37,6 @@ module "eks_cluster" {
   route53_weight             = "0"
   ecsfrontend_route53_weight = "0"
 
-  aws_region             = var.aws_region
   core_stack_name        = var.core_stack_name
   hosted_zone_name       = var.hosted_zone_name
   eks_admin_role_name    = var.eks_admin_role_name
