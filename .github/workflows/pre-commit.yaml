@@ -78,6 +78,8 @@ jobs:
 
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
         uses: clowdhaus/terraform-composite-actions/pre-commit@v1.8.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # Run only validate pre-commit check on min version supported
         if: ${{ matrix.directory !=  '.' && steps.changes.outputs.src== 'true' }}
         with:
@@ -86,6 +88,8 @@ jobs:
 
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
         uses: clowdhaus/terraform-composite-actions/pre-commit@v1.8.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # Run only validate pre-commit check on min version supported
         if: ${{ matrix.directory ==  '.' && steps.changes.outputs.src== 'true' }}
         with:
