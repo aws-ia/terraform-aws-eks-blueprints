@@ -69,7 +69,7 @@ resource "helm_release" "argocd_application" {
       { repoUrl = each.value.repo_url },
       each.value.values,
       local.global_application_values,
-      each.value.add_on_application ? var.addon_config : {}
+      each.value.add_on_application ? var.addon_config : null
     ))
     type = "auto"
   }
