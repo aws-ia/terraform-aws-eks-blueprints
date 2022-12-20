@@ -5,133 +5,16 @@
 - [EKS Blueprint Blue deployment](#eks-blueprint-blue-deployment)
   - [Table of content](#table-of-content)
   - [Folder overview](#folder-overview)
-  - [Infrastructure](#infrastructure)
-  - [Infrastructure Architecture](#infrastructure-architecture)
-  - [Prerequisites](#prerequisites)
-  - [Usage](#usage)
-  - [Cleanup](#cleanup)
 - [Terraform Doc](#terraform-doc)
-  - [Requirements](#requirements)
-  - [Providers](#providers)
-  - [Modules](#modules)
-  - [Resources](#resources)
-  - [Inputs](#inputs)
-  - [Outputs](#outputs)
 
 ## Folder overview
 
 This folder contains Terraform code to deploy an EKS Blueprint configured to deploy workload with ArgoCD and associated workload repository.
 This cluster will be used as part of our demo defined in [principal Readme](../README.md).
+
+This deploymentuses the local eks_cluster module. check it's [Readme](../modules/eks_cluster/README.md).
 What is include in this EKS cluster
 
-## Infrastructure
-
-The AWS resources created by the script are detailed bellow:
-
-- The infrastructure will be deployed in the ressources created in the [core-infra stack](../core-infra/README.md)
-- EKS Cluster
-  - Create an EKS Managed Node Group
-  - Create a platform team
-  - Create applications teams (with dedicated teams quotas)
-    - team-burnham
-    - team-riker
-    - ecsdemo-frontend
-    - ecsdemo-nodejs
-    - ecsdemo-crystal
-  - Kubernetes addon deploy with Terraform
-    - ArgoCD
-      - to deploy additional addons
-      - to deploy our demo workloads
-      - configured to expose a service loadbalancer
-  - Kubernetes addon deploy half with terraform and half with dedicated [ArgoCD addon repo]()
-    - Metrics server
-    - VPA
-    - Aws Load Balancer Controller
-    - Karpenter
-    - External DNS
-      - configured to target core infra Hosted Zone
-  - Kubernetes workloads (defined in a dedicated github repository repository)
-    - team-burnham
-      - burnham-ingress configured with weighted target groups
-
-## Infrastructure Architecture
-
-The following diagram represents the Infrastructure architecture being deployed with this project:
-
-<p align="center">
-  <img src="../static/archi-blue-green.png"/>
-</p>
-
-## Prerequisites
-
-- Before launching this solution please deploy the `core-infra` solution, which is provided in the root of this repository.
-- A public AWS Route 53 Hosted Zone that will be used to create our project hosted zone. It will be provided wviathe Terraform variable `"hosted_zone_name`
-  - Before moving to the next step, you will need to register a parent domain with AWS Route 53 (https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html) in case you don’t have one created yet.
-- Accessing GitOps Private git repositories with SSH access requiring an SSH key for authentication. In this example our workloads repositories are stored in GitHub, you can see in GitHub documentation on how to [connect with SSH](https://docs.github.com/en/authentication/connecting-to-github-with-ssh).
-  - The private ssh key value are supposed to be stored in AWS Secret Manager, by default in a secret named `github-blueprint-ssh-key`, but you can change it using the terraform variable `workload_repo_secret`
-
-## Usage
-
-**1.** Run Terraform init to download the providers and install the modules
-
-```shell
-terraform init
-```
-
-**2.** Create your SSH Key in Secret Manager
-
-Retrieve the ArgoUI password
-
-```bash
-aws secretsmanager get-secret-value \
-  --secret-id github-blueprint-ssh-key \
-  --query SecretString \
-  --output text --region $AWS_REGION
-```
-Should output your private key
-```
------PLACEHOLDER OPENSSH PRIVATE KEY-----
-FAKEKEY==
------END OPENSSH PRIVATE KEY-----
-```
-
-
-**3.** Review the terraform plan output, take a look at the changes that terraform will exeute, and then apply them:
-
-```shell
-terraform plan
-terraform apply
-```
-
-**4.** Once Terraform finishes the deployment open the ArgoUI Management Console And authenticate with the secret created by the core_infra stack
-
-Retrieve the ArgoUI password
-
-```bash
-aws secretsmanager get-secret-value \
-  --secret-id argocd-admin-secret.eks-blueprint \
-  --query SecretString \
-  --output text --region $AWS_REGION
-```
-
-Connect to the ArgoUI endpoint:
-
-```bash
-echo -n "https://"; kubectl get svc -n argocd argo-cd-argocd-server -o json | jq ".status.loadBalancer.ingress[0].hostname" -r
-```
-
-Validate the certificate issue, and login with credentials admin / <previous password from secretsmanager>
-
-**5.** Control Access to the Burnham ingress
-
-```bash
-URL=$(echo -n "https://" ; kubectl get ing -n team-burnham burnham-ingress -o json | jq ".spec.rules[0].host" -r)
-curl -s $URL | grep CLUSTER_NAME | awk -F "<span>|</span>" '{print $4}'
-```
-
-## Cleanup
-
-See Cleanup section in main Readme.md
 
 # Terraform Doc
 
@@ -156,21 +39,13 @@ See Cleanup section in main Readme.md
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eks_blueprints"></a> [eks\_blueprints](#module\_eks\_blueprints) | github.com/aws-ia/terraform-aws-eks-blueprints | v4.18.1 |
-| <a name="module_kubernetes_addons"></a> [kubernetes\_addons](#module\_kubernetes\_addons) | github.com/aws-ia/terraform-aws-eks-blueprints | v4.18.1/modules/kubernetes-addons |
+| <a name="module_eks_cluster"></a> [eks\_cluster](#module\_eks\_cluster) | ../modules/eks_cluster | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_eks_cluster_auth.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
-| [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |
-| [aws_route53_zone.sub](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
-| [aws_secretsmanager_secret.arogcd](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret) | data source |
-| [aws_secretsmanager_secret_version.admin_password_version](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret_version) | data source |
-| [aws_subnets.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
-| [aws_vpc.vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
 
 ## Inputs
 

@@ -83,8 +83,8 @@ module "acm" {
   source  = "terraform-aws-modules/acm/aws"
   version = "~> 4.0"
 
-  domain_name  = "${local.name}.${var.hosted_zone_name}"
-  zone_id      = aws_route53_zone.sub.zone_id
+  domain_name = "${local.name}.${var.hosted_zone_name}"
+  zone_id     = aws_route53_zone.sub.zone_id
 
   subject_alternative_names = [
     "*.${local.name}.${var.hosted_zone_name}"
