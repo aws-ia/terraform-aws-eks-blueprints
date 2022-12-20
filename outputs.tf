@@ -82,9 +82,9 @@ output "worker_node_security_group_id" {
   value       = try(module.aws_eks.node_security_group_id, "EKS Node groups not enabled")
 }
 
-#-------------------------------
-# Managed Node Groups Outputs
-#-------------------------------
+#---------------------------------
+# Self-managed Node Groups Outputs
+#---------------------------------
 output "self_managed_node_groups" {
   description = "Outputs from EKS Self-managed node groups "
   value       = var.create_eks && length(var.self_managed_node_groups) > 0 ? module.aws_eks_self_managed_node_groups[*] : []
@@ -115,9 +115,9 @@ output "windows_node_group_aws_auth_config_map" {
   value       = local.windows_node_group_aws_auth_config_map[*]
 }
 
-#-------------------------------
-# Managed Node Groups Outputs
-#-------------------------------
+#--------------------------------
+# EKS Managed Node Groups Outputs
+#--------------------------------
 output "managed_node_groups" {
   description = "Outputs from EKS Managed node groups "
   value       = var.create_eks && length(var.managed_node_groups) > 0 ? module.aws_eks_managed_node_groups[*] : []
