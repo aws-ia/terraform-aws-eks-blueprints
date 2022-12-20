@@ -1,12 +1,12 @@
-# EKS Blueprint for Terraform sample for blue/green cluster migration using Amazon Route53 for stateless workloads
+# Blue/Green or Canary Amazon EKS clusters migration for stateless ArgoCD workloads
 
-This directory provides a solution based on [EKS Blueprint for Terraform](https://aws-ia.github.io/terraform-aws-eks-blueprints) that shows how to leverage blue/green or canary application workload migration between EKS clusters, using [Amazon Route 53](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy-weighted.html) weighted routing feature. The workloads will be dynamically exposed using [AWS LoadBalancer Controller](https://aws-ia.github.io/terraform-aws-eks-blueprints/v4.13.0/add-ons/aws-load-balancer-controller/) and [External DNS add-on](https://aws-ia.github.io/terraform-aws-eks-blueprints/v4.13.0/add-ons/external-dns/).
+This directory provides a solution based on [EKS Blueprint for Terraform](https://aws-ia.github.io/terraform-aws-eks-blueprints) that shows how to leverage blue/green or canary application workload migration between EKS clusters, using [Amazon Route 53](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy-weighted.html) weighted routing feature. The workloads will be dynamically exposed using [AWS LoadBalancer Controller](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/aws-load-balancer-controller/) and [External DNS add-on](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/external-dns/).
 
-We are leveraging [the existing EKS Blueprints Workloads GitHub repository sample](https://github.com/aws-samples/eks-blueprints-workloads) to deploy our GitOps [ArgoCD](https://aws-ia.github.io/terraform-aws-eks-blueprints/v4.13.0/add-ons/argocd/) applications, which are defined as helm charts. We are leveraging [ArgoCD Apps of apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern where an ArgoCD Application can also reference other Helm charts to deploy.
+We are leveraging [the existing EKS Blueprints Workloads GitHub repository sample](https://github.com/aws-samples/eks-blueprints-workloads) to deploy our GitOps [ArgoCD](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/argocd/) applications, which are defined as helm charts. We are leveraging [ArgoCD Apps of apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern where an ArgoCD Application can also reference other Helm charts to deploy.
 
 ## Table of content
 
-- [EKS Blueprint for Terraform sample for blue/green cluster migration using Amazon Route53 for stateless workloads](#eks-blueprint-for-terraform-sample-for-bluegreen-cluster-migration-using-amazon-route53-for-stateless-workloads)
+- [Blue/Green or Canary Amazon EKS clusters migration for stateless ArgoCD workloads](#bluegreen-or-canary-amazon-eks-clusters-migration-for-stateless-argocd-workloads)
   - [Table of content](#table-of-content)
   - [Project structure](#project-structure)
   - [Prerequisites](#prerequisites)
@@ -15,7 +15,7 @@ We are leveraging [the existing EKS Blueprints Workloads GitHub repository sampl
     - [Create the core stack](#create-the-core-stack)
     - [Create the Blue cluster](#create-the-blue-cluster)
     - [Create the Green cluster](#create-the-green-cluster)
-  - [How this works](#how-this-works)
+  - [How this work](#how-this-work)
     - [Watch our Workload: we focus on team-burnham namespace.](#watch-our-workload-we-focus-on-team-burnham-namespace)
     - [Using AWS Route53 and External DNS](#using-aws-route53-and-external-dns)
       - [Configure Ingress ressources with weighted records](#configure-ingress-ressources-with-weighted-records)
@@ -39,11 +39,12 @@ See the Architecture of what we are building
   <img src="static/archi-blue-green.png"/>
 </p>
 
-Our sample is composed of three main directory:
+Our sample is composed of four main directory:
 
 - **core-infra** → this stack will create vpc and dependencies: create a Route53 sub zone for our sample, and a wildcard Certificate Manager certificate for our applications TLS endpoints, and a SecretManager password for the ArgoCD UIs.
-- **eks-blue** → will create our Blue EKS blueprint cluster, with ArgoCD add-on which will automatically deploy additional add-ons and our demo workloads
-- **eks-green** → same as blue, with some configuration differences (that can be newer Kubernetes version)
+- **modules/eks_cluster** → local module defining the EKS blueprint cluster with ArgoCD add-on which will automatically deploy additional add-ons and our demo workloads
+- **eks-blue** → an instance of the eks_cluster module to create blue cluster
+- **eks-green** → an instance of the eks_cluster module to create green cluster
 
 So we are going to create 2 EKS clusters, sharing the same VPC, and each one of them will install locally our workloads from the central GitOps repository leveraging ArgoCD add-on.
 In the GitOps workload repository, we have configured our applications deployments to leverage AWS Load Balancers Controllers annotations, so that applications will be exposed on AWS Load Balancers, created from our Kubernetes manifests. We will have 1 load balancer per cluster for each of our applications.
@@ -102,7 +103,7 @@ terraform apply
 
 ### Create the Blue cluster
 
-More info in the eks-blue [Readme](eks-blue/README.md)
+More info in the eks-blue [Readme](eks-blue/README.md), you can also see the detailed step in the [local module Readme](modules/eks_cluster/README.md)
 
 ```bash
 cd eks-blue
@@ -120,9 +121,9 @@ terraform init
 terraform apply
 ```
 
-By default the only differences in the 2 clusters are the values defined in `locals.tf`. We will change thoses values to upgrade Kubernetes version of new cluster, and to migrate our stateless workloads between clusters.
+By default the only differences in the 2 clusters are the values defined in [main.tf](./eks-blue/main.tf#L38-L43). We will change thoses values to upgrade Kubernetes version of new cluster, and to migrate our stateless workloads between clusters.
 
-## How this works
+## How this work
 
 ### Watch our Workload: we focus on team-burnham namespace.
 
@@ -412,7 +413,7 @@ aws route53 list-resource-record-sets \
 As DNS migration is dependent of DNS caching, normally relying on the TTL, you can use dig to see the current value of the TTL used locally
 
 ```
-export ROOT_DOMAIN=<your-domain-name> # the value you put in core_stack_name
+export ROOT_DOMAIN=<your-domain-name> # the value you put for hosted_zone_name
 dig +noauthority +noquestion +noadditional +nostats +ttlunits +ttlid A burnham.eks-blueprint.$ROOT_DOMAIN
 ```
 

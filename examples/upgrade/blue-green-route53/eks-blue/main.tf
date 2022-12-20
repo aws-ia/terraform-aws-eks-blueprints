@@ -27,11 +27,6 @@ data "aws_eks_cluster_auth" "this" {
   name = module.eks_cluster.eks_cluster_id
 }
 
-# data "aws_partition" "current" {}
-
-# # Find the user currently in use by AWS
-# data "aws_caller_identity" "current" {}
-
 module "eks_cluster" {
   source = "../modules/eks_cluster"
 

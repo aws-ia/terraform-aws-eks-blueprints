@@ -6,15 +6,19 @@
   - [Table of content](#table-of-content)
   - [Folder overview](#folder-overview)
 - [Terraform Doc](#terraform-doc)
+  - [Requirements](#requirements)
+  - [Providers](#providers)
+  - [Modules](#modules)
+  - [Resources](#resources)
+  - [Inputs](#inputs)
+  - [Outputs](#outputs)
 
 ## Folder overview
 
 This folder contains Terraform code to deploy an EKS Blueprint configured to deploy workload with ArgoCD and associated workload repository.
 This cluster will be used as part of our demo defined in [principal Readme](../README.md).
 
-This deploymentuses the local eks_cluster module. check it's [Readme](../modules/eks_cluster/README.md).
-What is include in this EKS cluster
-
+This deployment uses the local eks_cluster module. check it's [Readme](../modules/eks_cluster/README.md) to see what is include in this EKS cluster
 
 # Terraform Doc
 
@@ -24,16 +28,16 @@ What is include in this EKS cluster
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.47 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.8.0 |
 | <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | >= 1.14 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.16.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.47 |
 
 ## Modules
 
