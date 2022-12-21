@@ -24,7 +24,7 @@ In order to deploy an add-on with default configuration, simply enable the add-o
 module "eks_blueprints_kubernetes_addons" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
 
-  cluster_id                    = <EKS-CLUSTER-ID>
+  eks_cluster_id = <EKS-CLUSTER-ID>
 
   # EKS Addons
 
