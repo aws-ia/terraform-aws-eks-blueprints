@@ -589,6 +589,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#irsa-is-too-long" class="md-nav__link">
+    IRSA is too long
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1448,6 +1455,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#irsa-is-too-long" class="md-nav__link">
+    IRSA is too long
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1507,6 +1521,13 @@ aws-load-balancer-controller                               <span class="m">2</sp
   enable             = true
   serviceAccountName = &quot;&lt;service_account&gt;&quot;
 }
+</code></pre></div>
+<h3 id="irsa-is-too-long">IRSA is too long<a class="headerlink" href="#irsa-is-too-long" title="Permanent link">&para;</a></h3>
+<p>If the IAM role is too long, override the service account name in the <code>helm_config</code> to create a shorter role name.</p>
+<div class="highlight"><pre><span></span><code>  enable_aws_load_balancer_controller = true
+  aws_load_balancer_controller_helm_config = {
+    service_account = &quot;aws-lb-sa&quot;
+  }
 </code></pre></div>
 
               
