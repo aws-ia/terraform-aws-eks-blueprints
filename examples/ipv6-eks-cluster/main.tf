@@ -44,11 +44,16 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 19.5"
 
+<<<<<<< HEAD
   cluster_name                   = local.name
   cluster_version                = "1.24"
   cluster_endpoint_public_access = true
 
   # IPV6
+=======
+  cluster_name      = local.name
+  cluster_version   = "1.24"
+>>>>>>> 5200921f (feat: Support EKS 1.24 (#1265))
   cluster_ip_family = "ipv6"
 
   # We are using the IRSA created below for permissions
