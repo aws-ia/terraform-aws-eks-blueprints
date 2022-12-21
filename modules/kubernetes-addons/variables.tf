@@ -601,6 +601,20 @@ variable "ingress_nginx_helm_config" {
   default     = {}
 }
 
+
+#-----------K8ssandra Operator-------------
+variable "enable_k8ssandra_operator" {
+  description = "Enable K8ssandra Operator add-on"
+  type        = bool
+  default     = false
+}
+
+variable "k8ssandra_operator_helm_config" {
+  description = "K8ssandra Operator Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------Spark History Server-------------
 variable "enable_spark_history_server" {
   description = "Enable Spark History Server add-on"

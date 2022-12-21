@@ -310,6 +310,14 @@ module "ingress_nginx" {
   addon_context     = local.addon_context
 }
 
+module "k8ssandra_operator" {
+  count             = var.enable_k8ssandra_operator ? 1 : 0
+  source            = "./k8ssandra-operator"
+  helm_config       = var.k8ssandra_operator_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "karpenter" {
   source = "./karpenter"
 
