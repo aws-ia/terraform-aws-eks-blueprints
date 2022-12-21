@@ -69,7 +69,11 @@ module "eks" {
 =======
   cluster_name    = local.name
   cluster_version = "1.24"
+<<<<<<< HEAD
 >>>>>>> 5200921f (feat: Support EKS 1.24 (#1265))
+=======
+>>>>>>> 4a506bbc (feat: Support EKS 1.24 (#1265))
+>>>>>>> b51b13c7 (feat: Support EKS 1.24 (#1265))
 
   cluster_addons = {
     aws-ebs-csi-driver = {}
