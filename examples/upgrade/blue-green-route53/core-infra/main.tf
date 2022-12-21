@@ -68,6 +68,7 @@ data "aws_route53_zone" "root" {
 resource "aws_route53_zone" "sub" {
   name = "${local.name}.${var.hosted_zone_name}"
 }
+
 # Validate records for the new HostedZone
 resource "aws_route53_record" "ns" {
   zone_id = data.aws_route53_zone.root.zone_id

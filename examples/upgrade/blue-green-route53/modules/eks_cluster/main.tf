@@ -83,8 +83,7 @@ locals {
 
         apps = {
           ecsdemoFrontend = {
-            #repoURL        = "https://github.com/aws-containers/ecsdemo-frontend"
-            repoURL        = "https://github.com/allamand/ecsdemo-frontend"
+            repoURL        = "https://github.com/aws-containers/ecsdemo-frontend"
             targetRevision = "main"
             replicaCount   = "3"
             image = {

@@ -23,6 +23,7 @@ provider "kubectl" {
   load_config_file       = false
   token                  = data.aws_eks_cluster_auth.this.token
 }
+
 data "aws_eks_cluster_auth" "this" {
   name = module.eks_cluster.eks_cluster_id
 }

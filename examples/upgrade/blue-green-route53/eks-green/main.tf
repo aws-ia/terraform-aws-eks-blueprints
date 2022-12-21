@@ -23,6 +23,7 @@ provider "kubectl" {
   load_config_file       = false
   token                  = data.aws_eks_cluster_auth.this.token
 }
+
 data "aws_eks_cluster_auth" "this" {
   name = module.eks_cluster.eks_cluster_id
 }
@@ -31,9 +32,9 @@ module "eks_cluster" {
   source = "../modules/eks_cluster"
 
   suffix_stack_name = "green"
-  cluster_version   = "1.24"
+  cluster_version   = "1.24"         # Here, we deploy the cluster with the N+1 Kubernetes Version
 
-  argocd_route53_weight      = "0"
+  argocd_route53_weight      = "0"   # We control with theses parameters how we send traffic to the workloads in the new cluster
   route53_weight             = "0"
   ecsfrontend_route53_weight = "0"
 
