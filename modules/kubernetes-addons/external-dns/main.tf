@@ -49,11 +49,12 @@ module "helm_addon" {
   )
 
   irsa_config = {
-    create_kubernetes_namespace       = try(var.helm_config.create_namespace, true)
-    kubernetes_namespace              = try(var.helm_config.namespace, local.name)
-    create_kubernetes_service_account = true
-    kubernetes_service_account        = local.service_account
-    irsa_iam_policies                 = concat([aws_iam_policy.external_dns.arn], var.irsa_policies)
+    create_kubernetes_namespace         = try(var.helm_config.create_namespace, true)
+    kubernetes_namespace                = try(var.helm_config.namespace, local.name)
+    create_kubernetes_service_account   = true
+    create_service_account_secret_token = try(var.helm_config["create_service_account_secret_token"], false)
+    kubernetes_service_account          = local.service_account
+    irsa_iam_policies                   = concat([aws_iam_policy.external_dns.arn], var.irsa_policies)
   }
 
   addon_context     = var.addon_context
