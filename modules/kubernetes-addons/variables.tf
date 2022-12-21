@@ -1275,6 +1275,19 @@ variable "datadog_operator_helm_config" {
   default     = {}
 }
 
+#-----------GitLab Operator-------------
+variable "enable_gitlab_runner" {
+  description = "Enable GitLab Runner add-on"
+  type        = bool
+  default     = false
+}
+
+variable "gitlab_runner_helm_config" {
+  description = "GitLab Runner Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------Promtail ADDON-------------
 variable "enable_promtail" {
   description = "Enable Promtail add-on"
