@@ -1,8 +1,8 @@
-# LB Ingress Controller Deployment Guide
+# AWS Load Balancer Controller Deployment Guide
 
 # Introduction
 
-AWS Load Balancer Controller is a controller to help manage Elastic Load Balancers for a Kubernetes cluster.
+The [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/) is a controller to help manage Elastic Load Balancers for a Kubernetes cluster.
 
 - It satisfies Kubernetes Ingress resources by provisioning Application Load Balancers.
 - It satisfies Kubernetes Service resources by provisioning Network Load Balancers.
