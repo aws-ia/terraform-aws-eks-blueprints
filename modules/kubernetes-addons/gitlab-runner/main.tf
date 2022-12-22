@@ -15,6 +15,7 @@ module "helm_addon" {
       namespace        = local.name
       create_namespace = true
       description      = "GitLab runner"
+      values           = [file("${path.module}/values.yaml")]
     },
     var.helm_config
   )
