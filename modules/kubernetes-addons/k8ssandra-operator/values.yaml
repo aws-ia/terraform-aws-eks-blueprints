@@ -1,2 +1,4 @@
 # Default values for k8ssandra-operator.
 
+global:
+  clusterScoped: true
