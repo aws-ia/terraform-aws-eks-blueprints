@@ -1,0 +1,1943 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+    
+    
+      
+        <title>Extensibility - Amazon EKS Blueprints for Terraform</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.5d38496d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.cbb835fc.min.css">
+        
+      
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#extensibility" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-component="outdated" hidden>
+        <aside class="md-banner md-banner--warning">
+          
+        </aside>
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Amazon EKS Blueprints for Terraform
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Extensibility
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    aws-ia/terraform-aws-eks-blueprints
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Amazon EKS Blueprints for Terraform
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    aws-ia/terraform-aws-eks-blueprints
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core-concepts/" class="md-nav__link">
+        Core Concepts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../node-groups/" class="md-nav__link">
+        Node Groups
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          IAM
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="IAM" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          IAM
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iam/minimum-iam-policy/" class="md-nav__link">
+        Minimum IAM policy
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../teams/" class="md-nav__link">
+        Teams
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          Modules
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Modules" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Modules
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modules/emr-on-eks/" class="md-nav__link">
+        EMR on EKS
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          Add-ons
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Add-ons" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Add-ons
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/agones/" class="md-nav__link">
+        Agones
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/apache-airflow/" class="md-nav__link">
+        Apache Airflow add-on
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/argo-workflows/" class="md-nav__link">
+        Argo Workflows
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/argocd/" class="md-nav__link">
+        ArgoCD
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/aws-cloudwatch-metrics/" class="md-nav__link">
+        AWS CloudWatch Metrics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/aws-efs-csi-driver/" class="md-nav__link">
+        AWS EFS CSI Driver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/aws-for-fluent-bit/" class="md-nav__link">
+        AWS for Fluent Bit
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/aws-fsx-csi-driver/" class="md-nav__link">
+        Amazon FSx for Lustre CSI Driver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/aws-load-balancer-controller/" class="md-nav__link">
+        AWS Load Balancer Controller
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/aws-node-termination-handler/" class="md-nav__link">
+        AWS Node Termination Handler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/aws-privateca-issuer/" class="md-nav__link">
+        aws-privateca-issuer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/calico/" class="md-nav__link">
+        Calico
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/cert-manager-csi-driver/" class="md-nav__link">
+        cert-manager-csi-driver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/cert-manager-istio-csr/" class="md-nav__link">
+        cert-manager-istio-csr
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/cert-manager/" class="md-nav__link">
+        cert-manager
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/chaos-mesh/" class="md-nav__link">
+        Chaos Mesh
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/cilium/" class="md-nav__link">
+        Cilium
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/cluster-autoscaler/" class="md-nav__link">
+        Cluster Autoscaler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/cluster-proportional-autoscaler/" class="md-nav__link">
+        Horizontal cluster-proportional-autoscaler container
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/consul/" class="md-nav__link">
+        Consul
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/crossplane/" class="md-nav__link">
+        Crossplane
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/csi-secrets-store-provider-aws/" class="md-nav__link">
+        secrets-store-csi-driver-provider-aws
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/datadog-operator/" class="md-nav__link">
+        Datadog Operator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/external-dns/" class="md-nav__link">
+        ExternalDNS
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/external-secrets/" class="md-nav__link">
+        External Secrets Operator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/fargate-fluent-bit/" class="md-nav__link">
+        Fargate fluent bit
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/gatekeeper/" class="md-nav__link">
+        Gatekeeper
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/grafana/" class="md-nav__link">
+        Grafana
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/kafka/" class="md-nav__link">
+        Strimzi Operator for Apache Kafka
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/karpenter/" class="md-nav__link">
+        Karpenter
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/keda/" class="md-nav__link">
+        KEDA
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/kube-prometheus-stack/" class="md-nav__link">
+        kube-prometheus-stack
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/kube-state-metrics/" class="md-nav__link">
+        Kube-State-Metrics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/kubecost/" class="md-nav__link">
+        Kubecost
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/kuberay-operator/" class="md-nav__link">
+        KubeRay Operator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/kubernetes-dashboard/" class="md-nav__link">
+        Kubernetes Dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/kyverno/" class="md-nav__link">
+        Kyverno
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/local-volume-provisioner/" class="md-nav__link">
+        Local volume provisioner
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/managed-add-ons/" class="md-nav__link">
+        Amazon EKS Add-ons
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/metrics-server/" class="md-nav__link">
+        Metrics Server
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/nginx/" class="md-nav__link">
+        Nginx
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/nvidia-device-plugin/" class="md-nav__link">
+        NVIDIA Device Plugin
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/portworx/" class="md-nav__link">
+        Portworx add-on for EKS Blueprints
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/prometheus/" class="md-nav__link">
+        Prometheus
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/promtail/" class="md-nav__link">
+        Promtail
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/secrets-store-csi-driver/" class="md-nav__link">
+        secrets-store-csi-driver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/smb-csi-driver/" class="md-nav__link">
+        SMB CSI Driver Helm Chart
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/spark-history-server/" class="md-nav__link">
+        Spark History Server
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/spark-on-k8s-operator/" class="md-nav__link">
+        Spark K8S Operator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/tetrate-istio/" class="md-nav__link">
+        Tetrate Istio Distro
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/thanos/" class="md-nav__link">
+        Thanos
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/traefik/" class="md-nav__link">
+        Traefik
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/vault/" class="md-nav__link">
+        HashiCorp Vault
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/velero/" class="md-nav__link">
+        Velero
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/vpa/" class="md-nav__link">
+        Vertical Pod Autoscaler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-ons/yunikorn/" class="md-nav__link">
+        Apache YuniKorn
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9">
+          Advanced
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Advanced" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          Advanced
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/bottlerocket/" class="md-nav__link">
+        Bottlerocket
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/cluster-upgrades/" class="md-nav__link">
+        Cluster Upgrades
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/ecr-instructions/" class="md-nav__link">
+        ECR Instructions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/gitops-with-flux/" class="md-nav__link">
+        GitOps with Flux
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/multi-cluster/" class="md-nav__link">
+        Multi-cluster
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/private-clusters/" class="md-nav__link">
+        Private Clusters
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Extensibility
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Extensibility
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add-on-extensions" class="md-nav__link">
+    Add-on Extensions
+  </a>
+  
+    <nav class="md-nav" aria-label="Add-on Extensions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#helm-add-ons" class="md-nav__link">
+    Helm Add-ons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#non-helm-add-ons" class="md-nav__link">
+    Non-helm Add-ons
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#public-add-ons" class="md-nav__link">
+    Public Add-ons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#partner-add-ons" class="md-nav__link">
+    Partner Add-ons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#private-add-ons" class="md-nav__link">
+    Private Add-ons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#secrets-handling" class="md-nav__link">
+    Secrets Handling
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-public-add-on" class="md-nav__link">
+    Example Public Add-On
+  </a>
+  
+    <nav class="md-nav" aria-label="Example Public Add-On">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add-on-repo" class="md-nav__link">
+    Add-On Repo
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-on-code" class="md-nav__link">
+    Add-On Code
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#core-repo-changes" class="md-nav__link">
+    Core Repo Changes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gitops" class="md-nav__link">
+    GitOps
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add-on-extensions" class="md-nav__link">
+    Add-on Extensions
+  </a>
+  
+    <nav class="md-nav" aria-label="Add-on Extensions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#helm-add-ons" class="md-nav__link">
+    Helm Add-ons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#non-helm-add-ons" class="md-nav__link">
+    Non-helm Add-ons
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#public-add-ons" class="md-nav__link">
+    Public Add-ons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#partner-add-ons" class="md-nav__link">
+    Partner Add-ons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#private-add-ons" class="md-nav__link">
+    Private Add-ons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#secrets-handling" class="md-nav__link">
+    Secrets Handling
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-public-add-on" class="md-nav__link">
+    Example Public Add-On
+  </a>
+  
+    <nav class="md-nav" aria-label="Example Public Add-On">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add-on-repo" class="md-nav__link">
+    Add-On Repo
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-on-code" class="md-nav__link">
+    Add-On Code
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#core-repo-changes" class="md-nav__link">
+    Core Repo Changes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gitops" class="md-nav__link">
+    GitOps
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/extensibility.md" title="Edit this page" class="md-content__button md-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
+
+<h1 id="extensibility">Extensibility<a class="headerlink" href="#extensibility" title="Permanent link">&para;</a></h1>
+<p>This guide provides an overview of extensibility options focusing on add-on extensions as the primary mechanism for the partners and customers.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>EKS Blueprints framework is designed to be extensible. In the context of this guide, extensibility refers to the ability of customers and partners to both add new capabilities to the framework or platforms as well as customize existing behavior, including the ability to modify or override existing behavior.</p>
+<p>As of this writing, the primary means by which customers and partners can extend the EKS Blueprints for Terraform framework is by implementing new add-ons which could be leveraged exactly the same way as the core add-ons (supplied by the framework).</p>
+<h3 id="add-on-extensions">Add-on Extensions<a class="headerlink" href="#add-on-extensions" title="Permanent link">&para;</a></h3>
+<h4 id="helm-add-ons">Helm Add-ons<a class="headerlink" href="#helm-add-ons" title="Permanent link">&para;</a></h4>
+<p>Helm add-ons are the most common case that generally combines provisioning of a helm chart as well as supporting infrastructure such as wiring of proper IAM policies for the Kubernetes service account, provisioning or configuring other AWS resources (VPC, subnets, node groups).</p>
+<p>In order to simplify the add-on creation, we have provided a helper module called <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/helm-addon/README.md"><code>helm-addon</code></a> for convenience.</p>
+<h4 id="non-helm-add-ons">Non-helm Add-ons<a class="headerlink" href="#non-helm-add-ons" title="Permanent link">&para;</a></h4>
+<p>Add-ons that don't leverage helm but require to install arbitrary Kubernetes manifests will not be able to leverage the benefits provided by the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/helm-addon/README.md"><code>helm-addon</code></a> however, they are still relatively easy to implement and would follow a similar pattern. Such addons should leverage the <a href="https://registry.terraform.io/providers/gavinbunney/kubectl">kubectl provider</a>.</p>
+<h3 id="public-add-ons">Public Add-ons<a class="headerlink" href="#public-add-ons" title="Permanent link">&para;</a></h3>
+<p>The life-cycle of a public add-on should be decoupled from the life-cycle of the core framework repository. When decoupled, extensions can be released at any arbitrary cadence specific to the extension, enabling better agility when it comes to new features or bug fixes. The owner of such public add-on is ultimately responsible for the quality and maintenance of the add-on.</p>
+<p>In order to enable this model the following workflow outline steps required to create and release a public add-on:</p>
+<ol>
+<li>Public add-on are created in a separate repository. Public GitHub repository is preferred as it aligns with the open-source spirit of the framework and enables external reviews/feedback.</li>
+<li>Add-ons are released and consumed as distinct public Terraform modules.</li>
+<li>Public add-ons are expected to have sufficient documentation to allow customers to consume them independently. Documentation can reside in GitHub or external resources referenced in the documentation bundled with the extension.</li>
+<li>Public add-ons are expected to be tested and validated against released EKS Blueprints versions, e.g. with a CI/CD pipeline or GitHub Actions.</li>
+</ol>
+<h3 id="partner-add-ons">Partner Add-ons<a class="headerlink" href="#partner-add-ons" title="Permanent link">&para;</a></h3>
+<p>Partner extensions (APN Partner) are expected to comply with the public extension workflow and additional items required to ensure proper validation and documentation support for a partner extension.</p>
+<p>We expect 2 PRs to be created for every Partner Add-On.</p>
+<ol>
+<li>A PR against the main <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints">EKS Blueprints</a> repository that contains the following:</li>
+<li>Update <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/main.tf">kubernetes-addons/main.tf</a> to add a module invocation of the remote terraform module for the add-on.</li>
+<li>Documentation to update the <a href="../add-ons/">Add-Ons</a> section. Example of add-on documentation can be found here along with the list of other add-ons.</li>
+<li>A second PR against the <a href="https://github.com/aws-samples/eks-blueprints-add-ons">EKS Blueprints Add-Ons</a> repository to create an ArgoCD application for your add-on. See example of other add-ons that shows what should be added. Add-ons that do not provide GitOps support are not expected to create this PR.</li>
+</ol>
+<h3 id="private-add-ons">Private Add-ons<a class="headerlink" href="#private-add-ons" title="Permanent link">&para;</a></h3>
+<p>There are two ways in which a customer can implement fully private add-ons:</p>
+<ol>
+<li>Add-ons specific to a customer instance of EKS Blueprints can be implemented inline with the blueprint in the same codebase. Such extensions are scoped to the customer base. Forking the repo however has disadvantages when it comes to ongoing feature releases and bug fixes which will have to be manually ported to your fork.</li>
+<li>We recommend, you implement a separate repository for your private add-on while still using the upstream framework. This gives you the advantage of keeping up with ongoing feature releases and bug fixes while keeping your add-on private.</li>
+</ol>
+<p>The following example shows you can leverage EKS Blueprints to provide your own helm add-on.</p>
+<div class="highlight"><pre><span></span><code>#---------------------------------------------------------------
+# AWS VPC CNI Metrics Helper
+# This is using local helm chart
+#---------------------------------------------------------------
+
+data &quot;aws_partition&quot; &quot;current&quot; {}
+
+data &quot;aws_caller_identity&quot; &quot;current&quot; {}
+
+
+locals {
+  cni_metrics_name = &quot;cni-metrics-helper&quot;
+
+  default_helm_values = [templatefile(&quot;${path.module}/helm-values/cni-metrics-helper-values.yaml&quot;, {
+    eks_cluster_id = var.eks_cluster_id,
+    image          = &quot;602401143452.dkr.ecr.${var.region}.amazonaws.com/cni-metrics-helper:v1.10.3&quot;,
+    sa-name        = local.cni_metrics_name
+   oidc_url        = &quot;oidc.eks.eu-west-1.amazonaws.com/id/E6CASOMETHING55B9D01F7&quot;
+  })]
+
+  addon_context = {
+    aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
+    aws_caller_identity_arn        = data.aws_caller_identity.current.arn
+    aws_eks_cluster_endpoint       = data.aws_eks_cluster.cluster.endpoint
+    aws_partition_id               = data.aws_partition.current.partition
+    aws_region_name                = var.region
+    eks_cluster_id                 = var.eks_cluster_id
+    eks_oidc_issuer_url            = local.oidc_url
+    eks_oidc_provider_arn          = &quot;arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.oidc_url}&quot;
+    tags                           = {}
+  }
+
+  helm_config = {
+    name        = local.cni_metrics_name
+    description = &quot;CNI Metrics Helper Helm Chart&quot;
+    timeout     = &quot;300&quot;
+    chart       = &quot;${path.module}/local-helm-charts/cni-metrics-helper&quot;
+    version     = &quot;0.1.7&quot;
+    repository  = null
+    namespace   = &quot;kube-system&quot;
+    lint        = false
+    values      = local.default_helm_values
+  }
+
+  irsa_config = {
+    kubernetes_namespace              = &quot;kube-system&quot;
+    kubernetes_service_account        = local.cni_metrics_name
+    create_kubernetes_namespace       = false
+    create_kubernetes_service_account = true
+    irsa_iam_policies                 = [aws_iam_policy.cni_metrics.arn]
+  }
+}
+
+module &quot;helm_addon&quot; {
+  source      = &quot;github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon&quot;
+  helm_config = local.helm_config
+  irsa_config = local.irsa_config
+  addon_context = local.addon_context
+}
+
+resource &quot;aws_iam_policy&quot; &quot;cni_metrics&quot; {
+  name        = &quot;${var.eks_cluster_id}-cni-metrics&quot;
+  description = &quot;IAM policy for EKS CNI Metrics helper&quot;
+  path        = &quot;/&quot;
+  policy      = data.aws_iam_policy_document.cni_metrics.json
+
+  tags = var.tags
+}
+
+data &quot;aws_iam_policy_document&quot; &quot;cni_metrics&quot; {
+  statement {
+    sid = &quot;CNIMetrics&quot;
+    actions = [
+      &quot;cloudwatch:PutMetricData&quot;
+    ]
+    resources = [&quot;*&quot;]
+  }
+}
+</code></pre></div>
+<h3 id="secrets-handling">Secrets Handling<a class="headerlink" href="#secrets-handling" title="Permanent link">&para;</a></h3>
+<p>We expect that certain add-ons will need to provide access to sensitive values to their helm chart configuration such as password, license keys, API keys, etc. We recommend that you ask customers to store such secrets in an external secret store such as AWS Secrets Manager or AWS Systems Manager Parameter Store and use the <a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_csi_driver.html">AWS Secrets and Configuration Provider (ASCP)</a> to mount the secrets as files or environment variables in the pods of your add-on. We are actively working on providing a native add-on for ASCP as of this writing which you will be able to levarage for your add-on.</p>
+<h2 id="example-public-add-on">Example Public Add-On<a class="headerlink" href="#example-public-add-on" title="Permanent link">&para;</a></h2>
+<p><a href="https://registry.terraform.io/modules/askulkarni2/kube-state-metrics-addon/eksblueprints/latest">Kube-state-metrics-addon</a> extension contains a sample implementation of the <a href="https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics"><code>kube-state-metrics</code></a> that demonstrates how to write a public add-on that lives outside of the core repo.</p>
+<h3 id="add-on-repo">Add-On Repo<a class="headerlink" href="#add-on-repo" title="Permanent link">&para;</a></h3>
+<p>We recommend the use of pattern <code>terraform-eksblueprints-&lt;addon_name&gt;</code> as the name of the repo so that you are able to easily publish the module to Terraform <a href="https://registry.terraform.io/">registry</a>. See <a href="https://github.com/askulkarni2/terraform-eksblueprints-kube-state-metrics-addon">kube-state-metrics</a> for an example.</p>
+<h3 id="add-on-code">Add-On Code<a class="headerlink" href="#add-on-code" title="Permanent link">&para;</a></h3>
+<p>We recommend your add-on code follow Terraform standards for best practices for organizing your code, such as..</p>
+<div class="highlight"><pre><span></span><code>.
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── README.md
+├── blueprints
+│   ├── README.md
+│   ├── addons
+│   │   ├── README.md
+│   │   ├── addons.tfbackend
+│   │   ├── backend.tf
+│   │   ├── data.tf
+│   │   ├── main.tf
+│   │   ├── providers.tf
+│   │   └── variables.tf
+│   ├── eks
+│   │   ├── README.md
+│   │   ├── backend.tf
+│   │   ├── data.tf
+│   │   ├── eks.tfbackend
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   ├── providers.tf
+│   │   └── variables.tf
+│   ├── vars
+│   │   └── config.tfvars
+│   └── vpc
+│       ├── README.md
+│       ├── backend.tf
+│       ├── data.tf
+│       ├── locals.tf
+│       ├── main.tf
+│       ├── outputs.tf
+│       ├── providers.tf
+│       ├── variables.tf
+│       └── vpc.tfbackend
+├── locals.tf
+├── main.tf
+├── outputs.tf
+├── values.yaml
+└── variables.tf
+</code></pre></div>
+<p>In the above code tree,</p>
+<ul>
+<li>The root directory contains your add-on code.</li>
+<li>The blueprints code contains the code that demonstrates how customers can use your add-on with the EKS Blueprints framework. Here, we highly recommend that you show the true value add of your add-on through the pattern. Customers will benefit the most where the example shows how they can integrate their workload with your add-on.</li>
+</ul>
+<p>If your add-on can be deployed via helm chart, we recommend the use of the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/helm-addon">helm-addon</a> as shown below.</p>
+<p><strong>Note</strong>: Use the latest published module in the source version.</p>
+<blockquote>
+<p>main.tf</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code>module &quot;helm_addon&quot; {
+  source               = &quot;github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon?ref=v3.5.0&quot;
+  manage_via_gitops    = var.manage_via_gitops
+
+  ### The following values are defined in locals.tf
+  set_values           = local.set_values
+  set_sensitive_values = local.set_sensitive_values
+  helm_config          = local.helm_config
+  addon_context        = var.addon_context
+}
+</code></pre></div>
+<h3 id="core-repo-changes">Core Repo Changes<a class="headerlink" href="#core-repo-changes" title="Permanent link">&para;</a></h3>
+<p>Once you have tested your add-on locally against your fork of the core repo, please open a PR that contains the following:</p>
+<blockquote>
+<p>Update to <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/main.tf"><code>kubernetes-addons/main.tf</code></a> with a code block that invokes your add-on. E.g.</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code>module &quot;kube_state_metrics&quot; {
+  count                     = var.enable_kube_state_metrics ? 1 : 0
+  source                    = &quot;askulkarni2/kube-state-metrics-addon/eksblueprints&quot;
+  version                   = &quot;0.0.2&quot;
+  helm_config               = var.kube_state_metrics_helm_config
+  addon_context             = local.addon_context
+  manage_via_gitops         = var.argocd_manage_add_ons
+}
+</code></pre></div>
+<blockquote>
+<p>Update to <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/variables.tf"><code>kubernetes-addons/variables.tf</code></a> to accept parameters for your add-on. E.g.</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code>#-----------Kube State Metrics ADDON-------------
+variable &quot;enable_kube_state_metrics&quot; {
+  type        = bool
+  default     = false
+  description = &quot;Enable Kube State Metrics add-on&quot;
+}
+
+variable &quot;kube_state_metrics_helm_config&quot; {
+  type        = any
+  default     = {}
+  description = &quot;Kube State Metrics Helm Chart config&quot;
+}
+</code></pre></div>
+<ul>
+<li>Add documentation under add-on <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/docs/add-ons/"><code>docs</code></a> that gives an overview of your add-on and points the customer to the actual documentation which would live in your add-on repo.</li>
+</ul>
+<h3 id="gitops">GitOps<a class="headerlink" href="#gitops" title="Permanent link">&para;</a></h3>
+<p>If your add-on can be managed via ArgoCD GitOps, then</p>
+<ul>
+<li>Provide the <code>argo_gitops_config</code> as an output of your add-on module as shown <a href="https://github.com/askulkarni2/terraform-eksblueprints-kube-state-metrics-addon/blob/main/outputs.tf">here</a>.</li>
+</ul>
+<blockquote>
+<p>outputs.tf</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code>output &quot;argocd_gitops_config&quot; {
+  description = &quot;Configuration used for managing the add-on with ArgoCD&quot;
+  value       = var.manage_via_gitops ? local.argocd_gitops_config : null
+}
+</code></pre></div>
+<ul>
+<li>
+<p>In the PR against the core repo, update <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/locals.tf"><code>kubernetes-addons/locals.tf</code></a> to provide the add-on module output <code>argocd_gitops_config</code> to the <code>argocd_add_on_config</code> as shown for others.</p>
+</li>
+<li>
+<p>Open a PR against the <a href="https://github.com/aws-samples/eks-blueprints-add-ons">eks-blueprints-addons</a> repo with the following changes:</p>
+</li>
+<li>
+<p>Create a wrapper Helm chart for your add-on similar to <a href="https://github.com/aws-samples/eks-blueprints-add-ons/tree/main/add-ons/kube-state-metrics">kube-state-metrics</a></p>
+<ul>
+<li>Create a <a href="https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/add-ons/kube-state-metrics/Chart.yaml"><code>Chart.yaml</code></a> which points to the location of your actual helm chart.</li>
+<li>Create a <a href="https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/add-ons/kube-state-metrics/values.yaml"><code>values.yaml</code></a> which contains a default best-practice configuration for your add-on.</li>
+</ul>
+</li>
+<li>Create an ArgoCD application <a href="https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/templates/kube-state-metrics.yaml">template</a> which is applied if <code>enable_&lt;add_on&gt; = true</code> is used by the customer in the consumer module. This also used to parameterize your add-ons helm chart wrapper with values that will be passed over from Terraform to Helm using the <a href="../add-ons/#gitops-bridge">GitOps bridge</a>.</li>
+</ul>
+
+              
+            </article>
+            
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../advanced/private-clusters/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Private Clusters" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Private Clusters
+            </div>
+          </div>
+        </a>
+      
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["tabs"], "search": "../assets/javascripts/workers/search.b028fd86.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.7f366e99.min.js"></script>
+      
+    
+  </body>
+</html>
