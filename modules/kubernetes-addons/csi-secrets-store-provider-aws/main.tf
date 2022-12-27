@@ -1,6 +1,6 @@
 locals {
   name      = try(var.helm_config.name, "csi-secrets-store-provider-aws")
-  namespace = "kube-system"
+  namespace = try(var.helm_config.namespace, "kube-system")
 }
 
 resource "kubernetes_namespace_v1" "csi_secrets_store_provider_aws" {
