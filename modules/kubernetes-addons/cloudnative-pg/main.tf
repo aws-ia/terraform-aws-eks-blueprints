@@ -1,10 +1,10 @@
 locals {
-  name = "cloudnative-pg"
+  name = "cnpg"
 
   # https://github.com/cloudnative-pg/charts/blob/main/charts/cloudnative-pg/Chart.yaml
   default_helm_config = {
     name             = local.name
-    chart            = local.name
+    chart            = "cloudnative-pg"
     repository       = "https://cloudnative-pg.github.io/charts"
     version          = "0.16.1"
     namespace        = "cnpg-system"
