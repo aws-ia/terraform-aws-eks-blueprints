@@ -1,0 +1,58 @@
+# Operator configuration
+config:
+  # -- Specifies whether the secret should be created
+  create: true
+  # -- Specifies whether it should be stored in a secret, instead of a configmap
+  secret: false
+  # Examples:
+  # INHERITED_ANNOTATIONS: categories
+  # INHERITED_LABELS: environment, workload, app
+
+  data: {}
+  name: cnpg-controller-manager-config
+
+# -- Additinal arguments to be added to the operator's args list
+additionalArgs: []
+
+serviceAccount:
+  # -- Specifies whether the service account should be created
+  create: true
+  # -- The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+rbac:
+  # -- Specifies whether ClusterRole and ClusterRoleBinding should be created
+  create: true
+
+# -- Annotations to be added to the pod
+podAnnotations: {}
+# -- Annotations to be added to all other resources
+commonAnnotations: {}
+
+# -- Security Context for the whole pod
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+  # fsGroup: 2000
+
+# -- Priority indicates the importance of a Pod relative to other Pods.
+priorityClassName: ""
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 200Mi
+  requests:
+    cpu: 100m
+    memory: 100Mi
+
+# -- Nodeselector for the operator to be installed
+nodeSelector: {}
+
+# -- Tolerations for the operator to be installed
+tolerations: []
+
+# -- Affinity for the operator to be installed
+affinity: {}

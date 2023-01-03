@@ -112,6 +112,13 @@ module "airflow" {
   addon_context = local.addon_context
 }
 
+module "cloudnative-pg" {
+  count         = var.enable_cnpg ? 1 : 0
+  source        = "./cloudnative-pg"
+  helm_config   = var.cloudnative-pg_helm_config
+  addon_context = local.addon_context
+}
+
 module "argocd" {
   count         = var.enable_argocd ? 1 : 0
   source        = "./argocd"
