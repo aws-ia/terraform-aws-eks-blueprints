@@ -1197,6 +1197,19 @@ variable "airflow_helm_config" {
   default     = {}
 }
 
+#-----------CloudNative PG (Postresql) ADDON-------------
+variable "enable_cnpg" {
+  description = "Enable CloudNativePG PostreSql add-on"
+  type        = bool
+  default     = false
+}
+
+variable "cloudnative-pg_helm_config" {
+  description = "Apache CloudNativePG Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----Apache Kafka Strimzi Operator------
 variable "enable_strimzi_kafka_operator" {
   description = "Enable Kafka add-on"
