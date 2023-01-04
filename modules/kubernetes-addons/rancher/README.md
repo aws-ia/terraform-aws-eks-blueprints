@@ -1,10 +1,4 @@
-# Rancher Deployment Guide
-
-## Introduction
-
-[Rancher](https://www.rancher.com/) is a complete software stack for teams adopting containers. It addresses the operational and security challenges of managing multiple Kubernetes clusters, while providing DevOps teams with integrated tools for running containerized workloads.
-
-## Rancher Helm Chart
+# Rancher Helm Chart
 This add-on installs [Rancher Helm Chart](https://github.com/rancher/rancher/tree/release/v2.7/chart) in the EKS cluster.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
