@@ -111,13 +111,13 @@ module "eks_blueprints_kubernetes_addons" {
     ]
   }
   # Install SUSE Rancher helm chart
-  enable_rancher       = true
-  rancher_helm_config       = {
-    hostname                  = "rancher.${var.eks_cluster_domain}"
-    bootstrapPassword         = "admin"
-    ingress_tls_source        = "letsEncrypt"
-    ingress_ingressClassName  = "nginx"
-    version                   = "2.7.0"
+  enable_rancher = true
+  rancher_helm_config = {
+    hostname                 = "rancher.${var.eks_cluster_domain}"
+    bootstrapPassword        = "admin"
+    ingress_tls_source       = "letsEncrypt"
+    ingress_ingressClassName = "nginx"
+    version                  = "2.7.0"
   }
 
   tags = local.tags

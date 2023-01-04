@@ -50,7 +50,7 @@ locals {
     nvidiaDevicePlugin        = var.enable_nvidia_device_plugin ? module.nvidia_device_plugin[0].argocd_gitops_config : null
     consul                    = var.enable_consul ? module.consul[0].argocd_gitops_config : null
     thanos                    = var.enable_thanos ? module.thanos[0].argocd_gitops_config : null
-    rancher                   = var.enable_rancher ? { enable = true} : null
+    rancher                   = var.enable_rancher ? { enable = true } : null
   }
 
   addon_context = {

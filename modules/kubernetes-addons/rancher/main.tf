@@ -16,12 +16,12 @@ module "helm_addon" {
 
   helm_config = merge(
     {
-      name        = local.name
-      chart       = local.name                 
-      repository  = "https://releases.rancher.com/server-charts/stable"
-      version     = var.helm_config.version 
-      namespace   = try(kubernetes_namespace_v1.this[0].metadata[0].name, local.namespace)
-      description = "The Rancher HelmChart deployment configuration"
+      name                        = local.name
+      chart                       = local.name
+      repository                  = "https://releases.rancher.com/server-charts/stable"
+      version                     = var.helm_config.version
+      namespace                   = try(kubernetes_namespace_v1.this[0].metadata[0].name, local.namespace)
+      description                 = "The Rancher HelmChart deployment configuration"
       create_kubernetes_namespace = true
       values = [templatefile("${path.module}/values.yaml", {
         hostname                 = var.helm_config.hostname

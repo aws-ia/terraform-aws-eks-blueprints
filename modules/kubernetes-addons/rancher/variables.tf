@@ -1,9 +1,3 @@
-variable "rancher_config" {
-  description = "Rancher Helm Configuration"
-  type        = any
-  default     = {}
-}
-
 variable "manage_via_gitops" {
   description = "Determines if the add-on should be managed via GitOps."
   type        = bool

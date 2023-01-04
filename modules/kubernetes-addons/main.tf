@@ -802,8 +802,8 @@ module "consul" {
 }
 
 module "rancher" {
-  source = "./rancher"
-  count = var.enable_rancher ? 1: 0
-  helm_config      = var.rancher_helm_config
-  addon_context    = local.addon_context    
+  source        = "./rancher"
+  count         = var.enable_rancher ? 1 : 0
+  helm_config   = var.rancher_helm_config
+  addon_context = local.addon_context
 }
