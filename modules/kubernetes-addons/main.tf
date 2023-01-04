@@ -261,6 +261,16 @@ module "crossplane" {
   addon_context       = local.addon_context
 }
 
+module "crowdstrike_falcon_operator" {
+  source = "./falcon-operator"
+
+  count = var.enable_falcon_operator ? 1 : 0
+
+  client_id = var.falcon_client_id
+  client_secret = var.falcon_client_secret
+  sensor_type = var.falcon_sensor_type
+}
+
 module "datadog_operator" {
   source = "./datadog-operator"
 

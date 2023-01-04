@@ -1204,6 +1204,33 @@ variable "strimzi_kafka_operator_helm_config" {
   default     = {}
 }
 
+#------CrowdStrike Falcon Operator-------
+variable "enable_falcon_operator" {
+  description = "Enable CrowdStrike Falcon Operator add-on"
+  type        = bool
+  default     = false
+}
+
+variable "falcon_client_id" {
+  type = string
+  description = "Falcon API Client ID"
+  sensitive = true
+  default = null
+}
+
+variable "falcon_client_secret" {
+  type = string
+  description = "Falcon API Client Secret"
+  sensitive = true
+  default = null
+}
+
+variable "falcon_sensor_type" {
+  type = string
+  default = "FalconNodeSensor"
+  description = "Falcon sensor type: FalconNodeSensor or FalconContainer."
+}
+
 #-----------Datadog Operator-------------
 variable "enable_datadog_operator" {
   description = "Enable Datadog Operator add-on"
