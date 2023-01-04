@@ -1425,3 +1425,16 @@ variable "consul_helm_config" {
   type        = any
   default     = {}
 }
+
+#-----------Rancher addon----------------------
+variable "enable_rancher" {
+  description = "Enable Rancher"
+  type        = bool
+  default     = false
+}
+
+variable "rancher_helm_config" {
+  type        = any
+  description = "Rancher Helm Chart config"
+  default     = {}
+}

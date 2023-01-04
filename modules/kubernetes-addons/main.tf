@@ -800,3 +800,10 @@ module "consul" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
+
+module "rancher" {
+  source = "./rancher"
+  count = var.enable_rancher ? 1: 0
+  helm_config      = var.rancher_helm_config
+  addon_context    = local.addon_context    
+}

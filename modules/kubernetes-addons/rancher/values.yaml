@@ -1,0 +1,9 @@
+hostname: ${hostname}
+bootstrapPassword: ${bootstrapPassword}
+ingress:
+  tls:
+    source: ${ingress_tls_source}
+  ingressClassName: ${ingress_ingressClassName}
+letsEncrypt:
+  ingress:
+    class: ${ingress_ingressClassName}
