@@ -1,6 +1,6 @@
-# EKS Cluster Deployment with new VPC
+# EKS Cluster Deployment with new VPC and Rancher
 
-This example is adapted from the `eks-cluster-with-new-vpc` and it deploys the following a Basic EKS Cluster in an existing VPC with Internet gateway and NAT gateway already provisioned. This example also includes a custom Kubernetes Helm AddOn - Rancher that will automatically install Rancher the helm chart.
+This example is adapted from the `eks-cluster-with-new-vpc` and added code to use the Rancher add-on that will automatically install Rancher the helm chart.
 
 ## Install
 ```sh
