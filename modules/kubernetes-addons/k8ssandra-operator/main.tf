@@ -20,8 +20,14 @@ resource "helm_release" "cert-manager" {
   repository  = "https://charts.jetstack.io"
   version     = "v1.10.0"
   namespace   = "cert-manager"
+  create_namespace = true
   description = "Cert Manager Add-on"
   wait        = true
+  set {
+    name  = "installCRDs"
+    value = true
+  }
+
 }
 
 #-------------------------------------------------
@@ -32,5 +38,5 @@ module "helm_addon" {
   helm_config       = local.helm_config
   addon_context     = var.addon_context
   manage_via_gitops = var.manage_via_gitops
-  depends_on = [cert-manager]
+  depends_on = [helm_release.cert-manager]
 }
