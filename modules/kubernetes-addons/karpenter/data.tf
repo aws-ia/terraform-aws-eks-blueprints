@@ -26,6 +26,7 @@ data "aws_iam_policy_document" "karpenter" {
       "ec2:DescribeSubnets",
       "ec2:RunInstances",
       "iam:PassRole",
+      "iam:CreateServiceLinkedRole",
       "pricing:GetProducts",
       "ssm:GetParameter",
     ]
