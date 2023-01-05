@@ -13,6 +13,17 @@ locals {
   helm_config = merge(local.default_helm_config, var.helm_config)
 }
 
+
+resource "helm_release" "cert-manager" {
+  name  = "cert-manager"
+  chart = "cert-manager"
+  repository  = "https://charts.jetstack.io"
+  version     = "v1.10.0"
+  namespace   = "cert-manager"
+  description = "Cert Manager Add-on"
+  wait        = true
+}
+
 #-------------------------------------------------
 # K8assandra Operator Helm Add-on
 #-------------------------------------------------
@@ -21,4 +32,5 @@ module "helm_addon" {
   helm_config       = local.helm_config
   addon_context     = var.addon_context
   manage_via_gitops = var.manage_via_gitops
+  depends_on = [cert-manager]
 }
