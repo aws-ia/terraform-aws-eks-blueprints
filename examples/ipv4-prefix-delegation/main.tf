@@ -100,7 +100,7 @@ module "eks" {
     }
   }
 
-  tags = module.tags.tags
+  tags = local.tags
 }
 
 data "aws_eks_addon_version" "latest" {
