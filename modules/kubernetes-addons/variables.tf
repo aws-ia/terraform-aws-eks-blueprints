@@ -1204,7 +1204,7 @@ variable "enable_cnpg" {
   default     = false
 }
 
-variable "cloudnative-pg_helm_config" {
+variable "cloudnative_pg_helm_config" {
   description = "Apache CloudNativePG Helm Chart config"
   type        = any
   default     = {}
