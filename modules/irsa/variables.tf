@@ -15,6 +15,12 @@ variable "create_kubernetes_service_account" {
   default     = true
 }
 
+variable "create_service_account_secret_token" {
+  description = "Should the module create a secret for the service account (from k8s version 1.24 service account doesn't automatically create secret of the token)"
+  type        = bool
+  default     = false
+}
+
 variable "kubernetes_service_account" {
   description = "Kubernetes Service Account Name"
   type        = string
