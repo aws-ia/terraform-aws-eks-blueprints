@@ -39,6 +39,7 @@ locals {
 # Cluster
 ################################################################################
 
+#tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 19.5"

@@ -2,7 +2,7 @@
 
 This example shows how to provision a serverless cluster (serverless data plane) using Fargate Profiles.
 
-This example solution has been developed to work around these current limitations and provides:
+This example solution provides:
 
 - AWS EKS Cluster (control plane)
 - AWS EKS Fargate Profiles for the `kube-system` namespace which is used by the `coredns`, `vpc-cni`, and `kube-proxy` addons, as well as profile that will match on `app-*` namespaces using a wildcard pattern.
