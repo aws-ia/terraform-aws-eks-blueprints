@@ -22,6 +22,12 @@ variable "node_iam_instance_profile" {
   default     = ""
 }
 
+variable "enable_spot_termination_handling" {
+  description = "Determines whether to enable native spot termination handling"
+  type        = bool
+  default     = false
+}
+
 variable "sqs_queue_arn" {
   description = "(Optional) ARN of SQS used by Karpenter when native node termination handling is enabled"
   type        = string
