@@ -44,7 +44,6 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 - Initialize a working directory
 
 ```
-cd examples/observability/eks-cluster-with-observability
 terraform init
 ```
 
