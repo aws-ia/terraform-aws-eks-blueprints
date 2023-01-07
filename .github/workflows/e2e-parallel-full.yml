@@ -54,7 +54,6 @@ jobs:
         include:
           - example_path: examples/agones-game-controller
           - example_path: examples/complete-kubernetes-addons
-          - example_path: examples/eks-cluster-with-new-vpc
           - example_path: examples/fargate-serverless
           - example_path: examples/gitops/argocd
           - example_path: examples/grafana-loki

@@ -4,15 +4,12 @@
 package src
 
 import (
-	"context"
 	internal "github.com/aws-ia/terraform-aws-eks-blueprints/aws"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	test_structure "github.com/gruntwork-io/terratest/modules/test-structure"
 	"github.com/stretchr/testify/assert"
 	core "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"strings"
 	"testing"
 	"time"
 )
