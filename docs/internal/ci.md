@@ -58,4 +58,4 @@ Outputs:
 
 3. Setup a GitHub repo secret called `ROLE_TO_ASSUME` and set it to ARN of the role created in 1.
 
-4. We use an S3 backend to test the canonical [example](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/eks-cluster-with-new-vpc/main.tf). This allows us to recover from any failures during the `apply` stage. If you are setting up your own CI pipeline change the s3 bucket name in backend configuration of the example.
+4. We use an S3 backend to test examples. This allows us to recover from any failures during the `apply` stage. If you are setting up your own CI pipeline change the s3 bucket name in backend configuration of the example.

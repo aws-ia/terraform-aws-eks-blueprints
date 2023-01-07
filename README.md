@@ -12,7 +12,7 @@ This project leverages the community [terraform-aws-eks](https://github.com/terr
 
 ## Getting Started
 
-The easiest way to get started with EKS Blueprints is to follow our [Getting Started guide](https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/getting-started/).
+The easiest way to get started with EKS Blueprints is to select and example that is of interest and follow the instructions in its `README.md file`.
 
 ## Documentation
 
