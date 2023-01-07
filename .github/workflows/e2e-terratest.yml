@@ -29,7 +29,7 @@ jobs:
 
       - uses: actions/setup-go@v3
         with:
-          go-version: 1.18
+          go-version: 1.19
 
       - name: Configure AWS credentials from Test account
         uses: aws-actions/configure-aws-credentials@v1-node16
@@ -47,8 +47,8 @@ jobs:
 
       - name: Setup Dependencies
         working-directory: test/src
-        run: go get -v -t -d && go mod tidy -compat=1.18
+        run: go get -v -t -d && go mod tidy -compat=1.19
 
       - name: Run Go E2E Tests
         working-directory: test/src
-        run: go test -v -timeout 60m -tags=e2e
+        run: go test -timeout 60m -tags=e2e

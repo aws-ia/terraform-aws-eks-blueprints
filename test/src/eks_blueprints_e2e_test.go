@@ -23,19 +23,14 @@ var (
 		values      map[string]string
 	}{
 		{
-			"karpenter",
+			"fargate-serverless",
 			"us-west-2",
 			"aws-terra-test-eks",
 			map[string]string{
 				"rootFolder":        "../..",
-				"exampleFolderPath": "examples/karpenter"},
+				"exampleFolderPath": "examples/fargate-serverless"},
 		},
 	}
-	/* Commented for future use
-	S3BackendConfig = map[string]string{
-		"bucketName": "terraform-ssp-github-actions-state",
-		"s3Prefix": "terratest/examples/",
-		"awsRegion" : "us-west-2"}*/
 
 	destroyModules = []string{
 		"module.eks_blueprints_kubernetes_addons",
@@ -43,34 +38,19 @@ var (
 		"full_destroy",
 	}
 
-	// /*Update the expected Output variables and values*/
-	// outputParameters = [...]Outputs{
-	// 	{"eks_managed_nodegroup_status", "[ACTIVE]", "equal"},
-	// }
-
 	/*EKS API Validation*/
 	expectedEKSWorkerNodes = 3
 
 	/*Update the expected Deployments names and the namespace*/
 	expectedDeployments = [...]Deployment{
 		{"aws-load-balancer-controller", "kube-system"},
-		{"karpenter", "karpenter"},
 		{"coredns", "kube-system"},
-		{"metrics-server", "kube-system"},
-	}
-
-	/*Update the expected DaemonSet names and the namespace*/
-	expectedDaemonSets = [...]DaemonSet{
-		{"aws-node", "kube-system"},
-		{"kube-proxy", "kube-system"},
-		{"aws-cloudwatch-metrics", "amazon-cloudwatch"},
 	}
 
 	/*Update the expected K8s Services names and the namespace*/
 	expectedServices = [...]Services{
 		{"kube-dns", "kube-system", "ClusterIP"},
 		{"kubernetes", "default", "ClusterIP"},
-		{"metrics-server", "kube-system", "ClusterIP"},
 	}
 )
 
@@ -114,13 +94,6 @@ func TestEksBlueprintsE2E(t *testing.T) {
 				Vars: map[string]interface{}{
 					"cluster_name": "aws-terra-test-eks",
 				},
-				// VarFiles:     []string{testCase.name + ".tfvars"}, // The var file paths to pass to Terraform commands using -var-file option.
-				//BackendConfig: map[string]interface{}{
-				//	"bucket": S3BackendConfig["bucketName"],
-				//	"key":    S3BackendConfig["s3Prefix"]+testCase.name,
-				//	"region": S3BackendConfig["awsRegion"],
-				//},
-				NoColor: true,
 			}
 
 			terratestOptions := getTerraformOptions(t, inputTfOptions)
@@ -135,12 +108,6 @@ func TestEksBlueprintsE2E(t *testing.T) {
 							Vars: map[string]interface{}{
 								"cluster_name": "aws-terra-test-eks",
 							},
-							// VarFiles:     []string{testCase.name + ".tfvars"}, // The var file paths to pass to Terraform commands using -var-file option.
-							//BackendConfig: map[string]interface{}{
-							//	"bucket": S3BackendConfig["bucketName"],
-							//	"key":    S3BackendConfig["s3Prefix"]+testCase.name,
-							//	"region": S3BackendConfig["awsRegion"],
-							//},
 							Targets: []string{target},
 							NoColor: true,
 						}
@@ -171,26 +138,6 @@ func TestEksBlueprintsE2E(t *testing.T) {
 					assert.Contains(t, planResult, "No changes.")
 				})
 			})
-
-			// t.Run("TF_OUTPUTS_VALIDATION", func(t *testing.T) {
-			// 	/*Outputs Validation*/
-			// 	test_structure.RunTestStage(t, "outputs_validation", func() {
-			// 		terraformOptions := test_structure.LoadTerraformOptions(t, tempExampleFolder)
-			// 		for _, tc := range outputParameters {
-			// 			t.Run(tc.OutputVariable, func(t *testing.T) {
-			// 				ActualOutputValue := terraform.Output(t, terraformOptions, tc.OutputVariable)
-			// 				switch strings.ToLower(tc.AssertType) {
-			// 				case "equal":
-			// 					assert.Equal(t, tc.ExpectedOutputValue, ActualOutputValue)
-			// 				case "notempty":
-			// 					assert.NotEmpty(t, ActualOutputValue)
-			// 				case "contains":
-			// 					assert.Contains(t, ActualOutputValue, tc.ExpectedOutputValue)
-			// 				}
-			// 			})
-			// 		}
-			// 	})
-			// })
 
 			t.Run("EKS_ADDON_VALIDATION", func(t *testing.T) {
 				/*EKS and Addon Validation*/
@@ -234,18 +181,6 @@ func eksAddonValidation(t *testing.T, eksClusterName string, awsRegion string) {
 	})
 
 	/****************************************************************************/
-	/*TEST: Verify the total number of nodes running
-	/****************************************************************************/
-	// nodes, err := k8sclient.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
-	// if err != nil {
-	// 	t.Errorf("Error getting EKS nodes: %v", err)
-	// }
-	// t.Run("MATCH_TOTAL_EKS_WORKER_NODES", func(t *testing.T) {
-	// 	assert.Equal(t, expectedEKSWorkerNodes, len(nodes.Items))
-	// 	assert.Greater(t, len(nodes.Items), 0)
-	// })
-
-	/****************************************************************************/
 	/*Test: Validate Kubernetes Deployments
 	/****************************************************************************/
 	t.Run("EKS_DEPLOYMENTS_VALIDATION", func(t *testing.T) {
@@ -268,36 +203,6 @@ func eksAddonValidation(t *testing.T, eksClusterName string, awsRegion string) {
 				t.Run("UNAVAILABLE_REPLICAS/"+dep.Name, func(t *testing.T) {
 					assert.Equal(t, int32(0), deployment.Status.UnavailableReplicas)
 				})
-			}
-		}
-	})
-
-	/****************************************************************************/
-	/*Test: Validate Kubernetes DaemonSets
-	/****************************************************************************/
-	t.Run("EKS_DAEMONSETS_VALIDATION", func(t *testing.T) {
-		for _, daemon := range expectedDaemonSets {
-			daemonset, err := internal.GetDaemonSet(k8sclient, daemon.Name, daemon.Namespace)
-			if err != nil {
-				assert.Fail(t, "DaemonSet: %s | NAMESPACE: %s| Error: %s", daemon.Name, daemon.Namespace, err)
-			} else {
-				t.Log("|-----------------------------------------------------------------------------------------------------------------------|")
-				t.Logf("DaemonSet: %s | NAMESPACE: %s | DESIRED: %d | CURRENT: %d | READY: %d  AVAILABLE: %d | UNAVAILABLE: %d",
-					daemon.Name,
-					daemon.Namespace,
-					daemonset.Status.DesiredNumberScheduled,
-					daemonset.Status.CurrentNumberScheduled,
-					daemonset.Status.NumberReady,
-					daemonset.Status.NumberAvailable,
-					daemonset.Status.NumberUnavailable)
-				t.Logf("|-----------------------------------------------------------------------------------------------------------------------|")
-				t.Run("MATCH_DESIRED_VS_CURRENT_PODS/"+daemon.Name, func(t *testing.T) {
-					assert.Equal(t, daemonset.Status.DesiredNumberScheduled, daemonset.Status.CurrentNumberScheduled)
-				})
-				t.Run("UNAVAILABLE_REPLICAS/"+daemon.Name, func(t *testing.T) {
-					assert.Equal(t, int32(0), daemonset.Status.NumberUnavailable)
-				})
-
 			}
 		}
 	})

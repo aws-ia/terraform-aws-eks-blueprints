@@ -23,7 +23,8 @@ data "aws_eks_cluster_auth" "this" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = basename(path.cwd)
+  # var.cluster_name is required for Terratest
+  name   = coalesce(var.cluster_name, basename(path.cwd))
   region = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"

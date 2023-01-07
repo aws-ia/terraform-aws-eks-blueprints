@@ -41,8 +41,7 @@ data "aws_ecrpublic_authorization_token" "token" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  # var.cluster_name is required for Terratest
-  name   = coalesce(var.cluster_name, basename(path.cwd))
+  name   = basename(path.cwd)
   region = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
