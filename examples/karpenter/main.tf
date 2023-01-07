@@ -41,7 +41,8 @@ data "aws_ecrpublic_authorization_token" "token" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = basename(path.cwd)
+  # var.cluster_name is required for Terratest
+  name   = coalesce(var.cluster_name, basename(path.cwd))
   region = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
@@ -158,6 +159,20 @@ module "eks_blueprints_kubernetes_addons" {
   karpenter_node_iam_instance_profile        = module.karpenter.instance_profile_name
   karpenter_enable_spot_termination_handling = true
   karpenter_sqs_queue_arn                    = module.karpenter.queue_arn
+
+  enable_aws_load_balancer_controller = true
+  enable_metrics_server               = true
+  enable_aws_cloudwatch_metrics       = true
+
+  enable_cert_manager = true
+  cert_manager_helm_config = {
+    set_values = [
+      {
+        name  = "extraArgs[0]"
+        value = "--enable-certificate-owner-ref=false"
+      },
+    ]
+  }
 
   tags = local.tags
 }

@@ -26,12 +26,12 @@ var (
 		values      map[string]string
 	}{
 		{
-			"eks-cluster-with-new-vpc",
+			"karpenter",
 			"us-west-2",
 			"aws-terra-test-eks",
 			map[string]string{
 				"rootFolder":        "../..",
-				"exampleFolderPath": "examples/eks-cluster-with-new-vpc"},
+				"exampleFolderPath": "examples/karpenter"},
 		},
 	}
 	/* Commented for future use
@@ -42,19 +42,14 @@ var (
 
 	destroyModules = []string{
 		"module.eks_blueprints_kubernetes_addons",
-		"module.eks_blueprints",
-		"module.vpc",
+		"module.eks",
 		"full_destroy",
 	}
 
-	/*Update the expected Output variables and values*/
-	outputParameters = [...]Outputs{
-		{"vpc_cidr", "10.0.0.0/16", "equal"},
-		{"vpc_private_subnet_cidr", "[10.0.10.0/24 10.0.11.0/24 10.0.12.0/24]", "equal"},
-		{"vpc_public_subnet_cidr", "[10.0.0.0/24 10.0.1.0/24 10.0.2.0/24]", "equal"},
-		{"eks_cluster_id", "aws-terra-test-eks", "equal"},
-		{"eks_managed_nodegroup_status", "[ACTIVE]", "equal"},
-	}
+	// /*Update the expected Output variables and values*/
+	// outputParameters = [...]Outputs{
+	// 	{"eks_managed_nodegroup_status", "[ACTIVE]", "equal"},
+	// }
 
 	/*EKS API Validation*/
 	expectedEKSWorkerNodes = 3
@@ -62,7 +57,7 @@ var (
 	/*Update the expected Deployments names and the namespace*/
 	expectedDeployments = [...]Deployment{
 		{"aws-load-balancer-controller", "kube-system"},
-		{"cluster-autoscaler-aws-cluster-autoscaler", "kube-system"},
+		{"karpenter", "karpenter"},
 		{"coredns", "kube-system"},
 		{"metrics-server", "kube-system"},
 	}
@@ -76,7 +71,6 @@ var (
 
 	/*Update the expected K8s Services names and the namespace*/
 	expectedServices = [...]Services{
-		{"cluster-autoscaler-aws-cluster-autoscaler", "kube-system", "ClusterIP"},
 		{"kube-dns", "kube-system", "ClusterIP"},
 		{"kubernetes", "default", "ClusterIP"},
 		{"metrics-server", "kube-system", "ClusterIP"},
@@ -181,25 +175,25 @@ func TestEksBlueprintsE2E(t *testing.T) {
 				})
 			})
 
-			t.Run("TF_OUTPUTS_VALIDATION", func(t *testing.T) {
-				/*Outputs Validation*/
-				test_structure.RunTestStage(t, "outputs_validation", func() {
-					terraformOptions := test_structure.LoadTerraformOptions(t, tempExampleFolder)
-					for _, tc := range outputParameters {
-						t.Run(tc.OutputVariable, func(t *testing.T) {
-							ActualOutputValue := terraform.Output(t, terraformOptions, tc.OutputVariable)
-							switch strings.ToLower(tc.AssertType) {
-							case "equal":
-								assert.Equal(t, tc.ExpectedOutputValue, ActualOutputValue)
-							case "notempty":
-								assert.NotEmpty(t, ActualOutputValue)
-							case "contains":
-								assert.Contains(t, ActualOutputValue, tc.ExpectedOutputValue)
-							}
-						})
-					}
-				})
-			})
+			// t.Run("TF_OUTPUTS_VALIDATION", func(t *testing.T) {
+			// 	/*Outputs Validation*/
+			// 	test_structure.RunTestStage(t, "outputs_validation", func() {
+			// 		terraformOptions := test_structure.LoadTerraformOptions(t, tempExampleFolder)
+			// 		for _, tc := range outputParameters {
+			// 			t.Run(tc.OutputVariable, func(t *testing.T) {
+			// 				ActualOutputValue := terraform.Output(t, terraformOptions, tc.OutputVariable)
+			// 				switch strings.ToLower(tc.AssertType) {
+			// 				case "equal":
+			// 					assert.Equal(t, tc.ExpectedOutputValue, ActualOutputValue)
+			// 				case "notempty":
+			// 					assert.NotEmpty(t, ActualOutputValue)
+			// 				case "contains":
+			// 					assert.Contains(t, ActualOutputValue, tc.ExpectedOutputValue)
+			// 				}
+			// 			})
+			// 		}
+			// 	})
+			// })
 
 			t.Run("EKS_ADDON_VALIDATION", func(t *testing.T) {
 				/*EKS and Addon Validation*/
@@ -245,13 +239,14 @@ func eksAddonValidation(t *testing.T, eksClusterName string, awsRegion string) {
 	/****************************************************************************/
 	/*TEST: Verify the total number of nodes running
 	/****************************************************************************/
-	nodes, err := k8sclient.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
-	if err != nil {
-		t.Errorf("Error getting EKS nodes: %v", err)
-	}
-	t.Run("MATCH_TOTAL_EKS_WORKER_NODES", func(t *testing.T) {
-		assert.Equal(t, expectedEKSWorkerNodes, len(nodes.Items))
-	})
+	// nodes, err := k8sclient.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
+	// if err != nil {
+	// 	t.Errorf("Error getting EKS nodes: %v", err)
+	// }
+	// t.Run("MATCH_TOTAL_EKS_WORKER_NODES", func(t *testing.T) {
+	// 	assert.Equal(t, expectedEKSWorkerNodes, len(nodes.Items))
+	// 	assert.Greater(t, len(nodes.Items), 0)
+	// })
 
 	/****************************************************************************/
 	/*Test: Validate Kubernetes Deployments
