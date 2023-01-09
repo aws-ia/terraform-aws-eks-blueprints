@@ -123,6 +123,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_vpa                            = true
   enable_yunikorn                       = true
   enable_argo_rollouts                  = true
+  enable_strimzi_kafka_operator         = true
 
   tags = local.tags
 }
