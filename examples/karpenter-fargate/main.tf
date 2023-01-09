@@ -196,18 +196,6 @@ module "eks_blueprints_kubernetes_addons" {
   tags = local.tags
 }
 
-# # Allow ingress from the worker nodes security group (Karpenter nodes)
-# # to the cluster primary security group (Fargate nodes)
-# resource "aws_security_group_rule" "cluster_primary_ingress_all" {
-#   description              = "Allow All ingress from the worker nodes security group"
-#   type                     = "ingress"
-#   to_port                  = 0
-#   protocol                 = "-1"
-#   from_port                = 0
-#   security_group_id        = module.eks_blueprints.cluster_primary_security_group_id
-#   source_security_group_id = module.eks_blueprints.worker_node_security_group_id
-# }
-
 # Add the Karpenter Provisioners IAM Role
 # https://karpenter.sh/v0.19.0/getting-started/getting-started-with-terraform/#create-the-karpentercontroller-iam-role
 resource "aws_iam_role" "karpenter" {
