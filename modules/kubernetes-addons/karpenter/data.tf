@@ -1,5 +1,5 @@
 data "aws_arn" "queue" {
-  count = var.sqs_queue_arn != "" ? 1 : 0
+  count = var.enable_spot_termination_handling ? 1 : 0
 
   arn = var.sqs_queue_arn
 }
@@ -45,7 +45,7 @@ data "aws_iam_policy_document" "karpenter" {
   }
 
   dynamic "statement" {
-    for_each = var.sqs_queue_arn != "" ? [1] : []
+    for_each = var.enable_spot_termination_handling ? [1] : []
 
     content {
       actions = [

@@ -17,7 +17,7 @@ locals {
       name       = local.name
       chart      = local.name
       repository = "oci://public.ecr.aws/karpenter"
-      version    = "v0.20.0"
+      version    = "v0.22.0"
       namespace  = local.name
       values = [
         <<-EOT
@@ -35,11 +35,12 @@ locals {
   )
 
   irsa_config = {
-    kubernetes_namespace              = local.helm_config["namespace"]
-    kubernetes_service_account        = local.service_account
-    create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
-    create_kubernetes_service_account = true
-    irsa_iam_policies                 = concat([aws_iam_policy.karpenter.arn], var.irsa_policies)
+    kubernetes_namespace                = local.helm_config["namespace"]
+    kubernetes_service_account          = local.service_account
+    create_kubernetes_namespace         = try(local.helm_config["create_namespace"], true)
+    create_kubernetes_service_account   = true
+    create_service_account_secret_token = try(local.helm_config["create_service_account_secret_token"], false)
+    irsa_iam_policies                   = concat([aws_iam_policy.karpenter.arn], var.irsa_policies)
   }
 
   argocd_gitops_config = {

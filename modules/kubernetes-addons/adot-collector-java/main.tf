@@ -51,11 +51,12 @@ module "helm_addon" {
   ]
 
   irsa_config = {
-    create_kubernetes_namespace       = try(var.helm_config["create_namespace"], true)
-    kubernetes_namespace              = local.namespace
-    create_kubernetes_service_account = true
-    kubernetes_service_account        = try(var.helm_config.service_account, local.name)
-    irsa_iam_policies                 = ["arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonPrometheusRemoteWriteAccess"]
+    create_kubernetes_namespace         = try(var.helm_config["create_namespace"], true)
+    kubernetes_namespace                = local.namespace
+    create_kubernetes_service_account   = true
+    create_service_account_secret_token = try(var.helm_config["create_service_account_secret_token"], false)
+    kubernetes_service_account          = try(var.helm_config.service_account, local.name)
+    irsa_iam_policies                   = ["arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonPrometheusRemoteWriteAccess"]
   }
 
   addon_context = var.addon_context

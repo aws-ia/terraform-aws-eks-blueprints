@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 3.72"
+      version = ">= 4.47"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
@@ -17,10 +17,6 @@ terraform {
     null = {
       source  = "hashicorp/null"
       version = ">= 3.0"
-    }
-    kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.14"
     }
     time = {
       source  = "hashicorp/time"

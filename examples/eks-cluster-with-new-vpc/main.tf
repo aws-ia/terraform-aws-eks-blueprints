@@ -50,7 +50,7 @@ module "eks_blueprints" {
   source = "../.."
 
   cluster_name    = local.cluster_name
-  cluster_version = "1.23"
+  cluster_version = "1.24"
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
