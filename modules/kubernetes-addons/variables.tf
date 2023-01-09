@@ -1198,7 +1198,7 @@ variable "airflow_helm_config" {
 }
 
 #-----------CloudNative PG (Postresql) ADDON-------------
-variable "enable_cnpg" {
+variable "enable_cloudnative_pg" {
   description = "Enable CloudNativePG PostreSql add-on"
   type        = bool
   default     = false
