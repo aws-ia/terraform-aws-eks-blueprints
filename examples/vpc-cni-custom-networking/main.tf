@@ -59,7 +59,6 @@ module "eks" {
   cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
 
-  # EKS Addons
   cluster_addons = {
     coredns    = {}
     kube-proxy = {}
