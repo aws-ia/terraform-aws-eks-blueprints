@@ -1,14 +1,15 @@
 # EKS Cluster w/ VPC-CNI Custom Networking
 
 This example shows how to provision an EKS cluster with:
+
 - AWS VPC-CNI custom networking to assign IPs to pods from subnets outside of those used by the nodes
-- AWS VPC-CNI prefix delegation to allow higher pod densities - this is useful since the custom networking removes one ENI from use for pod IP assignment which lowers the number of pods that can be assigned to the node. Enabling prefix delegation allows for prefixes to be assigned to the ENIs to ensure the node resources can be fully utilized through higher pod densitities. See the user data section below for managing the max pods assigned to the node.
+- AWS VPC-CNI prefix delegation to allow higher pod densities - this is useful since the custom networking removes one ENI from use for pod IP assignment which lowers the number of pods that can be assigned to the node. Enabling prefix delegation allows for prefixes to be assigned to the ENIs to ensure the node resources can be fully utilized through higher pod densities. See the user data section below for managing the max pods assigned to the node.
 - Dedicated /28 subnets for the EKS cluster control plane. Making changes to the subnets used by the control plane is a destructive operation - it is recommended to use dedicated subnets for the control plane that are separate from the data plane to allow for future growth through the addition of subnets without disruption to the cluster.
 
 To disable prefix delegation from this example:
 
 1. Remove the `--cni-prefix-delegation-enabled` flag from the user data script
-2. Remove the environment environment variables `ENABLE_PREFIX_DELEGATION=true` and `WARM_PREFIX_TARGET=1` assignment from the `aws-node` daemonset (set in the `null_resource.kubectl_set_env` resource in this example)
+2. Remove the environment environment variables `ENABLE_PREFIX_DELEGATION=true` and `WARM_PREFIX_TARGET=1` assignment from the `vpc-cni` addon `configuration_values`
 
 ## Reference Documentation:
 
@@ -129,6 +130,6 @@ To teardown and remove the resources created in this example:
 
 ```sh
 terraform destroy -target=kubectl_manifest.eni_config -target=module.eks_blueprints_kubernetes_addons -auto-approve
-terraform destroy -target=module.eks_blueprints -auto-approve
+terraform destroy -target=module.eks -auto-approve
 terraform destroy -auto-approve
 ```
