@@ -43,10 +43,13 @@ locals {
     irsa_iam_policies                   = concat([aws_iam_policy.karpenter.arn], var.irsa_policies)
   }
 
-  argocd_gitops_config = {
+  argocd_gitops_config = merge(
+    {
     enable                    = true
     serviceAccountName        = local.service_account
     controllerClusterEndpoint = var.addon_context.aws_eks_cluster_endpoint
     awsDefaultInstanceProfile = var.node_iam_instance_profile
-  }
+  },
+  var.helm_config
+  )
 }
