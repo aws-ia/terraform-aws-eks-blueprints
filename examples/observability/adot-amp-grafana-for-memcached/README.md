@@ -42,7 +42,7 @@ terraform apply -target=module.managed_grafana # required to retrieve API key be
 
 Enter `yes` at command prompt to apply
 
-Alternatively, you can reuse an existing Managed Grafana workspace. In this case, you can add `grafana_endpoint="https://xxx/"` to your `terraform.tfvars` or use an evironment variable `export TF_VAR_grafana_endpoint=""https://xxx/""`
+Alternatively, you can reuse an existing Managed Grafana workspace. In this case, you can add `grafana_endpoint="https://xxx/"` to your `terraform.tfvars` or use an environment variable `export TF_VAR_grafana_endpoint=""https://xxx/""`
 
 2. Generate a Grafana API Key
 

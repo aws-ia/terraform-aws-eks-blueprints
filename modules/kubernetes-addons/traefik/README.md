@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Traefik is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease. Fore more detials about [Traefik can be found here](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)
+Traefik is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease. Fore more details about [Traefik can be found here](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements

@@ -85,7 +85,7 @@ Create a deployment with kubernetes/nginx-spot.yaml, which request spot instance
 kubectl apply -f kubernetes/nginx-spot.yaml
 ```
 
-If we scale the deployment, it will fullfill first the 2 nodes in the nodegroup spot_2vcpu_8mem
+If we scale the deployment, it will fullfil first the 2 nodes in the nodegroup spot_2vcpu_8mem
 
 ```bash
 kubectl scale deployment/nginx-spot --replicas=10
