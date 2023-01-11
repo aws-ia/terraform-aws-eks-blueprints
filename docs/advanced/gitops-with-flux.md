@@ -1,6 +1,6 @@
 # Manage your cluster(s) configuration with Flux
 
-Once you have deployed your EKS cluster(s) with Terraform, you can leverage [Flux](https://fluxcd.io) to manage your cluster's configuration with [GitOps](https://www.gitops.tech/), including the deployment of add-ons, cluster configuration (e.g. cluster policies) and applications. Using GitOps practices to manage your clusters configuration will simplfy management, scaling the number of clusters you run and be able to easily recreate your clusters, treating them as ephemeral resources. Recreating your cluster is as simple as deploying a new cluster with Terraform and bootstraping it with Flux pointing to the repository containing the configuration.
+Once you have deployed your EKS cluster(s) with Terraform, you can leverage [Flux](https://fluxcd.io) to manage your cluster's configuration with [GitOps](https://www.gitops.tech/), including the deployment of add-ons, cluster configuration (e.g. cluster policies) and applications. Using GitOps practices to manage your clusters configuration will simplify management, scaling the number of clusters you run and be able to easily recreate your clusters, treating them as ephemeral resources. Recreating your cluster is as simple as deploying a new cluster with Terraform and bootstrapping it with Flux pointing to the repository containing the configuration.
 
 The [aws-samples/flux-eks-gitops-config](https://github.com/aws-samples/flux-eks-gitops-config) repository provides a sample configuration blueprint for configuring multiple Amazon EKS clusters belonging to different stages (`test` and `production`) using [GitOps](https://www.gitops.tech/) with [Flux v2](https://fluxcd.io/docs/). This repository installs a set of commonly used Kubernetes add-ons to perform policy enforcement, restrict network traffic with network policies, cluster monitoring, extend Kubernetes deployment capabilities enabling progressive Canary deployments for your applications...
 
@@ -21,7 +21,7 @@ There're also a set of Kyverno cluster policies deployed to audit (test) or enfo
 
 ## Bootstrap your cluster with Flux
 
-The below instructions assume you have created a cluster with `eks-blueprints` with no add-ons other than aws-load-balancer-controller. If you're installing additonal add-ons via terraform, the configuration may clash with the one on the sample repository. If you plan to leverage Flux, we recommend that you use Terraform to install and manage only add-ons that require additional AWS resources to be created (like IAM roles for Service accounts), and then use Flux to manage the rest.
+The below instructions assume you have created a cluster with `eks-blueprints` with no add-ons other than aws-load-balancer-controller. If you're installing additional add-ons via terraform, the configuration may clash with the one on the sample repository. If you plan to leverage Flux, we recommend that you use Terraform to install and manage only add-ons that require additional AWS resources to be created (like IAM roles for Service accounts), and then use Flux to manage the rest.
 
 ### Prerequisites
 
@@ -52,7 +52,7 @@ Define whether you want to bootstrap your cluster with the `TEST` or the `PRODUC
   export CLUSTER_ENVIRONMENT=production
 ```
 
-Verify that your stagging cluster satisfies the prerequisites with:
+Verify that your staging cluster satisfies the prerequisites with:
 
 ```sh
   flux check --pre
