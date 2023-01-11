@@ -1,3 +1,9 @@
+variable "helm_config" {
+  description = "Helm provider config for the airflow."
+  type        = any
+  default     = {}
+}
+
 variable "addon_context" {
   description = "Input configuration for the addon"
   type = object({
