@@ -1,6 +1,5 @@
 locals {
   name = "cnpg"
-  
   default_helm_config = {
     name             = local.name
     chart            = "cloudnative-pg"
@@ -19,7 +18,7 @@ locals {
 # CloudNative PG Helm Add-on
 #-------------------------------------------------
 module "helm_addon" {
-  source = "../helm-addon"
+  source        = "../helm-addon"
   helm_config   = local.helm_config
   addon_context = var.addon_context
 }
