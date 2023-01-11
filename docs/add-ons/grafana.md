@@ -14,7 +14,11 @@ This option sets a default `adminPassword` by the helm chart which can be extrac
 <<<<<<< HEAD
 
 =======
+<<<<<<< HEAD
 >>>>>>> 37696ab9 (docs: Fix typos (#1314))
+=======
+>>>>>>> a427db33 (docs: Fix typos (#1314))
+>>>>>>> 39447086 (docs: Fix typos (#1314))
 ```
 enable_grafana = true
 ```
