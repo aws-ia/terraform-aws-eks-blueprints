@@ -92,7 +92,7 @@ The below example demonstrates advanced configuration options for a managed node
         ami_type        = "AL2_x86_64" # Amazon Linux 2(AL2_x86_64), AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
         release_version = ""           # Enter AMI release version to deploy the latest AMI released by AWS. Used only when you specify ami_type
         capacity_type   = "ON_DEMAND"  # ON_DEMAND or SPOT
-        instance_types  = ["m5.large"] # List of instances to get capacity from multipe pools
+        instance_types  = ["m5.large"] # List of instances to get capacity from multiple pools
 
         block_device_mappings = [
           {
@@ -169,7 +169,7 @@ The below example demonstrates advanced configuration options using GPU instance
       # 3> Node Group compute configuration
       ami_type       = "AL2_x86_64_GPU" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
       capacity_type  = "ON_DEMAND"      # ON_DEMAND or SPOT
-      instance_types = ["m5.large"]     # List of instances to get capacity from multipe pools
+      instance_types = ["m5.large"]     # List of instances to get capacity from multiple pools
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
@@ -179,7 +179,7 @@ The below example demonstrates advanced configuration options using GPU instance
       ]
 
       # 4> Node Group network configuration
-      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
 
       k8s_taints = []
 
@@ -221,7 +221,7 @@ The below example demonstrates advanced configuration options using GPU instance
       # 3> Node Group compute configuration
       ami_type       = "AL2_ARM_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
       capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
-      instance_types = ["m6g.large"] # List of instances to get capacity from multipe pools
+      instance_types = ["m6g.large"] # List of instances to get capacity from multiple pools
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
@@ -230,7 +230,7 @@ The below example demonstrates advanced configuration options using GPU instance
         }
       ]
       # 4> Node Group network configuration
-      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
 
       k8s_taints = []
 
@@ -269,11 +269,11 @@ The below example demonstrates advanced configuration options using GPU instance
       # 3> Node Group compute configuration
       ami_type       = "BOTTLEROCKET_ARM_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
       capacity_type  = "ON_DEMAND"           # ON_DEMAND or SPOT
-      instance_types = ["m6g.large"]          # List of instances to get capacity from multipe pools
+      instance_types = ["m6g.large"]          # List of instances to get capacity from multiple pools
       disk_size      = 50
 
       # 4> Node Group network configuration
-      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
 
       k8s_taints = []
 
@@ -312,7 +312,7 @@ The below example demonstrates advanced configuration options using GPU instance
       # 3> Node Group compute configuration
       ami_type       = "BOTTLEROCKET_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
       capacity_type  = "ON_DEMAND"           # ON_DEMAND or SPOT
-      instance_types = ["m5.large"]          # List of instances to get capacity from multipe pools
+      instance_types = ["m5.large"]          # List of instances to get capacity from multiple pools
       block_device_mappings = [
         {
           device_name = "/dev/xvda"
@@ -322,7 +322,7 @@ The below example demonstrates advanced configuration options using GPU instance
       ]
 
       # 4> Node Group network configuration
-      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
 
       k8s_taints = []
 
@@ -352,7 +352,7 @@ The below example demonstrates advanced configuration options using GPU instance
       # custom_ami_id is optional when you provide ami_type. Enter the Custom AMI id if you want to use your own custom AMI
       custom_ami_id  = data.aws_ami.amazonlinux2eks.id
       capacity_type  = "ON_DEMAND"  # ON_DEMAND or SPOT
-      instance_types = ["m5.large"] # List of instances to get capacity from multipe pools
+      instance_types = ["m5.large"] # List of instances to get capacity from multiple pools
 
       # Launch template configuration
       create_launch_template = true              # false will use the default launch template

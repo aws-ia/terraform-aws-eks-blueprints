@@ -26,7 +26,7 @@ variable "addon_context" {
 }
 
 variable "enable_wireguard" {
-  description = "Enable wiregaurd encryption"
+  description = "Enable wireguard encryption"
   type        = bool
   default     = false
 }
