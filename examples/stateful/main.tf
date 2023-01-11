@@ -3,21 +3,21 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
+  name = module.eks.cluster_name
 }
 
 data "aws_availability_zones" "available" {}
@@ -35,37 +35,56 @@ locals {
   }
 }
 
-#---------------------------------------------------------------
-# EKS Blueprints
-#---------------------------------------------------------------
+################################################################################
+# Cluster
+################################################################################
 
-module "eks_blueprints" {
-  source = "../.."
+#tfsec:ignore:aws-eks-enable-control-plane-logging
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 19.5"
 
-  cluster_name    = local.name
-  cluster_version = "1.24"
+  cluster_name                   = local.name
+  cluster_version                = "1.24"
+  cluster_endpoint_public_access = true
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
+  # EKS Addons
+  cluster_addons = {
+    coredns    = {}
+    kube-proxy = {}
+    vpc-cni    = {}
+  }
 
-  managed_node_groups = {
-    velero = {
-      node_group_name    = "velero"
-      launch_template_os = "amazonlinux2eks"
-      subnet_ids         = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
+
+  eks_managed_node_groups = {
+    initial = {
+      instance_types = ["m5.large"]
+
+      min_size     = 1
+      max_size     = 3
+      desired_size = 1
     }
   }
 
   tags = local.tags
 }
 
+################################################################################
+# Kubernetes Addons
+################################################################################
+
 module "eks_blueprints_kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
-  eks_oidc_provider    = module.eks_blueprints.oidc_provider
-  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
+  eks_cluster_id       = module.eks.cluster_name
+  eks_cluster_endpoint = module.eks.cluster_endpoint
+  eks_oidc_provider    = module.eks.oidc_provider
+  eks_cluster_version  = module.eks.cluster_version
+
+  # Wait on the node group(s) before provisioning addons
+  data_plane_wait_arn = join(",", [for group in module.eks.eks_managed_node_groups : group.node_group_arn])
 
   enable_velero           = true
   velero_backup_s3_bucket = module.velero_backup_s3_bucket.s3_bucket_id
@@ -84,9 +103,9 @@ module "eks_blueprints_kubernetes_addons" {
   tags = local.tags
 }
 
-#---------------------------------------------------------------
+################################################################################
 # Supporting Resources
-#---------------------------------------------------------------
+################################################################################
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
@@ -112,13 +131,11 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = local.tags
@@ -178,8 +195,8 @@ module "efs" {
   name           = local.name
 
   # Mount targets / security group
-  mount_targets = { for k, v in toset(range(length(local.azs))) :
-    element(local.azs, k) => { subnet_id = element(module.vpc.private_subnets, k) }
+  mount_targets = {
+    for k, v in zipmap(local.azs, module.vpc.private_subnets) : k => { subnet_id = v }
   }
   security_group_description = "${local.name} EFS security group"
   security_group_vpc_id      = module.vpc.vpc_id
