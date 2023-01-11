@@ -88,7 +88,7 @@ kubectl get storageclasses | grep fsx
   emr-eks-fsx-lustre   fsx.csi.aws.com         Delete          Immediate              false                  109s
 
 # Output of static persistent volume with name `fsx-static-pv`
-kubectl get pv | grep fsx  
+kubectl get pv | grep fsx
   fsx-static-pv                              1000Gi     RWX            Recycle          Bound    emr-data-team-a/fsx-static-pvc       fsx
 
 # Output of static persistent volume with name `fsx-static-pvc` and `fsx-dynamic-pvc`
@@ -159,9 +159,9 @@ kubectl get pods --namespace=emr-data-team-a -w
 ```
 
 ```sh
-kubectl exec -ti ny-taxi-trip-dyanmic-exec-1 -c spark-kubernetes-executor -n emr-data-team-a -- df -h
+kubectl exec -ti ny-taxi-trip-dynamic-exec-1 -c spark-kubernetes-executor -n emr-data-team-a -- df -h
 
-kubectl exec -ti ny-taxi-trip-dyanmic-exec-1 -c spark-kubernetes-executor -n emr-data-team-a -- ls -lah /dyanmic
+kubectl exec -ti ny-taxi-trip-dynamic-exec-1 -c spark-kubernetes-executor -n emr-data-team-a -- ls -lah /dynamic
 ```
 
 ## Cleanup

@@ -1,13 +1,13 @@
-# Transparent Encryption with Cilium and Wirguard
+# Transparent Encryption with Cilium and Wireguard
 
 This example shows how to provision an EKS cluster with:
 - Managed node group based on Bottlerocket AMI
-- Cilium configured in CNI chaining mode with VPC CNI and with Wiregaurd transparent encryption enabled
+- Cilium configured in CNI chaining mode with VPC CNI and with Wireguard transparent encryption enabled
 
 ## Reference Documentation:
 
-- [Cilium CNI Chaning Documentation](https://docs.cilium.io/en/v1.12/gettingstarted/cni-chaining-aws-cni/)
-- [Cilium Wiregaurd Encryption Documentation](https://docs.cilium.io/en/v1.12/gettingstarted/encryption-wireguard/)
+- [Cilium CNI Chaining Documentation](https://docs.cilium.io/en/v1.12/gettingstarted/cni-chaining-aws-cni/)
+- [Cilium Wireguard Encryption Documentation](https://docs.cilium.io/en/v1.12/gettingstarted/encryption-wireguard/)
 
 ## Prerequisites:
 
