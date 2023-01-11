@@ -1,9 +1,3 @@
-variable "helm_config" {
-  description = "Helm provider config for the CloudNative PG Operator."
-  type        = any
-  default     = {}
-}
-
 variable "addon_context" {
   description = "Input configuration for the addon"
   type = object({

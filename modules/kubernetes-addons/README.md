@@ -208,8 +208,8 @@
 | <a name="input_enable_cert_manager_istio_csr"></a> [enable\_cert\_manager\_istio\_csr](#input\_enable\_cert\_manager\_istio\_csr) | Enable Cert Manager istio-csr add-on | `bool` | `false` | no |
 | <a name="input_enable_chaos_mesh"></a> [enable\_chaos\_mesh](#input\_enable\_chaos\_mesh) | Enable Chaos Mesh add-on | `bool` | `false` | no |
 | <a name="input_enable_cilium"></a> [enable\_cilium](#input\_enable\_cilium) | Enable Cilium add-on | `bool` | `false` | no |
+| <a name="input_enable_cloudnative_pg"></a> [enable\_cloudnative\_pg](#input\_enable\_cloudnative\_pg) | Enable CloudNativePG PostreSql add-on | `bool` | `false` | no |
 | <a name="input_enable_cluster_autoscaler"></a> [enable\_cluster\_autoscaler](#input\_enable\_cluster\_autoscaler) | Enable Cluster autoscaler add-on | `bool` | `false` | no |
-| <a name="input_enable_cnpg"></a> [enable\_cnpg](#input\_enable\_cnpg) | Enable CloudNativePG PostreSql add-on | `bool` | `false` | no |
 | <a name="input_enable_consul"></a> [enable\_consul](#input\_enable\_consul) | Enable consul add-on | `bool` | `false` | no |
 | <a name="input_enable_coredns_autoscaler"></a> [enable\_coredns\_autoscaler](#input\_enable\_coredns\_autoscaler) | Enable CoreDNS autoscaler add-on | `bool` | `false` | no |
 | <a name="input_enable_coredns_cluster_proportional_autoscaler"></a> [enable\_coredns\_cluster\_proportional\_autoscaler](#input\_enable\_coredns\_cluster\_proportional\_autoscaler) | Enable cluster-proportional-autoscaler for CoreDNS | `bool` | `true` | no |

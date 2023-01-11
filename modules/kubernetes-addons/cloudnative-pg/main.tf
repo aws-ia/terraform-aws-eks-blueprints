@@ -8,7 +8,7 @@ locals {
 module "helm_addon" {
   source = "../helm-addon"
 
-  helm_config   =  {
+  helm_config = {
     name             = local.name
     chart            = "cloudnative-pg"
     repository       = "https://cloudnative-pg.github.io/charts"

@@ -114,9 +114,7 @@ module "airflow" {
 
 module "cloudnative_pg" {
   source        = "./cloudnative-pg"
-  
   count         = var.enable_cloudnative_pg ? 1 : 0
-  
   helm_config   = var.cloudnative_pg_helm_config
   addon_context = local.addon_context
 }
