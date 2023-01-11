@@ -1467,10 +1467,10 @@
 <div class="highlight"><pre><span></span><code>enable_metrics_server = true
 </code></pre></div>
 <p>Once deployed, you can see metrics-server pod in the <code>kube-system</code> namespace.</p>
-<div class="highlight"><pre><span></span><code>$ kubectl get deployments -n kube-system
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>deployments<span class="w"> </span>-n<span class="w"> </span>kube-system
 
-NAME                                                          READY   UP-TO-DATE   AVAILABLE   AGE
-metrics-server                                                <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           20m
+NAME<span class="w">                                                          </span>READY<span class="w">   </span>UP-TO-DATE<span class="w">   </span>AVAILABLE<span class="w">   </span>AGE
+metrics-server<span class="w">                                                </span><span class="m">1</span>/1<span class="w">     </span><span class="m">1</span><span class="w">            </span><span class="m">1</span><span class="w">           </span>20m
 </code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p>The following properties are made available for use when managing the add-on via GitOps</p>

@@ -1464,7 +1464,7 @@ This add-on configures <a href="https://grafana.com/docs/grafana/latest/datasour
 You can add more data sources using the <a href="https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml">values.yaml</a></p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/spark-k8s-operator">Grafana</a> can be deployed by enabling the add-on via the following. This example shows the usage of the Secrets Manager to create a new secret for Grafana adminPassword.</p>
-<p>This option sets a default <code>adminPassword</code> by the helm chart which can be extracted from kubernetes <code>secrets</code> with the name as <code>grafana</code>.<br />
+<p>This option sets a default <code>adminPassword</code> by the helm chart which can be extracted from kubernetes <code>secrets</code> with the name as <code>grafana</code>.
 <div class="highlight"><pre><span></span><code>enable_grafana = true
 </code></pre></div></p>
 <p>You can optionally customize the Helm chart that deploys <code>Grafana</code> via the following configuration.
@@ -1484,7 +1484,7 @@ Also, provide the <code>adminPassword</code> using set_sensitive values as shown
     set_sensitive = [
       {
         name  = &quot;adminPassword&quot;
-        value = &quot;&lt;YOUR_SECURE_PASSWORD_FOR_GARFANA_ADMIN&gt;&quot;
+        value = &quot;&lt;YOUR_SECURE_PASSWORD_FOR_GRAFANA_ADMIN&gt;&quot;
       }
     ]
   }

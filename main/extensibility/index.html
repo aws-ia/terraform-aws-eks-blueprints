@@ -1749,7 +1749,7 @@ data &quot;aws_iam_policy_document&quot; &quot;cni_metrics&quot; {
 }
 </code></pre></div>
 <h3 id="secrets-handling">Secrets Handling<a class="headerlink" href="#secrets-handling" title="Permanent link">&para;</a></h3>
-<p>We expect that certain add-ons will need to provide access to sensitive values to their helm chart configuration such as password, license keys, API keys, etc. We recommend that you ask customers to store such secrets in an external secret store such as AWS Secrets Manager or AWS Systems Manager Parameter Store and use the <a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_csi_driver.html">AWS Secrets and Configuration Provider (ASCP)</a> to mount the secrets as files or environment variables in the pods of your add-on. We are actively working on providing a native add-on for ASCP as of this writing which you will be able to levarage for your add-on.</p>
+<p>We expect that certain add-ons will need to provide access to sensitive values to their helm chart configuration such as password, license keys, API keys, etc. We recommend that you ask customers to store such secrets in an external secret store such as AWS Secrets Manager or AWS Systems Manager Parameter Store and use the <a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_csi_driver.html">AWS Secrets and Configuration Provider (ASCP)</a> to mount the secrets as files or environment variables in the pods of your add-on. We are actively working on providing a native add-on for ASCP as of this writing which you will be able to leverage for your add-on.</p>
 <h2 id="example-public-add-on">Example Public Add-On<a class="headerlink" href="#example-public-add-on" title="Permanent link">&para;</a></h2>
 <p><a href="https://registry.terraform.io/modules/askulkarni2/kube-state-metrics-addon/eksblueprints/latest">Kube-state-metrics-addon</a> extension contains a sample implementation of the <a href="https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics"><code>kube-state-metrics</code></a> that demonstrates how to write a public add-on that lives outside of the core repo.</p>
 <h3 id="add-on-repo">Add-On Repo<a class="headerlink" href="#add-on-repo" title="Permanent link">&para;</a></h3>
@@ -1757,46 +1757,46 @@ data &quot;aws_iam_policy_document&quot; &quot;cni_metrics&quot; {
 <h3 id="add-on-code">Add-On Code<a class="headerlink" href="#add-on-code" title="Permanent link">&para;</a></h3>
 <p>We recommend your add-on code follow Terraform standards for best practices for organizing your code, such as..</p>
 <div class="highlight"><pre><span></span><code>.
-├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
-├── blueprints
-│   ├── README.md
-│   ├── addons
-│   │   ├── README.md
-│   │   ├── addons.tfbackend
-│   │   ├── backend.tf
-│   │   ├── data.tf
-│   │   ├── main.tf
-│   │   ├── providers.tf
-│   │   └── variables.tf
-│   ├── eks
-│   │   ├── README.md
-│   │   ├── backend.tf
-│   │   ├── data.tf
-│   │   ├── eks.tfbackend
-│   │   ├── main.tf
-│   │   ├── outputs.tf
-│   │   ├── providers.tf
-│   │   └── variables.tf
-│   ├── vars
-│   │   └── config.tfvars
-│   └── vpc
-│       ├── README.md
-│       ├── backend.tf
-│       ├── data.tf
-│       ├── locals.tf
-│       ├── main.tf
-│       ├── outputs.tf
-│       ├── providers.tf
-│       ├── variables.tf
-│       └── vpc.tfbackend
-├── locals.tf
-├── main.tf
-├── outputs.tf
-├── values.yaml
-└── variables.tf
+├──<span class="w"> </span>CODE_OF_CONDUCT.md
+├──<span class="w"> </span>CONTRIBUTING.md
+├──<span class="w"> </span>LICENSE
+├──<span class="w"> </span>README.md
+├──<span class="w"> </span>blueprints
+│<span class="w">   </span>├──<span class="w"> </span>README.md
+│<span class="w">   </span>├──<span class="w"> </span>addons
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>README.md
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>addons.tfbackend
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>backend.tf
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>data.tf
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>main.tf
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>providers.tf
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>variables.tf
+│<span class="w">   </span>├──<span class="w"> </span>eks
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>README.md
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>backend.tf
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>data.tf
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>eks.tfbackend
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>main.tf
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>outputs.tf
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>providers.tf
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>variables.tf
+│<span class="w">   </span>├──<span class="w"> </span>vars
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>config.tfvars
+│<span class="w">   </span>└──<span class="w"> </span>vpc
+│<span class="w">       </span>├──<span class="w"> </span>README.md
+│<span class="w">       </span>├──<span class="w"> </span>backend.tf
+│<span class="w">       </span>├──<span class="w"> </span>data.tf
+│<span class="w">       </span>├──<span class="w"> </span>locals.tf
+│<span class="w">       </span>├──<span class="w"> </span>main.tf
+│<span class="w">       </span>├──<span class="w"> </span>outputs.tf
+│<span class="w">       </span>├──<span class="w"> </span>providers.tf
+│<span class="w">       </span>├──<span class="w"> </span>variables.tf
+│<span class="w">       </span>└──<span class="w"> </span>vpc.tfbackend
+├──<span class="w"> </span>locals.tf
+├──<span class="w"> </span>main.tf
+├──<span class="w"> </span>outputs.tf
+├──<span class="w"> </span>values.yaml
+└──<span class="w"> </span>variables.tf
 </code></pre></div>
 <p>In the above code tree,</p>
 <ul>

@@ -1509,9 +1509,9 @@
 </code></pre></div>
 <p>To validate that controller is running, ensure that controller deployment is in RUNNING state:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Assuming controller is installed in kube-system namespace</span>
-$ kubectl get deployments -n kube-system
-NAME                                                       READY   UP-TO-DATE   AVAILABLE   AGE
-aws-load-balancer-controller                               <span class="m">2</span>/2     <span class="m">2</span>            <span class="m">2</span>           3m58s
+$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>deployments<span class="w"> </span>-n<span class="w"> </span>kube-system
+NAME<span class="w">                                                       </span>READY<span class="w">   </span>UP-TO-DATE<span class="w">   </span>AVAILABLE<span class="w">   </span>AGE
+aws-load-balancer-controller<span class="w">                               </span><span class="m">2</span>/2<span class="w">     </span><span class="m">2</span><span class="w">            </span><span class="m">2</span><span class="w">           </span>3m58s
 </code></pre></div>
 <h4 id="aws-service-annotations-for-lb-ingress-controller">AWS Service annotations for LB Ingress Controller<a class="headerlink" href="#aws-service-annotations-for-lb-ingress-controller" title="Permanent link">&para;</a></h4>
 <p>Here is the link to get the AWS ELB <a href="https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/service/annotations/">service annotations</a> for LB Ingress controller.</p>

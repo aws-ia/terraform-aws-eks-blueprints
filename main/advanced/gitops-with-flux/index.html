@@ -1472,7 +1472,7 @@
 
 
 <h1 id="manage-your-clusters-configuration-with-flux">Manage your cluster(s) configuration with Flux<a class="headerlink" href="#manage-your-clusters-configuration-with-flux" title="Permanent link">&para;</a></h1>
-<p>Once you have deployed your EKS cluster(s) with Terraform, you can leverage <a href="https://fluxcd.io">Flux</a> to manage your cluster's configuration with <a href="https://www.gitops.tech/">GitOps</a>, including the deployment of add-ons, cluster configuration (e.g. cluster policies) and applications. Using GitOps practices to manage your clusters configuration will simplfy management, scaling the number of clusters you run and be able to easily recreate your clusters, treating them as ephemeral resources. Recreating your cluster is as simple as deploying a new cluster with Terraform and bootstraping it with Flux pointing to the repository containing the configuration.</p>
+<p>Once you have deployed your EKS cluster(s) with Terraform, you can leverage <a href="https://fluxcd.io">Flux</a> to manage your cluster's configuration with <a href="https://www.gitops.tech/">GitOps</a>, including the deployment of add-ons, cluster configuration (e.g. cluster policies) and applications. Using GitOps practices to manage your clusters configuration will simplify management, scaling the number of clusters you run and be able to easily recreate your clusters, treating them as ephemeral resources. Recreating your cluster is as simple as deploying a new cluster with Terraform and bootstrapping it with Flux pointing to the repository containing the configuration.</p>
 <p>The <a href="https://github.com/aws-samples/flux-eks-gitops-config">aws-samples/flux-eks-gitops-config</a> repository provides a sample configuration blueprint for configuring multiple Amazon EKS clusters belonging to different stages (<code>test</code> and <code>production</code>) using <a href="https://www.gitops.tech/">GitOps</a> with <a href="https://fluxcd.io/docs/">Flux v2</a>. This repository installs a set of commonly used Kubernetes add-ons to perform policy enforcement, restrict network traffic with network policies, cluster monitoring, extend Kubernetes deployment capabilities enabling progressive Canary deployments for your applications...</p>
 <p>You can use the above sample repository to experiment with the predefined cluster configurations and use it as a baseline to adjust it to your own needs.</p>
 <p>This sample installs the following Kubernetes add-ons:</p>
@@ -1487,7 +1487,7 @@
 <p><strong>NOTE:</strong> The add-ons on the sample are not configured for a production-ready cluster (e.g. Prometheus would need to be configured for long term metric storage, nginx would need HPA and any custom settings you need...).</p>
 <p>There're also a set of Kyverno cluster policies deployed to audit (test) or enforce (production) security settings on your workloads, as well as <a href="https://github.com/stefanprodan/podinfo">podinfo</a> as a sample application, configured with <a href="https://flagger.app/">Flagger</a> to perform progressive deployments. For further information, visit the <a href="https://github.com/aws-samples/flux-eks-gitops-config">aws-samples/flux-eks-gitops-config</a> repository documentation.</p>
 <h2 id="bootstrap-your-cluster-with-flux">Bootstrap your cluster with Flux<a class="headerlink" href="#bootstrap-your-cluster-with-flux" title="Permanent link">&para;</a></h2>
-<p>The below instructions assume you have created a cluster with <code>eks-blueprints</code> with no add-ons other than aws-load-balancer-controller. If you're installing additonal add-ons via terraform, the configuration may clash with the one on the sample repository. If you plan to leverage Flux, we recommend that you use Terraform to install and manage only add-ons that require additional AWS resources to be created (like IAM roles for Service accounts), and then use Flux to manage the rest.</p>
+<p>The below instructions assume you have created a cluster with <code>eks-blueprints</code> with no add-ons other than aws-load-balancer-controller. If you're installing additional add-ons via terraform, the configuration may clash with the one on the sample repository. If you plan to leverage Flux, we recommend that you use Terraform to install and manage only add-ons that require additional AWS resources to be created (like IAM roles for Service accounts), and then use Flux to manage the rest.</p>
 <h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
 <p>The add-ons and configurations of this repository require Kubernetes 1.21 or higher (this is required by the version of kube-prometheus-stack that is installed, you can use 1.19+ installing previous versions of kube-prometheus-stack).</p>
 <p>You'll also need the following:</p>
@@ -1497,55 +1497,55 @@
 </ul>
 <h3 id="bootstrap-your-cluster">Bootstrap your cluster<a class="headerlink" href="#bootstrap-your-cluster" title="Permanent link">&para;</a></h3>
 <p>Fork the <a href="https://github.com/aws-samples/flux-eks-gitops-config">aws-samples/flux-eks-gitops-config</a> repository on your personal GitHub account and export your GitHub access token, username and repo name:</p>
-<div class="highlight"><pre><span></span><code>  <span class="nb">export</span> <span class="nv">GITHUB_TOKEN</span><span class="o">=</span>&lt;your-token&gt;
-  <span class="nb">export</span> <span class="nv">GITHUB_USER</span><span class="o">=</span>&lt;your-username&gt;
-  <span class="nb">export</span> <span class="nv">GITHUB_REPO</span><span class="o">=</span>&lt;repository-name&gt;
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_TOKEN</span><span class="o">=</span>&lt;your-token&gt;
+<span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_USER</span><span class="o">=</span>&lt;your-username&gt;
+<span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_REPO</span><span class="o">=</span>&lt;repository-name&gt;
 </code></pre></div>
 <p>Define whether you want to bootstrap your cluster with the <code>TEST</code> or the <code>PRODUCTION</code> configuration:</p>
-<div class="highlight"><pre><span></span><code>  <span class="c1"># TEST configuration</span>
-  <span class="nb">export</span> <span class="nv">CLUSTER_ENVIRONMENT</span><span class="o">=</span><span class="nb">test</span>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="c1"># TEST configuration</span>
+<span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">CLUSTER_ENVIRONMENT</span><span class="o">=</span><span class="nb">test</span>
 
-  <span class="c1"># PRODUCTION configuration</span>
-  <span class="nb">export</span> <span class="nv">CLUSTER_ENVIRONMENT</span><span class="o">=</span>production
+<span class="w">  </span><span class="c1"># PRODUCTION configuration</span>
+<span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">CLUSTER_ENVIRONMENT</span><span class="o">=</span>production
 </code></pre></div>
-<p>Verify that your stagging cluster satisfies the prerequisites with:</p>
-<div class="highlight"><pre><span></span><code>  flux check --pre
+<p>Verify that your staging cluster satisfies the prerequisites with:</p>
+<div class="highlight"><pre><span></span><code><span class="w">  </span>flux<span class="w"> </span>check<span class="w"> </span>--pre
 </code></pre></div>
 <p>You can now bootstrap your cluster with Flux CLI.</p>
-<div class="highlight"><pre><span></span><code>  flux bootstrap github --owner<span class="o">=</span><span class="si">${</span><span class="nv">GITHUB_USER</span><span class="si">}</span> --repository<span class="o">=</span><span class="si">${</span><span class="nv">GITHUB_REPO</span><span class="si">}</span> --branch<span class="o">=</span>main --path<span class="o">=</span>clusters/<span class="si">${</span><span class="nv">CLUSTER_ENVIRONMENT</span><span class="si">}</span> --personal
+<div class="highlight"><pre><span></span><code><span class="w">  </span>flux<span class="w"> </span>bootstrap<span class="w"> </span>github<span class="w"> </span>--owner<span class="o">=</span><span class="si">${</span><span class="nv">GITHUB_USER</span><span class="si">}</span><span class="w"> </span>--repository<span class="o">=</span><span class="si">${</span><span class="nv">GITHUB_REPO</span><span class="si">}</span><span class="w"> </span>--branch<span class="o">=</span>main<span class="w"> </span>--path<span class="o">=</span>clusters/<span class="si">${</span><span class="nv">CLUSTER_ENVIRONMENT</span><span class="si">}</span><span class="w"> </span>--personal
 </code></pre></div>
 <p>The bootstrap command commits the manifests for the Flux components in <code>clusters/${CLUSTER_ENVIRONMENT}/flux-system</code> directory and creates a deploy key with read-only access on GitHub, so it can pull changes inside the cluster.</p>
 <p>Confirm that Flux has finished applying the configuration to your cluster (it will take 3 or 4 minutes to sync everything):</p>
-<div class="highlight"><pre><span></span><code>  $ flux get kustomization
-  NAME                READY MESSAGE                                                           REVISION                                        SUSPENDED
-  apps                True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False
-  calico-installation True  Applied revision: master/00a2f33ea55f2018819434175c09c8bd8f20741a master/00a2f33ea55f2018819434175c09c8bd8f20741a False
-  calico-operator     True  Applied revision: master/00a2f33ea55f2018819434175c09c8bd8f20741a master/00a2f33ea55f2018819434175c09c8bd8f20741a False
-  config              True  Applied revision: main/8fd33f531df71002f2da7bc9619ee75281a9ead0   main/8fd33f531df71002f2da7bc9619ee75281a9ead0   False
-  flux-system         True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False
-  infrastructure      True  Applied revision: main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe   False
+<div class="highlight"><pre><span></span><code><span class="w">  </span>$<span class="w"> </span>flux<span class="w"> </span>get<span class="w"> </span>kustomization
+<span class="w">  </span>NAME<span class="w">                </span>READY<span class="w"> </span>MESSAGE<span class="w">                                                           </span>REVISION<span class="w">                                        </span>SUSPENDED
+<span class="w">  </span>apps<span class="w">                </span>True<span class="w">  </span>Applied<span class="w"> </span>revision:<span class="w"> </span>main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe<span class="w">   </span>main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe<span class="w">   </span>False
+<span class="w">  </span>calico-installation<span class="w"> </span>True<span class="w">  </span>Applied<span class="w"> </span>revision:<span class="w"> </span>master/00a2f33ea55f2018819434175c09c8bd8f20741a<span class="w"> </span>master/00a2f33ea55f2018819434175c09c8bd8f20741a<span class="w"> </span>False
+<span class="w">  </span>calico-operator<span class="w">     </span>True<span class="w">  </span>Applied<span class="w"> </span>revision:<span class="w"> </span>master/00a2f33ea55f2018819434175c09c8bd8f20741a<span class="w"> </span>master/00a2f33ea55f2018819434175c09c8bd8f20741a<span class="w"> </span>False
+<span class="w">  </span>config<span class="w">              </span>True<span class="w">  </span>Applied<span class="w"> </span>revision:<span class="w"> </span>main/8fd33f531df71002f2da7bc9619ee75281a9ead0<span class="w">   </span>main/8fd33f531df71002f2da7bc9619ee75281a9ead0<span class="w">   </span>False
+<span class="w">  </span>flux-system<span class="w">         </span>True<span class="w">  </span>Applied<span class="w"> </span>revision:<span class="w"> </span>main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe<span class="w">   </span>main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe<span class="w">   </span>False
+<span class="w">  </span>infrastructure<span class="w">      </span>True<span class="w">  </span>Applied<span class="w"> </span>revision:<span class="w"> </span>main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe<span class="w">   </span>main/b7d10ca21be7cac0dcdd14c80353012ccfedd4fe<span class="w">   </span>False
 </code></pre></div>
 <p>Get the URL for the nginx ingress controller that has been deployed in your cluster (you will see two ingresses, since Flagger will create a canary ingress):</p>
-<div class="highlight"><pre><span></span><code>   $ kubectl get ingress -n podinfo
-   NAME             CLASS   HOSTS          ADDRESS                               PORTS   AGE
-   podinfo          nginx   podinfo.test   k8s-xxxxxx.elb.us-west-2.amazonaws.com   <span class="m">80</span>      23h
-   podinfo-canary   nginx   podinfo.test   k8s-xxxxxx.elb.us-west-2.amazonaws.com   <span class="m">80</span>      23h
+<div class="highlight"><pre><span></span><code><span class="w">   </span>$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>ingress<span class="w"> </span>-n<span class="w"> </span>podinfo
+<span class="w">   </span>NAME<span class="w">             </span>CLASS<span class="w">   </span>HOSTS<span class="w">          </span>ADDRESS<span class="w">                               </span>PORTS<span class="w">   </span>AGE
+<span class="w">   </span>podinfo<span class="w">          </span>nginx<span class="w">   </span>podinfo.test<span class="w">   </span>k8s-xxxxxx.elb.us-west-2.amazonaws.com<span class="w">   </span><span class="m">80</span><span class="w">      </span>23h
+<span class="w">   </span>podinfo-canary<span class="w">   </span>nginx<span class="w">   </span>podinfo.test<span class="w">   </span>k8s-xxxxxx.elb.us-west-2.amazonaws.com<span class="w">   </span><span class="m">80</span><span class="w">      </span>23h
 </code></pre></div>
 <p>Confirm that podinfo can be correctly accessed via ingress:</p>
-<div class="highlight"><pre><span></span><code>  $ curl -H <span class="s2">&quot;Host: podinfo.test&quot;</span> k8s-xxxxxx.elb.us-west-2.amazonaws.com
-  <span class="o">{</span>
-  <span class="s2">&quot;hostname&quot;</span>: <span class="s2">&quot;podinfo-primary-65584c8f4f-d7v4t&quot;</span>,
-  <span class="s2">&quot;version&quot;</span>: <span class="s2">&quot;6.0.0&quot;</span>,
-  <span class="s2">&quot;revision&quot;</span>: <span class="s2">&quot;&quot;</span>,
-  <span class="s2">&quot;color&quot;</span>: <span class="s2">&quot;#34577c&quot;</span>,
-  <span class="s2">&quot;logo&quot;</span>: <span class="s2">&quot;https://raw.githubusercontent.com/stefanprodan/podinfo/gh-pages/cuddle_clap.gif&quot;</span>,
-  <span class="s2">&quot;message&quot;</span>: <span class="s2">&quot;greetings from podinfo v6.0.0&quot;</span>,
-  <span class="s2">&quot;goos&quot;</span>: <span class="s2">&quot;linux&quot;</span>,
-  <span class="s2">&quot;goarch&quot;</span>: <span class="s2">&quot;amd64&quot;</span>,
-  <span class="s2">&quot;runtime&quot;</span>: <span class="s2">&quot;go1.16.5&quot;</span>,
-  <span class="s2">&quot;num_goroutine&quot;</span>: <span class="s2">&quot;10&quot;</span>,
-  <span class="s2">&quot;num_cpu&quot;</span>: <span class="s2">&quot;2&quot;</span>
-  <span class="o">}</span>
+<div class="highlight"><pre><span></span><code><span class="w">  </span>$<span class="w"> </span>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Host: podinfo.test&quot;</span><span class="w"> </span>k8s-xxxxxx.elb.us-west-2.amazonaws.com
+<span class="w">  </span><span class="o">{</span>
+<span class="w">  </span><span class="s2">&quot;hostname&quot;</span>:<span class="w"> </span><span class="s2">&quot;podinfo-primary-65584c8f4f-d7v4t&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;version&quot;</span>:<span class="w"> </span><span class="s2">&quot;6.0.0&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;revision&quot;</span>:<span class="w"> </span><span class="s2">&quot;&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;color&quot;</span>:<span class="w"> </span><span class="s2">&quot;#34577c&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;logo&quot;</span>:<span class="w"> </span><span class="s2">&quot;https://raw.githubusercontent.com/stefanprodan/podinfo/gh-pages/cuddle_clap.gif&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;message&quot;</span>:<span class="w"> </span><span class="s2">&quot;greetings from podinfo v6.0.0&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;goos&quot;</span>:<span class="w"> </span><span class="s2">&quot;linux&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;goarch&quot;</span>:<span class="w"> </span><span class="s2">&quot;amd64&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;runtime&quot;</span>:<span class="w"> </span><span class="s2">&quot;go1.16.5&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;num_goroutine&quot;</span>:<span class="w"> </span><span class="s2">&quot;10&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;num_cpu&quot;</span>:<span class="w"> </span><span class="s2">&quot;2&quot;</span>
+<span class="w">  </span><span class="o">}</span>
 </code></pre></div>
 <p>Congratulations! Your cluster has sync'ed all the configuration defined on the repository. Continue exploring the deployed configuration following these docs:</p>
 <ul>

@@ -1476,117 +1476,117 @@ velero_helm_config = {
 <ol>
 <li>Run <code>update-kubeconfig</code> command:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>aws eks --region &lt;REGION&gt; update-kubeconfig --name &lt;CLUSTER_NAME&gt;
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;REGION&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER_NAME&gt;
 </code></pre></div>
 <ol>
 <li>Test by listing velero resources provisioned:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>kubectl get all -n velero
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>velero
 
 <span class="c1"># Output should look similar to below</span>
-NAME                         READY   STATUS    RESTARTS   AGE
-pod/velero-b4d8fd5c7-5smp6   <span class="m">1</span>/1     Running   <span class="m">0</span>          112s
+NAME<span class="w">                         </span>READY<span class="w">   </span>STATUS<span class="w">    </span>RESTARTS<span class="w">   </span>AGE
+pod/velero-b4d8fd5c7-5smp6<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>112s
 
-NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>    AGE
-service/velero   ClusterIP   <span class="m">172</span>.20.217.203   &lt;none&gt;        <span class="m">8085</span>/TCP   114s
+NAME<span class="w">             </span>TYPE<span class="w">        </span>CLUSTER-IP<span class="w">       </span>EXTERNAL-IP<span class="w">   </span>PORT<span class="o">(</span>S<span class="o">)</span><span class="w">    </span>AGE
+service/velero<span class="w">   </span>ClusterIP<span class="w">   </span><span class="m">172</span>.20.217.203<span class="w">   </span>&lt;none&gt;<span class="w">        </span><span class="m">8085</span>/TCP<span class="w">   </span>114s
 
-NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/velero   <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           114s
+NAME<span class="w">                     </span>READY<span class="w">   </span>UP-TO-DATE<span class="w">   </span>AVAILABLE<span class="w">   </span>AGE
+deployment.apps/velero<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span><span class="m">1</span><span class="w">            </span><span class="m">1</span><span class="w">           </span>114s
 
-NAME                               DESIRED   CURRENT   READY   AGE
-replicaset.apps/velero-b4d8fd5c7   <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       114s
+NAME<span class="w">                               </span>DESIRED<span class="w">   </span>CURRENT<span class="w">   </span>READY<span class="w">   </span>AGE
+replicaset.apps/velero-b4d8fd5c7<span class="w">   </span><span class="m">1</span><span class="w">         </span><span class="m">1</span><span class="w">         </span><span class="m">1</span><span class="w">       </span>114s
 </code></pre></div>
 <ol>
 <li>Get backup location using velero <a href="https://velero.io/docs/v1.8/basic-install/#install-the-cli">CLI</a></li>
 </ol>
-<div class="highlight"><pre><span></span><code>velero backup-location get
+<div class="highlight"><pre><span></span><code>velero<span class="w"> </span>backup-location<span class="w"> </span>get
 
 <span class="c1"># Output should look similar to below</span>
-NAME      PROVIDER   BUCKET/PREFIX             PHASE       LAST VALIDATED                  ACCESS MODE   DEFAULT
-default   aws        velero-ssqwm44hvofzb32d   Available   <span class="m">2022</span>-05-22 <span class="m">10</span>:53:26 -0400 EDT   ReadWrite     <span class="nb">true</span>
+NAME<span class="w">      </span>PROVIDER<span class="w">   </span>BUCKET/PREFIX<span class="w">             </span>PHASE<span class="w">       </span>LAST<span class="w"> </span>VALIDATED<span class="w">                  </span>ACCESS<span class="w"> </span>MODE<span class="w">   </span>DEFAULT
+default<span class="w">   </span>aws<span class="w">        </span>velero-ssqwm44hvofzb32d<span class="w">   </span>Available<span class="w">   </span><span class="m">2022</span>-05-22<span class="w"> </span><span class="m">10</span>:53:26<span class="w"> </span>-0400<span class="w"> </span>EDT<span class="w">   </span>ReadWrite<span class="w">     </span><span class="nb">true</span>
 </code></pre></div>
 <ol>
 <li>To demonstrate creating a backup and restoring, create a new namespace and run nginx using below commands:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>kubectl create namespace backupdemo
-kubectl run nginx --image<span class="o">=</span>nginx -n backupdemo
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>create<span class="w"> </span>namespace<span class="w"> </span>backupdemo
+kubectl<span class="w"> </span>run<span class="w"> </span>nginx<span class="w"> </span>--image<span class="o">=</span>nginx<span class="w"> </span>-n<span class="w"> </span>backupdemo
 </code></pre></div>
 <ol>
 <li>Create backup of this namespace using velero</li>
 </ol>
-<div class="highlight"><pre><span></span><code>velero backup create backup1 --include-namespaces backupdemo
+<div class="highlight"><pre><span></span><code>velero<span class="w"> </span>backup<span class="w"> </span>create<span class="w"> </span>backup1<span class="w"> </span>--include-namespaces<span class="w"> </span>backupdemo
 
 <span class="c1"># Output should look similar to below</span>
-Backup request <span class="s2">&quot;backup1&quot;</span> submitted successfully.
-Run <span class="sb">`</span>velero backup describe backup1<span class="sb">`</span> or <span class="sb">`</span>velero backup logs backup1<span class="sb">`</span> <span class="k">for</span> more details.
+Backup<span class="w"> </span>request<span class="w"> </span><span class="s2">&quot;backup1&quot;</span><span class="w"> </span>submitted<span class="w"> </span>successfully.
+Run<span class="w"> </span><span class="sb">`</span>velero<span class="w"> </span>backup<span class="w"> </span>describe<span class="w"> </span>backup1<span class="sb">`</span><span class="w"> </span>or<span class="w"> </span><span class="sb">`</span>velero<span class="w"> </span>backup<span class="w"> </span>logs<span class="w"> </span>backup1<span class="sb">`</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>more<span class="w"> </span>details.
 </code></pre></div>
 <ol>
 <li>Describe the backup to check the backup status</li>
 </ol>
-<div class="highlight"><pre><span></span><code>velero backup describe backup1
+<div class="highlight"><pre><span></span><code>velero<span class="w"> </span>backup<span class="w"> </span>describe<span class="w"> </span>backup1
 
 <span class="c1"># Output should look similar to below</span>
-Name:         backup1
-Namespace:    velero
-Labels:       velero.io/storage-location<span class="o">=</span>default
-Annotations:  velero.io/source-cluster-k8s-gitversion<span class="o">=</span>v1.21.9-eks-14c7a48
-              velero.io/source-cluster-k8s-major-version<span class="o">=</span><span class="m">1</span>
-              velero.io/source-cluster-k8s-minor-version<span class="o">=</span><span class="m">21</span>+
+Name:<span class="w">         </span>backup1
+Namespace:<span class="w">    </span>velero
+Labels:<span class="w">       </span>velero.io/storage-location<span class="o">=</span>default
+Annotations:<span class="w">  </span>velero.io/source-cluster-k8s-gitversion<span class="o">=</span>v1.21.9-eks-14c7a48
+<span class="w">              </span>velero.io/source-cluster-k8s-major-version<span class="o">=</span><span class="m">1</span>
+<span class="w">              </span>velero.io/source-cluster-k8s-minor-version<span class="o">=</span><span class="m">21</span>+
 
-Phase:  Completed
+Phase:<span class="w">  </span>Completed
 
-Errors:    <span class="m">0</span>
-Warnings:  <span class="m">0</span>
+Errors:<span class="w">    </span><span class="m">0</span>
+Warnings:<span class="w">  </span><span class="m">0</span>
 
 Namespaces:
-  Included:  backupdemo
-  Excluded:  &lt;none&gt;
+<span class="w">  </span>Included:<span class="w">  </span>backupdemo
+<span class="w">  </span>Excluded:<span class="w">  </span>&lt;none&gt;
 
 Resources:
-  Included:        *
-  Excluded:        &lt;none&gt;
-  Cluster-scoped:  auto
+<span class="w">  </span>Included:<span class="w">        </span>*
+<span class="w">  </span>Excluded:<span class="w">        </span>&lt;none&gt;
+<span class="w">  </span>Cluster-scoped:<span class="w">  </span>auto
 
-Label selector:  &lt;none&gt;
+Label<span class="w"> </span>selector:<span class="w">  </span>&lt;none&gt;
 
-Storage Location:  default
+Storage<span class="w"> </span>Location:<span class="w">  </span>default
 
-Velero-Native Snapshot PVs:  auto
+Velero-Native<span class="w"> </span>Snapshot<span class="w"> </span>PVs:<span class="w">  </span>auto
 
-TTL:  720h0m0s
+TTL:<span class="w">  </span>720h0m0s
 
-Hooks:  &lt;none&gt;
+Hooks:<span class="w">  </span>&lt;none&gt;
 
-Backup Format Version:  <span class="m">1</span>.1.0
+Backup<span class="w"> </span>Format<span class="w"> </span>Version:<span class="w">  </span><span class="m">1</span>.1.0
 
-Started:    <span class="m">2022</span>-05-22 <span class="m">10</span>:54:32 -0400 EDT
-Completed:  <span class="m">2022</span>-05-22 <span class="m">10</span>:54:35 -0400 EDT
+Started:<span class="w">    </span><span class="m">2022</span>-05-22<span class="w"> </span><span class="m">10</span>:54:32<span class="w"> </span>-0400<span class="w"> </span>EDT
+Completed:<span class="w">  </span><span class="m">2022</span>-05-22<span class="w"> </span><span class="m">10</span>:54:35<span class="w"> </span>-0400<span class="w"> </span>EDT
 
-Expiration:  <span class="m">2022</span>-06-21 <span class="m">10</span>:54:32 -0400 EDT
+Expiration:<span class="w">  </span><span class="m">2022</span>-06-21<span class="w"> </span><span class="m">10</span>:54:32<span class="w"> </span>-0400<span class="w"> </span>EDT
 
-Total items to be backed up:  <span class="m">10</span>
-Items backed up:              <span class="m">10</span>
+Total<span class="w"> </span>items<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>backed<span class="w"> </span>up:<span class="w">  </span><span class="m">10</span>
+Items<span class="w"> </span>backed<span class="w"> </span>up:<span class="w">              </span><span class="m">10</span>
 
-Velero-Native Snapshots: &lt;none included&gt;
+Velero-Native<span class="w"> </span>Snapshots:<span class="w"> </span>&lt;none<span class="w"> </span>included&gt;
 </code></pre></div>
 <ol>
 <li>Delete the namespace - this will be restored using the backup created</li>
 </ol>
-<div class="highlight"><pre><span></span><code>kubectl delete namespace backupdemo
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>backupdemo
 </code></pre></div>
 <ol>
 <li>Restore the namespace from your backup</li>
 </ol>
-<div class="highlight"><pre><span></span><code>velero restore create --from-backup backup1
+<div class="highlight"><pre><span></span><code>velero<span class="w"> </span>restore<span class="w"> </span>create<span class="w"> </span>--from-backup<span class="w"> </span>backup1
 </code></pre></div>
 <ol>
 <li>Verify that the namespace is restored</li>
 </ol>
-<div class="highlight"><pre><span></span><code>kubectl get all -n backupdemo
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>backupdemo
 
 <span class="c1"># Output should look similar to below</span>
-NAME        READY   STATUS    RESTARTS   AGE
-pod/nginx   <span class="m">1</span>/1     Running   <span class="m">0</span>          21s
+NAME<span class="w">        </span>READY<span class="w">   </span>STATUS<span class="w">    </span>RESTARTS<span class="w">   </span>AGE
+pod/nginx<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>21s
 </code></pre></div>
 
               

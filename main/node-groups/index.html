@@ -1617,7 +1617,7 @@ The authenticator gets its configuration information from the <code>aws-auth</co
         ami_type        = &quot;AL2_x86_64&quot; # Amazon Linux 2(AL2_x86_64), AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
         release_version = &quot;&quot;           # Enter AMI release version to deploy the latest AMI released by AWS. Used only when you specify ami_type
         capacity_type   = &quot;ON_DEMAND&quot;  # ON_DEMAND or SPOT
-        instance_types  = [&quot;m5.large&quot;] # List of instances to get capacity from multipe pools
+        instance_types  = [&quot;m5.large&quot;] # List of instances to get capacity from multiple pools
 
         block_device_mappings = [
           {
@@ -1691,7 +1691,7 @@ The authenticator gets its configuration information from the <code>aws-auth</co
       # 3&gt; Node Group compute configuration
       ami_type       = &quot;AL2_x86_64_GPU&quot; # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
       capacity_type  = &quot;ON_DEMAND&quot;      # ON_DEMAND or SPOT
-      instance_types = [&quot;m5.large&quot;]     # List of instances to get capacity from multipe pools
+      instance_types = [&quot;m5.large&quot;]     # List of instances to get capacity from multiple pools
       block_device_mappings = [
         {
           device_name = &quot;/dev/xvda&quot;
@@ -1701,7 +1701,7 @@ The authenticator gets its configuration information from the <code>aws-auth</co
       ]
 
       # 4&gt; Node Group network configuration
-      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
 
       k8s_taints = []
 
@@ -1743,7 +1743,7 @@ The authenticator gets its configuration information from the <code>aws-auth</co
       # 3&gt; Node Group compute configuration
       ami_type       = &quot;AL2_ARM_64&quot; # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
       capacity_type  = &quot;ON_DEMAND&quot;  # ON_DEMAND or SPOT
-      instance_types = [&quot;m6g.large&quot;] # List of instances to get capacity from multipe pools
+      instance_types = [&quot;m6g.large&quot;] # List of instances to get capacity from multiple pools
       block_device_mappings = [
         {
           device_name = &quot;/dev/xvda&quot;
@@ -1752,7 +1752,7 @@ The authenticator gets its configuration information from the <code>aws-auth</co
         }
       ]
       # 4&gt; Node Group network configuration
-      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
 
       k8s_taints = []
 
@@ -1791,11 +1791,11 @@ The authenticator gets its configuration information from the <code>aws-auth</co
       # 3&gt; Node Group compute configuration
       ami_type       = &quot;BOTTLEROCKET_ARM_64&quot; # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
       capacity_type  = &quot;ON_DEMAND&quot;           # ON_DEMAND or SPOT
-      instance_types = [&quot;m6g.large&quot;]          # List of instances to get capacity from multipe pools
+      instance_types = [&quot;m6g.large&quot;]          # List of instances to get capacity from multiple pools
       disk_size      = 50
 
       # 4&gt; Node Group network configuration
-      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
 
       k8s_taints = []
 
@@ -1834,7 +1834,7 @@ The authenticator gets its configuration information from the <code>aws-auth</co
       # 3&gt; Node Group compute configuration
       ami_type       = &quot;BOTTLEROCKET_x86_64&quot; # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM, BOTTLEROCKET_ARM_64, BOTTLEROCKET_x86_64
       capacity_type  = &quot;ON_DEMAND&quot;           # ON_DEMAND or SPOT
-      instance_types = [&quot;m5.large&quot;]          # List of instances to get capacity from multipe pools
+      instance_types = [&quot;m5.large&quot;]          # List of instances to get capacity from multiple pools
       block_device_mappings = [
         {
           device_name = &quot;/dev/xvda&quot;
@@ -1844,7 +1844,7 @@ The authenticator gets its configuration information from the <code>aws-auth</co
       ]
 
       # 4&gt; Node Group network configuration
-      subnet_ids = [] # Defaults to private subnet-ids used by EKS Controle plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
+      subnet_ids = [] # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = [&#39;subnet1&#39;,&#39;subnet2&#39;,&#39;subnet3&#39;]
 
       k8s_taints = []
 
@@ -1874,7 +1874,7 @@ The authenticator gets its configuration information from the <code>aws-auth</co
       # custom_ami_id is optional when you provide ami_type. Enter the Custom AMI id if you want to use your own custom AMI
       custom_ami_id  = data.aws_ami.amazonlinux2eks.id
       capacity_type  = &quot;ON_DEMAND&quot;  # ON_DEMAND or SPOT
-      instance_types = [&quot;m5.large&quot;] # List of instances to get capacity from multipe pools
+      instance_types = [&quot;m5.large&quot;] # List of instances to get capacity from multiple pools
 
       # Launch template configuration
       create_launch_template = true              # false will use the default launch template

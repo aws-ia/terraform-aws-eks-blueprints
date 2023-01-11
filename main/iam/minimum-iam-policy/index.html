@@ -1436,212 +1436,212 @@
 <blockquote>
 <p><strong>Note</strong>: The policy resource is set as <code>*</code> to allow all resources, this is not a recommended practice.</p>
 </blockquote>
-<div class="highlight"><pre><span></span><code><span class="p p-Indicator">{</span><span class="w"></span>
-<span class="w">  </span><span class="s">&quot;Version&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;2012-10-17&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">  </span><span class="s">&quot;Statement&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">{</span><span class="w"></span>
-<span class="w">          </span><span class="s">&quot;Effect&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;Allow&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">          </span><span class="s">&quot;Action&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;aps:CreateAlertManagerDefinition&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;aps:CreateWorkspace&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;aps:DeleteAlertManagerDefinition&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;aps:DeleteWorkspace&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;aps:DescribeAlertManagerDefinition&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;aps:DescribeWorkspace&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;aps:ListTagsForResource&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;autoscaling:CreateAutoScalingGroup&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;autoscaling:CreateOrUpdateTags&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;autoscaling:DeleteAutoScalingGroup&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;autoscaling:DeleteLifecycleHook&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;autoscaling:DeleteTags&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;autoscaling:DescribeAutoScalingGroups&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;autoscaling:DescribeLifecycleHooks&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;autoscaling:DescribeTags&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;autoscaling:PutLifecycleHook&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;autoscaling:SetInstanceProtection&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;autoscaling:UpdateAutoScalingGroup&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:AllocateAddress&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:AssociateRouteTable&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:AttachInternetGateway&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:AuthorizeSecurityGroupEgress&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:AuthorizeSecurityGroupIngress&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:CreateEgressOnlyInternetGateway&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:CreateInternetGateway&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:CreateLaunchTemplate&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:CreateNatGateway&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:CreateNetworkAclEntry&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:CreateRoute&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:CreateRouteTable&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:CreateSecurityGroup&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:CreateSubnet&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:CreateTags&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:CreateVpc&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DeleteEgressOnlyInternetGateway&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DeleteInternetGateway&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DeleteLaunchTemplate&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DeleteNatGateway&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DeleteNetworkAclEntry&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DeleteRoute&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DeleteRouteTable&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DeleteSecurityGroup&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DeleteSubnet&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DeleteTags&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DeleteVpc&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeAccountAttributes&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeAddresses&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeAvailabilityZones&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeEgressOnlyInternetGateways&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeImages&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeInternetGateways&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeLaunchTemplateVersions&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeLaunchTemplates&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeNatGateways&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeNetworkAcls&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeNetworkInterfaces&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeRouteTables&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeSecurityGroups&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeSecurityGroupRules&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeSubnets&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeTags&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeVpcAttribute&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeVpcClassicLink&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeVpcClassicLinkDnsSupport&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DescribeVpcs&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DetachInternetGateway&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:DisassociateRouteTable&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:ModifySubnetAttribute&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:ModifyVpcAttribute&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:ReleaseAddress&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:RevokeSecurityGroupEgress&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;ec2:RevokeSecurityGroupIngress&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;eks:CreateAddon&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;eks:CreateCluster&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;eks:CreateFargateProfile&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;eks:CreateNodegroup&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;eks:DeleteAddon&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;eks:DeleteCluster&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;eks:DeleteFargateProfile&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;eks:DeleteNodegroup&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;eks:DescribeAddon&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;eks:DescribeAddonVersions&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;eks:DescribeCluster&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;eks:DescribeFargateProfile&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;eks:DescribeNodegroup&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;eks:TagResource&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;elasticfilesystem:CreateFileSystem&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;elasticfilesystem:CreateMountTarget&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;elasticfilesystem:DeleteFileSystem&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;elasticfilesystem:DeleteMountTarget&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;elasticfilesystem:DescribeFileSystems&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;elasticfilesystem:DescribeLifecycleConfiguration&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;elasticfilesystem:DescribeMountTargetSecurityGroups&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;elasticfilesystem:DescribeMountTargets&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;emr-containers:CreateVirtualCluster&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;emr-containers:DeleteVirtualCluster&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;emr-containers:DescribeVirtualCluster&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;events:DeleteRule&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;events:DescribeRule&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;events:ListTagsForResource&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;events:ListTargetsByRule&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;events:PutRule&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;events:PutTargets&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;events:RemoveTargets&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:AddRoleToInstanceProfile&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:AttachRolePolicy&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:CreateInstanceProfile&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:CreateOpenIDConnectProvider&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:CreatePolicy&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:CreateRole&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:CreateServiceLinkedRole&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:DeleteInstanceProfile&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:DeleteOpenIDConnectProvider&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:DeletePolicy&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:DeleteRole&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:DetachRolePolicy&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:GetInstanceProfile&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:GetOpenIDConnectProvider&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:GetPolicy&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:GetPolicyVersion&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:GetRole&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:ListAttachedRolePolicies&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:ListInstanceProfilesForRole&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:ListPolicyVersions&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:ListRolePolicies&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:PassRole&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:RemoveRoleFromInstanceProfile&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:TagOpenIDConnectProvider&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:TagInstanceProfile&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:TagPolicy&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:TagRole&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;iam:UpdateAssumeRolePolicy&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;kms:CreateAlias&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;kms:CreateKey&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;kms:DeleteAlias&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;kms:DescribeKey&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;kms:EnableKeyRotation&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;kms:GetKeyPolicy&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;kms:GetKeyRotationStatus&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;kms:ListAliases&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;kms:ListResourceTags&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;kms:PutKeyPolicy&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;kms:ScheduleKeyDeletion&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;kms:TagResource&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;logs:CreateLogGroup&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;logs:DeleteLogGroup&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;logs:DescribeLogGroups&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;logs:ListTagsLogGroup&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;logs:PutRetentionPolicy&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:CreateBucket&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:DeleteBucket&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:DeleteBucketOwnershipControls&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:DeleteBucketPolicy&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:DeleteObject&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetAccelerateConfiguration&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetBucketAcl&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetBucketCORS&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetBucketLogging&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetBucketObjectLockConfiguration&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetBucketOwnershipControls&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetBucketPolicy&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetBucketPublicAccessBlock&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetBucketRequestPayment&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetBucketTagging&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetBucketVersioning&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetBucketWebsite&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetEncryptionConfiguration&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetLifecycleConfiguration&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetObject&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetObjectTagging&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetObjectVersion&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:GetReplicationConfiguration&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:ListAllMyBuckets&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:ListBucket&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:PutBucketAcl&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:PutBucketOwnershipControls&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:PutBucketPolicy&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:PutBucketPublicAccessBlock&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:PutBucketTagging&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:PutBucketVersioning&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:PutEncryptionConfiguration&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;s3:PutObject&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;secretsmanager:CreateSecret&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;secretsmanager:DeleteSecret&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;secretsmanager:DescribeSecret&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;secretsmanager:GetResourcePolicy&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;secretsmanager:GetSecretValue&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;secretsmanager:PutSecretValue&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;sqs:CreateQueue&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;sqs:DeleteQueue&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;sqs:GetQueueAttributes&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;sqs:ListQueueTags&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;sqs:SetQueueAttributes&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;sqs:TagQueue&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">              </span><span class="s">&quot;sts:GetCallerIdentity&quot;</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">],</span><span class="w"></span>
-<span class="w">          </span><span class="s">&quot;Resource&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">}</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="p p-Indicator">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">{</span>
+<span class="w">  </span><span class="s">&quot;Version&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;2012-10-17&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">  </span><span class="s">&quot;Statement&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span>
+<span class="w">      </span><span class="p p-Indicator">{</span>
+<span class="w">          </span><span class="s">&quot;Effect&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;Allow&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">          </span><span class="s">&quot;Action&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span>
+<span class="w">              </span><span class="s">&quot;aps:CreateAlertManagerDefinition&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;aps:CreateWorkspace&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;aps:DeleteAlertManagerDefinition&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;aps:DeleteWorkspace&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;aps:DescribeAlertManagerDefinition&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;aps:DescribeWorkspace&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;aps:ListTagsForResource&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;autoscaling:CreateAutoScalingGroup&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;autoscaling:CreateOrUpdateTags&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;autoscaling:DeleteAutoScalingGroup&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;autoscaling:DeleteLifecycleHook&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;autoscaling:DeleteTags&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;autoscaling:DescribeAutoScalingGroups&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;autoscaling:DescribeLifecycleHooks&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;autoscaling:DescribeTags&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;autoscaling:PutLifecycleHook&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;autoscaling:SetInstanceProtection&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;autoscaling:UpdateAutoScalingGroup&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:AllocateAddress&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:AssociateRouteTable&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:AttachInternetGateway&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:AuthorizeSecurityGroupEgress&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:AuthorizeSecurityGroupIngress&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:CreateEgressOnlyInternetGateway&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:CreateInternetGateway&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:CreateLaunchTemplate&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:CreateNatGateway&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:CreateNetworkAclEntry&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:CreateRoute&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:CreateRouteTable&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:CreateSecurityGroup&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:CreateSubnet&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:CreateTags&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:CreateVpc&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DeleteEgressOnlyInternetGateway&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DeleteInternetGateway&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DeleteLaunchTemplate&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DeleteNatGateway&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DeleteNetworkAclEntry&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DeleteRoute&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DeleteRouteTable&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DeleteSecurityGroup&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DeleteSubnet&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DeleteTags&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DeleteVpc&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeAccountAttributes&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeAddresses&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeAvailabilityZones&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeEgressOnlyInternetGateways&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeImages&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeInternetGateways&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeLaunchTemplateVersions&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeLaunchTemplates&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeNatGateways&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeNetworkAcls&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeNetworkInterfaces&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeRouteTables&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeSecurityGroups&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeSecurityGroupRules&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeSubnets&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeTags&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeVpcAttribute&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeVpcClassicLink&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeVpcClassicLinkDnsSupport&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DescribeVpcs&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DetachInternetGateway&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:DisassociateRouteTable&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:ModifySubnetAttribute&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:ModifyVpcAttribute&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:ReleaseAddress&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:RevokeSecurityGroupEgress&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;ec2:RevokeSecurityGroupIngress&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;eks:CreateAddon&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;eks:CreateCluster&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;eks:CreateFargateProfile&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;eks:CreateNodegroup&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;eks:DeleteAddon&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;eks:DeleteCluster&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;eks:DeleteFargateProfile&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;eks:DeleteNodegroup&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;eks:DescribeAddon&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;eks:DescribeAddonVersions&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;eks:DescribeCluster&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;eks:DescribeFargateProfile&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;eks:DescribeNodegroup&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;eks:TagResource&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;elasticfilesystem:CreateFileSystem&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;elasticfilesystem:CreateMountTarget&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;elasticfilesystem:DeleteFileSystem&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;elasticfilesystem:DeleteMountTarget&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;elasticfilesystem:DescribeFileSystems&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;elasticfilesystem:DescribeLifecycleConfiguration&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;elasticfilesystem:DescribeMountTargetSecurityGroups&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;elasticfilesystem:DescribeMountTargets&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;emr-containers:CreateVirtualCluster&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;emr-containers:DeleteVirtualCluster&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;emr-containers:DescribeVirtualCluster&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;events:DeleteRule&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;events:DescribeRule&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;events:ListTagsForResource&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;events:ListTargetsByRule&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;events:PutRule&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;events:PutTargets&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;events:RemoveTargets&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:AddRoleToInstanceProfile&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:AttachRolePolicy&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:CreateInstanceProfile&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:CreateOpenIDConnectProvider&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:CreatePolicy&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:CreateRole&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:CreateServiceLinkedRole&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:DeleteInstanceProfile&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:DeleteOpenIDConnectProvider&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:DeletePolicy&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:DeleteRole&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:DetachRolePolicy&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:GetInstanceProfile&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:GetOpenIDConnectProvider&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:GetPolicy&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:GetPolicyVersion&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:GetRole&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:ListAttachedRolePolicies&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:ListInstanceProfilesForRole&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:ListPolicyVersions&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:ListRolePolicies&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:PassRole&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:RemoveRoleFromInstanceProfile&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:TagOpenIDConnectProvider&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:TagInstanceProfile&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:TagPolicy&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:TagRole&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;iam:UpdateAssumeRolePolicy&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;kms:CreateAlias&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;kms:CreateKey&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;kms:DeleteAlias&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;kms:DescribeKey&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;kms:EnableKeyRotation&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;kms:GetKeyPolicy&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;kms:GetKeyRotationStatus&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;kms:ListAliases&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;kms:ListResourceTags&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;kms:PutKeyPolicy&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;kms:ScheduleKeyDeletion&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;kms:TagResource&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;logs:CreateLogGroup&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;logs:DeleteLogGroup&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;logs:DescribeLogGroups&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;logs:ListTagsLogGroup&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;logs:PutRetentionPolicy&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:CreateBucket&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:DeleteBucket&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:DeleteBucketOwnershipControls&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:DeleteBucketPolicy&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:DeleteObject&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetAccelerateConfiguration&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetBucketAcl&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetBucketCORS&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetBucketLogging&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetBucketObjectLockConfiguration&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetBucketOwnershipControls&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetBucketPolicy&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetBucketPublicAccessBlock&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetBucketRequestPayment&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetBucketTagging&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetBucketVersioning&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetBucketWebsite&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetEncryptionConfiguration&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetLifecycleConfiguration&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetObject&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetObjectTagging&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetObjectVersion&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:GetReplicationConfiguration&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:ListAllMyBuckets&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:ListBucket&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:PutBucketAcl&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:PutBucketOwnershipControls&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:PutBucketPolicy&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:PutBucketPublicAccessBlock&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:PutBucketTagging&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:PutBucketVersioning&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:PutEncryptionConfiguration&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;s3:PutObject&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;secretsmanager:CreateSecret&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;secretsmanager:DeleteSecret&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;secretsmanager:DescribeSecret&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;secretsmanager:GetResourcePolicy&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;secretsmanager:GetSecretValue&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;secretsmanager:PutSecretValue&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;sqs:CreateQueue&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;sqs:DeleteQueue&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;sqs:GetQueueAttributes&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;sqs:ListQueueTags&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;sqs:SetQueueAttributes&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;sqs:TagQueue&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="s">&quot;sts:GetCallerIdentity&quot;</span>
+<span class="w">          </span><span class="p p-Indicator">],</span>
+<span class="w">          </span><span class="s">&quot;Resource&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;*&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="p p-Indicator">]</span>
+<span class="p p-Indicator">}</span>
 </code></pre></div>
 <h2 id="how-this-policy-was-generated">How this policy was generated?<a class="headerlink" href="#how-this-policy-was-generated" title="Permanent link">&para;</a></h2>
 <p>For each example we run in the E2E workflow, we run <a href="https://github.com/iann0036/iamlive">iamlive</a> in the background in CSM mode to help generate the policy.<br />

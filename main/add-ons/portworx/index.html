@@ -1545,7 +1545,7 @@
 <ol>
 <li>Run <code>terraform apply</code> command for the policy (replace it with your resource name):</li>
 </ol>
-<p><div class="highlight"><pre><span></span><code>terraform apply -target<span class="o">=</span><span class="s2">&quot;aws_iam_policy.&lt;policy-resource-name&gt;&quot;</span>
+<p><div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;aws_iam_policy.&lt;policy-resource-name&gt;&quot;</span>
 </code></pre></div>
 3. Attach the newly created AWS policy ARN to the node groups in your cluster:</p>
 <p><div class="highlight"><pre><span></span><code> managed_node_groups = {
@@ -1563,7 +1563,7 @@
   }
 </code></pre></div>
 4. Run the command below to apply the changes. (This step can be performed even if the cluster is up and running. The policy attachment happens without having to restart the nodes)
-<div class="highlight"><pre><span></span><code>terraform apply -target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints&quot;</span>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints&quot;</span>
 </code></pre></div></p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>After completing the requirement step, installing Portworx is simple, set <code>enable_portworx</code> variable to true inside the Kubernetes add-on module.</p>
@@ -1615,12 +1615,12 @@
 </tr>
 <tr>
 <td><code>drives</code></td>
-<td>Semi-colon seperated list of drives to be used for storage. (example: "/dev/sda;/dev/sdb" or "type=gp2,size=200;type=gp3,size=500")</td>
+<td>Semi-colon separated list of drives to be used for storage. (example: "/dev/sda;/dev/sdb" or "type=gp2,size=200;type=gp3,size=500")</td>
 <td>"type=gp2,size=200"</td>
 </tr>
 <tr>
 <td><code>useInternalKVDB</code></td>
-<td>boolen variable to set internal KVDB on/off</td>
+<td>boolean variable to set internal KVDB on/off</td>
 <td>true</td>
 </tr>
 <tr>
@@ -1640,12 +1640,12 @@
 </tr>
 <tr>
 <td><code>useOpenshiftInstall</code></td>
-<td>boolen variable to install Portworx on Openshift .</td>
+<td>boolean variable to install Portworx on Openshift .</td>
 <td>false</td>
 </tr>
 <tr>
 <td><code>etcdEndPoint</code></td>
-<td>The ETCD endpoint. Should be in the format etcd:http://(your-etcd-endpoint):2379. If there are multiple etcd endpoints they need to be ";" seperated.</td>
+<td>The ETCD endpoint. Should be in the format etcd:http://(your-etcd-endpoint):2379. If there are multiple etcd endpoints they need to be ";" separated.</td>
 <td>""</td>
 </tr>
 <tr>
@@ -1675,7 +1675,7 @@
 </tr>
 <tr>
 <td><code>registrySecret</code></td>
-<td>Image registery credentials to pull Portworx Images from a secure registry</td>
+<td>Image registry credentials to pull Portworx Images from a secure registry</td>
 <td>""</td>
 </tr>
 <tr>

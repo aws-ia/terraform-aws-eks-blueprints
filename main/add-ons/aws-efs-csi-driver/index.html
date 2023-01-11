@@ -1464,15 +1464,15 @@
 <div class="highlight"><pre><span></span><code>  enable_aws_efs_csi_driver = true
 </code></pre></div>
 <p>Once deployed, you will be able to see a number of supporting resources in the <code>kube-system</code> namespace.</p>
-<div class="highlight"><pre><span></span><code>$ kubectl get deployment efs-csi-controller -n kube-system
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>deployment<span class="w"> </span>efs-csi-controller<span class="w"> </span>-n<span class="w"> </span>kube-system
 
-NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
-efs-csi-controller   <span class="m">2</span>/2     <span class="m">2</span>            <span class="m">2</span>           4m29s
+NAME<span class="w">                 </span>READY<span class="w">   </span>UP-TO-DATE<span class="w">   </span>AVAILABLE<span class="w">   </span>AGE
+efs-csi-controller<span class="w">   </span><span class="m">2</span>/2<span class="w">     </span><span class="m">2</span><span class="w">            </span><span class="m">2</span><span class="w">           </span>4m29s
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>$ kubectl get daemonset efs-csi-node -n kube-system
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>daemonset<span class="w"> </span>efs-csi-node<span class="w"> </span>-n<span class="w"> </span>kube-system
 
-NAME           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                 AGE
-efs-csi-node   <span class="m">3</span>         <span class="m">3</span>         <span class="m">3</span>       <span class="m">3</span>            <span class="m">3</span>           beta.kubernetes.io/os<span class="o">=</span>linux   4m32s
+NAME<span class="w">           </span>DESIRED<span class="w">   </span>CURRENT<span class="w">   </span>READY<span class="w">   </span>UP-TO-DATE<span class="w">   </span>AVAILABLE<span class="w">   </span>NODE<span class="w"> </span>SELECTOR<span class="w">                 </span>AGE
+efs-csi-node<span class="w">   </span><span class="m">3</span><span class="w">         </span><span class="m">3</span><span class="w">         </span><span class="m">3</span><span class="w">       </span><span class="m">3</span><span class="w">            </span><span class="m">3</span><span class="w">           </span>beta.kubernetes.io/os<span class="o">=</span>linux<span class="w">   </span>4m32s
 </code></pre></div>
 <p>You can optionally customize the Helm chart that deploys the driver via the following configuration.</p>
 <div class="highlight"><pre><span></span><code>  enable_aws_efs_csi_driver = true

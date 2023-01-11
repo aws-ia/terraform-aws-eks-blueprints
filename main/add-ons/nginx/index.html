@@ -1465,9 +1465,9 @@
 <div class="highlight"><pre><span></span><code>enable_ingress_nginx = true
 </code></pre></div>
 <p>To validate that installation is successful run the following command:</p>
-<div class="highlight"><pre><span></span><code>$ kubectl get po -n kube-system
-NAME                                                              READY   STATUS    RESTARTS   AGE
-eks-blueprints-addon-ingress-nginx-78b8567p4q6   <span class="m">1</span>/1     Running   <span class="m">0</span>          4d10h
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>po<span class="w"> </span>-n<span class="w"> </span>kube-system
+NAME<span class="w">                                                              </span>READY<span class="w">   </span>STATUS<span class="w">    </span>RESTARTS<span class="w">   </span>AGE
+eks-blueprints-addon-ingress-nginx-78b8567p4q6<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>4d10h
 </code></pre></div>
 <p>Note that the ingress controller is deployed in the <code>ingress-nginx</code> namespace.</p>
 <p>You can optionally customize the Helm chart that deploys <code>nginx</code> via the following configuration.</p>
