@@ -98,7 +98,6 @@ resource "aws_eks_addon" "vpc_cni" {
   configuration_values = jsonencode({
     env = {
       # Reference https://aws.github.io/aws-eks-best-practices/reliability/docs/networkmanagement/#cni-custom-networking
-      # Reference https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
       AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG = "true"
       # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
       ENABLE_PREFIX_DELEGATION = "true"
