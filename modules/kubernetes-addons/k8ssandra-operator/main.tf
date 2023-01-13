@@ -14,7 +14,7 @@ locals {
 }
 
 
-resource "helm_release" "cert-manager" {
+resource "helm_release" "cert_manager" {
   name  = "cert-manager"
   chart = "cert-manager"
   repository  = "https://charts.jetstack.io"
