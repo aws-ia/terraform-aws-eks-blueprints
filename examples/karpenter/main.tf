@@ -71,6 +71,18 @@ module "eks" {
     coredns = {
       configuration_values = jsonencode({
         computeType = "Fargate"
+        # Ensure that the we fully utilize the minimum amount of resources that are supplied by
+        # Fargate https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html
+        resources = {
+          limits = {
+            cpu    = "0.25"
+            memory = "250Mi" # Going above this value will allocate a task with 1Gb of memory
+          }
+          requests = {
+            cpu    = "0.25"
+            memory = "250Mi" # Going above this value will allocate a task with 1Gb of memory
+          }
+        }
       })
     }
     kube-proxy = {}
