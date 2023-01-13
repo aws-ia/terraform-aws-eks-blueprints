@@ -4,6 +4,8 @@ locals {
 }
 
 resource "kubernetes_namespace_v1" "csi_secrets_store_provider_aws" {
+  count = try(var.helm_config.create_namespace, true) ? 1 : 0
+
   metadata {
     name = local.namespace
   }
@@ -19,7 +21,7 @@ module "helm_addon" {
       chart       = local.name
       repository  = "https://aws.github.io/eks-charts"
       version     = "0.0.3"
-      namespace   = kubernetes_namespace_v1.csi_secrets_store_provider_aws.metadata[0].name
+      namespace   = try(kubernetes_namespace_v1.csi_secrets_store_provider_aws[0].metadata[0].name, local.namespace)
       description = "A Helm chart to install the Secrets Store CSI Driver and the AWS Key Management Service Provider inside a Kubernetes cluster."
     },
     var.helm_config
