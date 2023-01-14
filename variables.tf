@@ -428,3 +428,7 @@ variable "platform_teams" {
   type        = any
   default     = {}
 }
+
+variable "environment" {
+  type = string
+}
