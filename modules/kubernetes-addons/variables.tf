@@ -1431,3 +1431,16 @@ variable "consul_helm_config" {
   type        = any
   default     = {}
 }
+
+#-----------Kuber Healthy addon-----------------------
+variable "enable_kuberhealthy" {
+  description = "Enable consul add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kuberhealthy_helm_config" {
+  description = "Kuberhealthy Helm Chart config"
+  type        = any
+  default     = {}
+}

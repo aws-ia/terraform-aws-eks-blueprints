@@ -1,0 +1,301 @@
+# Default values for kuberhealthy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+checkReaper:
+  logLevel: error
+  maxKHJobAge: 15m # Maximum age of the khjob resource before being reaped. Valid time units: "ns", "us" (or "µs"), "ms", "s", "m", "h"
+  maxCheckPodAge: 72h # Maximum age of khcheck/khjob pods before being reaped. Valid time units: "ns", "us" (or "µs"), "ms", "s", "m", "h"
+  maxCompletedPodCount: 4 # Maximum number of khcheck/khjob pods in Completed state before being reaped. If not set or set to 0, no completed khjob/khcheck pod will remain.
+  maxErrorPodCount: 4 # Maximum number of khcheck/khjob pods in Error state before being reaped. If not set or set to 0, no completed khjob/khcheck pod will remain.
+
+prometheus:
+  enabled: false
+  name: "prometheus"
+
+  grafanaDashboard:
+    enabled: false
+    label: grafana_dashboard
+    labelValue: "1"
+    # namespace: "" # Alternative namespace to use for grafana dashboard.
+
+  serviceMonitor:
+    enabled: false
+    release: prometheus-operator
+    additionalLabels: {}
+      # env: "dev"
+      # mycustomlabel: "value"
+    endpoints:
+      interval: 15s
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    namespace: kuberhealthy # prometheus operator must be allowed to scrape serviceMonitor metrics from kuberhealthy namespace or set to namespace of prometheus operator
+
+  prometheusRule:
+    enabled: false
+    release: prometheus-operator
+    additionalLabels: {}
+      # env: "dev"
+      # mycustomlabel: "value"
+    namespace: kuberhealthy
+
+# imageRegistry can be used to globally override where check images are pulled from. Individual checks can be overridden below.
+# By default if no overrides are specified, all images are pulled from Docker Hub.  Do not include a trailing '/'.
+imageRegistry: ""
+
+# Global imagePullSecrets setting for all images.
+# imagePullSecrets:
+# - name: my-secret-name
+
+# imageURL allows you to override all other nonsense and just specify the full image URL you want to pull
+#imageURL: docker.io/kuberhealthy/kuberhealthy:v1.6.0
+
+image:
+  registry: docker.io
+  repository: kuberhealthy/kuberhealthy
+  # Leave empty to use .Chart.AppVersion
+  tag:
+
+resources:
+  requests:
+    cpu: 400m
+    memory: 300Mi
+  limits:
+    cpu: 2
+    memory: 1Gi
+
+## Only minAvailable or maxUnavailable can be set at the same time.
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+  maxUnavailable:
+
+
+tolerations:
+  # change to true to tolerate and deploy to masters
+  master: false
+
+deployment:
+  replicas: 2
+  maxSurge: 0
+  maxUnavailable: 1
+  imagePullPolicy: IfNotPresent
+  nodeSelector: {}
+  podAnnotations: {}
+  # tolerations:
+  # - key: "key"
+  #   operator: "Equal"
+  #   value: "value"
+  #   effect: "NoSchedule"
+  env:
+    CHECK_REAPER_RUN_INTERVAL: "30s" # Interval for how often check pods should get reaped. Default is 30s
+  command:
+  - /app/kuberhealthy
+  # args:
+  # priorityClassName:
+  affinity: {}
+  ## Acceptable values for podAntiAffinity:
+  ## soft: specifies preferences that the scheduler will try to enforce but will not guarantee (Default)
+  ## hard: specifies rules that must be met for a pod to be scheduled onto a node
+  podAntiAffinity: "soft"
+
+# When enabled equals to true, runAsUser and fsGroup will be
+# included to all khchecks as specified below.
+securityContext:
+  enabled: true # if enabled is set to false, securityContext settings will not be applied at all in checker pod custom resources
+  runAsNonRoot: true
+  runAsUser: 999
+  fsGroup: 999
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+
+# When enabled kuberhealthy will create a PodSecurityPolicy, Role and Binding to match the specified securityContext
+# In case you use your own images for tests, you might need to add other PSPs as well on your own
+podSecurityPolicy:
+  enabled: false
+
+# Please remember that changing the service type to LoadBalancer
+# will expose Kuberhealthy to the internet, which could cause
+# error messages shown by Kuberhealthy to be exposed to the
+# public internet.  It is recommended to create the service
+# with ClusterIP, then to manually edit the service in order to
+# securely expose the port in an appropriate way for your
+# specific environment.
+service:
+  externalPort: 80
+  type: ClusterIP
+  annotations: {}
+
+check:
+  daemonset:
+    # leave blank for the default service account name
+    serviceAccountName:
+    enabled: true
+    runInterval: 15m
+    timeout: 12m
+    image:
+      registry: docker.io
+      repository: kuberhealthy/daemonset-check
+      tag: v3.3.0
+    extraEnvs: {}
+    nodeSelector: {}
+    tolerations:
+    #- key: "key"
+    #  operator: "Equal"
+    #  value: "value"
+    #  effect: "NoSchedule"
+    resources:
+      requests:
+        cpu: 10m
+        memory: 50Mi
+  deployment:
+    enabled: true
+    runInterval: 10m
+    timeout: 15m
+    image:
+      registry: docker.io
+      repository: kuberhealthy/deployment-check
+      tag: v1.9.0
+    extraEnvs:
+      CHECK_DEPLOYMENT_REPLICAS: "4"
+      CHECK_DEPLOYMENT_ROLLING_UPDATE: "true"
+      CHECK_SERVICE_ACCOUNT: "default"
+    nodeSelector: {}
+    tolerations:
+    #- key: "key"
+    #  operator: "Equal"
+    #  value: "value"
+    #  effect: "NoSchedule"
+    resources:
+      requests:
+        cpu: 25m
+        memory: 15Mi
+      limits:
+        cpu: 40m
+  dnsInternal:
+    enabled: true
+    runInterval: 2m
+    timeout: 15m
+    image:
+      registry: docker.io
+      repository: kuberhealthy/dns-resolution-check
+      tag: v1.5.0
+    extraEnvs:
+      HOSTNAME: "kubernetes.default"
+    nodeSelector: {}
+    tolerations:
+    #- key: "key"
+    #  operator: "Equal"
+    #  value: "value"
+    #  effect: "NoSchedule"
+    resources:
+      requests:
+        cpu: 10m
+        memory: 50Mi
+  dnsExternal:
+    enabled: false
+    runInterval: 2m
+    timeout: 15m
+    image:
+      registry: docker.io
+      repository: kuberhealthy/dns-resolution-check
+      tag: v1.5.0
+    extraEnvs:
+      HOSTNAME: "google.com"
+    nodeSelector: {}
+    tolerations:
+    #- key: "key"
+    #  operator: "Equal"
+    #  value: "value"
+    #  effect: "NoSchedule"
+    resources:
+      requests:
+        cpu: 10m
+        memory: 50Mi
+  podRestarts:
+    enabled: false
+    runInterval: 5m
+    timeout: 10m
+    image:
+      registry: docker.io
+      repository: kuberhealthy/pod-restarts-check
+      tag: v2.5.0
+    allNamespaces: false
+    extraEnvs:
+      MAX_FAILURES_ALLOWED: "10"
+    nodeSelector: {}
+    tolerations: []
+    #- key: "key"
+    #  operator: "Equal"
+    #  value: "value"
+    #  effect: "NoSchedule"
+    resources:
+      requests:
+        cpu: 10m
+        memory: 50Mi
+  podStatus:
+    enabled: false
+    runInterval: 5m
+    timeout: 15m
+    image:
+      registry: docker.io
+      repository: kuberhealthy/pod-status-check
+      tag: v1.3.0
+    allNamespaces: false
+    extraEnvs: {}
+    nodeSelector: {}
+    tolerations: []
+    #- key: "key"
+    #  operator: "Equal"
+    #  value: "value"
+    #  effect: "NoSchedule"
+    resources:
+      requests:
+        cpu: 10m
+        memory: 50Mi
+  storage:
+  # external check from registry
+  # https://github.com/ChrisHirsch/kuberhealthy-storage-check
+    enabled: false
+    # empty string indicate default storage class
+    # kubectl get storageclass
+    # or put storage class names into list
+    storageClass: [""]
+    runInterval: 5m
+    timeout: 10m
+    image:
+      registry: docker.io
+      repository: chrishirsch/kuberhealthy-storage-check
+      tag: v0.0.1
+    extraEnvs:
+      CHECK_STORAGE_IMAGE: bitnami/nginx:1.19
+      CHECK_STORAGE_INIT_IMAGE: bitnami/nginx:1.19
+    nodeSelector: {}
+    tolerations: []
+    #- key: "key"
+    #  operator: "Equal"
+    #  value: "value"
+    #  effect: "NoSchedule"
+    resources:
+      requests:
+        cpu: 10m
+        memory: 50Mi
+  networkConnection:
+    enabled: false
+    runInterval: 30m
+    timeout: 10m
+    image:
+      registry: docker.io
+      repository: kuberhealthy/network-connection-check
+      tag: v0.2.0
+    extraEnvs:
+      CONNECTION_TARGET: "tcp://github.com:443"
+    nodeSelector: {}
+    tolerations: []
+    #- key: "key"
+    #  operator: "Equal"
+    #  value: "value"
+    #  effect: "NoSchedule"
+    resources:
+      requests:
+        memory: 5Mi
+        cpu: 10m

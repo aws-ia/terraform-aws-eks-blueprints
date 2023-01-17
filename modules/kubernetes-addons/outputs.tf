@@ -312,3 +312,8 @@ output "emr_on_eks" {
   description = "EMR on EKS"
   value       = module.emr_on_eks
 }
+
+output "kuberhealthy" {
+  description = "Map of attributes of the Helm release and IRSA created"
+  value       = try(module.kuberhealthy[0], null)
+}
