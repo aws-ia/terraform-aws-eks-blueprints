@@ -18,7 +18,7 @@ module "helm_addon" {
 # AWS Provider
 #--------------------------------------
 module "aws_provider_irsa" {
-  count                             = try(var.aws_provider.enable, true) ? 1 : 0
+  count                             = var.aws_provider.enable == true ? 1 : 0
   source                            = "../../../modules/irsa"
   create_kubernetes_namespace       = false
   create_kubernetes_service_account = false
@@ -33,7 +33,7 @@ module "aws_provider_irsa" {
 }
 
 resource "kubectl_manifest" "aws_controller_config" {
-  count = try(var.aws_provider.enable, true) ? 1 : 0
+  count = var.aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-controller-config.yaml", {
     iam-role-arn          = module.aws_provider_irsa[0].irsa_iam_role_arn
     aws-controller-config = local.aws_provider.controller_config
@@ -43,7 +43,7 @@ resource "kubectl_manifest" "aws_controller_config" {
 }
 
 resource "kubectl_manifest" "aws_provider" {
-  count = try(var.aws_provider.enable, true) ? 1 : 0
+  count = var.aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/aws-provider.yaml", {
     provider-aws-version  = local.aws_provider.provider_aws_version
     aws-provider-name     = local.aws_provider.name
@@ -55,9 +55,9 @@ resource "kubectl_manifest" "aws_provider" {
 }
 
 # Wait for the AWS Provider CRDs to be fully created before initiating aws_provider_config deployment
-resource "time_sleep" "wait_30_seconds" {
-  count = try(var.aws_provider.enable, true) ? 1 : 0
-  create_duration = "30s"
+resource "time_sleep" "wait_60_seconds" {
+  count = var.aws_provider.enable == true ? 1 : 0
+  create_duration = "60s"
 
   depends_on = [kubectl_manifest.aws_provider]
 }
@@ -68,7 +68,7 @@ resource "kubectl_manifest" "aws_provider_config" {
     aws-provider-config = local.aws_provider.provider_config
   })
 
-  depends_on = [kubectl_manifest.aws_provider, time_sleep.wait_30_seconds]
+  depends_on = [kubectl_manifest.aws_provider, time_sleep.wait_60_seconds]
 }
 
 #--------------------------------------
@@ -166,9 +166,9 @@ resource "kubectl_manifest" "upbound_aws_provider" {
 }
 
 # Wait for the Upbound AWS Provider CRDs to be fully created before initiating upbound_aws_provider_config deployment
-resource "time_sleep" "upbound_wait_30_seconds" {
+resource "time_sleep" "upbound_wait_60_seconds" {
   count = var.upbound_aws_provider.enable == true ? 1 : 0
-  create_duration = "30s"
+  create_duration = "60s"
 
   depends_on = [kubectl_manifest.upbound_aws_provider]
 }
@@ -179,7 +179,7 @@ resource "kubectl_manifest" "upbound_aws_provider_config" {
     upbound-aws-provider-config = local.upbound_aws_provider.provider_config
   })
 
-  depends_on = [kubectl_manifest.upbound_aws_provider, time_sleep.upbound_wait_30_seconds]
+  depends_on = [kubectl_manifest.upbound_aws_provider, time_sleep.upbound_wait_60_seconds]
 }
 
 #--------------------------------------
@@ -230,8 +230,8 @@ resource "kubectl_manifest" "kubernetes_provider" {
 }
 
 # Wait for the AWS Provider CRDs to be fully created before initiating aws_provider_config deployment
-resource "time_sleep" "wait_30_seconds_kubernetes" {
-  create_duration = "30s"
+resource "time_sleep" "wait_60_seconds_kubernetes" {
+  create_duration = "60s"
 
   depends_on = [kubectl_manifest.kubernetes_provider]
 }
@@ -242,5 +242,5 @@ resource "kubectl_manifest" "kubernetes_provider_config" {
     kubernetes-provider-config = local.kubernetes_provider.provider_config
   })
 
-  depends_on = [kubectl_manifest.kubernetes_provider, time_sleep.wait_30_seconds_kubernetes]
+  depends_on = [kubectl_manifest.kubernetes_provider, time_sleep.wait_60_seconds_kubernetes]
 }
