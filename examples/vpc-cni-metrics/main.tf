@@ -38,81 +38,6 @@ locals {
 }
 
 ################################################################################
-# VPC CNI Metrics
-################################################################################
-
-module "vpc_cni_metrics_addon" {
-  source = "github.com/aws-ia/terraform-aws-eks-addon"
-
-  name             = "cni-metrics-helper"
-  chart            = "cni-metrics-helper"
-  repository       = "https://aws.github.io/eks-charts"
-  description      = "A Helm chart for the AWS VPC CNI Metrics Helper"
-  namespace        = "kube-system"
-  create_namespace = false
-
-  # Get corresponding region, account, and domain https://docs.aws.amazon.com/eks/latest/userguide/add-ons-images.html
-  # The image url is composed as <account>.dkr.ecr.<region>.<domain>/cni-metrics-helper:<tag>
-  values = [
-    <<-EOT
-      image:
-        region: us-west-2
-        tag: v1.12.1
-        account: "602401143452"
-        domain: "amazonaws.com"
-      env:
-        AWS_VPC_K8S_CNI_LOGLEVEL: INFO
-      serviceAccount:
-        name: cni-metrics-helper
-    EOT
-  ]
-
-  set_irsa_name = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-  # # Equivalent to the following but the ARN is only known internally to the module
-  # set = [{
-  #   name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-  #   value = iam_role_arn.this[0].arn
-  # }]
-
-  # IAM role for service account (IRSA)
-  create_role = true
-  role_policy_arns = {
-    cni_metrics = aws_iam_policy.cni_metrics.arn
-  }
-
-  oidc_providers = {
-    this = {
-      provider_arn = module.eks.oidc_provider_arn
-      # namespace is inherited from chart
-      service_account = "cni-metrics-helper"
-    }
-  }
-
-  tags = local.tags
-}
-
-resource "aws_iam_policy" "cni_metrics" {
-  name        = "${module.eks.cluster_name}-cni-metrics"
-  description = "IAM policy for EKS CNI Metrics helper"
-  path        = "/"
-  policy      = data.aws_iam_policy_document.cni_metrics.json
-
-  tags = local.tags
-}
-
-data "aws_iam_policy_document" "cni_metrics" {
-  statement {
-    sid = "CNIMetrics"
-    actions = [
-      "cloudwatch:PutMetricData",
-      "ec2:DescribeTags"
-    ]
-    resources = ["*"]
-  }
-}
-
-
-################################################################################
 # Cluster
 ################################################################################
 
@@ -138,7 +63,7 @@ module "eks" {
       type                          = "ingress"
       source_cluster_security_group = true
     }
-  } 
+  }
 
   eks_managed_node_groups = {
     initial = {
@@ -151,6 +76,35 @@ module "eks" {
   }
 
   tags = local.tags
+}
+
+################################################################################
+# Kubernetes Addons
+################################################################################
+
+module "eks_blueprints_kubernetes_addons" {
+  source = "../../modules/kubernetes-addons"
+
+  eks_cluster_id        = module.eks.cluster_name
+  eks_cluster_endpoint  = module.eks.cluster_endpoint
+  eks_oidc_provider     = module.eks.oidc_provider
+  eks_oidc_provider_arn = module.eks.oidc_provider_arn
+  eks_cluster_version   = module.eks.cluster_version
+  
+  # Enable VPC CNI Metrics
+  enable_aws_vpc_cni_metrics  = true
+  # Optional
+  aws_vpc_cni_metrics_version = data.aws_eks_addon_version.latest["vpc-cni"].version
+
+  tags = local.tags
+}
+
+data "aws_eks_addon_version" "latest" {
+  for_each = toset(["vpc-cni"])
+
+  addon_name         = each.value
+  kubernetes_version = local.cluster_version
+  most_recent        = true
 }
 
 ################################################################################

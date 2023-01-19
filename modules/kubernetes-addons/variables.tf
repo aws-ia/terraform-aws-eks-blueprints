@@ -1431,3 +1431,22 @@ variable "consul_helm_config" {
   type        = any
   default     = {}
 }
+
+#-----------AWS VPC CNI Metrics addon-------------
+variable "enable_aws_vpc_cni_metrics" {
+  description = "Enable AWS VPC CNI Metrics add-on"
+  type        = bool
+  default     = false
+}
+
+variable "aws_vpc_cni_metrics_helm_config" {
+  description = "AWS VPC CNI MetricsHelm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "aws_vpc_cni_metrics_version" {
+  description = "AWS VPC CNI Metrics image version"
+  type        = string
+  default     = "v1.12.1"
+}

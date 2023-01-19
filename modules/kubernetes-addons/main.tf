@@ -801,3 +801,11 @@ module "consul" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
+
+module "aws_vpc_cni_metrics" {
+  count             = var.enable_aws_vpc_cni_metrics ? 1 : 0
+  source            = "./aws-vpc-cni-metrics"
+  helm_config       = var.aws_vpc_cni_metrics_helm_config
+  addon_context     = merge(local.addon_context, { default_repository = local.amazon_container_image_registry_uris[data.aws_region.current.name] })
+  addon_version     = var.aws_vpc_cni_metrics_version
+}
