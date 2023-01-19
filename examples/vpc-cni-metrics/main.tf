@@ -42,7 +42,7 @@ locals {
 ################################################################################
 
 module "vpc_cni_metrics_addon" {
-  source = "aws-ia/eks-addon/aws"
+  source = "github.com/aws-ia/terraform-aws-eks-addon"
 
   name             = "cni-metrics-helper"
   chart            = "cni-metrics-helper"
@@ -61,7 +61,9 @@ module "vpc_cni_metrics_addon" {
         account: "602401143452"
         domain: "amazonaws.com"
       env:
-        AWS_VPC_K8S_CNI_LOGLEVEL: "INFO"
+        AWS_VPC_K8S_CNI_LOGLEVEL: ERROR
+      serviceAccount:
+        name: cni-metrics-helper
     EOT
   ]
 
