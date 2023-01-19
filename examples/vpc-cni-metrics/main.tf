@@ -131,7 +131,7 @@ module "eks" {
   node_security_group_additional_rules = {
     # Allows Control Plane Nodes to talk to Worker nodes vpc cni metrics port
     vpc_cni_metrics_traffic = {
-      description                   = "Cluster API to Nodegroup vpc cni metrics"
+      description                   = "Cluster API to node 61678/tcp vpc cni metrics"
       protocol                      = "tcp"
       from_port                     = 61678
       to_port                       = 61678
