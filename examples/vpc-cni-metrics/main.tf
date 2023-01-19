@@ -61,7 +61,7 @@ module "vpc_cni_metrics_addon" {
         account: "602401143452"
         domain: "amazonaws.com"
       env:
-        AWS_VPC_K8S_CNI_LOGLEVEL: ERROR
+        AWS_VPC_K8S_CNI_LOGLEVEL: INFO
       serviceAccount:
         name: cni-metrics-helper
     EOT
