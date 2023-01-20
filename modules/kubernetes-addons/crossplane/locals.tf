@@ -27,7 +27,7 @@ locals {
     },
     var.aws_provider
   )
-  
+
   upbound_aws_provider = merge({
     provider_aws_version     = "v0.27.0"
     additional_irsa_policies = ["arn:${var.addon_context.aws_partition_id}:iam::aws:policy/AdministratorAccess"]
@@ -53,11 +53,11 @@ locals {
 
   helm_provider = merge({
     provider_helm_version = "v0.13.0"
-    name                        = "provider-helm"
-    service_account             = "provider-helm"
-    provider_config             = "default"
-    controller_config           = "helm-controller-config"
-    cluster_role                = "cluster-admin"
+    name                  = "provider-helm"
+    service_account       = "provider-helm"
+    provider_config       = "default"
+    controller_config     = "helm-controller-config"
+    cluster_role          = "cluster-admin"
     },
     var.helm_provider
   )

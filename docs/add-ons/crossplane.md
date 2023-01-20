@@ -45,7 +45,7 @@ In case you have Enterprise support by Upbound, you might prefer to install the 
     namespace   = "upbound-system"
     description = "Upbound Universal Crossplane (UXP)"
   }
-``` 
+```
 
 
 ### Crossplane Providers Deployment

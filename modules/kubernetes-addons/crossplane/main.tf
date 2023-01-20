@@ -56,7 +56,7 @@ resource "kubectl_manifest" "aws_provider" {
 
 # Wait for the AWS Provider CRDs to be fully created before initiating aws_provider_config deployment
 resource "time_sleep" "wait_60_seconds" {
-  count = var.aws_provider.enable == true ? 1 : 0
+  count           = var.aws_provider.enable == true ? 1 : 0
   create_duration = "60s"
 
   depends_on = [kubectl_manifest.aws_provider]
@@ -144,7 +144,7 @@ module "upbound_aws_provider_irsa" {
 }
 
 resource "kubectl_manifest" "upbound_aws_controller_config" {
-  count     = var.upbound_aws_provider.enable == true ? 1 : 0
+  count = var.upbound_aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/upbound-aws-controller-config.yaml", {
     upbound-iam-role-arn          = module.upbound_aws_provider_irsa[0].irsa_iam_role_arn
     upbound-aws-controller-config = local.upbound_aws_provider.controller_config
@@ -154,7 +154,7 @@ resource "kubectl_manifest" "upbound_aws_controller_config" {
 }
 
 resource "kubectl_manifest" "upbound_aws_provider" {
-  count     = var.upbound_aws_provider.enable == true ? 1 : 0
+  count = var.upbound_aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/aws-provider/upbound-aws-provider.yaml", {
     upbound-provider-aws-version  = local.upbound_aws_provider.provider_aws_version
     upbound-aws-provider-name     = local.upbound_aws_provider.name
@@ -167,7 +167,7 @@ resource "kubectl_manifest" "upbound_aws_provider" {
 
 # Wait for the Upbound AWS Provider CRDs to be fully created before initiating upbound_aws_provider_config deployment
 resource "time_sleep" "upbound_wait_60_seconds" {
-  count = var.upbound_aws_provider.enable == true ? 1 : 0
+  count           = var.upbound_aws_provider.enable == true ? 1 : 0
   create_duration = "60s"
 
   depends_on = [kubectl_manifest.upbound_aws_provider]
@@ -287,7 +287,7 @@ resource "kubectl_manifest" "helm_provider" {
   yaml_body = templatefile("${path.module}/helm-provider/helm-provider.yaml", {
     provider-helm-version  = local.helm_provider.provider_helm_version
     helm-provider-name     = local.helm_provider.name
-    helm-controller-config   = local.helm_provider.controller_config
+    helm-controller-config = local.helm_provider.controller_config
   })
   wait = true
 
