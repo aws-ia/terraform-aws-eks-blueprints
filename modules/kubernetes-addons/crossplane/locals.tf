@@ -28,19 +28,6 @@ locals {
     var.aws_provider
   )
   
-  kubernetes_provider = merge({
-    provider_kubernetes_version = "v0.6.0"
-    name                        = "kubernetes-provider"
-    service_account             = "kubernetes-provider"
-    provider_config             = "default"
-    controller_config           = "kubernetes-controller-config"
-    cluster_role                = "cluster-admin"
-    },
-    var.kubernetes_provider
-  )
-
-  jet_aws_provider_sa = "jet-aws-provider"
-
   upbound_aws_provider = merge({
     provider_aws_version     = "v0.27.0"
     additional_irsa_policies = ["arn:${var.addon_context.aws_partition_id}:iam::aws:policy/AdministratorAccess"]
@@ -52,4 +39,28 @@ locals {
     },
     var.upbound_aws_provider
   )
+
+  kubernetes_provider = merge({
+    provider_kubernetes_version = "v0.6.0"
+    name                        = "kubernetes-provider"
+    service_account             = "kubernetes-provider"
+    provider_config             = "default"
+    controller_config           = "kubernetes-controller-config"
+    cluster_role                = "cluster-admin"
+    },
+    var.kubernetes_provider
+  )
+
+  helm_provider = merge({
+    provider_helm_version = "v0.13.0"
+    name                        = "provider-helm"
+    service_account             = "provider-helm"
+    provider_config             = "default"
+    controller_config           = "helm-controller-config"
+    cluster_role                = "cluster-admin"
+    },
+    var.helm_provider
+  )
+
+  jet_aws_provider_sa = "jet-aws-provider"
 }

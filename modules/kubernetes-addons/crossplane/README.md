@@ -17,10 +17,12 @@ Crossplane Add-on can be deployed as follows
   enable_crossplane = true
 ```
 
-This module allows you to deploy the following AWS providers for Crossplane. These providers disabled by default.
+This module allows you to deploy the following providers for Crossplane. These providers disabled by default.
 
 - [AWS Provider](https://github.com/crossplane/provider-aws)
 - [Upbound AWS Provider](https://github.com/upbound/provider-aws)
+- [Kubernetes Provider](https://github.com/crossplane-contrib/provider-kubernetes)
+- [Helm Provider](https://github.com/crossplane-contrib/provider-helm)
 - [Provider Jet AWS (Deprecated)](https://github.com/crossplane-contrib/provider-jet-aws)
 
 Refer to [docs](../../../docs/add-ons/crossplane.md) on how to deploy AWS Providers.

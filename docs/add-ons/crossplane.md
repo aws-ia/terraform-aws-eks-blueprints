@@ -48,13 +48,14 @@ In case you have Enterprise support by Upbound, you might prefer to install the 
 ``` 
 
 
-### Crossplane AWS Provider Deployment
-This module provides options to deploy the following AWS providers for Crossplane. These providers disabled by default, and it can be enabled using the config below.
+### Crossplane Providers Deployment
+This module provides options to deploy the following providers for Crossplane. These providers disabled by default, and it can be enabled using the config below.
 
  - [AWS Provider](https://github.com/crossplane/provider-aws)
  - [Upbound AWS Provider](https://github.com/upbound/provider-aws)
- - [Terrajet AWS Provider](https://github.com/crossplane-contrib/provider-jet-aws)
  - [Kubernetes Provider](https://github.com/crossplane-contrib/provider-kubernetes)
+ - [Helm Provider](https://github.com/crossplane-contrib/provider-helm)
+ - [Terrajet AWS Provider](https://github.com/crossplane-contrib/provider-jet-aws)
 
 _NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
 This example config uses AdministratorAccess, but you should select a policy with the minimum permissions required to provision your resources._
@@ -91,6 +92,14 @@ Config to deploy [Kubernetes provider](https://github.com/crossplane-contrib/pro
 ```hcl
 # Creates ProviderConfig -> kubernetes-provider
 crossplane_kubernetes_provider = {
+  enable                   = true
+}
+```
+
+Config to deploy [Helm Provider](https://github.com/crossplane-contrib/provider-helm)
+```hcl
+# Creates ProviderConfig -> helm-provider
+crossplane_helm_provider = {
   enable                   = true
 }
 ```

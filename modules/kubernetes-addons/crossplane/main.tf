@@ -186,6 +186,7 @@ resource "kubectl_manifest" "upbound_aws_provider_config" {
 # Kubernetes Provider
 #--------------------------------------
 resource "kubernetes_service_account_v1" "kubernetes_controller" {
+  count = var.kubernetes_provider.enable == true ? 1 : 0
   metadata {
     name      = local.kubernetes_provider.service_account
     namespace = local.namespace
@@ -199,7 +200,7 @@ resource "kubectl_manifest" "kubernetes_controller_clusterolebinding" {
   yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-controller-clusterrolebinding.yaml", {
     namespace                      = local.namespace
     cluster-role                   = local.kubernetes_provider.cluster_role
-    kubernetes-serviceaccount-name = kubernetes_service_account_v1.kubernetes_controller.metadata[0].name
+    kubernetes-serviceaccount-name = kubernetes_service_account_v1.kubernetes_controller[0].metadata[0].name
   })
   wait = true
 
@@ -209,7 +210,7 @@ resource "kubectl_manifest" "kubernetes_controller_clusterolebinding" {
 resource "kubectl_manifest" "kubernetes_controller_config" {
   count = var.kubernetes_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/kubernetes-provider/kubernetes-controller-config.yaml", {
-    kubernetes-serviceaccount-name = kubernetes_service_account_v1.kubernetes_controller.metadata[0].name
+    kubernetes-serviceaccount-name = kubernetes_service_account_v1.kubernetes_controller[0].metadata[0].name
     kubernetes-controller-config   = local.kubernetes_provider.controller_config
   })
   wait = true
@@ -243,4 +244,68 @@ resource "kubectl_manifest" "kubernetes_provider_config" {
   })
 
   depends_on = [kubectl_manifest.kubernetes_provider, time_sleep.wait_60_seconds_kubernetes]
+}
+
+#--------------------------------------
+# Helm Provider
+#--------------------------------------
+resource "kubernetes_service_account_v1" "helm_provider" {
+  count = var.helm_provider.enable == true ? 1 : 0
+  metadata {
+    name      = local.helm_provider.service_account
+    namespace = local.namespace
+  }
+
+  depends_on = [module.helm_addon]
+}
+
+resource "kubectl_manifest" "helm_provider_clusterolebinding" {
+  count = var.helm_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/helm-provider/helm-provider-clusterrolebinding.yaml", {
+    namespace                = local.namespace
+    cluster-role             = local.helm_provider.cluster_role
+    helm-serviceaccount-name = kubernetes_service_account_v1.helm_provider[0].metadata[0].name
+  })
+  wait = true
+
+  depends_on = [module.helm_addon]
+}
+
+resource "kubectl_manifest" "helm_controller_config" {
+  count = var.helm_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/helm-provider/helm-controller-config.yaml", {
+    helm-serviceaccount-name = kubernetes_service_account_v1.helm_provider[0].metadata[0].name
+    helm-controller-config   = local.helm_provider.controller_config
+  })
+  wait = true
+
+  depends_on = [module.helm_addon]
+}
+
+resource "kubectl_manifest" "helm_provider" {
+  count = var.helm_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/helm-provider/helm-provider.yaml", {
+    provider-helm-version  = local.helm_provider.provider_helm_version
+    helm-provider-name     = local.helm_provider.name
+    helm-controller-config   = local.helm_provider.controller_config
+  })
+  wait = true
+
+  depends_on = [kubectl_manifest.helm_provider_clusterolebinding]
+}
+
+# Wait for the Helm Provider CRDs to be fully created before initiating helm_provider_config deployment
+resource "time_sleep" "wait_60_seconds_helm" {
+  create_duration = "60s"
+
+  depends_on = [kubectl_manifest.helm_provider]
+}
+
+resource "kubectl_manifest" "helm_provider_config" {
+  count = var.helm_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/helm-provider/helm-provider-config.yaml", {
+    helm-provider-config = local.helm_provider.provider_config
+  })
+
+  depends_on = [kubectl_manifest.helm_provider, time_sleep.wait_60_seconds_helm]
 }

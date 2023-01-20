@@ -26,8 +26,18 @@ variable "aws_provider" {
   type        = any
 }
 
+variable "upbound_aws_provider" {
+  description = "Upbound AWS Provider config for Crossplane"
+  type        = any
+}
+
 variable "kubernetes_provider" {
   description = "Kubernetes Provider config for Crossplane"
+  type        = any
+}
+
+variable "helm_provider" {
+  description = "Helm Provider config for Crossplane"
   type        = any
 }
 
@@ -38,9 +48,4 @@ variable "jet_aws_provider" {
     provider_aws_version     = string
     additional_irsa_policies = list(string)
   })
-}
-
-variable "upbound_aws_provider" {
-  description = "Upbound AWS Provider config for Crossplane"
-  type        = any
 }

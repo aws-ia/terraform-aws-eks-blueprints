@@ -269,6 +269,14 @@ variable "crossplane_kubernetes_provider" {
   }
 }
 
+variable "crossplane_helm_provider" {
+  description = "Helm Provider config for Crossplane"
+  type        = any
+  default = {
+    enable = false
+  }
+}
+
 #-----------ONDAT ADDON-------------
 variable "enable_ondat" {
   description = "Enable Ondat add-on"
