@@ -2,7 +2,7 @@ locals {
   name             = try(var.helm_config.name, "kube-prometheus-stack")
   namespace_name   = try(var.helm_config.namespace, local.name)
   create_namespace = try(var.helm_config.create_namespace, true) && local.namespace_name != "kube-system"
-  namespace        = local.create_namespace ? kubernetes_namespace_v1.prometheus.metadata[0].name : local.namespace_name
+  namespace        = local.create_namespace ? kubernetes_namespace_v1.prometheus[0].metadata[0].name : local.namespace_name
 
 }
 
