@@ -1,11 +1,16 @@
 locals {
-  name      = try(var.helm_config.name, "kube-prometheus-stack")
-  namespace = try(var.helm_config.namespace, local.name)
+  name             = try(var.helm_config.name, "kube-prometheus-stack")
+  namespace_name   = try(var.helm_config.namespace, local.name)
+  create_namespace = try(var.helm_config.create_namespace, true) && local.namespace_name != "kube-system"
+  namespace        = local.create_namespace ? kubernetes_namespace_v1.prometheus.metadata[0].name : local.namespace_name
+
 }
 
 resource "kubernetes_namespace_v1" "prometheus" {
+  count = local.create_namespace ? 1 : 0
+
   metadata {
-    name = local.namespace
+    name = local.namespace_name
   }
 }
 
@@ -19,7 +24,7 @@ module "helm_addon" {
       chart      = local.name
       repository = "https://prometheus-community.github.io/helm-charts"
       version    = "41.6.1"
-      namespace  = kubernetes_namespace_v1.prometheus.metadata[0].name
+      namespace  = local.namespace
       values = [templatefile("${path.module}/values.yaml", {
         aws_region = var.addon_context.aws_region_name
       })]
