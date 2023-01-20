@@ -86,6 +86,7 @@
 | <a name="module_tetrate_istio"></a> [tetrate\_istio](#module\_tetrate\_istio) | ./tetrate-istio | n/a |
 | <a name="module_thanos"></a> [thanos](#module\_thanos) | ./thanos | n/a |
 | <a name="module_traefik"></a> [traefik](#module\_traefik) | ./traefik | n/a |
+| <a name="module_trino"></a> [trino](#module\_trino) | ./trino | n/a |
 | <a name="module_vault"></a> [vault](#module\_vault) | hashicorp/hashicorp-vault-eks-addon/aws | 1.0.0-rc2 |
 | <a name="module_velero"></a> [velero](#module\_velero) | ./velero | n/a |
 | <a name="module_vpa"></a> [vpa](#module\_vpa) | ./vpa | n/a |
@@ -250,6 +251,7 @@
 | <a name="input_enable_tetrate_istio"></a> [enable\_tetrate\_istio](#input\_enable\_tetrate\_istio) | Enable Tetrate Istio add-on | `bool` | `false` | no |
 | <a name="input_enable_thanos"></a> [enable\_thanos](#input\_enable\_thanos) | Enable Thanos add-on | `bool` | `false` | no |
 | <a name="input_enable_traefik"></a> [enable\_traefik](#input\_enable\_traefik) | Enable Traefik add-on | `bool` | `false` | no |
+| <a name="input_enable_trino"></a> [enable\_trino](#input\_enable\_trino) | Enable Trino add-on | `bool` | `false` | no |
 | <a name="input_enable_vault"></a> [enable\_vault](#input\_enable\_vault) | Enable HashiCorp Vault add-on | `bool` | `false` | no |
 | <a name="input_enable_velero"></a> [enable\_velero](#input\_enable\_velero) | Enable Kubernetes Dashboard add-on | `bool` | `false` | no |
 | <a name="input_enable_vpa"></a> [enable\_vpa](#input\_enable\_vpa) | Enable Vertical Pod Autoscaler add-on | `bool` | `false` | no |
@@ -325,6 +327,7 @@
 | <a name="input_thanos_helm_config"></a> [thanos\_helm\_config](#input\_thanos\_helm\_config) | Thanos Helm Chart config | `any` | `{}` | no |
 | <a name="input_thanos_irsa_policies"></a> [thanos\_irsa\_policies](#input\_thanos\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
 | <a name="input_traefik_helm_config"></a> [traefik\_helm\_config](#input\_traefik\_helm\_config) | Traefik Helm Chart config | `any` | `{}` | no |
+| <a name="input_trino_helm_config"></a> [trino\_helm\_config](#input\_trino\_helm\_config) | Trino Helm Chart config | `any` | `{}` | no |
 | <a name="input_vault_helm_config"></a> [vault\_helm\_config](#input\_vault\_helm\_config) | HashiCorp Vault Helm Chart config | `any` | `null` | no |
 | <a name="input_velero_backup_s3_bucket"></a> [velero\_backup\_s3\_bucket](#input\_velero\_backup\_s3\_bucket) | Bucket name for velero bucket | `string` | `""` | no |
 | <a name="input_velero_helm_config"></a> [velero\_helm\_config](#input\_velero\_helm\_config) | Kubernetes Velero Helm Chart config | `any` | `null` | no |
@@ -396,6 +399,7 @@
 | <a name="output_strimzi_kafka_operator"></a> [strimzi\_kafka\_operator](#output\_strimzi\_kafka\_operator) | Map of attributes of the Helm release and IRSA created |
 | <a name="output_thanos"></a> [thanos](#output\_thanos) | Map of attributes of the Helm release and IRSA created |
 | <a name="output_traefik"></a> [traefik](#output\_traefik) | Map of attributes of the Helm release and IRSA created |
+| <a name="output_trino"></a> [trino](#output\_trino) | Map of attributes of the Helm release and IRSA created |
 | <a name="output_velero"></a> [velero](#output\_velero) | Map of attributes of the Helm release and IRSA created |
 | <a name="output_vpa"></a> [vpa](#output\_vpa) | Map of attributes of the Helm release and IRSA created |
 | <a name="output_yunikorn"></a> [yunikorn](#output\_yunikorn) | Map of attributes of the Helm release and IRSA created |

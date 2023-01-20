@@ -293,6 +293,11 @@ output "traefik" {
   value       = try(module.traefik[0], null)
 }
 
+output "trino" {
+  description = "Map of attributes of the Helm release and IRSA created"
+  value       = try(module.trino[0], null)
+}
+
 output "velero" {
   description = "Map of attributes of the Helm release and IRSA created"
   value       = try(module.velero[0], null)

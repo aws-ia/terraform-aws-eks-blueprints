@@ -1431,3 +1431,15 @@ variable "consul_helm_config" {
   type        = any
   default     = {}
 }
+#-----------Trino addon-----------------------
+variable "enable_trino" {
+  description = "Enable Trino add-on"
+  type        = bool
+  default     = false
+}
+
+variable "trino_helm_config" {
+  description = "Trino Helm Chart config"
+  type        = any
+  default     = {}
+}

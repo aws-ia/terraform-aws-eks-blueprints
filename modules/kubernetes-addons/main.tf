@@ -477,6 +477,14 @@ module "traefik" {
   addon_context     = local.addon_context
 }
 
+module "trino" {
+  count             = var.enable_trino ? 1 : 0
+  source            = "./trino"
+  helm_config       = var.trino_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "vault" {
   count = var.enable_vault ? 1 : 0
 
