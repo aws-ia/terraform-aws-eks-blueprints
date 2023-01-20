@@ -10,6 +10,18 @@ variable "manage_via_gitops" {
   default     = false
 }
 
+variable "create_policy" {
+  description = "Controls whether or not to create an IAM policy for the controller."
+  type        = bool
+  default     = true
+}
+
+variable "load_balancer_controller_policy_arn" {
+  description = "ARN for an existing IAM policy for the loadbalancer controller."
+  type        = string
+  default     = ""
+}
+
 variable "addon_context" {
   description = "Input configuration for the addon."
   type = object({
