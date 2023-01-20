@@ -876,6 +876,12 @@ variable "karpenter_node_iam_instance_profile" {
   default     = ""
 }
 
+variable "karpenter_enable_spot_termination_handling" {
+  description = "Determines whether to enable native spot termination handling"
+  type        = bool
+  default     = false
+}
+
 variable "karpenter_sqs_queue_arn" {
   description = "(Optional) ARN of SQS used by Karpenter when native node termination handling is enabled"
   type        = string
@@ -1336,7 +1342,7 @@ variable "cilium_helm_config" {
 }
 
 variable "cilium_enable_wireguard" {
-  description = "Enable wiregaurd encryption"
+  description = "Enable wireguard encryption"
   type        = bool
   default     = false
 }

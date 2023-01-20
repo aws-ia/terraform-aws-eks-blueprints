@@ -15,6 +15,7 @@ locals {
     certManager               = var.enable_cert_manager ? module.cert_manager[0].argocd_gitops_config : null
     clusterAutoscaler         = var.enable_cluster_autoscaler ? module.cluster_autoscaler[0].argocd_gitops_config : null
     corednsAutoscaler         = var.enable_amazon_eks_coredns && var.enable_coredns_autoscaler && length(var.coredns_autoscaler_helm_config) > 0 ? module.coredns_autoscaler[0].argocd_gitops_config : null
+    datadogOperator           = var.enable_datadog_operator ? module.datadog_operator[0].argocd_gitops_config : null
     grafana                   = var.enable_grafana ? module.grafana[0].argocd_gitops_config : null
     ingressNginx              = var.enable_ingress_nginx ? module.ingress_nginx[0].argocd_gitops_config : null
     keda                      = var.enable_keda ? module.keda[0].argocd_gitops_config : null

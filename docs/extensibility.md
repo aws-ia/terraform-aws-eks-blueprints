@@ -134,7 +134,7 @@ data "aws_iam_policy_document" "cni_metrics" {
 
 ### Secrets Handling
 
-We expect that certain add-ons will need to provide access to sensitive values to their helm chart configuration such as password, license keys, API keys, etc. We recommend that you ask customers to store such secrets in an external secret store such as AWS Secrets Manager or AWS Systems Manager Parameter Store and use the [AWS Secrets and Configuration Provider (ASCP)](https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_csi_driver.html) to mount the secrets as files or environment variables in the pods of your add-on. We are actively working on providing a native add-on for ASCP as of this writing which you will be able to levarage for your add-on.
+We expect that certain add-ons will need to provide access to sensitive values to their helm chart configuration such as password, license keys, API keys, etc. We recommend that you ask customers to store such secrets in an external secret store such as AWS Secrets Manager or AWS Systems Manager Parameter Store and use the [AWS Secrets and Configuration Provider (ASCP)](https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_csi_driver.html) to mount the secrets as files or environment variables in the pods of your add-on. We are actively working on providing a native add-on for ASCP as of this writing which you will be able to leverage for your add-on.
 
 ## Example Public Add-On
 

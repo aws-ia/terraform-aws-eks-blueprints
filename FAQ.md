@@ -29,7 +29,7 @@ There are two options here:
 
 ## Provider Authentication
 
-The chain of events when provisioning an example is typically in the stages of VPC -> EKS cluster -> addons and manifests. Per Terraform's recommendation, it is not recommended to pass an unknown value into provider configurations. However, for the sake of simplicity and ease of use, Blueprints does specify the AWS provider along with the Kubernetes, Helm, and Kubectl providers in order to show the full configuration requred for provisioning example. Note - this is the configuration *required* to provision the example, not necessarily the shape of how the configuration should be structured; users are encouraged to split up EKS cluster creation from addon and manifest provisioning to align with Terraform's recommendations.
+The chain of events when provisioning an example is typically in the stages of VPC -> EKS cluster -> addons and manifests. Per Terraform's recommendation, it is not recommended to pass an unknown value into provider configurations. However, for the sake of simplicity and ease of use, Blueprints does specify the AWS provider along with the Kubernetes, Helm, and Kubectl providers in order to show the full configuration required for provisioning example. Note - this is the configuration *required* to provision the example, not necessarily the shape of how the configuration should be structured; users are encouraged to split up EKS cluster creation from addon and manifest provisioning to align with Terraform's recommendations.
 
 With that said, the examples here are combining the providers and users can sometimes encounter various issues with the provider authentication methods. There are primarily two methods for authenticating the Kubernetes, Helm, and Kubectl providers to the EKS cluster created:
 
@@ -39,9 +39,9 @@ With that said, the examples here are combining the providers and users can some
 The Kubernetes and Helm providers [recommend the `exec()` method](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs#exec-plugins), however this has the caveat that it requires the awscli to be installed on the machine running Terraform *AND* of at least a minimum version to support the API spec used by the provider (i.e. - `"client.authentication.k8s.io/v1alpha1"`, `"client.authentication.k8s.io/v1beta1"`, etc.). Selecting the appropriate provider authentication method is left up to users, and the examples used in this project will default to using the static token method for ease of use.
 
 Users of the static token method should be aware that if they receive a `401 Unauthorized` message, they might have a token that has expired and will need to run `terraform refresh` to get a new token.
-Users of the `exec()` method should be aware that the `exec()` method is reliant on the awscli and the associated authtentication API version; the awscli version may need to be updated to support a later API version required by the Kubernetes version in use.
+Users of the `exec()` method should be aware that the `exec()` method is reliant on the awscli and the associated authentication API version; the awscli version may need to be updated to support a later API version required by the Kubernetes version in use.
 
-The following examples demonstrate either method that users can utilize - please refer to the associated provider's documentation for further details on cofiguration.
+The following examples demonstrate either method that users can utilize - please refer to the associated provider's documentation for further details on configuration.
 
 ### Static Token Example
 
@@ -161,7 +161,7 @@ For example, with namespaces:
 kubectl get namespaces
 ```
 
-2. Check for any orphaned resources in the namesapce, make sure to replace <namespace_name> with your namespace:
+2. Check for any orphaned resources in the namespace, make sure to replace <namespace_name> with your namespace:
 
 ```sh
 kubectl api-resources --verbs=list --namespaced -o name   | xargs -n 1 kubectl get  \
