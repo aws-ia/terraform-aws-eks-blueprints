@@ -5,7 +5,7 @@ variable "helm_config" {
 }
 
 variable "addon_version" {
-  description = ""
+  description = "AWS VPC CNI Metrics image version"
   type        = string
   default     = "v1.12.1"
 }

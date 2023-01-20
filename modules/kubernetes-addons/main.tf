@@ -803,9 +803,9 @@ module "consul" {
 }
 
 module "aws_vpc_cni_metrics" {
-  count             = var.enable_aws_vpc_cni_metrics ? 1 : 0
-  source            = "./aws-vpc-cni-metrics"
-  helm_config       = var.aws_vpc_cni_metrics_helm_config
-  addon_context     = merge(local.addon_context, { default_repository = local.amazon_container_image_registry_uris[data.aws_region.current.name] })
-  addon_version     = var.aws_vpc_cni_metrics_version
+  count         = var.enable_aws_vpc_cni_metrics ? 1 : 0
+  source        = "./aws-vpc-cni-metrics"
+  helm_config   = var.aws_vpc_cni_metrics_helm_config
+  addon_context = merge(local.addon_context, { default_repository = local.amazon_container_image_registry_uris[data.aws_region.current.name] })
+  addon_version = var.aws_vpc_cni_metrics_version
 }
