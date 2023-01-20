@@ -588,6 +588,18 @@ variable "aws_load_balancer_controller_helm_config" {
   default     = {}
 }
 
+variable "aws_load_balancer_controller_create_policy" {
+  description = "Controls whether AWS Load Balancer Controller should create an IAM policy."
+  type        = bool
+  default     = true
+}
+
+variable "aws_load_balancer_controller_policy_arn" {
+  description = "ARN of a policy to pass to the AWS Load Balancer Controller."
+  type        = string
+  default     = ""
+}
+
 #-----------NGINX-------------
 variable "enable_ingress_nginx" {
   description = "Enable Ingress Nginx add-on"

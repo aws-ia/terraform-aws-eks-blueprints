@@ -182,6 +182,8 @@ module "aws_load_balancer_controller" {
   source            = "./aws-load-balancer-controller"
   helm_config       = var.aws_load_balancer_controller_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
+  create_policy                       = var.aws_load_balancer_controller_create_policy
+  load_balancer_controller_policy_arn = var.aws_load_balancer_controller_policy_arn
   addon_context     = merge(local.addon_context, { default_repository = local.amazon_container_image_registry_uris[data.aws_region.current.name] })
 }
 
