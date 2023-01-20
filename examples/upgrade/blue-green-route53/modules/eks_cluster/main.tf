@@ -190,12 +190,12 @@ data "aws_route53_zone" "sub" {
 }
 
 
-data "aws_secretsmanager_secret" "arogcd" {
+data "aws_secretsmanager_secret" "argocd" {
   name = "${local.argocd_secret_manager_name}.${local.core_stack_name}"
 }
 
 data "aws_secretsmanager_secret_version" "admin_password_version" {
-  secret_id = data.aws_secretsmanager_secret.arogcd.id
+  secret_id = data.aws_secretsmanager_secret.argocd.id
 }
 
 module "eks_blueprints" {

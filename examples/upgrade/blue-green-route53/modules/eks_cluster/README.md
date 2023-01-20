@@ -28,7 +28,7 @@ What is include in this EKS cluster
 
 The AWS resources created by the script are detailed bellow:
 
-- The infrastructure will be deployed in the ressources created in the [core-infra stack](../core-infra/README.md)
+- The infrastructure will be deployed in the resources created in the [core-infra stack](../core-infra/README.md)
 - EKS Cluster
   - Create an EKS Managed Node Group
   - Create a platform team
@@ -104,7 +104,7 @@ FAKEKEY==
 ```
 
 
-**3.** Review the terraform plan output, take a look at the changes that terraform will exeute, and then apply them:
+**3.** Review the terraform plan output, take a look at the changes that terraform will execute, and then apply them:
 
 ```shell
 terraform plan
@@ -174,7 +174,7 @@ See Cleanup section in main Readme.md
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |
 | [aws_route53_zone.sub](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
-| [aws_secretsmanager_secret.arogcd](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret) | data source |
+| [aws_secretsmanager_secret.argocd](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret) | data source |
 | [aws_secretsmanager_secret_version.admin_password_version](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret_version) | data source |
 | [aws_subnets.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
 | [aws_vpc.vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |

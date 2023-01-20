@@ -18,7 +18,7 @@ We are leveraging [the existing EKS Blueprints Workloads GitHub repository sampl
   - [How this work](#how-this-work)
     - [Watch our Workload: we focus on team-burnham namespace.](#watch-our-workload-we-focus-on-team-burnham-namespace)
     - [Using AWS Route53 and External DNS](#using-aws-route53-and-external-dns)
-      - [Configure Ingress ressources with weighted records](#configure-ingress-ressources-with-weighted-records)
+      - [Configure Ingress resources with weighted records](#configure-ingress-resources-with-weighted-records)
   - [Automate the migration from Terraform](#automate-the-migration-from-terraform)
   - [Delete the Stack](#delete-the-stack)
     - [Delete the EKS Cluster(s)](#delete-the-eks-clusters)
@@ -99,7 +99,7 @@ terraform init
 terraform apply
 ```
 
-> There can be somme Warnings due to not declare variables. This is normal and you can ignore thems as we share the same `terraform.tfvars` for the 3 projects by using symlinks for a uniq file, and we declare some variables used for the eks-blue and eks-green directory
+> There can be somme Warnings due to not declare variables. This is normal and you can ignore them as we share the same `terraform.tfvars` for the 3 projects by using symlinks for a uniq file, and we declare some variables used for the eks-blue and eks-green directory
 
 ### Create the Blue cluster
 
@@ -121,7 +121,7 @@ terraform init
 terraform apply
 ```
 
-By default the only differences in the 2 clusters are the values defined in [main.tf](./eks-blue/main.tf#L38-L43). We will change thoses values to upgrade Kubernetes version of new cluster, and to migrate our stateless workloads between clusters.
+By default the only differences in the 2 clusters are the values defined in [main.tf](./eks-blue/main.tf#L38-L43). We will change those values to upgrade Kubernetes version of new cluster, and to migrate our stateless workloads between clusters.
 
 ## How this work
 
@@ -217,11 +217,11 @@ This is the Terraform configuration to configure the ExternalDNS Add-on which is
 "heritage=external-dns,external-dns/owner=eks-blueprint-blue,external-dns/resource=ingress/team-burnham/burnham-ingress"
 ```
 
-So in this example the Owner of the record is the **external-dns** controller, from the **eks-blueprint-blue** EKS cluster, and correspond to the Kubernetes ingress ressouce names burnham-ingress in the team-burnham namespace.
+So in this example the Owner of the record is the **external-dns** controller, from the **eks-blueprint-blue** EKS cluster, and correspond to the Kubernetes ingress resource names burnham-ingress in the team-burnham namespace.
 
-Using this feature, and relying on weighted records, we will be able to do blue/green or canary migration by changing the weight of ingress ressources defined in each cluster.
+Using this feature, and relying on weighted records, we will be able to do blue/green or canary migration by changing the weight of ingress resources defined in each cluster.
 
-#### Configure Ingress ressources with weighted records
+#### Configure Ingress resources with weighted records
 
 Since we have configured ExternalDNS add-on, we can now defined specific annotation in our `ingress` object. You may already know that our workload are synchronized using ArgoCD from our workload repository sample.
 
@@ -303,7 +303,7 @@ eks-blueprint-blue
 eks-blueprint-green
 ```
 
-The default TTL is for 60 seconds, and you have 50% chance to have blue or green cluster, then you may need to replay the previous command several times to have an idea of the repartition, which theorically is 50%
+The default TTL is for 60 seconds, and you have 50% chance to have blue or green cluster, then you may need to replay the previous command several times to have an idea of the repartition, which theoretically is 50%
 
 3. Now that we see that our green cluster is taking requests correctly, we can update the eks-blue cluster configuration to have the weight to 0 and apply again. after a few moment, your route53 records should look like the below screenshot, and all requests should now reach eks-green cluster.
 
@@ -327,7 +327,7 @@ In this sample, we uses a simple terraform variable to control the weight for al
 
 In order to properly destroy the Cluster, we need first to remove the ArgoCD workloads, while keeping the ArgoCD addons.
 
-Why doing this? When we remove an ingress object, we want the associated Kubernetes add-ons like aws load balancer controller and External DNS to correctly free the associated AWS ressources. If we directly ask terraform to destroy everything, it can remove first theses controllers without allowing them the time to remove associated aws ressources that will still existing in AWS, preventing us to completely delete our cluster.
+Why doing this? When we remove an ingress object, we want the associated Kubernetes add-ons like aws load balancer controller and External DNS to correctly free the associated AWS resources. If we directly ask terraform to destroy everything, it can remove first theses controllers without allowing them the time to remove associated aws resources that will still existing in AWS, preventing us to completely delete our cluster.
 
 #### TL;DR
 
@@ -349,11 +349,11 @@ kubectl delete application workloads -n argocd
 kubectl delete application ecsdemo -n argocd
 ```
 
-Once every workload applications as been freed on AWS side, (this can take some times), we can then destroy our add-ons and terraform ressources
+Once every workload applications as been freed on AWS side, (this can take some times), we can then destroy our add-ons and terraform resources
 
-> Note: it can take time to deregister all load balancers, verify that you don't have any more AWS ressources created by EKS prior to start destroying EKS with terraform.
+> Note: it can take time to deregister all load balancers, verify that you don't have any more AWS resources created by EKS prior to start destroying EKS with terraform.
 
-3. Destroy terraform ressources
+3. Destroy terraform resources
 
 ```bash
 terraform apply -destroy -target="module.kubernetes_addons" -auto-approve
@@ -370,7 +370,7 @@ cd core-infra
 terraform apply -destroy -auto-approve
 ```
 
-This will destroy the Route53 hosted zone, the Certificate manager certificate, the VPC with all it's associated ressources.
+This will destroy the Route53 hosted zone, the Certificate manager certificate, the VPC with all it's associated resources.
 
 ## Troubleshoot
 
