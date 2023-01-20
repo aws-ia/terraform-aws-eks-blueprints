@@ -32,7 +32,7 @@ You can optionally customize the Helm chart that deploys `Crossplane` via the fo
   }
 ```
 
-In case you have Enterprise support by Upbound, you might prefer to install the [Upbound Universal Crossplane (UXP) helm chart](https://github.com/upbound/universal-crossplane/tree/main/cluster/charts/universal-crossplane) via the following configuration.
+To install the [Upbound Universal Crossplane (UXP) helm chart](https://github.com/upbound/universal-crossplane/tree/main/cluster/charts/universal-crossplane) use the following configuration.
 
 ```hcl
   enable_crossplane = true #defaults to Upstream Crossplane Helm Chart
