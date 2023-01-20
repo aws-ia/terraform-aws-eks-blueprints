@@ -58,7 +58,7 @@ Checkout the usage docs for Self-managed Node groups [examples](https://aws-ia.g
 | <a name="output_launch_template_latest_versions"></a> [launch\_template\_latest\_versions](#output\_launch\_template\_latest\_versions) | Launch Template latest versions for EKS Self Managed Node Group |
 | <a name="output_self_managed_asg_names"></a> [self\_managed\_asg\_names](#output\_self\_managed\_asg\_names) | Self managed group ASG names |
 | <a name="output_self_managed_iam_role_name"></a> [self\_managed\_iam\_role\_name](#output\_self\_managed\_iam\_role\_name) | Self managed groups IAM role names |
-| <a name="output_self_managed_nodegroup_iam_instance_profile_arn"></a> [self\_managed\_nodegroup\_iam\_instance\_profile\_arn](#output\_self\_managed\_nodegroup\_iam\_instance\_profile\_arn) | IAM Instance Profile arnd for EKS Self Managed Node Group |
+| <a name="output_self_managed_nodegroup_iam_instance_profile_arn"></a> [self\_managed\_nodegroup\_iam\_instance\_profile\_arn](#output\_self\_managed\_nodegroup\_iam\_instance\_profile\_arn) | IAM Instance Profile and for EKS Self Managed Node Group |
 | <a name="output_self_managed_nodegroup_iam_instance_profile_id"></a> [self\_managed\_nodegroup\_iam\_instance\_profile\_id](#output\_self\_managed\_nodegroup\_iam\_instance\_profile\_id) | IAM Instance Profile ID for EKS Self Managed Node Group |
 | <a name="output_self_managed_nodegroup_iam_role_arns"></a> [self\_managed\_nodegroup\_iam\_role\_arns](#output\_self\_managed\_nodegroup\_iam\_role\_arns) | Self managed groups IAM role arns |
 | <a name="output_self_managed_nodegroup_name"></a> [self\_managed\_nodegroup\_name](#output\_self\_managed\_nodegroup\_name) | EKS Self Managed node group id |

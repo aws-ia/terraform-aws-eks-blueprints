@@ -84,8 +84,8 @@ The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/fully-private-eks-cluster/vpc
-terraform destroy -var-file base.tfvars -auto-approve  
-```  
+terraform destroy -var-file base.tfvars -auto-approve
+```
 
 # Provision the Private EKS cluster using the EKS stack.
 
@@ -105,7 +105,7 @@ rm -vf ${HOME}/.aws/credentials
 ```
 > This page ([Update IAM settings for your Workspace](https://www.eksworkshop.com/020_prerequisites/workspaceiam/)) contains the above step and also some useful addition steps to save the AccountId and default Region into your bash_profile.
 
-5. From the Cloud9 bash teminal, ensure that your Cloud9 instance ARN shows the assumed-role that matches the IAM role you assigned to the EC2 instance:
+5. From the Cloud9 bash terminal, ensure that your Cloud9 instance ARN shows the assumed-role that matches the IAM role you assigned to the EC2 instance:
 ```shell script
 aws sts get-caller-identity --query Arn
 ```
@@ -189,7 +189,7 @@ The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/fully-private-eks-cluster/eks
-terraform destroy -var-file base.tfvars -auto-approve  
+terraform destroy -var-file base.tfvars -auto-approve
 ```
 
 # Provision the Managed Add-ons using the add-ons stack.
@@ -231,6 +231,6 @@ The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/fully-private-eks-cluster/add-ons
-terraform destroy -var-file base.tfvars -auto-approve  
+terraform destroy -var-file base.tfvars -auto-approve
 ```
 <!--- END_TF_DOCS --->

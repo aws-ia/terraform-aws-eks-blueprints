@@ -54,16 +54,9 @@ module "eks" {
   cluster_addons = {
     coredns    = {}
     kube-proxy = {}
-    vpc-cni = {
-      most_recent = true
-      configuration_values = jsonencode({
-        env = {
-          # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
-          ENABLE_PREFIX_DELEGATION = "true"
-          WARM_PREFIX_TARGET       = "1"
-        }
-      })
-    }
+    # Specify the VPC CNI addon outside of the module as shown below
+    # to ensure the addon is configured before compute resources are created
+    # See README for further details
   }
 
   vpc_id     = module.vpc.vpc_id
@@ -76,29 +69,29 @@ module "eks" {
       min_size     = 1
       max_size     = 1
       desired_size = 1
-
-      # See issue https://github.com/awslabs/amazon-eks-ami/issues/844
-      pre_bootstrap_user_data = <<-EOT
-        #!/bin/bash
-        set -ex
-
-        # https://docs.aws.amazon.com/eks/latest/userguide/choosing-instance-type.html#determine-max-pods
-        MAX_PODS=$(/etc/eks/max-pods-calculator.sh --instance-type-from-imds \
-          --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} \
-          --cni-prefix-delegation-enabled)
-
-        # These settings opt out of the default behavior and use the maximum number of pods, with a cap of 110 due to
-        # Kubernetes guidance https://kubernetes.io/docs/setup/best-practices/cluster-large/
-        # See more info here https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
-        cat <<-EOF > /etc/profile.d/bootstrap.sh
-          export USE_MAX_PODS=false
-          export KUBELET_EXTRA_ARGS="--max-pods=$${MAX_PODS}"
-        EOF
-        # Source extra environment variables in bootstrap script
-        sed -i '/^set -o errexit/a\\nsource /etc/profile.d/bootstrap.sh' /etc/eks/bootstrap.sh
-      EOT
     }
   }
+
+  tags = local.tags
+}
+
+################################################################################
+# VPC-CNI IPv4 Prefix Delegation
+################################################################################
+
+resource "aws_eks_addon" "vpc_cni" {
+  cluster_name      = module.eks.cluster_name
+  addon_name        = "vpc-cni"
+  resolve_conflicts = "OVERWRITE"
+  addon_version     = data.aws_eks_addon_version.latest["vpc-cni"].version
+
+  configuration_values = jsonencode({
+    env = {
+      # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
+      ENABLE_PREFIX_DELEGATION = "true"
+      WARM_PREFIX_TARGET       = "1"
+    }
+  })
 
   tags = local.tags
 }
