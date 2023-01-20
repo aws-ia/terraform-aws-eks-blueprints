@@ -16,7 +16,7 @@ variable "create_policy" {
   default     = true
 }
 
-variable "load_balancer_controller_policy_arn" {
+variable "policy_arn" {
   description = "ARN for an existing IAM policy for the loadbalancer controller."
   type        = string
   default     = ""

@@ -49,6 +49,6 @@ locals {
     create_kubernetes_namespace         = try(local.helm_config["create_namespace"], true)
     create_kubernetes_service_account   = true
     create_service_account_secret_token = try(local.helm_config["create_service_account_secret_token"], false)
-    irsa_iam_policies                   = [coalesce(var.load_balancer_controller_policy_arn, aws_iam_policy.aws_load_balancer_controller[0].arn)]
+    irsa_iam_policies                   = [coalesce(var.policy_arn, aws_iam_policy.aws_load_balancer_controller[0].arn)]
   }
 }
