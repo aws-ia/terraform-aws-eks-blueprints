@@ -11,4 +11,5 @@ resource "aws_iam_policy" "karpenter" {
   name        = "${var.addon_context.eks_cluster_id}-karpenter"
   description = "IAM Policy for Karpenter"
   policy      = data.aws_iam_policy_document.karpenter.json
+  path        = var.path
 }
