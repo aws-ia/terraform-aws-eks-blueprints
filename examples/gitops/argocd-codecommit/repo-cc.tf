@@ -59,7 +59,7 @@ resource "aws_lambda_function" "lambda_webhook" {
   handler       = "index.handler"
   runtime       = "nodejs16.x"
   tracing_config {
-    mode = "Passthrough"
+    mode = "Active"
   }
 }
 
