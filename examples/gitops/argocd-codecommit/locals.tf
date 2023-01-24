@@ -1,7 +1,7 @@
 locals {
 
-  name            = basename(path.cwd)
-  region          = data.aws_region.current.name
+  name = basename(path.cwd)
+  # region          = data.aws_region.current.name
   cluster_version = "1.23"
 
   vpc_cidr = "10.0.0.0/16"

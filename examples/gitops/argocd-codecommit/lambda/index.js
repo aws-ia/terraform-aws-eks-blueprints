@@ -1,4 +1,4 @@
-/* eslint-env node */ 
+/* eslint-env node */
 const https = require('https'); // eslint-disable-line
 
 /* webhook payload

@@ -1,21 +1,6 @@
-variable "argocd_url" {
-  type    = string
-  default = ""
-}
-
-output "argocd_url" {
-  description = "Url of ArgoCD"
-  value       = "https://${var.argocd_url}"
-}
-
 resource "aws_codecommit_repository" "workloads_repo_cc" {
   repository_name = "eks-blueprints-workloads-cc"
   default_branch  = "main"
-}
-
-output "workloads_repo_cc_url" {
-  description = "Url of AWS CodeCommit repository for ArgoCD workloads"
-  value       = aws_codecommit_repository.workloads_repo_cc.clone_url_http
 }
 
 resource "aws_iam_user" "argocd_user" {
@@ -68,7 +53,7 @@ data "archive_file" "lambda_zip" {
 }
 
 resource "aws_lambda_function" "lambda_webhook" {
-  filename      = "${path.module}/lambda_function.zip"
+  filename      = data.archive_file.lambda_zip.output_path
   function_name = join("-", [aws_codecommit_repository.workloads_repo_cc.repository_name, "webhook"])
   role          = aws_iam_role.iam_for_lambda.arn
   handler       = "index.handler"

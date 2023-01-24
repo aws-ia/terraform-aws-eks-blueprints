@@ -18,5 +18,8 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = ">= 1.14"
     }
+    archive = {
+      version = ">= 2.3.0"
+    }
   }
 }
