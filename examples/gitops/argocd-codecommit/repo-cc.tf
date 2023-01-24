@@ -58,6 +58,9 @@ resource "aws_lambda_function" "lambda_webhook" {
   role          = aws_iam_role.iam_for_lambda.arn
   handler       = "index.handler"
   runtime       = "nodejs16.x"
+  tracing_config {
+    mode = "Passthrough"
+  }
 }
 
 resource "aws_codecommit_trigger" "workloads_repo_cc_trigger" {
