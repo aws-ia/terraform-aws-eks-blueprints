@@ -7,7 +7,7 @@ locals {
     chart       = local.name
     repository  = "https://prometheus-community.github.io/helm-charts"
     version     = "4.29.0"
-    namespace   = "kube-system"
+    namespace   = "kube-state-metrics"
     description = "Kube State Metrics helm Chart deployment configuration"
   }
 

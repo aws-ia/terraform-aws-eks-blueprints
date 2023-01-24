@@ -353,7 +353,7 @@ module "metrics_server" {
 
 module "kube_state_metrics" {
   count             = var.enable_kube_state_metrics ? 1 : 0
-  source            = "./metrics-server"
+  source            = "./kube-state-metrics"
   helm_config       = var.kube_state_metrics_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
