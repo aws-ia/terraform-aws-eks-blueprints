@@ -9,12 +9,12 @@ data "aws_iam_policy_document" "velero" {
       "ec2:DeleteSnapshot"
     ]
     resources = [
-        "arn:${var.addon_context.aws_partition_id}:ec2:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:instance/*",
-        "arn:${var.addon_context.aws_partition_id}:ec2:${var.addon_context.aws_region_name}::snapshot/*",
-        "arn:${var.addon_context.aws_partition_id}:ec2:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:volume/*"
-        ]
+      "arn:${var.addon_context.aws_partition_id}:ec2:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:instance/*",
+      "arn:${var.addon_context.aws_partition_id}:ec2:${var.addon_context.aws_region_name}::snapshot/*",
+      "arn:${var.addon_context.aws_partition_id}:ec2:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:volume/*"
+    ]
   }
-  
+
   statement {
     actions = [
       "ec2:DescribeSnapshots",
