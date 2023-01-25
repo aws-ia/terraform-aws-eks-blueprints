@@ -27,5 +27,6 @@ module "helm_addon" {
     },
     var.helm_config
   )
-  addon_context = var.addon_context
+  manage_via_gitops = var.manage_via_gitops
+  addon_context     = var.addon_context
 }
