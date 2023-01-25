@@ -81,7 +81,7 @@ data "aws_iam_policy_document" "this" {
       "aps:GetMetricMetadata",
       "aps:GetSeries",
       "aps:QueryMetrics",
-      ]
+    ]
   }
 
 }
