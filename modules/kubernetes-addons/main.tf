@@ -254,13 +254,15 @@ module "coredns_autoscaler" {
 }
 
 module "crossplane" {
-  count               = var.enable_crossplane ? 1 : 0
-  source              = "./crossplane"
-  helm_config         = var.crossplane_helm_config
-  aws_provider        = var.crossplane_aws_provider
-  jet_aws_provider    = var.crossplane_jet_aws_provider
-  kubernetes_provider = var.crossplane_kubernetes_provider
-  addon_context       = local.addon_context
+  count                = var.enable_crossplane ? 1 : 0
+  source               = "./crossplane"
+  helm_config          = var.crossplane_helm_config
+  aws_provider         = var.crossplane_aws_provider
+  upbound_aws_provider = var.crossplane_upbound_aws_provider
+  jet_aws_provider     = var.crossplane_jet_aws_provider
+  kubernetes_provider  = var.crossplane_kubernetes_provider
+  helm_provider        = var.crossplane_helm_provider
+  addon_context        = local.addon_context
 }
 
 module "datadog_operator" {
@@ -371,10 +373,11 @@ module "ondat" {
 }
 
 module "kube_prometheus_stack" {
-  count         = var.enable_kube_prometheus_stack ? 1 : 0
-  source        = "./kube-prometheus-stack"
-  helm_config   = var.kube_prometheus_stack_helm_config
-  addon_context = local.addon_context
+  count             = var.enable_kube_prometheus_stack ? 1 : 0
+  source            = "./kube-prometheus-stack"
+  helm_config       = var.kube_prometheus_stack_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "portworx" {
