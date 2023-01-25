@@ -1,5 +1,5 @@
 variable "helm_config" {
-  description = "Helm provider config for the Argo Rollouts"
+  description = "Helm config for Crossplane"
   type        = any
   default     = {}
 }
@@ -26,13 +26,23 @@ variable "aws_provider" {
   type        = any
 }
 
+variable "upbound_aws_provider" {
+  description = "Upbound AWS Provider config for Crossplane"
+  type        = any
+}
+
 variable "kubernetes_provider" {
   description = "Kubernetes Provider config for Crossplane"
   type        = any
 }
 
+variable "helm_provider" {
+  description = "Helm Provider config for Crossplane"
+  type        = any
+}
+
 variable "jet_aws_provider" {
-  description = "AWS Provider Jet AWS config for Crossplane"
+  description = "AWS Provider Jet AWS config for Crossplane [Deprecated]"
   type = object({
     enable                   = bool
     provider_aws_version     = string
