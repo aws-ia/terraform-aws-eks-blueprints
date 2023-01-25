@@ -38,6 +38,6 @@ data "aws_iam_policy_document" "irsa_policy" {
       "sqs:DeleteMessage",
       "sqs:ReceiveMessage",
     ]
-    resources = [ aws_sqs_queue.aws_node_termination_handler_queue.arn ]
+    resources = [aws_sqs_queue.aws_node_termination_handler_queue.arn]
   }
 }
