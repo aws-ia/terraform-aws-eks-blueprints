@@ -24,12 +24,12 @@ data "aws_iam_policy_document" "karpenter" {
   }
 
   statement {
-    sid       = "AllowEc2Actions"
-    effect    = "Allow"
+    sid    = "AllowEc2Actions"
+    effect = "Allow"
     resources = [
       "arn:${var.addon_context.aws_partition_id}:ec2:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:*",
       "arn:${var.addon_context.aws_partition_id}:ec2:${var.addon_context.aws_region_name}::image/*"
-      ]
+    ]
 
     actions = [
       "ec2:CreateFleet",
