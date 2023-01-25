@@ -77,11 +77,11 @@ data "aws_iam_policy_document" "this" {
   }
 
   statement {
-    sid       = "AllowServiceDiscovery"
-    effect    = "Allow"
+    sid    = "AllowServiceDiscovery"
+    effect = "Allow"
     resources = [
-        "arn:${var.addon_context.aws_partition_id}:servicediscovery:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:namespace/*",
-        "arn:${var.addon_context.aws_partition_id}:servicediscovery:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:service/*"
+      "arn:${var.addon_context.aws_partition_id}:servicediscovery:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:namespace/*",
+      "arn:${var.addon_context.aws_partition_id}:servicediscovery:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:service/*"
     ]
     actions = [
       "servicediscovery:CreateService",
@@ -97,13 +97,13 @@ data "aws_iam_policy_document" "this" {
       "servicediscovery:UpdateInstanceCustomHealthStatus",
       "servicediscovery:GetOperation"
     ]
-  }  
-  
+  }
+
   statement {
-    sid       = "AllowRoute53"
-    effect    = "Allow"
+    sid    = "AllowRoute53"
+    effect = "Allow"
     resources = [
-        "arn:${var.addon_context.aws_partition_id}:route53:::*"]
+    "arn:${var.addon_context.aws_partition_id}:route53:::*"]
     actions = [
       "route53:ChangeResourceRecordSets",
       "route53:GetHealthCheck",
