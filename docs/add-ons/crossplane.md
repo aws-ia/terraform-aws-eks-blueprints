@@ -12,7 +12,7 @@ For complete project documentation, please visit the [Crossplane](https://crossp
 
 ### Crossplane Deployment
 
-Crossplane can be deployed by enabling the add-on via the following. Check out the full [example](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/crossplane/locals.tf) to deploy the EKS Cluster with Crossplane.
+Crossplane can be deployed by enabling the add-on via the following. Check out the full [example](https://github.com/awslabs/crossplane-on-eks/tree/main/bootstrap/terraform) to deploy the EKS Cluster with Crossplane.
 
 ```hcl
   enable_crossplane = true
@@ -27,23 +27,35 @@ You can optionally customize the Helm chart that deploys `Crossplane` via the fo
     name                      = "crossplane"
     chart                     = "crossplane"
     repository                = "https://charts.crossplane.io/stable/"
-    version                   = "1.6.2"
+    version                   = "1.10.1" # Get the lates version from https://github.com/crossplane/crossplane
     namespace                 = "crossplane-system"
-    values = [templatefile("${path.module}/values.yaml", {
-         service_account  = var.service_account,
-         operating_system = "linux"
-    })]
   }
-
-  crossplane_irsa_policies = [] # Optional to add additional policies to Crossplane IRSA
 ```
 
-### Crossplane AWS Provider Deployment
-This module provides options to deploy the following AWS providers for Crossplane. These providers disabled by default, and it can be enabled using the config below.
+To install the [Upbound Universal Crossplane (UXP) helm chart](https://github.com/upbound/universal-crossplane/tree/main/cluster/charts/universal-crossplane) use the following configuration.
+
+```hcl
+  enable_crossplane = true #defaults to Upstream Crossplane Helm Chart
+
+  crossplane_helm_config = {
+    name        = "crossplane"
+    chart       = "universal-crossplane"
+    repository  = "https://charts.upbound.io/stable/"
+    version     = "1.10.1" # Get the latest version from https://github.com/upbound/universal-crossplane
+    namespace   = "upbound-system"
+    description = "Upbound Universal Crossplane (UXP)"
+  }
+```
+
+
+### Crossplane Providers Deployment
+This module provides options to deploy the following providers for Crossplane. These providers disabled by default, and it can be enabled using the config below.
 
  - [AWS Provider](https://github.com/crossplane/provider-aws)
- - [Terrajet AWS Provider](https://github.com/crossplane-contrib/provider-jet-aws)
+ - [Upbound AWS Provider](https://github.com/upbound/provider-aws)
  - [Kubernetes Provider](https://github.com/crossplane-contrib/provider-kubernetes)
+ - [Helm Provider](https://github.com/crossplane-contrib/provider-helm)
+ - [Terrajet AWS Provider](https://github.com/crossplane-contrib/provider-jet-aws)
 
 _NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
 This example config uses AdministratorAccess, but you should select a policy with the minimum permissions required to provision your resources._
@@ -53,12 +65,18 @@ Config to deploy [AWS Provider](https://github.com/crossplane/provider-aws)
 # Creates ProviderConfig -> aws-provider
 crossplane_aws_provider = {
   enable                   = true
-  provider_aws_version     = "v0.24.1"  # Get the latest version from https://github.com/crossplane/provider-aws
-  additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
 }
 ```
 
-Config to deploy [Terrajet AWS Provider](https://github.com/crossplane-contrib/provider-jet-aws)
+Config to deploy [Upbound AWS Provider](https://github.com/upbound/provider-aws)
+```hcl
+# Creates ProviderConfig -> upbound-aws-provider
+crossplane_upbound_aws_provider = {
+  enable                   = true
+}
+```
+
+Config to deploy [Terrajet AWS Provider (Deprecated)](https://github.com/crossplane-contrib/provider-jet-aws)
 ```hcl
 # Creates ProviderConfig -> jet-aws-provider
 crossplane_jet_aws_provider = {
@@ -75,7 +93,14 @@ Config to deploy [Kubernetes provider](https://github.com/crossplane-contrib/pro
 # Creates ProviderConfig -> kubernetes-provider
 crossplane_kubernetes_provider = {
   enable                   = true
-  provider_kubernetes_version     = "v0.4.1"  # Get the latest version from  https://github.com/crossplane-contrib/provider-jet-aws
+}
+```
+
+Config to deploy [Helm Provider](https://github.com/crossplane-contrib/provider-helm)
+```hcl
+# Creates ProviderConfig -> helm-provider
+crossplane_helm_provider = {
+  enable                   = true
 }
 ```
 
