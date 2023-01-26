@@ -3,7 +3,7 @@ locals {
   namespace = try(var.helm_config.namespace, local.name)
 
   argocd_gitops_config = {
-    enable             = true
+    enable = true
   }
 }
 
