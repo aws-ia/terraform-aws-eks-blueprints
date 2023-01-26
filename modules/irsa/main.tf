@@ -64,9 +64,11 @@ resource "aws_iam_role" "irsa" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : var.eks_oidc_provider_arn
+          "Federated" : var.eks_oidc_provider_arn,
+          "AWS" : try(var.irsa_role_arn, null)
+          "Service" : try(var.irsa_role_service, null)
         },
-        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Action" : concat(["sts:AssumeRoleWithWebIdentity"], var.irsa_role_additional_actions),
         "Condition" : {
           "StringLike" : {
             "${local.eks_oidc_issuer_url}:sub" : "system:serviceaccount:${var.kubernetes_namespace}:${var.kubernetes_service_account}",
