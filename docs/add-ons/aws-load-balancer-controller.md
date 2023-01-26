@@ -28,6 +28,15 @@ You can optionally customize the Helm chart that deploys `aws-lb-ingress-control
   }
 ```
 
+You are also able to bypass the modules assumption that the creation of an IAM policy for managing load balancers is necessary, instead opting
+for a pre-existing policy, e.g.:
+
+```hcl
+  enable_aws_load_balancer_controller        = true
+  aws_load_balancer_controller_create_policy = false
+  aws_load_balancer_controller_policy_arn    = "arn:aws:iam::012345678901:policy/aws-eks-load-balancer-controller"
+```
+
 To validate that controller is running, ensure that controller deployment is in RUNNING state:
 
 ```sh
