@@ -8,7 +8,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://kubernetes-sigs.github.io/aws-fsx-csi-driver/"
-    version     = "1.4.4"
+    version     = "1.5.0"
     namespace   = local.namespace
     description = "The Amazon FSx for Lustre CSI driver Helm chart deployment configuration"
   }
