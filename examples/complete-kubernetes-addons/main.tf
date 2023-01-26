@@ -120,7 +120,7 @@ module "eks_blueprints_kubernetes_addons" {
     most_recent = true
   }
 
-  enable_aws_load_balancer_controller        = true
+  enable_aws_load_balancer_controller = true
   # Set the below variables to control whether the AWS Load Balancer addon creates it's own
   # IAM policy, or you'd prefer to create one yourself and pass the ARN for the module to use.
   # aws_load_balancer_controller_create_policy = true

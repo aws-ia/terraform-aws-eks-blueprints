@@ -404,4 +404,3 @@
 | <a name="output_vpa"></a> [vpa](#output\_vpa) | Map of attributes of the Helm release and IRSA created |
 | <a name="output_yunikorn"></a> [yunikorn](#output\_yunikorn) | Map of attributes of the Helm release and IRSA created |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-
