@@ -239,6 +239,14 @@ variable "crossplane_aws_provider" {
   }
 }
 
+variable "crossplane_upbound_aws_provider" {
+  description = "AWS Upbound Provider config for Crossplane"
+  type        = any
+  default = {
+    enable = false
+  }
+}
+
 variable "crossplane_jet_aws_provider" {
   description = "AWS Provider Jet AWS config for Crossplane"
   type = object({
@@ -255,6 +263,14 @@ variable "crossplane_jet_aws_provider" {
 
 variable "crossplane_kubernetes_provider" {
   description = "Kubernetes Provider config for Crossplane"
+  type        = any
+  default = {
+    enable = false
+  }
+}
+
+variable "crossplane_helm_provider" {
+  description = "Helm Provider config for Crossplane"
   type        = any
   default = {
     enable = false
@@ -1342,7 +1358,7 @@ variable "cilium_helm_config" {
 }
 
 variable "cilium_enable_wireguard" {
-  description = "Enable wiregaurd encryption"
+  description = "Enable wireguard encryption"
   type        = bool
   default     = false
 }

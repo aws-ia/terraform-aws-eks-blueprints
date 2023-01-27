@@ -7,7 +7,7 @@ This example solution provides:
 - AWS EKS Cluster (control plane)
 - AWS EKS Fargate Profiles for the `kube-system` namespace which is used by the `coredns`, `vpc-cni`, and `kube-proxy` addons, as well as profile that will match on `app-*` namespaces using a wildcard pattern.
 - AWS EKS managed addons `coredns`, `vpc-cni` and `kube-proxy`
-    `coredns` has been patched to run on Fargate, and `vpc-cni` has been configured to use prefix delegation to better suppor the max pods setting of 110 on the Karpenter provisioner
+    `coredns` has been patched to run on Fargate, and `vpc-cni` has been configured to use prefix delegation to better support the max pods setting of 110 on the Karpenter provisioner
 - A sample deployment is provided to demonstrates scaling a deployment to view how Karpenter responds to provision, and de-provision, resources on-demand
 
 ## Prerequisites:

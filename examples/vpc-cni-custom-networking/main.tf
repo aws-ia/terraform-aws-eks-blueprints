@@ -59,29 +59,17 @@ module "eks" {
   cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
 
-  # EKS Addons
   cluster_addons = {
     coredns    = {}
     kube-proxy = {}
-    vpc-cni = {
-      most_recent = true
-      configuration_values = jsonencode({
-        env = {
-          # Reference https://aws.github.io/aws-eks-best-practices/reliability/docs/networkmanagement/#cni-custom-networking
-          # Reference https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
-          AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG = "true"
-          ENI_CONFIG_LABEL_DEF               = "failure-domain.beta.kubernetes.io/zone"
-
-          # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
-          ENABLE_PREFIX_DELEGATION = "true"
-          WARM_PREFIX_TARGET       = "1"
-        }
-      })
-    }
+    # Specify the VPC CNI addon outside of the module as shown below
+    # to ensure the addon is configured before compute resources are created
+    # See README for further details
   }
 
-  vpc_id                   = module.vpc.vpc_id
-  subnet_ids               = module.vpc.private_subnets
+  vpc_id = module.vpc.vpc_id
+  # We only want to assign the 10.0.* range subnets to the data plane
+  subnet_ids               = slice(module.vpc.private_subnets, 0, 3)
   control_plane_subnet_ids = module.vpc.intra_subnets
 
   eks_managed_node_groups = {
@@ -91,32 +79,33 @@ module "eks" {
       min_size     = 1
       max_size     = 3
       desired_size = 2
-
-      # See issue https://github.com/awslabs/amazon-eks-ami/issues/844
-      pre_bootstrap_user_data = <<-EOT
-        #!/bin/bash
-        set -ex
-
-        # https://docs.aws.amazon.com/eks/latest/userguide/choosing-instance-type.html#determine-max-pods
-        MAX_PODS=$(/etc/eks/max-pods-calculator.sh \
-        --instance-type-from-imds \
-        --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} \
-        --cni-prefix-delegation-enabled \
-        --cni-custom-networking-enabled \
-        )
-
-        # These settings opt out of the default behavior and use the maximum number of pods, with a cap of 110 due to
-        # Kubernetes guidance https://kubernetes.io/docs/setup/best-practices/cluster-large/
-        # See more info here https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
-        cat <<-EOF > /etc/profile.d/bootstrap.sh
-          export USE_MAX_PODS=false
-          export KUBELET_EXTRA_ARGS="--max-pods=$${MAX_PODS}"
-        EOF
-        # Source extra environment variables in bootstrap script
-        sed -i '/^set -o errexit/a\\nsource /etc/profile.d/bootstrap.sh' /etc/eks/bootstrap.sh
-      EOT
     }
   }
+
+  tags = local.tags
+}
+
+################################################################################
+# VPC-CNI Custom CNI and IPv4 Prefix Delegation
+################################################################################
+
+resource "aws_eks_addon" "vpc_cni" {
+  cluster_name      = module.eks.cluster_name
+  addon_name        = "vpc-cni"
+  resolve_conflicts = "OVERWRITE"
+  addon_version     = data.aws_eks_addon_version.latest["vpc-cni"].version
+
+  configuration_values = jsonencode({
+    env = {
+      # Reference https://aws.github.io/aws-eks-best-practices/reliability/docs/networkmanagement/#cni-custom-networking
+      AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG = "true"
+      ENI_CONFIG_LABEL_DEF               = "topology.kubernetes.io/zone"
+
+      # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
+      ENABLE_PREFIX_DELEGATION = "true"
+      WARM_PREFIX_TARGET       = "1"
+    }
+  })
 
   tags = local.tags
 }

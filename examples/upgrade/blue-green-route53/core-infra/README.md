@@ -16,7 +16,7 @@
   - [Inputs](#inputs)
   - [Outputs](#outputs-1)
 
-This folder contains the Terraform code to deploy the core infratructure for our EKS Cluster **Blue** and **Green**. The AWS resources created by the script are:
+This folder contains the Terraform code to deploy the core infrastructure for our EKS Cluster **Blue** and **Green**. The AWS resources created by the script are:
 
 - Networking
   - VPC
@@ -26,7 +26,7 @@ This folder contains the Terraform code to deploy the core infratructure for our
     - 1 Internet Gateway
     - Associated Route Tables
 - 1 Hosted zone to use for our clusters with name `${core_stack_name}.${hosted_zone_name}`
-- 1 wildcard certificat for TLS terminaison associated to our new HostedZone `*.${core_stack_name}.${hosted_zone_name}`
+- 1 wildcard certificate for TLS termination associated to our new HostedZone `*.${core_stack_name}.${hosted_zone_name}`
 - 1 SecretManager password used to access ArgoCD UI in both EKS clusters.
 
 ## Getting Started
@@ -63,11 +63,11 @@ terraform plan
 terraform apply --auto-approve
 ```
 
-> There can be somme Warnings due to not declare variables. This is normal and you can ignore thems as we share the same `terraform.tfvars` for the 3 projects by using symlinks for a uniq file, and we declare some variables used for the eks-blue and eks-green directory
+> There can be somme Warnings due to not declare variables. This is normal and you can ignore them as we share the same `terraform.tfvars` for the 3 projects by using symlinks for a uniq file, and we declare some variables used for the eks-blue and eks-green directory
 
 ## Outputs
 
-After the execution of the Terraform code you will get an output with needed IDs and values needed as input for the nexts Terraform applies.
+After the execution of the Terraform code you will get an output with needed IDs and values needed as input for the next Terraform applies.
 
 ```shell
 terraform output
@@ -87,7 +87,7 @@ We are going to use this core infrastructure to host the EKS Blue and Green clus
 
 Run the following command if you want to delete all the resources created before.
 
-> If you have created EKS blueprints clusters, you'll need to clean thoses ressources first.
+> If you have created EKS blueprints clusters, you'll need to clean those resources first.
 
 ```shell
 terraform destroy
@@ -124,8 +124,8 @@ terraform destroy
 |------|------|
 | [aws_route53_record.ns](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_zone.sub](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_zone) | resource |
-| [aws_secretsmanager_secret.arogcd](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
-| [aws_secretsmanager_secret_version.arogcd](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret_version) | resource |
+| [aws_secretsmanager_secret.argocd](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
+| [aws_secretsmanager_secret_version.argocd](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret_version) | resource |
 | [random_password.argocd](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
 | [aws_route53_zone.root](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |

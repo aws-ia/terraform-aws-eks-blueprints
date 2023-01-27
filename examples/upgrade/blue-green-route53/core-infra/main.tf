@@ -107,12 +107,12 @@ resource "random_password" "argocd" {
 }
 
 #tfsec:ignore:aws-ssm-secret-use-customer-key
-resource "aws_secretsmanager_secret" "arogcd" {
+resource "aws_secretsmanager_secret" "argocd" {
   name                    = "${local.argocd_secret_manager_name}.${local.name}"
   recovery_window_in_days = 0 # Set to zero for this example to force delete during Terraform destroy
 }
 
-resource "aws_secretsmanager_secret_version" "arogcd" {
-  secret_id     = aws_secretsmanager_secret.arogcd.id
+resource "aws_secretsmanager_secret_version" "argocd" {
+  secret_id     = aws_secretsmanager_secret.argocd.id
   secret_string = random_password.argocd.result
 }
