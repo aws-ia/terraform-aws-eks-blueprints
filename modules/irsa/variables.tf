@@ -57,13 +57,13 @@ variable "irsa_iam_permissions_boundary" {
 }
 
 variable "irsa_principal_role_arn" {
-  description = "IRSA IAM Role ARN"
+  description = "IRSA IAM Role ARN to be used in the trust policy e.g., arn:aws:iam::<ACCOUNT-ID>:role/EMR_EC2_DefaultRole"
   type        = string
   default     = null
 }
 
 variable "irsa_principal_role_service" {
-  description = "IRSA IAM Role Service"
+  description = "IRSA IAM Role Service to be used in the trust policy e.g., eks.amazonaws.com"
   type        = string
   default     = null
 }
