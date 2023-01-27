@@ -1,0 +1,9 @@
+# https://github.com/crossplane-contrib/provider-helm/blob/master/examples/provider-config/provider-config-incluster.yaml
+---
+apiVersion: helm.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: ${helm-provider-config}
+spec:
+  credentials:
+    source: InjectedIdentity
