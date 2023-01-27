@@ -1,17 +1,20 @@
 module "helm_addon" {
   source = "../helm-addon"
 
-  manage_via_gitops = var.manage_via_gitops
-  helm_config       = local.helm_config
+  # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-state-metrics/Chart.yaml
+  helm_config = merge(
+    {
+      name             = local.name
+      chart            = local.name
+      repository       = "https://prometheus-community.github.io/helm-charts"
+      version          = "4.29.0"
+      namespace        = local.name
+      create_namespace = true
+      description      = "Kube State Metrics helm Chart deployment configuration"
+    },
+    var.helm_config
+  )
+
   addon_context     = var.addon_context
-
-  depends_on = [kubernetes_namespace_v1.this]
-}
-
-resource "kubernetes_namespace_v1" "this" {
-  count = try(local.helm_config["create_namespace"], true) && local.helm_config["namespace"] != "kube-state-metrics" ? 1 : 0
-
-  metadata {
-    name = local.helm_config["namespace"]
-  }
+  manage_via_gitops = var.manage_via_gitops
 }

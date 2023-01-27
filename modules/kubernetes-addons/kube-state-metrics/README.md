@@ -5,14 +5,11 @@
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
+No providers.
 
 ## Modules
 
@@ -22,9 +19,7 @@
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [kubernetes_namespace_v1.this](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace_v1) | resource |
+No resources.
 
 ## Inputs
 
