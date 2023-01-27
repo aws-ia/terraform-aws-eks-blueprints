@@ -1,3 +1,7 @@
+locals {
+  name = "kube-state-metrics"
+}
+
 module "helm_addon" {
   source = "../helm-addon"
 
