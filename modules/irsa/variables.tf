@@ -56,13 +56,13 @@ variable "irsa_iam_permissions_boundary" {
   default     = ""
 }
 
-variable "irsa_role_arn" {
+variable "irsa_principal_role_arn" {
   description = "IRSA IAM Role ARN"
   type        = string
   default = ""
 }
 
-variable "irsa_role_service" {
+variable "irsa_principal_role_service" {
   description = "IRSA IAM Role Service"
   type        = string
   default = ""

@@ -65,8 +65,8 @@ resource "aws_iam_role" "irsa" {
         "Effect" : "Allow",
         "Principal" : {
           "Federated" : var.eks_oidc_provider_arn,
-          "AWS" : try(var.irsa_role_arn, null)
-          "Service" : try(var.irsa_role_service, null)
+          "AWS" : try(var.irsa_principal_role_arn, null)
+          "Service" : try(var.irsa_principal_role_service, null)
         },
         "Action" : concat(["sts:AssumeRoleWithWebIdentity"], var.irsa_role_additional_actions),
         "Condition" : {
