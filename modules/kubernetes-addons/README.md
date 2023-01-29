@@ -64,6 +64,7 @@
 | <a name="module_karpenter"></a> [karpenter](#module\_karpenter) | ./karpenter | n/a |
 | <a name="module_keda"></a> [keda](#module\_keda) | ./keda | n/a |
 | <a name="module_kube_prometheus_stack"></a> [kube\_prometheus\_stack](#module\_kube\_prometheus\_stack) | ./kube-prometheus-stack | n/a |
+| <a name="module_kube_state_metrics"></a> [kube\_state\_metrics](#module\_kube\_state\_metrics) | ./kube-state-metrics | n/a |
 | <a name="module_kubecost"></a> [kubecost](#module\_kubecost) | ./kubecost | n/a |
 | <a name="module_kuberay_operator"></a> [kuberay\_operator](#module\_kuberay\_operator) | ./kuberay-operator | n/a |
 | <a name="module_kubernetes_dashboard"></a> [kubernetes\_dashboard](#module\_kubernetes\_dashboard) | ./kubernetes-dashboard | n/a |
@@ -162,8 +163,10 @@
 | <a name="input_coredns_cluster_proportional_autoscaler_helm_config"></a> [coredns\_cluster\_proportional\_autoscaler\_helm\_config](#input\_coredns\_cluster\_proportional\_autoscaler\_helm\_config) | Helm provider config for the CoreDNS cluster-proportional-autoscaler | `any` | `{}` | no |
 | <a name="input_crossplane_aws_provider"></a> [crossplane\_aws\_provider](#input\_crossplane\_aws\_provider) | AWS Provider config for Crossplane | `any` | <pre>{<br>  "enable": false<br>}</pre> | no |
 | <a name="input_crossplane_helm_config"></a> [crossplane\_helm\_config](#input\_crossplane\_helm\_config) | Crossplane Helm Chart config | `any` | `null` | no |
+| <a name="input_crossplane_helm_provider"></a> [crossplane\_helm\_provider](#input\_crossplane\_helm\_provider) | Helm Provider config for Crossplane | `any` | <pre>{<br>  "enable": false<br>}</pre> | no |
 | <a name="input_crossplane_jet_aws_provider"></a> [crossplane\_jet\_aws\_provider](#input\_crossplane\_jet\_aws\_provider) | AWS Provider Jet AWS config for Crossplane | <pre>object({<br>    enable                   = bool<br>    provider_aws_version     = string<br>    additional_irsa_policies = list(string)<br>  })</pre> | <pre>{<br>  "additional_irsa_policies": [],<br>  "enable": false,<br>  "provider_aws_version": "v0.24.1"<br>}</pre> | no |
 | <a name="input_crossplane_kubernetes_provider"></a> [crossplane\_kubernetes\_provider](#input\_crossplane\_kubernetes\_provider) | Kubernetes Provider config for Crossplane | `any` | <pre>{<br>  "enable": false<br>}</pre> | no |
+| <a name="input_crossplane_upbound_aws_provider"></a> [crossplane\_upbound\_aws\_provider](#input\_crossplane\_upbound\_aws\_provider) | AWS Upbound Provider config for Crossplane | `any` | <pre>{<br>  "enable": false<br>}</pre> | no |
 | <a name="input_csi_secrets_store_provider_aws_helm_config"></a> [csi\_secrets\_store\_provider\_aws\_helm\_config](#input\_csi\_secrets\_store\_provider\_aws\_helm\_config) | CSI Secrets Store Provider AWS Helm Configurations | `any` | `null` | no |
 | <a name="input_custom_image_registry_uri"></a> [custom\_image\_registry\_uri](#input\_custom\_image\_registry\_uri) | Custom image registry URI map of `{region = dkr.endpoint }` | `map(string)` | `{}` | no |
 | <a name="input_data_plane_wait_arn"></a> [data\_plane\_wait\_arn](#input\_data\_plane\_wait\_arn) | Addon deployment will not proceed until this value is known. Set to node group/Fargate profile ARN to wait for data plane to be ready before provisioning addons | `string` | `""` | no |
@@ -223,6 +226,7 @@
 | <a name="input_enable_karpenter"></a> [enable\_karpenter](#input\_enable\_karpenter) | Enable Karpenter autoscaler add-on | `bool` | `false` | no |
 | <a name="input_enable_keda"></a> [enable\_keda](#input\_enable\_keda) | Enable KEDA Event-based autoscaler add-on | `bool` | `false` | no |
 | <a name="input_enable_kube_prometheus_stack"></a> [enable\_kube\_prometheus\_stack](#input\_enable\_kube\_prometheus\_stack) | Enable Community kube-prometheus-stack add-on | `bool` | `false` | no |
+| <a name="input_enable_kube_state_metrics"></a> [enable\_kube\_state\_metrics](#input\_enable\_kube\_state\_metrics) | Enable Kube State Metrics add-on | `bool` | `false` | no |
 | <a name="input_enable_kubecost"></a> [enable\_kubecost](#input\_enable\_kubecost) | Enable Kubecost add-on | `bool` | `false` | no |
 | <a name="input_enable_kuberay_operator"></a> [enable\_kuberay\_operator](#input\_enable\_kuberay\_operator) | Enable KubeRay Operator add-on | `bool` | `false` | no |
 | <a name="input_enable_kubernetes_dashboard"></a> [enable\_kubernetes\_dashboard](#input\_enable\_kubernetes\_dashboard) | Enable Kubernetes Dashboard add-on | `bool` | `false` | no |
@@ -277,6 +281,7 @@
 | <a name="input_keda_helm_config"></a> [keda\_helm\_config](#input\_keda\_helm\_config) | KEDA Event-based autoscaler add-on config | `any` | `{}` | no |
 | <a name="input_keda_irsa_policies"></a> [keda\_irsa\_policies](#input\_keda\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
 | <a name="input_kube_prometheus_stack_helm_config"></a> [kube\_prometheus\_stack\_helm\_config](#input\_kube\_prometheus\_stack\_helm\_config) | Community kube-prometheus-stack Helm Chart config | `any` | `{}` | no |
+| <a name="input_kube_state_metrics_helm_config"></a> [kube\_state\_metrics\_helm\_config](#input\_kube\_state\_metrics\_helm\_config) | Kube State Metrics Helm Chart config | `any` | `{}` | no |
 | <a name="input_kubecost_helm_config"></a> [kubecost\_helm\_config](#input\_kubecost\_helm\_config) | Kubecost Helm Chart config | `any` | `{}` | no |
 | <a name="input_kuberay_operator_helm_config"></a> [kuberay\_operator\_helm\_config](#input\_kuberay\_operator\_helm\_config) | KubeRay Operator Helm Chart config | `any` | `{}` | no |
 | <a name="input_kubernetes_dashboard_helm_config"></a> [kubernetes\_dashboard\_helm\_config](#input\_kubernetes\_dashboard\_helm\_config) | Kubernetes Dashboard Helm Chart config | `any` | `null` | no |
@@ -378,6 +383,7 @@
 | <a name="output_karpenter"></a> [karpenter](#output\_karpenter) | Map of attributes of the Helm release and IRSA created |
 | <a name="output_keda"></a> [keda](#output\_keda) | Map of attributes of the Helm release and IRSA created |
 | <a name="output_kube_prometheus_stack"></a> [kube\_prometheus\_stack](#output\_kube\_prometheus\_stack) | Map of attributes of the Helm release and IRSA created |
+| <a name="output_kube_state_metrics"></a> [kube\_state\_metrics](#output\_kube\_state\_metrics) | Map of attributes of the Helm release and IRSA created |
 | <a name="output_kubecost"></a> [kubecost](#output\_kubecost) | Map of attributes of the Helm release and IRSA created |
 | <a name="output_kuberay_operator"></a> [kuberay\_operator](#output\_kuberay\_operator) | Map of attributes of the Helm release and IRSA created |
 | <a name="output_kubernetes_dashboard"></a> [kubernetes\_dashboard](#output\_kubernetes\_dashboard) | Map of attributes of the Helm release and IRSA created |

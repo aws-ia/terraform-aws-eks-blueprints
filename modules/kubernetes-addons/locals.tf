@@ -33,6 +33,7 @@ locals {
     argoWorkflows             = var.enable_argo_workflows ? module.argo_workflows[0].argocd_gitops_config : null
     karpenter                 = var.enable_karpenter ? module.karpenter[0].argocd_gitops_config : null
     kubernetesDashboard       = var.enable_kubernetes_dashboard ? module.kubernetes_dashboard[0].argocd_gitops_config : null
+    kubePrometheusStack       = var.enable_kube_prometheus_stack ? module.kube_prometheus_stack[0].argocd_gitops_config : null
     awsCloudWatchMetrics      = var.enable_aws_cloudwatch_metrics ? module.aws_cloudwatch_metrics[0].argocd_gitops_config : null
     externalDns               = var.enable_external_dns ? module.external_dns[0].argocd_gitops_config : null
     externalSecrets           = var.enable_external_secrets ? module.external_secrets[0].argocd_gitops_config : null
@@ -51,6 +52,7 @@ locals {
     nvidiaDevicePlugin        = var.enable_nvidia_device_plugin ? module.nvidia_device_plugin[0].argocd_gitops_config : null
     consul                    = var.enable_consul ? module.consul[0].argocd_gitops_config : null
     thanos                    = var.enable_thanos ? module.thanos[0].argocd_gitops_config : null
+    kubeStateMetrics          = var.enable_kube_state_metrics ? module.kube_state_metrics[0].argocd_gitops_config : null
   }
 
   addon_context = {

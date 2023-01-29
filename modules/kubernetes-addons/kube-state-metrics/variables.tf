@@ -1,11 +1,11 @@
 variable "helm_config" {
-  description = "Helm Config for kube-prometheus-stack"
+  description = "Helm provider config for Kube State Metrics"
   type        = any
   default     = {}
 }
 
 variable "manage_via_gitops" {
-  description = "Determines if the add-on should be managed via GitOps."
+  description = "Determines if the add-on should be managed via GitOps"
   type        = bool
   default     = false
 }
@@ -22,7 +22,5 @@ variable "addon_context" {
     eks_oidc_issuer_url            = string
     eks_oidc_provider_arn          = string
     tags                           = map(string)
-    irsa_iam_role_path             = string
-    irsa_iam_permissions_boundary  = string
   })
 }

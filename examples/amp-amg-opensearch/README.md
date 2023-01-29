@@ -10,6 +10,8 @@ AWS FluentBit Addon is configured to collect the container logs from EKS Cluster
 
 For the sake of simplicity in this example, we store sensitive information and credentials in `dev.tfvars`. This should not be done in a production environment. Instead, use an external secret store such as AWS Secrets Manager and use the [aws_secretsmanager_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret) data source to retrieve them.
 
+Checkout additional observability patterns at the [AWS Observability Accelerator for Terraform](https://github.com/aws-observability/terraform-aws-observability-accelerator)
+
 ## How to Deploy
 
 ### Prerequisites
@@ -44,7 +46,6 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 - Initialize a working directory
 
 ```
-cd examples/observability/eks-cluster-with-observability
 terraform init
 ```
 
