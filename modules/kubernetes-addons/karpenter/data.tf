@@ -1,5 +1,5 @@
 data "aws_arn" "queue" {
-  count = var.sqs_queue_arn != "" ? 1 : 0
+  count = var.enable_spot_termination_handling ? 1 : 0
 
   arn = var.sqs_queue_arn
 }
