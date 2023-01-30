@@ -429,6 +429,19 @@ variable "metrics_server_helm_config" {
   default     = {}
 }
 
+#---------KUBE STATE METRICS-----------
+variable "enable_kube_state_metrics" {
+  description = "Enable Kube State Metrics add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kube_state_metrics_helm_config" {
+  description = "Kube State Metrics Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------SYSDIG-------------
 variable "enable_sysdig_agent" {
   description = "Enable Sysdig Agent add-on"
