@@ -10,6 +10,7 @@ module "launch_template_self_managed_ng" {
       instance_type          = local.self_managed_node_group["instance_type"]
       capacity_type          = local.self_managed_node_group["capacity_type"] == "spot" ? "" : local.self_managed_node_group["capacity_type"]
       iam_instance_profile   = local.self_managed_node_group["iam_instance_profile_name"] == null ? aws_iam_instance_profile.self_managed_ng[0].name : local.self_managed_node_group["iam_instance_profile_name"]
+      placement              = local.self_managed_node_group["placement"]
 
       pre_userdata         = local.self_managed_node_group["pre_userdata"]
       bootstrap_extra_args = local.self_managed_node_group["bootstrap_extra_args"]
