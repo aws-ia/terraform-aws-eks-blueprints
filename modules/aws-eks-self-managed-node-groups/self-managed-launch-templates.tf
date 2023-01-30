@@ -10,7 +10,6 @@ module "launch_template_self_managed_ng" {
       instance_type          = local.self_managed_node_group["instance_type"]
       capacity_type          = local.self_managed_node_group["capacity_type"] == "spot" ? "" : local.self_managed_node_group["capacity_type"]
       iam_instance_profile   = local.self_managed_node_group["iam_instance_profile_name"] == null ? aws_iam_instance_profile.self_managed_ng[0].name : local.self_managed_node_group["iam_instance_profile_name"]
-      placement              = local.self_managed_node_group["placement"]
 
       pre_userdata         = local.self_managed_node_group["pre_userdata"]
       bootstrap_extra_args = local.self_managed_node_group["bootstrap_extra_args"]
@@ -24,6 +23,7 @@ module "launch_template_self_managed_ng" {
       http_put_response_hop_limit = try(var.self_managed_ng.http_put_response_hop_limit, 2)
       http_protocol_ipv6          = try(var.self_managed_ng.http_protocol_ipv6, null)
       instance_metadata_tags      = try(var.self_managed_ng.instance_metadata_tags, null)
+      placement                   = try(var.self_managed_ng.placement, null)
 
       service_ipv6_cidr = var.context.service_ipv6_cidr
       service_ipv4_cidr = var.context.service_ipv4_cidr
