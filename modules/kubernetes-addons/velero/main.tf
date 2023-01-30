@@ -55,37 +55,6 @@ module "helm_addon" {
   addon_context = var.addon_context
 }
 
-# https://github.com/vmware-tanzu/velero-plugin-for-aws#option-1-set-permissions-with-an-iam-user
-data "aws_iam_policy_document" "velero" {
-  statement {
-    actions = [
-      "ec2:CreateSnapshot",
-      "ec2:CreateTags",
-      "ec2:CreateVolume",
-      "ec2:DeleteSnapshot",
-      "ec2:DescribeSnapshots",
-      "ec2:DescribeVolumes",
-    ]
-    resources = ["*"]
-  }
-
-  statement {
-    actions = [
-      "s3:AbortMultipartUpload",
-      "s3:DeleteObject",
-      "s3:GetObject",
-      "s3:ListMultipartUploadParts",
-      "s3:PutObject",
-    ]
-    resources = ["arn:${var.addon_context.aws_partition_id}:s3:::${var.backup_s3_bucket}/*"]
-  }
-
-  statement {
-    actions   = ["s3:ListBucket"]
-    resources = ["arn:${var.addon_context.aws_partition_id}:s3:::${var.backup_s3_bucket}"]
-  }
-}
-
 resource "aws_iam_policy" "velero" {
   name        = "${var.addon_context.eks_cluster_id}-velero"
   description = "Provides Velero permissions to backup and restore cluster resources"
