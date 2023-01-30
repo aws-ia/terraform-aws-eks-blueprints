@@ -64,16 +64,16 @@ resource "aws_launch_template" "this" {
     }
   }
 
-  dynamic "placement" {
-    for_each = try(each.value.placement, {})
-    content {
-      affinity          = try(placement.value.affinity, null)
-      availability_zone = try(placement.value.availability_zone, null)
-      group_name        = try(placement.value.group_name, null)
-      host_id           = try(placement.value.host_id, null)
-      tenancy           = try(placement.value.tenancy, null)
-    }
-  }
+  # dynamic "placement" {
+  #   for_each = try(each.value.placement, {})
+  #   content {
+  #     affinity          = try(placement.value.affinity, null)
+  #     availability_zone = try(placement.value.availability_zone, null)
+  #     group_name        = try(placement.value.group_name, null)
+  #     host_id           = try(placement.value.host_id, null)
+  #     tenancy           = try(placement.value.tenancy, null)
+  #   }
+  # }
 
   dynamic "placement" {
     for_each = try(each.value.placement, null) != null ? [each.value.placement] : []
