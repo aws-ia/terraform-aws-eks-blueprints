@@ -64,16 +64,14 @@ resource "aws_launch_template" "this" {
     }
   }
 
-  dynamic "placement" {
-    for_each = var.placement != null ? [var.placement] : []
-    content {
-      affinity          = lookup(placement.value, "affinity", null)
-      availability_zone = lookup(placement.value, "availability_zone", null)
-      group_name        = lookup(placement.value, "group_name", null)
-      host_id           = lookup(placement.value, "host_id", null)
-      tenancy           = lookup(placement.value, "tenancy", null)
-    }
+  placement = {
+    affinity          = try(placement.value.affinity, null)
+    availability_zone = try(placement.value.availability_zone, null)
+    group_name        = try(placement.value.group_name, null)
+    host_id           = try(placement.value.host_id, null)
+    tenancy           = try(placement.value.tenancy, null)
   }
+
 
   vpc_security_group_ids = try(each.value.vpc_security_group_ids, null)
 

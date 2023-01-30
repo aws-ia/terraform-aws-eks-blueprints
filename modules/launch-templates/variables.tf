@@ -13,17 +13,3 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-
-variable "placement" {
-  description = "The placement specifications of the instances"
-
-  type = object({
-    affinity          = string
-    availability_zone = string
-    group_name        = string
-    host_id           = string
-    tenancy           = string
-  })
-
-  default = null
-}
