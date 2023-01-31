@@ -31,4 +31,3 @@ variable "context" {
     service_ipv4_cidr = string
   })
 }
-
