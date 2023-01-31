@@ -53,7 +53,7 @@ module "eks_blueprints" {
       launch_template_os = "amazonlinux2eks"
       subnet_ids         = module.vpc.private_subnets
 
-      placement           =   {
+      placement = {
         affinity          = null
         availability_zone = null
         group_name        = null
