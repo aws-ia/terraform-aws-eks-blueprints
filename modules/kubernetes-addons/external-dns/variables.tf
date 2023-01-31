@@ -13,6 +13,7 @@ variable "manage_via_gitops" {
 variable "irsa_policies" {
   description = "Additional IAM policies used for the add-on service account."
   type        = list(string)
+  default     = []
 }
 
 variable "domain_name" {
