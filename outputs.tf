@@ -198,6 +198,6 @@ output "emr_on_eks_role_id" {
 # Teams(Soft Multi-tenancy) Outputs
 #-------------------------------
 output "teams" {
-  description = "Outputs from EKS Fargate profiles groups "
+  description = "Output of the teams module. This contains the IAM roles arn of platform and application teams"
   value       = var.create_eks && (length(var.platform_teams) > 0 || length(var.application_teams) > 0) ? module.aws_eks_teams[*] : []
 }
