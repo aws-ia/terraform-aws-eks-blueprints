@@ -10,7 +10,8 @@ You can add more data sources using the [values.yaml](https://github.com/grafana
 
 [Grafana](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/spark-k8s-operator) can be deployed by enabling the add-on via the following. This example shows the usage of the Secrets Manager to create a new secret for Grafana adminPassword.
 
-This option sets a default `adminPassword` by the helm chart which can be extracted from kubernetes `secrets` with the name as `grafana`.  
+This option sets a default `adminPassword` by the helm chart which can be extracted from kubernetes `secrets` with the name as `grafana`.
+
 ```
 enable_grafana = true
 ```
@@ -22,7 +23,7 @@ Also, provide the `adminPassword` using set_sensitive values as shown in the exa
   enable_grafana = true
   grafana_irsa_policies = [] # Optional to add additional policies to IRSA
 
-# Optional  karpenter_helm_config
+# Optional grafana_helm_config
   grafana_helm_config = {
     name        = "grafana"
     chart       = "grafana"
@@ -34,7 +35,7 @@ Also, provide the `adminPassword` using set_sensitive values as shown in the exa
     set_sensitive = [
       {
         name  = "adminPassword"
-        value = "<YOUR_SECURE_PASSWORD_FOR_GARFANA_ADMIN>"
+        value = "<YOUR_SECURE_PASSWORD_FOR_GRAFANA_ADMIN>"
       }
     ]
   }

@@ -38,50 +38,15 @@ module "helm_addon" {
   ]
 
   irsa_config = {
-    create_kubernetes_namespace       = try(var.helm_config.create_namespace, false)
-    kubernetes_namespace              = local.namespace
-    create_kubernetes_service_account = true
-    kubernetes_service_account        = local.service_account
-    irsa_iam_policies                 = [aws_iam_policy.cluster_autoscaler.arn]
+    create_kubernetes_namespace         = try(var.helm_config.create_namespace, false)
+    kubernetes_namespace                = local.namespace
+    create_kubernetes_service_account   = true
+    create_service_account_secret_token = try(var.helm_config["create_service_account_secret_token"], false)
+    kubernetes_service_account          = local.service_account
+    irsa_iam_policies                   = [aws_iam_policy.cluster_autoscaler.arn]
   }
 
   addon_context = var.addon_context
-}
-
-data "aws_iam_policy_document" "cluster_autoscaler" {
-  statement {
-    sid       = ""
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "autoscaling:DescribeAutoScalingGroups",
-      "autoscaling:DescribeAutoScalingInstances",
-      "autoscaling:DescribeLaunchConfigurations",
-      "autoscaling:DescribeTags",
-      "ec2:DescribeInstanceTypes",
-      "ec2:DescribeLaunchTemplateVersions"
-    ]
-  }
-
-  statement {
-    sid       = ""
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "autoscaling:SetDesiredCapacity",
-      "autoscaling:TerminateInstanceInAutoScalingGroup",
-      "ec2:DescribeInstanceTypes",
-      "eks:DescribeNodegroup",
-    ]
-
-    condition {
-      test     = "StringEquals"
-      variable = "autoscaling:ResourceTag/k8s.io/cluster-autoscaler/${var.addon_context.eks_cluster_id}"
-      values   = ["owned"]
-    }
-  }
 }
 
 resource "aws_iam_policy" "cluster_autoscaler" {

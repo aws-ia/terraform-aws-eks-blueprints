@@ -8,7 +8,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://kubernetes-sigs.github.io/aws-fsx-csi-driver/"
-    version     = "1.4.4"
+    version     = "1.5.0"
     namespace   = local.namespace
     description = "The Amazon FSx for Lustre CSI driver Helm chart deployment configuration"
   }
@@ -35,12 +35,13 @@ locals {
   ]
 
   irsa_config = {
-    kubernetes_namespace              = local.helm_config["namespace"]
-    kubernetes_service_account        = local.service_account
-    create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
-    create_kubernetes_service_account = true
-    irsa_iam_policies                 = concat([aws_iam_policy.aws_fsx_csi_driver.arn], var.irsa_policies)
-    tags                              = var.addon_context.tags
+    kubernetes_namespace                = local.helm_config["namespace"]
+    kubernetes_service_account          = local.service_account
+    create_kubernetes_namespace         = try(local.helm_config["create_namespace"], true)
+    create_kubernetes_service_account   = true
+    create_service_account_secret_token = try(local.helm_config["create_service_account_secret_token"], false)
+    irsa_iam_policies                   = concat([aws_iam_policy.aws_fsx_csi_driver.arn], var.irsa_policies)
+    tags                                = var.addon_context.tags
   }
 
   argocd_gitops_config = {

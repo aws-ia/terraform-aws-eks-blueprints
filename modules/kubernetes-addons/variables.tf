@@ -51,6 +51,12 @@ variable "eks_oidc_provider" {
   default     = null
 }
 
+variable "eks_oidc_provider_arn" {
+  description = "The OpenID Connect identity provider ARN"
+  type        = string
+  default     = null
+}
+
 variable "eks_cluster_endpoint" {
   description = "Endpoint for your Kubernetes API server"
   type        = string
@@ -227,15 +233,17 @@ variable "crossplane_helm_config" {
 
 variable "crossplane_aws_provider" {
   description = "AWS Provider config for Crossplane"
-  type = object({
-    enable                   = bool
-    provider_aws_version     = string
-    additional_irsa_policies = list(string)
-  })
+  type        = any
   default = {
-    enable                   = false
-    provider_aws_version     = "v0.24.1"
-    additional_irsa_policies = []
+    enable = false
+  }
+}
+
+variable "crossplane_upbound_aws_provider" {
+  description = "AWS Upbound Provider config for Crossplane"
+  type        = any
+  default = {
+    enable = false
   }
 }
 
@@ -255,13 +263,17 @@ variable "crossplane_jet_aws_provider" {
 
 variable "crossplane_kubernetes_provider" {
   description = "Kubernetes Provider config for Crossplane"
-  type = object({
-    enable                      = bool
-    provider_kubernetes_version = string
-  })
+  type        = any
   default = {
-    enable                      = false
-    provider_kubernetes_version = "v0.4.1"
+    enable = false
+  }
+}
+
+variable "crossplane_helm_provider" {
+  description = "Helm Provider config for Crossplane"
+  type        = any
+  default = {
+    enable = false
   }
 }
 
@@ -417,6 +429,19 @@ variable "metrics_server_helm_config" {
   default     = {}
 }
 
+#---------KUBE STATE METRICS-----------
+variable "enable_kube_state_metrics" {
+  description = "Enable Kube State Metrics add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kube_state_metrics_helm_config" {
+  description = "Kube State Metrics Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------SYSDIG-------------
 variable "enable_sysdig_agent" {
   description = "Enable Sysdig Agent add-on"
@@ -495,6 +520,25 @@ variable "tetrate_istio_gateway_helm_config" {
   description = "Istio `gateway` Helm Chart config"
   type        = any
   default     = {}
+}
+
+#-----------THANOS-------------
+variable "enable_thanos" {
+  description = "Enable Thanos add-on"
+  type        = bool
+  default     = false
+}
+
+variable "thanos_helm_config" {
+  description = "Thanos Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "thanos_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
 }
 
 #-----------TRAEFIK-------------
@@ -857,6 +901,18 @@ variable "karpenter_irsa_policies" {
 
 variable "karpenter_node_iam_instance_profile" {
   description = "Karpenter Node IAM Instance profile id"
+  type        = string
+  default     = ""
+}
+
+variable "karpenter_enable_spot_termination_handling" {
+  description = "Determines whether to enable native spot termination handling"
+  type        = bool
+  default     = false
+}
+
+variable "karpenter_sqs_queue_arn" {
+  description = "(Optional) ARN of SQS used by Karpenter when native node termination handling is enabled"
   type        = string
   default     = ""
 }
@@ -1315,7 +1371,7 @@ variable "cilium_helm_config" {
 }
 
 variable "cilium_enable_wireguard" {
-  description = "Enable wiregaurd encryption"
+  description = "Enable wireguard encryption"
   type        = bool
   default     = false
 }
@@ -1377,4 +1433,30 @@ variable "enable_app_2048" {
   description = "Enable sample app 2048"
   type        = bool
   default     = false
+}
+
+#----------- EMR on EKS -----------------------
+variable "enable_emr_on_eks" {
+  description = "Enable EMR on EKS add-on"
+  type        = bool
+  default     = false
+}
+
+variable "emr_on_eks_config" {
+  description = "EMR on EKS Helm configuration values"
+  type        = any
+  default     = {}
+}
+
+#-----------Consul addon-----------------------
+variable "enable_consul" {
+  description = "Enable consul add-on"
+  type        = bool
+  default     = false
+}
+
+variable "consul_helm_config" {
+  description = "Consul Helm Chart config"
+  type        = any
+  default     = {}
 }

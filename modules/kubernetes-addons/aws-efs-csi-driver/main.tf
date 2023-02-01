@@ -22,11 +22,12 @@ module "helm_addon" {
   )
 
   irsa_config = {
-    kubernetes_namespace              = local.namespace
-    kubernetes_service_account        = local.service_account
-    create_kubernetes_namespace       = try(var.helm_config.create_namespace, false)
-    create_kubernetes_service_account = true
-    irsa_iam_policies                 = concat([aws_iam_policy.aws_efs_csi_driver.arn], var.irsa_policies)
+    kubernetes_namespace                = local.namespace
+    kubernetes_service_account          = local.service_account
+    create_kubernetes_namespace         = try(var.helm_config.create_namespace, false)
+    create_kubernetes_service_account   = true
+    create_service_account_secret_token = try(var.helm_config["create_service_account_secret_token"], false)
+    irsa_iam_policies                   = concat([aws_iam_policy.aws_efs_csi_driver.arn], var.irsa_policies)
   }
 
   set_values = [
@@ -50,62 +51,6 @@ module "helm_addon" {
 
   addon_context = var.addon_context
 }
-
-data "aws_iam_policy_document" "aws_efs_csi_driver" {
-  statement {
-    sid       = ""
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "ec2:DescribeAvailabilityZones",
-      "elasticfilesystem:DescribeAccessPoints",
-      "elasticfilesystem:DescribeFileSystems",
-      "elasticfilesystem:DescribeMountTargets"
-    ]
-  }
-
-  statement {
-    sid       = ""
-    effect    = "Allow"
-    resources = ["*"]
-    actions   = ["elasticfilesystem:CreateAccessPoint"]
-
-    condition {
-      test     = "StringLike"
-      variable = "aws:RequestTag/efs.csi.aws.com/cluster"
-      values   = ["true"]
-    }
-  }
-
-  statement {
-    sid       = ""
-    effect    = "Allow"
-    resources = ["*"]
-    actions   = ["elasticfilesystem:DeleteAccessPoint"]
-
-    condition {
-      test     = "StringLike"
-      variable = "aws:ResourceTag/efs.csi.aws.com/cluster"
-      values   = ["true"]
-    }
-  }
-
-  statement {
-    actions = [
-      "elasticfilesystem:ClientRootAccess",
-      "elasticfilesystem:ClientWrite",
-      "elasticfilesystem:ClientMount",
-    ]
-    resources = ["*"]
-    condition {
-      test     = "Bool"
-      variable = "elasticfilesystem:AccessedViaMountTarget"
-      values   = ["true"]
-    }
-  }
-}
-
 
 resource "aws_iam_policy" "aws_efs_csi_driver" {
   name        = "${var.addon_context.eks_cluster_id}-efs-csi-policy"

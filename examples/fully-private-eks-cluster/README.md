@@ -84,8 +84,8 @@ The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/fully-private-eks-cluster/vpc
-terraform destroy -var-file base.tfvars -auto-approve  
-```  
+terraform destroy -var-file base.tfvars -auto-approve
+```
 
 # Provision the Private EKS cluster using the EKS stack.
 
@@ -105,7 +105,7 @@ rm -vf ${HOME}/.aws/credentials
 ```
 > This page ([Update IAM settings for your Workspace](https://www.eksworkshop.com/020_prerequisites/workspaceiam/)) contains the above step and also some useful addition steps to save the AccountId and default Region into your bash_profile.
 
-5. From the Cloud9 bash teminal, ensure that your Cloud9 instance ARN shows the assumed-role that matches the IAM role you assigned to the EC2 instance:
+5. From the Cloud9 bash terminal, ensure that your Cloud9 instance ARN shows the assumed-role that matches the IAM role you assigned to the EC2 instance:
 ```shell script
 aws sts get-caller-identity --query Arn
 ```
@@ -125,7 +125,7 @@ Create a Terraform variable definition file called base.tfvars and update the va
 
 ```shell script
 region             = "us-west-2"
-cluster_version    = "1.22"
+cluster_version    = "1.24"
 vpc_id             = "<vpc-id>"
 private_subnet_ids = ["<private-subnet-1>", "<private-subnet-2>", "<private-subnet-3>"]
 cluster_security_group_additional_rules = {
@@ -189,7 +189,7 @@ The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/fully-private-eks-cluster/eks
-terraform destroy -var-file base.tfvars -auto-approve  
+terraform destroy -var-file base.tfvars -auto-approve
 ```
 
 # Provision the Managed Add-ons using the add-ons stack.
@@ -202,8 +202,6 @@ Create a Terraform variable definition file called base.tfvars and update the va
 ```shell script
 region         = "us-west-2"
 eks_cluster_id = "eks"
-cluster_version= "1.22"
-
 ```
 #### Step2: Run Terraform INIT
 Initialize a working directory with configuration files
@@ -233,6 +231,6 @@ The following command destroys the resources created by `terraform apply`
 
 ```shell script
 cd examples/fully-private-eks-cluster/add-ons
-terraform destroy -var-file base.tfvars -auto-approve  
+terraform destroy -var-file base.tfvars -auto-approve
 ```
 <!--- END_TF_DOCS --->

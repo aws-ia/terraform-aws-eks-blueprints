@@ -34,7 +34,7 @@ locals {
   name = basename(path.cwd)
   # var.cluster_name is for Terratest
   cluster_name    = local.name
-  cluster_version = "1.23"
+  cluster_version = "1.24"
   region          = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"

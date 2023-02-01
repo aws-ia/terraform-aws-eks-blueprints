@@ -44,45 +44,15 @@ module "helm_addon" {
     create_kubernetes_namespace = true
     kubernetes_namespace        = local.namespace
 
-    create_kubernetes_service_account = true
-    kubernetes_service_account        = try(var.helm_config.service_account, local.name)
+    create_kubernetes_service_account   = true
+    create_service_account_secret_token = try(var.helm_config["create_service_account_secret_token"], false)
+    kubernetes_service_account          = try(var.helm_config.service_account, local.name)
 
     irsa_iam_policies = concat([aws_iam_policy.velero.arn], var.irsa_policies)
   }
 
   # Blueprints
   addon_context = var.addon_context
-}
-
-# https://github.com/vmware-tanzu/velero-plugin-for-aws#option-1-set-permissions-with-an-iam-user
-data "aws_iam_policy_document" "velero" {
-  statement {
-    actions = [
-      "ec2:CreateSnapshot",
-      "ec2:CreateTags",
-      "ec2:CreateVolume",
-      "ec2:DeleteSnapshot",
-      "ec2:DescribeSnapshots",
-      "ec2:DescribeVolumes",
-    ]
-    resources = ["*"]
-  }
-
-  statement {
-    actions = [
-      "s3:AbortMultipartUpload",
-      "s3:DeleteObject",
-      "s3:GetObject",
-      "s3:ListMultipartUploadParts",
-      "s3:PutObject",
-    ]
-    resources = ["arn:${var.addon_context.aws_partition_id}:s3:::${var.backup_s3_bucket}/*"]
-  }
-
-  statement {
-    actions   = ["s3:ListBucket"]
-    resources = ["arn:${var.addon_context.aws_partition_id}:s3:::${var.backup_s3_bucket}"]
-  }
 }
 
 resource "aws_iam_policy" "velero" {

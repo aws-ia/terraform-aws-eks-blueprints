@@ -37,12 +37,19 @@ locals {
     }
   ]
 
+  argocd_gitops_config = {
+    enable             = true
+    serviceAccountName = local.service_account
+    queueURL           = aws_sqs_queue.aws_node_termination_handler_queue.url
+  }
+
   irsa_config = {
-    kubernetes_namespace              = local.namespace
-    kubernetes_service_account        = local.service_account
-    create_kubernetes_namespace       = false
-    create_kubernetes_service_account = true
-    irsa_iam_policies                 = concat([aws_iam_policy.aws_node_termination_handler_irsa.arn], var.irsa_policies)
+    kubernetes_namespace                = local.namespace
+    kubernetes_service_account          = local.service_account
+    create_kubernetes_namespace         = false
+    create_kubernetes_service_account   = true
+    create_service_account_secret_token = try(local.helm_config["create_service_account_secret_token"], false)
+    irsa_iam_policies                   = concat([aws_iam_policy.aws_node_termination_handler_irsa.arn], var.irsa_policies)
   }
 
   event_rules = flatten([

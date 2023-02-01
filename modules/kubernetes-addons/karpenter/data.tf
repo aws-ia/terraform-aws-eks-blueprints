@@ -1,3 +1,9 @@
+data "aws_arn" "queue" {
+  count = var.enable_spot_termination_handling ? 1 : 0
+
+  arn = var.sqs_queue_arn
+}
+
 data "aws_iam_policy_document" "karpenter" {
   statement {
     sid       = "Karpenter"
@@ -35,6 +41,20 @@ data "aws_iam_policy_document" "karpenter" {
       test     = "StringLike"
       variable = "ec2:ResourceTag/Name"
       values   = ["*karpenter*"]
+    }
+  }
+
+  dynamic "statement" {
+    for_each = var.enable_spot_termination_handling ? [1] : []
+
+    content {
+      actions = [
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes",
+        "sqs:GetQueueUrl",
+        "sqs:ReceiveMessage",
+      ]
+      resources = [var.sqs_queue_arn]
     }
   }
 }

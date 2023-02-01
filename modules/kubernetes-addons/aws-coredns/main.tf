@@ -193,6 +193,8 @@ module "cluster_proportional_autoscaler" {
         tolerations:
           - key: "CriticalAddonsOnly"
             operator: "Exists"
+        blueprints:
+          connection: ${try(null_resource.remove_default_coredns_deployment[0].id, "none")}
       EOT
     ]
     },

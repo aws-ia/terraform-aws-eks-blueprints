@@ -1,16 +1,7 @@
 variable "helm_config" {
-  description = "Helm provider config for the Argo Rollouts"
+  description = "Helm config for Crossplane"
   type        = any
   default     = {}
-}
-
-variable "aws_provider" {
-  description = "AWS Provider config for Crossplane"
-  type = object({
-    enable                   = bool
-    provider_aws_version     = string
-    additional_irsa_policies = list(string)
-  })
 }
 
 variable "addon_context" {
@@ -30,29 +21,31 @@ variable "addon_context" {
   })
 }
 
+variable "aws_provider" {
+  description = "AWS Provider config for Crossplane"
+  type        = any
+}
+
+variable "upbound_aws_provider" {
+  description = "Upbound AWS Provider config for Crossplane"
+  type        = any
+}
+
+variable "kubernetes_provider" {
+  description = "Kubernetes Provider config for Crossplane"
+  type        = any
+}
+
+variable "helm_provider" {
+  description = "Helm Provider config for Crossplane"
+  type        = any
+}
+
 variable "jet_aws_provider" {
-  description = "AWS Provider Jet AWS config for Crossplane"
+  description = "AWS Provider Jet AWS config for Crossplane [Deprecated]"
   type = object({
     enable                   = bool
     provider_aws_version     = string
     additional_irsa_policies = list(string)
   })
-}
-
-variable "kubernetes_provider" {
-  description = "Kubernetes Provider config for Crossplane"
-  type = object({
-    enable                      = bool
-    provider_kubernetes_version = string
-  })
-}
-
-variable "account_id" {
-  description = "Current AWS Account ID"
-  type        = string
-}
-
-variable "aws_partition" {
-  description = "AWS Identifier of the current partition e.g., aws or aws-cn"
-  type        = string
 }

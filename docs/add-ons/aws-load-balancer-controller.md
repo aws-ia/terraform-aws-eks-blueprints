@@ -50,3 +50,14 @@ awsLoadBalancerController = {
   serviceAccountName = "<service_account>"
 }
 ```
+
+### IRSA is too long
+
+If the IAM role is too long, override the service account name in the `helm_config` to create a shorter role name.
+
+```hcl
+  enable_aws_load_balancer_controller = true
+  aws_load_balancer_controller_helm_config = {
+    service_account = "aws-lb-sa"
+  }
+```

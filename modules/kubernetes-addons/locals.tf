@@ -11,9 +11,11 @@ locals {
     awsFSxCsiDriver           = var.enable_aws_fsx_csi_driver ? module.aws_fsx_csi_driver[0].argocd_gitops_config : null
     awsForFluentBit           = var.enable_aws_for_fluentbit ? module.aws_for_fluent_bit[0].argocd_gitops_config : null
     awsLoadBalancerController = var.enable_aws_load_balancer_controller ? module.aws_load_balancer_controller[0].argocd_gitops_config : null
+    awsNodeTerminationHandler = var.enable_aws_node_termination_handler ? module.aws_node_termination_handler[0].argocd_gitops_config : null
     certManager               = var.enable_cert_manager ? module.cert_manager[0].argocd_gitops_config : null
     clusterAutoscaler         = var.enable_cluster_autoscaler ? module.cluster_autoscaler[0].argocd_gitops_config : null
     corednsAutoscaler         = var.enable_amazon_eks_coredns && var.enable_coredns_autoscaler && length(var.coredns_autoscaler_helm_config) > 0 ? module.coredns_autoscaler[0].argocd_gitops_config : null
+    datadogOperator           = var.enable_datadog_operator ? module.datadog_operator[0].argocd_gitops_config : null
     grafana                   = var.enable_grafana ? module.grafana[0].argocd_gitops_config : null
     ingressNginx              = var.enable_ingress_nginx ? module.ingress_nginx[0].argocd_gitops_config : null
     keda                      = var.enable_keda ? module.keda[0].argocd_gitops_config : null
@@ -31,6 +33,7 @@ locals {
     argoWorkflows             = var.enable_argo_workflows ? module.argo_workflows[0].argocd_gitops_config : null
     karpenter                 = var.enable_karpenter ? module.karpenter[0].argocd_gitops_config : null
     kubernetesDashboard       = var.enable_kubernetes_dashboard ? module.kubernetes_dashboard[0].argocd_gitops_config : null
+    kubePrometheusStack       = var.enable_kube_prometheus_stack ? module.kube_prometheus_stack[0].argocd_gitops_config : null
     awsCloudWatchMetrics      = var.enable_aws_cloudwatch_metrics ? module.aws_cloudwatch_metrics[0].argocd_gitops_config : null
     externalDns               = var.enable_external_dns ? module.external_dns[0].argocd_gitops_config : null
     externalSecrets           = var.enable_external_secrets ? module.external_secrets[0].argocd_gitops_config : null
@@ -47,6 +50,9 @@ locals {
     kyverno_policies          = var.enable_kyverno ? { enable = true } : null
     kyverno_policy_reporter   = var.enable_kyverno ? { enable = true } : null
     nvidiaDevicePlugin        = var.enable_nvidia_device_plugin ? module.nvidia_device_plugin[0].argocd_gitops_config : null
+    consul                    = var.enable_consul ? module.consul[0].argocd_gitops_config : null
+    thanos                    = var.enable_thanos ? module.thanos[0].argocd_gitops_config : null
+    kubeStateMetrics          = var.enable_kube_state_metrics ? module.kube_state_metrics[0].argocd_gitops_config : null
   }
 
   addon_context = {
@@ -55,7 +61,7 @@ locals {
     aws_eks_cluster_endpoint       = local.eks_cluster_endpoint
     aws_partition_id               = data.aws_partition.current.partition
     aws_region_name                = data.aws_region.current.name
-    eks_cluster_id                 = var.eks_cluster_id
+    eks_cluster_id                 = data.aws_eks_cluster.eks_cluster.id
     eks_oidc_issuer_url            = local.eks_oidc_issuer_url
     eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.eks_oidc_issuer_url}"
     tags                           = var.tags
