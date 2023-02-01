@@ -16,16 +16,8 @@ provider "helm" {
   }
 }
 
-provider "kubectl" {
-  apply_retry_count      = 10
-  host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  load_config_file       = false
-  token                  = data.aws_eks_cluster_auth.this.token
-}
-
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_id
+  name = module.eks.cluster_name
 }
 
 data "aws_caller_identity" "current" {}
@@ -44,18 +36,48 @@ locals {
   }
 }
 
-#---------------------------------------------------------------
-# EKS Blueprints
-#---------------------------------------------------------------
+################################################################################
+# Cluster
+################################################################################
 
+#tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 18.30"
+  version = "~> 19.5"
 
-  cluster_name    = local.name
-  cluster_version = "1.24"
+  cluster_name                   = local.name
+  cluster_version                = "1.24"
+  cluster_endpoint_public_access = true
 
-  cluster_enabled_log_types = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
+  cluster_addons = {
+    coredns = {
+      configuration_values = jsonencode({
+        computeType = "Fargate"
+        # Ensure that the we fully utilize the minimum amount of resources that are supplied by
+        # Fargate https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html
+        # Fargate adds 256 MB to each pod's memory reservation for the required Kubernetes
+        # components (kubelet, kube-proxy, and containerd). Fargate rounds up to the following
+        # compute configuration that most closely matches the sum of vCPU and memory requests in
+        # order to ensure pods always have the resources that they need to run.
+        resources = {
+          limits = {
+            cpu = "0.25"
+            # We are targetting the smallest Task size of 512Mb, so we subtract 256Mb from the
+            # request/limit to ensure we can fit within that task
+            memory = "256M"
+          }
+          requests = {
+            cpu = "0.25"
+            # We are targetting the smallest Task size of 512Mb, so we subtract 256Mb from the
+            # request/limit to ensure we can fit within that task
+            memory = "256M"
+          }
+        }
+      })
+    }
+    kube-proxy = {}
+    vpc-cni    = {}
+  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -73,44 +95,45 @@ module "eks" {
     },
   ]
 
-  fargate_profiles = {
-    kube_system = {
-      name = "kube-system"
-      selectors = [
-        { namespace = "kube-system" }
-      ]
-    }
-    # Wildcard profile for EMR namespaces (prefix with `emr-`)
-    emr_wildcard = {
-      name = "emr-wildcard"
-      selectors = [
-        { namespace = "emr-*" }
-      ]
-    }
-  }
+  fargate_profiles = merge(
+    { for i in range(3) :
+      "kube-system-${element(split("-", local.azs[i]), 2)}" => {
+        selectors = [
+          { namespace = "kube-system" }
+        ]
+        # We want to create a profile per AZ for high availability
+        subnet_ids = [element(module.vpc.private_subnets, i)]
+      }
+    },
+    { for i in range(3) :
+      "emr-wildcard-${element(split("-", local.azs[i]), 2)}" => {
+        selectors = [
+          { namespace = "emr-*" }
+        ]
+        # We want to create a profile per AZ for high availability
+        subnet_ids = [element(module.vpc.private_subnets, i)]
+      }
+    },
+  )
 
   tags = local.tags
 }
 
+################################################################################
+# Kubernetes Addons
+################################################################################
+
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../modules/kubernetes-addons"
 
-  eks_cluster_id        = module.eks.cluster_id
+  eks_cluster_id        = module.eks.cluster_name
   eks_cluster_endpoint  = module.eks.cluster_endpoint
   eks_oidc_provider     = module.eks.oidc_provider
   eks_oidc_provider_arn = module.eks.oidc_provider_arn
   eks_cluster_version   = module.eks.cluster_version
 
   # Wait on the `kube-system` profile before provisioning addons
-  data_plane_wait_arn = module.eks.aws_auth_configmap_yaml
-
-  enable_self_managed_coredns       = true
-  remove_default_coredns_deployment = true
-  self_managed_coredns_helm_config = {
-    # Sets the correct annotations to ensure the Fargate provisioner is used and not the EC2 provisioner
-    compute_type       = "fargate"
-    kubernetes_version = module.eks.cluster_version
-  }
+  data_plane_wait_arn = join(",", [for prof in module.eks.fargate_profiles : prof.fargate_profile_arn])
 
   # Enable Fargate logging
   enable_fargate_fluentbit = true
@@ -149,9 +172,9 @@ module "eks_blueprints_kubernetes_addons" {
   tags = local.tags
 }
 
-#---------------------------------------------------------------
+################################################################################
 # Sample Spark Job
-#---------------------------------------------------------------
+################################################################################
 
 resource "null_resource" "s3_sync" {
   provisioner "local-exec" {
@@ -174,7 +197,7 @@ resource "time_sleep" "coredns" {
   # In practice, this generally won't be necessary since the cluster will be provisioned long before jobs are scheduled on the cluster
   # However, for this example, its necessary to ensure CoreDNS is ready before we schedule the example job
   triggers = {
-    coredns = module.eks_blueprints_kubernetes_addons.aws_coredns.service_account
+    coredns = module.eks.cluster_addons["coredns"].id
   }
 }
 
@@ -222,9 +245,9 @@ resource "null_resource" "start_job_run" {
   ]
 }
 
-#---------------------------------------------------------------
+################################################################################
 # Supporting Resources
-#---------------------------------------------------------------
+################################################################################
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"

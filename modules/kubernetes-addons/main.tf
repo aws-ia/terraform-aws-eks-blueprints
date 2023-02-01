@@ -252,13 +252,15 @@ module "coredns_autoscaler" {
 }
 
 module "crossplane" {
-  count               = var.enable_crossplane ? 1 : 0
-  source              = "./crossplane"
-  helm_config         = var.crossplane_helm_config
-  aws_provider        = var.crossplane_aws_provider
-  jet_aws_provider    = var.crossplane_jet_aws_provider
-  kubernetes_provider = var.crossplane_kubernetes_provider
-  addon_context       = local.addon_context
+  count                = var.enable_crossplane ? 1 : 0
+  source               = "./crossplane"
+  helm_config          = var.crossplane_helm_config
+  aws_provider         = var.crossplane_aws_provider
+  upbound_aws_provider = var.crossplane_upbound_aws_provider
+  jet_aws_provider     = var.crossplane_jet_aws_provider
+  kubernetes_provider  = var.crossplane_kubernetes_provider
+  helm_provider        = var.crossplane_helm_provider
+  addon_context        = local.addon_context
 }
 
 module "datadog_operator" {
@@ -315,12 +317,13 @@ module "karpenter" {
 
   count = var.enable_karpenter ? 1 : 0
 
-  helm_config               = var.karpenter_helm_config
-  irsa_policies             = var.karpenter_irsa_policies
-  node_iam_instance_profile = var.karpenter_node_iam_instance_profile
-  sqs_queue_arn             = var.karpenter_sqs_queue_arn
-  manage_via_gitops         = var.argocd_manage_add_ons
-  addon_context             = local.addon_context
+  helm_config                      = var.karpenter_helm_config
+  irsa_policies                    = var.karpenter_irsa_policies
+  node_iam_instance_profile        = var.karpenter_node_iam_instance_profile
+  enable_spot_termination_handling = var.karpenter_enable_spot_termination_handling
+  sqs_queue_arn                    = var.karpenter_sqs_queue_arn
+  manage_via_gitops                = var.argocd_manage_add_ons
+  addon_context                    = local.addon_context
 }
 
 module "keda" {
@@ -348,6 +351,14 @@ module "metrics_server" {
   addon_context     = local.addon_context
 }
 
+module "kube_state_metrics" {
+  count             = var.enable_kube_state_metrics ? 1 : 0
+  source            = "./kube-state-metrics"
+  helm_config       = var.kube_state_metrics_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "ondat" {
   source  = "ondat/ondat-addon/eksblueprints"
   version = "0.1.2"
@@ -368,10 +379,11 @@ module "ondat" {
 }
 
 module "kube_prometheus_stack" {
-  count         = var.enable_kube_prometheus_stack ? 1 : 0
-  source        = "./kube-prometheus-stack"
-  helm_config   = var.kube_prometheus_stack_helm_config
-  addon_context = local.addon_context
+  count             = var.enable_kube_prometheus_stack ? 1 : 0
+  source            = "./kube-prometheus-stack"
+  helm_config       = var.kube_prometheus_stack_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
 
 module "portworx" {
@@ -428,7 +440,7 @@ module "strimzi_kafka_operator" {
 
 module "sysdig_agent" {
   source  = "sysdiglabs/sysdig-addon/eksblueprints"
-  version = "0.0.1"
+  version = "0.0.3"
 
   count         = var.enable_sysdig_agent ? 1 : 0
   helm_config   = var.sysdig_agent_helm_config

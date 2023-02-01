@@ -114,19 +114,19 @@ The following tables lists the configurable parameters of the Portworx chart and
 | `imageVersion` | The image tag to pull | "2.11.0" |
 | `useAWSMarketplace` | Set this variable to true if you wish to use AWS marketplace license for Portworx | "false" |
 | `clusterName` | Portworx Cluster Name| portworx-\<random_string\> |
-| `drives` | Semi-colon seperated list of drives to be used for storage. (example: "/dev/sda;/dev/sdb" or "type=gp2,size=200;type=gp3,size=500")  |  "type=gp2,size=200"|
-| `useInternalKVDB` | boolen variable to set internal KVDB on/off | true |
+| `drives` | Semi-colon separated list of drives to be used for storage. (example: "/dev/sda;/dev/sdb" or "type=gp2,size=200;type=gp3,size=500")  |  "type=gp2,size=200"|
+| `useInternalKVDB` | boolean variable to set internal KVDB on/off | true |
 | `kvdbDevice` | specify a separate device to store KVDB data, only used when internalKVDB is set to true | type=gp2,size=150 |
 | `envVars` | semi-colon-separated list of environment variables that will be exported to portworx. (example: MYENV1=val1;MYENV2=val2) | "" |
 | `maxStorageNodesPerZone` | The maximum number of storage nodes desired per zone| 3 |
-| `useOpenshiftInstall` | boolen variable to install Portworx on Openshift .| false |
-| `etcdEndPoint` | The ETCD endpoint. Should be in the format etcd:http://(your-etcd-endpoint):2379. If there are multiple etcd endpoints they need to be ";" seperated. | "" |
+| `useOpenshiftInstall` | boolean variable to install Portworx on Openshift .| false |
+| `etcdEndPoint` | The ETCD endpoint. Should be in the format etcd:http://(your-etcd-endpoint):2379. If there are multiple etcd endpoints they need to be ";" separated. | "" |
 | `dataInterface` | Name of the interface <ethX>.| none |
 | `managementInterface` |  Name of the interface <ethX>.| none |
 | `useStork` | [Storage Orchestration for Hyperconvergence](https://github.com/libopenstorage/stork).| true  |
 | `storkVersion` | Optional: version of Stork. For eg: 2.11.0, when it's empty Portworx operator will pick up version according to Portworx version. | "2.11.0" |
 | `customRegistryURL` | URL where to pull Portworx image from | ""  |
-| `registrySecret` | Image registery credentials to pull Portworx Images from a secure registry | "" |
+| `registrySecret` | Image registry credentials to pull Portworx Images from a secure registry | "" |
 | `licenseSecret` | Kubernetes secret name that has Portworx licensing information | ""  |
 | `monitoring` | Enable Monitoring on Portworx cluster | false  |
 | `enableCSI` | Enable CSI | false  |
