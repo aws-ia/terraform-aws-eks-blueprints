@@ -22,6 +22,6 @@ output "argocd_gitops_config" {
   description = "Configuration used for managing the add-on with ArgoCD"
   value = var.manage_via_gitops ? merge(
     { enable = true },
-    local.appmesh_prometheus_gitops_config
+    local.argocd_gitops_config
   ) : null
 }
