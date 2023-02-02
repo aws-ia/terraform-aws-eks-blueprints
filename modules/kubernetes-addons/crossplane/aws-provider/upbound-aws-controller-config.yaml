@@ -1,0 +1,13 @@
+# https://github.com/upbound/provider-aws/blob/main/docs/Configuration.md#create-a-controllerconfig
+---
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
+metadata:
+  name: ${upbound-aws-controller-config}
+  annotations:
+    eks.amazonaws.com/role-arn: ${upbound-iam-role-arn}
+spec:
+  podSecurityContext:
+    fsGroup: 2000
+  args:
+    - --debug
