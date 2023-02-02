@@ -20,8 +20,5 @@ output "service_account" {
 
 output "argocd_gitops_config" {
   description = "Configuration used for managing the add-on with ArgoCD"
-  value = var.manage_via_gitops ? merge(
-    { enable = true },
-    local.argocd_gitops_config
-  ) : null
+  value       = var.manage_via_gitops ? local.argocd_gitops_config : null
 }

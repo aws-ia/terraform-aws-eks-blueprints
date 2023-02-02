@@ -9,6 +9,14 @@ locals {
   # `namespace` is the name of the resultant namespace to use - created or not
   namespace = local.create_namespace ? kubernetes_namespace_v1.prometheus[0].metadata[0].name : local.namespace_name
 
+  argocd_gitops_config = merge(
+    {
+      enable             = true
+      serviceAccountName = local.name
+    },
+    var.helm_config
+  )
+
   default_helm_config = {
     name        = local.name
     chart       = "appmesh-prometheus"
