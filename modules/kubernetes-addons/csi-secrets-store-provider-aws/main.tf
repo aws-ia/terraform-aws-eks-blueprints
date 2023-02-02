@@ -1,14 +1,6 @@
 locals {
   name      = try(var.helm_config.name, "csi-secrets-store-provider-aws")
-  namespace = try(var.helm_config.namespace, "kube-system")
-}
-
-resource "kubernetes_namespace_v1" "csi_secrets_store_provider_aws" {
-  count = local.namespace == "kube-system" ? 0 : 1
-
-  metadata {
-    name = local.namespace
-  }
+  namespace = try(var.helm_config.namespace, "secrets-store-csi-driver")
 }
 
 module "helm_addon" {
