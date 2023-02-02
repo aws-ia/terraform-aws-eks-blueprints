@@ -45,7 +45,12 @@ Previously under the v4.x structure, the EKS Blueprint project was comprised of 
 #### v4.x Structure
 
 ```
+├── aws-quickstart/
+|   └── cdk-eks-blueprints/
+|       └── examples/
 ├── aws-ia/
+|   ├── ecs-blueprints/
+|   |   └── examples/
 |   ├── terraform-aws-eks-blueprints/
 |   |   ├── aws-auth-configmap.tf
 |   |   ├── data.tf
@@ -80,7 +85,12 @@ Previously under the v4.x structure, the EKS Blueprint project was comprised of 
 #### v5.x Structure
 
 ```
+├── aws-quickstart/
+|   └── cdk-eks-blueprints/
+|       └── examples/
 ├── aws-ia/
+|   ├── ecs-blueprints/
+|   |   └── examples/
 |   ├── terraform-aws-eks-blueprints/
 |   |   └── examples/
 |   ├── eks-addons/                      # Contains addons in supported formats (Terraform, ArgoCD, and FluxCD (future))
