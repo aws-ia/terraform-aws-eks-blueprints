@@ -39,7 +39,7 @@ module "helm_addon" {
       name  = "serviceAccount.create"
       value = false
     }
-  ],
+    ],
     try(var.helm_config.set_values, [])
   )
 
