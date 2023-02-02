@@ -1465,7 +1465,7 @@
 <code>preserve=true</code> option removes Amazon EKS management of any settings and the ability for Amazon EKS to notify you of updates and automatically update the Amazon EKS add-on after you initiate an update, but preserves the add-on's software on your cluster.
 This option makes the add-on a self-managed add-on, rather than an Amazon EKS add-on.
 There is no downtime while deleting EKS managed Add-ons when <code>preserve=true</code>. This is a default option for <code>enable_amazon_eks_vpc_cni</code> , <code>enable_amazon_eks_coredns</code> and <code>enable_amazon_eks_kube_proxy</code>.</p>
-<p>Checkout this <a href="https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html#updating-vpc-cni-eks-add-on">doc</a> for more details.</p>
+<p>Checkout this <a href="https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html#updating-vpc-cni-eks-add-on">doc</a> for more details. Custom add-on configuration can be passed using <a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_addon">configuration_values</a> as a single JSON string while creating or updating the add-on.</p>
 <div class="highlight"><pre><span></span><code># EKS Addons
   enable_amazon_eks_vpc_cni = true # default is false
   #Optional
@@ -1478,7 +1478,13 @@ There is no downtime while deleting EKS managed Add-ons when <code>preserve=true
     service_account_role_arn = &quot;&quot;
     preserve                 = true
     additional_iam_policies  = []
-    tags                     = {}
+    configuration_values = jsonencode({
+      env = {
+        ENABLE_PREFIX_DELEGATION = &quot;true&quot;
+        WARM_PREFIX_TARGET       = &quot;1&quot;
+      }
+    })
+    tags = {}
   }
 
   enable_amazon_eks_coredns = true # default is false
@@ -1492,6 +1498,7 @@ There is no downtime while deleting EKS managed Add-ons when <code>preserve=true
     service_account_role_arn = &quot;&quot;
     preserve                 = true
     additional_iam_policies  = []
+    configuration_values     = &quot;&quot;
     tags                     = {}
   }
 
@@ -1506,6 +1513,7 @@ There is no downtime while deleting EKS managed Add-ons when <code>preserve=true
     service_account_role_arn = &quot;&quot;
     preserve                 = true
     additional_iam_policies  = []
+    configuration_values     = &quot;&quot;
     tags                     = {}
   }
 
@@ -1519,6 +1527,7 @@ There is no downtime while deleting EKS managed Add-ons when <code>preserve=true
     namespace                = &quot;kube-system&quot;
     additional_iam_policies  = []
     service_account_role_arn = &quot;&quot;
+    configuration_values     = &quot;&quot;
     tags                     = {}
   }
 </code></pre></div>
