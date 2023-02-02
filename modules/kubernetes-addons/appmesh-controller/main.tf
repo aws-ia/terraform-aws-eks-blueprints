@@ -3,6 +3,14 @@ locals {
   namespace = try(var.helm_config.namespace, "appmesh-system")
 
   dns_suffix = data.aws_partition.current.dns_suffix
+
+    argocd_gitops_config = merge(
+    {
+      enable             = true
+      serviceAccountName = local.name
+    },
+    var.helm_config
+  )
 }
 
 data "aws_partition" "current" {}
@@ -22,7 +30,7 @@ module "helm_addon" {
     var.helm_config
   )
 
-  set_values = [
+  set_values = concat([
     {
       name  = "serviceAccount.name"
       value = local.name
@@ -31,11 +39,13 @@ module "helm_addon" {
       name  = "serviceAccount.create"
       value = false
     }
-  ]
+  ],
+    try(var.helm_config.set_values, [])
+  )
 
   irsa_config = {
-    create_kubernetes_namespace         = true
-    kubernetes_namespace                = local.namespace
+    create_kubernetes_namespace         = try(var.helm_config.create_namespace, true)
+    kubernetes_namespace                = try(var.helm_config.namespace, local.namespace)
     create_kubernetes_service_account   = true
     create_service_account_secret_token = try(var.helm_config["create_service_account_secret_token"], false)
     kubernetes_service_account          = try(var.helm_config.service_account, local.name)
