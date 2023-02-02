@@ -17,7 +17,7 @@ locals {
       name       = local.name
       chart      = local.name
       repository = "oci://public.ecr.aws/karpenter"
-      version    = "v0.22.0"
+      version    = "v0.22.1"
       namespace  = local.name
       values = [
         <<-EOT
@@ -45,11 +45,11 @@ locals {
 
   argocd_gitops_config = merge(
     {
-    enable                    = true
-    serviceAccountName        = local.service_account
-    controllerClusterEndpoint = var.addon_context.aws_eks_cluster_endpoint
-    awsDefaultInstanceProfile = var.node_iam_instance_profile
-  },
-  var.helm_config
+      enable                    = true
+      serviceAccountName        = local.service_account
+      controllerClusterEndpoint = var.addon_context.aws_eks_cluster_endpoint
+      awsDefaultInstanceProfile = var.node_iam_instance_profile
+    },
+    var.helm_config
   )
 }
