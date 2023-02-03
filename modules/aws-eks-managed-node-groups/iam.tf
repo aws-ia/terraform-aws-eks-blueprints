@@ -1,7 +1,19 @@
 resource "aws_iam_role" "managed_ng" {
   name                  = "${var.context.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
   description           = "EKS Managed Node group IAM Role"
-  assume_role_policy    = data.aws_iam_policy_document.managed_ng_assume_role_policy.json
+  assume_role_policy    = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = "EKSWorkerAssumeRole"
+        Principal = {
+          Service = [local.ec2_principal]
+        }
+      }
+    ]
+  })
   path                  = var.context.iam_role_path
   permissions_boundary  = var.context.iam_role_permissions_boundary
   force_detach_policies = true
