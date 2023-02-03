@@ -10,10 +10,8 @@ locals {
   argocd_gitops_config = merge(
     {
       enable             = true
-      serviceAccount = {
-        name = local.name
-        create = true
-        }
+      serviceAccountName = local.name
+      serviceAccountCreate = true
     },
     var.helm_config
   )
