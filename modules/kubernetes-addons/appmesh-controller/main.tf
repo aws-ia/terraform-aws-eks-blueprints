@@ -23,7 +23,7 @@ module "helm_addon" {
       name        = local.name
       chart       = local.name
       repository  = "https://aws.github.io/eks-charts"
-      version     = "1.7.0"
+      version     = "1.10.0"
       namespace   = local.namespace
       description = "AWS App Mesh Helm Chart"
     },
