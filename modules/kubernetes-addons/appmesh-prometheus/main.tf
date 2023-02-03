@@ -3,14 +3,10 @@ locals {
   namespace_name   = try(var.helm_config.namespace, "appmesh-system")
   create_namespace = try(var.helm_config.create_namespace, false) && local.namespace_name != "kube-system"
 
-  # `namespace_name` is just the string representation of the namespace name
-  # `namespace` is the name of the resultant namespace to use - created or not
-  namespace = local.create_namespace ? kubernetes_namespace_v1.prometheus[0].metadata[0].name : local.namespace_name
-
   argocd_gitops_config = merge(
     {
-      enable             = true
-      serviceAccountName = local.name
+      enable               = true
+      serviceAccountName   = local.name
       serviceAccountCreate = true
     },
     var.helm_config

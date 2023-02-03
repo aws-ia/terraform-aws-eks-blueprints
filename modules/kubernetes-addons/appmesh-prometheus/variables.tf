@@ -1,9 +1,3 @@
-variable "irsa_policies" {
-  description = "Additional IAM policies for a IAM role for service accounts"
-  type        = list(string)
-  default     = []
-}
-
 variable "helm_config" {
   description = "Helm Config for Prometheus"
   type        = any
