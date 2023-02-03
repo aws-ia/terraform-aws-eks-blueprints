@@ -41,7 +41,7 @@ resource "helm_release" "argocd_project" {
   set {
     name  = "sourceRepos"
     value = each.value.repo_urls
-    type  = "string"
+    type  = "auto"
   }
 
   depends_on = [module.helm_addon]
