@@ -126,7 +126,7 @@ module "eks_blueprints" {
       public_ip         = false # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates
 
       http_endpoint               = "enabled"
-      http_tokens                 = "optional"
+      http_tokens                 = "required"
       http_put_response_hop_limit = 3
 
       # pre_userdata can be used in both cases where you provide custom_ami_id or ami_type
