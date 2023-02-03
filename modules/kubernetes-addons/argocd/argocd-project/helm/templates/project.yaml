@@ -8,7 +8,7 @@ spec:
     - group: '*'
       kind: '*'
   destinations:
-    - namespace: {{ .Values.namespace }}
+    - namespace: {{ .Values.destination.targetNamespace | quote }}
       server: {{ .Values.destination.server | quote }}
   sourceRepos:
     {{- range .Values.sourceRepos }}

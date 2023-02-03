@@ -33,10 +33,11 @@ locals {
   }
 
   default_argocd_project = {
-    namespace   = local.helm_config["namespace"]
-    name        = "default"
-    destination = "https://kubernetes.default.svc"
-    repo_urls   = ["*"]
+    namespace       = local.helm_config["namespace"]
+    name            = "default"
+    destination     = "https://kubernetes.default.svc"
+    repo_urls       = ["*"]
+    targetNamespace = "*"
   }
 
   global_application_values = {

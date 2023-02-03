@@ -1,9 +1,10 @@
-name: "argocd"
+name: "default"
 
 namespace: "argocd"
 # Destination cluster.
 destination:
   server: "https://kubernetes.default.svc"
+  targetNamespace: "*"
 
 sourceRepos:
   - "*"

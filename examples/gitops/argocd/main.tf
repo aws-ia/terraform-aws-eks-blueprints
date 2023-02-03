@@ -110,11 +110,11 @@ module "eks_blueprints_kubernetes_addons" {
   }
   argocd_projects = {
     system = {
-      destination = "*"
+      server    = "*"
       repo_urls = "{*}"
     }
     workloads = {
-      destination = "https://kubernetes.default.svc"
+      server    = "https://kubernetes.default.svc"
       repo_urls = "{https://github.com/aws-samples/eks-blueprints-workloads.git}" # multiple value can add using comma. eg "{*,git@github.com/blabla/blabla.git}"
     }
   }

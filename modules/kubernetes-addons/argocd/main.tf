@@ -34,7 +34,13 @@ resource "helm_release" "argocd_project" {
   # Destination Config.
   set {
     name  = "destination.server"
-    value = each.value.destination
+    value = each.value.server
+    type  = "string"
+  }
+
+  set {
+    name  = "destination.targetNamespace"
+    value = each.value.targetNamespace
     type  = "string"
   }
   # Source Config.
