@@ -87,7 +87,7 @@ module "eks" {
 
   fargate_profiles = merge(
     { for i in range(3) :
-      "app-wildcard-${element(split("-", local.azs[i]), 2)}" => {
+      "app-wildcard-${element(split(",", local.azs[i]), 2)}" => {
         selectors = [
           { namespace = "app-*" }
         ]
@@ -96,7 +96,7 @@ module "eks" {
       }
     },
     { for i in range(3) :
-      "kube-system-${element(split("-", local.azs[i]), 2)}" => {
+      "kube-system-${element(split(",", local.azs[i]), 2)}" => {
         selectors = [
           { namespace = "kube-system" }
         ]
