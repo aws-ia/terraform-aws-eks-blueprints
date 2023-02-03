@@ -6,7 +6,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://argoproj.github.io/argo-helm"
-    version     = "2.21.1"
+    version     = "2.21.2"
     namespace   = local.name
     description = "Argo Rollouts AddOn Helm Chart"
   }
