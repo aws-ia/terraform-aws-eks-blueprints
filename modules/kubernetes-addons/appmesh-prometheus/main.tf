@@ -10,7 +10,10 @@ locals {
   argocd_gitops_config = merge(
     {
       enable             = true
-      serviceAccountName = local.name
+      serviceAccount = {
+        name = local.name
+        create = true
+        }
     },
     var.helm_config
   )
@@ -42,11 +45,6 @@ locals {
       value = true
     }
   ]
-
-  appmesh_prometheus_gitops_config = {
-    enable             = true
-    serviceAccountName = local.name
-  }
 
 }
 

@@ -21,7 +21,7 @@ module "helm_addon" {
   helm_config = merge(
     {
       name        = local.name
-      chart       = local.name
+      chart       = "appmesh-controller"
       repository  = "https://aws.github.io/eks-charts"
       version     = "1.10.0"
       namespace   = local.namespace
