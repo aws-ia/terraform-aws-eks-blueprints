@@ -3,8 +3,6 @@ locals {
   namespace_name   = try(var.helm_config.namespace, "appmesh-system")
   create_namespace = try(var.helm_config.create_namespace, false) && local.namespace_name != "kube-system"
 
-  service_account_name = "${local.name}-sa"
-
   # `namespace_name` is just the string representation of the namespace name
   # `namespace` is the name of the resultant namespace to use - created or not
   namespace = local.create_namespace ? kubernetes_namespace_v1.prometheus[0].metadata[0].name : local.namespace_name
@@ -37,7 +35,7 @@ locals {
   set_values = [
     {
       name  = "serviceAccount.name"
-      value = local.service_account_name
+      value = local.name
     },
     {
       name  = "serviceAccount.create"
@@ -47,7 +45,7 @@ locals {
 
   appmesh_prometheus_gitops_config = {
     enable             = true
-    serviceAccountName = local.service_account_name
+    serviceAccountName = local.name
   }
 
 }
