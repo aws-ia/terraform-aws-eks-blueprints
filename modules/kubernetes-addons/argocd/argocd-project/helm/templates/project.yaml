@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: ""
+  name: {{ .Values.name }}
   namespace: {{ .Values.namespace }}
 spec:
   clusterResourceWhitelist:
