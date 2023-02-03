@@ -1,0 +1,7 @@
+apiVersion: v2
+appVersion: "1.0"
+description: A Helm chart for Kubernetes
+name: kuberay-operator
+version: 0.1.0
+icon: https://github.com/ray-project/ray/raw/master/doc/source/images/ray_header_logo.png
+type: application

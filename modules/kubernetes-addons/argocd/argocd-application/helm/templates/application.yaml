@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.project }}
+  source:
+    repoURL: {{ .Values.source.repoUrl }}
+    targetRevision: {{ .Values.source.targetRevision }}
+    path: {{ .Values.source.path }}
+    helm:
+      values: {{ toYaml .Values.source.helm.values | toString | indent 6 }}
+  destination:
+    server: {{ .Values.destination.server }}
+    namespace: {{ .Values.namespace }}
+  syncPolicy:
+    automated:
+      allowEmpty: false
+      prune: true
+      selfHeal: true
+    retry:
+      backoff:
+        duration: "10s"
+        factor: 2
+        maxDuration: "3m"
+      limit: 10
+    syncOptions:
+      - "Validate=false" # disables resource validation (equivalent to 'kubectl apply --validate=false') ( true by default )
+      - "CreateNamespace=true" # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
+      - "PrunePropagationPolicy=foreground" # Supported policies are background, foreground and orphan.
+      - "PruneLast=true" # Allow the ability for resource pruning to happen as a final, implicit wave of a sync operation
+      - "RespectIgnoreDifferences=true" # Respect ignored fields from '.Values.ignoreDifferences'
+  {{- with .Values.ignoreDifferences }}
+  ignoreDifferences:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}

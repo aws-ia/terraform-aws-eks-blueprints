@@ -22,6 +22,7 @@ You can optionally customize the Helm chart that deploys `aws_for_fluentbit` via
 ```hcl
   enable_aws_for_fluentbit = true
   aws_for_fluentbit_irsa_policies = ["IAM Policies"] # Add list of additional policies to IRSA to enable access to Kinesis, OpenSearch etc.
+  aws_for_fluentbit_cw_log_group_retention = 90
   aws_for_fluentbit_helm_config = {
     name                                      = "aws-for-fluent-bit"
     chart                                     = "aws-for-fluent-bit"
@@ -29,7 +30,6 @@ You can optionally customize the Helm chart that deploys `aws_for_fluentbit` via
     version                                   = "0.1.0"
     namespace                                 = "logging"
     aws_for_fluent_bit_cw_log_group           = "/${local.cluster_id}/worker-fluentbit-logs" # Optional
-    aws_for_fluentbit_cwlog_retention_in_days = 90
     create_namespace                          = true
     values = [templatefile("${path.module}/values.yaml", {
       region                          = data.aws_region.current.name,
@@ -53,4 +53,18 @@ awsForFluentBit = {
   enable       = true
   logGroupName = "<log_group_name>"
 }
+```
+
+### Externally-Created CloudWatch Log Group(s)
+
+If the CloudWatch log group FluentBit puts logs to is required to be encrypted by an existing KMS
+customer-managed key, then the CloudWatch log group needs to be created external to the
+kubernetes-addons module and passed in. Creating the CloudWatch log group externally is also useful
+if FluentBit is putting logs to multiple log groups because all the log groups can be created in
+the same code file. To do this, set the create log group flag to false and supply the
+previously-created log group name.
+
+```hcl
+aws_for_fluentbit_create_cw_log_group = false
+aws_for_fluentbit_cw_log_group_name   = aws_cloudwatch_log_group.application.name
 ```

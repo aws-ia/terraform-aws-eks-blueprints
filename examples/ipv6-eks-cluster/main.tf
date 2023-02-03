@@ -1,158 +1,126 @@
-terraform {
-  required_version = ">= 1.0.1"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 3.66.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.6.1"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.4.1"
-    }
-  }
-
-  backend "local" {
-    path = "local_tf_state/terraform-main.tfstate"
-  }
-}
-
-data "aws_region" "current" {}
-
-data "aws_availability_zones" "available" {}
-
-data "aws_eks_cluster" "cluster" {
-  name = module.eks-blueprints.eks_cluster_id
-}
-
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks-blueprints.eks_cluster_id
-}
-
 provider "aws" {
-  region = data.aws_region.current.id
-  alias  = "default"
+  region = local.region
 }
 
 provider "kubernetes" {
-  experiments {
-    manifest_resource = true
-  }
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = data.aws_eks_cluster.cluster.endpoint
-    token                  = data.aws_eks_cluster_auth.cluster.token
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    token                  = data.aws_eks_cluster_auth.this.token
   }
 }
+
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks.cluster_name
+}
+
+data "aws_availability_zones" "available" {}
 
 locals {
-  tenant          = "ipv6"    # AWS account name or unique id for tenant
-  environment     = "preprod" # Environment area eg., preprod or prod
-  zone            = "dev"     # Environment with in one sub_tenant or business unit
-  cluster_version = "1.21"
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
-  vpc_cidr     = "10.0.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
-  azs          = slice(data.aws_availability_zones.available.names, 0, 3)
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
+  vpc_cidr = "10.0.0.0/16"
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  terraform_version = "Terraform v1.0.1"
-}
-
-module "aws_vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "v3.13.0"
-
-  name = local.vpc_name
-  cidr = local.vpc_cidr
-  azs  = local.azs
-
-  enable_ipv6                                    = true
-  assign_ipv6_address_on_creation                = true # Assign IPv6 address on subnet, must be disabled to change IPv6 CIDRs. This is the IPv6 equivalent of map_public_ip_on_launch
-  private_subnet_assign_ipv6_address_on_creation = true # Assign IPv6 address on private subnet, must be disabled to change IPv6 CIDRs. This is the IPv6 equivalent of map_public_ip_on_launch
-
-  public_subnet_ipv6_prefixes  = [0, 1, 2] # Assigns IPv6 private subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list
-  private_subnet_ipv6_prefixes = [3, 4, 5] # Assigns IPv6 public subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list
-
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
-
-  enable_nat_gateway   = true
-  create_igw           = true
-  enable_dns_hostnames = true
-  single_nat_gateway   = true
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 }
-#---------------------------------------------------------------
-# Example to consume eks-blueprints module
-#---------------------------------------------------------------
-module "eks-blueprints" {
-  source = "../.."
 
-  tenant            = local.tenant
-  environment       = local.environment
-  zone              = local.zone
-  terraform_version = local.terraform_version
+################################################################################
+# Cluster
+################################################################################
 
-  # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = module.aws_vpc.private_subnets
+#tfsec:ignore:aws-eks-enable-control-plane-logging
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 19.5"
+
+  cluster_name                   = local.name
+  cluster_version                = "1.24"
+  cluster_endpoint_public_access = true
 
   # IPV6
   cluster_ip_family = "ipv6"
 
-  # EKS CONTROL PLANE VARIABLES
-  cluster_version = local.cluster_version
+  # We are using the IRSA created below for permissions
+  # However, we have to deploy with the policy attached FIRST (when creating a fresh cluster)
+  # and then turn this off after the cluster/node group is created. Without this initial policy,
+  # the VPC CNI fails to assign IPs and nodes cannot join the cluster
+  # See https://github.com/aws/containers-roadmap/issues/1666 for more context
+  create_cni_ipv6_iam_policy = true
 
-  # EKS MANAGED NODE GROUPS
-  managed_node_groups = {
-    mg_4 = {
-      node_group_name = "mng-ondemand"
-      instance_types  = ["m5.large"]
-      min_size        = "2"
-      desired_size    = "2"
-      max_size        = "10"
-      subnet_ids      = module.aws_vpc.private_subnets
+  cluster_addons = {
+    coredns    = {}
+    kube-proxy = {}
+    vpc-cni    = {}
+  }
+
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
+
+  eks_managed_node_groups = {
+    initial = {
+      instance_types = ["m5.large"]
+
+      min_size     = 1
+      max_size     = 3
+      desired_size = 2
     }
   }
+
+  tags = local.tags
 }
 
-module "eks-blueprints-kubernetes-addons" {
-  source         = "../../modules/kubernetes-addons"
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
-  enable_ipv6    = true # Enable Ipv6 network. Attaches new VPC CNI policy to the IRSA role
+################################################################################
+# Supporting Resources
+################################################################################
 
-  # EKS Managed Add-ons
-  enable_amazon_eks_vpc_cni    = true
-  enable_amazon_eks_coredns    = true
-  enable_amazon_eks_kube_proxy = true
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
 
-  #K8s Add-ons
-  enable_aws_load_balancer_controller = true
+  name = local.name
+  cidr = local.vpc_cidr
 
-  depends_on = [module.eks-blueprints.managed_node_groups]
-}
+  azs             = local.azs
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.eks-blueprints.configure_kubectl
+  enable_ipv6                     = true
+  assign_ipv6_address_on_creation = true
+  create_egress_only_igw          = true
+
+  public_subnet_ipv6_prefixes  = [0, 1, 2]
+  private_subnet_ipv6_prefixes = [3, 4, 5]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  # Manage so we can name
+  manage_default_network_acl    = true
+  default_network_acl_tags      = { Name = "${local.name}-default" }
+  manage_default_route_table    = true
+  default_route_table_tags      = { Name = "${local.name}-default" }
+  manage_default_security_group = true
+  default_security_group_tags   = { Name = "${local.name}-default" }
+
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" = 1
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = 1
+  }
+
+  tags = local.tags
 }

@@ -13,3 +13,8 @@ repoServer:
   autoscaling:
     enabled: true
     minReplicas: 2
+
+configs:
+  cm:
+    #use annotation for tracking but keep labels for compatibility with other tools
+    application.resourceTrackingMethod: annotation+label

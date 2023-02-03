@@ -1,17 +1,20 @@
 module "helm_addon" {
-  source            = "../helm-addon"
+  source = "../helm-addon"
+
   manage_via_gitops = var.manage_via_gitops
-  set_values        = local.set_values
   helm_config       = local.helm_config
-  irsa_config       = local.irsa_config
   addon_context     = var.addon_context
+
+  depends_on = [kubernetes_namespace_v1.this]
 }
 
-resource "kubectl_manifest" "sa_config" {
-  yaml_body = templatefile("${path.module}/manifests/eks-admin-service-account.yaml", {
-    sa-name   = local.service_account_name
-    namespace = local.helm_config["namespace"]
-  })
+resource "kubernetes_namespace_v1" "this" {
+  count = try(local.helm_config["create_namespace"], true) && local.helm_config["namespace"] != "kube-system" ? 1 : 0
 
-  depends_on = [module.helm_addon]
+  metadata {
+    name = local.helm_config["namespace"]
+    labels = {
+      "app.kubernetes.io/managed-by" = "terraform-aws-eks-blueprints"
+    }
+  }
 }

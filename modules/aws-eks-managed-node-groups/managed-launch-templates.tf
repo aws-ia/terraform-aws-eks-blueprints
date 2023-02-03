@@ -33,15 +33,24 @@ resource "aws_launch_template" "managed_node_groups" {
     enabled = local.managed_node_group["enable_monitoring"]
   }
 
-  metadata_options {
-    http_endpoint               = var.context.http_endpoint
-    http_tokens                 = var.context.http_tokens
-    http_put_response_hop_limit = var.context.http_put_response_hop_limit
+  dynamic "metadata_options" {
+    for_each = try(var.managed_ng.enable_metadata_options, true) ? [1] : []
+
+    content {
+      http_endpoint               = try(var.managed_ng.http_endpoint, "enabled")
+      http_tokens                 = try(var.managed_ng.http_tokens, "required") #tfsec:ignore:aws-autoscaling-enforce-http-token-imds
+      http_put_response_hop_limit = try(var.managed_ng.http_put_response_hop_limit, 2)
+      http_protocol_ipv6          = try(var.managed_ng.http_protocol_ipv6, null)
+      instance_metadata_tags      = try(var.managed_ng.instance_metadata_tags, null)
+    }
   }
 
-  tag_specifications {
-    resource_type = "instance"
-    tags          = local.common_tags
+  dynamic "tag_specifications" {
+    for_each = toset(["instance", "volume", "network-interface"])
+    content {
+      resource_type = tag_specifications.key
+      tags          = merge(local.common_tags, local.managed_node_group["launch_template_tags"])
+    }
   }
 
   network_interfaces {
@@ -53,12 +62,10 @@ resource "aws_launch_template" "managed_node_groups" {
     create_before_destroy = true
   }
 
+  tags = var.context.tags
+
   depends_on = [
     aws_iam_role.managed_ng,
-    aws_iam_instance_profile.managed_ng,
-    aws_iam_role_policy_attachment.managed_ng_AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.managed_ng_AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.managed_ng_AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.managed_ng
   ]
 }

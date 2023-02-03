@@ -14,7 +14,13 @@ You can use EKS Blueprints to easily bootstrap an EKS cluster with Amazon EKS ad
 
 ## Examples
 
-To view a library of examples for how you can leverage the terraform-eks-blueprints, please see our [examples](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples).
+To view a library of examples for how you can leverage `terraform-aws-eks-blueprints`, please see our [examples](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples).
+
+## Workshop
+We maintain a hands-on self-paced workshop, the [EKS Blueprints for Terraform workshop](https://catalog.workshops.aws/eks-blueprints-terraform/en-US) helps you with foundational setup of your EKS cluster, and it gradually adds complexity via existing and new modules.
+
+![EKS Blueprints for Terraform](https://static.us-east-1.prod.workshops.aws/public/6ad9b13b-df6a-4609-a586-fd2b7f25863c/static/eks_cluster_1.svg)
+
 
 ## Motivation
 
@@ -26,8 +32,8 @@ AWS customers have asked for examples that demonstrate how to integrate the land
 
 Customers can use this solution to easily architect and deploy complete, opinionated EKS clusters. Specifically, customers can leverage the eks-blueprints module to:
 
-✅ Deploy Well-Architected EKS clusters across any number of accounts and regions.  
-✅ Manage cluster configuration, including add-ons that run in each cluster, from a single Git repository.  
-✅ Define teams, namespaces, and their associated access permissions for your clusters.  
-✅ Leverage GitOps-based workflows for onboarding and managing workloads for your teams.  
-✅ Create Continuous Delivery (CD) pipelines that are responsible for deploying your infrastructure.  
+- Deploy Well-Architected EKS clusters across any number of accounts and regions.
+- Manage cluster configuration, including add-ons that run in each cluster, from a single Git repository.
+- Define teams, namespaces, and their associated access permissions for your clusters.
+- Leverage GitOps-based workflows for onboarding and managing workloads for your teams.
+- Create Continuous Delivery (CD) pipelines that are responsible for deploying your infrastructure.

@@ -4,7 +4,7 @@ resource "aws_eks_node_group" "managed_ng" {
   node_group_name        = local.managed_node_group["enable_node_group_prefix"] == false ? local.managed_node_group["node_group_name"] : null
   node_group_name_prefix = local.managed_node_group["enable_node_group_prefix"] == true ? format("%s-", local.managed_node_group["node_group_name"]) : null
 
-  node_role_arn   = aws_iam_role.managed_ng.arn
+  node_role_arn   = local.managed_node_group["create_iam_role"] == true ? aws_iam_role.managed_ng[0].arn : local.managed_node_group["iam_role_arn"]
   subnet_ids      = length(local.managed_node_group["subnet_ids"]) == 0 ? (local.managed_node_group["subnet_type"] == "public" ? var.context.public_subnet_ids : var.context.private_subnet_ids) : local.managed_node_group["subnet_ids"]
   release_version = try(local.managed_node_group["release_version"], "") == "" || local.managed_node_group["custom_ami_id"] != "" ? null : local.managed_node_group["release_version"]
 
@@ -13,12 +13,20 @@ resource "aws_eks_node_group" "managed_ng" {
   disk_size            = local.managed_node_group["create_launch_template"] == true ? null : local.managed_node_group["disk_size"]
   instance_types       = local.managed_node_group["instance_types"]
   force_update_version = local.managed_node_group["force_update_version"]
-  version              = var.context.cluster_version
+  version              = local.managed_node_group["custom_ami_id"] != "" ? null : var.context.cluster_version
 
   scaling_config {
     desired_size = local.managed_node_group["desired_size"]
     max_size     = local.managed_node_group["max_size"]
     min_size     = local.managed_node_group["min_size"]
+  }
+
+  dynamic "update_config" {
+    for_each = local.managed_node_group["update_config"]
+    content {
+      max_unavailable            = try(update_config.value["max_unavailable"], null)
+      max_unavailable_percentage = try(update_config.value["max_unavailable_percentage"], null)
+    }
   }
 
   lifecycle {
@@ -70,9 +78,6 @@ resource "aws_eks_node_group" "managed_ng" {
   depends_on = [
     aws_iam_role.managed_ng,
     aws_iam_instance_profile.managed_ng,
-    aws_iam_role_policy_attachment.managed_ng_AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.managed_ng_AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.managed_ng_AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.managed_ng
   ]
 

@@ -5,6 +5,9 @@ autoDiscovery:
 extraArgs:
   aws-use-static-instance-list: true
 
+image:
+  tag: ${image_tag}
+
 resources:
   limits:
     cpu: 200m

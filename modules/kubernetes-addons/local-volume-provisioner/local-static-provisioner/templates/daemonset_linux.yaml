@@ -1,0 +1,113 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "provisioner.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    helm.sh/chart: {{ template "provisioner.chart" . }}
+    app.kubernetes.io/name: {{ template "provisioner.name" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "provisioner.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "provisioner.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.daemonset.podLabels }}
+{{ .Values.daemonset.podLabels | toYaml | trim | indent 8 }}
+{{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- if .Values.daemonset.podAnnotations }}
+{{ .Values.daemonset.podAnnotations | toYaml | trim | indent 8 }}
+{{- end }}
+    spec:
+      serviceAccountName: {{ template "provisioner.serviceAccountName" . }}
+{{- if .Values.daemonset.priorityClassName }}
+      priorityClassName: {{.Values.daemonset.priorityClassName}}
+{{- end }}
+      nodeSelector:
+        kubernetes.io/os: linux
+{{- if .Values.daemonset.nodeSelector }}
+        {{ toYaml .Values.daemonset.nodeSelector | nindent 8 }}
+{{- end }}
+{{- if .Values.daemonset.tolerations }}
+      tolerations:
+        {{ toYaml .Values.daemonset.tolerations | nindent 8 }}
+{{- end }}
+{{- if .Values.daemonset.affinity }}
+      affinity:
+        {{ toYaml .Values.daemonset.affinity | nindent 8 }}
+{{- end }}
+{{- with .Values.daemonset.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+{{- end }}
+      containers:
+        - name: provisioner
+          image: {{ .Values.daemonset.image }}
+          {{- if .Values.daemonset.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.daemonset.imagePullPolicy }}
+          {{- end }}
+          securityContext:
+            privileged: {{ .Values.daemonset.privileged }}
+{{- if .Values.daemonset.resources }}
+          resources:
+            {{ toYaml .Values.daemonset.resources | nindent 12 }}
+{{- end }}
+          env:
+          - name: MY_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: MY_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: JOB_CONTAINER_IMAGE
+            value: {{ .Values.daemonset.image }}
+          {{- if .Values.daemonset.kubeConfigEnv }}
+          - name: KUBECONFIG
+            value: {{.Values.daemonset.kubeConfigEnv}}
+          {{- end }}
+          ports:
+          - name: metrics
+            containerPort: 8080
+          volumeMounts:
+            - name: provisioner-config
+              mountPath: /etc/provisioner/config
+              readOnly: true
+            {{- if .Values.common.mountDevVolume }}
+            - name: provisioner-dev
+              mountPath: /dev
+            {{- end }}
+            {{- range $classConfig := .Values.classes }}
+            - name: {{ $classConfig.name }}
+              mountPath: {{ $classConfig.mountDir | default $classConfig.hostDir }}
+              mountPropagation: HostToContainer
+            {{- end }}
+      volumes:
+        - name: provisioner-config
+          configMap:
+            name: {{ template "provisioner.fullname" . }}-config
+        {{- if .Values.common.mountDevVolume }}
+        - name: provisioner-dev
+          hostPath:
+            path: /dev
+        {{- end }}
+        {{- range $classConfig := .Values.classes }}
+        - name: {{ $classConfig.name }}
+          hostPath:
+            path: {{ $classConfig.hostDir }}
+        {{- end }}
+        {{- range $name, $path := .Values.daemonset.additionalHostPathVolumes }}
+        - name: {{ quote $name }}
+          hostPath:
+            path: {{ quote $path }}
+        {{- end }}

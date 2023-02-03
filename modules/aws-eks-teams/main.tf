@@ -5,41 +5,23 @@ resource "kubernetes_namespace" "team" {
   for_each = var.application_teams
   metadata {
     name   = each.key
-    labels = each.value["labels"]
+    labels = try(each.value["labels"], {})
   }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Quotas
 # ---------------------------------------------------------------------------------------------------------------------
-resource "kubernetes_resource_quota" "team_compute_quota" {
-  for_each = var.application_teams
-  metadata {
-    name      = "compute-quota"
-    namespace = kubernetes_namespace.team[each.key].metadata[0].name
-  }
-  spec {
-    hard = {
-      "requests.cpu"    = each.value["quota"]["requests.cpu"]
-      "requests.memory" = each.value["quota"]["requests.memory"]
-      "limits.cpu"      = each.value["quota"]["limits.cpu"]
-      "limits.memory"   = each.value["quota"]["limits.memory"]
-    }
-  }
-}
+resource "kubernetes_resource_quota" "this" {
+  for_each = { for team_name, team_data in var.application_teams : team_name => team_data if lookup(team_data, "quota", "") != "" }
 
-resource "kubernetes_resource_quota" "team_object_quota" {
-  for_each = var.application_teams
   metadata {
-    name      = "object-quota"
+    name      = "quotas"
     namespace = kubernetes_namespace.team[each.key].metadata[0].name
   }
+
   spec {
-    hard = {
-      "pods"     = each.value["quota"]["pods"]
-      "secrets"  = each.value["quota"]["secrets"]
-      "services" = each.value["quota"]["services"]
-    }
+    hard = try(each.value.quota, {})
   }
 }
 
@@ -48,7 +30,10 @@ resource "kubernetes_resource_quota" "team_object_quota" {
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "team_access" {
   for_each = { for team_name, team_data in var.application_teams : team_name => team_data if lookup(team_data, "users", "") != "" }
-  name     = format("%s-%s-%s", local.role_prefix_name, "${each.key}", "Access")
+
+  name                 = "${var.eks_cluster_id}-${each.key}-access"
+  permissions_boundary = var.iam_role_permissions_boundary
+
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -61,6 +46,7 @@ resource "aws_iam_role" "team_access" {
       }
     ]
   })
+
   tags = var.tags
 }
 
@@ -133,15 +119,17 @@ resource "kubernetes_role_binding" "team" {
 
 resource "aws_iam_role" "team_sa_irsa" {
   for_each = var.application_teams
-  name     = format("%s-%s-%s", local.role_prefix_name, "${each.key}", "sa-role")
-  tags     = var.tags
+
+  name                 = "${var.eks_cluster_id}-${each.key}-sa-role"
+  permissions_boundary = var.iam_role_permissions_boundary
+
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${local.eks_oidc_provider_arn}"
+          "Federated" : local.eks_oidc_provider_arn
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
@@ -153,6 +141,8 @@ resource "aws_iam_role" "team_sa_irsa" {
       }
     ]
   })
+
+  tags = var.tags
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -186,10 +176,12 @@ resource "kubectl_manifest" "team" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_iam_role" "platform_team" {
-  for_each            = var.platform_teams
-  name                = format("%s-%s-%s", local.role_prefix_name, "${each.key}", "Access")
-  tags                = var.tags
-  managed_policy_arns = [aws_iam_policy.platform_team_eks_access[0].arn]
+  for_each = var.platform_teams
+
+  name                 = "${var.eks_cluster_id}-${each.key}-access"
+  permissions_boundary = var.iam_role_permissions_boundary
+  managed_policy_arns  = [aws_iam_policy.platform_team_eks_access[0].arn]
+
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -202,6 +194,8 @@ resource "aws_iam_role" "platform_team" {
       }
     ]
   })
+
+  tags = var.tags
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -210,7 +204,7 @@ resource "aws_iam_role" "platform_team" {
 
 resource "aws_iam_policy" "platform_team_eks_access" {
   count       = length(var.platform_teams) > 0 ? 1 : 0
-  name        = format("%s-%s", local.role_prefix_name, "PlatformTeamEKSAccess")
+  name        = "${var.eks_cluster_id}-PlatformTeamEKSAccess"
   path        = "/"
   description = "Platform Team EKS Console Access"
   policy      = data.aws_iam_policy_document.platform_team_eks_access[0].json

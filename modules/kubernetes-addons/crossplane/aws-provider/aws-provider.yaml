@@ -4,6 +4,6 @@ kind: Provider
 metadata:
   name: ${aws-provider-name}
 spec:
-  package: crossplane/provider-aws:${provider-aws-version}
+  package: xpkg.upbound.io/crossplane-contrib/provider-aws:${provider-aws-version}
   controllerConfigRef:
-    name: aws-controller-config
+    name: ${aws-controller-config}

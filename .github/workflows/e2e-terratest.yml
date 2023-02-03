@@ -1,7 +1,17 @@
 name: e2e-terratest
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.tf'
+      - '**.yml'
+      - '**.yaml'
+      - 'test/*'
   workflow_dispatch:
+
+concurrency: e2e-terratest
 
 jobs:
   test:
@@ -15,14 +25,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v3
         with:
           go-version: 1.17
 
       - name: Configure AWS credentials from Test account
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
           aws-region: us-west-2
@@ -30,9 +40,9 @@ jobs:
           role-session-name: GithubActions-Session
 
       - name: Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.0.11
+          terraform_version: 1.0.0
           terraform_wrapper: false
 
       - name: Setup Dependencies

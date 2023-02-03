@@ -1,42 +1,46 @@
 output "vpc_private_subnet_cidr" {
-  value = module.aws_vpc.private_subnets_cidr_blocks
+  description = "VPC private subnet CIDR"
+  value       = module.vpc.private_subnets_cidr_blocks
 }
 
 output "vpc_public_subnet_cidr" {
-  value = module.aws_vpc.public_subnets_cidr_blocks
+  description = "VPC public subnet CIDR"
+  value       = module.vpc.public_subnets_cidr_blocks
 }
 
 output "vpc_cidr" {
-  value = module.aws_vpc.vpc_cidr_block
+  description = "VPC CIDR"
+  value       = module.vpc.vpc_cidr_block
 }
 
 output "eks_cluster_id" {
-  value = module.eks_blueprints.eks_cluster_id
+  description = "EKS cluster ID"
+  value       = module.eks_blueprints.eks_cluster_id
 }
 
-# Managed Node group name
 output "eks_managed_nodegroups" {
-  value = module.eks_blueprints.managed_node_groups
+  description = "EKS managed node groups"
+  value       = module.eks_blueprints.managed_node_groups
 }
 
-# Managed Node group id
 output "eks_managed_nodegroup_ids" {
-  value = module.eks_blueprints.managed_node_groups_id
+  description = "EKS managed node group ids"
+  value       = module.eks_blueprints.managed_node_groups_id
 }
 
-# Managed Node group id
 output "eks_managed_nodegroup_arns" {
-  value = module.eks_blueprints.managed_node_group_arn
+  description = "EKS managed node group arns"
+  value       = module.eks_blueprints.managed_node_group_arn
 }
 
-# Managed Node group role name
 output "eks_managed_nodegroup_role_name" {
-  value = module.eks_blueprints.managed_node_group_iam_role_names
+  description = "EKS managed node group role name"
+  value       = module.eks_blueprints.managed_node_group_iam_role_names
 }
 
-# Managed Node group status
 output "eks_managed_nodegroup_status" {
-  value = module.eks_blueprints.managed_node_groups_status
+  description = "EKS managed node group status"
+  value       = module.eks_blueprints.managed_node_groups_status
 }
 
 output "configure_kubectl" {
@@ -46,6 +50,6 @@ output "configure_kubectl" {
 
 # Region used for Terratest
 output "region" {
-  value       = var.region
   description = "AWS region"
+  value       = local.region
 }

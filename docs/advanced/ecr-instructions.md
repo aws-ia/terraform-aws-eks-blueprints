@@ -24,7 +24,7 @@ After the repo is created in ECR, tag your image so, you can push the image to t
 $ docker tag <image name>:<image tag> <account id>.dkr.ecr.<aws region.amazonaws.com/<image name>:<image tag>
 ```
 
-Step6: Run the following command to push this image to your newly created AWS repository:
+Step 6: Run the following command to push this image to your newly created AWS repository:
 
 ```
 $ docker push <account id>.dkr.ecr.<aws region.amazonaws.com/<image name>:<image tag>

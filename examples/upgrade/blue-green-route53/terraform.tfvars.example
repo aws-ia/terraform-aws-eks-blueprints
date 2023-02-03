@@ -1,0 +1,19 @@
+# You should update the below variables
+
+aws_region          = "eu-west-1"
+core_stack_name     = "eks-blueprint"
+hosted_zone_name    = "eks.mydomain.org" # your Existing Hosted Zone
+eks_admin_role_name = "Admin" # Additional role admin in the cluster (usually the role I use in the AWS console)
+
+#To use other existing VPC reference it's tags
+vpc_tag_key   = "Blueprint"
+vpc_tag_value = "eks-blueprint" # Need same value as core_stack_name
+
+# EKS Blueprint AddOns ArgoCD App of App repository
+addons_repo_url = "git@github.com:aws-samples/eks-blueprints-add-ons.git"
+
+# EKS Blueprint Workloads ArgoCD App of App repository
+workload_repo_url      = "git@github.com:aws-samples/eks-blueprints-workloads.git"
+workload_repo_revision = "main"
+workload_repo_path     = "envs/dev"
+workload_repo_secret   = "github-blueprint-ssh-key"

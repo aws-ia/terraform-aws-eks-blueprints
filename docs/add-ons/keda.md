@@ -37,6 +37,6 @@ The following properties are made available for use when managing the add-on via
 ```
 keda = {
   enable             = true
-  serviceAccountName = "<service_account_name>"
+  serviceAccountName = "<service_account>"
 }
 ```

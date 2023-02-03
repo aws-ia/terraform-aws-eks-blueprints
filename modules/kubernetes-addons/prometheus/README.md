@@ -1,12 +1,12 @@
 # Prometheus Helm Chart
 
-###### Instructions to upload Prometheus Docker image to AWS ECR
+## Instructions to upload Prometheus Docker image to AWS ECR
 
-Step1: Get the latest docker image from this link
+Step 1: Get the latest docker image from this link
 
         https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus/values.yaml
 
-Step2: Download the docker image to your local Mac/Laptop
+Step 2: Download the docker image to your local Mac/Laptop
 
         $ docker pull quay.io/prometheus/prometheus:v2.31.1
         $ docker pull quay.io/prometheus/alertmanager:v0.23.0
@@ -14,12 +14,11 @@ Step2: Download the docker image to your local Mac/Laptop
         $ docker pull quay.io/prometheus/node-exporter:v1.3.0
         $ docker pull prom/pushgateway:v1.4.2
 
-
-Step3: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
+Step 3: Retrieve an authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
 
         $ aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin <account id>.dkr.ecr.eu-west-1.amazonaws.com
 
-Step4: Create an ECR repo for each image mentioned in Step2 with the same in ECR. See example for
+Step 4: Create an ECR repo for each image mentioned in Step 2 with the same in ECR. See example for
 
         $ aws ecr create-repository \
               --repository-name quay.io/prometheus/prometheus \
@@ -27,36 +26,33 @@ Step4: Create an ECR repo for each image mentioned in Step2 with the same in ECR
 
 Repeat the above steps for other 4 images
 
-Step5: After the build completes, tag your image so, you can push the image to this repository:
+Step 5: After the build completes, tag your image so, you can push the image to this repository:
 
         $ docker tag quay.io/prometheus/prometheus:v2.31.1 <accountid>.dkr.ecr.eu-west-1.amazonaws.com/quay.io/prometheus/prometheus:v2.31.1
 
 Repeat the above steps for other 4 images
 
-Step6: Run the following command to push this image to your newly created AWS repository:
+Step 6: Run the following command to push this image to your newly created AWS repository:
 
         $ docker push <accountid>.dkr.ecr.eu-west-1.amazonaws.com/quay.io/prometheus/prometheus:v2.31.1
 
 Repeat the above steps for other 4 images
 
-### Instructions to download Helm Charts
-
-Helm Chart
-
-    https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus/values.yaml
-
-
-<!--- BEGIN_TF_DOCS --->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
 
 ## Modules
 
@@ -91,5 +87,8 @@ No requirements.
 | Name | Description |
 |------|-------------|
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
-
-<!--- END_TF_DOCS --->
+| <a name="output_irsa_arn"></a> [irsa\_arn](#output\_irsa\_arn) | IAM role ARN for the service account |
+| <a name="output_irsa_name"></a> [irsa\_name](#output\_irsa\_name) | IAM role name for the service account |
+| <a name="output_release_metadata"></a> [release\_metadata](#output\_release\_metadata) | Map of attributes of the Helm release metadata |
+| <a name="output_service_account"></a> [service\_account](#output\_service\_account) | Name of Kubernetes service account |
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

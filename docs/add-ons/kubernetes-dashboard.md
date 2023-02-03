@@ -33,7 +33,7 @@ The following properties are made available for use when managing the add-on via
 ```hcl-terraform
 argocd_gitops_config = {
   enable             = true
-  serviceAccountName = local.service_account_name
+  serviceAccountName = local.service_account
 }
 ```
 

@@ -12,11 +12,38 @@ cert-manger can be deployed by enabling the add-on via the following.
 enable_cert_manager = true
 ```
 
+cert-manger can optionally leverage the `cert_manager_domain_names` global property of the `kubernetes_addon` submodule for DNS01 protocol. The value for this property should be a list of Route53 domains managed by your account. cert-manager is restricted to the zones from the list.
+
+```
+cert_manager_domain_names = [<cluster_domain>, <another_cluster_domain>]
+```
+
+With this add-on self-signed CA and Let's Encrypt cluster issuers will be installed.
+
+You can disable Let's Encrypt cluster issuers with:
+
+```
+cert_manager_install_letsencrypt_issuers = false
+```
+
+You can set an email address for expiration emails with:
+
+```
+cert_manager_letsencrypt_email = "user@example.com"
+```
+
+You can pass previously created secrets for use as `imagePullSecrets` on the Service Account
+
+```
+cert_manager_kubernetes_svc_image_pull_secrets = ["regcred"]
+```
+
 ### GitOps Configuration
 
 The following properties are made available for use when managing the add-on via GitOps.
 
 ```
+
 certManager = {
   enable = true
 }

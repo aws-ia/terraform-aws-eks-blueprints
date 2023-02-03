@@ -1,17 +1,14 @@
 locals {
-  name                 = "kubernetes-dashboard"
-  service_account_name = "eks-admin"
-  namespace            = "kube-system"
+  name = "kubernetes-dashboard"
 
+  # https://github.com/kubernetes/dashboard/blob/master/charts/helm-chart/kubernetes-dashboard/Chart.yaml
   default_helm_config = {
     name        = local.name
     chart       = local.name
     repository  = "https://kubernetes.github.io/dashboard/"
-    version     = "5.2.0"
-    namespace   = local.namespace
+    version     = "5.11.0"
+    namespace   = local.name
     description = "Kubernetes Dashboard Helm Chart"
-    values      = local.default_helm_values
-    timeout     = "1200"
   }
 
   helm_config = merge(
@@ -19,28 +16,7 @@ locals {
     var.helm_config
   )
 
-  default_helm_values = []
-
-  set_values = [
-    {
-      name  = "serviceAccount.name"
-      value = local.service_account_name
-    },
-    {
-      name  = "serviceAccount.create"
-      value = false
-    }
-  ]
-
-  irsa_config = {
-    kubernetes_namespace              = local.helm_config["namespace"]
-    kubernetes_service_account        = local.service_account_name
-    create_kubernetes_namespace       = false
-    create_kubernetes_service_account = true
-  }
-
   argocd_gitops_config = {
-    enable             = true
-    serviceAccountName = local.service_account_name
+    enable = true
   }
 }

@@ -31,4 +31,4 @@ Alternatively, you can override the Helm Values by setting the `vault_helm_confi
   }
 ```
 
-This snippet does not contain _all_ available options that can be set as part of `vault_helm_config`. For the complete listing, see the [`hashicorp-vault-eks-blueprints-addon` repository](https://github.com/hashicorp/terraform-aws-hashicorp-vault-eks-addon/blob/main/locals.tf).
+This snippet does not contain _all_ available options that can be set as part of `vault_helm_config`. For the complete listing, see the [`hashicorp-vault-eks-blueprints-addon` repository](https://github.com/hashicorp/terraform-aws-hashicorp-vault-eks-addon/).

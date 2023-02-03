@@ -1,4 +1,3 @@
-
 # Help on Fargate Logging with Fluentbit and CloudWatch
 # https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html
 
@@ -7,8 +6,7 @@ resource "kubernetes_namespace" "aws_observability" {
     name = "aws-observability"
 
     labels = {
-      aws-observability              = "enabled"
-      "app.kubernetes.io/managed-by" = "terraform-eks-blueprints"
+      aws-observability = "enabled"
     }
   }
 }
@@ -24,5 +22,6 @@ resource "kubernetes_config_map" "aws_logging" {
     "parsers.conf" = local.config["parsers_conf"]
     "filters.conf" = local.config["filters_conf"]
     "output.conf"  = local.config["output_conf"]
+    "flb_log_cw"   = local.config["flb_log_cw"]
   }
 }

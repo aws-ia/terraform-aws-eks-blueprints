@@ -1,11 +1,15 @@
 locals {
-  default_emr_on_eks_teams = {
-    emr_on_eks_namespace     = "emr-on-eks-spark"
-    emr_on_eks_iam_role_name = "emr-on-eks-spark-iam-role"
+
+  default_emr_eks_team = {
+    namespace               = "emr-on-eks-spark"
+    job_execution_role      = "emr-on-eks-job-role"
+    additional_iam_policies = []
   }
+
   emr_on_eks_team = merge(
-    local.default_emr_on_eks_teams,
+    local.default_emr_eks_team,
     var.emr_on_eks_teams
   )
+
   emr_service_name = "emr-containers"
 }

@@ -18,6 +18,7 @@ You can stream logs from Fargate directly to `Amazon CloudWatch`, `Amazon OpenSe
 You can also stream logs to destinations such as `Amazon S3`, `Amazon Kinesis Data Streams`, and partner tools through Amazon Kinesis Data Firehose.
 
 ## Fluent Bit CloudWatch Config
+
 Please find the updated configuration from [AWS Docs](https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html)
 
 ```hcl
@@ -42,8 +43,8 @@ Please find the updated configuration from [AWS Docs](https://docs.aws.amazon.co
   Match *
   Key_Name log
   Parser regex
-  Preserve_Key On
-  Reserve_Data On
+  Preserve_Key True
+  Reserve_Data True
     EOF
       parsers_conf = <<EOF
 [PARSER]
@@ -55,19 +56,23 @@ Please find the updated configuration from [AWS Docs](https://docs.aws.amazon.co
   Time_Keep On
   Decode_Field_As json message
     EOF
+  flb_log_cw: true
   }
 ```
 
-<!--- BEGIN_TF_DOCS --->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
 
 ## Modules
 
@@ -90,5 +95,4 @@ No modules.
 ## Outputs
 
 No outputs.
-
-<!--- END_TF_DOCS --->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

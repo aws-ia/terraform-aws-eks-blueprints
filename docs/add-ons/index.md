@@ -1,36 +1,8 @@
 # Kubernetes Addons Module
 
-The [`kubernetes-addons`](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/) module within EKS Blueprints allows you to configure the add-ons you would like deployed into you EKS cluster with simple **true/false** flags.
+The [`kubernetes-addons`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons) module within EKS Blueprints allows you to configure the add-ons you would like deployed into you EKS cluster with simple **true/false** flags.
 
-The framework currently provides support for the following add-ons:
-
-| Add-on    | Description   |
-|-----------|-----------------
-| [Agones](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/agones.md) | Deploys Agones into an EKS cluster. |
-| [ArgoCD](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/argocd.md) | Deploys ArgoCD into an EKS cluster. |
-| [AWS EFS CSI driver](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/aws-efs-csi-driver.md) | Deploys the AWS EFS CSI driver into an EKS cluster. |
-| [AWS for Fluent Bit](.https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/aws-for-fluent-bit.md) | Deploys Fluent Bit into an EKS cluster. |
-| [AWS CloudWatch Metrics](.https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/aws-cloudwatch-metrics.md) | Deploys AWS CloudWatch Metrics Agent into an EKS cluster. |
-| [AWS Load Balancer Controller](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/aws-load-balancer-controller.md) | Deploys the AWS Load Balancer Controller into an EKS cluster. |
-| [AWS Node Termination Handler](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/aws-node-termination-handler.md) | Deploys the AWS Node Termination Handler into an EKS cluster. |
-| [cert-manager](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/cert-manager.md) | Deploys cert-manager into an EKS cluster. |
-| [Cluster Autoscaler](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/cluster-autoscaler.md) | Deploys the standard cluster autoscaler into an EKS cluster. |
-| [Crossplane](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/crossplane.md) | Deploys Crossplane into an EKS cluster. |
-| [ExternalDNS](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/external-dns.md) | Deploys External DNS into an EKS cluster. |
-| [Fargate Fluent Bit](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/fargate-fluent-bit.md) | Adds Fluent Bit support for EKS Fargate |
-| [Karpenter](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/karpenter.md) | Deploys Karpenter into an EKS cluster. |
-| [Keda](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/keda.md) | Deploys Keda into an EKS cluster. |
-| [Kube State Metrics](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/kube-state-metrics.md) | Deploys Kube State Metrics into an EKS cluster. |
-| [Kubernetes Dashboard](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/kubernetes-dashboard.md) | Deploys Kubernetes Dashboard into an EKS cluster. |
-| [Metrics Server](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/metrics-server.md) | Deploys the Kubernetes Metrics Server into an EKS cluster. |
-| [Ingress Nginx](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/nginx.md) | Deploys the NGINX Ingress Controller into an EKS cluster. |
-| [Prometheus](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/prometheus.md) | Deploys Prometheus into an EKS cluster. |
-| [Spark K8S Operator](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/spark-on-k8s-operator.md) | Deploys the Kubernetes Operator for Apache Spark into an EKS cluster. |
-| [Tetrate Istio](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/tetrate-istio.md) | Deploys Tetrate Istio Distro into an EKS cluster. |
-| [Traefik](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/traefik.md) | Deploys Traefik Proxy into an EKS cluster.
-| [HashiCorp Vault](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/vault.md) | Deploys HashiCorp Vault into an EKS cluster.
-| [VPA](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/vpa.md) | Deploys the Vertical Pod Autoscaler into an EKS cluster. |
-| [YuniKorn](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/add-ons/yunikorn.md) | Deploys Apache YuniKorn into an EKS cluster. |
+The framework currently provides support for add-ons listed in the current folder.
 
 ## Add-on Management
 
@@ -52,7 +24,7 @@ In order to deploy an add-on with default configuration, simply enable the add-o
 module "eks_blueprints_kubernetes_addons" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
 
-  cluster_id                    = <EKS-CLUSTER-ID>
+  eks_cluster_id = <EKS-CLUSTER-ID>
 
   # EKS Addons
 
@@ -103,7 +75,7 @@ To indicate that you would like to manage add-ons via ArgoCD, you must do the fo
 
 Note, that the `add_on_application` flag in your `Application` configuration must be set to `true`.
 
-```
+```hcl
 enable_argocd           = true
 argocd_manage_add_ons   = true
 argocd_applications     = {

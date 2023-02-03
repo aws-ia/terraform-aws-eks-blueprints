@@ -1,7 +1,5 @@
 data "aws_partition" "current" {}
-
 data "aws_caller_identity" "current" {}
-
 data "aws_region" "current" {}
 
 data "aws_eks_cluster" "cluster" {
@@ -14,7 +12,7 @@ data "http" "eks_cluster_readiness" {
 
   url            = join("/", [data.aws_eks_cluster.cluster[0].endpoint, "healthz"])
   ca_certificate = base64decode(data.aws_eks_cluster.cluster[0].certificate_authority[0].data)
-  timeout        = 300
+  timeout        = var.eks_readiness_timeout
 }
 
 data "aws_iam_session_context" "current" {
@@ -26,12 +24,12 @@ data "aws_iam_policy_document" "eks_key" {
     sid    = "Allow access for all principals in the account that are authorized"
     effect = "Allow"
     actions = [
-      "kms:Encrypt",
-      "kms:Decrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
       "kms:CreateGrant",
-      "kms:DescribeKey"
+      "kms:Decrypt",
+      "kms:DescribeKey",
+      "kms:Encrypt",
+      "kms:GenerateDataKey*",
+      "kms:ReEncrypt*",
     ]
     resources = ["*"]
 
@@ -62,7 +60,7 @@ data "aws_iam_policy_document" "eks_key" {
       "kms:Describe*",
       "kms:Get*",
       "kms:List*",
-      "kms:RevokeGrant"
+      "kms:RevokeGrant",
     ]
     resources = ["*"]
 
@@ -86,10 +84,7 @@ data "aws_iam_policy_document" "eks_key" {
       type = "AWS"
       identifiers = concat(
         var.cluster_kms_key_additional_admin_arns,
-        [
-          "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${local.cluster_iam_role_name}",
-          data.aws_iam_session_context.current.issuer_arn
-        ]
+        [data.aws_iam_session_context.current.issuer_arn]
       )
     }
   }
@@ -98,18 +93,18 @@ data "aws_iam_policy_document" "eks_key" {
     sid    = "Allow use of the key"
     effect = "Allow"
     actions = [
-      "kms:Encrypt",
       "kms:Decrypt",
-      "kms:ReEncrypt*",
+      "kms:DescribeKey",
+      "kms:Encrypt",
       "kms:GenerateDataKey*",
-      "kms:DescribeKey"
+      "kms:ReEncrypt*",
     ]
     resources = ["*"]
 
     principals {
       type = "AWS"
       identifiers = [
-        "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${local.cluster_iam_role_name}"
+        local.cluster_iam_role_pathed_arn
       ]
     }
   }
@@ -122,14 +117,14 @@ data "aws_iam_policy_document" "eks_key" {
     actions = [
       "kms:CreateGrant",
       "kms:ListGrants",
-      "kms:RevokeGrant"
+      "kms:RevokeGrant",
     ]
     resources = ["*"]
 
     principals {
       type = "AWS"
       identifiers = [
-        "arn:${local.context.aws_partition_id}:iam::${local.context.aws_caller_identity_account_id}:role/${local.cluster_iam_role_name}"
+        local.cluster_iam_role_pathed_arn
       ]
     }
 

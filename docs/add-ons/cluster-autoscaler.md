@@ -19,8 +19,9 @@ enable_cluster_autoscaler = true
 
 The following properties are made available for use when managing the add-on via GitOps.
 
-```
+```hcl
 clusterAutoscaler = {
   enable = true
+  serviceAccountName = "<service_account>"
 }
 ```

@@ -1,33 +1,39 @@
 # Agones Helm Chart
 
 ## Agones
+
 Agones is an Open source Kubernetes Controller with custom resource definitions and is used to create, run, manage and scale dedicated game server processes within Kubernetes clusters using standard Kubernetes tooling and APIs. This model also allows any matchmaker to interact directly with Agones via the Kubernetes API to provision a dedicated game server
 
 ## GameLift
+
 Amazon GameLift enables developers to deploy, operate, and scale dedicated, low-cost servers in the cloud for session-based, multiplayer games. Built on AWS global computing infrastructure, GameLift helps deliver high-performance, high-reliability, low-cost game servers while dynamically scaling your resource usage to meet worldwide player demand.
 
-     https://github.com/googleforgames/agones/tree/main/install/helm/agones
-     https://artifacthub.io/packages/helm/agones/agones
+https://github.com/googleforgames/agones/tree/main/install/helm/agones
+https://artifacthub.io/packages/helm/agones/agones
 
-DOCKER IMAGES
+### Docker Images
 
-      gcr.io/agones-images/agones-controller:1.15.0-rc
-      gcr.io/agones-images/agones-ping:1.15.0-rc
-      gcr.io/agones-images/agones-allocator:1.15.0-rc
+```
+gcr.io/agones-images/agones-controller:1.15.0-rc
+gcr.io/agones-images/agones-ping:1.15.0-rc
+gcr.io/agones-images/agones-allocator:1.15.0-rc
+```
 
-
-
-<!--- BEGIN_TF_DOCS --->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.72 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.72 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
 
 ## Modules
 
@@ -57,5 +63,8 @@ No requirements.
 | Name | Description |
 |------|-------------|
 | <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
-
-<!--- END_TF_DOCS --->
+| <a name="output_irsa_arn"></a> [irsa\_arn](#output\_irsa\_arn) | IAM role ARN for the service account |
+| <a name="output_irsa_name"></a> [irsa\_name](#output\_irsa\_name) | IAM role name for the service account |
+| <a name="output_release_metadata"></a> [release\_metadata](#output\_release\_metadata) | Map of attributes of the Helm release metadata |
+| <a name="output_service_account"></a> [service\_account](#output\_service\_account) | Name of Kubernetes service account |
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -5,6 +5,7 @@ variable "addon_config" {
 }
 
 variable "addon_context" {
+  description = "Input configuration for the addon"
   type = object({
     aws_caller_identity_account_id = string
     aws_caller_identity_arn        = string
@@ -18,5 +19,22 @@ variable "addon_context" {
     irsa_iam_role_path             = string
     irsa_iam_permissions_boundary  = string
   })
-  description = "Input configuration for the addon"
+}
+
+variable "enable_amazon_eks_aws_ebs_csi_driver" {
+  description = "Enable EKS Managed AWS EBS CSI Driver add-on"
+  type        = bool
+  default     = false
+}
+
+variable "enable_self_managed_aws_ebs_csi_driver" {
+  description = "Enable self-managed aws-ebs-csi-driver add-on"
+  type        = bool
+  default     = false
+}
+
+variable "helm_config" {
+  description = "Self-managed aws-ebs-csi-driver Helm chart config"
+  type        = any
+  default     = {}
 }

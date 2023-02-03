@@ -1,0 +1,31 @@
+securityContext:
+  fsGroup: 65534
+
+executor: "KubernetesExecutor"
+
+workers:
+  replicas: 0
+
+postgresql:
+  enabled: true
+
+scheduler:
+  replicas: 1
+  waitForMigrations:
+    enabled: false
+
+webserver:
+  replicas: 1
+  waitForMigrations:
+    enabled: false
+
+migrateDatabaseJob:
+  enabled: true
+
+triggerer:
+  enabled: true
+  waitForMigrations:
+    enabled: false
+
+redis:
+  enabled: false

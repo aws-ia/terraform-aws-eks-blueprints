@@ -1,0 +1,103 @@
+name: plan-examples
+
+on:
+  # Review https://securitylab.github.com/research/github-actions-preventing-pwn-requests/ and better understand the risks of using pull_request_target before making major changes to this workflow.
+  pull_request_target:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  getExampleDirectories:
+    name: Get example directories
+    runs-on: ubuntu-latest
+    # Do not remove environment setup without considering changes to pull_request_target and checkout of PR, as it may lead to checks running automatically against malicious code in PRs.
+    environment: EKS Blueprints Test
+    # Skip running on forks since it won't have access to secrets
+    if: github.repository == 'aws-ia/terraform-aws-eks-blueprints'
+    outputs:
+      directories: ${{ steps.dirs.outputs.directories }}
+    steps:
+      # Be careful not to change this to explicit checkout from PR ref/code, as below we run a python code that may change from the PR code.
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get Terraform directories for evaluation
+        id: dirs
+        run: |
+          DIRS=$(python3 .github/scripts/plan-examples.py)
+          echo "directories=$DIRS" >> $GITHUB_OUTPUT
+
+  plan:
+    name: Plan examples
+    needs: getExampleDirectories
+    runs-on: ubuntu-latest
+    # Skip running on forks since it won't have access to secrets
+    if: github.repository == 'aws-ia/terraform-aws-eks-blueprints'
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        directory: ${{ fromJson(needs.getExampleDirectories.outputs.directories) }}
+
+    steps:
+      - name: Remove default Terraform
+        run: rm -rf $(which terraform)
+
+      - name: checkout-merge
+        if: "contains(github.event_name, 'pull_request')"
+        uses: actions/checkout@v3
+        with:
+          ref: refs/pull/${{github.event.pull_request.number}}/merge
+
+      - name: checkout
+        if: "!contains(github.event_name, 'pull_request')"
+        uses: actions/checkout@v3
+
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          # Need to check not only the example directory
+          # but also the supporting module(s) code
+          # for plans (not for pre-commit)
+          filters: |
+            src:
+              - '${{ matrix.directory }}/**/*.(tf|yml|yaml)'
+              - 'modules/**/*.(tf|yml|yaml)'
+              - '*.tf'
+
+      - name: Configure AWS credentials from Test account
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        if: steps.changes.outputs.src== 'true'
+        with:
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          aws-region: us-west-2
+          role-duration-seconds: 3600
+          role-session-name: GithubActions-Session
+
+      - name: Terraform Job
+        uses: hashicorp/setup-terraform@v2
+        if: steps.changes.outputs.src== 'true'
+        with:
+          terraform_version: 1.0.0
+
+      - if: steps.changes.outputs.src== 'true'
+        run: terraform version
+
+      - name: Terraform Init
+        if: steps.changes.outputs.src== 'true'
+        run: terraform init -reconfigure
+        working-directory: ${{ matrix.directory }}
+
+      - name: Terraform Plan
+        if: steps.changes.outputs.src== 'true'
+        working-directory: ${{ matrix.directory }}
+        run: terraform plan -no-color

@@ -1,0 +1,22 @@
+apiVersion: 'v1'
+kind: 'LimitRange'
+metadata:
+  name: 'resource-limits'
+  namespace: ecsdemo-frontend
+spec:
+  limits:
+    - type: 'Container'
+      max:
+        cpu: '2'
+        memory: '1Gi'
+      min:
+        cpu: '50m'
+        memory: '4Mi'
+      default:
+        cpu: '300m'
+        memory: '200Mi'
+      defaultRequest:
+        cpu: '200m'
+        memory: '100Mi'
+      maxLimitRequestRatio:
+        cpu: '10'

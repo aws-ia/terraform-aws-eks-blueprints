@@ -7,22 +7,34 @@ locals {
     ami_type                 = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, BOTTLEROCKET_x86_64, BOTTLEROCKET_ARM_64
     subnet_type              = "private"
     subnet_ids               = []
-    release_version          = ""
-    force_update_version     = null
 
-    desired_size    = "3"
-    max_size        = "3"
-    min_size        = "1"
-    max_unavailable = "1"
-    disk_size       = 50 # disk_size will be ignored when using Launch Templates
+    # IAM Roles for Nodegroup
+    create_iam_role = true
+    iam_role_arn    = null # iam_role_arn will be used if create_iam_role=false
 
-    k8s_labels      = {}
-    k8s_taints      = []
-    additional_tags = {}
+    # Scaling Config
+    desired_size = 3
+    max_size     = 3
+    min_size     = 1
+    disk_size    = 50 # disk_size will be ignored when using Launch Templates
+
+    # Upgrade Config
+    update_config = [{
+      max_unavailable            = 1
+      max_unavailable_percentage = null
+    }]
+
+    release_version      = ""
+    force_update_version = null
+
+    k8s_labels           = {}
+    k8s_taints           = []
+    additional_tags      = {}
+    launch_template_tags = {}
 
     remote_access           = false
-    ec2_ssh_key             = ""
-    ssh_security_group_id   = ""
+    ec2_ssh_key             = null
+    ssh_security_group_id   = null
     additional_iam_policies = []
 
     timeouts = [{
@@ -47,13 +59,15 @@ locals {
     block_device_mappings = [{
       device_name           = "/dev/xvda"
       volume_type           = "gp3" # The volume type. Can be standard, gp2, gp3, io1, io2, sc1 or st1 (Default: gp3).
-      volume_size           = "100"
+      volume_size           = 100
       delete_on_termination = true
       encrypted             = true
       kms_key_id            = ""
       iops                  = 3000
       throughput            = 125
     }]
+
+    format_mount_nvme_disk = false
   }
 
   managed_node_group = merge(
@@ -65,35 +79,39 @@ locals {
   ec2_principal     = "ec2.${var.context.aws_partition_dns_suffix}"
 
   userdata_params = {
-    eks_cluster_id       = var.context.eks_cluster_id
-    cluster_ca_base64    = var.context.cluster_ca_base64
-    cluster_endpoint     = var.context.cluster_endpoint
-    custom_ami_id        = local.managed_node_group["custom_ami_id"]
-    pre_userdata         = local.managed_node_group["pre_userdata"]         # Applied to all launch templates
-    bootstrap_extra_args = local.managed_node_group["bootstrap_extra_args"] # used only when custom_ami_id specified e.g., bootstrap_extra_args="--use-max-pods false --container-runtime containerd"
-    post_userdata        = local.managed_node_group["post_userdata"]        # used only when custom_ami_id specified
-    kubelet_extra_args   = local.managed_node_group["kubelet_extra_args"]   # used only when custom_ami_id specified e.g., kubelet_extra_args="--node-labels=arch=x86,WorkerType=SPOT --max-pods=50 --register-with-taints=spot=true:NoSchedule"  # Equivalent to k8s_labels used in managed node groups
-    service_ipv6_cidr    = var.context.service_ipv6_cidr == null ? "" : var.context.service_ipv6_cidr
-    service_ipv4_cidr    = var.context.service_ipv4_cidr == null ? "" : var.context.service_ipv4_cidr
+    eks_cluster_id         = var.context.eks_cluster_id
+    cluster_ca_base64      = var.context.cluster_ca_base64
+    cluster_endpoint       = var.context.cluster_endpoint
+    custom_ami_id          = local.managed_node_group["custom_ami_id"]
+    pre_userdata           = local.managed_node_group["pre_userdata"]         # Applied to all launch templates
+    bootstrap_extra_args   = local.managed_node_group["bootstrap_extra_args"] # used only when custom_ami_id specified e.g., bootstrap_extra_args="--use-max-pods false --container-runtime containerd"
+    post_userdata          = local.managed_node_group["post_userdata"]        # used only when custom_ami_id specified
+    kubelet_extra_args     = local.managed_node_group["kubelet_extra_args"]   # used only when custom_ami_id specified e.g., kubelet_extra_args="--node-labels=arch=x86,WorkerType=SPOT --max-pods=50 --register-with-taints=spot=true:NoSchedule"  # Equivalent to k8s_labels used in managed node groups
+    service_ipv6_cidr      = var.context.service_ipv6_cidr == null ? "" : var.context.service_ipv6_cidr
+    service_ipv4_cidr      = var.context.service_ipv4_cidr == null ? "" : var.context.service_ipv4_cidr
+    format_mount_nvme_disk = local.managed_node_group["format_mount_nvme_disk"]
   }
 
   userdata_base64 = base64encode(
     templatefile("${path.module}/templates/userdata-${local.managed_node_group["launch_template_os"]}.tpl", local.userdata_params)
   )
 
-  eks_worker_policies = toset(concat(
-    local.managed_node_group["additional_iam_policies"]
-  ))
+  eks_worker_policies = { for k, v in toset(concat([
+    "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy",
+    "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy",
+    "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly",
+    "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"],
+    local.managed_node_group["additional_iam_policies"
+  ])) : k => v if local.managed_node_group["create_iam_role"] }
 
   common_tags = merge(
     var.context.tags,
     local.managed_node_group["additional_tags"],
     {
-      Name = "${var.context.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
-    },
-    {
+      Name                                                      = "${var.context.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
       "kubernetes.io/cluster/${var.context.eks_cluster_id}"     = "owned"
       "k8s.io/cluster-autoscaler/${var.context.eks_cluster_id}" = "owned"
       "k8s.io/cluster-autoscaler/enabled"                       = "TRUE"
+      "managed-by"                                              = "terraform-aws-eks-blueprints"
   })
 }

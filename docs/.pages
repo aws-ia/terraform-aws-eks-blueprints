@@ -1,0 +1,12 @@
+nav:
+    - Overview: index.md
+    - Getting Started: getting-started.md
+    - Core Concepts: core-concepts.md
+    - Node Groups: node-groups.md
+    - IAM: iam
+    - Teams: teams.md
+    - Modules: modules
+    - Add-ons: add-ons
+    - Advanced: advanced
+    - Extensibility: extensibility.md
+    - ...

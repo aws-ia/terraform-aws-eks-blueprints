@@ -1,0 +1,31 @@
+# https://github.com/kubecost/cost-analyzer-helm-chart/blob/master/cost-analyzer/values-eks-cost-monitoring.yaml
+global:
+  grafana:
+    enabled: false
+    proxy: false
+
+imageVersion: prod-1.97.0
+kubecostFrontend:
+  image: public.ecr.aws/kubecost/frontend
+
+kubecostModel:
+  image: public.ecr.aws/kubecost/cost-model
+
+kubecostMetrics:
+  emitPodAnnotations: true
+  emitNamespaceAnnotations: true
+
+prometheus:
+  server:
+    image:
+      repository: public.ecr.aws/kubecost/prometheus
+      tag: v2.35.0
+
+  configmapReload:
+    prometheus:
+      image:
+        repository: public.ecr.aws/bitnami/configmap-reload
+        tag: 0.7.1
+
+reporting:
+  productAnalytics: false

@@ -1,23 +1,29 @@
-variable "cluster_version" {
+variable "name" {
+  description = "Name of the VPC and EKS Cluster"
+  default     = "emr-on-eks"
   type        = string
-  description = "Kubernetes Version"
-  default     = "1.21"
 }
 
-variable "tenant" {
+variable "region" {
+  description = "region"
   type        = string
-  description = "Account Name or unique account unique id e.g., apps or management or aws007"
-  default     = "aws001"
+  default     = "us-west-2"
 }
 
-variable "environment" {
+variable "eks_cluster_version" {
+  description = "EKS Cluster version"
+  default     = "1.24"
   type        = string
-  default     = "preprod"
-  description = "Environment area, e.g. prod or preprod "
 }
 
-variable "zone" {
+variable "tags" {
+  description = "Default tags"
+  default     = {}
+  type        = map(string)
+}
+
+variable "vpc_cidr" {
+  description = "VPC CIDR"
+  default     = "10.1.0.0/16"
   type        = string
-  description = "zone, e.g. dev or qa or load or ops etc..."
-  default     = "test"
 }

@@ -16,10 +16,10 @@ data "aws_iam_policy_document" "irsa" {
     resources = ["arn:${var.addon_context.aws_partition_id}:logs:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:log-group:*"]
 
     actions = [
+      "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:DescribeLogGroups",
       "logs:DescribeLogStreams",
-      "logs:CreateLogGroup",
     ]
   }
 }
@@ -44,11 +44,11 @@ data "aws_iam_policy_document" "kms" {
     resources = ["*"]
 
     actions = [
-      "kms:Encrypt*",
       "kms:Decrypt*",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
       "kms:Describe*",
+      "kms:Encrypt*",
+      "kms:GenerateDataKey*",
+      "kms:ReEncrypt*",
     ]
 
     condition {

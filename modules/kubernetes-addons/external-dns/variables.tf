@@ -1,26 +1,40 @@
 variable "helm_config" {
+  description = "External DNS Helm Configuration"
   type        = any
   default     = {}
-  description = "External DNS Helm Configuration"
 }
 
 variable "manage_via_gitops" {
+  description = "Determines if the add-on should be managed via GitOps."
   type        = bool
   default     = false
-  description = "Determines if the add-on should be managed via GitOps."
 }
 
 variable "irsa_policies" {
-  type        = list(string)
   description = "Additional IAM policies used for the add-on service account."
+  type        = list(string)
+  default     = []
 }
 
 variable "domain_name" {
+  description = "[Deprecated - use `route53_zone_arns`] Domain name of the Route53 hosted zone to use with External DNS."
   type        = string
-  description = "Domain name of the Route53 hosted zone to use with External DNS."
+}
+
+variable "private_zone" {
+  description = "[Deprecated - use `route53_zone_arns`] Determines if referenced Route53 hosted zone is private."
+  type        = bool
+  default     = false
+}
+
+variable "route53_zone_arns" {
+  description = "List of Route53 zones ARNs which external-dns will have access to create/manage records"
+  type        = list(string)
+  default     = []
 }
 
 variable "addon_context" {
+  description = "Input configuration for the addon"
   type = object({
     aws_caller_identity_account_id = string
     aws_caller_identity_arn        = string
@@ -34,5 +48,4 @@ variable "addon_context" {
     irsa_iam_role_path             = string
     irsa_iam_permissions_boundary  = string
   })
-  description = "Input configuration for the addon"
 }

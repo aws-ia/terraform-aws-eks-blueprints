@@ -1,48 +1,12 @@
 site_name: Amazon EKS Blueprints for Terraform
 repo_name: "aws-ia/terraform-aws-eks-blueprints"
 repo_url: "https://github.com/aws-ia/terraform-aws-eks-blueprints"
+edit_uri: "edit/main/docs/"
 docs_dir: "docs"
 theme:
   name: material
   features:
     - tabs
-nav:
-  - Overview: "index.md"
-  - Getting Started: "getting-started.md"
-  - Core Concepts: "core-concepts.md"
-  - Node Groups: "node-groups.md"
-  - Teams: "teams.md"
-  - Modules:
-      - EMR on EKS: "modules/emr-on-eks.md"
-  - Add-ons:
-      - Overview: "add-ons/index.md"
-      - Agones: "add-ons/agones.md"
-      - Amazon EKS Add-ons: "add-ons/managed-add-ons.md"
-      - Argo CD: "add-ons/argocd.md"
-      - AWS for Fluent Bit: "add-ons/aws-for-fluent-bit.md"
-      - AWS Load Balancer Controller: "add-ons/aws-load-balancer-controller.md"
-      - AWS Distro for OpenTelemetry: "add-ons/aws-open-telemetry.md"
-      - AWS Node Termination Handler: "add-ons/aws-node-termination-handler.md"
-      - cert-manager: "add-ons/cert-manager.md"
-      - Cluster Autoscaler: "add-ons/cluster-autoscaler.md"
-      - Fargate Fluent Bit: "add-ons/fargate-fluent-bit.md"
-      - Karpenter: "add-ons/karpenter.md"
-      - KEDA: "add-ons/keda.md"
-      - Metrics Server: "add-ons/metrics-server.md"
-      - Nginx: "add-ons/nginx.md"
-      - Prometheus: "add-ons/prometheus.md"
-      - Spark K8S Operator: "add-ons/spark-on-k8s-operator.md"
-      - Tetrate Istio: "add-ons/tetrate-istio.md"
-      - Traefik: "add-ons/traefik.md"
-      - VPA: "add-ons/vpa.md"
-      - YuniKorn: "add-ons/yunikorn.md"
-  - Advanced:
-      - Bottlerocket: "advanced/bottlerocket.md"
-      - Cluster Upgrades: "advanced/cluster-upgrades.md"
-      - ECR Instructions: "advanced/ecr-instructions.md"
-      - GitOps with Flux: "advanced/gitops-with-flux.md"
-      - Multi-cluster: "advanced/multi-cluster.md"
-      - Private Clusters: "advanced/private-clusters.md"
 markdown_extensions:
   - def_list
   - pymdownx.highlight
@@ -54,3 +18,8 @@ markdown_extensions:
       permalink: true
 plugins:
   - search
+  - awesome-pages
+  - include-markdown
+extra:
+  version:
+    provider: mike

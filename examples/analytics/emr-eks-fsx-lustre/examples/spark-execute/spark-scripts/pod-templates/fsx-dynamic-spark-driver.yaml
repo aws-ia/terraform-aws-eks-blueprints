@@ -1,0 +1,30 @@
+# NOTE: PVC is created before the start of the Spark job to avoid waiting for 15 mins to create FSx filesystem while the job is running
+#
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fsx-taxi-driver
+  namespace: emr-data-team-a # Namespace used to submit the jobs
+spec:
+  volumes:
+    - name: spark-local-dir-ny-taxi
+      persistentVolumeClaim:
+        claimName: fsx-dynamic-pvc  # Dynamic PVC pre-created by this example terraform template
+
+  nodeSelector:
+    "NodeGroupType": "spark"
+
+  containers:
+    - name: spark-kubernetes-driver # Don't change this name. EMR on EKS looking for this name
+      volumeMounts:
+        - name: spark-local-dir-ny-taxi
+          mountPath: /dynamic # FSx Scratch 1 filesystem for executors scratch space
+          readOnly: false
+  initContainers:  # initContainer only used in Driver to set the permissions for dynamically created filesystem.
+    - name: spark-init-container-driver  # Don't change this name. EMR on EKS looking for this name
+      image: public.ecr.aws/y4g4v0z7/busybox
+      volumeMounts:
+        - name: spark-local-dir-ny-taxi
+          mountPath: /dynamic # FSx Scratch 1 filesystem for executors scratch space
+      command: ["sh", "-c", "chmod 777 /dynamic", "chown -hR +999:+1000 /dynamic"]

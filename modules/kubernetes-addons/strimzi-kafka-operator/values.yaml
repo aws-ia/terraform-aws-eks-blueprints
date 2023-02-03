@@ -1,0 +1,9 @@
+# Default values for strimzi-kafka-operator.
+
+resources:
+  limits:
+    memory: 1Gi
+    cpu: 1000m
+  requests:
+    memory: 1Gi
+    cpu: 1000m

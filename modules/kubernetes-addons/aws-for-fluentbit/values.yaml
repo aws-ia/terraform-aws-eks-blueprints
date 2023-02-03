@@ -1,6 +1,6 @@
 serviceAccount:
   create: false
-  name: ${service_account_name}
+  name: ${service_account}
 
 cloudWatch:
   enabled: true

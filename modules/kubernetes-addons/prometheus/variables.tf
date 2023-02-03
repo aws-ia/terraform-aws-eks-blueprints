@@ -1,28 +1,29 @@
 variable "helm_config" {
+  description = "Helm Config for Prometheus"
   type        = any
   default     = {}
-  description = "Helm Config for Prometheus"
 }
 
 variable "enable_amazon_prometheus" {
+  description = "Enable AWS Managed Prometheus service"
   type        = bool
   default     = false
-  description = "Enable AWS Managed Prometheus service"
 }
 
 variable "amazon_prometheus_workspace_endpoint" {
+  description = "Amazon Managed Prometheus Workspace Endpoint"
   type        = string
   default     = null
-  description = "Amazon Managed Prometheus Workspace Endpoint"
 }
 
 variable "manage_via_gitops" {
+  description = "Determines if the add-on should be managed via GitOps."
   type        = bool
   default     = false
-  description = "Determines if the add-on should be managed via GitOps."
 }
 
 variable "addon_context" {
+  description = "Input configuration for the addon"
   type = object({
     aws_caller_identity_account_id = string
     aws_caller_identity_arn        = string
@@ -36,5 +37,4 @@ variable "addon_context" {
     irsa_iam_role_path             = string
     irsa_iam_permissions_boundary  = string
   })
-  description = "Input configuration for the addon"
 }

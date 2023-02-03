@@ -1,12 +1,14 @@
 terraform {
+  required_version = ">= 1.0.0"
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 3.66.0"
+      version = ">= 4.47"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = ">= 2.7.1"
+      version = ">= 2.10"
     }
     helm = {
       source  = "hashicorp/helm"
@@ -14,11 +16,11 @@ terraform {
     }
     local = {
       source  = "hashicorp/local"
-      version = "2.1.0"
+      version = ">= 2.1"
     }
     null = {
       source  = "hashicorp/null"
-      version = "3.1.0"
+      version = ">= 3.1"
     }
     http = {
       source  = "terraform-aws-modules/http"
@@ -26,9 +28,7 @@ terraform {
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = ">= 1.7.0"
+      version = ">= 1.14"
     }
   }
-
-  required_version = ">= 1.0.0"
 }

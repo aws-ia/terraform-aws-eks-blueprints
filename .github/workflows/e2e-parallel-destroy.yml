@@ -4,12 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       TFDestroy:
-        description: "Destroy TF Automatically (false/true) - Default: true"
+        description: 'Destroy TF Automatically (false/true) - Default: true'
         required: true
-        default: "true"
+        default: 'true'
 
-env:
-  DEFAULT_DEPLOY_ORDER: "module.e2e-test.module.aws_vpc,module.e2e-test.module.eks-blueprints,module.e2e-test.module.eks-blueprints-kubernetes-addons"
+concurrency: e2e-parallel-destroy
 
 jobs:
   deploy:
@@ -24,130 +23,44 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - example_path: examples/analytics/emr-on-eks
-            tenant_name: "emr-eks"
-          - example_path: examples/analytics/spark-k8s-operator
-            tenant_name: "spark"
-          - example_path: examples/gitops/argocd
-            tenant_name: "argo"
-          - example_path: examples/aws-efs-csi-driver
-            tenant_name: "efs"
-          - example_path: examples/crossplane
-            tenant_name: "crossplane"
+          - example_path: examples/agones-game-controller
+          - example_path: examples/complete-kubernetes-addons
           - example_path: examples/eks-cluster-with-new-vpc
-            tenant_name: "new-vpc"
-          - example_path: examples/fully-private-eks-cluster
-            tenant_name: "private"
-            deployment_order:
-              [
-                "module.e2e-test.module.aws_vpc",
-                "module.e2e-test.module.vpc_endpoint_gateway",
-                "module.e2e-test.module.vpc_endpoints",
-                "module.e2e-test.module.eks-blueprints",
-              ]
-          - example_path: examples/game-tech/agones-game-controller
-            tenant_name: "agones"
-          - example_path: examples/ingress-controllers/nginx
-            tenant_name: "nginx"
-            deployment_order:
-              [
-                "module.e2e-test.module.aws_vpc",
-                "module.e2e-test.module.eks-blueprints",
-                "module.e2e-test.module.eks-blueprints-kubernetes-addons",
-                "module.e2e-test.module.aws_load_balancer_controller",
-                "module.e2e-test.module.ingress_nginx",
-              ]
+          - example_path: examples/fargate-serverless
+          - example_path: examples/gitops/argocd
+          - example_path: examples/grafana-loki
+          - example_path: examples/ipv4-prefix-delegation
+          - example_path: examples/ipv6-eks-cluster
           - example_path: examples/karpenter
-            tenant_name: "karpenter"
-          - example_path: examples/node-groups/managed-node-groups
-            tenant_name: "managed"
           - example_path: examples/multi-tenancy-with-teams
-            tenant_name: "teams"
-          - example_path: examples/node-groups/self-managed-node-groups
-            tenant_name: "self"
-          - example_path: examples/node-groups/windows-node-groups
-            tenant_name: "windows"
+          - example_path: examples/stateful
+          - example_path: examples/vpc-cni-custom-networking
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Pre Setup
-        id: pre-setup
-        run: |
-          mkdir -p deploy/e2e/gh-e2e-test
-          if [[ ${{ matrix.example_path }} == deploy/* ]]
-          then
-            echo "Skipping pre-setup for ${{ matrix.example_path }}"
-            cp -R ${{ matrix.example_path }}/* deploy/e2e/gh-e2e-test/
-          else
-            echo "Running pre-setup for ${{ matrix.example_path }}"
-            cp -R deploy/e2e/gh-e2e-template/* deploy/e2e/gh-e2e-test/
-            sed -i "s!REPLACE_ME!${{ matrix.tenant_name }}!g" deploy/e2e/gh-e2e-test/base.tfvars
-            sed -i "s!TF_STATE_PATH!${{ matrix.example_path }}!g" deploy/e2e/gh-e2e-test/backend.conf
-            sed -i "s!EXAMPLE_PATH!${{ matrix.example_path }}!g" deploy/e2e/gh-e2e-test/main.tf
-          fi
-        continue-on-error: false
+      - name: Setup backend
+        # Un-comment remote backend for use in workflow
+        run: sed -i "s/# //g" ${{ matrix.example_path }}/versions.tf
 
-      - name: Setup Deployment Order
-        id: setup-deployment-order
-        run: |
-          export MATRIX_DEPLOYMENT_ORDER=${{join(matrix.deployment_order,',') }}
-
-          if [ -z "$MATRIX_DEPLOYMENT_ORDER" ]
-          then
-            DEPLOYMENT_ORDER=${{env.DEFAULT_DEPLOY_ORDER}}
-          else
-            DEPLOYMENT_ORDER=$MATRIX_DEPLOYMENT_ORDER
-          fi
-          echo "DEPLOYMENT_ORDER=$DEPLOYMENT_ORDER" >> $GITHUB_ENV
-        continue-on-error: false
-
-      - name: Configure AWS credentials from Test account
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Auth AWS
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
           aws-region: us-west-2
           role-duration-seconds: 3600
           role-session-name: GithubActions-Session
 
-      - name: Terraform Job
-        uses: hashicorp/setup-terraform@v1
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.0.11
-
-      - name: Terraform Fmt
-        id: fmt
-        run: terraform fmt -check -recursive -list -no-color
-        continue-on-error: false
-
-      - name: Terraform Init
-        id: init
-        run: terraform init  -backend-config backend.conf -reconfigure
-        working-directory: deploy/e2e/gh-e2e-test
-        continue-on-error: false
-
-      - name: Terraform Validate
-        id: validate
-        working-directory: deploy/e2e/gh-e2e-test
-        run: terraform validate -no-color
-        continue-on-error: false
-
-      - name: Terraform Plan Destroy
-        id: plan-destroy
-        working-directory: deploy/e2e/gh-e2e-test
-        run: terraform plan -destroy -var-file base.tfvars -no-color
-        continue-on-error: false
+          terraform_version: 1.0.0
 
       - name: Terraform Destroy
-        id: destroy
-        working-directory: deploy/e2e/gh-e2e-test
+        working-directory: ${{ matrix.example_path }}
         run: |
-          reverse_array=$(echo ${{ env.DEPLOYMENT_ORDER }}  | awk -F, '{for (i=NF; i>0; --i) printf "%s%s", (i<NF ? "," : ""), $i; printf "\n"}')
-          IFS=',' read -r -a array <<< "$reverse_array"
-          for element in "${array[@]}"
-          do
-            terraform destroy -target="$element" -var-file base.tfvars -no-color -input=false -auto-approve
-            sleep 45
-          done
-          terraform destroy -var-file base.tfvars -no-color -input=false -auto-approve
-        continue-on-error: false
+          terraform init -upgrade=true
+          terraform destroy -target=module.eks_blueprints_kubernetes_addons  -no-color -input=false -auto-approve
+          terraform destroy -target=module.eks_blueprints  -no-color -input=false -auto-approve
+          terraform destroy -no-color -input=false -auto-approve

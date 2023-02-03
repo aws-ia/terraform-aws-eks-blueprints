@@ -1,6 +1,6 @@
 output "self_managed_nodegroup_name" {
   description = "EKS Self Managed node group id"
-  value       = local.self_managed_node_group["node_group_name"].*
+  value       = local.self_managed_node_group["node_group_name"][*]
 }
 
 output "self_managed_nodegroup_iam_role_arns" {
@@ -39,6 +39,6 @@ output "self_managed_nodegroup_iam_instance_profile_id" {
 }
 
 output "self_managed_nodegroup_iam_instance_profile_arn" {
-  description = "IAM Instance Profile arnd for EKS Self Managed Node Group"
+  description = "IAM Instance Profile and for EKS Self Managed Node Group"
   value       = aws_iam_instance_profile.self_managed_ng[*].arn
 }

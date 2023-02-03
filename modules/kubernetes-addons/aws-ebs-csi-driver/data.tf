@@ -1,4 +1,6 @@
 data "aws_iam_policy_document" "aws_ebs_csi_driver" {
+  count = local.create_irsa ? 1 : 0
+
   statement {
     sid       = ""
     effect    = "Allow"
