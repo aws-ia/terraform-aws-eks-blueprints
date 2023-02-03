@@ -209,7 +209,6 @@ module "appmesh_prometheus" {
   source            = "./appmesh-prometheus"
   helm_config       = var.appmesh_prometheus_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  irsa_policies     = var.appmesh_prometheus_irsa_policies
   addon_context     = local.addon_context
 }
 
