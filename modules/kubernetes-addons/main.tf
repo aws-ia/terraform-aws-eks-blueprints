@@ -117,6 +117,7 @@ module "argocd" {
   source        = "./argocd"
   helm_config   = var.argocd_helm_config
   applications  = var.argocd_applications
+  projects      = var.argocd_projects
   addon_config  = { for k, v in local.argocd_addon_config : k => v if v != null }
   addon_context = local.addon_context
 }

@@ -1,0 +1,8 @@
+name: ""
+
+# Destination cluster.
+destination:
+  server: "https://kubernetes.default.svc"
+
+sourceRepos:
+  - "*"

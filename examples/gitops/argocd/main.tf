@@ -107,6 +107,12 @@ module "eks_blueprints_kubernetes_addons" {
       add_on_application = false
     }
   }
+  argocd_projects = {
+    system = {
+      destination = "*"
+      repo_urls = ["*"]
+    }
+  }
 
   # Add-ons
   enable_amazon_eks_aws_ebs_csi_driver = true

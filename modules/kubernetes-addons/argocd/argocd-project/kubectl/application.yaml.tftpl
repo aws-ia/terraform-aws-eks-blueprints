@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: ${name}
+  namespace: ${namespace}
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  destinations:
+  - namespace: ${dest_namespace}
+    server: ${dest_server}
+  sourceRepos:
+  %{ for s in sourceRepoUrl ~}
+  - ${s}
+  %{ endfor ~}

@@ -32,6 +32,13 @@ locals {
     add_on_application = false
   }
 
+  default_argocd_project = {
+    namespace   = local.helm_config["namespace"]
+    name        = "default"
+    destination = "https://kubernetes.default.svc"
+    repo_urls   = ["*"]
+  }
+
   global_application_values = {
     region      = var.addon_context.aws_region_name
     account     = var.addon_context.aws_caller_identity_account_id

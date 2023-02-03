@@ -855,6 +855,12 @@ variable "argocd_applications" {
   default     = {}
 }
 
+variable "argocd_projects" {
+  description = "Argo CD Project config to bootstrap the cluster"
+  type        = any
+  default     = {}
+}
+
 variable "argocd_manage_add_ons" {
   description = "Enable managing add-on configuration via ArgoCD App of Apps"
   type        = bool

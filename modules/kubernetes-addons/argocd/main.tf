@@ -13,7 +13,39 @@ resource "kubernetes_namespace_v1" "this" {
     name = local.helm_config["namespace"]
   }
 }
+# ---------------------------------------------------------------------------------------------------------------------
+# ArgoCD Projects Bootstrapping
+# ---------------------------------------------------------------------------------------------------------------------
+resource "helm_release" "argocd_project" {
+  for_each = { for k, v in var.projects : k => merge(local.default_argocd_project, v) }
 
+  name      = each.key
+  chart     = "${path.module}/argocd-project/helm"
+  version   = "1.0.0"
+  namespace = local.helm_config["namespace"]
+
+  # Application Meta.
+  set {
+    name  = "name"
+    value = each.key
+    type  = "string"
+  }
+
+  # Destination Config.
+  set {
+    name  = "destination.server"
+    value = each.value.destination
+    type  = "string"
+  }
+  # Source Config.
+  set {
+    name  = "sourceRepos"
+    value = each.value.repo_urls
+    type  = "string"
+  }
+
+  depends_on = [module.helm_addon]
+}
 # ---------------------------------------------------------------------------------------------------------------------
 # ArgoCD App of Apps Bootstrapping (Helm)
 # ---------------------------------------------------------------------------------------------------------------------
