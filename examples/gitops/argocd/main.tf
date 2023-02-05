@@ -191,8 +191,7 @@ module "eks_blueprints_kubernetes_addons" {
           description = "Sync privileges for guestbook-dev"
           policies    = ["p, proj:workloads:ci-role, applications, sync, workloads/guestbook-dev, allow"]
         }
-      ]\
-
+      ]
     }
   }
 
