@@ -110,12 +110,89 @@ module "eks_blueprints_kubernetes_addons" {
   }
   argocd_projects = {
     system = {
-      server    = "*"
-      repo_urls = "{*}"
+      description = "ArgoCd Project for system applications"
+      repo_urls   = "{*}"
+      destinations = [
+        {
+          namespace = "*"
+          server    = "https://kubernetes.default.svc"
+        }
+      ]
+      cluster_resource_whitelist = [
+        {
+          group = "*"
+          kind  = "*"
+        }
+      ]
+      namespace_resource_blacklist = []
+      namespace_resource_whitelist = []
+      roles                        = []
+      sync_windows                 = []
     }
     workloads = {
-      server    = "https://kubernetes.default.svc"
-      repo_urls = "{https://github.com/aws-samples/eks-blueprints-workloads.git}" # multiple value can add using comma. eg "{*,git@github.com/blabla/blabla.git}"
+      description = "ArgoCD Project for Application Workloads"
+      repo_urls   = "{https://github.com/aws-samples/eks-blueprints-workloads.git}" # multiple value can add using comma. eg "{*,git@github.com/blabla/blabla.git}"
+      sync_windows = [
+        {
+          kind     = "allow"
+          schedule = "10 1 * * *"
+          duration = "1h"
+          applications = [
+            "*-prod"
+          ]
+          manualSync = true
+        },
+        {
+          kind = "deny"
+          schedule : "0 22 * * *"
+          duration : "1h"
+          namespaces : ["default"]
+        }
+      ]
+      cluster_resource_whitelist = [
+        {
+          group = ""
+          kind  = "Namespace"
+        }
+      ]
+      namespace_resource_blacklist = [
+        {
+          group = ""
+          kind  = "ResourceQuota"
+        },
+        {
+          group = ""
+          kind  = "LimitRange"
+        },
+        {
+          group = ""
+          kind  = "NetworkPolicy"
+        }
+      ]
+      namespace_resource_whitelist = [
+        {
+          group = "apps"
+          kind  = "Deployment"
+        },
+        {
+          group = "apps"
+          kind  = "StatefulSet"
+        }
+      ]
+      roles = [
+        {
+          name        = "read-only"
+          description = "Read-only privileges to Application Workloads Project"
+          policies    = ["p, proj:workloads:read-only, applications, get, workloads/*, allow"]
+          groups      = ["my-oidc-group"]
+        },
+        {
+          name        = "ci-role"
+          description = "Sync privileges for guestbook-dev"
+          policies    = ["p, proj:workloads:ci-role, applications, sync, workloads/guestbook-dev, allow"]
+        }
+      ]\
+
     }
   }
 

@@ -1,10 +1,46 @@
-name: "default"
+name: "system32"
 
 namespace: "argocd"
-# Destination cluster.
-destination:
-  server: "https://kubernetes.default.svc"
-  targetNamespace: "*"
 
+description: "Example Project"
+
+clusterResourceWhitelist:
+  - group: "*"
+    kind: "*"
+namespaceResourceBlacklist:
+#  - group: ''
+#    kind: ResourceQuota
+#  - group: ''
+#    kind: LimitRange
+#  - group: ''
+#    kind: NetworkPolicy
+namespaceResourceWhitelist:
+#  - group: 'apps'
+#    kind: Deployment
+#  - group: 'apps'
+#    kind: StatefulSet
+roles:
+#  - name: read-only
+#    description: Read-only privileges to my-project
+#    policies:
+#      - p, proj:my-project:read-only, applications, get, my-project/*, allow
+#    groups:
+#      - my-oidc-group
+# Destination cluster.
+destinations:
+  - namespace: "*"
+    server: "https://kubernetes.default.svc"
 sourceRepos:
   - "*"
+syncWindows:
+#  - kind: allow
+#    schedule: '10 1 * * *'
+#    duration: 1h
+#    applications:
+#      - '*-prod'
+#    manualSync: true
+#  - kind: deny
+#    schedule: '0 22 * * *'
+#    duration: 1h
+#    namespaces:
+#      - default

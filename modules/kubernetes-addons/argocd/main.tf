@@ -31,18 +31,49 @@ resource "helm_release" "argocd_project" {
     type  = "string"
   }
 
-  # Destination Config.
   set {
-    name  = "destination.server"
-    value = each.value.server
+    name  = "description"
+    value = each.value.description
     type  = "string"
   }
 
+  # Destination Config.
   set {
-    name  = "destination.targetNamespace"
-    value = each.value.targetNamespace
-    type  = "string"
+    name  = "destinations"
+    value = yamlencode(each.value.destinations)
+    type  = "auto"
   }
+
+  set {
+    name  = "clusterResourceWhitelist"
+    value = yamlencode(each.value.cluster_resource_whitelist)
+    type  = "auto"
+  }
+
+  set {
+    name  = "namespaceResourceBlacklist"
+    value = yamlencode(each.value.namespace_resource_blacklist)
+    type  = "auto"
+  }
+
+  set {
+    name  = "namespaceResourceWhitelist"
+    value = yamlencode(each.value.namespace_resource_whitelist)
+    type  = "auto"
+  }
+
+  set {
+    name  = "roles"
+    value = yamlencode(each.value.roles)
+    type  = "auto"
+  }
+
+  set {
+    name  = "syncWindows"
+    value = yamlencode(each.value.sync_windows)
+    type  = "auto"
+  }
+
   # Source Config.
   set {
     name  = "sourceRepos"

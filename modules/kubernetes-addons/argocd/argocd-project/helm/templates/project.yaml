@@ -4,13 +4,42 @@ metadata:
   name: {{ .Values.name }}
   namespace: {{ .Values.namespace }}
 spec:
+  # Project description
+  description: {{ .Values.description | quote }}
+
+  {{- with .Values.clusterResourceWhitelist }}
   clusterResourceWhitelist:
-    - group: '*'
-      kind: '*'
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.namespaceResourceBlacklist }}
+  namespaceResourceBlacklist:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.namespaceResourceWhitelist }}
+  namespaceResourceWhitelist:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  # Destination clusters can be identified by 'server', 'name', or both.
+  {{- with .Values.destinations }}
   destinations:
-    - namespace: {{ .Values.destination.targetNamespace | quote }}
-      server: {{ .Values.destination.server | quote }}
+    {{- toYaml . | nindent 4  }}
+  {{- end }}
+
+  # Allow manifests to deploy from any Git repos
+  {{- range .Values.sourceRepos }}
   sourceRepos:
-    {{- range .Values.sourceRepos }}
     - {{ . | quote }}
-    {{- end }}
+  {{- end }}
+
+  {{- with .Values.roles }}
+  roles:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.syncWindows }}
+  syncWindows:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
