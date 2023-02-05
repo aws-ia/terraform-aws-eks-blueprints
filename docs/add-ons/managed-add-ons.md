@@ -18,7 +18,7 @@ Note: EKS managed Add-ons can be converted to self-managed add-on with `preserve
 This option makes the add-on a self-managed add-on, rather than an Amazon EKS add-on.
 There is no downtime while deleting EKS managed Add-ons when `preserve=true`. This is a default option for `enable_amazon_eks_vpc_cni` , `enable_amazon_eks_coredns` and `enable_amazon_eks_kube_proxy`.
 
-Checkout this [doc](https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html#updating-vpc-cni-eks-add-on) for more details.
+Checkout this [doc](https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html#updating-vpc-cni-eks-add-on) for more details. Custom add-on configuration can be passed using [configuration_values](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_addon) as a single JSON string while creating or updating the add-on.
 
 ```
 # EKS Addons
@@ -33,7 +33,13 @@ Checkout this [doc](https://docs.aws.amazon.com/eks/latest/userguide/managing-vp
     service_account_role_arn = ""
     preserve                 = true
     additional_iam_policies  = []
-    tags                     = {}
+    configuration_values = jsonencode({
+      env = {
+        ENABLE_PREFIX_DELEGATION = "true"
+        WARM_PREFIX_TARGET       = "1"
+      }
+    })
+    tags = {}
   }
 
   enable_amazon_eks_coredns = true # default is false
@@ -47,6 +53,7 @@ Checkout this [doc](https://docs.aws.amazon.com/eks/latest/userguide/managing-vp
     service_account_role_arn = ""
     preserve                 = true
     additional_iam_policies  = []
+    configuration_values     = ""
     tags                     = {}
   }
 
@@ -61,6 +68,7 @@ Checkout this [doc](https://docs.aws.amazon.com/eks/latest/userguide/managing-vp
     service_account_role_arn = ""
     preserve                 = true
     additional_iam_policies  = []
+    configuration_values     = ""
     tags                     = {}
   }
 
@@ -74,6 +82,7 @@ Checkout this [doc](https://docs.aws.amazon.com/eks/latest/userguide/managing-vp
     namespace                = "kube-system"
     additional_iam_policies  = []
     service_account_role_arn = ""
+    configuration_values     = ""
     tags                     = {}
   }
 ```
