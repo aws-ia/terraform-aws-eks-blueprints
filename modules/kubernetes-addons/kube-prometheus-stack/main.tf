@@ -4,13 +4,16 @@ locals {
   create_namespace = try(var.helm_config.create_namespace, true) && local.namespace_name != "kube-system"
   namespace        = local.create_namespace ? kubernetes_namespace_v1.prometheus[0].metadata[0].name : local.namespace_name
 
+  argocd_gitops_config = {
+    enable = true
+  }
 }
 
 resource "kubernetes_namespace_v1" "prometheus" {
   count = local.create_namespace ? 1 : 0
 
   metadata {
-    name = local.namespace_name
+    name = local.namespace
   }
 }
 
@@ -32,5 +35,6 @@ module "helm_addon" {
     },
     var.helm_config
   )
-  addon_context = var.addon_context
+  manage_via_gitops = var.manage_via_gitops
+  addon_context     = var.addon_context
 }

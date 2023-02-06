@@ -19,13 +19,25 @@ data "aws_iam_policy_document" "aws_node_termination_handler_queue_policy_docume
 data "aws_iam_policy_document" "irsa_policy" {
   statement {
     actions = [
-      "autoscaling:CompleteLifecycleAction",
       "autoscaling:DescribeAutoScalingInstances",
       "autoscaling:DescribeTags",
       "ec2:DescribeInstances",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    actions = [
+      "autoscaling:CompleteLifecycleAction",
+    ]
+    resources = ["arn:${var.addon_context.aws_partition_id}:autoscaling:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:autoScalingGroup:*"]
+  }
+
+  statement {
+    actions = [
       "sqs:DeleteMessage",
       "sqs:ReceiveMessage",
     ]
-    resources = ["*"]
+    resources = [aws_sqs_queue.aws_node_termination_handler_queue.arn]
   }
 }

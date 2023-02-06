@@ -233,6 +233,11 @@ output "metrics_server" {
   value       = try(module.metrics_server[0], null)
 }
 
+output "kube_state_metrics" {
+  description = "Map of attributes of the Helm release and IRSA created"
+  value       = try(module.kube_state_metrics[0], null)
+}
+
 output "nvidia_device_plugin" {
   description = "Map of attributes of the Helm release and IRSA created"
   value       = try(module.nvidia_device_plugin[0], null)

@@ -76,21 +76,6 @@ resource "kubernetes_namespace_v1" "prometheus" {
 # ------------------------------------------
 # AMP Ingest Permissions
 # ------------------------------------------
-
-data "aws_iam_policy_document" "ingest" {
-  statement {
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "aps:GetLabels",
-      "aps:GetMetricMetadata",
-      "aps:GetSeries",
-      "aps:RemoteWrite",
-    ]
-  }
-}
-
 resource "aws_iam_policy" "ingest" {
   count = var.enable_amazon_prometheus ? 1 : 0
 
@@ -119,21 +104,6 @@ module "irsa_amp_ingest" {
 # ------------------------------------------
 # AMP Query Permissions
 # ------------------------------------------
-
-data "aws_iam_policy_document" "query" {
-  statement {
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "aps:GetLabels",
-      "aps:GetMetricMetadata",
-      "aps:GetSeries",
-      "aps:QueryMetrics",
-    ]
-  }
-}
-
 resource "aws_iam_policy" "query" {
   count = var.enable_amazon_prometheus ? 1 : 0
 
