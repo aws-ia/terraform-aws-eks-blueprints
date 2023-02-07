@@ -20,7 +20,7 @@ provider "kubernetes" {
   host                   = data.aws_eks_cluster.hub.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.hub.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.hub.token
-  alias = "hub"
+  alias                  = "hub"
 }
 
 provider "helm" {
@@ -99,9 +99,9 @@ module "eks_blueprints" {
     mg_5 = {
       node_group_name = "managed-ondemand"
       instance_types  = ["t3.small"]
-      min_size     = 1
-      max_size     = 4
-      desired_size = 3
+      min_size        = 1
+      max_size        = 4
+      desired_size    = 3
       subnet_ids      = module.vpc.private_subnets
     }
   }
@@ -137,32 +137,32 @@ module "eks_blueprints_kubernetes_addons" {
 module "eks_blueprints_argocd_addon" {
   source = "../../../../modules/kubernetes-addons/argocd"
   providers = {
-    helm = helm.hub
+    helm       = helm.hub
     kubernetes = kubernetes.hub
   }
 
-  argocd_hub   = false
-  
+  argocd_hub = false
+
   applications = {
     "${local.name}-addons" = {
       path               = "chart"
       repo_url           = "https://github.com/csantanapr/eks-blueprints-add-ons.git"
-      target_revision = "argo-multi-cluster"
+      target_revision    = "argo-multi-cluster"
       add_on_application = true
-      values             = {
+      values = {
         destinationServer = module.eks_blueprints.eks_cluster_endpoint
-        targetRevision = "argo-multi-cluster"
-        
+        targetRevision    = "argo-multi-cluster"
+
       }
     }
   }
-  
+
   addon_config = { for k, v in module.eks_blueprints_kubernetes_addons.argocd_addon_config : k => v if v != null }
 
   addon_context = {
-    aws_region_name = local.region
+    aws_region_name                = local.region
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
-    eks_cluster_id = module.eks_blueprints.eks_cluster_id
+    eks_cluster_id                 = module.eks_blueprints.eks_cluster_id
   }
 
 }

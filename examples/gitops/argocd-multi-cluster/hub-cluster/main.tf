@@ -65,9 +65,9 @@ module "eks_blueprints" {
     mg_5 = {
       node_group_name = "managed-ondemand"
       instance_types  = ["t3.small"]
-      min_size     = 1
-      max_size     = 4
-      desired_size = 3
+      min_size        = 1
+      max_size        = 4
+      desired_size    = 3
       subnet_ids      = module.vpc.private_subnets
     }
   }
@@ -90,7 +90,7 @@ module "eks_blueprints_kubernetes_addons" {
   argocd_manage_add_ons = true
   argocd_helm_config = {
     namespace = local.namespace
-    version = "5.19.12"
+    version   = "5.19.12"
     values = [
       yamlencode(
         {
@@ -100,8 +100,8 @@ module "eks_blueprints_kubernetes_addons" {
                 "eks.amazonaws.com/role-arn" : module.argocd_irsa.irsa_iam_role_arn
               }
             }
-            service: {
-              type: "LoadBalancer"
+            service : {
+              type : "LoadBalancer"
             }
           }
           controller : {
@@ -125,7 +125,8 @@ module "eks_blueprints_kubernetes_addons" {
   argocd_applications = {
     hub-cluster-addons = {
       path               = "chart"
-      repo_url           = "https://github.com/askulkarni2/eks-blueprints-add-ons.git"
+      repo_url           = "https://github.com/csantanapr/eks-blueprints-add-ons.git"
+      target_revision    = "argo-multi-cluster"
       add_on_application = true
     }
   }
