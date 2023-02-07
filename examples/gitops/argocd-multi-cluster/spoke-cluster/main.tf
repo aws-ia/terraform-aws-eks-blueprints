@@ -130,6 +130,7 @@ module "eks_blueprints_kubernetes_addons" {
 
   tags = local.tags
 }
+
 #---------------------------------------------------------------
 # EKS Blueprints Add-Ons
 #---------------------------------------------------------------
@@ -141,14 +142,21 @@ module "eks_blueprints_argocd_addon" {
   }
 
   argocd_hub   = false
+  
   applications = {
     "${local.name}-addons" = {
       path               = "chart"
-      repo_url           = "https://github.com/askulkarni2/eks-blueprints-add-ons.git"
+      repo_url           = "https://github.com/csantanapr/eks-blueprints-add-ons.git"
+      target_revision = "argo-multi-cluster"
       add_on_application = true
-      destination        = module.eks_blueprints.eks_cluster_endpoint
+      values             = {
+        destinationServer = module.eks_blueprints.eks_cluster_endpoint
+        targetRevision = "argo-multi-cluster"
+        
+      }
     }
   }
+  
   addon_config = { for k, v in module.eks_blueprints_kubernetes_addons.argocd_addon_config : k => v if v != null }
 
   addon_context = {
