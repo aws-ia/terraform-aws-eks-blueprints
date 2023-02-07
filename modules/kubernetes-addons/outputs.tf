@@ -33,6 +33,11 @@ output "appmesh_controller" {
   value       = try(module.appmesh_controller[0], null)
 }
 
+output "argocd_addon_config" {
+  description = "ArgoCD addon config options"
+  value       = local.argocd_addon_config
+}
+
 output "argocd" {
   description = "Map of attributes of the Helm release and IRSA created"
   value       = try(module.argocd[0], null)

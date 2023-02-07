@@ -64,7 +64,10 @@ module "eks_blueprints" {
   managed_node_groups = {
     mg_5 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["m5.large"]
+      instance_types  = ["t3.small"]
+      min_size     = 1
+      max_size     = 4
+      desired_size = 3
       subnet_ids      = module.vpc.private_subnets
     }
   }
@@ -87,42 +90,18 @@ module "eks_blueprints_kubernetes_addons" {
   argocd_manage_add_ons = true
   argocd_helm_config = {
     namespace = local.namespace
+    version = "5.19.12"
     values = [
       yamlencode(
         {
-          # TODO: Don't do this, lets use TLS
-          configs : {
-            params : {
-              "server.insecure" : true
-            }
-          }
           server : {
             serviceAccount : {
               annotations : {
                 "eks.amazonaws.com/role-arn" : module.argocd_irsa.irsa_iam_role_arn
               }
             }
-            ingress : {
-              enabled : true
-              ingressClassName : "alb"
-              annotations : {
-                "alb.ingress.kubernetes.io/target-type" : "ip"
-                "alb.ingress.kubernetes.io/scheme" : "internet-facing"
-              }
-              extraPaths : [
-                {
-                  path : "/"
-                  pathType : "Prefix"
-                  backend : {
-                    service : {
-                      name : "argo-cd-argocd-server"
-                      port : {
-                        number : 80
-                      }
-                    }
-                  }
-                }
-              ]
+            service: {
+              type: "LoadBalancer"
             }
           }
           controller : {
@@ -151,9 +130,10 @@ module "eks_blueprints_kubernetes_addons" {
     }
   }
 
-  enable_ingress_nginx                = true
+  enable_ingress_nginx                = false
   enable_aws_load_balancer_controller = true
-  enable_datadog_operator             = true
+  enable_datadog_operator             = false
+  enable_metrics_server               = true
 
   tags = local.tags
 }
@@ -171,7 +151,7 @@ resource "bcrypt_hash" "argo" {
 
 #tfsec:ignore:aws-ssm-secret-use-customer-key
 resource "aws_secretsmanager_secret" "argocd" {
-  name = "argocd-login"
+  name = "argocd-login-2"
   # Set to zero for this example to force delete during Terraform destroy
   recovery_window_in_days = 0
 }

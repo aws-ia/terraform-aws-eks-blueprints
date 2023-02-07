@@ -18,15 +18,12 @@ variable "addon_config" {
 
 variable "addon_context" {
   description = "Input configuration for the addon"
-  type = object({
-    aws_caller_identity_account_id = string
-    aws_caller_identity_arn        = string
-    aws_eks_cluster_endpoint       = string
-    aws_partition_id               = string
-    aws_region_name                = string
-    eks_cluster_id                 = string
-    eks_oidc_issuer_url            = string
-    eks_oidc_provider_arn          = string
-    tags                           = map(string)
-  })
+  type = any
+  default = {}
+}
+
+variable "argocd_hub" {
+  description = "Assume hub ArgoCD installation"
+  type        = bool
+  default     = true
 }
