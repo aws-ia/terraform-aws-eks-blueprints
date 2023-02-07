@@ -190,7 +190,7 @@ resource "kubernetes_secret_v1" "spoke_cluster" {
             "--cluster-name",
             local.name,
             "--role-arn",
-            "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/spoke-role"
+            aws_iam_role.spoke_role.arn
           ],
           env : {
             AWS_REGION : local.region
@@ -246,6 +246,6 @@ module "vpc" {
 }
 
 resource "aws_iam_role" "spoke_role" {
-  name               = "spoke-role"
+  name               = local.name
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
