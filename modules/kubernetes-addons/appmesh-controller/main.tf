@@ -4,13 +4,11 @@ locals {
 
   dns_suffix = data.aws_partition.current.dns_suffix
 
-  argocd_gitops_config = merge(
+  argocd_gitops_config = {
     {
       enable             = true
       serviceAccountName = local.name
-    },
-    var.helm_config
-  )
+    }
 }
 
 data "aws_partition" "current" {}

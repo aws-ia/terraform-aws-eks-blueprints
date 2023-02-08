@@ -3,14 +3,11 @@ locals {
   namespace_name   = try(var.helm_config.namespace, "appmesh-system")
   create_namespace = try(var.helm_config.create_namespace, false) && local.namespace_name != "kube-system"
 
-  argocd_gitops_config = merge(
-    {
-      enable               = true
-      serviceAccountName   = local.name
-      serviceAccountCreate = true
-    },
-    var.helm_config
-  )
+  argocd_gitops_config = {
+    enable               = true
+    serviceAccountName   = local.name
+    serviceAccountCreate = true
+  }
 
   default_helm_config = {
     name        = local.name
