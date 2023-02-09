@@ -4,6 +4,16 @@
 [![plan-examples](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/plan-examples.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/plan-examples.yml)
 [![pre-commit](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/pre-commit.yaml)
 
+___
+
+# :bangbang: Notice of Potential Breaking Changes in Version 5 :bangbang:
+The direction for EKS Blueprints in v5 will shift from providing an all-encompassing, monolithic "framework" and instead focus more on how users can organize a set of modular components to create the desired solution on Amazon EKS. 
+
+An issue is being created to provide community notice and to help track the work and cutover to v5 of EKS Blueprints.
+
+Continue discussion Issue https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/1421
+___
+
 Welcome to Amazon EKS Blueprints for Terraform!
 
 This repository contains a collection of Terraform modules that aim to make it easier and faster for customers to adopt [Amazon EKS](https://aws.amazon.com/eks/). It can be used by AWS customers, partners, and internal AWS teams to configure and manage complete EKS clusters that are fully bootstrapped with the operational software that is needed to deploy and operate workloads.
