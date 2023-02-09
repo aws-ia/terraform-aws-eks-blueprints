@@ -1,6 +1,10 @@
 locals {
   name      = try(var.helm_config.name, "kube-prometheus-stack")
   namespace = try(var.helm_config.namespace, local.name)
+
+  argocd_gitops_config = {
+    enable = true
+  }
 }
 
 resource "kubernetes_namespace_v1" "prometheus" {
