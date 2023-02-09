@@ -9,9 +9,9 @@ ___
 # :bangbang: Notice of Potential Breaking Changes in Version 5 :bangbang:
 The direction for EKS Blueprints in v5 will shift from providing an all-encompassing, monolithic "framework" and instead focus more on how users can organize a set of modular components to create the desired solution on Amazon EKS. 
 
-An issue is being created to provide community notice and to help track the work and cutover to v5 of EKS Blueprints.
+The issue below was created to provide community notice and to help track progress, learn what's new and how the migration path would look like to upgrade your current Terraform deployments. 
 
-Continue discussion Issue https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/1421
+We welcome the EKS Blueprints community to continue the discussion in issue https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/1421
 ___
 
 Welcome to Amazon EKS Blueprints for Terraform!
