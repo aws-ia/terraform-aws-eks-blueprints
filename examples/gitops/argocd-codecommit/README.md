@@ -21,7 +21,7 @@ To better understand how ArgoCD works with EKS Blueprints, read the EKS Blueprin
 ## Prerequisites
 
 Main Terraform files (main.ft, locals.tf, providers.tf, outputs.tf, data.tf) were created using instructions from [EKS Blueprints for Terraform Workshop](https://catalog.workshops.aws/eks-blueprints-terraform/en-US)
-Solution specifc sript is repo-cc.tf
+Solution specific sript is repo-cc.tf
 
 Ensure that you have the following tools installed locally:
 
@@ -29,7 +29,7 @@ Ensure that you have the following tools installed locally:
 2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
-Change the link of GitHub repository for workloads from [EKS Blueprints for Terraform Workshop](https://catalog.workshops.aws/eks-blueprints-terraform/en-US) to AWS CodeCommit repository provisioned by the stack in repo-cc.tf
+Change the link of GitHub repository for workloads from [EKS Blueprints Workloads Repo](https://github.com/aws-samples/eks-blueprints-workloads) to AWS CodeCommit repository provisioned by the stack in repo-cc.tf
 
 ```sh
   #---------------------------------------------------------------
