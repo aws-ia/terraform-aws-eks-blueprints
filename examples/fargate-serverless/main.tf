@@ -86,8 +86,8 @@ module "eks" {
   create_node_security_group    = false
 
   fargate_profiles = merge(
-    { for i in range(3) :
-      "app-wildcard-${element(split(",", local.azs[i]), 2)}" => {
+    { for i in range(length(local.azs)) :
+      "app-wildcard-${element(split("-", local.azs[i]), 2)}" => {
         selectors = [
           { namespace = "app-*" }
         ]
@@ -95,8 +95,8 @@ module "eks" {
         subnet_ids = [element(module.vpc.private_subnets, i)]
       }
     },
-    { for i in range(3) :
-      "kube-system-${element(split(",", local.azs[i]), 2)}" => {
+    { for i in range(length(local.azs)) :
+      "kube-system-${element(split("-", local.azs[i]), 2)}" => {
         selectors = [
           { namespace = "kube-system" }
         ]

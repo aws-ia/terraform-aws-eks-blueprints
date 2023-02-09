@@ -127,8 +127,8 @@ module "eks" {
   ]
 
   fargate_profiles = merge(
-    { for i in range(3) :
-      "kube-system-${element(split(",", local.azs[i]), 2)}" => {
+    { for i in range(length(local.azs)) :
+      "kube-system-${element(split("-", local.azs[i]), 2)}" => {
         selectors = [
           { namespace = "kube-system" }
         ]
@@ -136,8 +136,8 @@ module "eks" {
         subnet_ids = [element(module.vpc.private_subnets, i)]
       }
     },
-    { for i in range(3) :
-      "karpenter-${element(split(",", local.azs[i]), 2)}" => {
+    { for i in range(length(local.azs)) :
+      "karpenter-${element(split("-", local.azs[i]), 2)}" => {
         selectors = [
           { namespace = "karpenter" }
         ]
