@@ -6,21 +6,21 @@ provider "bcrypt" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks_blueprints.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks_blueprints.eks_cluster_id
+  name = module.eks.cluster_name
 }
 
 data "aws_availability_zones" "available" {}
@@ -38,6 +38,10 @@ locals {
   name   = "hub-cluster"
   region = "us-west-2"
 
+  cluster_version = "1.24"
+
+  instance_type = "t3.small"
+
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
@@ -49,26 +53,29 @@ locals {
   namespace = "argocd"
 }
 
+
 #---------------------------------------------------------------
-# EKS Blueprints
+# EKS Cluster
 #---------------------------------------------------------------
-module "eks_blueprints" {
-  source = "../../../../"
+#tfsec:ignore:aws-eks-enable-control-plane-logging
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 19.7"
 
-  cluster_name    = local.name
-  cluster_version = "1.24"
+  cluster_name                   = local.name
+  cluster_version                = local.cluster_version
+  cluster_endpoint_public_access = true
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
-  managed_node_groups = {
-    mg_5 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["t3.small"]
-      min_size        = 1
-      max_size        = 4
-      desired_size    = 3
-      subnet_ids      = module.vpc.private_subnets
+  eks_managed_node_groups = {
+    initial = {
+      instance_types = [local.instance_type]
+
+      min_size     = 1
+      max_size     = 4
+      desired_size = 3
     }
   }
 
@@ -81,13 +88,13 @@ module "eks_blueprints" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../../modules/kubernetes-addons"
 
-  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
-  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
-  eks_oidc_provider    = module.eks_blueprints.oidc_provider
-  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
+  eks_cluster_id        = module.eks.cluster_name
+  eks_cluster_endpoint  = module.eks.cluster_endpoint
+  eks_oidc_provider     = module.eks.oidc_provider
+  eks_cluster_version   = module.eks.cluster_version
 
   enable_argocd         = true
-  argocd_manage_add_ons = true
+  argocd_manage_add_ons = true # Indicates addons to be install via ArgoCD
   argocd_helm_config = {
     namespace = local.namespace
     version   = "5.19.12"
@@ -131,6 +138,7 @@ module "eks_blueprints_kubernetes_addons" {
     }
   }
 
+  # Add-ons
   enable_ingress_nginx                = false
   enable_aws_load_balancer_controller = true
   enable_datadog_operator             = false
@@ -207,13 +215,13 @@ module "argocd_irsa" {
   kubernetes_service_account        = "argocd-*"
   irsa_iam_role_name                = "argocd-hub"
   irsa_iam_policies                 = [aws_iam_policy.irsa_policy.arn]
-  eks_cluster_id                    = module.eks_blueprints.eks_cluster_id
-  eks_oidc_provider_arn             = module.eks_blueprints.eks_oidc_provider_arn
+  eks_cluster_id                    = module.eks.cluster_name
+  eks_oidc_provider_arn             = module.eks.oidc_provider_arn
   tags                              = local.tags
 }
 
 resource "aws_iam_policy" "irsa_policy" {
-  name        = "${module.eks_blueprints.eks_cluster_id}-argocd-irsa"
+  name        = "${module.eks.cluster_name}-argocd-irsa"
   description = "IAM Policy for ArgoCD Hub"
   policy      = data.aws_iam_policy_document.irsa_policy.json
   tags        = local.tags

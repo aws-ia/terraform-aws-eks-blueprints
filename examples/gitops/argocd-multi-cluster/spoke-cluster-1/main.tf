@@ -3,10 +3,10 @@
 # Spoke Cluster
 #---------------------------------------------------------------
 module "spoke_cluster" {
-  source = "../spoke-cluster"
+  source = "../spoke-cluster-template"
 
-  hub_cluster_name = "hub-cluster"
-  spoke_cluster_name = "spoke-cluster-1"
+  hub_cluster_name   = "hub-cluster"
+  spoke_cluster_name = "cluster-1"
 
 }
 

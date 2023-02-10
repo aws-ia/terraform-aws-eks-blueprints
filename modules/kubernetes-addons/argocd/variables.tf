@@ -22,8 +22,8 @@ variable "addon_context" {
   default = {}
 }
 
-variable "argocd_hub" {
-  description = "Assume hub ArgoCD installation"
+variable "argocd_remote" {
+  description = "Setup Remote Cluster"
   type        = bool
-  default     = true
+  default     = false
 }
