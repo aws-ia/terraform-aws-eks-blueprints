@@ -18,10 +18,6 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = ">= 1.14"
     }
-    null = {
-      source  = "hashicorp/null"
-      version = ">= 3.0"
-    }
   }
 
   # ##  Used for end-to-end testing on project; update to suit your needs

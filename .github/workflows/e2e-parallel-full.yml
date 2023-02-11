@@ -53,11 +53,8 @@ jobs:
       matrix:
         include:
           - example_path: examples/agones-game-controller
-          - example_path: examples/complete-kubernetes-addons
-          - example_path: examples/eks-cluster-with-new-vpc
           - example_path: examples/fargate-serverless
-          - example_path: examples/gitops/argocd
-          - example_path: examples/grafana-loki
+          - example_path: examples/argocd
           - example_path: examples/ipv4-prefix-delegation
           - example_path: examples/ipv6-eks-cluster
           - example_path: examples/karpenter

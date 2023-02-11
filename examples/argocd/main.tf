@@ -16,13 +16,7 @@ provider "helm" {
   }
 }
 
-provider "kubectl" {
-  apply_retry_count      = 10
-  host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  load_config_file       = false
-  token                  = data.aws_eks_cluster_auth.this.token
-}
+provider "bcrypt" {}
 
 data "aws_eks_cluster_auth" "this" {
   name = module.eks.cluster_name
@@ -34,9 +28,10 @@ locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
+  cluster_version = "1.24"
+
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
-
 
   tags = {
     Blueprint  = local.name
@@ -54,7 +49,7 @@ module "eks" {
   version = "~> 19.5"
 
   cluster_name                   = local.name
-  cluster_version                = "1.24"
+  cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
 
   # EKS Addons
@@ -71,14 +66,9 @@ module "eks" {
     initial = {
       instance_types = ["m5.large"]
 
-      # BottleRocket ships with kernel 5.10 so there is no need
-      # to do anything special
-      ami_type = "BOTTLEROCKET_x86_64"
-      platform = "bottlerocket"
-
-      min_size     = 1
-      max_size     = 5
-      desired_size = 2
+      min_size     = 3
+      max_size     = 10
+      desired_size = 5
     }
   }
 
@@ -97,121 +87,84 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks.oidc_provider
   eks_cluster_version  = module.eks.cluster_version
 
-  # Wait on the `kube-system` profile before provisioning addons
-  data_plane_wait_arn = join(",", [for group in module.eks.eks_managed_node_groups : group.node_group_arn])
+  enable_argocd = true
+  # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.
+  argocd_helm_config = {
+    set_sensitive = [
+      {
+        name  = "configs.secret.argocdServerAdminPassword"
+        value = bcrypt_hash.argo.id
+      }
+    ]
+  }
+
+  keda_helm_config = {
+    values = [
+      {
+        name  = "serviceAccount.create"
+        value = "false"
+      }
+    ]
+  }
+
+  argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying add-ons
+  argocd_applications = {
+    addons = {
+      path               = "chart"
+      repo_url           = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
+      add_on_application = true
+    }
+    workloads = {
+      path               = "envs/dev"
+      repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+      add_on_application = false
+    }
+  }
 
   # Add-ons
-  enable_cilium           = true
-  cilium_enable_wireguard = true
+  enable_amazon_eks_aws_ebs_csi_driver = true
+  enable_aws_for_fluentbit             = true
+  # Let fluentbit create the cw log group
+  aws_for_fluentbit_create_cw_log_group = false
+  enable_cert_manager                   = true
+  enable_cluster_autoscaler             = true
+  enable_karpenter                      = true
+  enable_keda                           = true
+  enable_metrics_server                 = true
+  enable_prometheus                     = true
+  enable_traefik                        = true
+  enable_vpa                            = true
+  enable_yunikorn                       = true
+  enable_argo_rollouts                  = true
 
   tags = local.tags
 }
 
 #---------------------------------------------------------------
-# Sample App for Testing
+# ArgoCD Admin Password credentials with Secrets Manager
+# Login to AWS Secrets manager with the same role as Terraform to extract the ArgoCD admin password with the secret name as "argocd"
 #---------------------------------------------------------------
-
-resource "kubectl_manifest" "server" {
-  count = var.enable_example ? 1 : 0
-
-  yaml_body = yamlencode({
-    apiVersion = "v1"
-    kind       = "Pod"
-    metadata = {
-      name = "server"
-      labels = {
-        blog = "wireguard"
-        name = "server"
-      }
-    }
-    spec = {
-      containers = [
-        {
-          name  = "server"
-          image = "nginx"
-        }
-      ]
-      topologySpreadConstraints = [
-        {
-          maxSkew           = 1
-          topologyKey       = "kubernetes.io/hostname"
-          whenUnsatisfiable = "DoNotSchedule"
-          labelSelector = {
-            matchLabels = {
-              blog = "wireguard"
-            }
-          }
-        }
-      ]
-    }
-  })
-
-  depends_on = [
-    module.eks_blueprints_kubernetes_addons
-  ]
+resource "random_password" "argocd" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
-resource "kubectl_manifest" "service" {
-  count = var.enable_example ? 1 : 0
-
-  yaml_body = yamlencode({
-    apiVersion = "v1"
-    kind       = "Service"
-    metadata = {
-      name = "server"
-    }
-    spec = {
-      selector = {
-        name = "server"
-      }
-      ports = [
-        {
-          port = 80
-        }
-      ]
-    }
-  })
+# Argo requires the password to be bcrypt, we use custom provider of bcrypt,
+# as the default bcrypt function generates diff for each terraform plan
+resource "bcrypt_hash" "argo" {
+  cleartext = random_password.argocd.result
 }
 
-resource "kubectl_manifest" "client" {
-  count = var.enable_example ? 1 : 0
+#tfsec:ignore:aws-ssm-secret-use-customer-key
+resource "aws_secretsmanager_secret" "argocd" {
+  name                    = "argocd"
+  recovery_window_in_days = 0 # Set to zero for this example to force delete during Terraform destroy
+}
 
-  yaml_body = yamlencode({
-    apiVersion = "v1"
-    kind       = "Pod"
-    metadata = {
-      name = "client"
-      labels = {
-        blog = "wireguard"
-        name = "client"
-      }
-    }
-    spec = {
-      containers = [
-        {
-          name    = "client"
-          image   = "busybox"
-          command = ["watch", "wget", "server"]
-        }
-      ]
-      topologySpreadConstraints = [
-        {
-          maxSkew           = 1
-          topologyKey       = "kubernetes.io/hostname"
-          whenUnsatisfiable = "DoNotSchedule"
-          labelSelector = {
-            matchLabels = {
-              blog = "wireguard"
-            }
-          }
-        }
-      ]
-    }
-  })
-
-  depends_on = [
-    kubectl_manifest.server[0]
-  ]
+resource "aws_secretsmanager_secret_version" "argocd" {
+  secret_id     = aws_secretsmanager_secret.argocd.id
+  secret_string = random_password.argocd.result
 }
 
 ################################################################################
