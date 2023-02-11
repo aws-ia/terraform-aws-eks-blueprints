@@ -51,3 +51,9 @@ variable "addon_context" {
     irsa_iam_permissions_boundary  = string
   })
 }
+
+variable "path" {
+  description = "Path in which to create the Karpenter policy"
+  type        = string
+  default     = "/"
+}
