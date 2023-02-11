@@ -71,6 +71,11 @@ data "aws_iam_policy_document" "karpenter" {
   }
 
   statement {
+    actions   = ["eks:DescribeCluster"]
+    resources = ["arn:${var.addon_context.aws_partition_id}:eks:*:${var.addon_context.aws_caller_identity_account_id}:cluster/${var.addon_context.eks_cluster_id}"]
+  }
+
+  statement {
     sid       = "ConditionalEC2Termination"
     effect    = "Allow"
     resources = ["arn:${var.addon_context.aws_partition_id}:ec2:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:instance/*"]
