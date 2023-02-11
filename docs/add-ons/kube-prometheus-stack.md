@@ -41,3 +41,13 @@ Be aware that it is likely necessary to update the CRDs when updating the Chart 
 
 
 For complete project documentation, please visit the [kube-prometheus-stack Github repository](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack).
+
+### GitOps Configuration
+
+The following properties are made available for use when managing the add-on via GitOps.
+
+```hcl
+kubePrometheusStack = {
+  enable = true
+}
+```

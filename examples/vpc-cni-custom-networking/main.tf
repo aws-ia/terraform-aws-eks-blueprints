@@ -99,7 +99,7 @@ resource "aws_eks_addon" "vpc_cni" {
     env = {
       # Reference https://aws.github.io/aws-eks-best-practices/reliability/docs/networkmanagement/#cni-custom-networking
       AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG = "true"
-      ENI_CONFIG_LABEL_DEF               = "failure-domain.beta.kubernetes.io/zone"
+      ENI_CONFIG_LABEL_DEF               = "topology.kubernetes.io/zone"
 
       # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
       ENABLE_PREFIX_DELEGATION = "true"

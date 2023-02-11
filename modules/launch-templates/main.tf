@@ -64,6 +64,17 @@ resource "aws_launch_template" "this" {
     }
   }
 
+  dynamic "placement" {
+    for_each = try(each.value.placement, null) != null ? [each.value.placement] : []
+    content {
+      affinity          = lookup(placement.value, "affinity", null)
+      availability_zone = lookup(placement.value, "availability_zone", null)
+      group_name        = lookup(placement.value, "group_name", null)
+      host_id           = lookup(placement.value, "host_id", null)
+      tenancy           = lookup(placement.value, "tenancy", null)
+    }
+  }
+
   vpc_security_group_ids = try(each.value.vpc_security_group_ids, null)
 
   dynamic "network_interfaces" {

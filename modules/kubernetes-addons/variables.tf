@@ -239,6 +239,14 @@ variable "crossplane_aws_provider" {
   }
 }
 
+variable "crossplane_upbound_aws_provider" {
+  description = "AWS Upbound Provider config for Crossplane"
+  type        = any
+  default = {
+    enable = false
+  }
+}
+
 variable "crossplane_jet_aws_provider" {
   description = "AWS Provider Jet AWS config for Crossplane"
   type = object({
@@ -255,6 +263,14 @@ variable "crossplane_jet_aws_provider" {
 
 variable "crossplane_kubernetes_provider" {
   description = "Kubernetes Provider config for Crossplane"
+  type        = any
+  default = {
+    enable = false
+  }
+}
+
+variable "crossplane_helm_provider" {
+  description = "Helm Provider config for Crossplane"
   type        = any
   default = {
     enable = false
@@ -409,6 +425,19 @@ variable "enable_metrics_server" {
 
 variable "metrics_server_helm_config" {
   description = "Metrics Server Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#---------KUBE STATE METRICS-----------
+variable "enable_kube_state_metrics" {
+  description = "Enable Kube State Metrics add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kube_state_metrics_helm_config" {
+  description = "Kube State Metrics Helm Chart config"
   type        = any
   default     = {}
 }

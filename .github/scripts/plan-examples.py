@@ -16,7 +16,7 @@ def get_examples():
         'examples/fully-private-eks-cluster/add-ons',
         'examples/ai-ml/ray',  # excluded until #887 is fixed,
         'examples/crossplane' #example removed
-        'examples/upgrade/blue-green-route53'
+        'examples/upgrade/blue-green-route53/core-infra'
     }
 
     projects = {
