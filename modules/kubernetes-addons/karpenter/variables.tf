@@ -22,6 +22,7 @@ variable "node_iam_instance_profile" {
   default     = ""
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "enable_spot_termination_handling" {
   description = "Determines whether to enable native spot termination handling"
   type        = bool
@@ -49,4 +50,10 @@ variable "addon_context" {
     irsa_iam_role_path             = string
     irsa_iam_permissions_boundary  = string
   })
+}
+
+variable "path" {
+  description = "Path in which to create the Karpenter policy"
+  type        = string
+  default     = "/"
 }
