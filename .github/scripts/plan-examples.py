@@ -10,8 +10,7 @@ def get_examples():
     """
     exclude = {
         'examples/appmesh-mtls',  # excluded until Rout53 is setup
-        'examples/crossplane' #example removed
-        'examples/upgrade/blue-green-route53/core-infra'
+        'examples/blue-green-upgrade/core-infra'
     }
 
     projects = {
