@@ -52,6 +52,14 @@ module "eks_blueprints" {
       node_group_name    = "self_mg4"
       launch_template_os = "amazonlinux2eks"
       subnet_ids         = module.vpc.private_subnets
+
+      placement = {
+        affinity          = null
+        availability_zone = null
+        group_name        = null
+        host_id           = null
+        tenancy           = "dedicated"
+      }
     }
     self_mg5 = {
       node_group_name = "self_mg5" # Name is used to create a dedicated IAM role for each node group and adds to AWS-AUTH config map
