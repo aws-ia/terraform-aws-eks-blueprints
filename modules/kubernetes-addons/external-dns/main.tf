@@ -10,8 +10,8 @@ locals {
     var.helm_config
   )
 
-  data_aws_route53 = data.aws_route53_zone.selected[0] != "" ? data.aws_route53_zone.selected[0].arn : ""
-  route53_zone_arns = merge(var.route53_zone_arns, local.data_aws_route53)
+  data_aws_route53 = data.aws_route53_zone.selected != "" ? [] : data.aws_route53_zone.selected[0].arn
+  route53_zone_arns = concat(var.route53_zone_arns, local.data_aws_route53)
 }
 
 module "helm_addon" {
@@ -78,7 +78,7 @@ resource "aws_iam_policy" "external_dns" {
 
 # TODO - remove at next breaking change
 data "aws_route53_zone" "selected" {
-  count = var.route53_zone_arns != "" ? 1 : 0
+  count = var.route53_zone_arns == "" ? 1 : 0
   name         = var.domain_name
   private_zone = var.private_zone
 }
