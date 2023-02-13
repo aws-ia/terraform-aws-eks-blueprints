@@ -29,9 +29,9 @@ spec:
   {{- end }}
 
   # Allow manifests to deploy from any Git repos
-  {{- range .Values.sourceRepos }}
+  {{- with .Values.sourceRepos }}
   sourceRepos:
-    - {{ . | quote }}
+    {{- toYaml . | nindent 4  }}
   {{- end }}
 
   {{- with .Values.roles }}

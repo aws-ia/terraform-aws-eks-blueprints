@@ -37,49 +37,18 @@ resource "helm_release" "argocd_project" {
     type  = "string"
   }
 
-  # Destination Config.
-  set {
-    name  = "destinations"
-    value = yamlencode(each.value.destinations)
-    type  = "auto"
-  }
-
-  set {
-    name  = "clusterResourceWhitelist"
-    value = yamlencode(each.value.cluster_resource_whitelist)
-    type  = "auto"
-  }
-
-  set {
-    name  = "namespaceResourceBlacklist"
-    value = yamlencode(each.value.namespace_resource_blacklist)
-    type  = "auto"
-  }
-
-  set {
-    name  = "namespaceResourceWhitelist"
-    value = yamlencode(each.value.namespace_resource_whitelist)
-    type  = "auto"
-  }
-
-  set {
-    name  = "roles"
-    value = yamlencode(each.value.roles)
-    type  = "auto"
-  }
-
-  set {
-    name  = "syncWindows"
-    value = yamlencode(each.value.sync_windows)
-    type  = "auto"
-  }
-
-  # Source Config.
-  set {
-    name  = "sourceRepos"
-    value = each.value.repo_urls
-    type  = "auto"
-  }
+  values = [
+    # Application ignoreDifferences
+    yamlencode({
+      "destinations"               = lookup(each.value, "destinations", [])
+      "clusterResourceWhitelist"   = lookup(each.value, "clusterResourceWhitelist", [])
+      "namespaceResourceBlacklist" = lookup(each.value, "namespaceResourceBlacklist", [])
+      "namespaceResourceWhitelist" = lookup(each.value, "namespaceResourceWhitelist", [])
+      "roles"                      = lookup(each.value, "roles", [])
+      "syncWindows"                = lookup(each.value, "syncWindows", [])
+      "sourceRepos"                = lookup(each.value, "sourceRepos", [])
+    })
+  ]
 
   depends_on = [module.helm_addon]
 }

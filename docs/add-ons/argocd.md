@@ -42,6 +42,7 @@ The framework provides an approach to bootstrapping workloads and/or additional 
 The following code example demonstrates how you can supply information for a repository in order to bootstrap multiple workloads in a new EKS cluster. The example leverages a [sample App of Apps repository](https://github.com/aws-samples/eks-blueprints-workloads.git).
 
 ```hcl
+
 argocd_applications = {
   addons = {
     path                = "chart"
@@ -69,6 +70,26 @@ argocd_applications     = {
     path                = "chart"
     repo_url            = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
     add_on_application  = true # Indicates the root add-on application.
+  }
+}
+```
+
+### ArgoCD Projects
+To logically group your applications, you can create multiple Argo CD projects, each representing a different group of applications.
+Sample configuration can be found below:
+```hcl
+enable_argocd           = true
+argocd_manage_add_ons   = true
+argocd_projects = {
+  system = {
+    description  = "ArgoCd Project for system applications"
+    destinations = [
+      {
+        namespace = "*"
+        server    = "https://kubernetes.default.svc"
+      }
+    ]
+    repo_urls = ["*"]
   }
 }
 ```
@@ -118,8 +139,42 @@ argocd_helm_config = {
   values = [templatefile("${path.module}/argocd-values.yaml", {})]
 }
 
+argocd_projects = {
+  addons = {
+    description = "ArgoCd Project for addons applications"
+    destinations = [
+      {
+        namespace = "*"
+        server    = "https://kubernetes.default.svc"
+      }
+    ]
+    repo_urls = ["*"]
+  }
+  workloads = {
+    description = "ArgoCD Project for Application Workloads"
+    destinations = [
+      {
+        namespace = "*"
+        server    = "https://kubernetes.default.svc"
+      }
+    ]
+    repo_urls = ["*"]
+    cluster_resource_whitelist = [
+      {
+        group = "*"
+        kind  = "*"
+      }
+    ]
+    namespace_resource_blacklist = []
+    namespace_resource_whitelist = []
+    roles        = []
+    sync_windows = []
+  }
+}
+
 argocd_applications = {
   workloads = {
+    project             = "workloads"
     path                = "envs/dev"
     repo_url            = "https://github.com/aws-samples/eks-blueprints-workloads.git"
     values              = {}
@@ -136,6 +191,7 @@ argocd_applications = {
     type                = "kustomize"
   }
   addons = {
+    project             = "addons"
     path                = "chart"
     repo_url            = "git@github.com:aws-samples/eks-blueprints-add-ons.git"
     add_on_application  = true              # Indicates the root add-on application.

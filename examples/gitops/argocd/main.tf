@@ -111,7 +111,7 @@ module "eks_blueprints_kubernetes_addons" {
   argocd_projects = {
     system = {
       description = "ArgoCd Project for system applications"
-      repo_urls   = "{*}"
+      repo_urls   = ["*"]
       destinations = [
         {
           namespace = "*"
@@ -131,7 +131,7 @@ module "eks_blueprints_kubernetes_addons" {
     }
     workloads = {
       description = "ArgoCD Project for Application Workloads"
-      repo_urls   = "{https://github.com/aws-samples/eks-blueprints-workloads.git}" # multiple value can add using comma. eg "{*,git@github.com/blabla/blabla.git}"
+      repo_urls   = ["https://github.com/aws-samples/eks-blueprints-workloads.git"]
       sync_windows = [
         {
           kind     = "allow"

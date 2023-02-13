@@ -1,4 +1,4 @@
-name: "system32"
+name: "system"
 
 namespace: "argocd"
 
