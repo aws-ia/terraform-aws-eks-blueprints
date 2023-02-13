@@ -14,6 +14,9 @@ enable_external_dns = true
 
 External DNS can optionally leverage the `eks_cluster_domain` global property of the `kubernetes_addon` submodule. The value for this property should be a Route53 domain managed by your account. ExternalDNS will leverage the value supplied for its `zoneIdFilters` property, which will restrict ExternalDNS to only create records for this domain. See docs [here](https://github.com/bitnami/charts/tree/master/bitnami/external-dns).
 
+> NB: If ```external_dns_route53_zone_arns``` is populated than the values of ```eks_cluster_domain``` and ```private_zone``` will not be used to lookup the zone to be used. In this case only the ```external_dns_route53_zone_arns``` will be passed to the external-dns addon.
+>
+
 ```
 eks_cluster_domain = <cluster_domain>
 ```
