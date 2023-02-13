@@ -43,7 +43,7 @@ This deployment uses the local eks_cluster module. check it's [Readme](../module
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eks_cluster"></a> [eks\_cluster](#module\_eks\_cluster) | ../modules/eks_cluster | n/a |
+| <a name="module_eks_cluster"></a> [eks\_cluster](#module\_eks\_cluster) | ../../modules/eks_cluster | n/a |
 
 ## Resources
 
