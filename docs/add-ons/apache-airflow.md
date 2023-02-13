@@ -1,7 +1,7 @@
 # Apache Airflow add-on
 
 This document describes the details of the best practices for building and deploying Self-managed **Highly Scalable Apache Airflow cluster on Kubernetes(Amazon EKS) Cluster**.
-Alternatively, Amazon also provides a fully managed Apache Airflow service(MWAA). Please see this [example](https://awslabs.github.io/data-on-eks/docs/job-schedulers-eks/aws-managed-airflow) if you are looking to build Amazon MWAA.
+Alternatively, Amazon also provides a fully managed Apache Airflow service(MWAA).
 
 Apache Airflow is used for the scheduling and orchestration of data pipelines or workflows.
 Orchestration of data pipelines refers to the sequencing, coordination, scheduling, and managing complex data pipelines from diverse sources.
