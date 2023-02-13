@@ -38,7 +38,7 @@ resource "helm_release" "argocd_project" {
   }
 
   values = [
-    # Application ignoreDifferences
+    # ArgoCD Project Spec
     yamlencode({
       "destinations"               = lookup(each.value, "destinations", [])
       "clusterResourceWhitelist"   = lookup(each.value, "clusterResourceWhitelist", [])
