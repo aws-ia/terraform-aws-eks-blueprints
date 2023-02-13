@@ -91,6 +91,8 @@ module "eks_blueprints_kubernetes_addons" {
 
   # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
   enable_agones = true
+  # Do not be fooled, this is required by the Agones addon
+  eks_worker_security_group_id = module.eks.cluster_security_group_id
   agones_helm_config = {
     name       = "agones"
     chart      = "agones"
