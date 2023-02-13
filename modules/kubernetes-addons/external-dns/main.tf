@@ -72,9 +72,3 @@ resource "aws_iam_policy" "external_dns" {
   policy      = data.aws_iam_policy_document.external_dns_iam_policy_document.json
   tags        = var.addon_context.tags
 }
-
-# TODO - remove at next breaking change
-data "aws_route53_zone" "selected" {
-  name         = var.domain_name
-  private_zone = var.private_zone
-}
