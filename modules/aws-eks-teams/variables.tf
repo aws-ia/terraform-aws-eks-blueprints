@@ -26,3 +26,9 @@ variable "iam_role_permissions_boundary" {
   type        = string
   default     = null
 }
+
+variable "path" {
+  description = "Path in which to create the platform_team_eks_access policy"
+  type        = string
+  default     = "/"
+}

@@ -10,13 +10,8 @@ def get_examples():
     """
     exclude = {
         'examples/appmesh-mtls',  # excluded until Rout53 is setup
-        'examples/eks-cluster-with-external-dns',  # excluded until Rout53 is setup
-        'examples/fully-private-eks-cluster/vpc',  # skipping until issue #711 is addressed
-        'examples/fully-private-eks-cluster/eks',
-        'examples/fully-private-eks-cluster/add-ons',
-        'examples/ai-ml/ray',  # excluded until #887 is fixed,
-        'examples/crossplane' #example removed
-        'examples/upgrade/blue-green-route53/core-infra'
+        'examples/blue-green-upgrade/core-infra',
+        'examples/blue-green-upgrade/modules/eks_cluster'
     }
 
     projects = {
