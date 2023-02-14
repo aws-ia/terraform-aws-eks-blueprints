@@ -41,12 +41,12 @@ resource "helm_release" "argocd_project" {
     # ArgoCD Project Spec
     yamlencode({
       "destinations"               = lookup(each.value, "destinations", [])
-      "clusterResourceWhitelist"   = lookup(each.value, "clusterResourceWhitelist", [])
-      "namespaceResourceBlacklist" = lookup(each.value, "namespaceResourceBlacklist", [])
-      "namespaceResourceWhitelist" = lookup(each.value, "namespaceResourceWhitelist", [])
+      "clusterResourceWhitelist"   = lookup(each.value, "cluster_resource_whitelist", [])
+      "namespaceResourceBlacklist" = lookup(each.value, "namespace_resource_blacklist", [])
+      "namespaceResourceWhitelist" = lookup(each.value, "namespace_resource_whitelist", [])
       "roles"                      = lookup(each.value, "roles", [])
-      "syncWindows"                = lookup(each.value, "syncWindows", [])
-      "sourceRepos"                = lookup(each.value, "sourceRepos", [])
+      "syncWindows"                = lookup(each.value, "sync_windows", [])
+      "sourceRepos"                = lookup(each.value, "repo_urls", [])
     })
   ]
 
