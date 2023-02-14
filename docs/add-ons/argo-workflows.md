@@ -4,8 +4,6 @@
 
 For complete project documentation, please visit the [Argo Workflows documentation site](https://argoproj.github.io/argo-workflows/).
 
-[DoEKS has an example demonstrates how to use Argo Workflows to assign jobs to Amazon EKS] (https://awslabs.github.io/data-on-eks/docs/job-schedulers-eks/argo-workflows-eks)
-
 ## Usage
 
 Argo Workflows can be deployed by enabling the add-on via the following.

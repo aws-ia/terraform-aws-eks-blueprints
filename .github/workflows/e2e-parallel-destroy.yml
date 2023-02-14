@@ -24,11 +24,8 @@ jobs:
       matrix:
         include:
           - example_path: examples/agones-game-controller
-          - example_path: examples/complete-kubernetes-addons
-          - example_path: examples/eks-cluster-with-new-vpc
           - example_path: examples/fargate-serverless
-          - example_path: examples/gitops/argocd
-          - example_path: examples/grafana-loki
+          - example_path: examples/argocd
           - example_path: examples/ipv4-prefix-delegation
           - example_path: examples/ipv6-eks-cluster
           - example_path: examples/karpenter
@@ -63,4 +60,5 @@ jobs:
           terraform init -upgrade=true
           terraform destroy -target=module.eks_blueprints_kubernetes_addons  -no-color -input=false -auto-approve
           terraform destroy -target=module.eks_blueprints  -no-color -input=false -auto-approve
+          terraform destroy -target=module.eks -no-color -input=false -auto-approve
           terraform destroy -no-color -input=false -auto-approve
