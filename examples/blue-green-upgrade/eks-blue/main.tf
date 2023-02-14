@@ -29,7 +29,7 @@ data "aws_eks_cluster_auth" "this" {
 }
 
 module "eks_cluster" {
-  source = "../../modules/eks_cluster"
+  source = "../modules/eks_cluster"
 
   suffix_stack_name = "blue"
   cluster_version   = "1.23"

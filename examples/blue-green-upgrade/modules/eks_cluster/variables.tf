@@ -16,7 +16,6 @@ variable "cluster_version" {
   default     = "1.23"
 }
 
-
 variable "hosted_zone_name" {
   type        = string
   description = "Route53 domain for the cluster."
