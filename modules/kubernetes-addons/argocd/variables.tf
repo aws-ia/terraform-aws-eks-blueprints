@@ -10,6 +10,12 @@ variable "applications" {
   default     = {}
 }
 
+variable "projects" {
+  description = "ArgoCD Project config used to bootstrap a cluster."
+  type        = any
+  default     = {}
+}
+
 variable "addon_config" {
   description = "Configuration for managing add-ons via ArgoCD"
   type        = any

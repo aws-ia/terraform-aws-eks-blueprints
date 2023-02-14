@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  # Project description
+  description: {{ .Values.description | quote }}
+
+  {{- with .Values.clusterResourceWhitelist }}
+  clusterResourceWhitelist:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.namespaceResourceBlacklist }}
+  namespaceResourceBlacklist:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.namespaceResourceWhitelist }}
+  namespaceResourceWhitelist:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  # Destination clusters can be identified by 'server', 'name', or both.
+  {{- with .Values.destinations }}
+  destinations:
+    {{- toYaml . | nindent 4  }}
+  {{- end }}
+
+  # Allow manifests to deploy from any Git repos
+  {{- with .Values.sourceRepos }}
+  sourceRepos:
+    {{- toYaml . | nindent 4  }}
+  {{- end }}
+
+  {{- with .Values.roles }}
+  roles:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.syncWindows }}
+  syncWindows:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
