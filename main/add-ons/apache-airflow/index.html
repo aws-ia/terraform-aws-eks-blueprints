@@ -254,7 +254,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../node-groups/" class="md-nav__link">
+      <a href="../../node-groups.md" class="md-nav__link">
         Node Groups
       </a>
     </li>
@@ -1585,7 +1585,7 @@
 
 <h1 id="apache-airflow-add-on">Apache Airflow add-on<a class="headerlink" href="#apache-airflow-add-on" title="Permanent link">&para;</a></h1>
 <p>This document describes the details of the best practices for building and deploying Self-managed <strong>Highly Scalable Apache Airflow cluster on Kubernetes(Amazon EKS) Cluster</strong>.
-Alternatively, Amazon also provides a fully managed Apache Airflow service(MWAA). Please see this <a href="https://awslabs.github.io/data-on-eks/docs/job-schedulers-eks/aws-managed-airflow">example</a> if you are looking to build Amazon MWAA.</p>
+Alternatively, Amazon also provides a fully managed Apache Airflow service(MWAA).</p>
 <p>Apache Airflow is used for the scheduling and orchestration of data pipelines or workflows.
 Orchestration of data pipelines refers to the sequencing, coordination, scheduling, and managing complex data pipelines from diverse sources.
 A workflow is represented as a <a href="https://airflow.apache.org/docs/apache-airflow/stable/concepts/dags.html">DAG</a> (a Directed Acyclic Graph), and contains individual pieces of work called <a href="https://airflow.apache.org/docs/apache-airflow/stable/concepts/tasks.html">Tasks</a>, arranged with dependencies and data flows taken into account.</p>
@@ -1632,12 +1632,11 @@ Ths deployment uses <em>HA scheduler</em> with two replicas to take advantage of
 <p>This deployment example uses internet facing Load Balancer to easily access the WebUI however it's not recommended for Production.
 You can modify the <code>values.yaml</code> to set the Load Balancer to <code>internal</code> and upload certificate to use HTTPS.
 Ensure access to the WebUI using internal domain and network.</p>
-<p>Checkout the <a href="https://awslabs.github.io/data-on-eks/docs/job-schedulers-eks/self-managed-airflow">examples</a> of deploying and using Apache Airflow on Amazon EKS.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p>The <a href="https://awslabs.github.io/data-on-eks/docs/job-schedulers-eks/self-managed-airflow">Apache Airflow</a> can be deployed by enabling the add-on via the following.</p>
+<p>The Apache Airflow can be deployed by enabling the add-on via the following.</p>
 <div class="highlight"><pre><span></span><code>  enable_airflow = true
 </code></pre></div>
-<p>For production workloads, you can use this <a href="https://awslabs.github.io/data-on-eks/docs/job-schedulers-eks/self-managed-airflow">example</a> with custom Helm Config.</p>
+<p>For production workloads, you can use the following custom Helm Config.</p>
 <div class="highlight"><pre><span></span><code>    enable_airflow = true
     airflow_helm_config = {
       name             = &quot;airflow&quot;
