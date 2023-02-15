@@ -32,7 +32,7 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 CD into the example directory:
 
 ```sh
-cd examples/eks-cluster-with-new-vpc/
+cd examples/fully-private-cluster/
 ```
 
 Initialize the working directory with the following:
