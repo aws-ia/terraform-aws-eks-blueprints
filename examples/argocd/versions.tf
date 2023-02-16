@@ -14,9 +14,13 @@ terraform {
       source  = "hashicorp/helm"
       version = ">= 2.8"
     }
-    grafana = {
-      source  = "grafana/grafana"
-      version = ">= 1.34"
+    random = {
+      source  = "hashicorp/random"
+      version = "3.3.2"
+    }
+    bcrypt = {
+      source  = "viktorradnai/bcrypt"
+      version = ">= 0.1.2"
     }
   }
 
@@ -24,6 +28,6 @@ terraform {
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"
   #   region = "us-west-2"
-  #   key    = "e2e/amp-amg-opensearch/terraform.tfstate"
+  #   key    = "e2e/argocd/terraform.tfstate"
   # }
 }
