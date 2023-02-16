@@ -1,8 +1,0 @@
-txtOwnerId: ${txtOwnerId}
-zoneIdFilters:
-  - ${zoneIdFilter}
-policy: 'sync'
-aws:
-  zoneType: 'public'
-  zonesCacheDuration: '1h'
-logLevel: 'debug'
