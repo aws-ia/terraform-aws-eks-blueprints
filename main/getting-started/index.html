@@ -1551,8 +1551,7 @@ fargate-ip-10-0-10-71.us-west-2.compute.internal<span class="w">    </span>Ready
 </code></pre></div>
 <h3 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h3>
 <p>To teardown and remove the resources created in this example:</p>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>delete<span class="w"> </span>deployment<span class="w"> </span>inflate
-terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_kubernetes_addons&quot;</span><span class="w"> </span>-auto-approve
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_kubernetes_addons&quot;</span><span class="w"> </span>-auto-approve
 terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
 terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </code></pre></div>
