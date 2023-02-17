@@ -265,84 +265,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#deployment-steps" class="md-nav__link">
-    Deployment Steps
+  <a href="#examples" class="md-nav__link">
+    Examples
   </a>
   
-    <nav class="md-nav" aria-label="Deployment Steps">
+    <nav class="md-nav" aria-label="Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#clone-the-repo" class="md-nav__link">
-    Clone the repo
+  <a href="#deploy" class="md-nav__link">
+    Deploy
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#terraform-init" class="md-nav__link">
-    Terraform INIT
+  <a href="#validate" class="md-nav__link">
+    Validate
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#terraform-plan" class="md-nav__link">
-    Terraform PLAN
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#terraform-apply" class="md-nav__link">
-    Terraform APPLY
+  <a href="#destroy" class="md-nav__link">
+    Destroy
   </a>
   
 </li>
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-kubectl" class="md-nav__link">
-    Configure kubectl
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validation" class="md-nav__link">
-    Validation
-  </a>
-  
-    <nav class="md-nav" aria-label="Validation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#list-worker-nodes" class="md-nav__link">
-    List worker nodes
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#list-pods" class="md-nav__link">
-    List pods
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cleanup" class="md-nav__link">
-    Cleanup
-  </a>
   
 </li>
       
@@ -1494,84 +1446,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#deployment-steps" class="md-nav__link">
-    Deployment Steps
+  <a href="#examples" class="md-nav__link">
+    Examples
   </a>
   
-    <nav class="md-nav" aria-label="Deployment Steps">
+    <nav class="md-nav" aria-label="Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#clone-the-repo" class="md-nav__link">
-    Clone the repo
+  <a href="#deploy" class="md-nav__link">
+    Deploy
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#terraform-init" class="md-nav__link">
-    Terraform INIT
+  <a href="#validate" class="md-nav__link">
+    Validate
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#terraform-plan" class="md-nav__link">
-    Terraform PLAN
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#terraform-apply" class="md-nav__link">
-    Terraform APPLY
+  <a href="#destroy" class="md-nav__link">
+    Destroy
   </a>
   
 </li>
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-kubectl" class="md-nav__link">
-    Configure kubectl
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validation" class="md-nav__link">
-    Validation
-  </a>
-  
-    <nav class="md-nav" aria-label="Validation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#list-worker-nodes" class="md-nav__link">
-    List worker nodes
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#list-pods" class="md-nav__link">
-    List pods
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cleanup" class="md-nav__link">
-    Cleanup
-  </a>
   
 </li>
       
@@ -1602,80 +1506,54 @@
 <li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
 <li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
 </ol>
-<h2 id="deployment-steps">Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permanent link">&para;</a></h2>
-<p>The following steps will walk you through the deployment of an <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/eks-cluster-with-new-vpc/main.tf">example blueprint</a>. This example will deploy a new VPC, a private EKS cluster with public and private subnets, and one managed node group that will be placed in the private subnets. The example will also deploy the following add-ons into the EKS cluster:</p>
-<ul>
-<li>AWS Load Balancer Controller</li>
-<li>Cluster Autoscaler</li>
-<li>CoreDNS</li>
-<li>kube-proxy</li>
-<li>Metrics Server</li>
-<li>vpc-cni</li>
-</ul>
-<h3 id="clone-the-repo">Clone the repo<a class="headerlink" href="#clone-the-repo" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/aws-ia/terraform-aws-eks-blueprints.git
-</code></pre></div>
-<h3 id="terraform-init">Terraform INIT<a class="headerlink" href="#terraform-init" title="Permanent link">&para;</a></h3>
-<p>CD into the example directory:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>examples/eks-cluster-with-new-vpc/
-</code></pre></div>
-<p>Initialize the working directory with the following:</p>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<p>Select an example from the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples"><code>examples/</code></a> directory and follow the instructions in its respective README.md file. The deployment steps for examples generally follow the deploy, validate, and clean-up steps shown below.</p>
+<h3 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h3>
+<p>To provision this example:</p>
 <div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>init
+terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="w"> </span>module.vpc
+terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="w"> </span>module.eks
+terraform<span class="w"> </span>apply
 </code></pre></div>
-<h3 id="terraform-plan">Terraform PLAN<a class="headerlink" href="#terraform-plan" title="Permanent link">&para;</a></h3>
-<p>Verify the resources that will be created by this execution:</p>
-<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>plan
+<p>Enter <code>yes</code> at command prompt to apply</p>
+<h3 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h3>
+<p>The following command will update the <code>kubeconfig</code> on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code> to validate the CoreDNS deployment for Fargate.</p>
+<ol>
+<li>Run <code>update-kubeconfig</code> command:</li>
+</ol>
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;REGION&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER_NAME&gt;
 </code></pre></div>
-<h3 id="terraform-apply">Terraform APPLY<a class="headerlink" href="#terraform-apply" title="Permanent link">&para;</a></h3>
-<p>We will leverage Terraform's <a href="https://learn.hashicorp.com/tutorials/terraform/resource-targeting?in=terraform/cli">target</a> functionality to deploy a VPC, an EKS Cluster, and Kubernetes add-ons in separate steps.</p>
-<p><strong>Deploy the VPC</strong>. This step will take roughly 3 minutes to complete.</p>
-<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.vpc&quot;</span>
+<ol>
+<li>View the pods that were created:</li>
+</ol>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A
+
+<span class="c1"># Output should show some pods running</span>
+NAMESPACE<span class="w">     </span>NAME<span class="w">                                  </span>READY<span class="w">   </span>STATUS<span class="w">    </span>RESTARTS<span class="w">   </span>AGE
+kube-system<span class="w">   </span>coredns-66b965946d-gd59n<span class="w">              </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>92s
+kube-system<span class="w">   </span>coredns-66b965946d-tsjrm<span class="w">              </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>92s
+kube-system<span class="w">   </span>ebs-csi-controller-57cb869486-bcm9z<span class="w">   </span><span class="m">6</span>/6<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>90s
+kube-system<span class="w">   </span>ebs-csi-controller-57cb869486-xw4z4<span class="w">   </span><span class="m">6</span>/6<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>90s
 </code></pre></div>
-<p><strong>Deploy the EKS cluster</strong>. This step will take roughly 14 minutes to complete.</p>
-<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints&quot;</span>
-</code></pre></div>
-<p><strong>Deploy the add-ons</strong>. This step will take rough 5 minutes to complete.</p>
-<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply
-</code></pre></div>
-<h2 id="configure-kubectl">Configure kubectl<a class="headerlink" href="#configure-kubectl" title="Permanent link">&para;</a></h2>
-<p>Terraform output will display a command in your console that you can use to bootstrap your local <code>kubeconfig</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="nv">configure_kubectl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws eks --region &lt;region&gt; update-kubeconfig --name &lt;cluster-name&gt;&quot;</span>
-</code></pre></div>
-<p>Run the command in your terminal.</p>
-<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;region&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;cluster-name&gt;
-</code></pre></div>
-<h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h2>
-<h3 id="list-worker-nodes">List worker nodes<a class="headerlink" href="#list-worker-nodes" title="Permanent link">&para;</a></h3>
+<ol>
+<li>View the nodes that were created:</li>
+</ol>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
+
+<span class="c1"># Output should show some nodes running</span>
+NAME<span class="w">                                                </span>STATUS<span class="w">   </span>ROLES<span class="w">    </span>AGE<span class="w">     </span>VERSION
+fargate-ip-10-0-10-11.us-west-2.compute.internal<span class="w">    </span>Ready<span class="w">    </span>&lt;none&gt;<span class="w">   </span>8m7s<span class="w">    </span>v1.24.8-eks-a1bebd3
+fargate-ip-10-0-10-210.us-west-2.compute.internal<span class="w">   </span>Ready<span class="w">    </span>&lt;none&gt;<span class="w">   </span>2m50s<span class="w">   </span>v1.24.8-eks-a1bebd3
+fargate-ip-10-0-10-218.us-west-2.compute.internal<span class="w">   </span>Ready<span class="w">    </span>&lt;none&gt;<span class="w">   </span>8m6s<span class="w">    </span>v1.24.8-eks-a1bebd3
+fargate-ip-10-0-10-227.us-west-2.compute.internal<span class="w">   </span>Ready<span class="w">    </span>&lt;none&gt;<span class="w">   </span>8m8s<span class="w">    </span>v1.24.8-eks-a1bebd3
+fargate-ip-10-0-10-42.us-west-2.compute.internal<span class="w">    </span>Ready<span class="w">    </span>&lt;none&gt;<span class="w">   </span>8m6s<span class="w">    </span>v1.24.8-eks-a1bebd3
+fargate-ip-10-0-10-71.us-west-2.compute.internal<span class="w">    </span>Ready<span class="w">    </span>&lt;none&gt;<span class="w">   </span>2m48s<span class="w">   </span>v1.24.8-eks-a1bebd3
 </code></pre></div>
-<p>You should see output similar to the following:</p>
-<div class="highlight"><pre><span></span><code>NAME                                        STATUS   ROLES    AGE     VERSION
-ip-10-0-10-161.us-west-2.compute.internal   Ready    &lt;none&gt;   4h18m   v1.21.5-eks-9017834
-ip-10-0-11-171.us-west-2.compute.internal   Ready    &lt;none&gt;   4h18m   v1.21.5-eks-9017834
-ip-10-0-12-48.us-west-2.compute.internal    Ready    &lt;none&gt;   4h18m   v1.21.5-eks-9017834
-</code></pre></div>
-<h3 id="list-pods">List pods<a class="headerlink" href="#list-pods" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>kube-system
-</code></pre></div>
-<p>You should see output similar to the following:</p>
-<div class="highlight"><pre><span></span><code>NAME                                                        READY   STATUS    RESTARTS   AGE
-aws-load-balancer-controller-954746b57-k9lhc                1/1     Running   1          15m
-aws-load-balancer-controller-954746b57-q5gh4                1/1     Running   1          15m
-aws-node-jlnkd                                              1/1     Running   1          15m
-aws-node-k86pv                                              1/1     Running   0          12m
-aws-node-kjcdg                                              1/1     Running   1          14m
-cluster-autoscaler-aws-cluster-autoscaler-5d4446b58-d6frd   1/1     Running   1          15m
-coredns-85d5b4454c-jksbw                                    1/1     Running   1          24m
-coredns-85d5b4454c-x7wwd                                    1/1     Running   1          24m
-kube-proxy-92slm                                            1/1     Running   1          18m
-kube-proxy-bz5kb                                            1/1     Running   1          18m
-kube-proxy-zl7cj                                            1/1     Running   1          18m
-metrics-server-694d47d564-hzd8h                             1/1     Running   1          15m
-</code></pre></div>
-<h2 id="cleanup">Cleanup<a class="headerlink" href="#cleanup" title="Permanent link">&para;</a></h2>
-<p>To clean up your environment, destroy the Terraform modules in reverse order.</p>
-<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_kubernetes_addons&quot;</span><span class="w"> </span>-auto-approve
-terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints&quot;</span><span class="w"> </span>-auto-approve
+<h3 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h3>
+<p>To teardown and remove the resources created in this example:</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>delete<span class="w"> </span>deployment<span class="w"> </span>inflate
+terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_kubernetes_addons&quot;</span><span class="w"> </span>-auto-approve
+terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
 terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </code></pre></div>
 

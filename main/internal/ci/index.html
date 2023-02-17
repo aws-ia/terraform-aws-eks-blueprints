@@ -1389,7 +1389,7 @@
 
 
 <h1 id="e2e-tests">E2E tests<a class="headerlink" href="#e2e-tests" title="Permanent link">&para;</a></h1>
-<p>We use GitHub Actions to run an end-to-end tests to verify all PRs. The GitHub Actions used are a combination of <code>aws-actions/configure-aws-credentials</code> and <code>hashicorp/setup-terraform@v1</code>. See the complete action definition <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/.github/workflows/e2e-terratest.yml">here</a>.</p>
+<p>We use GitHub Actions to run an end-to-end tests to verify all PRs. The GitHub Actions used are a combination of <code>aws-actions/configure-aws-credentials</code> and <code>hashicorp/setup-terraform@v1</code>.</p>
 <h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
 <ol>
 <li>Use the following CloudFormation template to setup a new IAM role.</li>
@@ -1448,7 +1448,7 @@
 <p>Setup a GitHub repo secret called <code>ROLE_TO_ASSUME</code> and set it to ARN of the role created in 1.</p>
 </li>
 <li>
-<p>We use an S3 backend to test the canonical <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/eks-cluster-with-new-vpc/main.tf">example</a>. This allows us to recover from any failures during the <code>apply</code> stage. If you are setting up your own CI pipeline change the s3 bucket name in backend configuration of the example.</p>
+<p>We use an S3 backend for the e2e tests. This allows us to recover from any failures during the <code>apply</code> stage. If you are setting up your own CI pipeline change the s3 bucket name in backend configuration of the example.</p>
 </li>
 </ol>
 
