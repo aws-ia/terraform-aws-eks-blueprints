@@ -7,21 +7,26 @@ provider "bcrypt" {
 
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  token                  = data.aws_eks_cluster_auth.this.token
+  cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region]
+    command     = "aws"
+  }
 }
 
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-    token                  = data.aws_eks_cluster_auth.this.token
+    cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region]
+      command     = "aws"
+    }
   }
 }
 
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
-}
 
 data "aws_availability_zones" "available" {}
 
@@ -40,7 +45,7 @@ locals {
 
   cluster_version = "1.24"
 
-  instance_type = "t3.small"
+  instance_type = "t3.small" #TODO change to m5.large before merging PR
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -75,7 +80,7 @@ module "eks" {
 
       min_size     = 1
       max_size     = 4
-      desired_size = 3
+      desired_size = 2
     }
   }
 
@@ -88,10 +93,10 @@ module "eks" {
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../../modules/kubernetes-addons"
 
-  eks_cluster_id        = module.eks.cluster_name
-  eks_cluster_endpoint  = module.eks.cluster_endpoint
-  eks_oidc_provider     = module.eks.oidc_provider
-  eks_cluster_version   = module.eks.cluster_version
+  eks_cluster_id       = module.eks.cluster_name
+  eks_cluster_endpoint = module.eks.cluster_endpoint
+  eks_oidc_provider    = module.eks.oidc_provider
+  eks_cluster_version  = module.eks.cluster_version
 
   enable_argocd         = true
   argocd_manage_add_ons = true # Indicates addons to be install via ArgoCD
@@ -118,6 +123,11 @@ module "eks_blueprints_kubernetes_addons" {
               }
             }
           }
+          configs : {
+            params : {
+              "application.namespaces" : "cluster-*" # See more config options at https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace/
+            }
+          }
         }
       )
     ]
@@ -130,13 +140,14 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   argocd_applications = {
-    hub-cluster-addons = {
+    addons = {
       path               = "chart"
       repo_url           = "https://github.com/csantanapr/eks-blueprints-add-ons.git"
       target_revision    = "argo-multi-cluster"
       add_on_application = true
     }
   }
+
 
   # Add-ons
   enable_ingress_nginx                = false

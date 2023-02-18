@@ -35,8 +35,7 @@ cd ..
 
 Login with kubectl to Hub Cluster
 ```sh
-$(terraform output -chdir=hub-cluster -raw configure_kubectl)
-echo "https://$(kubectl get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
+terraform -chdir=hub-cluster output -raw configure_kubectl
 ```
 
 Get ArgoCD URL and Password
@@ -62,9 +61,23 @@ Go to Settings->Clusters, you should see 2 remote clusters:
 
 ## CleanUp
 
-Destroy the 3 clusters
+Destroy Spoke Cluster 1
 ```sh
-terraform -chdir=hub-cluster destroy -auto-approve
-terraform -chdir=spoke-cluster-1 destroy -auto-approve
-terraform -chdir=spoke-cluster-2 destroy -auto-approve
+cd spoke-cluster-1
+./destroy.sh
+cd ..
+```
+
+Destroy Spoke Cluster 2
+```sh
+cd spoke-cluster-2
+./destroy.sh
+cd ..
+```
+
+Destroy Hub Cluster
+```sh
+cd hub-cluster
+./destroy.sh
+cd ..
 ```
