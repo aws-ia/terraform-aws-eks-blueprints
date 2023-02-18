@@ -204,7 +204,7 @@ module "eks_blueprints_argocd_addons" {
       values = {
         destinationServer = module.eks.cluster_endpoint # Indicates the location of the remote cluster to deploy Addons
         argoNamespace     = local.name # Namespace to create ArgoCD Apps
-        argoProject       = local.name
+        argoProject       = local.name # Argo Project
         targetRevision    = "argo-multi-cluster" #TODO change to main once git repo is updated
       }
     }
@@ -224,7 +224,7 @@ module "eks_blueprints_argocd_addons" {
 
 
 
-/*
+
 #---------------------------------------------------------------
 # EKS Workloads via ArgoCD
 #---------------------------------------------------------------
@@ -247,8 +247,11 @@ module "eks_blueprints_argocd_workloads" {
       path               = "envs/dev"
       repo_url           = "https://github.com/csantanapr/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
       target_revision    = "argo-multi-cluster" #TODO change to main once git repo is updated
+      project            = local.name
       values = {
         destinationServer = "https://kubernetes.default.svc" # Indicates the location where ArgoCD is installed, in this case hub cluster
+        argoNamespace     = local.name # Namespace to create ArgoCD Apps
+        argoProject       = local.name # Argo Project
         spec = {
           destination = {
             server = module.eks.cluster_endpoint # Indicates the location of the remote cluster to deploy Apps
@@ -269,6 +272,7 @@ module "eks_blueprints_argocd_workloads" {
       path               = "helm-guestbook"
       repo_url           = "https://github.com/argoproj/argocd-example-apps.git"
       target_revision    = "master"
+      project            = local.name
       destination = module.eks.cluster_endpoint
       namespace = "single-workload"
     } 
@@ -283,7 +287,7 @@ module "eks_blueprints_argocd_workloads" {
   depends_on = [module.eks_blueprints_argocd_addons]
 
 }
-*/
+
 
 # Secret in hub
 resource "kubernetes_secret_v1" "spoke_cluster" {
