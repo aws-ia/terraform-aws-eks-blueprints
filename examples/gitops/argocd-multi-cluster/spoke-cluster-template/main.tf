@@ -73,6 +73,7 @@ data "aws_iam_policy_document" "assume_role_policy" {
 locals {
   name             = var.spoke_cluster_name
   hub_cluster_name = var.hub_cluster_name
+  environment      = var.environment
   region           = "us-west-2"
 
   cluster_version = "1.24"
@@ -158,7 +159,7 @@ module "eks_blueprints_kubernetes_addons" {
 #---------------------------------------------------------------
 resource "helm_release" "argocd_project" {
   provider = helm.hub
-  name       = "argo-project"
+  name       = "argo-project-${local.name}"
   chart      = "${path.module}/argo-project"
   namespace  = "argocd"
   create_namespace = true
@@ -244,7 +245,7 @@ module "eks_blueprints_argocd_workloads" {
     # This shows how to deploy a multiple workloads using ArgoCD App of Apps pattern
     workloads = {
       add_on_application = false
-      path               = "envs/dev"
+      path               = "envs/${local.environment}"
       repo_url           = "https://github.com/csantanapr/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
       target_revision    = "argo-multi-cluster" #TODO change to main once git repo is updated
       project            = local.name

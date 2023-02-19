@@ -9,7 +9,7 @@ module "helm_addon" {
 }
 
 resource "kubernetes_namespace_v1" "this" {
-  count = !var.argocd_remote && try(local.helm_config["create_namespace"], true) && local.helm_config["namespace"] != "kube-system" ? 1 : 0
+  count = length(var.addon_config) != 0 && try(local.helm_config["create_namespace"], true) && local.helm_config["namespace"] != "kube-system" ? 1 : 0
   metadata {
     name = local.helm_config["namespace"]
   }

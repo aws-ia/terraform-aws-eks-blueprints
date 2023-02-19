@@ -4,7 +4,12 @@ variable "hub_cluster_name" {
   default     = "hub-cluster"
 }
 variable "spoke_cluster_name" {
-  description = "Hub Cluster Name"
+  description = "Spoke Cluster Name"
   type        = string
-  default     = "spoke-cluster"
+  default     = "cluster-n"
+}
+variable "environment" {
+  description = "Spoke Cluster Environment"
+  type        = string
+  default     = "dev"
 }

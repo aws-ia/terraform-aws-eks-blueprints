@@ -7,6 +7,7 @@ module "spoke_cluster" {
 
   hub_cluster_name   = "hub-cluster"
   spoke_cluster_name = "cluster-2"
+  environment        = "test"
 
 }
 
