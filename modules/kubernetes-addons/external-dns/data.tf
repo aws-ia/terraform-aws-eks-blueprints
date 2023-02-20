@@ -2,7 +2,7 @@ data "aws_iam_policy_document" "external_dns_iam_policy_document" {
   statement {
     effect = "Allow"
     resources = distinct(concat(
-      [data.aws_route53_zone.selected.arn],
+      try([data.aws_route53_zone.selected[0].arn],[]),
       var.route53_zone_arns
     ))
     actions = [

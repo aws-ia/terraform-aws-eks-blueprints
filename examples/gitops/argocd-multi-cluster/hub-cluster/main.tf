@@ -27,6 +27,14 @@ provider "helm" {
   }
 }
 
+# To get the hosted zone to be use in argocd domain
+data "aws_route53_zone" "argocd" {
+  count = local.argocd_domain == "" ? 0 : 1
+  name         = local.argocd_domain
+  private_zone = local.argocd_domain_private_zone
+}
+
+data "aws_caller_identity" "current" {}
 
 data "aws_availability_zones" "available" {}
 
@@ -56,6 +64,11 @@ locals {
   }
 
   namespace = "argocd"
+
+  argocd_domain = var.argocd_domain
+  argocd_domain_arn = data.aws_route53_zone.argocd[0].arn
+  argocd_domain_private_zone = var.argocd_domain_private_zone
+
 }
 
 
@@ -112,8 +125,33 @@ module "eks_blueprints_kubernetes_addons" {
                 "eks.amazonaws.com/role-arn" : module.argocd_irsa.irsa_iam_role_arn
               }
             }
-            service : {
-              type : "LoadBalancer"
+            #service : {
+            #  type : "LoadBalancer"
+            #}
+            ingress : {
+              enabled : true
+              annotations: {
+                "alb.ingress.kubernetes.io/scheme" : "internet-facing"
+                "alb.ingress.kubernetes.io/target-type" : "ip"
+                "alb.ingress.kubernetes.io/backend-protocol" : "HTTPS"
+                "alb.ingress.kubernetes.io/listen-ports": "[{\"HTTPS\":443}]"
+                "alb.ingress.kubernetes.io/tags": "Environment=hub,GitOps=true"
+              }
+              hosts : ["argocd.${local.argocd_domain}"]
+              tls: [
+                {
+                  hosts: ["argocd.${local.argocd_domain}"]
+                }
+              ]
+              ingressClassName: "alb"
+            }
+            ingressGrpc : {
+              enabled: true
+              isAWSALB: true
+              awsALB : {
+                serviceType : "ClusterIP" # Instance mode needs type NodePort, IP mode needs type ClusterIP or NodePort
+                backendProtocolVersion: "GRPC"  ## This tells AWS to send traffic from the ALB using HTTP2. Can use gRPC as well if you want to leverage gRPC specific features
+              }
             }
           }
           controller : {
@@ -150,10 +188,12 @@ module "eks_blueprints_kubernetes_addons" {
 
 
   # Add-ons
-  enable_ingress_nginx                = false
   enable_aws_load_balancer_controller = true
-  enable_datadog_operator             = false
   enable_metrics_server               = true
+  enable_external_dns                 = true
+  external_dns_route53_zone_arns      = [local.argocd_domain_arn]
+
+
 
   tags = local.tags
 }

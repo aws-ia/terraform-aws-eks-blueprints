@@ -75,6 +75,7 @@ resource "aws_iam_policy" "external_dns" {
 
 # TODO - remove at next breaking change
 data "aws_route53_zone" "selected" {
+  count = var.domain_name == "" ? 0 : 1
   name         = var.domain_name
   private_zone = var.private_zone
 }

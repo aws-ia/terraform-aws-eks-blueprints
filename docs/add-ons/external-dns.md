@@ -22,9 +22,10 @@ Alternatively, you can supply a list of Route53 zone ARNs which external-dns wil
 
 ```hcl
   external_dns_route53_zone_arns = [
-    "arn:aws:route53::123456789012:hostedzone/Z1234567890"
+    "arn:aws:route53:::hostedzone/Z1234567890"
   ]
 ```
+>arns cannot contain an account
 
 You can optionally customize the Helm chart that deploys `external-dns` via the following configuration.
 

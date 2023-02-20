@@ -3,6 +3,17 @@
 This example demonstrate how to deploy a single instance of ArgoCD on a central cluster (hub)
 managing multiple tenant clusters (spokes). In this example all spoke clusters get the same configuration for addons deployed from a central ArgoCD.
 
+## Create domain certificate in ACM, for example 
+```
+aws acm request-certificate --domain-name '*.example.com' ---validation-method DNS
+```
+
+## Setup Domain
+Set the sub domain for argocd
+```
+export TF_VAR_argo_domain=example.com
+```
+
 ## Deploy Hub Cluster
 ```sh
 cd hub-cluster
