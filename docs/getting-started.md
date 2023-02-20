@@ -10,128 +10,67 @@ First, ensure that you have installed the following tools locally.
 2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
-## Deployment Steps
+## Examples
 
-The following steps will walk you through the deployment of an [example blueprint](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/eks-cluster-with-new-vpc/main.tf). This example will deploy a new VPC, a private EKS cluster with public and private subnets, and one managed node group that will be placed in the private subnets. The example will also deploy the following add-ons into the EKS cluster:
+Select an example from the [`examples/`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples) directory and follow the instructions in its respective README.md file. The deployment steps for examples generally follow the deploy, validate, and clean-up steps shown below.
 
-- AWS Load Balancer Controller
-- Cluster Autoscaler
-- CoreDNS
-- kube-proxy
-- Metrics Server
-- vpc-cni
+### Deploy
 
-### Clone the repo
-
-```sh
-git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
-```
-
-### Terraform INIT
-
-CD into the example directory:
-
-```sh
-cd examples/eks-cluster-with-new-vpc/
-```
-
-Initialize the working directory with the following:
+To provision this example:
 
 ```sh
 terraform init
-```
-
-### Terraform PLAN
-
-Verify the resources that will be created by this execution:
-
-```sh
-terraform plan
-```
-
-### Terraform APPLY
-
-We will leverage Terraform's [target](https://learn.hashicorp.com/tutorials/terraform/resource-targeting?in=terraform/cli) functionality to deploy a VPC, an EKS Cluster, and Kubernetes add-ons in separate steps.
-
-**Deploy the VPC**. This step will take roughly 3 minutes to complete.
-
-```sh
-terraform apply -target="module.vpc"
-```
-
-**Deploy the EKS cluster**. This step will take roughly 14 minutes to complete.
-
-```sh
-terraform apply -target="module.eks_blueprints"
-```
-
-**Deploy the add-ons**. This step will take rough 5 minutes to complete.
-
-```sh
+terraform apply -target module.vpc
+terraform apply -target module.eks
 terraform apply
 ```
 
-## Configure kubectl
+Enter `yes` at command prompt to apply
 
-Terraform output will display a command in your console that you can use to bootstrap your local `kubeconfig`.
+### Validate
 
-```sh
-configure_kubectl = "aws eks --region <region> update-kubeconfig --name <cluster-name>"
-```
+The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the CoreDNS deployment for Fargate.
 
-Run the command in your terminal.
+1. Run `update-kubeconfig` command:
 
 ```sh
-aws eks --region <region> update-kubeconfig --name <cluster-name>
+aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
 ```
 
-## Validation
+3. View the pods that were created:
 
-### List worker nodes
+```sh
+kubectl get pods -A
+
+# Output should show some pods running
+NAMESPACE     NAME                                  READY   STATUS    RESTARTS   AGE
+kube-system   coredns-66b965946d-gd59n              1/1     Running   0          92s
+kube-system   coredns-66b965946d-tsjrm              1/1     Running   0          92s
+kube-system   ebs-csi-controller-57cb869486-bcm9z   6/6     Running   0          90s
+kube-system   ebs-csi-controller-57cb869486-xw4z4   6/6     Running   0          90s
+```
+
+3. View the nodes that were created:
 
 ```sh
 kubectl get nodes
+
+# Output should show some nodes running
+NAME                                                STATUS   ROLES    AGE     VERSION
+fargate-ip-10-0-10-11.us-west-2.compute.internal    Ready    <none>   8m7s    v1.24.8-eks-a1bebd3
+fargate-ip-10-0-10-210.us-west-2.compute.internal   Ready    <none>   2m50s   v1.24.8-eks-a1bebd3
+fargate-ip-10-0-10-218.us-west-2.compute.internal   Ready    <none>   8m6s    v1.24.8-eks-a1bebd3
+fargate-ip-10-0-10-227.us-west-2.compute.internal   Ready    <none>   8m8s    v1.24.8-eks-a1bebd3
+fargate-ip-10-0-10-42.us-west-2.compute.internal    Ready    <none>   8m6s    v1.24.8-eks-a1bebd3
+fargate-ip-10-0-10-71.us-west-2.compute.internal    Ready    <none>   2m48s   v1.24.8-eks-a1bebd3
 ```
 
-You should see output similar to the following:
+### Destroy
 
-```
-NAME                                        STATUS   ROLES    AGE     VERSION
-ip-10-0-10-161.us-west-2.compute.internal   Ready    <none>   4h18m   v1.21.5-eks-9017834
-ip-10-0-11-171.us-west-2.compute.internal   Ready    <none>   4h18m   v1.21.5-eks-9017834
-ip-10-0-12-48.us-west-2.compute.internal    Ready    <none>   4h18m   v1.21.5-eks-9017834
-```
-
-### List pods
-
-```sh
-kubectl get pods -n kube-system
-```
-
-You should see output similar to the following:
-
-```
-NAME                                                        READY   STATUS    RESTARTS   AGE
-aws-load-balancer-controller-954746b57-k9lhc                1/1     Running   1          15m
-aws-load-balancer-controller-954746b57-q5gh4                1/1     Running   1          15m
-aws-node-jlnkd                                              1/1     Running   1          15m
-aws-node-k86pv                                              1/1     Running   0          12m
-aws-node-kjcdg                                              1/1     Running   1          14m
-cluster-autoscaler-aws-cluster-autoscaler-5d4446b58-d6frd   1/1     Running   1          15m
-coredns-85d5b4454c-jksbw                                    1/1     Running   1          24m
-coredns-85d5b4454c-x7wwd                                    1/1     Running   1          24m
-kube-proxy-92slm                                            1/1     Running   1          18m
-kube-proxy-bz5kb                                            1/1     Running   1          18m
-kube-proxy-zl7cj                                            1/1     Running   1          18m
-metrics-server-694d47d564-hzd8h                             1/1     Running   1          15m
-```
-
-## Cleanup
-
-To clean up your environment, destroy the Terraform modules in reverse order.
+To teardown and remove the resources created in this example:
 
 ```sh
 terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
-terraform destroy -target="module.eks_blueprints" -auto-approve
+terraform destroy -target="module.eks" -auto-approve
 terraform destroy -auto-approve
 ```

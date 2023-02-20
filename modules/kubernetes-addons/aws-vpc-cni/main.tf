@@ -18,6 +18,7 @@ resource "aws_eks_addon" "vpc_cni" {
   resolve_conflicts        = try(var.addon_config.resolve_conflicts, "OVERWRITE")
   service_account_role_arn = local.create_irsa ? module.irsa_addon[0].irsa_iam_role_arn : try(var.addon_config.service_account_role_arn, null)
   preserve                 = try(var.addon_config.preserve, true)
+  configuration_values     = try(var.addon_config.configuration_values, null)
 
   tags = merge(
     var.addon_context.tags,
