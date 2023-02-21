@@ -1,5 +1,5 @@
 module "helm_addon" {
-  count = !var.argocd_remote ? 1 : 0
+  count  = !var.argocd_remote ? 1 : 0
   source = "../helm-addon"
 
   helm_config   = local.helm_config
@@ -128,8 +128,8 @@ resource "kubernetes_secret" "argocd_gitops" {
   for_each = { for k, v in var.applications : k => v if try(v.ssh_key_secret_name, null) != null }
 
   metadata {
-    name      = "${each.key}-repo-secret"
-    namespace = local.helm_config["namespace"]
+    name      = lookup(each.value, "git_secret_name", "${each.key}-repo-secret")
+    namespace = lookup(each.value, "git_secret_namespace", local.helm_config["namespace"])
     labels    = { "argocd.argoproj.io/secret-type" : "repository" }
   }
 

@@ -29,7 +29,7 @@ provider "helm" {
 
 # To get the hosted zone to be use in argocd domain
 data "aws_route53_zone" "argocd" {
-  count = local.argocd_domain == "" ? 0 : 1
+  count        = local.argocd_domain == "" ? 0 : 1
   name         = local.argocd_domain
   private_zone = local.argocd_domain_private_zone
 }
@@ -65,8 +65,8 @@ locals {
 
   namespace = "argocd"
 
-  argocd_domain = var.argocd_domain
-  argocd_domain_arn = data.aws_route53_zone.argocd[0].arn
+  argocd_domain              = var.argocd_domain
+  argocd_domain_arn          = data.aws_route53_zone.argocd[0].arn
   argocd_domain_private_zone = var.argocd_domain_private_zone
 
 }
@@ -126,31 +126,31 @@ module "eks_blueprints_kubernetes_addons" {
               }
             }
             #service : {
-            #  type : "LoadBalancer"
+            #  type : "LoadBalancer"  # To use LoadBalaner uncomment here, and comment out below ingress and ingressGrpc
             #}
             ingress : {
               enabled : true
-              annotations: {
+              annotations : {
                 "alb.ingress.kubernetes.io/scheme" : "internet-facing"
                 "alb.ingress.kubernetes.io/target-type" : "ip"
                 "alb.ingress.kubernetes.io/backend-protocol" : "HTTPS"
-                "alb.ingress.kubernetes.io/listen-ports": "[{\"HTTPS\":443}]"
-                "alb.ingress.kubernetes.io/tags": "Environment=hub,GitOps=true"
+                "alb.ingress.kubernetes.io/listen-ports" : "[{\"HTTPS\":443}]"
+                "alb.ingress.kubernetes.io/tags" : "Environment=hub,GitOps=true"
               }
               hosts : ["argocd.${local.argocd_domain}"]
-              tls: [
+              tls : [
                 {
-                  hosts: ["argocd.${local.argocd_domain}"]
+                  hosts : ["argocd.${local.argocd_domain}"]
                 }
               ]
-              ingressClassName: "alb"
+              ingressClassName : "alb"
             }
             ingressGrpc : {
-              enabled: true
-              isAWSALB: true
+              enabled : true
+              isAWSALB : true
               awsALB : {
-                serviceType : "ClusterIP" # Instance mode needs type NodePort, IP mode needs type ClusterIP or NodePort
-                backendProtocolVersion: "GRPC"  ## This tells AWS to send traffic from the ALB using HTTP2. Can use gRPC as well if you want to leverage gRPC specific features
+                serviceType : "ClusterIP"       # Instance mode needs type NodePort, IP mode needs type ClusterIP or NodePort
+                backendProtocolVersion : "GRPC" ## This tells AWS to send traffic from the ALB using HTTP2. Can use gRPC as well if you want to leverage gRPC specific features
               }
             }
           }

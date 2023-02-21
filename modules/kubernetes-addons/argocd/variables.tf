@@ -18,8 +18,8 @@ variable "addon_config" {
 
 variable "addon_context" {
   description = "Input configuration for the addon"
-  type = any
-  default = {}
+  type        = any
+  default     = {}
 }
 
 variable "argocd_remote" {
