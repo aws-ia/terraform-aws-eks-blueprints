@@ -143,10 +143,36 @@ module "eks_blueprints_kubernetes_addons" {
   argocd_manage_add_ons = true # Indicates addons to be install via ArgoCD
 
 
-  enable_ingress_nginx                = false
-  enable_aws_load_balancer_controller = true
-  enable_datadog_operator             = false
-  enable_metrics_server               = true
+  # EKS Add-ons
+  enable_amazon_eks_aws_ebs_csi_driver = try(var.addons.enable_amazon_eks_aws_ebs_csi_driver, false)
+  enable_aws_load_balancer_controller  = try(var.addons.enable_aws_load_balancer_controller, false)
+  enable_metrics_server                = try(var.addons.enable_metrics_server, false)
+  enable_aws_cloudwatch_metrics        = try(var.addons.enable_aws_cloudwatch_metrics, false)
+  enable_kubecost                      = try(var.addons.enable_kubecost, false)
+  enable_gatekeeper                    = try(var.addons.enable_gatekeeper, false)
+  enable_ingress_nginx                 = try(var.addons.enable_ingress_nginx, false)
+  enable_datadog_operator              = try(var.addons.enable_datadog_operator, false)
+
+  enable_cluster_autoscaler = try(var.addons.enable_cluster_autoscaler, false)
+  cluster_autoscaler_helm_config = {
+    set = [
+      {
+        name  = "podLabels.prometheus\\.io/scrape",
+        value = "true",
+        type  = "string",
+      }
+    ]
+  }
+
+  enable_cert_manager = try(var.addons.enable_cert_manager, false)
+  cert_manager_helm_config = {
+    set_values = [
+      {
+        name  = "extraArgs[0]"
+        value = "--enable-certificate-owner-ref=false"
+      },
+    ]
+  }
 
   tags = local.tags
 }
@@ -193,19 +219,19 @@ module "eks_blueprints_argocd_addons" {
   helm_config = {
     namespace = local.name # Use cluster name as namespace for ArgoCD Apps
   }
-  
+
   applications = {
     # This shows how to deploy Cluster addons using ArgoCD App of Apps pattern
-    addons = {
+    "${local.environment}-addons" = {
       add_on_application = true
       path               = "chart"
-      repo_url           = "https://github.com/csantanapr/eks-blueprints-add-ons.git"  #TODO change to https://github.com/aws-samples/eks-blueprints-add-ons once git repo is updated
+      repo_url           = "https://github.com/csantanapr/eks-blueprints-add-ons.git" #TODO change to https://github.com/aws-samples/eks-blueprints-add-ons once git repo is updated
       #repo_url             = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-add-ons.git" #TODO change to https://github.com/aws-samples/eks-blueprints-add-ons once git repo is updated
       #ssh_key_secret_name  = "github-ssh-key"                                       # Needed for private repos
       #git_secret_namespace = "argocd"
       #git_secret_name      = "${local.name}-addons"
-      target_revision      = "argo-multi-cluster" #TODO change to main once git repo is updated
-      project              = local.name
+      target_revision = "argo-multi-cluster" #TODO change to main once git repo is updated
+      project         = local.name
       values = {
         destinationServer = module.eks.cluster_endpoint # Indicates the location of the remote cluster to deploy Addons
         argoNamespace     = local.name                  # Namespace to create ArgoCD Apps
@@ -214,7 +240,7 @@ module "eks_blueprints_argocd_addons" {
       }
     }
   }
-  
+
 
   addon_config = { for k, v in module.eks_blueprints_kubernetes_addons.argocd_addon_config : k => v if v != null }
 
@@ -245,10 +271,10 @@ module "eks_blueprints_argocd_workloads" {
   helm_config = {
     namespace = local.name # Use cluster name as namespace for ArgoCD Apps
   }
-  
+
   applications = {
     # This shows how to deploy a multiple workloads using ArgoCD App of Apps pattern
-    workloads = {
+    "${local.environment}-workloads" = {
       add_on_application = false
       path               = "envs/${local.environment}"
       repo_url           = "https://github.com/csantanapr/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
@@ -256,8 +282,8 @@ module "eks_blueprints_argocd_workloads" {
       #ssh_key_secret_name  = "github-ssh-key"                                         # Needed for private repos
       #git_secret_namespace = "argocd"
       #git_secret_name      = "${local.name}-workloads"
-      target_revision      = "argo-multi-cluster" #TODO change to main once git repo is updated
-      project              = local.name
+      target_revision = "argo-multi-cluster" #TODO change to main once git repo is updated
+      project         = local.name
       values = {
         destinationServer = "https://kubernetes.default.svc" # Indicates the location where ArgoCD is installed, in this case hub cluster
         argoNamespace     = local.name                       # Namespace to create ArgoCD Apps
@@ -267,9 +293,9 @@ module "eks_blueprints_argocd_workloads" {
             server = module.eks.cluster_endpoint # Indicates the location of the remote cluster to deploy Apps
           }
           source = {
-            repoURL        = "https://github.com/csantanapr/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
+            repoURL = "https://github.com/csantanapr/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
             #repoURL        = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
-            targetRevision = "argo-multi-cluster"                                         #TODO change to main once git repo is updated
+            targetRevision = "argo-multi-cluster" #TODO change to main once git repo is updated
           }
           ingress = {
             argocd = false
@@ -277,7 +303,7 @@ module "eks_blueprints_argocd_workloads" {
         }
       }
     }
-    
+
     # This shows how to deploy a workload using a single ArgoCD App
     "single-workload" = {
       add_on_application = false
@@ -288,9 +314,9 @@ module "eks_blueprints_argocd_workloads" {
       destination        = module.eks.cluster_endpoint
       namespace          = "single-workload"
     }
-    
+
   }
-  
+
 
   addon_context = {
     aws_region_name                = local.region

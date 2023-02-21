@@ -13,3 +13,8 @@ variable "environment" {
   type        = string
   default     = "dev"
 }
+variable "addons" {
+  description = "Spoke Cluster Environment"
+  type        = any
+  default     = {}
+}

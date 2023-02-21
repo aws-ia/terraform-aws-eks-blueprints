@@ -24,19 +24,27 @@ cd ..
 
 ## Update Spoke Cluster Template
 
-You can edit the file [spoke-cluster-template/main.tf](./spoke-cluster-template/main.tf) to change the configuration of the cluster and any addons to be installed in all the spoke clusters.
+You can edit the file [spoke-cluster-template/main.tf](./spoke-cluster-template/main.tf) to change the configuration of the cluster and any addons to make it optional to install in any of  the spoke clusters.
 
-## Deploy Spoke Cluster 1
+## Deploy Spoke Cluster 1 "DEV"
 ```sh
-cd spoke-cluster-1
+cd spoke-cluster-1-dev
 terraform init
 terraform apply -auto-approve
 cd ..
 ```
 
-## Deploy Spoke Cluster 2
+## Deploy Spoke Cluster 2 "TEST"
 ```sh
-cd spoke-cluster-2
+cd spoke-cluster-2-test
+terraform init
+terraform apply -auto-approve
+cd ..
+```
+
+## Deploy Spoke Cluster 2 "PROD"
+```sh
+cd spoke-cluster-2-prod
 terraform init
 terraform apply -auto-approve
 cd ..
@@ -51,9 +59,13 @@ terraform -chdir=hub-cluster output -raw configure_kubectl
 
 Get ArgoCD URL and Password
 ```sh
-echo "URL: https://$(kubectl get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
+echo "URL: https://$(kubectl get ing -n argocd argo-cd-argocd-server -o jsonpath='{.spec.tls[0].hosts[0]}')"
 echo "Username: admin"
 echo "Password: $(aws secretsmanager get-secret-value --secret-id  argocd-login-2 --region us-west-2 | grep SecretString)"
+```
+> If using Service instead of Ingress get the URL via the following command:
+```sh
+echo "URL: https://$(kubectl get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 ```
 
 Expected output:
@@ -65,28 +77,45 @@ Expected output:
 
 Login into ArgoCD UI with the provided username and password
 
-Go to Settings->Clusters, you should see 2 remote clusters:
-  - `cluster-1` is the Spoke Cluster 1
-  - `cluster-2` is the Spoke Cluster 2
+Go to Settings->Clusters, you should see 3 remote clusters:
+  - `cluster-dev`  is the Spoke Cluster 1 "DEV"
+  - `cluster-test` is the Spoke Cluster 2 "TEST"
+  - `cluster-prod` is the Spoke Cluster 3 "PROD"
 
 
 ## CleanUp
 
-Destroy Spoke Cluster 1
+### Destroy Spoke Cluster 1 "DEV"
 ```sh
-cd spoke-cluster-1
+cd spoke-cluster-1-dev
 ./destroy.sh
 cd ..
 ```
 
-Destroy Spoke Cluster 2
+### Destroy Spoke Cluster 2 "TEST"
 ```sh
-cd spoke-cluster-2
+cd spoke-cluster-2-test
 ./destroy.sh
 cd ..
 ```
 
-Destroy Hub Cluster
+### Destroy Spoke Cluster 3 "PROD"
+```sh
+cd spoke-cluster-2-prod
+./destroy.sh
+cd ..
+```
+
+### Destroy Hub Cluster
+Get the login for Hub Cluster and login with `kubectl`
+```sh
+terraform -chdir=hub-cluster output -raw configure_kubectl
+```
+Login into Hub Cluster to manually delete the ingress before uninstalling argocd server, the ingress depends on the aws-loadbalancer-controller addon being deployed via gitops using argocd application.
+```sh
+kubectl delete ing argo-cd-argocd-server -n argocd
+```
+Destroy the cluster
 ```sh
 cd hub-cluster
 ./destroy.sh
