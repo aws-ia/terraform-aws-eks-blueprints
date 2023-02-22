@@ -67,6 +67,7 @@ module "eks" {
       # the addon is configured before data plane compute resources are created
       # See README for further details
       before_compute = true
+      most_recent    = true # To ensure access to the latest settings provided
       configuration_values = jsonencode({
         env = {
           # Reference https://aws.github.io/aws-eks-best-practices/reliability/docs/networkmanagement/#cni-custom-networking
