@@ -104,12 +104,11 @@ echo "URL: https://$(kubectl get svc -n argocd argo-cd-argocd-server -o jsonpath
 ```
 
 Expected output:
->URL: https://a54906352f1984862b737855962b5d13-448052034.us-west-2.elb.amazonaws.com
-
->Username: admin
-
->Password: SecretString: **********
-
+```
+URL: https://argocd.example.com
+Username: admin
+Password: SecretString: **********
+```
 Login into ArgoCD UI with the provided username and password
 
 Go to Settings->Clusters, you should see 3 remote clusters:
