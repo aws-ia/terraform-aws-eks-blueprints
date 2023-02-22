@@ -1,5 +1,13 @@
 provider "aws" {
-  region = local.region
+  region  = local.region
+  profile = local.spoke_profile
+}
+
+# Modify based in which account the hub cluster is located
+provider "aws" {
+  region  = local.hub_region
+  profile = local.hub_profile
+  alias   = "hub"
 }
 
 provider "kubernetes" {
@@ -7,7 +15,7 @@ provider "kubernetes" {
   cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
-    args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region]
+    args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region, "--profile", local.spoke_profile]
     command     = "aws"
   }
 }
@@ -18,7 +26,7 @@ provider "helm" {
     cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
-      args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region]
+      args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region, "--profile", local.spoke_profile]
       command     = "aws"
     }
   }
@@ -29,7 +37,7 @@ provider "kubernetes" {
   cluster_ca_certificate = try(base64decode(data.aws_eks_cluster.hub.certificate_authority[0].data), "")
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
-    args        = ["eks", "get-token", "--cluster-name", local.hub_cluster_name, "--region", local.region]
+    args        = ["eks", "get-token", "--cluster-name", local.hub_cluster_name, "--region", local.region, "--profile", local.hub_profile]
     command     = "aws"
   }
   alias = "hub"
@@ -41,7 +49,7 @@ provider "helm" {
     cluster_ca_certificate = try(base64decode(data.aws_eks_cluster.hub.certificate_authority[0].data), "")
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
-      args        = ["eks", "get-token", "--cluster-name", local.hub_cluster_name, "--region", local.region]
+      args        = ["eks", "get-token", "--cluster-name", local.hub_cluster_name, "--region", local.region, "--profile", local.hub_profile]
       command     = "aws"
     }
   }
@@ -49,6 +57,7 @@ provider "helm" {
 }
 
 data "aws_eks_cluster" "hub" {
+  provider = aws.hub
   name = local.hub_cluster_name
 }
 
@@ -57,7 +66,8 @@ data "aws_caller_identity" "current" {}
 data "aws_availability_zones" "available" {}
 
 data "aws_iam_role" "argo_role" {
-  name = "argocd-hub"
+  provider = aws.hub
+  name     = "argocd-hub"
 }
 
 data "aws_iam_policy_document" "assume_role_policy" {
@@ -74,7 +84,7 @@ locals {
   name             = var.spoke_cluster_name
   hub_cluster_name = var.hub_cluster_name
   environment      = var.environment
-  region           = "us-west-2"
+  
 
   cluster_version = "1.24"
 
@@ -87,6 +97,13 @@ locals {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
+
+  # Multi account setup
+  region        = var.spoke_region
+  spoke_profile = var.spoke_profile
+  hub_region    = var.hub_region
+  hub_profile   = var.hub_profile
+
 }
 
 #---------------------------------------------------------------
@@ -337,10 +354,10 @@ resource "kubernetes_secret_v1" "spoke_cluster" {
     namespace = "argocd"
     labels = {
       "argocd.argoproj.io/secret-type" : "cluster"
-      "environment": local.environment
+      "environment" : local.environment
     }
     annotations = {
-      "project": local.name 
+      "project" : local.name
     }
   }
   data = {

@@ -18,3 +18,24 @@ variable "addons" {
   type        = any
   default     = {}
 }
+# Multi-account Multi-region support
+variable "spoke_region" {
+  description = "Spoke Cluster Region"
+  type        = string
+  default     = "us-west-2"
+}
+variable "spoke_profile" {
+  description = "Spoke Cluster CLI Profile"
+  type        = string
+  default     = "default"
+}
+variable "hub_region" {
+  description = "Hub Cluster Region"
+  type        = string
+  default     = "us-west-2"
+}
+variable "hub_profile" {
+  description = "Hub Cluster CLI Profile"
+  type        = string
+  default     = "default"
+}

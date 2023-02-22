@@ -52,6 +52,15 @@ You have the option to edit the file [spoke-cluster-template/main.tf](./spoke-cl
 
 Each spoke cluster deploys a different set of Cluster addons and applications. See the `main.tf` for each spoke cluster to review the configuration.
 
+Spoke cluster can be created in different accounts or regions than the hub cluster,
+inpect the `main.tf` to pass the optional parameters.
+```hcl
+spoke_profile = "account-spoke-Admin"
+spoke_region  = "us-east-1"
+hub_profile   = "account-hub-Admin"
+hub_region    = "us-west-2"
+```
+
 ## Deploy Spoke Cluster 1 "DEV"
 ```sh
 cd spoke-cluster-1-dev

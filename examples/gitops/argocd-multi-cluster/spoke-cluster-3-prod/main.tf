@@ -15,5 +15,10 @@ module "spoke_cluster" {
     enable_gatekeeper                   = true
   }
 
+  # (Optional) Multi account to list profiles use "aws configure list-profiles"
+  #spoke_profile = "carrlos+salaunch-Admin"
+  #spoke_region  = "us-east-1"
+  #hub_profile   = "carrlos-Admin"
+  #hub_region    = "us-west-2"
 }
 
