@@ -179,10 +179,17 @@ module "eks_blueprints_kubernetes_addons" {
 
   argocd_applications = {
     addons = {
+      add_on_application = true
       path               = "chart"
       repo_url           = "https://github.com/csantanapr/eks-blueprints-add-ons.git"
       target_revision    = "argo-multi-cluster"
-      add_on_application = true
+    }
+    # This shows how to deploy an application to leverage cluster generator  https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Cluster/
+    application-set = {
+      add_on_application = false
+      path               = "application-sets"
+      repo_url           = "https://github.com/csantanapr/eks-blueprints-workloads.git"
+      target_revision    = "argo-multi-cluster"
     }
   }
 

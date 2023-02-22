@@ -337,6 +337,10 @@ resource "kubernetes_secret_v1" "spoke_cluster" {
     namespace = "argocd"
     labels = {
       "argocd.argoproj.io/secret-type" : "cluster"
+      "environment": local.environment
+    }
+    annotations = {
+      "project": local.name 
     }
   }
   data = {
