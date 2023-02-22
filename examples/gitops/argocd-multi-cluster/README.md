@@ -120,10 +120,12 @@ Go to Settings->Clusters, you should see 3 remote clusters:
 
 ## (Optiona) Private git repositories
 To use private git repositories you can use SSH authentication.
-To configure SSH, you need to create a secret key in Secret Manager
-containing the private SSH key
-Then edit the file [spoke-cluster-template/main.tf](./spoke-cluster-template/main.tf) and specify the git url using SSH notation (ie git@gitub.com/<user_or_org>/<repository>).
+
+1. Create a secret key `github-ssh-key` with in Secret Manager
+containing the private SSH key in plain text, this key is specified using the variable `ssh_key_secret_name` in [spoke-cluster-template/main.tf](./spoke-cluster-template/main.tf)
+2. Edit the file [spoke-cluster-template/main.tf](./spoke-cluster-template/main.tf) and specify the git url using SSH notation (ie git@gitub.com/<user_or_org>/<repository>).
 The variables `git_secret_namespace` and `git_secret_name` are used to store the git configuration in the Hub Cluster.
+
 For more information see [ArgoCD SSH git authentication](https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#repositories)
 ```hcl
 repo_url             = "git@gitub.com/<user_or_org>/<repository>"
