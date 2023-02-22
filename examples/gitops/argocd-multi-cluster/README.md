@@ -28,7 +28,7 @@ aws route53 create-hosted-zone --name 'example.com' --caller-reference "$(date)"
 #### Create domain certificate in ACM, for example
 You can use the Console, or the `aws` cli
 ```sh
-aws acm request-certificate --domain-name '*.example.com' ---validation-method DNS
+aws acm request-certificate --domain-name '*.example.com' --validation-method DNS
 ```
 
 #### Setup Domain
@@ -50,9 +50,9 @@ cd ..
 
 You have the option to edit the file [spoke-cluster-template/main.tf](./spoke-cluster-template/main.tf) to change the configuration of the spoke clusters.
 
-Each spoke cluster deploys a different set of Cluster addons and applications. See the `main.tf` for each spoke cluster to review the configuration.
+(Optional) Each spoke cluster deploys a different set of Cluster addons and applications. See the `main.tf` for each spoke cluster to review the configuration.
 
-Spoke cluster can be created in different accounts or regions than the hub cluster,
+(Optional) Spoke cluster can be created in different accounts or regions than the hub cluster,
 inpect the `main.tf` to pass the optional parameters.
 ```hcl
 spoke_profile = "account-spoke-Admin"
