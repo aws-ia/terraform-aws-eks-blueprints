@@ -5,8 +5,8 @@ Cilium is open source software for transparently securing the network connectivi
 Cilium can be set up in two manners:
 - In combination with the `Amazon VPC CNI plugin`. In this hybrid mode, the AWS VPC CNI plugin is responsible for setting up the virtual network devices as well as for IP address management (IPAM) via ENIs.
 After the initial networking is setup for a given pod, the Cilium CNI plugin is called to attach eBPF programs to the network devices set up by the AWS VPC CNI plugin in order to enforce network policies, perform load-balancing and provide encryption.
-Read the installation instruction [here](https://docs.cilium.io/en/stable/gettingstarted/cni-chaining-aws-cni/#chaining-aws-cni)
-- As a replacement of `Amazon VPC CNI`,  read the complete installation guideline [here](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-helm/)
+Read the installation instruction [here](https://docs.cilium.io/en/latest/installation/cni-chaining-aws-cni/)
+- As a replacement of `Amazon VPC CNI`,  read the complete installation guideline [here](https://docs.cilium.io/en/latest/installation/k8s-install-helm/)
 
 For complete project documentation, please visit the [Cilium documentation site](https://docs.cilium.io/en/stable/).
 
