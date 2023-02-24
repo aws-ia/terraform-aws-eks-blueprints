@@ -58,7 +58,7 @@ provider "helm" {
 
 data "aws_eks_cluster" "hub" {
   provider = aws.hub
-  name = local.hub_cluster_name
+  name     = local.hub_cluster_name
 }
 
 data "aws_caller_identity" "current" {}
@@ -84,7 +84,7 @@ locals {
   name             = var.spoke_cluster_name
   hub_cluster_name = var.hub_cluster_name
   environment      = var.environment
-  
+
 
   cluster_version = "1.24"
 
@@ -160,15 +160,77 @@ module "eks_blueprints_kubernetes_addons" {
   argocd_manage_add_ons = true # Indicates addons to be install via ArgoCD
 
 
-  # EKS Add-ons
-  enable_amazon_eks_aws_ebs_csi_driver = try(var.addons.enable_amazon_eks_aws_ebs_csi_driver, false)
-  enable_aws_load_balancer_controller  = try(var.addons.enable_aws_load_balancer_controller, false)
-  enable_metrics_server                = try(var.addons.enable_metrics_server, false)
-  enable_aws_cloudwatch_metrics        = try(var.addons.enable_aws_cloudwatch_metrics, false)
-  enable_kubecost                      = try(var.addons.enable_kubecost, false)
-  enable_gatekeeper                    = try(var.addons.enable_gatekeeper, false)
-  enable_ingress_nginx                 = try(var.addons.enable_ingress_nginx, false)
-  enable_datadog_operator              = try(var.addons.enable_datadog_operator, false)
+  # EKS Add-ons (Some addons required custom configuration, review the specifc addon documentation and add any required configuration below)
+  enable_amazon_eks_aws_ebs_csi_driver         = try(var.addons.enable_amazon_eks_aws_ebs_csi_driver, false)
+  enable_aws_load_balancer_controller          = try(var.addons.enable_aws_load_balancer_controller, false)
+  enable_metrics_server                        = try(var.addons.enable_metrics_server, false)
+  enable_coredns_autoscaler                    = try(var.addons.enable_coredns_autoscaler, false)
+  enable_appmesh_controller                    = try(var.addons.enable_appmesh_controller, false)
+  enable_crossplane                            = try(var.addons.enable_crossplane, false)
+  enable_ondat                                 = try(var.addons.enable_ondat, false)
+  enable_external_dns                          = try(var.addons.enable_external_dns, false)
+  enable_amazon_prometheus                     = try(var.addons.enable_amazon_prometheus, false)
+  enable_prometheus                            = try(var.addons.enable_prometheus, false)
+  enable_kube_prometheus_stack                 = try(var.addons.enable_kube_prometheus_stack, false)
+  enable_kube_state_metrics                    = try(var.addons.enable_kube_state_metrics, false)
+  enable_sysdig_agent                          = try(var.addons.enable_sysdig_agent, false)
+  enable_tetrate_istio                         = try(var.addons.enable_tetrate_istio, false)
+  enable_thanos                                = try(var.addons.enable_thanos, false)
+  enable_traefik                               = try(var.addons.enable_traefik, false)
+  enable_agones                                = try(var.addons.enable_agones, false)
+  enable_aws_efs_csi_driver                    = try(var.addons.enable_aws_efs_csi_driver, false)
+  enable_aws_fsx_csi_driver                    = try(var.addons.enable_aws_fsx_csi_driver, false)
+  enable_ingress_nginx                         = try(var.addons.enable_ingress_nginx, false)
+  enable_spark_history_server                  = try(var.addons.enable_spark_history_server, false)
+  enable_spark_k8s_operator                    = try(var.addons.enable_spark_k8s_operator, false)
+  enable_aws_for_fluentbit                     = try(var.addons.enable_aws_for_fluentbit, false)
+  enable_aws_cloudwatch_metrics                = try(var.addons.enable_aws_cloudwatch_metrics, false)
+  enable_cert_manager_csi_driver               = try(var.addons.enable_cert_manager_csi_driver, false)
+  enable_cert_manager_istio_csr                = try(var.addons.enable_cert_manager_istio_csr, false)
+  enable_argo_workflows                        = try(var.addons.enable_argo_workflows, false)
+  enable_argo_rollouts                         = try(var.addons.enable_argo_rollouts, false)
+  enable_aws_node_termination_handler          = try(var.addons.enable_aws_node_termination_handler, false)
+  enable_karpenter                             = try(var.addons.enable_karpenter, false)
+  karpenter_enable_spot_termination_handling   = try(var.addons.karpenter_enable_spot_termination_handling, false)
+  enable_keda                                  = try(var.addons.enable_keda, false)
+  enable_kubernetes_dashboard                  = try(var.addons.enable_kubernetes_dashboard, false)
+  enable_vault                                 = try(var.addons.enable_vault, false)
+  enable_vpa                                   = try(var.addons.enable_vpa, false)
+  enable_yunikorn                              = try(var.addons.enable_yunikorn, false)
+  enable_aws_privateca_issuer                  = try(var.addons.enable_aws_privateca_issuer, false)
+  enable_opentelemetry_operator                = try(var.addons.enable_opentelemetry_operator, false)
+  enable_amazon_eks_adot                       = try(var.addons.enable_amazon_eks_adot, false)
+  enable_velero                                = try(var.addons.enable_velero, false)
+  enable_adot_collector_java                   = try(var.addons.enable_adot_collector_java, false)
+  enable_adot_collector_haproxy                = try(var.addons.enable_adot_collector_haproxy, false)
+  enable_adot_collector_memcached              = try(var.addons.enable_adot_collector_memcached, false)
+  enable_adot_collector_nginx                  = try(var.addons.enable_adot_collector_nginx, false)
+  enable_secrets_store_csi_driver_provider_aws = try(var.addons.enable_secrets_store_csi_driver_provider_aws, false)
+  enable_secrets_store_csi_driver              = try(var.addons.enable_secrets_store_csi_driver, false)
+  enable_external_secrets                      = try(var.addons.enable_external_secrets, false)
+  enable_grafana                               = try(var.addons.enable_grafana, false)
+  enable_kuberay_operator                      = try(var.addons.enable_kuberay_operator, false)
+  enable_reloader                              = try(var.addons.enable_reloader, false)
+  enable_strimzi_kafka_operator                = try(var.addons.enable_strimzi_kafka_operator, false)
+  enable_datadog_operator                      = try(var.addons.enable_datadog_operator, false)
+  enable_airflow                               = try(var.addons.enable_airflow, false)
+  enable_promtail                              = try(var.addons.enable_promtail, false)
+  enable_calico                                = try(var.addons.enable_calico, false)
+  enable_kubecost                              = try(var.addons.enable_kubecost, false)
+  enable_kyverno                               = try(var.addons.enable_kyverno, false)
+  enable_kyverno_policies                      = try(var.addons.enable_kyverno_policies, false)
+  enable_kyverno_policy_reporter               = try(var.addons.enable_kyverno_policy_reporter, false)
+  enable_smb_csi_driver                        = try(var.addons.enable_smb_csi_driver, false)
+  enable_chaos_mesh                            = try(var.addons.enable_chaos_mesh, false)
+  enable_cilium                                = try(var.addons.enable_cilium, false)
+  cilium_enable_wireguard                      = try(var.addons.cilium_enable_wireguard, false)
+  enable_gatekeeper                            = try(var.addons.enable_gatekeeper, false)
+  enable_portworx                              = try(var.addons.enable_portworx, false)
+  enable_local_volume_provisioner              = try(var.addons.enable_local_volume_provisioner, false)
+  enable_nvidia_device_plugin                  = try(var.addons.enable_nvidia_device_plugin, false)
+  enable_app_2048                              = try(var.addons.enable_app_2048, false)
+  enable_emr_on_eks                            = try(var.addons.enable_emr_on_eks, false)
+  enable_consul                                = try(var.addons.enable_consul, false)
 
   enable_cluster_autoscaler = try(var.addons.enable_cluster_autoscaler, false)
   cluster_autoscaler_helm_config = {
