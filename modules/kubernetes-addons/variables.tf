@@ -911,10 +911,22 @@ variable "karpenter_enable_spot_termination_handling" {
   default     = false
 }
 
-variable "karpenter_sqs_queue_arn" {
-  description = "(Optional) ARN of SQS used by Karpenter when native node termination handling is enabled"
+variable "sqs_queue_managed_sse_enabled" {
+  description = "Enable server-side encryption (SSE) for a SQS queue"
+  type        = bool
+  default     = true
+}
+
+variable "sqs_queue_kms_master_key_id" {
+  description = "The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK"
   type        = string
-  default     = ""
+  default     = null
+}
+
+variable "sqs_queue_kms_data_key_reuse_period_seconds" {
+  description = "The length of time, in seconds, for which Amazon SQS can reuse a data key to encrypt or decrypt messages before calling AWS KMS again"
+  type        = number
+  default     = null
 }
 
 #-----------KEDA ADDON-------------

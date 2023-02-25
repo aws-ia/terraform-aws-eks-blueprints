@@ -1,8 +1,4 @@
-data "aws_arn" "queue" {
-  count = var.enable_spot_termination_handling ? 1 : 0
-
-  arn = var.sqs_queue_arn
-}
+data "aws_partition" "current" {}
 
 data "aws_iam_policy_document" "karpenter" {
   statement {
@@ -89,7 +85,7 @@ data "aws_iam_policy_document" "karpenter" {
   }
 
   dynamic "statement" {
-    for_each = var.sqs_queue_arn != "" ? [1] : []
+    for_each = var.enable_spot_termination != "" ? [1] : []
 
     content {
       actions = [
@@ -98,7 +94,24 @@ data "aws_iam_policy_document" "karpenter" {
         "sqs:GetQueueUrl",
         "sqs:ReceiveMessage",
       ]
-      resources = [var.sqs_queue_arn]
+      resources = [aws_sqs_queue.this[0].arn]
     }
+  }
+}
+
+data "aws_iam_policy_document" "sqs_queue" {
+  count = var.enable_spot_termination ? 1 : 0
+
+  statement {
+    sid     = "SqsWrite"
+    actions = ["sqs:SendMessage"]
+    principals {
+      type = "Service"
+      identifiers = [
+        "events.${local.dns_suffix}",
+        "sqs.${local.dns_suffix}"
+      ]
+    }
+    resources = [aws_sqs_queue.this[0].arn]
   }
 }
