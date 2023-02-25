@@ -171,7 +171,6 @@ module "eks_blueprints_kubernetes_addons" {
   }
   karpenter_node_iam_instance_profile        = module.karpenter.instance_profile_name
   karpenter_enable_spot_termination_handling = true
-  karpenter_sqs_queue_arn                    = module.karpenter.queue_arn
 
   tags = local.tags
 }
