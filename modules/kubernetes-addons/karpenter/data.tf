@@ -85,7 +85,7 @@ data "aws_iam_policy_document" "karpenter" {
   }
 
   dynamic "statement" {
-    for_each = var.enable_spot_termination != "" ? [1] : []
+    for_each = var.enable_spot_termination ? [1] : []
 
     content {
       actions = [
