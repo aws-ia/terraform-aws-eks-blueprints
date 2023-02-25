@@ -16,7 +16,7 @@ resource "aws_iam_policy" "karpenter" {
 
 #tfsec:ignore:aws-sqs-enable-queue-encryption
 resource "aws_sqs_queue" "this" {
-  count = var.enable_spot_termination
+  count = var.enable_spot_termination ? 1 : 0
 
   name                              = "karpenter-${var.addon_context.eks_cluster_id}"
   message_retention_seconds         = 300
@@ -28,7 +28,7 @@ resource "aws_sqs_queue" "this" {
 }
 
 resource "aws_sqs_queue_policy" "this" {
-  count = var.enable_spot_termination
+  count = var.enable_spot_termination ? 1 : 0
 
   queue_url = aws_sqs_queue.this[0].id
   policy    = data.aws_iam_policy_document.sqs_queue[0].json
