@@ -46,6 +46,17 @@ terraform apply -auto-approve
 cd ..
 ```
 
+## Configure kubectl for Hub Cluster
+Login with kubectl to Hub Cluster
+```sh
+terraform -chdir=hub-cluster output -raw configure_kubectl
+```
+Expected output, run the `aws eks command`
+```
+aws eks update-kubeconfig --name hub-cluster --region us-west-2
+```
+
+
 ## Update Spoke Cluster Template
 
 You have the option to edit the file [spoke-cluster-template/main.tf](./spoke-cluster-template/main.tf) to change the configuration of the spoke clusters.
@@ -85,13 +96,9 @@ terraform apply -auto-approve
 cd ..
 ```
 
-## Access ArgoCD UI
+## Verify the spoke clusters are deployed
 
-Login with kubectl to Hub Cluster
-```sh
-terraform -chdir=hub-cluster output -raw configure_kubectl
-```
-
+## Access ArgoCD
 Get ArgoCD URL and Password
 ```sh
 echo "URL: https://$(kubectl get ing -n argocd argo-cd-argocd-server -o jsonpath='{.spec.tls[0].hosts[0]}')"
@@ -109,13 +116,31 @@ URL: https://argocd.example.com
 Username: admin
 Password: SecretString: **********
 ```
-Login into ArgoCD UI with the provided username and password
+
+### Login into ArgoCD UI
+Login into ArgoCD UI using the url, username and password
 
 Go to Settings->Clusters, you should see 3 remote clusters:
   - `cluster-dev`  is the Spoke Cluster 1 "DEV"
   - `cluster-test` is the Spoke Cluster 2 "TEST"
   - `cluster-prod` is the Spoke Cluster 3 "PROD"
 
+## Login into ArgoCD CLI
+You can access ArgoCD using the `argo` CLI
+Download the latest Argo CD version from https://github.com/argoproj/argo-cd/releases/latest. More detailed installation instructions can be found via the [CLI installation documentation](https://argo-cd.readthedocs.io/en/stable/cli_installation/).
+
+Login using `argo login` use the hostname, username, and password
+```
+argo login argocd login argocd.${TF_VAR_argo_domain} --username admin
+```
+List the the spoke clusters
+```
+argocd cluster list
+```
+You can list based on cluster labels usign `kubectl`
+```sh
+kubectl get secrets -n argocd -l environment=dev,argocd.argoproj.io/secret-type=cluster
+```
 
 ## (Optiona) Private git repositories
 To use private git repositories you can use SSH authentication.
@@ -157,17 +182,12 @@ cd ..
 ```
 
 ### Destroy Hub Cluster
-Get the login for Hub Cluster and login with `kubectl`
-```sh
-terraform -chdir=hub-cluster output -raw configure_kubectl
-```
-Login into Hub Cluster to manually delete the ingress before uninstalling argocd server, the ingress depends on the aws-loadbalancer-controller addon being deployed via gitops using argocd application.
-```sh
-kubectl delete ing argo-cd-argocd-server -n argocd
-```
-Destroy the cluster
 ```sh
 cd hub-cluster
 ./destroy.sh
 cd ..
+```
+>The above `./destroy.sh` command deletes the ingress before uninstalling argocd server, the ingress depends on the aws-loadbalancer-controller addon being deployed via gitops using argocd application. The following command is run before any `terraform destroy runs` in the `destroy.sh` script.
+```sh
+kubectl delete ing argo-cd-argocd-server -n argocd
 ```

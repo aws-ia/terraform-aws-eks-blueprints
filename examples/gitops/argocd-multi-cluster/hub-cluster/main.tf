@@ -1,5 +1,6 @@
 provider "aws" {
-  region = local.region
+  region  = local.region
+  profile = local.hub_profile
 }
 
 provider "bcrypt" {
@@ -10,7 +11,7 @@ provider "kubernetes" {
   cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
-    args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region]
+    args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region, "--profile", local.hub_profile]
     command     = "aws"
   }
 }
@@ -21,7 +22,7 @@ provider "helm" {
     cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
-      args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region]
+      args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region, "--profile", local.hub_profile]
       command     = "aws"
     }
   }
@@ -48,12 +49,12 @@ data "aws_iam_policy_document" "irsa_policy" {
 }
 
 locals {
-  name   = "hub-cluster"
-  region = "us-west-2"
+  name             = "hub-cluster"
+  hub_cluster_name = var.hub_cluster_name
 
   cluster_version = "1.24"
 
-  instance_type = "t3.small" #TODO change to m5.large before merging PR
+  instance_type = "m5.large"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -68,6 +69,10 @@ locals {
   argocd_domain              = var.argocd_domain
   argocd_domain_arn          = data.aws_route53_zone.argocd[0].arn
   argocd_domain_private_zone = var.argocd_domain_private_zone
+
+  # Multi-{account,region} setup
+  region      = var.hub_region
+  hub_profile = var.hub_profile
 
 }
 
@@ -115,11 +120,38 @@ module "eks_blueprints_kubernetes_addons" {
   argocd_manage_add_ons = true # Indicates addons to be install via ArgoCD
   argocd_helm_config = {
     namespace = local.namespace
-    version   = "5.19.12"
+    version   = "5.23.1" # ArgoCD v2.6.2
     values = [
       yamlencode(
         {
+          dex : {
+            enabled : false # Disable dex since we are not using
+          }
+          redis-ha : {
+            enabled : true
+          }
+          controller : {
+            replicas : 3 # Additional replicas will cause sharding of managed clusters across number of replicas.
+            serviceAccount : {
+              annotations : {
+                "eks.amazonaws.com/role-arn" : module.argocd_irsa.irsa_iam_role_arn
+              }
+            }
+          }
+          repoServer : {
+            autoscaling : {
+              enabled : true
+              minReplicas : 2
+            }
+          }
+          applicationSet : {
+            replicaCount : 2
+          }
           server : {
+            autoscaling : {
+              enabled : true
+              minReplicas : 2
+            }
             serviceAccount : {
               annotations : {
                 "eks.amazonaws.com/role-arn" : module.argocd_irsa.irsa_iam_role_arn
@@ -154,13 +186,6 @@ module "eks_blueprints_kubernetes_addons" {
               }
             }
           }
-          controller : {
-            serviceAccount : {
-              annotations : {
-                "eks.amazonaws.com/role-arn" : module.argocd_irsa.irsa_iam_role_arn
-              }
-            }
-          }
           configs : {
             params : {
               "application.namespaces" : "cluster-*" # See more config options at https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace/
@@ -183,6 +208,10 @@ module "eks_blueprints_kubernetes_addons" {
       path               = "chart"
       repo_url           = "https://github.com/csantanapr/eks-blueprints-add-ons.git"
       target_revision    = "argo-multi-cluster"
+      #repo_url             = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-add-ons.git" #TODO change to https://github.com/aws-samples/eks-blueprints-add-ons once git repo is updated
+      #ssh_key_secret_name  = "github-ssh-key" # Needed for private repos
+      #git_secret_namespace = "argocd"
+      #git_secret_name      = "${local.name}-addons"
     }
     # This shows how to deploy an application to leverage cluster generator  https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Cluster/
     application-set = {
@@ -190,17 +219,19 @@ module "eks_blueprints_kubernetes_addons" {
       path               = "application-sets"
       repo_url           = "https://github.com/csantanapr/eks-blueprints-workloads.git"
       target_revision    = "argo-multi-cluster"
+      #repo_url             = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
+      #ssh_key_secret_name  = "github-ssh-key"# Needed for private repos
+      #git_secret_namespace = "argocd"
+      #git_secret_name      = "${local.name}-workloads"
     }
   }
 
 
   # Add-ons
-  enable_aws_load_balancer_controller = true
-  enable_metrics_server               = true
-  enable_external_dns                 = true
-  external_dns_route53_zone_arns      = [local.argocd_domain_arn]
-
-
+  enable_aws_load_balancer_controller = true                      # ArgoCD UI depends on aws-loadbalancer-controller for Ingress
+  enable_metrics_server               = true                      # ArgoCD HPAs depend on metric-server
+  enable_external_dns                 = true                      # ArgoCD Server and UI use valid https domain name
+  external_dns_route53_zone_arns      = [local.argocd_domain_arn] # ArgoCD Server and UI domain name is registered in Route 53
 
   tags = local.tags
 }

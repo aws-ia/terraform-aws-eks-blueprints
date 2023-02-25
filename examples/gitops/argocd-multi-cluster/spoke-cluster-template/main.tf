@@ -88,7 +88,7 @@ locals {
 
   cluster_version = "1.24"
 
-  instance_type = "t3a.xlarge" #TODO change to m5.large before merging PR
+  instance_type = "m5.large"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -98,7 +98,7 @@ locals {
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 
-  # Multi account setup
+  # Multi-{account,region} setup
   region        = var.spoke_region
   spoke_profile = var.spoke_profile
   hub_region    = var.hub_region
@@ -166,7 +166,6 @@ module "eks_blueprints_kubernetes_addons" {
   enable_metrics_server                        = try(var.addons.enable_metrics_server, false)
   enable_coredns_autoscaler                    = try(var.addons.enable_coredns_autoscaler, false)
   enable_appmesh_controller                    = try(var.addons.enable_appmesh_controller, false)
-  enable_crossplane                            = try(var.addons.enable_crossplane, false)
   enable_ondat                                 = try(var.addons.enable_ondat, false)
   enable_external_dns                          = try(var.addons.enable_external_dns, false)
   enable_amazon_prometheus                     = try(var.addons.enable_amazon_prometheus, false)
@@ -231,7 +230,6 @@ module "eks_blueprints_kubernetes_addons" {
   enable_app_2048                              = try(var.addons.enable_app_2048, false)
   enable_emr_on_eks                            = try(var.addons.enable_emr_on_eks, false)
   enable_consul                                = try(var.addons.enable_consul, false)
-
   enable_cluster_autoscaler = try(var.addons.enable_cluster_autoscaler, false)
   cluster_autoscaler_helm_config = {
     set = [
@@ -242,7 +240,6 @@ module "eks_blueprints_kubernetes_addons" {
       }
     ]
   }
-
   enable_cert_manager = try(var.addons.enable_cert_manager, false)
   cert_manager_helm_config = {
     set_values = [
@@ -252,6 +249,22 @@ module "eks_blueprints_kubernetes_addons" {
       },
     ]
   }
+  enable_crossplane = try(var.addons.enable_crossplane, false)
+  crossplane_helm_config = {
+    name        = "crossplane"
+    chart       = "universal-crossplane"
+    repository  = "https://charts.upbound.io/stable/"
+    version     = "1.11.0-up.1" # Get the latest version from https://github.com/upbound/universal-crossplane
+    namespace   = "upbound-system"
+    description = "Upbound Universal Crossplane (UXP)"
+  }
+  crossplane_upbound_aws_provider = {
+    enable                   = true
+  }
+  crossplane_kubernetes_provider = {
+    enable                   = true
+  }
+
 
   tags = local.tags
 }
@@ -306,7 +319,7 @@ module "eks_blueprints_argocd_addons" {
       path               = "chart"
       repo_url           = "https://github.com/csantanapr/eks-blueprints-add-ons.git" #TODO change to https://github.com/aws-samples/eks-blueprints-add-ons once git repo is updated
       #repo_url             = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-add-ons.git" #TODO change to https://github.com/aws-samples/eks-blueprints-add-ons once git repo is updated
-      #ssh_key_secret_name  = "github-ssh-key"                                       # Needed for private repos
+      #ssh_key_secret_name  = "github-ssh-key" # Needed for private repos
       #git_secret_namespace = "argocd"
       #git_secret_name      = "${local.name}-addons"
       target_revision = "argo-multi-cluster" #TODO change to main once git repo is updated
@@ -358,7 +371,7 @@ module "eks_blueprints_argocd_workloads" {
       path               = "envs/${local.environment}"
       repo_url           = "https://github.com/csantanapr/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
       #repo_url             = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
-      #ssh_key_secret_name  = "github-ssh-key"                                         # Needed for private repos
+      #ssh_key_secret_name  = "github-ssh-key"# Needed for private repos
       #git_secret_namespace = "argocd"
       #git_secret_name      = "${local.name}-workloads"
       target_revision = "argo-multi-cluster" #TODO change to main once git repo is updated
