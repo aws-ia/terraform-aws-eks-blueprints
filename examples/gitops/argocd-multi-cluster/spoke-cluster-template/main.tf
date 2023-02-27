@@ -32,6 +32,18 @@ provider "helm" {
   }
 }
 
+provider "kubectl" {
+  host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region, "--profile", local.spoke_profile]
+      command     = "aws"
+    }
+  load_config_file       = false
+  apply_retry_count      = 15
+}
+
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.hub.endpoint
   cluster_ca_certificate = try(base64decode(data.aws_eks_cluster.hub.certificate_authority[0].data), "")
@@ -136,7 +148,7 @@ module "eks" {
     initial = {
       instance_types = [local.instance_type]
 
-      min_size     = 1
+      min_size     = 2
       max_size     = 4
       desired_size = 3
     }

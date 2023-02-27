@@ -28,6 +28,18 @@ provider "helm" {
   }
 }
 
+provider "kubectl" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region, "--profile", local.hub_profile]
+    command     = "aws"
+  }
+  load_config_file  = false
+  apply_retry_count = 15
+}
+
 # To get the hosted zone to be use in argocd domain
 data "aws_route53_zone" "argocd" {
   count        = local.argocd_domain == "" ? 0 : 1
@@ -96,9 +108,9 @@ module "eks" {
     initial = {
       instance_types = [local.instance_type]
 
-      min_size     = 1
+      min_size     = 2
       max_size     = 4
-      desired_size = 2
+      desired_size = 3
     }
   }
 
@@ -232,6 +244,29 @@ module "eks_blueprints_kubernetes_addons" {
   enable_metrics_server               = true                      # ArgoCD HPAs depend on metric-server
   enable_external_dns                 = true                      # ArgoCD Server and UI use valid https domain name
   external_dns_route53_zone_arns      = [local.argocd_domain_arn] # ArgoCD Server and UI domain name is registered in Route 53
+
+  enable_crossplane = false
+  crossplane_helm_config = {
+    version = "1.10.1" # Get the latest version from https://charts.crossplane.io/stable
+  }
+  crossplane_aws_provider = {
+    enable               = true
+    provider_config      = "aws-provider-config"
+    provider_aws_version = "v0.37.1" # Get the latest version from https://marketplace.upbound.io/providers/crossplane-contrib/provider-aws
+  }
+  crossplane_upbound_aws_provider = {
+    enable               = true
+    provider_config      = "aws-provider-config"
+    provider_aws_version = "v0.30.0" # Get the latest version from   https://marketplace.upbound.io/providers/upbound/provider-aws
+  }
+  crossplane_kubernetes_provider = {
+    enable                      = true
+    provider_kubernetes_version = "v0.6.0" # Get the latest version from  https://marketplace.upbound.io/providers/crossplane-contrib/provider-kubernetes
+  }
+  crossplane_helm_provider = {
+    enable                = true
+    provider_helm_version = "v0.13.0" # Get the latest version from https://marketplace.upbound.io/providers/crossplane-contrib/provider-helm
+  }
 
   tags = local.tags
 }
