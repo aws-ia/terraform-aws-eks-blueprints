@@ -55,7 +55,7 @@ resource "aws_launch_template" "managed_node_groups" {
 
   network_interfaces {
     associate_public_ip_address = local.managed_node_group["public_ip"]
-    security_groups             = var.context.worker_security_group_ids
+    security_groups             = concat(var.context.worker_security_group_ids, try(local.managed_node_group["vpc_security_group_ids"], []))
   }
 
   lifecycle {
