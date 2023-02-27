@@ -131,7 +131,7 @@ resource "null_resource" "remove_default_coredns_deployment" {
     }
 
     # We are removing the deployment provided by the EKS service and replacing it through the self-managed CoreDNS Helm addon
-    # However, we are maintaing the existing kube-dns service and annotating it for Helm to assume control
+    # However, we are maintaining the existing kube-dns service and annotating it for Helm to assume control
     command = <<-EOT
       kubectl --namespace kube-system delete deployment coredns --kubeconfig <(echo $KUBECONFIG | base64 -d)
     EOT
@@ -150,11 +150,56 @@ resource "null_resource" "modify_kube_dns" {
       CONNECTION = null_resource.remove_default_coredns_deployment[0].id
     }
 
-    # We are maintaing the existing kube-dns service and annotating it for Helm to assume control
+    # We are maintaining the existing kube-dns service and annotating it for Helm to assume control
     command = <<-EOT
       kubectl --namespace kube-system annotate --overwrite service kube-dns meta.helm.sh/release-name=coredns --kubeconfig <(echo $KUBECONFIG | base64 -d)
       kubectl --namespace kube-system annotate --overwrite service kube-dns meta.helm.sh/release-namespace=kube-system --kubeconfig <(echo $KUBECONFIG | base64 -d)
       kubectl --namespace kube-system label --overwrite service kube-dns app.kubernetes.io/managed-by=Helm --kubeconfig <(echo $KUBECONFIG | base64 -d)
+    EOT
+  }
+}
+
+resource "null_resource" "modify_coredns_metadata" {
+  count = var.enable_self_managed_coredns && var.remove_default_coredns_deployment ? 1 : 0
+
+  triggers = {}
+
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    environment = {
+      KUBECONFIG = base64encode(local.kubeconfig)
+      CONNECTION = null_resource.remove_default_coredns_deployment[0].id
+    }
+
+    # We are maintaining any existing coredns ConfigMap and ServiceAccount,
+    # and annotating and labelling them for Helm to assume control
+    command = <<-EOT
+      _kubectl() {
+        kubectl "$@" \
+          --kubeconfig <(echo $KUBECONFIG | base64 -d) \
+          --namespace kube-system \
+          --overwrite
+      }
+
+      _annotate() {
+        _kubectl annotate "$@" \
+          meta.helm.sh/release-namespace=kube-system \
+          meta.helm.sh/release-name=coredns
+      }
+
+      _label() {
+        _kubectl label "$@" \
+          app.kubernetes.io/managed-by=Helm \
+          eks.amazonaws.com/component-
+      }
+
+      adopt() {
+        _annotate "$@"
+        _label "$@"
+      }
+
+      adopt configmap coredns
+      adopt serviceaccount coredns
     EOT
   }
 }

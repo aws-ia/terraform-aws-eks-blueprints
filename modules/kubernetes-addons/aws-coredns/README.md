@@ -22,9 +22,18 @@ To enable and modify the EKS managed addon for CoreDNS, you can reference the fo
 
 ```sh
 kubectl --namespace kube-system delete deployment coredns
+
 kubectl --namespace kube-system annotate --overwrite service kube-dns meta.helm.sh/release-name=coredns
 kubectl --namespace kube-system annotate --overwrite service kube-dns meta.helm.sh/release-namespace=kube-system
 kubectl --namespace kube-system label --overwrite service kube-dns app.kubernetes.io/managed-by=Helm
+
+kubectl --namespace kube-system annotate --overwrite configmap coredns meta.helm.sh/release-name=coredns
+kubectl --namespace kube-system annotate --overwrite configmap coredns meta.helm.sh/release-namespace=kube-system
+kubectl --namespace kube-system label --overwrite configmap coredns app.kubernetes.io/managed-by=Helm eks.amazonaws.com/component-
+
+kubectl --namespace kube-system annotate --overwrite serviceaccount coredns meta.helm.sh/release-name=coredns
+kubectl --namespace kube-system annotate --overwrite serviceaccount coredns meta.helm.sh/release-namespace=kube-system
+kubectl --namespace kube-system label --overwrite serviceaccount coredns app.kubernetes.io/managed-by=Helm eks.amazonaws.com/component-
 ```
 
 See the [`fargate-serverless`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/fargate-serverless) example where the self-managed CoreDNS addon is used to provision CoreDNS on a serverless cluster (data plane).
@@ -86,6 +95,7 @@ By default, EKS provisions CoreDNS with a replica count of 2. As the cluster siz
 | Name | Type |
 |------|------|
 | [aws_eks_addon.coredns](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_addon) | resource |
+| [null_resource.modify_coredns_metadata](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.modify_kube_dns](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.remove_default_coredns_deployment](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [time_sleep.this](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
