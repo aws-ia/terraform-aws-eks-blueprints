@@ -17,7 +17,7 @@ locals {
       name       = local.name
       chart      = local.name
       repository = "oci://public.ecr.aws/karpenter"
-      version    = "v0.22.0"
+      version    = "v0.23.0"
       namespace  = local.name
       values = [
         <<-EOT
@@ -26,7 +26,7 @@ locals {
               clusterName: ${var.addon_context.eks_cluster_id}
               clusterEndpoint: ${var.addon_context.aws_eks_cluster_endpoint}
               defaultInstanceProfile: ${var.node_iam_instance_profile}
-              interruptionQueueName: ${try(data.aws_arn.queue[0].resource, "")}
+              interruptionQueueName: ${try(aws_sqs_queue.this[0].name, "")}
         EOT
       ]
       description = "karpenter Helm Chart for Node Autoscaling"
@@ -48,5 +48,50 @@ locals {
     serviceAccountName        = local.service_account
     controllerClusterEndpoint = var.addon_context.aws_eks_cluster_endpoint
     awsDefaultInstanceProfile = var.node_iam_instance_profile
+    awsInterruptionQueueName  = try(aws_sqs_queue.this[0].name, "")
+  }
+
+  dns_suffix = data.aws_partition.current.dns_suffix
+
+  # Karpenter Spot Interruption Event rules
+  event_rules = {
+    health_event = {
+      name        = "HealthEvent"
+      description = "Karpenter Interrupt - AWS health event for EC2"
+      event_pattern = {
+        source      = ["aws.health"]
+        detail-type = ["AWS Health Event"]
+        detail = {
+          service = ["EC2"]
+        }
+      }
+    }
+    spot_interupt = {
+      name        = "SpotInterrupt"
+      description = "Karpenter Interrupt - A spot interruption warning was triggered for the node"
+      event_pattern = {
+        source      = ["aws.ec2"]
+        detail-type = ["EC2 Spot Instance Interruption Warning"]
+      }
+    }
+    instance_rebalance = {
+      name        = "InstanceRebalance"
+      description = "Karpenter Interrupt - A spot rebalance recommendation was triggered for the node"
+      event_pattern = {
+        source      = ["aws.ec2"]
+        detail-type = ["EC2 Instance Rebalance Recommendation"]
+      }
+    }
+    instance_state_change = {
+      name        = "InstanceStateChange"
+      description = "Karpenter interrupt - EC2 instance state-change notification"
+      event_pattern = {
+        source      = ["aws.ec2"]
+        detail-type = ["EC2 Instance State-change Notification"]
+        detail = {
+          state = ["stopping", "terminated", "shutting-down", "stopped"] #ignored pending and running
+        }
+      }
+    }
   }
 }

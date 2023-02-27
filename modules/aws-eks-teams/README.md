@@ -164,6 +164,7 @@ No modules.
 | <a name="input_application_teams"></a> [application\_teams](#input\_application\_teams) | Map of maps of teams to create | `any` | `{}` | no |
 | <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | EKS Cluster name | `string` | n/a | yes |
 | <a name="input_iam_role_permissions_boundary"></a> [iam\_role\_permissions\_boundary](#input\_iam\_role\_permissions\_boundary) | ARN of the policy that is used to set the permissions boundary for the IAM role | `string` | `null` | no |
+| <a name="input_path"></a> [path](#input\_path) | Path in which to create the platform\_team\_eks\_access policy | `string` | `"/"` | no |
 | <a name="input_platform_teams"></a> [platform\_teams](#input\_platform\_teams) | Map of maps of teams to create | `any` | `{}` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 

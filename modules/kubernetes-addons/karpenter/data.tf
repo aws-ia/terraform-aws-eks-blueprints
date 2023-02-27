@@ -1,20 +1,12 @@
-data "aws_arn" "queue" {
-  count = var.enable_spot_termination_handling ? 1 : 0
-
-  arn = var.sqs_queue_arn
-}
+data "aws_partition" "current" {}
 
 data "aws_iam_policy_document" "karpenter" {
   statement {
-    sid       = "Karpenter"
+    sid       = "AllowEc2DescribeActions"
     effect    = "Allow"
     resources = ["*"]
 
     actions = [
-      "ec2:CreateFleet",
-      "ec2:CreateLaunchTemplate",
-      "ec2:CreateTags",
-      "ec2:DeleteLaunchTemplate",
       "ec2:DescribeAvailabilityZones",
       "ec2:DescribeImages",
       "ec2:DescribeInstances",
@@ -24,17 +16,65 @@ data "aws_iam_policy_document" "karpenter" {
       "ec2:DescribeSecurityGroups",
       "ec2:DescribeSpotPriceHistory",
       "ec2:DescribeSubnets",
-      "ec2:RunInstances",
+    ]
+  }
+
+  statement {
+    sid    = "AllowEc2Actions"
+    effect = "Allow"
+    resources = [
+      "arn:${var.addon_context.aws_partition_id}:ec2:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:*",
+      "arn:${var.addon_context.aws_partition_id}:ec2:${var.addon_context.aws_region_name}::image/*"
+    ]
+
+    actions = [
+      "ec2:CreateFleet",
+      "ec2:CreateLaunchTemplate",
+      "ec2:CreateTags",
+      "ec2:DeleteLaunchTemplate",
+      "ec2:RunInstances"
+    ]
+  }
+
+  statement {
+    sid       = "AllowPassRole"
+    effect    = "Allow"
+    resources = ["arn:${var.addon_context.aws_partition_id}:iam::${var.addon_context.aws_caller_identity_account_id}:role/*"]
+
+    actions = [
       "iam:PassRole",
+    ]
+  }
+
+  statement {
+    sid       = "AllowGetPrice"
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
       "pricing:GetProducts",
+    ]
+  }
+
+  statement {
+    sid       = "AllowGetParameters"
+    effect    = "Allow"
+    resources = ["arn:${var.addon_context.aws_partition_id}:ssm:${var.addon_context.aws_region_name}::parameter/*"]
+
+    actions = [
       "ssm:GetParameter",
     ]
   }
 
   statement {
+    actions   = ["eks:DescribeCluster"]
+    resources = ["arn:${var.addon_context.aws_partition_id}:eks:*:${var.addon_context.aws_caller_identity_account_id}:cluster/${var.addon_context.eks_cluster_id}"]
+  }
+
+  statement {
     sid       = "ConditionalEC2Termination"
     effect    = "Allow"
-    resources = ["*"]
+    resources = ["arn:${var.addon_context.aws_partition_id}:ec2:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:instance/*"]
     actions   = ["ec2:TerminateInstances"]
 
     condition {
@@ -45,7 +85,7 @@ data "aws_iam_policy_document" "karpenter" {
   }
 
   dynamic "statement" {
-    for_each = var.enable_spot_termination_handling ? [1] : []
+    for_each = var.enable_spot_termination ? [1] : []
 
     content {
       actions = [
@@ -54,7 +94,24 @@ data "aws_iam_policy_document" "karpenter" {
         "sqs:GetQueueUrl",
         "sqs:ReceiveMessage",
       ]
-      resources = [var.sqs_queue_arn]
+      resources = [aws_sqs_queue.this[0].arn]
     }
+  }
+}
+
+data "aws_iam_policy_document" "sqs_queue" {
+  count = var.enable_spot_termination ? 1 : 0
+
+  statement {
+    sid     = "SqsWrite"
+    actions = ["sqs:SendMessage"]
+    principals {
+      type = "Service"
+      identifiers = [
+        "events.${local.dns_suffix}",
+        "sqs.${local.dns_suffix}"
+      ]
+    }
+    resources = [aws_sqs_queue.this[0].arn]
   }
 }

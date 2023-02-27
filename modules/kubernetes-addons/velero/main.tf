@@ -18,7 +18,7 @@ module "helm_addon" {
     name        = local.name
     description = "A Helm chart for velero"
     chart       = local.name
-    version     = "2.32.1"
+    version     = "3.1.0"
     repository  = "https://vmware-tanzu.github.io/helm-charts/"
     namespace   = local.namespace
     values = [templatefile("${path.module}/values.yaml", {
@@ -41,7 +41,7 @@ module "helm_addon" {
   ]
 
   irsa_config = {
-    create_kubernetes_namespace = true
+    create_kubernetes_namespace = try(var.helm_config["create_namespace"], true)
     kubernetes_namespace        = local.namespace
 
     create_kubernetes_service_account   = true
