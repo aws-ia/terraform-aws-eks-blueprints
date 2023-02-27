@@ -15,6 +15,7 @@ data "aws_iam_policy_document" "ingest" {
       "aps:GetMetricMetadata",
       "aps:GetSeries",
       "aps:RemoteWrite",
+      "aps:ListRules",
     ]
   }
 }
@@ -36,6 +37,7 @@ data "aws_iam_policy_document" "query" {
       "aps:GetMetricMetadata",
       "aps:GetSeries",
       "aps:QueryMetrics",
+      "aps:ListRules",
     ]
   }
 }
