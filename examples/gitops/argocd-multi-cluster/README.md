@@ -3,6 +3,17 @@
 This example demonstrate how to deploy a single instance of ArgoCD on a central cluster (hub)
 managing multiple tenant clusters (spokes). In this example all spoke clusters get the same configuration for addons deployed from a central ArgoCD.
 
+## Features
+The following features are highlighted in this example
+- Central and Spoke/Child cluster deployed in different accounts and/or regions.
+- Central GitOps instance deploying addons and workloads to spoke/child clusters
+- Demonstrate the pattern of spoke/child cluster template terraform module.
+- Each spoke/child cluster can elect different set of addons to be installed
+- Demonstrate GitOps Application patterns, app of apps, single app, application-sets.
+- ArgoCD Application Sets using Cluster generator, cluster are label based on environment (ie dev, test, prod)
+- ArgoCD Ingress configuration with custom domain name, valid ssl certificate thru AWS ACM, and AWS Route 53 DNS configured with external-dns. Secure login via Web Ui and CLI using https and grpc (ie. no need to skip ssl verify)
+- ArgoCD High Availability with Auto-scaling (HPA), controller with multiple replicas for cluster sharding. Disable unused components (ie dex server).
+
 
 ## Setup LoadBalancer or Ingress
 The example supports ArgoCD UI configuration with a valid domain name (ie example.com) or LoadBalancer with a generated domain name.
