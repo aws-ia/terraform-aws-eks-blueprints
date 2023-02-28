@@ -37,4 +37,5 @@ locals {
     account     = var.addon_context.aws_caller_identity_account_id
     clusterName = var.addon_context.eks_cluster_id
   }
+
 }

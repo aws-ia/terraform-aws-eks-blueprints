@@ -1,3 +1,7 @@
+# ---------------------------------------------------------------------------------------------------------------------
+# SSH Key
+# ---------------------------------------------------------------------------------------------------------------------
+
 data "aws_secretsmanager_secret" "ssh_key" {
   for_each = { for k, v in var.applications : k => v if try(v.ssh_key_secret_name, null) != null }
   name     = each.value.ssh_key_secret_name
