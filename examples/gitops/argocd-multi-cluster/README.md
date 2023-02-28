@@ -13,6 +13,8 @@ The following features are highlighted in this example
 - ArgoCD Application Sets using Cluster generator, cluster are label based on environment (ie dev, test, prod)
 - ArgoCD Ingress configuration with custom domain name, valid ssl certificate thru AWS ACM, and AWS Route 53 DNS configured with external-dns. Secure login via Web Ui and CLI using https and grpc (ie. no need to skip ssl verify)
 - ArgoCD High Availability with Auto-scaling (HPA), controller with multiple replicas for cluster sharding. Disable unused components (ie dex server).
+- Support for private git repositories and configuration via ssh private key stored in AWS Secret Manager.
+- ArgoCD intial admin password generated and stored in AWS Secret Manager.
 
 
 ## Setup LoadBalancer or Ingress
