@@ -263,19 +263,27 @@ module "eks_blueprints_kubernetes_addons" {
   }
   enable_crossplane = try(var.addons.enable_crossplane, false)
   crossplane_helm_config = {
-    name        = "crossplane"
-    chart       = "universal-crossplane"
-    repository  = "https://charts.upbound.io/stable/"
-    version     = "1.11.0-up.1" # Get the latest version from https://github.com/upbound/universal-crossplane
-    namespace   = "upbound-system"
-    description = "Upbound Universal Crossplane (UXP)"
+    version = "1.11.1" # Get the latest version from https://charts.crossplane.io/stable
+  }
+  crossplane_aws_provider = {
+    enable               = true
+    provider_config      = "aws-provider-config"
+    provider_aws_version = "v0.37.1" # Get the latest version from https://marketplace.upbound.io/providers/crossplane-contrib/provider-aws
   }
   crossplane_upbound_aws_provider = {
-    enable                   = true
+    enable               = false
+    provider_config      = "aws-provider-config"
+    provider_aws_version = "v0.30.0" # Get the latest version from   https://marketplace.upbound.io/providers/upbound/provider-aws
   }
   crossplane_kubernetes_provider = {
-    enable                   = true
+    enable                      = true
+    provider_kubernetes_version = "v0.6.0" # Get the latest version from  https://marketplace.upbound.io/providers/crossplane-contrib/provider-kubernetes
   }
+  crossplane_helm_provider = {
+    enable                = true
+    provider_helm_version = "v0.13.0" # Get the latest version from https://marketplace.upbound.io/providers/crossplane-contrib/provider-helm
+  }
+
 
 
   tags = local.tags
@@ -318,7 +326,7 @@ module "eks_blueprints_argocd_addons" {
     kubernetes = kubernetes.hub
   }
 
-  argocd_remote = true # Indicates this is a remote cluster for ArgoCD
+  argocd_skip_install = true # Indicates this is a remote cluster for ArgoCD
 
   helm_config = {
     namespace = local.name # Use cluster name as namespace for ArgoCD Apps
@@ -371,7 +379,7 @@ module "eks_blueprints_argocd_workloads" {
     kubernetes = kubernetes.hub
   }
 
-  argocd_remote = true # Indicates this is a remote cluster for ArgoCD
+  argocd_skip_install = true # Indicates this is a remote cluster for ArgoCD
   helm_config = {
     namespace = local.name # Use cluster name as namespace for ArgoCD Apps
   }

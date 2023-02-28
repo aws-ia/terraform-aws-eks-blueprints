@@ -1,5 +1,5 @@
 module "helm_addon" {
-  count  = !var.argocd_remote ? 1 : 0
+  count  = !var.argocd_skip_install ? 1 : 0
   source = "../helm-addon"
 
   helm_config   = local.helm_config

@@ -34,7 +34,7 @@ aws acm request-certificate --domain-name '*.example.com' --validation-method DN
 #### Setup Domain
 Set the sub domain for argocd
 ```
-export TF_VAR_argo_domain=example.com
+export TF_VAR_argocd_domain=example.com
 ```
 
 ## Deploy Hub Cluster

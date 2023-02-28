@@ -22,8 +22,8 @@ variable "addon_context" {
   default     = {}
 }
 
-variable "argocd_remote" {
-  description = "Setup Remote Cluster"
+variable "argocd_skip_install" {
+  description = "Skips Installation of ArgoCD addon/controller"
   type        = bool
   default     = false
 }

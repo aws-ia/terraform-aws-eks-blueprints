@@ -76,8 +76,8 @@ locals {
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 
-  namespace = "argocd"
-
+  argocd_namespace           = "argocd"
+  argocd_subdomain           = "argocd"
   argocd_domain              = var.argocd_domain
   argocd_domain_arn          = data.aws_route53_zone.argocd[0].arn
   argocd_domain_private_zone = var.argocd_domain_private_zone
@@ -131,7 +131,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_argocd         = true
   argocd_manage_add_ons = true # Indicates addons to be install via ArgoCD
   argocd_helm_config = {
-    namespace = local.namespace
+    namespace = local.argocd_namespace
     version   = "5.23.1" # ArgoCD v2.6.2
     values = [
       yamlencode(
@@ -181,10 +181,10 @@ module "eks_blueprints_kubernetes_addons" {
                 "alb.ingress.kubernetes.io/listen-ports" : "[{\"HTTPS\":443}]"
                 "alb.ingress.kubernetes.io/tags" : "Environment=hub,GitOps=true"
               }
-              hosts : ["argocd.${local.argocd_domain}"]
+              hosts : ["${local.argocd_subdomain}.${local.argocd_domain}"]
               tls : [
                 {
-                  hosts : ["argocd.${local.argocd_domain}"]
+                  hosts : ["${local.argocd_subdomain}.${local.argocd_domain}"]
                 }
               ]
               ingressClassName : "alb"
@@ -214,31 +214,6 @@ module "eks_blueprints_kubernetes_addons" {
     ]
   }
 
-  argocd_applications = {
-    addons = {
-      add_on_application = true
-      path               = "chart"
-      repo_url           = "https://github.com/csantanapr/eks-blueprints-add-ons.git"
-      target_revision    = "argo-multi-cluster"
-      #repo_url             = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-add-ons.git" #TODO change to https://github.com/aws-samples/eks-blueprints-add-ons once git repo is updated
-      #ssh_key_secret_name  = "github-ssh-key" # Needed for private repos
-      #git_secret_namespace = "argocd"
-      #git_secret_name      = "${local.name}-addons"
-    }
-    # This shows how to deploy an application to leverage cluster generator  https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Cluster/
-    application-set = {
-      add_on_application = false
-      path               = "application-sets"
-      repo_url           = "https://github.com/csantanapr/eks-blueprints-workloads.git"
-      target_revision    = "argo-multi-cluster"
-      #repo_url             = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
-      #ssh_key_secret_name  = "github-ssh-key"# Needed for private repos
-      #git_secret_namespace = "argocd"
-      #git_secret_name      = "${local.name}-workloads"
-    }
-  }
-
-
   # Add-ons
   enable_aws_load_balancer_controller = true                      # ArgoCD UI depends on aws-loadbalancer-controller for Ingress
   enable_metrics_server               = true                      # ArgoCD HPAs depend on metric-server
@@ -247,7 +222,7 @@ module "eks_blueprints_kubernetes_addons" {
 
   enable_crossplane = false
   crossplane_helm_config = {
-    version = "1.10.1" # Get the latest version from https://charts.crossplane.io/stable
+    version = "1.11.1" # Get the latest version from https://charts.crossplane.io/stable
   }
   crossplane_aws_provider = {
     enable               = true
@@ -255,7 +230,7 @@ module "eks_blueprints_kubernetes_addons" {
     provider_aws_version = "v0.37.1" # Get the latest version from https://marketplace.upbound.io/providers/crossplane-contrib/provider-aws
   }
   crossplane_upbound_aws_provider = {
-    enable               = true
+    enable               = false
     provider_config      = "aws-provider-config"
     provider_aws_version = "v0.30.0" # Get the latest version from   https://marketplace.upbound.io/providers/upbound/provider-aws
   }
@@ -270,6 +245,86 @@ module "eks_blueprints_kubernetes_addons" {
 
   tags = local.tags
 }
+
+#---------------------------------------------------------------
+# EKS Blueprints Add-Ons via ArgoCD
+#---------------------------------------------------------------
+module "eks_blueprints_argocd_addons" {
+  source = "../../../../modules/kubernetes-addons/argocd"
+
+  argocd_skip_install = true # Skip argocd controller install
+
+  helm_config = {
+    namespace        = local.argocd_namespace
+    create_namespace = false
+  }
+
+  applications = {
+    # This shows how to deploy Cluster addons using ArgoCD App of Apps pattern
+    addons = {
+      add_on_application = true
+      path               = "chart"
+      repo_url           = "https://github.com/csantanapr/eks-blueprints-add-ons.git"
+      target_revision    = "argo-multi-cluster" #TODO change main
+      #repo_url             = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-add-ons.git" #TODO change to https://github.com/aws-samples/eks-blueprints-add-ons once git repo is updated
+      #ssh_key_secret_name  = "github-ssh-key" # Needed for private repos
+      #git_secret_namespace = "argocd"
+      #git_secret_name      = "${local.name}-addons"
+    }
+  }
+
+
+  addon_config = { for k, v in module.eks_blueprints_kubernetes_addons.argocd_addon_config : k => v if v != null }
+
+  addon_context = {
+    aws_region_name                = local.region
+    aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
+    eks_cluster_id                 = module.eks.cluster_name
+  }
+
+  depends_on = [module.eks_blueprints_kubernetes_addons]
+}
+
+
+#---------------------------------------------------------------
+# EKS Workloads via ArgoCD
+#---------------------------------------------------------------
+module "eks_blueprints_argocd_workloads" {
+  source = "../../../../modules/kubernetes-addons/argocd"
+
+  argocd_skip_install = true # Skip argocd controller install
+
+  helm_config = {
+    namespace        = local.argocd_namespace
+    create_namespace = false
+  }
+
+  applications = {
+    # This shows how to deploy an application to leverage cluster generator  https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Cluster/
+    application-set = {
+      add_on_application = false
+      path               = "application-sets"
+      repo_url           = "https://github.com/csantanapr/eks-blueprints-workloads.git"
+      target_revision    = "argo-multi-cluster" #TODO change to main
+      #repo_url             = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
+      #ssh_key_secret_name  = "github-ssh-key"# Needed for private repos
+      #git_secret_namespace = "argocd"
+      #git_secret_name      = "${local.name}-workloads"
+    }
+
+  }
+
+
+  addon_context = {
+    aws_region_name                = local.region
+    aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
+    eks_cluster_id                 = module.eks.cluster_name
+  }
+
+  depends_on = [module.eks_blueprints_argocd_addons]
+
+}
+
 
 resource "random_password" "argocd" {
   length           = 16
@@ -333,7 +388,7 @@ module "vpc" {
 
 module "argocd_irsa" {
   source                            = "../../../../modules/irsa"
-  kubernetes_namespace              = local.namespace
+  kubernetes_namespace              = local.argocd_namespace
   create_kubernetes_namespace       = false
   create_kubernetes_service_account = false
   kubernetes_service_account        = "argocd-*"
