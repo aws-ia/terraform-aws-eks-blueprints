@@ -92,6 +92,11 @@ data "aws_iam_policy_document" "assume_role_policy" {
   }
 }
 
+resource "aws_iam_role" "spoke_role" {
+  name               = local.name
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
+}
+
 locals {
   name             = var.spoke_cluster_name
   hub_cluster_name = var.hub_cluster_name
@@ -118,9 +123,10 @@ locals {
 
 }
 
-#---------------------------------------------------------------
-# EKS Cluster
-#---------------------------------------------------------------
+################################################################################
+# Cluster
+################################################################################
+
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
@@ -148,9 +154,9 @@ module "eks" {
     initial = {
       instance_types = [local.instance_type]
 
-      min_size     = 2
-      max_size     = 4
-      desired_size = 3
+      min_size     = 3
+      max_size     = 10
+      desired_size = 5
     }
   }
 
@@ -158,9 +164,10 @@ module "eks" {
 }
 
 
-#---------------------------------------------------------------
+################################################################################
 # EKS Blueprints Add-Ons IRSA config
-#---------------------------------------------------------------
+################################################################################
+
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../../modules/kubernetes-addons"
 
@@ -284,17 +291,13 @@ module "eks_blueprints_kubernetes_addons" {
     provider_helm_version = "v0.13.0" # Get the latest version from https://marketplace.upbound.io/providers/crossplane-contrib/provider-helm
   }
 
-
-
   tags = local.tags
 }
 
+################################################################################
+# Create Namespace and ArgoCD Project for Spoke Cluster "cluster-*"
+################################################################################
 
-
-
-#---------------------------------------------------------------
-# Create Namespace and ArgoCD Project
-#---------------------------------------------------------------
 resource "helm_release" "argocd_project" {
   provider         = helm.hub
   name             = "argo-project-${local.name}"
@@ -316,9 +319,10 @@ resource "helm_release" "argocd_project" {
   depends_on = [module.eks_blueprints_kubernetes_addons]
 }
 
-#---------------------------------------------------------------
+################################################################################
 # EKS Blueprints Add-Ons via ArgoCD
-#---------------------------------------------------------------
+################################################################################
+
 module "eks_blueprints_argocd_addons" {
   source = "../../../../modules/kubernetes-addons/argocd"
   providers = {
@@ -365,13 +369,10 @@ module "eks_blueprints_argocd_addons" {
   depends_on = [helm_release.argocd_project]
 }
 
-
-
-
-
-#---------------------------------------------------------------
+################################################################################
 # EKS Workloads via ArgoCD
-#---------------------------------------------------------------
+################################################################################
+
 module "eks_blueprints_argocd_workloads" {
   source = "../../../../modules/kubernetes-addons/argocd"
   providers = {
@@ -483,10 +484,10 @@ resource "kubernetes_secret_v1" "spoke_cluster" {
   }
 }
 
-
-#---------------------------------------------------------------
+################################################################################
 # Supporting Resources
-#---------------------------------------------------------------'
+################################################################################
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
@@ -495,8 +496,8 @@ module "vpc" {
   cidr = local.vpc_cidr
 
   azs             = local.azs
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
 
   enable_nat_gateway   = true
   single_nat_gateway   = true
@@ -519,9 +520,4 @@ module "vpc" {
   }
 
   tags = local.tags
-}
-
-resource "aws_iam_role" "spoke_role" {
-  name               = local.name
-  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }

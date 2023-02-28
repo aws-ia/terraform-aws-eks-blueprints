@@ -1,4 +1,4 @@
-# Multi-cluster ArgoCD
+# Multi-cluster EKS with ArgoCD
 
 This example demonstrate how to deploy a single instance of ArgoCD on a central cluster (hub)
 managing multiple tenant clusters (spokes). In this example all spoke clusters get the same configuration for addons deployed from a central ArgoCD.
@@ -17,6 +17,25 @@ The following features are highlighted in this example
 - ArgoCD intial admin password generated and stored in AWS Secret Manager.
 - Instructions and `destroy.sh` script to properly destroy clusters in a clean way.
 
+To better understand how ArgoCD works with EKS Blueprints, read the EKS Blueprints ArgoCD [Documentation](https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/add-ons/argocd/)
+
+## Reference Documentation
+
+- [Documentation](https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/add-ons/argocd/)
+- [EKS Blueprints Add-ons Repo](https://github.com/aws-samples/eks-blueprints-add-ons)
+- [EKS Blueprints Workloads Repo](https://github.com/aws-samples/eks-blueprints-workloads)
+
+
+## Prerequisites
+
+Ensure that you have the following tools installed locally:
+
+1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
+3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+
+
+# Deploy
 
 ## Setup LoadBalancer or Ingress
 The example supports ArgoCD UI configuration with a valid domain name (ie example.com) or LoadBalancer with a generated domain name.
@@ -86,6 +105,8 @@ hub_profile   = "account-hub-Admin"
 hub_region    = "us-west-2"
 ```
 
+The Spoke clusters can be deploy in parallel
+
 ## Deploy Spoke Cluster 1 "DEV"
 ```sh
 cd spoke-cluster-1-dev
@@ -110,9 +131,9 @@ terraform apply -auto-approve
 cd ..
 ```
 
-## Verify the spoke clusters are deployed
+## Validate
 
-## Access ArgoCD
+### Access ArgoCD
 Get ArgoCD URL and Password
 ```sh
 echo "URL: https://$(kubectl get ing -n argocd argo-cd-argocd-server -o jsonpath='{.spec.tls[0].hosts[0]}')"
@@ -172,7 +193,7 @@ git_secret_namespace = "argocd"
 git_secret_name      = "${local.name}-addons"
 ```
 
-## CleanUp
+## Destroy
 
 ### Destroy Spoke Cluster 1 "DEV"
 ```sh

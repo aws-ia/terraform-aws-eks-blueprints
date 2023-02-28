@@ -140,10 +140,11 @@ module "eks_blueprints_kubernetes_addons" {
   tags = local.tags
 }
 
-#---------------------------------------------------------------
+################################################################################
 # ArgoCD Admin Password credentials with Secrets Manager
 # Login to AWS Secrets manager with the same role as Terraform to extract the ArgoCD admin password with the secret name as "argocd"
-#---------------------------------------------------------------
+################################################################################
+
 resource "random_password" "argocd" {
   length           = 16
   special          = true

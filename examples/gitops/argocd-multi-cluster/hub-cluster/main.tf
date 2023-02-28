@@ -3,9 +3,6 @@ provider "aws" {
   profile = local.hub_profile
 }
 
-provider "bcrypt" {
-}
-
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
@@ -40,6 +37,8 @@ provider "kubectl" {
   apply_retry_count = 15
 }
 
+provider "bcrypt" {}
+
 # To get the hosted zone to be use in argocd domain
 data "aws_route53_zone" "argocd" {
   count        = local.argocd_domain == "" ? 0 : 1
@@ -55,8 +54,7 @@ data "aws_iam_policy_document" "irsa_policy" {
   statement {
     effect    = "Allow"
     resources = ["*"]
-
-    actions = ["sts:AssumeRole"]
+    actions   = ["sts:AssumeRole"]
   }
 }
 
@@ -88,14 +86,14 @@ locals {
 
 }
 
+################################################################################
+# Cluster
+################################################################################
 
-#---------------------------------------------------------------
-# EKS Cluster
-#---------------------------------------------------------------
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.7"
+  version = "~> 19.10"
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
@@ -108,18 +106,19 @@ module "eks" {
     initial = {
       instance_types = [local.instance_type]
 
-      min_size     = 2
-      max_size     = 4
-      desired_size = 3
+      min_size     = 3
+      max_size     = 10
+      desired_size = 5
     }
   }
 
   tags = local.tags
 }
 
-#---------------------------------------------------------------
-# EKS Blueprints Add-Ons
-#---------------------------------------------------------------
+################################################################################
+# Kubernetes Addons
+################################################################################
+
 module "eks_blueprints_kubernetes_addons" {
   source = "../../../../modules/kubernetes-addons"
 
@@ -246,9 +245,10 @@ module "eks_blueprints_kubernetes_addons" {
   tags = local.tags
 }
 
-#---------------------------------------------------------------
+################################################################################
 # EKS Blueprints Add-Ons via ArgoCD
-#---------------------------------------------------------------
+################################################################################
+
 module "eks_blueprints_argocd_addons" {
   source = "../../../../modules/kubernetes-addons/argocd"
 
@@ -273,7 +273,6 @@ module "eks_blueprints_argocd_addons" {
     }
   }
 
-
   addon_config = { for k, v in module.eks_blueprints_kubernetes_addons.argocd_addon_config : k => v if v != null }
 
   addon_context = {
@@ -286,9 +285,10 @@ module "eks_blueprints_argocd_addons" {
 }
 
 
-#---------------------------------------------------------------
+################################################################################
 # EKS Workloads via ArgoCD
-#---------------------------------------------------------------
+################################################################################
+
 module "eks_blueprints_argocd_workloads" {
   source = "../../../../modules/kubernetes-addons/argocd"
 
@@ -314,7 +314,6 @@ module "eks_blueprints_argocd_workloads" {
 
   }
 
-
   addon_context = {
     aws_region_name                = local.region
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
@@ -325,6 +324,10 @@ module "eks_blueprints_argocd_workloads" {
 
 }
 
+################################################################################
+# ArgoCD Admin Password credentials with Secrets Manager
+# Login to AWS Secrets manager with the same role as Terraform to extract the ArgoCD admin password with the secret name as "argocd"
+################################################################################
 
 resource "random_password" "argocd" {
   length           = 16
@@ -332,7 +335,8 @@ resource "random_password" "argocd" {
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
-# argo expects bcrypt
+# Argo requires the password to be bcrypt, we use custom provider of bcrypt,
+# as the default bcrypt function generates diff for each terraform plan
 resource "bcrypt_hash" "argo" {
   cleartext = random_password.argocd.result
 }
@@ -347,43 +351,6 @@ resource "aws_secretsmanager_secret" "argocd" {
 resource "aws_secretsmanager_secret_version" "argocd" {
   secret_id     = aws_secretsmanager_secret.argocd.id
   secret_string = random_password.argocd.result
-}
-
-#---------------------------------------------------------------
-# Supporting Resources
-#---------------------------------------------------------------
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
-
-  name = local.name
-  cidr = local.vpc_cidr
-
-  azs             = local.azs
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
-
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
-  enable_dns_hostnames = true
-
-  # manage so we can name them
-  manage_default_network_acl    = true
-  default_network_acl_tags      = { Name = "${local.name}-default" }
-  manage_default_route_table    = true
-  default_route_table_tags      = { Name = "${local.name}-default" }
-  manage_default_security_group = true
-  default_security_group_tags   = { Name = "${local.name}-default" }
-
-  public_subnet_tags = {
-    "kubernetes.io/role/elb" = 1
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/role/internal-elb" = 1
-  }
-
-  tags = local.tags
 }
 
 module "argocd_irsa" {
@@ -404,4 +371,42 @@ resource "aws_iam_policy" "irsa_policy" {
   description = "IAM Policy for ArgoCD Hub"
   policy      = data.aws_iam_policy_document.irsa_policy.json
   tags        = local.tags
+}
+
+################################################################################
+# Supporting Resources
+################################################################################
+
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = local.name
+  cidr = local.vpc_cidr
+
+  azs             = local.azs
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  # Manage so we can name
+  manage_default_network_acl    = true
+  default_network_acl_tags      = { Name = "${local.name}-default" }
+  manage_default_route_table    = true
+  default_route_table_tags      = { Name = "${local.name}-default" }
+  manage_default_security_group = true
+  default_security_group_tags   = { Name = "${local.name}-default" }
+
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" = 1
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = 1
+  }
+
+  tags = local.tags
 }
