@@ -15,6 +15,7 @@ The following features are highlighted in this example
 - ArgoCD High Availability with Auto-scaling (HPA), controller with multiple replicas for cluster sharding. Disable unused components (ie dex server).
 - Support for private git repositories and configuration via ssh private key stored in AWS Secret Manager.
 - ArgoCD intial admin password generated and stored in AWS Secret Manager.
+- Instructions and `destroy.sh` script to properly destroy clusters in a clean way.
 
 
 ## Setup LoadBalancer or Ingress
