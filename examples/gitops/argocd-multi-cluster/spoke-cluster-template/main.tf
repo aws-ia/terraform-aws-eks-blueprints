@@ -284,11 +284,11 @@ module "eks_blueprints_kubernetes_addons" {
   }
   crossplane_kubernetes_provider = {
     enable                      = true
-    provider_kubernetes_version = "v0.6.0" # Get the latest version from  https://marketplace.upbound.io/providers/crossplane-contrib/provider-kubernetes
+    provider_kubernetes_version = "v0.7.0" # Get the latest version from  https://marketplace.upbound.io/providers/crossplane-contrib/provider-kubernetes
   }
   crossplane_helm_provider = {
     enable                = true
-    provider_helm_version = "v0.13.0" # Get the latest version from https://marketplace.upbound.io/providers/crossplane-contrib/provider-helm
+    provider_helm_version = "v0.14.0" # Get the latest version from https://marketplace.upbound.io/providers/crossplane-contrib/provider-helm
   }
 
   tags = local.tags

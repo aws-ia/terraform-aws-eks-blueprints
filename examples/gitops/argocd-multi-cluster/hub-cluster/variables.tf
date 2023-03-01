@@ -23,3 +23,34 @@ variable "argocd_domain_private_zone" {
   type        = bool
   default     = false
 }
+variable "argocd_enable_sso" {
+  description = "Enable SSO for ArgoCD"
+  type        = bool
+  default     = false
+}
+variable "argocd_sso_issuer" {
+  description = "ArgoCD SSO OIDC issuer"
+  type        = string
+  default     = ""
+}
+variable "argocd_sso_client_id" {
+  description = "ArgoCD SSO OIDC clientID"
+  type        = string
+  default     = ""
+}
+variable "argocd_sso_client_secret" {
+  description = "ArgoCD SSO OIDC clientSecret"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+variable "argocd_sso_logout_url" {
+  description = "ArgoCD SSO OIDC logoutURL"
+  type        = string
+  default     = ""
+}
+variable "argocd_sso_cli_client_id" {
+  description = "ArgoCD SSO OIDC cliClientID"
+  type        = string
+  default     = ""
+}

@@ -1,0 +1,22 @@
+configs:
+  cm:
+    url: ${url}
+    oidc.config: |
+      name: AWS
+      issuer: ${issuer}
+      clientID: ${clientID}
+      clientSecret: ${clientSecret}
+      requestedIDTokenClaims:
+        groups:
+          essential: true
+      requestedScopes:
+        - openid
+        - profile
+        - email
+      logoutURL: ${logoutURL}
+      cliClientID: ${cliClientID}
+  rbac:
+    policy.csv: |
+      g, argocd-admin, role:admin
+      g, argocd-readonly, role:readonly
+    scopes: '[cognito:groups]'

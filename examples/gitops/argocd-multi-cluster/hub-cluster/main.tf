@@ -84,6 +84,15 @@ locals {
   region      = var.hub_region
   hub_profile = var.hub_profile
 
+  # AWS Cognito for ArgoCD SSO
+  argocd_sso = var.argocd_enable_sso ? templatefile("${path.module}/cognito.yaml", {
+    issuer       = var.argocd_sso_issuer
+    clientID     = var.argocd_sso_client_id
+    clientSecret = var.argocd_sso_client_secret
+    logoutURL    = "${var.argocd_sso_logout_url}?client_id=${var.argocd_sso_client_id}&logout_uri=https://${local.argocd_subdomain}.${local.argocd_domain}/logout"
+    cliClientID  = var.argocd_sso_cli_client_id
+    url          = "https://${local.argocd_subdomain}.${local.argocd_domain}"
+  }) : ""
 }
 
 ################################################################################
@@ -201,9 +210,14 @@ module "eks_blueprints_kubernetes_addons" {
             params : {
               "application.namespaces" : "cluster-*" # See more config options at https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace/
             }
+            cm : {
+              "application.resourceTrackingMethod" : "annotation+label" #use annotation for tracking but keep labels for compatibility with other tools
+            }
+
           }
         }
-      )
+      ),
+      local.argocd_sso
     ]
     set_sensitive = [
       {
@@ -235,11 +249,11 @@ module "eks_blueprints_kubernetes_addons" {
   }
   crossplane_kubernetes_provider = {
     enable                      = true
-    provider_kubernetes_version = "v0.6.0" # Get the latest version from  https://marketplace.upbound.io/providers/crossplane-contrib/provider-kubernetes
+    provider_kubernetes_version = "v0.7.0" # Get the latest version from  https://marketplace.upbound.io/providers/crossplane-contrib/provider-kubernetes
   }
   crossplane_helm_provider = {
     enable                = true
-    provider_helm_version = "v0.13.0" # Get the latest version from https://marketplace.upbound.io/providers/crossplane-contrib/provider-helm
+    provider_helm_version = "v0.14.0" # Get the latest version from https://marketplace.upbound.io/providers/crossplane-contrib/provider-helm
   }
 
   tags = local.tags
