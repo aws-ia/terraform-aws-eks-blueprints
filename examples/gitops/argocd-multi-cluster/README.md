@@ -15,7 +15,9 @@ The following features are highlighted in this example
 - ArgoCD High Availability with Auto-scaling (HPA), controller with multiple replicas for cluster sharding. Disable unused components (ie dex server).
 - Support for private git repositories and configuration via ssh private key stored in AWS Secret Manager.
 - ArgoCD intial admin password generated and stored in AWS Secret Manager.
+- ArgoCD SSO Login with Amazon Cognito. Read section below for instructions on how to setup Amazon Cognito
 - Instructions and `destroy.sh` script to properly destroy clusters in a clean way.
+
 
 To better understand how ArgoCD works with EKS Blueprints, read the EKS Blueprints ArgoCD [Documentation](https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/add-ons/argocd/)
 
@@ -66,7 +68,7 @@ aws acm request-certificate --domain-name '*.example.com' --validation-method DN
 
 #### Setup Domain
 Set the sub domain for argocd
-```
+```sh
 export TF_VAR_argocd_domain=example.com
 ```
 
@@ -226,3 +228,86 @@ cd ..
 ```sh
 kubectl delete ing argo-cd-argocd-server -n argocd
 ```
+
+## (Optional) ArgoCD SSO login with Amazon Cognito
+
+You can configure SSO Login for ArgoCD Web UI and CLI. ArgoCD supports integration with an existing [OIDC provider](https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#existing-oidc-provider) such as [Amazon Cognito](https://aws.amazon.com/cognito/).
+
+
+### UserPool configuration
+
+* You have a Cognito UserPool created (if not yet, make one right now, stick to the defaults if you do it through AWS Console). Note the `Pool Id`. We are going to use it later.
+* Create an app client per correspondent Argo application.
+* Configure an app client per correspondent Argo application.
+  * In `Enabled Identity Providers` select `Cognito User Pool`
+  * In `Callback URL(s)` specify `https://${your-ARGOCD-fqdn}/auth/callback`
+  * In `Sign out URL(s)` specify `https://${your-ARGOCD-fqdn}/logout`
+  * In `Allowed OAuth Flows` select `Authorization code grant`
+  * In `Allowed OAuth Scopes` select `email`, `openid`, `profile`
+  * Save Changes
+* Configure the domain name. You must have it for authentication flow to work.
+  * For this guide, use `Amazon Cognito domain` with a custom `Domain prefix`, set any value there. Cognito will use it to redirect you to your UserPoll Sign In page. It is OK to use your own domain as well but its config is out of the scope of this guide. Take note of the domain.
+
+### CLI authentication
+
+We will need another secret-less **client application** in the Cognito user pool. Go and create one in AWS Console. Just make sure `Generate client secret` option is not selected. Take a note of it's client ID.
+Now configure this client app. Let's make sure the following is selected:
+* In `Enabled Identity Providers` select `Cognito User Pool`
+* In `Callback URL(s)` specify `http://localhost:8085/auth/callback`
+* In `Allowed OAuth Flows` select `Authorization code grant`
+* In `Allowed OAuth Scopes` select `email`, `openid`, `profile`
+* Save Changes
+
+### RBAC
+
+Add an user to the user pool, then create a groups `argocd-admin` and `argocd-readonly` and add the users to each corresponding group. Add the user you just added to the `argocd-admin` to allow admin tasks in ArgoCD.
+
+The group names can be change in [./hub-cluster/cognito.yaml](./hub-cluster/cognito.yaml)
+
+```yaml
+configs:
+  rbac:
+    policy.csv: |
+      g, argocd-admin, role:admin
+      g, argocd-readonly, role:readonly
+    scopes: '[cognito:groups]'
+```
+ArgoCD built-in roles are `role:admin` and `role:readonly` additional policies can be added see [ArgoCD RBAC documentation](https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/)
+
+### CLI Login
+Whe login with Argo CLI use the command  `argocd login https://myargocd.acme.com --sso`.
+
+### Disable Dex
+ArgoCD also support SSO using [Bundled Dex OIDC provider](https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#dex)
+Since we are not using dex, the example disables dex in ArgoCD.
+
+
+### Deploy Hub Cluster with ArgoCD SSO
+
+Collect the following information from Amazon Cognito User Pool:
+* your UserPool IDP endpoint - it follows this schema `https://cognito-idp.${aws-region}.amazonaws.com/${UserPool-ID}`. For example `https://cognito-idp.us-east-1.amazonaws.com/us-east-1_uTZRXY6BL`
+* your ArgoCD app client Logout URL. For exaxmple `https://{client-app-name}.auth.{aws-region}.amazoncognito.com/logout`
+* your ArgoCD app client ID. For example: `67dted0oitvupuubmah32ar10s`
+* your ArgoCD app client Secret. For example: `dp9cvv8f055pt99203aos3iota0ci7up96dgmfdi1eu03c569hj`.
+* your ArgoCD CLI app client ID. For example `5oq67qgtjmpc2sqjjn88puj477`
+
+Set the following Terraform Variables, for example
+```sh
+export TF_VAR_argocd_enable_sso=true
+export TF_VAR_argocd_domain="example.com" # See instructions above to configure Route 53 zone, and ACM Certificate
+export TF_VAR_argocd_sso_issuer="https://cognito-idp.us-west-2.amazonaws.com/us-west-2_voJm3sI8d"
+export TF_VAR_argocd_sso_client_id="67dted0oitvupuubmah32ar10s"
+export TF_VAR_argocd_sso_client_secret="dp9cvv8f055pt99203aos3iota0ci7up96dgmfdi1eu03c569hj"
+export TF_VAR_argocd_sso_logout_url="https://argocd.auth.us-west-2.amazoncognito.com/logout"
+export TF_VAR_argocd_sso_cli_client_id="5oq67qgtjmpc2sqjjn88puj477"
+```
+
+Deploy the Hub Cluster after setting the Terraform environment variables:
+```sh
+cd hub-cluster
+terraform init
+terraform apply -auto-approve
+cd ..
+```
+
+
