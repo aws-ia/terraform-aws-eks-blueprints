@@ -182,7 +182,10 @@ module "aws_load_balancer_controller" {
   source            = "./aws-load-balancer-controller"
   helm_config       = var.aws_load_balancer_controller_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = merge(local.addon_context, { default_repository = local.amazon_container_image_registry_uris[data.aws_region.current.name] })
+  path              = var.aws_load_balancer_controller_path
+  addon_context = merge(local.addon_context, {
+    default_repository = local.amazon_container_image_registry_uris[data.aws_region.current.name]
+  })
 }
 
 module "aws_node_termination_handler" {
@@ -322,6 +325,7 @@ module "karpenter" {
   node_iam_instance_profile                   = var.karpenter_node_iam_instance_profile
   enable_spot_termination                     = var.karpenter_enable_spot_termination_handling
   manage_via_gitops                           = var.argocd_manage_add_ons
+  path                                        = var.karpenter_path
   addon_context                               = local.addon_context
   sqs_queue_managed_sse_enabled               = var.sqs_queue_managed_sse_enabled
   sqs_queue_kms_master_key_id                 = var.sqs_queue_kms_master_key_id
@@ -803,7 +807,8 @@ module "emr_on_eks" {
 
   # EMR Virtual Cluster
   name           = try(each.value.name, each.key)
-  eks_cluster_id = data.aws_eks_cluster.eks_cluster.id # Data source is tied to `sleep` to ensure data plane is ready first
+  eks_cluster_id = data.aws_eks_cluster.eks_cluster.id
+  # Data source is tied to `sleep` to ensure data plane is ready first
 
   tags = merge(var.tags, try(each.value.tags, {}))
 }

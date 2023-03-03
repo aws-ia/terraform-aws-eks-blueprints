@@ -27,3 +27,9 @@ variable "addon_context" {
     default_repository             = string
   })
 }
+
+variable "path" {
+  description = "Path in which to create the LB IRSA policy"
+  type        = string
+  default     = "/"
+}

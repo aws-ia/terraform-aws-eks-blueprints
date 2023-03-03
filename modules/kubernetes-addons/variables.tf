@@ -617,6 +617,12 @@ variable "aws_load_balancer_controller_helm_config" {
   default     = {}
 }
 
+variable "aws_load_balancer_controller_path" {
+  description = "Path in which to create the LB IRSA policy"
+  type        = string
+  default     = "/"
+}
+
 #-----------NGINX-------------
 variable "enable_ingress_nginx" {
   description = "Enable Ingress Nginx add-on"
@@ -909,6 +915,12 @@ variable "karpenter_enable_spot_termination_handling" {
   description = "Determines whether to enable native spot termination handling"
   type        = bool
   default     = false
+}
+
+variable "karpenter_path" {
+  description = "Path in which to create the Karpenter policy"
+  type        = string
+  default     = "/"
 }
 
 variable "sqs_queue_managed_sse_enabled" {
