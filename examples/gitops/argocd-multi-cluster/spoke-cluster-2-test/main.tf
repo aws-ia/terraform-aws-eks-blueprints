@@ -20,4 +20,3 @@ module "spoke_cluster" {
   #hub_profile   = "carrlos-Admin"
   #hub_region    = "us-west-2"
 }
-

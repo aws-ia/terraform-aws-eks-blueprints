@@ -34,14 +34,14 @@ provider "helm" {
 
 provider "kubectl" {
   host                   = module.eks.cluster_endpoint
-    cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region, "--profile", local.spoke_profile]
-      command     = "aws"
-    }
-  load_config_file       = false
-  apply_retry_count      = 15
+  cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region, "--profile", local.spoke_profile]
+    command     = "aws"
+  }
+  load_config_file  = false
+  apply_retry_count = 15
 }
 
 provider "kubernetes" {
@@ -249,7 +249,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_app_2048                              = try(var.addons.enable_app_2048, false)
   enable_emr_on_eks                            = try(var.addons.enable_emr_on_eks, false)
   enable_consul                                = try(var.addons.enable_consul, false)
-  enable_cluster_autoscaler = try(var.addons.enable_cluster_autoscaler, false)
+  enable_cluster_autoscaler                    = try(var.addons.enable_cluster_autoscaler, false)
   cluster_autoscaler_helm_config = {
     set = [
       {
