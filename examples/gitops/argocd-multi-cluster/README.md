@@ -3,6 +3,8 @@
 This example demonstrate how to deploy a single instance of ArgoCD on a central cluster (hub)
 managing multiple tenant clusters (spokes). In this example all spoke clusters get the same configuration for addons deployed from a central ArgoCD.
 
+![ArgoCD Multi-Cluster Topology](images/argocd-topology.jpg)
+![ArgoCD HA/Autoscaling](images/argocd-ha.jpg)
 ## Features
 The following features are highlighted in this example
 - Central and Spoke/Child cluster deployed in different accounts and/or regions.
@@ -35,6 +37,7 @@ Ensure that you have the following tools installed locally:
 1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+4. [argocd cli](https://argo-cd.readthedocs.io/en/stable/cli_installation/)
 
 
 # Deploy
