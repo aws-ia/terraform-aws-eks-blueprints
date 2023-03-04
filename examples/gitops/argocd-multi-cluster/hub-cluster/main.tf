@@ -66,8 +66,9 @@ locals {
 
   instance_type = "m5.large"
 
-  vpc_cidr = "10.0.0.0/16"
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  vpc_cidr  = "10.0.0.0/16"
+  azs_count = 3
+  azs       = slice(data.aws_availability_zones.available.names, 0, local.azs_count)
 
   tags = {
     Blueprint  = local.name
@@ -161,16 +162,36 @@ module "eks_blueprints_kubernetes_addons" {
           repoServer : {
             autoscaling : {
               enabled : true
-              minReplicas : 2
+              minReplicas : local.azs_count
+            }
+            resources : { # Adjust based on your specific use case (required for HPA)
+              limits : {
+                cpu : "200m"
+                memory : "512Mi"
+              }
+              requests : {
+                cpu : "100m"
+                memory : "256Mi"
+              }
             }
           }
           applicationSet : {
-            replicaCount : 2
+            replicaCount : 2 # The controller doesn't scale horizontally, is active-standby replicas
           }
           server : {
             autoscaling : {
               enabled : true
-              minReplicas : 2
+              minReplicas : local.azs_count
+            }
+            resources : { # Adjust based on your specific use case (required for HPA)
+              limits : {
+                cpu : "200m"
+                memory : "512Mi"
+              }
+              requests : {
+                cpu : "100m"
+                memory : "256Mi"
+              }
             }
             serviceAccount : {
               annotations : {
