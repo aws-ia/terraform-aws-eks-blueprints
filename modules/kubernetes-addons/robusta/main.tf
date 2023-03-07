@@ -8,7 +8,8 @@ locals {
 }
 
 module "helm_addon" {
-  source = "../helm_addon"
+
+  source = "../helm-addon"
 
   # https://github.com/robusta-dev/robusta/blob/master/helm/robusta/Chart.yaml
   helm_config = merge(
