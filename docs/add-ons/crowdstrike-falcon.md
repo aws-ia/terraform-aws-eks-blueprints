@@ -39,7 +39,7 @@ module "eks_blueprints_kubernetes_addons" {
 #---------------------------------------------------------------
 
 module "crowdstrike_falcon" {
-  source = "github.com/crowdstrike/terraform-modules//falcon/k8s-protection-agent?ref=<release>"
+  source = "github.com/CrowdStrike/terraform-kubectl-falcon?ref=<release>"
 
   #  CrowdStrike Falcon Module Configuration
 }
