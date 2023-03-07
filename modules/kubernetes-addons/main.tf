@@ -395,6 +395,7 @@ module "portworx" {
   helm_config   = var.portworx_helm_config
   addon_context = local.addon_context
 }
+
 module "prometheus" {
   count       = var.enable_prometheus ? 1 : 0
   source      = "./prometheus"
@@ -410,6 +411,14 @@ module "reloader" {
   count             = var.enable_reloader ? 1 : 0
   source            = "./reloader"
   helm_config       = var.reloader_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
+module "robusta" {
+  count             = var.enable_robusta ? 1 : 0
+  source            = "./robusta"
+  helm_config       = var.robusta_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }

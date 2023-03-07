@@ -263,6 +263,11 @@ output "reloader" {
   value       = try(module.reloader[0], null)
 }
 
+output "robusta" {
+  description = "Map of attributes of the Helm release and IRSA created"
+  value       = try(module.robusta[0], null)
+}
+
 output "secrets_store_csi_driver" {
   description = "Map of attributes of the Helm release and IRSA created"
   value       = try(module.secrets_store_csi_driver[0], null)

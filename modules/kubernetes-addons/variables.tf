@@ -1472,3 +1472,17 @@ variable "consul_helm_config" {
   type        = any
   default     = {}
 }
+
+
+#------------ Robusta addon --------------
+variable "enable_robusta" {
+  description = "Enable Robusta add-on"
+  type        = bool
+  default     = false
+}
+
+variable "robusta_helm_config" {
+  description = "Robusta Helm Chart config"
+  type        = any
+  default     = {}
+}
