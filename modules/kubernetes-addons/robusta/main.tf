@@ -1,10 +1,5 @@
 locals {
   name = "robusta"
-
-  argocd_gitops_config = {
-    enable             = true
-    serviceAccountName = local.name
-  }
 }
 
 module "helm_addon" {
