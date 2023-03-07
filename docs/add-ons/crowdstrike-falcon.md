@@ -19,7 +19,9 @@ Refer to the [`falcon module`](https://github.com/CrowdStrike/terraform-kubectl-
 
 ## Example
 
-You will call the `falcon` module similar to how you would call any other terraform module. The [module documentation](https://github.com/CrowdStrike/terraform-kubectl-falcon) provides a list of all the inputs and outputs.
+You will call the `falcon` module similar to how you would call any other terraform module. 
+
+A full end to end example of using the `falcon` module with `eks_blueprints` can be found in the [examples](https://github.com/CrowdStrike/terraform-kubectl-falcon/tree/v0.1.0/examples/aws-eks-blueprint-example) directory of the `falcon` module.
 
 ```hcl
 #---------------------------------------------------------------
