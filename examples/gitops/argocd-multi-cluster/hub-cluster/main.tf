@@ -40,10 +40,10 @@ provider "kubectl" {
 provider "bcrypt" {}
 
 # To get the hosted zone to be use in argocd domain
-data "aws_route53_zone" "argocd" {
-  count        = local.argocd_domain == "" ? 0 : 1
-  name         = local.argocd_domain
-  private_zone = local.argocd_domain_private_zone
+data "aws_route53_zone" "domain_name" {
+  count        = var.enable_ingress ? 1 : 0
+  name         = local.domain_name
+  private_zone = var.domain_private_zone
 }
 
 data "aws_caller_identity" "current" {}
@@ -61,6 +61,7 @@ data "aws_iam_policy_document" "irsa_policy" {
 locals {
   name             = "hub-cluster"
   hub_cluster_name = var.hub_cluster_name
+  domain_name      = var.domain_name
 
   cluster_version = "1.24"
 
@@ -77,9 +78,7 @@ locals {
 
   argocd_namespace           = "argocd"
   argocd_subdomain           = "argocd"
-  argocd_domain              = var.argocd_domain
-  argocd_domain_arn          = data.aws_route53_zone.argocd[0].arn
-  argocd_domain_private_zone = var.argocd_domain_private_zone
+  argocd_domain_arn          = data.aws_route53_zone.domain_name[0].arn
 
   # Multi-{account,region} setup
   region      = var.hub_region
@@ -90,9 +89,9 @@ locals {
     issuer       = var.argocd_sso_issuer
     clientID     = var.argocd_sso_client_id
     clientSecret = var.argocd_sso_client_secret
-    logoutURL    = "${var.argocd_sso_logout_url}?client_id=${var.argocd_sso_client_id}&logout_uri=https://${local.argocd_subdomain}.${local.argocd_domain}/logout"
+    logoutURL    = "${var.argocd_sso_logout_url}?client_id=${var.argocd_sso_client_id}&logout_uri=https://${local.argocd_subdomain}.${local.domain_name}/logout"
     cliClientID  = var.argocd_sso_cli_client_id
-    url          = "https://${local.argocd_subdomain}.${local.argocd_domain}"
+    url          = "https://${local.argocd_subdomain}.${local.domain_name}"
   }) : ""
 }
 
@@ -242,10 +241,10 @@ module "eks_blueprints_kubernetes_addons" {
                 "alb.ingress.kubernetes.io/listen-ports" : "[{\"HTTPS\":443}]"
                 "alb.ingress.kubernetes.io/tags" : "Environment=hub,GitOps=true"
               }
-              hosts : ["${local.argocd_subdomain}.${local.argocd_domain}"]
+              hosts : ["${local.argocd_subdomain}.${local.domain_name}"]
               tls : [
                 {
-                  hosts : ["${local.argocd_subdomain}.${local.argocd_domain}"]
+                  hosts : ["${local.argocd_subdomain}.${local.domain_name}"]
                 }
               ]
               ingressClassName : "alb"
@@ -283,7 +282,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_aws_load_balancer_controller = true                      # ArgoCD UI depends on aws-loadbalancer-controller for Ingress
   enable_metrics_server               = true                      # ArgoCD HPAs depend on metric-server
   enable_external_dns                 = true                      # ArgoCD Server and UI use valid https domain name
-  external_dns_route53_zone_arns      = [local.argocd_domain_arn] # ArgoCD Server and UI domain name is registered in Route 53
+  external_dns_route53_zone_arns      = [data.aws_route53_zone.domain_name[0].arn] # ArgoCD Server and UI domain name is registered in Route 53
 
   # Observability for ArgoCD
   enable_amazon_eks_aws_ebs_csi_driver = true
@@ -499,4 +498,31 @@ module "vpc" {
   }
 
   tags = local.tags
+}
+
+
+################################################################################
+# ACM Certificate
+################################################################################
+
+resource "aws_acm_certificate" "cert" {
+  count               = var.enable_ingress ? 1 : 0
+  domain_name         = "*.${local.domain_name}"
+  validation_method   = "DNS"
+}
+
+resource "aws_route53_record" "cert" {
+  count           = var.enable_ingress ? 1 : 0
+  zone_id         = data.aws_route53_zone.domain_name[0].zone_id
+  name            = tolist(aws_acm_certificate.cert[0].domain_validation_options)[0].resource_record_name
+  type            = tolist(aws_acm_certificate.cert[0].domain_validation_options)[0].resource_record_type
+  records         = [tolist(aws_acm_certificate.cert[0].domain_validation_options)[0].resource_record_value]
+  ttl             = 60
+  allow_overwrite = true
+}
+
+resource "aws_acm_certificate_validation" "cert" {
+  count                   = var.enable_ingress ? 1 : 0
+  certificate_arn         = aws_acm_certificate.cert[0].arn
+  validation_record_fqdns = [for record in aws_route53_record.cert : record.fqdn]
 }

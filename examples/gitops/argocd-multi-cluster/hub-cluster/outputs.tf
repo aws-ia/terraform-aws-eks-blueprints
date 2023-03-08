@@ -4,5 +4,5 @@ output "configure_kubectl" {
 }
 output "argocd_login" {
   description = "ArgoCD CLI login command"
-  value       = "argocd login argocd.${local.argocd_domain} --username admin"
+  value       = "argocd login argocd.${local.domain_name} --username admin"
 }

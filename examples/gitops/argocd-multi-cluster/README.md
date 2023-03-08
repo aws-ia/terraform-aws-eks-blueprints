@@ -57,24 +57,23 @@ service : {
 
 ### (Option 2) Ingress
 You will be able to use ArgoCD with a valid SSL certificate on a domain (i.e. argocd.example.com)
+You can use a registered domain you control or register a new one following the instructions [here](https://aws.amazon.com/getting-started/hands-on/get-a-domain/).
+
+To enable this option, use:
+```
+export TF_VAR_enable_ingress=true
+```
 
 #### Create DNS Hosted Zone in Route 53
-You can use the Console, or the `aws` cli
-```sh
-aws route53 create-hosted-zone --name 'example.com' --caller-reference "$(date)"
+In this step you will delegate your registered domain DNS to Amazon Route53. You can either delegate the top level domain or a subdomain.
 ```
-
-#### Create domain certificate in ACM, for example
-You can use the Console, or the `aws` cli
-```sh
-aws acm request-certificate --domain-name '*.example.com' --validation-method DNS
+export TF_VAR_domain_name=<my-registered-domain> # For example: example.com or subdomain.example.com
 ```
-
-#### Setup Domain
-Set the sub domain for argocd
+You can use the Console, or the `aws` cli to create a hosted zone. Execute the following command only once:
 ```sh
-export TF_VAR_argocd_domain=example.com
+aws route53 create-hosted-zone --name $TF_VAR_domain_name --caller-reference "$(date)"
 ```
+Use the NameServers in the DelegatoinSet to update your registered domain NS records at the registrar. 
 
 ## Deploy Hub Cluster
 After selecting LoadBalancer or Ingress for ArgoCD, deploy the Hub Cluster
