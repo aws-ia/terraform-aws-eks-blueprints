@@ -286,8 +286,6 @@ module "external_dns" {
   irsa_policies     = var.external_dns_irsa_policies
   addon_context     = local.addon_context
 
-  domain_name       = var.eks_cluster_domain
-  private_zone      = var.external_dns_private_zone
   route53_zone_arns = var.external_dns_route53_zone_arns
 }
 
