@@ -40,7 +40,7 @@ module "helm_addon" {
   irsa_config = {
     create_kubernetes_namespace         = try(var.helm_config.create_namespace, false)
     kubernetes_namespace                = local.namespace
-    create_kubernetes_service_account   = true
+    create_kubernetes_service_account   = try(var.helm_config["create_service_account"], true)
     create_service_account_secret_token = try(var.helm_config["create_service_account_secret_token"], false)
     kubernetes_service_account          = local.service_account
     irsa_iam_policies                   = [aws_iam_policy.cluster_autoscaler.arn]
