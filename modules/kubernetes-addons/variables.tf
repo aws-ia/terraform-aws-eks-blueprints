@@ -3,12 +3,6 @@ variable "eks_cluster_id" {
   type        = string
 }
 
-variable "eks_cluster_domain" {
-  description = "The domain for the EKS cluster"
-  type        = string
-  default     = ""
-}
-
 variable "eks_worker_security_group_id" {
   description = "EKS Worker Security group Id created by EKS module"
   type        = string
@@ -357,12 +351,6 @@ variable "external_dns_irsa_policies" {
   description = "Additional IAM policies for a IAM role for service accounts"
   type        = list(string)
   default     = []
-}
-
-variable "external_dns_private_zone" {
-  type        = bool
-  description = "Determines if referenced Route53 zone is private."
-  default     = false
 }
 
 variable "external_dns_route53_zone_arns" {
