@@ -158,6 +158,14 @@ module "eks_blueprints_kubernetes_addons" {
                 "eks.amazonaws.com/role-arn" : module.argocd_irsa.irsa_iam_role_arn
               }
             }
+            metrics : {
+              enabled : true
+              service : {
+                annotations : {
+                  "prometheus.io/scrape" : true
+                }
+              }
+            }
           }
           repoServer : {
             autoscaling : {
@@ -174,9 +182,25 @@ module "eks_blueprints_kubernetes_addons" {
                 memory : "256Mi"
               }
             }
+            metrics : {
+              enabled : true
+              service : {
+                annotations : {
+                  "prometheus.io/scrape" : true
+                }
+              }
+            }
           }
           applicationSet : {
             replicaCount : 2 # The controller doesn't scale horizontally, is active-standby replicas
+            metrics : {
+              enabled : true
+              service : {
+                annotations : {
+                  "prometheus.io/scrape" : true
+                }
+              }
+            }
           }
           server : {
             autoscaling : {
@@ -191,6 +215,14 @@ module "eks_blueprints_kubernetes_addons" {
               requests : {
                 cpu : "100m"
                 memory : "256Mi"
+              }
+            }
+            metrics : {
+              enabled : true
+              service : {
+                annotations : {
+                  "prometheus.io/scrape" : true
+                }
               }
             }
             serviceAccount : {
@@ -234,7 +266,6 @@ module "eks_blueprints_kubernetes_addons" {
             cm : {
               "application.resourceTrackingMethod" : "annotation+label" #use annotation for tracking but keep labels for compatibility with other tools
             }
-
           }
         }
       ),
@@ -253,6 +284,11 @@ module "eks_blueprints_kubernetes_addons" {
   enable_metrics_server               = true                      # ArgoCD HPAs depend on metric-server
   enable_external_dns                 = true                      # ArgoCD Server and UI use valid https domain name
   external_dns_route53_zone_arns      = [local.argocd_domain_arn] # ArgoCD Server and UI domain name is registered in Route 53
+
+  # Observability for ArgoCD
+  enable_amazon_eks_aws_ebs_csi_driver = true
+  enable_prometheus                    = true
+  enable_amazon_prometheus             = true
 
   enable_crossplane = false
   crossplane_helm_config = {
@@ -407,6 +443,25 @@ resource "aws_iam_policy" "irsa_policy" {
   policy      = data.aws_iam_policy_document.irsa_policy.json
   tags        = local.tags
 }
+
+
+resource "helm_release" "grafana" {
+  name       = "grafana"
+  repository = "https://grafana.github.io/helm-charts"
+  chart      = "grafana"
+  version    = "6.52.1"
+  namespace  = "grafana"
+  create_namespace  = true
+
+
+  values = [templatefile("${path.module}/grafana-argocd/values.yaml", {
+      operating_system = "linux"
+      region           = local.region
+    })]
+
+  depends_on = [module.eks_blueprints_kubernetes_addons]
+}
+
 
 ################################################################################
 # Supporting Resources
