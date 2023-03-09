@@ -12,9 +12,9 @@ This document provides a high level overview of the Core Concepts that are embed
 
 ## Cluster
 
-A `cluster` is simply an EKS cluster. EKS Blueprints provides for customizing the compute options you leverage with your `clusters`. The framework currently supports `EC2`, `Fargate` and `BottleRocket` instances. It also supports managed and self-managed node groups. To specify the type of compute you want to use for your `cluster`, you use the `managed_node_groups`, `self_managed_nodegroups`, or `fargate_profiles` variables.
+A `cluster` is simply an EKS cluster. EKS Blueprints provides for customizing the compute options you leverage with your `clusters`. The framework currently supports `EC2`, `Fargate` and `BottleRocket` instances. It also supports managed and self-managed node groups.
 
-See our [Node Groups](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/node-groups/) documentation and our [Node Group example directory](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/node-groups) for detailed information.
+We rely on [`terraform-aws-modules/eks/aws`](https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest) to configure `clusters`. See our [examples](getting-started.md) to see how `terraform-aws-modules/eks/aws` is configured for EKS Blueprints.
 
 ## Add-on
 
