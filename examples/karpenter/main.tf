@@ -15,6 +15,12 @@ provider "kubernetes" {
 }
 
 provider "helm" {
+  registry {
+    url      = "oci://public.ecr.aws"
+    username = data.aws_ecrpublic_authorization_token.token.user_name
+    password = data.aws_ecrpublic_authorization_token.token.password
+  }
+  
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
@@ -165,10 +171,6 @@ module "eks_blueprints_kubernetes_addons" {
   data_plane_wait_arn = join(",", [for prof in module.eks.fargate_profiles : prof.fargate_profile_arn])
 
   enable_karpenter = true
-  karpenter_helm_config = {
-    repository_username = data.aws_ecrpublic_authorization_token.token.user_name
-    repository_password = data.aws_ecrpublic_authorization_token.token.password
-  }
   karpenter_node_iam_instance_profile        = module.karpenter.instance_profile_name
   karpenter_enable_spot_termination_handling = true
 
