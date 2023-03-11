@@ -37,13 +37,11 @@ provider "kubectl" {
   apply_retry_count = 15
 }
 
-provider "bcrypt" {}
-
 # To get the hosted zone to be use in argocd domain
 data "aws_route53_zone" "domain_name" {
-  count        = var.enable_ingress ? 1 : 0
+  count        = local.enable_ingress ? 1 : 0
   name         = local.domain_name
-  private_zone = var.domain_private_zone
+  private_zone = local.domain_private_zone
 }
 
 data "aws_caller_identity" "current" {}
@@ -77,15 +75,19 @@ locals {
   }
 
   argocd_namespace  = "argocd"
+
+  # Ingress Config
+  enable_ingress = var.enable_ingress
   argocd_subdomain  = "argocd"
-  argocd_domain_arn = data.aws_route53_zone.domain_name[0].arn
+  argocd_domain_arn = local.enable_ingress ? data.aws_route53_zone.domain_name[0].arn : ""
+  domain_private_zone = var.domain_private_zone
 
   # Multi-{account,region} setup
   region      = var.hub_region
   hub_profile = var.hub_profile
 
   # AWS Cognito for ArgoCD SSO
-  argocd_sso = var.argocd_enable_sso ? templatefile("${path.module}/cognito.yaml", {
+  argocd_sso = var.argocd_enable_sso && local.enable_ingress ? templatefile("${path.module}/cognito.yaml", {
     issuer       = var.argocd_sso_issuer
     clientID     = var.argocd_sso_client_id
     clientSecret = var.argocd_sso_client_secret
@@ -93,6 +95,7 @@ locals {
     cliClientID  = var.argocd_sso_cli_client_id
     url          = "https://${local.argocd_subdomain}.${local.domain_name}"
   }) : ""
+
 }
 
 ################################################################################
@@ -229,11 +232,11 @@ module "eks_blueprints_kubernetes_addons" {
                 "eks.amazonaws.com/role-arn" : module.argocd_irsa.irsa_iam_role_arn
               }
             }
-            #service : {
-            #  type : "LoadBalancer"  # To use LoadBalaner uncomment here, and comment out below ingress and ingressGrpc
-            #}
+            service : {
+              type : local.enable_ingress ? "ClusterIP" : "LoadBalancer"
+            }
             ingress : {
-              enabled : true
+              enabled : local.enable_ingress
               annotations : {
                 "alb.ingress.kubernetes.io/scheme" : "internet-facing"
                 "alb.ingress.kubernetes.io/target-type" : "ip"
@@ -270,22 +273,16 @@ module "eks_blueprints_kubernetes_addons" {
       ),
       local.argocd_sso
     ]
-    set_sensitive = [
-      {
-        name  = "configs.secret.argocdServerAdminPassword"
-        value = bcrypt_hash.argo.id
-      }
-    ]
   }
 
   # Add-ons
   enable_aws_load_balancer_controller = true # ArgoCD UI depends on aws-loadbalancer-controller for Ingress
   enable_metrics_server               = true # ArgoCD HPAs depend on metric-server
-  enable_external_dns                 = true # ArgoCD Server and UI use valid https domain name
+  enable_external_dns                 = local.enable_ingress ? true : false # ArgoCD Server and UI use valid https domain name
   external_dns_helm_config = {
     domainFilters : [local.domain_name]
   }
-  external_dns_route53_zone_arns = [data.aws_route53_zone.domain_name[0].arn] # ArgoCD Server and UI domain name is registered in Route 53
+  external_dns_route53_zone_arns = [local.argocd_domain_arn] # ArgoCD Server and UI domain name is registered in Route 53
 
   # Observability for ArgoCD
   enable_amazon_eks_aws_ebs_csi_driver = true
@@ -397,35 +394,6 @@ module "eks_blueprints_argocd_workloads" {
 
 }
 
-################################################################################
-# ArgoCD Admin Password credentials with Secrets Manager
-# Login to AWS Secrets manager with the same role as Terraform to extract the ArgoCD admin password with the secret name as "argocd"
-################################################################################
-
-resource "random_password" "argocd" {
-  length           = 16
-  special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
-}
-
-# Argo requires the password to be bcrypt, we use custom provider of bcrypt,
-# as the default bcrypt function generates diff for each terraform plan
-resource "bcrypt_hash" "argo" {
-  cleartext = random_password.argocd.result
-}
-
-#tfsec:ignore:aws-ssm-secret-use-customer-key
-resource "aws_secretsmanager_secret" "argocd" {
-  name = "argocd-login-2"
-  # Set to zero for this example to force delete during Terraform destroy
-  recovery_window_in_days = 0
-}
-
-resource "aws_secretsmanager_secret_version" "argocd" {
-  secret_id     = aws_secretsmanager_secret.argocd.id
-  secret_string = random_password.argocd.result
-}
-
 module "argocd_irsa" {
   source                            = "../../../../modules/irsa"
   kubernetes_namespace              = local.argocd_namespace
@@ -509,13 +477,13 @@ module "vpc" {
 ################################################################################
 
 resource "aws_acm_certificate" "cert" {
-  count             = var.enable_ingress ? 1 : 0
+  count             = local.enable_ingress ? 1 : 0
   domain_name       = "*.${local.domain_name}"
   validation_method = "DNS"
 }
 
 resource "aws_route53_record" "cert" {
-  count           = var.enable_ingress ? 1 : 0
+  count           = local.enable_ingress ? 1 : 0
   zone_id         = data.aws_route53_zone.domain_name[0].zone_id
   name            = tolist(aws_acm_certificate.cert[0].domain_validation_options)[0].resource_record_name
   type            = tolist(aws_acm_certificate.cert[0].domain_validation_options)[0].resource_record_type
@@ -525,7 +493,7 @@ resource "aws_route53_record" "cert" {
 }
 
 resource "aws_acm_certificate_validation" "cert" {
-  count                   = var.enable_ingress ? 1 : 0
+  count                   = local.enable_ingress ? 1 : 0
   certificate_arn         = aws_acm_certificate.cert[0].arn
   validation_record_fqdns = [for record in aws_route53_record.cert : record.fqdn]
 }

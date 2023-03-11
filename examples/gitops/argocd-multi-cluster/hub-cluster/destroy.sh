@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -xe
+set -x
 
 # Delete the Ingress before removing the addons
 kubectl_login=$(terraform output -raw configure_kubectl)

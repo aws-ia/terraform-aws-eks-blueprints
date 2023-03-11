@@ -43,19 +43,9 @@ Ensure that you have the following tools installed locally:
 
 # Deploy
 
-## Setup LoadBalancer or Ingress
+### (Optional) Ingress
 The example supports ArgoCD UI configuration with a valid domain name (ie. example.com) or LoadBalancer with a generated domain name.
 To use the Ingress, you must create a Route 53 Hosted zone, and configure ACM with the domain name.
-
-### (Option 1) LoadBalancer
-Edit the [hub-cluster/main.tf](./hub-cluster/main.tf) and for the ArgoCD helm config `argocd_helm_config` variable comment `ingress` section and uncomment `service` section
-```hcl
-service : {
-  type : "LoadBalancer"
-}
-```
-
-### (Option 2) Ingress
 You will be able to use ArgoCD with a valid SSL certificate on a domain (i.e. argocd.example.com)
 You can use a registered domain you control or register a new one following the instructions [here](https://aws.amazon.com/getting-started/hands-on/get-a-domain/).
 
@@ -64,7 +54,8 @@ To enable this option, use:
 export TF_VAR_enable_ingress=true
 ```
 
-#### Create DNS Hosted Zone in Route 53
+**Create DNS Hosted Zone in Route 53:**
+
 In this step you will delegate your registered domain DNS to Amazon Route53. You can either delegate the top level domain or a subdomain.
 ```
 export TF_VAR_domain_name=<my-registered-domain> # For example: example.com or subdomain.example.com
@@ -139,15 +130,17 @@ cd ..
 ## Validate
 
 ### Access ArgoCD
-Get ArgoCD URL and Password
+Get ArgoCD URL and Passwordif using Ingress
 ```sh
 echo "URL: https://$(kubectl get ing -n argocd argo-cd-argocd-server -o jsonpath='{.spec.tls[0].hosts[0]}')"
 echo "Username: admin"
-echo "Password: $(aws secretsmanager get-secret-value --secret-id  argocd-login-2 --region us-west-2 | grep SecretString)"
+echo "Password: $(kubectl get secrets argocd-initial-admin-secret -n argocd --template="{{index .data.password | base64decode}}")"
 ```
-> If using Service instead of Ingress get the URL via the following command:
+> If not using Ingress get the URL via the following command:
 ```sh
 echo "URL: https://$(kubectl get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
+echo "Username: admin"
+echo "Password: $(kubectl get secrets argocd-initial-admin-secret -n argocd --template="{{index .data.password | base64decode}}")"
 ```
 
 Expected output:
@@ -181,6 +174,16 @@ You can list based on cluster labels using `kubectl`
 ```sh
 kubectl get secrets -n argocd -l environment=dev,argocd.argoproj.io/secret-type=cluster
 ```
+
+## Grafana
+You can view the ArgoCD metrics using Grafana.
+To get the URL, username, and password run the followig command
+```sh
+echo "URL: https://$(kubectl get svc grafana -n grafana -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
+echo "Username: admin"
+echo "Password: $(kubectl get secrets argocd-initial-admin-secret -n grafana --template="{{index .data.admin-password | base64decode}}")"
+```
+Select the ArgoCD dashboard that is loaded
 
 ## (Optional) Private git repositories
 To use private git repositories, you can use SSH authentication.

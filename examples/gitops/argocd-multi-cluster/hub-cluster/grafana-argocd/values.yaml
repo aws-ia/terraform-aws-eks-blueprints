@@ -2,6 +2,9 @@
 serviceAccount:
   create: false
 
+service:
+  type: LoadBalancer
+
 resources:
   limits:
     cpu: 200m

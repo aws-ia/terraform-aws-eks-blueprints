@@ -44,6 +44,7 @@ variable "argocd_sso_logout_url" {
 variable "domain_name" {
   description = "Domain Name"
   type        = string
+  default     = ""
 }
 
 variable "enable_ingress" {
