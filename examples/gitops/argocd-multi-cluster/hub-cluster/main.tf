@@ -76,9 +76,9 @@ locals {
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 
-  argocd_namespace           = "argocd"
-  argocd_subdomain           = "argocd"
-  argocd_domain_arn          = data.aws_route53_zone.domain_name[0].arn
+  argocd_namespace  = "argocd"
+  argocd_subdomain  = "argocd"
+  argocd_domain_arn = data.aws_route53_zone.domain_name[0].arn
 
   # Multi-{account,region} setup
   region      = var.hub_region
@@ -279,10 +279,13 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   # Add-ons
-  enable_aws_load_balancer_controller = true                      # ArgoCD UI depends on aws-loadbalancer-controller for Ingress
-  enable_metrics_server               = true                      # ArgoCD HPAs depend on metric-server
-  enable_external_dns                 = true                      # ArgoCD Server and UI use valid https domain name
-  external_dns_route53_zone_arns      = [data.aws_route53_zone.domain_name[0].arn] # ArgoCD Server and UI domain name is registered in Route 53
+  enable_aws_load_balancer_controller = true # ArgoCD UI depends on aws-loadbalancer-controller for Ingress
+  enable_metrics_server               = true # ArgoCD HPAs depend on metric-server
+  enable_external_dns                 = true # ArgoCD Server and UI use valid https domain name
+  external_dns_helm_config = {
+    domainFilters : [local.domain_name]
+  }
+  external_dns_route53_zone_arns = [data.aws_route53_zone.domain_name[0].arn] # ArgoCD Server and UI domain name is registered in Route 53
 
   # Observability for ArgoCD
   enable_amazon_eks_aws_ebs_csi_driver = true
@@ -445,18 +448,18 @@ resource "aws_iam_policy" "irsa_policy" {
 
 
 resource "helm_release" "grafana" {
-  name       = "grafana"
-  repository = "https://grafana.github.io/helm-charts"
-  chart      = "grafana"
-  version    = "6.52.1"
-  namespace  = "grafana"
-  create_namespace  = true
+  name             = "grafana"
+  repository       = "https://grafana.github.io/helm-charts"
+  chart            = "grafana"
+  version          = "6.52.1"
+  namespace        = "grafana"
+  create_namespace = true
 
 
   values = [templatefile("${path.module}/grafana-argocd/values.yaml", {
-      operating_system = "linux"
-      region           = local.region
-    })]
+    operating_system = "linux"
+    region           = local.region
+  })]
 
   depends_on = [module.eks_blueprints_kubernetes_addons]
 }
@@ -506,9 +509,9 @@ module "vpc" {
 ################################################################################
 
 resource "aws_acm_certificate" "cert" {
-  count               = var.enable_ingress ? 1 : 0
-  domain_name         = "*.${local.domain_name}"
-  validation_method   = "DNS"
+  count             = var.enable_ingress ? 1 : 0
+  domain_name       = "*.${local.domain_name}"
+  validation_method = "DNS"
 }
 
 resource "aws_route53_record" "cert" {

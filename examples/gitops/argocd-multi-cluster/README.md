@@ -73,7 +73,7 @@ You can use the Console, or the `aws` cli to create a hosted zone. Execute the f
 ```sh
 aws route53 create-hosted-zone --name $TF_VAR_domain_name --caller-reference "$(date)"
 ```
-Use the NameServers in the DelegatoinSet to update your registered domain NS records at the registrar. 
+Use the NameServers in the DelegatoinSet to update your registered domain NS records at the registrar.
 
 ## Deploy Hub Cluster
 After selecting LoadBalancer or Ingress for ArgoCD, deploy the Hub Cluster
@@ -89,7 +89,7 @@ Login with kubectl to Hub Cluster
 ```sh
 terraform -chdir=hub-cluster output -raw configure_kubectl
 ```
-Expected output, run the `aws eks command`
+Expected output, run the `aws eks update-kubeconfig` command
 ```
 aws eks update-kubeconfig --name hub-cluster --region us-west-2
 ```
