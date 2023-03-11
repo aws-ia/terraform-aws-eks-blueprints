@@ -171,6 +171,10 @@ module "eks_blueprints_kubernetes_addons" {
   data_plane_wait_arn = join(",", [for prof in module.eks.fargate_profiles : prof.fargate_profile_arn])
 
   enable_karpenter = true
+    karpenter_helm_config = {
+    repository_username = "placeholder-user"
+    repository_password = "placeholder-pass"
+  }
   karpenter_node_iam_instance_profile        = module.karpenter.instance_profile_name
   karpenter_enable_spot_termination_handling = true
 
