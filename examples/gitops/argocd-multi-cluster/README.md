@@ -50,7 +50,7 @@ You will be able to use ArgoCD with a valid SSL certificate on a domain (i.e. ar
 You can use a registered domain you control or register a new one following the instructions [here](https://aws.amazon.com/getting-started/hands-on/get-a-domain/).
 
 To enable this option, use:
-```
+```sh
 export TF_VAR_enable_ingress=true
 ```
 
@@ -300,6 +300,7 @@ Collect the following information from Amazon Cognito User Pool:
 Set the following Terraform Variables, for example
 ```sh
 export TF_VAR_argocd_enable_sso=true
+export TF_VAR_enable_ingress=true
 export TF_VAR_argocd_domain="example.com" # See instructions above to configure Route 53 zone, and ACM Certificate
 export TF_VAR_argocd_sso_issuer="https://cognito-idp.us-west-2.amazonaws.com/us-west-2_voJm3sI8d"
 export TF_VAR_argocd_sso_client_id="67dted0oitvupuubmah32ar10s"
