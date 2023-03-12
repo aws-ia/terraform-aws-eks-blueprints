@@ -136,7 +136,7 @@ echo "URL: https://$(kubectl get ing -n argocd argo-cd-argocd-server -o jsonpath
 echo "Username: admin"
 echo "Password: $(kubectl get secrets argocd-initial-admin-secret -n argocd --template="{{index .data.password | base64decode}}")"
 ```
-> If not using Ingress get the URL via the following command:
+> If using LoadBalancer insteaf of Ingress get the URL via the following command:
 ```sh
 echo "URL: https://$(kubectl get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 echo "Username: admin"
@@ -180,8 +180,8 @@ You can view the ArgoCD metrics using Grafana.
 To get the URL, username, and password run the followig command
 ```sh
 echo "URL: https://$(kubectl get svc grafana -n grafana -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
-echo "Username: admin"
-echo "Password: $(kubectl get secrets argocd-initial-admin-secret -n grafana --template="{{index .data.admin-password | base64decode}}")"
+echo "Username: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-user\" | base64decode}}")"
+echo "Password: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-password\" | base64decode}}")"
 ```
 Select the ArgoCD dashboard that is loaded
 
