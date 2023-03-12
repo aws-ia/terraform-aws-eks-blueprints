@@ -183,7 +183,7 @@ echo "URL: https://$(kubectl get svc grafana -n grafana -o jsonpath='{.status.lo
 echo "Username: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-user\" | base64decode}}")"
 echo "Password: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-password\" | base64decode}}")"
 ```
-Select the ArgoCD dashboard that is loaded
+Select the ArgoCD dashboard that is loaded pre-loaded
 
 ## (Optional) Private git repositories
 To use private git repositories, you can use SSH authentication.
