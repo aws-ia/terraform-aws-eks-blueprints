@@ -179,7 +179,7 @@ kubectl get secrets -n argocd -l environment=dev,argocd.argoproj.io/secret-type=
 You can view the ArgoCD metrics using Grafana.
 To get the URL, username, and password run the followig command
 ```sh
-echo "URL: https://$(kubectl get svc grafana -n grafana -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
+echo "URL: http://$(kubectl get svc grafana -n grafana -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 echo "Username: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-user\" | base64decode}}")"
 echo "Password: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-password\" | base64decode}}")"
 ```

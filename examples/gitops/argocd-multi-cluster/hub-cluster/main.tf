@@ -57,9 +57,8 @@ data "aws_iam_policy_document" "irsa_policy" {
 }
 
 locals {
-  name             = "hub-cluster"
-  hub_cluster_name = var.hub_cluster_name
-  domain_name      = var.domain_name
+  name        = var.hub_cluster_name
+  domain_name = var.domain_name
 
   cluster_version = "1.24"
 
@@ -74,12 +73,13 @@ locals {
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 
-  argocd_namespace  = "argocd"
+  argocd_namespace         = "argocd"
+  argocd_namespaces_prefix = var.argocd_namespaces_prefix
 
   # Ingress Config
-  enable_ingress = var.enable_ingress
-  argocd_subdomain  = "argocd"
-  argocd_domain_arn = local.enable_ingress ? data.aws_route53_zone.domain_name[0].arn : ""
+  enable_ingress      = var.enable_ingress
+  argocd_subdomain    = "argocd"
+  argocd_domain_arn   = local.enable_ingress ? data.aws_route53_zone.domain_name[0].arn : ""
   domain_private_zone = var.domain_private_zone
 
   # Multi-{account,region} setup
@@ -263,7 +263,7 @@ module "eks_blueprints_kubernetes_addons" {
           }
           configs : {
             params : {
-              "application.namespaces" : "cluster-*" # See more config options at https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace/
+              "application.namespaces" : local.argocd_namespaces_prefix # See more config options at https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace/
             }
             cm : {
               "application.resourceTrackingMethod" : "annotation+label" #use annotation for tracking but keep labels for compatibility with other tools
@@ -276,8 +276,8 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   # Add-ons
-  enable_aws_load_balancer_controller = true # ArgoCD UI depends on aws-loadbalancer-controller for Ingress
-  enable_metrics_server               = true # ArgoCD HPAs depend on metric-server
+  enable_aws_load_balancer_controller = true                                # ArgoCD UI depends on aws-loadbalancer-controller for Ingress
+  enable_metrics_server               = true                                # ArgoCD HPAs depend on metric-server
   enable_external_dns                 = local.enable_ingress ? true : false # ArgoCD Server and UI use valid https domain name
   external_dns_helm_config = {
     domainFilters : [local.domain_name]
