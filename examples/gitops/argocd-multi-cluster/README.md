@@ -130,13 +130,13 @@ cd ..
 ## Validate
 
 ### Access ArgoCD
-Get ArgoCD URL and Passwordif using Ingress
+Get ArgoCD URL and Password if using Ingress
 ```sh
 echo "URL: https://$(kubectl get ing -n argocd argo-cd-argocd-server -o jsonpath='{.spec.tls[0].hosts[0]}')"
 echo "Username: admin"
 echo "Password: $(kubectl get secrets argocd-initial-admin-secret -n argocd --template="{{index .data.password | base64decode}}")"
 ```
-> If using LoadBalancer insteaf of Ingress get the URL via the following command:
+Get ArgoCD URL and Password if using LoadBalancer and not Ingress
 ```sh
 echo "URL: https://$(kubectl get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 echo "Username: admin"
@@ -177,7 +177,7 @@ kubectl get secrets -n argocd -l environment=dev,argocd.argoproj.io/secret-type=
 
 ## Grafana
 You can view the ArgoCD metrics using Grafana.
-To get the URL, username, and password run the followig command
+Get Grafana URL and Password if using LoadBalancer and not Ingress
 ```sh
 echo "URL: http://$(kubectl get svc grafana -n grafana -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 echo "Username: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-user\" | base64decode}}")"
