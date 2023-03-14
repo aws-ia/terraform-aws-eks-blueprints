@@ -4,5 +4,5 @@ output "configure_kubectl" {
 }
 output "argocd_login" {
   description = "ArgoCD CLI login command"
-  value       = local.enable_ingress ? "argocd login ${local.argocd_subdomain}.${local.domain_name} --username admin" : "argocd login $(kubectl get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}') --username admin"
+  value       = local.enable_ingress ? "argocd login ${local.argocd_subdomain}.${local.domain_name} --username admin" : "argocd login $(kubectl get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}') --username admin --insecure"
 }
