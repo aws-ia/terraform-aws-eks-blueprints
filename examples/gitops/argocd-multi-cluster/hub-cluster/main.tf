@@ -78,16 +78,24 @@ locals {
 
   # Ingress Config
   enable_ingress      = var.enable_ingress
-  argocd_subdomain    = "argocd"
+  argocd_subdomain    = var.argocd_subdomain
   argocd_domain_arn   = local.enable_ingress ? data.aws_route53_zone.domain_name[0].arn : ""
   domain_private_zone = var.domain_private_zone
+  grafana_subdomain   = var.grafana_subdomain
 
   # Multi-{account,region} setup
   region      = var.hub_region
   hub_profile = var.hub_profile
 
-  # AWS Cognito for ArgoCD SSO
-  argocd_sso = var.argocd_enable_sso && local.enable_ingress ? templatefile("${path.module}/cognito.yaml", {
+  # ArgoCD Helm values for base
+  argocd_values = templatefile("${path.module}/helm-argocd/values.yaml", {
+    irsa_iam_role_arn = module.argocd_irsa.irsa_iam_role_arn
+    host              = "${local.argocd_subdomain}.${local.domain_name}"
+    enable_ingress    = local.enable_ingress
+  })
+
+  # ArgoCD Helm values for AWS Cognito SSO Login
+  argocd_sso = var.argocd_enable_sso && local.enable_ingress ? templatefile("${path.module}/helm-argocd/cognito.yaml", {
     issuer       = var.argocd_sso_issuer
     clientID     = var.argocd_sso_client_id
     clientSecret = var.argocd_sso_client_secret
@@ -144,135 +152,7 @@ module "eks_blueprints_kubernetes_addons" {
   argocd_helm_config = {
     namespace = local.argocd_namespace
     version   = "5.23.1" # ArgoCD v2.6.2
-    values = [
-      yamlencode(
-        {
-          dex : {
-            enabled : false # Disable dex since we are not using
-          }
-          redis-ha : {
-            enabled : true
-          }
-          controller : {
-            replicas : 3 # Additional replicas will cause sharding of managed clusters across number of replicas.
-            serviceAccount : {
-              annotations : {
-                "eks.amazonaws.com/role-arn" : module.argocd_irsa.irsa_iam_role_arn
-              }
-            }
-            metrics : {
-              enabled : true
-              service : {
-                annotations : {
-                  "prometheus.io/scrape" : true
-                }
-              }
-            }
-          }
-          repoServer : {
-            autoscaling : {
-              enabled : true
-              minReplicas : local.azs_count
-            }
-            resources : { # Adjust based on your specific use case (required for HPA)
-              limits : {
-                cpu : "200m"
-                memory : "512Mi"
-              }
-              requests : {
-                cpu : "100m"
-                memory : "256Mi"
-              }
-            }
-            metrics : {
-              enabled : true
-              service : {
-                annotations : {
-                  "prometheus.io/scrape" : true
-                }
-              }
-            }
-          }
-          applicationSet : {
-            replicaCount : 2 # The controller doesn't scale horizontally, is active-standby replicas
-            metrics : {
-              enabled : true
-              service : {
-                annotations : {
-                  "prometheus.io/scrape" : true
-                }
-              }
-            }
-          }
-          server : {
-            autoscaling : {
-              enabled : true
-              minReplicas : local.azs_count
-            }
-            resources : { # Adjust based on your specific use case (required for HPA)
-              limits : {
-                cpu : "200m"
-                memory : "512Mi"
-              }
-              requests : {
-                cpu : "100m"
-                memory : "256Mi"
-              }
-            }
-            metrics : {
-              enabled : true
-              service : {
-                annotations : {
-                  "prometheus.io/scrape" : true
-                }
-              }
-            }
-            serviceAccount : {
-              annotations : {
-                "eks.amazonaws.com/role-arn" : module.argocd_irsa.irsa_iam_role_arn
-              }
-            }
-            service : {
-              type : local.enable_ingress ? "ClusterIP" : "LoadBalancer"
-            }
-            ingress : {
-              enabled : local.enable_ingress
-              annotations : {
-                "alb.ingress.kubernetes.io/scheme" : "internet-facing"
-                "alb.ingress.kubernetes.io/target-type" : "ip"
-                "alb.ingress.kubernetes.io/backend-protocol" : "HTTPS"
-                "alb.ingress.kubernetes.io/listen-ports" : "[{\"HTTPS\":443}]"
-                "alb.ingress.kubernetes.io/tags" : "Environment=hub,GitOps=true"
-              }
-              hosts : ["${local.argocd_subdomain}.${local.domain_name}"]
-              tls : [
-                {
-                  hosts : ["${local.argocd_subdomain}.${local.domain_name}"]
-                }
-              ]
-              ingressClassName : "alb"
-            }
-            ingressGrpc : {
-              enabled : true
-              isAWSALB : true
-              awsALB : {
-                serviceType : "ClusterIP"       # Instance mode needs type NodePort, IP mode needs type ClusterIP or NodePort
-                backendProtocolVersion : "GRPC" ## This tells AWS to send traffic from the ALB using HTTP2. Can use gRPC as well if you want to leverage gRPC specific features
-              }
-            }
-          }
-          configs : {
-            params : {
-              "application.namespaces" : local.argocd_namespaces_prefix # See more config options at https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace/
-            }
-            cm : {
-              "application.resourceTrackingMethod" : "annotation+label" #use annotation for tracking but keep labels for compatibility with other tools
-            }
-          }
-        }
-      ),
-      local.argocd_sso
-    ]
+    values    = [local.argocd_values, local.argocd_sso]
   }
 
   # Add-ons
@@ -414,6 +294,9 @@ resource "aws_iam_policy" "irsa_policy" {
   tags        = local.tags
 }
 
+################################################################################
+# Grafana
+################################################################################
 
 resource "helm_release" "grafana" {
   name             = "grafana"
@@ -424,9 +307,10 @@ resource "helm_release" "grafana" {
   create_namespace = true
 
 
-  values = [templatefile("${path.module}/grafana-argocd/values.yaml", {
+  values = [templatefile("${path.module}/helm-grafana/values.yaml", {
+    host             = "${local.grafana_subdomain}.${local.domain_name}"
+    enable_ingress   = local.enable_ingress
     operating_system = "linux"
-    region           = local.region
   })]
 
   depends_on = [module.eks_blueprints_kubernetes_addons]

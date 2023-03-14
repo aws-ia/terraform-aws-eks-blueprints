@@ -16,8 +16,8 @@ managing multiple tenant clusters (spokes).
 - ArgoCD Application Sets using Cluster generator, cluster are labeled based on environment (i.e. dev, test, prod)
 - ArgoCD Ingress configuration with a custom domain name, valid SSL certificate thru AWS ACM, and AWS Route 53 DNS configured with external-dns. Secure login via Web Ui and CLI using HTTPS and grpc (i.e. no need to skip SSL verification)
 - ArgoCD High Availability with Auto-scaling (HPA), controller with multiple replicas for cluster sharding. Disable unused components (i.e. dex server).
+- ArgoCD Observability via Prometheus and Grafana, Grafana Ingress configuration with a custom domain name, valid SSL certificate thru AWS ACM, and AWS Route 53 DNS configured with external-dns.
 - Support private git repositories and configuration via ssh private key stored in AWS Secret Manager.
-- ArgoCD initial admin password generated and stored in AWS Secret Manager.
 - ArgoCD SSO Login with Amazon Cognito. Read the section below for instructions on how to setup Amazon Cognito
 - Instructions and `destroy.sh` script to cleanly destroy clusters.
 
@@ -130,13 +130,13 @@ cd ..
 ## Validate
 
 ### Access ArgoCD
-Get ArgoCD URL and Password if using Ingress
+Get the ArgoCD URL and Password if using Ingress
 ```sh
 echo "URL: https://$(kubectl get ing -n argocd argo-cd-argocd-server -o jsonpath='{.spec.tls[0].hosts[0]}')"
 echo "Username: admin"
 echo "Password: $(kubectl get secrets argocd-initial-admin-secret -n argocd --template="{{index .data.password | base64decode}}")"
 ```
-Get ArgoCD URL and Password if using LoadBalancer and not Ingress
+Get the ArgoCD URL and Password if using LoadBalancer and not Ingress
 ```sh
 echo "URL: https://$(kubectl get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 echo "Username: admin"
@@ -177,12 +177,20 @@ kubectl get secrets -n argocd -l environment=dev,argocd.argoproj.io/secret-type=
 
 ## Grafana
 You can view the ArgoCD metrics using Grafana.
-Get Grafana URL and Password if using LoadBalancer and not Ingress
+Get the Grafana URL and Password if using Ingress
+```sh
+echo "URL: https://$(kubectl get ing grafana -n grafana -o jsonpath='{.spec.tls[0].hosts[0]}')"
+echo "Username: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-user\" | base64decode}}")"
+echo "Password: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-password\" | base64decode}}")"
+```
+Get the Grafana URL and Password if using LoadBalancer and not Ingress
 ```sh
 echo "URL: http://$(kubectl get svc grafana -n grafana -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 echo "Username: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-user\" | base64decode}}")"
 echo "Password: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-password\" | base64decode}}")"
 ```
+
+
 Select the ArgoCD dashboard that is loaded pre-loaded
 
 ## (Optional) Private git repositories

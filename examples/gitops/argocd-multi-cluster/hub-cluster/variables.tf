@@ -53,6 +53,18 @@ variable "domain_name" {
   default     = ""
 }
 
+variable "argocd_subdomain" {
+  description = "ArgoCD subdomain"
+  type        = string
+  default     = "argocd"
+}
+
+variable "grafana_subdomain" {
+  description = "Grafana subdomain"
+  type        = string
+  default     = "grafana"
+}
+
 variable "enable_ingress" {
   description = "Enable ingress"
   type        = bool

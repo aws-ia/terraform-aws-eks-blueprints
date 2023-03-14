@@ -3,7 +3,20 @@ serviceAccount:
   create: false
 
 service:
-  type: LoadBalancer
+  type: ${enable_ingress ? "ClusterIP" : "LoadBalancer"}
+
+ingress:
+  enabled: ${enable_ingress}
+  annotations:
+    alb.ingress.kubernetes.io/scheme: "internet-facing"
+    alb.ingress.kubernetes.io/target-type: "ip"
+    alb.ingress.kubernetes.io/listen-ports: "[{\"HTTPS\":443}]"
+    alb.ingress.kubernetes.io/tags: "Environment=hub,GitOps=true"
+  ingressClassName: "alb"
+  hosts:
+  - ${host}
+  tls:
+  - hosts: [${host}]
 
 resources:
   limits:
