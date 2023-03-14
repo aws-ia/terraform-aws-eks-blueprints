@@ -45,6 +45,7 @@ locals {
 
   gameserver_minport = 7000
   gameserver_maxport = 8000
+
   tags = {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
