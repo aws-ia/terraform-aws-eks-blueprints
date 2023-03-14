@@ -79,7 +79,7 @@ data "aws_availability_zones" "available" {}
 
 data "aws_iam_role" "argo_role" {
   provider = aws.hub
-  name     = "argocd-hub"
+  name     = "${local.hub_cluster_name}-argocd-hub"
 }
 
 data "aws_iam_policy_document" "assume_role_policy" {

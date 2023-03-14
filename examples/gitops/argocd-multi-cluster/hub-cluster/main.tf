@@ -280,7 +280,7 @@ module "argocd_irsa" {
   create_kubernetes_namespace       = false
   create_kubernetes_service_account = false
   kubernetes_service_account        = "argocd-*"
-  irsa_iam_role_name                = "argocd-hub"
+  irsa_iam_role_name                = "${module.eks.cluster_name}-argocd-hub"
   irsa_iam_policies                 = [aws_iam_policy.irsa_policy.arn]
   eks_cluster_id                    = module.eks.cluster_name
   eks_oidc_provider_arn             = module.eks.oidc_provider_arn

@@ -6,6 +6,7 @@ set -x
 kubectl_login=$(terraform output -raw configure_kubectl)
 $kubectl_login
 kubectl delete ing argo-cd-argocd-server -n argocd
+kubectl delete ing grafana -n grafana
 
 terraform destroy -target="module.eks_blueprints_argocd_workloads" -auto-approve
 sleep 60 # wait for argocd apps to be deleted
