@@ -16,7 +16,7 @@ To provision this example:
 
 ```sh
 terraform init
-terraform apply -target module.vpc
+terraform apply -target module.vpc -target module.vpc_endpoints -target module.vpc_endpoints_sg
 terraform apply -target module.eks
 terraform apply
 ```
