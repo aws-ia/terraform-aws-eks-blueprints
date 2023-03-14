@@ -85,7 +85,9 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "../../modules/kubernetes-addons"
+  # Users should pin the version to the latest available release
+  # tflint-ignore: terraform_module_pinned_source
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
 
   eks_cluster_id       = module.eks.cluster_name
   eks_cluster_endpoint = module.eks.cluster_endpoint
@@ -93,12 +95,29 @@ module "eks_blueprints_kubernetes_addons" {
   eks_cluster_version  = module.eks.cluster_version
 
   # Add-ons
-  enable_cert_manager            = true
-  enable_cert_manager_csi_driver = true
-  enable_aws_privateca_issuer    = true
-  aws_privateca_acmca_arn        = aws_acmpca_certificate_authority.this.arn
+  enable_cert_manager         = true
+  enable_aws_privateca_issuer = true
+  aws_privateca_acmca_arn     = aws_acmpca_certificate_authority.this.arn
 
   tags = local.tags
+}
+
+################################################################################
+# Cert Manager CSI Helm Chart
+################################################################################
+
+resource "helm_release" "cert_manager_csi" {
+  name             = "cert-manager-csi-driver"
+  chart            = "cert-manager-csi-driver"
+  version          = "v0.4.2"
+  repository       = "https://charts.jetstack.io"
+  description      = "Cert Manager CSI Driver Add-on"
+  namespace        = "cert-manager"
+  create_namespace = false
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
+  ]
 }
 
 #-------------------------------

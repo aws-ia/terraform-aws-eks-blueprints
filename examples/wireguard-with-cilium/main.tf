@@ -86,26 +86,38 @@ module "eks" {
 }
 
 ################################################################################
-# Kubernetes Addons
+# Cilium Helm Chart for e2e encryption with Wireguard
 ################################################################################
 
-module "eks_blueprints_kubernetes_addons" {
-  source = "../../modules/kubernetes-addons"
+resource "helm_release" "cilium" {
+  name             = "cilium"
+  chart            = "cilium"
+  version          = "1.12.3"
+  repository       = "https://helm.cilium.io/"
+  description      = "Cilium Add-on"
+  namespace        = "kube-system"
+  create_namespace = false
 
-  eks_cluster_id       = module.eks.cluster_name
-  eks_cluster_endpoint = module.eks.cluster_endpoint
-  eks_oidc_provider    = module.eks.oidc_provider
-  eks_cluster_version  = module.eks.cluster_version
+  values = [
+    <<-EOT
+      cni:
+        chainingMode: aws-cni
+      enableIPv4Masquerade: false
+      tunnel: disabled
+      endpointRoutes:
+        enabled: true
+      l7Proxy: false
+      encryption:
+        enabled: true
+        type: wireguard
+    EOT
+  ]
 
-  # Wait on the `kube-system` profile before provisioning addons
-  data_plane_wait_arn = join(",", [for group in module.eks.eks_managed_node_groups : group.node_group_arn])
-
-  # Add-ons
-  enable_cilium           = true
-  cilium_enable_wireguard = true
-
-  tags = local.tags
+  depends_on = [
+    module.eks
+  ]
 }
+
 
 #---------------------------------------------------------------
 # Sample App for Testing
@@ -147,7 +159,7 @@ resource "kubectl_manifest" "server" {
   })
 
   depends_on = [
-    module.eks_blueprints_kubernetes_addons
+    helm_release.cilium
   ]
 }
 

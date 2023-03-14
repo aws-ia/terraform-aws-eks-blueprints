@@ -363,7 +363,9 @@ module "eks_blueprints" {
 #certificate_arn = aws_acm_certificate_validation.example.certificate_arn
 
 module "kubernetes_addons" {
-  source             = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.18.1/modules/kubernetes-addons"
+  # Users should pin the version to the latest available release
+  # tflint-ignore: terraform_module_pinned_source
+  source             = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
   eks_cluster_id     = module.eks_blueprints.eks_cluster_id
   eks_cluster_domain = local.eks_cluster_domain
 

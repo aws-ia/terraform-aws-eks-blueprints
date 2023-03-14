@@ -80,7 +80,9 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "../../modules/kubernetes-addons"
+  # Users should pin the version to the latest available release
+  # tflint-ignore: terraform_module_pinned_source
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
 
   eks_cluster_id       = module.eks.cluster_name
   eks_cluster_endpoint = module.eks.cluster_endpoint
@@ -94,15 +96,6 @@ module "eks_blueprints_kubernetes_addons" {
       {
         name  = "configs.secret.argocdServerAdminPassword"
         value = bcrypt_hash.argo.id
-      }
-    ]
-  }
-
-  keda_helm_config = {
-    values = [
-      {
-        name  = "serviceAccount.create"
-        value = "false"
       }
     ]
   }
@@ -129,12 +122,9 @@ module "eks_blueprints_kubernetes_addons" {
   enable_cert_manager                   = true
   enable_cluster_autoscaler             = true
   enable_karpenter                      = true
-  enable_keda                           = true
   enable_metrics_server                 = true
   enable_prometheus                     = true
-  enable_traefik                        = true
   enable_vpa                            = true
-  enable_yunikorn                       = true
   enable_argo_rollouts                  = true
 
   tags = local.tags

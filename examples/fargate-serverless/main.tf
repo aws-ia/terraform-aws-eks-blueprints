@@ -107,7 +107,9 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "../../modules/kubernetes-addons"
+  # Users should pin the version to the latest available release
+  # tflint-ignore: terraform_module_pinned_source
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
 
   eks_cluster_id       = module.eks.cluster_name
   eks_cluster_endpoint = module.eks.cluster_endpoint
@@ -116,9 +118,6 @@ module "eks_blueprints_kubernetes_addons" {
 
   # Wait on the `kube-system` profile before provisioning addons
   data_plane_wait_arn = join(",", [for prof in module.eks.fargate_profiles : prof.fargate_profile_arn])
-
-  # Sample application
-  enable_app_2048 = true
 
   # Enable Fargate logging
   enable_fargate_fluentbit = true
@@ -179,4 +178,107 @@ module "vpc" {
   }
 
   tags = local.tags
+}
+
+################################################################################
+# Sample App
+################################################################################
+
+resource "kubernetes_namespace_v1" "this" {
+  metadata {
+    name = local.name
+  }
+}
+
+resource "kubernetes_deployment_v1" "this" {
+  metadata {
+    name      = local.name
+    namespace = kubernetes_namespace_v1.this.metadata[0].name
+  }
+
+  spec {
+    replicas = 3
+
+    selector {
+      match_labels = {
+        "app.kubernetes.io/name" = local.name
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          "app.kubernetes.io/name" = local.name
+        }
+      }
+
+      spec {
+        container {
+          image = "public.ecr.aws/l6m2t8p7/docker-2048:latest"
+          # image_pull_policy = "Always"
+          name = local.name
+
+          port {
+            container_port = 80
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service_v1" "this" {
+  metadata {
+    name      = local.name
+    namespace = kubernetes_namespace_v1.this.metadata[0].name
+  }
+
+  spec {
+    selector = {
+      "app.kubernetes.io/name" = local.name
+    }
+
+
+    port {
+      port        = 80
+      target_port = 80
+      protocol    = "TCP"
+    }
+
+    type = "NodePort"
+  }
+}
+
+resource "kubernetes_ingress_v1" "this" {
+  metadata {
+    name      = local.name
+    namespace = kubernetes_namespace_v1.this.metadata[0].name
+
+    annotations = {
+      "alb.ingress.kubernetes.io/scheme"      = "internet-facing"
+      "alb.ingress.kubernetes.io/target-type" = "ip"
+    }
+  }
+
+  spec {
+    ingress_class_name = "alb"
+
+    rule {
+      http {
+        path {
+          path      = "/"
+          path_type = "Prefix"
+
+          backend {
+            service {
+              name = local.name
+              port {
+                number = 80
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
