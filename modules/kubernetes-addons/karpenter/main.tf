@@ -37,7 +37,7 @@ resource "aws_sqs_queue_policy" "this" {
 resource "aws_cloudwatch_event_rule" "this" {
   for_each = { for k, v in local.event_rules : k => v if var.enable_spot_termination }
 
-  name_prefix   = "${var.rule_name_prefix}${each.value.name}-"
+  name_prefix   = "${var.rule_name_prefix}-${each.value.name}-"
   description   = each.value.description
   event_pattern = jsonencode(each.value.event_pattern)
   tags = merge(
