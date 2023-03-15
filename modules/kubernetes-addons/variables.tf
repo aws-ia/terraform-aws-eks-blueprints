@@ -911,6 +911,12 @@ variable "karpenter_enable_spot_termination_handling" {
   default     = false
 }
 
+variable "karpenter_event_rule_name_prefix" {
+  description = "Prefix used for karpenter event bridge rules"
+  type        = string
+  default     = "Karpenter"
+}
+
 variable "sqs_queue_managed_sse_enabled" {
   description = "Enable server-side encryption (SSE) for a SQS queue"
   type        = bool
