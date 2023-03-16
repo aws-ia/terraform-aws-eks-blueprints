@@ -915,6 +915,11 @@ variable "karpenter_event_rule_name_prefix" {
   description = "Prefix used for karpenter event bridge rules"
   type        = string
   default     = ""
+
+  validation {
+    condition     = length(var.karpenter_event_rule_name_prefix) == 64
+    error_message = "Maximum input length exceeded. Please enter no more than 64 characters."
+  }
 }
 
 variable "sqs_queue_managed_sse_enabled" {
