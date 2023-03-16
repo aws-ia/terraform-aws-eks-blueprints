@@ -13,7 +13,7 @@
     
     
       
-        <title>Karpenter - Amazon EKS Blueprints for Terraform</title>
+        <title>CrowdStrike Falcon - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#karpenter" class="md-skip">
+        <a href="#crowdstrike-falcon" class="md-skip">
           Skip to content
         </a>
       
@@ -99,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Karpenter
+              CrowdStrike Falcon
             
           </span>
         </div>
@@ -699,11 +699,73 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../crowdstrike-falcon/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          CrowdStrike Falcon
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         CrowdStrike Falcon
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#falcon-operator" class="md-nav__link">
+    Falcon Operator
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kubernetes-protection-agent-kpa" class="md-nav__link">
+    Kubernetes Protection Agent (KPA)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -825,65 +887,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Karpenter
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../karpenter/" class="md-nav__link">
         Karpenter
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-    <nav class="md-nav" aria-label="Usage">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gitops-configuration" class="md-nav__link">
-    GitOps Configuration
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1419,22 +1427,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#falcon-operator" class="md-nav__link">
+    Falcon Operator
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kubernetes-protection-agent-kpa" class="md-nav__link">
+    Kubernetes Protection Agent (KPA)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#usage" class="md-nav__link">
     Usage
   </a>
   
-    <nav class="md-nav" aria-label="Usage">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gitops-configuration" class="md-nav__link">
-    GitOps Configuration
-  </a>
-  
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
   
 </li>
       
@@ -1450,51 +1466,24 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/karpenter.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/edit/main/docs/add-ons/crowdstrike-falcon.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-<h1 id="karpenter">Karpenter<a class="headerlink" href="#karpenter" title="Permanent link">&para;</a></h1>
-<p>Karpenter is an open-source node provisioning project built for Kubernetes. Karpenter automatically launches just the right compute resources to handle your cluster's applications. It is designed to let you take full advantage of the cloud with fast and simple compute provisioning for Kubernetes clusters.</p>
-<p>For complete project documentation, please visit the <a href="https://karpenter.sh/docs/getting-started/">Karpenter documentation</a>.</p>
+<h1 id="crowdstrike-falcon">CrowdStrike Falcon<a class="headerlink" href="#crowdstrike-falcon" title="Permanent link">&para;</a></h1>
+<p><a href="https://github.com/CrowdStrike/terraform-kubectl-falcon"><code>terraform-kubectl-falcon</code></a> is a Terraform module that can automate the deployment of CrowdStrike Falcon Sensor and the Kubernetes Protection Agent on a Kubernetes cluster.</p>
+<h2 id="falcon-operator">Falcon Operator<a class="headerlink" href="#falcon-operator" title="Permanent link">&para;</a></h2>
+<p>Falcon Operator is a Kubernetes operator that manages the deployment of the CrowdStrike Falcon Sensor on a Kubernetes cluster. The CrowdStrike Falcon Sensor provides runtime protection for workloads running on a Kubernetes cluster.</p>
+<p>More information can be found in the <a href="https://github.com/CrowdStrike/terraform-kubectl-falcon/blob/main/modules/operator/README.md">Operator submodule</a>.</p>
+<h2 id="kubernetes-protection-agent-kpa">Kubernetes Protection Agent (KPA)<a class="headerlink" href="#kubernetes-protection-agent-kpa" title="Permanent link">&para;</a></h2>
+<p>The Kubernetes Protection Agent provides visibility into the cluster by collecting event information from the Kubernetes layer. These events are correlated to sensor events and cloud events to provide complete cluster visibility.</p>
+<p>More information can be found in the <a href="https://github.com/CrowdStrike/terraform-kubectl-falcon/blob/main/modules/k8s-protection-agent/README.md">KPA sub-module</a>.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p>Karpenter can be deployed by enabling the add-on via the following. Check out the full <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/karpenter/locals.tf">example</a> to deploy the EKS Cluster with Karpenter.</p>
-<div class="highlight"><pre><span></span><code>enable_karpenter = true
-</code></pre></div>
-<p>You can optionally customize the Helm chart that deploys <code>Karpenter</code> via the following configuration.</p>
-<div class="highlight"><pre><span></span><code>  enable_karpenter = true
-  # Queue optional for native handling of instance termination events
-  karpenter_sqs_queue_arn = &quot;arn:aws:sqs:us-west-2:444455556666:queue1&quot;
-  # Optional  karpenter_helm_config
-  karpenter_helm_config = {
-    name                       = &quot;karpenter&quot;
-    chart                      = &quot;karpenter&quot;
-    repository                 = &quot;https://charts.karpenter.sh&quot;
-    version                    = &quot;0.19.3&quot;
-    namespace                  = &quot;karpenter&quot;
-    values = [templatefile(&quot;${path.module}/values.yaml&quot;, {
-         eks_cluster_id       = var.eks_cluster_id,
-         eks_cluster_endpoint = var.eks_cluster_endpoint,
-         service_account      = var.service_account,
-         operating_system     = &quot;linux&quot;
-    })]
-  }
-
-  karpenter_irsa_policies = [] # Optional to add additional policies to IRSA
-</code></pre></div>
-<h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
-<p>The following properties are made available for use when managing the add-on via GitOps.</p>
-<p>Refer to <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/karpenter/locals.tf">locals.tf</a> for latest config. GitOps with ArgoCD Add-on repo is located <a href="https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/values.yaml">here</a></p>
-<div class="highlight"><pre><span></span><code>  argocd_gitops_config = {
-    enable                    = true
-    serviceAccountName        = local.service_account
-    controllerClusterName     = var.eks_cluster_id
-    controllerClusterEndpoint = local.eks_cluster_endpoint
-    awsDefaultInstanceProfile = var.node_iam_instance_profile
-  }
-</code></pre></div>
+<p>Refer to the <a href="https://github.com/CrowdStrike/terraform-kubectl-falcon"><code>terraform-kubectl-falcon</code></a> documentation for the most up-to-date information on inputs and outputs.</p>
+<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
+<p>A full end to end example of using the <code>terraform-kubectl-falcon</code> module with <code>eks_blueprints</code> can be found in the <a href="https://github.com/CrowdStrike/terraform-kubectl-falcon/tree/v0.1.0/examples/aws-eks-blueprint-example">examples</a> directory of the <code>terraform-kubectl-falcon</code> module.</p>
 
               
             </article>
@@ -1510,7 +1499,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../kafka/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Strimzi Operator for Apache Kafka" rel="prev">
+        <a href="../crossplane/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Crossplane" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1519,20 +1508,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Strimzi Operator for Apache Kafka
+              Crossplane
             </div>
           </div>
         </a>
       
       
         
-        <a href="../keda/" class="md-footer__link md-footer__link--next" aria-label="Next: KEDA" rel="next">
+        <a href="../csi-secrets-store-provider-aws/" class="md-footer__link md-footer__link--next" aria-label="Next: secrets-store-csi-driver-provider-aws" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              KEDA
+              secrets-store-csi-driver-provider-aws
             </div>
           </div>
           <div class="md-footer__button md-icon">
