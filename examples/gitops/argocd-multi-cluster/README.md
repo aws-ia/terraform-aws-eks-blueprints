@@ -119,7 +119,7 @@ terraform apply -auto-approve
 cd ..
 ```
 
-## Deploy Spoke Cluster 2 "PROD"
+## Deploy Spoke Cluster 3 "PROD"
 ```sh
 cd spoke-cluster-2-prod
 terraform init
@@ -307,9 +307,9 @@ Collect the following information from Amazon Cognito User Pool:
 
 Set the following Terraform Variables, for example
 ```sh
-export TF_VAR_argocd_enable_sso=true
 export TF_VAR_enable_ingress=true
-export TF_VAR_argocd_domain="example.com" # See instructions above to configure Route 53 zone, and ACM Certificate
+export TF_VAR_domain_name="example.com" # See instructions above to configure Route 53 hosted zone
+export TF_VAR_argocd_enable_sso=true
 export TF_VAR_argocd_sso_issuer="https://cognito-idp.us-west-2.amazonaws.com/us-west-2_voJm3sI8d"
 export TF_VAR_argocd_sso_client_id="67dted0oitvupuubmah32ar10s"
 export TF_VAR_argocd_sso_client_secret="dp9cvv8f055pt99203aos3iota0ci7up96dgmfdi1eu03c569hj"
