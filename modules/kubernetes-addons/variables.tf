@@ -917,7 +917,7 @@ variable "karpenter_event_rule_name_prefix" {
   default     = ""
 
   validation {
-    condition     = length(var.karpenter_event_rule_name_prefix) == 64
+    condition     = length(var.karpenter_event_rule_name_prefix) <= 64
     error_message = "Maximum input length exceeded. Please enter no more than 64 characters."
   }
 }
