@@ -917,8 +917,8 @@ variable "karpenter_event_rule_name_prefix" {
   default     = ""
 
   validation {
-    condition     = length(var.karpenter_event_rule_name_prefix) <= 15
-    error_message = "Maximum input length exceeded. Please enter no more than 15 characters."
+    condition     = length(var.karpenter_event_rule_name_prefix) <= 14
+    error_message = "Maximum input length exceeded. Please enter no more than 14 characters."
   }
 }
 
