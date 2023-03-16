@@ -1472,3 +1472,16 @@ variable "consul_helm_config" {
   type        = any
   default     = {}
 }
+
+variable "enable_kubernetes_event_exporter" {
+  description = "kubernetes-event-exporter add-on"
+  type        = bool
+  default     = false
+}
+
+variable "kubernetes_event_exporter_config" {
+  description = "kubernetes-event-exporter Helm configuration values"
+  type        = any
+  default     = {}
+}
+

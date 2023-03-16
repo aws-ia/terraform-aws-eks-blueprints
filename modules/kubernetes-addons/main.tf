@@ -815,3 +815,13 @@ module "consul" {
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
 }
+
+module "kubernetes_event_exporter" {
+  source = "./kubernetes-event-exporter"
+
+  count = var.enable_kubernetes_event_exporter ? 1 : 0
+
+  helm_config       = var.kubernetes_event_exporter_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
