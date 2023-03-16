@@ -72,5 +72,5 @@ variable "sqs_queue_kms_data_key_reuse_period_seconds" {
 variable "rule_name_prefix" {
   description = "Prefix used for all event bridge rules"
   type        = string
-  default     = "Karpenter"
+  default     = ""
 }

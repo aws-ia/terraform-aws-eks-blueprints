@@ -914,7 +914,7 @@ variable "karpenter_enable_spot_termination_handling" {
 variable "karpenter_event_rule_name_prefix" {
   description = "Prefix used for karpenter event bridge rules"
   type        = string
-  default     = "Karpenter"
+  default     = ""
 }
 
 variable "sqs_queue_managed_sse_enabled" {
