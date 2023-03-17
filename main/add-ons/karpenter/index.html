@@ -1467,6 +1467,8 @@
 <div class="highlight"><pre><span></span><code>  enable_karpenter = true
   # Queue optional for native handling of instance termination events
   karpenter_sqs_queue_arn = &quot;arn:aws:sqs:us-west-2:444455556666:queue1&quot;
+  # Optional to add name prefix for Karpenter&#39;s event bridge rules
+  karpenter_event_rule_name_prefix = &quot;Karpenter&quot;
   # Optional  karpenter_helm_config
   karpenter_helm_config = {
     name                       = &quot;karpenter&quot;
