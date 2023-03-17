@@ -424,7 +424,7 @@ module "vpc_cni_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.14"
 
-  role_nam_prefix = "${module.eks.cluster_name}-vpc-cni-"
+  role_name_prefix = "${module.eks.cluster_name}-vpc-cni-"
 
   attach_vpc_cni_policy = true
   vpc_cni_enable_ipv4   = true
