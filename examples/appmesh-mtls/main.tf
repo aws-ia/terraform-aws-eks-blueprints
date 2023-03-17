@@ -42,10 +42,6 @@ provider "kubectl" {
   }
 }
 
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
-}
-
 data "aws_availability_zones" "available" {}
 
 data "aws_partition" "current" {}
@@ -191,18 +187,11 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.9"
+  version = "~> 19.10"
 
   cluster_name                   = local.name
   cluster_version                = "1.24"
   cluster_endpoint_public_access = true
-
-  # EKS Addons
-  cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
-  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -229,10 +218,21 @@ module "eks_blueprints_kubernetes_addons" {
   # tflint-ignore: terraform_module_pinned_source
   source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
 
-  eks_cluster_id       = module.eks.cluster_name
-  eks_cluster_endpoint = module.eks.cluster_endpoint
-  eks_oidc_provider    = module.eks.oidc_provider
-  eks_cluster_version  = module.eks.cluster_version
+  cluster_name            = module.eks.cluster_name
+  cluster_endpoint        = module.eks.cluster_endpoint
+  cluster_version         = module.eks.cluster_version
+  cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
+  oidc_provider_arn       = module.eks.oidc_provider_arn
+
+  eks_addons = {
+    coredns = {}
+    vpc-cni = {
+      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
+    }
+    kube-proxy = {}
+  }
+
+
 
   aws_privateca_acmca_arn     = aws_acmpca_certificate_authority.this.arn
   enable_cert_manager         = true
@@ -248,7 +248,7 @@ module "eks_blueprints_kubernetes_addons" {
 module "appmesh_addon" {
   # Users should pin the version to the latest available release
   # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addon"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/eks-blueprints-addon"
 
   chart            = "appmesh-controller"
   chart_version    = "1.7.0"
@@ -267,8 +267,8 @@ module "appmesh_addon" {
   set_irsa_name = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
 
   # IAM role for service account (IRSA)
-  create_role = true
-  role_name   = "appmesh-controller"
+  create_role      = true
+  role_name_prefix = "${module.eks.cluster_name}-appmesh-controller-"
   role_policy_arns = {
     appmesh = aws_iam_policy.this.arn
   }
@@ -415,7 +415,26 @@ module "vpc" {
 }
 
 resource "aws_iam_policy" "this" {
-  name        = "${module.eks.cluster_name}-appmesh"
+  name_prefix = "${module.eks.cluster_name}-appmesh-"
   description = "IAM Policy for App Mesh"
   policy      = data.aws_iam_policy_document.this.json
+}
+
+module "vpc_cni_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.14"
+
+  role_nam_prefix = "${module.eks.cluster_name}-vpc-cni-"
+
+  attach_vpc_cni_policy = true
+  vpc_cni_enable_ipv4   = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-node"]
+    }
+  }
+
+  tags = local.tags
 }

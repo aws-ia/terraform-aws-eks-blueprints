@@ -365,9 +365,13 @@ module "eks_blueprints" {
 module "kubernetes_addons" {
   # Users should pin the version to the latest available release
   # tflint-ignore: terraform_module_pinned_source
-  source             = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
-  eks_cluster_id     = module.eks_blueprints.eks_cluster_id
-  eks_cluster_domain = local.eks_cluster_domain
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+
+  cluster_name            = module.eks.cluster_name
+  cluster_endpoint        = module.eks.cluster_endpoint
+  cluster_version         = module.eks.cluster_version
+  cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
+  oidc_provider_arn       = module.eks.oidc_provider_arn
 
   #---------------------------------------------------------------
   # ARGO CD ADD-ON
@@ -399,36 +403,17 @@ module "kubernetes_addons" {
   }
 
   #---------------------------------------------------------------
-  # EKS Managed AddOns
-  # https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/
+  # EKS AddOns
   #---------------------------------------------------------------
-
-  enable_amazon_eks_coredns = true
-  amazon_eks_coredns_config = {
-    most_recent        = true
-    kubernetes_version = local.cluster_version
-    resolve_conflicts  = "OVERWRITE"
-  }
-
-  enable_amazon_eks_aws_ebs_csi_driver = true
-  amazon_eks_aws_ebs_csi_driver_config = {
-    most_recent        = true
-    kubernetes_version = local.cluster_version
-    resolve_conflicts  = "OVERWRITE"
-  }
-
-  enable_amazon_eks_kube_proxy = true
-  amazon_eks_kube_proxy_config = {
-    most_recent        = true
-    kubernetes_version = local.cluster_version
-    resolve_conflicts  = "OVERWRITE"
-  }
-
-  enable_amazon_eks_vpc_cni = true
-  amazon_eks_vpc_cni_config = {
-    most_recent        = true
-    kubernetes_version = local.cluster_version
-    resolve_conflicts  = "OVERWRITE"
+  eks_addons = {
+    aws-ebs-csi-driver = {
+      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
+    }
+    coredns = {}
+    vpc-cni = {
+      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
+    }
+    kube-proxy = {}
   }
 
   #---------------------------------------------------------------
@@ -457,5 +442,41 @@ module "kubernetes_addons" {
   }
 
   enable_kubecost = true
+}
 
+module "ebs_csi_driver_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.14"
+
+  role_name_prefix = "${module.eks.cluster_name}-ebs-csi-driver-"
+
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+
+  tags = local.tags
+}
+
+module "vpc_cni_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.14"
+
+  role_name_prefix = "${module.eks.cluster_name}-vpc-cni-"
+
+  attach_vpc_cni_policy = true
+  vpc_cni_enable_ipv4   = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-node"]
+    }
+  }
+
+  tags = local.tags
 }

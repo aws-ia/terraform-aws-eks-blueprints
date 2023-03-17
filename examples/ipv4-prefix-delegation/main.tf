@@ -28,17 +28,13 @@ provider "helm" {
   }
 }
 
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
-}
-
 data "aws_availability_zones" "available" {}
 
 locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
-  cluster_version = "1.24"
+  cluster_version = "1.25"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -56,7 +52,7 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.9"
+  version = "~> 19.10"
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
