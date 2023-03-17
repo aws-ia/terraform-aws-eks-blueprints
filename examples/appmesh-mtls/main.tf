@@ -267,8 +267,8 @@ module "appmesh_addon" {
   set_irsa_name = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
 
   # IAM role for service account (IRSA)
-  create_role      = true
-  role_name_prefix = "${module.eks.cluster_name}-appmesh-controller-"
+  create_role = true
+  role_name   = "${module.eks.cluster_name}-appmesh-controller-"
   role_policy_arns = {
     appmesh = aws_iam_policy.this.arn
   }
