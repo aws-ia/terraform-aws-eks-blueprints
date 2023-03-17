@@ -68,3 +68,14 @@ variable "sqs_queue_kms_data_key_reuse_period_seconds" {
   type        = number
   default     = null
 }
+
+variable "rule_name_prefix" {
+  description = "Prefix used for all event bridge rules"
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = length(var.rule_name_prefix) <= 14
+    error_message = "Maximum input length exceeded. Please enter no more than 14 characters."
+  }
+}

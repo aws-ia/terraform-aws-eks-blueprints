@@ -13,4 +13,5 @@ If you are using EKS Blueprints for Terraform please consider adding yourself as
 
 | Organization | Description | Contacts | Link |
 | --- | --- | --- | --- |
+| AlgoDx AB | At AlgoDx, we are dedicated to developing and implementing clinically validated ML-based clinical decision support software that save lives and reduce costs in healthcare, primarily targeting intensive and critical care. We achieve this through the integration of our state-of-the-art AI precision medicine platform with health systems’ electronic medical records. | sebastian.olsson@algodx.com, info+engineering@algodx.com | https://www.algodx.com/ |
 | Swyft Logistics | Swyft is an award-winning, tech-enabled last-mile e-Parcel delivery service provider, primarily operating in the fashion, electronics, and personal care industries. Swyft aspires to reinvent logistics in Pakistan and connecting people beyond possibilities. Our focus is on innovation, development of technologies and processes. | abdul.rauf@swyftlogistics.com, haider.aslam@swyftlogistics.com, osama.maruf@swyftlogistics.com,   | https://www.swyftlogistics.com/ |
