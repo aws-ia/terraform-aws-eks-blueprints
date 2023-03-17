@@ -440,8 +440,6 @@ module "kubernetes_addons" {
     policy       = "sync"
     logLevel     = "debug"
   }
-
-  enable_kubecost = true
 }
 
 module "ebs_csi_driver_irsa" {
