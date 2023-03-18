@@ -81,7 +81,7 @@ locals {
 
   # ArgoCD Helm values for base
   argocd_values = templatefile("${path.module}/helm-argocd/values.yaml", {
-    irsa_iam_role_arn = module.argocd_irsa.irsa_iam_role_arn
+    irsa_iam_role_arn = module.argocd_irsa.iam_role_arn
     host              = "${local.argocd_subdomain}.${local.domain_name}"
     enable_ingress    = local.enable_ingress
   })
@@ -159,30 +159,6 @@ module "eks_blueprints_kubernetes_addons" {
   # Observability for ArgoCD
   enable_amazon_eks_aws_ebs_csi_driver = true
   enable_prometheus                    = true
-  enable_amazon_prometheus             = true
-
-  enable_crossplane = false
-  crossplane_helm_config = {
-    version = "1.11.1" # Get the latest version from https://charts.crossplane.io/stable
-  }
-  crossplane_aws_provider = {
-    enable               = true
-    provider_config      = "aws-provider-config"
-    provider_aws_version = "v0.37.1" # Get the latest version from https://marketplace.upbound.io/providers/crossplane-contrib/provider-aws
-  }
-  crossplane_upbound_aws_provider = {
-    enable               = false
-    provider_config      = "aws-provider-config"
-    provider_aws_version = "v0.30.0" # Get the latest version from   https://marketplace.upbound.io/providers/upbound/provider-aws
-  }
-  crossplane_kubernetes_provider = {
-    enable                      = true
-    provider_kubernetes_version = "v0.7.0" # Get the latest version from  https://marketplace.upbound.io/providers/crossplane-contrib/provider-kubernetes
-  }
-  crossplane_helm_provider = {
-    enable                = true
-    provider_helm_version = "v0.14.0" # Get the latest version from https://marketplace.upbound.io/providers/crossplane-contrib/provider-helm
-  }
 
   tags = local.tags
 }
@@ -271,11 +247,12 @@ module "eks_blueprints_argocd_workloads" {
 ################################################################################
 
 module "argocd_irsa" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/eks-blueprints-addon?ref=argo-multi-cluster"  #TODO change git org to aws-ia
+  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/eks-blueprints-addon?ref=argo-multi-cluster" #TODO change git org to aws-ia
 
-  create_release = false
-  create_role    = true
-  role_name      = "${module.eks.cluster_name}-argocd-hub"
+  create_release       = false
+  create_role          = true
+  role_name_use_prefix = false
+  role_name            = "${module.eks.cluster_name}-argocd-hub"
   role_policy_arns = {
     ArgoCD_EKS_Policy = aws_iam_policy.irsa_policy.arn
   }
