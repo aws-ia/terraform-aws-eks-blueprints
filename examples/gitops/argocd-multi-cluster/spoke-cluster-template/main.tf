@@ -169,7 +169,7 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "../../../../modules/kubernetes-addons"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons?ref=argo-multi-cluster"
 
   eks_cluster_id       = module.eks.cluster_name
   eks_cluster_endpoint = module.eks.cluster_endpoint
@@ -324,7 +324,7 @@ resource "helm_release" "argocd_project" {
 ################################################################################
 
 module "eks_blueprints_argocd_addons" {
-  source = "../../../../modules/kubernetes-addons/argocd"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster"
   providers = {
     helm       = helm.hub
     kubernetes = kubernetes.hub
@@ -374,7 +374,7 @@ module "eks_blueprints_argocd_addons" {
 ################################################################################
 
 module "eks_blueprints_argocd_workloads" {
-  source = "../../../../modules/kubernetes-addons/argocd"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster"
   providers = {
     helm       = helm.hub
     kubernetes = kubernetes.hub

@@ -48,14 +48,6 @@ data "aws_caller_identity" "current" {}
 
 data "aws_availability_zones" "available" {}
 
-data "aws_iam_policy_document" "irsa_policy" {
-  statement {
-    effect    = "Allow"
-    resources = ["*"]
-    actions   = ["sts:AssumeRole"]
-  }
-}
-
 locals {
   name        = var.hub_cluster_name
   domain_name = var.domain_name
@@ -140,7 +132,7 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "../../../../modules/kubernetes-addons"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons?ref=argo-multi-cluster"
 
   eks_cluster_id       = module.eks.cluster_name
   eks_cluster_endpoint = module.eks.cluster_endpoint
@@ -200,7 +192,7 @@ module "eks_blueprints_kubernetes_addons" {
 ################################################################################
 
 module "eks_blueprints_argocd_addons" {
-  source = "../../../../modules/kubernetes-addons/argocd"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster"
 
   argocd_skip_install = true # Skip argocd controller install
 
@@ -240,7 +232,7 @@ module "eks_blueprints_argocd_addons" {
 ################################################################################
 
 module "eks_blueprints_argocd_workloads" {
-  source = "../../../../modules/kubernetes-addons/argocd"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster"
 
   argocd_skip_install = true # Skip argocd controller install
 
@@ -274,17 +266,28 @@ module "eks_blueprints_argocd_workloads" {
 
 }
 
+################################################################################
+# ArgoCD EKS Access
+################################################################################
+
 module "argocd_irsa" {
-  source                            = "../../../../modules/irsa"
-  kubernetes_namespace              = local.argocd_namespace
-  create_kubernetes_namespace       = false
-  create_kubernetes_service_account = false
-  kubernetes_service_account        = "argocd-*"
-  irsa_iam_role_name                = "${module.eks.cluster_name}-argocd-hub"
-  irsa_iam_policies                 = [aws_iam_policy.irsa_policy.arn]
-  eks_cluster_id                    = module.eks.cluster_name
-  eks_oidc_provider_arn             = module.eks.oidc_provider_arn
-  tags                              = local.tags
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/eks-blueprints-addon?ref=argo-multi-cluster"
+
+  create_release = false
+  create_role    = true
+  role_name      = "${module.eks.cluster_name}-argocd-hub"
+  role_policy_arns = {
+    ArgoCD_EKS_Policy = aws_iam_policy.irsa_policy.arn
+  }
+  oidc_providers = {
+    this = {
+      provider_arn    = module.eks.oidc_provider_arn
+      namespace       = local.argocd_namespace
+      service_account = "argocd-*"
+    }
+  }
+  tags = local.tags
+
 }
 
 resource "aws_iam_policy" "irsa_policy" {
@@ -292,6 +295,14 @@ resource "aws_iam_policy" "irsa_policy" {
   description = "IAM Policy for ArgoCD Hub"
   policy      = data.aws_iam_policy_document.irsa_policy.json
   tags        = local.tags
+}
+
+data "aws_iam_policy_document" "irsa_policy" {
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
+    actions   = ["sts:AssumeRole"]
+  }
 }
 
 ################################################################################
