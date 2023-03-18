@@ -170,13 +170,6 @@ data "aws_partition" "current" {}
 # Find the user currently in use by AWS
 data "aws_caller_identity" "current" {}
 
-data "aws_vpc" "vpc" {
-  filter {
-    name   = "tag:${var.vpc_tag_key}"
-    values = [local.tag_val_vpc]
-  }
-}
-
 data "aws_subnets" "private" {
   filter {
     name   = "tag:${var.vpc_tag_key}"
@@ -203,7 +196,7 @@ module "eks" {
   version = "~> 19.10"
 
   cluster_name                   = local.name
-  cluster_version                = "1.25"
+  cluster_version                = var.cluster_version
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
@@ -231,6 +224,8 @@ module "eks" {
 }
 
 module "admin_team" {
+  # Users should pin the version to the latest available release
+  # tflint-ignore: terraform_module_pinned_source
   source = "github.com/aws-ia/terraform-aws-eks-blueprints-teams"
 
   name = "admin"
@@ -251,6 +246,8 @@ module "admin_team" {
 
 
 module "application_teams" {
+  # Users should pin the version to the latest available release
+  # tflint-ignore: terraform_module_pinned_source
   source = "github.com/aws-ia/terraform-aws-eks-blueprints-teams"
 
   name              = "application_teams"
