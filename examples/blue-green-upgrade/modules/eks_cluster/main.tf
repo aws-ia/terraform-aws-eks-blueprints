@@ -198,29 +198,18 @@ data "aws_secretsmanager_secret_version" "admin_password_version" {
   secret_id = data.aws_secretsmanager_secret.argocd.id
 }
 
-module "eks_blueprints" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.18.1"
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 19.10"
 
-  cluster_name = local.name
+  cluster_name                   = local.name
+  cluster_version                = "1.25"
+  cluster_endpoint_public_access = true
 
-  # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = data.aws_vpc.vpc.id
-  private_subnet_ids = data.aws_subnets.private.ids
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
-  # EKS CONTROL PLANE VARIABLES
-  cluster_version = local.cluster_version
-
-  # List of map_roles
-  map_roles = [
-    {
-      rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_admin_role_name}" # The ARN of the IAM role
-      username = "ops-role"                                                                                    # The user name within Kubernetes to map to the IAM role
-      groups   = ["system:masters"]                                                                            # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
-    }
-  ]
-
-  # EKS MANAGED NODE GROUPS
-  managed_node_groups = {
+  eks_managed_node_groups = {
     mg_5 = {
       node_group_name = local.node_group_name
       instance_types  = ["m5.xlarge"]
@@ -229,20 +218,49 @@ module "eks_blueprints" {
     }
   }
 
-  platform_teams = {
-    admin = {
-      users = [
-        data.aws_caller_identity.current.arn,
-        "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${var.iam_platform_user}",
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_admin_role_name}"
-      ]
+  manage_aws_auth_configmap = true
+  aws_auth_roles = [
+    {
+      rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_admin_role_name}" # The ARN of the IAM role
+      username = "ops-role"                                                                                    # The user name within Kubernetes to map to the IAM role
+      groups   = ["system:masters"]                                                                            # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
     }
-  }
+  ]
 
-  application_teams = {
+  tags = local.tags
+}
 
+module "admin_team" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-teams"
+
+  name = "admin"
+
+  # Enables elevated, admin privileges for this team
+  enable_admin = true
+
+  users = [
+    data.aws_caller_identity.current.arn,
+    "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${var.iam_platform_user}",
+    "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_admin_role_name}"
+  ]
+
+  cluster_arn = module.eks.cluster_arn
+
+  tags = local.tags
+}
+
+
+module "application_teams" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-teams"
+
+  name              = "application_teams"
+  users             = [data.aws_caller_identity.current.arn]
+  cluster_arn       = module.eks.cluster_arn
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  namespaces = {
     team-burnham = {
-      "labels" = {
+      labels = {
         "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
         "appName"                                 = "burnham-team-app",
         "projectName"                             = "project-burnham",
@@ -252,7 +270,8 @@ module "eks_blueprints" {
         "billingCode"                             = "example",
         "branch"                                  = "example"
       }
-      "quota" = {
+
+      resource_quotas = {
         "requests.cpu"    = "10000m",
         "requests.memory" = "20Gi",
         "limits.cpu"      = "20000m",
@@ -261,13 +280,13 @@ module "eks_blueprints" {
         "secrets"         = "10",
         "services"        = "10"
       }
+
       ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
       manifests_dir = "../kubernetes/team-burnham/"
-      users         = [data.aws_caller_identity.current.arn]
     }
 
     team-riker = {
-      "labels" = {
+      labels = {
         "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
         "appName"                                 = "riker-team-app",
         "projectName"                             = "project-riker",
@@ -277,7 +296,7 @@ module "eks_blueprints" {
         "billingCode"                             = "example",
         "branch"                                  = "example"
       }
-      "quota" = {
+      resource_quotas = {
         "requests.cpu"    = "10000m",
         "requests.memory" = "20Gi",
         "limits.cpu"      = "20000m",
@@ -286,21 +305,20 @@ module "eks_blueprints" {
         "secrets"         = "10",
         "services"        = "10"
       }
+
       ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
       manifests_dir = "../kubernetes/team-riker/"
-      users         = [data.aws_caller_identity.current.arn]
     }
 
-
     ecsdemo-frontend = {
-      "labels" = {
+      labels = {
         "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
         "appName"                                 = "ecsdemo-frontend-app",
         "projectName"                             = "ecsdemo-frontend",
         "environment"                             = "dev",
       }
       #don't use quotas here cause ecsdemo app does not have request/limits
-      "quota" = {
+      resource_quotas = {
         "requests.cpu"    = "100",
         "requests.memory" = "20Gi",
         "limits.cpu"      = "200",
@@ -311,17 +329,18 @@ module "eks_blueprints" {
       }
       ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
       manifests_dir = "../kubernetes/ecsdemo-frontend/"
-      users         = [data.aws_caller_identity.current.arn]
     }
+
     ecsdemo-nodejs = {
-      "labels" = {
+      labels = {
         "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
         "appName"                                 = "ecsdemo-nodejs-app",
         "projectName"                             = "ecsdemo-nodejs",
         "environment"                             = "dev",
       }
+
       #don't use quotas here cause ecsdemo app does not have request/limits
-      "quota" = {
+      resource_quotas = {
         "requests.cpu"    = "10000m",
         "requests.memory" = "20Gi",
         "limits.cpu"      = "20000m",
@@ -330,19 +349,20 @@ module "eks_blueprints" {
         "secrets"         = "10",
         "services"        = "10"
       }
+
       ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
       manifests_dir = "../kubernetes/ecsdemo-nodejs"
-      users         = [data.aws_caller_identity.current.arn]
     }
     ecsdemo-crystal = {
-      "labels" = {
+      labels = {
         "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
         "appName"                                 = "ecsdemo-crystal-app",
         "projectName"                             = "ecsdemo-crystal",
         "environment"                             = "dev",
       }
+
       #don't use quotas here cause ecsdemo app does not have request/limits
-      "quota" = {
+      resource_quotas = {
         "requests.cpu"    = "10000m",
         "requests.memory" = "20Gi",
         "limits.cpu"      = "20000m",
@@ -351,9 +371,9 @@ module "eks_blueprints" {
         "secrets"         = "10",
         "services"        = "10"
       }
+
       ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
       manifests_dir = "../kubernetes/ecsdemo-crystal"
-      users         = [data.aws_caller_identity.current.arn]
     }
   }
 
@@ -367,7 +387,7 @@ module "kubernetes_addons" {
   # tflint-ignore: terraform_module_pinned_source
   source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
 
-  cluster_name            = module.eks.cluster_name
+  cluster_name            = module.eks_blueprints.eks_cluster_id
   cluster_endpoint        = module.eks.cluster_endpoint
   cluster_version         = module.eks.cluster_version
   cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url

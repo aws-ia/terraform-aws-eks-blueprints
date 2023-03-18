@@ -32,7 +32,7 @@ module "eks_cluster" {
   source = "../modules/eks_cluster"
 
   suffix_stack_name = "blue"
-  cluster_version   = "1.23"
+  cluster_version   = "1.25"
 
   argocd_route53_weight      = "100"
   route53_weight             = "100"
