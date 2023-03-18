@@ -169,7 +169,7 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons?ref=argo-multi-cluster"
+  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons?ref=argo-multi-cluster"  #TODO change git org to aws-ia
 
   eks_cluster_id       = module.eks.cluster_name
   eks_cluster_endpoint = module.eks.cluster_endpoint
@@ -324,7 +324,7 @@ resource "helm_release" "argocd_project" {
 ################################################################################
 
 module "eks_blueprints_argocd_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster"
+  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster"  #TODO change git org to aws-ia
   providers = {
     helm       = helm.hub
     kubernetes = kubernetes.hub
@@ -374,7 +374,7 @@ module "eks_blueprints_argocd_addons" {
 ################################################################################
 
 module "eks_blueprints_argocd_workloads" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster"
+  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster"  #TODO change git org to aws-ia
   providers = {
     helm       = helm.hub
     kubernetes = kubernetes.hub
