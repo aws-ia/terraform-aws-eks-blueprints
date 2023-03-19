@@ -2,6 +2,13 @@ provider "aws" {
   region = local.region
 }
 
+# Required for public ECR where Karpenter artifacts are hosted
+provider "aws" {
+  region = "us-east-1"
+  alias  = "virginia"
+}
+
+
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
@@ -23,6 +30,10 @@ data "aws_eks_cluster_auth" "this" {
 }
 
 data "aws_availability_zones" "available" {}
+
+data "aws_ecrpublic_authorization_token" "token" {
+  provider = aws.virginia
+}
 
 locals {
   name   = basename(path.cwd)
@@ -46,29 +57,22 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.9"
+  version = "~> 19.10"
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
-
-  # EKS Addons
-  cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
-  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_groups = {
     initial = {
-      instance_types = ["m5.large"]
+      instance_types = ["m5.xlarge"]
 
-      min_size     = 3
+      min_size     = 2
       max_size     = 10
-      desired_size = 5
+      desired_size = 2
     }
   }
 
@@ -80,29 +84,27 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "../../../modules/kubernetes-addons"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
 
-  eks_cluster_id       = module.eks.cluster_name
-  eks_cluster_endpoint = module.eks.cluster_endpoint
-  eks_oidc_provider    = module.eks.oidc_provider
-  eks_cluster_version  = module.eks.cluster_version
+  cluster_name            = module.eks.cluster_name
+  cluster_endpoint        = module.eks.cluster_endpoint
+  cluster_version         = module.eks.cluster_version
+  cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
+  oidc_provider_arn       = module.eks.oidc_provider_arn
 
   enable_argocd = true
   # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.
   argocd_helm_config = {
+    set = [
+      {
+        name = "server.service.type"
+        value = "LoadBalancer"
+      }
+    ]
     set_sensitive = [
       {
         name  = "configs.secret.argocdServerAdminPassword"
         value = bcrypt_hash.argo.id
-      }
-    ]
-  }
-
-  keda_helm_config = {
-    values = [
-      {
-        name  = "serviceAccount.create"
-        value = "false"
       }
     ]
   }
@@ -122,20 +124,45 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   # Add-ons
-  enable_amazon_eks_aws_ebs_csi_driver = true
-  enable_aws_for_fluentbit             = true
-  # Let fluentbit create the cw log group
-  aws_for_fluentbit_create_cw_log_group = false
-  enable_cert_manager                   = true
-  enable_cluster_autoscaler             = true
-  enable_karpenter                      = true
-  enable_keda                           = true
-  enable_metrics_server                 = true
-  enable_prometheus                     = true
-  enable_traefik                        = true
-  enable_vpa                            = true
-  enable_yunikorn                       = true
-  enable_argo_rollouts                  = true
+  eks_addons = {
+    aws-ebs-csi-driver = {
+      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
+    }
+    coredns = {}
+    vpc-cni = {
+      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
+    }
+    kube-proxy = {}
+  }
+
+  enable_cert_manager                          = true
+  enable_cluster_autoscaler                    = true
+  enable_aws_load_balancer_controller = true
+  enable_metrics_server               = true
+  enable_prometheus = true
+  enable_vpa        = true
+  enable_aws_for_fluentbit = true
+  # deletes log group on destroy
+  aws_for_fluentbit_cw_log_group_skip_destroy = false
+
+  enable_aws_node_termination_handler = true
+  #PSPs are deprecated in 1.25
+  aws_node_termination_handler_helm_config = {
+    set = [
+      {
+        name  = "rbac.pspEnabled"
+        value = false
+      }
+    ]
+  }
+
+  enable_karpenter = true
+  # ECR login required
+  karpenter_helm_config = {
+    repository_username = data.aws_ecrpublic_authorization_token.token.user_name
+    repository_password = data.aws_ecrpublic_authorization_token.token.password
+  }
+
 
   tags = local.tags
 }
@@ -180,8 +207,8 @@ module "vpc" {
   cidr = local.vpc_cidr
 
   azs             = local.azs
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
   enable_nat_gateway   = true
   single_nat_gateway   = true
@@ -201,6 +228,43 @@ module "vpc" {
 
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
+  }
+
+  tags = local.tags
+}
+
+module "ebs_csi_driver_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.14"
+
+  role_name = "ebs-csi-driver"
+
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+
+  tags = local.tags
+}
+
+module "vpc_cni_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.14"
+
+  role_name = "vpc-cni"
+
+  attach_vpc_cni_policy = true
+  vpc_cni_enable_ipv4   = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-node"]
+    }
   }
 
   tags = local.tags

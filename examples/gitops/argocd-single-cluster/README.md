@@ -127,10 +127,10 @@ The following command will update the `kubeconfig` on your local machine and all
     You can easily retrieve the password by running the following command:
 
     ```sh
-    aws secretsmanager get-secret-value --secret-id <SECRET_NAME>--region <REGION>
+    aws secretsmanager get-secret-value --secret-id <SECRET_NAME> --region <REGION>
     ```
 
-    Replace `<SECRET_NAME>` with the name of the secret name, if you haven't changed it then it should be `argocd`, also, make sure to replace `<REGION>` with the region you are using.
+    Replace `<SECRET_NAME>` with the name of the secret name (example argocd), if you haven't changed it then it should be `argocd`, also, make sure to replace `<REGION>` with the region you are using.
 
     Pickup the the secret from the `SecretString`.
 
