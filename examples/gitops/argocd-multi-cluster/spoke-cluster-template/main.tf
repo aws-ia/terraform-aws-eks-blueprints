@@ -231,6 +231,7 @@ module "eks_blueprints_kubernetes_addons" {
   tags = local.tags
 }
 
+
 ################################################################################
 # Create Namespace and ArgoCD Project for Spoke Cluster "cluster-*"
 ################################################################################
@@ -253,7 +254,52 @@ resource "helm_release" "argocd_project" {
       }
     )
   ]
-  depends_on = [module.eks_blueprints_kubernetes_addons]
+}
+
+################################################################################
+# Create secret in cluster-hub to register in ArgoCD
+################################################################################
+
+resource "kubernetes_secret_v1" "spoke_cluster" {
+  provider = kubernetes.hub
+  metadata {
+    name      = local.name
+    namespace = "argocd"
+    labels = {
+      "argocd.argoproj.io/secret-type" : "cluster"
+      "environment" : local.environment
+    }
+    annotations = {
+      "project" : local.name
+    }
+  }
+  data = {
+    server = module.eks.cluster_endpoint
+    name   = local.name
+    config = jsonencode(
+      {
+        execProviderConfig : {
+          apiVersion : "client.authentication.k8s.io/v1beta1",
+          command : "argocd-k8s-auth",
+          args : [
+            "aws",
+            "--cluster-name",
+            local.name,
+            "--role-arn",
+            aws_iam_role.spoke_role.arn
+          ],
+          env : {
+            AWS_REGION : local.region
+          }
+        },
+        tlsClientConfig : {
+          insecure : false,
+          caData : module.eks.cluster_certificate_authority_data
+        }
+      }
+    )
+  }
+  depends_on = [helm_release.argocd_project]
 }
 
 ################################################################################
@@ -303,7 +349,7 @@ module "eks_blueprints_argocd_addons" {
     eks_cluster_id                 = module.eks.cluster_name
   }
 
-  depends_on = [helm_release.argocd_project]
+  depends_on = [kubernetes_secret_v1.spoke_cluster]
 }
 
 ################################################################################
@@ -376,49 +422,6 @@ module "eks_blueprints_argocd_workloads" {
 
   depends_on = [module.eks_blueprints_argocd_addons]
 
-}
-
-
-# Secret in hub
-resource "kubernetes_secret_v1" "spoke_cluster" {
-  provider = kubernetes.hub
-  metadata {
-    name      = local.name
-    namespace = "argocd"
-    labels = {
-      "argocd.argoproj.io/secret-type" : "cluster"
-      "environment" : local.environment
-    }
-    annotations = {
-      "project" : local.name
-    }
-  }
-  data = {
-    server = module.eks.cluster_endpoint
-    name   = local.name
-    config = jsonencode(
-      {
-        execProviderConfig : {
-          apiVersion : "client.authentication.k8s.io/v1beta1",
-          command : "argocd-k8s-auth",
-          args : [
-            "aws",
-            "--cluster-name",
-            local.name,
-            "--role-arn",
-            aws_iam_role.spoke_role.arn
-          ],
-          env : {
-            AWS_REGION : local.region
-          }
-        },
-        tlsClientConfig : {
-          insecure : false,
-          caData : module.eks.cluster_certificate_authority_data
-        }
-      }
-    )
-  }
 }
 
 ################################################################################
