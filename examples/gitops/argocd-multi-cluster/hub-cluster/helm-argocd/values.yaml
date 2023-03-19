@@ -8,7 +8,7 @@ controller:
   serviceAccount:
     annotations:
       eks.amazonaws.com/role-arn: ${irsa_iam_role_arn}
-  replicas: 3 # Additional replicas will cause sharding of managed clusters across number of replicas.
+  replicas: 1 # Additional replicas will cause sharding of managed clusters across number of replicas.
   metrics:
     enabled: true
     service:

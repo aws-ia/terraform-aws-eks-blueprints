@@ -81,7 +81,7 @@ locals {
 
   # ArgoCD Helm values for base
   argocd_values = templatefile("${path.module}/helm-argocd/values.yaml", {
-    irsa_iam_role_arn = module.argocd_irsa.iam_role_arn
+    irsa_iam_role_arn = "arn:aws:iam::015299085168:role/hub-cluster-argocd-hub" #module.argocd_irsa.iam_role_arn
     host              = "${local.argocd_subdomain}.${local.domain_name}"
     enable_ingress    = local.enable_ingress
   })
@@ -249,10 +249,11 @@ module "eks_blueprints_argocd_workloads" {
 module "argocd_irsa" {
   source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/eks-blueprints-addon?ref=argo-multi-cluster" #TODO change git org to aws-ia
 
-  create_release       = false
-  create_role          = true
-  role_name_use_prefix = false
-  role_name            = "${module.eks.cluster_name}-argocd-hub"
+  create_release             = false
+  create_role                = true
+  role_name_use_prefix       = false
+  role_name                  = "${module.eks.cluster_name}-argocd-hub"
+  assume_role_condition_test = "StringLike"
   role_policy_arns = {
     ArgoCD_EKS_Policy = aws_iam_policy.irsa_policy.arn
   }
