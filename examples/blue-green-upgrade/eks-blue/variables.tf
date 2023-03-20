@@ -13,7 +13,7 @@ variable "core_stack_name" {
 variable "hosted_zone_name" {
   type        = string
   description = "Route53 domain for the cluster."
-  default     = "kuapoorv.people.aws.dev"
+  default     = ""
 }
 
 variable "eks_admin_role_name" {
