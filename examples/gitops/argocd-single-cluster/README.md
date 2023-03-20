@@ -53,65 +53,77 @@ The following command will update the `kubeconfig` on your local machine and all
     ```sh
     kubectl get pods -A
 
-    NAMESPACE            NAME                                                         READY   STATUS    RESTARTS   AGE
-    argo-rollouts        argo-rollouts-5656b86459-jgssp                               1/1     Running   0          6m59s
-    argo-rollouts        argo-rollouts-5656b86459-kncxg                               1/1     Running   0          6m59s
-    argocd               argo-cd-argocd-application-controller-0                      1/1     Running   0          15m
-    argocd               argo-cd-argocd-applicationset-controller-9f66b8d6b-bnvqk     1/1     Running   0          15m
-    argocd               argo-cd-argocd-dex-server-66c5769c46-kxns4                   1/1     Running   0          15m
-    argocd               argo-cd-argocd-notifications-controller-74c78485d-fgh4w      1/1     Running   0          15m
-    argocd               argo-cd-argocd-repo-server-77b8c98d6f-kcq6j                  1/1     Running   0          15m
-    argocd               argo-cd-argocd-repo-server-77b8c98d6f-mt7nf                  1/1     Running   0          15m
-    argocd               argo-cd-argocd-server-849d775f7b-t2crt                       1/1     Running   0          15m
-    argocd               argo-cd-argocd-server-849d775f7b-vnwtq                       1/1     Running   0          15m
-    argocd               argo-cd-redis-ha-haproxy-578979d984-5chwx                    1/1     Running   0          15m
-    argocd               argo-cd-redis-ha-haproxy-578979d984-74qdg                    1/1     Running   0          15m
-    argocd               argo-cd-redis-ha-haproxy-578979d984-9dwf2                    1/1     Running   0          15m
-    argocd               argo-cd-redis-ha-server-0                                    4/4     Running   0          15m
-    argocd               argo-cd-redis-ha-server-1                                    4/4     Running   0          12m
-    argocd               argo-cd-redis-ha-server-2                                    4/4     Running   0          11m
-    aws-for-fluent-bit   aws-for-fluent-bit-7gwzd                                     1/1     Running   0          7m10s
-    aws-for-fluent-bit   aws-for-fluent-bit-9gzqw                                     1/1     Running   0          7m10s
-    aws-for-fluent-bit   aws-for-fluent-bit-csrgh                                     1/1     Running   0          7m10s
-    aws-for-fluent-bit   aws-for-fluent-bit-h9vtm                                     1/1     Running   0          7m10s
-    aws-for-fluent-bit   aws-for-fluent-bit-p4bmj                                     1/1     Running   0          7m10s
-    cert-manager         cert-manager-765c5d7777-k7jkk                                1/1     Running   0          7m6s
-    cert-manager         cert-manager-cainjector-6bc9d758b-kt8dm                      1/1     Running   0          7m6s
-    cert-manager         cert-manager-webhook-586d45d5ff-szkc7                        1/1     Running   0          7m6s
-    geolocationapi       geolocationapi-fbb6987f8-d22qv                               2/2     Running   0          6m15s
-    geolocationapi       geolocationapi-fbb6987f8-fqshh                               2/2     Running   0          6m15s
-    karpenter            karpenter-5d65d77779-nnsjp                                   2/2     Running   0          7m42s
-    keda                 keda-operator-676b4b8d8c-5bjmt                               1/1     Running   0          7m16s
-    keda                 keda-operator-metrics-apiserver-5d679f968c-jkhz8             1/1     Running   0          7m16s
-    kube-system          aws-node-66dl8                                               1/1     Running   0          14m
-    kube-system          aws-node-7fgks                                               1/1     Running   0          14m
-    kube-system          aws-node-828t9                                               1/1     Running   0          14m
-    kube-system          aws-node-k7phx                                               1/1     Running   0          14m
-    kube-system          aws-node-rptsc                                               1/1     Running   0          14m
-    kube-system          cluster-autoscaler-aws-cluster-autoscaler-74456d5cc9-hfqlz   1/1     Running   0          7m24s
-    kube-system          coredns-657694c6f4-kp6sm                                     1/1     Running   0          19m
-    kube-system          coredns-657694c6f4-wcqh2                                     1/1     Running   0          19m
-    kube-system          kube-proxy-6zwcj                                             1/1     Running   0          14m
-    kube-system          kube-proxy-9kkg7                                             1/1     Running   0          14m
-    kube-system          kube-proxy-q9bgv                                             1/1     Running   0          14m
-    kube-system          kube-proxy-rzndg                                             1/1     Running   0          14m
-    kube-system          kube-proxy-w86mz                                             1/1     Running   0          14m
-    kube-system          metrics-server-694d47d564-psr4s                              1/1     Running   0          6m37s
-    prometheus           prometheus-alertmanager-758597fd7-pntlj                      2/2     Running   0          7m18s
-    prometheus           prometheus-kube-state-metrics-5fd8648d78-w48p2               1/1     Running   0          7m18s
-    prometheus           prometheus-node-exporter-7wr8x                               1/1     Running   0          7m18s
-    prometheus           prometheus-node-exporter-9hjzw                               1/1     Running   0          7m19s
-    prometheus           prometheus-node-exporter-kjsxt                               1/1     Running   0          7m18s
-    prometheus           prometheus-node-exporter-mr9cx                               1/1     Running   0          7m19s
-    prometheus           prometheus-node-exporter-qmm58                               1/1     Running   0          7m19s
-    prometheus           prometheus-pushgateway-8696df5474-cv59q                      1/1     Running   0          7m18s
-    prometheus           prometheus-server-58c58c58cc-n4242                           2/2     Running   0          7m18s
-    team-burnham         nginx-66b6c48dd5-nnp9l                                       1/1     Running   0          7m39s
-    team-riker           guestbook-ui-6847557d79-lrms2                                1/1     Running   0          7m39s
-    traefik              traefik-b9955f58-pc2zp                                       1/1     Running   0          7m4s
-    vpa                  vpa-recommender-554f56647b-lcz9w                             1/1     Running   0          7m35s
-    vpa                  vpa-updater-67d6c5c7cf-b9hw4                                 1/1     Running   0          7m35s
-    yunikorn             yunikorn-scheduler-5c446fcc89-lcmmm                          2/2     Running   0          7m28s
+    NAMESPACE            NAME                                                        READY   STATUS    RESTARTS   AGE
+    argocd               argo-cd-argocd-application-controller-0                     1/1     Running   0          4h52m
+    argocd               argo-cd-argocd-applicationset-controller-545ccfc6b5-5224c   1/1     Running   0          4h52m
+    argocd               argo-cd-argocd-dex-server-778b56ccb6-2bf62                  1/1     Running   0          4h52m
+    argocd               argo-cd-argocd-notifications-controller-6958fd7b5f-5wbsz    1/1     Running   0          4h52m
+    argocd               argo-cd-argocd-repo-server-76bc99f6f9-bk5tm                 1/1     Running   0          4h52m
+    argocd               argo-cd-argocd-repo-server-76bc99f6f9-w5bw4                 1/1     Running   0          4h52m
+    argocd               argo-cd-argocd-server-7d94cb6fdd-rtxqb                      1/1     Running   0          4h52m
+    argocd               argo-cd-argocd-server-7d94cb6fdd-zd9qb                      1/1     Running   0          4h52m
+    argocd               argo-cd-redis-ha-haproxy-776d4dc75f-228h5                   1/1     Running   0          4h52m
+    argocd               argo-cd-redis-ha-haproxy-776d4dc75f-kjghp                   1/1     Running   0          4h52m
+    argocd               argo-cd-redis-ha-haproxy-776d4dc75f-q49q9                   1/1     Running   0          4h52m
+    argocd               argo-cd-redis-ha-server-0                                   3/3     Running   0          4h52m
+    argocd               argo-cd-redis-ha-server-1                                   3/3     Running   0          4h50m
+    argocd               argo-cd-redis-ha-server-2                                   2/3     Running   0          4h49m
+    aws-for-fluent-bit   aws-for-fluent-bit-b8pj8                                    1/1     Running   0          103s
+    aws-for-fluent-bit   aws-for-fluent-bit-cxz6l                                    1/1     Running   0          52s
+    aws-for-fluent-bit   aws-for-fluent-bit-k4hgv                                    1/1     Running   0          103s
+    cert-manager         cert-manager-5988d49cb9-574m8                               1/1     Running   0          95s
+    cert-manager         cert-manager-cainjector-9cc6bbc8b-x7wsg                     1/1     Running   0          95s
+    cert-manager         cert-manager-webhook-678c96cb8f-kc9xw                       1/1     Running   0          95s
+    geolocationapi       geolocationapi-7fc86654f-m45ng                              2/2     Running   0          84s
+    geolocationapi       geolocationapi-7fc86654f-vfjfg                              2/2     Running   0          84s
+    geordie              downstream0-6c4f5f86d9-pgfj4                                1/1     Running   0          89s
+    geordie              downstream1-74966d8bd-6z5fz                                 1/1     Running   0          89s
+    geordie              frontend-6bf488454-58qp2                                    1/1     Running   0          89s
+    geordie              redis-server-5d46d8bc95-fcbzx                               1/1     Running   0          89s
+    geordie              yelb-appserver-58cb77cdd5-6v7sv                             1/1     Running   0          89s
+    geordie              yelb-db-79b954dbd6-7dr96                                    1/1     Running   0          90s
+    geordie              yelb-ui-8457b656f6-skbmn                                    1/1     Running   0          89s
+    karpenter            karpenter-6d57cdbbd6-2wrm9                                  1/1     Running   0          101s
+    karpenter            karpenter-6d57cdbbd6-rcpwg                                  1/1     Running   0          101s
+    kube-system          aws-load-balancer-controller-9584499dc-l75lw                1/1     Running   0          99s
+    kube-system          aws-load-balancer-controller-9584499dc-s6r8p                1/1     Running   0          99s
+    kube-system          aws-node-78gh5                                              1/1     Running   0          4h51m
+    kube-system          aws-node-llgpn                                              1/1     Running   0          4h51m
+    kube-system          aws-node-termination-handler-96cwm                          1/1     Running   0          101s
+    kube-system          aws-node-termination-handler-qxm4j                          1/1     Running   0          52s
+    kube-system          aws-node-termination-handler-xbqcv                          1/1     Running   0          101s
+    kube-system          aws-node-zstqw                                              1/1     Running   0          52s
+    kube-system          cluster-autoscaler-aws-cluster-autoscaler-54b58f76b-g4h54   1/1     Running   0          102s
+    kube-system          coredns-55bb869c54-rd8lv                                    1/1     Running   0          4h53m
+    kube-system          coredns-55bb869c54-x2mpz                                    1/1     Running   0          4h53m
+    kube-system          ebs-csi-controller-77b447d695-8nrhs                         6/6     Running   0          4h53m
+    kube-system          ebs-csi-controller-77b447d695-f4r2f                         6/6     Running   0          4h53m
+    kube-system          ebs-csi-node-bm8ps                                          3/3     Running   0          52s
+    kube-system          ebs-csi-node-jh5pp                                          3/3     Running   0          4h51m
+    kube-system          ebs-csi-node-xd894                                          3/3     Running   0          4h51m
+    kube-system          kube-proxy-65tmh                                            1/1     Running   0          4h51m
+    kube-system          kube-proxy-jw2j4                                            1/1     Running   0          4h51m
+    kube-system          kube-proxy-sdtsj                                            1/1     Running   0          52s
+    kube-system          metrics-server-7cd9d56884-bqqhn                             1/1     Running   0          103s
+    kube-system          metrics-server-7cd9d56884-v7pgf                             1/1     Running   0          103s
+    kube-system          metrics-server-7cd9d56884-w9vgq                             1/1     Running   0          103s
+    prometheus           prometheus-alertmanager-c4bffdb7b-vv4z7                     2/2     Running   0          76s
+    prometheus           prometheus-kube-state-metrics-5c9f756cf8-dpqs9              1/1     Running   0          75s
+    prometheus           prometheus-node-exporter-dfbdp                              1/1     Running   0          76s
+    prometheus           prometheus-node-exporter-fs6tp                              1/1     Running   0          42s
+    prometheus           prometheus-node-exporter-pb2lk                              1/1     Running   0          76s
+    prometheus           prometheus-pushgateway-75c66bf7d8-5rr46                     1/1     Running   0          75s
+    prometheus           prometheus-server-7d57c9697f-kkts8                          2/2     Running   0          75s
+    team-burnham         burnham-558f4c4f8b-9kpbf                                    1/1     Running   0          94s
+    team-burnham         burnham-558f4c4f8b-9l6gh                                    1/1     Running   0          94s
+    team-burnham         burnham-558f4c4f8b-bq7zs                                    1/1     Running   0          94s
+    team-burnham         nginx-74f76956db-xjgpv                                      1/1     Running   0          94s
+    team-riker           deployment-2048-cfc677879-4lkjh                             1/1     Running   0          94s
+    team-riker           deployment-2048-cfc677879-6bzrr                             1/1     Running   0          94s
+    team-riker           deployment-2048-cfc677879-6zmmr                             1/1     Running   0          94s
+    team-riker           guestbook-ui-b9cfb7875-nl5dw                                1/1     Running   0          94s
+    vpa                  vpa-recommender-746bf6945b-gmjts                            1/1     Running   0          98s
+    vpa                  vpa-updater-56ff87bd4c-4s2p2                                1/1     Running   0          98s
     ```
 
 3. You can access the ArgoCD UI by running the following command:
@@ -146,7 +158,5 @@ First, we need to ensure that the ArgoCD applications are properly cleaned up fr
 
 Then you can start delete the terraform resources:
 ```sh
-terraform destroy -target=module.eks_blueprints_kubernetes_addons -auto-approve
-terraform destroy -target=module.eks -auto-approve
-terraform destroy -auto-approve
-````
+./destroy.sh
+```
