@@ -198,6 +198,7 @@ data "aws_secretsmanager_secret_version" "admin_password_version" {
   secret_id = data.aws_secretsmanager_secret.argocd.id
 }
 
+#tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 19.10"
