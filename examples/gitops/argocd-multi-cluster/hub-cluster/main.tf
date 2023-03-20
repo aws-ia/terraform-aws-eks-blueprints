@@ -1,6 +1,6 @@
 provider "aws" {
-  region  = local.region
-  profile = local.hub_profile
+  region  = var.region
+  profile = var.hub_profile
 }
 
 provider "kubernetes" {
@@ -8,7 +8,7 @@ provider "kubernetes" {
   cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
-    args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region, "--profile", local.hub_profile]
+    args        = ["eks", "get-token", "--cluster-name", local.name, "--region", var.region, "--profile", var.hub_profile]
     command     = "aws"
   }
 }
@@ -19,7 +19,7 @@ provider "helm" {
     cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
-      args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region, "--profile", local.hub_profile]
+      args        = ["eks", "get-token", "--cluster-name", local.name, "--region", var.region, "--profile", var.hub_profile]
       command     = "aws"
     }
   }
@@ -30,7 +30,7 @@ provider "kubectl" {
   cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
-    args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region, "--profile", local.hub_profile]
+    args        = ["eks", "get-token", "--cluster-name", local.name, "--region", var.region, "--profile", var.hub_profile]
     command     = "aws"
   }
   load_config_file  = false
@@ -39,9 +39,9 @@ provider "kubectl" {
 
 # To get the hosted zone to be use in argocd domain
 data "aws_route53_zone" "domain_name" {
-  count        = local.enable_ingress ? 1 : 0
-  name         = local.domain_name
-  private_zone = local.domain_private_zone
+  count        = var.enable_ingress ? 1 : 0
+  name         = var.domain_name
+  private_zone = var.domain_private_zone
 }
 
 data "aws_caller_identity" "current" {}
@@ -50,7 +50,6 @@ data "aws_availability_zones" "available" {}
 
 locals {
   name        = var.hub_cluster_name
-  domain_name = var.domain_name
 
   cluster_version = "1.24"
 
@@ -66,36 +65,47 @@ locals {
   }
 
   argocd_namespace         = "argocd"
-  argocd_namespaces_prefix = var.argocd_namespaces_prefix
-
-  # Ingress Config
-  enable_ingress      = var.enable_ingress
-  argocd_subdomain    = var.argocd_subdomain
-  argocd_domain_arn   = local.enable_ingress ? data.aws_route53_zone.domain_name[0].arn : ""
-  domain_private_zone = var.domain_private_zone
-  grafana_subdomain   = var.grafana_subdomain
-
-  # Multi-{account,region} setup
-  region      = var.hub_region
-  hub_profile = var.hub_profile
+  argocd_domain_arn   = try(data.aws_route53_zone.domain_name[0].arn, "")
 
   # ArgoCD Helm values for base
   argocd_values = templatefile("${path.module}/helm-argocd/values.yaml", {
-    irsa_iam_role_arn = "arn:aws:iam::015299085168:role/hub-cluster-argocd-hub" #module.argocd_irsa.iam_role_arn
-    host              = "${local.argocd_subdomain}.${local.domain_name}"
-    enable_ingress    = local.enable_ingress
+    irsa_iam_role_arn = module.argocd_irsa.iam_role_arn
+    host              = "${var.argocd_subdomain}.${var.domain_name}"
+    enable_ingress    = var.enable_ingress
   })
 
   # ArgoCD Helm values for AWS Cognito SSO Login
-  argocd_sso = var.argocd_enable_sso && local.enable_ingress ? templatefile("${path.module}/helm-argocd/cognito.yaml", {
+  argocd_sso = var.argocd_enable_sso && var.enable_ingress ? templatefile("${path.module}/helm-argocd/cognito.yaml", {
     issuer       = var.argocd_sso_issuer
     clientID     = var.argocd_sso_client_id
     clientSecret = var.argocd_sso_client_secret
-    logoutURL    = "${var.argocd_sso_logout_url}?client_id=${var.argocd_sso_client_id}&logout_uri=https://${local.argocd_subdomain}.${local.domain_name}/logout"
+    logoutURL    = "${var.argocd_sso_logout_url}?client_id=${var.argocd_sso_client_id}&logout_uri=https://${var.argocd_subdomain}.${var.domain_name}/logout"
     cliClientID  = var.argocd_sso_cli_client_id
-    url          = "https://${local.argocd_subdomain}.${local.domain_name}"
+    url          = "https://${var.argocd_subdomain}.${var.domain_name}"
   }) : ""
 
+}
+
+################################################################################
+# EBS CSI Driver Role
+################################################################################
+
+module "ebs_csi_driver_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.14"
+
+  role_name = "${local.name}-ebs-csi-driver"
+
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+
+  tags = local.tags
 }
 
 ################################################################################
@@ -110,6 +120,22 @@ module "eks" {
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
+
+  cluster_addons = {
+    aws-ebs-csi-driver = {
+      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
+      most_recent = true
+    }
+    coredns = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent = true
+    }
+  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -134,30 +160,30 @@ module "eks" {
 module "eks_blueprints_kubernetes_addons" {
   source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons?ref=argo-multi-cluster" #TODO change git org to aws-ia
 
-  eks_cluster_id       = module.eks.cluster_name
-  eks_cluster_endpoint = module.eks.cluster_endpoint
-  eks_oidc_provider    = module.eks.oidc_provider
-  eks_cluster_version  = module.eks.cluster_version
+  cluster_name            = module.eks.cluster_name
+  cluster_endpoint        = module.eks.cluster_endpoint
+  cluster_version         = module.eks.cluster_version
+  cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
+  oidc_provider_arn       = module.eks.oidc_provider_arn
 
   enable_argocd         = true
-  argocd_manage_add_ons = true # Indicates addons to be install via ArgoCD
+  argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying add-ons
   argocd_helm_config = {
     namespace = local.argocd_namespace
-    version   = "5.23.1" # ArgoCD v2.6.2
+    version   = "5.27.1" # ArgoCD v2.6.6
     values    = [local.argocd_values, local.argocd_sso]
   }
 
   # Add-ons
   enable_aws_load_balancer_controller = true                                # ArgoCD UI depends on aws-loadbalancer-controller for Ingress
   enable_metrics_server               = true                                # ArgoCD HPAs depend on metric-server
-  enable_external_dns                 = local.enable_ingress ? true : false # ArgoCD Server and UI use valid https domain name
+  enable_external_dns                 = var.enable_ingress ? true : false # ArgoCD Server and UI use valid https domain name
   external_dns_helm_config = {
-    domainFilters : [local.domain_name]
+    domainFilters : [var.domain_name]
   }
   external_dns_route53_zone_arns = [local.argocd_domain_arn] # ArgoCD Server and UI domain name is registered in Route 53
 
   # Observability for ArgoCD
-  enable_amazon_eks_aws_ebs_csi_driver = true
   enable_prometheus                    = true
 
   tags = local.tags
@@ -194,7 +220,7 @@ module "eks_blueprints_argocd_addons" {
   addon_config = { for k, v in module.eks_blueprints_kubernetes_addons.argocd_addon_config : k => v if v != null }
 
   addon_context = {
-    aws_region_name                = local.region
+    aws_region_name                = var.region
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
     eks_cluster_id                 = module.eks.cluster_name
   }
@@ -233,7 +259,7 @@ module "eks_blueprints_argocd_workloads" {
   }
 
   addon_context = {
-    aws_region_name                = local.region
+    aws_region_name                = var.region
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
     eks_cluster_id                 = module.eks.cluster_name
   }
@@ -297,8 +323,8 @@ resource "helm_release" "grafana" {
 
 
   values = [templatefile("${path.module}/helm-grafana/values.yaml", {
-    host             = "${local.grafana_subdomain}.${local.domain_name}"
-    enable_ingress   = local.enable_ingress
+    host             = "${var.grafana_subdomain}.${var.domain_name}"
+    enable_ingress   = var.enable_ingress
     operating_system = "linux"
   })]
 
@@ -344,19 +370,18 @@ module "vpc" {
   tags = local.tags
 }
 
-
 ################################################################################
 # ACM Certificate
 ################################################################################
 
 resource "aws_acm_certificate" "cert" {
-  count             = local.enable_ingress ? 1 : 0
-  domain_name       = "*.${local.domain_name}"
+  count             = var.enable_ingress ? 1 : 0
+  domain_name       = "*.${var.domain_name}"
   validation_method = "DNS"
 }
 
 resource "aws_route53_record" "cert" {
-  count           = local.enable_ingress ? 1 : 0
+  count           = var.enable_ingress ? 1 : 0
   zone_id         = data.aws_route53_zone.domain_name[0].zone_id
   name            = tolist(aws_acm_certificate.cert[0].domain_validation_options)[0].resource_record_name
   type            = tolist(aws_acm_certificate.cert[0].domain_validation_options)[0].resource_record_type
@@ -366,7 +391,7 @@ resource "aws_route53_record" "cert" {
 }
 
 resource "aws_acm_certificate_validation" "cert" {
-  count                   = local.enable_ingress ? 1 : 0
+  count                   = var.enable_ingress ? 1 : 0
   certificate_arn         = aws_acm_certificate.cert[0].arn
   validation_record_fqdns = [for record in aws_route53_record.cert : record.fqdn]
 }

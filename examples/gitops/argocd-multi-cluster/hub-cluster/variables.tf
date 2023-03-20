@@ -1,9 +1,3 @@
-variable "argocd_namespaces_prefix" {
-  description = "Namespaces prefix that ArgoCD controller will watch for resources"
-  type        = string
-  default     = "cluster-*"
-}
-
 variable "argocd_sso_cli_client_id" {
   description = "ArgoCD SSO OIDC cliClientID"
   type        = string
@@ -83,7 +77,7 @@ variable "hub_profile" {
   default     = "default"
 }
 
-variable "hub_region" {
+variable "region" {
   description = "Hub Cluster Region"
   type        = string
   default     = "us-west-2"
