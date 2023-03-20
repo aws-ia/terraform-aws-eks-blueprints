@@ -6,6 +6,13 @@ data "aws_iam_policy_document" "external_secrets" {
       ["arn:${var.addon_context.aws_partition_id}:ssm:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:parameter/*"]
     )
   }
+  statement {
+    # it seems `ssm:DescribeParameters` needs wildcard on resources.
+    actions = ["ssm:DescribeParameters"]
+    resources = concat(
+      ["arn:${var.addon_context.aws_partition_id}:ssm:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:*"]
+    )
+  }
 
   statement {
     actions = [
