@@ -136,11 +136,11 @@ module "eks" {
 module "eks_blueprints_kubernetes_addons" {
   source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons?ref=argo-multi-cluster" #TODO change git org to aws-ia
 
-  cluster_name            = module.eks.cluster_name
-  cluster_endpoint        = module.eks.cluster_endpoint
-  cluster_version         = module.eks.cluster_version
-  cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
-  oidc_provider_arn       = module.eks.oidc_provider_arn
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider     = module.eks.oidc_provider
+  oidc_provider_arn = module.eks.oidc_provider_arn
 
   enable_argocd = true
   # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.

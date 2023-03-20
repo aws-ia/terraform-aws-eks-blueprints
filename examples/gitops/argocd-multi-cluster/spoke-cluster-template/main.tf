@@ -199,11 +199,11 @@ module "eks" {
 module "eks_blueprints_kubernetes_addons" {
   source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons?ref=argo-multi-cluster"  #TODO change git org to aws-ia
 
-  cluster_name            = module.eks.cluster_name
-  cluster_endpoint        = module.eks.cluster_endpoint
-  cluster_version         = module.eks.cluster_version
-  cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
-  oidc_provider_arn       = module.eks.oidc_provider_arn
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider     = module.eks.oidc_provider
+  oidc_provider_arn = module.eks.oidc_provider_arn
 
   argocd_manage_add_ons = true # Indicates addons to be install via ArgoCD
 
@@ -219,7 +219,8 @@ module "eks_blueprints_kubernetes_addons" {
   enable_aws_fsx_csi_driver                    = try(var.addons.enable_aws_fsx_csi_driver, false)
   enable_ingress_nginx                         = try(var.addons.enable_ingress_nginx, false)
   enable_aws_for_fluentbit                     = try(var.addons.enable_aws_for_fluentbit, false)
-  enable_aws_cloudwatch_metrics                = try(var.addons.enable_aws_cloudwatch_metrics, false)
+  enable_cloudwatch_metrics                    = try(var.addons.enable_cloudwatch_metrics, false)
+  enable_cloudwatch_metrics_gitops             = true
   enable_argo_workflows                        = try(var.addons.enable_argo_workflows, false)
   enable_argo_rollouts                         = try(var.addons.enable_argo_rollouts, false)
   enable_aws_node_termination_handler          = try(var.addons.enable_aws_node_termination_handler, false)
