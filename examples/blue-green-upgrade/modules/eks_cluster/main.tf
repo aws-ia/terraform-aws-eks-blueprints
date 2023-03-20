@@ -170,6 +170,13 @@ data "aws_partition" "current" {}
 # Find the user currently in use by AWS
 data "aws_caller_identity" "current" {}
 
+data "aws_vpc" "vpc" {
+  filter {
+    name   = "tag:${var.vpc_tag_key}"
+    values = [local.tag_val_vpc]
+  }
+}
+
 data "aws_subnets" "private" {
   filter {
     name   = "tag:${var.vpc_tag_key}"
@@ -196,11 +203,11 @@ module "eks" {
   version = "~> 19.10"
 
   cluster_name                   = local.name
-  cluster_version                = var.cluster_version
+  cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  vpc_id     = data.aws_vpc.vpc.id
+  subnet_ids = data.aws_subnets.private.ids
 
   eks_managed_node_groups = {
     mg_5 = {
@@ -384,7 +391,7 @@ module "kubernetes_addons" {
   # tflint-ignore: terraform_module_pinned_source
   source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
 
-  cluster_name            = module.eks_blueprints.eks_cluster_id
+  cluster_name            = module.eks.cluster_name
   cluster_endpoint        = module.eks.cluster_endpoint
   cluster_version         = module.eks.cluster_version
   cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
