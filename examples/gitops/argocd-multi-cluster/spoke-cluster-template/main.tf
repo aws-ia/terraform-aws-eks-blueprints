@@ -1,12 +1,12 @@
 provider "aws" {
-  region  = local.region
-  profile = local.spoke_profile
+  region  = var.region
+  profile = var.spoke_profile
 }
 
 # Modify based in which account the hub cluster is located
 provider "aws" {
-  region  = local.hub_region
-  profile = local.hub_profile
+  region  = var.hub_region
+  profile = var.hub_profile
   alias   = "hub"
 }
 
@@ -15,7 +15,7 @@ provider "kubernetes" {
   cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
-    args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region, "--profile", local.spoke_profile]
+    args        = ["eks", "get-token", "--cluster-name", local.name, "--region", var.region, "--profile", var.spoke_profile]
     command     = "aws"
   }
 }
@@ -26,7 +26,7 @@ provider "helm" {
     cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
-      args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region, "--profile", local.spoke_profile]
+      args        = ["eks", "get-token", "--cluster-name", local.name, "--region", var.region, "--profile", var.spoke_profile]
       command     = "aws"
     }
   }
@@ -37,7 +37,7 @@ provider "kubectl" {
   cluster_ca_certificate = try(base64decode(module.eks.cluster_certificate_authority_data), "")
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
-    args        = ["eks", "get-token", "--cluster-name", local.name, "--region", local.region, "--profile", local.spoke_profile]
+    args        = ["eks", "get-token", "--cluster-name", local.name, "--region", var.region, "--profile", var.spoke_profile]
     command     = "aws"
   }
   load_config_file  = false
@@ -49,7 +49,7 @@ provider "kubernetes" {
   cluster_ca_certificate = try(base64decode(data.aws_eks_cluster.hub.certificate_authority[0].data), "")
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
-    args        = ["eks", "get-token", "--cluster-name", local.hub_cluster_name, "--region", local.region, "--profile", local.hub_profile]
+    args        = ["eks", "get-token", "--cluster-name", var.hub_cluster_name, "--region", var.region, "--profile", var.hub_profile]
     command     = "aws"
   }
   alias = "hub"
@@ -61,7 +61,7 @@ provider "helm" {
     cluster_ca_certificate = try(base64decode(data.aws_eks_cluster.hub.certificate_authority[0].data), "")
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
-      args        = ["eks", "get-token", "--cluster-name", local.hub_cluster_name, "--region", local.region, "--profile", local.hub_profile]
+      args        = ["eks", "get-token", "--cluster-name", var.hub_cluster_name, "--region", var.region, "--profile", var.hub_profile]
       command     = "aws"
     }
   }
@@ -70,7 +70,7 @@ provider "helm" {
 
 data "aws_eks_cluster" "hub" {
   provider = aws.hub
-  name     = local.hub_cluster_name
+  name     = var.hub_cluster_name
 }
 
 data "aws_caller_identity" "current" {}
@@ -79,7 +79,7 @@ data "aws_availability_zones" "available" {}
 
 data "aws_iam_role" "argo_role" {
   provider = aws.hub
-  name     = "${local.hub_cluster_name}-argocd-hub"
+  name     = "${var.hub_cluster_name}-argocd-hub"
 }
 
 data "aws_iam_policy_document" "assume_role_policy" {
@@ -99,9 +99,6 @@ resource "aws_iam_role" "spoke_role" {
 
 locals {
   name             = var.spoke_cluster_name
-  hub_cluster_name = var.hub_cluster_name
-  environment      = var.environment
-
 
   cluster_version = "1.24"
 
@@ -114,13 +111,28 @@ locals {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
+}
 
-  # Multi-{account,region} setup
-  region        = var.spoke_region
-  spoke_profile = var.spoke_profile
-  hub_region    = var.hub_region
-  hub_profile   = var.hub_profile
+################################################################################
+# EBS CSI Driver Role
+################################################################################
 
+module "ebs_csi_driver_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.14"
+
+  role_name = "${local.name}-ebs-csi-driver"
+
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+
+  tags = local.tags
 }
 
 ################################################################################
@@ -130,11 +142,27 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.7"
+  version = "~> 19.10"
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
+
+  cluster_addons = {
+    aws-ebs-csi-driver = {
+      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
+      most_recent = true
+    }
+    coredns = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent = true
+    }
+  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -171,16 +199,16 @@ module "eks" {
 module "eks_blueprints_kubernetes_addons" {
   source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons?ref=argo-multi-cluster"  #TODO change git org to aws-ia
 
-  eks_cluster_id       = module.eks.cluster_name
-  eks_cluster_endpoint = module.eks.cluster_endpoint
-  eks_oidc_provider    = module.eks.oidc_provider
-  eks_cluster_version  = module.eks.cluster_version
+  cluster_name            = module.eks.cluster_name
+  cluster_endpoint        = module.eks.cluster_endpoint
+  cluster_version         = module.eks.cluster_version
+  cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
+  oidc_provider_arn       = module.eks.oidc_provider_arn
 
   argocd_manage_add_ons = true # Indicates addons to be install via ArgoCD
 
 
   # EKS Add-ons (Some addons required custom configuration, review the specifc addon documentation and add any required configuration below)
-  enable_amazon_eks_aws_ebs_csi_driver         = try(var.addons.enable_amazon_eks_aws_ebs_csi_driver, false)
   enable_aws_load_balancer_controller          = try(var.addons.enable_aws_load_balancer_controller, false)
   enable_metrics_server                        = try(var.addons.enable_metrics_server, false)
   enable_external_dns                          = try(var.addons.enable_external_dns, false)
@@ -267,7 +295,7 @@ resource "kubernetes_secret_v1" "spoke_cluster" {
     namespace = "argocd"
     labels = {
       "argocd.argoproj.io/secret-type" : "cluster"
-      "environment" : local.environment
+      "environment" : var.environment
     }
     annotations = {
       "project" : local.name
@@ -289,7 +317,7 @@ resource "kubernetes_secret_v1" "spoke_cluster" {
             aws_iam_role.spoke_role.arn
           ],
           env : {
-            AWS_REGION : local.region
+            AWS_REGION : var.region
           }
         },
         tlsClientConfig : {
@@ -321,7 +349,7 @@ module "eks_blueprints_argocd_addons" {
 
   applications = {
     # This shows how to deploy Cluster addons using ArgoCD App of Apps pattern
-    "${local.environment}-addons" = {
+    "${var.environment}-addons" = {
       add_on_application = true
       path               = "chart"
       repo_url           = "https://github.com/csantanapr/eks-blueprints-add-ons.git" #TODO change to https://github.com/aws-samples/eks-blueprints-add-ons once git repo is updated
@@ -344,7 +372,7 @@ module "eks_blueprints_argocd_addons" {
   addon_config = { for k, v in module.eks_blueprints_kubernetes_addons.argocd_addon_config : k => v if v != null }
 
   addon_context = {
-    aws_region_name                = local.region
+    aws_region_name                = var.region
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
     eks_cluster_id                 = module.eks.cluster_name
   }
@@ -370,9 +398,9 @@ module "eks_blueprints_argocd_workloads" {
 
   applications = {
     # This shows how to deploy a multiple workloads using ArgoCD App of Apps pattern
-    "${local.environment}-workloads" = {
+    "${var.environment}-workloads" = {
       add_on_application = false
-      path               = "envs/${local.environment}"
+      path               = "envs/${var.environment}"
       repo_url           = "https://github.com/csantanapr/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
       #repo_url             = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
       #ssh_key_secret_name  = "github-ssh-key"# Needed for private repos
@@ -401,7 +429,7 @@ module "eks_blueprints_argocd_workloads" {
     }
 
     # This shows how to deploy a workload using a single ArgoCD App
-    "single-workload" = {
+    "${var.environment}-workload" = {
       add_on_application = false
       path               = "helm-guestbook"
       repo_url           = "https://github.com/argoproj/argocd-example-apps.git"
@@ -415,7 +443,7 @@ module "eks_blueprints_argocd_workloads" {
 
 
   addon_context = {
-    aws_region_name                = local.region
+    aws_region_name                = var.region
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
     eks_cluster_id                 = module.eks.cluster_name
   }

@@ -19,7 +19,7 @@ variable "addons" {
   default     = {}
 }
 # Multi-account Multi-region support
-variable "spoke_region" {
+variable "region" {
   description = "Spoke Cluster Region"
   type        = string
   default     = "us-west-2"
