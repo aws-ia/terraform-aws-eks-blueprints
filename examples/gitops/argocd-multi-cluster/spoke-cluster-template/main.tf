@@ -461,7 +461,7 @@ module "eks_blueprints_argocd_workloads" {
 ################################################################################
 
 module "admin_team" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-teams?ref=view-cluster-role"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-teams"
 
   name = "admin-team"
 
@@ -473,7 +473,7 @@ module "admin_team" {
 }
 
 module "app_teams" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-teams?ref=view-cluster-role"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-teams"
 
   for_each = {
     frontend = {}
