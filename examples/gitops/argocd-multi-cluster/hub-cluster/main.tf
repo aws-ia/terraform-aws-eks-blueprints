@@ -49,7 +49,7 @@ data "aws_caller_identity" "current" {}
 data "aws_availability_zones" "available" {}
 
 locals {
-  name        = var.hub_cluster_name
+  name = var.hub_cluster_name
 
   cluster_version = "1.24"
 
@@ -64,8 +64,8 @@ locals {
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 
-  argocd_namespace         = "argocd"
-  argocd_domain_arn   = try(data.aws_route53_zone.domain_name[0].arn, "")
+  argocd_namespace  = "argocd"
+  argocd_domain_arn = try(data.aws_route53_zone.domain_name[0].arn, "")
 
   # ArgoCD Helm values for base
   argocd_values = templatefile("${path.module}/helm-argocd/values.yaml", {
@@ -124,7 +124,7 @@ module "eks" {
   cluster_addons = {
     aws-ebs-csi-driver = {
       service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
-      most_recent = true
+      most_recent              = true
     }
     coredns = {
       most_recent = true
@@ -175,8 +175,8 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   # Add-ons
-  enable_aws_load_balancer_controller = true                                # ArgoCD UI depends on aws-loadbalancer-controller for Ingress
-  enable_metrics_server               = true                                # ArgoCD HPAs depend on metric-server
+  enable_aws_load_balancer_controller = true                              # ArgoCD UI depends on aws-loadbalancer-controller for Ingress
+  enable_metrics_server               = true                              # ArgoCD HPAs depend on metric-server
   enable_external_dns                 = var.enable_ingress ? true : false # ArgoCD Server and UI use valid https domain name
   external_dns_helm_config = {
     domainFilters : [var.domain_name]
@@ -184,7 +184,7 @@ module "eks_blueprints_kubernetes_addons" {
   external_dns_route53_zone_arns = [local.argocd_domain_arn] # ArgoCD Server and UI domain name is registered in Route 53
 
   # Observability for ArgoCD
-  enable_prometheus                    = true
+  enable_prometheus = true
 
   tags = local.tags
 }

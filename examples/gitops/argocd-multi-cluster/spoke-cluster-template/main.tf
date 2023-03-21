@@ -98,7 +98,7 @@ resource "aws_iam_role" "spoke_role" {
 }
 
 locals {
-  name             = var.spoke_cluster_name
+  name = var.spoke_cluster_name
 
   cluster_version = "1.24"
 
@@ -151,7 +151,7 @@ module "eks" {
   cluster_addons = {
     aws-ebs-csi-driver = {
       service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
-      most_recent = true
+      most_recent              = true
     }
     coredns = {
       most_recent = true
@@ -168,15 +168,17 @@ module "eks" {
   subnet_ids = module.vpc.private_subnets
 
 
-  # Granting access to hub cluster
+  # Team Access
   manage_aws_auth_configmap = true
-  aws_auth_roles = [
+  aws_auth_roles = flatten([
     {
-      rolearn  = aws_iam_role.spoke_role.arn
+      rolearn  = aws_iam_role.spoke_role.arn # Granting access to ArgoCD from hub cluster
       username = "gitops-role"
       groups   = ["system:masters"]
-    }
-  ]
+    },
+    module.admin_team.aws_auth_configmap_role,
+    [for team in module.app_teams : team.aws_auth_configmap_role],
+  ])
 
   eks_managed_node_groups = {
     initial = {
@@ -197,7 +199,7 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons?ref=argo-multi-cluster"  #TODO change git org to aws-ia
+  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons?ref=argo-multi-cluster" #TODO change git org to aws-ia
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -336,7 +338,7 @@ resource "kubernetes_secret_v1" "spoke_cluster" {
 ################################################################################
 
 module "eks_blueprints_argocd_addons" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster"  #TODO change git org to aws-ia
+  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster" #TODO change git org to aws-ia
   providers = {
     helm       = helm.hub
     kubernetes = kubernetes.hub
@@ -381,12 +383,13 @@ module "eks_blueprints_argocd_addons" {
   depends_on = [kubernetes_secret_v1.spoke_cluster]
 }
 
+
 ################################################################################
 # EKS Workloads via ArgoCD
 ################################################################################
 
 module "eks_blueprints_argocd_workloads" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster"  #TODO change git org to aws-ia
+  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster" #TODO change git org to aws-ia
   providers = {
     helm       = helm.hub
     kubernetes = kubernetes.hub
@@ -451,6 +454,175 @@ module "eks_blueprints_argocd_workloads" {
 
   depends_on = [module.eks_blueprints_argocd_addons]
 
+}
+
+################################################################################
+# Teams
+################################################################################
+
+module "admin_team" {
+  source = "github.com/csantanapr/terraform-aws-eks-blueprints-teams?ref=view-cluster-role"
+
+  name = "admin-team"
+
+  enable_admin = true
+  users        = [data.aws_caller_identity.current.arn]
+  cluster_arn  = module.eks.cluster_arn
+
+  tags = local.tags
+}
+
+module "app_teams" {
+  source = "github.com/csantanapr/terraform-aws-eks-blueprints-teams?ref=view-cluster-role"
+
+  for_each = {
+    frontend = {}
+    crystal  = {}
+    nodejs   = {}
+  }
+  name = "app-team-${each.key}"
+
+
+  users             = [data.aws_caller_identity.current.arn]
+  cluster_arn       = module.eks.cluster_arn
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  namespaces = {
+
+    "backend-${each.key}" = {
+      create_service_account = false
+
+      labels = {
+        appName     = "eks-teams-app",
+        projectName = "project--eks-blueprints",
+      }
+
+      resource_quota = {
+        hard = {
+          "limits.cpu"      = "4",
+          "limits.memory"   = "16Gi",
+          "requests.cpu"    = "2",
+          "requests.memory" = "4Gi",
+          "pods"            = "20",
+          "secrets"         = "20",
+          "services"        = "20"
+        }
+      }
+      limit_range = {
+        limit = [
+          {
+            type = "Pod"
+            max = {
+              cpu    = "2"
+              memory = "1Gi"
+            }
+          },
+          {
+            type = "Container"
+            default = {
+              cpu    = "500m"
+              memory = "512Mi"
+            }
+            default_request = {
+              cpu    = "100m"
+              memory = "128Mi"
+            }
+          }
+        ]
+      }
+    }
+  }
+
+
+  tags = local.tags
+}
+
+
+################################################################################
+# EKS Workloads for Teams via ArgoCD
+################################################################################
+
+module "eks_blueprints_argocd_team_workloads" {
+  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster" #TODO change git org to aws-ia
+  providers = {
+    helm       = helm.hub
+    kubernetes = kubernetes.hub
+  }
+
+  argocd_skip_install = true # Indicates this is a remote cluster for ArgoCD
+  helm_config = {
+    namespace = local.name # Use cluster name as namespace for ArgoCD Apps
+  }
+
+  applications = {
+    # This shows how to deploy a multiple workloads using ArgoCD App of Apps pattern
+    "${var.environment}-team-workloads" = {
+      add_on_application = false
+      path               = "multi-repo/argo-app-of-apps/${var.environment}"
+      repo_url           = "https://github.com/csantanapr/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
+      #repo_url             = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
+      #ssh_key_secret_name  = "github-ssh-key"# Needed for private repos
+      #git_secret_namespace = "argocd"
+      #git_secret_name      = "${local.name}-workloads"
+      target_revision = "argo-multi-cluster" #TODO change to main once git repo is updated
+      project         = local.name
+      values = {
+        destinationServer = module.eks.cluster_endpoint # Indicates the location of the remote cluster to deploy Apps
+        argoNamespace     = local.name                  # Namespace to create ArgoCD Apps
+        sourceNamespaces  = [local.name]
+        spec = {
+          apps = {
+            ecsdemoFrontend = {
+              createProject = true
+              name          = "backend-frontend"
+              project       = "backend-frontend-${var.environment}"
+              namespace     = "backend-frontend"
+              helm = {
+                parameters = [
+                  {
+                    name : "ecsdemoCrystal.namespace"
+                    value : "backend-crystal"
+                  },
+                  {
+                    name : "ecsdemoNodejs.namespace"
+                    value : "backend-nodejs"
+                  }
+                ]
+              }
+            }
+            ecsdemoNodejs = {
+              createProject = true
+              name          = "backend-nodejs"
+              project       = "backend-nodejs-${var.environment}"
+              namespace     = "backend-nodejs"
+              helm = {
+                values = "fullnameOverride: ecsdemo-nodejs"
+              }
+
+            }
+            ecsdemoCrystal = {
+              createProject = true
+              name          = "backend-crystal"
+              project       = "backend-crystal-${var.environment}"
+              namespace     = "backend-crystal"
+              helm = {
+                values = "fullnameOverride: ecsdemo-crystal"
+              }
+
+            }
+          }
+        }
+      }
+    }
+  }
+
+  addon_context = {
+    aws_region_name                = var.region
+    aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
+    eks_cluster_id                 = module.eks.cluster_name
+  }
+
+  depends_on = [module.eks_blueprints_argocd_addons]
 }
 
 ################################################################################
