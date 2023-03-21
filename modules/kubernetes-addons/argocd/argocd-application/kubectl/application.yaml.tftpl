@@ -11,6 +11,10 @@ spec:
     repoURL: ${sourceRepoUrl}
     targetRevision: ${sourceTargetRevision}
     path: ${sourcePath}
+    %{ if useRecurse }
+    directory:
+      recurse: true
+    %{ endif }
   destination:
     server: ${destinationServer}
     namespace: ${namespace}

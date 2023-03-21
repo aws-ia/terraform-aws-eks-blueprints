@@ -130,10 +130,12 @@ argocd_applications = {
       This points to a single application with no overlays, but it could easily
       point to a a specific overlay for an environment like "dev", and/or utilize
       the ArgoCD app of apps model to install many additional ArgoCD apps.
+      Directory recursion is enabled: https://argo-cd.readthedocs.io/en/stable/user-guide/directory/#enabling-recursive-resource-detection
     */
     path                = "argocd-example-apps/kustomize-guestbook/"
     repo_url            = "https://github.com/argoproj/argocd-example-apps.git"
     type                = "kustomize"
+    recurse             = true
   }
   addons = {
     path                = "chart"

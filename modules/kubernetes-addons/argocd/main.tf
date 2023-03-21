@@ -107,6 +107,7 @@ resource "kubectl_manifest" "argocd_kustomize_application" {
       sourcePath           = each.value.path
       destinationServer    = each.value.destination
       ignoreDifferences    = lookup(each.value, "ignoreDifferences", [])
+      useRecurse           = each.value.use_recurse
     }
   )
 
