@@ -199,7 +199,7 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons?ref=argo-multi-cluster" #TODO change git org to aws-ia
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -330,6 +330,9 @@ resource "kubernetes_secret_v1" "spoke_cluster" {
       }
     )
   }
+  # Need to create ArgoCD project before creating secret
+  # When secret is created the ArgoCD Application Set is activated
+  # using the Cluster Generator, and create ArgoCD Apps specifying the ArgoCD Project
   depends_on = [helm_release.argocd_project]
 }
 
@@ -338,7 +341,7 @@ resource "kubernetes_secret_v1" "spoke_cluster" {
 ################################################################################
 
 module "eks_blueprints_argocd_addons" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster" #TODO change git org to aws-ia
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd"
   providers = {
     helm       = helm.hub
     kubernetes = kubernetes.hub
@@ -380,6 +383,8 @@ module "eks_blueprints_argocd_addons" {
     eks_cluster_id                 = module.eks.cluster_name
   }
 
+  # The Cluster secret needs to be created before creating ArgoCD Applications for Addons
+  # ArgoCD Apps will have the remote cluster as destination
   depends_on = [kubernetes_secret_v1.spoke_cluster]
 }
 
@@ -389,7 +394,7 @@ module "eks_blueprints_argocd_addons" {
 ################################################################################
 
 module "eks_blueprints_argocd_workloads" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster" #TODO change git org to aws-ia
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd"
   providers = {
     helm       = helm.hub
     kubernetes = kubernetes.hub
@@ -452,8 +457,9 @@ module "eks_blueprints_argocd_workloads" {
     eks_cluster_id                 = module.eks.cluster_name
   }
 
+  # The addons need to be present by the time the workloads are deployed
+  # On destroy the workloads need to be remove before the addons
   depends_on = [module.eks_blueprints_argocd_addons]
-
 }
 
 ################################################################################
@@ -543,7 +549,7 @@ module "app_teams" {
 ################################################################################
 
 module "eks_blueprints_argocd_team_workloads" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster" #TODO change git org to aws-ia
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd"
   providers = {
     helm       = helm.hub
     kubernetes = kubernetes.hub
@@ -622,6 +628,8 @@ module "eks_blueprints_argocd_team_workloads" {
     eks_cluster_id                 = module.eks.cluster_name
   }
 
+  # The addons need to be present by the time the workloads are deployed
+  # On destroy the workloads need to be remove before the addons
   depends_on = [module.eks_blueprints_argocd_addons]
 }
 

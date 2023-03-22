@@ -158,7 +158,7 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons?ref=argo-multi-cluster" #TODO change git org to aws-ia
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -194,7 +194,7 @@ module "eks_blueprints_kubernetes_addons" {
 ################################################################################
 
 module "eks_blueprints_argocd_addons" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster" #TODO change git org to aws-ia
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd"
 
   argocd_skip_install = true # Skip argocd controller install
 
@@ -234,7 +234,7 @@ module "eks_blueprints_argocd_addons" {
 ################################################################################
 
 module "eks_blueprints_argocd_workloads" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=argo-multi-cluster" #TODO change git org to aws-ia
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd"
 
   argocd_skip_install = true # Skip argocd controller install
 
@@ -273,7 +273,7 @@ module "eks_blueprints_argocd_workloads" {
 ################################################################################
 
 module "argocd_irsa" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/eks-blueprints-addon?ref=argo-multi-cluster" #TODO change git org to aws-ia
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/eks-blueprints-addon"
 
   create_release             = false
   create_role                = true
