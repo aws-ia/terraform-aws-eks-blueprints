@@ -18,6 +18,8 @@ You can optionally customize the Helm chart that deploys `Karpenter` via the fol
   enable_karpenter = true
   # Queue optional for native handling of instance termination events
   karpenter_sqs_queue_arn = "arn:aws:sqs:us-west-2:444455556666:queue1"
+  # Optional to add name prefix for Karpenter's event bridge rules
+  karpenter_event_rule_name_prefix = "Karpenter"
   # Optional  karpenter_helm_config
   karpenter_helm_config = {
     name                       = "karpenter"

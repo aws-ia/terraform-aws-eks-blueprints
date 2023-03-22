@@ -321,6 +321,7 @@ module "karpenter" {
   irsa_policies                               = var.karpenter_irsa_policies
   node_iam_instance_profile                   = var.karpenter_node_iam_instance_profile
   enable_spot_termination                     = var.karpenter_enable_spot_termination_handling
+  rule_name_prefix                            = var.karpenter_event_rule_name_prefix
   manage_via_gitops                           = var.argocd_manage_add_ons
   addon_context                               = local.addon_context
   sqs_queue_managed_sse_enabled               = var.sqs_queue_managed_sse_enabled
