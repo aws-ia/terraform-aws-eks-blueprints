@@ -22,17 +22,10 @@ variable "node_iam_instance_profile" {
   default     = ""
 }
 
-# tflint-ignore: terraform_unused_declarations
-variable "enable_spot_termination_handling" {
+variable "enable_spot_termination" {
   description = "Determines whether to enable native spot termination handling"
   type        = bool
   default     = false
-}
-
-variable "sqs_queue_arn" {
-  description = "(Optional) ARN of SQS used by Karpenter when native node termination handling is enabled"
-  type        = string
-  default     = ""
 }
 
 variable "addon_context" {
@@ -56,4 +49,33 @@ variable "path" {
   description = "Path in which to create the Karpenter policy"
   type        = string
   default     = "/"
+}
+
+variable "sqs_queue_managed_sse_enabled" {
+  description = "Enable server-side encryption (SSE) for a SQS queue"
+  type        = bool
+  default     = true
+}
+
+variable "sqs_queue_kms_master_key_id" {
+  description = "The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK"
+  type        = string
+  default     = null
+}
+
+variable "sqs_queue_kms_data_key_reuse_period_seconds" {
+  description = "The length of time, in seconds, for which Amazon SQS can reuse a data key to encrypt or decrypt messages before calling AWS KMS again"
+  type        = number
+  default     = null
+}
+
+variable "rule_name_prefix" {
+  description = "Prefix used for all event bridge rules"
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = length(var.rule_name_prefix) <= 14
+    error_message = "Maximum input length exceeded. Please enter no more than 14 characters."
+  }
 }
