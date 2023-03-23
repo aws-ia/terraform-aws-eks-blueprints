@@ -392,11 +392,11 @@ module "kubernetes_addons" {
   # tflint-ignore: terraform_module_pinned_source
   source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
 
-  cluster_name            = module.eks.cluster_name
-  cluster_endpoint        = module.eks.cluster_endpoint
-  cluster_version         = module.eks.cluster_version
-  oidc_provider = module.eks.cluster_oidc_issuer_url
-  oidc_provider_arn       = module.eks.oidc_provider_arn
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider     = module.eks.cluster_oidc_issuer_url
+  oidc_provider_arn = module.eks.oidc_provider_arn
 
   #---------------------------------------------------------------
   # ARGO CD ADD-ON
@@ -452,8 +452,8 @@ module "kubernetes_addons" {
   aws_load_balancer_controller_helm_config = {
     service_account = "aws-lb-sa"
   }
-  enable_karpenter              = true
-  enable_aws_for_fluentbit      = true
+  enable_karpenter         = true
+  enable_aws_for_fluentbit = true
   #enable_aws_cloudwatch_metrics = true
 
   #to view the result : terraform state show 'module.kubernetes_addons.module.external_dns[0].module.helm_addon.helm_release.addon[0]'
