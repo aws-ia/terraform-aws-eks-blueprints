@@ -77,13 +77,15 @@ Our objective here is to show you how Application teams and Platform teams can c
 
 ```bash
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
-cd examples/upgrade/blue-green-route53
+cd examples/blue-green-upgrade/
 ```
 
-2. Copy the `terraform.tfvars.example` to `terraform.tfvars` and change region, hosted_zone_name, eks_admin_role_name according to your needs.
+2. Copy the `terraform.tfvars.example` to `terraform.tfvars` on each `core-infra`, `eks-blue` and `eks-green` folders, and change region, hosted_zone_name, eks_admin_role_name according to your needs.
 
 ```shell
-cp terraform.tfvars.example terraform.tfvars
+cp terraform.tfvars.example core-infra/terraform.tfvars
+cp terraform.tfvars.example eks-blue/terraform.tfvars
+cp terraform.tfvars.example eks-green/terraform.tfvars
 ```
 
 - You will need to provide the `hosted_zone_name` for example `my-example.com`. Terraform will create a new hosted zone for the project with name: `${core_stack_name}.${hosted_zone_name}` so in our example `eks-blueprint.my-example.com`.
