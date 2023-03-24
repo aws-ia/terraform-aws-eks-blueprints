@@ -24,7 +24,7 @@ locals {
   #---------------------------------------------------------------
   # ARGOCD WORKLOAD APPLICATION
   #---------------------------------------------------------------
-  # workload_repo = "https://github.com/ybezsonov/eks-blueprints-workloads.git"
+  # workload_repo = "https://github.com/aws-samples/eks-blueprints-workloads.git"
   workload_repo = aws_codecommit_repository.workloads_repo_cc.clone_url_http
 
   workload_application = {

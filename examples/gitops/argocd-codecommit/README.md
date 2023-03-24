@@ -7,7 +7,7 @@ This example shows how to provision an EKS cluster with:
   - Private AWS CodeCommit repository and AWS Lambda stack provisioned by included Terraform script (repo-cc.tf) and used for workloads
   - AWS Lambda triggers ArgoCD projects sync using ArgoCD webhook after each push to the AWS CodeCommit repository
 
-![Architectural diagramm](images/argocd-cc.png)
+![Architectural diagram](images/argocd-cc.png)
 
 To better understand how ArgoCD works with EKS Blueprints, read the EKS Blueprints ArgoCD [Documentation](https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/add-ons/argocd/)
 
@@ -21,7 +21,7 @@ To better understand how ArgoCD works with EKS Blueprints, read the EKS Blueprin
 ## Prerequisites
 
 Main Terraform files (main.ft, locals.tf, providers.tf, outputs.tf, data.tf) were created using instructions from [EKS Blueprints for Terraform Workshop](https://catalog.workshops.aws/eks-blueprints-terraform/en-US)
-Solution specific sript is repo-cc.tf
+Solution specific script is repo-cc.tf
 
 Ensure that you have the following tools installed locally:
 
@@ -29,13 +29,13 @@ Ensure that you have the following tools installed locally:
 2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
-Change the link of GitHub repository for workloads from [EKS Blueprints Workloads Repo](https://github.com/aws-samples/eks-blueprints-workloads) to AWS CodeCommit repository provisioned by the stack in repo-cc.tf
+Change the link in the examples/gitops/argocd-codecommit/locals.tf of GitHub repository for workloads from [EKS Blueprints Workloads Repo](https://github.com/aws-samples/eks-blueprints-workloads) to AWS CodeCommit repository provisioned by the stack in repo-cc.tf
 
 ```sh
   #---------------------------------------------------------------
   # ARGOCD WORKLOAD APPLICATION
   #---------------------------------------------------------------
-  # workload_repo = "https://github.com/ybezsonov/eks-blueprints-workloads.git"
+  # workload_repo = "https://github.com/aws-samples/eks-blueprints-workloads.git"
   workload_repo = aws_codecommit_repository.workloads_repo_cc.clone_url_http
 ```
 
@@ -53,6 +53,7 @@ Update main.tf and enable workloads and addons (if not enabled yet).
 - Provision this example in the solution directory:
 
 ```sh
+cd examples/gitops/argocd-codecommit
 terraform init
 terraform plan
 terraform apply
@@ -69,7 +70,7 @@ terraform output configure_kubectl
 - Clone [EKS Blueprints Workloads Repo](https://github.com/aws-samples/eks-blueprints-workloads) from Github to AWS CodeCommit (clone2cc.sh)
 
 ```sh
-pushd ..
+pushd ../../../..
 git clone https://github.com/aws-samples/eks-blueprints-workloads.git
 git clone https://git-codecommit.$AWS_REGION.amazonaws.com/v1/repos/eks-blueprints-workloads-cc
 cd eks-blueprints-workloads-cc
@@ -107,7 +108,7 @@ terraform apply
 
 Enter `yes` at command prompt to apply
 
-- Use ArgoCD Url, "admin" user and password below to loging to ArgoCD UI
+- Use ArgoCD Url, "admin" user and password below to logging to ArgoCD UI
 
 ```sh
 echo "ArgoCD URL: https://$TF_VAR_argocd_url"

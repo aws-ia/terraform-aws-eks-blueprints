@@ -1,4 +1,4 @@
-pushd ..
+pushd ../../../..
 git clone https://github.com/aws-samples/eks-blueprints-workloads.git
 git clone https://git-codecommit.$AWS_REGION.amazonaws.com/v1/repos/eks-blueprints-workloads-cc
 cd eks-blueprints-workloads-cc
