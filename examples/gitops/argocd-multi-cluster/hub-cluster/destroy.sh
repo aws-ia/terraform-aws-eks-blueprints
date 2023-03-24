@@ -5,8 +5,7 @@ set -x
 # Delete the Ingress before removing the addons
 kubectl_login=$(terraform output -raw configure_kubectl)
 $kubectl_login
-kubectl delete ing argo-cd-argocd-server -n argocd
-kubectl delete ing grafana -n grafana
+kubectl delete ing -A --all
 
 terraform destroy -target="module.eks_blueprints_argocd_workloads" -auto-approve
 terraform destroy -target="module.eks_blueprints_argocd_addons" -auto-approve

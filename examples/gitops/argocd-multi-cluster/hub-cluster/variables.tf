@@ -59,6 +59,12 @@ variable "grafana_subdomain" {
   default     = "grafana"
 }
 
+variable "keycloak_subdomain" {
+  description = "Keycloak subdomain"
+  type        = string
+  default     = "keycloak"
+}
+
 variable "enable_ingress" {
   description = "Enable ingress"
   type        = bool

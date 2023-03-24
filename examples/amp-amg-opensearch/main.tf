@@ -128,12 +128,12 @@ resource "grafana_data_source" "prometheus" {
   is_default = true
   url        = module.managed_prometheus.workspace_prometheus_endpoint
 
-  json_data {
+  json_data_encoded = jsonencode({
     http_method     = "POST"
     sigv4_auth      = true
     sigv4_auth_type = "workspace-iam-role"
     sigv4_region    = local.region
-  }
+  })
 }
 
 #---------------------------------------------------------------

@@ -185,6 +185,15 @@ module "eks_blueprints_kubernetes_addons" {
 
   # Observability for ArgoCD
   enable_prometheus = true
+  enable_amazon_prometheus             = true
+  amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
+
+  # Temporary fix for issue https://github.com/aws-ia/terraform-aws-eks-blueprints-addons/issues/80
+  enable_efs_csi_driver = false
+  efs_csi_driver = {
+    create_role = false
+  }
+
 
   tags = local.tags
 }
@@ -307,6 +316,129 @@ data "aws_iam_policy_document" "irsa_policy" {
     resources = ["*"]
     actions   = ["sts:AssumeRole"]
   }
+}
+
+################################################################################
+# AMP
+################################################################################
+
+module "managed_prometheus" {
+  source  = "terraform-aws-modules/managed-service-prometheus/aws"
+  version = "~> 2.2"
+
+  workspace_alias = local.name
+
+  tags = local.tags
+}
+
+
+################################################################################
+# Keycloak
+################################################################################
+
+resource "random_password" "keycloak" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+#tfsec:ignore:aws-ssm-secret-use-customer-key
+resource "aws_secretsmanager_secret" "keycloak" {
+  name                    = "keycloak"
+  recovery_window_in_days = 0 # Set to zero for this example to force delete during Terraform destroy
+}
+
+resource "aws_secretsmanager_secret_version" "keycloak" {
+  secret_id     = aws_secretsmanager_secret.keycloak.id
+  secret_string = random_password.keycloak.result
+}
+
+resource "helm_release" "keycloak" {
+  count            = var.enable_ingress ? 1 : 0
+
+  name             = "keycloak"
+  repository       = "https://charts.bitnami.com/bitnami"
+  chart            = "keycloak"
+  version          = "13.4.0"
+  namespace        = "keycloak"
+  create_namespace = true
+
+
+  values = [templatefile("${path.module}/helm-keycloak/values.yaml", {
+    workspace_endpoint = module.managed_grafana.workspace_endpoint
+    password         = random_password.keycloak.result
+    enable_ingress   = var.enable_ingress
+    host             = "${var.keycloak_subdomain}.${var.domain_name}"
+  })]
+
+  depends_on = [module.eks_blueprints_kubernetes_addons]
+}
+
+
+################################################################################
+# AMG
+################################################################################
+
+provider "grafana" {
+  url  = "https://${module.managed_grafana.workspace_endpoint}"
+  auth = module.managed_grafana.workspace_api_keys.admin.key
+}
+
+resource "grafana_data_source" "prometheus" {
+  type       = "prometheus"
+  name       = "prometheus"
+  is_default = true
+  url        = module.managed_prometheus.workspace_prometheus_endpoint
+
+  json_data_encoded = jsonencode({
+    http_method     = "POST"
+    sigv4_auth      = true
+    sigv4_auth_type = "workspace-iam-role"
+    sigv4_region    = var.region
+  })
+}
+
+resource "grafana_dashboard" "argocd" {
+  config_json = file("${path.module}/grafana-argocd-dashboard.json")
+}
+
+
+module "managed_grafana" {
+  source = "github.com/csantanapr/terraform-aws-managed-service-grafana?ref=skip-saml-configuration"
+
+  create = var.enable_ingress ? true : false
+
+  # Workspace
+  name                      = local.name
+  associate_license         = false
+  description               = "AWS Managed Grafana service gitops example"
+  account_access_type       = "CURRENT_ACCOUNT"
+  authentication_providers  = ["SAML"]
+  permission_type           = "CUSTOMER_MANAGED"
+  data_sources              = ["PROMETHEUS"]
+  workspace_api_keys = {
+    admin = {
+      key_name        = "admin"
+      key_role        = "ADMIN"
+      seconds_to_live = 3600
+    }
+  }
+
+  # New variable
+  saml_create = false
+
+  tags = local.tags
+}
+
+resource "aws_grafana_workspace_saml_configuration" "this" {
+  count = var.enable_ingress ? 1 : 0
+
+  workspace_id       = module.managed_grafana.workspace_id
+  idp_metadata_url = "https://${var.keycloak_subdomain}.${var.domain_name}/realms/keycloak-blog/protocol/saml/descriptor"
+  editor_role_values = ["editor"]
+  admin_role_values       = ["admin"]
+  role_assertion          = "role"
+  depends_on = [helm_release.keycloak]
 }
 
 ################################################################################

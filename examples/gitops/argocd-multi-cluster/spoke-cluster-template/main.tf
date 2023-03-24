@@ -217,7 +217,8 @@ module "eks_blueprints_kubernetes_addons" {
   enable_amazon_prometheus                     = try(var.addons.enable_amazon_prometheus, false)
   enable_prometheus                            = try(var.addons.enable_prometheus, false)
   enable_kube_prometheus_stack                 = try(var.addons.enable_kube_prometheus_stack, false)
-  enable_aws_efs_csi_driver                    = try(var.addons.enable_aws_efs_csi_driver, false)
+  enable_efs_csi_driver                        = try(var.addons.enable_efs_csi_driver, false)
+  enable_efs_csi_driver_gitops                 = true
   enable_aws_fsx_csi_driver                    = try(var.addons.enable_aws_fsx_csi_driver, false)
   enable_ingress_nginx                         = try(var.addons.enable_ingress_nginx, false)
   enable_aws_for_fluentbit                     = try(var.addons.enable_aws_for_fluentbit, false)

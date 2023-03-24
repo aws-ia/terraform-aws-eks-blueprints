@@ -1,0 +1,104 @@
+auth:
+  adminUser: admin
+  adminPassword: "${password}"
+keycloakConfigCli:
+  image:
+    tag: 5.6.1-debian-11-r4
+  enabled: true
+  configuration:
+    realm.json: |
+      {
+        "realm": "keycloak-blog",
+        "enabled": true,
+        "roles": {
+          "realm": [
+            {
+              "name": "admin"
+            }
+          ]
+        },
+        "users": [
+          {
+            "username": "admin",
+            "email": "admin@keycloak",
+            "enabled": true,
+            "firstName": "Admin",
+            "realmRoles": [
+              "admin"
+            ],
+            "credentials": [
+              {
+                "type": "password",
+                "value": "${password}"
+              }
+            ]
+          }
+        ],
+        "clients": [
+          {
+            "clientId": "https://${workspace_endpoint}/saml/metadata",
+            "name": "amazon-managed-grafana",
+            "enabled": true,
+            "protocol": "saml",
+            "adminUrl": "https://${workspace_endpoint}/login/saml",
+            "redirectUris": [
+              "https://${workspace_endpoint}/saml/acs"
+            ],
+            "attributes": {
+              "saml.authnstatement": "true",
+              "saml.server.signature": "true",
+              "saml_name_id_format": "email",
+              "saml_force_name_id_format": "true",
+              "saml.assertion.signature": "true",
+              "saml.client.signature": "false"
+            },
+            "defaultClientScopes": [],
+            "protocolMappers": [
+              {
+                "name": "name",
+                "protocol": "saml",
+                "protocolMapper": "saml-user-property-mapper",
+                "consentRequired": false,
+                "config": {
+                  "attribute.nameformat": "Unspecified",
+                  "user.attribute": "firstName",
+                  "attribute.name": "displayName"
+                }
+              },
+              {
+                "name": "email",
+                "protocol": "saml",
+                "protocolMapper": "saml-user-property-mapper",
+                "consentRequired": false,
+                "config": {
+                  "attribute.nameformat": "Unspecified",
+                  "user.attribute": "email",
+                  "attribute.name": "mail"
+                }
+              },
+              {
+                "name": "role list",
+                "protocol": "saml",
+                "protocolMapper": "saml-role-list-mapper",
+                "config": {
+                  "single": "true",
+                  "attribute.nameformat": "Unspecified",
+                  "attribute.name": "role"
+                }
+              }
+            ]
+          }
+        ]
+      }
+service:
+  type: ClusterIP
+ingress:
+  enabled: ${enable_ingress}
+  ingressClassName: alb
+  pathType: Prefix
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: 'ip'
+    alb.ingress.kubernetes.io/listen-ports: "[{\"HTTPS\":443}]"
+    alb.ingress.kubernetes.io/tags: "Environment=hub,GitOps=true"
+  hostname: ${host}

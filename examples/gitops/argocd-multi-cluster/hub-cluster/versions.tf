@@ -18,5 +18,9 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = ">= 1.14"
     }
+    grafana = {
+      source = "grafana/grafana"
+      version = "1.36.1"
+    }
   }
 }
