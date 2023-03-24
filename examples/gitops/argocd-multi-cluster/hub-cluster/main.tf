@@ -184,7 +184,7 @@ module "eks_blueprints_kubernetes_addons" {
   external_dns_route53_zone_arns = [local.argocd_domain_arn] # ArgoCD Server and UI domain name is registered in Route 53
 
   # Observability for ArgoCD
-  enable_prometheus = true
+  enable_prometheus                    = true
   enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
 
@@ -354,7 +354,7 @@ resource "aws_secretsmanager_secret_version" "keycloak" {
 }
 
 resource "helm_release" "keycloak" {
-  count            = var.enable_ingress ? 1 : 0
+  count = var.enable_ingress ? 1 : 0
 
   name             = "keycloak"
   repository       = "https://charts.bitnami.com/bitnami"
@@ -366,9 +366,9 @@ resource "helm_release" "keycloak" {
 
   values = [templatefile("${path.module}/helm-keycloak/values.yaml", {
     workspace_endpoint = module.managed_grafana.workspace_endpoint
-    password         = random_password.keycloak.result
-    enable_ingress   = var.enable_ingress
-    host             = "${var.keycloak_subdomain}.${var.domain_name}"
+    password           = random_password.keycloak.result
+    enable_ingress     = var.enable_ingress
+    host               = "${var.keycloak_subdomain}.${var.domain_name}"
   })]
 
   depends_on = [module.eks_blueprints_kubernetes_addons]
@@ -409,13 +409,13 @@ module "managed_grafana" {
   create = var.enable_ingress ? true : false
 
   # Workspace
-  name                      = local.name
-  associate_license         = false
-  description               = "AWS Managed Grafana service gitops example"
-  account_access_type       = "CURRENT_ACCOUNT"
-  authentication_providers  = ["SAML"]
-  permission_type           = "CUSTOMER_MANAGED"
-  data_sources              = ["PROMETHEUS"]
+  name                     = local.name
+  associate_license        = false
+  description              = "AWS Managed Grafana service gitops example"
+  account_access_type      = "CURRENT_ACCOUNT"
+  authentication_providers = ["SAML"]
+  permission_type          = "CUSTOMER_MANAGED"
+  data_sources             = ["PROMETHEUS"]
   workspace_api_keys = {
     admin = {
       key_name        = "admin"
@@ -434,11 +434,11 @@ resource "aws_grafana_workspace_saml_configuration" "this" {
   count = var.enable_ingress ? 1 : 0
 
   workspace_id       = module.managed_grafana.workspace_id
-  idp_metadata_url = "https://${var.keycloak_subdomain}.${var.domain_name}/realms/keycloak-blog/protocol/saml/descriptor"
+  idp_metadata_url   = "https://${var.keycloak_subdomain}.${var.domain_name}/realms/keycloak-blog/protocol/saml/descriptor"
   editor_role_values = ["editor"]
-  admin_role_values       = ["admin"]
-  role_assertion          = "role"
-  depends_on = [helm_release.keycloak]
+  admin_role_values  = ["admin"]
+  role_assertion     = "role"
+  depends_on         = [helm_release.keycloak]
 }
 
 ################################################################################
