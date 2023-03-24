@@ -205,7 +205,7 @@ resource "aws_iam_role" "platform_team" {
 resource "aws_iam_policy" "platform_team_eks_access" {
   count       = length(var.platform_teams) > 0 ? 1 : 0
   name        = "${var.eks_cluster_id}-PlatformTeamEKSAccess"
-  path        = "/"
+  path        = var.path
   description = "Platform Team EKS Console Access"
   policy      = data.aws_iam_policy_document.platform_team_eks_access[0].json
   tags        = var.tags

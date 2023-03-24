@@ -4,7 +4,7 @@ Calico is a widely adopted, battle-tested open source networking and network sec
 Calico provides two major services for Cloud Native applications: network connectivity between workloads and network security policy enforcement between workloads.
 [Calico](https://projectcalico.docs.tigera.io/getting-started/kubernetes/helm#download-the-helm-chart) docs chart bootstraps Calico infrastructure on a Kubernetes cluster using the Helm package manager.
 
-For complete project documentation, please visit the [Calico documentation site](https://www.tigera.io/calico-documentation/).
+For complete project documentation, please visit the [Calico documentation site](https://docs.tigera.io/calico/next/about/).
 
 ## Usage
 
