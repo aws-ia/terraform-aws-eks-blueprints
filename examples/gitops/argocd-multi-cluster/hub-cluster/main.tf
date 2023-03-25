@@ -85,11 +85,11 @@ locals {
     url          = "https://${local.argocd_subdomain}.${var.domain_name}"
   }) : ""
 
-  enable_grafana_oss = false
-  grafana_subdomain = "argocd"
-
+  # AMG Config
   enable_keycloak = true
   keycloak_subdomain = "keycloak"
+  keycloak_admin_password_key_name = "keycloak"
+  keycloak_admin_username = "admin"
 
 }
 
@@ -165,7 +165,7 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons?ref=fix-iam-role-creation"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -187,6 +187,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_external_dns                 = var.enable_ingress ? true : false # ArgoCD Server and UI use valid https domain name
   external_dns_helm_config = {
     domainFilters : [var.domain_name]
+    policy: "sync" # Allows to delete DNS records
   }
   external_dns_route53_zone_arns = [local.argocd_domain_arn] # ArgoCD Server and UI domain name is registered in Route 53
 
@@ -203,7 +204,7 @@ module "eks_blueprints_kubernetes_addons" {
 ################################################################################
 
 module "eks_blueprints_argocd_addons" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=fix-iam-role-creation"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd"
 
   argocd_skip_install = true # Skip argocd controller install
 
@@ -243,7 +244,7 @@ module "eks_blueprints_argocd_addons" {
 ################################################################################
 
 module "eks_blueprints_argocd_workloads" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=fix-iam-role-creation"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd"
 
   argocd_skip_install = true # Skip argocd controller install
 
@@ -282,7 +283,7 @@ module "eks_blueprints_argocd_workloads" {
 ################################################################################
 
 module "argocd_irsa" {
-  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/eks-blueprints-addon?ref=fix-iam-role-creation"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/eks-blueprints-addon"
 
   create_release             = false
   create_role                = true
@@ -344,7 +345,7 @@ resource "random_password" "keycloak" {
 
 #tfsec:ignore:aws-ssm-secret-use-customer-key
 resource "aws_secretsmanager_secret" "keycloak" {
-  name                    = "keycloak"
+  name                    = local.keycloak_admin_password_key_name
   recovery_window_in_days = 0 # Set to zero for this example to force delete during Terraform destroy
 }
 
@@ -366,6 +367,7 @@ resource "helm_release" "keycloak" {
 
   values = [templatefile("${path.module}/helm-keycloak/values.yaml", {
     workspace_endpoint = module.managed_grafana.workspace_endpoint
+    admin_username     = local.keycloak_admin_username
     password           = random_password.keycloak.result
     enable_ingress     = var.enable_ingress
     host               = "${local.keycloak_subdomain}.${var.domain_name}"
@@ -382,13 +384,6 @@ resource "helm_release" "keycloak" {
 provider "grafana" {
   url  = "https://${module.managed_grafana.workspace_endpoint}"
   auth = module.managed_grafana.workspace_api_keys.admin.key
-}
-
-output amg_endpoint {
-  value = "https://${module.managed_grafana.workspace_endpoint}"
-}
-output amg_apikey {
-  value = module.managed_grafana.workspace_api_keys.admin.key
 }
 
 resource "grafana_data_source" "prometheus" {
@@ -432,7 +427,7 @@ module "managed_grafana" {
   }
 
   # New variable
-  saml_create = false
+  create_saml_configuration = false
 
   tags = local.tags
 }
@@ -454,31 +449,6 @@ resource "aws_grafana_workspace_saml_configuration" "this" {
   role_assertion     = "role"
   depends_on         = [time_sleep.wait_keyclock_ingress]
 }
-
-
-################################################################################
-# Grafana
-################################################################################
-
-resource "helm_release" "grafana" {
-  count = local.enable_grafana_oss && var.enable_ingress ? 1 : 0
-  name             = "grafana"
-  repository       = "https://grafana.github.io/helm-charts"
-  chart            = "grafana"
-  version          = "6.52.1"
-  namespace        = "grafana"
-  create_namespace = true
-
-
-  values = [templatefile("${path.module}/helm-grafana/values.yaml", {
-    host             = "${local.grafana_subdomain}.${var.domain_name}"
-    enable_ingress   = var.enable_ingress
-    operating_system = "linux"
-  })]
-
-  depends_on = [module.eks_blueprints_kubernetes_addons]
-}
-
 
 ################################################################################
 # Supporting Resources

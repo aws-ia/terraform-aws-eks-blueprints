@@ -16,7 +16,8 @@ managing multiple tenant clusters (spokes).
 - ArgoCD Application Sets using Cluster generator, cluster are labeled based on environment (i.e. dev, test, prod)
 - ArgoCD Ingress configuration with a custom domain name, valid SSL certificate thru AWS ACM, and AWS Route 53 DNS configured with external-dns. Secure login via Web Ui and CLI using HTTPS and grpc (i.e. no need to skip SSL verification)
 - ArgoCD High Availability with Auto-scaling (HPA), controller with multiple replicas for cluster sharding. Disable unused components (i.e. dex server).
-- ArgoCD Observability via Prometheus and Grafana, Grafana Ingress configuration with a custom domain name, valid SSL certificate thru AWS ACM, and AWS Route 53 DNS configured with external-dns.
+- ArgoCD Observability via Amazon Managed Service for Prometheus (AMP) and Amazon Managed Grafana (AMG)
+- Amazon Managed Grafana (AMG) SSO Login setup automatically and ArgoCD Grafana dashboard pre-loaded
 - Support private git repositories and configuration via ssh private key stored in AWS Secret Manager.
 - ArgoCD SSO Login with Amazon Cognito. Read the section below for instructions on how to setup Amazon Cognito
 - Instructions and `destroy.sh` script to cleanly destroy clusters.
@@ -177,26 +178,21 @@ kubectl get secrets -n argocd -l environment=dev,argocd.argoproj.io/secret-type=
 
 ## AWS Managed Grafana (AMG)
 You can view the ArgoCD metrics using Grafana.
-You need to enable ingress and domain to use
-To login into AMG use username `admin` and the password from the following command
-```sh
-echo "Password: $(kubectl get secrets keycloak -n keycloak --template="{{index .data \"admin-password\" | base64decode}}")"
-```
-Select the ArgoCD dashboard that is loaded pre-loaded
 
-## Grafana OSS
-If using Grafana running in EKS, with Ingress
+You need to to set to `true` the variable `var.enable_ingress` and set the value for `var.domain_name`
+To login into AMG use the the url, username and password using the following command:
 ```sh
-echo "URL: https://$(kubectl get ing grafana -n grafana -o jsonpath='{.spec.tls[0].hosts[0]}')"
-echo "Username: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-user\" | base64decode}}")"
-echo "Password: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-password\" | base64decode}}")"
+terraform -chdir=hub-cluster output -raw grafana_url
+terraform -chdir=hub-cluster output -raw grafana_admin_username
+terraform -chdir=hub-cluster output -raw grafana_admin_password_cmd
 ```
-Get the Grafana URL and Password if using LoadBalancer and not Ingress
-```sh
-echo "URL: http://$(kubectl get svc grafana -n grafana -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
-echo "Username: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-user\" | base64decode}}")"
-echo "Password: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-password\" | base64decode}}")"
+Expected output for `grafana_admin_password_cmd`, run the `aws secretsmanager get-secret-value ...` command
 ```
+aws secretsmanager get-secret-value --secret-id keycloak --region us-west-2
+```
+Pickup the the secret from the `SecretString`.
+
+Select the ArgoCD dashboard from AMG that is loaded pre-loaded
 
 ## (Optional) Private git repositories
 To use private git repositories, you can use SSH authentication.

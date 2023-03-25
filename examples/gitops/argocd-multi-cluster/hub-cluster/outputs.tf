@@ -18,3 +18,15 @@ output "grafana_url" {
   value       = var.enable_ingress ? "https://${module.managed_grafana.workspace_endpoint}" : ""
 }
 
+output "grafana_admin_username" {
+  description = "AMG Admin username"
+  value = local.keycloak_admin_username
+}
+
+output "grafana_admin_password_cmd" {
+  description = "AWS CLI command to retrieve password for AMG"
+  value = "aws secretsmanager get-secret-value --secret-id ${local.keycloak_admin_password_key_name} --region ${var.region}"
+}
+
+
+

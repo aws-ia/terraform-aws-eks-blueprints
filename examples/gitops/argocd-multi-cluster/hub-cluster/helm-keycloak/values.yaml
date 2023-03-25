@@ -19,7 +19,7 @@ keycloakConfigCli:
         },
         "users": [
           {
-            "username": "admin",
+            "username": "${admin_username}",
             "email": "admin@keycloak",
             "enabled": true,
             "firstName": "Admin",
