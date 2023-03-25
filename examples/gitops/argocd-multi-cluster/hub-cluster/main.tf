@@ -90,6 +90,7 @@ locals {
   keycloak_subdomain = "keycloak"
   keycloak_admin_password_key_name = "keycloak"
   keycloak_admin_username = "admin"
+  keycloak_ingress_ready = "300s"
 
 }
 
@@ -434,7 +435,7 @@ module "managed_grafana" {
 
 # Wait for Keycloak ingress to be up
 resource "time_sleep" "wait_keyclock_ingress" {
-  create_duration = "600s"
+  create_duration = local.keycloak_ingress_ready
 
   depends_on = [helm_release.keycloak]
 }
