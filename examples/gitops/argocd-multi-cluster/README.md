@@ -175,9 +175,17 @@ You can list based on cluster labels using `kubectl`
 kubectl get secrets -n argocd -l environment=dev,argocd.argoproj.io/secret-type=cluster
 ```
 
-## Grafana
+## AWS Managed Grafana (AMG)
 You can view the ArgoCD metrics using Grafana.
-Get the Grafana URL and Password if using Ingress
+You need to enable ingress and domain to use
+To login into AMG use username `admin` and the password from the following command
+```sh
+echo "Password: $(kubectl get secrets keycloak -n keycloak --template="{{index .data \"admin-password\" | base64decode}}")"
+```
+Select the ArgoCD dashboard that is loaded pre-loaded
+
+## Grafana OSS
+If using Grafana running in EKS, with Ingress
 ```sh
 echo "URL: https://$(kubectl get ing grafana -n grafana -o jsonpath='{.spec.tls[0].hosts[0]}')"
 echo "Username: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-user\" | base64decode}}")"
@@ -189,9 +197,6 @@ echo "URL: http://$(kubectl get svc grafana -n grafana -o jsonpath='{.status.loa
 echo "Username: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-user\" | base64decode}}")"
 echo "Password: $(kubectl get secrets grafana -n grafana --template="{{index .data \"admin-password\" | base64decode}}")"
 ```
-
-
-Select the ArgoCD dashboard that is loaded pre-loaded
 
 ## (Optional) Private git repositories
 To use private git repositories, you can use SSH authentication.

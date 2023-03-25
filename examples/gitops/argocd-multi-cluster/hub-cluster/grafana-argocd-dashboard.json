@@ -1,4 +1,56 @@
 {
+  "__inputs": [],
+  "__elements": [],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "8.4.7"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph (old)",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "heatmap",
+      "name": "Heatmap",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -26,15 +78,15 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 14584,
   "graphTooltip": 0,
-  "id": 2,
+  "id": null,
+  "iteration": 1679710647413,
   "links": [],
   "liveNow": false,
   "panels": [
     {
       "collapsed": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "gridPos": {
         "h": 1,
@@ -47,8 +99,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "refId": "A"
         }
@@ -58,8 +109,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "gridPos": {
         "h": 4,
@@ -75,15 +125,14 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "![argoimage](https://avatars1.githubusercontent.com/u/30269780?s=110&v=4)",
-        "mode": "markdown"
+        "content": "<img src=\"data:image/png;base64,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\" alt=\"ArgoCD\" />",
+        "mode": "html"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "refId": "A"
         }
@@ -93,8 +142,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -136,12 +184,11 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "time() - max(process_start_time_seconds{service=~\"argo-cd-argocd-application-controller-metrics\", namespace=\"$namespace\"})",
@@ -153,8 +200,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum by (service) (up{service=\"argo-cd-argocd-application-controller-metrics\", namespace=\"argocd\"})/ count by (service) (up{service=\"argo-cd-argocd-application-controller-metrics\", namespace=\"argocd\"}) * 100",
@@ -170,8 +216,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -220,12 +265,11 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "expr": "count(count by (server) (argocd_cluster_info{namespace=~\"$namespace\"}))",
           "format": "time_series",
@@ -239,8 +283,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -289,13 +332,12 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "repeatDirection": "h",
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "expr": "sum(argocd_app_info{namespace=~\"$namespace\",dest_server=~\"$cluster\",health_status=~\"$health_status\",sync_status=~\"$sync_status\"})",
           "format": "time_series",
@@ -309,8 +351,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -359,12 +400,11 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "expr": "count(count by (repo) (argocd_app_info{namespace=~\"$namespace\"}))",
           "format": "time_series",
@@ -378,8 +418,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -435,13 +474,12 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "repeatDirection": "h",
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(rate(argocd_app_sync_total{namespace=~\"$namespace\"}[5m]))",
@@ -461,8 +499,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -504,7 +541,7 @@
       },
       "paceLength": 10,
       "percentage": false,
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -515,8 +552,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "expr": "sum(argocd_app_info{namespace=~\"$namespace\",dest_server=~\"$cluster\",health_status=~\"$health_status\",sync_status=~\"$sync_status\"}) by (namespace)",
           "format": "time_series",
@@ -560,8 +596,7 @@
     {
       "collapsed": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "gridPos": {
         "h": 1,
@@ -574,8 +609,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "refId": "A"
         }
@@ -596,8 +630,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -640,7 +673,7 @@
       },
       "paceLength": 10,
       "percentage": false,
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -651,8 +684,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "expr": "sum(argocd_app_info{namespace=~\"$namespace\",dest_server=~\"$cluster\",health_status=~\"$health_status\",sync_status=~\"$sync_status\",health_status!=\"\"}) by (health_status)",
           "format": "time_series",
@@ -707,8 +739,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -751,7 +782,7 @@
       },
       "paceLength": 10,
       "percentage": false,
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -762,8 +793,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "expr": "sum(argocd_app_info{namespace=~\"$namespace\",dest_server=~\"$cluster\",health_status=~\"$health_status\",sync_status=~\"$sync_status\",health_status!=\"\"}) by (sync_status)",
           "format": "time_series",
@@ -806,8 +836,7 @@
     {
       "collapsed": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "gridPos": {
         "h": 1,
@@ -820,8 +849,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "refId": "A"
         }
@@ -835,8 +863,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -879,7 +906,7 @@
       },
       "paceLength": 10,
       "percentage": false,
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "pointradius": 1,
       "points": false,
       "renderer": "flot",
@@ -890,8 +917,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(round(increase(argocd_app_sync_total{namespace=~\"$namespace\",dest_server=~\"$cluster\"}[5m]))) by ($grouping) OR on() vector(0)",
@@ -943,8 +969,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -986,7 +1011,7 @@
       },
       "paceLength": 10,
       "percentage": false,
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -997,8 +1022,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(round(increase(argocd_app_sync_total{namespace=~\"$namespace\",phase=~\"Error|Failed\",dest_server=~\"$cluster\"}[5m]))) by ($grouping, phase) OR on() vector(0)",
@@ -1046,8 +1070,7 @@
     {
       "collapsed": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "gridPos": {
         "h": 1,
@@ -1060,8 +1083,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "refId": "A"
         }
@@ -1071,8 +1093,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -1080,8 +1101,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1157,8 +1176,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(argocd_app_reconcile_count{namespace=~\"$namespace\",dest_server=~\"$cluster\"}[$interval])) by ($grouping)",
@@ -1171,8 +1189,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(argocd_app_reconcile_count{namespace=~\"$namespace\",dest_server=~\"$cluster\"}[5m])) by ($grouping)",
@@ -1196,23 +1213,7 @@
       },
       "dataFormat": "tsbuckets",
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "scaleDistribution": {
-              "type": "linear"
-            }
-          }
-        },
-        "overrides": []
+        "uid": "$datasource"
       },
       "gridPos": {
         "h": 7,
@@ -1272,8 +1273,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(argocd_app_reconcile_bucket{namespace=~\"$namespace\"}[5m])) by (le)",
@@ -1303,8 +1303,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -1312,8 +1311,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1387,8 +1384,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(argocd_app_k8s_request_total{namespace=~\"$namespace\"}[5m])) by (verb, resource_kind)",
@@ -1409,8 +1405,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -1448,7 +1443,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1459,8 +1454,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "expr": "sum(workqueue_depth{namespace=~\"$namespace\",name=~\"app_.*\"}) by (name)",
           "format": "time_series",
@@ -1507,8 +1501,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -1545,7 +1538,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1556,8 +1549,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "expr": "sum(argocd_kubectl_exec_pending{namespace=~\"$namespace\"}) by (command)",
           "format": "time_series",
@@ -1605,8 +1597,7 @@
     {
       "collapsed": true,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "gridPos": {
         "h": 1,
@@ -1622,8 +1613,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "fill": 1,
           "fillGradient": 0,
@@ -1668,7 +1658,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "uid": "$datasource"
               },
               "expr": "go_memstats_heap_alloc_bytes{job=\"argocd-metrics\",namespace=~\"$namespace\"}",
               "format": "time_series",
@@ -1713,8 +1703,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "fill": 1,
           "fillGradient": 0,
@@ -1761,7 +1750,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "uid": "$datasource"
               },
               "expr": "irate(process_cpu_seconds_total{job=\"argocd-metrics\",namespace=~\"$namespace\"}[1m])",
               "format": "time_series",
@@ -1807,8 +1796,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "fill": 1,
           "fillGradient": 0,
@@ -1855,7 +1843,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "uid": "$datasource"
               },
               "expr": "go_goroutines{job=\"argocd-metrics\",namespace=~\"$namespace\"}",
               "format": "time_series",
@@ -1898,8 +1886,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "refId": "A"
         }
@@ -1910,8 +1897,7 @@
     {
       "collapsed": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "gridPos": {
         "h": 1,
@@ -1924,8 +1910,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "refId": "A"
         }
@@ -1939,8 +1924,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -1979,7 +1963,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1990,8 +1974,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "expr": "sum(argocd_cluster_api_resource_objects{namespace=~\"$namespace\",server=~\"$cluster\"}) by (server)",
           "format": "time_series",
@@ -2036,8 +2019,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -2077,7 +2059,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2088,8 +2070,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "expr": "  sum(argocd_cluster_api_resources{namespace=~\"$namespace\",server=~\"$cluster\"}) by (server)",
           "format": "time_series",
@@ -2134,8 +2115,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -2174,7 +2154,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2185,8 +2165,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(argocd_cluster_events_total{namespace=~\"$namespace\",server=~\"$cluster\"}[5m])) by (server)",
@@ -2230,8 +2209,7 @@
     {
       "collapsed": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "gridPos": {
         "h": 1,
@@ -2244,8 +2222,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "refId": "A"
         }
@@ -2259,8 +2236,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -2295,7 +2271,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2306,8 +2282,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "expr": "sum(increase(argocd_git_request_total{request_type=\"ls-remote\", namespace=~\"$namespace\"}[10m])) by (namespace)",
           "format": "time_series",
@@ -2352,8 +2327,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -2388,7 +2362,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2399,8 +2373,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "expr": "sum(increase(argocd_git_request_total{request_type=\"fetch\", namespace=~\"$namespace\"}[10m])) by (namespace)",
           "format": "time_series",
@@ -2451,23 +2424,7 @@
       },
       "dataFormat": "tsbuckets",
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "scaleDistribution": {
-              "type": "linear"
-            }
-          }
-        },
-        "overrides": []
+        "uid": "$datasource"
       },
       "gridPos": {
         "h": 8,
@@ -2524,8 +2481,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(argocd_git_request_duration_seconds_bucket{request_type=\"fetch\", namespace=~\"$namespace\"}[5m])) by (le)",
@@ -2564,23 +2520,7 @@
       },
       "dataFormat": "tsbuckets",
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "scaleDistribution": {
-              "type": "linear"
-            }
-          }
-        },
-        "overrides": []
+        "uid": "$datasource"
       },
       "gridPos": {
         "h": 8,
@@ -2637,8 +2577,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(argocd_git_request_duration_seconds_bucket{request_type=\"ls-remote\", namespace=~\"$namespace\"}[5m])) by (le)",
@@ -2667,8 +2606,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -2676,8 +2614,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -2748,8 +2684,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "go_memstats_heap_alloc_bytes{service=~\".*argocd-repo-server.*\",namespace=~\"$namespace\"}",
@@ -2770,8 +2705,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -2807,7 +2741,7 @@
       },
       "paceLength": 10,
       "percentage": false,
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2818,8 +2752,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -2865,8 +2798,7 @@
     {
       "collapsed": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "gridPos": {
         "h": 1,
@@ -2879,8 +2811,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "refId": "A"
         }
@@ -2890,8 +2821,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -2899,8 +2829,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -2971,8 +2899,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "go_memstats_heap_alloc_bytes{service=~\".*argocd-server-metrics.*\",namespace=~\"$namespace\"}",
@@ -2992,8 +2919,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fill": 1,
       "fillGradient": 0,
@@ -3023,7 +2949,7 @@
       },
       "paceLength": 10,
       "percentage": false,
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3034,8 +2960,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "go_goroutines{service=~\".*argocd-server-metrics.*\",namespace=~\"$namespace\"}",
@@ -3082,8 +3007,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fill": 1,
       "fillGradient": 0,
@@ -3113,7 +3037,7 @@
       },
       "paceLength": 10,
       "percentage": false,
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3124,8 +3048,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "go_gc_duration_seconds{service=~\".*argocd-server-metrics.*\", quantile=\"1\", namespace=~\"$namespace\"}",
@@ -3184,14 +3107,13 @@
         "content": "#### gRPC Services:",
         "mode": "markdown"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "8.4.7",
       "transparent": true,
       "type": "text"
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -3199,8 +3121,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -3233,7 +3153,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3273,8 +3194,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(grpc_server_handled_total{service=~\".*argocd-server-metrics.*\",grpc_service=\"application.ApplicationService\",namespace=~\"$namespace\"}[5m])) by (grpc_code, grpc_method)",
@@ -3290,8 +3210,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -3299,8 +3218,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -3333,7 +3250,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3373,8 +3291,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(grpc_server_handled_total{service=~\".*argocd-server-metrics.*\",grpc_service=\"cluster.ClusterService\",namespace=~\"$namespace\"}[5m])) by (grpc_code, grpc_method)",
@@ -3390,8 +3307,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -3399,8 +3315,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -3433,7 +3347,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3473,8 +3388,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(grpc_server_handled_total{service=~\".*argocd-server-metrics.*\",grpc_service=\"project.ProjectService\",namespace=~\"$namespace\"}[5m])) by (grpc_code, grpc_method)",
@@ -3490,8 +3404,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -3499,8 +3412,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -3533,7 +3444,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "transparent"
+                "color": "transparent",
+                "value": null
               },
               {
                 "color": "red"
@@ -3572,8 +3484,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(grpc_server_handled_total{service=~\".*argocd-server-metrics.*\",grpc_service=\"repository.RepositoryService\",namespace=~\"$namespace\"}[5m])) by (grpc_code, grpc_method)",
@@ -3589,8 +3500,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -3598,8 +3508,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -3632,7 +3540,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3672,8 +3581,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(grpc_server_handled_total{service=~\".*argocd-server-metrics.*\",grpc_service=\"session.SessionService\",namespace=~\"$namespace\"}[5m])) by (grpc_code, grpc_method)",
@@ -3690,8 +3598,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -3699,8 +3606,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -3733,7 +3638,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3773,8 +3679,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(grpc_server_handled_total{service=~\".*argocd-server-metrics.*\",grpc_service=\"version.VersionService\",namespace=~\"$namespace\"}[5m])) by (grpc_code, grpc_method)",
@@ -3790,8 +3695,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -3799,8 +3703,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -3833,7 +3735,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3873,8 +3776,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(grpc_server_handled_total{service=~\".*argocd-server-metrics.*\",grpc_service=\"account.AccountService\",namespace=~\"$namespace\"}[5m])) by (grpc_code, grpc_method)",
@@ -3890,8 +3792,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -3899,8 +3800,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -3933,7 +3832,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3973,8 +3873,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(grpc_server_handled_total{service=~\".*argocd-server-metrics.*\",grpc_service=\"settings.SettingsService\",namespace=~\"$namespace\"}[5m])) by (grpc_code, grpc_method)",
@@ -3992,8 +3891,7 @@
     {
       "collapsed": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "gridPos": {
         "h": 1,
@@ -4006,8 +3904,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "refId": "A"
         }
@@ -4017,8 +3914,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -4026,8 +3922,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -4061,7 +3955,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4096,8 +3991,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(increase(argocd_redis_request_total{namespace=~\"$namespace\"}[5m])) by (failed)",
@@ -4111,7 +4005,7 @@
   ],
   "refresh": "",
   "revision": 1,
-  "schemaVersion": 38,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -4135,14 +4029,10 @@
       },
       {
         "allValue": ".*",
-        "current": {
-          "selected": false,
-          "text": "https://kubernetes.default.svc",
-          "value": "https://kubernetes.default.svc"
-        },
+        "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "PBFA97CFB590B2093"
+          "uid": "$datasource"
         },
         "definition": "label_values(argocd_cluster_info, server)",
         "hide": 0,
@@ -4165,14 +4055,10 @@
       },
       {
         "allValue": ".*",
-        "current": {
-          "selected": false,
-          "text": "argocd",
-          "value": "argocd"
-        },
+        "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "PBFA97CFB590B2093"
+          "uid": "$datasource"
         },
         "definition": "label_values(kube_pod_info, namespace)",
         "hide": 0,
@@ -4351,6 +4237,6 @@
   "timezone": "",
   "title": "ArgoCD Copy",
   "uid": "Rl5qI-a4z",
-  "version": 28,
+  "version": 1,
   "weekStart": ""
 }

@@ -65,12 +65,13 @@ locals {
   }
 
   argocd_namespace  = "argocd"
+  argocd_subdomain  = "argocd"
   argocd_domain_arn = try(data.aws_route53_zone.domain_name[0].arn, "")
 
   # ArgoCD Helm values for base
   argocd_values = templatefile("${path.module}/helm-argocd/values.yaml", {
     irsa_iam_role_arn = module.argocd_irsa.iam_role_arn
-    host              = "${var.argocd_subdomain}.${var.domain_name}"
+    host              = "${local.argocd_subdomain}.${var.domain_name}"
     enable_ingress    = var.enable_ingress
   })
 
@@ -79,10 +80,16 @@ locals {
     issuer       = var.argocd_sso_issuer
     clientID     = var.argocd_sso_client_id
     clientSecret = var.argocd_sso_client_secret
-    logoutURL    = "${var.argocd_sso_logout_url}?client_id=${var.argocd_sso_client_id}&logout_uri=https://${var.argocd_subdomain}.${var.domain_name}/logout"
+    logoutURL    = "${var.argocd_sso_logout_url}?client_id=${var.argocd_sso_client_id}&logout_uri=https://${local.argocd_subdomain}.${var.domain_name}/logout"
     cliClientID  = var.argocd_sso_cli_client_id
-    url          = "https://${var.argocd_subdomain}.${var.domain_name}"
+    url          = "https://${local.argocd_subdomain}.${var.domain_name}"
   }) : ""
+
+  enable_grafana_oss = false
+  grafana_subdomain = "argocd"
+
+  enable_keycloak = true
+  keycloak_subdomain = "keycloak"
 
 }
 
@@ -158,7 +165,7 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons?ref=fix-iam-role-creation"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -188,13 +195,6 @@ module "eks_blueprints_kubernetes_addons" {
   enable_amazon_prometheus             = true
   amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
 
-  # Temporary fix for issue https://github.com/aws-ia/terraform-aws-eks-blueprints-addons/issues/80
-  enable_efs_csi_driver = false
-  efs_csi_driver = {
-    create_role = false
-  }
-
-
   tags = local.tags
 }
 
@@ -203,7 +203,7 @@ module "eks_blueprints_kubernetes_addons" {
 ################################################################################
 
 module "eks_blueprints_argocd_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd"
+  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=fix-iam-role-creation"
 
   argocd_skip_install = true # Skip argocd controller install
 
@@ -243,7 +243,7 @@ module "eks_blueprints_argocd_addons" {
 ################################################################################
 
 module "eks_blueprints_argocd_workloads" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd"
+  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/argocd?ref=fix-iam-role-creation"
 
   argocd_skip_install = true # Skip argocd controller install
 
@@ -282,7 +282,7 @@ module "eks_blueprints_argocd_workloads" {
 ################################################################################
 
 module "argocd_irsa" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/eks-blueprints-addon"
+  source = "github.com/csantanapr/terraform-aws-eks-blueprints-addons//modules/eks-blueprints-addon?ref=fix-iam-role-creation"
 
   create_release             = false
   create_role                = true
@@ -368,7 +368,7 @@ resource "helm_release" "keycloak" {
     workspace_endpoint = module.managed_grafana.workspace_endpoint
     password           = random_password.keycloak.result
     enable_ingress     = var.enable_ingress
-    host               = "${var.keycloak_subdomain}.${var.domain_name}"
+    host               = "${local.keycloak_subdomain}.${var.domain_name}"
   })]
 
   depends_on = [module.eks_blueprints_kubernetes_addons]
@@ -384,24 +384,31 @@ provider "grafana" {
   auth = module.managed_grafana.workspace_api_keys.admin.key
 }
 
+output amg_endpoint {
+  value = "https://${module.managed_grafana.workspace_endpoint}"
+}
+output amg_apikey {
+  value = module.managed_grafana.workspace_api_keys.admin.key
+}
+
 resource "grafana_data_source" "prometheus" {
   type       = "prometheus"
-  name       = "prometheus"
+  name       = "Prometheus"
   is_default = true
   url        = module.managed_prometheus.workspace_prometheus_endpoint
 
   json_data_encoded = jsonencode({
-    http_method     = "POST"
-    sigv4_auth      = true
-    sigv4_auth_type = "workspace-iam-role"
-    sigv4_region    = var.region
+    httpMethod     = "POST"
+    sigV4Auth      = true
+    sigV4AuthType  = "ec2_iam_role"
+    sigV4Region    = var.region
   })
+
 }
 
 resource "grafana_dashboard" "argocd" {
   config_json = file("${path.module}/grafana-argocd-dashboard.json")
 }
-
 
 module "managed_grafana" {
   source = "github.com/csantanapr/terraform-aws-managed-service-grafana?ref=skip-saml-configuration"
@@ -414,13 +421,13 @@ module "managed_grafana" {
   description              = "AWS Managed Grafana service gitops example"
   account_access_type      = "CURRENT_ACCOUNT"
   authentication_providers = ["SAML"]
-  permission_type          = "CUSTOMER_MANAGED"
+  permission_type          = "SERVICE_MANAGED"
   data_sources             = ["PROMETHEUS"]
   workspace_api_keys = {
     admin = {
       key_name        = "admin"
       key_role        = "ADMIN"
-      seconds_to_live = 3600
+      seconds_to_live = 2505600
     }
   }
 
@@ -430,22 +437,31 @@ module "managed_grafana" {
   tags = local.tags
 }
 
+# Wait for Keycloak ingress to be up
+resource "time_sleep" "wait_keyclock_ingress" {
+  create_duration = "600s"
+
+  depends_on = [helm_release.keycloak]
+}
+
 resource "aws_grafana_workspace_saml_configuration" "this" {
   count = var.enable_ingress ? 1 : 0
 
   workspace_id       = module.managed_grafana.workspace_id
-  idp_metadata_url   = "https://${var.keycloak_subdomain}.${var.domain_name}/realms/keycloak-blog/protocol/saml/descriptor"
+  idp_metadata_url   = "https://${local.keycloak_subdomain}.${var.domain_name}/realms/keycloak-blog/protocol/saml/descriptor"
   editor_role_values = ["editor"]
   admin_role_values  = ["admin"]
   role_assertion     = "role"
-  depends_on         = [helm_release.keycloak]
+  depends_on         = [time_sleep.wait_keyclock_ingress]
 }
+
 
 ################################################################################
 # Grafana
 ################################################################################
 
 resource "helm_release" "grafana" {
+  count = local.enable_grafana_oss && var.enable_ingress ? 1 : 0
   name             = "grafana"
   repository       = "https://grafana.github.io/helm-charts"
   chart            = "grafana"
@@ -455,7 +471,7 @@ resource "helm_release" "grafana" {
 
 
   values = [templatefile("${path.module}/helm-grafana/values.yaml", {
-    host             = "${var.grafana_subdomain}.${var.domain_name}"
+    host             = "${local.grafana_subdomain}.${var.domain_name}"
     enable_ingress   = var.enable_ingress
     operating_system = "linux"
   })]

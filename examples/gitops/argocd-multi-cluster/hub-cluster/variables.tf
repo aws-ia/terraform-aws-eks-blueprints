@@ -1,3 +1,9 @@
+variable "domain_private_zone" {
+  description = "Is ArgoCD private zone"
+  type        = bool
+  default     = false
+}
+
 variable "argocd_sso_cli_client_id" {
   description = "ArgoCD SSO OIDC cliClientID"
   type        = string
@@ -8,12 +14,6 @@ variable "argocd_sso_client_id" {
   description = "ArgoCD SSO OIDC clientID"
   type        = string
   default     = ""
-}
-
-variable "domain_private_zone" {
-  description = "Is ArgoCD private zone"
-  type        = bool
-  default     = false
 }
 
 variable "argocd_enable_sso" {
@@ -45,24 +45,6 @@ variable "domain_name" {
   description = "Domain Name"
   type        = string
   default     = ""
-}
-
-variable "argocd_subdomain" {
-  description = "ArgoCD subdomain"
-  type        = string
-  default     = "argocd"
-}
-
-variable "grafana_subdomain" {
-  description = "Grafana subdomain"
-  type        = string
-  default     = "grafana"
-}
-
-variable "keycloak_subdomain" {
-  description = "Keycloak subdomain"
-  type        = string
-  default     = "keycloak"
 }
 
 variable "enable_ingress" {
