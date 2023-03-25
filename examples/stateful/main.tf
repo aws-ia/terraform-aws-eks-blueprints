@@ -194,7 +194,8 @@ module "eks" {
 module "eks_blueprints_kubernetes_addons" {
   # Users should pin the version to the latest available release
   # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+  #source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons?ref=2023-03-24-addons-refinement"
+  source = "../../../../terraform-aws-eks-blueprints-addons"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -218,7 +219,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_velero           = true
   velero_backup_s3_bucket = module.velero_backup_s3_bucket.s3_bucket_id
 
-  enable_aws_efs_csi_driver = true
+  enable_efs_csi_driver = true
 
   tags = local.tags
 }
