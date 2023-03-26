@@ -278,9 +278,9 @@ module "eks_blueprints_argocd_workloads" {
     workloads-app-of-apps = {
       add_on_application = false
       path               = "envs/dev"
-      repo_url           = "https://github.com/csantanapr/eks-blueprints-workloads.git"
+      repo_url           = "https://github.com/csantanapr/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
       target_revision    = "argo-multi-cluster" #TODO change to main
-      #repo_url             = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
+      #repo_url             = "git@github.com:aws-samples/eks-blueprints-workloads.git"
       #ssh_key_secret_name  = "github-ssh-key"# Needed for private repos
       #git_secret_namespace = "argocd"
       #git_secret_name      = "${local.name}-workloads"
@@ -288,7 +288,7 @@ module "eks_blueprints_argocd_workloads" {
         spec = {
           source = {
             repoURL = "https://github.com/csantanapr/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
-            #repoURL        = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
+            #repoURL        = "git@github.com:aws-samples/eks-blueprints-workloads.git"
             targetRevision = "argo-multi-cluster" #TODO change to main once git repo is updated
           }
           ingress = {

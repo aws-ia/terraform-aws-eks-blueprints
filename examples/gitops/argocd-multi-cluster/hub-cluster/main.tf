@@ -85,12 +85,13 @@ locals {
     url          = "https://${local.argocd_subdomain}.${var.domain_name}"
   }) : ""
 
-  # AMG Config
-  enable_keycloak = true
+  # Keycloak and AMG Config
+  enable_keycloak = var.enable_ingress && length(var.domain_name) > 0
   keycloak_subdomain = "keycloak"
   keycloak_admin_password_key_name = "keycloak"
   keycloak_admin_username = "admin"
   keycloak_ingress_ready = "300s"
+  enable_amg = local.enable_keycloak
 
 }
 
@@ -219,9 +220,9 @@ module "eks_blueprints_argocd_addons" {
     addons = {
       add_on_application = true
       path               = "chart"
-      repo_url           = "https://github.com/csantanapr/eks-blueprints-add-ons.git"
-      target_revision    = "argo-multi-cluster" #TODO change main
-      #repo_url             = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-add-ons.git" #TODO change to https://github.com/aws-samples/eks-blueprints-add-ons once git repo is updated
+      repo_url           = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
+      target_revision    = "main" #TODO change main
+      #repo_url             = "git@github.com:aws-samples/eks-blueprints-add-ons.git"
       #ssh_key_secret_name  = "github-ssh-key" # Needed for private repos
       #git_secret_namespace = "argocd"
       #git_secret_name      = "${local.name}-addons"
@@ -259,9 +260,9 @@ module "eks_blueprints_argocd_workloads" {
     application-set = {
       add_on_application = false
       path               = "application-sets"
-      repo_url           = "https://github.com/csantanapr/eks-blueprints-workloads.git"
+      repo_url           = "https://github.com/csantanapr/eks-blueprints-workloads.git" #TODO to aws-samples github org
       target_revision    = "argo-multi-cluster" #TODO change to main
-      #repo_url             = "git@github.com:csantanapr-test-gitops-1/eks-blueprints-workloads.git" #TODO change to https://github.com/aws-samples/eks-blueprints-workloads once git repo is updated
+      #repo_url             = "git@github.com:aws-samples/eks-blueprints-workloads.git"
       #ssh_key_secret_name  = "github-ssh-key"# Needed for private repos
       #git_secret_namespace = "argocd"
       #git_secret_name      = "${local.name}-workloads"
@@ -339,6 +340,8 @@ module "managed_prometheus" {
 ################################################################################
 
 resource "random_password" "keycloak" {
+  count = local.enable_keycloak ? 1 : 0
+
   length           = 16
   special          = true
   override_special = "!#$%&*()-_=+[]{}<>:?"
@@ -346,17 +349,21 @@ resource "random_password" "keycloak" {
 
 #tfsec:ignore:aws-ssm-secret-use-customer-key
 resource "aws_secretsmanager_secret" "keycloak" {
+  count = local.enable_keycloak ? 1 : 0
+
   name                    = local.keycloak_admin_password_key_name
   recovery_window_in_days = 0 # Set to zero for this example to force delete during Terraform destroy
 }
 
 resource "aws_secretsmanager_secret_version" "keycloak" {
-  secret_id     = aws_secretsmanager_secret.keycloak.id
-  secret_string = random_password.keycloak.result
+  count = local.enable_keycloak ? 1 : 0
+
+  secret_id     = aws_secretsmanager_secret.keycloak[0].id
+  secret_string = random_password.keycloak[0].result
 }
 
 resource "helm_release" "keycloak" {
-  count = var.enable_ingress ? 1 : 0
+  count = local.enable_keycloak ? 1 : 0
 
   name             = "keycloak"
   repository       = "https://charts.bitnami.com/bitnami"
@@ -369,7 +376,7 @@ resource "helm_release" "keycloak" {
   values = [templatefile("${path.module}/helm-keycloak/values.yaml", {
     workspace_endpoint = module.managed_grafana.workspace_endpoint
     admin_username     = local.keycloak_admin_username
-    password           = random_password.keycloak.result
+    password           = random_password.keycloak[0].result
     enable_ingress     = var.enable_ingress
     host               = "${local.keycloak_subdomain}.${var.domain_name}"
   })]
@@ -383,11 +390,13 @@ resource "helm_release" "keycloak" {
 ################################################################################
 
 provider "grafana" {
-  url  = "https://${module.managed_grafana.workspace_endpoint}"
-  auth = module.managed_grafana.workspace_api_keys.admin.key
+  url  = "https://${try(module.managed_grafana.workspace_endpoint,"")}"
+  auth = try(module.managed_grafana.workspace_api_keys.admin.key)
 }
 
 resource "grafana_data_source" "prometheus" {
+  count = local.enable_amg ? 1 : 0
+
   type       = "prometheus"
   name       = "Prometheus"
   is_default = true
@@ -403,13 +412,16 @@ resource "grafana_data_source" "prometheus" {
 }
 
 resource "grafana_dashboard" "argocd" {
+  count = local.enable_amg ? 1 : 0
+
   config_json = file("${path.module}/grafana-argocd-dashboard.json")
 }
 
 module "managed_grafana" {
-  source = "github.com/csantanapr/terraform-aws-managed-service-grafana?ref=skip-saml-configuration"
+  source = "terraform-aws-modules/managed-service-grafana/aws"
+  version = "~> 1.9"
 
-  create = var.enable_ingress ? true : false
+  create = local.enable_amg
 
   # Workspace
   name                     = local.name
@@ -427,7 +439,7 @@ module "managed_grafana" {
     }
   }
 
-  # New variable
+  # SAML configuration will do after keycloak is installed
   create_saml_configuration = false
 
   tags = local.tags
@@ -435,13 +447,15 @@ module "managed_grafana" {
 
 # Wait for Keycloak ingress to be up
 resource "time_sleep" "wait_keyclock_ingress" {
+  count = local.enable_amg ? 1 : 0
+
   create_duration = local.keycloak_ingress_ready
 
   depends_on = [helm_release.keycloak]
 }
 
 resource "aws_grafana_workspace_saml_configuration" "this" {
-  count = var.enable_ingress ? 1 : 0
+  count = local.enable_amg ? 1 : 0
 
   workspace_id       = module.managed_grafana.workspace_id
   idp_metadata_url   = "https://${local.keycloak_subdomain}.${var.domain_name}/realms/keycloak-blog/protocol/saml/descriptor"
