@@ -411,12 +411,12 @@ module "eks_blueprints_argocd_workloads" {
     "${var.environment}-workloads" = {
       add_on_application = false
       path               = "envs/${var.environment}"
-      repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+      repo_url           = "https://github.com/csantanapr/eks-blueprints-workloads.git"
       #repo_url             = "git@github.com:aws-samples/eks-blueprints-workloads.git"
       #ssh_key_secret_name  = "github-ssh-key"# Needed for private repos
       #git_secret_namespace = "argocd"
       #git_secret_name      = "${local.name}-workloads"
-      target_revision = "main" #TODO change to main once git repo is updated
+      target_revision = "argo-multi-cluster" #TODO change to main once git repo is updated
       project         = local.name
       values = {
         destinationServer = "https://kubernetes.default.svc" # Indicates the location where ArgoCD is installed, in this case hub cluster
@@ -427,9 +427,9 @@ module "eks_blueprints_argocd_workloads" {
             server = module.eks.cluster_endpoint # Indicates the location of the remote cluster to deploy Apps
           }
           source = {
-            repoURL = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+            repoURL = "https://github.com/csantanapr/eks-blueprints-workloads.git"
             #repoURL        = "git@github.com:aws-samples/eks-blueprints-workloads.git"
-            targetRevision = "main" #TODO change to main once git repo is updated
+            targetRevision = "argo-multi-cluster" #TODO change to main once git repo is updated
           }
           ingress = {
             argocd = false
