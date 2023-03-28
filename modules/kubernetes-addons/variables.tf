@@ -371,6 +371,20 @@ variable "external_dns_route53_zone_arns" {
   default     = []
 }
 
+#-----------External Snapshotter-------------
+
+variable "enable_external_snapshotter" {
+  description = "External Snapshotter"
+  type        = bool
+  default     = false
+}
+
+variable "external_snapshotter_helm_config" {
+  description = "External Snapshotter Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 #-----------Amazon Managed Service for Prometheus-------------
 variable "enable_amazon_prometheus" {
   description = "Enable AWS Managed Prometheus service"

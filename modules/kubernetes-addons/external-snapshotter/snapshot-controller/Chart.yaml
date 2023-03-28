@@ -1,0 +1,6 @@
+apiVersion: v2
+name: snapshot-controller
+description: A Helm chart to install snapshot-controller
+type: application
+version: 0.0.1
+appVersion: v6.2.0

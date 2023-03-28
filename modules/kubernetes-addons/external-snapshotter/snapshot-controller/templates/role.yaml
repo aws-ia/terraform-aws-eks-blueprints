@@ -1,0 +1,11 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    {{- include "snapshot-controller.labels" $ | nindent 4 }}
+  namespace: {{ .Values.namespace }}
+  name: {{ include "snapshot-controller.name" . }}-leaderelection
+rules:
+- apiGroups: ["coordination.k8s.io"]
+  resources: ["leases"]
+  verbs: ["get", "watch", "list", "delete", "update", "create"]

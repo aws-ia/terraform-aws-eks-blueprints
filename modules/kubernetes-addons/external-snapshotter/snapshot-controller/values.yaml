@@ -1,0 +1,9 @@
+namespace: ${namespace}
+nameOverride: ${nameOverride}
+replicas: ${replicas}
+image:
+  tag: v6.2.1
+
+affinity: {}
+
+hostNetwork: false

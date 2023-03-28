@@ -288,6 +288,15 @@ module "external_dns" {
   route53_zone_arns = var.external_dns_route53_zone_arns
 }
 
+module "external_snapshotter" {
+  source = "./external-snapshotter"
+
+  count = var.enable_external_snapshotter ? 1 : 0
+
+  helm_config   = var.external_snapshotter_helm_config
+  addon_context = local.addon_context
+}
+
 module "fargate_fluentbit" {
   count         = var.enable_fargate_fluentbit ? 1 : 0
   source        = "./fargate-fluentbit"
