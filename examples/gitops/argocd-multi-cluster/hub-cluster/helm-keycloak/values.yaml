@@ -10,6 +10,8 @@ keycloakConfigCli:
       {
         "realm": "keycloak-blog",
         "enabled": true,
+        "ssoSessionIdleTimeout": 28800,
+        "ssoSessionMaxLifespan": 86400,
         "roles": {
           "realm": [
             {
