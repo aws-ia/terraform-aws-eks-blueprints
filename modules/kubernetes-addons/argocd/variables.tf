@@ -10,7 +10,7 @@ variable "applications" {
   default     = {}
 
   validation {
-    condition     = alltrue([for k, v in var.applications : length(regexall("^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$", k)) > 0])
+    condition     = alltrue([for k, v in var.applications : length(regexall("^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$", k)) > 0])
     error_message = "All ArgoCD application config keys must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character"
   }
 }
