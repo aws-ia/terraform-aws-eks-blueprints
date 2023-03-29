@@ -23,7 +23,7 @@ secrets_store_csi_driver_helm_config = {
     repository = "https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts"
     version    = "1.2.4"
     namespace  = "secrets-store-csi-driver"
-    set_sensitive = [
+    set_values = [
       {
         name  = "syncSecret.enabled"
         value = "false"
