@@ -363,8 +363,7 @@ module "kube_state_metrics" {
 }
 
 module "ondat" {
-  source  = "ondat/ondat-addon/eksblueprints"
-  version = "0.1.2"
+  source = "./ondat"
 
   count = var.enable_ondat ? 1 : 0
 
