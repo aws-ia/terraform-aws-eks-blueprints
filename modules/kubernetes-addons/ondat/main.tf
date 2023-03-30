@@ -36,7 +36,7 @@ locals {
 }
 
 module "helm_addon" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon"
+  source = "../helm-addon"
 
   manage_via_gitops = var.manage_via_gitops
 
