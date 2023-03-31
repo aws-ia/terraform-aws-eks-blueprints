@@ -163,10 +163,17 @@ Go to Settings->Clusters; you should see three remote clusters:
 You can access ArgoCD using the `argo` CLI
 Download the latest Argo CD version from https://github.com/argoproj/argo-cd/releases/latest. See [CLI installation documentation](https://argo-cd.readthedocs.io/en/stable/cli_installation/).
 
-Log in using `argo login` using the hostname, username, and password.
+Log in using `argocd login` using the hostname, username, and password
+
+If using Ingress with a Route 53 domain name use the following to get the CLI login command:
 ```sh
-argo login argocd login argocd.${TF_VAR_argo_domain} --username admin
+echo "argocd login $(kubectl get ing -n argocd argo-cd-argocd-server -o jsonpath='{.spec.tls[0].hosts[0]}')"
 ```
+If using LoadBalancer use the following to get the CLI login command:
+```sh
+echo "argocd login $(kubectl get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
+```
+
 List the spoke clusters
 ```sh
 argocd cluster list
