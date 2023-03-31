@@ -167,7 +167,7 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons?ref=3e64d809ac9dbc89aee872fe0f366f0b757d3137" # TODO: Last update to hash 04=3/31/2023
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -206,7 +206,7 @@ module "eks_blueprints_kubernetes_addons" {
 ################################################################################
 
 module "eks_blueprints_argocd_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd?ref=3e64d809ac9dbc89aee872fe0f366f0b757d3137" # TODO: Last update to hash 04=3/31/2023
 
   argocd_skip_install = true # Skip argocd controller install
 
@@ -246,7 +246,7 @@ module "eks_blueprints_argocd_addons" {
 ################################################################################
 
 module "eks_blueprints_argocd_workloads" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd?ref=3e64d809ac9dbc89aee872fe0f366f0b757d3137" # TODO: Last update to hash 04=3/31/2023
 
   argocd_skip_install = true # Skip argocd controller install
 
@@ -285,14 +285,14 @@ module "eks_blueprints_argocd_workloads" {
 ################################################################################
 
 module "argocd_irsa" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/eks-blueprints-addon"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/eks-blueprints-addon?ref=3e64d809ac9dbc89aee872fe0f366f0b757d3137" # TODO: Last update to hash 04=3/31/2023
 
   create_release             = false
   create_role                = true
   role_name_use_prefix       = false
   role_name                  = "${module.eks.cluster_name}-argocd-hub"
   assume_role_condition_test = "StringLike"
-  role_policy_arns = {
+  role_policies = {
     ArgoCD_EKS_Policy = aws_iam_policy.irsa_policy.arn
   }
   oidc_providers = {
@@ -390,8 +390,8 @@ resource "helm_release" "keycloak" {
 ################################################################################
 
 provider "grafana" {
-  url  = "https://${try(module.managed_grafana.workspace_endpoint,"")}"
-  auth = try(module.managed_grafana.workspace_api_keys.admin.key)
+  url  = try("https://${module.managed_grafana.workspace_endpoint}", null)
+  auth = try(module.managed_grafana.workspace_api_keys.admin.key, "")
 }
 
 resource "grafana_data_source" "prometheus" {
