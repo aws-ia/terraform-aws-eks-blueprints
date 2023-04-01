@@ -199,7 +199,7 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons?ref=3e64d809ac9dbc89aee872fe0f366f0b757d3137"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -342,7 +342,7 @@ resource "kubernetes_secret_v1" "spoke_cluster" {
 ################################################################################
 
 module "eks_blueprints_argocd_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd?ref=3e64d809ac9dbc89aee872fe0f366f0b757d3137"
   providers = {
     helm       = helm.hub
     kubernetes = kubernetes.hub
@@ -395,7 +395,7 @@ module "eks_blueprints_argocd_addons" {
 ################################################################################
 
 module "eks_blueprints_argocd_workloads" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd?ref=3e64d809ac9dbc89aee872fe0f366f0b757d3137"
   providers = {
     helm       = helm.hub
     kubernetes = kubernetes.hub
@@ -468,7 +468,7 @@ module "eks_blueprints_argocd_workloads" {
 ################################################################################
 
 module "admin_team" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-teams"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-teams?ref=v0.2.0"
 
   name = "admin-team"
 
@@ -480,7 +480,7 @@ module "admin_team" {
 }
 
 module "app_teams" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-teams"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-teams?ref=v0.2.0"
 
   for_each = {
     frontend = {}
@@ -550,7 +550,7 @@ module "app_teams" {
 ################################################################################
 
 module "eks_blueprints_argocd_team_workloads" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/argocd?ref=3e64d809ac9dbc89aee872fe0f366f0b757d3137"
   providers = {
     helm       = helm.hub
     kubernetes = kubernetes.hub
