@@ -46,5 +46,14 @@ The following properties are made available for use when managing the add-on via
 
 certManager = {
   enable = true
+  serviceAccountName = local.service_account
+  certManagerCa = {
+    enabled = true
+  }
+  certManagerLetsencrypt = {
+    enabled  = var.install_letsencrypt_issuers
+    email    = var.letsencrypt_email
+    dnsZones = var.domain_names
+  }
 }
 ```
