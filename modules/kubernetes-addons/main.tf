@@ -155,6 +155,15 @@ module "aws_fsx_csi_driver" {
   addon_context     = local.addon_context
 }
 
+module "aws_fsxn_csi_driver" {
+  count             = var.enable_aws_fsxn_csi_driver ? 1 : 0
+  source            = "./aws-fsxn-csi-driver"
+  helm_config       = var.aws_fsxn_csi_driver_helm_config
+  irsa_policies     = var.aws_fsxn_csi_driver_irsa_policies
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+}
+
 module "aws_for_fluent_bit" {
   count                    = var.enable_aws_for_fluentbit ? 1 : 0
   source                   = "./aws-for-fluentbit"

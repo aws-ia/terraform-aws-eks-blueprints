@@ -604,6 +604,25 @@ variable "aws_fsx_csi_driver_irsa_policies" {
   type        = list(string)
   default     = []
 }
+
+#-----------AWS FSX ONTAP CSI DRIVER ADDON-------------
+variable "enable_aws_fsxn_csi_driver" {
+  description = "Enable AWS FSxN CSI driver add-on"
+  type        = bool
+  default     = false
+}
+
+variable "aws_fsxn_csi_driver_helm_config" {
+  description = "AWS FSxN CSI driver Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+variable "aws_fsxn_csi_driver_irsa_policies" {
+  description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
+  default     = []
+}
 #-----------AWS LB Ingress Controller-------------
 variable "enable_aws_load_balancer_controller" {
   description = "Enable AWS Load Balancer Controller add-on"

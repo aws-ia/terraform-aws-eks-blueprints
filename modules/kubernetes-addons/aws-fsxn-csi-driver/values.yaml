@@ -1,0 +1,125 @@
+# Default values for standalone.
+# This is a YAML-formatted file.
+
+## Node labels for pod assignment
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+## Pod Annotations
+podAnnotations: {}
+
+## Deployment Annotations
+deploymentAnnotations: {}
+
+## Tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+## Affinity for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+# tridentControllerPluginNodeSelector additional nodeSelectors for the Pod running the Trident Controller CSI Plugin.
+# tridentControllerPluginNodeSelector : {}
+
+# tridentControllerPluginTolerations overrides tolerations for the Pod running the Trident Controler CSI Plugin.
+# tridentControllerPluginTolerations: []
+
+# tridentNodePluginNodeSelector additional nodeSelectors for Pods running the Trident Node CSI Plugin.
+# tridentNodePluginNodeSelector : {}
+
+# tridentNodePluginTolerations overrides tolerations for Pods running the Trident Node CSI Plugin. 
+# tridentNodePluginTolerations: []
+
+
+
+# imageRegistry identifies the registry for the trident-operator, trident, and other images.  Leave empty to accept the default.
+imageRegistry: ""
+
+# imagePullPolicy sets the image pull policy for the trident-operator.
+imagePullPolicy: IfNotPresent
+
+# imagePullSecrets sets the image pull secrets for the trident-operator, trident, and other images.
+imagePullSecrets: []
+
+# kubeletDir allows overriding the host location of kubelet's internal state. (default "/var/lib/kubelet").
+kubeletDir: ""
+
+
+# operatorLogLevel allows the log level of the Trident operator to be set to one of these: 
+# trace, debug, info, warn, error, fatal.
+# operatorLogLevel: "info"
+
+# operatorDebug allows the log level of the Trident operator to be set to debug
+operatorDebug: true
+
+# operatorImage allows the complete override of the image for trident-operator.
+operatorImage: ""
+
+# operatorImageTag allows overriding the tag of the trident-operator image.
+operatorImageTag: ""
+
+
+# tridentIPv6 allows enabling Trident to work in IPv6 clusters.
+tridentIPv6: false
+
+# tridentK8sTimeout overrides the default 30-second timeout for most Kubernetes API operations (if non-zero, in seconds).
+tridentK8sTimeout: 0
+
+# tridentHttpRequestTimeout (duration) overrides the default 90-second timeout for the HTTP requests, with 0s being an
+# infinite duration for the timeout. Negative values are not allowed.
+tridentHttpRequestTimeout: "90s"
+
+# tridentSilenceAutosupport allows disabling Trident's periodic Autosupport reporting.
+tridentSilenceAutosupport: false
+
+# tridentAutosupportImage allows the complete override of the image for Trident's Autosupport container.
+tridentAutosupportImage: ""
+
+# tridentAutosupportImageTag allows overriding the tag of the image for Trident's Autosupport container.
+tridentAutosupportImageTag: "23.01"
+
+# tridentAutosupportProxy allows Trident's autosupport container to phone home via an HTTP proxy.
+tridentAutosupportProxy: ""
+
+# tridentLogFormat sets the Trident logging format (text or json).
+tridentLogFormat: "text"
+
+# tridentDisableAuditLog disables Trident's audit logger.
+tridentDisableAuditLog: true
+
+# tridentLogLevel allows the log level of Trident to be set to one of these: trace, debug, info, warn, error, fatal.
+#tridentLogLevel: "info"
+
+# tridentDebug allows the log level of Trident to be set to debug
+tridentDebug: false
+
+# tridentLogWorkflows allows specific Trident workflows to be enabled for trace logging or log suppression.
+tridentLogWorkflows: ""
+
+# tridentLogLayers allows specific Trident layers to be enabled for trace logging or log suppression.
+tridentLogLayers: ""
+
+# tridentImage allows the complete override of the image for Trident.
+tridentImage: ""
+
+# tridentImageTag allows overriding the tag of the image for Trident.
+tridentImageTag: ""
+
+# (Deprecated) tridentEnableNodePrep attempts to automatically install required packages on nodes.
+tridentEnableNodePrep: false
+
+# (Deprecated) tridentSkipK8sVersionCheck allows overriding the k8s version limit for Trident.
+tridentSkipK8sVersionCheck: false
+
+# tridentProbePort allows overriding the default port used for k8s liveness/readiness probes.
+tridentProbePort: ""
+
+# windows allows Trident to be installed on Windows worker node.
+windows: false
+
+# enableForceDetach allows enabling the force detach feature.
+enableForceDetach: false
+
+# excludePodSecurityPolicy excludes the operator pod security policy from creation.
+excludePodSecurityPolicy: false
