@@ -6,7 +6,7 @@ This add-on deploys the [Amazon FSx for NetApp ONTAP CSI Driver](https://aws.ama
 
 ## Usage
 
-The [Amazon FSx for NetApp ONTAP CSI Driver](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/aws-fsxn-csi-driver) can be deployed by enabling the add-on via the following.
+The [Amazon FSx for NetApp ONTAP CSI Driver](https://github.com/mickeysh/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/aws-fsxn-csi-driver) can be deployed by enabling the add-on via the following.
 
 ```hcl
   enable_aws_fsxn_csi_driver = true
