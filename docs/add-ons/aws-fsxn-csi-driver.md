@@ -29,16 +29,16 @@ You can optionally customize the Helm chart that deploys `enable_aws_fsxn_csi_dr
 Once deployed, you will be able to see a number of supporting resources in the `trident` namespace.
 
 ```sh
-$ kubectl get deployment fsx-csi-controller -n kube-system
+$ kubectl get deployment trident-controller -n trident
 
 NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
-fsx-csi-controller   2/2     2            2           4m29s
+trident-controller   1/1     1            1           41m
 ```
 
 ```sh
-$ kubectl get daemonset fsx-csi-node -n kube-system
+$ kubectl get daemonset trident-node-linux -n trident
 
-NAME           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                 AGE
-fsx-csi-node   3         3         3       3            3           kubernetes.io/os=linux   4m32s
+NAME                 DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                                     AGE
+trident-node-linux   6         6         6       6            6           kubernetes.io/arch=amd64,kubernetes.io/os=linux   42m
 ```
 
