@@ -1,0 +1,9 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ${storage_class_name}
+provisioner: fsx.csi.aws.com
+parameters:
+  subnetId: ${subnet_id}
+  securityGroupIds: ${security_group_id}

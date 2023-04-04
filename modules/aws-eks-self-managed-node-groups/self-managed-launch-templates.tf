@@ -23,7 +23,6 @@ module "launch_template_self_managed_ng" {
       http_put_response_hop_limit = try(var.self_managed_ng.http_put_response_hop_limit, 2)
       http_protocol_ipv6          = try(var.self_managed_ng.http_protocol_ipv6, null)
       instance_metadata_tags      = try(var.self_managed_ng.instance_metadata_tags, null)
-      placement                   = try(var.self_managed_ng.placement, null)
 
       service_ipv6_cidr = var.context.service_ipv6_cidr
       service_ipv4_cidr = var.context.service_ipv4_cidr

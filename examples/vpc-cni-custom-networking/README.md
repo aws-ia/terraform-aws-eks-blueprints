@@ -10,7 +10,9 @@ To disable prefix delegation from this example remove the environment environmen
 
 ## VPC CNI Configuration
 
-In this example, the `vpc-cni` addon is configured using `before_compute = true`. This is done to ensure the `vpc-cni` is created and updated *before* any EC2 instances are created so that the desired settings have applied before they will be referenced. With this configuration, you will now see that nodes created will have `--max-pods 110` configured do to the use of prefix delegation being enabled on the `vpc-cni`.
+In this example, the `vpc-cni` addon is configured outside of the `terraform-aws-eks` module even though the module supports configuring the `vpc-cni` addon. This is done to ensure the `vpc-cni` is updated *before* any EC2 instances are created so that the desired settings have applied before they will be referenced. In the `terraform-aws-eks` module, the addon resource has an explicit `depends_on` set to ensure the EKS managed node group(s), self-managed node group(s), and/or Fargate profile(s) are created *before* the addons. This is because nearly all of the addons require compute in order for them to reach a healthy state, otherwise they will fail and cause the `terraform apply` to fail. However, for the `vpc-cni` which is a daemonset, it does not require compute to exist first, and more importantly, it should be configured *before* compute is created.
+
+With this configuration, you will now see that nodes created will have `--max-pods 110` configured do to the use of prefix delegation being enabled on the `vpc-cni`.
 
 If you find that your nodes are not being created with the correct number of max pods (i.e. - for `m5.large`, if you are seeing a max pods of 29 instead of 110), most likely the `vpc-cni` was not configured *before* the EC2 instances.
 

@@ -1,0 +1,15 @@
+alertManager:
+  enabled: false
+grafana:
+  grafana.ini:
+    server:
+      root_url: https://${hostname}/monitoring/
+      serve_from_sub_path: true
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    %{ if hostname != null }
+    hosts:
+      - ray-demo.${hostname}
+    %{ endif }
+    path: /monitoring

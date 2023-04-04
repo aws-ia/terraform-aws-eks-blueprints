@@ -103,3 +103,5 @@ crossplane_helm_provider = {
   enable                   = true
 }
 ```
+
+Checkout the full [example](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/crossplane) to deploy Crossplane with `kubernetes-addons` module

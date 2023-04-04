@@ -5,7 +5,7 @@ This addon deploys Strimizi Kafka Operator and it makes it really easy to spin u
 For complete project documentation, please visit the [Strimzi Kafka](https://strimzi.io/).
 
 ## Usage
-Strimzi Kafka Operator can be deployed by enabling the add-on via the following.
+Strimzi Kafka Operator can be deployed by enabling the add-on via the following. Check out the full [example](https://github.com/awslabs/data-on-eks/tree/main/streaming/kafka) to deploy the EKS Cluster with Kafka.
 
 ```hcl
 enable_strimzi_kafka_operator = true

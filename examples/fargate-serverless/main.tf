@@ -42,7 +42,7 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.9"
+  version = "~> 19.5"
 
   cluster_name                   = local.name
   cluster_version                = "1.24"
@@ -85,19 +85,26 @@ module "eks" {
   create_cluster_security_group = false
   create_node_security_group    = false
 
-  fargate_profiles = {
-    app_wildcard = {
-      selectors = [
-        { namespace = "app-*" }
-      ]
+  fargate_profiles = merge(
+    { for i in range(3) :
+      "app-wildcard-${element(split("-", local.azs[i]), 2)}" => {
+        selectors = [
+          { namespace = "app-*" }
+        ]
+        # We want to create a profile per AZ for high availability
+        subnet_ids = [element(module.vpc.private_subnets, i)]
+      }
+    },
+    { for i in range(3) :
+      "kube-system-${element(split("-", local.azs[i]), 2)}" => {
+        selectors = [
+          { namespace = "kube-system" }
+        ]
+        # We want to create a profile per AZ for high availability
+        subnet_ids = [element(module.vpc.private_subnets, i)]
+      }
     }
-    kube_system = {
-      name = "kube-system"
-      selectors = [
-        { namespace = "kube-system" }
-      ]
-    }
-  }
+  )
 
   tags = local.tags
 }

@@ -44,7 +44,7 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.9"
+  version = "~> 19.5"
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
@@ -54,19 +54,9 @@ module "eks" {
   cluster_addons = {
     coredns    = {}
     kube-proxy = {}
-    vpc-cni = {
-      # Specify the VPC CNI addon should be deployed before compute to ensure
-      # the addon is configured before data plane compute resources are created
-      # See README for further details
-      before_compute = true
-      configuration_values = jsonencode({
-        env = {
-          # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
-          ENABLE_PREFIX_DELEGATION = "true"
-          WARM_PREFIX_TARGET       = "1"
-        }
-      })
-    }
+    # Specify the VPC CNI addon outside of the module as shown below
+    # to ensure the addon is configured before compute resources are created
+    # See README for further details
   }
 
   vpc_id     = module.vpc.vpc_id
@@ -83,6 +73,35 @@ module "eks" {
   }
 
   tags = local.tags
+}
+
+################################################################################
+# VPC-CNI IPv4 Prefix Delegation
+################################################################################
+
+resource "aws_eks_addon" "vpc_cni" {
+  cluster_name      = module.eks.cluster_name
+  addon_name        = "vpc-cni"
+  resolve_conflicts = "OVERWRITE"
+  addon_version     = data.aws_eks_addon_version.latest["vpc-cni"].version
+
+  configuration_values = jsonencode({
+    env = {
+      # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
+      ENABLE_PREFIX_DELEGATION = "true"
+      WARM_PREFIX_TARGET       = "1"
+    }
+  })
+
+  tags = local.tags
+}
+
+data "aws_eks_addon_version" "latest" {
+  for_each = toset(["vpc-cni"])
+
+  addon_name         = each.value
+  kubernetes_version = local.cluster_version
+  most_recent        = true
 }
 
 ################################################################################

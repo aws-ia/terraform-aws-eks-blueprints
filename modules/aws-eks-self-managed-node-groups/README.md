@@ -6,6 +6,8 @@ Amazon EKS Self Managed Node Groups lets you create, update, scale, and terminat
 
 This module allows you to create on-demand or spot self managed Linux or Windows nodegroups. You can instantiate the module once with map of node group values to create multiple self managed node groups. By default, the module uses the latest available version of Amazon-provided EKS-optimized AMIs for Amazon Linux 2, Bottlerocket, or Windows 2019 Server Core operating systems. You can override the image via the custom_ami_id input variable.
 
+Checkout the usage docs for Self-managed Node groups [examples](https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/node-groups/)
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 

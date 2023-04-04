@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+      app.kubernetes.io/name: linux
+  name: linux
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: linux
+spec:
+  selector:
+    matchLabels:
+      run: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: linux
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: nginx
+  sessionAffinity: None
+  type: ClusterIP

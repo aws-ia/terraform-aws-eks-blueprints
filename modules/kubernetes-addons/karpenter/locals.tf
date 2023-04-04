@@ -17,7 +17,7 @@ locals {
       name       = local.name
       chart      = local.name
       repository = "oci://public.ecr.aws/karpenter"
-      version    = "v0.23.0"
+      version    = "v0.22.0"
       namespace  = local.name
       values = [
         <<-EOT
@@ -48,6 +48,5 @@ locals {
     serviceAccountName        = local.service_account
     controllerClusterEndpoint = var.addon_context.aws_eks_cluster_endpoint
     awsDefaultInstanceProfile = var.node_iam_instance_profile
-    awsInterruptionQueueName  = try(data.aws_arn.queue[0].resource, "")
   }
 }

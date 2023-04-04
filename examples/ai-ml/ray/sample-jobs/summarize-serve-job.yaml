@@ -1,0 +1,21 @@
+# Job to submit a Ray program from a pod outside a running Ray cluster.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: ray-summarize-job-
+  namespace: ray-cluster
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: summarize
+          image: $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/ray-demo:latest
+          imagePullPolicy: Always
+          command: [ "/bin/bash", "-c", "--" ]
+          args:
+            - "python /opt/hface_t5_summarize_serve.py"
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 2Gi

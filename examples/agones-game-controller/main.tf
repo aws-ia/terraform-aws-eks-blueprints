@@ -3,21 +3,21 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    host                   = module.eks_blueprints.eks_cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
+  name = module.eks_blueprints.eks_cluster_id
 }
 
 data "aws_availability_zones" "available" {}
@@ -25,8 +25,6 @@ data "aws_availability_zones" "available" {}
 locals {
   name   = basename(path.cwd)
   region = "us-west-2"
-
-  cluster_version = "1.24"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -37,53 +35,66 @@ locals {
   }
 }
 
-################################################################################
-# Cluster
-################################################################################
+#---------------------------------------------------------------
+# EKS Blueprints
+#---------------------------------------------------------------
 
-#tfsec:ignore:aws-eks-enable-control-plane-logging
-module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.9"
+module "eks_blueprints" {
+  source = "../.."
 
-  cluster_name                   = local.name
-  cluster_version                = local.cluster_version
-  cluster_endpoint_public_access = true
+  cluster_name    = local.name
+  cluster_version = "1.24"
 
-  # EKS Addons
-  cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
-  }
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  managed_node_groups = {
+    mg_5 = {
+      node_group_name        = "managed-ondemand"
+      create_launch_template = true
+      launch_template_os     = "amazonlinux2eks"
+      public_ip              = true
+      pre_userdata           = <<-EOT
+        yum install -y amazon-ssm-agent
+        systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent"
+      EOT
 
-  eks_managed_node_groups = {
-    initial = {
+      desired_size    = 3
+      max_size        = 12
+      min_size        = 3
+      max_unavailable = 1
+
+      ami_type       = "AL2_x86_64"
+      capacity_type  = "ON_DEMAND"
       instance_types = ["m5.large"]
+      disk_size      = 50
 
-      min_size     = 1
-      max_size     = 5
-      desired_size = 2
+      subnet_ids = module.vpc.public_subnets
+
+      k8s_labels = {
+        Environment = "preprod"
+        Zone        = "dev"
+        WorkerType  = "ON_DEMAND"
+      }
+      additional_tags = {
+        ExtraTag    = "m5x-on-demand"
+        Name        = "m5x-on-demand"
+        subnet_type = "public"
+      }
     }
   }
 
   tags = local.tags
 }
 
-################################################################################
-# Kubernetes Addons
-################################################################################
-
 module "eks_blueprints_kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  eks_cluster_id       = module.eks.cluster_name
-  eks_cluster_endpoint = module.eks.cluster_endpoint
-  eks_oidc_provider    = module.eks.oidc_provider
-  eks_cluster_version  = module.eks.cluster_version
+  eks_cluster_id               = module.eks_blueprints.eks_cluster_id
+  eks_cluster_endpoint         = module.eks_blueprints.eks_cluster_endpoint
+  eks_oidc_provider            = module.eks_blueprints.oidc_provider
+  eks_cluster_version          = module.eks_blueprints.eks_cluster_version
+  eks_worker_security_group_id = module.eks_blueprints.worker_node_security_group_id
 
   # Add-ons
   enable_metrics_server     = true
@@ -91,8 +102,6 @@ module "eks_blueprints_kubernetes_addons" {
 
   # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
   enable_agones = true
-  # Do not be fooled, this is required by the Agones addon
-  eks_worker_security_group_id = module.eks.cluster_security_group_id
   agones_helm_config = {
     name       = "agones"
     chart      = "agones"
@@ -111,9 +120,9 @@ module "eks_blueprints_kubernetes_addons" {
   tags = local.tags
 }
 
-################################################################################
+#---------------------------------------------------------------
 # Supporting Resources
-################################################################################
+#---------------------------------------------------------------
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
@@ -123,8 +132,8 @@ module "vpc" {
   cidr = local.vpc_cidr
 
   azs             = local.azs
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
   enable_nat_gateway   = true
   single_nat_gateway   = true
@@ -139,11 +148,13 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
-    "kubernetes.io/role/elb" = 1
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/elb"              = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/role/internal-elb" = 1
+    "kubernetes.io/cluster/${local.name}" = "shared"
+    "kubernetes.io/role/internal-elb"     = 1
   }
 
   tags = local.tags

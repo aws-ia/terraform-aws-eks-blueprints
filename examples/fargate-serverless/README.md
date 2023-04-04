@@ -45,7 +45,7 @@ aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
 kubectl get pods -A
 
 # Output should look like below
-game-2048     deployment-2048-7ff458c9f-mb5xs                 1/1     Running   0          5h23m
+game-2048      deployment-2048-7ff458c9f-mb5xs                 1/1     Running   0          5h23m
 game-2048     deployment-2048-7ff458c9f-qc99d                 1/1     Running   0          4h23m
 game-2048     deployment-2048-7ff458c9f-rm26f                 1/1     Running   0          4h23m
 game-2048     deployment-2048-7ff458c9f-vzjhm                 1/1     Running   0          4h23m
