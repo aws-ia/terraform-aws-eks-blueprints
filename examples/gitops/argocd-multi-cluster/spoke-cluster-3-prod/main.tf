@@ -17,7 +17,7 @@ module "spoke_cluster" {
 
   # (Optional) Multi account to list profiles use "aws configure list-profiles"
   #spoke_profile = "carrlos+salaunch-Admin"
-  #spoke_region  = "us-east-1"
+  #region        = "us-east-1"
   #hub_profile   = "carrlos-Admin"
   #hub_region    = "us-west-2"
 }
