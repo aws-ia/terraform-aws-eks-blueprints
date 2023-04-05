@@ -9,26 +9,19 @@ module "secrets_store_csi_driver" {
   addon_context = var.addon_context
 }
 
-resource "kubernetes_namespace_v1" "csi_secrets_store_provider_aws" {
-  count = local.namespace == "kube-system" ? 0 : 1
-
-  metadata {
-    name = local.namespace
-  }
-}
-
 module "helm_addon" {
   source = "../helm-addon"
 
   # https://github.com/aws/secrets-store-csi-driver-provider-aws/blob/main/charts/secrets-store-csi-driver-provider-aws/Chart.yaml
   helm_config = merge(
     {
-      name        = local.name
-      chart       = local.name
-      repository  = "https://aws.github.io/secrets-store-csi-driver-provider-aws"
-      version     = "0.3.2"
-      namespace   = local.namespace
-      description = "A Helm chart for the AWS Secrets Manager and Config Provider for Secret Store CSI Driver."
+      name             = local.name
+      chart            = local.name
+      repository       = "https://aws.github.io/secrets-store-csi-driver-provider-aws"
+      version          = "0.3.2"
+      namespace        = local.namespace
+      create_namespace = local.namespace == "kube-system" ? false : true
+      description      = "A Helm chart for the AWS Secrets Manager and Config Provider for Secret Store CSI Driver."
     },
     var.helm_config
   )
@@ -37,7 +30,6 @@ module "helm_addon" {
   addon_context     = var.addon_context
 
   depends_on = [
-    kubernetes_namespace_v1.csi_secrets_store_provider_aws,
     module.secrets_store_csi_driver
   ]
 }
