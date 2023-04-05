@@ -3,12 +3,6 @@ locals {
   namespace = try(var.helm_config.namespace, "kube-system")
 }
 
-module "secrets_store_csi_driver" {
-  source = "../secrets-store-csi-driver"
-
-  addon_context = var.addon_context
-}
-
 module "helm_addon" {
   source = "../helm-addon"
 
@@ -28,8 +22,4 @@ module "helm_addon" {
 
   manage_via_gitops = var.manage_via_gitops
   addon_context     = var.addon_context
-
-  depends_on = [
-    module.secrets_store_csi_driver
-  ]
 }
