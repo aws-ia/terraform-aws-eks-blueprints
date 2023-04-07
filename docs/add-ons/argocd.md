@@ -125,7 +125,7 @@ argocd_applications = {
     values              = {}
     type                = "helm"            # Optional, defaults to helm.
   }
-  kustomize_apps = {
+  kustomize-apps = {
     /*
       This points to a single application with no overlays, but it could easily
       point to a a specific overlay for an environment like "dev", and/or utilize

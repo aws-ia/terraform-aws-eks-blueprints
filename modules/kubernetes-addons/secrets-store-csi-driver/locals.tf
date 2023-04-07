@@ -3,10 +3,10 @@ locals {
 
   # https://github.com/kubernetes-sigs/secrets-store-csi-driver/blob/main/charts/secrets-store-csi-driver/Chart.yaml
   default_helm_config = {
-    name        = local.name
+    name        = "csi-secrets-store"
     chart       = local.name
     repository  = "https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts"
-    version     = "1.2.4"
+    version     = "1.3.1"
     namespace   = local.name
     description = "A Helm chart to install the Secrets Store CSI Driver"
   }
