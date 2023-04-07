@@ -893,6 +893,12 @@ variable "karpenter_helm_config" {
   default     = {}
 }
 
+variable "karpenter_irsa_iam_role_name" {
+  description = "Karpenter IRSA IAM role arn"
+  type        = string
+  default     = ""
+}
+
 variable "karpenter_irsa_policies" {
   description = "Additional IAM policies for a IAM role for service accounts"
   type        = list(string)

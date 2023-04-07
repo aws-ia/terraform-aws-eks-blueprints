@@ -276,6 +276,7 @@
 | <a name="input_karpenter_enable_spot_termination_handling"></a> [karpenter\_enable\_spot\_termination\_handling](#input\_karpenter\_enable\_spot\_termination\_handling) | Determines whether to enable native spot termination handling | `bool` | `false` | no |
 | <a name="input_karpenter_event_rule_name_prefix"></a> [karpenter\_event\_rule\_name\_prefix](#input\_karpenter\_event\_rule\_name\_prefix) | Prefix used for karpenter event bridge rules | `string` | `""` | no |
 | <a name="input_karpenter_helm_config"></a> [karpenter\_helm\_config](#input\_karpenter\_helm\_config) | Karpenter autoscaler add-on config | `any` | `{}` | no |
+| <a name="input_karpenter_irsa_iam_role_name"></a> [karpenter\_irsa\_iam\_role\_name](#input\_karpenter\_irsa\_iam\_role\_name) | Karpenter IRSA IAM role arn | `string` | `""` | no |
 | <a name="input_karpenter_irsa_policies"></a> [karpenter\_irsa\_policies](#input\_karpenter\_irsa\_policies) | Additional IAM policies for a IAM role for service accounts | `list(string)` | `[]` | no |
 | <a name="input_karpenter_node_iam_instance_profile"></a> [karpenter\_node\_iam\_instance\_profile](#input\_karpenter\_node\_iam\_instance\_profile) | Karpenter Node IAM Instance profile id | `string` | `""` | no |
 | <a name="input_keda_helm_config"></a> [keda\_helm\_config](#input\_keda\_helm\_config) | KEDA Event-based autoscaler add-on config | `any` | `{}` | no |

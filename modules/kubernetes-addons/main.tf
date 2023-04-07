@@ -327,6 +327,7 @@ module "karpenter" {
   sqs_queue_managed_sse_enabled               = var.sqs_queue_managed_sse_enabled
   sqs_queue_kms_master_key_id                 = var.sqs_queue_kms_master_key_id
   sqs_queue_kms_data_key_reuse_period_seconds = var.sqs_queue_kms_data_key_reuse_period_seconds
+  irsa_iam_role_name                          = var.karpenter_irsa_iam_role_name
 }
 
 module "keda" {

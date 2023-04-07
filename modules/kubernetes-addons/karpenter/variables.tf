@@ -4,6 +4,12 @@ variable "helm_config" {
   default     = {}
 }
 
+variable "irsa_iam_role_name" {
+  description = "IAM role name for IRSA"
+  type        = string
+  default     = ""
+}
+
 variable "irsa_policies" {
   description = "Additional IAM policies for a IAM role for service accounts"
   type        = list(string)
