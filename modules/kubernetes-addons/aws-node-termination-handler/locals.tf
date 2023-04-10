@@ -8,7 +8,7 @@ locals {
     name        = local.name
     chart       = local.name
     repository  = "https://aws.github.io/eks-charts"
-    version     = "0.19.3"
+    version     = "0.21.0"
     namespace   = local.namespace
     description = "AWS Node Termination Handler Helm Chart"
     values      = local.default_helm_values
