@@ -9,7 +9,7 @@ module "helm_addon" {
 }
 
 resource "aws_iam_policy" "karpenter" {
-  name_prefix = "${var.addon_context.eks_cluster_id}-karpenter"
+  name        = var.irsa_iam_role_name != "" ? substr(var.irsa_iam_role_name, 0, 64) : substr("${var.addon_context.eks_cluster_id}-karpenter", 0, 64)
   description = "IAM Policy for Karpenter"
   policy      = data.aws_iam_policy_document.karpenter.json
   path        = var.path
