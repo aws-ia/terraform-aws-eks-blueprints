@@ -1,80 +1,47 @@
-# EKS Cluster with Teams to a new VPC
+# Multi-Tenancy w/ Teams
 
-This example deploys a new EKS Cluster with Teams to a new VPC.
+This example demonstrates how to provision and configure a multi-tenancy Amazon EKS cluster with safeguards for resource consumption and namespace isolation.
 
-- Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
-- Creates an Internet gateway for the Public Subnets and a NAT Gateway for the Private Subnets
-- Creates an EKS Cluster Control plane with public endpoint with one managed node group
-- Creates two application teams - blue and red and deploys team manifests to the cluster
-- Creates a single platform admin team - you will need to provide your own IAM user/role first, see the example for more details
+This example solution provides:
 
-## How to Deploy
+- Amazon EKS Cluster (control plane)
+- Amazon EKS managed nodegroup (data plane)
+- Two development teams - `team-red` and `team-blue` - isolated to their respective namespaces
+- An admin team with privileged access to the cluster (`team-admin`)
 
-### Prerequisites:
+## Prerequisites:
 
-Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
+Ensure that you have the following tools installed locally:
 
-1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-2. [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
-3. [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
+3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
-### Deployment Steps
+## Deploy
 
-#### Step 1: Clone the repo using the command below
-
-```sh
-git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
-```
-
-#### Step 2: Run `terraform init`
-
-to initialize a working directory with configuration files
+To provision this example:
 
 ```sh
-cd examples/multi-tenancy-with-teams/
 terraform init
-```
-
-#### Step 3: Run `terraform plan`
-
-to verify the resources created by this execution
-
-```sh
-export AWS_REGION=<enter-your-region>   # Select your own region
-terraform plan
-```
-
-#### Step 4: Finally, `terraform apply`
-
-to create resources
-
-```sh
 terraform apply
 ```
 
-Enter `yes` to apply
+Enter `yes` at command prompt to apply
 
-### Configure kubectl and test cluster
+## Validate
 
-EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster. This following command used to update the `kubeconfig` in your local machine where you run kubectl commands to interact with your EKS Cluster.
+The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl`.
 
-#### Step 5: Run update-kubeconfig command.
-
-`~/.kube/config` file gets updated with cluster details and certificate from the below command
-
-    $ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
-
-#### Step 6: List all the worker nodes by running the command below
-
-    $ kubectl get nodes
-
-#### Step 7: List all the pods running in kube-system namespace
-
-    $ kubectl get pods -n kube-system
-
-## How to Destroy
+1. Run `update-kubeconfig` command:
 
 ```sh
-cd examples/multi-tenancy-with-teams
+aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
+```
+
+## Destroy
+
+To teardown and remove the resources created in this example:
+
+```sh
 terraform destroy -auto-approve
 ```
