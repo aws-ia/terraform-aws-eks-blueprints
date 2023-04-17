@@ -8,13 +8,6 @@
   - [Usage](#usage)
   - [Outputs](#outputs)
   - [Cleanup](#cleanup)
-- [Terraform Doc](#terraform-doc)
-  - [Requirements](#requirements)
-  - [Providers](#providers)
-  - [Modules](#modules)
-  - [Resources](#resources)
-  - [Inputs](#inputs)
-  - [Outputs](#outputs-1)
 
 This folder contains the Terraform code to deploy the core infrastructure for our EKS Cluster **Blue** and **Green**. The AWS resources created by the script are:
 

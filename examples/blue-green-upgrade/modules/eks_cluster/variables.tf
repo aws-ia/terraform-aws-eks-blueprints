@@ -1,10 +1,15 @@
-variable "core_stack_name" {
+variable "aws_region" {
+  description = "AWS Region"
+  type        = string
+  default     = "us-west-2"
+}
+variable "environment_name" {
   description = "The name of Core Infrastructure stack, feel free to rename it. Used for cluster and VPC names."
   type        = string
   default     = "eks-blueprint"
 }
 
-variable "suffix_stack_name" {
+variable "service_name" {
   description = "The name of the Suffix for the stack name"
   type        = string
   default     = "blue"
@@ -13,7 +18,7 @@ variable "suffix_stack_name" {
 variable "cluster_version" {
   description = "The Version of Kubernetes to deploy"
   type        = string
-  default     = "1.23"
+  default     = "1.24"
 }
 
 variable "hosted_zone_name" {

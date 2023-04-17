@@ -1,11 +1,11 @@
 locals {
-  core_stack_name   = var.core_stack_name
-  suffix_stack_name = var.suffix_stack_name
+  environment = var.environment_name
+  service     = var.service_name
 
-  env  = "dev" # use to suffix some kubernetes objects
-  name = "${var.core_stack_name}-${local.suffix_stack_name}"
+  env  = var.environment_name
+  name = "${local.environment}-${local.service}"
 
-  eks_cluster_domain = "${local.core_stack_name}.${var.hosted_zone_name}" # for external-dns
+  eks_cluster_domain = "${local.environment}.${var.hosted_zone_name}" # for external-dns
 
   cluster_version = var.cluster_version
 
@@ -14,8 +14,9 @@ locals {
   route53_weight             = var.route53_weight
   ecsfrontend_route53_weight = var.ecsfrontend_route53_weight
 
-  tag_val_vpc            = var.vpc_tag_value == "" ? var.core_stack_name : var.vpc_tag_value
-  tag_val_private_subnet = var.vpc_tag_value == "" ? "${var.core_stack_name}-private-" : var.vpc_tag_value
+  tag_val_vpc            = local.environment
+  tag_val_public_subnet  = "${local.environment}-public-"
+  tag_val_private_subnet = "${local.environment}-private-"
 
   node_group_name            = "managed-ondemand"
   argocd_secret_manager_name = var.argocd_secret_manager_name_suffix
@@ -53,7 +54,7 @@ locals {
         }
         blueprint                = "terraform"
         clusterName              = local.name
-        karpenterInstanceProfile = "${local.name}-${local.node_group_name}"
+        karpenterInstanceProfile = module.karpenter.instance_profile_name
         env                      = local.env
         ingress = {
           type                  = "alb"
@@ -82,10 +83,66 @@ locals {
         karpenterInstanceProfile = "${local.name}-${local.node_group_name}"
 
         apps = {
+          ecsdemoNodejs  = {
+            replicaCount   = "9"
+            nodeSelector = {
+              "karpenter.sh/provisioner-name" = "default"
+            }
+            tolerations = [
+              {
+                key      = "karpenter"
+                operator = "Exists"
+                effect   = "NoSchedule"
+              }
+            ]
+            topologyAwareHints = "true"
+            topologySpreadConstraints = [
+              {
+                maxSkew           = 1
+                topologyKey       = "topology.kubernetes.io/zone"
+                whenUnsatisfiable = "DoNotSchedule"
+                labelSelector = {
+                  matchLabels = {
+                    "app.kubernetes.io/name" = "ecsdemo-nodejs"
+                  }
+                }
+              }
+            ]
+
+          }
+
+          ecsdemoCrystal  = {
+            replicaCount   = "9"
+            nodeSelector = {
+              "karpenter.sh/provisioner-name" = "default"
+            }
+            tolerations = [
+              {
+                key      = "karpenter"
+                operator = "Exists"
+                effect   = "NoSchedule"
+              }
+            ]
+            topologyAwareHints = "true"
+            topologySpreadConstraints = [
+              {
+                maxSkew           = 1
+                topologyKey       = "topology.kubernetes.io/zone"
+                whenUnsatisfiable = "DoNotSchedule"
+                labelSelector = {
+                  matchLabels = {
+                    "app.kubernetes.io/name" = "ecsdemo-crystal"
+                  }
+                }
+              }
+            ]
+
+          }
+
           ecsdemoFrontend = {
-            repoURL        = "https://github.com/aws-containers/ecsdemo-frontend"
+            repoURL        = "https://github.com/allamand/ecsdemo-frontend"
             targetRevision = "main"
-            replicaCount   = "3"
+            #replicaCount   = "9" # see autoscaling configuration
             image = {
               repository = "public.ecr.aws/seb-demo/ecsdemo-frontend"
               tag        = "latest"
@@ -126,16 +183,16 @@ locals {
             }
             autoscaling = {
               enabled                        = "true"
-              minReplicas                    = "3"
+              minReplicas                    = "9"
               maxReplicas                    = "100"
               targetCPUUtilizationPercentage = "60"
             }
             nodeSelector = {
-              "karpenter.sh/provisioner-name" = "burnham"
+              "karpenter.sh/provisioner-name" = "default"
             }
             tolerations = [
               {
-                key      = "burnham"
+                key      = "karpenter"
                 operator = "Exists"
                 effect   = "NoSchedule"
               }
@@ -172,201 +229,532 @@ data "aws_caller_identity" "current" {}
 
 data "aws_vpc" "vpc" {
   filter {
-    name   = "tag:${var.vpc_tag_key}"
+    name   = "tag:Name"
     values = [local.tag_val_vpc]
   }
 }
 
 data "aws_subnets" "private" {
   filter {
-    name   = "tag:${var.vpc_tag_key}"
+    name   = "tag:Name"
     values = ["${local.tag_val_private_subnet}*"]
   }
 }
 
 # Create Sub HostedZone four our deployment
 data "aws_route53_zone" "sub" {
-  name = "${var.core_stack_name}.${var.hosted_zone_name}"
+  name = "${var.environment_name}.${var.hosted_zone_name}"
 }
 
 
 data "aws_secretsmanager_secret" "argocd" {
-  name = "${local.argocd_secret_manager_name}.${local.core_stack_name}"
+  name = "${local.argocd_secret_manager_name}.${local.environment}"
 }
 
 data "aws_secretsmanager_secret_version" "admin_password_version" {
   secret_id = data.aws_secretsmanager_secret.argocd.id
 }
 
-module "eks_blueprints" {
-  source = "../../../.."
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks.cluster_name
+}
+
+#tfsec:ignore:aws-eks-enable-control-plane-logging
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 19.12"
 
   cluster_name = local.name
-
-  # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = data.aws_vpc.vpc.id
-  private_subnet_ids = data.aws_subnets.private.ids
-
-  # EKS CONTROL PLANE VARIABLES
   cluster_version = local.cluster_version
+  cluster_endpoint_public_access = true
 
-  # List of map_roles
-  map_roles = [
+  vpc_id             = data.aws_vpc.vpc.id
+  subnet_ids = data.aws_subnets.private.ids
+
+  eks_managed_node_groups = {
+    initial = {
+      node_group_name = local.node_group_name
+      instance_types = ["m5.large"]
+
+      min_size     = 1
+      max_size     = 5
+      desired_size = 3
+      subnet_ids      = data.aws_subnets.private.ids
+    }
+  }
+
+  manage_aws_auth_configmap = true
+  aws_auth_roles = flatten([
+    module.eks_blueprints_admin_team.aws_auth_configmap_role,
+    [for team in module.eks_blueprints_dev_teams : team.aws_auth_configmap_role],
+    {
+      rolearn  = module.karpenter.role_arn
+      username = "system:node:{{EC2PrivateDNSName}}"
+      groups = [
+        "system:bootstrappers",
+        "system:nodes",
+      ]
+    },
     {
       rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_admin_role_name}" # The ARN of the IAM role
       username = "ops-role"                                                                                    # The user name within Kubernetes to map to the IAM role
       groups   = ["system:masters"]                                                                            # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
     }
-  ]
+  ])
+
+  # List of map_roles
+  # map_roles = [
+  #   {
+  #     rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_admin_role_name}" # The ARN of the IAM role
+  #     username = "ops-role"                                                                                    # The user name within Kubernetes to map to the IAM role
+  #     groups   = ["system:masters"]                                                                            # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
+  #   }
+  # ]
 
   # EKS MANAGED NODE GROUPS
-  managed_node_groups = {
-    mg_5 = {
-      node_group_name = local.node_group_name
-      instance_types  = ["m5.xlarge"]
-      min_size        = 3
-      subnet_ids      = data.aws_subnets.private.ids
+  # managed_node_groups = {
+  #   mg_5 = {
+  #     node_group_name = local.node_group_name
+  #     instance_types  = ["m5.large"]
+  #     min_size        = 3
+  #     subnet_ids      = data.aws_subnets.private.ids
+  #   }
+  # }
+
+  # platform_teams = {
+  #   admin = {
+  #     users = [
+  #       data.aws_caller_identity.current.arn,
+  #       "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${var.iam_platform_user}",
+  #       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_admin_role_name}"
+  #     ]
+  #   }
+  # }
+
+  # application_teams = {
+  #   team-platform = {
+  #     "labels" = {
+  #       "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
+  #       "appName"                                 = "platform-team-app",
+  #       "projectName"                             = "project-platform",
+  #     }
+  #     "quota" = {
+  #       "requests.cpu"    = "10000m",
+  #       "requests.memory" = "20Gi",
+  #       "limits.cpu"      = "20000m",
+  #       "limits.memory"   = "50Gi",
+  #       "pods"            = "10",
+  #       "secrets"         = "10",
+  #       "services"        = "10"
+  #     }
+  #     ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
+  #     manifests_dir = "../kubernetes/team-platform/"
+  #     users         = [data.aws_caller_identity.current.arn]
+  #   }
+
+  #   team-burnham = {
+  #     "labels" = {
+  #       "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
+  #       "appName"                                 = "burnham-team-app",
+  #       "projectName"                             = "project-burnham",
+  #       "environment"                             = "dev",
+  #     }
+  #     "quota" = {
+  #       "requests.cpu"    = "20k",
+  #       "requests.memory" = "20000Gi",
+  #       "limits.cpu"      = "40k",
+  #       "limits.memory"   = "50000Gi",
+  #       "pods"            = "10k",
+  #       "secrets"         = "10k",
+  #       "services"        = "10k"
+  #     }
+  #     manifests_dir = "../kubernetes/team-burnham/"
+  #     users         = [data.aws_caller_identity.current.arn]
+  #   }
+
+  #   team-riker = {
+  #     "labels" = {
+  #       "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
+  #       "appName"                                 = "riker-team-app",
+  #       "projectName"                             = "project-riker",
+  #       "environment"                             = "dev",
+  #       "domain"                                  = "example",
+  #       "uuid"                                    = "example",
+  #       "billingCode"                             = "example",
+  #       "branch"                                  = "example"
+  #     }
+  #     "quota" = {
+  #       "requests.cpu"    = "10000m",
+  #       "requests.memory" = "20Gi",
+  #       "limits.cpu"      = "20000m",
+  #       "limits.memory"   = "50Gi",
+  #       "pods"            = "10",
+  #       "secrets"         = "10",
+  #       "services"        = "10"
+  #     }
+  #     ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
+  #     manifests_dir = "../kubernetes/team-riker/"
+  #     users         = [data.aws_caller_identity.current.arn]
+  #   }
+
+
+  #   ecsdemo-frontend = {
+  #     "labels" = {
+  #       "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
+  #       "appName"                                 = "ecsdemo-frontend-app",
+  #       "projectName"                             = "ecsdemo-frontend",
+  #       "environment"                             = "dev",
+  #     }
+  #     #don't use quotas here cause ecsdemo app does not have request/limits
+  #     "quota" = {
+  #       "requests.cpu"    = "100",
+  #       "requests.memory" = "20Gi",
+  #       "limits.cpu"      = "200",
+  #       "limits.memory"   = "50Gi",
+  #       "pods"            = "100",
+  #       "secrets"         = "10",
+  #       "services"        = "20"
+  #     }
+  #     ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
+  #     manifests_dir = "../kubernetes/ecsdemo-frontend/"
+  #     users         = [data.aws_caller_identity.current.arn]
+  #   }
+  #   ecsdemo-nodejs = {
+  #     "labels" = {
+  #       "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
+  #       "appName"                                 = "ecsdemo-nodejs-app",
+  #       "projectName"                             = "ecsdemo-nodejs",
+  #       "environment"                             = "dev",
+  #     }
+  #     #don't use quotas here cause ecsdemo app does not have request/limits
+  #     "quota" = {
+  #       "requests.cpu"    = "10000m",
+  #       "requests.memory" = "20Gi",
+  #       "limits.cpu"      = "20000m",
+  #       "limits.memory"   = "50Gi",
+  #       "pods"            = "20",
+  #       "secrets"         = "10",
+  #       "services"        = "10"
+  #     }
+  #     ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
+  #     manifests_dir = "../kubernetes/ecsdemo-nodejs"
+  #     users         = [data.aws_caller_identity.current.arn]
+  #   }
+  #   ecsdemo-crystal = {
+  #     "labels" = {
+  #       "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
+  #       "appName"                                 = "ecsdemo-crystal-app",
+  #       "projectName"                             = "ecsdemo-crystal",
+  #       "environment"                             = "dev",
+  #     }
+  #     #don't use quotas here cause ecsdemo app does not have request/limits
+  #     "quota" = {
+  #       "requests.cpu"    = "10000m",
+  #       "requests.memory" = "20Gi",
+  #       "limits.cpu"      = "20000m",
+  #       "limits.memory"   = "50Gi",
+  #       "pods"            = "20",
+  #       "secrets"         = "10",
+  #       "services"        = "10"
+  #     }
+  #     ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
+  #     manifests_dir = "../kubernetes/ecsdemo-crystal"
+  #     users         = [data.aws_caller_identity.current.arn]
+  #   }
+  # }
+
+  tags = local.tags
+}
+
+module "eks_blueprints_admin_team" {
+  source  = "aws-ia/eks-blueprints-teams/aws"
+  version = "~> 0.2"
+
+  name = "admin-team"
+
+  enable_admin = true
+  users = [
+    data.aws_caller_identity.current.arn,
+    "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${var.iam_platform_user}",
+    "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_admin_role_name}"
+  ]
+  cluster_arn  = module.eks.cluster_arn
+
+  tags = local.tags
+}
+
+module "eks_blueprints_platform_teams" {
+  source  = "aws-ia/eks-blueprints-teams/aws"
+  version = "~> 0.2"
+
+  for_each = {
+    platform = {
+      labels = {
+        "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
+        "appName"                                 = "platform-team-app",
+        "projectName"                             = "project-platform",        
+      }
     }
   }
+  name = "team-${each.key}"
 
-  platform_teams = {
-    admin = {
-      users = [
-        data.aws_caller_identity.current.arn,
-        "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${var.iam_platform_user}",
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_admin_role_name}"
-      ]
-    }
+  users             = [data.aws_caller_identity.current.arn]
+  cluster_arn       = module.eks.cluster_arn
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  labels = merge(
+    {
+      team = each.key
+    },
+    try(each.value.labels, {})
+  )
+
+  annotations = {
+    team = each.key
   }
 
-  application_teams = {
+  namespaces = {
+    "team-${each.key}" = {
+      labels =  merge(
+      {
+        team = each.key
+      },
+      try(each.value.labels, {})
+      )
 
-    team-burnham = {
-      "labels" = {
+      resource_quota = {
+        hard = {
+          "requests.cpu"    = "10000m",
+          "requests.memory" = "20Gi",
+          "limits.cpu"      = "20000m",
+          "limits.memory"   = "50Gi",
+          "pods"            = "20",
+          "secrets"         = "20",
+          "services"        = "20"
+        }
+      }
+
+      limit_range = {
+        limit = [
+          {
+            type = "Pod"
+            max = {
+              cpu    = "200m"
+              memory = "1Gi"
+            }
+          },
+          {
+            type = "PersistentVolumeClaim"
+            min = {
+              storage = "24M"
+            }
+          },
+          {
+            type = "Container"
+            default = {
+              cpu    = "50m"
+              memory = "24Mi"
+            }
+          }
+        ]
+      }
+    }
+
+    ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
+    #manifests_dir = "../kubernetes/team-burnham/"
+  }
+
+  tags = local.tags
+}
+
+module "eks_blueprints_dev_teams" {
+  source  = "aws-ia/eks-blueprints-teams/aws"
+  version = "~> 0.2"
+
+  for_each = {
+    burnham = {
+      labels = {
         "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
         "appName"                                 = "burnham-team-app",
-        "projectName"                             = "project-burnham",
-        "environment"                             = "dev",
-        "domain"                                  = "example",
-        "uuid"                                    = "example",
-        "billingCode"                             = "example",
-        "branch"                                  = "example"
-      }
-      "quota" = {
-        "requests.cpu"    = "10000m",
-        "requests.memory" = "20Gi",
-        "limits.cpu"      = "20000m",
-        "limits.memory"   = "50Gi",
-        "pods"            = "10",
-        "secrets"         = "10",
-        "services"        = "10"
-      }
-      ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
-      manifests_dir = "../kubernetes/team-burnham/"
-      users         = [data.aws_caller_identity.current.arn]
+        "projectName"                             = "project-burnham",        
+      }      
     }
-
-    team-riker = {
-      "labels" = {
+    riker = {
+      labels = {
         "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
         "appName"                                 = "riker-team-app",
-        "projectName"                             = "project-riker",
-        "environment"                             = "dev",
-        "domain"                                  = "example",
-        "uuid"                                    = "example",
-        "billingCode"                             = "example",
-        "branch"                                  = "example"
-      }
-      "quota" = {
-        "requests.cpu"    = "10000m",
-        "requests.memory" = "20Gi",
-        "limits.cpu"      = "20000m",
-        "limits.memory"   = "50Gi",
-        "pods"            = "10",
-        "secrets"         = "10",
-        "services"        = "10"
-      }
-      ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
-      manifests_dir = "../kubernetes/team-riker/"
-      users         = [data.aws_caller_identity.current.arn]
-    }
+        "projectName"                             = "project-riker",        
+      }      
+    }     
+  }
+  name = "team-${each.key}"
 
+  users             = [data.aws_caller_identity.current.arn]
+  cluster_arn       = module.eks.cluster_arn
+  oidc_provider_arn = module.eks.oidc_provider_arn
 
-    ecsdemo-frontend = {
-      "labels" = {
-        "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
-        "appName"                                 = "ecsdemo-frontend-app",
-        "projectName"                             = "ecsdemo-frontend",
-        "environment"                             = "dev",
+  labels = merge(
+    {
+      team = each.key
+    },
+    try(each.value.labels, {})
+  )
+
+  annotations = {
+    team = each.key
+  }
+
+  namespaces = {
+    "team-${each.key}" = {
+      labels =  merge(
+      {
+        team = each.key
+      },
+      try(each.value.labels, {})
+      )
+
+      resource_quota = {
+        hard = {
+          "requests.cpu"    = "100",
+          "requests.memory" = "20Gi",
+          "limits.cpu"      = "200",
+          "limits.memory"   = "50Gi",
+          "pods"            = "100",
+          "secrets"         = "10",
+          "services"        = "20"
+        }
       }
-      #don't use quotas here cause ecsdemo app does not have request/limits
-      "quota" = {
-        "requests.cpu"    = "100",
-        "requests.memory" = "20Gi",
-        "limits.cpu"      = "200",
-        "limits.memory"   = "50Gi",
-        "pods"            = "100",
-        "secrets"         = "10",
-        "services"        = "20"
+
+      limit_range = {
+        limit = [
+          {
+            type = "Pod"
+            max = {
+              cpu    = "2"
+              memory = "1Gi"
+            }
+            min = {
+              cpu    = "10m"
+              memory = "4Mi"
+            }
+          },
+          {
+            type = "PersistentVolumeClaim"
+            min = {
+              storage = "24M"
+            }
+          },
+          {
+            type = "Container"
+            default = {
+              cpu    = "50m"
+              memory = "24Mi"
+            }
+          }
+        ]
       }
-      ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
-      manifests_dir = "../kubernetes/ecsdemo-frontend/"
-      users         = [data.aws_caller_identity.current.arn]
     }
-    ecsdemo-nodejs = {
-      "labels" = {
+  }
+
+  tags = local.tags
+
+}
+
+module "eks_blueprints_ecsdemo_teams" {
+  source  = "aws-ia/eks-blueprints-teams/aws"
+  version = "~> 0.2"
+
+  for_each = {
+    ecsdemo-frontend = {}  
+    ecsdemo-nodejs = {}  
+    ecsdemo-crystal = {}        
+  }
+  name = "team-${each.key}"
+
+  users             = [data.aws_caller_identity.current.arn]
+  cluster_arn       = module.eks.cluster_arn
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  labels = {
+    "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
+    "appName"                                 = "${each.key}-app",
+    "projectName"                             = each.key,
+    "environment"                             = "dev",
+    "downscaler/uptime"                       = "Mon-Fri_0900-1700_CET",
+    //validation regex '(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?')
+    //"downscaler/downtime"                     = "Sat-Sun 00:00-24:00 CET,Fri-Fri 20:00-24:00 CET",    
+  }
+
+  annotations = {
+    team = each.key
+  }
+
+  namespaces = {
+    "${each.key}" = {
+      labels = {
         "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
-        "appName"                                 = "ecsdemo-nodejs-app",
-        "projectName"                             = "ecsdemo-nodejs",
+        "appName"                                 = "${each.key}-app",
+        "projectName"                             = each.key,
         "environment"                             = "dev",
       }
-      #don't use quotas here cause ecsdemo app does not have request/limits
-      "quota" = {
-        "requests.cpu"    = "10000m",
-        "requests.memory" = "20Gi",
-        "limits.cpu"      = "20000m",
-        "limits.memory"   = "50Gi",
-        "pods"            = "10",
-        "secrets"         = "10",
-        "services"        = "10"
+
+      resource_quota = {
+        hard = {
+          "requests.cpu"    = "100",
+          "requests.memory" = "20Gi",
+          "limits.cpu"      = "200",
+          "limits.memory"   = "50Gi",
+          "pods"            = "100",
+          "secrets"         = "10",
+          "services"        = "20"
+        }
       }
-      ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
-      manifests_dir = "../kubernetes/ecsdemo-nodejs"
-      users         = [data.aws_caller_identity.current.arn]
-    }
-    ecsdemo-crystal = {
-      "labels" = {
-        "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
-        "appName"                                 = "ecsdemo-crystal-app",
-        "projectName"                             = "ecsdemo-crystal",
-        "environment"                             = "dev",
+
+      limit_range = {
+        limit = [
+          {
+            type = "Pod"
+            max = {
+              cpu    = "2"
+              memory = "1Gi"
+            }
+            min = {
+              cpu    = "10m"
+              memory = "4Mi"
+            }
+          },
+          {
+            type = "PersistentVolumeClaim"
+            min = {
+              storage = "24M"
+            }
+          },
+          {
+            type = "Container"
+            default = {
+              cpu    = "50m"
+              memory = "24Mi"
+            }
+          }
+        ]
       }
-      #don't use quotas here cause ecsdemo app does not have request/limits
-      "quota" = {
-        "requests.cpu"    = "10000m",
-        "requests.memory" = "20Gi",
-        "limits.cpu"      = "20000m",
-        "limits.memory"   = "50Gi",
-        "pods"            = "10",
-        "secrets"         = "10",
-        "services"        = "10"
-      }
-      ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
-      manifests_dir = "../kubernetes/ecsdemo-crystal"
-      users         = [data.aws_caller_identity.current.arn]
     }
   }
 
   tags = local.tags
 }
 
-#certificate_arn = aws_acm_certificate_validation.example.certificate_arn
-
 module "kubernetes_addons" {
-  source = "../../../../modules/kubernetes-addons"
+   # Users should pin the version to the latest available release
+     # tflint-ignore: terraform_module_pinned_source
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+  #version = "v1"
 
-  eks_cluster_id     = module.eks_blueprints.eks_cluster_id
-  eks_cluster_domain = local.eks_cluster_domain
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider     = module.eks.cluster_oidc_issuer_url
+  oidc_provider_arn = module.eks.oidc_provider_arn
 
   #---------------------------------------------------------------
   # ARGO CD ADD-ON
@@ -389,6 +777,7 @@ module "kubernetes_addons" {
         value = bcrypt(data.aws_secretsmanager_secret_version.admin_password_version.secret_string)
       }
     ]
+     # To have additional LB for Argo
     set = [
       {
         name  = "server.service.type"
@@ -399,36 +788,19 @@ module "kubernetes_addons" {
 
   #---------------------------------------------------------------
   # EKS Managed AddOns
-  # https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/
   #---------------------------------------------------------------
 
-  enable_amazon_eks_coredns = true
-  amazon_eks_coredns_config = {
-    most_recent        = true
-    kubernetes_version = local.cluster_version
-    resolve_conflicts  = "OVERWRITE"
+  eks_addons = {
+    aws-ebs-csi-driver = {
+      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
+    }
+    coredns = {}
+    vpc-cni = {
+      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
+    }
+    kube-proxy = {}
   }
 
-  enable_amazon_eks_aws_ebs_csi_driver = true
-  amazon_eks_aws_ebs_csi_driver_config = {
-    most_recent        = true
-    kubernetes_version = local.cluster_version
-    resolve_conflicts  = "OVERWRITE"
-  }
-
-  enable_amazon_eks_kube_proxy = true
-  amazon_eks_kube_proxy_config = {
-    most_recent        = true
-    kubernetes_version = local.cluster_version
-    resolve_conflicts  = "OVERWRITE"
-  }
-
-  enable_amazon_eks_vpc_cni = true
-  amazon_eks_vpc_cni_config = {
-    most_recent        = true
-    kubernetes_version = local.cluster_version
-    resolve_conflicts  = "OVERWRITE"
-  }
 
   #---------------------------------------------------------------
   # ADD-ONS - You can add additional addons here
@@ -438,23 +810,78 @@ module "kubernetes_addons" {
   enable_metrics_server               = true
   enable_vpa                          = true
   enable_aws_load_balancer_controller = true
-  aws_load_balancer_controller_helm_config = {
-    service_account = "aws-lb-sa"
-  }
+  #aws_load_balancer_controller_helm_config = {
+  #  service_account = "aws-lb-sa"
+  #}
   enable_karpenter              = true
-  enable_aws_for_fluentbit      = true
-  enable_aws_cloudwatch_metrics = true
+  #karpenter_node_iam_instance_profile        = module.karpenter.instance_profile_name
+  #karpenter_enable_spot_termination_handling = true
 
-  #to view the result : terraform state show 'module.kubernetes_addons.module.external_dns[0].module.helm_addon.helm_release.addon[0]'
+  enable_aws_for_fluentbit      = true
+  #enable_aws_cloudwatch_metrics = true
+
   enable_external_dns = true
 
-  external_dns_helm_config = {
-    txtOwnerId   = local.name
-    zoneIdFilter = data.aws_route53_zone.sub.zone_id # Note: this uses GitOpsBridge
-    policy       = "sync"
-    logLevel     = "debug"
+  #external_dns_helm_config = {
+  #  txtOwnerId   = local.name
+  #  zoneIdFilter = data.aws_route53_zone.sub.zone_id # Note: this uses GitOpsBridge
+  #  policy       = "sync"
+  #  logLevel     = "debug"
+  #}
+
+  #enable_kubecost = true
+  enable_argo_rollouts = true
+
+}
+
+module "ebs_csi_driver_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.14"
+
+  role_name_prefix = "${module.eks.cluster_name}-ebs-csi-driver-"
+
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
   }
 
-  enable_kubecost = true
+  tags = local.tags
+}
 
+module "vpc_cni_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.14"
+
+  role_name_prefix = "${module.eks.cluster_name}-vpc-cni-"
+
+  attach_vpc_cni_policy = true
+  vpc_cni_enable_ipv4   = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-node"]
+    }
+  }
+
+  tags = local.tags
+}
+################################################################################
+# Karpenter
+################################################################################
+
+# Creates Karpenter native node termination handler resources and IAM instance profile
+module "karpenter" {
+  source  = "terraform-aws-modules/eks/aws//modules/karpenter"
+  version = "~> 19.12"
+
+  cluster_name           = module.eks.cluster_name
+  irsa_oidc_provider_arn = module.eks.oidc_provider_arn
+  create_irsa            = false # IRSA will be created by the kubernetes-addons module
+
+  tags = local.tags
 }
