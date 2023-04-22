@@ -10,6 +10,11 @@ output "eks_cluster_id" {
   description = "Amazon EKS Cluster Name"
   value       = module.aws_eks.cluster_id
 }
+  
+output "eks_cluster_name" {
+  description = "Amazon EKS Cluster Name"
+  value       = module.aws_eks.cluster_name
+}
 
 output "eks_cluster_certificate_authority_data" {
   description = "Base64 encoded certificate data required to communicate with the cluster"
