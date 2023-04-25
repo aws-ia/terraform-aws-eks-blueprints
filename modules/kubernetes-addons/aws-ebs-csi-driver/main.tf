@@ -29,6 +29,22 @@ resource "aws_eks_addon" "aws_ebs_csi_driver" {
   )
 }
 
+resource "kubernetes_storage_class" "gp3_sc" {
+  count = var.enable_amazon_eks_aws_ebs_gp3_sc == true ? 1 : 0
+  metadata {
+    name = "gp3"
+  }
+  storage_provisioner = "kubernetes.io/aws-ebs"
+  reclaim_policy      = "Delete"
+  parameters = {
+    type   = "gp3"
+    fsType = "ext4"
+  }
+  mount_options          = ["debug"]
+  allow_volume_expansion = true
+  volume_binding_mode    = "WaitForFirstConsumer"
+}
+
 module "helm_addon" {
   source = "../helm-addon"
   count  = var.enable_self_managed_aws_ebs_csi_driver && !var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0

@@ -155,6 +155,12 @@ variable "enable_amazon_eks_aws_ebs_csi_driver" {
   default     = false
 }
 
+variable "enable_amazon_eks_aws_ebs_gp3_sc" {
+  description = "Enable GP3 storage class"
+  type        = bool
+  default     = false
+}
+
 variable "enable_self_managed_aws_ebs_csi_driver" {
   description = "Enable self-managed aws-ebs-csi-driver add-on; enable_self_managed_aws_ebs_csi_driver and enable_amazon_eks_aws_ebs_csi_driver are mutually exclusive"
   type        = bool

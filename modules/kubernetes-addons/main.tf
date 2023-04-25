@@ -75,6 +75,8 @@ module "aws_ebs_csi_driver" {
 
   # Amazon EKS aws-ebs-csi-driver addon
   enable_amazon_eks_aws_ebs_csi_driver = var.enable_amazon_eks_aws_ebs_csi_driver
+  enable_amazon_eks_aws_ebs_gp3_sc     = var.enable_amazon_eks_aws_ebs_gp3_sc
+
   addon_config = merge(
     {
       kubernetes_version = local.eks_cluster_version
