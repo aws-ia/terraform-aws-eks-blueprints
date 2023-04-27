@@ -45,15 +45,16 @@ module "aws_eks" {
   cluster_ip_family                    = var.cluster_ip_family
   cluster_service_ipv4_cidr            = var.cluster_service_ipv4_cidr
 
-  vpc_id                                  = var.vpc_id
-  create_cluster_security_group           = var.create_cluster_security_group
-  cluster_security_group_id               = var.cluster_security_group_id
-  cluster_security_group_name             = var.cluster_security_group_name
-  cluster_security_group_use_name_prefix  = var.cluster_security_group_use_name_prefix
-  cluster_security_group_description      = var.cluster_security_group_description
-  cluster_additional_security_group_ids   = var.cluster_additional_security_group_ids
-  cluster_security_group_additional_rules = var.cluster_security_group_additional_rules
-  cluster_security_group_tags             = var.cluster_security_group_tags
+  vpc_id                                     = var.vpc_id
+  create_cluster_security_group              = var.create_cluster_security_group
+  cluster_security_group_id                  = var.cluster_security_group_id
+  cluster_security_group_name                = var.cluster_security_group_name
+  cluster_security_group_use_name_prefix     = var.cluster_security_group_use_name_prefix
+  cluster_security_group_description         = var.cluster_security_group_description
+  cluster_additional_security_group_ids      = var.cluster_additional_security_group_ids
+  cluster_security_group_additional_rules    = var.cluster_security_group_additional_rules
+  cluster_security_group_tags                = var.cluster_security_group_tags
+  create_cluster_primary_security_group_tags = var.create_cluster_primary_security_group_tags
 
   create_node_security_group           = var.create_node_security_group
   node_security_group_name             = var.node_security_group_name
