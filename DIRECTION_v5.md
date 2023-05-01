@@ -1,4 +1,4 @@
-# Direction for v5 of EKS Blueprints
+# Direction for v5 of Terraform EKS Blueprints
 
 ## What Has Worked
 
@@ -34,9 +34,10 @@ With this shift in direction, the cluster definition will be removed from the pr
 
 1. EKS Blueprints will remove its Amazon EKS cluster Terraform module components (control plane, EKS managed node group, self-managed node group, and Fargate profile modules) from the project. In its place, users are encouraged to utilize the [`terraform-aws-eks`](https://github.com/terraform-aws-modules/terraform-aws-eks) module which meets or exceeds nearly all of the functionality of the EKS Blueprints v4.x cluster module. This includes the Terraform code contained at the root of the project as well as the `aws-eks-fargate-profiles`, `aws-eks-managed-node-groups`, `aws-eks-self-managed-node-groups`, and `launch-templates` modules which will all be removed from the project.
 2. The `aws-kms` module will be removed entirely. This was consumed in the root project module for cluster secret encryption. In its place, users can utilize the KMS key creation functionality of the [`terraform-aws-eks`](https://github.com/terraform-aws-modules/terraform-aws-eks) module or the [`terraform-aws-kms`](https://github.com/terraform-aws-modules/terraform-aws-kms) module if they wish to control the key separately from the cluster itself.
-3. The `emr-on-eks` module will be removed entirely; its replacement can be found in the addons under [`emr-on-eks`](https://github.com/aws-ia/terraform-aws-eks-blueprints-addons/tree/main/modules/kubernetes-addons/emr-on-eks) and you can see an example of its usage under the [`emr-on-eks-fargate`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/05da30c58f3596faa5c9e6a400c6b70a074d3a2c/examples/analytics/emr-on-eks-fargate) example.
-4. The `irsa` and `helm-addon` modules will be removed entirely; we have released a new external module [`terraform-aws-eks-kubernetes-addon`](https://github.com/aws-ia/terraform-aws-kubernetes-addon) that is available on the Terraform registry that replicates/replaces the functionality of these two modules. This will now allow users, as well as partners, to create their own addons that are not natively supported by EKS Blueprints more easily and following the same process as EKS Blueprints.
+3. The `emr-on-eks` module will be removed entirely; its replacement can be found in the new external module [`terraform-aws-emr`](https://github.com/terraform-aws-modules/terraform-aws-emr/tree/master/modules/serverless).
+4. The `irsa` and `helm-addon` modules will be removed entirely; we have released a new external module [`terraform-aws-eks-blueprints-addon`](https://github.com/aws-ia/terraform-aws-eks-blueprints-addon) that is available on the Terraform registry that replicates/replaces the functionality of these two modules. This will now allow users, as well as partners, to create their own addons that are not natively supported by EKS Blueprints more easily and following the same process as EKS Blueprints.
 5. The `aws-eks-teams` module will be removed entirely; its replacement will be the new external module [`terraform-aws-eks-blueprints-teams`](https://github.com/aws-ia/terraform-aws-eks-blueprints-teams) that incorporates the changes customers have been asking for in https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/842
+6. The integration between Terraform and ArgoCD has been removed in the initial release of v5. The team is currently investigating better patterns and solutions in conjunction with the ArgoCD and FluxCD teams that will provide a better, more integrated experience when using a GitOps based approach for cluster management. This will be released in a future version of EKS Blueprints v5 and is tracked [here](https://github.com/aws-ia/terraform-aws-eks-blueprints-addons/issues/114)
 
 ### Resulting Project Structure
 
@@ -45,12 +46,7 @@ Previously under the v4.x structure, the EKS Blueprint project was comprised of 
 #### v4.x Structure
 
 ```
-├── aws-quickstart/
-|   └── cdk-eks-blueprints/
-|       └── examples/
 ├── aws-ia/
-|   ├── ecs-blueprints/
-|   |   └── examples/
 |   ├── terraform-aws-eks-ack-addons/
 |   └── terraform-aws-eks-blueprints/
 |       ├── aws-auth-configmap.tf
@@ -75,46 +71,32 @@ Previously under the v4.x structure, the EKS Blueprint project was comprised of 
 ├── awslabs/
 |   ├── crossplane-on-eks/
 |   └── data-on-eks/
-├── aws-samples/
-|   ├── eks-blueprints-add-ons/
-|   └── eks-blueprints-workloads/
-└── aws-observability/
-    └── terraform-aws-observability-accelerator/
+└── aws-samples/
+    ├── eks-blueprints-add-ons/   # Previously shared with the CDK based EKS Blueprints project
+    └── eks-blueprints-workloads/ # Previously shared with the CDK based EKS Blueprints project
 ```
+
+Under th new v5.x structure, the Terraform based EKS Blueprints project will be comprised of the following repositories:
 
 #### v5.x Structure
 
 ```
-├── aws-quickstart/
-|   └── cdk-eks-blueprints/
-|       └── examples/
 ├── aws-ia/
-|   ├── ecs-blueprints/
-|   |   └── examples/
 |   ├── terraform-aws-eks-ack-addons/
-|   ├── terraform-aws-eks-blueprints/       # Will contain only example/blueprint implementations, no modules
-|   ├── terraform-aws-eks-blueprints-addons # Will contain all of the addons currently supported in EKS Blueprints today, as-is
-|   ├── terraform-aws-eks-blueprints-teams  # Was previously `aws-eks-teams/` EKS Blueprint sub-module
-|   └── terraform-aws-kubernetes-addon      # Module for creating Terraform based addon (IRSA + Helm chart)
-├── awslabs/
-|   ├── crossplane-on-eks/
-|   └── data-on-eks/
-├── aws-samples/
-|   ├── eks-blueprints-add-ons/
-|   └── eks-blueprints-workloads/
-└── aws-observability/
-    └── terraform-aws-observability-accelerator/
+|   ├── terraform-aws-eks-blueprints/       # Will contain only example/blueprint implementations; no modules
+|   ├── terraform-aws-eks-blueprints-addon  # Module for creating Terraform based addon (IRSA + Helm chart)
+|   ├── terraform-aws-eks-blueprints-addons # Will contain a select set of addons supported by the EKS Blueprints
+|   └── terraform-aws-eks-blueprints-teams  # Was previously `aws-eks-teams/` EKS Blueprint sub-module; updated based on customer feedback
+└── awslabs/
+    ├── crossplane-on-eks/
+    └── data-on-eks/        # Data related patterns that used to be located in `terraform-aws-eks-blueprints/` are now located here
 ```
 
 ## What Can Users Expect
 
-With these changes, the team intends to provide a better experience for users of the EKS Blueprints project as well as new and improved reference architectures. Following the v5 changes, the team intends to:
+With these changes, the team intends to provide a better experience for users of the Terraform EKS Blueprints project as well as new and improved reference architectures. Following the v5 changes, the team intends to:
 
 1. Improved quality of the examples provided - more information on the intent of the example, why it might be useful for users, what scenarios is the pattern applicable, etc. Where applicable, architectural diagrams and supporting material will be provided to highlight the intent of the example and how its constructed.
-2. A more clear distinction between a blueprint and a usage reference. For example - the Karpenter on EKS Fargate blueprint should demonstrate all of the various aspects that users should be aware of and consider in order to take full advantage of this pattern (recommended practices, observability, logging, monitoring, security, day 2 operations, etc.). This is what makes it a blueprint. In contrast, a usage reference would be an example that shows how users can pass configuration values to the Karpenter provisioner. This example is less focused on the holistic architecture and more focused on how one might configure Karpenter using the implementation. The EKS Blueprints repository will focus mostly on holistic architecture and patterns, and any usage references should be saved for the repository that contains that implementation definition (i.e. - the `terraform-aws-eks-blueprints-addons` repository where the addon implementation is defined).
+2. A more clear distinction between a blueprint and a usage reference. For example - the Karpenter on EKS Fargate blueprint should demonstrate all of the various aspects that users should be aware of and consider in order to take full advantage of this pattern (recommended practices, observability, logging, monitoring, security, day 2 operations, etc.); this is what makes it a blueprint. In contrast, a usage reference would be an example that shows how users can pass configuration values to the Karpenter provisioner. This example is less focused on the holistic architecture and more focused on how one might configure Karpenter using the implementation. The EKS Blueprints repository will focus mostly on holistic architecture and patterns, and any usage references should be saved for the repository that contains that implementation definition (i.e. - the `terraform-aws-eks-blueprints-addons` repository where the addon implementation is defined).
 3. Faster, and more responsive feedback. The first part of this is going to be improved documentation on how to contribute which should help clarify whether a contribution is worthy and willing to be accepted by the team before any effort is spent by the contributor. However, the goal of v5 is to focus more on the value added benefits that EKS Blueprints was created to provide as opposed to simply mass producing Helm chart wrappers (addons) and trying to keep up with that operationally intensive process.
 4. Lastly, more examples and blueprints that demonstrate various architectures and workloads that run on top of Amazon EKS as well as integrations into other AWS services.
-
-## What Is Not Changing
-
-- Currently there are no plans to change the way addons are created and managed under EKS Blueprints in the v5 changes. The EKS Blueprints addons module will move from the `terraform-aws-eks-blueprints` repository to its own repository `terraform-aws-eks-blueprints-addons` as-is.
