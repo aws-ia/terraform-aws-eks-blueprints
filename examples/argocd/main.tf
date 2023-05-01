@@ -36,8 +36,6 @@ locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
-  cluster_version = "1.25"
-
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
@@ -54,10 +52,10 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.10"
+  version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = local.cluster_version
+  cluster_version                = "1.25"
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
@@ -77,10 +75,10 @@ module "eks" {
 }
 
 ################################################################################
-# Kubernetes Addons
+# EKS Blueprints Addons
 ################################################################################
 
-module "eks_blueprints_kubernetes_addons" {
+module "eks_blueprints_addons" {
   # Users should pin the version to the latest available release
   # tflint-ignore: terraform_module_pinned_source
   source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
@@ -88,7 +86,6 @@ module "eks_blueprints_kubernetes_addons" {
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
   cluster_version   = module.eks.cluster_version
-  oidc_provider     = module.eks.cluster_oidc_issuer_url
   oidc_provider_arn = module.eks.oidc_provider_arn
 
   eks_addons = {
@@ -102,42 +99,39 @@ module "eks_blueprints_kubernetes_addons" {
     kube-proxy = {}
   }
 
-  enable_argocd = true
-  # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.
-  argocd_helm_config = {
-    set_sensitive = [
-      {
-        name  = "configs.secret.argocdServerAdminPassword"
-        value = bcrypt_hash.argo.id
-      }
-    ]
-  }
+  # enable_argocd = true
+  # # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.
+  # argocd_helm_config = {
+  #   set_sensitive = [
+  #     {
+  #       name  = "configs.secret.argocdServerAdminPassword"
+  #       value = bcrypt_hash.argo.id
+  #     }
+  #   ]
+  # }
 
-  argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying add-ons
-  argocd_applications = {
-    addons = {
-      path               = "chart"
-      repo_url           = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
-      add_on_application = true
-    }
-    workloads = {
-      path               = "envs/dev"
-      repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
-      add_on_application = false
-    }
-  }
+  # argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying add-ons
+  # argocd_applications = {
+  #   addons = {
+  #     path               = "chart"
+  #     repo_url           = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
+  #     add_on_application = true
+  #   }
+  #   workloads = {
+  #     path               = "envs/dev"
+  #     repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+  #     add_on_application = false
+  #   }
+  # }
 
   # Add-ons
   enable_aws_for_fluentbit = true
   # Let fluentbit create the cw log group
-  aws_for_fluentbit_create_cw_log_group = false
-  enable_cert_manager                   = true
-  enable_cluster_autoscaler             = true
-  enable_karpenter                      = true
-  enable_metrics_server                 = true
-  enable_prometheus                     = true
-  enable_vpa                            = true
-  enable_argo_rollouts                  = true
+  enable_cert_manager   = true
+  enable_karpenter      = true
+  enable_metrics_server = true
+  enable_vpa            = true
+  enable_argo_rollouts  = true
 
   tags = local.tags
 }
@@ -175,7 +169,7 @@ resource "aws_secretsmanager_secret_version" "argocd" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
   name = local.name
   cidr = local.vpc_cidr
@@ -184,17 +178,8 @@ module "vpc" {
   private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
   public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
 
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
-  enable_dns_hostnames = true
-
-  # Manage so we can name
-  manage_default_network_acl    = true
-  default_network_acl_tags      = { Name = "${local.name}-default" }
-  manage_default_route_table    = true
-  default_route_table_tags      = { Name = "${local.name}-default" }
-  manage_default_security_group = true
-  default_security_group_tags   = { Name = "${local.name}-default" }
+  enable_nat_gateway = true
+  single_nat_gateway = true
 
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1

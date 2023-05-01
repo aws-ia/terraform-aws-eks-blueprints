@@ -1,0 +1,25 @@
+ondat-operator:
+  serviceAccount:
+    create: false
+    name: ${ondat_service_account_name}
+  cluster:
+    create: true
+    secretRefName: ${ondat_credential_secret_name}
+    admin:
+      username: ${ondat_admin_username}
+      password: ${ondat_admin_password}
+    kvBackend:
+      address: ${etcd_address}
+    nodeSelectorTerm:
+      key: ${ondat_nodeselectorterm_key}
+      value: ${ondat_nodeselectorterm_value}
+etcd-cluster-operator:
+  cluster:
+    replicas: 5
+    storage: 15Gi
+    storageclass: etcd
+    nodeSelectorTerm:
+      key: ${etcd_nodeselectorterm_key}
+      value: ${etcd_nodeselectorterm_value}
+  ondat:
+    namespace: storageos

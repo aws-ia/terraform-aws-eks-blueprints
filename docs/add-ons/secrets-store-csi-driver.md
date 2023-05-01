@@ -13,3 +13,25 @@ secrets-store-csi-driver can be deployed by enabling the add-ons via the followi
 ```hcl
 enable_secrets_store_csi_driver = true
 ```
+
+You can optionally customize the Helm chart that deploys `secrets_store_csi_driver` via the following configuration.
+
+```hcl
+secrets_store_csi_driver_helm_config = {
+    name       = "secrets-store-csi-driver"
+    chart      = "secrets-store-csi-driver"
+    repository = "https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts"
+    version    = "1.2.4"
+    namespace  = "secrets-store-csi-driver"
+    set_values = [
+      {
+        name  = "syncSecret.enabled"
+        value = "false"
+      },
+      {
+        name  = "enableSecretRotation"
+        value = "false"
+      }
+    ]
+}
+```

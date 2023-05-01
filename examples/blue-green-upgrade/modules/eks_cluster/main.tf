@@ -20,143 +20,143 @@ locals {
   node_group_name            = "managed-ondemand"
   argocd_secret_manager_name = var.argocd_secret_manager_name_suffix
 
-  #---------------------------------------------------------------
-  # ARGOCD ADD-ON APPLICATION
-  #---------------------------------------------------------------
+  # #---------------------------------------------------------------
+  # # ARGOCD ADD-ON APPLICATION
+  # #---------------------------------------------------------------
 
-  addon_application = {
-    path                = "chart"
-    repo_url            = var.addons_repo_url
-    ssh_key_secret_name = var.workload_repo_secret
-    add_on_application  = true
-  }
+  # addon_application = {
+  #   path                = "chart"
+  #   repo_url            = var.addons_repo_url
+  #   ssh_key_secret_name = var.workload_repo_secret
+  #   add_on_application  = true
+  # }
 
-  #---------------------------------------------------------------
-  # ARGOCD WORKLOAD APPLICATION
-  #---------------------------------------------------------------
+  # #---------------------------------------------------------------
+  # # ARGOCD WORKLOAD APPLICATION
+  # #---------------------------------------------------------------
 
-  workload_application = {
-    path                = var.workload_repo_path # <-- we could also to blue/green on the workload repo path like: envs/dev-blue / envs/dev-green
-    repo_url            = var.workload_repo_url
-    target_revision     = var.workload_repo_revision
-    ssh_key_secret_name = var.workload_repo_secret
-    add_on_application  = false
-    values = {
-      labels = {
-        env   = local.env
-        myapp = "myvalue"
-      }
-      spec = {
-        source = {
-          repoURL        = var.workload_repo_url
-          targetRevision = var.workload_repo_revision
-        }
-        blueprint                = "terraform"
-        clusterName              = local.name
-        karpenterInstanceProfile = "${local.name}-${local.node_group_name}"
-        env                      = local.env
-        ingress = {
-          type                  = "alb"
-          host                  = local.eks_cluster_domain
-          route53_weight        = local.route53_weight # <-- You can control the weight of the route53 weighted records between clusters
-          argocd_route53_weight = local.argocd_route53_weight
-        }
-      }
-    }
-  }
+  # workload_application = {
+  #   path                = var.workload_repo_path # <-- we could also to blue/green on the workload repo path like: envs/dev-blue / envs/dev-green
+  #   repo_url            = var.workload_repo_url
+  #   target_revision     = var.workload_repo_revision
+  #   ssh_key_secret_name = var.workload_repo_secret
+  #   add_on_application  = false
+  #   values = {
+  #     labels = {
+  #       env   = local.env
+  #       myapp = "myvalue"
+  #     }
+  #     spec = {
+  #       source = {
+  #         repoURL        = var.workload_repo_url
+  #         targetRevision = var.workload_repo_revision
+  #       }
+  #       blueprint                = "terraform"
+  #       clusterName              = local.name
+  #       karpenterInstanceProfile = "${local.name}-${local.node_group_name}"
+  #       env                      = local.env
+  #       ingress = {
+  #         type                  = "alb"
+  #         host                  = local.eks_cluster_domain
+  #         route53_weight        = local.route53_weight # <-- You can control the weight of the route53 weighted records between clusters
+  #         argocd_route53_weight = local.argocd_route53_weight
+  #       }
+  #     }
+  #   }
+  # }
 
-  #---------------------------------------------------------------
-  # ARGOCD ECSDEMO APPLICATION
-  #---------------------------------------------------------------
+  # #---------------------------------------------------------------
+  # # ARGOCD ECSDEMO APPLICATION
+  # #---------------------------------------------------------------
 
-  ecsdemo_application = {
-    path                = "multi-repo/argo-app-of-apps/dev"
-    repo_url            = var.workload_repo_url
-    target_revision     = var.workload_repo_revision
-    ssh_key_secret_name = var.workload_repo_secret
-    add_on_application  = false
-    values = {
-      spec = {
-        blueprint                = "terraform"
-        clusterName              = local.name
-        karpenterInstanceProfile = "${local.name}-${local.node_group_name}"
+  # ecsdemo_application = {
+  #   path                = "multi-repo/argo-app-of-apps/dev"
+  #   repo_url            = var.workload_repo_url
+  #   target_revision     = var.workload_repo_revision
+  #   ssh_key_secret_name = var.workload_repo_secret
+  #   add_on_application  = false
+  #   values = {
+  #     spec = {
+  #       blueprint                = "terraform"
+  #       clusterName              = local.name
+  #       karpenterInstanceProfile = "${local.name}-${local.node_group_name}"
 
-        apps = {
-          ecsdemoFrontend = {
-            repoURL        = "https://github.com/aws-containers/ecsdemo-frontend"
-            targetRevision = "main"
-            replicaCount   = "3"
-            image = {
-              repository = "public.ecr.aws/seb-demo/ecsdemo-frontend"
-              tag        = "latest"
-            }
-            ingress = {
-              enabled   = "true"
-              className = "alb"
-              annotations = {
-                "alb.ingress.kubernetes.io/scheme"                = "internet-facing"
-                "alb.ingress.kubernetes.io/group.name"            = "ecsdemo"
-                "alb.ingress.kubernetes.io/listen-ports"          = "[{\\\"HTTPS\\\": 443}]"
-                "alb.ingress.kubernetes.io/ssl-redirect"          = "443"
-                "alb.ingress.kubernetes.io/target-type"           = "ip"
-                "external-dns.alpha.kubernetes.io/set-identifier" = local.name
-                "external-dns.alpha.kubernetes.io/aws-weight"     = local.ecsfrontend_route53_weight
-              }
-              hosts = [
-                {
-                  host = "frontend.${local.eks_cluster_domain}"
-                  paths = [
-                    {
-                      path     = "/"
-                      pathType = "Prefix"
-                    }
-                  ]
-                }
-              ]
-            }
-            resources = {
-              requests = {
-                cpu    = "1"
-                memory = "256Mi"
-              }
-              limits = {
-                cpu    = "1"
-                memory = "512Mi"
-              }
-            }
-            autoscaling = {
-              enabled                        = "true"
-              minReplicas                    = "3"
-              maxReplicas                    = "100"
-              targetCPUUtilizationPercentage = "60"
-            }
-            nodeSelector = {
-              "karpenter.sh/provisioner-name" = "burnham"
-            }
-            tolerations = [
-              {
-                key      = "burnham"
-                operator = "Exists"
-                effect   = "NoSchedule"
-              }
-            ]
-            topologySpreadConstraints = [
-              {
-                maxSkew           = 1
-                topologyKey       = "topology.kubernetes.io/zone"
-                whenUnsatisfiable = "DoNotSchedule"
-                labelSelector = {
-                  matchLabels = {
-                    "app.kubernetes.io/name" = "ecsdemo-frontend"
-                  }
-                }
-              }
-            ]
-          }
-        }
-      }
-    }
-  }
+  #       apps = {
+  #         ecsdemoFrontend = {
+  #           repoURL        = "https://github.com/aws-containers/ecsdemo-frontend"
+  #           targetRevision = "main"
+  #           replicaCount   = "3"
+  #           image = {
+  #             repository = "public.ecr.aws/seb-demo/ecsdemo-frontend"
+  #             tag        = "latest"
+  #           }
+  #           ingress = {
+  #             enabled   = "true"
+  #             className = "alb"
+  #             annotations = {
+  #               "alb.ingress.kubernetes.io/scheme"                = "internet-facing"
+  #               "alb.ingress.kubernetes.io/group.name"            = "ecsdemo"
+  #               "alb.ingress.kubernetes.io/listen-ports"          = "[{\\\"HTTPS\\\": 443}]"
+  #               "alb.ingress.kubernetes.io/ssl-redirect"          = "443"
+  #               "alb.ingress.kubernetes.io/target-type"           = "ip"
+  #               "external-dns.alpha.kubernetes.io/set-identifier" = local.name
+  #               "external-dns.alpha.kubernetes.io/aws-weight"     = local.ecsfrontend_route53_weight
+  #             }
+  #             hosts = [
+  #               {
+  #                 host = "frontend.${local.eks_cluster_domain}"
+  #                 paths = [
+  #                   {
+  #                     path     = "/"
+  #                     pathType = "Prefix"
+  #                   }
+  #                 ]
+  #               }
+  #             ]
+  #           }
+  #           resources = {
+  #             requests = {
+  #               cpu    = "1"
+  #               memory = "256Mi"
+  #             }
+  #             limits = {
+  #               cpu    = "1"
+  #               memory = "512Mi"
+  #             }
+  #           }
+  #           autoscaling = {
+  #             enabled                        = "true"
+  #             minReplicas                    = "3"
+  #             maxReplicas                    = "100"
+  #             targetCPUUtilizationPercentage = "60"
+  #           }
+  #           nodeSelector = {
+  #             "karpenter.sh/provisioner-name" = "burnham"
+  #           }
+  #           tolerations = [
+  #             {
+  #               key      = "burnham"
+  #               operator = "Exists"
+  #               effect   = "NoSchedule"
+  #             }
+  #           ]
+  #           topologySpreadConstraints = [
+  #             {
+  #               maxSkew           = 1
+  #               topologyKey       = "topology.kubernetes.io/zone"
+  #               whenUnsatisfiable = "DoNotSchedule"
+  #               labelSelector = {
+  #                 matchLabels = {
+  #                   "app.kubernetes.io/name" = "ecsdemo-frontend"
+  #                 }
+  #               }
+  #             }
+  #           ]
+  #         }
+  #       }
+  #     }
+  #   }
+  # }
 
   tags = {
     Blueprint  = local.name
@@ -201,7 +201,7 @@ data "aws_secretsmanager_secret_version" "admin_password_version" {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.10"
+  version = "~> 19.13"
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
@@ -220,21 +220,17 @@ module "eks" {
   }
 
   manage_aws_auth_configmap = true
-  aws_auth_roles = [
-    {
-      rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_admin_role_name}" # The ARN of the IAM role
-      username = "ops-role"                                                                                    # The user name within Kubernetes to map to the IAM role
-      groups   = ["system:masters"]                                                                            # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
-    }
-  ]
+  aws_auth_roles = flatten([
+    module.admin_team.aws_auth_configmap_role,
+    module.application_teams.aws_auth_configmap_role,
+  ])
 
   tags = local.tags
 }
 
 module "admin_team" {
-  # Users should pin the version to the latest available release
-  # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-teams"
+  source  = "aws-ia/eks-blueprints-teams/aws"
+  version = "0.2.0"
 
   name = "admin"
 
@@ -252,11 +248,9 @@ module "admin_team" {
   tags = local.tags
 }
 
-
 module "application_teams" {
-  # Users should pin the version to the latest available release
-  # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-teams"
+  source  = "aws-ia/eks-blueprints-teams/aws"
+  version = "0.2.0"
 
   name              = "application_teams"
   users             = [data.aws_caller_identity.current.arn]
@@ -385,9 +379,7 @@ module "application_teams" {
   tags = local.tags
 }
 
-#certificate_arn = aws_acm_certificate_validation.example.certificate_arn
-
-module "kubernetes_addons" {
+module "eks_blueprints_addons" {
   # Users should pin the version to the latest available release
   # tflint-ignore: terraform_module_pinned_source
   source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
@@ -395,37 +387,36 @@ module "kubernetes_addons" {
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
   cluster_version   = module.eks.cluster_version
-  oidc_provider     = module.eks.cluster_oidc_issuer_url
   oidc_provider_arn = module.eks.oidc_provider_arn
 
   #---------------------------------------------------------------
   # ARGO CD ADD-ON
   #---------------------------------------------------------------
 
-  enable_argocd         = true
-  argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying Add-ons.
+  # enable_argocd         = true
+  # argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying Add-ons.
 
-  argocd_applications = {
-    addons    = local.addon_application
-    workloads = local.workload_application
-    ecsdemo   = local.ecsdemo_application
-  }
+  # argocd_applications = {
+  #   addons    = local.addon_application
+  #   workloads = local.workload_application
+  #   ecsdemo   = local.ecsdemo_application
+  # }
 
-  # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.
-  argocd_helm_config = {
-    set_sensitive = [
-      {
-        name  = "configs.secret.argocdServerAdminPassword"
-        value = bcrypt(data.aws_secretsmanager_secret_version.admin_password_version.secret_string)
-      }
-    ]
-    set = [
-      {
-        name  = "server.service.type"
-        value = "LoadBalancer"
-      }
-    ]
-  }
+  # # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.
+  # argocd_helm_config = {
+  #   set_sensitive = [
+  #     {
+  #       name  = "configs.secret.argocdServerAdminPassword"
+  #       value = bcrypt(data.aws_secretsmanager_secret_version.admin_password_version.secret_string)
+  #     }
+  #   ]
+  #   set = [
+  #     {
+  #       name  = "server.service.type"
+  #       value = "LoadBalancer"
+  #     }
+  #   ]
+  # }
 
   #---------------------------------------------------------------
   # EKS AddOns
@@ -449,7 +440,7 @@ module "kubernetes_addons" {
   enable_metrics_server               = true
   enable_vpa                          = true
   enable_aws_load_balancer_controller = true
-  aws_load_balancer_controller_helm_config = {
+  aws_load_balancer_controller = {
     service_account = "aws-lb-sa"
   }
   enable_karpenter         = true
@@ -459,7 +450,7 @@ module "kubernetes_addons" {
   #to view the result : terraform state show 'module.kubernetes_addons.module.external_dns[0].module.helm_addon.helm_release.addon[0]'
   enable_external_dns = true
 
-  external_dns_helm_config = {
+  external_dns = {
     txtOwnerId   = local.name
     zoneIdFilter = data.aws_route53_zone.sub.zone_id # Note: this uses GitOpsBridge
     policy       = "sync"

@@ -30,10 +30,6 @@ provider "helm" {
 
 data "aws_availability_zones" "available" {}
 
-data "aws_security_group" "eks_worker_group" {
-  id = module.eks.cluster_security_group_id
-}
-
 locals {
   name   = basename(path.cwd)
   region = "us-west-2"
@@ -59,7 +55,7 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.10"
+  version = "~> 19.13"
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
@@ -71,6 +67,7 @@ module "eks" {
   eks_managed_node_groups = {
     initial = {
       instance_types = ["m5.large"]
+      subnet_ids     = module.vpc.public_subnets
 
       min_size     = 1
       max_size     = 5
@@ -78,14 +75,26 @@ module "eks" {
     }
   }
 
+  cluster_security_group_additional_rules = {
+    ingress_gameserver_tcp = {
+      description      = "Nodes on ephemeral ports"
+      protocol         = "tcp"
+      from_port        = local.gameserver_minport
+      to_port          = local.gameserver_maxport
+      type             = "ingress"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+    }
+  }
+
   tags = local.tags
 }
 
 ################################################################################
-# Kubernetes Addons
+# EKS Blueprints Addons
 ################################################################################
 
-module "eks_blueprints_kubernetes_addons" {
+module "eks_blueprints_addons" {
   # Users should pin the version to the latest available release
   # tflint-ignore: terraform_module_pinned_source
   source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
@@ -93,10 +102,9 @@ module "eks_blueprints_kubernetes_addons" {
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
   cluster_version   = module.eks.cluster_version
-  oidc_provider     = module.eks.cluster_oidc_issuer_url
   oidc_provider_arn = module.eks.oidc_provider_arn
 
-  #EKS Add-Ons
+  # EKS Add-Ons
   eks_addons = {
     coredns = {}
     vpc-cni = {
@@ -134,7 +142,7 @@ resource "helm_release" "agones" {
   })]
 
   depends_on = [
-    module.eks_blueprints_kubernetes_addons
+    module.eks_blueprints_addons
   ]
 }
 
@@ -144,7 +152,7 @@ resource "helm_release" "agones" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
   name = local.name
   cidr = local.vpc_cidr
@@ -153,17 +161,8 @@ module "vpc" {
   private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
   public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
 
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
-  enable_dns_hostnames = true
-
-  # Manage so we can name
-  manage_default_network_acl    = true
-  default_network_acl_tags      = { Name = "${local.name}-default" }
-  manage_default_route_table    = true
-  default_route_table_tags      = { Name = "${local.name}-default" }
-  manage_default_security_group = true
-  default_security_group_tags   = { Name = "${local.name}-default" }
+  enable_nat_gateway = true
+  single_nat_gateway = true
 
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
@@ -174,17 +173,6 @@ module "vpc" {
   }
 
   tags = local.tags
-}
-
-resource "aws_security_group_rule" "agones_sg_ingress_rule" {
-  description       = "Allow UDP ingress from internet"
-  type              = "ingress"
-  from_port         = local.gameserver_minport
-  to_port           = local.gameserver_maxport
-  protocol          = "udp"
-  cidr_blocks       = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sgr
-  ipv6_cidr_blocks  = ["::/0"]      #tfsec:ignore:aws-vpc-no-public-ingress-sgr
-  security_group_id = data.aws_security_group.eks_worker_group.id
 }
 
 module "vpc_cni_irsa" {

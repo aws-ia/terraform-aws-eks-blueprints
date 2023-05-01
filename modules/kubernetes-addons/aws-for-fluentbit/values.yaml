@@ -2,19 +2,7 @@ serviceAccount:
   create: false
   name: ${service_account}
 
-cloudWatch:
+cloudWatchLogs:
   enabled: true
   region: ${aws_region}
   logGroupName: ${log_group_name}
-
-firehose:
-  enabled: false
-  region: ${aws_region}
-
-kinesis:
-  enabled: false
-  region: ${aws_region}
-
-elasticsearch:
-  enabled: false
-  region: ${aws_region}

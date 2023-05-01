@@ -43,18 +43,126 @@ provider "kubectl" {
 }
 
 data "aws_availability_zones" "available" {}
-
-data "aws_partition" "current" {}
-
 data "aws_caller_identity" "current" {}
 
+locals {
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
-data "aws_iam_policy_document" "this" {
+  vpc_cidr = "10.0.0.0/16"
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+
+  account_id = data.aws_caller_identity.current.account_id
+
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
+  }
+}
+
+################################################################################
+# Cluster
+################################################################################
+
+#tfsec:ignore:aws-eks-enable-control-plane-logging
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 19.13"
+
+  cluster_name                   = local.name
+  cluster_version                = "1.25"
+  cluster_endpoint_public_access = true
+
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
+
+  eks_managed_node_groups = {
+    initial = {
+      instance_types = ["m5.large"]
+
+      min_size     = 1
+      max_size     = 5
+      desired_size = 2
+    }
+  }
+
+  tags = local.tags
+}
+
+################################################################################
+# EKS Blueprints Addons
+################################################################################
+
+module "eks_blueprints_addons" {
+  # Users should pin the version to the latest available release
+  # tflint-ignore: terraform_module_pinned_source
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  eks_addons = {
+    coredns = {}
+    vpc-cni = {
+      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
+    }
+    kube-proxy = {}
+  }
+
+  enable_cert_manager         = true
+  enable_aws_privateca_issuer = true
+  aws_privateca_issuer = {
+    acmca_arn = aws_acmpca_certificate_authority.this.arn
+  }
+
+  tags = local.tags
+}
+
+################################################################################
+# AppMesh Addons
+################################################################################
+
+module "appmesh_addon" {
+  source  = "aws-ia/eks-blueprints-addon/aws"
+  version = "1.0.0"
+
+  chart            = "appmesh-controller"
+  chart_version    = "1.7.0"
+  repository       = "https://aws.github.io/eks-charts"
+  description      = "AWS App Mesh Helm Chart"
+  namespace        = "appmesh-system"
+  create_namespace = true
+
+  set = [
+    {
+      name  = "serviceAccount.name"
+      value = "appmesh-controller"
+    }
+  ]
+
+  set_irsa_names = ["serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"]
+
+  # IAM role for service account (IRSA)
+  create_role             = true
+  role_name               = "appmesh-controller-"
+  source_policy_documents = data.aws_iam_policy_document.appmesh.json
+
+  oidc_providers = {
+    this = {
+      provider_arn    = module.eks.oidc_provider_arn
+      service_account = "appmesh-controller"
+    }
+  }
+
+  tags = local.tags
+}
+
+data "aws_iam_policy_document" "appmesh" {
   statement {
     sid       = "AllowAppMesh"
-    effect    = "Allow"
-    resources = ["arn:${data.aws_partition.current.partition}:appmesh:${local.region}:${data.aws_caller_identity.current.account_id}:mesh/*"]
-
+    resources = ["arn:aws:appmesh:${local.region}:${local.account_id}:mesh/*"]
     actions = [
       "appmesh:ListVirtualRouters",
       "appmesh:ListVirtualServices",
@@ -96,21 +204,19 @@ data "aws_iam_policy_document" "this" {
 
   statement {
     sid       = "CreateServiceLinkedRole"
-    effect    = "Allow"
-    resources = ["arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/appmesh.${data.aws_partition.current.dns_suffix}/AWSServiceRoleForAppMesh"]
+    resources = ["arn:aws:iam::${local.account_id}:role/aws-service-role/appmesh.amazonaws.com/AWSServiceRoleForAppMesh"]
     actions   = ["iam:CreateServiceLinkedRole"]
 
     condition {
       test     = "StringLike"
       variable = "iam:AWSServiceName"
-      values   = ["appmesh.${data.aws_partition.current.dns_suffix}"]
+      values   = ["appmesh.amazonaws.com"]
     }
   }
 
   statement {
     sid       = "AllowACMAccess"
-    effect    = "Allow"
-    resources = ["arn:${data.aws_partition.current.partition}:acm:${local.region}:${data.aws_caller_identity.current.account_id}:certificate/*"]
+    resources = ["arn:aws:acm:${local.region}:${local.account_id}:certificate/*"]
     actions = [
       "acm:ListCertificates",
       "acm:DescribeCertificate",
@@ -119,8 +225,7 @@ data "aws_iam_policy_document" "this" {
 
   statement {
     sid       = "AllowACMPCAAccess"
-    effect    = "Allow"
-    resources = ["arn:${data.aws_partition.current.partition}:acm-pca:${local.region}:${data.aws_caller_identity.current.account_id}:certificate-authority/*"]
+    resources = ["arn:aws:acm-pca:${local.region}:${local.account_id}:certificate-authority/*"]
     actions = [
       "acm-pca:DescribeCertificateAuthority",
       "acm-pca:ListCertificateAuthorities"
@@ -128,11 +233,10 @@ data "aws_iam_policy_document" "this" {
   }
 
   statement {
-    sid    = "AllowServiceDiscovery"
-    effect = "Allow"
+    sid = "AllowServiceDiscovery"
     resources = [
-      "arn:${data.aws_partition.current.partition}:servicediscovery:${local.region}:${data.aws_caller_identity.current.account_id}:namespace/*",
-      "arn:${data.aws_partition.current.partition}:servicediscovery:${local.region}:${data.aws_caller_identity.current.account_id}:service/*"
+      "arn:aws:servicediscovery:${local.region}:${local.account_id}:namespace/*",
+      "arn:aws:servicediscovery:${local.region}:${local.account_id}:service/*"
     ]
     actions = [
       "servicediscovery:CreateService",
@@ -151,10 +255,8 @@ data "aws_iam_policy_document" "this" {
   }
 
   statement {
-    sid    = "AllowRoute53"
-    effect = "Allow"
-    resources = [
-    "arn:${data.aws_partition.current.partition}:route53:::*"]
+    sid       = "AllowRoute53"
+    resources = ["arn:aws:route53:::*"]
     actions = [
       "route53:ChangeResourceRecordSets",
       "route53:GetHealthCheck",
@@ -163,124 +265,6 @@ data "aws_iam_policy_document" "this" {
       "route53:DeleteHealthCheck"
     ]
   }
-}
-
-
-locals {
-  name   = basename(path.cwd)
-  region = "us-west-2"
-
-  vpc_cidr = "10.0.0.0/16"
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
-
-
-  tags = {
-    Blueprint  = local.name
-    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
-  }
-}
-
-################################################################################
-# Cluster
-################################################################################
-
-#tfsec:ignore:aws-eks-enable-control-plane-logging
-module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.10"
-
-  cluster_name                   = local.name
-  cluster_version                = "1.24"
-  cluster_endpoint_public_access = true
-
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
-
-  eks_managed_node_groups = {
-    initial = {
-      instance_types = ["m5.large"]
-
-      min_size     = 1
-      max_size     = 5
-      desired_size = 2
-    }
-  }
-
-  tags = local.tags
-}
-
-################################################################################
-# Kubernetes Addons
-################################################################################
-
-module "eks_blueprints_kubernetes_addons" {
-  # Users should pin the version to the latest available release
-  # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
-
-  cluster_name      = module.eks.cluster_name
-  cluster_endpoint  = module.eks.cluster_endpoint
-  cluster_version   = module.eks.cluster_version
-  oidc_provider     = module.eks.cluster_oidc_issuer_url
-  oidc_provider_arn = module.eks.oidc_provider_arn
-
-  eks_addons = {
-    coredns = {}
-    vpc-cni = {
-      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
-    }
-    kube-proxy = {}
-  }
-
-
-
-  aws_privateca_acmca_arn     = aws_acmpca_certificate_authority.this.arn
-  enable_cert_manager         = true
-  enable_aws_privateca_issuer = true
-
-  tags = local.tags
-}
-
-################################################################################
-# AppMesh Addons
-################################################################################
-
-module "appmesh_addon" {
-  # Users should pin the version to the latest available release
-  # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons//modules/eks-blueprints-addon"
-
-  chart            = "appmesh-controller"
-  chart_version    = "1.7.0"
-  repository       = "https://aws.github.io/eks-charts"
-  description      = "AWS App Mesh Helm Chart"
-  namespace        = "appmesh-system"
-  create_namespace = true
-
-  set = [
-    {
-      name  = "serviceAccount.name"
-      value = "appmesh-controller"
-    }
-  ]
-
-  set_irsa_name = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-
-  # IAM role for service account (IRSA)
-  create_role = true
-  role_name   = "${module.eks.cluster_name}-appmesh-controller-"
-  role_policy_arns = {
-    appmesh = aws_iam_policy.this.arn
-  }
-
-  oidc_providers = {
-    this = {
-      provider_arn    = module.eks.oidc_provider_arn
-      service_account = "appmesh-controller"
-    }
-  }
-
-  tags = local.tags
 }
 
 #---------------------------------------------------------------
@@ -382,7 +366,7 @@ resource "kubectl_manifest" "pca_certificate" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
   name = local.name
   cidr = local.vpc_cidr
@@ -391,17 +375,8 @@ module "vpc" {
   private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
   public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
 
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
-  enable_dns_hostnames = true
-
-  # Manage so we can name
-  manage_default_network_acl    = true
-  default_network_acl_tags      = { Name = "${local.name}-default" }
-  manage_default_route_table    = true
-  default_route_table_tags      = { Name = "${local.name}-default" }
-  manage_default_security_group = true
-  default_security_group_tags   = { Name = "${local.name}-default" }
+  enable_nat_gateway = true
+  single_nat_gateway = true
 
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
@@ -412,12 +387,6 @@ module "vpc" {
   }
 
   tags = local.tags
-}
-
-resource "aws_iam_policy" "this" {
-  name_prefix = "${module.eks.cluster_name}-appmesh-"
-  description = "IAM Policy for App Mesh"
-  policy      = data.aws_iam_policy_document.this.json
 }
 
 module "vpc_cni_irsa" {
