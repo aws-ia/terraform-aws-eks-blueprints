@@ -35,6 +35,11 @@ data "aws_caller_identity" "current" {}
 
 data "aws_availability_zones" "available" {}
 
+data "http" "efa_device_plugin_yaml" {
+  url = "https://raw.githubusercontent.com/aws-samples/aws-efa-eks/main/manifest/efa-k8s-device-plugin.yml"
+}
+
+
 # Local config
 
 locals {
@@ -48,6 +53,7 @@ locals {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
+
 }
 
 # Resources
@@ -55,6 +61,12 @@ locals {
 resource "aws_placement_group" "efa_pg" {
   name     = "efa_pg"
   strategy = "cluster"
+}
+
+resource "kubectl_manifest" "efa_device_plugin" {
+  yaml_body = <<YAML
+${data.http.efa_device_plugin_yaml.body}
+YAML
 }
 
 # Upstream Terraform Modules
@@ -125,6 +137,9 @@ module "eks" {
     iam_role_additional_policies = {
       AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
     }
+    placement = {
+      group_name = aws_placement_group.efa_pg.name
+    }
   }
 
   self_managed_node_groups = {
@@ -136,7 +151,7 @@ module "eks" {
       instance_type = "c5n.9xlarge"
      
       subnet_ids = [module.vpc.private_subnets[0]]
-
+      
       network_interfaces = [
         {
           description                 = "EFA interface"
@@ -157,8 +172,6 @@ module "eks" {
         sysctl -w kernel.yama.ptrace_scope=0
       EOT
 
-      placement_group = aws_placement_group.efa_pg.name
-
     }
   }
 
@@ -178,7 +191,7 @@ module "eks_blueprints_kubernetes_addons" {
   # Wait on the node group(s) before provisioning addons
   data_plane_wait_arn = join(",", [for group in module.eks.eks_managed_node_groups : group.node_group_arn])
 
-  enable_amazon_eks_aws_ebs_csi_driver = true
+  enable_amazon_eks_aws_ebs_csi_driver = false
   enable_aws_efs_csi_driver            = true
   enable_aws_fsx_csi_driver            = true
 
