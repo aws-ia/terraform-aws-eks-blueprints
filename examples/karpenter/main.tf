@@ -77,7 +77,7 @@ module "eks" {
   version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = "1.25"
+  cluster_version                = "1.26"
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
@@ -86,6 +86,19 @@ module "eks" {
   # Fargate profiles use the cluster primary security group so these are not utilized
   create_cluster_security_group = false
   create_node_security_group    = false
+
+  manage_aws_auth_configmap = true
+  aws_auth_roles = [
+    # We need to add in the Karpenter node IAM role for nodes launched by Karpenter
+    {
+      rolearn  = module.eks_blueprints_addons.karpenter.node_iam_role_arn
+      username = "system:node:{{EC2PrivateDNSName}}"
+      groups = [
+        "system:bootstrappers",
+        "system:nodes",
+      ]
+    },
+  ]
 
   fargate_profiles = {
     karpenter = {
@@ -114,19 +127,17 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_addons" {
-  # Users should pin the version to the latest available release
-  # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+  source = "../do-not-use"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
 
+  # We want to wait for the Fargate profiles to be deployed first
+  create_delay_dependencies = [for prof in module.eks.fargate_profiles : prof.fargate_profile_arn]
+
   eks_addons = {
-    aws-ebs-csi-driver = {
-      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
-    }
     coredns = {
       configuration_values = jsonencode({
         computeType = "Fargate"
@@ -152,18 +163,7 @@ module "eks_blueprints_addons" {
         }
       })
     }
-    vpc-cni = {
-      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
-      most_recent              = true
-      before_compute           = true
-      configuration_values = jsonencode({
-        env = {
-          # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
-          ENABLE_PREFIX_DELEGATION = "true"
-          WARM_PREFIX_TARGET       = "1"
-        }
-      })
-    }
+    vpc-cni    = {}
     kube-proxy = {}
   }
 
@@ -171,9 +171,6 @@ module "eks_blueprints_addons" {
   karpenter = {
     repository_username = data.aws_ecrpublic_authorization_token.token.user_name
     repository_password = data.aws_ecrpublic_authorization_token.token.password
-  }
-  karpenter_instance_profile = {
-    iam_role_name = module.eks.fargate_profiles["karpenter"].iam_role_name
   }
 
   tags = local.tags
@@ -238,14 +235,10 @@ resource "kubectl_manifest" "karpenter_node_template" {
         karpenter.sh/discovery: ${module.eks.cluster_name}
       securityGroupSelector:
         karpenter.sh/discovery: ${module.eks.cluster_name}
-      instanceProfile: ${module.eks_blueprints_addons.instance_profile_name}
+      instanceProfile: ${module.eks_blueprints_addons.karpenter.node_instance_profile_name}
       tags:
         karpenter.sh/discovery: ${module.eks.cluster_name}
   YAML
-
-  depends_on = [
-    module.eks_blueprints_addons
-  ]
 }
 
 # Example deployment using the [pause image](https://www.ianlewis.org/en/almighty-pause-container)
@@ -276,7 +269,7 @@ resource "kubectl_manifest" "karpenter_example_deployment" {
   YAML
 
   depends_on = [
-    module.eks_blueprints_addons
+    kubectl_manifest.karpenter_node_template
   ]
 }
 
@@ -306,43 +299,6 @@ module "vpc" {
     "kubernetes.io/role/internal-elb" = 1
     # Tags subnets for Karpenter auto-discovery
     "karpenter.sh/discovery" = local.name
-  }
-
-  tags = local.tags
-}
-
-module "ebs_csi_driver_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.14"
-
-  role_name_prefix = "${module.eks.cluster_name}-ebs-csi-driver-"
-
-  attach_ebs_csi_policy = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
-    }
-  }
-
-  tags = local.tags
-}
-
-module "vpc_cni_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.14"
-
-  role_name_prefix = "${module.eks.cluster_name}-vpc-cni-"
-
-  attach_vpc_cni_policy = true
-  vpc_cni_enable_ipv4   = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:aws-node"]
-    }
   }
 
   tags = local.tags
