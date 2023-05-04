@@ -46,6 +46,8 @@ locals {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
+
+  velero_s3_backup_location = "${module.velero_backup_s3_bucket.s3_bucket_arn}/backups"
 }
 
 ################################################################################
@@ -201,7 +203,7 @@ module "eks_blueprints_addons" {
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
 
-  create_delay_dependencies = [for group in module.eks.eks_managed_node_groups:group.node_group_arn]
+  #create_delay_dependencies = [for group in module.eks.eks_managed_node_groups:group.node_group_arn]
 
   eks_addons = {
     aws-ebs-csi-driver = {
@@ -217,7 +219,7 @@ module "eks_blueprints_addons" {
   enable_velero = true
   # An S3 Bucket ARN is required. This can be declared with or without a Prefix.
   velero = {
-    s3_backup_location = "${module.velero_backup_s3_bucket.s3_bucket_arn}/backups"
+    s3_backup_location = local.velero_s3_backup_location
   }
   enable_aws_efs_csi_driver = true
 

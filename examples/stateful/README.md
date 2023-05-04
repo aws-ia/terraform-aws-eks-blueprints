@@ -142,7 +142,7 @@ Filesystem     1K-blocks    Used Available Use% Mounted on
 To teardown and remove the resources created in this example:
 
 ```bash
-terraform destroy -target module.eks_blueprints_kubernetes_addons
+terraform destroy -target module.eks_blueprints_addons
 terraform destroy
 ```
 
