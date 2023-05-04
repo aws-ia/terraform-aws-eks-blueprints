@@ -196,7 +196,7 @@ module "eks" {
 module "eks_blueprints_addons" {
   # Users should pin the version to the latest available release
   # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+  source = "../do-not-use"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -234,7 +234,7 @@ resource "kubernetes_annotations" "gp2" {
   api_version = "storage.k8s.io/v1"
   kind        = "StorageClass"
   # This is true because the resources was already created by the ebs-csi-driver addon
-  force       = "true"
+  force = "true"
 
   metadata {
     name = "gp2"
