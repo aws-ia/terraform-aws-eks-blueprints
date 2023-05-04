@@ -51,13 +51,13 @@ data "aws_iam_policy_document" "aws_efs_csi_driver" {
   }
 
   statement {
-    sid       = "AllowTagResource"
-    effect    = "Allow"
+    sid    = "AllowTagResource"
+    effect = "Allow"
     resources = [
       "arn:${var.addon_context.aws_partition_id}:elasticfilesystem:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:file-system/*",
       "arn:${var.addon_context.aws_partition_id}:elasticfilesystem:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:access-point/*"
     ]
-    actions   = ["elasticfilesystem:TagResource"]
+    actions = ["elasticfilesystem:TagResource"]
 
     condition {
       test     = "StringLike"
