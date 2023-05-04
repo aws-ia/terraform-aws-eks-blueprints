@@ -32,26 +32,12 @@ You can optionally customize the Helm chart that deploys the driver via the foll
   enable_aws_efs_csi_driver = true
 
   # Optional aws_efs_csi_driver_helm_config
-  aws_efs_csi_driver_helm_config = {
-    repository  = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
-    version     = "2.2.3"
+  aws_efs_csi_driver = {
+    repository     = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
+    chart_version  = "2.4.1"
   }
-  aws_efs_csi_driver_irsa_policies = ["<ADDITIONAL_IAM_POLICY_ARN>"]
-```
-
-### GitOps Configuration
-
-`ArgoCD` with `App of Apps` GitOps enabled for this Add-on by enabling the following variable
-
-```hcl
-argocd_manage_add_ons = true
-```
-
-The following is configured to ArgoCD App of Apps for this Add-on.
-
-```hcl
-  argocd_gitops_config = {
-    enable             = true
-    serviceAccountName = local.service_account
+  aws_efs_csi_driver {
+    role_policies = ["<ADDITIONAL_IAM_POLICY_ARN>"]
   }
 ```
+

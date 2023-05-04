@@ -46,6 +46,8 @@ locals {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
+
+  velero_s3_backup_location = "${module.velero_backup_s3_bucket.s3_bucket_arn}/backups"
 }
 
 ################################################################################
@@ -58,7 +60,7 @@ module "eks" {
   version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = "1.25"
+  cluster_version                = "1.26"
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
@@ -194,12 +196,14 @@ module "eks" {
 module "eks_blueprints_addons" {
   # Users should pin the version to the latest available release
   # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+  source = "../do-not-use"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
+
+  create_delay_dependencies = [for group in module.eks.eks_managed_node_groups : group.node_group_arn]
 
   eks_addons = {
     aws-ebs-csi-driver = {
@@ -213,8 +217,9 @@ module "eks_blueprints_addons" {
   }
 
   enable_velero = true
+  # An S3 Bucket ARN is required. This can be declared with or without a Prefix.
   velero = {
-    s3_backup_location = module.velero_backup_s3_bucket.s3_bucket_id
+    s3_backup_location = local.velero_s3_backup_location
   }
   enable_aws_efs_csi_driver = true
 
@@ -228,19 +233,20 @@ module "eks_blueprints_addons" {
 resource "kubernetes_annotations" "gp2" {
   api_version = "storage.k8s.io/v1"
   kind        = "StorageClass"
-  force       = "true"
+  # This is true because the resources was already created by the ebs-csi-driver addon
+  force = "true"
 
   metadata {
     name = "gp2"
   }
 
   annotations = {
-    # Modify annotations to remove gp2 as default storage class still reatain the class
+    # Modify annotations to remove gp2 as default storage class still retain the class
     "storageclass.kubernetes.io/is-default-class" = "false"
   }
 
   depends_on = [
-    module.eks_blueprints_kubernetes_addons
+    module.eks_blueprints_addons
   ]
 }
 
@@ -266,7 +272,7 @@ resource "kubernetes_storage_class_v1" "gp3" {
   }
 
   depends_on = [
-    module.eks_blueprints_kubernetes_addons
+    module.eks_blueprints_addons
   ]
 }
 
@@ -287,7 +293,7 @@ resource "kubernetes_storage_class_v1" "efs" {
   ]
 
   depends_on = [
-    module.eks_blueprints_kubernetes_addons
+    module.eks_blueprints_addons
   ]
 }
 
@@ -362,7 +368,7 @@ module "velero_backup_s3_bucket" {
 
 module "efs" {
   source  = "terraform-aws-modules/efs/aws"
-  version = "~> 1.0"
+  version = "~> 1.1"
 
   creation_token = local.name
   name           = local.name

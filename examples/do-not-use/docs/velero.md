@@ -12,23 +12,23 @@
 ```hcl
 enable_velero           = true
 velero_backup_s3_bucket = "<YOUR_BUCKET_NAME>"
+velero = {
+    s3_backup_location = "<YOUR_S3_BUCKET_ARN>[/prefix]"
+  }
 ```
 
 You can also customize the Helm chart that deploys `velero` via the following configuration:
 
 ```hcl
 enable_velero           = true
-velero_helm_config = {
-  name        = "velero"
-  description = "A Helm chart for velero"
-  chart       = "velero"
-  version     = "2.30.0"
-  repository  = "https://vmware-tanzu.github.io/helm-charts/"
-  namespace   = "velero"
-  values = [templatefile("${path.module}/values.yaml", {
-    bucket = "<YOUR_BUCKET_NAME>",
-    region = "<YOUR_BUCKET_REGION>"
-  })]
+velero = {
+  name          = "velero"
+  description   = "A Helm chart for velero"
+  chart         = "velero"
+  chart_version = "3.1.6"
+  repository    = "https://vmware-tanzu.github.io/helm-charts/"
+  namespace     = "velero"
+  values        = <EXTRA_HELM_VALUES>
 }
 ```
 
@@ -50,16 +50,16 @@ kubectl get all -n velero
 
 # Output should look similar to below
 NAME                         READY   STATUS    RESTARTS   AGE
-pod/velero-b4d8fd5c7-5smp6   1/1     Running   0          112s
+pod/velero-7b8994d56-z89sl   1/1     Running   0          25h
 
-NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
-service/velero   ClusterIP   172.20.217.203   <none>        8085/TCP   114s
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/velero   ClusterIP   172.20.20.118   <none>        8085/TCP   25h
 
 NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/velero   1/1     1            1           114s
+deployment.apps/velero   1/1     1            1           25h
 
 NAME                               DESIRED   CURRENT   READY   AGE
-replicaset.apps/velero-b4d8fd5c7   1         1         1       114s
+replicaset.apps/velero-7b8994d56   1         1         1       25h
 ```
 
 3. Get backup location using velero [CLI](https://velero.io/docs/v1.8/basic-install/#install-the-cli)
@@ -68,8 +68,8 @@ replicaset.apps/velero-b4d8fd5c7   1         1         1       114s
 velero backup-location get
 
 # Output should look similar to below
-NAME      PROVIDER   BUCKET/PREFIX             PHASE       LAST VALIDATED                  ACCESS MODE   DEFAULT
-default   aws        velero-ssqwm44hvofzb32d   Available   2022-05-22 10:53:26 -0400 EDT   ReadWrite     true
+NAME      PROVIDER   BUCKET/PREFIX                                 PHASE       LAST VALIDATED                  ACCESS MODE   DEFAULT
+default   aws        stateful-20230503175301619800000005/backups   Available   2023-05-04 15:15:00 -0400 EDT   ReadWrite     true
 ```
 
 4. To demonstrate creating a backup and restoring, create a new namespace and run nginx using below commands:
@@ -98,14 +98,12 @@ velero backup describe backup1
 Name:         backup1
 Namespace:    velero
 Labels:       velero.io/storage-location=default
-Annotations:  velero.io/source-cluster-k8s-gitversion=v1.21.9-eks-14c7a48
+Annotations:  velero.io/source-cluster-k8s-gitversion=v1.26.2-eks-a59e1f0
               velero.io/source-cluster-k8s-major-version=1
-              velero.io/source-cluster-k8s-minor-version=21+
+              velero.io/source-cluster-k8s-minor-version=26+
 
 Phase:  Completed
 
-Errors:    0
-Warnings:  0
 
 Namespaces:
   Included:  backupdemo
@@ -124,17 +122,20 @@ Velero-Native Snapshot PVs:  auto
 
 TTL:  720h0m0s
 
+CSISnapshotTimeout:    10m0s
+ItemOperationTimeout:  0s
+
 Hooks:  <none>
 
 Backup Format Version:  1.1.0
 
-Started:    2022-05-22 10:54:32 -0400 EDT
-Completed:  2022-05-22 10:54:35 -0400 EDT
+Started:    2023-05-04 15:16:31 -0400 EDT
+Completed:  2023-05-04 15:16:33 -0400 EDT
 
-Expiration:  2022-06-21 10:54:32 -0400 EDT
+Expiration:  2023-06-03 15:16:31 -0400 EDT
 
-Total items to be backed up:  10
-Items backed up:              10
+Total items to be backed up:  9
+Items backed up:              9
 
 Velero-Native Snapshots: <none included>
 ```
