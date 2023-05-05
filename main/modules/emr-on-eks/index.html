@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1443,22 +1443,22 @@ This module deploys the necessary resources to run EMR Spark Jobs on EKS Cluster
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/emr-on-eks">EMR on EKS</a> can be deployed by enabling the module via the following.</p>
 <p>Checkout this <a href="https://aws.amazon.com/blogs/mt/monitoring-amazon-emr-on-eks-with-amazon-managed-prometheus-and-amazon-managed-grafana/">Blog</a> to setup Observability for EMR on EKS Spark Jobs</p>
-<div class="highlight"><pre><span></span><code>    #---------------------------------------
-    # ENABLE EMR ON EKS
-    #---------------------------------------
-    enable_emr_on_eks = true
-    emr_on_eks_teams = {
-      emr-team-a = {
-        namespace               = &quot;emr-data-team-a&quot;
-        job_execution_role      = &quot;emr-eks-data-team-a&quot;
-        additional_iam_policies = [&quot;&lt;ENTER-IAM-POLICY-ARN&gt;&quot;]
-      }
-      emr-team-b = {
-        namespace               = &quot;emr-data-team-b&quot;
-        job_execution_role      = &quot;emr-eks-data-team-b&quot;
-        additional_iam_policies = [&quot;&lt;ENTER-IAM-POLICY-ARN&gt;&quot;]
-      }
-    }
+<div class="highlight"><pre><span></span><code><span class="c1">    #---------------------------------------</span>
+<span class="c1">    # ENABLE EMR ON EKS</span>
+<span class="c1">    #---------------------------------------</span>
+<span class="w">    </span><span class="na">enable_emr_on_eks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">    </span><span class="nb">emr_on_eks_teams</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nb">emr-team-a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="na">namespace</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;emr-data-team-a&quot;</span>
+<span class="w">        </span><span class="na">job_execution_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;emr-eks-data-team-a&quot;</span>
+<span class="w">        </span><span class="na">additional_iam_policies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;&lt;ENTER-IAM-POLICY-ARN&gt;&quot;</span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="nb">emr-team-b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="na">namespace</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;emr-data-team-b&quot;</span>
+<span class="w">        </span><span class="na">job_execution_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;emr-eks-data-team-b&quot;</span>
+<span class="w">        </span><span class="na">additional_iam_policies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;&lt;ENTER-IAM-POLICY-ARN&gt;&quot;</span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
 </code></pre></div>
 <p>Once deployed, you can create Virtual EMR Cluster and execute Spark jobs. See the <a href="https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/setting-up-registration.html">document</a> below for more details.</p>
 

@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1434,7 +1434,7 @@
 <p>The <a href="https://github.com/DataDog/datadog-operator">Datadog Operator</a> is a Kubernetes add-on that can automate the deployment of a best-practice Datadog monitoring agent on a Kubernetes cluster.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>The Datadog Operator can be deployed by enabling the add-on via the following.</p>
-<div class="highlight"><pre><span></span><code>enable_datadog_operator = true
+<div class="highlight"><pre><span></span><code><span class="na">enable_datadog_operator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>Once the operator is provisioned, the Datadog Agent can be deployed by creating a <code>DatadogAgent</code> resource and supplying an API key.</p>
 

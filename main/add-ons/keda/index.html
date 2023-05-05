@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1463,18 +1463,18 @@
 <p>For complete project documentation, please visit the <a href="https://keda.sh/">KEDA documentation site</a>.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>KEDA can be deployed by enabling the add-on via the following.</p>
-<div class="highlight"><pre><span></span><code>enable_keda = true
+<div class="highlight"><pre><span></span><code><span class="na">enable_keda</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>Deploy KEDA with custom <code>values.yaml</code></p>
-<div class="highlight"><pre><span></span><code>  # Optional Map value; pass keda-values.yaml from consumer module
-  keda_helm_config = {
-    name       = &quot;keda&quot;                                               # (Required) Release name.
-    repository = &quot;https://kedacore.github.io/charts&quot;                  # (Optional) Repository URL where to locate the requested chart.
-    chart      = &quot;keda&quot;                                               # (Required) Chart name to be installed.
-    version    = &quot;2.6.2&quot;                                              # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/keda/locals.tf
-    namespace  = &quot;keda&quot;                                               # (Optional) The namespace to install the release into.
-    values = [templatefile(&quot;${path.module}/keda-values.yaml&quot;, {})]
-  }
+<div class="highlight"><pre><span></span><code><span class="c1">  # Optional Map value; pass keda-values.yaml from consumer module</span>
+<span class="w">  </span><span class="nb">keda_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;keda&quot;</span><span class="c1">                                               # (Required) Release name.</span>
+<span class="w">    </span><span class="na">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://kedacore.github.io/charts&quot;</span><span class="c1">                  # (Optional) Repository URL where to locate the requested chart.</span>
+<span class="w">    </span><span class="na">chart</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;keda&quot;</span><span class="c1">                                               # (Required) Chart name to be installed.</span>
+<span class="w">    </span><span class="na">version</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;2.6.2&quot;</span><span class="c1">                                              # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/keda/locals.tf</span>
+<span class="w">    </span><span class="na">namespace</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;keda&quot;</span><span class="c1">                                               # (Optional) The namespace to install the release into.</span>
+<span class="w">    </span><span class="na">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nf">templatefile</span><span class="p">(</span><span class="s2">&quot;${path.module}/keda-values.yaml&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{})]</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p>The following properties are made available for use when managing the add-on via GitOps.</p>

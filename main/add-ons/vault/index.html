@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1451,19 +1451,19 @@
 <p>Checkout the full <a href="https://github.com/hashicorp/terraform-aws-hashicorp-vault-eks-addon/tree/main/blueprints/getting-started">example</a>.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>This step deploys the <a href="https://www.vaultproject.io">HashiCorp Vault</a> with default Helm Chart config</p>
-<div class="highlight"><pre><span></span><code>  enable_vault = true
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_vault</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>Alternatively, you can override the Helm Values by setting the <code>vault_helm_config</code> object, like shown in the code snippet below:</p>
-<div class="highlight"><pre><span></span><code>  enable_vault = true
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_vault</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 
-  vault_helm_config = {
-    name       = &quot;vault&quot;                                          # (Required) Release name.
-    chart      = &quot;vault&quot;                                          # (Required) Chart name to be installed.
-    repository = &quot;https://helm.releases.hashicorp.com&quot;            # (Optional) Repository URL where to locate the requested chart.
-    version    = &quot;v0.19.0&quot;                                        # (Optional) Specify the exact chart version to install.
+<span class="w">  </span><span class="nb">vault_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;vault&quot;</span><span class="c1">                                          # (Required) Release name.</span>
+<span class="w">    </span><span class="na">chart</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;vault&quot;</span><span class="c1">                                          # (Required) Chart name to be installed.</span>
+<span class="w">    </span><span class="na">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://helm.releases.hashicorp.com&quot;</span><span class="c1">            # (Optional) Repository URL where to locate the requested chart.</span>
+<span class="w">    </span><span class="na">version</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;v0.19.0&quot;</span><span class="c1">                                        # (Optional) Specify the exact chart version to install.</span>
 
-    # ...
-  }
+<span class="c1">    # ...</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 <p>This snippet does not contain <em>all</em> available options that can be set as part of <code>vault_helm_config</code>. For the complete listing, see the <a href="https://github.com/hashicorp/terraform-aws-hashicorp-vault-eks-addon/"><code>hashicorp-vault-eks-blueprints-addon</code> repository</a>.</p>
 

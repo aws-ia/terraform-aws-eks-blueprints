@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1436,18 +1436,18 @@
 <p>You can define <code>batchScheduler: "yunikorn"</code> when you are running Spark Applications using SparkK8sOperator</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>This step deploys the Apache YuniKorn K8s schedular with default Helm Chart config</p>
-<div class="highlight"><pre><span></span><code>  enable_yunikorn = true
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_yunikorn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>Alternatively, you can override the helm values by using the code snippet below</p>
-<div class="highlight"><pre><span></span><code>  enable_yunikorn = true
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_yunikorn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 
-  yunikorn_helm_config = {
-    name       = &quot;yunikorn&quot;                                 # (Required) Release name.
-    repository = &quot;https://apache.github.io/yunikorn-release&quot; # (Optional) Repository URL where to locate the requested chart.
-    chart      = &quot;yunikorn&quot;                                 # (Required) Chart name to be installed.
-    version    = &quot;0.12.2&quot;                               # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/yunikorn/locals.tf
-    values     = [templatefile(&quot;${path.module}/values.yaml&quot;, {})]
-  }
+<span class="w">  </span><span class="nb">yunikorn_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;yunikorn&quot;</span><span class="c1">                                 # (Required) Release name.</span>
+<span class="w">    </span><span class="na">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://apache.github.io/yunikorn-release&quot;</span><span class="c1"> # (Optional) Repository URL where to locate the requested chart.</span>
+<span class="w">    </span><span class="na">chart</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;yunikorn&quot;</span><span class="c1">                                 # (Required) Chart name to be installed.</span>
+<span class="w">    </span><span class="na">version</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.12.2&quot;</span><span class="c1">                               # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/yunikorn/locals.tf</span>
+<span class="w">    </span><span class="na">values</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nf">templatefile</span><span class="p">(</span><span class="s2">&quot;${path.module}/values.yaml&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{})]</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 
               

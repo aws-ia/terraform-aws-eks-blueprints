@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1547,57 +1547,57 @@
 </blockquote>
 <p>To overcome this limitation, you can add/enable <code>manifests_dir</code> after you applied and created the cluster first. We are working on a better solution for this.</p>
 <h4 id="application-team-example">Application Team Example<a class="headerlink" href="#application-team-example" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code>  # EKS Application Teams
+<div class="highlight"><pre><span></span><code><span class="c1">  # EKS Application Teams</span>
 
-  application_teams = {
-    # First Team
-    team-blue = {
-      &quot;labels&quot; = {
-        &quot;appName&quot;     = &quot;example&quot;,
-        &quot;projectName&quot; = &quot;example&quot;,
-        &quot;environment&quot; = &quot;example&quot;,
-        &quot;domain&quot;      = &quot;example&quot;,
-        &quot;uuid&quot;        = &quot;example&quot;,
-      }
-      &quot;quota&quot; = {
-        &quot;requests.cpu&quot;    = &quot;1000m&quot;,
-        &quot;requests.memory&quot; = &quot;4Gi&quot;,
-        &quot;limits.cpu&quot;      = &quot;2000m&quot;,
-        &quot;limits.memory&quot;   = &quot;8Gi&quot;,
-        &quot;pods&quot;            = &quot;10&quot;,
-        &quot;secrets&quot;         = &quot;10&quot;,
-        &quot;services&quot;        = &quot;10&quot;
-      }
-      manifests_dir = &quot;./manifests&quot;
-      # Belows are examples of IAM users and roles
-      users = [
-        &quot;arn:aws:iam::123456789012:user/blue-team-user&quot;,
-        &quot;arn:aws:iam::123456789012:role/blue-team-sso-iam-role&quot;
-      ]
-    }
+<span class="w">  </span><span class="nb">application_teams</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="c1">    # First Team</span>
+<span class="w">    </span><span class="nb">team-blue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="s2">&quot;labels&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;appName&quot;</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;example&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;projectName&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;example&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;environment&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;example&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;domain&quot;</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;example&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;uuid&quot;</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;example&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="s2">&quot;quota&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;requests.cpu&quot;</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1000m&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;requests.memory&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;4Gi&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;limits.cpu&quot;</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;2000m&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;limits.memory&quot;</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;8Gi&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;pods&quot;</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;10&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;secrets&quot;</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;10&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;services&quot;</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;10&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="na">manifests_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;./manifests&quot;</span>
+<span class="c1">      # Belows are examples of IAM users and roles</span>
+<span class="w">      </span><span class="na">users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;arn:aws:iam::123456789012:user/blue-team-user&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;arn:aws:iam::123456789012:role/blue-team-sso-iam-role&quot;</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
 
-    # Second Team
-    team-red = {
-      &quot;labels&quot; = {
-        &quot;appName&quot;     = &quot;example2&quot;,
-        &quot;projectName&quot; = &quot;example2&quot;,
-      }
-      &quot;quota&quot; = {
-        &quot;requests.cpu&quot;    = &quot;2000m&quot;,
-        &quot;requests.memory&quot; = &quot;8Gi&quot;,
-        &quot;limits.cpu&quot;      = &quot;4000m&quot;,
-        &quot;limits.memory&quot;   = &quot;16Gi&quot;,
-        &quot;pods&quot;            = &quot;20&quot;,
-        &quot;secrets&quot;         = &quot;20&quot;,
-        &quot;services&quot;        = &quot;20&quot;
-      }
-      manifests_dir = &quot;./manifests2&quot;
-      users = [
+<span class="c1">    # Second Team</span>
+<span class="w">    </span><span class="nb">team-red</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="s2">&quot;labels&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;appName&quot;</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;example2&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;projectName&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;example2&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="s2">&quot;quota&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;requests.cpu&quot;</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;2000m&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;requests.memory&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;8Gi&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;limits.cpu&quot;</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;4000m&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;limits.memory&quot;</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;16Gi&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;pods&quot;</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;20&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;secrets&quot;</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;20&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;services&quot;</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;20&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="na">manifests_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;./manifests2&quot;</span>
+<span class="w">      </span><span class="na">users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
 
-        &quot;arn:aws:iam::123456789012:role/other-sso-iam-role&quot;
-      ]
-    }
-  }
+<span class="w">        </span><span class="s2">&quot;arn:aws:iam::123456789012:role/other-sso-iam-role&quot;</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 <p>EKS Blueprints will do the following for every provided team:</p>
 <ul>
@@ -1611,14 +1611,14 @@
 <h3 id="platformteam">PlatformTeam<a class="headerlink" href="#platformteam" title="Permanent link">&para;</a></h3>
 <p>To create an <code>Platform Team</code> for your cluster, simply use <code>platform_teams</code>. You will need to supply a team name and and all users/roles.</p>
 <h4 id="platform-team-example">Platform Team Example<a class="headerlink" href="#platform-team-example" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code>  platform_teams = {
-    admin-team-name-example = {
-      users = [
-        &quot;arn:aws:iam::123456789012:user/admin-user&quot;,
-        &quot;arn:aws:iam::123456789012:role/org-admin-role&quot;
-      ]
-    }
-  }
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nb">platform_teams</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">admin-team-name-example</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;arn:aws:iam::123456789012:user/admin-user&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;arn:aws:iam::123456789012:role/org-admin-role&quot;</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 <p><code>Platform Team</code> does the following:</p>
 <ul>

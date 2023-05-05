@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1462,30 +1462,30 @@
 For reference templates refer <a href="https://github.com/open-policy-agent/gatekeeper/tree/master/charts/gatekeeper/templates">Templates</a></p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>Gatekeeper can be deployed by enabling the add-on via the following.</p>
-<div class="highlight"><pre><span></span><code>enable_gatekeeper = true
+<div class="highlight"><pre><span></span><code><span class="na">enable_gatekeeper</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>You can optionally customize the Helm chart that deploys <code>Gatekeeper</code> via the following configuration.</p>
-<div class="highlight"><pre><span></span><code>  enable_gatekeeper = true
-  # Optional  gatekeeper_helm_config
-  gatekeeper_helm_config = {
-    name                       = &quot;gatekeeper&quot;
-    chart                      = &quot;gatekeeper&quot;
-    repository                 = &quot;https://open-policy-agent.github.io/gatekeeper/charts&quot;
-    version                    = &quot;3.9.0&quot;
-    namespace                  = &quot;gatekeeper-system&quot;
-    values = [
-      &lt;&lt;-EOT
-        clusterName: ${var.eks_cluster_id}
-      EOT
-    ]
-  }
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_gatekeeper</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="c1">  # Optional  gatekeeper_helm_config</span>
+<span class="w">  </span><span class="nb">gatekeeper_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">                       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;gatekeeper&quot;</span>
+<span class="w">    </span><span class="na">chart</span><span class="w">                      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;gatekeeper&quot;</span>
+<span class="w">    </span><span class="na">repository</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://open-policy-agent.github.io/gatekeeper/charts&quot;</span>
+<span class="w">    </span><span class="na">version</span><span class="w">                    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;3.9.0&quot;</span>
+<span class="w">    </span><span class="na">namespace</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;gatekeeper-system&quot;</span>
+<span class="w">    </span><span class="na">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="o">&lt;&lt;-</span><span class="dl">EOT</span>
+<span class="sh">        clusterName: ${var.eks_cluster_id}</span>
+<span class="dl">      EOT</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p>The following properties are made available for use when managing the add-on via GitOps.</p>
-<div class="highlight"><pre><span></span><code>  argocd_gitops_config = {
-    enable          = true
-    clusterName     = var.eks_cluster_id
-  }
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nb">argocd_gitops_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">enable</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">    </span><span class="na">clusterName</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.eks_cluster_id</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 
               

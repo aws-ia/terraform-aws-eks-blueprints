@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1461,19 +1461,19 @@
 This add-on deploys the <a href="https://aws.amazon.com/fsx/lustre/">Amazon FSx for Lustre CSI Driver</a> into an EKS cluster.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>The <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/aws-fsx-csi-driver">Amazon FSx for Lustre CSI Driver</a> can be deployed by enabling the add-on via the following.</p>
-<div class="highlight"><pre><span></span><code>  enable_aws_fsx_csi_driver = true
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_aws_fsx_csi_driver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>You can optionally customize the Helm chart that deploys <code>enable_aws_fsx_csi_driver</code> via the following configuration.</p>
-<div class="highlight"><pre><span></span><code>  enable_aws_fsx_csi_driver = true
-  aws_fsx_csi_driver_helm_config = {
-    name                       = &quot;aws-fsx-csi-driver&quot;
-    chart                      = &quot;aws-fsx-csi-driver&quot;
-    repository                 = &quot;https://kubernetes-sigs.github.io/aws-fsx-csi-driver/&quot;
-    version                    = &quot;1.4.2&quot;
-    namespace                  = &quot;kube-system&quot;
-    values = [templatefile(&quot;${path.module}/aws-fsx-csi-driver-values.yaml&quot;, {})] # Create this `aws-fsx-csi-driver-values.yaml` file with your own custom values
-  }
-  aws_fsx_csi_driver_irsa_policies = [&quot;&lt;ADDITIONAL_IAM_POLICY_ARN&gt;&quot;]
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_aws_fsx_csi_driver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="nb">aws_fsx_csi_driver_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">                       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws-fsx-csi-driver&quot;</span>
+<span class="w">    </span><span class="na">chart</span><span class="w">                      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws-fsx-csi-driver&quot;</span>
+<span class="w">    </span><span class="na">repository</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://kubernetes-sigs.github.io/aws-fsx-csi-driver/&quot;</span>
+<span class="w">    </span><span class="na">version</span><span class="w">                    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.4.2&quot;</span>
+<span class="w">    </span><span class="na">namespace</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;kube-system&quot;</span>
+<span class="w">    </span><span class="na">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nf">templatefile</span><span class="p">(</span><span class="s2">&quot;${path.module}/aws-fsx-csi-driver-values.yaml&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{})]</span><span class="c1"> # Create this `aws-fsx-csi-driver-values.yaml` file with your own custom values</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="na">aws_fsx_csi_driver_irsa_policies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;&lt;ADDITIONAL_IAM_POLICY_ARN&gt;&quot;</span><span class="p">]</span>
 </code></pre></div>
 <p>Once deployed, you will be able to see a number of supporting resources in the <code>kube-system</code> namespace.</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>deployment<span class="w"> </span>fsx-csi-controller<span class="w"> </span>-n<span class="w"> </span>kube-system
@@ -1488,13 +1488,13 @@ fsx-csi-node<span class="w">   </span><span class="m">3</span><span class="w">  
 </code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p><code>ArgoCD</code> with <code>App of Apps</code> GitOps enabled for this Add-on by enabling the following variable</p>
-<div class="highlight"><pre><span></span><code>argocd_manage_add_ons = true
+<div class="highlight"><pre><span></span><code><span class="na">argocd_manage_add_ons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>The following is configured to ArgoCD App of Apps for this Add-on.</p>
-<div class="highlight"><pre><span></span><code>  argocd_gitops_config = {
-    enable             = true
-    serviceAccountName = local.service_account
-  }
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nb">argocd_gitops_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">enable</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">    </span><span class="na">serviceAccountName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">local.service_account</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 
               

@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1461,27 +1461,27 @@
 <p>Container Insights collects data as performance log events using embedded metric format. These performance log events are entries that use a structured JSON schema that enables high-cardinality data to be ingested and stored at scale. From this data, CloudWatch creates aggregated metrics at the cluster, node, pod, task, and service level as CloudWatch metrics. The metrics that Container Insights collects are available in CloudWatch automatic dashboards, and also viewable in the Metrics section of the CloudWatch console.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/aws-cloudwatch-metrics">aws-cloudwatch-metrics</a> can be deployed by enabling the add-on via the following.</p>
-<div class="highlight"><pre><span></span><code>enable_aws_cloudwatch_metrics = true
+<div class="highlight"><pre><span></span><code><span class="na">enable_aws_cloudwatch_metrics</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>You can optionally customize the Helm chart that deploys <code>aws_cloudwatch_metrics</code> via the following configuration.</p>
-<div class="highlight"><pre><span></span><code>  enable_aws_cloudwatch_metrics        = true
-  aws_cloudwatch_metrics_irsa_policies = [&quot;IAM Policies&quot;]
-  aws_cloudwatch_metrics_helm_config   = {
-    name       = &quot;aws-cloudwatch-metrics&quot;
-    chart      = &quot;aws-cloudwatch-metrics&quot;
-    repository = &quot;https://aws.github.io/eks-charts&quot;
-    version    = &quot;0.0.7&quot;
-    namespace  = &quot;amazon-cloudwatch&quot;
-    values     = [templatefile(&quot;${path.module}/values.yaml&quot;, {
-      eks_cluster_id = var.addon_context.eks_cluster_id
-    })]
-  }
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_aws_cloudwatch_metrics</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">aws_cloudwatch_metrics_irsa_policies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;IAM Policies&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nb">aws_cloudwatch_metrics_helm_config</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws-cloudwatch-metrics&quot;</span>
+<span class="w">    </span><span class="na">chart</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws-cloudwatch-metrics&quot;</span>
+<span class="w">    </span><span class="na">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://aws.github.io/eks-charts&quot;</span>
+<span class="w">    </span><span class="na">version</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.0.7&quot;</span>
+<span class="w">    </span><span class="na">namespace</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;amazon-cloudwatch&quot;</span>
+<span class="w">    </span><span class="na">values</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nf">templatefile</span><span class="p">(</span><span class="s2">&quot;${path.module}/values.yaml&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">eks_cluster_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.addon_context.eks_cluster_id</span>
+<span class="w">    </span><span class="p">})]</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p>The following properties are made available for use when managing the add-on via GitOps.</p>
-<div class="highlight"><pre><span></span><code>awsCloudWatchMetrics = {
-  enable       = true
-}
+<div class="highlight"><pre><span></span><code><span class="nb">awsCloudWatchMetrics</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">enable</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="p">}</span>
 </code></pre></div>
 
               

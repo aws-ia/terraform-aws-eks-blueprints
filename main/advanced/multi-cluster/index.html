@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1473,20 +1473,20 @@
 <h2 id="important-note">Important Note<a class="headerlink" href="#important-note" title="Permanent link">&para;</a></h2>
 <p>If you are using an existing VPC, you need to ensure that the following tags are added to the VPC and subnet resources</p>
 <p>Add Tags to <strong>VPC</strong>
-<div class="highlight"><pre><span></span><code>    Key = &quot;Kubernetes.io/cluster/${local.cluster_id}&quot;
-    Value = &quot;Shared&quot;
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="na">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Kubernetes.io/cluster/${local.cluster_id}&quot;</span>
+<span class="w">    </span><span class="na">Value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Shared&quot;</span>
 </code></pre></div></p>
 <p>Add Tags to <strong>Public Subnets tagging</strong> requirement
-<div class="highlight"><pre><span></span><code>    public_subnet_tags = {
-      &quot;Kubernetes.io/cluster/${local.cluster_id}&quot; = &quot;shared&quot;
-      &quot;Kubernetes.io/role/elb&quot;                      = &quot;1&quot;
-    }
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nb">public_subnet_tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="s2">&quot;Kubernetes.io/cluster/${local.cluster_id}&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;shared&quot;</span>
+<span class="w">      </span><span class="s2">&quot;Kubernetes.io/role/elb&quot;</span><span class="w">                      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1&quot;</span>
+<span class="w">    </span><span class="p">}</span>
 </code></pre></div></p>
 <p>Add Tags to <strong>Private Subnets tagging</strong> requirement
-<div class="highlight"><pre><span></span><code>    private_subnet_tags = {
-      &quot;Kubernetes.io/cluster/${local.cluster_id}&quot; = &quot;shared&quot;
-      &quot;Kubernetes.io/role/internal-elb&quot;             = &quot;1&quot;
-    }
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nb">private_subnet_tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="s2">&quot;Kubernetes.io/cluster/${local.cluster_id}&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;shared&quot;</span>
+<span class="w">      </span><span class="s2">&quot;Kubernetes.io/role/internal-elb&quot;</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1&quot;</span>
+<span class="w">    </span><span class="p">}</span>
 </code></pre></div></p>
 
               

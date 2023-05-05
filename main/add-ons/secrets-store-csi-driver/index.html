@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1436,26 +1436,26 @@
 <p>For more details, refer <a href="https://secrets-store-csi-driver.sigs.k8s.io/">Secrets Store CSI Driver</a></p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>secrets-store-csi-driver can be deployed by enabling the add-ons via the following.</p>
-<div class="highlight"><pre><span></span><code>enable_secrets_store_csi_driver = true
+<div class="highlight"><pre><span></span><code><span class="na">enable_secrets_store_csi_driver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>You can optionally customize the Helm chart that deploys <code>secrets_store_csi_driver</code> via the following configuration.</p>
-<div class="highlight"><pre><span></span><code>secrets_store_csi_driver_helm_config = {
-    name       = &quot;secrets-store-csi-driver&quot;
-    chart      = &quot;secrets-store-csi-driver&quot;
-    repository = &quot;https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts&quot;
-    version    = &quot;1.2.4&quot;
-    namespace  = &quot;secrets-store-csi-driver&quot;
-    set_values = [
-      {
-        name  = &quot;syncSecret.enabled&quot;
-        value = &quot;false&quot;
-      },
-      {
-        name  = &quot;enableSecretRotation&quot;
-        value = &quot;false&quot;
-      }
-    ]
-}
+<div class="highlight"><pre><span></span><code><span class="nb">secrets_store_csi_driver_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;secrets-store-csi-driver&quot;</span>
+<span class="w">    </span><span class="na">chart</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;secrets-store-csi-driver&quot;</span>
+<span class="w">    </span><span class="na">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts&quot;</span>
+<span class="w">    </span><span class="na">version</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.2.4&quot;</span>
+<span class="w">    </span><span class="na">namespace</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;secrets-store-csi-driver&quot;</span>
+<span class="w">    </span><span class="na">set_values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="na">name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;syncSecret.enabled&quot;</span>
+<span class="w">        </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;false&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="na">name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;enableSecretRotation&quot;</span>
+<span class="w">        </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;false&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 
               

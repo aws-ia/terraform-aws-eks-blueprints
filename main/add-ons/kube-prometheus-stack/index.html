@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1484,30 +1484,30 @@
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>The default values.yaml file in this add-on has disabled the components that are unreachable in EKS environments, and an EBS Volume for Persistent Storage.</p>
 <p>You can override the defaults using the <code>set</code> helm_config key, and set the admin password with <code>set_sensitive</code>:</p>
-<div class="highlight"><pre><span></span><code>  enable_kube_prometheus_stack      = true
-  kube_prometheus_stack_helm_config = {
-    set = [
-      {
-        name  = &quot;kubeProxy.enabled&quot;
-        value = false
-      }
-    ],
-    set_sensitive = [
-      {
-        name  = &quot;grafana.adminPassword&quot;
-        value = data.aws_secretsmanager_secret_version.admin_password_version.secret_string
-      }
-    ]
-  }
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_kube_prometheus_stack</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="nb">kube_prometheus_stack_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="na">name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;kubeProxy.enabled&quot;</span>
+<span class="w">        </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="na">set_sensitive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="na">name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;grafana.adminPassword&quot;</span>
+<span class="w">        </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_secretsmanager_secret_version.admin_password_version.secret_string</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 <h2 id="upgrading-the-chart">Upgrading the Chart<a class="headerlink" href="#upgrading-the-chart" title="Permanent link">&para;</a></h2>
 <p>Be aware that it is likely necessary to update the CRDs when updating the Chart version. Refer to the Project documentation on upgrades for your specific versions: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack#upgrading-chart</p>
 <p>For complete project documentation, please visit the <a href="https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack">kube-prometheus-stack Github repository</a>.</p>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p>The following properties are made available for use when managing the add-on via GitOps.</p>
-<div class="highlight"><pre><span></span><code>kubePrometheusStack = {
-  enable = true
-}
+<div class="highlight"><pre><span></span><code><span class="nb">kubePrometheusStack</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">enable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="p">}</span>
 </code></pre></div>
 
               

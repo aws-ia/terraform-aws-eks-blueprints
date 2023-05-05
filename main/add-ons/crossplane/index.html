@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1482,30 +1482,30 @@
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <h3 id="crossplane-deployment">Crossplane Deployment<a class="headerlink" href="#crossplane-deployment" title="Permanent link">&para;</a></h3>
 <p>Crossplane can be deployed by enabling the add-on via the following. Check out the full <a href="https://github.com/awslabs/crossplane-on-eks/tree/main/bootstrap/terraform">example</a> to deploy the EKS Cluster with Crossplane.</p>
-<div class="highlight"><pre><span></span><code>  enable_crossplane = true
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_crossplane</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>You can optionally customize the Helm chart that deploys <code>Crossplane</code> via the following configuration.</p>
-<div class="highlight"><pre><span></span><code>  enable_crossplane = true
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_crossplane</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 
-  crossplane_helm_config = {
-    name                      = &quot;crossplane&quot;
-    chart                     = &quot;crossplane&quot;
-    repository                = &quot;https://charts.crossplane.io/stable/&quot;
-    version                   = &quot;1.10.1&quot; # Get the lates version from https://github.com/crossplane/crossplane
-    namespace                 = &quot;crossplane-system&quot;
-  }
+<span class="w">  </span><span class="nb">crossplane_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">                      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;crossplane&quot;</span>
+<span class="w">    </span><span class="na">chart</span><span class="w">                     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;crossplane&quot;</span>
+<span class="w">    </span><span class="na">repository</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://charts.crossplane.io/stable/&quot;</span>
+<span class="w">    </span><span class="na">version</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.10.1&quot;</span><span class="c1"> # Get the lates version from https://github.com/crossplane/crossplane</span>
+<span class="w">    </span><span class="na">namespace</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;crossplane-system&quot;</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 <p>To install the <a href="https://github.com/upbound/universal-crossplane/tree/main/cluster/charts/universal-crossplane">Upbound Universal Crossplane (UXP) helm chart</a> use the following configuration.</p>
-<div class="highlight"><pre><span></span><code>  enable_crossplane = true #defaults to Upstream Crossplane Helm Chart
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_crossplane</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="c1"> #defaults to Upstream Crossplane Helm Chart</span>
 
-  crossplane_helm_config = {
-    name        = &quot;crossplane&quot;
-    chart       = &quot;universal-crossplane&quot;
-    repository  = &quot;https://charts.upbound.io/stable/&quot;
-    version     = &quot;1.10.1&quot; # Get the latest version from https://github.com/upbound/universal-crossplane
-    namespace   = &quot;upbound-system&quot;
-    description = &quot;Upbound Universal Crossplane (UXP)&quot;
-  }
+<span class="w">  </span><span class="nb">crossplane_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;crossplane&quot;</span>
+<span class="w">    </span><span class="na">chart</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;universal-crossplane&quot;</span>
+<span class="w">    </span><span class="na">repository</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://charts.upbound.io/stable/&quot;</span>
+<span class="w">    </span><span class="na">version</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.10.1&quot;</span><span class="c1"> # Get the latest version from https://github.com/upbound/universal-crossplane</span>
+<span class="w">    </span><span class="na">namespace</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;upbound-system&quot;</span>
+<span class="w">    </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Upbound Universal Crossplane (UXP)&quot;</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 <h3 id="crossplane-providers-deployment">Crossplane Providers Deployment<a class="headerlink" href="#crossplane-providers-deployment" title="Permanent link">&para;</a></h3>
 <p>This module provides options to deploy the following providers for Crossplane. These providers disabled by default, and it can be enabled using the config below.</p>
@@ -1519,37 +1519,37 @@
 <p><em>NOTE: Crossplane requires Admin like permissions to create and update resources similar to Terraform deploy role.
 This example config uses AdministratorAccess, but you should select a policy with the minimum permissions required to provision your resources.</em></p>
 <p>Config to deploy <a href="https://github.com/crossplane/provider-aws">AWS Provider</a>
-<div class="highlight"><pre><span></span><code># Creates ProviderConfig -&gt; aws-provider
-crossplane_aws_provider = {
-  enable                   = true
-}
+<div class="highlight"><pre><span></span><code><span class="c1"># Creates ProviderConfig -&gt; aws-provider</span>
+<span class="nb">crossplane_aws_provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">enable</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="p">}</span>
 </code></pre></div></p>
 <p>Config to deploy <a href="https://github.com/upbound/provider-aws">Upbound AWS Provider</a>
-<div class="highlight"><pre><span></span><code># Creates ProviderConfig -&gt; upbound-aws-provider
-crossplane_upbound_aws_provider = {
-  enable                   = true
-}
+<div class="highlight"><pre><span></span><code><span class="c1"># Creates ProviderConfig -&gt; upbound-aws-provider</span>
+<span class="nb">crossplane_upbound_aws_provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">enable</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="p">}</span>
 </code></pre></div></p>
 <p>Config to deploy <a href="https://github.com/crossplane-contrib/provider-jet-aws">Terrajet AWS Provider (Deprecated)</a>
-<div class="highlight"><pre><span></span><code># Creates ProviderConfig -&gt; jet-aws-provider
-crossplane_jet_aws_provider = {
-  enable                   = true
-  provider_aws_version     = &quot;v0.4.1&quot;  # Get the latest version from  https://github.com/crossplane-contrib/provider-jet-aws
-  additional_irsa_policies = [&quot;arn:aws:iam::aws:policy/AdministratorAccess&quot;]
-}
+<div class="highlight"><pre><span></span><code><span class="c1"># Creates ProviderConfig -&gt; jet-aws-provider</span>
+<span class="nb">crossplane_jet_aws_provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">enable</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">provider_aws_version</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;v0.4.1&quot;</span><span class="c1">  # Get the latest version from  https://github.com/crossplane-contrib/provider-jet-aws</span>
+<span class="w">  </span><span class="na">additional_irsa_policies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;arn:aws:iam::aws:policy/AdministratorAccess&quot;</span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div></p>
 <p><em>NOTE: Crossplane requires cluster-admin permissions to create and update Kubernetes resources.</em></p>
 <p>Config to deploy <a href="https://github.com/crossplane-contrib/provider-kubernetes">Kubernetes provider</a>
-<div class="highlight"><pre><span></span><code># Creates ProviderConfig -&gt; kubernetes-provider
-crossplane_kubernetes_provider = {
-  enable                   = true
-}
+<div class="highlight"><pre><span></span><code><span class="c1"># Creates ProviderConfig -&gt; kubernetes-provider</span>
+<span class="nb">crossplane_kubernetes_provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">enable</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="p">}</span>
 </code></pre></div></p>
 <p>Config to deploy <a href="https://github.com/crossplane-contrib/provider-helm">Helm Provider</a>
-<div class="highlight"><pre><span></span><code># Creates ProviderConfig -&gt; helm-provider
-crossplane_helm_provider = {
-  enable                   = true
-}
+<div class="highlight"><pre><span></span><code><span class="c1"># Creates ProviderConfig -&gt; helm-provider</span>
+<span class="nb">crossplane_helm_provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">enable</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="p">}</span>
 </code></pre></div></p>
 
               

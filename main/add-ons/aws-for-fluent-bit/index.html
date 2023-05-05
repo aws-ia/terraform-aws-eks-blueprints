@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1492,31 +1492,31 @@
 <p><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/aws-for-fluentbit">aws-for-fluent-bit</a> can be deployed by enabling the add-on via the following.</p>
 <p>This add-on is configured to stream the worker node logs to CloudWatch Logs by default. It can further be configured to stream the logs to additional destinations like Kinesis Data Firehose, Kinesis Data Streams and Amazon OpenSearch Service by passing the custom <code>values.yaml</code>.
 See this <a href="https://github.com/aws/eks-charts/tree/master/stable/aws-for-fluent-bit">Helm Chart</a> for more details.</p>
-<div class="highlight"><pre><span></span><code>enable_aws_for_fluentbit = true
+<div class="highlight"><pre><span></span><code><span class="na">enable_aws_for_fluentbit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>You can optionally customize the Helm chart that deploys <code>aws_for_fluentbit</code> via the following configuration.</p>
-<div class="highlight"><pre><span></span><code>  enable_aws_for_fluentbit = true
-  aws_for_fluentbit_irsa_policies = [&quot;IAM Policies&quot;] # Add list of additional policies to IRSA to enable access to Kinesis, OpenSearch etc.
-  aws_for_fluentbit_cw_log_group_retention = 90
-  aws_for_fluentbit_helm_config = {
-    name                                      = &quot;aws-for-fluent-bit&quot;
-    chart                                     = &quot;aws-for-fluent-bit&quot;
-    repository                                = &quot;https://aws.github.io/eks-charts&quot;
-    version                                   = &quot;0.1.0&quot;
-    namespace                                 = &quot;logging&quot;
-    aws_for_fluent_bit_cw_log_group           = &quot;/${local.cluster_id}/worker-fluentbit-logs&quot; # Optional
-    create_namespace                          = true
-    values = [templatefile(&quot;${path.module}/values.yaml&quot;, {
-      region                          = data.aws_region.current.name,
-      aws_for_fluent_bit_cw_log_group = &quot;/${local.cluster_id}/worker-fluentbit-logs&quot;
-    })]
-    set = [
-      {
-        name  = &quot;nodeSelector.kubernetes\\.io/os&quot;
-        value = &quot;linux&quot;
-      }
-    ]
-  }
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_aws_for_fluentbit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">aws_for_fluentbit_irsa_policies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;IAM Policies&quot;</span><span class="p">]</span><span class="c1"> # Add list of additional policies to IRSA to enable access to Kinesis, OpenSearch etc.</span>
+<span class="w">  </span><span class="na">aws_for_fluentbit_cw_log_group_retention</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">90</span>
+<span class="w">  </span><span class="nb">aws_for_fluentbit_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">                                      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws-for-fluent-bit&quot;</span>
+<span class="w">    </span><span class="na">chart</span><span class="w">                                     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws-for-fluent-bit&quot;</span>
+<span class="w">    </span><span class="na">repository</span><span class="w">                                </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://aws.github.io/eks-charts&quot;</span>
+<span class="w">    </span><span class="na">version</span><span class="w">                                   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.1.0&quot;</span>
+<span class="w">    </span><span class="na">namespace</span><span class="w">                                 </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;logging&quot;</span>
+<span class="w">    </span><span class="na">aws_for_fluent_bit_cw_log_group</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/${local.cluster_id}/worker-fluentbit-logs&quot;</span><span class="c1"> # Optional</span>
+<span class="w">    </span><span class="na">create_namespace</span><span class="w">                          </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">    </span><span class="na">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nf">templatefile</span><span class="p">(</span><span class="s2">&quot;${path.module}/values.yaml&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">region</span><span class="w">                          </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_region.current.name</span><span class="p">,</span>
+<span class="w">      </span><span class="na">aws_for_fluent_bit_cw_log_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/${local.cluster_id}/worker-fluentbit-logs&quot;</span>
+<span class="w">    </span><span class="p">})]</span>
+<span class="w">    </span><span class="na">set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="na">name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;nodeSelector.kubernetes\\.io/os&quot;</span>
+<span class="w">        </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;linux&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p>The following properties are made available for use when managing the add-on via GitOps.</p>
@@ -1532,8 +1532,8 @@ kubernetes-addons module and passed in. Creating the CloudWatch log group extern
 if FluentBit is putting logs to multiple log groups because all the log groups can be created in
 the same code file. To do this, set the create log group flag to false and supply the
 previously-created log group name.</p>
-<div class="highlight"><pre><span></span><code>aws_for_fluentbit_create_cw_log_group = false
-aws_for_fluentbit_cw_log_group_name   = aws_cloudwatch_log_group.application.name
+<div class="highlight"><pre><span></span><code><span class="na">aws_for_fluentbit_create_cw_log_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="na">aws_for_fluentbit_cw_log_group_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_cloudwatch_log_group.application.name</span>
 </code></pre></div>
 
               

@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1460,24 +1460,24 @@
 <p><a href="https://external-secrets.io/latest">External Secrets Operator</a> is a Kubernetes operator that integrates external secret management systems like AWS Secrets Manager, HashiCorp Vault, Google Secrets Manager, Azure Key Vault and many more. The operator reads information from external APIs and automatically injects the values into a Kubernetes Secret.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>The External Secrets Operator can be deployed by enabling the add-on via the following.</p>
-<div class="highlight"><pre><span></span><code>enable_external_secrets = true
+<div class="highlight"><pre><span></span><code><span class="na">enable_external_secrets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>You can optionally customize the Helm chart that deploys the operator via the following configuration.</p>
-<div class="highlight"><pre><span></span><code>  enable_external_secrets = true
-  external_secrets_helm_config = {
-    name                       = &quot;external-secrets&quot;
-    chart                      = &quot;external-secrets&quot;
-    repository                 = &quot;https://charts.external-secrets.io/&quot;
-    version                    = &quot;0.5.9&quot;
-    namespace                  = &quot;external-secrets&quot;
-  }
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_external_secrets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="nb">external_secrets_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">                       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;external-secrets&quot;</span>
+<span class="w">    </span><span class="na">chart</span><span class="w">                      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;external-secrets&quot;</span>
+<span class="w">    </span><span class="na">repository</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://charts.external-secrets.io/&quot;</span>
+<span class="w">    </span><span class="na">version</span><span class="w">                    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.5.9&quot;</span>
+<span class="w">    </span><span class="na">namespace</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;external-secrets&quot;</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p>The following properties are made available for use when managing the add-on via GitOps.</p>
 <p>Refer to <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/external-secrets/locals.tf">locals.tf</a> for latest config. GitOps with ArgoCD Add-on repo is located <a href="https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/values.yaml">here</a>.</p>
-<div class="highlight"><pre><span></span><code>  argocd_gitops_config = {
-    enable = true
-  }
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nb">argocd_gitops_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">enable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 
               

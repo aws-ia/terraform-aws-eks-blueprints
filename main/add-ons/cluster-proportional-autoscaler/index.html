@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1465,58 +1465,58 @@ It is typically installed as a <strong>Deployment</strong> in your cluster.</p>
 <p><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/cluster-proportional-autoscaler">cluster-proportional-autoscaler</a> can be deployed by enabling the add-on via the following.</p>
 <p>The example shows how to enable <code>cluster-proportional-autoscaler</code> for <code>CoreDNS Deployment</code>. CoreDNS deployment is not configured with HPA. So, this add-on helps to scale CoreDNS Add-on according to the size of the nodes and cores.</p>
 <p>This Add-on can be used to scale any application with Deployment objects.</p>
-<div class="highlight"><pre><span></span><code>enable_coredns_autoscaler = true
-coredns_autoscaler_helm_config = {
-  name        = &quot;cluster-proportional-autoscaler&quot;
-  chart       = &quot;cluster-proportional-autoscaler&quot;
-  repository  = &quot;https://kubernetes-sigs.github.io/cluster-proportional-autoscaler&quot;
-  version     = &quot;1.0.0&quot;
-  namespace   = &quot;kube-system&quot;
-  timeout     = &quot;300&quot;
-  values = [
-    &lt;&lt;-EOT
-    nameOverride: kube-dns-autoscaler
+<div class="highlight"><pre><span></span><code><span class="na">enable_coredns_autoscaler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="nb">coredns_autoscaler_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;cluster-proportional-autoscaler&quot;</span>
+<span class="w">  </span><span class="na">chart</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;cluster-proportional-autoscaler&quot;</span>
+<span class="w">  </span><span class="na">repository</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://kubernetes-sigs.github.io/cluster-proportional-autoscaler&quot;</span>
+<span class="w">  </span><span class="na">version</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span>
+<span class="w">  </span><span class="na">namespace</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;kube-system&quot;</span>
+<span class="w">  </span><span class="na">timeout</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;300&quot;</span>
+<span class="w">  </span><span class="na">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="o">&lt;&lt;-</span><span class="dl">EOT</span>
+<span class="sh">    nameOverride: kube-dns-autoscaler</span>
 
-     # Formula for controlling the replicas. Adjust according to your needs
-     #  replicas = max( ceil( cores * 1/coresPerReplica ) , ceil( nodes * 1/nodesPerReplica ) )
-    config:
-      linear:
-      coresPerReplica: 256
-      nodesPerReplica: 16
-      min: 1
-      max: 100
-      preventSinglePointFailure: true
-      includeUnschedulableNodes: true
+<span class="sh">     # Formula for controlling the replicas. Adjust according to your needs</span>
+<span class="sh">     #  replicas = max( ceil( cores * 1/coresPerReplica ) , ceil( nodes * 1/nodesPerReplica ) )</span>
+<span class="sh">    config:</span>
+<span class="sh">      linear:</span>
+<span class="sh">      coresPerReplica: 256</span>
+<span class="sh">      nodesPerReplica: 16</span>
+<span class="sh">      min: 1</span>
+<span class="sh">      max: 100</span>
+<span class="sh">      preventSinglePointFailure: true</span>
+<span class="sh">      includeUnschedulableNodes: true</span>
 
-    # Target to scale. In format: deployment/*, replicationcontroller/* or replicaset/* (not case sensitive).
-    options:
-      target: deployment/coredns # Notice the target as `deployment/coredns`
+<span class="sh">    # Target to scale. In format: deployment/*, replicationcontroller/* or replicaset/* (not case sensitive).</span>
+<span class="sh">    options:</span>
+<span class="sh">      target: deployment/coredns # Notice the target as `deployment/coredns`</span>
 
-    serviceAccount:
-      create: true
-      name: kube-dns-autoscaler
+<span class="sh">    serviceAccount:</span>
+<span class="sh">      create: true</span>
+<span class="sh">      name: kube-dns-autoscaler</span>
 
-    podSecurityContext:
-      seccompProfile:
-      type: RuntimeDefault
-      supplementalGroups: [ 65534 ]
-      fsGroup: 65534
+<span class="sh">    podSecurityContext:</span>
+<span class="sh">      seccompProfile:</span>
+<span class="sh">      type: RuntimeDefault</span>
+<span class="sh">      supplementalGroups: [ 65534 ]</span>
+<span class="sh">      fsGroup: 65534</span>
 
-    resources:
-      limits:
-        cpu: 100m
-        memory: 128Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+<span class="sh">    resources:</span>
+<span class="sh">      limits:</span>
+<span class="sh">        cpu: 100m</span>
+<span class="sh">        memory: 128Mi</span>
+<span class="sh">      requests:</span>
+<span class="sh">        cpu: 100m</span>
+<span class="sh">        memory: 128Mi</span>
 
-    tolerations:
-      - key: &quot;CriticalAddonsOnly&quot;
-        operator: &quot;Exists&quot;
-        description = &quot;Cluster Proportional Autoscaler for CoreDNS Service&quot;
-    EOT
-  ]
-}
+<span class="sh">    tolerations:</span>
+<span class="sh">      - key: &quot;CriticalAddonsOnly&quot;</span>
+<span class="sh">        operator: &quot;Exists&quot;</span>
+<span class="sh">        description = &quot;Cluster Proportional Autoscaler for CoreDNS Service&quot;</span>
+<span class="dl">    EOT</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p>The following properties are made available for use when managing the add-on via GitOps.</p>

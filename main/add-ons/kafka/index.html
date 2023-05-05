@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1462,27 +1462,27 @@ This addon deploys Strimizi Kafka Operator and it makes it really easy to spin u
 <p>For complete project documentation, please visit the <a href="https://strimzi.io/">Strimzi Kafka</a>.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>Strimzi Kafka Operator can be deployed by enabling the add-on via the following.</p>
-<div class="highlight"><pre><span></span><code>enable_strimzi_kafka_operator = true
+<div class="highlight"><pre><span></span><code><span class="na">enable_strimzi_kafka_operator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>You can optionally customize the Helm chart that deploys <code>Kafka</code> via the following configuration.</p>
-<div class="highlight"><pre><span></span><code>  enable_strimzi_kafka_operator = true
-  # Optional  kafka_helm_config
-  strimzi_kafka_operator_helm_config = {
-    name             = local.name
-    chart            = &quot;strimzi-kafka-operator&quot;
-    repository       = &quot;https://strimzi.io/charts/&quot;
-    version          = &quot;0.31.1&quot;
-    namespace        = local.name
-    create_namespace = true
-    values           = [templatefile(&quot;${path.module}/values.yaml&quot;, {})]
-    description      = &quot;Strimzi - Apache Kafka on Kubernetes&quot;
-  }
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_strimzi_kafka_operator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="c1">  # Optional  kafka_helm_config</span>
+<span class="w">  </span><span class="nb">strimzi_kafka_operator_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="nv">local.name</span>
+<span class="w">    </span><span class="na">chart</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;strimzi-kafka-operator&quot;</span>
+<span class="w">    </span><span class="na">repository</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://strimzi.io/charts/&quot;</span>
+<span class="w">    </span><span class="na">version</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.31.1&quot;</span>
+<span class="w">    </span><span class="na">namespace</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.name</span>
+<span class="w">    </span><span class="na">create_namespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">    </span><span class="na">values</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nf">templatefile</span><span class="p">(</span><span class="s2">&quot;${path.module}/values.yaml&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{})]</span>
+<span class="w">    </span><span class="na">description</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Strimzi - Apache Kafka on Kubernetes&quot;</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p>The following properties are made available for use when managing the add-on via GitOps.</p>
-<div class="highlight"><pre><span></span><code>strimziKafkaOperator = {
-  enable = true
-}
+<div class="highlight"><pre><span></span><code><span class="nb">strimziKafkaOperator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">enable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="p">}</span>
 </code></pre></div>
 
               

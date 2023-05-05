@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1466,24 +1466,24 @@ Read the installation instruction <a href="https://docs.cilium.io/en/latest/inst
 <p>For complete project documentation, please visit the <a href="https://docs.cilium.io/en/stable/">Cilium documentation site</a>.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>By Cilium in combination with the <code>Amazon VPC CNI plugin</code> by enabling the add-on via the following.</p>
-<div class="highlight"><pre><span></span><code>enable_cilium = true
+<div class="highlight"><pre><span></span><code><span class="na">enable_cilium</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>Deploy Cilium with custom <code>values.yaml</code></p>
-<div class="highlight"><pre><span></span><code>  # Optional Map value; pass cilium-values.yaml from consumer module
-   cilium_helm_config = {
-    name       = &quot;cilium&quot;                                               # (Required) Release name.
-    repository = &quot;https://helm.cilium.io/&quot;                              # (Optional) Repository URL where to locate the requested chart.
-    chart      = &quot;cilium&quot;                                               # (Required) Chart name to be installed.
-    version    = &quot;1.12.1&quot;                                               # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/cilium/locals.tf
-    values = [templatefile(&quot;${path.module}/cilium-values.yaml&quot;, {})]
-  }
+<div class="highlight"><pre><span></span><code><span class="c1">  # Optional Map value; pass cilium-values.yaml from consumer module</span>
+<span class="w">   </span><span class="nb">cilium_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;cilium&quot;</span><span class="c1">                                               # (Required) Release name.</span>
+<span class="w">    </span><span class="na">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://helm.cilium.io/&quot;</span><span class="c1">                              # (Optional) Repository URL where to locate the requested chart.</span>
+<span class="w">    </span><span class="na">chart</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;cilium&quot;</span><span class="c1">                                               # (Required) Chart name to be installed.</span>
+<span class="w">    </span><span class="na">version</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.12.1&quot;</span><span class="c1">                                               # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/cilium/locals.tf</span>
+<span class="w">    </span><span class="na">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nf">templatefile</span><span class="p">(</span><span class="s2">&quot;${path.module}/cilium-values.yaml&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{})]</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 <p>Refer to the <a href="https://github.com/cilium/cilium/blob/master/install/kubernetes/cilium/values.yaml">cilium default values file</a> for complete values options for the chart</p>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p>The following properties are made available for use when managing the add-on via GitOps.</p>
-<div class="highlight"><pre><span></span><code>cilium = {
-  enable  = true
-}
+<div class="highlight"><pre><span></span><code><span class="nb">cilium</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">enable</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="p">}</span>
 </code></pre></div>
 
               

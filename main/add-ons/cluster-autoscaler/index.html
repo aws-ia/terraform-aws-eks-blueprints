@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1465,14 +1465,14 @@
 <p>The <a href="https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler">Cluster Autoscaler</a> add-on adds support for Cluster Autoscaler to an EKS cluster. It is typically installed as a <strong>Deployment</strong> in your cluster. It uses leader election to ensure high availability, but scaling is one done via one replica at a time.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/cluster-autoscaler">Cluster Autoscaler</a> can be deployed by enabling the add-on via the following.</p>
-<div class="highlight"><pre><span></span><code>enable_cluster_autoscaler = true
+<div class="highlight"><pre><span></span><code><span class="na">enable_cluster_autoscaler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p>The following properties are made available for use when managing the add-on via GitOps.</p>
-<div class="highlight"><pre><span></span><code>clusterAutoscaler = {
-  enable = true
-  serviceAccountName = &quot;&lt;service_account&gt;&quot;
-}
+<div class="highlight"><pre><span></span><code><span class="nb">clusterAutoscaler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">enable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">serviceAccountName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&lt;service_account&gt;&quot;</span>
+<span class="p">}</span>
 </code></pre></div>
 
               

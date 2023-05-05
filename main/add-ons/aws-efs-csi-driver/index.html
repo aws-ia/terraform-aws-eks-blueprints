@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1460,7 +1460,7 @@
 <p>This add-on deploys the <a href="https://docs.aws.amazon.com/eks/latest/userguide/efs-csi.html">AWS EFS CSI driver</a> into an EKS cluster.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>The <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/aws-efs-csi-driver">AWS EFS CSI driver</a> can be deployed by enabling the add-on via the following. Check out the full <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/stateful/main.tf">example</a> to deploy an EKS Cluster with EFS backing the dynamic provisioning of persistent volumes.</p>
-<div class="highlight"><pre><span></span><code>  enable_aws_efs_csi_driver = true
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_aws_efs_csi_driver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>Once deployed, you will be able to see a number of supporting resources in the <code>kube-system</code> namespace.</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>deployment<span class="w"> </span>efs-csi-controller<span class="w"> </span>-n<span class="w"> </span>kube-system
@@ -1474,24 +1474,24 @@ NAME<span class="w">           </span>DESIRED<span class="w">   </span>CURRENT<s
 efs-csi-node<span class="w">   </span><span class="m">3</span><span class="w">         </span><span class="m">3</span><span class="w">         </span><span class="m">3</span><span class="w">       </span><span class="m">3</span><span class="w">            </span><span class="m">3</span><span class="w">           </span>beta.kubernetes.io/os<span class="o">=</span>linux<span class="w">   </span>4m32s
 </code></pre></div>
 <p>You can optionally customize the Helm chart that deploys the driver via the following configuration.</p>
-<div class="highlight"><pre><span></span><code>  enable_aws_efs_csi_driver = true
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_aws_efs_csi_driver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 
-  # Optional aws_efs_csi_driver_helm_config
-  aws_efs_csi_driver_helm_config = {
-    repository  = &quot;https://kubernetes-sigs.github.io/aws-efs-csi-driver/&quot;
-    version     = &quot;2.2.3&quot;
-  }
-  aws_efs_csi_driver_irsa_policies = [&quot;&lt;ADDITIONAL_IAM_POLICY_ARN&gt;&quot;]
+<span class="c1">  # Optional aws_efs_csi_driver_helm_config</span>
+<span class="w">  </span><span class="nb">aws_efs_csi_driver_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">repository</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://kubernetes-sigs.github.io/aws-efs-csi-driver/&quot;</span>
+<span class="w">    </span><span class="na">version</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;2.2.3&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="na">aws_efs_csi_driver_irsa_policies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;&lt;ADDITIONAL_IAM_POLICY_ARN&gt;&quot;</span><span class="p">]</span>
 </code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p><code>ArgoCD</code> with <code>App of Apps</code> GitOps enabled for this Add-on by enabling the following variable</p>
-<div class="highlight"><pre><span></span><code>argocd_manage_add_ons = true
+<div class="highlight"><pre><span></span><code><span class="na">argocd_manage_add_ons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>The following is configured to ArgoCD App of Apps for this Add-on.</p>
-<div class="highlight"><pre><span></span><code>  argocd_gitops_config = {
-    enable             = true
-    serviceAccountName = local.service_account
-  }
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nb">argocd_gitops_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">enable</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">    </span><span class="na">serviceAccountName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">local.service_account</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 
               

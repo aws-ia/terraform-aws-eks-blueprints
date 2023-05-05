@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1461,41 +1461,41 @@
 <p>For complete project documentation, please visit the <a href="https://karpenter.sh/docs/getting-started/">Karpenter documentation</a>.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>Karpenter can be deployed by enabling the add-on via the following. Check out the full <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/karpenter/locals.tf">example</a> to deploy the EKS Cluster with Karpenter.</p>
-<div class="highlight"><pre><span></span><code>enable_karpenter = true
+<div class="highlight"><pre><span></span><code><span class="na">enable_karpenter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>You can optionally customize the Helm chart that deploys <code>Karpenter</code> via the following configuration.</p>
-<div class="highlight"><pre><span></span><code>  enable_karpenter = true
-  # Queue optional for native handling of instance termination events
-  karpenter_sqs_queue_arn = &quot;arn:aws:sqs:us-west-2:444455556666:queue1&quot;
-  # Optional to add name prefix for Karpenter&#39;s event bridge rules
-  karpenter_event_rule_name_prefix = &quot;Karpenter&quot;
-  # Optional  karpenter_helm_config
-  karpenter_helm_config = {
-    name                       = &quot;karpenter&quot;
-    chart                      = &quot;karpenter&quot;
-    repository                 = &quot;https://charts.karpenter.sh&quot;
-    version                    = &quot;0.19.3&quot;
-    namespace                  = &quot;karpenter&quot;
-    values = [templatefile(&quot;${path.module}/values.yaml&quot;, {
-         eks_cluster_id       = var.eks_cluster_id,
-         eks_cluster_endpoint = var.eks_cluster_endpoint,
-         service_account      = var.service_account,
-         operating_system     = &quot;linux&quot;
-    })]
-  }
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="na">enable_karpenter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="c1">  # Queue optional for native handling of instance termination events</span>
+<span class="w">  </span><span class="na">karpenter_sqs_queue_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;arn:aws:sqs:us-west-2:444455556666:queue1&quot;</span>
+<span class="c1">  # Optional to add name prefix for Karpenter&#39;s event bridge rules</span>
+<span class="w">  </span><span class="na">karpenter_event_rule_name_prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Karpenter&quot;</span>
+<span class="c1">  # Optional  karpenter_helm_config</span>
+<span class="w">  </span><span class="nb">karpenter_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">                       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;karpenter&quot;</span>
+<span class="w">    </span><span class="na">chart</span><span class="w">                      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;karpenter&quot;</span>
+<span class="w">    </span><span class="na">repository</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://charts.karpenter.sh&quot;</span>
+<span class="w">    </span><span class="na">version</span><span class="w">                    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.19.3&quot;</span>
+<span class="w">    </span><span class="na">namespace</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;karpenter&quot;</span>
+<span class="w">    </span><span class="na">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nf">templatefile</span><span class="p">(</span><span class="s2">&quot;${path.module}/values.yaml&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="na">eks_cluster_id</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.eks_cluster_id</span><span class="p">,</span>
+<span class="w">         </span><span class="na">eks_cluster_endpoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.eks_cluster_endpoint</span><span class="p">,</span>
+<span class="w">         </span><span class="na">service_account</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.service_account</span><span class="p">,</span>
+<span class="w">         </span><span class="na">operating_system</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;linux&quot;</span>
+<span class="w">    </span><span class="p">})]</span>
+<span class="w">  </span><span class="p">}</span>
 
-  karpenter_irsa_policies = [] # Optional to add additional policies to IRSA
+<span class="w">  </span><span class="na">karpenter_irsa_policies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="c1"> # Optional to add additional policies to IRSA</span>
 </code></pre></div>
 <h3 id="gitops-configuration">GitOps Configuration<a class="headerlink" href="#gitops-configuration" title="Permanent link">&para;</a></h3>
 <p>The following properties are made available for use when managing the add-on via GitOps.</p>
 <p>Refer to <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/karpenter/locals.tf">locals.tf</a> for latest config. GitOps with ArgoCD Add-on repo is located <a href="https://github.com/aws-samples/eks-blueprints-add-ons/blob/main/chart/values.yaml">here</a></p>
-<div class="highlight"><pre><span></span><code>  argocd_gitops_config = {
-    enable                    = true
-    serviceAccountName        = local.service_account
-    controllerClusterName     = var.eks_cluster_id
-    controllerClusterEndpoint = local.eks_cluster_endpoint
-    awsDefaultInstanceProfile = var.node_iam_instance_profile
-  }
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nb">argocd_gitops_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">enable</span><span class="w">                    </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">    </span><span class="na">serviceAccountName</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.service_account</span>
+<span class="w">    </span><span class="na">controllerClusterName</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.eks_cluster_id</span>
+<span class="w">    </span><span class="na">controllerClusterEndpoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">local.eks_cluster_endpoint</span>
+<span class="w">    </span><span class="na">awsDefaultInstanceProfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.node_iam_instance_profile</span>
+<span class="w">  </span><span class="p">}</span>
 </code></pre></div>
 
               

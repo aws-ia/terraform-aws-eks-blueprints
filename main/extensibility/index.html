@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1668,84 +1668,84 @@
 <li>We recommend, you implement a separate repository for your private add-on while still using the upstream framework. This gives you the advantage of keeping up with ongoing feature releases and bug fixes while keeping your add-on private.</li>
 </ol>
 <p>The following example shows you can leverage EKS Blueprints to provide your own helm add-on.</p>
-<div class="highlight"><pre><span></span><code>#---------------------------------------------------------------
-# AWS VPC CNI Metrics Helper
-# This is using local helm chart
-#---------------------------------------------------------------
+<div class="highlight"><pre><span></span><code><span class="c1">#---------------------------------------------------------------</span>
+<span class="c1"># AWS VPC CNI Metrics Helper</span>
+<span class="c1"># This is using local helm chart</span>
+<span class="c1">#---------------------------------------------------------------</span>
 
-data &quot;aws_partition&quot; &quot;current&quot; {}
+<span class="kr">data</span><span class="w"> </span><span class="nc">&quot;aws_partition&quot;</span><span class="w"> </span><span class="nv">&quot;current&quot;</span><span class="w"> </span><span class="p">{}</span>
 
-data &quot;aws_caller_identity&quot; &quot;current&quot; {}
+<span class="kr">data</span><span class="w"> </span><span class="nc">&quot;aws_caller_identity&quot;</span><span class="w"> </span><span class="nv">&quot;current&quot;</span><span class="w"> </span><span class="p">{}</span>
 
 
-locals {
-  cni_metrics_name = &quot;cni-metrics-helper&quot;
+<span class="nb">locals</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">cni_metrics_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;cni-metrics-helper&quot;</span>
 
-  default_helm_values = [templatefile(&quot;${path.module}/helm-values/cni-metrics-helper-values.yaml&quot;, {
-    eks_cluster_id = var.eks_cluster_id,
-    image          = &quot;602401143452.dkr.ecr.${var.region}.amazonaws.com/cni-metrics-helper:v1.10.3&quot;,
-    sa-name        = local.cni_metrics_name
-   oidc_url        = &quot;oidc.eks.eu-west-1.amazonaws.com/id/E6CASOMETHING55B9D01F7&quot;
-  })]
+<span class="w">  </span><span class="na">default_helm_values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nf">templatefile</span><span class="p">(</span><span class="s2">&quot;${path.module}/helm-values/cni-metrics-helper-values.yaml&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">eks_cluster_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.eks_cluster_id</span><span class="p">,</span>
+<span class="w">    </span><span class="na">image</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;602401143452.dkr.ecr.${var.region}.amazonaws.com/cni-metrics-helper:v1.10.3&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">sa-name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.cni_metrics_name</span>
+<span class="w">   </span><span class="na">oidc_url</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;oidc.eks.eu-west-1.amazonaws.com/id/E6CASOMETHING55B9D01F7&quot;</span>
+<span class="w">  </span><span class="p">})]</span>
 
-  addon_context = {
-    aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
-    aws_caller_identity_arn        = data.aws_caller_identity.current.arn
-    aws_eks_cluster_endpoint       = data.aws_eks_cluster.cluster.endpoint
-    aws_partition_id               = data.aws_partition.current.partition
-    aws_region_name                = var.region
-    eks_cluster_id                 = var.eks_cluster_id
-    eks_oidc_issuer_url            = local.oidc_url
-    eks_oidc_provider_arn          = &quot;arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.oidc_url}&quot;
-    tags                           = {}
-  }
+<span class="w">  </span><span class="nb">addon_context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">aws_caller_identity_account_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_caller_identity.current.account_id</span>
+<span class="w">    </span><span class="na">aws_caller_identity_arn</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_caller_identity.current.arn</span>
+<span class="w">    </span><span class="na">aws_eks_cluster_endpoint</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_eks_cluster.cluster.endpoint</span>
+<span class="w">    </span><span class="na">aws_partition_id</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_partition.current.partition</span>
+<span class="w">    </span><span class="na">aws_region_name</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="nv">var.region</span>
+<span class="w">    </span><span class="na">eks_cluster_id</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="nv">var.eks_cluster_id</span>
+<span class="w">    </span><span class="na">eks_oidc_issuer_url</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="nv">local.oidc_url</span>
+<span class="w">    </span><span class="na">eks_oidc_provider_arn</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.oidc_url}&quot;</span>
+<span class="w">    </span><span class="nb">tags</span><span class="w">                           </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">  </span><span class="p">}</span>
 
-  helm_config = {
-    name        = local.cni_metrics_name
-    description = &quot;CNI Metrics Helper Helm Chart&quot;
-    timeout     = &quot;300&quot;
-    chart       = &quot;${path.module}/local-helm-charts/cni-metrics-helper&quot;
-    version     = &quot;0.1.7&quot;
-    repository  = null
-    namespace   = &quot;kube-system&quot;
-    lint        = false
-    values      = local.default_helm_values
-  }
+<span class="w">  </span><span class="nb">helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.cni_metrics_name</span>
+<span class="w">    </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;CNI Metrics Helper Helm Chart&quot;</span>
+<span class="w">    </span><span class="na">timeout</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;300&quot;</span>
+<span class="w">    </span><span class="na">chart</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${path.module}/local-helm-charts/cni-metrics-helper&quot;</span>
+<span class="w">    </span><span class="na">version</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.1.7&quot;</span>
+<span class="w">    </span><span class="na">repository</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="kt">null</span>
+<span class="w">    </span><span class="na">namespace</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;kube-system&quot;</span>
+<span class="w">    </span><span class="na">lint</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="w">    </span><span class="na">values</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">local.default_helm_values</span>
+<span class="w">  </span><span class="p">}</span>
 
-  irsa_config = {
-    kubernetes_namespace              = &quot;kube-system&quot;
-    kubernetes_service_account        = local.cni_metrics_name
-    create_kubernetes_namespace       = false
-    create_kubernetes_service_account = true
-    irsa_iam_policies                 = [aws_iam_policy.cni_metrics.arn]
-  }
-}
+<span class="w">  </span><span class="nb">irsa_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">kubernetes_namespace</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;kube-system&quot;</span>
+<span class="w">    </span><span class="na">kubernetes_service_account</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.cni_metrics_name</span>
+<span class="w">    </span><span class="na">create_kubernetes_namespace</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="w">    </span><span class="na">create_kubernetes_service_account</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">    </span><span class="na">irsa_iam_policies</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_iam_policy.cni_metrics.arn</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 
-module &quot;helm_addon&quot; {
-  source      = &quot;github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon&quot;
-  helm_config = local.helm_config
-  irsa_config = local.irsa_config
-  addon_context = local.addon_context
-}
+<span class="kr">module</span><span class="w"> </span><span class="nv">&quot;helm_addon&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon&quot;</span>
+<span class="w">  </span><span class="na">helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">local.helm_config</span>
+<span class="w">  </span><span class="na">irsa_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">local.irsa_config</span>
+<span class="w">  </span><span class="na">addon_context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">local.addon_context</span>
+<span class="p">}</span>
 
-resource &quot;aws_iam_policy&quot; &quot;cni_metrics&quot; {
-  name        = &quot;${var.eks_cluster_id}-cni-metrics&quot;
-  description = &quot;IAM policy for EKS CNI Metrics helper&quot;
-  path        = &quot;/&quot;
-  policy      = data.aws_iam_policy_document.cni_metrics.json
+<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;aws_iam_policy&quot;</span><span class="w"> </span><span class="nv">&quot;cni_metrics&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${var.eks_cluster_id}-cni-metrics&quot;</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;IAM policy for EKS CNI Metrics helper&quot;</span>
+<span class="w">  </span><span class="na">path</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/&quot;</span>
+<span class="w">  </span><span class="na">policy</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_iam_policy_document.cni_metrics.json</span>
 
-  tags = var.tags
-}
+<span class="w">  </span><span class="na">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.tags</span>
+<span class="p">}</span>
 
-data &quot;aws_iam_policy_document&quot; &quot;cni_metrics&quot; {
-  statement {
-    sid = &quot;CNIMetrics&quot;
-    actions = [
-      &quot;cloudwatch:PutMetricData&quot;
-    ]
-    resources = [&quot;*&quot;]
-  }
-}
+<span class="kr">data</span><span class="w"> </span><span class="nc">&quot;aws_iam_policy_document&quot;</span><span class="w"> </span><span class="nv">&quot;cni_metrics&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">statement</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">sid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;CNIMetrics&quot;</span>
+<span class="w">    </span><span class="na">actions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="s2">&quot;cloudwatch:PutMetricData&quot;</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">    </span><span class="na">resources</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="secrets-handling">Secrets Handling<a class="headerlink" href="#secrets-handling" title="Permanent link">&para;</a></h3>
 <p>We expect that certain add-ons will need to provide access to sensitive values to their helm chart configuration such as password, license keys, API keys, etc. We recommend that you ask customers to store such secrets in an external secret store such as AWS Secrets Manager or AWS Systems Manager Parameter Store and use the <a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_csi_driver.html">AWS Secrets and Configuration Provider (ASCP)</a> to mount the secrets as files or environment variables in the pods of your add-on. We are actively working on providing a native add-on for ASCP as of this writing which you will be able to leverage for your add-on.</p>
@@ -1807,46 +1807,46 @@ data &quot;aws_iam_policy_document&quot; &quot;cni_metrics&quot; {
 <blockquote>
 <p>main.tf</p>
 </blockquote>
-<div class="highlight"><pre><span></span><code>module &quot;helm_addon&quot; {
-  source               = &quot;github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon?ref=v3.5.0&quot;
-  manage_via_gitops    = var.manage_via_gitops
+<div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;helm_addon&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon?ref=v3.5.0&quot;</span>
+<span class="w">  </span><span class="na">manage_via_gitops</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.manage_via_gitops</span>
 
-  ### The following values are defined in locals.tf
-  set_values           = local.set_values
-  set_sensitive_values = local.set_sensitive_values
-  helm_config          = local.helm_config
-  addon_context        = var.addon_context
-}
+<span class="c1">  ### The following values are defined in locals.tf</span>
+<span class="w">  </span><span class="na">set_values</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">local.set_values</span>
+<span class="w">  </span><span class="na">set_sensitive_values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">local.set_sensitive_values</span>
+<span class="w">  </span><span class="na">helm_config</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">local.helm_config</span>
+<span class="w">  </span><span class="na">addon_context</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.addon_context</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="core-repo-changes">Core Repo Changes<a class="headerlink" href="#core-repo-changes" title="Permanent link">&para;</a></h3>
 <p>Once you have tested your add-on locally against your fork of the core repo, please open a PR that contains the following:</p>
 <blockquote>
 <p>Update to <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/main.tf"><code>kubernetes-addons/main.tf</code></a> with a code block that invokes your add-on. E.g.</p>
 </blockquote>
-<div class="highlight"><pre><span></span><code>module &quot;kube_state_metrics&quot; {
-  count                     = var.enable_kube_state_metrics ? 1 : 0
-  source                    = &quot;askulkarni2/kube-state-metrics-addon/eksblueprints&quot;
-  version                   = &quot;0.0.2&quot;
-  helm_config               = var.kube_state_metrics_helm_config
-  addon_context             = local.addon_context
-  manage_via_gitops         = var.argocd_manage_add_ons
-}
+<div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;kube_state_metrics&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">count</span><span class="w">                     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.enable_kube_state_metrics</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="m">0</span>
+<span class="w">  </span><span class="na">source</span><span class="w">                    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;askulkarni2/kube-state-metrics-addon/eksblueprints&quot;</span>
+<span class="w">  </span><span class="na">version</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.0.2&quot;</span>
+<span class="w">  </span><span class="na">helm_config</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="nv">var.kube_state_metrics_helm_config</span>
+<span class="w">  </span><span class="na">addon_context</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="nv">local.addon_context</span>
+<span class="w">  </span><span class="na">manage_via_gitops</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">var.argocd_manage_add_ons</span>
+<span class="p">}</span>
 </code></pre></div>
 <blockquote>
 <p>Update to <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/variables.tf"><code>kubernetes-addons/variables.tf</code></a> to accept parameters for your add-on. E.g.</p>
 </blockquote>
-<div class="highlight"><pre><span></span><code>#-----------Kube State Metrics ADDON-------------
-variable &quot;enable_kube_state_metrics&quot; {
-  type        = bool
-  default     = false
-  description = &quot;Enable Kube State Metrics add-on&quot;
-}
+<div class="highlight"><pre><span></span><code><span class="c1">#-----------Kube State Metrics ADDON-------------</span>
+<span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;enable_kube_state_metrics&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">bool</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Enable Kube State Metrics add-on&quot;</span>
+<span class="p">}</span>
 
-variable &quot;kube_state_metrics_helm_config&quot; {
-  type        = any
-  default     = {}
-  description = &quot;Kube State Metrics Helm Chart config&quot;
-}
+<span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;kube_state_metrics_helm_config&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="err">any</span>
+<span class="w">  </span><span class="nb">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Kube State Metrics Helm Chart config&quot;</span>
+<span class="p">}</span>
 </code></pre></div>
 <ul>
 <li>Add documentation under add-on <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/docs/add-ons/"><code>docs</code></a> that gives an overview of your add-on and points the customer to the actual documentation which would live in your add-on repo.</li>
@@ -1859,10 +1859,10 @@ variable &quot;kube_state_metrics_helm_config&quot; {
 <blockquote>
 <p>outputs.tf</p>
 </blockquote>
-<div class="highlight"><pre><span></span><code>output &quot;argocd_gitops_config&quot; {
-  description = &quot;Configuration used for managing the add-on with ArgoCD&quot;
-  value       = var.manage_via_gitops ? local.argocd_gitops_config : null
-}
+<div class="highlight"><pre><span></span><code><span class="kr">output</span><span class="w"> </span><span class="nv">&quot;argocd_gitops_config&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Configuration used for managing the add-on with ArgoCD&quot;</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.manage_via_gitops</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="nv">local.argocd_gitops_config</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kt">null</span>
+<span class="p">}</span>
 </code></pre></div>
 <ul>
 <li>

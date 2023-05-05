@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.3.2">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.3.2">
     
     
       
@@ -1452,23 +1452,23 @@
 </ul>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/velero">Velero</a> can be deployed by enabling the add-on via the following.</p>
-<div class="highlight"><pre><span></span><code>enable_velero           = true
-velero_backup_s3_bucket = &quot;&lt;YOUR_BUCKET_NAME&gt;&quot;
+<div class="highlight"><pre><span></span><code><span class="na">enable_velero</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="na">velero_backup_s3_bucket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&lt;YOUR_BUCKET_NAME&gt;&quot;</span>
 </code></pre></div>
 <p>You can also customize the Helm chart that deploys <code>velero</code> via the following configuration:</p>
-<div class="highlight"><pre><span></span><code>enable_velero           = true
-velero_helm_config = {
-  name        = &quot;velero&quot;
-  description = &quot;A Helm chart for velero&quot;
-  chart       = &quot;velero&quot;
-  version     = &quot;2.30.0&quot;
-  repository  = &quot;https://vmware-tanzu.github.io/helm-charts/&quot;
-  namespace   = &quot;velero&quot;
-  values = [templatefile(&quot;${path.module}/values.yaml&quot;, {
-    bucket = &quot;&lt;YOUR_BUCKET_NAME&gt;&quot;,
-    region = &quot;&lt;YOUR_BUCKET_REGION&gt;&quot;
-  })]
-}
+<div class="highlight"><pre><span></span><code><span class="na">enable_velero</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="nb">velero_helm_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;velero&quot;</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;A Helm chart for velero&quot;</span>
+<span class="w">  </span><span class="na">chart</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;velero&quot;</span>
+<span class="w">  </span><span class="na">version</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;2.30.0&quot;</span>
+<span class="w">  </span><span class="na">repository</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://vmware-tanzu.github.io/helm-charts/&quot;</span>
+<span class="w">  </span><span class="na">namespace</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;velero&quot;</span>
+<span class="w">  </span><span class="na">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nf">templatefile</span><span class="p">(</span><span class="s2">&quot;${path.module}/values.yaml&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">bucket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&lt;YOUR_BUCKET_NAME&gt;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&lt;YOUR_BUCKET_REGION&gt;&quot;</span>
+<span class="w">  </span><span class="p">})]</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>To see a working example, see the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/stateful"><code>stateful</code></a> example blueprint.</p>
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
