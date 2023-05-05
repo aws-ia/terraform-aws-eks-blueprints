@@ -69,7 +69,7 @@ If you would like to use private repositories, you can download Docker images fo
 
 To indicate that you would like to manage add-ons via ArgoCD, you must do the following:
 
-1. Enable the ArgoCD add-on by setting `argocd_enable` to `true`.
+1. Enable the ArgoCD add-on by setting `enable_argocd` to `true`.
 2. Specify you would like ArgoCD to be responsible for deploying your add-ons by setting `argocd_manage_add_ons` to `true`. This will prevent the individual Terraform add-on modules from deploying Helm charts.
 3. Pass Application configuration for your add-ons repository via the `argocd_applications` property.
 
