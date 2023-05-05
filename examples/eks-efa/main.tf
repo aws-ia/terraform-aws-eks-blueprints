@@ -39,12 +39,22 @@ data "http" "efa_device_plugin_yaml" {
   url = "https://raw.githubusercontent.com/aws-samples/aws-efa-eks/main/manifest/efa-k8s-device-plugin.yml"
 }
 
+data "aws_ami" "eks_gpu_node" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amazon-eks-gpu-node-${local.cluster_version}-*"]
+  }
+}
 
 # Local config
 
 locals {
   name   = basename(path.cwd)
   region = "us-east-1"
+  cluster_version = "1.25"
 
   vpc_cidr = "10.11.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 2)
@@ -69,6 +79,14 @@ ${data.http.efa_device_plugin_yaml.body}
 YAML
 }
 
+resource "helm_release" "k8s-device-plugin" {
+  name  = "k8s-device-plugin"
+  repository = "https://nvidia.github.io/k8s-device-plugin"
+  chart = "nvidia-device-plugin"
+  version = "0.14.0"
+  namespace = "kube-system"
+}
+
 # Upstream Terraform Modules
 
 module "eks" {
@@ -76,7 +94,7 @@ module "eks" {
   version = "~> 19.12"
 
   cluster_name                   = local.name
-  cluster_version                = "1.25"
+  cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
   
   cluster_addons = {
@@ -148,7 +166,26 @@ module "eks" {
       max_size     = 8
       desired_size = 2
 
-      instance_type = "c5n.9xlarge"
+      #instance_type = "c5n.9xlarge"
+      instance_type  = "g4dn.metal"
+      ami_id         = data.aws_ami.eks_gpu_node.id
+
+      ebs_optimized     = true
+      enable_monitoring = true
+
+      block_device_mappings = {
+        xvda = {
+          device_name = "/dev/xvda"
+          ebs = {
+            volume_size           = 40
+            volume_type           = "gp3"
+            iops                  = 3000
+            throughput            = 150
+            encrypted             = true
+            delete_on_termination = true
+          }
+        }
+      }
      
       subnet_ids = [module.vpc.private_subnets[0]]
       
