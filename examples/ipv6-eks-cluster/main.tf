@@ -53,7 +53,7 @@ module "eks" {
   version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = "1.25"
+  cluster_version                = "1.26"
   cluster_endpoint_public_access = true
 
   # IPV6
@@ -72,8 +72,8 @@ module "eks" {
     vpc-cni    = {}
   }
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  vpc_id                   = module.vpc.vpc_id
+  subnet_ids               = module.vpc.private_subnets
 
   eks_managed_node_groups = {
     initial = {
@@ -103,8 +103,16 @@ module "vpc" {
   private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
   public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
 
+  enable_ipv6 = true
+
+  public_subnet_ipv6_native    = true
+  public_subnet_ipv6_prefixes  = [0, 1, 2]
+  private_subnet_ipv6_native   = true
+  private_subnet_ipv6_prefixes = [3, 4, 5]
+
   enable_nat_gateway = true
   single_nat_gateway = true
+
 
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
