@@ -13,14 +13,14 @@
   - [Resources](#resources)
   - [Inputs](#inputs)
   - [Outputs](#outputs)
-- [Example Walkthrough](example-walkthrough)
-  - [1. Clone Repository](clone-repository)
-  - [2. Configure Terraform Plan](configure-terraform-plan)
-  - [3. Initialize Terraform Plan](initialize-terraform-plan)
-  - [4. Create Terraform Plan](create-terraform-plan)
-  - [5. Apply Terraform Plan](apply-terraform-plan)
-  - [6. Test EFA][test-efa]
-  - [7. Cleanup](cleanup)
+- [Example Walkthrough](#example-walkthrough)
+  - [1. Clone Repository](#clone-repository)
+  - [2. Configure Terraform Plan](#configure-terraform-plan)
+  - [3. Initialize Terraform Plan](#initialize-terraform-plan)
+  - [4. Create Terraform Plan](#create-terraform-plan)
+  - [5. Apply Terraform Plan](#apply-terraform-plan)
+  - [6. Test EFA](#test-efa)
+  - [7. Cleanup](#cleanup)
 
 ## Elastic Fabric Adapter Overview
 
