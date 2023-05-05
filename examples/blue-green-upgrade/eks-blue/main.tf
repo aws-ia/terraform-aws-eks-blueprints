@@ -36,10 +36,10 @@ module "eks_cluster" {
   cluster_version   = "1.23"
 
   argocd_route53_weight      = "100"
-  route53_weight             = "100"
+  route53_weight             = "0"
   ecsfrontend_route53_weight = "100"
 
-  environment_name        = var.core_stack_name
+  environment_name        = var.environment_name
   hosted_zone_name       = var.hosted_zone_name
   eks_admin_role_name    = var.eks_admin_role_name
   workload_repo_url      = var.workload_repo_url

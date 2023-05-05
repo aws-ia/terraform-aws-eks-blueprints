@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 locals {
-  name   = var.core_stack_name
+  name   = var.environment_name
   region = var.aws_region
 
   vpc_cidr       = var.vpc_cidr

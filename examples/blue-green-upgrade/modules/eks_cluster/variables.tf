@@ -4,7 +4,7 @@ variable "aws_region" {
   default     = "us-west-2"
 }
 variable "environment_name" {
-  description = "The name of Core Infrastructure stack, feel free to rename it. Used for cluster and VPC names."
+  description = "The name of Environment Infrastructure stack, feel free to rename it. Used for cluster and VPC names."
   type        = string
   default     = "eks-blueprint"
 }
@@ -82,7 +82,7 @@ variable "vpc_tag_key" {
 }
 
 variable "vpc_tag_value" {
-  # if left blank then {core_stack_name} will be used
+  # if left blank then {environment_name} will be used
   description = "The tag value of the VPC and subnets"
   type        = string
   default     = ""

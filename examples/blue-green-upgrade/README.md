@@ -12,7 +12,7 @@ We are leveraging [the existing EKS Blueprints Workloads GitHub repository sampl
   - [Prerequisites](#prerequisites)
   - [Quick Start](#quick-start)
     - [Configure the Stacks](#configure-the-stacks)
-    - [Create the core stack](#create-the-core-stack)
+    - [Create the environment stack](#create-the-environment-stack)
     - [Create the Blue cluster](#create-the-blue-cluster)
     - [Create the Green cluster](#create-the-green-cluster)
   - [How this work](#how-this-work)
@@ -24,7 +24,7 @@ We are leveraging [the existing EKS Blueprints Workloads GitHub repository sampl
     - [Delete the EKS Cluster(s)](#delete-the-eks-clusters)
       - [TL;DR](#tldr)
       - [Manual](#manual)
-    - [Delete the core infra stack](#delete-the-core-infra-stack)
+    - [Delete the environment stack](#delete-the-environment-stack)
   - [Troubleshoot](#troubleshoot)
     - [External DNS Ownership](#external-dns-ownership)
     - [Check Route 53 Record status](#check-route-53-record-status)
@@ -41,7 +41,7 @@ See the Architecture of what we are building
 
 Our sample is composed of four main directory:
 
-- **core-infra** → this stack will create vpc and dependencies: create a Route53 sub zone for our sample, and a wildcard Certificate Manager certificate for our applications TLS endpoints, and a SecretManager password for the ArgoCD UIs.
+- **environment** → this stack will create the common vpc and dependencies used by our clusters: create a Route53 sub zone for our sample, and a wildcard Certificate Manager certificate for our applications TLS endpoints, and a SecretManager password for the ArgoCD UIs.
 - **modules/eks_cluster** → local module defining the EKS blueprint cluster with ArgoCD add-on which will automatically deploy additional add-ons and our demo workloads
 - **eks-blue** → an instance of the eks_cluster module to create blue cluster
 - **eks-green** → an instance of the eks_cluster module to create green cluster
@@ -80,23 +80,23 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 cd examples/blue-green-upgrade/
 ```
 
-2. Copy the `terraform.tfvars.example` to `terraform.tfvars` on each `core-infra`, `eks-blue` and `eks-green` folders, and change region, hosted_zone_name, eks_admin_role_name according to your needs.
+2. Copy the `terraform.tfvars.example` to `terraform.tfvars` on each `environment`, `eks-blue` and `eks-green` folders, and change region, hosted_zone_name, eks_admin_role_name according to your needs.
 
 ```shell
-cp terraform.tfvars.example core-infra/terraform.tfvars
+cp terraform.tfvars.example environment/terraform.tfvars
 cp terraform.tfvars.example eks-blue/terraform.tfvars
 cp terraform.tfvars.example eks-green/terraform.tfvars
 ```
 
-- You will need to provide the `hosted_zone_name` for example `my-example.com`. Terraform will create a new hosted zone for the project with name: `${core_stack_name}.${hosted_zone_name}` so in our example `eks-blueprint.my-example.com`.
+- You will need to provide the `hosted_zone_name` for example `my-example.com`. Terraform will create a new hosted zone for the project with name: `${environment}.${hosted_zone_name}` so in our example `eks-blueprint.my-example.com`.
 - You need to provide a valid IAM role in `eks_admin_role_name` to have EKS cluster admin rights, generally the one uses in the EKS console.
 
-### Create the core stack
+### Create the environment stack
 
-More info in the core-infra [Readme](core-infra/README.md)
+More info in the environment [Readme](environment/README.md)
 
 ```bash
-cd core-infra
+cd environment
 terraform init
 terraform apply
 ```
@@ -363,12 +363,12 @@ terraform apply -destroy -target="module.eks_blueprints" -auto-approve
 terraform apply -destroy -auto-approve
 ```
 
-### Delete the core infra stack
+### Delete the environment stack
 
-If you have finish playing with this solution, and once you have destroyed the 2 EKS clusters, you can now delete the core_infra stack.
+If you have finish playing with this solution, and once you have destroyed the 2 EKS clusters, you can now delete the environment stack.
 
-```
-cd core-infra
+```bash
+cd environment
 terraform apply -destroy -auto-approve
 ```
 

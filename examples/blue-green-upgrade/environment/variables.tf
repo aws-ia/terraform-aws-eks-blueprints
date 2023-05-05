@@ -1,5 +1,5 @@
-variable "core_stack_name" {
-  description = "The name of Core Infrastructure stack, feel free to rename it. Used for cluster and VPC names."
+variable "environment_name" {
+  description = "The name of environment Infrastructure stack, feel free to rename it. Used for cluster and VPC names."
   type        = string
   default     = "eks-blueprint"
 }

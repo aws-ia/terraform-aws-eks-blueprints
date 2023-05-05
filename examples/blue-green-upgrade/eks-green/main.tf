@@ -36,10 +36,10 @@ module "eks_cluster" {
   cluster_version   = "1.24" # Here, we deploy the cluster with the N+1 Kubernetes Version
 
   argocd_route53_weight      = "0" # We control with theses parameters how we send traffic to the workloads in the new cluster
-  route53_weight             = "0"
+  route53_weight             = "100"
   ecsfrontend_route53_weight = "0"
 
-  environment_name        = var.core_stack_name
+  environment_name        = var.environment_name
   hosted_zone_name       = var.hosted_zone_name
   eks_admin_role_name    = var.eks_admin_role_name
   workload_repo_url      = var.workload_repo_url
