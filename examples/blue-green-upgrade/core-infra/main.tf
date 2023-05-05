@@ -28,8 +28,8 @@ module "vpc" {
   cidr = local.vpc_cidr
 
   azs             = local.azs
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 6, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 6, k + 10)]
 
   enable_nat_gateway   = true
   create_igw           = true

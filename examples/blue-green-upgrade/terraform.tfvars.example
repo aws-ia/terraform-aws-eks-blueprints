@@ -6,7 +6,6 @@ hosted_zone_name    = "eks.mydomain.org" # your Existing Hosted Zone
 eks_admin_role_name = "Admin" # Additional role admin in the cluster (usually the role I use in the AWS console)
 
 #To use other existing VPC reference it's tags
-vpc_tag_key   = "Blueprint"
 vpc_tag_value = "eks-blueprint" # Need same value as core_stack_name
 
 # EKS Blueprint AddOns ArgoCD App of App repository

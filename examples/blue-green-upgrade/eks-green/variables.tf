@@ -64,12 +64,6 @@ variable "argocd_secret_manager_name_suffix" {
   default     = "argocd-admin-secret"
 }
 
-variable "vpc_tag_key" {
-  description = "The tag key of the VPC and subnets"
-  type        = string
-  default     = "Name"
-}
-
 variable "vpc_tag_value" {
   # if left blank then {core_stack_name} will be used
   description = "The tag value of the VPC and subnets"
