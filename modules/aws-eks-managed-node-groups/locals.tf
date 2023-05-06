@@ -26,7 +26,7 @@ locals {
 
     release_version      = ""
     force_update_version = null
-    
+
     update_default_version = true
 
     k8s_labels           = {}
