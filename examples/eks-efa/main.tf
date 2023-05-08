@@ -75,7 +75,7 @@ resource "aws_placement_group" "efa_pg" {
 
 resource "kubectl_manifest" "efa_device_plugin" {
   yaml_body = <<YAML
-${data.http.efa_device_plugin_yaml.body}
+${data.http.efa_device_plugin_yaml.response_body}
 YAML
 }
 
