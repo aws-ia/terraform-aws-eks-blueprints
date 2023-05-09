@@ -26,7 +26,6 @@
     - [8.2. EFA NCCL Test](#82-efa-nccl-test)
   - [9. Cleanup](#9-cleanup)
 - [Conclusion](#conclusion)
-- 
 
 ## Elastic Fabric Adapter Overview
 
@@ -199,7 +198,7 @@ terraform plan -out tfplan
 <details>
 <summary>Output:</summary>
 
-```logs
+```text
 ...
 # module.vpc.aws_vpc.this[0] will be created
   + resource "aws_vpc" "this" {
@@ -232,8 +231,10 @@ terraform apply tfplan
 ```
 
 <details>
+
 <summary>Output:</summary>
-```logs
+
+```text
 aws_placement_group.efa_pg: Creating...
 module.eks.aws_cloudwatch_log_group.this[0]: Creating...
 module.vpc.aws_vpc.this[0]: Creating...
@@ -271,6 +272,7 @@ Apply complete! Resources: 80 added, 0 changed, 0 destroyed.
 Outputs:
 
 configure_kubectl = "aws eks update-kubeconfig --region us-east-1 --name eks-efa"
+
 ```
 </details>
 
@@ -328,7 +330,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubeflow/mpi-operator/v0.3.0/
 
 Output:
 
-```log
+```text
 namespace/mpi-operator created
 customresourcedefinition.apiextensions.k8s.io/mpijobs.kubeflow.org created
 serviceaccount/mpi-operator created
@@ -349,7 +351,7 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/aws-do-eks/main/C
 
 Output:
 
-```logs
+```text
 clusterrole.rbac.authorization.k8s.io/mpi-operator configured
 ```
 
@@ -367,7 +369,7 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/aws-do-eks/main/C
 
 Output:
 
-```logs
+```text
 mpijob.kubeflow.org/efa-info-test created
 ```
 
@@ -377,7 +379,7 @@ kubectl get pods
 
 Output:
 
-```logs
+```text
 NAME                           READY   STATUS      RESTARTS   AGE
 efa-info-test-launcher-hckkj   0/1     Completed   2          37s
 efa-info-test-worker-0         1/1     Running     0          38s
@@ -392,7 +394,7 @@ kubectl logs -f $(kubectl get pods | grep launcher | cut -d ' ' -f 1)
 
 Output:
 
-```logs
+```text
 Warning: Permanently added 'efa-info-test-worker-1.efa-info-test-worker.default.svc,10.11.13.224' (ECDSA) to the list of known hosts.
 Warning: Permanently added 'efa-info-test-worker-0.efa-info-test-worker.default.svc,10.11.4.63' (ECDSA) to the list of known hosts.
 [1,1]<stdout>:provider: efa
@@ -419,7 +421,7 @@ kubectl delete mpijob efa-info-test
 
 Output:
 
-```logs
+```text
 mpijob.kubeflow.org "efa-info-test" deleted
 ```
 
@@ -433,7 +435,7 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/aws-do-eks/main/C
 
 Output:
 
-```log
+```text
 mpijob.kubeflow.org/test-nccl-efa created
 ```
 
@@ -445,7 +447,7 @@ kubectl get pods
 
 Output:
 
-```logs
+```text
 NAME                           READY   STATUS    RESTARTS      AGE
 test-nccl-efa-launcher-tx47t   1/1     Running   2 (31s ago)   33s
 test-nccl-efa-worker-0         1/1     Running   0             33s
@@ -462,7 +464,7 @@ kubectl logs -f $(kubectl get pods | grep launcher | cut -d ' ' -f 1)
 
 <summary>Output:</summary>
 
-```logs
+```text
 Warning: Permanently added 'test-nccl-efa-worker-1.test-nccl-efa-worker.default.svc,10.11.5.31' (ECDSA) to the list of known hosts.
 Warning: Permanently added 'test-nccl-efa-worker-0.test-nccl-efa-worker.default.svc,10.11.13.106' (ECDSA) to the list of known hosts.
 [1,0]<stdout>:# nThread 1 nGpus 1 minBytes 1 maxBytes 1073741824 step: 2(factor) warmup iters: 5 iters: 100 agg iters: 1 validation: 1 graph: 0
@@ -563,7 +565,7 @@ Warning: Permanently added 'test-nccl-efa-worker-0.test-nccl-efa-worker.default.
 
 The following section from the beginning of the log, indicates that the test is being performed using EFA:
 
-```logs
+```text
 [1,0]<stdout>:test-nccl-efa-worker-0:21:21 [0] NCCL INFO NET/OFI Selected Provider is efa (found 1 nics)
 [1,0]<stdout>:test-nccl-efa-worker-0:21:21 [0] NCCL INFO Using network AWS Libfabric
 [1,0]<stdout>:NCCL version 2.12.7+cuda11.4
@@ -594,7 +596,7 @@ kubectl delete mpijob test-nccl-efa
 
 Output:
 
-```logs
+```text
 mpijob.kubeflow.org "test-nccl-efa" deleted
 ```
 
@@ -607,7 +609,7 @@ terraform destroy
 <details>
 <summary>Output:</summary>
 
-```logs
+```text
 ...
  # module.eks.module.self_managed_node_group["efa"].aws_iam_role.this[0] will be destroyed
 ...
