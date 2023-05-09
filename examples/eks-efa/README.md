@@ -1,11 +1,11 @@
 # EKS Blueprint Example with Elastic Fabric Adapter
 
-## Table of contents
+## Table of Contents
 
 - [EKS Blueprint Example with Elastic Fabric Adapter](#eks-blueprint-example-with-elastic-fabric-adapter)
-  - [Table of contents](#table-of-contents)
+  - [Table of Contents](#table-of-contents)
   - [Elastic Fabric Adapter Overview](#elastic-fabric-adapter-overview)
-  - [Setup Details](setup-details)
+  - [Setup Details](#setup-details)
 - [Terraform Doc](#terraform-doc)
   - [Requirements](#requirements)
   - [Providers](#providers)
@@ -22,8 +22,8 @@
   - [6. Connect to EKS](#6-connect-to-eks)
   - [7. Deploy Kubeflow MPI Operator](#7-deploy-kubeflow-mpi-operator)
   - [8. Test EFA](#8-test-efa)
-    - [8.1. EFA Info test](#81-efa-info-test)
-    - [8.2. EFA NCCL test](#82-efa-nccl-test)
+    - [8.1. EFA Info Test](#81-efa-info-test)
+    - [8.2. EFA NCCL Test](#82-efa-nccl-test)
   - [9. Cleanup](#9-cleanup)
 
 ## Elastic Fabric Adapter Overview
@@ -352,7 +352,7 @@ clusterrole.rbac.authorization.k8s.io/mpi-operator configured
 
 We will run two tests. The first one will show the presence of EFA adapters on our EFA-enabled nodes. The second will test EFA performance.
 
-### 8.1. EFA Info test
+### 8.1. EFA Info Test
 
 To run the EFA info test, execute the following commands:
 
@@ -404,9 +404,9 @@ Warning: Permanently added 'efa-info-test-worker-0.efa-info-test-worker.default.
 [1,0]<stdout>:    protocol: FI_PROTO_EFA
 ```
 
-This result shows that two EFA adapters are available (one in each worker pod)
+This result shows that two EFA adapters are available (one for each worker pod).
 
-Lastly, delete the test job
+Lastly, delete the test job:
 
 ```bash
 kubectl delete mpijob efa-info-test
