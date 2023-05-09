@@ -2095,25 +2095,25 @@ resource "aws_cloudwatch_log_group" "fargate_fluentbit" {
 resource "aws_iam_policy" "fargate_fluentbit" {
   count = var.enable_fargate_fluentbit ? 1 : 0
 
-  name              = try(var.fargate_fluentbit_cw_log_group.name, "fargate-fluentbit-logs")
+  name = try(var.fargate_fluentbit_cw_log_group.name, "fargate-fluentbit-logs")
 
-   policy = jsonencode({
-     Version = "2012-10-17",
-     Statement = [{
-       Effect = "Allow",
-       Action = [
-         "logs:CreateLogStream",
-         "logs:CreateLogGroup",
-         "logs:DescribeLogStreams",
-         "logs:PutLogEvents"
-       ],
-       Resource = [
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Action = [
+        "logs:CreateLogStream",
+        "logs:CreateLogGroup",
+        "logs:DescribeLogStreams",
+        "logs:PutLogEvents"
+      ],
+      Resource = [
         try("${var.fargate_fluentbit.cwlog_arn}:*", "${aws_cloudwatch_log_group.fargate_fluentbit[0].arn}:*"),
         try("${var.fargate_fluentbit.cwlog_arn}:logstream:*", "${aws_cloudwatch_log_group.fargate_fluentbit[0].arn}:logstream:*")
-       ]
-     }]
-   })
- }
+      ]
+    }]
+  })
+}
 
 # Help on Fargate Logging with Fluentbit and CloudWatch
 # https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html

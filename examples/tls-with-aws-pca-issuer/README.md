@@ -28,7 +28,7 @@ To provision this example:
 ```sh
 terraform init
 terraform apply -target module.vpc
-terraform apply -target module.eks 
+terraform apply -target module.eks
 terraform apply
 
 ```
@@ -39,8 +39,8 @@ Enter `yes` at command prompt to apply
 
 The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the CoreDNS deployment for Fargate.
 
-1. Check the Terraform provided Output, to update your `kubeconfig` 
-   
+1. Check the Terraform provided Output, to update your `kubeconfig`
+
 ```hcl
 Apply complete! Resources: 63 added, 0 changed, 0 destroyed.
 
@@ -48,7 +48,7 @@ Outputs:
 
 configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name fully-private-cluster"
 ```
-   
+
 2. Run `update-kubeconfig` command, using the Terraform provided Output, replace with your `$AWS_REGION` and your `$CLUSTER_NAME` variables.
 
 ```sh

@@ -25,7 +25,7 @@ To provision this example:
 ```sh
 terraform init
 terraform apply -target module.vpc
-terraform apply -target module.eks 
+terraform apply -target module.eks
 terraform apply
 
 ```
@@ -36,8 +36,8 @@ Enter `yes` at command prompt to apply
 
 The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the CoreDNS deployment for Fargate.
 
-1. Check the Terraform provided Output, to update your `kubeconfig` 
-   
+1. Check the Terraform provided Output, to update your `kubeconfig`
+
 ```hcl
 Apply complete! Resources: 63 added, 0 changed, 0 destroyed.
 
@@ -45,7 +45,7 @@ Outputs:
 
 configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name fully-private-cluster"
 ```
-   
+
 2. Run `update-kubeconfig` command, using the Terraform provided Output, replace with your `$AWS_REGION` and your `$CLUSTER_NAME` variables.
 
 ```sh
@@ -71,11 +71,11 @@ aws eks list-fargate-profiles --cluster-name fargate-serverless
 }
 ```
 
-4. Test by listing Nodes in in the Cluster, you should see Fargate instances as your Cluster Nodes. 
-   
+4. Test by listing Nodes in in the Cluster, you should see Fargate instances as your Cluster Nodes.
+
 
 ```sh
-kubectl get nodes                                                     
+kubectl get nodes  
 NAME                                                STATUS   ROLES    AGE   VERSION
 fargate-ip-10-0-17-17.us-west-2.compute.internal    Ready    <none>   25m   v1.26.3-eks-f4dc2c0
 fargate-ip-10-0-20-244.us-west-2.compute.internal   Ready    <none>   71s   v1.26.3-eks-f4dc2c0
@@ -188,7 +188,7 @@ kubectl -n app-2048 create ingress app-2048 --class alb --rule="/*=app-2048:80" 
 ```
 
 ```sh
-kubectl -n app-2048 get ingress                                                
+kubectl -n app-2048 get ingress  
 NAME       CLASS   HOSTS   ADDRESS                                                                 PORTS   AGE
 app-2048   alb     *       k8s-app2048-app2048-6d9c5e92d6-1096330604.us-west-2.elb.amazonaws.com   80      4m9s
 ```

@@ -114,8 +114,8 @@ module "eks_blueprints_addons" {
   enable_cert_manager         = true
   enable_aws_privateca_issuer = true
   aws_privateca_issuer = {
-    acmca_arn = aws_acmpca_certificate_authority.this.arn
-    namespace = "aws-privateca-issuer"
+    acmca_arn        = aws_acmpca_certificate_authority.this.arn
+    namespace        = "aws-privateca-issuer"
     create_namespace = true
   }
 
