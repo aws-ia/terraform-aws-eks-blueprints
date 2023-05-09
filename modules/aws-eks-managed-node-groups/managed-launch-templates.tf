@@ -3,7 +3,7 @@ resource "aws_launch_template" "managed_node_groups" {
 
   name                   = "${var.context.eks_cluster_id}-${local.managed_node_group["node_group_name"]}"
   description            = "Launch Template for EKS Managed Node Groups"
-  update_default_version = true
+  update_default_version = local.managed_node_group["update_default_version"]
 
   user_data = local.userdata_base64
 
