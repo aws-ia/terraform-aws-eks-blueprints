@@ -88,6 +88,11 @@ output "fargate_fluentbit" {
   value       = kubernetes_config_map_v1.aws_logging
 }
 
+output "fargate_fluentbit_policy" {
+  description = "Map of attributes of the Helm release and IRSA created"
+  value       = aws_iam_policy.fargate_fluentbit
+}
+
 output "gatekeeper" {
   description = "Map of attributes of the Helm release and IRSA created"
   value       = module.gatekeeper

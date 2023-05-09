@@ -135,9 +135,9 @@ module "vpc_endpoints" {
 }
 
 resource "aws_vpc_peering_connection" "this" {
-  peer_vpc_id   = module.vpc.vpc_id
-  vpc_id        = module.vpc.default_vpc_id
-  auto_accept   = true
+  peer_vpc_id = module.vpc.vpc_id
+  vpc_id      = module.vpc.default_vpc_id
+  auto_accept = true
 
   accepter {
     allow_remote_vpc_dns_resolution = true
@@ -165,7 +165,7 @@ resource "aws_route" "eks_to_default" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "this" {
-  for_each = { for sg in concat([module.eks.cluster_security_group_id, module.eks.cluster_primary_security_group_id]) : sg => sg }
+  for_each          = { for sg in concat([module.eks.cluster_security_group_id, module.eks.cluster_primary_security_group_id]) : sg => sg }
   security_group_id = each.value
 
   cidr_ipv4   = module.vpc.default_vpc_cidr_block
