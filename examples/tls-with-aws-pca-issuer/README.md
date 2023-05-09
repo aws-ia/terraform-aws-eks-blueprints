@@ -13,73 +13,66 @@ This example deploys the following
 
 ## How to Deploy
 
-### Prerequisites:
+## Prerequisites:
 
-Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply
+Ensure that you have the following tools installed locally:
 
-1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-2. [Kubectl](https://Kubernetes.io/docs/tasks/tools/)
-3. [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
+3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
-### Deployment Steps
+## Deploy
 
-#### Step 1: Clone the repo using the command below
-
-```sh
-git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
-```
-
-#### Step 2: Run Terraform INIT
-
-Initialize a working directory with configuration files
+To provision this example:
 
 ```sh
-cd examples/tls-with-aws-pca-issuer/
 terraform init
-```
-
-#### Step 3: Run Terraform PLAN
-
-Verify the resources created by this execution
-
-```sh
-export AWS_REGION=<ENTER YOUR REGION>   # Select your own region
-terraform plan
-```
-
-#### Step 4: Finally, Terraform APPLY
-
-**Deploy the pattern**
-
-```sh
+terraform apply -target module.vpc
+terraform apply -target module.eks 
 terraform apply
+
 ```
 
-Enter `yes` to apply.
+Enter `yes` at command prompt to apply
 
-### Configure `kubectl` and test cluster
+## Validate
 
-EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster.
-This following command used to update the `kubeconfig` in your local machine where you run kubectl commands to interact with your EKS Cluster.
+The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the CoreDNS deployment for Fargate.
 
-#### Step 5: Run `update-kubeconfig` command
+1. Check the Terraform provided Output, to update your `kubeconfig` 
+   
+```hcl
+Apply complete! Resources: 63 added, 0 changed, 0 destroyed.
 
-`~/.kube/config` file gets updated with cluster details and certificate from the below command
+Outputs:
 
-    $ aws eks --region <enter-your-region> update-kubeconfig --name <cluster-name>
+configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name fully-private-cluster"
+```
+   
+2. Run `update-kubeconfig` command, using the Terraform provided Output, replace with your `$AWS_REGION` and your `$CLUSTER_NAME` variables.
 
-#### Step 6: List all the worker nodes by running the command below
+```sh
+aws eks --region <$AWS_REGION> update-kubeconfig --name <$CLUSTER_NAME>
+```
 
-    $ kubectl get nodes
+3. List all the pods running in `aws-privateca-issuer` and `cert-manager` namespace
 
-#### Step 7: List all the pods running in `aws-privateca-issuer` and `cert-manager` namespace
+```sh
+kubectl get pods -n aws-privateca-issuer
+kubectl get pods -n cert-manager
+```
 
-    $ kubectl get pods -n aws-privateca-issuer
-    $ kubectl get pods -n cert-manager
+4. View the `certificate` status in the `default` Namespace. It should be in `Ready` state, and be pointing to a `secret` created in the same Namespace.
 
-#### Step 8: View the `Certificate` status. It should be in 'Ready' state.
+```sh
+kubectl get certificate -o wide
+NAME      READY   SECRET                  ISSUER                    STATUS                                          AGE
+example   True    example-clusterissuer   tls-with-aws-pca-issuer   Certificate is up to date and has not expired   41m
 
-    $ kubectl get Certificate
+kubectl get secret example-clusterissuer
+NAME                    TYPE                DATA   AGE
+example-clusterissuer   kubernetes.io/tls   3      43m
+```
 
 ## Cleanup
 
@@ -88,13 +81,7 @@ To clean up your environment, destroy the Terraform modules in reverse order.
 Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
 
 ```sh
-terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
-terraform destroy -target="module.eks" -auto-approve
-terraform destroy -target="module.vpc" -auto-approve
-```
-
-Finally, destroy any additional resources that are not in the above modules
-
-```sh
+terraform destroy -target module.eks_blueprints_kubernetes_addons -auto-approve
+terraform destroy -target module.eks -auto-approve
 terraform destroy -auto-approve
 ```

@@ -52,7 +52,7 @@ configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name fully-p
 aws eks --region <$AWS_REGION> update-kubeconfig --name <$CLUSTER_NAME>
 ```
 
-2. Validate if the Fargate Profiles were successfully created in the Cluster.
+3. Validate if the Fargate Profiles were successfully created in the Cluster.
 
 ```sh
 aws eks list-clusters
@@ -71,7 +71,7 @@ aws eks list-fargate-profiles --cluster-name fargate-serverless
 }
 ```
 
-3. Test by listing Nodes in in the Cluster, you should see Fargate instances as your Cluster Nodes. 
+4. Test by listing Nodes in in the Cluster, you should see Fargate instances as your Cluster Nodes. 
    
 
 ```sh
@@ -86,7 +86,7 @@ fargate-ip-10-0-47-31.us-west-2.compute.internal    Ready    <none>   75s   v1.2
 fargate-ip-10-0-6-175.us-west-2.compute.internal    Ready    <none>   25m   v1.26.3-eks-f4dc2c0
 ```
 
-1. Test by listing all the Pods running currently. All the Pods should reach a status of `Running` after approximately 60 seconds:
+5. Test by listing all the Pods running currently. All the Pods should reach a status of `Running` after approximately 60 seconds:
 
 ```sh
 kubectl get pods -A
@@ -100,7 +100,7 @@ kube-system     coredns-7b7bddbc85-jmbv6                        1/1     Running 
 kube-system     coredns-7b7bddbc85-rgmzq                        1/1     Running   0          26m
 ```
 
-5. Check if the `aws-logging` configMap for Fargate Fluentbit was created.
+6. Check if the `aws-logging` configMap for Fargate Fluentbit was created.
 
 ```sh
 kubectl -n aws-observability get configmap aws-logging -o yaml
@@ -171,7 +171,7 @@ aws logs describe-log-streams --log-group-name "/fargate-serverless/fargate-flue
 ]
 ```
 
-6. (Optional) Test that the sample application.
+7. (Optional) Test that the sample application.
 
 Create an Ingress using the AWS LoadBalancer Controller deployed with the EKS Blueprints Add-ons module, pointing to our application Service.
 

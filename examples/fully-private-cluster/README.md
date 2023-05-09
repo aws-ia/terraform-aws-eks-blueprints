@@ -63,7 +63,7 @@ configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name fully-p
 aws eks --region <$AWS_REGION> update-kubeconfig --name <$CLUSTER_NAME>
 ```
 
-1. Test by listing Nodes in in the Cluster.
+3. Test by listing Nodes in in the Cluster.
 
 ```sh
 kubectl get nodes                                                                                                                                                     
@@ -73,7 +73,7 @@ ip-10-0-44-110.us-west-2.compute.internal   Ready    <none>   8m36s   v1.26.2-ek
 ip-10-0-9-147.us-west-2.compute.internal    Ready    <none>   8m35s   v1.26.2-eks-a59e1f0
 ```
 
-1. Test by listing all the Pods running currently. All the Pods should reach a status of `Running` after approximately 60 seconds:
+4. Test by listing all the Pods running currently. All the Pods should reach a status of `Running` after approximately 60 seconds:
 
 ```sh
 kubectl $ kubectl get pods -A                                                                                                                                                    

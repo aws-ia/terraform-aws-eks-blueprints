@@ -68,7 +68,7 @@ module "eks" {
   version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = "1.25"
+  cluster_version                = "1.26"
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
@@ -115,6 +115,8 @@ module "eks_blueprints_addons" {
   enable_aws_privateca_issuer = true
   aws_privateca_issuer = {
     acmca_arn = aws_acmpca_certificate_authority.this.arn
+    namespace = "aws-privateca-issuer"
+    create_namespace = true
   }
 
   tags = local.tags
@@ -127,7 +129,7 @@ module "eks_blueprints_addons" {
 resource "helm_release" "cert_manager_csi" {
   name             = "cert-manager-csi-driver"
   chart            = "cert-manager-csi-driver"
-  version          = "v0.4.2"
+  version          = "v0.5.0"
   repository       = "https://charts.jetstack.io"
   description      = "Cert Manager CSI Driver Add-on"
   namespace        = "cert-manager"
