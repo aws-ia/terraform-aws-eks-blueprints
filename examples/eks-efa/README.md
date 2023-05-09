@@ -25,6 +25,8 @@
     - [8.1. EFA Info Test](#81-efa-info-test)
     - [8.2. EFA NCCL Test](#82-efa-nccl-test)
   - [9. Cleanup](#9-cleanup)
+- [Conclusion](#conclusion)
+- 
 
 ## Elastic Fabric Adapter Overview
 
@@ -197,6 +199,7 @@ terraform plan -out tfplan
 <details>
 <summary>Output:</summary>
 
+```logs
 ...
 # module.vpc.aws_vpc.this[0] will be created
   + resource "aws_vpc" "this" {
@@ -213,13 +216,13 @@ Changes to Outputs:
   + configure_kubectl = "aws eks update-kubeconfig --region us-east-1 --name eks-efa"
   + eks_cluster_id    = (known after apply)
 
-──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────
 
 Saved the plan to: tfplan
 
 To perform exactly these actions, run the following command to apply:
     terraform apply "tfplan"
-
+```
 </details>
   
 ## 5. Apply Terraform Plan
@@ -230,6 +233,7 @@ terraform apply tfplan
 
 <details>
 <summary>Output:</summary>
+```logs
 aws_placement_group.efa_pg: Creating...
 module.eks.aws_cloudwatch_log_group.this[0]: Creating...
 module.vpc.aws_vpc.this[0]: Creating...
@@ -267,6 +271,7 @@ Apply complete! Resources: 80 added, 0 changed, 0 destroyed.
 Outputs:
 
 configure_kubectl = "aws eks update-kubeconfig --region us-east-1 --name eks-efa"
+```
 </details>
 
 > **_Note:_** If the plan apply operation fails, you can repeat `terraform plan -out tfplan` and `terraform apply tfplan`
@@ -457,7 +462,7 @@ kubectl logs -f $(kubectl get pods | grep launcher | cut -d ' ' -f 1)
 
 <summary>Output:</summary>
 
-```txt
+```logs
 Warning: Permanently added 'test-nccl-efa-worker-1.test-nccl-efa-worker.default.svc,10.11.5.31' (ECDSA) to the list of known hosts.
 Warning: Permanently added 'test-nccl-efa-worker-0.test-nccl-efa-worker.default.svc,10.11.13.106' (ECDSA) to the list of known hosts.
 [1,0]<stdout>:# nThread 1 nGpus 1 minBytes 1 maxBytes 1073741824 step: 2(factor) warmup iters: 5 iters: 100 agg iters: 1 validation: 1 graph: 0
@@ -601,6 +606,8 @@ terraform destroy
 
 <details>
 <summary>Output:</summary>
+
+```logs
 ...
  # module.eks.module.self_managed_node_group["efa"].aws_iam_role.this[0] will be destroyed
 ...
@@ -609,14 +616,6 @@ Plan: 0 to add, 0 to change, 80 to destroy.
 
 Changes to Outputs:
   - configure_kubectl = "aws eks update-kubeconfig --region us-east-1 --name eks-efa" -> null
-╷
-│ Warning: Deprecated attribute
-│ 
-│   on main.tf line 78, in resource "kubectl_manifest" "efa_device_plugin":
-│   78: ${data.http.efa_device_plugin_yaml.body}
-│ 
-│ The attribute "body" is deprecated. Refer to the provider documentation for details.
-╵
 
 Do you really want to destroy all resources?
   Terraform will destroy all your managed infrastructure, as shown above.
@@ -641,13 +640,18 @@ module.vpc.aws_vpc.this[0]: Destroying... [id=vpc-04677b1ab4eac3ca7]
 module.vpc.aws_vpc.this[0]: Destruction complete after 0s
 ╷
 │ Warning: EC2 Default Network ACL (acl-0932148c7d86482e0) not deleted, removing from state
-│ 
-│ 
 ╵
 
 Destroy complete! Resources: 80 destroyed.
+```
 
 </details>
 
 The cleanup process takes about 15 minutes.
- 
+
+# Conclusion
+
+With this example, we have demonstrated how AWS EKS Blueprints can be used to create an EKS cluster with an 
+EFA-enabled nodegroup. Futhermore, we have shown how to run MPI Jobs to validate that EFA works and check its performance.
+Use this example as a starting point to bootstrap your own infrastructure-as-code terraform projects that require use 
+of high-performance networking on AWS with Elastic Fabric Adapter.
