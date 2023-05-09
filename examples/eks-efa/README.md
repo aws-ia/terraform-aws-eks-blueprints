@@ -43,7 +43,7 @@ In the provided Terraform EKS Blueprint example here, these requirements are sat
 
 # Terraform Doc
 
-The main Terraform doc [main.tf](main.tf) contains local variables, local data, vpc and eks definitions, device plugins, and addons. 
+The main Terraform doc [main.tf](main.tf) contains local variables, local data, vpc and eks definitions, device plugins, and addons.
 
 ## Requirements
 
@@ -60,7 +60,7 @@ The following modules are included in the template:
 1. [vpc](main.tf#L240) - defines the VPC which will be used to host the EKS cluster
 
 2. [eks](main.tf#L92) - defines the EKS cluster
-   The EKS cluster contains a managed nodedgroup called `sys` for running system pods, 
+   The EKS cluster contains a managed nodedgroup called `sys` for running system pods,
    and an unmanaged nodegroup called `efa` which has the necessary configuration to enable EFA on the nodes in that group.
 
 3. [eks_blueprints_kubernetes_addons](main.tf#L220) - defines EKS cluster addons to be deployed
@@ -74,7 +74,7 @@ The [resources section of main.tf](main.tf#69) creates a placement group, deploy
 
 There are no required user-inputs.
 The template comes with default inputs which create an EKS cluster called `eks-efa` in region `us-east-1`.
-These settings as well as others can be adjusted in the [variables.tf](variables.tf) file. 
+These settings can be adjusted in the [variables.tf](variables.tf) file.
 
 ## Outputs
 
@@ -223,7 +223,7 @@ To perform exactly these actions, run the following command to apply:
     terraform apply "tfplan"
 ```
 </details>
-  
+
 ## 5. Apply Terraform Plan
 
 ```bash
@@ -257,13 +257,13 @@ module.eks_blueprints_kubernetes_addons.module.aws_efs_csi_driver[0].module.helm
 module.eks_blueprints_kubernetes_addons.module.aws_fsx_csi_driver[0].module.helm_addon.helm_release.addon[0]: Creation complete after 36s [id=aws-fsx-csi-driver]
 ╷
 │ Warning: "default_secret_name" is no longer applicable for Kubernetes v1.24.0 and above
-│ 
+│
 │   with module.eks_blueprints_kubernetes_addons.module.aws_efs_csi_driver[0].module.helm_addon.module.irsa[0].kubernetes_service_account_v1.irsa[0],
 │   on ../../modules/irsa/main.tf line 37, in resource "kubernetes_service_account_v1" "irsa":
 │   37: resource "kubernetes_service_account_v1" "irsa" {
-│ 
+│
 │ Starting from version 1.24.0 Kubernetes does not automatically generate a token for service accounts, in this case, "default_secret_name" will be empty
-│ 
+│
 │ (and one more similar warning elsewhere)
 ╵
 
@@ -282,7 +282,7 @@ It takes about 15 minutes to create the cluster.
 
 ## 6. Connect to EKS
 
-Copy the value of the `configure_kubectl` output and execute it in your shell to connect to your EKS cluster. 
+Copy the value of the `configure_kubectl` output and execute it in your shell to connect to your EKS cluster.
 
 ```bash
 aws eks update-kubeconfig --region us-east-1 --name eks-efa
@@ -342,7 +342,7 @@ clusterrolebinding.rbac.authorization.k8s.io/mpi-operator created
 deployment.apps/mpi-operator created
 ```
 
-In addition to deploying the operator, please apply a patch to the mpi-operator clusterrole 
+In addition to deploying the operator, please apply a patch to the mpi-operator clusterrole
 to allow the mpi-operator service account access to `leases` resources in the `coordination.k8s.io` apiGroup.
 
 ```bash
@@ -439,7 +439,7 @@ Output:
 mpijob.kubeflow.org/test-nccl-efa created
 ```
 
-Then display the pods in the current namespace: 
+Then display the pods in the current namespace:
 
 ```bash
 kubectl get pods
@@ -518,9 +518,9 @@ Warning: Permanently added 'test-nccl-efa-worker-0.test-nccl-efa-worker.default.
 [1,1]<stdout>:test-nccl-efa-worker-1:21:26 [0] NCCL INFO comm 0x7f9c0c000f60 rank 1 nranks 2 cudaDev 0 busId f5000 - Init COMPLETE
 [1,0]<stdout>:test-nccl-efa-worker-0:21:27 [0] NCCL INFO comm 0x7fde98000f60 rank 0 nranks 2 cudaDev 0 busId 35000 - Init COMPLETE
 [1,0]<stdout>:#
-[1,0]<stdout>:#                                                              out-of-place                       in-place          
+[1,0]<stdout>:#                                                              out-of-place                       in-place  
 [1,0]<stdout>:#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
-[1,0]<stdout>:#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       
+[1,0]<stdout>:#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)  
 [1,0]<stdout>:test-nccl-efa-worker-0:21:21 [0] NCCL INFO Launch mode Parallel
 [1,0]<stdout>:           0             0     float     sum      -1     6.36    0.00    0.00      0     6.40    0.00    0.00      0
 [1,0]<stdout>:           0             0     float     sum      -1     6.43    0.00    0.00      0     6.35    0.00    0.00      0
@@ -556,7 +556,7 @@ Warning: Permanently added 'test-nccl-efa-worker-0.test-nccl-efa-worker.default.
 [1,1]<stdout>:test-nccl-efa-worker-1:21:21 [0] NCCL INFO comm 0x7f9c0c000f60 rank 1 nranks 2 cudaDev 0 busId f5000 - Destroy COMPLETE
 [1,0]<stdout>:test-nccl-efa-worker-0:21:21 [0] NCCL INFO comm 0x7fde98000f60 rank 0 nranks 2 cudaDev 0 busId 35000 - Destroy COMPLETE
 [1,0]<stdout>:# Out of bounds values : 0 OK
-[1,0]<stdout>:# Avg bus bandwidth    : 1.15327 
+[1,0]<stdout>:# Avg bus bandwidth    : 1.15327
 [1,0]<stdout>:#
 [1,0]<stdout>:
 ```
@@ -570,14 +570,14 @@ The following section from the beginning of the log, indicates that the test is 
 [1,0]<stdout>:test-nccl-efa-worker-0:21:21 [0] NCCL INFO Using network AWS Libfabric
 [1,0]<stdout>:NCCL version 2.12.7+cuda11.4
 ```
- 
+
 Columns 8 and 12 in the output table show the in-place and out-of-place bus bandwidth calculated for the data size listed in column 1. In this case it is 3.13 and 3.12 GB/s respectively.
 Your actual results may be slightly different. The calculated average bus bandwidth is displayed at the bottom of the log when the test finishes after it reaches the max data size,
-specified in the mpijob manifest. In this result the average bus bandwidth is 1.15 GB/s. 
+specified in the mpijob manifest. In this result the average bus bandwidth is 1.15 GB/s.
 
 ```
 [1,0]<stdout>:#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
-[1,0]<stdout>:#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       
+[1,0]<stdout>:#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)  
 ...
 [1,0]<stdout>:      262144         65536     float     sum      -1    195.0    1.34    1.34      0    194.0    1.35    1.35      0
 [1,0]<stdout>:      524288        131072     float     sum      -1    296.9    1.77    1.77      0    291.1    1.80    1.80      0
@@ -585,7 +585,7 @@ specified in the mpijob manifest. In this result the average bus bandwidth is 1.
 [1,0]<stdout>:     2097152        524288     float     sum      -1    983.3    2.13    2.13      0    973.9    2.15    2.15      0
 [1,0]<stdout>:     4194304       1048576     float     sum      -1   1745.4    2.40    2.40      0   1673.2    2.51    2.51      0
 ...
-[1,0]<stdout>:# Avg bus bandwidth    : 1.15327 
+[1,0]<stdout>:# Avg bus bandwidth    : 1.15327
 ```
 
 Finally, delete the test mpi job:
@@ -653,7 +653,7 @@ The cleanup process takes about 15 minutes.
 
 # Conclusion
 
-With this example, we have demonstrated how AWS EKS Blueprints can be used to create an EKS cluster with an 
+With this example, we have demonstrated how AWS EKS Blueprints can be used to create an EKS cluster with an
 EFA-enabled nodegroup. Futhermore, we have shown how to run MPI Jobs to validate that EFA works and check its performance.
-Use this example as a starting point to bootstrap your own infrastructure-as-code terraform projects that require use 
+Use this example as a starting point to bootstrap your own infrastructure-as-code terraform projects that require use
 of high-performance networking on AWS with Elastic Fabric Adapter.

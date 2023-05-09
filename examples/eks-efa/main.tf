@@ -31,8 +31,6 @@ data "aws_eks_cluster_auth" "this" {
   name = module.eks.cluster_name
 }
 
-data "aws_caller_identity" "current" {}
-
 data "aws_availability_zones" "available" {}
 
 data "http" "efa_device_plugin_yaml" {
@@ -52,8 +50,7 @@ data "aws_ami" "eks_gpu_node" {
 # Local config
 
 locals {
-  name   = basename(path.cwd)
-  region = "us-east-1"
+  name            = var.cluster_name
   cluster_version = "1.25"
 
   vpc_cidr = "10.11.0.0/16"
@@ -79,12 +76,12 @@ ${data.http.efa_device_plugin_yaml.response_body}
 YAML
 }
 
-resource "helm_release" "k8s-device-plugin" {
-  name  = "k8s-device-plugin"
+resource "helm_release" "k8s_device_plugin" {
+  name       = "k8s-device-plugin"
   repository = "https://nvidia.github.io/k8s-device-plugin"
-  chart = "nvidia-device-plugin"
-  version = "0.14.0"
-  namespace = "kube-system"
+  chart      = "nvidia-device-plugin"
+  version    = "0.14.0"
+  namespace  = "kube-system"
 }
 
 # Upstream Terraform Modules
@@ -96,7 +93,7 @@ module "eks" {
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
-  
+
   cluster_addons = {
     coredns = {
       most_recent = true
@@ -117,13 +114,13 @@ module "eks" {
       AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
     }
   }
-  
+
   eks_managed_node_groups = {
     sys = {
       instance_types = ["m5.large"]
-      min_size     = 1
-      max_size     = 5
-      desired_size = 2
+      min_size       = 1
+      max_size       = 5
+      desired_size   = 2
     }
   }
 
@@ -141,12 +138,12 @@ module "eks" {
       self        = true
     }
     egress_self_all = {
-      description      = "Node to node all egress traffic"
-      protocol         = "-1"
-      from_port        = 0
-      to_port          = 0
-      type             = "egress"
-      self             = true
+      description = "Node to node all egress traffic"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "egress"
+      self        = true
     }
   }
 
@@ -167,8 +164,8 @@ module "eks" {
       desired_size = 2
 
       #instance_type = "c5n.9xlarge"
-      instance_type  = "g4dn.metal"
-      ami_id         = data.aws_ami.eks_gpu_node.id
+      instance_type = "g4dn.metal"
+      ami_id        = data.aws_ami.eks_gpu_node.id
 
       ebs_optimized     = true
       enable_monitoring = true
@@ -186,9 +183,9 @@ module "eks" {
           }
         }
       }
-     
+
       subnet_ids = [module.vpc.private_subnets[0]]
-      
+
       network_interfaces = [
         {
           description                 = "EFA interface"
@@ -203,7 +200,7 @@ module "eks" {
         # Install EFA
         curl -O https://efa-installer.amazonaws.com/aws-efa-installer-latest.tar.gz
         tar -xf aws-efa-installer-latest.tar.gz && cd aws-efa-installer
-        ./efa_installer.sh -y 
+        ./efa_installer.sh -y
         fi_info -p efa -t FI_EP_RDM
         # Disable ptrace
         sysctl -w kernel.yama.ptrace_scope=0
