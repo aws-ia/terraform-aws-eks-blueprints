@@ -3,7 +3,7 @@
 ## Table of contents
 
 - [EKS Blueprint Example with Elastic Fabric Adapter](#eks-blueprint-example-with-elastic-fabric-adapter)
-  - [Table of content](#table-of-contents)
+  - [Table of contents](#table-of-contents)
   - [Elastic Fabric Adapter Overview](#elastic-fabric-adapter-overview)
   - [Setup Details](setup-details)
 - [Terraform Doc](#terraform-doc)
