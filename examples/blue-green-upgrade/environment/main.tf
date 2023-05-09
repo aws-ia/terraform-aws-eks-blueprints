@@ -60,7 +60,7 @@ module "vpc" {
   #     # Ignore changes to tags, e.g. because a management agent
   #     # updates these based on some ruleset managed elsewhere.
   #     public_subnet_tags,
-  #     #private_subnet_tags, 
+  #     #private_subnet_tags,
   #   ]
   # }
 

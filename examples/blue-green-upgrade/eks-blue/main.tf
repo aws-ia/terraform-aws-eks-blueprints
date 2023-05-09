@@ -24,22 +24,22 @@ provider "kubectl" {
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
- data "aws_eks_cluster_auth" "this" {
-   name = module.eks_cluster.eks_cluster_id
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks_cluster.eks_cluster_id
 }
 
 module "eks_cluster" {
   source = "../modules/eks_cluster"
 
-  aws_region = var.aws_region
-  service_name = "blue"
-  cluster_version   = "1.23"
+  aws_region      = var.aws_region
+  service_name    = "blue"
+  cluster_version = "1.23"
 
   argocd_route53_weight      = "100"
   route53_weight             = "0"
   ecsfrontend_route53_weight = "100"
 
-  environment_name        = var.environment_name
+  environment_name       = var.environment_name
   hosted_zone_name       = var.hosted_zone_name
   eks_admin_role_name    = var.eks_admin_role_name
   workload_repo_url      = var.workload_repo_url
@@ -51,6 +51,4 @@ module "eks_cluster" {
 
   iam_platform_user                 = var.iam_platform_user
   argocd_secret_manager_name_suffix = var.argocd_secret_manager_name_suffix
-  vpc_tag_value                     = var.vpc_tag_value
-
 }

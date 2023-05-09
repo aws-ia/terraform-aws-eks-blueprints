@@ -12,28 +12,28 @@ locals {
   name = "${local.environment}-${local.service}"
 
 
-# Mapping
-  hosted_zone_name = var.hosted_zone_name
-  addons_repo_url = var.addons_repo_url
-  workload_repo_secret = var.workload_repo_secret
-  cluster_version = var.cluster_version
+  # Mapping
+  hosted_zone_name           = var.hosted_zone_name
+  addons_repo_url            = var.addons_repo_url
+  workload_repo_secret       = var.workload_repo_secret
+  cluster_version            = var.cluster_version
   argocd_secret_manager_name = var.argocd_secret_manager_name_suffix
-  workload_repo_path = var.workload_repo_path
-  workload_repo_url = var.workload_repo_url
-  workload_repo_revision = var.workload_repo_revision
-  eks_admin_role_name = var.eks_admin_role_name
-  iam_platform_user = var.iam_platform_user
+  workload_repo_path         = var.workload_repo_path
+  workload_repo_url          = var.workload_repo_url
+  workload_repo_revision     = var.workload_repo_revision
+  eks_admin_role_name        = var.eks_admin_role_name
+  iam_platform_user          = var.iam_platform_user
 
-  metrics_server = true
+  metrics_server               = true
   aws_load_balancer_controller = true
-  karpenter = true
-  aws_for_fluentbit  = true
-  cert_manager = true
-  cloudwatch_metrics = true
-  external_dns = true
-  vpa = true
-  kubecost = true
-  argo_rollouts = true
+  karpenter                    = true
+  aws_for_fluentbit            = true
+  cert_manager                 = true
+  cloudwatch_metrics           = true
+  external_dns                 = true
+  vpa                          = true
+  kubecost                     = true
+  argo_rollouts                = true
 
   # Route 53 Ingress Weights
   argocd_route53_weight      = var.argocd_route53_weight
@@ -46,7 +46,7 @@ locals {
   tag_val_public_subnet  = "${local.environment}-public-"
   tag_val_private_subnet = "${local.environment}-private-"
 
-  node_group_name            = "managed-ondemand"
+  node_group_name = "managed-ondemand"
 
 
   #---------------------------------------------------------------
@@ -83,7 +83,7 @@ locals {
         }
         blueprint                = "terraform"
         clusterName              = local.name
-        karpenterInstanceProfile  = module.karpenter.instance_profile_name
+        karpenterInstanceProfile = module.karpenter.instance_profile_name
         env                      = local.env
         ingress = {
           type                  = "alb"
@@ -103,7 +103,7 @@ locals {
     path                = "multi-repo/argo-app-of-apps/dev"
     repo_url            = "${local.workload_repo_url}"
     target_revision     = "${local.workload_repo_revision}"
-    ssh_key_secret_name = "${local.workload_repo_secret}"    
+    ssh_key_secret_name = "${local.workload_repo_secret}"
     add_on_application  = false
     values = {
       spec = {
@@ -183,7 +183,7 @@ locals {
                 "alb.ingress.kubernetes.io/listen-ports"          = "[{\\\"HTTPS\\\": 443}]"
                 "alb.ingress.kubernetes.io/ssl-redirect"          = "443"
                 "alb.ingress.kubernetes.io/target-type"           = "ip"
-                "external-dns.alpha.kubernetes.io/set-identifier"  = local.name
+                "external-dns.alpha.kubernetes.io/set-identifier" = local.name
                 "external-dns.alpha.kubernetes.io/aws-weight"     = local.ecsfrontend_route53_weight
               }
               hosts = [
@@ -305,37 +305,33 @@ data "aws_secretsmanager_secret_version" "admin_password_version" {
   secret_id = data.aws_secretsmanager_secret.argocd.id
 }
 
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
-}
-
-data "aws_ecrpublic_authorization_token" "token" {
-  provider = aws.virginia
-}
+# data "aws_ecrpublic_authorization_token" "token" {
+#   provider = aws.virginia
+# }
 
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 19.12"
 
-  cluster_name = local.name
-  cluster_version = local.cluster_version
+  cluster_name                   = local.name
+  cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
 
-  vpc_id             = data.aws_vpc.vpc.id
+  vpc_id     = data.aws_vpc.vpc.id
   subnet_ids = data.aws_subnets.private.ids
-  
+
   #we uses only 1 security group to allow connection with Fargate, MNG, and Karpenter nodes
-  create_node_security_group    = false
+  create_node_security_group = false
   eks_managed_node_groups = {
     initial = {
       node_group_name = local.node_group_name
-      instance_types = ["m5.large"]
+      instance_types  = ["m5.large"]
 
       min_size     = 1
       max_size     = 5
       desired_size = 3
-      subnet_ids      = data.aws_subnets.private.ids
+      subnet_ids   = data.aws_subnets.private.ids
     }
   }
 
@@ -353,12 +349,12 @@ module "eks" {
     },
     {
       rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.eks_admin_role_name}" # The ARN of the IAM role
-      username = "ops-role"                                                                                    # The user name within Kubernetes to map to the IAM role
-      groups   = ["system:masters"]                                                                            # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
+      username = "ops-role"                                                                                      # The user name within Kubernetes to map to the IAM role
+      groups   = ["system:masters"]                                                                              # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
     }
   ])
 
-    tags = merge(local.tags, {
+  tags = merge(local.tags, {
     # NOTE - if creating multiple security groups with this module, only tag the
     # security group that Karpenter should utilize with the following tag
     # (i.e. - at most, only one security group should have this tag in your account)
@@ -378,7 +374,7 @@ module "eks_blueprints_admin_team" {
     "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${local.iam_platform_user}",
     "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.eks_admin_role_name}"
   ]
-  cluster_arn  = module.eks.cluster_arn
+  cluster_arn = module.eks.cluster_arn
 
   tags = local.tags
 }
@@ -392,7 +388,7 @@ module "eks_blueprints_platform_teams" {
       labels = {
         "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
         "appName"                                 = "platform-team-app",
-        "projectName"                             = "project-platform",        
+        "projectName"                             = "project-platform",
       }
     }
   }
@@ -415,11 +411,11 @@ module "eks_blueprints_platform_teams" {
 
   namespaces = {
     "team-${each.key}" = {
-      labels =  merge(
-      {
-        team = each.key
-      },
-      try(each.value.labels, {})
+      labels = merge(
+        {
+          team = each.key
+        },
+        try(each.value.labels, {})
       )
 
       resource_quota = {
@@ -473,16 +469,16 @@ module "eks_blueprints_dev_teams" {
       labels = {
         "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
         "appName"                                 = "burnham-team-app",
-        "projectName"                             = "project-burnham",        
-      }      
+        "projectName"                             = "project-burnham",
+      }
     }
     riker = {
       labels = {
         "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
         "appName"                                 = "riker-team-app",
-        "projectName"                             = "project-riker",        
-      }      
-    }     
+        "projectName"                             = "project-riker",
+      }
+    }
   }
   name = "team-${each.key}"
 
@@ -503,11 +499,11 @@ module "eks_blueprints_dev_teams" {
 
   namespaces = {
     "team-${each.key}" = {
-      labels =  merge(
-      {
-        team = each.key
-      },
-      try(each.value.labels, {})
+      labels = merge(
+        {
+          team = each.key
+        },
+        try(each.value.labels, {})
       )
 
       resource_quota = {
@@ -562,9 +558,9 @@ module "eks_blueprints_ecsdemo_teams" {
   version = "~> 0.2"
 
   for_each = {
-    ecsdemo-frontend = {}  
-    ecsdemo-nodejs = {}  
-    ecsdemo-crystal = {}        
+    ecsdemo-frontend = {}
+    ecsdemo-nodejs   = {}
+    ecsdemo-crystal  = {}
   }
   name = "team-${each.key}"
 
@@ -577,9 +573,6 @@ module "eks_blueprints_ecsdemo_teams" {
     "appName"                                 = "${each.key}-app",
     "projectName"                             = each.key,
     "environment"                             = "dev",
-    "downscaler/uptime"                       = "Mon-Fri_0900-1700_CET",
-    //validation regex '(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?')
-    //"downscaler/downtime"                     = "Sat-Sun 00:00-24:00 CET,Fri-Fri 20:00-24:00 CET",    
   }
 
   annotations = {
@@ -714,18 +707,18 @@ module "kubernetes_addons" {
   # https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/
   #---------------------------------------------------------------
 
-  enable_metrics_server               = true
-  enable_vpa                          = true
-  enable_aws_load_balancer_controller = true
+  enable_metrics_server               = local.metrics_server
+  enable_vpa                          = local.vpa
+  enable_aws_load_balancer_controller = local.aws_load_balancer_controller
   aws_load_balancer_controller_helm_config = {
     service_account = "aws-lb-sa"
   }
-  enable_karpenter              = true
-  enable_aws_for_fluentbit      = true
-  enable_aws_cloudwatch_metrics = true
+  enable_karpenter              = local.karpenter
+  enable_aws_for_fluentbit      = local.aws_for_fluentbit
+  enable_aws_cloudwatch_metrics = local.cloudwatch_metrics
 
   #to view the result : terraform state show 'module.kubernetes_addons.module.external_dns[0].module.helm_addon.helm_release.addon[0]'
-  enable_external_dns = true
+  enable_external_dns = local.external_dns
 
   external_dns_helm_config = {
     txtOwnerId   = local.name
@@ -734,7 +727,9 @@ module "kubernetes_addons" {
     logLevel     = "debug"
   }
 
-  enable_kubecost = true
+  enable_kubecost      = local.kubecost
+  enable_cert_manager  = local.cert_manager
+  enable_argo_rollouts = local.argo_rollouts
 
 }
 
@@ -845,7 +840,7 @@ module "kubernetes_addons" {
 #   external_dns_route53_zone_arns = [
 #     data.aws_route53_zone.sub.arn
 #   ]
-# #helm get all external-dns -n external-dns   
+# #helm get all external-dns -n external-dns
 #   external_dns = {
 #     service_account_name = "external-dns-sa"
 #     #chart_version = "1.12.2"

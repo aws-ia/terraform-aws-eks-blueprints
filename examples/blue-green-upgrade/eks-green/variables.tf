@@ -63,10 +63,3 @@ variable "argocd_secret_manager_name_suffix" {
   description = "Name of secret manager secret for ArgoCD Admin UI Password"
   default     = "argocd-admin-secret"
 }
-
-variable "vpc_tag_value" {
-  # if left blank then {environment_name} will be used
-  description = "The tag value of the VPC and subnets"
-  type        = string
-  default     = ""
-}
