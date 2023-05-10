@@ -55,7 +55,7 @@ configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name fully-p
 aws eks --region <$AWS_REGION> update-kubeconfig --name <$CLUSTER_NAME>
 ```
 
-3. List all the pods running in `aws-privateca-issuer` and `cert-manager` namespace
+3. List all the pods running in `aws-privateca-issuer` and `cert-manager` Namespace.
 
 ```sh
 kubectl get pods -n aws-privateca-issuer
