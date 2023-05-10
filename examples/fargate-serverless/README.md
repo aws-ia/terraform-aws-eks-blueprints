@@ -197,7 +197,7 @@ Open the browser to access the application via the URL address shown in the last
 
 When accessing the URL in your browser, it should look like this:
 
-![app-fargate-serverless](static/app-fargate-serverless.png)
+![app-fargate-serverless](../../docs/static/app-fargate-serverless.png)
 
 > You might need to wait a few minutes, and then refresh your browser.
 > If your Ingress isn't created after several minutes, then run this command to view the AWS Load Balancer Controller logs:
