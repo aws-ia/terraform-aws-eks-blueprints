@@ -111,142 +111,142 @@ module "eks_blueprints_addons" {
   }
 
   # Add-ons
-  enable_cert_manager = true
-  #   enable_aws_privateca_issuer = true
-  #   aws_privateca_issuer = {
-  #     acmca_arn        = aws_acmpca_certificate_authority.this.arn
-  #     namespace        = "aws-privateca-issuer"
-  #     create_namespace = true
-  #   }
+  enable_cert_manager         = true
+  enable_aws_privateca_issuer = true
+  aws_privateca_issuer = {
+    acmca_arn        = aws_acmpca_certificate_authority.this.arn
+    namespace        = "aws-privateca-issuer"
+    create_namespace = true
+  }
 
-  #   tags = local.tags
+  tags = local.tags
 }
 
-# ################################################################################
-# # Cert Manager CSI Helm Chart
-# ################################################################################
+################################################################################
+# Cert Manager CSI Helm Chart
+################################################################################
 
-# resource "helm_release" "cert_manager_csi" {
-#   name             = "cert-manager-csi-driver"
-#   chart            = "cert-manager-csi-driver"
-#   version          = "v0.5.0"
-#   repository       = "https://charts.jetstack.io"
-#   description      = "Cert Manager CSI Driver Add-on"
-#   namespace        = "cert-manager"
-#   create_namespace = false
+resource "helm_release" "cert_manager_csi" {
+  name             = "cert-manager-csi-driver"
+  chart            = "cert-manager-csi-driver"
+  version          = "v0.5.0"
+  repository       = "https://charts.jetstack.io"
+  description      = "Cert Manager CSI Driver Add-on"
+  namespace        = "cert-manager"
+  create_namespace = false
 
-#   depends_on = [
-#     module.eks_blueprints_addons
-#   ]
-# }
+  depends_on = [
+    module.eks_blueprints_addons
+  ]
+}
 
-# #-------------------------------
-# # Associates a certificate with an AWS Certificate Manager Private Certificate Authority (ACM PCA Certificate Authority).
-# # An ACM PCA Certificate Authority is unable to issue certificates until it has a certificate associated with it.
-# # A root level ACM PCA Certificate Authority is able to self-sign its own root certificate.
-# #-------------------------------
+#-------------------------------
+# Associates a certificate with an AWS Certificate Manager Private Certificate Authority (ACM PCA Certificate Authority).
+# An ACM PCA Certificate Authority is unable to issue certificates until it has a certificate associated with it.
+# A root level ACM PCA Certificate Authority is able to self-sign its own root certificate.
+#-------------------------------
 
-# resource "aws_acmpca_certificate_authority" "this" {
-#   type = "ROOT"
+resource "aws_acmpca_certificate_authority" "this" {
+  type = "ROOT"
 
-#   certificate_authority_configuration {
-#     key_algorithm     = "RSA_4096"
-#     signing_algorithm = "SHA512WITHRSA"
+  certificate_authority_configuration {
+    key_algorithm     = "RSA_4096"
+    signing_algorithm = "SHA512WITHRSA"
 
-#     subject {
-#       common_name = var.certificate_dns
-#     }
-#   }
+    subject {
+      common_name = var.certificate_dns
+    }
+  }
 
-#   tags = local.tags
-# }
+  tags = local.tags
+}
 
-# resource "aws_acmpca_certificate" "this" {
-#   certificate_authority_arn   = aws_acmpca_certificate_authority.this.arn
-#   certificate_signing_request = aws_acmpca_certificate_authority.this.certificate_signing_request
-#   signing_algorithm           = "SHA512WITHRSA"
+resource "aws_acmpca_certificate" "this" {
+  certificate_authority_arn   = aws_acmpca_certificate_authority.this.arn
+  certificate_signing_request = aws_acmpca_certificate_authority.this.certificate_signing_request
+  signing_algorithm           = "SHA512WITHRSA"
 
-#   template_arn = "arn:aws:acm-pca:::template/RootCACertificate/V1"
+  template_arn = "arn:aws:acm-pca:::template/RootCACertificate/V1"
 
-#   validity {
-#     type  = "YEARS"
-#     value = 10
-#   }
-# }
+  validity {
+    type  = "YEARS"
+    value = 10
+  }
+}
 
-# resource "aws_acmpca_certificate_authority_certificate" "this" {
-#   certificate_authority_arn = aws_acmpca_certificate_authority.this.arn
+resource "aws_acmpca_certificate_authority_certificate" "this" {
+  certificate_authority_arn = aws_acmpca_certificate_authority.this.arn
 
-#   certificate       = aws_acmpca_certificate.this.certificate
-#   certificate_chain = aws_acmpca_certificate.this.certificate_chain
-# }
+  certificate       = aws_acmpca_certificate.this.certificate
+  certificate_chain = aws_acmpca_certificate.this.certificate_chain
+}
 
-# #-------------------------------
-# #  This resource creates a CRD of AWSPCAClusterIssuer Kind, which then represents the ACM PCA in K8
-# #-------------------------------
+#-------------------------------
+#  This resource creates a CRD of AWSPCAClusterIssuer Kind, which then represents the ACM PCA in K8
+#-------------------------------
 
-# # Using kubectl to workaround kubernetes provider issue https://github.com/hashicorp/terraform-provider-kubernetes/issues/1453
-# resource "kubectl_manifest" "cluster_pca_issuer" {
-#   yaml_body = yamlencode({
-#     apiVersion = "awspca.cert-manager.io/v1beta1"
-#     kind       = "AWSPCAClusterIssuer"
+# Using kubectl to workaround kubernetes provider issue https://github.com/hashicorp/terraform-provider-kubernetes/issues/1453
+resource "kubectl_manifest" "cluster_pca_issuer" {
+  yaml_body = yamlencode({
+    apiVersion = "awspca.cert-manager.io/v1beta1"
+    kind       = "AWSPCAClusterIssuer"
 
-#     metadata = {
-#       name = module.eks.cluster_name
-#     }
+    metadata = {
+      name = module.eks.cluster_name
+    }
 
-#     spec = {
-#       arn = aws_acmpca_certificate_authority.this.arn
-#       region : local.region
-#     }
-#   })
+    spec = {
+      arn = aws_acmpca_certificate_authority.this.arn
+      region : local.region
+    }
+  })
 
-#   depends_on = [
-#     module.eks_blueprints_addons
-#   ]
-# }
+  depends_on = [
+    module.eks_blueprints_addons
+  ]
+}
 
-# #-------------------------------
-# # This resource creates a CRD of Certificate Kind, which then represents certificate issued from ACM PCA,
-# # mounted as K8 secret
-# #-------------------------------
+#-------------------------------
+# This resource creates a CRD of Certificate Kind, which then represents certificate issued from ACM PCA,
+# mounted as K8 secret
+#-------------------------------
 
-# # Using kubectl to workaround kubernetes provider issue https://github.com/hashicorp/terraform-provider-kubernetes/issues/1453
-# resource "kubectl_manifest" "pca_certificate" {
-#   yaml_body = yamlencode({
-#     apiVersion = "cert-manager.io/v1"
-#     kind       = "Certificate"
+# Using kubectl to workaround kubernetes provider issue https://github.com/hashicorp/terraform-provider-kubernetes/issues/1453
+resource "kubectl_manifest" "pca_certificate" {
+  yaml_body = yamlencode({
+    apiVersion = "cert-manager.io/v1"
+    kind       = "Certificate"
 
-#     metadata = {
-#       name      = var.certificate_name
-#       namespace = "default"
-#     }
+    metadata = {
+      name      = var.certificate_name
+      namespace = "default"
+    }
 
-#     spec = {
-#       commonName = var.certificate_dns
-#       duration   = "2160h0m0s"
-#       issuerRef = {
-#         group = "awspca.cert-manager.io"
-#         kind  = "AWSPCAClusterIssuer"
-#         name : module.eks.cluster_name
-#       }
-#       renewBefore = "360h0m0s"
-#       secretName  = join("-", [var.certificate_name, "clusterissuer"]) # This is the name with which the K8 Secret will be available
-#       usages = [
-#         "server auth",
-#         "client auth"
-#       ]
-#       privateKey = {
-#         algorithm : "RSA"
-#         size : 2048
-#       }
-#     }
-#   })
+    spec = {
+      commonName = var.certificate_dns
+      duration   = "2160h0m0s"
+      issuerRef = {
+        group = "awspca.cert-manager.io"
+        kind  = "AWSPCAClusterIssuer"
+        name : module.eks.cluster_name
+      }
+      renewBefore = "360h0m0s"
+      secretName  = join("-", [var.certificate_name, "clusterissuer"]) # This is the name with which the K8 Secret will be available
+      usages = [
+        "server auth",
+        "client auth"
+      ]
+      privateKey = {
+        algorithm : "RSA"
+        size : 2048
+      }
+    }
+  })
 
-#   depends_on = [
-#     kubectl_manifest.cluster_pca_issuer,
-#   ]
-# }
+  depends_on = [
+    kubectl_manifest.cluster_pca_issuer,
+  ]
+}
 
 ################################################################################
 # Supporting Resources
