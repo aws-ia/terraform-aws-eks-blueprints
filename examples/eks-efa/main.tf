@@ -93,6 +93,7 @@ module "eks" {
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
+  cluster_enabled_log_types      = var.cluster_enabled_log_types
 
   cluster_addons = {
     coredns = {

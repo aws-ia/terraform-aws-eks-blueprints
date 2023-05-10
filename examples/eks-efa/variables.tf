@@ -9,3 +9,9 @@ variable "cluster_name" {
   type        = string
   default     = "eks-efa"
 }
+
+variable "cluster_enabled_log_types" {
+  description = "EKS Cluster Control Plane Logging"
+  type        = list(any)
+  default     = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
+}
