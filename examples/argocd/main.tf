@@ -123,8 +123,6 @@ module "eks_blueprints_addons" {
   # Add-ons
   enable_amazon_eks_aws_ebs_csi_driver = true
   enable_aws_load_balancer_controller  = true
-  enable_aws_for_fluentbit = true
-  # Let fluentbit create the cw log group
   enable_cert_manager   = true
   enable_karpenter      = true
   enable_metrics_server = true
