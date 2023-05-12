@@ -92,7 +92,8 @@ module "eks_blueprints_addons" {
   eks_cluster_id        = module.eks.cluster_name
   eks_cluster_endpoint  = module.eks.cluster_endpoint
   eks_cluster_version   = module.eks.cluster_version
-  eks_oidc_provider     = module.eks.oidc_provider_arn
+  eks_oidc_provider     = module.eks.oidc_provider
+  eks_oidc_provider_arn = module.eks.oidc_provider_arn
 
   enable_argocd = true
   # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.
@@ -121,6 +122,7 @@ module "eks_blueprints_addons" {
 
   # Add-ons
   enable_amazon_eks_aws_ebs_csi_driver = true
+  enable_aws_load_balancer_controller  = true
   enable_aws_for_fluentbit = true
   # Let fluentbit create the cw log group
   enable_cert_manager   = true
