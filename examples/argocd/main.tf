@@ -1,6 +1,4 @@
-provider "aws" {
-  region = local.region
-}
+provider "aws" {}
 
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
@@ -34,7 +32,6 @@ data "aws_availability_zones" "available" {}
 
 locals {
   name   = basename(path.cwd)
-  region = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -57,6 +54,15 @@ module "eks" {
   cluster_name                   = local.name
   cluster_version                = "1.25"
   cluster_endpoint_public_access = true
+
+  # EKS Addons
+  cluster_addons = {
+    coredns    = {}
+    kube-proxy = {}
+    vpc-cni    = {
+      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
+    }
+  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -81,50 +87,40 @@ module "eks" {
 module "eks_blueprints_addons" {
   # Users should pin the version to the latest available release
   # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.31.0"
 
-  cluster_name      = module.eks.cluster_name
-  cluster_endpoint  = module.eks.cluster_endpoint
-  cluster_version   = module.eks.cluster_version
-  oidc_provider_arn = module.eks.oidc_provider_arn
+  eks_cluster_id        = module.eks.cluster_name
+  eks_cluster_endpoint  = module.eks.cluster_endpoint
+  eks_cluster_version   = module.eks.cluster_version
+  eks_oidc_provider     = module.eks.oidc_provider_arn
 
-  eks_addons = {
-    aws-ebs-csi-driver = {
-      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
-    }
-    coredns = {}
-    vpc-cni = {
-      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
-    }
-    kube-proxy = {}
+  enable_argocd = true
+  # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.
+  argocd_helm_config = {
+    set_sensitive = [
+      {
+        name  = "configs.secret.argocdServerAdminPassword"
+        value = bcrypt_hash.argo.id
+      }
+    ]
   }
 
-  # enable_argocd = true
-  # # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.
-  # argocd_helm_config = {
-  #   set_sensitive = [
-  #     {
-  #       name  = "configs.secret.argocdServerAdminPassword"
-  #       value = bcrypt_hash.argo.id
-  #     }
-  #   ]
-  # }
-
-  # argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying add-ons
-  # argocd_applications = {
-  #   addons = {
-  #     path               = "chart"
-  #     repo_url           = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
-  #     add_on_application = true
-  #   }
-  #   workloads = {
-  #     path               = "envs/dev"
-  #     repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
-  #     add_on_application = false
-  #   }
-  # }
+  argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying add-ons
+  argocd_applications = {
+    addons = {
+      path               = "chart"
+      repo_url           = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
+      add_on_application = true
+    }
+    workloads = {
+      path               = "envs/dev"
+      repo_url           = "https://github.com/aws-samples/eks-blueprints-workloads.git"
+      add_on_application = false
+    }
+  }
 
   # Add-ons
+  enable_amazon_eks_aws_ebs_csi_driver = true
   enable_aws_for_fluentbit = true
   # Let fluentbit create the cw log group
   enable_cert_manager   = true
@@ -187,24 +183,6 @@ module "vpc" {
 
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
-  }
-
-  tags = local.tags
-}
-
-module "ebs_csi_driver_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.14"
-
-  role_name_prefix = "${module.eks.cluster_name}-ebs-csi-driver-"
-
-  attach_ebs_csi_policy = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
-    }
   }
 
   tags = local.tags
