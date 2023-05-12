@@ -4,7 +4,7 @@
 
 ## Usage
 
-To deploy cert-manager Add-on via [EKS Blueprints Addons](https://github.com/aws-ia/terraform-aws-eks-blueprints-addons), reference the following parameters under the `module.eks_blueprints_addons` as shown in this [example](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/fargate-serverless/main.tf#L114).
+To deploy cert-manager Add-on via [EKS Blueprints Addons](https://github.com/aws-ia/terraform-aws-eks-blueprints-addons), reference the following parameters under the `module.eks_blueprints_addons`.
 
 ```hcl
 module "eks_blueprints_addons" {

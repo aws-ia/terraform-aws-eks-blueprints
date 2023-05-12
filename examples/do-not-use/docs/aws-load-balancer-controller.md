@@ -1,10 +1,10 @@
 # AWS Load Balancer Controller.
 
-[AWS Load Balancer Controller ](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/) is a controller to help manage Elastic Load Balancers for a Kubernetes cluster. This Add-on deploys this controller in an Amazon EKS Cluster.
+[AWS Load Balancer Controller ](https://kubernetes-sigs.github.io/aws-load-balancer-controller/) is a controller to help manage Elastic Load Balancers for a Kubernetes cluster. This Add-on deploys this controller in an Amazon EKS Cluster.
 
 ## Usage 
 
-In order to deploy the AWS Load Balancer Controller Addon via [EKS Blueprints Addons](https://github.com/aws-ia/terraform-aws-eks-blueprints-addons), reference the following parameters under the `module.eks_blueprints_addons` as shown in this [example](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/fargate-serverless/main.tf#L144-L156).
+In order to deploy the AWS Load Balancer Controller Addon via [EKS Blueprints Addons](https://github.com/aws-ia/terraform-aws-eks-blueprints-addons), reference the following parameters under the `module.eks_blueprints_addons`.
 
 ```hcl
 module "eks_blueprints_addons" {
@@ -76,7 +76,7 @@ kubectl create ingress example-ingress --class alb --rule="/*=example-svc:80" \
 ```sh
 kubectl get ingress  
 NAME                CLASS   HOSTS   ADDRESS                                                                 PORTS   AGE
-example-ingress     alb     *       k8s-example-ingress-7e0d6f03e7-2117441715.us-west-2.elb.amazonaws.com   80      4m9s
+example-ingress     alb     *       k8s-example-ingress-7e0d6f03e7-1234567890.us-west-2.elb.amazonaws.com   80      4m9s
 ```
 
 ## Resources

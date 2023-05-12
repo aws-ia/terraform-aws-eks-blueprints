@@ -4,7 +4,7 @@ Amazon EKS on Fargate offers a built-in log router based on Fluent Bit. This mea
 
 ## Usage
 
-To configure the Fargate Fluentbit ConfigMap via the [EKS Blueprints Addons](https://github.com/aws-ia/terraform-aws-eks-blueprints-addons), just reference the following parameters under the `module.eks_blueprints_addons` as shown in this [example](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/examples/fargate-serverless/main.tf#L139C6-L142).
+To configure the Fargate Fluentbit ConfigMap via the [EKS Blueprints Addons](https://github.com/aws-ia/terraform-aws-eks-blueprints-addons), just reference the following parameters under the `module.eks_blueprints_addons`.
 
 ```hcl
 module "eks_blueprints_addons" {
@@ -83,7 +83,7 @@ aws logs describe-log-groups --log-group-name-prefix "/fargate-serverless/fargat
             "creationTime": 1683580491652,
             "retentionInDays": 90,
             "metricFilterCount": 0,
-            "arn": "arn:aws:logs:us-west-2:978045894046:log-group:/fargate-serverless/fargate-fluentbit-logs20230509014113352200000006:*",
+            "arn": "arn:aws:logs:us-west-2:111122223333:log-group:/fargate-serverless/fargate-fluentbit-logs20230509014113352200000006:*",
             "storedBytes": 0
         }
     ]

@@ -797,7 +797,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
     condition {
       test     = "StringEquals"
       variable = "iam:AWSServiceName"
-      values   = ["elasticloadbalancing.amazonaws.com"]
+      values   = ["elasticloadbalancing.${local.dns_suffix}"]
     }
   }
 
@@ -2095,7 +2095,7 @@ resource "aws_cloudwatch_log_group" "fargate_fluentbit" {
 resource "aws_iam_policy" "fargate_fluentbit" {
   count = var.enable_fargate_fluentbit ? 1 : 0
 
-  name = try(var.fargate_fluentbit_cw_log_group.name, "fargate-fluentbit-logs")
+  name = try(var.fargate_fluentbit_cw_log_group.name, "/${var.cluster_name}-fargate-fluentbit-logs")
 
   policy = jsonencode({
     Version = "2012-10-17",

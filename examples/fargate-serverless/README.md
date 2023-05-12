@@ -24,8 +24,6 @@ To provision this example:
 
 ```sh
 terraform init
-terraform apply -target module.vpc
-terraform apply -target module.eks
 terraform apply
 
 ```
@@ -52,26 +50,7 @@ configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name fully-p
 aws eks --region <$AWS_REGION> update-kubeconfig --name <$CLUSTER_NAME>
 ```
 
-3. Validate if the Fargate Profiles were successfully created in the Cluster.
-
-```sh
-aws eks list-clusters
-{
-    "clusters": [
-        "fargate-serverless"
-    ]
-}
-
-aws eks list-fargate-profiles --cluster-name fargate-serverless
-{
-    "fargateProfileNames": [
-        "app_wildcard",
-        "kube-system"
-    ]
-}
-```
-
-4. Test by listing Nodes in in the Cluster, you should see Fargate instances as your Cluster Nodes.
+3. Test by listing Nodes in in the Cluster, you should see Fargate instances as your Cluster Nodes.
 
 
 ```sh
@@ -86,7 +65,7 @@ fargate-ip-10-0-47-31.us-west-2.compute.internal    Ready    <none>   75s   v1.2
 fargate-ip-10-0-6-175.us-west-2.compute.internal    Ready    <none>   25m   v1.26.3-eks-f4dc2c0
 ```
 
-5. Test by listing all the Pods running currently. All the Pods should reach a status of `Running` after approximately 60 seconds:
+4. Test by listing all the Pods running currently. All the Pods should reach a status of `Running` after approximately 60 seconds:
 
 ```sh
 kubectl get pods -A
@@ -100,7 +79,7 @@ kube-system     coredns-7b7bddbc85-jmbv6                        1/1     Running 
 kube-system     coredns-7b7bddbc85-rgmzq                        1/1     Running   0          26m
 ```
 
-6. Check if the `aws-logging` configMap for Fargate Fluentbit was created.
+5. Check if the `aws-logging` configMap for Fargate Fluentbit was created.
 
 ```sh
 kubectl -n aws-observability get configmap aws-logging -o yaml
@@ -153,7 +132,7 @@ aws logs describe-log-groups --log-group-name-prefix "/fargate-serverless/fargat
             "creationTime": 1683580491652,
             "retentionInDays": 90,
             "metricFilterCount": 0,
-            "arn": "arn:aws:logs:us-west-2:978045894046:log-group:/fargate-serverless/fargate-fluentbit-logs20230509014113352200000006:*",
+            "arn": "arn:aws:logs:us-west-2:111222333444:log-group:/fargate-serverless/fargate-fluentbit-logs20230509014113352200000006:*",
             "storedBytes": 0
         }
     ]
@@ -171,7 +150,7 @@ aws logs describe-log-streams --log-group-name "/fargate-serverless/fargate-flue
 ]
 ```
 
-7. (Optional) Test that the sample application.
+6. (Optional) Test that the sample application.
 
 Create an Ingress using the AWS LoadBalancer Controller deployed with the EKS Blueprints Add-ons module, pointing to our application Service.
 
@@ -190,14 +169,10 @@ kubectl -n app-2048 create ingress app-2048 --class alb --rule="/*=app-2048:80" 
 ```sh
 kubectl -n app-2048 get ingress  
 NAME       CLASS   HOSTS   ADDRESS                                                                 PORTS   AGE
-app-2048   alb     *       k8s-app2048-app2048-6d9c5e92d6-1096330604.us-west-2.elb.amazonaws.com   80      4m9s
+app-2048   alb     *       k8s-app2048-app2048-6d9c5e92d6-1234567890.us-west-2.elb.amazonaws.com   80      4m9s
 ```
 
-Open the browser to access the application via the URL address shown in the last output in the ADDRESS column. In our example `k8s-app2048-app2048-6d9c5e92d6-1096330604.us-west-2.elb.amazonaws.com`.
-
-When accessing the URL in your browser, it should look like this:
-
-![app-fargate-serverless](../../docs/static/app-fargate-serverless.png)
+Open the browser to access the application via the URL address shown in the last output in the ADDRESS column. In our example `k8s-app2048-app2048-6d9c5e92d6-1234567890.us-west-2.elb.amazonaws.com`.
 
 > You might need to wait a few minutes, and then refresh your browser.
 > If your Ingress isn't created after several minutes, then run this command to view the AWS Load Balancer Controller logs:
