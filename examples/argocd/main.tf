@@ -126,7 +126,6 @@ module "eks_blueprints_addons" {
   enable_cert_manager   = true
   enable_karpenter      = true
   enable_metrics_server = true
-  enable_vpa            = true
   enable_argo_rollouts  = true
 
   tags = local.tags
