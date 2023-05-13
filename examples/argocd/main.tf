@@ -31,7 +31,7 @@ provider "bcrypt" {}
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = basename(path.cwd)
+  name = basename(path.cwd)
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -59,7 +59,7 @@ module "eks" {
   cluster_addons = {
     coredns    = {}
     kube-proxy = {}
-    vpc-cni    = {
+    vpc-cni = {
       service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
     }
   }
@@ -123,10 +123,10 @@ module "eks_blueprints_addons" {
   # Add-ons
   enable_amazon_eks_aws_ebs_csi_driver = true
   enable_aws_load_balancer_controller  = true
-  enable_cert_manager   = true
-  enable_karpenter      = true
-  enable_metrics_server = true
-  enable_argo_rollouts  = true
+  enable_cert_manager                  = true
+  enable_karpenter                     = true
+  enable_metrics_server                = true
+  enable_argo_rollouts                 = true
 
   tags = local.tags
 }
