@@ -4,11 +4,13 @@ This getting started guide will help you deploy your first EKS environment using
 
 ## Prerequisites:
 
-First, ensure that you have installed the following tools locally.
+First, you must ensure that you have installed the following tools:
 
 1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+
+Alternatively everything can be setup via [Dev Containers](https://containers.dev/) with all prerequisites installed - This can be done in [Visual Studio Code](https://code.visualstudio.com/download) with [Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) on your own machine, alternatively in GitHub main repo page click the green Code dropbox, select Codespaces, Open in codespace - This will install all prerequisites and let you use the repo. 
 
 ## Examples
 
