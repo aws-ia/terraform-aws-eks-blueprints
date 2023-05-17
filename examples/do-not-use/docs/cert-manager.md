@@ -8,7 +8,7 @@ To deploy cert-manager Add-on via [EKS Blueprints Addons](https://github.com/aws
 
 ```hcl
 module "eks_blueprints_addons" {
-    
+
   enable_cert_manager         = true
 }
 ```
@@ -84,7 +84,7 @@ kubectl get certificate -o wide
 NAME      READY   SECRET           ISSUER                      STATUS                                          AGE
 example   True    example-secret   selfsigned-cluster-issuer   Certificate is up to date and has not expired   44s
 
-kubectl get secret example-secret 
+kubectl get secret example-secret
 NAME             TYPE                DATA   AGE
 example-secret   kubernetes.io/tls   3      70s
 ```

@@ -57,27 +57,17 @@ module "eks" {
   cluster_endpoint_public_access = true
 
   # IPV6
-  cluster_ip_family = "ipv6"
-
-  # We are using the IRSA created below for permissions
-  # However, we have to deploy with the policy attached FIRST (when creating a fresh cluster)
-  # and then turn this off after the cluster/node group is created. Without this initial policy,
-  # the VPC CNI fails to assign IPs and nodes cannot join the cluster
-  # See https://github.com/aws/containers-roadmap/issues/1666 for more context
+  cluster_ip_family          = "ipv6"
   create_cni_ipv6_iam_policy = true
 
   cluster_addons = {
     coredns    = {}
     kube-proxy = {}
-    vpc-cni = {
-      most_recent              = true
-      before_compute           = true
-      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
-    }
+    vpc-cni    = {}
   }
 
-  vpc_id                   = module.vpc.vpc_id
-  subnet_ids               = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_groups = {
     initial = {
@@ -107,13 +97,15 @@ module "vpc" {
   private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
   public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
 
-  enable_ipv6 = true
+  enable_nat_gateway     = true
+  single_nat_gateway     = true
+  enable_ipv6            = true
+  create_egress_only_igw = true
 
-  public_subnet_ipv6_prefixes  = [0, 1, 2]
-  public_subnet_assign_ipv6_address_on_creation = true
-  private_subnet_ipv6_prefixes = [3, 4, 5]
+  public_subnet_ipv6_prefixes                    = [0, 1, 2]
+  public_subnet_assign_ipv6_address_on_creation  = true
+  private_subnet_ipv6_prefixes                   = [3, 4, 5]
   private_subnet_assign_ipv6_address_on_creation = true
-
 
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
@@ -121,25 +113,6 @@ module "vpc" {
 
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
-  }
-
-  tags = local.tags
-}
-
-module "vpc_cni_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.14"
-
-  role_name_prefix = "${module.eks.cluster_name}-vpc-cni-"
-
-  attach_vpc_cni_policy = true
-  vpc_cni_enable_ipv6   = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:aws-node"]
-    }
   }
 
   tags = local.tags
