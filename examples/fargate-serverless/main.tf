@@ -31,8 +31,9 @@ provider "helm" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = basename(path.cwd)
-  region = "us-west-2"
+  name     = basename(path.cwd)
+  region   = "us-west-2"
+  app_name = "app-2048"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -53,7 +54,7 @@ module "eks" {
   version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = "1.25"
+  cluster_version                = "1.26"
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
@@ -77,6 +78,12 @@ module "eks" {
     }
   }
 
+  fargate_profile_defaults = {
+    iam_role_additional_policies = {
+      additional = module.eks_blueprints_addons.fargate_fluentbit_policy[0].arn
+    }
+  }
+
   tags = local.tags
 }
 
@@ -87,7 +94,8 @@ module "eks" {
 module "eks_blueprints_addons" {
   # Users should pin the version to the latest available release
   # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+  source = "../do-not-use"
+  #source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -135,7 +143,7 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    set_values = [
+    set = [
       {
         name  = "vpcId"
         value = module.vpc.vpc_id
@@ -185,13 +193,13 @@ module "vpc" {
 
 resource "kubernetes_namespace_v1" "this" {
   metadata {
-    name = local.name
+    name = local.app_name
   }
 }
 
 resource "kubernetes_deployment_v1" "this" {
   metadata {
-    name      = local.name
+    name      = local.app_name
     namespace = kubernetes_namespace_v1.this.metadata[0].name
   }
 
@@ -200,14 +208,14 @@ resource "kubernetes_deployment_v1" "this" {
 
     selector {
       match_labels = {
-        "app.kubernetes.io/name" = local.name
+        "app.kubernetes.io/name" = local.app_name
       }
     }
 
     template {
       metadata {
         labels = {
-          "app.kubernetes.io/name" = local.name
+          "app.kubernetes.io/name" = local.app_name
         }
       }
 
@@ -215,7 +223,7 @@ resource "kubernetes_deployment_v1" "this" {
         container {
           image = "public.ecr.aws/l6m2t8p7/docker-2048:latest"
           # image_pull_policy = "Always"
-          name = local.name
+          name = local.app_name
 
           port {
             container_port = 80
@@ -228,13 +236,13 @@ resource "kubernetes_deployment_v1" "this" {
 
 resource "kubernetes_service_v1" "this" {
   metadata {
-    name      = local.name
+    name      = local.app_name
     namespace = kubernetes_namespace_v1.this.metadata[0].name
   }
 
   spec {
     selector = {
-      "app.kubernetes.io/name" = local.name
+      "app.kubernetes.io/name" = local.app_name
     }
 
 
@@ -245,40 +253,6 @@ resource "kubernetes_service_v1" "this" {
     }
 
     type = "NodePort"
-  }
-}
-
-resource "kubernetes_ingress_v1" "this" {
-  metadata {
-    name      = local.name
-    namespace = kubernetes_namespace_v1.this.metadata[0].name
-
-    annotations = {
-      "alb.ingress.kubernetes.io/scheme"      = "internet-facing"
-      "alb.ingress.kubernetes.io/target-type" = "ip"
-    }
-  }
-
-  spec {
-    ingress_class_name = "alb"
-
-    rule {
-      http {
-        path {
-          path      = "/"
-          path_type = "Prefix"
-
-          backend {
-            service {
-              name = local.name
-              port {
-                number = 80
-              }
-            }
-          }
-        }
-      }
-    }
   }
 }
 
