@@ -7,7 +7,7 @@ module "helm_addon" {
       name             = "kubecost"
       chart            = "cost-analyzer"
       repository       = "oci://public.ecr.aws/kubecost"
-      version          = "1.97.0"
+      version          = "1.103.3"
       namespace        = "kubecost"
       values           = [file("${path.module}/values.yaml")]
       create_namespace = true
