@@ -52,7 +52,7 @@ module "eks" {
   version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = "1.25"
+  cluster_version                = "1.26"
   cluster_endpoint_public_access = true
 
   # EKS Addons
