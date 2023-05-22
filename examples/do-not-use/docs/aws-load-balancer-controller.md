@@ -2,7 +2,7 @@
 
 [AWS Load Balancer Controller ](https://kubernetes-sigs.github.io/aws-load-balancer-controller/) is a controller to help manage Elastic Load Balancers for a Kubernetes cluster. This Add-on deploys this controller in an Amazon EKS Cluster.
 
-## Usage 
+## Usage
 
 In order to deploy the AWS Load Balancer Controller Addon via [EKS Blueprints Addons](https://github.com/aws-ia/terraform-aws-eks-blueprints-addons), reference the following parameters under the `module.eks_blueprints_addons`.
 

@@ -40,4 +40,3 @@ You can optionally customize the Helm chart that deploys the driver via the foll
     role_policies = ["<ADDITIONAL_IAM_POLICY_ARN>"]
   }
 ```
-
