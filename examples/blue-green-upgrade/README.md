@@ -41,7 +41,7 @@ See the Architecture of what we are building
 
 Our sample is composed of four main directory:
 
-- **environment** → this stack will create the common vpc and dependencies used by our clusters: create a Route53 sub zone for our sample, and a wildcard Certificate Manager certificate for our applications TLS endpoints, and a SecretManager password for the ArgoCD UIs.
+- **environment** → this stack will create the common VPC and its dependencies used by our EKS clusters: create a Route53 sub domain hosted zone for our sample, a wildcard certificate on Certificate Manager for our applications TLS endpoints, and a SecretManager password for the ArgoCD UIs.
 - **modules/eks_cluster** → local module defining the EKS blueprint cluster with ArgoCD add-on which will automatically deploy additional add-ons and our demo workloads
 - **eks-blue** → an instance of the eks_cluster module to create blue cluster
 - **eks-green** → an instance of the eks_cluster module to create green cluster
@@ -158,7 +158,18 @@ We have set up a [simple go application](https://github.com/allamand/eks-example
 
 The application is deployed from our [<burnham> workload repository manifest](https://github.com/aws-samples/eks-blueprints-workloads/blob/main/teams/team-burnham/dev/templates/burnham.yaml)
 
-See the deployment
+Connect to the cluster: Execute one of the EKS cluster login commands from the `terraform output` command, depending on the IAM role you can assume to access to the cluster. If you want EKS Admin cluster, you can execute the command associated to the **eks_blueprints_admin_team_configure_kubectl** output. It should be something similar to:
+
+```bash
+aws eks --region eu-west-3 update-kubeconfig --name eks-blueprint-blue  --role-arn arn:aws:iam::0123456789:role/admin-team-20230505075455219300000002
+```
+
+Note it will allow the role associated to the paramerer **eks_admin_role_name** to assume the role.
+
+You can also connect with the user who created the EKS cluster without specifying the `--role-arn` parameter
+
+
+Next, you can interrct with the cluster and see the deployment
 
 ```bash
 $ kubectl get deployment -n team-burnham -l app=burnham-deployment-devburnham

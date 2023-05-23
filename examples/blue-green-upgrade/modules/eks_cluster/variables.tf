@@ -18,7 +18,7 @@ variable "service_name" {
 variable "cluster_version" {
   description = "The Version of Kubernetes to deploy"
   type        = string
-  default     = "1.24"
+  default     = "1.25"
 }
 
 variable "hosted_zone_name" {
