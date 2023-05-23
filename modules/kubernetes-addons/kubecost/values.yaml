@@ -4,7 +4,7 @@ global:
     enabled: false
     proxy: false
 
-imageVersion: prod-1.97.0
+imageVersion: prod-1.103.3
 kubecostFrontend:
   image: public.ecr.aws/kubecost/frontend
 

@@ -24,7 +24,7 @@ Deploy Kubecost with custom `values.yaml`
     name       = "kubecost"                                             # (Required) Release name.
     repository = "oci://public.ecr.aws/kubecost"                        # (Optional) Repository URL where to locate the requested chart.
     chart      = "cost-analyzer"                                        # (Required) Chart name to be installed.
-    version    = "1.96.0"                                               # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/kubecost/locals.tf
+    version    = "1.103.3"                                              # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/kubecost/locals.tf
     namespace  = "kubecost"                                             # (Optional) The namespace to install the release into.
     values = [templatefile("${path.module}/kubecost-values.yaml", {})]
   }
