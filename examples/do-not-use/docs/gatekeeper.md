@@ -19,14 +19,10 @@ You can also customize the Helm chart that deploys `gatekeeper` via the followin
   enable_gatekeeper = true
 
   gatekeeper = {
-    name                       = "gatekeeper"
-    chart_version              = "3.12.0"
-    repository                 = "https://open-policy-agent.github.io/gatekeeper/charts"
-    namespace                  = "gatekeeper-system"
-    values = [
-      <<-EOT
-        clusterName: ${local.name}
-      EOT
-    ]
+    name          = "gatekeeper"
+    chart_version = "3.12.0"
+    repository    = "https://open-policy-agent.github.io/gatekeeper/charts"
+    namespace     = "gatekeeper-system"
+    values        = [templatefile("${path.module}/values.yaml", {})]
   }
 ```

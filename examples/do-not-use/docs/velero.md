@@ -28,7 +28,7 @@ velero = {
   chart_version = "3.1.6"
   repository    = "https://vmware-tanzu.github.io/helm-charts/"
   namespace     = "velero"
-  values        = <EXTRA_HELM_VALUES>
+  values        = [templatefile("${path.module}/values.yaml", {})]
 }
 ```
 
