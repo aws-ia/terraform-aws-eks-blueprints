@@ -21,10 +21,10 @@ You can also customize the Helm chart that deploys `velero` via the following co
 
 ```hcl
 enable_velero           = true
+
 velero = {
   name          = "velero"
   description   = "A Helm chart for velero"
-  chart         = "velero"
   chart_version = "3.1.6"
   repository    = "https://vmware-tanzu.github.io/helm-charts/"
   namespace     = "velero"

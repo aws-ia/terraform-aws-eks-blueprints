@@ -13,14 +13,13 @@ Gatekeeper can be deployed by enabling the add-on via the following.
 enable_gatekeeper = true
 ```
 
-You can also customize the Helm chart that deploys `velero` via the following configuration:
+You can also customize the Helm chart that deploys `gatekeeper` via the following configuration:
 
 ```hcl
   enable_gatekeeper = true
-  # Optional  gatekeeper_helm_config
+
   gatekeeper = {
     name                       = "gatekeeper"
-    chart                      = "gatekeeper"
     chart_version              = "3.12.0"
     repository                 = "https://open-policy-agent.github.io/gatekeeper/charts"
     namespace                  = "gatekeeper-system"
