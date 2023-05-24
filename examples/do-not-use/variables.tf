@@ -374,8 +374,8 @@ variable "enable_gatekeeper" {
 
 variable "gatekeeper" {
   description = "Gatekeeper add-on configuration"
-  type        = bool
-  default     = false
+  type        = any
+  default     = {}
 }
 
 ################################################################################
