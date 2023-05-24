@@ -15,7 +15,7 @@ This step deploys the Vertical Pod Autoscaler with default Helm Chart config
 You can also customize the Helm chart that deploys `vpa` via the following configuration:
 
 ```hcl
-  vpa_enable = true
+  enable_vpa = true
   enable_metrics_server = true
 
   vpa = {
