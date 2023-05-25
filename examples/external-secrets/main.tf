@@ -46,13 +46,13 @@ data "aws_availability_zones" "available" {}
 data "aws_caller_identity" "current" {}
 
 locals {
-  name      = basename(path.cwd)
-  namespace = "external-secrets"
-  region    = "us-west-2"
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
+  namespace                = "external-secrets"
   cluster_secretstore_name = "cluster-secretstore-sm"
   cluster_secretstore_sa   = "cluster-secretstore-sa"
   secretstore_name         = "secretstore-ps"
