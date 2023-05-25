@@ -82,21 +82,3 @@ variable "vpc_tag_value" {
   type        = string
   default     = ""
 }
-
-variable "argocd_route53_weight" {
-  description = "The Route53 weighted records weight for argocd application"
-  type        = string
-  default     = "0"
-}
-
-variable "ecsfrontend_route53_weight" {
-  description = "The Route53 weighted records weight for ecsdeo-frontend application"
-  type        = string
-  default     = "0"
-}
-
-variable "route53_weight" {
-  description = "The Route53 weighted records weight for others application"
-  type        = string
-  default     = "0"
-}
