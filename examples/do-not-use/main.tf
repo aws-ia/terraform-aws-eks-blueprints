@@ -245,7 +245,7 @@ module "aws_cloudwatch_metrics" {
   namespace        = try(var.aws_cloudwatch_metrics.namespace, "amazon-cloudwatch")
   create_namespace = try(var.aws_cloudwatch_metrics.create_namespace, true)
   chart            = "aws-cloudwatch-metrics"
-  chart_version    = try(var.aws_cloudwatch_metrics.chart_version, "0.0.8")
+  chart_version    = try(var.aws_cloudwatch_metrics.chart_version, "0.0.9")
   repository       = try(var.aws_cloudwatch_metrics.repository, "https://aws.github.io/eks-charts")
   values           = try(var.aws_cloudwatch_metrics.values, [])
 
