@@ -43,7 +43,6 @@ provider "kubectl" {
 }
 
 data "aws_availability_zones" "available" {}
-
 data "aws_caller_identity" "current" {}
 
 locals {
@@ -99,9 +98,8 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_addons" {
-  # Users should pin the version to the latest available release
-  # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "0.1.0"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
