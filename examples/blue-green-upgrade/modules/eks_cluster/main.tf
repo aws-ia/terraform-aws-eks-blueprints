@@ -371,8 +371,8 @@ module "eks_blueprints_admin_team" {
   enable_admin = true
   users = [
     data.aws_caller_identity.current.arn,
-    "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${local.iam_platform_user}",
-    "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.eks_admin_role_name}"
+    try("arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${local.iam_platform_user}",null),
+    "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${local.eks_admin_role_name}"
   ]
   cluster_arn = module.eks.cluster_arn
 
