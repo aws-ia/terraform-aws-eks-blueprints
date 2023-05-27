@@ -68,7 +68,7 @@ module "eks" {
   version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = "1.25"
+  cluster_version                = "1.27"
   cluster_endpoint_public_access = true
 
   # EKS Addons
@@ -81,18 +81,29 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
+
   eks_managed_node_groups = {
     initial = {
       instance_types = ["m5.large"]
-
-      # BottleRocket ships with kernel 5.10 so there is no need
-      # to do anything special
-      ami_type = "BOTTLEROCKET_x86_64"
-      platform = "bottlerocket"
-
+      # Cilium Wireguard requires Linux Kernel 5.10 or aboved.
+      # For EKS 1.24 and above, the AMI the Kernerl version is 5.10
+      # For EKS 1.23 and below, you need to use Bottlerocket OS. For example:
+      #    ami_type = "BOTTLEROCKET_x86_64"
+      #    platform = "bottlerocket"
       min_size     = 1
-      max_size     = 5
+      max_size     = 3
       desired_size = 2
+    }
+  }
+  # Extend node-to-node security group rules
+  node_security_group_additional_rules = {
+    ingress_cilium_wireguard = {
+      description = "Allow Cilium Wireguard node to node"
+      protocol    = "udp"
+      from_port   = 51871
+      to_port     = 51871  # Cilium Wireguard Port https://github.com/cilium/cilium/blob/main/Documentation/security/network/encryption-wireguard.rst
+      type        = "ingress"
+      self        = true
     }
   }
 
@@ -106,7 +117,7 @@ module "eks" {
 resource "helm_release" "cilium" {
   name             = "cilium"
   chart            = "cilium"
-  version          = "1.12.3"
+  version          = "1.13.2"
   repository       = "https://helm.cilium.io/"
   description      = "Cilium Add-on"
   namespace        = "kube-system"
@@ -132,10 +143,17 @@ resource "helm_release" "cilium" {
   ]
 }
 
-
 #---------------------------------------------------------------
 # Sample App for Testing
 #---------------------------------------------------------------
+
+# For some reason the example pods can't be deployed right after helm install of cilium a delay needs to be introduced. This is being investigated
+resource "time_sleep" "wait_wireguard" {
+  count           = var.enable_example ? 1 : 0
+  create_duration = "15s"
+
+  depends_on = [helm_release.cilium]
+}
 
 resource "kubectl_manifest" "server" {
   count = var.enable_example ? 1 : 0
@@ -172,9 +190,7 @@ resource "kubectl_manifest" "server" {
     }
   })
 
-  depends_on = [
-    helm_release.cilium
-  ]
+  depends_on = [time_sleep.wait_wireguard]
 }
 
 resource "kubectl_manifest" "service" {
@@ -235,9 +251,7 @@ resource "kubectl_manifest" "client" {
     }
   })
 
-  depends_on = [
-    kubectl_manifest.server[0]
-  ]
+  depends_on = [kubectl_manifest.server]
 }
 
 ################################################################################
