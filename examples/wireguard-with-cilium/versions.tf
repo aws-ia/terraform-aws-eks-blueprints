@@ -18,6 +18,10 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = ">= 1.14"
     }
+    time = {
+      source  = "hashicorp/time"
+      version = ">= 0.9"
+    }
   }
 
   # ##  Used for end-to-end testing on project; update to suit your needs

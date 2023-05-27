@@ -101,7 +101,7 @@ module "eks" {
       description = "Allow Cilium Wireguard node to node"
       protocol    = "udp"
       from_port   = 51871
-      to_port     = 51871  # Cilium Wireguard Port https://github.com/cilium/cilium/blob/main/Documentation/security/network/encryption-wireguard.rst
+      to_port     = 51871 # Cilium Wireguard Port https://github.com/cilium/cilium/blob/main/Documentation/security/network/encryption-wireguard.rst
       type        = "ingress"
       self        = true
     }
