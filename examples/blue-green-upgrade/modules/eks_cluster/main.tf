@@ -56,8 +56,8 @@ locals {
   #At this time (with new v5 addon repository), the Addons need to be managed by Terrform and not ArgoCD
   addons_application = {
     path                = "chart"
-    repo_url            = "${local.addons_repo_url}"
-    ssh_key_secret_name = "${local.workload_repo_secret}"
+    repo_url            = local.addons_repo_url
+    ssh_key_secret_name = local.workload_repo_secret
     add_on_application  = true
   }
 
@@ -66,10 +66,10 @@ locals {
   #---------------------------------------------------------------
 
   workload_application = {
-    path                = "${local.workload_repo_path}" # <-- we could also to blue/green on the workload repo path like: envs/dev-blue / envs/dev-green
-    repo_url            = "${local.workload_repo_url}"
-    target_revision     = "${local.workload_repo_revision}"
-    ssh_key_secret_name = "${local.workload_repo_secret}"
+    path                = local.workload_repo_path # <-- we could also to blue/green on the workload repo path like: envs/dev-blue / envs/dev-green
+    repo_url            = local.workload_repo_url
+    target_revision     = local.workload_repo_revision
+    ssh_key_secret_name = local.workload_repo_secret
     add_on_application  = false
     values = {
       labels = {
@@ -78,8 +78,8 @@ locals {
       }
       spec = {
         source = {
-          repoURL        = "${local.workload_repo_url}"
-          targetRevision = "${local.workload_repo_revision}"
+          repoURL        = local.workload_repo_url
+          targetRevision = local.workload_repo_revision
         }
         blueprint                = "terraform"
         clusterName              = local.name
@@ -101,9 +101,9 @@ locals {
 
   ecsdemo_application = {
     path                = "multi-repo/argo-app-of-apps/dev"
-    repo_url            = "${local.workload_repo_url}"
-    target_revision     = "${local.workload_repo_revision}"
-    ssh_key_secret_name = "${local.workload_repo_secret}"
+    repo_url            = local.workload_repo_url
+    target_revision     = local.workload_repo_revision
+    ssh_key_secret_name = local.workload_repo_secret
     add_on_application  = false
     values = {
       spec = {
@@ -585,7 +585,7 @@ module "eks_blueprints_ecsdemo_teams" {
   }
 
   namespaces = {
-    "${each.key}" = {
+    each.key = {
       labels = {
         "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
         "appName"                                 = "${each.key}-app",
