@@ -79,36 +79,20 @@ apt-get update
 apt-get install -y tcpdump
 ```
 
-6. Start a packet capture and verify you don't see payload in clear text
+6. Start a packet capture on `cilium_wg0` and verify you see payload in clear text, it means the traffic is encrypted with wireguard
 
 ```sh
-tcpdump -A -c 3 -i cilium_wg0
+tcpdump -A -c 40 -i cilium_wg0 | grep "Welcome to nginx!"
 
-# Output should look similar below (truncated for brevity)
+# Output should look similar below
 
-tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
-listening on cilium_wg0, link-type RAW (Raw IP), capture size 262144 bytes
-05:28:30.234209 IP ip-10-0-11-73.ec2.internal.58086 > ip-10-0-10-160.ec2.internal.http: Flags [S], seq 2831772984, win 62727, options [mss 8961,sackOK,TS val 3834644316 ecr 0,nop,wscale 7], length 0
-E..<].@.?...
-..I
-.
-....P..m8........&.....#....
-...\........
-05:28:30.234306 IP ip-10-0-10-160.ec2.internal.http > ip-10-0-11-73.ec2.internal.58086: Flags [S.], seq 131501951, ack 2831772985, win 62643, options [mss 8961,sackOK,TS val 1959385110 ecr 3834644316,nop,wscale 7], length 0
-E..<..@.?...
-.
-.
-..I.P........m9....*.....#....
-t......\....
-05:28:30.234930 IP ip-10-0-11-73.ec2.internal.58086 > ip-10-0-10-160.ec2.internal.http: Flags [.], ack 1, win 491, options [nop,nop,TS val 3834644317 ecr 1959385110], length 0
-E..4].@.?...
-..I
-.
-....P..m9...............
-...]t...
-3 packets captured
-9 packets received by filter
-1 packet dropped by kernel
+<title>Welcome to nginx!</title>
+<h1>Welcome to nginx!</h1>
+...
+
+40 packets captured
+40 packets received by filter
+0 packets dropped by kernel
 ```
 7. Exit the container shell
 
@@ -121,7 +105,6 @@ exit
 To teardown and remove the resources created in this example:
 
 ```sh
-terraform destroy -target=module.eks_blueprints_kubernetes_addons -auto-approve
-terraform destroy -target=module.eks_blueprints -auto-approve
+terraform destroy -target=module.eks -auto-approve
 terraform destroy -auto-approve
 ```
