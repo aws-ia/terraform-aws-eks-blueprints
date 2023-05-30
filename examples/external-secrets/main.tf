@@ -43,17 +43,16 @@ provider "kubectl" {
 }
 
 data "aws_availability_zones" "available" {}
-
 data "aws_caller_identity" "current" {}
 
 locals {
-  name      = basename(path.cwd)
-  namespace = "external-secrets"
-  region    = "us-west-2"
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
+  namespace                = "external-secrets"
   cluster_secretstore_name = "cluster-secretstore-sm"
   cluster_secretstore_sa   = "cluster-secretstore-sa"
   secretstore_name         = "secretstore-ps"
@@ -99,9 +98,8 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_addons" {
-  # Users should pin the version to the latest available release
-  # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "0.1.0"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint

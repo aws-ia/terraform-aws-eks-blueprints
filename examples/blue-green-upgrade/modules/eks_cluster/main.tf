@@ -1,24 +1,13 @@
 locals {
-  core_stack_name   = var.core_stack_name
   suffix_stack_name = var.suffix_stack_name
 
-  env  = "dev" # use to suffix some kubernetes objects
-  name = "${var.core_stack_name}-${local.suffix_stack_name}"
-
-  eks_cluster_domain = "${local.core_stack_name}.${var.hosted_zone_name}" # for external-dns
-
+  name            = "${var.core_stack_name}-${local.suffix_stack_name}"
   cluster_version = var.cluster_version
-
-  # Route 53 Ingress Weights
-  argocd_route53_weight      = var.argocd_route53_weight
-  route53_weight             = var.route53_weight
-  ecsfrontend_route53_weight = var.ecsfrontend_route53_weight
 
   tag_val_vpc            = var.vpc_tag_value == "" ? var.core_stack_name : var.vpc_tag_value
   tag_val_private_subnet = var.vpc_tag_value == "" ? "${var.core_stack_name}-private-" : var.vpc_tag_value
 
-  node_group_name            = "managed-ondemand"
-  argocd_secret_manager_name = var.argocd_secret_manager_name_suffix
+  node_group_name = "managed-ondemand"
 
   # #---------------------------------------------------------------
   # # ARGOCD ADD-ON APPLICATION
@@ -187,15 +176,6 @@ data "aws_subnets" "private" {
 # Create Sub HostedZone four our deployment
 data "aws_route53_zone" "sub" {
   name = "${var.core_stack_name}.${var.hosted_zone_name}"
-}
-
-
-data "aws_secretsmanager_secret" "argocd" {
-  name = "${local.argocd_secret_manager_name}.${local.core_stack_name}"
-}
-
-data "aws_secretsmanager_secret_version" "admin_password_version" {
-  secret_id = data.aws_secretsmanager_secret.argocd.id
 }
 
 #tfsec:ignore:aws-eks-enable-control-plane-logging

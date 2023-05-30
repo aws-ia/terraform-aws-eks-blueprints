@@ -80,7 +80,7 @@ module "eks" {
 
   fargate_profile_defaults = {
     iam_role_additional_policies = {
-      additional = module.eks_blueprints_addons.fargate_fluentbit_policy[0].arn
+      additional = module.eks_blueprints_addons.fargate_fluentbit.iam_policy[0].arn
     }
   }
 
@@ -92,10 +92,8 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_addons" {
-  # Users should pin the version to the latest available release
-  # tflint-ignore: terraform_module_pinned_source
-  source = "../do-not-use"
-  #source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "0.1.0"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint

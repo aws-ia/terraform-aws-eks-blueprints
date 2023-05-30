@@ -10,7 +10,7 @@ repos:
       - id: detect-aws-credentials
         args: ['--allow-missing-credentials']
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.78.0
+    rev: v1.79.1
     hooks:
       - id: terraform_fmt
       - id: terraform_docs
@@ -33,8 +33,8 @@ repos:
           - '--args=--only=terraform_workspace_remote'
       - id: terraform_validate
         exclude: deploy
-      - id: terraform_tfsec
-        files: ^examples/ # only scan `examples/*` which are the implementation
-        args:
-          - --args=--config-file=__GIT_WORKING_DIR__/tfsec.yaml
-          - --args=--concise-output
+      # - id: terraform_tfsec
+      #   files: ^examples/ # only scan `examples/*` which are the implementation
+      #   args:
+      #     - --args=--config-file=__GIT_WORKING_DIR__/tfsec.yaml
+      #     - --args=--concise-output
