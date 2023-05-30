@@ -66,7 +66,7 @@ variable "addons_repo_url" {
 variable "iam_platform_user" {
   type        = string
   description = "IAM user used as platform-user"
-  default     = "platform-user"
+  default     = ""
 }
 
 variable "argocd_secret_manager_name_suffix" {

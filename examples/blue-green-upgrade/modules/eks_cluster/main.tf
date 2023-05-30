@@ -312,7 +312,7 @@ data "aws_secretsmanager_secret_version" "admin_password_version" {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.12"
+  version = "~> 19.15.1"
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
@@ -362,6 +362,11 @@ module "eks" {
   })
 }
 
+data "aws_iam_user" "platform_user" {
+  count     = local.iam_platform_user != "" ? 1 : 0
+  user_name = local.iam_platform_user
+}
+
 module "eks_blueprints_admin_team" {
   source  = "aws-ia/eks-blueprints-teams/aws"
   version = "~> 0.2"
@@ -371,7 +376,7 @@ module "eks_blueprints_admin_team" {
   enable_admin = true
   users = [
     data.aws_caller_identity.current.arn,
-    try("arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${local.iam_platform_user}",null),
+    try(data.aws_iam_user.platform_user[0].arn, data.aws_caller_identity.current.arn),
     "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${local.eks_admin_role_name}"
   ]
   cluster_arn = module.eks.cluster_arn
@@ -903,7 +908,7 @@ module "vpc_cni_irsa" {
 # Creates Karpenter native node termination handler resources and IAM instance profile
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "~> 19.12"
+  version = "~> 19.15.1"
 
   cluster_name           = module.eks.cluster_name
   irsa_oidc_provider_arn = module.eks.oidc_provider_arn
