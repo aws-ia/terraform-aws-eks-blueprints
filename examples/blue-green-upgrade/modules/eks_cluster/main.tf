@@ -367,6 +367,11 @@ data "aws_iam_user" "platform_user" {
   user_name = local.iam_platform_user
 }
 
+data "aws_iam_role" "eks_admin_role_name" {
+  count     = local.eks_admin_role_name != "" ? 1 : 0
+  name = local.eks_admin_role_name
+}
+
 module "eks_blueprints_admin_team" {
   source  = "aws-ia/eks-blueprints-teams/aws"
   version = "~> 0.2"
@@ -377,7 +382,7 @@ module "eks_blueprints_admin_team" {
   users = [
     data.aws_caller_identity.current.arn,
     try(data.aws_iam_user.platform_user[0].arn, data.aws_caller_identity.current.arn),
-    "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${local.eks_admin_role_name}"
+    try(data.aws_iam_role.eks_admin_role_name[0].arn, data.aws_caller_identity.current.arn),
   ]
   cluster_arn = module.eks.cluster_arn
 
@@ -457,9 +462,6 @@ module "eks_blueprints_platform_teams" {
         ]
       }
     }
-
-    ## Manifests Example: we can specify a directory with kubernetes manifests that can be automatically applied in the team-riker namespace.
-    #manifests_dir = "../kubernetes/team-burnham/"
   }
 
   tags = local.tags
