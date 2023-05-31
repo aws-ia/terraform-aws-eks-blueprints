@@ -39,10 +39,6 @@ provider "kubectl" {
   }
 }
 
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks_cluster.eks_cluster_id
-}
-
 module "eks_cluster" {
   source = "../modules/eks_cluster"
 

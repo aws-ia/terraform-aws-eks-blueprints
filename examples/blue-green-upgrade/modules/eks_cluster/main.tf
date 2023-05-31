@@ -248,9 +248,6 @@ locals {
   }
 }
 
-
-data "aws_partition" "current" {}
-
 # Find the user currently in use by AWS
 data "aws_caller_identity" "current" {}
 
@@ -368,8 +365,8 @@ data "aws_iam_user" "platform_user" {
 }
 
 data "aws_iam_role" "eks_admin_role_name" {
-  count     = local.eks_admin_role_name != "" ? 1 : 0
-  name = local.eks_admin_role_name
+  count = local.eks_admin_role_name != "" ? 1 : 0
+  name  = local.eks_admin_role_name
 }
 
 module "eks_blueprints_admin_team" {
