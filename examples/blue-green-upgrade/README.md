@@ -53,7 +53,7 @@ We have configured ExternalDNS add-ons in our two clusters to share the same Rou
 
 Here we use the same GitOps workload configuration repository and adapt parameters with the `values.yaml`. We could also use different ArgoCD repository for each cluster, or use a new directory if we want to validate or test new deployment manifests with maybe additional features, configurations or to use with different Kubernetes add-ons (like changing ingress controller).
 
-Our objective here is to show you how Application teams and Platform teams can configured their infrastructure and workloads so that application teams are able to deploy autonomously their workloads to the EKS clusters thanks to ArgoCD, and platform team can keep the control of migrating production workloads from one cluster to another without having to synchronized operations with applications teams, or asking them to build a complicated CD pipeline.
+Our objective here is to show you how Application teams and Platform teams can configure their infrastructure and workloads so that application teams are able to deploy autonomously their workloads to the EKS clusters thanks to ArgoCD, and platform team can keep the control of migrating production workloads from one cluster to another without having to synchronized operations with applications teams, or asking them to build a complicated CD pipeline.
 
 > In this example we show how you can seamlessly migrate your stateless workloads between the 2 clusters for a blue/green or Canary migration, but you can also leverage the same architecture to have your workloads for example separated in different accounts or regions, for either High Availability or Lower latency Access from your customers.
 
@@ -101,7 +101,7 @@ terraform init
 terraform apply
 ```
 
-> There can be somme Warnings due to not declare variables. This is normal and you can ignore them as we share the same `terraform.tfvars` for the 3 projects by using symlinks for a uniq file, and we declare some variables used for the eks-blue and eks-green directory
+> There can be some Warnings due to not declare variables. This is normal and you can ignore them as we share the same `terraform.tfvars` for the 3 projects by using symlinks for a unique file, and we declare some variables used for the eks-blue and eks-green directory
 
 ### Create the Blue cluster
 
@@ -138,7 +138,7 @@ Our clusters are configured with existing ArgoCD Github repository that is synch
   <img src="static/eks-argo.png"/>
 </p>
 
-We are going to look after on of the application deployed from the workload repository as example to demonstrate our migration automation: the `Burnham` workload in the team-burnham namespace.
+We are going to look after one of the application deployed from the workload repository as example to demonstrate our migration automation: the `Burnham` workload in the team-burnham namespace.
 We have set up a [simple go application](https://github.com/allamand/eks-example-go) than can respond in it's body the name of the cluster it is running on. With this it will be easy to see the current migration on our workload.
 
 ```
@@ -164,15 +164,15 @@ Connect to the cluster: Execute one of the EKS cluster login commands from the `
 aws eks --region eu-west-3 update-kubeconfig --name eks-blueprint-blue  --role-arn arn:aws:iam::0123456789:role/admin-team-20230505075455219300000002
 ```
 
-Note it will allow the role associated to the paramerer **eks_admin_role_name** to assume the role.
+Note it will allow the role associated to the parameter **eks_admin_role_name** to assume the role.
 
 You can also connect with the user who created the EKS cluster without specifying the `--role-arn` parameter
 
 
-Next, you can interrct with the cluster and see the deployment
+Next, you can interact with the cluster and see the deployment
 
 ```bash
-$ kubectl get deployment -n team-burnham -l app=burnham-deployment-devburnham
+$ kubectl get deployment -n team-burnham -l app=burnham
 NAME      READY   UP-TO-DATE   AVAILABLE   AGE
 burnham   3/3     3            3           3d18h
 ```
@@ -259,7 +259,7 @@ Amazon Route 53 weighted records works like this:
 
 Now that we have setup our 2 clusters, deployed with ArgoCD and that the weighed records from `values.yaml` are injected from Terraform, let's see how our Platform team can trigger the workload migration.
 
-1. At first, 100% of burnham traffic is set to the **eks-blue** cluster, this is controlled from the `locals.tf` with the parameter `route53_weight = "100"`. The same parameter is set to 0 in cluster eks-green.
+1. At first, 100% of burnham traffic is set to the **eks-blue** cluster, this is controlled from the `eks-blue/main.tf` & `eks-green/main.tf` files with the parameter `route53_weight = "100"`. The same parameter is set to 0 in cluster eks-green.
 
 <p align="center">
   <img src="static/burnham-records.png"/>
