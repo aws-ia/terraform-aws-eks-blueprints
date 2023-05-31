@@ -334,7 +334,7 @@ module "eks" {
 
   manage_aws_auth_configmap = true
   aws_auth_roles = flatten([
-    module.eks_blueprints_admin_team.aws_auth_configmap_role,
+    module.eks_blueprints_platform_teams.aws_auth_configmap_role,
     [for team in module.eks_blueprints_dev_teams : team.aws_auth_configmap_role],
     {
       rolearn  = module.karpenter.role_arn
@@ -369,61 +369,36 @@ data "aws_iam_role" "eks_admin_role_name" {
   name  = local.eks_admin_role_name
 }
 
-module "eks_blueprints_admin_team" {
+module "eks_blueprints_platform_teams" {
   source  = "aws-ia/eks-blueprints-teams/aws"
   version = "~> 0.2"
 
-  name = "admin-team"
+  name = "team-platform"
 
+  # Enables elevated, admin privileges for this team
   enable_admin = true
+
+  # Define who can impersonate the team-platform Role
   users = [
     data.aws_caller_identity.current.arn,
     try(data.aws_iam_user.platform_user[0].arn, data.aws_caller_identity.current.arn),
     try(data.aws_iam_role.eks_admin_role_name[0].arn, data.aws_caller_identity.current.arn),
   ]
-  cluster_arn = module.eks.cluster_arn
-
-  tags = local.tags
-}
-
-module "eks_blueprints_platform_teams" {
-  source  = "aws-ia/eks-blueprints-teams/aws"
-  version = "~> 0.2"
-
-  for_each = {
-    platform = {
-      labels = {
-        "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
-        "appName"                                 = "platform-team-app",
-        "projectName"                             = "project-platform",
-      }
-    }
-  }
-  name = "team-${each.key}"
-
-  users             = [data.aws_caller_identity.current.arn]
   cluster_arn       = module.eks.cluster_arn
   oidc_provider_arn = module.eks.oidc_provider_arn
 
-  labels = merge(
-    {
-      team = each.key
-    },
-    try(each.value.labels, {})
-  )
+  labels = {
+    "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
+    "appName"                                 = "platform-team-app",
+    "projectName"                             = "project-platform",
+  }
 
   annotations = {
-    team = each.key
+    team = "platform"
   }
 
   namespaces = {
-    "team-${each.key}" = {
-      labels = merge(
-        {
-          team = each.key
-        },
-        try(each.value.labels, {})
-      )
+    "team-platform" = {
 
       resource_quota = {
         hard = {
@@ -459,6 +434,7 @@ module "eks_blueprints_platform_teams" {
         ]
       }
     }
+
   }
 
   tags = local.tags
