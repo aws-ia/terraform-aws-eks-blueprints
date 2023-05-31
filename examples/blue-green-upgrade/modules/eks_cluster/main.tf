@@ -585,7 +585,7 @@ module "eks_blueprints_ecsdemo_teams" {
   }
 
   namespaces = {
-    each.key = {
+    "${each.key}" = {
       labels = {
         "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
         "appName"                                 = "${each.key}-app",
