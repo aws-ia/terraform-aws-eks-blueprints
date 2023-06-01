@@ -817,4 +817,5 @@ module "consul" {
 
   helm_config       = var.consul_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
 }
