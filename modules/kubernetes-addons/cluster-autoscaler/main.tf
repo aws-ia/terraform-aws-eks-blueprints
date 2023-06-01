@@ -28,6 +28,10 @@ module "helm_addon" {
 
   set_values = [
     {
+      name  = "image.repository"
+      value = "registry.k8s.io/autoscaling/cluster-autoscaler"
+    },
+    {
       name  = "rbac.serviceAccount.create"
       value = "false"
     },
