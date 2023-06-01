@@ -332,23 +332,25 @@ module "eks" {
   }
 
   manage_aws_auth_configmap = true
-  aws_auth_roles = flatten([
-    [module.eks_blueprints_platform_teams.aws_auth_configmap_role],
+  aws_auth_roles = concat(
     [for team in module.eks_blueprints_dev_teams : team.aws_auth_configmap_role],
-    [{
-      rolearn  = module.karpenter.role_arn
-      username = "system:node:{{EC2PrivateDNSName}}"
-      groups = [
-        "system:bootstrappers",
-        "system:nodes",
-      ]
-    }],
-    [{
-      rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.eks_admin_role_name}" # The ARN of the IAM role
-      username = "ops-role"                                                                                      # The user name within Kubernetes to map to the IAM role
-      groups   = ["system:masters"]                                                                              # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
-    }]
-  ])
+    [
+      module.eks_blueprints_platform_teams.aws_auth_configmap_role,
+      {
+        rolearn  = module.karpenter.role_arn
+        username = "system:node:{{EC2PrivateDNSName}}"
+        groups = [
+          "system:bootstrappers",
+          "system:nodes",
+        ]
+      },
+      {
+        rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.eks_admin_role_name}" # The ARN of the IAM role
+        username = "ops-role"                                                                                      # The user name within Kubernetes to map to the IAM role
+        groups   = ["system:masters"]                                                                              # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
+      }
+    ]
+  )
 
   tags = merge(local.tags, {
     # NOTE - if creating multiple security groups with this module, only tag the
