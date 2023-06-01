@@ -169,7 +169,6 @@ locals {
           ecsdemoFrontend = {
             repoURL        = "https://github.com/allamand/ecsdemo-frontend"
             targetRevision = "main"
-            #replicaCount   = "9" # see autoscaling configuration
             image = {
               repository = "public.ecr.aws/seb-demo/ecsdemo-frontend"
               tag        = "latest"
@@ -442,7 +441,7 @@ module "eks_blueprints_platform_teams" {
 
 module "eks_blueprints_dev_teams" {
   source  = "aws-ia/eks-blueprints-teams/aws"
-  version = "~> 0.2"
+  version = "~> 0.2.0"
 
   for_each = {
     burnham = {
@@ -615,7 +614,7 @@ module "eks_blueprints_ecsdemo_teams" {
 }
 
 module "kubernetes_addons" {
-  source = "../../../../modules/kubernetes-addons"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.0/modules/kubernetes-addons"
 
   eks_cluster_id     = module.eks.cluster_name
   eks_cluster_domain = local.eks_cluster_domain
@@ -712,134 +711,6 @@ module "kubernetes_addons" {
   enable_argo_rollouts = local.argo_rollouts
 
 }
-
-######################################
-#Work to update to new Addon repo
-#But this break ArgoCD deployments so I comment temporarily here while working on new integration
-
-# module "kubernetes_addons" {
-#    # Users should pin the version to the latest available release
-#      # tflint-ignore: terraform_module_pinned_source
-#   source = "github.com/aws-ia/terraform-aws-eks-blueprints-addons?ref=70d10b15ad991c3a46fa405b56e76d3357f31ae1"
-#   #version = "v1"
-
-#   cluster_name      = module.eks.cluster_name
-#   cluster_endpoint  = module.eks.cluster_endpoint
-#   cluster_version   = module.eks.cluster_version
-#   oidc_provider     = module.eks.cluster_oidc_issuer_url
-#   oidc_provider_arn = module.eks.oidc_provider_arn
-
-#   #---------------------------------------------------------------
-#   # ARGO CD ADD-ON
-#   #---------------------------------------------------------------
-
-#   enable_argocd         = true
-#   #https://github.com/helm/helm/pull/9426
-#   #https://github.com/argoproj/argo-cd/issues/5202
-#   #for now Argocd can't managed addons with new current repo
-#   #argocd_manage_add_ons = false # Indicates that ArgoCD is responsible for managing/deploying Add-ons.
-
-#   argocd_applications = {
-#     addons    = local.addons_application
-#     workloads = local.workload_application
-#     ecsdemo   = local.ecsdemo_application
-#   }
-
-#   # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.
-#   argocd_helm_config = {
-#     set_sensitive = [
-#       {
-#         name  = "configs.secret.argocdServerAdminPassword"
-#         value = bcrypt(data.aws_secretsmanager_secret_version.admin_password_version.secret_string)
-#       }
-#     ]
-#      # To have additional LB for Argo
-#     set = [
-#       {
-#         name  = "server.service.type"
-#         value = "LoadBalancer"
-#       }
-#     ]
-#   }
-
-#   #---------------------------------------------------------------
-#   # EKS Managed AddOns
-#   #---------------------------------------------------------------
-
-#   eks_addons = {
-#     aws-ebs-csi-driver = {
-#       service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
-#     }
-#     coredns = {}
-#     vpc-cni = {
-#       service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
-#       most_recent    = true
-#       before_compute = true
-#       configuration_values = jsonencode({
-#         env = {
-#           # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
-#           ENABLE_PREFIX_DELEGATION = "true"
-#           WARM_PREFIX_TARGET       = "1"
-#         }
-#       })
-#     }
-#     kube-proxy = {}
-#   }
-
-
-#   #---------------------------------------------------------------
-#   # ADD-ONS - You can add additional addons here
-#   # https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/
-#   #---------------------------------------------------------------
-
-#   enable_metrics_server               = local.metrics_server
-#   enable_vpa                          = local.vpa
-#   enable_aws_load_balancer_controller = local.aws_load_balancer_controller
-#   aws_load_balancer_controller = {
-#     service_account_name = "aws-lb-sa"
-#   }
-#   enable_karpenter              = local.karpenter
-#   # ECR login required
-#   karpenter = {
-#     repository_username = data.aws_ecrpublic_authorization_token.token.user_name
-#     repository_password = data.aws_ecrpublic_authorization_token.token.password
-#   }
-#   karpenter_instance_profile = {
-#     iam_role_name = module.karpenter.role_name
-#     name = module.karpenter.instance_profile_name
-#     create = false
-#   }
-#   karpenter_enable_spot_termination = true
-
-#   #enable_aws_for_fluentbit      = true
-#   #enable_aws_cloudwatch_metrics = true
-
-#   enable_external_dns = local.external_dns
-
-#   #Needed to create Role
-#   external_dns_route53_zone_arns = [
-#     data.aws_route53_zone.sub.arn
-#   ]
-# #helm get all external-dns -n external-dns
-#   external_dns = {
-#     service_account_name = "external-dns-sa"
-#     #chart_version = "1.12.2"
-#     values = [
-#       yamlencode({
-#         txtOwnerId   = local.name
-#         policy       = "sync"
-#         logLevel     = "debug"
-#         #domainFilters = [data.aws_route53_zone.sub.zone_id]
-#         domainFilters = [local.eks_cluster_domain]
-#       })
-#     ]
-#   }
-
-#   #enable_kubecost = true
-#   enable_argo_rollouts = local.argo_rollouts
-
-# }
-
 module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.14"
