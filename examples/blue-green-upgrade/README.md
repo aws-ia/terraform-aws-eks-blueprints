@@ -12,7 +12,7 @@ We are leveraging [the existing EKS Blueprints Workloads GitHub repository sampl
   - [Prerequisites](#prerequisites)
   - [Quick Start](#quick-start)
     - [Configure the Stacks](#configure-the-stacks)
-    - [Create the core stack](#create-the-core-stack)
+    - [Create the environment stack](#create-the-environment-stack)
     - [Create the Blue cluster](#create-the-blue-cluster)
     - [Create the Green cluster](#create-the-green-cluster)
   - [How this work](#how-this-work)
@@ -24,7 +24,7 @@ We are leveraging [the existing EKS Blueprints Workloads GitHub repository sampl
     - [Delete the EKS Cluster(s)](#delete-the-eks-clusters)
       - [TL;DR](#tldr)
       - [Manual](#manual)
-    - [Delete the core infra stack](#delete-the-core-infra-stack)
+    - [Delete the environment stack](#delete-the-environment-stack)
   - [Troubleshoot](#troubleshoot)
     - [External DNS Ownership](#external-dns-ownership)
     - [Check Route 53 Record status](#check-route-53-record-status)
@@ -41,7 +41,7 @@ See the Architecture of what we are building
 
 Our sample is composed of four main directory:
 
-- **core-infra** → this stack will create vpc and dependencies: create a Route53 sub zone for our sample, and a wildcard Certificate Manager certificate for our applications TLS endpoints, and a SecretManager password for the ArgoCD UIs.
+- **environment** → this stack will create the common VPC and its dependencies used by our EKS clusters: create a Route53 sub domain hosted zone for our sample, a wildcard certificate on Certificate Manager for our applications TLS endpoints, and a SecretManager password for the ArgoCD UIs.
 - **modules/eks_cluster** → local module defining the EKS blueprint cluster with ArgoCD add-on which will automatically deploy additional add-ons and our demo workloads
 - **eks-blue** → an instance of the eks_cluster module to create blue cluster
 - **eks-green** → an instance of the eks_cluster module to create green cluster
@@ -53,7 +53,7 @@ We have configured ExternalDNS add-ons in our two clusters to share the same Rou
 
 Here we use the same GitOps workload configuration repository and adapt parameters with the `values.yaml`. We could also use different ArgoCD repository for each cluster, or use a new directory if we want to validate or test new deployment manifests with maybe additional features, configurations or to use with different Kubernetes add-ons (like changing ingress controller).
 
-Our objective here is to show you how Application teams and Platform teams can configured their infrastructure and workloads so that application teams are able to deploy autonomously their workloads to the EKS clusters thanks to ArgoCD, and platform team can keep the control of migrating production workloads from one cluster to another without having to synchronized operations with applications teams, or asking them to build a complicated CD pipeline.
+Our objective here is to show you how Application teams and Platform teams can configure their infrastructure and workloads so that application teams are able to deploy autonomously their workloads to the EKS clusters thanks to ArgoCD, and platform team can keep the control of migrating production workloads from one cluster to another without having to synchronized operations with applications teams, or asking them to build a complicated CD pipeline.
 
 > In this example we show how you can seamlessly migrate your stateless workloads between the 2 clusters for a blue/green or Canary migration, but you can also leverage the same architecture to have your workloads for example separated in different accounts or regions, for either High Availability or Lower latency Access from your customers.
 
@@ -77,29 +77,31 @@ Our objective here is to show you how Application teams and Platform teams can c
 
 ```bash
 git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
-cd examples/upgrade/blue-green-route53
+cd examples/blue-green-upgrade/
 ```
 
-2. Copy the `terraform.tfvars.example` to `terraform.tfvars` and change region, hosted_zone_name, eks_admin_role_name according to your needs.
+2. Copy the `terraform.tfvars.example` to `terraform.tfvars` on each `environment`, `eks-blue` and `eks-green` folders, and change region, hosted_zone_name, eks_admin_role_name according to your needs.
 
 ```shell
-cp terraform.tfvars.example terraform.tfvars
+cp terraform.tfvars.example environment/terraform.tfvars
+cp terraform.tfvars.example eks-blue/terraform.tfvars
+cp terraform.tfvars.example eks-green/terraform.tfvars
 ```
 
-- You will need to provide the `hosted_zone_name` for example `my-example.com`. Terraform will create a new hosted zone for the project with name: `${core_stack_name}.${hosted_zone_name}` so in our example `eks-blueprint.my-example.com`.
+- You will need to provide the `hosted_zone_name` for example `my-example.com`. Terraform will create a new hosted zone for the project with name: `${environment}.${hosted_zone_name}` so in our example `eks-blueprint.my-example.com`.
 - You need to provide a valid IAM role in `eks_admin_role_name` to have EKS cluster admin rights, generally the one uses in the EKS console.
 
-### Create the core stack
+### Create the environment stack
 
-More info in the core-infra [Readme](core-infra/README.md)
+More info in the environment [Readme](environment/README.md)
 
 ```bash
-cd core-infra
+cd environment
 terraform init
 terraform apply
 ```
 
-> There can be somme Warnings due to not declare variables. This is normal and you can ignore them as we share the same `terraform.tfvars` for the 3 projects by using symlinks for a uniq file, and we declare some variables used for the eks-blue and eks-green directory
+> There can be some Warnings due to not declare variables. This is normal and you can ignore them as we share the same `terraform.tfvars` for the 3 projects by using symlinks for a unique file, and we declare some variables used for the eks-blue and eks-green directory
 
 ### Create the Blue cluster
 
@@ -136,7 +138,7 @@ Our clusters are configured with existing ArgoCD Github repository that is synch
   <img src="static/eks-argo.png"/>
 </p>
 
-We are going to look after on of the application deployed from the workload repository as example to demonstrate our migration automation: the `Burnham` workload in the team-burnham namespace.
+We are going to look after one of the application deployed from the workload repository as example to demonstrate our migration automation: the `Burnham` workload in the team-burnham namespace.
 We have set up a [simple go application](https://github.com/allamand/eks-example-go) than can respond in it's body the name of the cluster it is running on. With this it will be easy to see the current migration on our workload.
 
 ```
@@ -156,10 +158,21 @@ We have set up a [simple go application](https://github.com/allamand/eks-example
 
 The application is deployed from our [<burnham> workload repository manifest](https://github.com/aws-samples/eks-blueprints-workloads/blob/main/teams/team-burnham/dev/templates/burnham.yaml)
 
-See the deployment
+Connect to the cluster: Execute one of the EKS cluster login commands from the `terraform output` command, depending on the IAM role you can assume to access to the cluster. If you want EKS Admin cluster, you can execute the command associated to the **eks_blueprints_admin_team_configure_kubectl** output. It should be something similar to:
 
 ```bash
-$ kubectl get deployment -n team-burnham -l app=burnham-deployment-devburnham
+aws eks --region eu-west-3 update-kubeconfig --name eks-blueprint-blue  --role-arn arn:aws:iam::0123456789:role/admin-team-20230505075455219300000002
+```
+
+Note it will allow the role associated to the parameter **eks_admin_role_name** to assume the role.
+
+You can also connect with the user who created the EKS cluster without specifying the `--role-arn` parameter
+
+
+Next, you can interact with the cluster and see the deployment
+
+```bash
+$ kubectl get deployment -n team-burnham -l app=burnham
 NAME      READY   UP-TO-DATE   AVAILABLE   AGE
 burnham   3/3     3            3           3d18h
 ```
@@ -246,7 +259,7 @@ Amazon Route 53 weighted records works like this:
 
 Now that we have setup our 2 clusters, deployed with ArgoCD and that the weighed records from `values.yaml` are injected from Terraform, let's see how our Platform team can trigger the workload migration.
 
-1. At first, 100% of burnham traffic is set to the **eks-blue** cluster, this is controlled from the `locals.tf` with the parameter `route53_weight = "100"`. The same parameter is set to 0 in cluster eks-green.
+1. At first, 100% of burnham traffic is set to the **eks-blue** cluster, this is controlled from the `eks-blue/main.tf` & `eks-green/main.tf` files with the parameter `route53_weight = "100"`. The same parameter is set to 0 in cluster eks-green.
 
 <p align="center">
   <img src="static/burnham-records.png"/>
@@ -361,12 +374,12 @@ terraform apply -destroy -target="module.eks_blueprints" -auto-approve
 terraform apply -destroy -auto-approve
 ```
 
-### Delete the core infra stack
+### Delete the environment stack
 
-If you have finish playing with this solution, and once you have destroyed the 2 EKS clusters, you can now delete the core_infra stack.
+If you have finish playing with this solution, and once you have destroyed the 2 EKS clusters, you can now delete the environment stack.
 
-```
-cd core-infra
+```bash
+cd environment
 terraform apply -destroy -auto-approve
 ```
 
