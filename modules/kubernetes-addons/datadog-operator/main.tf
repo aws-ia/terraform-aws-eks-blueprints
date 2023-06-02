@@ -11,7 +11,7 @@ module "helm_addon" {
       name             = local.name
       chart            = local.name
       repository       = "https://helm.datadoghq.com"
-      version          = "0.8.8"
+      version          = "1.0.2"
       namespace        = local.name
       create_namespace = true
       description      = "Datadog Operator"
