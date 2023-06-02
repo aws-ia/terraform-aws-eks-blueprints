@@ -10,13 +10,6 @@
   - [Prerequisites](#prerequisites)
   - [Usage](#usage)
   - [Cleanup](#cleanup)
-- [Terraform Doc](#terraform-doc)
-  - [Requirements](#requirements)
-  - [Providers](#providers)
-  - [Modules](#modules)
-  - [Resources](#resources)
-  - [Inputs](#inputs)
-  - [Outputs](#outputs)
 
 ## Folder overview
 
@@ -28,7 +21,7 @@ What is include in this EKS cluster
 
 The AWS resources created by the script are detailed bellow:
 
-- The infrastructure will be deployed in the resources created in the [core-infra stack](../core-infra/README.md)
+- The infrastructure will be deployed in the resources created in the [environment stack](../../environment/README.md)
 - EKS Cluster
   - Create an EKS Managed Node Group
   - Create a platform team
@@ -54,7 +47,7 @@ The AWS resources created by the script are detailed bellow:
     - [Aws Load Balancer Controller](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/add-ons/aws-load-balancer-controller/)
     - [Karpenter](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/add-ons/karpenter/)
     - [External DNS](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/add-ons/external-dns/)
-      - configured to target core infra Hosted Zone
+      - configured to target the environment infrastructure Hosted Zone
     - [AWS for FluentBit](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/add-ons/aws-for-fluent-bit/) to centralized logs in Amazon CloudWatch
     - [AWS CloudWatch Metrics](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/add-ons/aws-cloudwatch-metrics/) to enable [Container Insight](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html)
     - [Kubecost](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/add-ons/kubecost/)
@@ -72,7 +65,7 @@ The following diagram represents the Infrastructure architecture being deployed 
 
 ## Prerequisites
 
-- Before launching this solution please deploy the `core-infra` solution, which is provided in the root of this repository.
+- Before launching this solution please deploy the `environment` solution, which is provided in the root of this repository.
 - A public AWS Route 53 Hosted Zone that will be used to create our project hosted zone. It will be provided wviathe Terraform variable `"hosted_zone_name`
   - Before moving to the next step, you will need to register a parent domain with AWS Route 53 (https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html) in case you don’t have one created yet.
 - Accessing GitOps Private git repositories with SSH access requiring an SSH key for authentication. In this example our workloads repositories are stored in GitHub, you can see in GitHub documentation on how to [connect with SSH](https://docs.github.com/en/authentication/connecting-to-github-with-ssh).
@@ -96,13 +89,14 @@ aws secretsmanager get-secret-value \
   --query SecretString \
   --output text --region $AWS_REGION
 ```
+
 Should output your private key
+
 ```
 -----PLACEHOLDER OPENSSH PRIVATE KEY-----
 FAKEKEY==
 -----END OPENSSH PRIVATE KEY-----
 ```
-
 
 **3.** Review the terraform plan output, take a look at the changes that terraform will execute, and then apply them:
 
@@ -111,7 +105,7 @@ terraform plan
 terraform apply
 ```
 
-**4.** Once Terraform finishes the deployment open the ArgoUI Management Console And authenticate with the secret created by the core_infra stack
+**4.** Once Terraform finishes the deployment open the ArgoUI Management Console And authenticate with the secret created by the `environment` stack
 
 Retrieve the ArgoUI password
 

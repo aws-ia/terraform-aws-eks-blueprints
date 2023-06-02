@@ -4,8 +4,8 @@ variable "aws_region" {
   default     = "us-west-2"
 }
 
-variable "core_stack_name" {
-  description = "The name of Core Infrastructure stack, feel free to rename it. Used for cluster and VPC names."
+variable "environment_name" {
+  description = "The name of Environment Infrastructure stack name, feel free to rename it. Used for cluster and VPC names."
   type        = string
   default     = "eks-blueprint"
 }
@@ -55,24 +55,11 @@ variable "addons_repo_url" {
 variable "iam_platform_user" {
   type        = string
   description = "IAM user used as platform-user"
-  default     = "platform-user"
+  default     = ""
 }
 
 variable "argocd_secret_manager_name_suffix" {
   type        = string
   description = "Name of secret manager secret for ArgoCD Admin UI Password"
   default     = "argocd-admin-secret"
-}
-
-variable "vpc_tag_key" {
-  description = "The tag key of the VPC and subnets"
-  type        = string
-  default     = "Name"
-}
-
-variable "vpc_tag_value" {
-  # if left blank then {core_stack_name} will be used
-  description = "The tag value of the VPC and subnets"
-  type        = string
-  default     = ""
 }
