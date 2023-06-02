@@ -49,7 +49,7 @@
 | <a name="module_chaos_mesh"></a> [chaos\_mesh](#module\_chaos\_mesh) | ./chaos-mesh | n/a |
 | <a name="module_cilium"></a> [cilium](#module\_cilium) | ./cilium | n/a |
 | <a name="module_cluster_autoscaler"></a> [cluster\_autoscaler](#module\_cluster\_autoscaler) | ./cluster-autoscaler | n/a |
-| <a name="module_consul"></a> [consul](#module\_consul) | ./consul | n/a |
+| <a name="module_consul"></a> [consul](#module\_consul) | hashicorp/hashicorp-consul-eks-addon/aws | 1.0.0-rc.1 |
 | <a name="module_coredns_autoscaler"></a> [coredns\_autoscaler](#module\_coredns\_autoscaler) | ./cluster-proportional-autoscaler | n/a |
 | <a name="module_crossplane"></a> [crossplane](#module\_crossplane) | ./crossplane | n/a |
 | <a name="module_csi_secrets_store_provider_aws"></a> [csi\_secrets\_store\_provider\_aws](#module\_csi\_secrets\_store\_provider\_aws) | ./csi-secrets-store-provider-aws | n/a |
