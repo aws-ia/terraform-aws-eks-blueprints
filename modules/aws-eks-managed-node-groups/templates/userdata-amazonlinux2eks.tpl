@@ -29,7 +29,7 @@ mount -a
 %{ if length(service_ipv4_cidr) > 0 ~}
 export SERVICE_IPV4_CIDR=${service_ipv4_cidr}
 %{ endif ~}
-%{ if length(service_ipv4_cidr) > 0 ~}
+%{ if length(service_ipv6_cidr) > 0 ~}
 export SERVICE_IPV6_CIDR=${service_ipv6_cidr}
 %{ endif ~}
 %{ if length(custom_ami_id) > 0 ~}

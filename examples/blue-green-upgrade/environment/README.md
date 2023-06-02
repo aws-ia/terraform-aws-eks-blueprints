@@ -1,22 +1,15 @@
-# Core Infrastructure
+# Common Environement Infrastructure
 
 ## Table of content
 
-- [Core Infrastructure](#core-infrastructure)
+- [Common Environement Infrastructure](#common-environement-infrastructure)
   - [Table of content](#table-of-content)
   - [Getting Started](#getting-started)
   - [Usage](#usage)
   - [Outputs](#outputs)
   - [Cleanup](#cleanup)
-- [Terraform Doc](#terraform-doc)
-  - [Requirements](#requirements)
-  - [Providers](#providers)
-  - [Modules](#modules)
-  - [Resources](#resources)
-  - [Inputs](#inputs)
-  - [Outputs](#outputs-1)
 
-This folder contains the Terraform code to deploy the core infrastructure for our EKS Cluster **Blue** and **Green**. The AWS resources created by the script are:
+This folder contains the Terraform code to deploy the common environment infrastructure for our EKS Cluster **Blue** and **Green**. The AWS resources created by the script are:
 
 - Networking
   - VPC
@@ -25,8 +18,8 @@ This folder contains the Terraform code to deploy the core infrastructure for ou
     - 1 NAT Gateway
     - 1 Internet Gateway
     - Associated Route Tables
-- 1 Hosted zone to use for our clusters with name `${core_stack_name}.${hosted_zone_name}`
-- 1 wildcard certificate for TLS termination associated to our new HostedZone `*.${core_stack_name}.${hosted_zone_name}`
+- 1 Hosted zone to use for our clusters with name `${environment}.${hosted_zone_name}`
+- 1 wildcard certificate for TLS termination associated to our new HostedZone `*.${environment}.${hosted_zone_name}`
 - 1 SecretManager password used to access ArgoCD UI in both EKS clusters.
 
 ## Getting Started
@@ -40,9 +33,8 @@ Fork this repository and [create the GitHub token granting access](https://docs.
 
 ## Usage
 
-
 ```bash
-cd core-infra/
+cd environment/
 ```
 
 - Run Terraform init to download the providers and install the modules
@@ -81,7 +73,7 @@ aws_route53_zone = "eks-blueprint.eks.mydomain.org"
 vpc_id = "vpc-0d649baf641a8071e"
 ```
 
-We are going to use this core infrastructure to host the EKS Blue and Green clusters.
+We are going to use this common environment infrastructure to host the EKS Blue and Green clusters.
 
 ## Cleanup
 
