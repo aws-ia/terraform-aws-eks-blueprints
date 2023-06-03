@@ -1,5 +1,5 @@
-variable "core_stack_name" {
-  description = "The name of Core Infrastructure stack, feel free to rename it. Used for cluster and VPC names."
+variable "environment_name" {
+  description = "The name of environment Infrastructure stack, feel free to rename it. Used for cluster and VPC names."
   type        = string
   default     = "eks-blueprint"
 }
@@ -25,5 +25,5 @@ variable "argocd_secret_manager_name_suffix" {
 variable "hosted_zone_name" {
   type        = string
   description = "Route53 domain for the cluster."
-  default     = "sallaman.people.aws.dev"
+  default     = "example.com"
 }
