@@ -1,4 +1,4 @@
-# IPv6 EKS Cluster
+# Amazon EKS Cluster w/ IPv6 Networking
 
 This example shows how to create an EKS cluster that utilizes IPv6 networking.
 

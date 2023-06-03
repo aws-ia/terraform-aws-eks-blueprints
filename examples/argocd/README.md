@@ -1,4 +1,4 @@
-# EKS Cluster with ArgoCD
+# Amazon EKS Cluster w/ ArgoCD
 
 This example shows how to provision an EKS cluster with:
 

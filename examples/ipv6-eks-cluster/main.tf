@@ -53,7 +53,7 @@ module "eks" {
   version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = "1.26"
+  cluster_version                = "1.27"
   cluster_endpoint_public_access = true
 
   # IPV6
@@ -88,7 +88,7 @@ module "eks" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name = local.name
   cidr = local.vpc_cidr

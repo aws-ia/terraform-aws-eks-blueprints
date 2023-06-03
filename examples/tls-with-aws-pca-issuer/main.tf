@@ -68,7 +68,7 @@ module "eks" {
   version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = "1.26"
+  cluster_version                = "1.27"
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
@@ -102,10 +102,8 @@ module "eks_blueprints_addons" {
 
   # EKS Add-on
   eks_addons = {
-    coredns = {}
-    vpc-cni = {
-      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
-    }
+    coredns    = {}
+    vpc-cni    = {}
     kube-proxy = {}
   }
 
@@ -253,7 +251,7 @@ resource "kubectl_manifest" "pca_certificate" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name = local.name
   cidr = local.vpc_cidr
@@ -271,25 +269,6 @@ module "vpc" {
 
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
-  }
-
-  tags = local.tags
-}
-
-module "vpc_cni_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.14"
-
-  role_name_prefix = "${module.eks.cluster_name}-vpc-cni-"
-
-  attach_vpc_cni_policy = true
-  vpc_cni_enable_ipv4   = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:aws-node"]
-    }
   }
 
   tags = local.tags

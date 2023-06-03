@@ -1,4 +1,4 @@
-# EKS Cluster for Stateful Workloads
+# Amazon EKS Cluster for Stateful Workloads
 
 ## Features
 

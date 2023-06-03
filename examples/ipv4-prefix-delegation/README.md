@@ -1,4 +1,4 @@
-# EKS Cluster w/ Prefix Delegation
+# Amazon EKS Cluster w/ Prefix Delegation
 
 This example shows how to provision an EKS cluster with prefix delegation enabled for increasing the number of available IP addresses for the EC2 nodes utilized.
 

@@ -68,7 +68,7 @@ module "eks" {
   version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = "1.25"
+  cluster_version                = "1.27"
   cluster_endpoint_public_access = true
 
   cluster_addons = {
@@ -141,7 +141,7 @@ resource "kubectl_manifest" "eni_config" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name = local.name
   cidr = local.vpc_cidr

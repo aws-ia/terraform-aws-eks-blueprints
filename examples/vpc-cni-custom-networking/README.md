@@ -1,4 +1,4 @@
-# EKS Cluster w/ VPC-CNI Custom Networking
+# VPC-CNI Custom Networking
 
 This example shows how to provision an EKS cluster with:
 
