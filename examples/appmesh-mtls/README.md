@@ -272,6 +272,7 @@ kubectl delete deployments appmesh-example-app; kubectl delete service appmesh-e
 kubectl delete virtualservices.appmesh.k8s.aws appmesh-example-vs
 kubectl delete virtualrouters.appmesh.k8s.aws appmesh-example-vr
 kubectl delete virtualnodes.appmesh.k8s.aws appmesh-example-vn  
+kubectl delete meshes.appmesh.k8s.aws appmesh-example
 terraform destroy -target="module.appmesh_addon" -auto-approve
 terraform destroy -target="module.eks_blueprints_addons" -auto-approve
 terraform destroy -auto-approve
