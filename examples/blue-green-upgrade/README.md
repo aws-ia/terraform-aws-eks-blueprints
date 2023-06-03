@@ -1,4 +1,4 @@
-# Blue/Green or Canary Amazon EKS clusters migration for stateless ArgoCD workloads
+# Blue/Green Migration
 
 This directory provides a solution based on [EKS Blueprint for Terraform](https://aws-ia.github.io/terraform-aws-eks-blueprints) that shows how to leverage blue/green or canary application workload migration between EKS clusters, using [Amazon Route 53](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy-weighted.html) weighted routing feature. The workloads will be dynamically exposed using [AWS LoadBalancer Controller](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/aws-load-balancer-controller/) and [External DNS add-on](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/external-dns/).
 

@@ -1,4 +1,4 @@
-# Amazon EKS Deployment with Agones Gaming Kubernetes Controller
+# Agones Game Controller on Amazon EKS
 
 This example shows how to deploy and run Gaming applications on Amazon EKS with Agones Kubernetes Controller
 

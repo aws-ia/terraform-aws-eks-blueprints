@@ -1,4 +1,4 @@
-# EKS Cluster with AppMesh mTLS
+# EKS Cluster w/ AppMesh mTLS
 
 This examples demonstrates how to deploy an Amazon EKS cluster with AppMesh mTLS enabled.
 
@@ -49,7 +49,7 @@ This example deploys the folowing Kubernetes resources:
 2. List the created Resources.
 
 ```sh
-kubectl get pods -A  
+kubectl get pods -A
 NAMESPACE          NAME                                       READY   STATUS    RESTARTS   AGE
 amazon-guardduty   aws-guardduty-agent-54tlt                  1/1     Running   0          4h42m
 amazon-guardduty   aws-guardduty-agent-tl574                  1/1     Running   0          4h42m
@@ -73,7 +73,7 @@ appmesh-mtls   4h42m
 ```
 
 ```sh
-kubectl get certificate  
+kubectl get certificate
 NAME      READY   SECRET                  AGE
 example   True    example-clusterissuer   4h12m
 ```
@@ -130,7 +130,7 @@ mesh.appmesh.k8s.aws/appmesh-example created
   3. Create a Virtual Node.
 
 ```sh
-cat <<EOF | kubectl apply -f -  
+cat <<EOF | kubectl apply -f -
 apiVersion: appmesh.k8s.aws/v1beta2
 kind: VirtualNode
 metadata:
@@ -166,7 +166,7 @@ EOF
   4. Create a Virtual Router.
 
 ```sh
-cat <<EOF | kubectl apply -f -  
+cat <<EOF | kubectl apply -f -
 apiVersion: appmesh.k8s.aws/v1beta2
 kind: VirtualRouter
 metadata:
@@ -193,7 +193,7 @@ EOF
   5. Create a Virtual Service.
 
 ```sh
-cat <<EOF | kubectl apply -f -  
+cat <<EOF | kubectl apply -f -
 apiVersion: appmesh.k8s.aws/v1beta2
 kind: VirtualService
 metadata:
@@ -211,7 +211,7 @@ EOF
   6. Create a Deployment and a Service in the `default` Namespace.
 
 ```sh
-cat <<EOF | kubectl apply -f -  
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Service
 metadata:
@@ -271,7 +271,7 @@ To teardown and remove the resources created in this example:
 kubectl delete deployments appmesh-example-app; kubectl delete service appmesh-example-svc
 kubectl delete virtualservices.appmesh.k8s.aws appmesh-example-vs
 kubectl delete virtualrouters.appmesh.k8s.aws appmesh-example-vr
-kubectl delete virtualnodes.appmesh.k8s.aws appmesh-example-vn  
+kubectl delete virtualnodes.appmesh.k8s.aws appmesh-example-vn
 kubectl delete meshes.appmesh.k8s.aws appmesh-example
 terraform destroy -target="module.appmesh_addon" -auto-approve
 terraform destroy -target="module.eks_blueprints_addons" -auto-approve

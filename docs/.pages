@@ -1,4 +1,5 @@
 nav:
   - Overview: index.md
   - Getting Started: getting-started.md
+  - Blueprints: blueprints
   - IAM: iam

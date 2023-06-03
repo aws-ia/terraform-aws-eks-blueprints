@@ -1,4 +1,4 @@
-# Serverless EKS Cluster using Fargate Profiles
+# Serverless Amazon EKS Cluster
 
 This example shows how to provision an Amazon EKS Cluster (serverless data plane) using Fargate Profiles.
 
@@ -54,7 +54,7 @@ aws eks --region <$AWS_REGION> update-kubeconfig --name <$CLUSTER_NAME>
 
 
 ```sh
-kubectl get nodes  
+kubectl get nodes
 NAME                                                STATUS   ROLES    AGE   VERSION
 fargate-ip-10-0-17-17.us-west-2.compute.internal    Ready    <none>   25m   v1.26.3-eks-f4dc2c0
 fargate-ip-10-0-20-244.us-west-2.compute.internal   Ready    <none>   71s   v1.26.3-eks-f4dc2c0
@@ -167,7 +167,7 @@ kubectl -n app-2048 create ingress app-2048 --class alb --rule="/*=app-2048:80" 
 ```
 
 ```sh
-kubectl -n app-2048 get ingress  
+kubectl -n app-2048 get ingress
 NAME       CLASS   HOSTS   ADDRESS                                                                 PORTS   AGE
 app-2048   alb     *       k8s-app2048-app2048-6d9c5e92d6-1234567890.us-west-2.elb.amazonaws.com   80      4m9s
 ```
