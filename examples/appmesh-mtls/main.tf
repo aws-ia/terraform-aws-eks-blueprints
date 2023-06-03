@@ -128,7 +128,7 @@ module "appmesh_addon" {
   version = "1.0.0"
 
   chart            = "appmesh-controller"
-  chart_version    = "1.7.0"
+  chart_version    = "1.11.0"
   repository       = "https://aws.github.io/eks-charts"
   description      = "AWS App Mesh Helm Chart"
   namespace        = "appmesh-system"
@@ -146,7 +146,7 @@ module "appmesh_addon" {
   # IAM role for service account (IRSA)
   create_role             = true
   role_name               = "appmesh-controller-"
-  source_policy_documents = data.aws_iam_policy_document.appmesh.json
+  source_policy_documents = [data.aws_iam_policy_document.appmesh.json]
 
   oidc_providers = {
     this = {
