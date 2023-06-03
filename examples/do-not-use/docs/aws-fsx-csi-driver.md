@@ -4,7 +4,7 @@ This add-on deploys the [Amazon FSx for Lustre CSI Driver](https://docs.aws.amaz
 
 ## Usage
 
-The [Amazon FSx for Lustre CSI Driver](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/aws-fsx-csi-driver) can be deployed by enabling the add-on via the following. 
+The [Amazon FSx for Lustre CSI Driver](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/aws-fsx-csi-driver) can be deployed by enabling the add-on via the following.
 
 ```hcl
   enable_aws_fsx_csi_driver = true

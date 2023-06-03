@@ -39,7 +39,7 @@ configure_kubectl = "aws eks --region us-west-2 update-kubeconfig <CLUSTER_NAME>
 ```
 
 This example deploys the folowing Kubernetes resources:
-* The `appmesh-controller` in the `appmesh-system` Namespace. 
+* The `appmesh-controller` in the `appmesh-system` Namespace.
 * The `cert-manager` resources on `cert-manager` Namespace.
 * The `aws-privateca-issuer` on `kube-system` Namespace.
 * A Cluster Issuer `appmesh-mtls`.
@@ -49,7 +49,7 @@ This example deploys the folowing Kubernetes resources:
 2. List the created Resources.
 
 ```sh
-kubectl get pods -A    
+kubectl get pods -A  
 NAMESPACE          NAME                                       READY   STATUS    RESTARTS   AGE
 amazon-guardduty   aws-guardduty-agent-54tlt                  1/1     Running   0          4h42m
 amazon-guardduty   aws-guardduty-agent-tl574                  1/1     Running   0          4h42m
@@ -67,13 +67,13 @@ kube-system        kube-proxy-w54pc                           1/1     Running   
 ```
 
 ```sh
-kubectl get awspcaclusterissuers.awspca.cert-manager.io 
+kubectl get awspcaclusterissuers.awspca.cert-manager.io
 NAME           AGE
 appmesh-mtls   4h42m
 ```
 
 ```sh
-kubectl get certificate                                
+kubectl get certificate  
 NAME      READY   SECRET                  AGE
 example   True    example-clusterissuer   4h12m
 ```
@@ -83,14 +83,14 @@ kubectl describe secret example-clusterissuer
 Name:         example-clusterissuer
 Namespace:    default
 Labels:       controller.cert-manager.io/fao=true
-Annotations:  cert-manager.io/alt-names: 
+Annotations:  cert-manager.io/alt-names:
               cert-manager.io/certificate-name: example
               cert-manager.io/common-name: example.com
-              cert-manager.io/ip-sans: 
+              cert-manager.io/ip-sans:
               cert-manager.io/issuer-group: awspca.cert-manager.io
               cert-manager.io/issuer-kind: AWSPCAClusterIssuer
               cert-manager.io/issuer-name: appmesh-mtls
-              cert-manager.io/uri-sans: 
+              cert-manager.io/uri-sans:
 
 Type:  kubernetes.io/tls
 
@@ -103,7 +103,7 @@ tls.key:  1675 bytes
 
 
 3. Create the AWS App Mesh Resources on your Amazon EKS Cluster. Full documentation can be found [here](https://docs.aws.amazon.com/app-mesh/latest/userguide/getting-started-kubernetes.html#configure-app-mesh).
-   
+
    1.  Annotate the `default` Namespace to allow Side Car Injection.
 
 ```sh
@@ -112,7 +112,7 @@ namespace/default labeled
 ```
 
   2. Create the Mesh.
-   
+
 ```sh
 cat <<EOF | kubectl apply -f -
 apiVersion: appmesh.k8s.aws/v1beta2
@@ -128,9 +128,9 @@ mesh.appmesh.k8s.aws/appmesh-example created
 ```
 
   3. Create a Virtual Node.
-   
+
 ```sh
-cat <<EOF | kubectl apply -f -                                                                      
+cat <<EOF | kubectl apply -f -  
 apiVersion: appmesh.k8s.aws/v1beta2
 kind: VirtualNode
 metadata:
@@ -166,7 +166,7 @@ EOF
   4. Create a Virtual Router.
 
 ```sh
-cat <<EOF | kubectl apply -f -                                                                      
+cat <<EOF | kubectl apply -f -  
 apiVersion: appmesh.k8s.aws/v1beta2
 kind: VirtualRouter
 metadata:
@@ -193,7 +193,7 @@ EOF
   5. Create a Virtual Service.
 
 ```sh
-cat <<EOF | kubectl apply -f -                                                                      
+cat <<EOF | kubectl apply -f -  
 apiVersion: appmesh.k8s.aws/v1beta2
 kind: VirtualService
 metadata:
@@ -207,11 +207,11 @@ spec:
         name: appmesh-example-vr
 EOF
 ```
-  
+
   6. Create a Deployment and a Service in the `default` Namespace.
 
 ```sh
-cat <<EOF | kubectl apply -f -                                                                      
+cat <<EOF | kubectl apply -f -  
 apiVersion: v1
 kind: Service
 metadata:
@@ -256,7 +256,7 @@ EOF
   7. Validate if the Pods are in `Running` state with 2 Containers, being one of them the injected sidecar from AppMesh.
 
 ```sh
-kubectl get pods 
+kubectl get pods
 NAME                                   READY   STATUS    RESTARTS   AGE
 appmesh-example-app-6946cdbdf6-gnxww   2/2     Running   0          54s
 appmesh-example-app-6946cdbdf6-nx9tg   2/2     Running   0          54s
@@ -269,8 +269,8 @@ To teardown and remove the resources created in this example:
 
 ```sh
 kubectl delete deployments appmesh-example-app; kubectl delete service appmesh-example-svc
-kubectl delete virtualservices.appmesh.k8s.aws appmesh-example-vs 
-kubectl delete virtualrouters.appmesh.k8s.aws appmesh-example-vr 
+kubectl delete virtualservices.appmesh.k8s.aws appmesh-example-vs
+kubectl delete virtualrouters.appmesh.k8s.aws appmesh-example-vr
 kubectl delete virtualnodes.appmesh.k8s.aws appmesh-example-vn  
 terraform destroy -target="module.appmesh_addon" -auto-approve
 terraform destroy -target="module.eks_blueprints_addons" -auto-approve

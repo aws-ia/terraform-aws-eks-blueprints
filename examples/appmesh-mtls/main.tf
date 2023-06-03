@@ -146,7 +146,7 @@ module "appmesh_addon" {
   # IAM role for service account (IRSA)
   create_role             = true
   role_name               = "appmesh-controller-"
-  source_policy_documents = [ data.aws_iam_policy_document.appmesh.json ]
+  source_policy_documents = [data.aws_iam_policy_document.appmesh.json]
 
   oidc_providers = {
     this = {
