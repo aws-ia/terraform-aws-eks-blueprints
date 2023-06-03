@@ -1,6 +1,0 @@
-apiVersion: v2
-name: cert-manager-letsencrypt
-description: Cert Manager Cluster Issuers for Let's Encrypt certificates with DNS01 protocol
-type: application
-version: 0.1.0
-appVersion: v0.1.0

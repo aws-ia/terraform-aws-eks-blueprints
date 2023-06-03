@@ -1,1 +1,0 @@
-clusterName: ${eks_cluster_id}

@@ -1,5 +1,0 @@
-global:
-  name: consul
-
-server:
-  replicas: 3

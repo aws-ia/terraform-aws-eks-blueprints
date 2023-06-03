@@ -1,6 +1,0 @@
-apiVersion: v2
-name: argo-application
-description: A Helm chart that installs an ArgoCD Application resource.
-type: application
-version: 0.1.0
-appVersion: 0.1.0

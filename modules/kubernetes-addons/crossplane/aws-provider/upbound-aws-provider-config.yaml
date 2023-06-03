@@ -1,9 +1,0 @@
-# https://github.com/upbound/provider-aws/blob/main/docs/Configuration.md#create-a-providerconfig
----
-apiVersion: aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: ${upbound-aws-provider-config}
-spec:
-  credentials:
-    source: IRSA
