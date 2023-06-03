@@ -1,9 +1,0 @@
----
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-  name: ${aws-provider-name}
-spec:
-  package: crossplane/provider-jet-aws:${provider-aws-version}
-  controllerConfigRef:
-    name: jet-aws-controller-config

@@ -1,9 +1,0 @@
----
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-  name: ${helm-provider-name}
-spec:
-  package: xpkg.upbound.io/crossplane-contrib/provider-helm:${provider-helm-version}
-  controllerConfigRef:
-    name: ${helm-controller-config}
