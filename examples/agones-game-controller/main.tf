@@ -118,24 +118,6 @@ module "eks" {
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = ["::/0"]
     }
-
-    ingress_ssh = {
-      protocol         = "tcp"
-      from_port        = 22
-      to_port          = 22
-      type             = "ingress"
-      cidr_blocks      = ["10.0.0.0/8"]
-      ipv6_cidr_blocks = ["::/64"]
-    }
-
-    egress_tcp = {
-      protocol         = "-1"
-      from_port        = 0
-      to_port          = 0
-      type             = "egress"
-      cidr_blocks      = ["0.0.0.0/0"]
-      ipv6_cidr_blocks = ["::/0"]
-    }
   }
 
   tags = local.tags
