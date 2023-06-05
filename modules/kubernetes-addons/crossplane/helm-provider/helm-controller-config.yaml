@@ -1,6 +1,0 @@
-apiVersion: pkg.crossplane.io/v1alpha1
-kind: ControllerConfig
-metadata:
-  name: ${helm-controller-config}
-spec:
-  serviceAccountName: ${helm-serviceaccount-name}

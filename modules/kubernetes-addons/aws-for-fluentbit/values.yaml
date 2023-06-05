@@ -1,8 +1,0 @@
-serviceAccount:
-  create: false
-  name: ${service_account}
-
-cloudWatchLogs:
-  enabled: true
-  region: ${aws_region}
-  logGroupName: ${log_group_name}

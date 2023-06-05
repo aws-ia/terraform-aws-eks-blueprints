@@ -1,8 +1,0 @@
-nav:
-    - Bottlerocket: bottlerocket.md
-    - Cluster Upgrades: cluster-upgrades.md
-    - ECR Instructions: ecr-instructions.md
-    - GitOps with Flux: gitops-with-flux.md
-    - Multi-cluster: multi-cluster.md
-    - Private Clusters: private-clusters.md
-    - ...

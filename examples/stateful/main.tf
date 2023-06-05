@@ -5,19 +5,27 @@ provider "aws" {
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  token                  = data.aws_eks_cluster_auth.this.token
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
 }
 
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-    token                  = data.aws_eks_cluster_auth.this.token
-  }
-}
 
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      # This requires the awscli to be installed locally where Terraform is executed
+      args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+    }
+  }
 }
 
 data "aws_caller_identity" "current" {}
@@ -37,6 +45,8 @@ locals {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
+
+  velero_s3_backup_location = "${module.velero_backup_s3_bucket.s3_bucket_arn}/backups"
 }
 
 ################################################################################
@@ -46,18 +56,11 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.12"
+  version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = "1.24"
+  cluster_version                = "1.27"
   cluster_endpoint_public_access = true
-
-  # EKS Addons
-  cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
-  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -186,25 +189,35 @@ module "eks" {
 }
 
 ################################################################################
-# Kubernetes Addons
+# EKS Blueprints Addons
 ################################################################################
 
-module "eks_blueprints_kubernetes_addons" {
-  source = "../../modules/kubernetes-addons"
+module "eks_blueprints_addons" {
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "0.2.0"
 
-  eks_cluster_id       = module.eks.cluster_name
-  eks_cluster_endpoint = module.eks.cluster_endpoint
-  eks_oidc_provider    = module.eks.oidc_provider
-  eks_cluster_version  = module.eks.cluster_version
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider_arn = module.eks.oidc_provider_arn
 
-  # Wait on the node group(s) before provisioning addons
-  data_plane_wait_arn = join(",", [for group in module.eks.eks_managed_node_groups : group.node_group_arn])
+  create_delay_dependencies = [for group in module.eks.eks_managed_node_groups : group.node_group_arn]
 
-  enable_velero           = true
-  velero_backup_s3_bucket = module.velero_backup_s3_bucket.s3_bucket_id
+  eks_addons = {
+    aws-ebs-csi-driver = {
+      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
+    }
+    coredns    = {}
+    vpc-cni    = {}
+    kube-proxy = {}
+  }
 
-  enable_amazon_eks_aws_ebs_csi_driver = true
-  enable_aws_efs_csi_driver            = true
+  enable_velero = true
+  # An S3 Bucket ARN is required. This can be declared with or without a Prefix.
+  velero = {
+    s3_backup_location = local.velero_s3_backup_location
+  }
+  enable_aws_efs_csi_driver = true
 
   tags = local.tags
 }
@@ -216,19 +229,20 @@ module "eks_blueprints_kubernetes_addons" {
 resource "kubernetes_annotations" "gp2" {
   api_version = "storage.k8s.io/v1"
   kind        = "StorageClass"
-  force       = "true"
+  # This is true because the resources was already created by the ebs-csi-driver addon
+  force = "true"
 
   metadata {
     name = "gp2"
   }
 
   annotations = {
-    # Modify annotations to remove gp2 as default storage class still reatain the class
+    # Modify annotations to remove gp2 as default storage class still retain the class
     "storageclass.kubernetes.io/is-default-class" = "false"
   }
 
   depends_on = [
-    module.eks_blueprints_kubernetes_addons
+    module.eks_blueprints_addons
   ]
 }
 
@@ -254,7 +268,7 @@ resource "kubernetes_storage_class_v1" "gp3" {
   }
 
   depends_on = [
-    module.eks_blueprints_kubernetes_addons
+    module.eks_blueprints_addons
   ]
 }
 
@@ -275,7 +289,7 @@ resource "kubernetes_storage_class_v1" "efs" {
   ]
 
   depends_on = [
-    module.eks_blueprints_kubernetes_addons
+    module.eks_blueprints_addons
   ]
 }
 
@@ -285,7 +299,7 @@ resource "kubernetes_storage_class_v1" "efs" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name = local.name
   cidr = local.vpc_cidr
@@ -350,7 +364,7 @@ module "velero_backup_s3_bucket" {
 
 module "efs" {
   source  = "terraform-aws-modules/efs/aws"
-  version = "~> 1.0"
+  version = "~> 1.1"
 
   creation_token = local.name
   name           = local.name
@@ -389,6 +403,24 @@ module "ebs_kms_key" {
 
   # Aliases
   aliases = ["eks/${local.name}/ebs"]
+
+  tags = local.tags
+}
+
+module "ebs_csi_driver_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.20"
+
+  role_name_prefix = "${module.eks.cluster_name}-ebs-csi-driver-"
+
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
 
   tags = local.tags
 }

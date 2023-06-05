@@ -1,4 +1,4 @@
-# IPv6 EKS Cluster
+# Amazon EKS Cluster w/ IPv6 Networking
 
 This example shows how to create an EKS cluster that utilizes IPv6 networking.
 
@@ -62,7 +62,5 @@ ip-10-0-12-188.us-west-2.compute.internal   Ready    <none>   4m57s   v1.24.7-ek
 To teardown and remove the resources created in this example:
 
 ```sh
-terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
-terraform destroy -target="module.eks" -auto-approve
 terraform destroy -auto-approve
 ```

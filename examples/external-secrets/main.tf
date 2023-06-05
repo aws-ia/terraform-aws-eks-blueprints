@@ -5,40 +5,54 @@ provider "aws" {
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  token                  = data.aws_eks_cluster_auth.this.token
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
 }
 
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-    token                  = data.aws_eks_cluster_auth.this.token
+
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      # This requires the awscli to be installed locally where Terraform is executed
+      args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+    }
   }
 }
 
 provider "kubectl" {
-  apply_retry_count      = 10
+  apply_retry_count      = 5
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   load_config_file       = false
-  token                  = data.aws_eks_cluster_auth.this.token
-}
 
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
 }
 
 data "aws_availability_zones" "available" {}
 data "aws_caller_identity" "current" {}
 
 locals {
-  name      = basename(path.cwd)
-  namespace = "external-secrets"
-  region    = "us-west-2"
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
+  namespace                = "external-secrets"
   cluster_secretstore_name = "cluster-secretstore-sm"
   cluster_secretstore_sa   = "cluster-secretstore-sa"
   secretstore_name         = "secretstore-ps"
@@ -57,18 +71,11 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.12"
+  version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = "1.24"
+  cluster_version                = "1.27"
   cluster_endpoint_public_access = true
-
-  # EKS Addons
-  cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
-  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -87,17 +94,29 @@ module "eks" {
 }
 
 ################################################################################
-# Kubernetes Addons
+# EKS Blueprints Addons
 ################################################################################
 
-module "eks_blueprints_kubernetes_addons" {
-  source = "../../modules/kubernetes-addons"
+module "eks_blueprints_addons" {
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "0.2.0"
 
-  eks_cluster_id       = module.eks.cluster_name
-  eks_cluster_endpoint = module.eks.cluster_endpoint
-  eks_oidc_provider    = module.eks.oidc_provider
-  eks_cluster_version  = module.eks.cluster_version
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider_arn = module.eks.oidc_provider_arn
 
+  # EKS Add-ons
+  eks_addons = {
+    aws-ebs-csi-driver = {
+      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
+    }
+    coredns    = {}
+    vpc-cni    = {}
+    kube-proxy = {}
+  }
+
+  # Add-ons
   enable_external_secrets = true
 
   tags = local.tags
@@ -109,7 +128,7 @@ module "eks_blueprints_kubernetes_addons" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name = local.name
   cidr = local.vpc_cidr
@@ -132,52 +151,8 @@ module "vpc" {
   tags = local.tags
 }
 
-#---------------------------------------------------------------
-# External Secrets Operator - Secret
-#---------------------------------------------------------------
-
 resource "aws_kms_key" "secrets" {
   enable_key_rotation = true
-}
-
-module "cluster_secretstore_role" {
-  source                      = "../../modules/irsa"
-  kubernetes_namespace        = local.namespace
-  create_kubernetes_namespace = false
-  kubernetes_service_account  = local.cluster_secretstore_sa
-  irsa_iam_policies           = [aws_iam_policy.cluster_secretstore.arn]
-  eks_cluster_id              = module.eks.cluster_name
-  eks_oidc_provider_arn       = module.eks.oidc_provider_arn
-
-  depends_on = [module.eks_blueprints_kubernetes_addons]
-}
-
-resource "aws_iam_policy" "cluster_secretstore" {
-  name_prefix = local.cluster_secretstore_sa
-  policy      = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "secretsmanager:GetResourcePolicy",
-        "secretsmanager:GetSecretValue",
-        "secretsmanager:DescribeSecret",
-        "secretsmanager:ListSecretVersionIds"
-      ],
-      "Resource": "${aws_secretsmanager_secret.secret.arn}"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "kms:Decrypt"
-      ],
-      "Resource": "${aws_kms_key.secrets.arn}"
-    }
-  ]
-}
-POLICY
 }
 
 resource "kubectl_manifest" "cluster_secretstore" {
@@ -197,7 +172,7 @@ spec:
             name: ${local.cluster_secretstore_sa}
             namespace: ${local.namespace}
 YAML
-  depends_on = [module.eks_blueprints_kubernetes_addons]
+  depends_on = [module.eks_blueprints_addons]
 }
 
 resource "aws_secretsmanager_secret" "secret" {
@@ -236,42 +211,6 @@ YAML
 # External Secrets Operator - Parameter Store
 #---------------------------------------------------------------
 
-module "secretstore_role" {
-  source                      = "../../modules/irsa"
-  kubernetes_namespace        = local.namespace
-  create_kubernetes_namespace = false
-  kubernetes_service_account  = local.secretstore_sa
-  irsa_iam_policies           = [aws_iam_policy.secretstore.arn]
-  eks_cluster_id              = module.eks.cluster_name
-  eks_oidc_provider_arn       = module.eks.oidc_provider_arn
-  depends_on                  = [module.eks_blueprints_kubernetes_addons]
-}
-
-resource "aws_iam_policy" "secretstore" {
-  name_prefix = local.secretstore_sa
-  policy      = <<POLICY
-{
-	"Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ssm:GetParameter*"
-      ],
-      "Resource": "arn:aws:ssm:${local.region}:${data.aws_caller_identity.current.account_id}:parameter/${local.name}/*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "kms:Decrypt"
-      ],
-      "Resource": "${aws_kms_key.secrets.arn}"
-    }
-  ]
-}
-POLICY
-}
-
 resource "kubectl_manifest" "secretstore" {
   yaml_body  = <<YAML
 apiVersion: external-secrets.io/v1beta1
@@ -289,7 +228,7 @@ spec:
           serviceAccountRef:
             name: ${local.secretstore_sa}
 YAML
-  depends_on = [module.eks_blueprints_kubernetes_addons]
+  depends_on = [module.eks_blueprints_addons]
 }
 
 resource "aws_ssm_parameter" "secret_parameter" {
@@ -320,4 +259,119 @@ spec:
       key: ${aws_ssm_parameter.secret_parameter.name}
 YAML
   depends_on = [kubectl_manifest.secretstore]
+}
+
+#---------------------------------------------------------------
+# IRSA
+#---------------------------------------------------------------
+
+module "cluster_secretstore_role" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.14"
+
+  role_name_prefix = "${module.eks.cluster_name}-secrets-manager-"
+
+  role_policy_arns = {
+    policy = aws_iam_policy.cluster_secretstore.arn
+  }
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["${local.namespace}:${local.cluster_secretstore_sa}"]
+    }
+  }
+
+  tags = local.tags
+}
+
+resource "aws_iam_policy" "cluster_secretstore" {
+  name_prefix = local.cluster_secretstore_sa
+  policy      = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetResourcePolicy",
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:ListSecretVersionIds"
+      ],
+      "Resource": "${aws_secretsmanager_secret.secret.arn}"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": "${aws_kms_key.secrets.arn}"
+    }
+  ]
+}
+POLICY
+}
+
+module "secretstore_role" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.14"
+
+  role_name_prefix = "${module.eks.cluster_name}-parameter-store"
+
+  role_policy_arns = {
+    policy = aws_iam_policy.secretstore.arn
+  }
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["${local.namespace}:${local.cluster_secretstore_sa}"]
+    }
+  }
+
+  tags = local.tags
+}
+
+resource "aws_iam_policy" "secretstore" {
+  name_prefix = local.secretstore_sa
+  policy      = <<POLICY
+{
+	"Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameter*"
+      ],
+      "Resource": "arn:aws:ssm:${local.region}:${data.aws_caller_identity.current.account_id}:parameter/${local.name}/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": "${aws_kms_key.secrets.arn}"
+    }
+  ]
+}
+POLICY
+}
+
+module "ebs_csi_driver_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.20"
+
+  role_name_prefix = "${module.eks.cluster_name}-ebs-csi-driver-"
+
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+
+  tags = local.tags
 }

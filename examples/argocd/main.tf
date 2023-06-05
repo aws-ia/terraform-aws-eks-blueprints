@@ -5,30 +5,36 @@ provider "aws" {
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  token                  = data.aws_eks_cluster_auth.this.token
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
 }
 
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-    token                  = data.aws_eks_cluster_auth.this.token
+
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      # This requires the awscli to be installed locally where Terraform is executed
+      args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+    }
   }
 }
 
 provider "bcrypt" {}
-
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
-}
 
 data "aws_availability_zones" "available" {}
 
 locals {
   name   = basename(path.cwd)
   region = "us-west-2"
-
-  cluster_version = "1.24"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -46,10 +52,10 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.12"
+  version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = local.cluster_version
+  cluster_version                = "1.27"
   cluster_endpoint_public_access = true
 
   # EKS Addons
@@ -76,16 +82,19 @@ module "eks" {
 }
 
 ################################################################################
-# Kubernetes Addons
+# EKS Blueprints Addons
 ################################################################################
 
-module "eks_blueprints_kubernetes_addons" {
-  source = "../../modules/kubernetes-addons"
+module "eks_blueprints_addons" {
+  # Users should pin the version to the latest available release
+  # tflint-ignore: terraform_module_pinned_source
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.31.0"
 
-  eks_cluster_id       = module.eks.cluster_name
-  eks_cluster_endpoint = module.eks.cluster_endpoint
-  eks_oidc_provider    = module.eks.oidc_provider
-  eks_cluster_version  = module.eks.cluster_version
+  eks_cluster_id        = module.eks.cluster_name
+  eks_cluster_endpoint  = module.eks.cluster_endpoint
+  eks_cluster_version   = module.eks.cluster_version
+  eks_oidc_provider     = module.eks.oidc_provider
+  eks_oidc_provider_arn = module.eks.oidc_provider_arn
 
   enable_argocd = true
   # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.
@@ -94,15 +103,6 @@ module "eks_blueprints_kubernetes_addons" {
       {
         name  = "configs.secret.argocdServerAdminPassword"
         value = bcrypt_hash.argo.id
-      }
-    ]
-  }
-
-  keda_helm_config = {
-    values = [
-      {
-        name  = "serviceAccount.create"
-        value = "false"
       }
     ]
   }
@@ -123,19 +123,11 @@ module "eks_blueprints_kubernetes_addons" {
 
   # Add-ons
   enable_amazon_eks_aws_ebs_csi_driver = true
-  enable_aws_for_fluentbit             = true
-  # Let fluentbit create the cw log group
-  aws_for_fluentbit_create_cw_log_group = false
-  enable_cert_manager                   = true
-  enable_cluster_autoscaler             = true
-  enable_karpenter                      = true
-  enable_keda                           = true
-  enable_metrics_server                 = true
-  enable_prometheus                     = true
-  enable_traefik                        = true
-  enable_vpa                            = true
-  enable_yunikorn                       = true
-  enable_argo_rollouts                  = true
+  enable_aws_load_balancer_controller  = true
+  enable_cert_manager                  = true
+  enable_karpenter                     = true
+  enable_metrics_server                = true
+  enable_argo_rollouts                 = true
 
   tags = local.tags
 }
@@ -173,7 +165,7 @@ resource "aws_secretsmanager_secret_version" "argocd" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name = local.name
   cidr = local.vpc_cidr

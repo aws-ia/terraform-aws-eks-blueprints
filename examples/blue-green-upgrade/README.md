@@ -1,8 +1,10 @@
-# Blue/Green or Canary Amazon EKS clusters migration for stateless ArgoCD workloads
+# Blue/Green Migration
 
 This directory provides a solution based on [EKS Blueprint for Terraform](https://aws-ia.github.io/terraform-aws-eks-blueprints) that shows how to leverage blue/green or canary application workload migration between EKS clusters, using [Amazon Route 53](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy-weighted.html) weighted routing feature. The workloads will be dynamically exposed using [AWS LoadBalancer Controller](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/aws-load-balancer-controller/) and [External DNS add-on](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/external-dns/).
 
 We are leveraging [the existing EKS Blueprints Workloads GitHub repository sample](https://github.com/aws-samples/eks-blueprints-workloads) to deploy our GitOps [ArgoCD](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/argocd/) applications, which are defined as helm charts. We are leveraging [ArgoCD Apps of apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern where an ArgoCD Application can also reference other Helm charts to deploy.
+
+> You can also find more informations in the [associated blog post](https://aws.amazon.com/blogs/containers/blue-green-or-canary-amazon-eks-clusters-migration-for-stateless-argocd-workloads/)
 
 ## Table of content
 
@@ -167,7 +169,6 @@ aws eks --region eu-west-3 update-kubeconfig --name eks-blueprint-blue  --role-a
 Note it will allow the role associated to the parameter **eks_admin_role_name** to assume the role.
 
 You can also connect with the user who created the EKS cluster without specifying the `--role-arn` parameter
-
 
 Next, you can interact with the cluster and see the deployment
 
@@ -338,7 +339,7 @@ In this sample, we uses a simple terraform variable to control the weight for al
 
 > This section, can be executed in either eks-blue or eks-green folders, or in both if you want to delete both clusters.
 
-In order to properly destroy the Cluster, we need first to remove the ArgoCD workloads, while keeping the ArgoCD addons.
+In order to properly destroy the Cluster, we need first to remove the ArgoCD workloads, while keeping the ArgoCD addons. We will also need to remove our Karpenter provisioners, and any other objects you created outside of Terraform that needs to be cleaned before destroying the terraform stack.
 
 Why doing this? When we remove an ingress object, we want the associated Kubernetes add-ons like aws load balancer controller and External DNS to correctly free the associated AWS resources. If we directly ask terraform to destroy everything, it can remove first theses controllers without allowing them the time to remove associated aws resources that will still existing in AWS, preventing us to completely delete our cluster.
 
@@ -350,13 +351,22 @@ Why doing this? When we remove an ingress object, we want the associated Kuberne
 
 #### Manual
 
-1. Delete Workloads App of App
+1. If also deployed, delete your Karpenter provisioners
+
+this is safe to delete if no addons are deployed on Karpenter, which is the case here.
+If not we should separate the team-platform deployments which installed Karpenter provisioners in a separate ArgoCD Application to avoid any conflicts.
+
+```bash
+kubectl delete provisioners.karpenter.sh --all
+```
+
+2. Delete Workloads App of App
 
 ```bash
 kubectl delete application workloads -n argocd
 ```
 
-2. If also deployed, delete ecsdemo App of App
+3. If also deployed, delete ecsdemo App of App
 
 ```bash
 kubectl delete application ecsdemo -n argocd
@@ -366,11 +376,11 @@ Once every workload applications as been freed on AWS side, (this can take some 
 
 > Note: it can take time to deregister all load balancers, verify that you don't have any more AWS resources created by EKS prior to start destroying EKS with terraform.
 
-3. Destroy terraform resources
+4. Destroy terraform resources
 
 ```bash
-terraform apply -destroy -target="module.kubernetes_addons" -auto-approve
-terraform apply -destroy -target="module.eks_blueprints" -auto-approve
+terraform apply -destroy -target="module.eks_cluster.module.kubernetes_addons" -auto-approve
+terraform apply -destroy -target="module.eks_cluster.module.eks" -auto-approve
 terraform apply -destroy -auto-approve
 ```
 

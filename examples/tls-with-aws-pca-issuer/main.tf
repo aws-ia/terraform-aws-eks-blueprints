@@ -5,27 +5,41 @@ provider "aws" {
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  token                  = data.aws_eks_cluster_auth.this.token
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
 }
 
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-    token                  = data.aws_eks_cluster_auth.this.token
+
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      # This requires the awscli to be installed locally where Terraform is executed
+      args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+    }
   }
 }
 
 provider "kubectl" {
-  apply_retry_count      = 10
+  apply_retry_count      = 5
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   load_config_file       = false
-  token                  = data.aws_eks_cluster_auth.this.token
-}
 
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
 }
 
 data "aws_availability_zones" "available" {}
@@ -51,18 +65,11 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.12"
+  version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = "1.24"
+  cluster_version                = "1.27"
   cluster_endpoint_public_access = true
-
-  # EKS Addons
-  cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
-  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -81,24 +88,53 @@ module "eks" {
 }
 
 ################################################################################
-# Kubernetes Addons
+# EKS Blueprints Addons
 ################################################################################
 
-module "eks_blueprints_kubernetes_addons" {
-  source = "../../modules/kubernetes-addons"
+module "eks_blueprints_addons" {
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "0.2.0"
 
-  eks_cluster_id       = module.eks.cluster_name
-  eks_cluster_endpoint = module.eks.cluster_endpoint
-  eks_oidc_provider    = module.eks.oidc_provider
-  eks_cluster_version  = module.eks.cluster_version
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  # EKS Add-on
+  eks_addons = {
+    coredns    = {}
+    vpc-cni    = {}
+    kube-proxy = {}
+  }
 
   # Add-ons
-  enable_cert_manager            = true
-  enable_cert_manager_csi_driver = true
-  enable_aws_privateca_issuer    = true
-  aws_privateca_acmca_arn        = aws_acmpca_certificate_authority.this.arn
+  enable_cert_manager         = true
+  enable_aws_privateca_issuer = true
+  aws_privateca_issuer = {
+    acmca_arn        = aws_acmpca_certificate_authority.this.arn
+    namespace        = "aws-privateca-issuer"
+    create_namespace = true
+  }
 
   tags = local.tags
+}
+
+################################################################################
+# Cert Manager CSI Helm Chart
+################################################################################
+
+resource "helm_release" "cert_manager_csi" {
+  name             = "cert-manager-csi-driver"
+  chart            = "cert-manager-csi-driver"
+  version          = "v0.5.0"
+  repository       = "https://charts.jetstack.io"
+  description      = "Cert Manager CSI Driver Add-on"
+  namespace        = "cert-manager"
+  create_namespace = false
+
+  depends_on = [
+    module.eks_blueprints_addons
+  ]
 }
 
 #-------------------------------
@@ -163,7 +199,7 @@ resource "kubectl_manifest" "cluster_pca_issuer" {
   })
 
   depends_on = [
-    module.eks_blueprints_kubernetes_addons
+    module.eks_blueprints_addons
   ]
 }
 
@@ -215,7 +251,7 @@ resource "kubectl_manifest" "pca_certificate" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name = local.name
   cidr = local.vpc_cidr

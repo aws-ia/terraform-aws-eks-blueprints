@@ -1,4 +1,0 @@
-clusterName: ${eks_cluster_id}
-region: ${aws_region}
-image:
-  repository: ${repository}

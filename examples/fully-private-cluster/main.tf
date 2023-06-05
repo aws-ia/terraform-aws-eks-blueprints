@@ -24,10 +24,10 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.12"
+  version = "~> 19.13"
 
   cluster_name    = local.name
-  cluster_version = "1.24"
+  cluster_version = "1.27"
 
   # EKS Addons
   cluster_addons = {
@@ -45,7 +45,7 @@ module "eks" {
 
       min_size     = 1
       max_size     = 5
-      desired_size = 2
+      desired_size = 3
     }
   }
 
@@ -58,7 +58,9 @@ module "eks" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
+
+  manage_default_vpc = true
 
   name = local.name
   cidr = local.vpc_cidr
@@ -77,7 +79,7 @@ module "vpc" {
 
 module "vpc_endpoints_sg" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name        = "${local.name}-vpc-endpoints"
   description = "Security group for VPC endpoint access"
@@ -104,7 +106,7 @@ module "vpc_endpoints_sg" {
 
 module "vpc_endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   vpc_id             = module.vpc.vpc_id
   security_group_ids = [module.vpc_endpoints_sg.security_group_id]
@@ -130,4 +132,44 @@ module "vpc_endpoints" {
   })
 
   tags = local.tags
+}
+
+resource "aws_vpc_peering_connection" "this" {
+  peer_vpc_id = module.vpc.vpc_id
+  vpc_id      = module.vpc.default_vpc_id
+  auto_accept = true
+
+  accepter {
+    allow_remote_vpc_dns_resolution = true
+  }
+
+  requester {
+    allow_remote_vpc_dns_resolution = true
+  }
+}
+
+resource "aws_route" "default_to_eks" {
+  route_table_id            = module.vpc.default_vpc_default_route_table_id
+  destination_cidr_block    = module.vpc.vpc_cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.this.id
+  depends_on                = [module.vpc]
+}
+
+resource "aws_route" "eks_to_default" {
+  for_each = { for rt in module.vpc.private_route_table_ids : rt => rt }
+
+  route_table_id            = each.value
+  destination_cidr_block    = module.vpc.default_vpc_cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.this.id
+  depends_on                = [module.vpc]
+}
+
+resource "aws_vpc_security_group_ingress_rule" "this" {
+  for_each          = { for sg in concat([module.eks.cluster_security_group_id, module.eks.cluster_primary_security_group_id]) : sg => sg }
+  security_group_id = each.value
+
+  cidr_ipv4   = module.vpc.default_vpc_cidr_block
+  from_port   = 443
+  to_port     = 443
+  ip_protocol = "tcp"
 }

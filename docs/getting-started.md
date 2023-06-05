@@ -70,7 +70,7 @@ fargate-ip-10-0-10-71.us-west-2.compute.internal    Ready    <none>   2m48s   v1
 To teardown and remove the resources created in this example:
 
 ```sh
-terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
+terraform destroy -target="module.eks_blueprints_addons" -auto-approve
 terraform destroy -target="module.eks" -auto-approve
 terraform destroy -auto-approve
 ```

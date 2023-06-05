@@ -5,19 +5,27 @@ provider "aws" {
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  token                  = data.aws_eks_cluster_auth.this.token
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
 }
 
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-    token                  = data.aws_eks_cluster_auth.this.token
-  }
-}
 
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      # This requires the awscli to be installed locally where Terraform is executed
+      args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+    }
+  }
 }
 
 data "aws_availability_zones" "available" {}
@@ -26,10 +34,11 @@ locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
-  cluster_version = "1.24"
-
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+
+  gameserver_minport = 7000
+  gameserver_maxport = 8000
 
   tags = {
     Blueprint  = local.name
@@ -44,18 +53,11 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.12"
+  version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = local.cluster_version
+  cluster_version                = "1.27"
   cluster_endpoint_public_access = true
-
-  # EKS Addons
-  cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
-  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -63,6 +65,7 @@ module "eks" {
   eks_managed_node_groups = {
     initial = {
       instance_types = ["m5.large"]
+      subnet_ids     = module.vpc.public_subnets
 
       min_size     = 1
       max_size     = 5
@@ -70,45 +73,72 @@ module "eks" {
     }
   }
 
+  cluster_security_group_additional_rules = {
+    ingress_gameserver_tcp = {
+      description      = "Nodes on ephemeral ports"
+      protocol         = "tcp"
+      from_port        = local.gameserver_minport
+      to_port          = local.gameserver_maxport
+      type             = "ingress"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+    }
+  }
+
   tags = local.tags
 }
 
 ################################################################################
-# Kubernetes Addons
+# EKS Blueprints Addons
 ################################################################################
 
-module "eks_blueprints_kubernetes_addons" {
-  source = "../../modules/kubernetes-addons"
+module "eks_blueprints_addons" {
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "0.2.0"
 
-  eks_cluster_id       = module.eks.cluster_name
-  eks_cluster_endpoint = module.eks.cluster_endpoint
-  eks_oidc_provider    = module.eks.oidc_provider
-  eks_cluster_version  = module.eks.cluster_version
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  # EKS Add-Ons
+  eks_addons = {
+    coredns    = {}
+    vpc-cni    = {}
+    kube-proxy = {}
+  }
 
   # Add-ons
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
 
-  # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
-  enable_agones = true
-  # Do not be fooled, this is required by the Agones addon
-  eks_worker_security_group_id = module.eks.cluster_security_group_id
-  agones_helm_config = {
-    name       = "agones"
-    chart      = "agones"
-    repository = "https://agones.dev/chart/stable"
-    version    = "1.21.0"
-    namespace  = "agones-system"
-
-    values = [templatefile("${path.module}/helm_values/agones-values.yaml", {
-      expose_udp            = true
-      gameserver_namespaces = "{${join(",", ["default", "xbox-gameservers", "xbox-gameservers"])}}"
-      gameserver_minport    = 7000
-      gameserver_maxport    = 8000
-    })]
-  }
-
   tags = local.tags
+}
+
+################################################################################
+# Agones Helm Chart
+################################################################################
+
+# NOTE: Agones requires a Node group in Public Subnets and enable Public IP
+resource "helm_release" "agones" {
+  name             = "agones"
+  chart            = "agones"
+  version          = "1.21.0"
+  repository       = "https://agones.dev/chart/stable"
+  description      = "Agones helm chart"
+  namespace        = "agones-system"
+  create_namespace = true
+
+  values = [templatefile("${path.module}/helm_values/agones-values.yaml", {
+    expose_udp            = true
+    gameserver_namespaces = "{${join(",", ["default", "xbox-gameservers", "xbox-gameservers"])}}"
+    gameserver_minport    = 7000
+    gameserver_maxport    = 8000
+  })]
+
+  depends_on = [
+    module.eks_blueprints_addons
+  ]
 }
 
 ################################################################################
@@ -117,7 +147,7 @@ module "eks_blueprints_kubernetes_addons" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name = local.name
   cidr = local.vpc_cidr

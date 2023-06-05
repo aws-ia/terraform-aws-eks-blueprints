@@ -5,26 +5,35 @@ provider "aws" {
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  token                  = data.aws_eks_cluster_auth.this.token
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
 }
 
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-    token                  = data.aws_eks_cluster_auth.this.token
-  }
-}
 
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      # This requires the awscli to be installed locally where Terraform is executed
+      args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+    }
+  }
 }
 
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = basename(path.cwd)
-  region = "us-west-2"
+  name     = basename(path.cwd)
+  region   = "us-west-2"
+  app_name = "app-2048"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -42,13 +51,57 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.12"
+  version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = "1.24"
+  cluster_version                = "1.27"
   cluster_endpoint_public_access = true
 
-  cluster_addons = {
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
+
+  # Fargate profiles use the cluster primary security group so these are not utilized
+  create_cluster_security_group = false
+  create_node_security_group    = false
+
+  fargate_profiles = {
+    app_wildcard = {
+      selectors = [
+        { namespace = "app-*" }
+      ]
+    }
+    kube_system = {
+      name = "kube-system"
+      selectors = [
+        { namespace = "kube-system" }
+      ]
+    }
+  }
+
+  fargate_profile_defaults = {
+    iam_role_additional_policies = {
+      additional = module.eks_blueprints_addons.fargate_fluentbit.iam_policy[0].arn
+    }
+  }
+
+  tags = local.tags
+}
+
+################################################################################
+# EKS Blueprints Addons
+################################################################################
+
+module "eks_blueprints_addons" {
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "0.2.0"
+
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  # EKS Add-ons
+  eks_addons = {
     coredns = {
       configuration_values = jsonencode({
         computeType = "Fargate"
@@ -74,61 +127,19 @@ module "eks" {
         }
       })
     }
-    kube-proxy = {}
     vpc-cni    = {}
+    kube-proxy = {}
   }
-
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
-
-  # Fargate profiles use the cluster primary security group so these are not utilized
-  create_cluster_security_group = false
-  create_node_security_group    = false
-
-  fargate_profiles = {
-    app_wildcard = {
-      selectors = [
-        { namespace = "app-*" }
-      ]
-    }
-    kube_system = {
-      name = "kube-system"
-      selectors = [
-        { namespace = "kube-system" }
-      ]
-    }
-  }
-
-  tags = local.tags
-}
-
-################################################################################
-# Kubernetes Addons
-################################################################################
-
-module "eks_blueprints_kubernetes_addons" {
-  source = "../../modules/kubernetes-addons"
-
-  eks_cluster_id       = module.eks.cluster_name
-  eks_cluster_endpoint = module.eks.cluster_endpoint
-  eks_oidc_provider    = module.eks.oidc_provider
-  eks_cluster_version  = module.eks.cluster_version
-
-  # Wait on the `kube-system` profile before provisioning addons
-  data_plane_wait_arn = join(",", [for prof in module.eks.fargate_profiles : prof.fargate_profile_arn])
-
-  # Sample application
-  enable_app_2048 = true
 
   # Enable Fargate logging
   enable_fargate_fluentbit = true
-  fargate_fluentbit_addon_config = {
+  fargate_fluentbit = {
     flb_log_cw = true
   }
 
   enable_aws_load_balancer_controller = true
-  aws_load_balancer_controller_helm_config = {
-    set_values = [
+  aws_load_balancer_controller = {
+    set = [
       {
         name  = "vpcId"
         value = module.vpc.vpc_id
@@ -149,7 +160,7 @@ module "eks_blueprints_kubernetes_addons" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name = local.name
   cidr = local.vpc_cidr
@@ -170,4 +181,73 @@ module "vpc" {
   }
 
   tags = local.tags
+}
+
+################################################################################
+# Sample App
+################################################################################
+
+resource "kubernetes_namespace_v1" "this" {
+  metadata {
+    name = local.app_name
+  }
+}
+
+resource "kubernetes_deployment_v1" "this" {
+  metadata {
+    name      = local.app_name
+    namespace = kubernetes_namespace_v1.this.metadata[0].name
+  }
+
+  spec {
+    replicas = 3
+
+    selector {
+      match_labels = {
+        "app.kubernetes.io/name" = local.app_name
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          "app.kubernetes.io/name" = local.app_name
+        }
+      }
+
+      spec {
+        container {
+          image = "public.ecr.aws/l6m2t8p7/docker-2048:latest"
+          # image_pull_policy = "Always"
+          name = local.app_name
+
+          port {
+            container_port = 80
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service_v1" "this" {
+  metadata {
+    name      = local.app_name
+    namespace = kubernetes_namespace_v1.this.metadata[0].name
+  }
+
+  spec {
+    selector = {
+      "app.kubernetes.io/name" = local.app_name
+    }
+
+
+    port {
+      port        = 80
+      target_port = 80
+      protocol    = "TCP"
+    }
+
+    type = "NodePort"
+  }
 }
