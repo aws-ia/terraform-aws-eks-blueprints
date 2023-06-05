@@ -68,25 +68,25 @@ module "eks" {
     default = {
       instance_types = ["m5.large"]
       subnet_ids     = module.vpc.public_subnets
-      min_size     = 1
-      max_size     = 5
-      desired_size = 2
+      min_size       = 1
+      max_size       = 5
+      desired_size   = 2
     }
     agones_system = {
-      instance_types = ["m5.large"]
-      subnet_ids     = module.vpc.public_subnets
+      instance_types       = ["m5.large"]
+      subnet_ids           = module.vpc.public_subnets
       bootstrap_extra_args = "--node-labels=agones.dev/agones-system=true --register-with-taints=agones.dev/agones-system=true:NoExecute"
-      min_size     = 1
-      max_size     = 1
-      desired_size = 1
+      min_size             = 1
+      max_size             = 1
+      desired_size         = 1
     }
     agones_metrics = {
-      instance_types = ["m5.large"]
-      subnet_ids     = module.vpc.public_subnets
+      instance_types       = ["m5.large"]
+      subnet_ids           = module.vpc.public_subnets
       bootstrap_extra_args = "--node-labels=agones.dev/agones-metrics=true --register-with-taints=agones.dev/agones-metrics=true:NoExecute"
-      min_size     = 1
-      max_size     = 1
-      desired_size = 1
+      min_size             = 1
+      max_size             = 1
+      desired_size         = 1
     }
   }
 
@@ -108,7 +108,7 @@ module "eks" {
       type             = "ingress"
       cidr_blocks      = ["10.0.0.0/8"]
       ipv6_cidr_blocks = ["::/64"]
-    } 
+    }
 
     egress_tcp = {
       protocol         = "-1"
@@ -201,7 +201,7 @@ module "vpc" {
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${module.eks.cluster_name}" = "shared"
-    "kubernetes.io/role/elb" = 1
+    "kubernetes.io/role/elb"                           = 1
   }
 
   private_subnet_tags = {
