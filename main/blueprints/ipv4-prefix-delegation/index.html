@@ -10,21 +10,27 @@
         <meta name="author" content="AWS">
       
       
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/blueprints/ipv4-prefix-delegation/">
       
       
-      <link rel="icon" href="/terraform-aws-eks-blueprints/main/images/colored-logo.png">
+        <link rel="prev" href="../fully-private-cluster/">
+      
+      
+        <link rel="next" href="../ipv6-eks-cluster/">
+      
+      <link rel="icon" href="../../images/colored-logo.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.4">
     
     
       
-        <title>Amazon EKS Blueprints for Terraform</title>
+        <title>IPv4 Prefix Delegation - Amazon EKS Blueprints for Terraform</title>
       
     
     
-      <link rel="stylesheet" href="/terraform-aws-eks-blueprints/main/assets/stylesheets/main.240905d7.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.240905d7.min.css">
       
         
-        <link rel="stylesheet" href="/terraform-aws-eks-blueprints/main/assets/stylesheets/palette.a0c5b2b5.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
       
   
@@ -81,7 +87,7 @@
       
     
     
-    <script>__md_scope=new URL("/terraform-aws-eks-blueprints/main",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -105,6 +111,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#amazon-eks-cluster-w-prefix-delegation" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -121,9 +132,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/terraform-aws-eks-blueprints/main/." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+    <a href="../.." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
       
-  <img src="/terraform-aws-eks-blueprints/main/images/white-logo.png" alt="logo">
+  <img src="../../images/white-logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -139,7 +150,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              IPv4 Prefix Delegation
             
           </span>
         </div>
@@ -218,9 +229,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/terraform-aws-eks-blueprints/main/." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+    <a href="../.." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
       
-  <img src="/terraform-aws-eks-blueprints/main/images/white-logo.png" alt="logo">
+  <img src="../../images/white-logo.png" alt="logo">
 
     </a>
     Amazon EKS Blueprints for Terraform
@@ -248,7 +259,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         Overview
       </a>
     </li>
@@ -263,7 +274,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/getting-started/" class="md-nav__link">
+      <a href="../../getting-started/" class="md-nav__link">
         Getting Started
       </a>
     </li>
@@ -276,14 +287,16 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
       
       
       
@@ -292,7 +305,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Blueprints
@@ -305,7 +318,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/agones-game-controller/" class="md-nav__link">
+      <a href="../agones-game-controller/" class="md-nav__link">
         Agones Game Controller
       </a>
     </li>
@@ -319,7 +332,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/appmesh-mtls/" class="md-nav__link">
+      <a href="../appmesh-mtls/" class="md-nav__link">
         AWS AppMesh mTLS
       </a>
     </li>
@@ -333,7 +346,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/argocd/" class="md-nav__link">
+      <a href="../argocd/" class="md-nav__link">
         ArgoCD
       </a>
     </li>
@@ -347,7 +360,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/blue-green-upgrade/" class="md-nav__link">
+      <a href="../blue-green-upgrade/" class="md-nav__link">
         Blue/Green Migration
       </a>
     </li>
@@ -361,7 +374,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/elastic-fabric-adapter/" class="md-nav__link">
+      <a href="../elastic-fabric-adapter/" class="md-nav__link">
         Elastic Fabric Adapter
       </a>
     </li>
@@ -375,7 +388,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/external-secrets/" class="md-nav__link">
+      <a href="../external-secrets/" class="md-nav__link">
         External Secrets
       </a>
     </li>
@@ -389,7 +402,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/fargate-serverless/" class="md-nav__link">
+      <a href="../fargate-serverless/" class="md-nav__link">
         Fargate Serverless
       </a>
     </li>
@@ -403,7 +416,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/fully-private-cluster/" class="md-nav__link">
+      <a href="../fully-private-cluster/" class="md-nav__link">
         Fully Private Cluster
       </a>
     </li>
@@ -415,11 +428,80 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/ipv4-prefix-delegation/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          IPv4 Prefix Delegation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         IPv4 Prefix Delegation
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#vpc-cni-configuration" class="md-nav__link">
+    VPC CNI Configuration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    Validate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    Destroy
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -431,7 +513,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/ipv6-eks-cluster/" class="md-nav__link">
+      <a href="../ipv6-eks-cluster/" class="md-nav__link">
         IPv6 Networking
       </a>
     </li>
@@ -445,7 +527,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/karpenter/" class="md-nav__link">
+      <a href="../karpenter/" class="md-nav__link">
         Karpenter
       </a>
     </li>
@@ -459,7 +541,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/multi-tenancy-with-teams/" class="md-nav__link">
+      <a href="../multi-tenancy-with-teams/" class="md-nav__link">
         Multi-Tenancy w/ Teams
       </a>
     </li>
@@ -473,7 +555,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/stateful/" class="md-nav__link">
+      <a href="../stateful/" class="md-nav__link">
         Stateful
       </a>
     </li>
@@ -487,7 +569,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/tls-with-aws-pca-issuer/" class="md-nav__link">
+      <a href="../tls-with-aws-pca-issuer/" class="md-nav__link">
         TLS w/ AWS PCA Issuer
       </a>
     </li>
@@ -501,7 +583,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/vpc-cni-custom-networking/" class="md-nav__link">
+      <a href="../vpc-cni-custom-networking/" class="md-nav__link">
         VPC CNI Custom Networking
       </a>
     </li>
@@ -515,7 +597,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/wireguard-with-cilium/" class="md-nav__link">
+      <a href="../wireguard-with-cilium/" class="md-nav__link">
         Wireguard /w Cilium
       </a>
     </li>
@@ -564,7 +646,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/iam/minimum-iam-policy/" class="md-nav__link">
+      <a href="../../iam/minimum-iam-policy/" class="md-nav__link">
         Minimum IAM policy
       </a>
     </li>
@@ -595,6 +677,51 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#vpc-cni-configuration" class="md-nav__link">
+    VPC CNI Configuration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    Validate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    Destroy
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -606,8 +733,109 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+  
+  
+
+
+<!-- BEGIN INCLUDE ../../examples/ipv4-prefix-delegation/README.md -->
+<h1 id="amazon-eks-cluster-w-prefix-delegation">Amazon EKS Cluster w/ Prefix Delegation<a class="headerlink" href="#amazon-eks-cluster-w-prefix-delegation" title="Permanent link">&para;</a></h1>
+<p>This example shows how to provision an EKS cluster with prefix delegation enabled for increasing the number of available IP addresses for the EC2 nodes utilized.</p>
+<ul>
+<li><a href="https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html">Documentation</a></li>
+<li><a href="https://aws.amazon.com/blogs/containers/amazon-vpc-cni-increases-pods-per-node-limits/">Blog post</a></li>
+</ul>
+<h2 id="vpc-cni-configuration">VPC CNI Configuration<a class="headerlink" href="#vpc-cni-configuration" title="Permanent link">&para;</a></h2>
+<p>In this example, the <code>vpc-cni</code> addon is configured using <code>before_compute = true</code>. This is done to ensure the <code>vpc-cni</code> is created and updated <em>before</em> any EC2 instances are created so that the desired settings have applied before they will be referenced. With this configuration, you will now see that nodes created will have <code>--max-pods 110</code> configured do to the use of prefix delegation being enabled on the <code>vpc-cni</code>.</p>
+<p>If you find that your nodes are not being created with the correct number of max pods (i.e. - for <code>m5.large</code>, if you are seeing a max pods of 29 instead of 110), most likely the <code>vpc-cni</code> was not configured <em>before</em> the EC2 instances.</p>
+<h2 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>Ensure that you have the following tools installed locally:</p>
+<ol>
+<li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
+<li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
+<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
+</ol>
+<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
+<p>To provision this example:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply
+</span></code></pre></div>
+<p>Enter <code>yes</code> at command prompt to apply</p>
+<h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
+<p>The following command will update the <code>kubeconfig</code> on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code> to validate the deployment.</p>
+<ol>
+<li>Run <code>update-kubeconfig</code> command:</li>
+</ol>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;REGION&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER_NAME&gt;
+</span></code></pre></div>
+<ol>
+<li>List the nodes running currently</li>
+</ol>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># Output should look like below</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>NAME<span class="w">                                        </span>STATUS<span class="w">                        </span>ROLES<span class="w">    </span>AGE<span class="w">     </span>VERSION
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>ip-10-0-30-125.us-west-2.compute.internal<span class="w">   </span>Ready<span class="w">                         </span>&lt;none&gt;<span class="w">   </span>2m19s<span class="w">   </span>v1.22.9-eks-810597c
+</span></code></pre></div>
+<ol>
+<li>Inspect the nodes settings and check for the max allocatable pods - should be 110 in this scenario with m5.xlarge:</li>
+</ol>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span>describe<span class="w"> </span>node
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># Output should look like below (truncated for brevity)</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>Capacity:
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span>attachable-volumes-aws-ebs:<span class="w">  </span><span class="m">25</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span>cpu:<span class="w">                         </span><span class="m">4</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span>ephemeral-storage:<span class="w">           </span>104845292Ki
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span>hugepages-1Gi:<span class="w">               </span><span class="m">0</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span>hugepages-2Mi:<span class="w">               </span><span class="m">0</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span>memory:<span class="w">                      </span>15919124Ki
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span>pods:<span class="w">                        </span><span class="m">110</span><span class="w"> </span><span class="c1"># &lt;- this should be 110 and not 58</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">  </span>Allocatable:
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">    </span>attachable-volumes-aws-ebs:<span class="w">  </span><span class="m">25</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">    </span>cpu:<span class="w">                         </span>3920m
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">    </span>ephemeral-storage:<span class="w">           </span><span class="m">95551679124</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">    </span>hugepages-1Gi:<span class="w">               </span><span class="m">0</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">    </span>hugepages-2Mi:<span class="w">               </span><span class="m">0</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span>memory:<span class="w">                      </span>14902292Ki
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">    </span>pods:<span class="w">                        </span><span class="m">110</span><span class="w"> </span><span class="c1"># &lt;- this should be 110 and not 58</span>
+</span></code></pre></div>
+<ol>
+<li>List out the pods running currently:</li>
+</ol>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># Output should look like below</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>NAMESPACE<span class="w">     </span>NAME<span class="w">                       </span>READY<span class="w">   </span>STATUS<span class="w">        </span>RESTARTS<span class="w">   </span>AGE
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>kube-system<span class="w">   </span>aws-node-77rwz<span class="w">             </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">       </span><span class="m">0</span><span class="w">          </span>6m5s
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>kube-system<span class="w">   </span>coredns-657694c6f4-fdz4f<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">       </span><span class="m">0</span><span class="w">          </span>5m12s
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>kube-system<span class="w">   </span>coredns-657694c6f4-kvm92<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">       </span><span class="m">0</span><span class="w">          </span>5m12s
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>kube-system<span class="w">   </span>kube-proxy-plwlc<span class="w">           </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">       </span><span class="m">0</span><span class="w">          </span>6m5s
+</span></code></pre></div>
+<ol>
+<li>Inspect one of the <code>aws-node-*</code> (AWS VPC CNI) pods to ensure prefix delegation is enabled and warm prefix target is 1:</li>
+</ol>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>describe<span class="w"> </span>ds<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>aws-node<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>ENABLE_PREFIX_DELEGATION:<span class="w"> </span>-A<span class="w"> </span><span class="m">3</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># Output should look like below (truncated for brevity)</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span>ENABLE_PREFIX_DELEGATION:<span class="w">               </span><span class="nb">true</span><span class="w"> </span><span class="c1"># &lt;- this should be set to true</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span>VPC_ID:<span class="w">                                 </span>vpc-0399887df9d0add85
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span>WARM_ENI_TARGET:<span class="w">                        </span><span class="m">1</span><span class="w"> </span><span class="c1"># &lt;- this should be set to 1</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span>WARM_PREFIX_TARGET:<span class="w">                     </span><span class="m">1</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span>...
+</span></code></pre></div>
+<h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
+<p>To teardown and remove the resources created in this example:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+</span></code></pre></div>
+<!-- END INCLUDE -->
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -643,10 +871,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "/terraform-aws-eks-blueprints/main", "features": ["navigation.tabs.sticky"], "search": "/terraform-aws-eks-blueprints/main/assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs.sticky"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="/terraform-aws-eks-blueprints/main/assets/javascripts/bundle.19047be9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.19047be9.min.js"></script>
       
     
   </body>

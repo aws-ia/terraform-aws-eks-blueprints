@@ -10,21 +10,27 @@
         <meta name="author" content="AWS">
       
       
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/blueprints/tls-with-aws-pca-issuer/">
       
       
-      <link rel="icon" href="/terraform-aws-eks-blueprints/main/images/colored-logo.png">
+        <link rel="prev" href="../stateful/">
+      
+      
+        <link rel="next" href="../vpc-cni-custom-networking/">
+      
+      <link rel="icon" href="../../images/colored-logo.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.4">
     
     
       
-        <title>Amazon EKS Blueprints for Terraform</title>
+        <title>TLS w/ AWS PCA Issuer - Amazon EKS Blueprints for Terraform</title>
       
     
     
-      <link rel="stylesheet" href="/terraform-aws-eks-blueprints/main/assets/stylesheets/main.240905d7.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.240905d7.min.css">
       
         
-        <link rel="stylesheet" href="/terraform-aws-eks-blueprints/main/assets/stylesheets/palette.a0c5b2b5.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
       
   
@@ -81,7 +87,7 @@
       
     
     
-    <script>__md_scope=new URL("/terraform-aws-eks-blueprints/main",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -105,6 +111,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#tls-with-aws-pca-issuer" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -121,9 +132,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/terraform-aws-eks-blueprints/main/." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+    <a href="../.." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
       
-  <img src="/terraform-aws-eks-blueprints/main/images/white-logo.png" alt="logo">
+  <img src="../../images/white-logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -139,7 +150,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              TLS w/ AWS PCA Issuer
             
           </span>
         </div>
@@ -218,9 +229,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/terraform-aws-eks-blueprints/main/." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+    <a href="../.." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
       
-  <img src="/terraform-aws-eks-blueprints/main/images/white-logo.png" alt="logo">
+  <img src="../../images/white-logo.png" alt="logo">
 
     </a>
     Amazon EKS Blueprints for Terraform
@@ -248,7 +259,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         Overview
       </a>
     </li>
@@ -263,7 +274,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/getting-started/" class="md-nav__link">
+      <a href="../../getting-started/" class="md-nav__link">
         Getting Started
       </a>
     </li>
@@ -276,14 +287,16 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
       
       
       
@@ -292,7 +305,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Blueprints
@@ -305,7 +318,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/agones-game-controller/" class="md-nav__link">
+      <a href="../agones-game-controller/" class="md-nav__link">
         Agones Game Controller
       </a>
     </li>
@@ -319,7 +332,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/appmesh-mtls/" class="md-nav__link">
+      <a href="../appmesh-mtls/" class="md-nav__link">
         AWS AppMesh mTLS
       </a>
     </li>
@@ -333,7 +346,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/argocd/" class="md-nav__link">
+      <a href="../argocd/" class="md-nav__link">
         ArgoCD
       </a>
     </li>
@@ -347,7 +360,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/blue-green-upgrade/" class="md-nav__link">
+      <a href="../blue-green-upgrade/" class="md-nav__link">
         Blue/Green Migration
       </a>
     </li>
@@ -361,7 +374,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/elastic-fabric-adapter/" class="md-nav__link">
+      <a href="../elastic-fabric-adapter/" class="md-nav__link">
         Elastic Fabric Adapter
       </a>
     </li>
@@ -375,7 +388,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/external-secrets/" class="md-nav__link">
+      <a href="../external-secrets/" class="md-nav__link">
         External Secrets
       </a>
     </li>
@@ -389,7 +402,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/fargate-serverless/" class="md-nav__link">
+      <a href="../fargate-serverless/" class="md-nav__link">
         Fargate Serverless
       </a>
     </li>
@@ -403,7 +416,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/fully-private-cluster/" class="md-nav__link">
+      <a href="../fully-private-cluster/" class="md-nav__link">
         Fully Private Cluster
       </a>
     </li>
@@ -417,7 +430,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/ipv4-prefix-delegation/" class="md-nav__link">
+      <a href="../ipv4-prefix-delegation/" class="md-nav__link">
         IPv4 Prefix Delegation
       </a>
     </li>
@@ -431,7 +444,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/ipv6-eks-cluster/" class="md-nav__link">
+      <a href="../ipv6-eks-cluster/" class="md-nav__link">
         IPv6 Networking
       </a>
     </li>
@@ -445,7 +458,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/karpenter/" class="md-nav__link">
+      <a href="../karpenter/" class="md-nav__link">
         Karpenter
       </a>
     </li>
@@ -459,7 +472,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/multi-tenancy-with-teams/" class="md-nav__link">
+      <a href="../multi-tenancy-with-teams/" class="md-nav__link">
         Multi-Tenancy w/ Teams
       </a>
     </li>
@@ -473,7 +486,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/stateful/" class="md-nav__link">
+      <a href="../stateful/" class="md-nav__link">
         Stateful
       </a>
     </li>
@@ -485,11 +498,80 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/tls-with-aws-pca-issuer/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          TLS w/ AWS PCA Issuer
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         TLS w/ AWS PCA Issuer
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-deploy" class="md-nav__link">
+    How to Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    Validate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanup" class="md-nav__link">
+    Cleanup
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -501,7 +583,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/vpc-cni-custom-networking/" class="md-nav__link">
+      <a href="../vpc-cni-custom-networking/" class="md-nav__link">
         VPC CNI Custom Networking
       </a>
     </li>
@@ -515,7 +597,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/blueprints/wireguard-with-cilium/" class="md-nav__link">
+      <a href="../wireguard-with-cilium/" class="md-nav__link">
         Wireguard /w Cilium
       </a>
     </li>
@@ -564,7 +646,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/terraform-aws-eks-blueprints/main/iam/minimum-iam-policy/" class="md-nav__link">
+      <a href="../../iam/minimum-iam-policy/" class="md-nav__link">
         Minimum IAM policy
       </a>
     </li>
@@ -595,6 +677,51 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-deploy" class="md-nav__link">
+    How to Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    Validate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanup" class="md-nav__link">
+    Cleanup
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -606,8 +733,88 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+  
+  
+
+
+<!-- BEGIN INCLUDE ../../examples/tls-with-aws-pca-issuer/README.md -->
+<h1 id="tls-with-aws-pca-issuer">TLS with AWS PCA Issuer<a class="headerlink" href="#tls-with-aws-pca-issuer" title="Permanent link">&para;</a></h1>
+<p>This example deploys the following</p>
+<ul>
+<li>Basic EKS Cluster with VPC</li>
+<li>Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets</li>
+<li>Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets</li>
+<li>Enables cert-manager module</li>
+<li>Enables cert-manager CSI driver module</li>
+<li>Enables aws-privateca-issuer module</li>
+<li>Creates AWS Certificate Manager Private Certificate Authority, enables and activates it</li>
+<li>Creates the CRDs to fetch <code>tls.crt</code>, <code>tls.key</code> and <code>ca.crt</code> , which will be available as Kubernetes Secret. Now you may mount the secret in the application for end to end TLS.</li>
+</ul>
+<h2 id="how-to-deploy">How to Deploy<a class="headerlink" href="#how-to-deploy" title="Permanent link">&para;</a></h2>
+<h2 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>Ensure that you have the following tools installed locally:</p>
+<ol>
+<li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
+<li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
+<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
+</ol>
+<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
+<p>To provision this example:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="w"> </span>module.vpc
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="w"> </span>module.eks
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>terraform<span class="w"> </span>apply
+</span></code></pre></div>
+<p>Enter <code>yes</code> at command prompt to apply</p>
+<h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
+<p>The following command will update the <code>kubeconfig</code> on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code> to validate the CoreDNS deployment for Fargate.</p>
+<ol>
+<li>Check the Terraform provided Output, to update your <code>kubeconfig</code></li>
+</ol>
+<div class="language-hcl highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="err">Apply</span><span class="w"> </span><span class="err">complete</span><span class="p">!</span><span class="w"> </span><span class="err">Resources</span><span class="p">:</span><span class="w"> </span><span class="m">63</span><span class="w"> </span><span class="err">added</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="err">changed</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="err">destroyed</span><span class="p">.</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="err">Outputs</span><span class="p">:</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="na">configure_kubectl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws eks --region us-west-2 update-kubeconfig --name fully-private-cluster&quot;</span>
+</span></code></pre></div>
+<ol>
+<li>Run <code>update-kubeconfig</code> command, using the Terraform provided Output, replace with your <code>$AWS_REGION</code> and your <code>$CLUSTER_NAME</code> variables.</li>
+</ol>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;<span class="nv">$AWS_REGION</span>&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;<span class="nv">$CLUSTER_NAME</span>&gt;
+</span></code></pre></div>
+<ol>
+<li>List all the pods running in <code>aws-privateca-issuer</code> and <code>cert-manager</code> Namespace.</li>
+</ol>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>aws-privateca-issuer
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>cert-manager
+</span></code></pre></div>
+<ol>
+<li>View the <code>certificate</code> status in the <code>default</code> Namespace. It should be in <code>Ready</code> state, and be pointing to a <code>secret</code> created in the same Namespace.</li>
+</ol>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>certificate<span class="w"> </span>-o<span class="w"> </span>wide
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>NAME<span class="w">      </span>READY<span class="w">   </span>SECRET<span class="w">                  </span>ISSUER<span class="w">                    </span>STATUS<span class="w">                                          </span>AGE
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>example<span class="w">   </span>True<span class="w">    </span>example-clusterissuer<span class="w">   </span>tls-with-aws-pca-issuer<span class="w">   </span>Certificate<span class="w"> </span>is<span class="w"> </span>up<span class="w"> </span>to<span class="w"> </span>date<span class="w"> </span>and<span class="w"> </span>has<span class="w"> </span>not<span class="w"> </span>expired<span class="w">   </span>41m
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>example-clusterissuer
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>NAME<span class="w">                    </span>TYPE<span class="w">                </span>DATA<span class="w">   </span>AGE
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>example-clusterissuer<span class="w">   </span>kubernetes.io/tls<span class="w">   </span><span class="m">3</span><span class="w">      </span>43m
+</span></code></pre></div>
+<h2 id="cleanup">Cleanup<a class="headerlink" href="#cleanup" title="Permanent link">&para;</a></h2>
+<p>To clean up your environment, destroy the Terraform modules in reverse order.</p>
+<p>Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="w"> </span>module.eks_blueprints_kubernetes_addons<span class="w"> </span>-auto-approve
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="w"> </span>module.eks<span class="w"> </span>-auto-approve
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+</span></code></pre></div>
+<!-- END INCLUDE -->
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -643,10 +850,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "/terraform-aws-eks-blueprints/main", "features": ["navigation.tabs.sticky"], "search": "/terraform-aws-eks-blueprints/main/assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs.sticky"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="/terraform-aws-eks-blueprints/main/assets/javascripts/bundle.19047be9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.19047be9.min.js"></script>
       
     
   </body>
