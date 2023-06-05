@@ -9,7 +9,7 @@ locals {
   namespace            = "kube-system"
   service_account_name = "${local.name}-sa-${random_string.id.result}"
 
-  aws_marketplace_config = try(var.helm_config["set"][index(var.helm_config.set.*.name, "aws.marketplace")], null)
+  aws_marketplace_config = try(var.helm_config["set"][index(var.helm_config.set[*].name, "aws.marketplace")], null)
   use_aws_marketplace    = local.aws_marketplace_config != null ? local.aws_marketplace_config["value"] : false
 
   default_helm_config = {
@@ -33,7 +33,7 @@ locals {
     create_kubernetes_namespace       = false
     kubernetes_namespace              = local.namespace
     create_kubernetes_service_account = true
-    kubernetes_service_account        = "${local.service_account_name}"
+    kubernetes_service_account        = local.service_account_name
     irsa_iam_policies                 = local.irsa_iam_policies_list
   }
 
@@ -58,7 +58,7 @@ locals {
     enableCSI              = false
     enableAutopilot        = false
     KVDBauthSecretName     = ""
-    eksServiceAccount      = "${local.service_account_name}"
+    eksServiceAccount      = local.service_account_name
     awsAccessKeyId         = ""
     awsSecretAccessKey     = ""
     deleteType             = "UninstallAndWipe"

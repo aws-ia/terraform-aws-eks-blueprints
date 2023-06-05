@@ -102,9 +102,9 @@ tolerations:                          # Add tolerations
 serviceAccount:
   hook:
     create: true
-    name: 
+    name:
 
-aws:  
+aws:
   marketplace:
   eksServiceAccount: ${eksServiceAccount}
   accessKeyId: ${awsAccessKeyId}
