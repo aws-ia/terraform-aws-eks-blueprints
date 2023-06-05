@@ -98,9 +98,8 @@ Just type k9s after the installation and then you will see the output like this
 
 #### Step 9: Deploying the Sample game server
 
-    kubectl create -f https://raw.githubusercontent.com/googleforgames/agones/release-1.15.0/examples/simple-game-server/gameserver.yaml
+    kubectl create -f https://raw.githubusercontent.com/googleforgames/agones/release-1.32.0/examples/simple-game-server/gameserver.yaml
 
-   kubectl create -f https://raw.githubusercontent.com/googleforgames/agones/release-1.32.0/examples/simple-game-server/gameserver.yaml
 
     kubectl get gs
 
