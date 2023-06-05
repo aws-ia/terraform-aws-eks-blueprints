@@ -1,0 +1,17 @@
+global:
+  kspm:
+    deploy: true
+agent:
+  sysdig:
+    settings:
+      collector_port: 6443
+nodeAnalyzer:
+  nodeAnalyzer:
+    benchmarkRunner:
+      deploy: false
+    runtimeScanner:
+      settings:
+        eveEnabled: true
+  secure:
+    vulnerabilityManagement:
+      newEngineOnly: true

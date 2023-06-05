@@ -389,12 +389,14 @@ module "kube_prometheus_stack" {
 }
 
 module "portworx" {
-  count         = var.enable_portworx ? 1 : 0
-  source        = "portworx/portworx-addon/eksblueprints"
-  version       = "0.0.6"
+  source = "./portworx"
+
+  count = var.enable_portworx ? 1 : 0
+
   helm_config   = var.portworx_helm_config
   addon_context = local.addon_context
 }
+
 module "prometheus" {
   count       = var.enable_prometheus ? 1 : 0
   source      = "./prometheus"
@@ -441,8 +443,7 @@ module "strimzi_kafka_operator" {
 }
 
 module "sysdig_agent" {
-  source  = "sysdiglabs/sysdig-addon/eksblueprints"
-  version = "0.0.3"
+  source = "./sysdig"
 
   count         = var.enable_sysdig_agent ? 1 : 0
   helm_config   = var.sysdig_agent_helm_config
@@ -450,11 +451,6 @@ module "sysdig_agent" {
 }
 
 module "tetrate_istio" {
-  # source  = "tetratelabs/tetrate-istio-addon/eksblueprints"
-  # version = "0.0.7"
-
-  # TODO - remove local source and revert to remote once
-  # https://github.com/tetratelabs/terraform-eksblueprints-tetrate-istio-addon/pull/12  is merged
   source = "./tetrate-istio"
 
   count = var.enable_tetrate_istio ? 1 : 0
