@@ -34,6 +34,8 @@ locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
+  cluster_version = "1.27"
+
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
@@ -56,30 +58,63 @@ module "eks" {
   version = "~> 19.13"
 
   cluster_name                   = local.name
-  cluster_version                = "1.27"
+  cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_groups = {
-    initial = {
+    default = {
       instance_types = ["m5.large"]
       subnet_ids     = module.vpc.public_subnets
-
       min_size     = 1
       max_size     = 5
       desired_size = 2
     }
+    agones_system = {
+      instance_types = ["m5.large"]
+      subnet_ids     = module.vpc.public_subnets
+      bootstrap_extra_args = "--node-labels=agones.dev/agones-system=true --register-with-taints=agones.dev/agones-system=true:NoExecute"
+      min_size     = 1
+      max_size     = 1
+      desired_size = 1
+    }
+    agones_metrics = {
+      instance_types = ["m5.large"]
+      subnet_ids     = module.vpc.public_subnets
+      bootstrap_extra_args = "--node-labels=agones.dev/agones-metrics=true --register-with-taints=agones.dev/agones-metrics=true:NoExecute"
+      min_size     = 1
+      max_size     = 1
+      desired_size = 1
+    }
   }
 
   cluster_security_group_additional_rules = {
-    ingress_gameserver_tcp = {
-      description      = "Nodes on ephemeral ports"
-      protocol         = "tcp"
+    ingress_gameserver_udp = {
+      description      = "Agones Game Server Ports"
+      protocol         = "udp"
       from_port        = local.gameserver_minport
       to_port          = local.gameserver_maxport
       type             = "ingress"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+    }
+
+    ingress_ssh = {
+      protocol         = "tcp"
+      from_port        = 22
+      to_port          = 22
+      type             = "ingress"
+      cidr_blocks      = ["10.0.0.0/8"]
+      ipv6_cidr_blocks = ["::/64"]
+    } 
+
+    egress_tcp = {
+      protocol         = "-1"
+      from_port        = 0
+      to_port          = 0
+      type             = "egress"
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = ["::/0"]
     }
@@ -94,7 +129,7 @@ module "eks" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "0.2.0"
+  version = "0.1.0"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -103,8 +138,10 @@ module "eks_blueprints_addons" {
 
   # EKS Add-Ons
   eks_addons = {
-    coredns    = {}
-    vpc-cni    = {}
+    coredns = {}
+    vpc-cni = {
+      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
+    }
     kube-proxy = {}
   }
 
@@ -123,7 +160,7 @@ module "eks_blueprints_addons" {
 resource "helm_release" "agones" {
   name             = "agones"
   chart            = "agones"
-  version          = "1.21.0"
+  version          = "1.32.0"
   repository       = "https://agones.dev/chart/stable"
   description      = "Agones helm chart"
   namespace        = "agones-system"
@@ -132,8 +169,8 @@ resource "helm_release" "agones" {
   values = [templatefile("${path.module}/helm_values/agones-values.yaml", {
     expose_udp            = true
     gameserver_namespaces = "{${join(",", ["default", "xbox-gameservers", "xbox-gameservers"])}}"
-    gameserver_minport    = 7000
-    gameserver_maxport    = 8000
+    gameserver_minport    = local.gameserver_minport
+    gameserver_maxport    = local.gameserver_maxport
   })]
 
   depends_on = [
@@ -147,10 +184,13 @@ resource "helm_release" "agones" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.0"
+  version = "~> 4.0"
 
   name = local.name
   cidr = local.vpc_cidr
+
+  # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
+  map_public_ip_on_launch = true
 
   azs             = local.azs
   private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
@@ -160,11 +200,32 @@ module "vpc" {
   single_nat_gateway = true
 
   public_subnet_tags = {
+    "kubernetes.io/cluster/${module.eks.cluster_name}" = "shared"
     "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
+  }
+
+  tags = local.tags
+  #merge(local.tags, {"kubernetes.io/cluster/${module.eks.cluster_name}" = "shared"})
+}
+
+module "vpc_cni_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.14"
+
+  role_name_prefix = "${module.eks.cluster_name}-vpc-cni-"
+
+  attach_vpc_cni_policy = true
+  vpc_cni_enable_ipv4   = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-node"]
+    }
   }
 
   tags = local.tags
