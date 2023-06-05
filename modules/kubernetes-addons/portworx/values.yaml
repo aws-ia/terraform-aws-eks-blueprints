@@ -1,0 +1,123 @@
+# Please uncomment and specify values for these options as per your requirements.
+
+deployOperator: true                    # Deploy the Portworx operator
+deployCluster: true                     # Deploy the Portworx cluster
+
+imageVersion: ${imageVersion}               # Version of the PX Image.
+pxOperatorImageVersion: 1.9.0       # Version of the PX operator image.
+
+openshiftInstall: ${useOpenshiftInstall}                 # Defaults to false for installing Portworx on Openshift .
+isTargetOSCoreOS: false                 # Is your target OS CoreOS? Defaults to false.
+pksInstall: false                       # installation on PKS (Pivotal Container Service)
+EKSInstall: true                        # installation on EKS.
+AKSInstall: false                      # installation on AKS
+etcdEndPoint:  ${etcdEndPoint}        # The ETCD endpoint. Should be in the format etcd:http://<your-etcd-endpoint>:2379. If there are multiple etcd endpoints they need to be ";" seperated.
+                                      # the default value is empty since it requires to be explicity set using either the --set option of -f values.yaml.
+clusterName: ${clusterName}             # This is the default. please change it to your cluster name.
+usefileSystemDrive: false             # true/false Instructs PX to use an unmounted Drive even if it has a filesystem.
+usedrivesAndPartitions: false         # Defaults to false. Change to true and PX will use unmounted drives and partitions.
+drives: ${drives}                          # NOTE: This is a ";" seperated list of drives. For eg: "/dev/sda;/dev/sdb;/dev/sdc" or
+                                      # "type=gp2,size=200;type=gp3,size=500". Defaults to use -A switch.
+journalDevice:
+maxStorageNodesPerZone: ${maxStorageNodesPerZone}  # The maximum number of storage nodes desired per zone, in case of cloud drive provisioning
+
+secretType: k8s                       # Defaults to k8s, but can be kvdb/k8s/aws-kms/vault/ibm-kp. It is autopopulated to ibm-kp
+                                      # if the environment is IKS.
+
+dataInterface: ${dataInterface}                   # Name of the interface <ethX>
+managementInterface: none             # Name of the interface <ethX>
+serviceType: none                     # Kubernetes service type for services deployed by the Operator. Direct Values like
+                                      # 'LoadBalancer', 'NodePort' will change all services. To change the types of specific
+                                      # services, value can be specified as 'portworx-service:LoadBalancer;portworx-api:ClusterIP'
+
+envVars:  ${envVars}                        # DEPRECATED: Use envs section to set env variables
+                                      # NOTE: This is a ";" seperated list of environment variables.
+                                      # For eg: MYENV1=myvalue1;MYENV2=myvalue2
+
+envs:                                 # Add environment variables to the Portworx container in all Kubernetes supported formats
+  # - name: AWS_CA_BUNDLE
+  #   value: "/etc/pwx/objectstore-cert/objectstore.pem"
+  # - name: AWS_ACCESS_KEY_ID
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: aws-creds
+  #       key: access-key
+
+miscArgs: none                        # Miscellaneous arguments that will be passed to portworx verbatim. Only use this if there is
+                                      # no equivalent way to specify these options directly via a StorageCluster spec field.
+
+disableStorageClass: false            # Instructs Operator to not install the default Portworx StorageClasses.
+
+stork: ${useStork}                           # Use Stork https://docs.portworx.com/scheduler/kubernetes/stork.html for hyperconvergence.
+storkVersion: ${storkVersion}                       # Optional: version of Stork. For eg: 2.7.0, when it's empty Portworx operator will pick up
+                                      # version according to Portworx version.
+
+storkSpec:                            # Optional Stork configurations
+  args:                               # Pass arguments to Stork container. Example: verbose='true';webhook-controller='false'
+  volumes:                            # Add volumes to Stork container. Refer the top level volumes for schema.
+
+customRegistryURL: ${customRegistryURL}       #Url wherre to pull Portworx image from
+registrySecret: ${registrySecret}         #Image registery credentials to pull Portworx Images from a secure registry
+licenseSecret:  ${licenseSecret}         #Kubernetes secret name that has Portworx licensing information
+
+monitoring: ${monitoring}
+
+deployOnMaster:  false                # For POC only
+csi: ${enableCSI}                     # Enable CSI
+aut: ${enableAutopilot}               # Enable AutoPilot
+
+
+internalKVDB: ${useInternalKVDB}      # internal KVDB
+kvdbDevice: ${kvdbDevice}             # specify a separate device to store KVDB data, only used when internalKVDB is set to true
+
+etcd:                                 # DEPRECATED: Use kvdb.authSecretName for configuring secure etcd
+  credentials: none:none              # Username and password for ETCD authentication in the form user:password
+  certPath: none                      # Base path where the certificates are placed. (example: if the certificates ca,crt and the key are in /etc/pwx/etcdcerts the value should be provided as /etc/pwx/etcdcerts)
+  ca: none                            # Location of CA file for ETCD authentication. Should be /path/to/server.ca
+  cert: none                          # Location of certificate for ETCD authentication. Should be /path/to/server.crt
+  key: none                           # Location of certificate key for ETCD authentication Should be /path/to/servery.key
+
+consul:                               # DEPRECATED: Use kvdb.authSecretName for configuring secure consul
+  token: none                         # ACL token value used for Consul authentication. (example: 398073a8-5091-4d9c-871a-bbbeb030d1f6)
+
+kvdb:
+  authSecretName: ${KVDBauthSecretName}    # Refer https://docs.portworx.com/reference/etcd/#securing-with-certificates-in-kubernetes to
+                                      # create a kvdb secret and specify the name of the secret here
+
+volumes:                              # Add volumes to Portworx container. Supported volume types: Host, Secret, ConfigMap
+  # - name: objectstore-cert
+  #   mountPath: /etc/pwx/objectstore-cert
+  #   secret:
+  #     secretName: objectstore-cert
+  #     items:
+  #     - key: objectstore.pem
+  #       path: objectstore.pem
+
+tolerations:                          # Add tolerations
+  # - key: "key"
+  #   operator: "Equal|Exists"
+  #   value: "value"
+  #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+serviceAccount:
+  hook:
+    create: true
+    name:
+
+aws:
+  marketplace:
+  eksServiceAccount: ${eksServiceAccount}
+  accessKeyId: ${awsAccessKeyId}
+  secretAccessKey: ${awsSecretAccessKey}
+
+deleteType: ${deleteType}
+
+clusterToken:
+  create: true                    # Create cluster token
+  secretName: px-vol-encryption    # Name of kubernetes secret to be created. Requires clusterToken.create to be true.
+  serviceAccountName: px-create-cluster-token  # Service account name to use for post-install hook to create cluster token
+
+#requirePxEnabledTag: true               # if set to true, portworx will only install on nodes with px/enabled: true label. Not required in most scenarios.
+
+deleteStrategy:                          # Optional: Delete strategy for the portworx cluster
+  type:                                  # Valid values: Uninstall, UninstallAndWipe
