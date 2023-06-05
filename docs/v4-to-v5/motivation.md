@@ -1,3 +1,7 @@
+---
+title: Motivation
+---
+
 # Direction for v5 of Terraform EKS Blueprints
 
 ## What Has Worked
@@ -45,7 +49,7 @@ Previously under the v4.x structure, the EKS Blueprint project was comprised of 
 
 #### v4.x Structure
 
-```
+```sh
 ├── aws-ia/
 |   ├── terraform-aws-eks-ack-addons/
 |   └── terraform-aws-eks-blueprints/
@@ -80,7 +84,7 @@ Under th new v5.x structure, the Terraform based EKS Blueprints project will be 
 
 #### v5.x Structure
 
-```
+```sh
 ├── aws-ia/
 |   ├── terraform-aws-eks-ack-addons/
 |   ├── terraform-aws-eks-blueprints/       # Will contain only example/blueprint implementations; no modules

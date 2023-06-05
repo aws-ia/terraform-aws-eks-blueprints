@@ -1,0 +1,5 @@
+nav:
+  - Motivation: motivation.md
+  - Cluster: cluster.md
+  - Addons: addons.md
+  - Teams: teams.md

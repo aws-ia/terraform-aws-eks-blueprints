@@ -3,3 +3,5 @@ nav:
   - Getting Started: getting-started.md
   - Blueprints: blueprints
   - IAM: iam
+  - v4 to v5 Migration: v4-to-v5
+  - FAQ: faq.md

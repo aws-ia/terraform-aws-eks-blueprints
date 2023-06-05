@@ -1,8 +1,12 @@
-# Upgrade from v4.x to v5.x
+---
+title: Teams
+---
 
-Please consult the `examples` directory for reference example configurations. If you find a bug, please open an issue with supporting configuration to reproduce.
+# Migrate to EKS Blueprints Teams Module
 
-#### ⚠️ This guide is under active development. As tasks for v5.0 are implemented, the associated upgrade guidance/changes are documented here. See [here](https://github.com/aws-ia/terraform-aws-eks-blueprints/milestone/1) to track progress of v5.0 implementation.
+Please consult the [docs/v4-to-v5/example](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/v4-to-v5/example) directory for reference configurations. If you find a bug, please open an issue with supporting configuration to reproduce.
+
+#### ⚠️ This guide is under active development.
 
 ## List of backwards incompatible changes
 
@@ -54,7 +58,7 @@ Please consult the `examples` directory for reference example configurations. If
 
 ```hcl
 module "eks_blueprints" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.4.0"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1"
 
   # TODO
 
@@ -64,8 +68,9 @@ module "eks_blueprints" {
 ### After - v5.x Example
 
 ```hcl
-module "eks_blueprints" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v5.0.0"
+module "eks_blueprints_teams" {
+  source  = "aws-ia/eks-blueprints-teams/aws"
+  version = "~> 0.3"
 
   # TODO
 
@@ -75,9 +80,10 @@ module "eks_blueprints" {
 ### Diff of Before vs After
 
 ```diff
-module "eks_blueprints" {
--  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.4.0"
-+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v5.0.0"
+module "eks_blueprints_teams" {
+-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1"
++  source  = "aws-ia/eks-blueprints-teams/aws"
++  version = "~> 0.3"
 
   # TODO
 }
