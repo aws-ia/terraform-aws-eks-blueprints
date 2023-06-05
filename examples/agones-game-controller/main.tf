@@ -176,10 +176,9 @@ resource "helm_release" "agones" {
   create_namespace = true
 
   values = [templatefile("${path.module}/helm_values/agones-values.yaml", {
-    expose_udp            = true
-    gameserver_namespaces = "{${join(",", ["default", "xbox-gameservers", "xbox-gameservers"])}}"
-    gameserver_minport    = local.gameserver_minport
-    gameserver_maxport    = local.gameserver_maxport
+    expose_udp         = true
+    gameserver_minport = local.gameserver_minport
+    gameserver_maxport = local.gameserver_maxport
   })]
 
   depends_on = [
