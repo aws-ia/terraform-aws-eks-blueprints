@@ -117,7 +117,16 @@ module "eks" {
       type             = "ingress"
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = ["::/0"]
+    },
+    ingress_gameserver_webhook = {
+      description                   = "Cluster API to node 8081/tcp agones webhook"
+      protocol                      = "tcp"
+      from_port                     = 8081
+      to_port                       = 8081
+      type                          = "ingress"
+      source_cluster_security_group = true
     }
+
   }
 
   tags = local.tags
