@@ -61,20 +61,19 @@ module "eks" {
   cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  vpc_id                   = module.vpc.vpc_id
+  control_plane_subnet_ids = module.vpc.private_subnets
+  subnet_ids               = module.vpc.public_subnets
 
   eks_managed_node_groups = {
     default = {
       instance_types = ["m5.large"]
-      subnet_ids     = module.vpc.public_subnets
       min_size       = 1
       max_size       = 5
       desired_size   = 2
     }
     agones_system = {
       instance_types = ["m5.large"]
-      subnet_ids     = module.vpc.public_subnets
       labels = {
         "agones.dev/agones-system" = true
       }
@@ -91,7 +90,6 @@ module "eks" {
     }
     agones_metrics = {
       instance_types = ["m5.large"]
-      subnet_ids     = module.vpc.public_subnets
       labels = {
         "agones.dev/agones-metrics" = true
       }
@@ -147,10 +145,8 @@ module "eks_blueprints_addons" {
 
   # EKS Add-Ons
   eks_addons = {
-    coredns = {}
-    vpc-cni = {
-      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
-    }
+    coredns    = {}
+    vpc-cni    = {}
     kube-proxy = {}
   }
 
@@ -208,32 +204,11 @@ module "vpc" {
   single_nat_gateway = true
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${module.eks.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                           = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
-  }
-
-  tags = local.tags
-  #merge(local.tags, {"kubernetes.io/cluster/${module.eks.cluster_name}" = "shared"})
-}
-
-module "vpc_cni_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.14"
-
-  role_name_prefix = "${module.eks.cluster_name}-vpc-cni-"
-
-  attach_vpc_cni_policy = true
-  vpc_cni_enable_ipv4   = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:aws-node"]
-    }
   }
 
   tags = local.tags
