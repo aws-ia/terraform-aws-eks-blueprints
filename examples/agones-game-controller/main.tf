@@ -206,8 +206,7 @@ module "vpc" {
   single_nat_gateway = true
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${module.eks.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                           = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
@@ -215,7 +214,6 @@ module "vpc" {
   }
 
   tags = local.tags
-  #merge(local.tags, {"kubernetes.io/cluster/${module.eks.cluster_name}" = "shared"})
 }
 
 module "vpc_cni_irsa" {
