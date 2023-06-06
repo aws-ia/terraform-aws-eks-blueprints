@@ -1,4 +1,4 @@
-# Agones Game Controller on Amazon EKS
+# Amazon EKS Deployment with Agones Gaming Kubernetes Controller
 
 This example shows how to deploy and run Gaming applications on Amazon EKS with Agones Kubernetes Controller
 
@@ -63,7 +63,8 @@ terraform apply
 
 Enter `yes` to apply.
 
-### Configure `kubectl` and test cluster
+
+#### Configure `kubectl` and test cluster
 
 EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster.
 This following command used to update the `kubeconfig` in your local machine where you run kubectl commands to interact with your EKS Cluster.
@@ -82,7 +83,7 @@ This following command used to update the `kubeconfig` in your local machine whe
 
     $ kubectl get pods -n agones-system
 
-## Step 8: Install K9s
+#### Step 8: Install K9s (OPTIONAL)
 
 This step is to install K9s client tool to interact with EKS Cluster
 
@@ -94,19 +95,11 @@ Just type k9s after the installation and then you will see the output like this
 
 ![Alt Text](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/9c6f8ea3e710f7b0137be07835653a2bf4f9fdfe/images/k9s-agones-cluster.png "K9s")
 
-## Step 9: Add EKS Workshop IAM role as EKS Cluster Administrator
 
-    $ aws sts get-caller-identity
+#### Step 9: Deploying the Sample game server
 
-    ROLE="    - rolearn: arn:aws:iam::${ACCOUNT_ID}:role/TeamRole\n      username: admin\n      groups:\n        - system:masters"
+    kubectl create -f https://raw.githubusercontent.com/googleforgames/agones/release-1.32.0/examples/simple-game-server/gameserver.yaml
 
-    kubectl get -n kube-system configmap/aws-auth -o yaml | awk "/mapRoles: \|/{print;print \"$ROLE\";next}1" > /tmp/aws-auth-patch.yml
-
-    kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/aws-auth-patch.yml)"
-
-## Step 10: Deploying the Sample game server
-
-    kubectl create -f https://raw.githubusercontent.com/googleforgames/agones/release-1.15.0/examples/simple-game-server/gameserver.yaml
 
     kubectl get gs
 
@@ -115,7 +108,7 @@ Output looks like below
     NAME                       STATE   ADDRESS         PORT   NODE                                        AGE
     simple-game-server-7r6jr   Ready   34.243.345.22   7902   ip-10-1-23-233.eu-west-1.compute.internal   11h
 
-## Step 11: Testing the Sample Game Server
+#### Step 10: Testing the Sample Game Server
 
     sudo yum install netcat
 
