@@ -32,7 +32,7 @@ repos:
           - '--args=--only=terraform_standard_module_structure'
           - '--args=--only=terraform_workspace_remote'
       - id: terraform_validate
-        exclude: deploy
+        exclude: docs
       # - id: terraform_tfsec
       #   files: ^examples/ # only scan `examples/*` which are the implementation
       #   args:
