@@ -85,7 +85,7 @@ module "eks" {
 
 module "eks_blueprints_admin_team" {
   source  = "aws-ia/eks-blueprints-teams/aws"
-  version = "~> 0.2"
+  version = "~> 1.0"
 
   name = "admin-team"
 
@@ -98,7 +98,7 @@ module "eks_blueprints_admin_team" {
 
 module "eks_blueprints_dev_teams" {
   source  = "aws-ia/eks-blueprints-teams/aws"
-  version = "~> 0.2"
+  version = "~> 1.0"
 
   for_each = {
     red = {

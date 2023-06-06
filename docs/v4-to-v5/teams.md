@@ -70,7 +70,7 @@ module "eks_blueprints" {
 ```hcl
 module "eks_blueprints_teams" {
   source  = "aws-ia/eks-blueprints-teams/aws"
-  version = "~> 0.3"
+  version = "~> 1.0"
 
   # TODO
 
@@ -83,7 +83,7 @@ module "eks_blueprints_teams" {
 module "eks_blueprints_teams" {
 -  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1"
 +  source  = "aws-ia/eks-blueprints-teams/aws"
-+  version = "~> 0.3"
++  version = "~> 1.0"
 
   # TODO
 }

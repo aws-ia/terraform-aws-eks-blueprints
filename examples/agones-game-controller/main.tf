@@ -136,7 +136,7 @@ module "eks" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "0.1.0"
+  version = "~> 1.0"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -188,17 +188,16 @@ resource "helm_release" "agones" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name = local.name
   cidr = local.vpc_cidr
 
-  # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
-  map_public_ip_on_launch = true
-
   azs             = local.azs
   private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
   public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
+  # NOTE: Agones requires a Node group in Public Subnets and enable Public IP
+  map_public_ip_on_launch = true
 
   enable_nat_gateway = true
   single_nat_gateway = true
