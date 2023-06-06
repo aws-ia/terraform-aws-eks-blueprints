@@ -61,20 +61,20 @@ module "eks" {
   cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  vpc_id                   = module.vpc.vpc_id
+  subnet_ids               = module.vpc.public_subnets
+  control_plane_subnet_ids = module.vpc.private_subnets
+
 
   eks_managed_node_groups = {
     default = {
       instance_types = ["m5.large"]
-      subnet_ids     = module.vpc.public_subnets
       min_size       = 1
       max_size       = 5
       desired_size   = 2
     }
     agones_system = {
       instance_types = ["m5.large"]
-      subnet_ids     = module.vpc.public_subnets
       labels = {
         "agones.dev/agones-system" = true
       }
@@ -91,7 +91,6 @@ module "eks" {
     }
     agones_metrics = {
       instance_types = ["m5.large"]
-      subnet_ids     = module.vpc.public_subnets
       labels = {
         "agones.dev/agones-metrics" = true
       }

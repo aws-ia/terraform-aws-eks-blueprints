@@ -141,7 +141,8 @@ To clean up your environment, destroy the Terraform modules in reverse order.
 Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
 
 ```sh
-terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
+terraform destroy -target="helm_release.agones" -auto-approve
+terraform destroy -target="module.eks_blueprints_addons" -auto-approve
 terraform destroy -target="module.eks" -auto-approve
 terraform destroy -target="module.vpc" -auto-approve
 ```
