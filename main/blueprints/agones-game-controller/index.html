@@ -112,7 +112,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#agones-game-controller-on-amazon-eks" class="md-skip">
+        <a href="#amazon-eks-deployment-with-agones-gaming-kubernetes-controller" class="md-skip">
           Skip to content
         </a>
       
@@ -601,6 +601,112 @@
   
 
     
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          v4 to v5 Migration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          v4 to v5 Migration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../v4-to-v5/motivation/" class="md-nav__link">
+        Motivation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../v4-to-v5/cluster/" class="md-nav__link">
+        Cluster
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../v4-to-v5/addons/" class="md-nav__link">
+        Addons
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../v4-to-v5/teams/" class="md-nav__link">
+        Teams
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        FAQ
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -638,7 +744,7 @@
 
 
 <!-- BEGIN INCLUDE ../../examples/agones-game-controller/README.md -->
-<h1 id="agones-game-controller-on-amazon-eks">Agones Game Controller on Amazon EKS<a class="headerlink" href="#agones-game-controller-on-amazon-eks" title="Permanent link">&para;</a></h1>
+<h1 id="amazon-eks-deployment-with-agones-gaming-kubernetes-controller">Amazon EKS Deployment with Agones Gaming Kubernetes Controller<a class="headerlink" href="#amazon-eks-deployment-with-agones-gaming-kubernetes-controller" title="Permanent link">&para;</a></h1>
 <p>This example shows how to deploy and run Gaming applications on Amazon EKS with Agones Kubernetes Controller</p>
 <ul>
 <li>Deploy Private VPC, Subnets and all the required VPC endpoints</li>
@@ -679,7 +785,7 @@ Built on AWS global computing infrastructure, GameLift helps deliver high-perfor
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>terraform<span class="w"> </span>apply
 </span></code></pre></div>
 <p>Enter <code>yes</code> to apply.</p>
-<h3 id="configure-kubectl-and-test-cluster">Configure <code>kubectl</code> and test cluster<a class="headerlink" href="#configure-kubectl-and-test-cluster" title="Permanent link">&para;</a></h3>
+<h4 id="configure-kubectl-and-test-cluster">Configure <code>kubectl</code> and test cluster<a class="headerlink" href="#configure-kubectl-and-test-cluster" title="Permanent link">&para;</a></h4>
 <p>EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster.
 This following command used to update the <code>kubeconfig</code> in your local machine where you run kubectl commands to interact with your EKS Cluster.</p>
 <h4 id="step-5-run-update-kubeconfig-command">Step 5: Run <code>update-kubeconfig</code> command<a class="headerlink" href="#step-5-run-update-kubeconfig-command" title="Permanent link">&para;</a></h4>
@@ -695,7 +801,7 @@ This following command used to update the <code>kubeconfig</code> in your local 
 <div class="codehilite"><pre><span></span><code>$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>agones-system
 </code></pre></div>
 
-<h2 id="step-8-install-k9s">Step 8: Install K9s<a class="headerlink" href="#step-8-install-k9s" title="Permanent link">&para;</a></h2>
+<h4 id="step-8-install-k9s-optional">Step 8: Install K9s (OPTIONAL)<a class="headerlink" href="#step-8-install-k9s-optional" title="Permanent link">&para;</a></h4>
 <p>This step is to install K9s client tool to interact with EKS Cluster</p>
 <div class="codehilite"><pre><span></span><code> curl -sS https://webinstall.dev/k9s | bash
 </code></pre></div>
@@ -705,18 +811,9 @@ This following command used to update the <code>kubeconfig</code> in your local 
 </code></pre></div>
 
 <p><img alt="Alt Text" src="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/9c6f8ea3e710f7b0137be07835653a2bf4f9fdfe/images/k9s-agones-cluster.png" title="K9s" /></p>
-<h2 id="step-9-add-eks-workshop-iam-role-as-eks-cluster-administrator">Step 9: Add EKS Workshop IAM role as EKS Cluster Administrator<a class="headerlink" href="#step-9-add-eks-workshop-iam-role-as-eks-cluster-administrator" title="Permanent link">&para;</a></h2>
-<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
+<h4 id="step-9-deploying-the-sample-game-server">Step 9: Deploying the Sample game server<a class="headerlink" href="#step-9-deploying-the-sample-game-server" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><code><span class="nx">kubectl</span><span class="w"> </span><span class="nx">create</span><span class="w"> </span><span class="o">-</span><span class="nx">f</span><span class="w"> </span><span class="nx">https</span><span class="p">:</span><span class="c1">//raw.githubusercontent.com/googleforgames/agones/release-1.32.0/examples/simple-game-server/gameserver.yaml</span>
 
-<span class="nv">ROLE</span><span class="o">=</span><span class="s2">&quot;    - rolearn: arn:aws:iam::</span><span class="si">${</span><span class="nv">ACCOUNT_ID</span><span class="si">}</span><span class="s2">:role/TeamRole\n      username: admin\n      groups:\n        - system:masters&quot;</span>
-
-kubectl<span class="w"> </span>get<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>configmap/aws-auth<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s2">&quot;/mapRoles: \|/{print;print \&quot;</span><span class="nv">$ROLE</span><span class="s2">\&quot;;next}1&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>/tmp/aws-auth-patch.yml
-
-kubectl<span class="w"> </span>patch<span class="w"> </span>configmap/aws-auth<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>--patch<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>cat<span class="w"> </span>/tmp/aws-auth-patch.yml<span class="k">)</span><span class="s2">&quot;</span>
-</code></pre></div>
-
-<h2 id="step-10-deploying-the-sample-game-server">Step 10: Deploying the Sample game server<a class="headerlink" href="#step-10-deploying-the-sample-game-server" title="Permanent link">&para;</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="nx">kubectl</span><span class="w"> </span><span class="nx">create</span><span class="w"> </span><span class="o">-</span><span class="nx">f</span><span class="w"> </span><span class="nx">https</span><span class="p">:</span><span class="c1">//raw.githubusercontent.com/googleforgames/agones/release-1.15.0/examples/simple-game-server/gameserver.yaml</span>
 
 <span class="nx">kubectl</span><span class="w"> </span><span class="nx">get</span><span class="w"> </span><span class="nx">gs</span>
 </code></pre></div>
@@ -726,7 +823,7 @@ kubectl<span class="w"> </span>patch<span class="w"> </span>configmap/aws-auth<s
 <span class="nx">simple</span><span class="o">-</span><span class="nx">game</span><span class="o">-</span><span class="nx">server</span><span class="o">-</span><span class="mi">7</span><span class="nx">r6jr</span><span class="w">   </span><span class="nx">Ready</span><span class="w">   </span><span class="m m-Double">34.243.345.2</span><span class="mi">2</span><span class="w">   </span><span class="mi">7902</span><span class="w">   </span><span class="nx">ip</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">23</span><span class="o">-</span><span class="mi">233</span><span class="p">.</span><span class="nx">eu</span><span class="o">-</span><span class="nx">west</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="nx">compute</span><span class="p">.</span><span class="nx">internal</span><span class="w">   </span><span class="mi">11</span><span class="nx">h</span>
 </code></pre></div>
 
-<h2 id="step-11-testing-the-sample-game-server">Step 11: Testing the Sample Game Server<a class="headerlink" href="#step-11-testing-the-sample-game-server" title="Permanent link">&para;</a></h2>
+<h4 id="step-10-testing-the-sample-game-server">Step 10: Testing the Sample Game Server<a class="headerlink" href="#step-10-testing-the-sample-game-server" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><code>sudo yum install netcat
 
 nc -u &lt;ADDRESS&gt; &lt;PORT&gt;
@@ -752,9 +849,10 @@ e.g.,  nc -u 34.243.345.22 7902
 <h2 id="cleanup">Cleanup<a class="headerlink" href="#cleanup" title="Permanent link">&para;</a></h2>
 <p>To clean up your environment, destroy the Terraform modules in reverse order.</p>
 <p>Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_kubernetes_addons&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.vpc&quot;</span><span class="w"> </span>-auto-approve
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;helm_release.agones&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.vpc&quot;</span><span class="w"> </span>-auto-approve
 </span></code></pre></div>
 <p>Finally, destroy any additional resources that are not in the above modules</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
