@@ -24,10 +24,10 @@ Consult the [CONTRIBUTING](https://github.com/aws-ia/terraform-aws-eks-blueprint
 - [ ] Yes, I have updated the [docs](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/docs) for this feature
 - [ ] Yes, I ran `pre-commit run -a` with this PR
 
-### For Moderators
-
-- [ ] E2E Test successfully complete before merge?
-
 ### Additional Notes
+
+How was this change tested?
+
+* 
 
 <!-- Anything else we should know when reviewing? -->
