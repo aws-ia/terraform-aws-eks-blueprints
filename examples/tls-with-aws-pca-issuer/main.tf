@@ -93,7 +93,7 @@ module "eks" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "0.2.0"
+  version = "~> 1.0"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -116,25 +116,17 @@ module "eks_blueprints_addons" {
     create_namespace = true
   }
 
+  helm_releases = {
+    cert-manager-csi-driver = {
+      description   = "Cert Manager CSI Driver Add-on"
+      chart         = "cert-manager-csi-driver"
+      namespace     = "cert-manager"
+      chart_version = "v0.5.0"
+      repository    = "https://charts.jetstack.io"
+    }
+  }
+
   tags = local.tags
-}
-
-################################################################################
-# Cert Manager CSI Helm Chart
-################################################################################
-
-resource "helm_release" "cert_manager_csi" {
-  name             = "cert-manager-csi-driver"
-  chart            = "cert-manager-csi-driver"
-  version          = "v0.5.0"
-  repository       = "https://charts.jetstack.io"
-  description      = "Cert Manager CSI Driver Add-on"
-  namespace        = "cert-manager"
-  create_namespace = false
-
-  depends_on = [
-    module.eks_blueprints_addons
-  ]
 }
 
 #-------------------------------

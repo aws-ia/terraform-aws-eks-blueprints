@@ -372,7 +372,7 @@ data "aws_iam_role" "eks_admin_role_name" {
 
 module "eks_blueprints_platform_teams" {
   source  = "aws-ia/eks-blueprints-teams/aws"
-  version = "~> 0.2"
+  version = "~> 1.0"
 
   name = "team-platform"
 
@@ -443,7 +443,7 @@ module "eks_blueprints_platform_teams" {
 
 module "eks_blueprints_dev_teams" {
   source  = "aws-ia/eks-blueprints-teams/aws"
-  version = "~> 0.2.0"
+  version = "~> 1.0"
 
   for_each = {
     burnham = {
@@ -536,7 +536,7 @@ module "eks_blueprints_dev_teams" {
 
 module "eks_blueprints_ecsdemo_teams" {
   source  = "aws-ia/eks-blueprints-teams/aws"
-  version = "~> 0.2"
+  version = "~> 1.0"
 
   for_each = {
     ecsdemo-frontend = {}
@@ -616,7 +616,7 @@ module "eks_blueprints_ecsdemo_teams" {
 }
 
 module "kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.0/modules/kubernetes-addons"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.32.1"
 
   eks_cluster_id     = module.eks.cluster_name
   eks_cluster_domain = local.eks_cluster_domain
@@ -715,7 +715,7 @@ module "kubernetes_addons" {
 }
 module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.14"
+  version = "~> 5.20"
 
   role_name_prefix = "${module.eks.cluster_name}-ebs-csi-driver-"
 
@@ -733,7 +733,7 @@ module "ebs_csi_driver_irsa" {
 
 module "vpc_cni_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.14"
+  version = "~> 5.20"
 
   role_name_prefix = "${module.eks.cluster_name}-vpc-cni-"
 
@@ -756,7 +756,7 @@ module "vpc_cni_irsa" {
 # Creates Karpenter native node termination handler resources and IAM instance profile
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "~> 19.15.1"
+  version = "~> 19.15.2"
 
   cluster_name           = module.eks.cluster_name
   irsa_oidc_provider_arn = module.eks.oidc_provider_arn

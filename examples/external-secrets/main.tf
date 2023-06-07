@@ -99,7 +99,7 @@ module "eks" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "0.2.0"
+  version = "~> 1.0"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -267,7 +267,7 @@ YAML
 
 module "cluster_secretstore_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.14"
+  version = "~> 5.20"
 
   role_name_prefix = "${module.eks.cluster_name}-secrets-manager-"
 
@@ -315,7 +315,7 @@ POLICY
 
 module "secretstore_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.14"
+  version = "~> 5.20"
 
   role_name_prefix = "${module.eks.cluster_name}-parameter-store"
 

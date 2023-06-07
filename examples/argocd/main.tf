@@ -88,7 +88,7 @@ module "eks" {
 module "eks_blueprints_addons" {
   # Users should pin the version to the latest available release
   # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.31.0"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.32.1"
 
   eks_cluster_id        = module.eks.cluster_name
   eks_cluster_endpoint  = module.eks.cluster_endpoint

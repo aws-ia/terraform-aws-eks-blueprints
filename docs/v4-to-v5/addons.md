@@ -75,7 +75,7 @@ module "eks_blueprints_addons" {
 ```hcl
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 0.2"
+  version = "~> 1.0"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -93,7 +93,7 @@ module "eks_blueprints_addons" {
 module "eks_blueprints_addons" {
 -  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.32.1"
 +  source  = "aws-ia/eks-blueprints-addons/aws"
-+  version = "~> 0.2"
++  version = "~> 1.0"
 
   # TODO
 }
