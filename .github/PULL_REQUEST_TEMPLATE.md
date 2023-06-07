@@ -28,6 +28,6 @@ Consult the [CONTRIBUTING](https://github.com/aws-ia/terraform-aws-eks-blueprint
 
 How was this change tested?
 
-* 
+*
 
 <!-- Anything else we should know when reviewing? -->
