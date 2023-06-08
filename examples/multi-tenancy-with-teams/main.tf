@@ -126,10 +126,10 @@ module "eks_blueprints_dev_teams" {
   }
 
   namespaces = {
-    "blue-${each.key}" = {
+    "team-${each.key}" = {
       labels = {
-        appName     = "blue-team-app",
-        projectName = "project-blue",
+        appName     = "${each.key}-team-app",
+        projectName = "project-${each.key}",
       }
 
       resource_quota = {
