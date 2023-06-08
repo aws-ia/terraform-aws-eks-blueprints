@@ -76,7 +76,6 @@ locals {
 
   common_tags = merge(
     var.context.tags,
-    local.self_managed_node_group["additional_tags"],
     {
       Name                                                             = "${local.self_managed_node_group["node_group_name"]}-${var.context.eks_cluster_id}"
       "kubernetes.io/cluster/${var.context.eks_cluster_id}"            = "owned"
@@ -85,5 +84,6 @@ locals {
       "k8s.io/cluster-autoscaler/node-template/label/eks/capacityType" = local.self_managed_node_group["capacity_type"]
       "k8s.io/cluster-autoscaler/node-template/label/eks/nodegroup"    = local.self_managed_node_group["node_group_name"]
       "managed-by"                                                     = "terraform-aws-eks-blueprints"
-  })
+    },
+    local.self_managed_node_group["additional_tags"])
 }
