@@ -78,17 +78,7 @@ module "eks" {
     }
   }
 
-  tags = merge(local.tags, {
-    git_commit           = "19c7cfd40c4b83ec534b3ffcd70c3a3efc42ffd1"
-    git_file             = "examples/argocd/main.tf"
-    git_last_modified_at = "2023-06-05 14:07:47"
-    git_last_modified_by = "kuapoorv@amazon.com"
-    git_modifiers        = "bryantbiggs/kuapoorv"
-    git_org              = "cpieper78"
-    git_repo             = "terraform-aws-eks-blueprints"
-    yor_name             = "eks"
-    yor_trace            = "95cb7d9f-5f1c-4699-8cb5-f0ade75f5869"
-  })
+  tags = local.tags
 }
 
 ################################################################################
@@ -139,17 +129,7 @@ module "eks_blueprints_addons" {
   enable_metrics_server                = true
   enable_argo_rollouts                 = true
 
-  tags = merge(local.tags, {
-    git_commit           = "0cb73da0305b078c64575d559f29281bda8f1e3e"
-    git_file             = "examples/argocd/main.tf"
-    git_last_modified_at = "2023-06-07 00:10:11"
-    git_last_modified_by = "bryantbiggs@gmail.com"
-    git_modifiers        = "bryantbiggs/kuapoorv"
-    git_org              = "cpieper78"
-    git_repo             = "terraform-aws-eks-blueprints"
-    yor_name             = "eks_blueprints_addons"
-    yor_trace            = "d4d0f52e-173c-4cf3-99a5-66ff50715477"
-  })
+  tags = local.tags
 }
 
 #---------------------------------------------------------------
@@ -172,17 +152,7 @@ resource "bcrypt_hash" "argo" {
 resource "aws_secretsmanager_secret" "argocd" {
   name                    = "argocd"
   recovery_window_in_days = 0 # Set to zero for this example to force delete during Terraform destroy
-  tags = {
-    git_commit           = "243ae23284c132753957508de3f724c0af73ebf0"
-    git_file             = "examples/argocd/main.tf"
-    git_last_modified_at = "2023-02-14 21:25:25"
-    git_last_modified_by = "bryantbiggs@gmail.com"
-    git_modifiers        = "bryantbiggs"
-    git_org              = "cpieper78"
-    git_repo             = "terraform-aws-eks-blueprints"
-    yor_name             = "argocd"
-    yor_trace            = "51058cf1-2e9b-4430-88ff-38219342dd32"
-  }
+  tags = local.tags
 }
 
 resource "aws_secretsmanager_secret_version" "argocd" {
@@ -216,15 +186,5 @@ module "vpc" {
     "kubernetes.io/role/internal-elb" = 1
   }
 
-  tags = merge(local.tags, {
-    git_commit           = "19c7cfd40c4b83ec534b3ffcd70c3a3efc42ffd1"
-    git_file             = "examples/argocd/main.tf"
-    git_last_modified_at = "2023-06-05 14:07:47"
-    git_last_modified_by = "kuapoorv@amazon.com"
-    git_modifiers        = "bryantbiggs/kuapoorv"
-    git_org              = "cpieper78"
-    git_repo             = "terraform-aws-eks-blueprints"
-    yor_name             = "vpc"
-    yor_trace            = "091cdba5-4333-4c14-92d2-e1dc83156570"
-  })
+ tags = local.tags
 }
