@@ -85,5 +85,6 @@ locals {
       "k8s.io/cluster-autoscaler/node-template/label/eks/nodegroup"    = local.self_managed_node_group["node_group_name"]
       "managed-by"                                                     = "terraform-aws-eks-blueprints"
     },
-    local.self_managed_node_group["additional_tags"])
+    local.self_managed_node_group["additional_tags"]
+  )
 }
