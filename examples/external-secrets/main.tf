@@ -119,7 +119,8 @@ module "eks_blueprints_addons" {
   # Add-ons
   enable_external_secrets = true
 
-  tags = local.tags
+  tags       = local.tags
+  depends_on = [module.eks]
 }
 
 #---------------------------------------------------------------
@@ -266,23 +267,16 @@ YAML
 #---------------------------------------------------------------
 
 module "cluster_secretstore_role" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.20"
+  source                      = "../../modules/irsa"
+  kubernetes_namespace        = local.namespace
+  create_kubernetes_namespace = false
+  kubernetes_service_account  = local.cluster_secretstore_sa
+  irsa_iam_policies           = [aws_iam_policy.cluster_secretstore.arn]
+  eks_cluster_id              = module.eks.cluster_name
+  eks_oidc_provider_arn       = module.eks.oidc_provider_arn
 
-  role_name_prefix = "${module.eks.cluster_name}-secrets-manager-"
-
-  role_policy_arns = {
-    policy = aws_iam_policy.cluster_secretstore.arn
-  }
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["${local.namespace}:${local.cluster_secretstore_sa}"]
-    }
-  }
-
-  tags = local.tags
+  depends_on = [module.eks_blueprints_addons]
+  tags       = local.tags
 }
 
 resource "aws_iam_policy" "cluster_secretstore" {
@@ -314,23 +308,15 @@ POLICY
 }
 
 module "secretstore_role" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.20"
-
-  role_name_prefix = "${module.eks.cluster_name}-parameter-store"
-
-  role_policy_arns = {
-    policy = aws_iam_policy.secretstore.arn
-  }
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["${local.namespace}:${local.cluster_secretstore_sa}"]
-    }
-  }
-
-  tags = local.tags
+  source                      = "../../modules/irsa"
+  kubernetes_namespace        = local.namespace
+  create_kubernetes_namespace = false
+  kubernetes_service_account  = local.secretstore_sa
+  irsa_iam_policies           = [aws_iam_policy.secretstore.arn]
+  eks_cluster_id              = module.eks.cluster_name
+  eks_oidc_provider_arn       = module.eks.oidc_provider_arn
+  depends_on                  = [module.eks_blueprints_addons]
+  tags                        = local.tags
 }
 
 resource "aws_iam_policy" "secretstore" {
