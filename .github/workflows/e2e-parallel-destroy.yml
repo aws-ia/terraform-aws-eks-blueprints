@@ -10,6 +10,9 @@ on:
 
 concurrency: e2e-parallel-destroy
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     name: Run e2e test
@@ -34,6 +37,11 @@ jobs:
           - example_path: examples/vpc-cni-custom-networking
 
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@v3
 

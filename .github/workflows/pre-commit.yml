@@ -26,6 +26,11 @@ jobs:
     outputs:
       directories: ${{ steps.dirs.outputs.directories }}
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -41,6 +46,11 @@ jobs:
       matrix:
         directory: ${{ fromJson(needs.collectInputs.outputs.directories) }}
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Remove default Terraform
         run: rm -rf $(which terraform)
 
@@ -99,6 +109,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: collectInputs
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Remove default Terraform
         run: rm -rf $(which terraform)
 

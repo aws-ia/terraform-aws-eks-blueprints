@@ -14,6 +14,9 @@ env:
   IAMLIVE_VERSION: v0.48.0
   BUCKET_NAME: terraform-eks-blueprints-iam-policies-examples
 
+permissions:
+  contents: read
+
 jobs:
   prereq-cleanup:
     name: Prerequisite Cleanup
@@ -23,6 +26,11 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -62,6 +70,11 @@ jobs:
           - example_path: examples/stateful
           - example_path: examples/vpc-cni-custom-networking
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -147,6 +160,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Be careful not to change this to explicit checkout from PR ref/code, as below we run a python code that may change from the PR code.
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@v3
 
