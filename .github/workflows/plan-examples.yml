@@ -11,6 +11,9 @@ concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   getExampleDirectories:
     name: Get example directories
@@ -23,6 +26,11 @@ jobs:
       directories: ${{ steps.dirs.outputs.directories }}
     steps:
       # Be careful not to change this to explicit checkout from PR ref/code, as below we run a python code that may change from the PR code.
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -49,6 +57,11 @@ jobs:
         directory: ${{ fromJson(needs.getExampleDirectories.outputs.directories) }}
 
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Remove default Terraform
         run: rm -rf $(which terraform)
 
