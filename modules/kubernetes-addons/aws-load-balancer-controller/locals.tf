@@ -1,6 +1,9 @@
 locals {
   name            = "aws-load-balancer-controller"
   service_account = try(var.helm_config.service_account, "${local.name}-sa")
+  account_id = data.aws_caller_identity.current.account_id
+  partition  = data.aws_partition.current.partition
+  region     = data.aws_region.current.name
 
   # https://github.com/aws/eks-charts/blob/master/stable/aws-load-balancer-controller/Chart.yaml
   default_helm_config = {
