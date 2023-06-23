@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "aws_lb" {
     condition {
       test     = "StringEquals"
       variable = "iam:AWSServiceName"
-      values   = ["elasticloadbalancing.${local.dns_suffix}"]
+      values   = ["elasticloadbalancing.${data.aws_partition.current.dns_suffix}"]
     }
   }
 
