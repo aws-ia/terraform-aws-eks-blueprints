@@ -1,8 +1,12 @@
-data "aws_iam_policy_document" "aws_load_balancer_controller" {
+data "aws_partition" "current" {}
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
+data "aws_iam_policy_document" "aws_lb" {
   statement {
     sid       = "AllowCreateServiceLinkedRole"
     effect    = "Allow"
-    resources = ["arn:${local.partition}:iam::${local.account_id}:role/aws-service-role/elasticloadbalancing.amazonaws.com/AWSServiceRoleForElasticLoadBalancing"]
+    resources = ["arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/elasticloadbalancing.amazonaws.com/AWSServiceRoleForElasticLoadBalancing"]
     actions   = ["iam:CreateServiceLinkedRole"]
 
     condition {
@@ -56,9 +60,9 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
     effect = "Allow"
 
     resources = [
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:loadbalancer/app/*/*",
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:loadbalancer/net/*/*",
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:targetgroup/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:loadbalancer/app/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:loadbalancer/net/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:targetgroup/*/*",
     ]
 
     actions = [
@@ -79,7 +83,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
     sid    = "AllowManageTargetGroup"
     effect = "Allow"
     resources = [
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:targetgroup/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:targetgroup/*/*",
     ]
 
     actions = [
@@ -94,8 +98,8 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
     sid    = "AllowManageListeners"
     effect = "Allow"
     resources = [
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:listener/app/*/*/*",
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:listener/net/*/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:listener/app/*/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:listener/net/*/*/*",
     ]
 
     actions = [
@@ -111,8 +115,8 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
     sid    = "AllowManageRules"
     effect = "Allow"
     resources = [
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:listener-rule/app/*/*/*/*",
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:listener-rule/net/*/*/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:listener-rule/app/*/*/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:listener-rule/net/*/*/*/*",
     ]
 
     actions = [
@@ -126,13 +130,13 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
     effect = "Allow"
 
     resources = [
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:loadbalancer/app/*/*",
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:loadbalancer/net/*/*",
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:listener/app/*/*/*",
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:listener/net/*/*/*",
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:listener-rule/app/*/*/*/*",
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:listener-rule/net/*/*/*/*",
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:targetgroup/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:loadbalancer/app/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:loadbalancer/net/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:listener/app/*/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:listener/net/*/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:listener-rule/app/*/*/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:listener-rule/net/*/*/*/*",
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:targetgroup/*/*",
     ]
 
     actions = [
@@ -144,7 +148,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
   statement {
     sid       = "AllowManageTargets"
     effect    = "Allow"
-    resources = ["arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:targetgroup/*/*"]
+    resources = ["arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:targetgroup/*/*"]
 
     actions = [
       "elasticloadbalancing:DeregisterTargets",
@@ -156,8 +160,8 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
     sid    = "AllowGetCertificates"
     effect = "Allow"
     resources = [
-      "arn:${local.partition}:acm:${local.region}:${local.account_id}:*",
-      "arn:${local.partition}:acm:${local.region}:${local.account_id}:certificate/*"
+      "arn:${data.aws_partition.current.partition}:acm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*",
+      "arn:${data.aws_partition.current.partition}:acm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:certificate/*"
     ]
 
     actions = [
@@ -169,7 +173,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
   statement {
     sid       = "AllowDescribeCognitoIdp"
     effect    = "Allow"
-    resources = ["arn:${local.partition}:cognito-idp:${local.region}:${local.account_id}:userpool/*"]
+    resources = ["arn:${data.aws_partition.current.partition}:cognito-idp:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:userpool/*"]
 
     actions = ["cognito-idp:DescribeUserPoolClient"]
   }
@@ -178,8 +182,8 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
     sid    = "AllowGetServerCertificates"
     effect = "Allow"
     resources = [
-      "arn:${local.partition}:iam::${local.account_id}:*",
-      "arn:${local.partition}:iam::${local.account_id}:server-certificate/*"
+      "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:*",
+      "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:server-certificate/*"
     ]
 
     actions = [
@@ -192,8 +196,8 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
     sid    = "AllowShield"
     effect = "Allow"
     resources = [
-      "arn:${local.partition}:shield::${local.account_id}:*",
-      "arn:${local.partition}:shield::${local.account_id}:protection/*"
+      "arn:${data.aws_partition.current.partition}:shield::${data.aws_caller_identity.current.account_id}:*",
+      "arn:${data.aws_partition.current.partition}:shield::${data.aws_caller_identity.current.account_id}:protection/*"
     ]
 
     actions = [
@@ -208,14 +212,14 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
     sid    = "AllowManageWebAcl"
     effect = "Allow"
     resources = [
-      "arn:${local.partition}:elasticloadbalancing:${local.region}:${local.account_id}:loadbalancer/app/*/*",
-      "arn:${local.partition}:apigateway:${local.region}::/restapis/*/stages/*",
-      "arn:${local.partition}:appsync:${local.region}:${local.account_id}:apis/*",
-      "arn:${local.partition}:cognito-idp:${local.region}:${local.account_id}:userpool/*",
-      "arn:${local.partition}:wafv2:${local.region}:${local.account_id}:*",
-      "arn:${local.partition}:wafv2:${local.region}:${local.account_id}:*/webacl/*/*",
-      "arn:${local.partition}:waf-regional:${local.region}:${local.account_id}:*",
-      "arn:${local.partition}:waf-regional:${local.region}:${local.account_id}:webacl/*"
+      "arn:${data.aws_partition.current.partition}:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:loadbalancer/app/*/*",
+      "arn:${data.aws_partition.current.partition}:apigateway:${data.aws_region.current.name}::/restapis/*/stages/*",
+      "arn:${data.aws_partition.current.partition}:appsync:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:apis/*",
+      "arn:${data.aws_partition.current.partition}:cognito-idp:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:userpool/*",
+      "arn:${data.aws_partition.current.partition}:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*",
+      "arn:${data.aws_partition.current.partition}:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*/webacl/*/*",
+      "arn:${data.aws_partition.current.partition}:waf-regional:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*",
+      "arn:${data.aws_partition.current.partition}:waf-regional:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:webacl/*"
     ]
 
     actions = [
@@ -234,7 +238,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
   statement {
     sid       = "AllowManageSecurityGroups"
     effect    = "Allow"
-    resources = ["arn:${local.partition}:ec2:${local.region}:${local.account_id}:security-group/*"]
+    resources = ["arn:${data.aws_partition.current.partition}:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:security-group/*"]
 
     actions = [
       "ec2:AuthorizeSecurityGroupIngress",
@@ -249,8 +253,8 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
     sid    = "AllowCreateSecurityGroups"
     effect = "Allow"
     resources = [
-      "arn:${local.partition}:ec2:${local.region}:${local.account_id}:security-group/*",
-      "arn:${local.partition}:ec2:${local.region}:${local.account_id}:vpc/*",
+      "arn:${data.aws_partition.current.partition}:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:security-group/*",
+      "arn:${data.aws_partition.current.partition}:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:vpc/*",
     ]
     actions = ["ec2:CreateSecurityGroup"]
   }
