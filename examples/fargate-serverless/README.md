@@ -8,7 +8,7 @@ This example solution provides:
 - AWS EKS Fargate Profiles for the `kube-system` namespace which is used by the `coredns`, `vpc-cni`, and `kube-proxy` addons, as well as profile that will match on `app-*` namespaces using a wildcard pattern.
 - AWS EKS managed addons `coredns`, `vpc-cni` and `kube-proxy`
 - AWS Load Balancer Controller add-on deployed through a Helm chart. The default AWS Load Balancer Controller add-on configuration is overridden so that it can be deployed on Fargate compute.
-- A [sample-app](./sample-app) is provided to demonstrates how to configure the Ingress so that application can be accessed over the internet.
+- A sample-app is provided (in-line) to demonstrate how to configure the Ingress so that application can be accessed over the internet.
 
 ## Prerequisites:
 
