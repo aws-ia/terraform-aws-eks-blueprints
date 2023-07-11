@@ -1538,7 +1538,7 @@
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
 <p>EKS Blueprints provides support for onboarding and managing teams and easily configuring cluster access. We currently support two <code>Team</code> types: <code>application_teams</code> and <code>platform_teams</code>.</p>
 <p><code>Application Teams</code> represent teams managing workloads running in cluster namespaces and <code>Platform Teams</code> represents platform administrators who have admin access (masters group) to clusters.</p>
-<p>You can reference the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/aws-eks-teams">aws-eks-teams</a> module to create your own team implementations.</p>
+<p>You can reference the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints-teams">aws-eks-teams</a> module to create your own team implementations.</p>
 <h3 id="applicationteam">ApplicationTeam<a class="headerlink" href="#applicationteam" title="Permanent link">&para;</a></h3>
 <p>To create an <code>application_team</code> for your cluster, you will need to supply a team name, with the options to pass map of labels, map of resource quotas, existing IAM entities (user/roles), and a directory where you may optionally place any policy definitions and generic manifests for the team. These manifests will be applied by EKS Blueprints and will be outside of the team control.</p>
 <p><strong>NOTE:</strong> When the manifests are applied, namespaces are not checked. Therefore, you are responsible for namespace settings in the yaml files.</p>
