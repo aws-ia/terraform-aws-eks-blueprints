@@ -13,8 +13,8 @@ def lambda_handler(event, context):
         # Extract the Private IP address of the newly created ENI
         ip = event['detail']['responseElements']['networkInterface']['privateIpAddress']
 
-        # We directly add the extracted Private IP address of the ENI as a 
-        # target to the target group 
+        # We directly add the extracted Private IP address of the ENI as a
+        # target to the target group
         try:
             response = nlbClient.register_targets(
                 TargetGroupArn = targetGroupARN,
@@ -28,5 +28,5 @@ def lambda_handler(event, context):
         except Exception as e:
             print(e)
             raise(e)
-        
-    return 
+
+    return

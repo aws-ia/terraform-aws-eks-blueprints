@@ -8,7 +8,7 @@ targetGroupARN = os.environ['TARGET_GROUP_ARN']
 eksClusterName = os.environ['EKS_CLUSTER_NAME']
 
 def lambda_handler(event, context):
-        
+
     unhealthyTargetIPAddresses   = []
     eksApiEndpointEniIPAddresses = []
     unhealthyTargetsToDeregister = []
@@ -21,7 +21,7 @@ def lambda_handler(event, context):
         print("Did not find any TargetHealthDescriptions, quitting!")
         return
 
-    # Iterate over the list of TargetHealthDescriptions and extract the list of 
+    # Iterate over the list of TargetHealthDescriptions and extract the list of
     # unhealthy targets
     for targetHealthDescription in targetHealthDescriptions:
         if targetHealthDescription["TargetHealth"]["State"] == "unhealthy":
@@ -42,20 +42,20 @@ def lambda_handler(event, context):
     if networkInterfaces is None:
         print("Did not find any EKS API ENIs to compare with, quitting!")
         return
-   
+
     for networkInterface in networkInterfaces:
         eksApiEndpointEniIPAddresses.append(
             networkInterface["PrivateIpAddress"]
         )
-    
+
     for unhealthyTargetIPAddress in unhealthyTargetIPAddresses:
         if unhealthyTargetIPAddress not in eksApiEndpointEniIPAddresses:
             unhealthyTarget = {
                 'Id': unhealthyTargetIPAddress,
-                'Port': 443                
+                'Port': 443
             }
             unhealthyTargetsToDeregister.append(unhealthyTarget)
-    
+
     if len(unhealthyTargetsToDeregister) == 0:
         print("There are no unhealthy targets to deregister, quitting!")
         return
@@ -70,6 +70,6 @@ def lambda_handler(event, context):
         print(response)
     except Exception as e:
         print(e)
-        raise(e)    
+        raise(e)
 
-    return 
+    return

@@ -2,7 +2,7 @@
 
 This example sets up resources in your AWS environment to demonstrate access from a client VPC to API endpoint(s) of a private EKS cluster deployed in a private/restricted VPC via `PrivateLink`
 
-Refer to the [documentation](https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html) for `PrivateLink` concepts. 
+Refer to the [documentation](https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html) for `PrivateLink` concepts.
 
 ## Prerequisites:
 
@@ -12,18 +12,18 @@ Ensure that you have the following tools installed locally:
 2. kubectl
 3. terraform
 
-## Deploy 
+## Deploy
 
-For using the variable values provided, as is, in `variables.tf`, run the 
-following command 
+For using the variable values provided, as is, in `variables.tf`, run the
+following command
 
-```sh 
+```sh
 terraform init
-terraform apply --auto-approve 
+terraform apply --auto-approve
 ```
 
 If you choose to customize, create a file by the name `terraform.tfvars` in the
-root directory of this repo with the following content, customize the content as 
+root directory of this repo with the following content, customize the content as
 per your needs and then run the command shown above
 
 ```
@@ -36,7 +36,7 @@ managed_node_group    = {
     instance_types    = ["t3.small"]
     min_size          = 1
     max_size          = 3
-    desired_size      = 2    
+    desired_size      = 2  
 }
 aws_key_pair_name     = "aws-eks-privatelink"
 eks_cluster_name      = "private-eks-cluster"
@@ -60,12 +60,12 @@ client VPC.
 
 ## Configure for use with `kubectl`
 
-Since the EKS cluster was setup with your (user) account, by default, the 
-`aws-auth` ConfigMap has only your account entry that allows access to the 
-cluster as `admin`. Also since, the API endpoint is private, Terraform cannot 
-reach it to add access for additional users. 
+Since the EKS cluster was setup with your (user) account, by default, the
+`aws-auth` ConfigMap has only your account entry that allows access to the
+cluster as `admin`. Also since, the API endpoint is private, Terraform cannot
+reach it to add access for additional users.
 
-Use the following manual steps to access the cluster with `kubectl` from the 
+Use the following manual steps to access the cluster with `kubectl` from the
 client instance.
 
 ### Step 1: Get temporary credentials
@@ -73,7 +73,7 @@ client instance.
 Run the following command on your local machine to get temporary credentials and
 save them to a local file.
 
-```sh 
+```sh
 # Get temporary credentials that expire in one hour
 aws sts get-session-token --duration-seconds 3600 --output yaml
 ```
@@ -90,11 +90,11 @@ Credentials:
 
 ### Step 2: Log into the client instance and create/update a `~/.bashrc` file
 
-Using part of the `client_instance_ssh_command` output (minus the `curl` 
-command) SSH into client instance. 
+Using part of the `client_instance_ssh_command` output (minus the `curl`
+command) SSH into client instance.
 
-Once logged in, create/update `~/.bashrc` 
-file with the following content using the information collected from the last 
+Once logged in, create/update `~/.bashrc`
+file with the following content using the information collected from the last
 step.
 
 ```sh
@@ -111,7 +111,7 @@ source ~/.bashrc
 
 ### Step 3: Setup kubeconfig file
 
-Run the following command to setup the `kubeconfig` file to access the EKS 
+Run the following command to setup the `kubeconfig` file to access the EKS
 cluster
 
 ```sh
@@ -123,7 +123,7 @@ You can now choose to exit the SSH session with the client instance.
 
 ### Step 4: Test cluster access with `kubectl` within the next hour
 
-```sh 
+```sh
 # Change/correct the public DNS name of the client instance
 ssh -i '~/.ssh/aws-eks-privatelink.pem' \
 ec2-user@ec2-35-89-5-85.us-west-2.compute.amazonaws.com \
@@ -138,10 +138,10 @@ ip-10-0-17-85.us-west-2.compute.internal    Ready    <none>   5h58m   v1.25.9-ek
 ip-10-0-48-180.us-west-2.compute.internal   Ready    <none>   5h58m   v1.25.9-eks-0a21954
 ```
 
-## Destroy 
+## Destroy
 
 Run the following command to destroy all the resources created by Terraform:
 
-```sh 
+```sh
 terraform destroy --auto-approve
 ```

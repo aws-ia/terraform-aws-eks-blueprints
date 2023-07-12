@@ -4,17 +4,12 @@ locals {
   client_vpc_name  = format("%s-%s-%s", var.eks_cluster_name, "client", "vpc")
   service_vpc_name = format("%s-%s", var.eks_cluster_name, "vpc")
 
-  eks_managed_eni_ips = [
-    for eni_id, eni in data.aws_network_interface.eks_managed_eni :
-    eni.private_ip
-  ]
-
   nlb_ip_cidrs = [
     for ip_addr in data.dns_a_record_set.nlb.addrs :
     format("%s/32", ip_addr)
   ]
 
-  # Get patterns for subdomain name (index 1) and domain name (index 2) 
+  # Get patterns for subdomain name (index 1) and domain name (index 2)
   api_server_url_pattern = regex("(https://)([[:alnum:]]+\\.)(.*)",
   module.eks.cluster_endpoint)
 

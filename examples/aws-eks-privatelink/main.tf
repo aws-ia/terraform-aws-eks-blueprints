@@ -30,9 +30,9 @@ module "client_vpc" {
   tags = local.tags
 }
 
-# Create a security group for client instance such that it allows ingress TCP 
-# traffic on port 22 (SSH), port 443 (HTTPS) from anywhere and egress TCP/UDP 
-# traffic on port 53 (DNS) to anywhere 
+# Create a security group for client instance such that it allows ingress TCP
+# traffic on port 22 (SSH), port 443 (HTTPS) from anywhere and egress TCP/UDP
+# traffic on port 53 (DNS) to anywhere
 module "client_instance_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 5.0"
@@ -115,8 +115,8 @@ module "client_instance" {
   tags = local.tags
 }
 
-# Configure the Private EKS VPC by setting only private subnets and without a 
-# NAT Gateway, effectively preventing ingress/exgress outside of VPC 
+# Configure the Private EKS VPC by setting only private subnets and without a
+# NAT Gateway, effectively preventing ingress/exgress outside of VPC
 module "private_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
@@ -129,7 +129,7 @@ module "private_vpc" {
     for k, v in local.azs : cidrsubnet(var.vpc_cidr, 4, k)
   ]
 
-  # No NAT Gateway prevents ingress into the VPC, making VPC extra private 
+  # No NAT Gateway prevents ingress into the VPC, making VPC extra private
   enable_nat_gateway = false
 
   private_subnet_tags = {
@@ -139,18 +139,18 @@ module "private_vpc" {
   tags = local.tags
 }
 
-# Explicitly create a Internet Gateway here in the Private EKS VPC as without an 
-# internet gateway, a NLB cannot be created. Config option of create_igw = true 
-# (default) did not work during the VPC creation as it requires public subnets 
+# Explicitly create a Internet Gateway here in the Private EKS VPC as without an
+# internet gateway, a NLB cannot be created. Config option of create_igw = true
+# (default) did not work during the VPC creation as it requires public subnets
 # and the related routes that connect them to IGW
 resource "aws_internet_gateway" "igw" {
   vpc_id = module.private_vpc.vpc_id
   tags   = local.tags
 }
 
-# Define security group for Private EKS VPC endpoints such that only ingress 
-# that is allowed is HTTPS traffic on TCP on port 443 and only from the private 
-# subnets. For egress allow HTTPS traffic on TCP to all the services outside of 
+# Define security group for Private EKS VPC endpoints such that only ingress
+# that is allowed is HTTPS traffic on TCP on port 443 and only from the private
+# subnets. For egress allow HTTPS traffic on TCP to all the services outside of
 # the VPC on port 443
 module "private_vpc_endpoints_sg" {
   source  = "terraform-aws-modules/security-group/aws"
@@ -217,8 +217,8 @@ module "private_vpc_endpoints" {
   tags = local.tags
 }
 
-# Create EKS cluster by not excplicitly setting the variable 
-# cluster_endpoint_private_access which will then default to false and creates 
+# Create EKS cluster by not excplicitly setting the variable
+# cluster_endpoint_private_access which will then default to false and creates
 # an EKS cluster that is only accessible within the VPC in which it is created
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
@@ -241,14 +241,14 @@ module "eks" {
   }
 
   # Adding additional tag only for the sake of creating an implicit dependency
-  # on the 'vpc_endpoints' module. The 'depends_on' meta-argument resulted in an 
-  # error and hence this hack. 
+  # on the 'vpc_endpoints' module. The 'depends_on' meta-argument resulted in an
+  # error and hence this hack.
   tags = merge(local.tags, {
     EndpointsTotalCount = length(module.private_vpc_endpoints.endpoints)
   })
 }
 
-# Create an internal ELB with a target group config defined such that it can 
+# Create an internal ELB with a target group config defined such that it can
 # point to and health check k8s API Server endpoint.
 module "nlb" {
   source  = "terraform-aws-modules/alb/aws"
@@ -282,7 +282,7 @@ module "nlb" {
   tags = local.tags
 }
 
-# Create a new rule in the EKS Managed SG such that it allows TCP traffic on 
+# Create a new rule in the EKS Managed SG such that it allows TCP traffic on
 # port 443 from the NLB IP addresses
 resource "aws_security_group_rule" "allow_tls_service" {
   type              = "ingress"
@@ -293,8 +293,8 @@ resource "aws_security_group_rule" "allow_tls_service" {
   security_group_id = data.aws_security_group.eks_managed_sg.id
 }
 
-# Create a VPC Endpoint Service such that the service can be then shared with 
-# other services in other VPCs. This Service Endpoint is created in the VPC 
+# Create a VPC Endpoint Service such that the service can be then shared with
+# other services in other VPCs. This Service Endpoint is created in the VPC
 # where the LB exists
 resource "aws_vpc_endpoint_service" "this" {
   acceptance_required        = true
@@ -305,7 +305,7 @@ resource "aws_vpc_endpoint_service" "this" {
   }, local.tags)
 }
 
-# Create a new security group that allows TLS traffic on port 443 and let the 
+# Create a new security group that allows TLS traffic on port 443 and let the
 # client applications in Client VPC connect to the VPC Endpoint on port 443
 resource "aws_security_group" "allow_tls_client" {
   name        = "allow-ingress-tls-egress-all"
@@ -331,9 +331,9 @@ resource "aws_security_group" "allow_tls_client" {
   tags = local.tags
 }
 
-# Create a VPC Endpoint in the Client VPC and bind it to the Service Endpoint 
+# Create a VPC Endpoint in the Client VPC and bind it to the Service Endpoint
 # created earlier such that the service in the client VPC can locally connect to
-# the endpoint to be able to access the API Server Endpoint of the remote EKS 
+# the endpoint to be able to access the API Server Endpoint of the remote EKS
 # cluster in the Serivce VPC
 resource "aws_vpc_endpoint" "this" {
   vpc_id             = module.client_vpc.vpc_id
@@ -346,7 +346,7 @@ resource "aws_vpc_endpoint" "this" {
   }, local.tags)
 }
 
-# Accept a pending VPC Endpoint connection accept request to VPC Endpoint 
+# Accept a pending VPC Endpoint connection accept request to VPC Endpoint
 # Service
 resource "aws_vpc_endpoint_connection_accepter" "this" {
   vpc_endpoint_service_id = aws_vpc_endpoint_service.this.id
@@ -355,7 +355,7 @@ resource "aws_vpc_endpoint_connection_accepter" "this" {
   depends_on = [module.eks]
 }
 
-# Create a private hosted zone for the Client VPC matching the domain name of 
+# Create a private hosted zone for the Client VPC matching the domain name of
 # the API server URL
 resource "aws_route53_zone" "private" {
   name = local.r53_private_hosted_zone
@@ -384,7 +384,7 @@ resource "aws_s3_bucket" "this" {
 }
 
 # Define a Lambda to handle the API Endpoint ENI creation
-module "handle_eni_create_λ" {
+module "handle_eni_create_lambda" {
   source = "terraform-aws-modules/lambda/aws"
 
   function_name = "eks-api-endpoints-create-event-handler"
@@ -429,7 +429,7 @@ module "handle_eni_create_λ" {
 }
 
 # Define a Lambda to handle the API Endpoint ENI deletion
-module "handle_eni_cleanup_λ" {
+module "handle_eni_cleanup_lambda" {
   source = "terraform-aws-modules/lambda/aws"
 
   function_name = "eks-api-endpoints-cleanup-event-handler"
@@ -482,7 +482,7 @@ module "handle_eni_cleanup_λ" {
   tags = local.tags
 }
 
-# One single eventbridge module that defines two rules and invokes one Lambda 
+# One single eventbridge module that defines two rules and invokes one Lambda
 # for each rule that is matched
 module "eventbridge" {
   source = "terraform-aws-modules/eventbridge/aws"
@@ -511,7 +511,7 @@ module "eventbridge" {
     }
     eks-api-endpoint-cleanup = {
       description         = "Trigger for a Lambda"
-      schedule_expression = "rate(${var.handle_eni_cleanup_λ_freq} minutes)"
+      schedule_expression = "rate(${var.handle_eni_cleanup_lambda_freq} minutes)"
     }
   }
 
@@ -519,14 +519,14 @@ module "eventbridge" {
   targets = {
     eks-api-endpoint-create = [
       {
-        name = module.handle_eni_create_λ.lambda_function_name
-        arn  = module.handle_eni_create_λ.lambda_function_arn
+        name = module.handle_eni_create_lambda.lambda_function_name
+        arn  = module.handle_eni_create_lambda.lambda_function_arn
       }
     ]
     eks-api-endpoint-cleanup = [
       {
-        name = module.handle_eni_cleanup_λ.lambda_function_name
-        arn  = module.handle_eni_cleanup_λ.lambda_function_arn
+        name = module.handle_eni_cleanup_lambda.lambda_function_name
+        arn  = module.handle_eni_cleanup_lambda.lambda_function_arn
       }
     ]
   }
