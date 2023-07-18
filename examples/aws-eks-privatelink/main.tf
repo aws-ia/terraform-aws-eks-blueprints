@@ -43,11 +43,6 @@ module "client_instance_sg" {
 
   ingress_with_cidr_blocks = [
     {
-      rule        = "https-443-tcp"
-      description = "HTTPS"
-      cidr_blocks = "0.0.0.0/0"
-    },
-    {
       rule        = "ssh-tcp"
       description = "SSH"
       cidr_blocks = "0.0.0.0/0"
@@ -56,18 +51,8 @@ module "client_instance_sg" {
 
   egress_with_cidr_blocks = [
     {
-      rule        = "dns-tcp"
-      description = "DNS Lookups on TCP"
-      cidr_blocks = "0.0.0.0/0"
-    },
-    {
-      rule        = "dns-udp"
-      description = "DNS Lookups on UDP"
-      cidr_blocks = "0.0.0.0/0"
-    },
-    {
-      rule        = "https-443-tcp"
-      description = "HTTPS"
+      rule        = "all-all"
+      description = "Traffic on all ports and protocols"
       cidr_blocks = "0.0.0.0/0"
     }
   ]
