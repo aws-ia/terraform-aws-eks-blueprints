@@ -1,134 +1,3 @@
-# Configure the Private EKS VPC by setting only private subnets and without a
-# NAT Gateway, effectively preventing ingress/exgress outside of VPC
-module "private_vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.0"
-
-  name = local.service_vpc_name
-  cidr = local.vpc_cidr
-
-  azs             = local.azs
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
-
-  # No NAT Gateway prevents ingress into the VPC, making VPC extra private
-  enable_nat_gateway = false
-
-  private_subnet_tags = {
-    "kubernetes.io/role/internal-elb" = 1
-  }
-
-  tags = local.tags
-}
-
-# Explicitly create a Internet Gateway here in the Private EKS VPC as without an
-# internet gateway, a NLB cannot be created. Config option of create_igw = true
-# (default) did not work during the VPC creation as it requires public subnets
-# and the related routes that connect them to IGW
-resource "aws_internet_gateway" "igw" {
-  vpc_id = module.private_vpc.vpc_id
-  tags   = local.tags
-}
-
-# Define security group for Private EKS VPC endpoints such that only ingress
-# that is allowed is HTTPS traffic on TCP on port 443 and only from the private
-# subnets. For egress allow HTTPS traffic on TCP to all the services outside of
-# the VPC on port 443
-module "private_vpc_endpoints_sg" {
-  source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 5.0"
-
-  name        = "${local.name}-vpc-endpoints"
-  description = "Security group for VPC endpoint access"
-  vpc_id      = module.private_vpc.vpc_id
-
-  ingress_with_cidr_blocks = [
-    {
-      rule        = "https-443-tcp"
-      description = "VPC CIDR HTTPS"
-      cidr_blocks = join(",", module.private_vpc.private_subnets_cidr_blocks)
-    },
-  ]
-
-  egress_with_cidr_blocks = [
-    {
-      rule        = "https-443-tcp"
-      description = "All egress HTTPS"
-      cidr_blocks = "0.0.0.0/0"
-    },
-  ]
-
-  tags = local.tags
-}
-
-# Create all the endpoints for the Private EKS VPC in one go
-module "private_vpc_endpoints" {
-  source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "~> 5.0"
-
-  vpc_id             = module.private_vpc.vpc_id
-  security_group_ids = [module.private_vpc_endpoints_sg.security_group_id]
-
-  endpoints = merge(
-    {
-      # For S3 create an Gateway VPC endpoint
-      s3 = {
-        service         = "s3"
-        service_type    = "Gateway"
-        route_table_ids = module.private_vpc.private_route_table_ids
-        tags = {
-          Name = "${local.name}-s3"
-        }
-      }
-    },
-    {
-      # For all other AWS listed below, create an Interface VPC endpoint
-      for service in toset(["autoscaling", "ecr.api", "ecr.dkr",
-        "ec2", "ec2messages", "elasticloadbalancing", "sts", "kms",
-      "logs", "ssm", "ssmmessages"]) :
-      replace(service, ".", "_") =>
-      {
-        service             = service
-        subnet_ids          = module.private_vpc.private_subnets
-        private_dns_enabled = true
-        tags                = { Name = "${var.local.name}-${service}" }
-      }
-    }
-  )
-
-  tags = local.tags
-}
-
-# Create EKS cluster by not excplicitly setting the variable
-# cluster_endpoint_private_access which will then default to false and creates
-# an EKS cluster that is only accessible within the VPC in which it is created
-module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.15"
-
-  cluster_name    = local.name
-  cluster_version = "1.27"
-
-  cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
-  }
-
-  vpc_id     = module.private_vpc.vpc_id
-  subnet_ids = module.private_vpc.private_subnets
-
-  eks_managed_node_groups = {
-    mng = var.managed_node_group
-  }
-
-  # Adding additional tag only for the sake of creating an implicit dependency
-  # on the 'vpc_endpoints' module. The 'depends_on' meta-argument resulted in an
-  # error and hence this hack.
-  tags = merge(local.tags, {
-    EndpointsTotalCount = length(module.private_vpc_endpoints.endpoints)
-  })
-}
-
 # Create an internal ELB with a target group config defined such that it can
 # point to and health check k8s API Server endpoint.
 module "nlb" {
@@ -136,8 +5,8 @@ module "nlb" {
   version = "~> 8.6.1"
 
   name               = "nlb-to-eks-managed-enis"
-  vpc_id             = module.private_vpc.vpc_id
-  subnets            = module.private_vpc.private_subnets
+  vpc_id             = module.vpc.vpc_id
+  subnets            = module.vpc.private_subnets
   internal           = true
   load_balancer_type = "network"
 
@@ -161,17 +30,6 @@ module "nlb" {
   }]
 
   tags = local.tags
-}
-
-# Create a new rule in the EKS Managed SG such that it allows TCP traffic on
-# port 443 from the NLB IP addresses
-resource "aws_security_group_rule" "allow_tls_service" {
-  type              = "ingress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks       = local.nlb_ip_cidrs
-  security_group_id = data.aws_security_group.eks_managed_sg.id
 }
 
 # Create a VPC Endpoint Service such that the service can be then shared with
