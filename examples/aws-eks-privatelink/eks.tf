@@ -2,10 +2,6 @@
 # EKS Cluster
 ################################################################################
 
-data "dns_a_record_set" "nlb" {
-  host = module.nlb.lb_dns_name
-}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 19.15"
