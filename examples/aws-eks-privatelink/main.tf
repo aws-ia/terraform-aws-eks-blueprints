@@ -1,105 +1,3 @@
-# This module will create a VPC to which the client application will be deployed
-# Since there are no restrictions on this VPC, it will have both kind of subnets
-# and will have access to services outside of the VPC via the NAT Gateway
-module "client_vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.0"
-
-  name = local.client_vpc_name
-  cidr = var.vpc_cidr
-
-  azs = local.azs
-  private_subnets = [
-    for k, v in local.azs : cidrsubnet(var.vpc_cidr, 4, k)
-  ]
-  public_subnets = [
-    for k, v in local.azs : cidrsubnet(var.vpc_cidr, 4, k + 10)
-  ]
-
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
-  enable_dns_hostnames = true
-
-  manage_default_network_acl    = true
-  default_network_acl_tags      = { Name = "${local.client_vpc_name}-default" }
-  manage_default_route_table    = true
-  default_route_table_tags      = { Name = "${local.client_vpc_name}-default" }
-  manage_default_security_group = true
-  default_security_group_tags   = { Name = "${local.client_vpc_name}-default" }
-
-  tags = local.tags
-}
-
-# Create a security group for client instance such that it allows ingress TCP
-# traffic on port 22 (SSH), port 443 (HTTPS) from anywhere and egress TCP/UDP
-# traffic on port 53 (DNS) to anywhere
-module "client_instance_sg" {
-  source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 5.0"
-
-  name        = "allow-ingress-ssh-tls-egress-all"
-  description = "Security group for client instance"
-  vpc_id      = module.client_vpc.vpc_id
-
-  ingress_with_cidr_blocks = [
-    {
-      rule        = "ssh-tcp"
-      description = "SSH"
-      cidr_blocks = "0.0.0.0/0"
-    }
-  ]
-
-  egress_with_cidr_blocks = [
-    {
-      rule        = "all-all"
-      description = "Traffic on all ports and protocols"
-      cidr_blocks = "0.0.0.0/0"
-    }
-  ]
-
-  tags = local.tags
-}
-
-# Create a SSH key pair
-resource "tls_private_key" "this" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-# Create an AWS key pair with the public key of the SSH key pair created earlier
-resource "aws_key_pair" "this" {
-  key_name   = var.aws_key_pair_name
-  public_key = tls_private_key.this.public_key_openssh
-
-  # This command would run on Linux/Unix/Mac only and assumes that you have a
-  # folder at this path: ${var.ssh_key_local_path}
-  provisioner "local-exec" {
-    command = <<EOF
-    echo '${tls_private_key.this.private_key_pem}' > \
-    ${var.ssh_key_local_path}/${var.aws_key_pair_name}.pem
-    EOF
-  }
-  tags = local.tags
-}
-
-# Spin up a sample instance in the client VPC for testing purposes only
-# Block this code module if and when needed as this is entirely optional
-module "client_instance" {
-  source = "terraform-aws-modules/ec2-instance/aws"
-
-  name                   = "client-privatelink-instance"
-  instance_type          = "t2.micro"
-  key_name               = resource.aws_key_pair.this.key_name
-  monitoring             = true
-  vpc_security_group_ids = [module.client_instance_sg.security_group_id]
-  subnet_id              = module.client_vpc.public_subnets[0]
-  user_data              = file("user-data.sh")
-
-  associate_public_ip_address = true
-
-  tags = local.tags
-}
-
 # Configure the Private EKS VPC by setting only private subnets and without a
 # NAT Gateway, effectively preventing ingress/exgress outside of VPC
 module "private_vpc" {
@@ -107,12 +5,10 @@ module "private_vpc" {
   version = "~> 5.0"
 
   name = local.service_vpc_name
-  cidr = var.vpc_cidr
+  cidr = local.vpc_cidr
 
-  azs = local.azs
-  private_subnets = [
-    for k, v in local.azs : cidrsubnet(var.vpc_cidr, 4, k)
-  ]
+  azs             = local.azs
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
 
   # No NAT Gateway prevents ingress into the VPC, making VPC extra private
   enable_nat_gateway = false
@@ -141,7 +37,7 @@ module "private_vpc_endpoints_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 5.0"
 
-  name        = "${var.eks_cluster_name}-vpc-endpoints"
+  name        = "${local.name}-vpc-endpoints"
   description = "Security group for VPC endpoint access"
   vpc_id      = module.private_vpc.vpc_id
 
@@ -180,7 +76,7 @@ module "private_vpc_endpoints" {
         service_type    = "Gateway"
         route_table_ids = module.private_vpc.private_route_table_ids
         tags = {
-          Name = "${var.eks_cluster_name}-s3"
+          Name = "${local.name}-s3"
         }
       }
     },
@@ -194,7 +90,7 @@ module "private_vpc_endpoints" {
         service             = service
         subnet_ids          = module.private_vpc.private_subnets
         private_dns_enabled = true
-        tags                = { Name = "${var.eks_cluster_name}-${service}" }
+        tags                = { Name = "${var.local.name}-${service}" }
       }
     }
   )
@@ -207,10 +103,10 @@ module "private_vpc_endpoints" {
 # an EKS cluster that is only accessible within the VPC in which it is created
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.15.3"
+  version = "~> 19.15"
 
-  cluster_name    = var.eks_cluster_name
-  cluster_version = var.eks_cluster_version
+  cluster_name    = local.name
+  cluster_version = "1.27"
 
   cluster_addons = {
     coredns    = {}
@@ -452,7 +348,7 @@ module "handle_eni_cleanup_lambda" {
 
   environment_variables = {
     TARGET_GROUP_ARN = module.nlb.target_group_arns[0]
-    EKS_CLUSTER_NAME = var.eks_cluster_name
+    EKS_CLUSTER_NAME = module.eks.cluster_name
   }
 
   allowed_triggers = {
@@ -487,7 +383,7 @@ module "eventbridge" {
           "sourceIPAddress" : ["eks.amazonaws.com"],
           "responseElements" : {
             "networkInterface" : {
-              "description" : ["Amazon EKS ${var.eks_cluster_name}"]
+              "description" : ["Amazon EKS ${local.name}"]
             }
           }
         }

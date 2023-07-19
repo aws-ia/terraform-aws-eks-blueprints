@@ -1,7 +1,14 @@
 locals {
-  azs = data.aws_availability_zones.available.names
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
-  client_vpc_name  = format("%s-%s-%s", var.eks_cluster_name, "client", "vpc")
+  vpc_cidr = "10.0.0.0/16"
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
+  }
   service_vpc_name = format("%s-%s", var.eks_cluster_name, "vpc")
 
   nlb_ip_cidrs = [
@@ -16,9 +23,4 @@ locals {
   # Retrieve the subdomain and domain name of the API server endpoint URL
   r53_record_subdomain    = local.api_server_url_pattern[1]
   r53_private_hosted_zone = local.api_server_url_pattern[2]
-
-  tags = {
-    Blueprint  = basename(path.cwd)
-    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
-  }
 }
