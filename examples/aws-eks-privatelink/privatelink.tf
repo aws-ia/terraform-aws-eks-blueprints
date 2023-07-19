@@ -117,38 +117,35 @@ resource "aws_route53_record" "alias_k8s_api_server" {
   }
 }
 
-# Create a randomly named S3 bucket to store the Lambda ZIP files
-resource "aws_s3_bucket" "this" {
-  tags = local.tags
-}
+################################################################################
+# Lambda - Add ENI IPs to NLB Target Group
+################################################################################
 
-# Define a Lambda to handle the API Endpoint ENI creation
-module "handle_eni_create_lambda" {
-  source = "terraform-aws-modules/lambda/aws"
+module "add_eni_ips_lambda" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "~> 5.0"
 
-  function_name = "eks-api-endpoints-create-event-handler"
-  description   = "Lambda that handles creation of EKS API endpoints"
-  handler       = "handler.lambda_handler"
+  function_name = "${local.name}-add-eni-ips"
+  description   = "Adds ENI IPs to NLB target group when EKS API endpoint is created"
+  handler       = "delete_eni.handler"
   runtime       = "python3.10"
   publish       = true
-  source_path   = "handle-eni-create"
-  store_on_s3   = true
-  s3_bucket     = resource.aws_s3_bucket.this.id
+  source_path   = "lambdas"
 
   attach_policy_json = true
   policy_json        = <<-EOT
-  {
+    {
       "Version": "2012-10-17",
       "Statement": [
-          {
-              "Effect": "Allow",
-              "Action": [
-                  "elasticloadbalancing:RegisterTargets"
-              ],
-              "Resource": ["${module.nlb.target_group_arns[0]}"]
-          }
+        {
+          "Effect": "Allow",
+          "Action": [
+            "elasticloadbalancing:RegisterTargets"
+          ],
+          "Resource": ["${module.nlb.target_group_arns[0]}"]
+        }
       ]
-  }
+    }
   EOT
 
   environment_variables = {
@@ -157,51 +154,51 @@ module "handle_eni_create_lambda" {
 
   allowed_triggers = {
     eventbridge = {
-      principal = "events.amazonaws.com"
-      source_arn = module.eventbridge.eventbridge_rule_arns[
-        "eks-api-endpoint-create"
-      ]
+      principal  = "events.amazonaws.com"
+      source_arn = module.eventbridge.eventbridge_rule_arns["eks-api-endpoint-create"]
     }
   }
 
   tags = local.tags
 }
 
-# Define a Lambda to handle the API Endpoint ENI deletion
-module "handle_eni_cleanup_lambda" {
-  source = "terraform-aws-modules/lambda/aws"
+################################################################################
+# Lambda - Delete ENI IPs from NLB Target Group
+################################################################################
 
-  function_name = "eks-api-endpoints-cleanup-event-handler"
-  description   = "Lambda that handles deletion of EKS API endpoints"
-  handler       = "handler.lambda_handler"
+module "delete_eni_ips_lambda" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "~> 5.0"
+
+  function_name = "${local.name}-delete-eni-ips"
+  description   = "Deletes ENI IPs from NLB target group when EKS API endpoint is deleted"
+  handler       = "delete_eni.handler"
   runtime       = "python3.10"
   publish       = true
-  source_path   = "handle-eni-cleanup"
-  store_on_s3   = true
-  s3_bucket     = resource.aws_s3_bucket.this.id
+  source_path   = "lambdas"
 
   attach_policy_json = true
   policy_json        = <<-EOT
-  {
+    {
       "Version": "2012-10-17",
       "Statement": [
-          {
-              "Effect": "Allow",
-              "Action": [
-                  "ec2:DescribeNetworkInterfaces",
-                  "elasticloadbalancing:Describe*"
-              ],
-              "Resource": ["*"]
-          },
-          {
-              "Effect": "Allow",
-              "Action": [
-                  "elasticloadbalancing:DeregisterTargets"
-              ],
-              "Resource": ["${module.nlb.target_group_arns[0]}"]
-          }
+        {
+          "Effect": "Allow",
+          "Action": [
+            "ec2:DescribeNetworkInterfaces",
+            "elasticloadbalancing:Describe*"
+          ],
+          "Resource": ["*"]
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "elasticloadbalancing:DeregisterTargets"
+          ],
+          "Resource": ["${module.nlb.target_group_arns[0]}"]
+        }
       ]
-  }
+    }
   EOT
 
   environment_variables = {
@@ -211,25 +208,25 @@ module "handle_eni_cleanup_lambda" {
 
   allowed_triggers = {
     eventbridge = {
-      principal = "events.amazonaws.com"
-      source_arn = module.eventbridge.eventbridge_rule_arns[
-        "eks-api-endpoint-cleanup"
-      ]
+      principal  = "events.amazonaws.com"
+      source_arn = module.eventbridge.eventbridge_rule_arns["eks-api-endpoint-delete"]
     }
   }
 
   tags = local.tags
 }
 
-# One single eventbridge module that defines two rules and invokes one Lambda
-# for each rule that is matched
+################################################################################
+# EventBridge Rules
+################################################################################
+
 module "eventbridge" {
-  source = "terraform-aws-modules/eventbridge/aws"
+  source  = "terraform-aws-modules/eventbridge/aws"
+  version = "~> 2.0"
 
   # Use the existing default event bus
   create_bus = false
 
-  # Create two rules, one to handle ENI creation and one to handle deletion
   rules = {
     eks-api-endpoint-create = {
       event_pattern = jsonencode({
@@ -248,24 +245,24 @@ module "eventbridge" {
       })
       enabled = true
     }
-    eks-api-endpoint-cleanup = {
+
+    eks-api-endpoint-delete = {
       description         = "Trigger for a Lambda"
-      schedule_expression = "rate(${var.handle_eni_cleanup_lambda_freq} minutes)"
+      schedule_expression = "rate(15 minutes)"
     }
   }
 
-  # Define the Lambda targets that need to be triggered, one for each rule
   targets = {
     eks-api-endpoint-create = [
       {
-        name = module.handle_eni_create_lambda.lambda_function_name
-        arn  = module.handle_eni_create_lambda.lambda_function_arn
+        name = module.add_eni_ips_lambda.lambda_function_name
+        arn  = module.add_eni_ips_lambda.lambda_function_arn
       }
     ]
-    eks-api-endpoint-cleanup = [
+    eks-api-endpoint-delete = [
       {
-        name = module.handle_eni_cleanup_lambda.lambda_function_name
-        arn  = module.handle_eni_cleanup_lambda.lambda_function_arn
+        name = module.delete_eni_ips_lambda.lambda_function_name
+        arn  = module.delete_eni_ips_lambda.lambda_function_arn
       }
     ]
   }

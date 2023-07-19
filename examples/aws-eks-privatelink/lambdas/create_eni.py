@@ -5,16 +5,12 @@ nlbClient = boto3.client('elbv2')
 
 targetGroupARN = os.environ['TARGET_GROUP_ARN']
 
-def lambda_handler(event, context):
-
-    # Check if the event is of the type CreateNetworkInterface
+def handler(event, context):
+    # Only modify on CreateNetworkInterface events
     if event["detail"]["eventName"] == "CreateNetworkInterface":
-
-        # Extract the Private IP address of the newly created ENI
         ip = event['detail']['responseElements']['networkInterface']['privateIpAddress']
 
-        # We directly add the extracted Private IP address of the ENI as a
-        # target to the target group
+        # Add the extracted private IP address of the ENI as an IP target in the target group
         try:
             response = nlbClient.register_targets(
                 TargetGroupArn = targetGroupARN,
@@ -24,9 +20,6 @@ def lambda_handler(event, context):
                 }]
             )
             print(response)
-            return(response)
         except Exception as e:
             print(e)
             raise(e)
-
-    return

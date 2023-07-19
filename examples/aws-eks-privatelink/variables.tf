@@ -9,9 +9,3 @@ variable "endpoint_name" {
   type        = string
   default     = "k8s-api-server-ep"
 }
-
-variable "handle_eni_cleanup_lambda_freq" {
-  description = "Frequency in mins, how often the clean up lambda needs to run"
-  type        = number
-  default     = 15
-}
