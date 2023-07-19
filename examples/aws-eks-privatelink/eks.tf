@@ -80,6 +80,10 @@ resource "aws_internet_gateway" "igw" {
   tags   = local.tags
 }
 
+################################################################################
+# VPC Endpoints
+################################################################################
+
 module "vpc_endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "~> 5.1"

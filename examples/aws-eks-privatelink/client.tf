@@ -1,3 +1,6 @@
+# The resources defined in this file are only used for demonstrating private connectivity
+# They are not required for the solution
+
 locals {
   client_name = "${local.name}-client"
 }
@@ -32,28 +35,7 @@ module "client_vpc" {
 
 ################################################################################
 # EC2 Instance
-# This EC2 is only used for demonstrating private connectivity and not required for the solution
 ################################################################################
-
-module "client_security_group" {
-  source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 5.0"
-
-  name        = local.client_name
-  description = "Security group for SSM access to private cluster"
-  vpc_id      = module.client_vpc.vpc_id
-
-  egress_with_cidr_blocks = [
-    {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_blocks = "0.0.0.0/0"
-    },
-  ]
-
-  tags = local.tags
-}
 
 module "client_ec2_instance" {
   source = "terraform-aws-modules/ec2-instance/aws"
@@ -81,6 +63,26 @@ module "client_ec2_instance" {
     unzip -qq awscliv2.zip
     ./aws/install
   EOT
+
+  tags = local.tags
+}
+
+module "client_security_group" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "~> 5.0"
+
+  name        = local.client_name
+  description = "Security group for SSM access to private cluster"
+  vpc_id      = module.client_vpc.vpc_id
+
+  egress_with_cidr_blocks = [
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = "0.0.0.0/0"
+    },
+  ]
 
   tags = local.tags
 }

@@ -1,3 +1,9 @@
+provider "aws" {
+  region = local.region
+}
+
+data "aws_availability_zones" "available" {}
+
 locals {
   name   = basename(path.cwd)
   region = "us-west-2"
