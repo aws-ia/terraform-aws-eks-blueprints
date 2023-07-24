@@ -80,7 +80,7 @@ jobs:
           restore-keys: ${{ runner.os }}-terraform-
 
       - name: Terraform min/max versions
-        uses: clowdhaus/terraform-min-max@v1.2.6
+        uses: clowdhaus/terraform-min-max@v1.2.7
         if: steps.changes.outputs.src== 'true'
         id: minMax
         with:
@@ -145,7 +145,7 @@ jobs:
 
       - name: Terraform min/max versions
         id: minMax
-        uses: clowdhaus/terraform-min-max@v1.2.6
+        uses: clowdhaus/terraform-min-max@v1.2.7
         if: steps.changes.outputs.src== 'true'
 
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.maxVersion }}
