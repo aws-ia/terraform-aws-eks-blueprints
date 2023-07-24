@@ -3,14 +3,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'docs/**'
-      - mkdocs.yml
-      - README.md
-      - '.github/workflows/publish-docs.yml'
-  release:
-    types:
-      - published
 
 env:
   PYTHON_VERSION: 3.x
@@ -22,6 +14,8 @@ jobs:
   build:
     name: Deploy docs
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@v2
@@ -42,7 +36,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install mike==1.1.2 \
-            mkdocs-material==9.1.4 \
+            mkdocs-material==9.1.19 \
             mkdocs-include-markdown-plugin==4.0.4 \
             mkdocs-awesome-pages-plugin==2.9.1
 
