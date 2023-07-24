@@ -100,6 +100,9 @@ module "eks_blueprints_addons" {
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
 
+  # We want to wait for the Fargate profiles to be deployed first
+  create_delay_dependencies = [for prof in module.eks.fargate_profiles : prof.fargate_profile_arn]
+
   # EKS Add-ons
   eks_addons = {
     coredns = {
