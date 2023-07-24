@@ -29,21 +29,6 @@ terraform apply
 
 Enter `yes` at command prompt to apply
 
-If you choose to customize, create a file by the name `terraform.tfvars` in the root directory of this repo with the following content, customize the content as per your needs and then run the command shown above
-
-```
-aws_region            = "us-west-2"
-istio_helm_chart_version = "1.18.1"
-eks_cluster_version   = "1.27
-managed_node_group    = {
-    node_group_name   = "managed-ondemand"
-    instance_types    = ["t3.small"]
-    min_size          = 1
-    max_size          = 3
-    desired_size      = 2  
-}"
-```
-
 ## Validate
 
 The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the deployment.
@@ -90,7 +75,7 @@ helm list -n istio-system
 ```
 
 ```
-# Output should look like below 
+# Output should look like below
 NAME         	NAMESPACE   	REVISION	UPDATED                             	STATUS  	CHART         	APP VERSION
 istio-base   	istio-system	1       	2023-07-19 11:05:41.599921 -0700 PDT	deployed	base-1.18.1   	1.18.1
 istio-ingress	istio-system	1       	2023-07-19 11:06:03.41609 -0700 PDT 	deployed	gateway-1.18.1	1.18.1
@@ -98,17 +83,21 @@ istiod       	istio-system	1       	2023-07-19 11:05:48.087616 -0700 PDT	deploye
 ```
 
 ## Test
-1. Create the sample namespace and enable the sidecar injecton for this namespace
+
+1. Create the sample namespace and enable the sidecar injection for this namespace
+
 ```sh
 kubectl create namespace sample
 kubectl label namespace sample istio-injection=enabled
 ```
+
 ```
 namespace/sample created
 namespace/sample labeled
 ```
 
 2. Deploy helloworld app
+
 ```sh
 cat <<EOF > helloworld.yaml
 apiVersion: v1
@@ -164,6 +153,7 @@ deployment.apps/helloworld-v1 created
 ```
 
 3. Deploy sleep app that we will use to connect to helloworld app
+
 ```sh
 cat <<EOF > sleep.yaml
 apiVersion: v1
@@ -226,6 +216,7 @@ deployment.apps/sleep created
 ```
 
 4. Check all the pods in the `sample` namespace
+
 ```sh
 kubectl get pods -n sample
 ```
@@ -235,6 +226,7 @@ helloworld-v1-b6c45f55-bx2xk   2/2     Running   0          50s
 sleep-9454cc476-p2zxr          2/2     Running   0          15s
 ```
 5. Connect to helloworld app from sleep app and see the connectivity is using envoy proxy
+
 ```sh
 kubectl exec -n sample -c sleep \
     "$(kubectl get pod -n sample -l \
@@ -270,5 +262,6 @@ kubectl exec -n sample -c sleep \
 To teardown and remove the resources created in this example:
 
 ```sh
+terraform destroy -target="module.eks_blueprints_addons" -auto-approve
 terraform destroy -auto-approve
 ```
