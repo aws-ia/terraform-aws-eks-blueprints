@@ -34,25 +34,6 @@ module "client_vpc" {
 }
 
 ################################################################################
-# VPC Endpoint
-# This allows resources in the client VPC to connect to the EKS cluster API
-# endpoint in the EKS VPC without going over the internet, using a VPC peering
-# connection, or a transit gateway attachment between VPCs
-################################################################################
-
-resource "aws_vpc_endpoint" "this" {
-  vpc_id             = module.client_vpc.vpc_id
-  service_name       = resource.aws_vpc_endpoint_service.this.service_name
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = module.client_vpc.private_subnets
-  security_group_ids = [resource.aws_security_group.allow_tls_client.id]
-
-  tags = merge(local.tags,
-    { Name = var.endpoint_name },
-  )
-}
-
-################################################################################
 # EC2 Instance
 ################################################################################
 

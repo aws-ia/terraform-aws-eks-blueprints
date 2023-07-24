@@ -17,13 +17,13 @@ module "eks" {
 
   cluster_security_group_additional_rules = {
     # Allow tcp/443 from the NLB IP addresses
-    nlb_ingress = {
+    for ip_addr in data.dns_a_record_set.nlb.addrs : "nlb_ingress_${replace(ip_addr, ".", "")}" => {
       description = "Allow ingress from NLB"
       type        = "ingress"
       from_port   = 443
       to_port     = 443
       protocol    = "tcp"
-      cidr_blocks = [for ip_addr in data.dns_a_record_set.nlb.addrs : "${ip_addr}/32"]
+      cidr_blocks = ["${ip_addr}/32"]
     }
   }
 
@@ -42,6 +42,19 @@ module "eks" {
 
   tags = local.tags
 }
+
+# # The NLB IP addresses are added to the cluster primary security group
+# # since it is not created/controlled by Terraform, and therefore does not
+# # create conflicts with Terraform. A similar but alternate solution would
+# # be to create a separate security group for the NLB and add the rules
+# resource "aws_security_group_rule" "primary_additional" {
+#   type              = "ingress"
+#   from_port         = 443
+#   to_port           = 443
+#   protocol          = "tcp"
+#   cidr_blocks       = [for ip_addr in data.dns_a_record_set.nlb.addrs : "${ip_addr}/32"]
+#   security_group_id = module.eks.cluster_primary_security_group_id
+# }
 
 ################################################################################
 # VPC

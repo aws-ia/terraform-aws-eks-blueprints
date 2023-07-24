@@ -1,24 +1,38 @@
 import boto3
+import logging
 import os
+import json
 
-nlbClient = boto3.client('elbv2')
-ec2Client = boto3.client('ec2')
+ELBV2_CLIENT = boto3.client('elbv2')
+EC2_CLIENT = boto3.client('ec2')
 
-targetGroupARN = os.environ['TARGET_GROUP_ARN']
-eksClusterName = os.environ['EKS_CLUSTER_NAME']
+TARGET_GROUP_ARN = os.environ['TARGET_GROUP_ARN']
 
-def lambda_handler(event, context):
+
+class StructuredMessage:
+    def __init__(self, message, /, **kwargs):
+        self.message = message
+        self.kwargs = kwargs
+
+    def __str__(self):
+        return '%s >>> %s' % (self.message, json.dumps(self.kwargs))
+
+_ = StructuredMessage # optional, to improve readability
+logging.basicConfig(level=logging.DEBUG, format='%(message)s')
+
+
+def handler(event, context):
 
     unhealthyTargetIPAddresses   = []
     eksApiEndpointEniIPAddresses = []
     unhealthyTargetsToDeregister = []
 
-    targetHealthDescriptions = nlbClient.describe_target_health(
-        TargetGroupArn=targetGroupARN,
+    targetHealthDescriptions = ELBV2_CLIENT.describe_target_health(
+        TargetGroupArn=TARGET_GROUP_ARN,
     )['TargetHealthDescriptions']
 
-    if targetHealthDescriptions is None:
-        print("Did not find any TargetHealthDescriptions, quitting!")
+    if not targetHealthDescriptions:
+        logging.info("Did not find any TargetHealthDescriptions, quitting!")
         return
 
     # Iterate over the list of TargetHealthDescriptions and extract the list of
@@ -28,19 +42,19 @@ def lambda_handler(event, context):
             unhealthyTargetIPAddress = targetHealthDescription["Target"]["Id"]
             unhealthyTargetIPAddresses.append(unhealthyTargetIPAddress)
 
-    networkInterfaces = ec2Client.describe_network_interfaces(
+    networkInterfaces = EC2_CLIENT.describe_network_interfaces(
         Filters=[
             {
                 'Name': 'description',
                 'Values': [
-                    'Amazon EKS '+eksClusterName,
+                    f'Amazon EKS {os.environ["EKS_CLUSTER_NAME"]}',
                 ]
             },
         ],
     )['NetworkInterfaces']
 
-    if networkInterfaces is None:
-        print("Did not find any EKS API ENIs to compare with, quitting!")
+    if not networkInterfaces:
+        logging.info("Did not find any EKS API ENIs to compare with, quitting!")
         return
 
     for networkInterface in networkInterfaces:
@@ -56,18 +70,18 @@ def lambda_handler(event, context):
             }
             unhealthyTargetsToDeregister.append(unhealthyTarget)
 
-    if len(unhealthyTargetsToDeregister) == 0:
-        print("There are no unhealthy targets to deregister, quitting!")
+    if not unhealthyTargetsToDeregister:
+        logging.info("There are no unhealthy targets to deregister, quitting!")
         return
 
-    print("Targets are to be deregistered \n"+str(unhealthyTargetsToDeregister))
+    logging.info("Targets are to be deregistered: %s", unhealthyTargetsToDeregister)
 
     try:
-        response = nlbClient.deregister_targets(
-            TargetGroupArn = targetGroupARN,
+        response = ELBV2_CLIENT.deregister_targets(
+            TargetGroupArn = TARGET_GROUP_ARN,
             Targets=unhealthyTargetsToDeregister
         )
-        print(response)
+        logging.info(_(response))
     except Exception as e:
-        print(e)
+        logging.error(_(e))
         raise(e)

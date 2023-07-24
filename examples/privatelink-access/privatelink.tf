@@ -13,7 +13,7 @@ module "nlb" {
   load_balancer_type = "network"
 
   target_groups = [{
-    name_prefix      = "${local.name}-"
+    name             = local.name
     backend_protocol = "TCP"
     backend_port     = 443
     target_type      = "ip"
@@ -38,8 +38,28 @@ data "dns_a_record_set" "nlb" {
   host = module.nlb.lb_dns_name
 }
 
+# VPC Endpoint Service that can be shared with other services in other VPCs.
+# This Service Endpoint is created in the VPC where the LB exists; the client
+# VPC Endpoint will connect to this service to reach the cluster via AWS PrivateLink
+resource "aws_vpc_endpoint_service" "this" {
+  acceptance_required        = true
+  network_load_balancer_arns = [module.nlb.lb_arn]
+
+  tags = merge(local.tags,
+    { Name = local.name },
+  )
+}
+
+resource "aws_vpc_endpoint_connection_accepter" "this" {
+  vpc_endpoint_service_id = aws_vpc_endpoint_service.this.id
+  vpc_endpoint_id         = aws_vpc_endpoint.client.id
+}
+
 ################################################################################
-# VPC Endpoint Service
+# VPC Endpoint
+# This allows resources in the client VPC to connect to the EKS cluster API
+# endpoint in the EKS VPC without going over the internet, using a VPC peering
+# connection, or a transit gateway attachment between VPCs
 ################################################################################
 
 locals {
@@ -51,22 +71,22 @@ locals {
   cluster_endpoint_domain    = local.api_server_url_pattern[2]
 }
 
-# Create a VPC Endpoint Service such that the service can be then shared with
-# other services in other VPCs. This Service Endpoint is created in the VPC
-# where the LB exists
-resource "aws_vpc_endpoint_service" "this" {
-  acceptance_required        = true
-  network_load_balancer_arns = [module.nlb.lb_arn]
+resource "aws_vpc_endpoint" "client" {
+  vpc_id             = module.client_vpc.vpc_id
+  service_name       = resource.aws_vpc_endpoint_service.this.service_name
+  vpc_endpoint_type  = "Interface"
+  subnet_ids         = module.client_vpc.private_subnets
+  security_group_ids = [resource.aws_security_group.client_vpc_endpoint.id]
 
   tags = merge(local.tags,
-    { Name = var.endpoint_service_name },
+    { Name = local.name },
   )
 }
 
 # Create a new security group that allows TLS traffic on port 443 and let the
 # client applications in Client VPC connect to the VPC Endpoint on port 443
-resource "aws_security_group" "allow_tls_client" {
-  name        = "allow-ingress-tls-egress-all"
+resource "aws_security_group" "client_vpc_endpoint" {
+  name_prefix = "${local.name}-"
   description = "Allow TLS inbound traffic"
   vpc_id      = module.client_vpc.vpc_id
 
@@ -89,12 +109,7 @@ resource "aws_security_group" "allow_tls_client" {
   tags = local.tags
 }
 
-resource "aws_vpc_endpoint_connection_accepter" "this" {
-  vpc_endpoint_service_id = aws_vpc_endpoint_service.this.id
-  vpc_endpoint_id         = aws_vpc_endpoint.this.id
-}
-
-resource "aws_route53_zone" "this" {
+resource "aws_route53_zone" "client" {
   name    = local.cluster_endpoint_domain
   comment = "Private hosted zone for EKS API server endpoint"
 
@@ -105,29 +120,29 @@ resource "aws_route53_zone" "this" {
   tags = local.tags
 }
 
-resource "aws_route53_record" "this" {
-  zone_id = resource.aws_route53_zone.this.zone_id
+resource "aws_route53_record" "client" {
+  zone_id = resource.aws_route53_zone.client.zone_id
   name    = "${local.cluster_endpoint_subdomain}${local.cluster_endpoint_domain}"
   type    = "A"
 
   alias {
-    name                   = resource.aws_vpc_endpoint.this.dns_entry[0].dns_name
-    zone_id                = resource.aws_vpc_endpoint.this.dns_entry[0].hosted_zone_id
+    name                   = resource.aws_vpc_endpoint.client.dns_entry[0].dns_name
+    zone_id                = resource.aws_vpc_endpoint.client.dns_entry[0].hosted_zone_id
     evaluate_target_health = true
   }
 }
 
 ################################################################################
-# Lambda - Add ENI IPs to NLB Target Group
+# Lambda - Create ENI IPs to NLB Target Group
 ################################################################################
 
-module "add_eni_ips_lambda" {
+module "create_eni_lambda" {
   source  = "terraform-aws-modules/lambda/aws"
   version = "~> 5.0"
 
   function_name = "${local.name}-add-eni-ips"
-  description   = "Adds ENI IPs to NLB target group when EKS API endpoint is created"
-  handler       = "delete_eni.handler"
+  description   = "Add ENI IPs to NLB target group when EKS API endpoint is created"
+  handler       = "create_eni.handler"
   runtime       = "python3.10"
   publish       = true
   source_path   = "lambdas"
@@ -166,7 +181,7 @@ module "add_eni_ips_lambda" {
 # Lambda - Delete ENI IPs from NLB Target Group
 ################################################################################
 
-module "delete_eni_ips_lambda" {
+module "delete_eni_lambda" {
   source  = "terraform-aws-modules/lambda/aws"
   version = "~> 5.0"
 
@@ -255,14 +270,14 @@ module "eventbridge" {
   targets = {
     eks-api-endpoint-create = [
       {
-        name = module.add_eni_ips_lambda.lambda_function_name
-        arn  = module.add_eni_ips_lambda.lambda_function_arn
+        name = module.create_eni_lambda.lambda_function_name
+        arn  = module.create_eni_lambda.lambda_function_arn
       }
     ]
     eks-api-endpoint-delete = [
       {
-        name = module.delete_eni_ips_lambda.lambda_function_name
-        arn  = module.delete_eni_ips_lambda.lambda_function_arn
+        name = module.delete_eni_lambda.lambda_function_name
+        arn  = module.delete_eni_lambda.lambda_function_arn
       }
     ]
   }
