@@ -6,7 +6,7 @@ This example shows how to provision an EKS cluster with Istio.
 * Add node_security_group rules for port access required for Istio communication
 * Install Istio using Helm resources in Terraform
 * Install Istio Ingress Gateway using Helm resources in Terraform
-* Deploy/Validate Istio communciation using sample application
+* Deploy/Validate Istio communication using sample application
 
 Refer to the [documentation](https://istio.io/latest/docs/concepts/) for `Istio` concepts.
 
@@ -183,7 +183,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sleep
+      app: sleepdocs/blueprints/argocd.md
   template:
     metadata:
       labels:
