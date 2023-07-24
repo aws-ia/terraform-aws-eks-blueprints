@@ -41,7 +41,7 @@ Apply complete! Resources: 63 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name fully-private-cluster"
+configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name fargate-serverless"
 ```
 
 2. Run `update-kubeconfig` command, using the Terraform provided Output, replace with your `$AWS_REGION` and your `$CLUSTER_NAME` variables.
