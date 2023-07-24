@@ -10,20 +10,20 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/blueprints/stateful/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/blueprints/istio/">
       
       
-        <link rel="prev" href="../multi-tenancy-with-teams/">
+        <link rel="prev" href="../ipv6-eks-cluster/">
       
       
-        <link rel="next" href="../tls-with-aws-pca-issuer/">
+        <link rel="next" href="../karpenter/">
       
       <link rel="icon" href="../../images/colored-logo.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.4">
     
     
       
-        <title>Stateful - Amazon EKS Blueprints for Terraform</title>
+        <title>Istio - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -112,7 +112,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#amazon-eks-cluster-for-stateful-workloads" class="md-skip">
+        <a href="#amazon-eks-cluster-w-istio" class="md-skip">
           Skip to content
         </a>
       
@@ -150,7 +150,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Stateful
+              Istio
             
           </span>
         </div>
@@ -456,11 +456,80 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../istio/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Istio
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Istio
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    Validate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test" class="md-nav__link">
+    Test
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    Destroy
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -498,114 +567,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Stateful
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../stateful/" class="md-nav__link">
         Stateful
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    Features
-  </a>
-  
-    <nav class="md-nav" aria-label="Features">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#velero" class="md-nav__link">
-    velero
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ebs-efs-csi-drivers" class="md-nav__link">
-    EBS &amp; EFS CSI Drivers
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#eks-managed-nodegroup-w-multiple-volumes" class="md-nav__link">
-    EKS Managed Nodegroup w/ Multiple Volumes
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#eks-managed-nodegroup-w-instance-store-volumes" class="md-nav__link">
-    EKS Managed Nodegroup w/ Instance Store Volume(s)
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validate" class="md-nav__link">
-    Validate
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    Destroy
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -841,47 +807,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    Features
-  </a>
-  
-    <nav class="md-nav" aria-label="Features">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#velero" class="md-nav__link">
-    velero
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ebs-efs-csi-drivers" class="md-nav__link">
-    EBS &amp; EFS CSI Drivers
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#eks-managed-nodegroup-w-multiple-volumes" class="md-nav__link">
-    EKS Managed Nodegroup w/ Multiple Volumes
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#eks-managed-nodegroup-w-instance-store-volumes" class="md-nav__link">
-    EKS Managed Nodegroup w/ Instance Store Volume(s)
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#prerequisites" class="md-nav__link">
     Prerequisites:
   </a>
@@ -898,6 +823,13 @@
         <li class="md-nav__item">
   <a href="#validate" class="md-nav__link">
     Validate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test" class="md-nav__link">
+    Test
   </a>
   
 </li>
@@ -927,37 +859,17 @@
   
 
 
-<!-- BEGIN INCLUDE ../../examples/stateful/README.md -->
-<h1 id="amazon-eks-cluster-for-stateful-workloads">Amazon EKS Cluster for Stateful Workloads<a class="headerlink" href="#amazon-eks-cluster-for-stateful-workloads" title="Permanent link">&para;</a></h1>
-<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
-<p>Please note: not all of the features listed below are required for stateful workloads on EKS. We are simply grouping together a set of features that are commonly encountered when managing stateful workloads. Users are encouraged to only enable the features that are required for their workload(s) and use case(s).</p>
-<h3 id="velero"><a href="https://github.com/vmware-tanzu/velero">velero</a><a class="headerlink" href="#velero" title="Permanent link">&para;</a></h3>
-<p>(From the project documentation)
-<code>velero</code> (formerly Heptio Ark) gives you tools to back up and restore your Kubernetes cluster resources and persistent volumes. You can run Velero with a public cloud platform or on-premises. Velero lets you:</p>
+<!-- BEGIN INCLUDE ../../examples/istio/README.md -->
+<h1 id="amazon-eks-cluster-w-istio">Amazon EKS Cluster w/ Istio<a class="headerlink" href="#amazon-eks-cluster-w-istio" title="Permanent link">&para;</a></h1>
+<p>This example shows how to provision an EKS cluster with Istio.</p>
 <ul>
-<li>Take backups of your cluster and restore in case of loss.</li>
-<li>Migrate cluster resources to other clusters.</li>
-<li>Replicate your production cluster to development and testing clusters.</li>
+<li>Deploy EKS Cluster with one managed node group in an VPC</li>
+<li>Add node_security_group rules for port access required for Istio communication</li>
+<li>Install Istio using Helm resources in Terraform</li>
+<li>Install Istio Ingress Gateway using Helm resources in Terraform</li>
+<li>Deploy/Validate Istio communication using sample application</li>
 </ul>
-<h3 id="ebs-efs-csi-drivers">EBS &amp; EFS CSI Drivers<a class="headerlink" href="#ebs-efs-csi-drivers" title="Permanent link">&para;</a></h3>
-<ul>
-<li>A second storage class for <code>gp3</code> backed volumes has been added and made the default over the EKS default <code>gp2</code> storage class (<code>gp2</code> storage class remains in the cluster for use, but it is no longer the default storage class)</li>
-<li>A standard implementation of the EFS CSI driver</li>
-</ul>
-<h3 id="eks-managed-nodegroup-w-multiple-volumes">EKS Managed Nodegroup w/ Multiple Volumes<a class="headerlink" href="#eks-managed-nodegroup-w-multiple-volumes" title="Permanent link">&para;</a></h3>
-<p>An EKS managed nodegroup that utilizes multiple EBS volumes. The primary use case demonstrated in this example is a second volume that is dedicated to the <code>containerd</code> runtime to ensure the root volume is not filled up nor has its I/O exhausted to ensure the instance does not reach a degraded state. The <code>containerd</code> directories are mapped to this volume. You can read more about this recommendation in our <a href="https://aws.github.io/aws-eks-best-practices/scalability/docs/data-plane/#use-multiple-ebs-volumes-for-containers">EKS best practices guide</a> and refer to the <code>containerd</code> <a href="https://github.com/containerd/containerd/blob/main/docs/ops.md#base-configuration">documentation</a> for more information. The update for <code>containerd</code> to use the second volume is managed through the provided user data.</p>
-<p>In addition, the following properties are configured on the nodegroup volumes:</p>
-<ul>
-<li>EBS encryption using a customer managed key (CMK)</li>
-<li>Configuring the volumes to use GP3 storage</li>
-</ul>
-<h3 id="eks-managed-nodegroup-w-instance-store-volumes">EKS Managed Nodegroup w/ Instance Store Volume(s)<a class="headerlink" href="#eks-managed-nodegroup-w-instance-store-volumes" title="Permanent link">&para;</a></h3>
-<p>An EKS managed nodegroup that utilizes EC2 instances with ephemeral instance store(s). Instance stores are ideal for temporary storage of information that changes frequently, such as buffers, caches, scratch data, and other temporary content, or for data that is replicated across a fleet of instances. You can read more about instance stores in the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html">AWS documentation</a>; and be sure to check out the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html#instance-block-device-mapping"><code>Block device mapping instance store caveats</code></a> section as well which covers why the example has provided user data for mounting the instance store(s). The size and number of instance stores will vary based on the EC2 instance type and class.</p>
-<p>In addition, the following properties are configured on the nodegroup volumes:</p>
-<ul>
-<li>EBS encryption using a customer managed key (CMK)</li>
-<li>Configuring the volumes to use GP3 storage</li>
-</ul>
+<p>Refer to the <a href="https://istio.io/latest/docs/concepts/">documentation</a> for <code>Istio</code> concepts.</p>
 <h2 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <p>Ensure that you have the following tools installed locally:</p>
 <ol>
@@ -972,7 +884,6 @@
 </span></code></pre></div>
 <p>Enter <code>yes</code> at command prompt to apply</p>
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
-<p>For validating <code>velero</code> see <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/velero#validate">here</a></p>
 <p>The following command will update the <code>kubeconfig</code> on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code> to validate the deployment.</p>
 <ol>
 <li>Run <code>update-kubeconfig</code> command:</li>
@@ -980,75 +891,204 @@
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;REGION&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER_NAME&gt;
 </span></code></pre></div>
 <ol>
-<li>List the storage classes to view that <code>efs</code>, <code>gp2</code>, and <code>gp3</code> classes are present and <code>gp3</code> is the default storage class</li>
+<li>List the nodes running currently</li>
 </ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>storageclasses
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>NAME<span class="w">            </span>PROVISIONER<span class="w">             </span>RECLAIMPOLICY<span class="w">   </span>VOLUMEBINDINGMODE<span class="w">      </span>ALLOWVOLUMEEXPANSION<span class="w">   </span>AGE
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>efs<span class="w">             </span>efs.csi.aws.com<span class="w">         </span>Delete<span class="w">          </span>Immediate<span class="w">              </span><span class="nb">true</span><span class="w">                   </span>2m19s
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>gp2<span class="w">             </span>kubernetes.io/aws-ebs<span class="w">   </span>Delete<span class="w">          </span>WaitForFirstConsumer<span class="w">   </span><span class="nb">false</span><span class="w">                  </span>15m
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>gp3<span class="w"> </span><span class="o">(</span>default<span class="o">)</span><span class="w">   </span>ebs.csi.aws.com<span class="w">         </span>Delete<span class="w">          </span>WaitForFirstConsumer<span class="w">   </span><span class="nb">true</span><span class="w">                   </span>2m19s
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a># Output should look like below
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>NAME                          STATUS   ROLES    AGE   VERSION
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>ip-10-0-22-173.ec2.internal   Ready    &lt;none&gt;   48m   v1.27.3-eks-a5565ad
 </span></code></pre></div>
 <ol>
-<li>From an instance launched with instance store(s), check that the instance store has been mounted correctly. To verify, first install the <code>nvme-cli</code> tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:</li>
+<li>List out the pods running currently:</li>
 </ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Install the nvme-cli tool</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>nvme-cli<span class="w"> </span>-y
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Show NVMe volumes attached</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>sudo<span class="w"> </span>nvme<span class="w"> </span>list
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># Output should look like below - notice the model is `EC2 NVMe Instance Storage` for the instance store</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>Node<span class="w">             </span>SN<span class="w">                   </span>Model<span class="w">                                    </span>Namespace<span class="w"> </span>Usage<span class="w">                      </span>Format<span class="w">           </span>FW<span class="w"> </span>Rev
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>----------------<span class="w"> </span>--------------------<span class="w"> </span>----------------------------------------<span class="w"> </span>---------<span class="w"> </span>--------------------------<span class="w"> </span>----------------<span class="w"> </span>--------
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>/dev/nvme0n1<span class="w">     </span>vol0546d3c3b0af0bf6d<span class="w"> </span>Amazon<span class="w"> </span>Elastic<span class="w"> </span>Block<span class="w"> </span>Store<span class="w">               </span><span class="m">1</span><span class="w">          </span><span class="m">25</span>.77<span class="w">  </span>GB<span class="w"> </span>/<span class="w">  </span><span class="m">25</span>.77<span class="w">  </span>GB<span class="w">    </span><span class="m">512</span><span class="w">   </span>B<span class="w"> </span>+<span class="w">  </span><span class="m">0</span><span class="w"> </span>B<span class="w">   </span><span class="m">1</span>.0
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>/dev/nvme1n1<span class="w">     </span>AWS24BBF51AF55097008<span class="w"> </span>Amazon<span class="w"> </span>EC2<span class="w"> </span>NVMe<span class="w"> </span>Instance<span class="w"> </span>Storage<span class="w">         </span><span class="m">1</span><span class="w">          </span><span class="m">75</span>.00<span class="w">  </span>GB<span class="w"> </span>/<span class="w">  </span><span class="m">75</span>.00<span class="w">  </span>GB<span class="w">    </span><span class="m">512</span><span class="w">   </span>B<span class="w"> </span>+<span class="w">  </span><span class="m">0</span><span class="w"> </span>B<span class="w">   </span><span class="m">0</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="c1"># Show disks, their partitions and mounts</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>sudo<span class="w"> </span>lsblk
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="c1"># Output should look like below</span>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>NAME<span class="w">          </span>MAJ:MIN<span class="w"> </span>RM<span class="w">  </span>SIZE<span class="w"> </span>RO<span class="w"> </span>TYPE<span class="w"> </span>MOUNTPOINT
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>nvme0n1<span class="w">       </span><span class="m">259</span>:0<span class="w">    </span><span class="m">0</span><span class="w">   </span>24G<span class="w">  </span><span class="m">0</span><span class="w"> </span>disk
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>├─nvme0n1p1<span class="w">   </span><span class="m">259</span>:2<span class="w">    </span><span class="m">0</span><span class="w">   </span>24G<span class="w">  </span><span class="m">0</span><span class="w"> </span>part<span class="w"> </span>/
-</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>└─nvme0n1p128<span class="w"> </span><span class="m">259</span>:3<span class="w">    </span><span class="m">0</span><span class="w">    </span>1M<span class="w">  </span><span class="m">0</span><span class="w"> </span>part
-</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>nvme1n1<span class="w">       </span><span class="m">259</span>:1<span class="w">    </span><span class="m">0</span><span class="w"> </span><span class="m">69</span>.9G<span class="w">  </span><span class="m">0</span><span class="w"> </span>disk<span class="w"> </span>/local1<span class="w"> </span><span class="c1"># &lt;--- this is the instance store</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods,svc<span class="w"> </span>-n<span class="w"> </span>istio-system
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a># Output should look like below
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>NAME                                 READY   STATUS    RESTARTS   AGE
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>pod/istio-ingress-6f7c5dffd8-chkww   1/1     Running   0          48m
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>pod/istiod-ff577f8b8-t9ww2           1/1     Running   0          48m
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>NAME                    TYPE           CLUSTER-IP      EXTERNAL-IP                                                                     PORT(S)                                      AGE
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>service/istio-ingress   LoadBalancer   172.20.100.3    a59363808e78d46d59bf3378cafffcec-a12f9c78cb607b6b.elb.us-east-1.amazonaws.com   15021:32118/TCP,80:32740/TCP,443:30624/TCP   48m
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>service/istiod          ClusterIP      172.20.249.63   &lt;none&gt;                                                                          15010/TCP,15012/TCP,443/TCP,15014/TCP        48m
 </span></code></pre></div>
 <ol>
-<li>From an instance launched with multiple volume(s), check that the instance store has been mounted correctly. To verify, first install the <code>nvme-cli</code> tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:</li>
+<li>Verify all the helm releases installed for Istio:</li>
 </ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Install the nvme-cli tool</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>nvme-cli<span class="w"> </span>-y
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Show NVMe volumes attached</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>sudo<span class="w"> </span>nvme<span class="w"> </span>list
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Output should look like below, where /dev/nvme0n1 is the root volume and /dev/nvme1n1 is the second, additional volume</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>Node<span class="w">             </span>SN<span class="w">                   </span>Model<span class="w">                                    </span>Namespace<span class="w"> </span>Usage<span class="w">                      </span>Format<span class="w">           </span>FW<span class="w"> </span>Rev
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>----------------<span class="w"> </span>--------------------<span class="w"> </span>----------------------------------------<span class="w"> </span>---------<span class="w"> </span>--------------------------<span class="w"> </span>----------------<span class="w"> </span>--------
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>/dev/nvme0n1<span class="w">     </span>vol0cd37dab9e4a5c184<span class="w"> </span>Amazon<span class="w"> </span>Elastic<span class="w"> </span>Block<span class="w"> </span>Store<span class="w">               </span><span class="m">1</span><span class="w">          </span><span class="m">68</span>.72<span class="w">  </span>GB<span class="w"> </span>/<span class="w">  </span><span class="m">68</span>.72<span class="w">  </span>GB<span class="w">    </span><span class="m">512</span><span class="w">   </span>B<span class="w"> </span>+<span class="w">  </span><span class="m">0</span><span class="w"> </span>B<span class="w">   </span><span class="m">1</span>.0
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>/dev/nvme1n1<span class="w">     </span>vol0ad3629c159ee869c<span class="w"> </span>Amazon<span class="w"> </span>Elastic<span class="w"> </span>Block<span class="w"> </span>Store<span class="w">               </span><span class="m">1</span><span class="w">          </span><span class="m">25</span>.77<span class="w">  </span>GB<span class="w"> </span>/<span class="w">  </span><span class="m">25</span>.77<span class="w">  </span>GB<span class="w">    </span><span class="m">512</span><span class="w">   </span>B<span class="w"> </span>+<span class="w">  </span><span class="m">0</span><span class="w"> </span>B<span class="w">   </span><span class="m">1</span>.0
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>helm<span class="w"> </span>list<span class="w"> </span>-n<span class="w"> </span>istio-system
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a># Output should look like below
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>NAME            NAMESPACE       REVISION    UPDATED                                 STATUS      CHART           APP VERSION
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>istio-base      istio-system    1           2023-07-19 11:05:41.599921 -0700 PDT    deployed    base-1.18.1     1.18.1
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>istio-ingress   istio-system    1           2023-07-19 11:06:03.41609 -0700 PDT     deployed    gateway-1.18.1  1.18.1
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>istiod          istio-system    1           2023-07-19 11:05:48.087616 -0700 PDT    deployed    istiod-1.18.1   1.18.1
+</span></code></pre></div>
+<h2 id="test">Test<a class="headerlink" href="#test" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Create the sample namespace and enable the sidecar injection for this namespace</li>
+</ol>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span>create<span class="w"> </span>namespace<span class="w"> </span>sample
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>kubectl<span class="w"> </span>label<span class="w"> </span>namespace<span class="w"> </span>sample<span class="w"> </span>istio-injection<span class="o">=</span>enabled
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>namespace/sample created
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>namespace/sample labeled
 </span></code></pre></div>
 <ol>
-<li>From the same instance used in step 4, check that the containerd directories are using the second <code>/dev/nvme1n1</code> volume:</li>
+<li>Deploy helloworld app</li>
 </ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>df<span class="w"> </span>/var/lib/containerd/
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># Output should look like below, which shows the directory on the /dev/nvme1n1 volume and NOT on /dev/nvme0n1 (root volume)</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>Filesystem<span class="w">     </span>1K-blocks<span class="w">    </span>Used<span class="w"> </span>Available<span class="w"> </span>Use%<span class="w"> </span>Mounted<span class="w"> </span>on
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>/dev/nvme1n1<span class="w">    </span><span class="m">24594768</span><span class="w"> </span><span class="m">2886716</span><span class="w">  </span><span class="m">20433380</span><span class="w">  </span><span class="m">13</span>%<span class="w"> </span>/var/lib/containerd
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt;EOF &gt; helloworld.yaml</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="s">apiVersion: v1</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="s">kind: Service</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="s">metadata:</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="s">  name: helloworld</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="s">  labels:</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="s">    app: helloworld</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="s">    service: helloworld</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="s">spec:</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="s">  ports:</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="s">  - port: 5000</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="s">    name: http</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="s">  selector:</span>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="s">    app: helloworld</span>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="s">---</span>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="s">apiVersion: apps/v1</span>
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="s">kind: Deployment</span>
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="s">metadata:</span>
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="s">  name: helloworld-v1</span>
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="s">  labels:</span>
+</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="s">    app: helloworld</span>
+</span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="s">    version: v1</span>
+</span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="s">spec:</span>
+</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="s">  replicas: 1</span>
+</span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="s">  selector:</span>
+</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="s">    matchLabels:</span>
+</span><span id="__span-10-27"><a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="s">      app: helloworld</span>
+</span><span id="__span-10-28"><a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="s">      version: v1</span>
+</span><span id="__span-10-29"><a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="s">  template:</span>
+</span><span id="__span-10-30"><a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a><span class="s">    metadata:</span>
+</span><span id="__span-10-31"><a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a><span class="s">      labels:</span>
+</span><span id="__span-10-32"><a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a><span class="s">        app: helloworld</span>
+</span><span id="__span-10-33"><a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a><span class="s">        version: v1</span>
+</span><span id="__span-10-34"><a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a><span class="s">    spec:</span>
+</span><span id="__span-10-35"><a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a><span class="s">      containers:</span>
+</span><span id="__span-10-36"><a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a><span class="s">      - name: helloworld</span>
+</span><span id="__span-10-37"><a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a><span class="s">        image: docker.io/istio/examples-helloworld-v1</span>
+</span><span id="__span-10-38"><a id="__codelineno-10-38" name="__codelineno-10-38" href="#__codelineno-10-38"></a><span class="s">        resources:</span>
+</span><span id="__span-10-39"><a id="__codelineno-10-39" name="__codelineno-10-39" href="#__codelineno-10-39"></a><span class="s">          requests:</span>
+</span><span id="__span-10-40"><a id="__codelineno-10-40" name="__codelineno-10-40" href="#__codelineno-10-40"></a><span class="s">            cpu: &quot;100m&quot;</span>
+</span><span id="__span-10-41"><a id="__codelineno-10-41" name="__codelineno-10-41" href="#__codelineno-10-41"></a><span class="s">        imagePullPolicy: IfNotPresent #Always</span>
+</span><span id="__span-10-42"><a id="__codelineno-10-42" name="__codelineno-10-42" href="#__codelineno-10-42"></a><span class="s">        ports:</span>
+</span><span id="__span-10-43"><a id="__codelineno-10-43" name="__codelineno-10-43" href="#__codelineno-10-43"></a><span class="s">        - containerPort: 5000</span>
+</span><span id="__span-10-44"><a id="__codelineno-10-44" name="__codelineno-10-44" href="#__codelineno-10-44"></a><span class="s">EOF</span>
+</span><span id="__span-10-45"><a id="__codelineno-10-45" name="__codelineno-10-45" href="#__codelineno-10-45"></a>
+</span><span id="__span-10-46"><a id="__codelineno-10-46" name="__codelineno-10-46" href="#__codelineno-10-46"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>helloworld.yaml<span class="w"> </span>-n<span class="w"> </span>sample
 </span></code></pre></div>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>df<span class="w"> </span>/run/containerd/
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1"># Output should look like below, which shows the directory on the /dev/nvme1n1 volume and NOT on /dev/nvme0n1 (root volume)</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>Filesystem<span class="w">     </span>1K-blocks<span class="w">    </span>Used<span class="w"> </span>Available<span class="w"> </span>Use%<span class="w"> </span>Mounted<span class="w"> </span>on
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>/dev/nvme1n1<span class="w">    </span><span class="m">24594768</span><span class="w"> </span><span class="m">2886716</span><span class="w">  </span><span class="m">20433380</span><span class="w">  </span><span class="m">13</span>%<span class="w"> </span>/run/containerd
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>service/helloworld created
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>deployment.apps/helloworld-v1 created
 </span></code></pre></div>
+<ol>
+<li>Deploy sleep app that we will use to connect to helloworld app</li>
+</ol>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt;EOF &gt; sleep.yaml</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="s">apiVersion: v1</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="s">kind: ServiceAccount</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="s">metadata:</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="s">  name: sleep</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="s">---</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="s">apiVersion: v1</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="s">kind: Service</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="s">metadata:</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="s">  name: sleep</span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="s">  labels:</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="s">    app: sleep</span>
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="s">    service: sleep</span>
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="s">spec:</span>
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="s">  ports:</span>
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="s">  - port: 80</span>
+</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="s">    name: http</span>
+</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="s">  selector:</span>
+</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="s">    app: sleep</span>
+</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a><span class="s">---</span>
+</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="s">apiVersion: apps/v1</span>
+</span><span id="__span-12-22"><a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a><span class="s">kind: Deployment</span>
+</span><span id="__span-12-23"><a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a><span class="s">metadata:</span>
+</span><span id="__span-12-24"><a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a><span class="s">  name: sleep</span>
+</span><span id="__span-12-25"><a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a><span class="s">spec:</span>
+</span><span id="__span-12-26"><a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a><span class="s">  replicas: 1</span>
+</span><span id="__span-12-27"><a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a><span class="s">  selector:</span>
+</span><span id="__span-12-28"><a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a><span class="s">    matchLabels:</span>
+</span><span id="__span-12-29"><a id="__codelineno-12-29" name="__codelineno-12-29" href="#__codelineno-12-29"></a><span class="s">      app: sleepdocs/blueprints/argocd.md</span>
+</span><span id="__span-12-30"><a id="__codelineno-12-30" name="__codelineno-12-30" href="#__codelineno-12-30"></a><span class="s">  template:</span>
+</span><span id="__span-12-31"><a id="__codelineno-12-31" name="__codelineno-12-31" href="#__codelineno-12-31"></a><span class="s">    metadata:</span>
+</span><span id="__span-12-32"><a id="__codelineno-12-32" name="__codelineno-12-32" href="#__codelineno-12-32"></a><span class="s">      labels:</span>
+</span><span id="__span-12-33"><a id="__codelineno-12-33" name="__codelineno-12-33" href="#__codelineno-12-33"></a><span class="s">        app: sleep</span>
+</span><span id="__span-12-34"><a id="__codelineno-12-34" name="__codelineno-12-34" href="#__codelineno-12-34"></a><span class="s">    spec:</span>
+</span><span id="__span-12-35"><a id="__codelineno-12-35" name="__codelineno-12-35" href="#__codelineno-12-35"></a><span class="s">      terminationGracePeriodSeconds: 0</span>
+</span><span id="__span-12-36"><a id="__codelineno-12-36" name="__codelineno-12-36" href="#__codelineno-12-36"></a><span class="s">      serviceAccountName: sleep</span>
+</span><span id="__span-12-37"><a id="__codelineno-12-37" name="__codelineno-12-37" href="#__codelineno-12-37"></a><span class="s">      containers:</span>
+</span><span id="__span-12-38"><a id="__codelineno-12-38" name="__codelineno-12-38" href="#__codelineno-12-38"></a><span class="s">      - name: sleep</span>
+</span><span id="__span-12-39"><a id="__codelineno-12-39" name="__codelineno-12-39" href="#__codelineno-12-39"></a><span class="s">        image: curlimages/curl</span>
+</span><span id="__span-12-40"><a id="__codelineno-12-40" name="__codelineno-12-40" href="#__codelineno-12-40"></a><span class="s">        command: [&quot;/bin/sleep&quot;, &quot;infinity&quot;]</span>
+</span><span id="__span-12-41"><a id="__codelineno-12-41" name="__codelineno-12-41" href="#__codelineno-12-41"></a><span class="s">        imagePullPolicy: IfNotPresent</span>
+</span><span id="__span-12-42"><a id="__codelineno-12-42" name="__codelineno-12-42" href="#__codelineno-12-42"></a><span class="s">        volumeMounts:</span>
+</span><span id="__span-12-43"><a id="__codelineno-12-43" name="__codelineno-12-43" href="#__codelineno-12-43"></a><span class="s">        - mountPath: /etc/sleep/tls</span>
+</span><span id="__span-12-44"><a id="__codelineno-12-44" name="__codelineno-12-44" href="#__codelineno-12-44"></a><span class="s">          name: secret-volume</span>
+</span><span id="__span-12-45"><a id="__codelineno-12-45" name="__codelineno-12-45" href="#__codelineno-12-45"></a><span class="s">      volumes:</span>
+</span><span id="__span-12-46"><a id="__codelineno-12-46" name="__codelineno-12-46" href="#__codelineno-12-46"></a><span class="s">      - name: secret-volume</span>
+</span><span id="__span-12-47"><a id="__codelineno-12-47" name="__codelineno-12-47" href="#__codelineno-12-47"></a><span class="s">        secret:</span>
+</span><span id="__span-12-48"><a id="__codelineno-12-48" name="__codelineno-12-48" href="#__codelineno-12-48"></a><span class="s">          secretName: sleep-secret</span>
+</span><span id="__span-12-49"><a id="__codelineno-12-49" name="__codelineno-12-49" href="#__codelineno-12-49"></a><span class="s">          optional: true</span>
+</span><span id="__span-12-50"><a id="__codelineno-12-50" name="__codelineno-12-50" href="#__codelineno-12-50"></a><span class="s">EOF</span>
+</span><span id="__span-12-51"><a id="__codelineno-12-51" name="__codelineno-12-51" href="#__codelineno-12-51"></a>
+</span><span id="__span-12-52"><a id="__codelineno-12-52" name="__codelineno-12-52" href="#__codelineno-12-52"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>sleep.yaml<span class="w"> </span>-n<span class="w"> </span>sample
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>serviceaccount/sleep created
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>service/sleep created
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>deployment.apps/sleep created
+</span></code></pre></div>
+<ol>
+<li>Check all the pods in the <code>sample</code> namespace</li>
+</ol>
+<p><div class="language-sh highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>sample
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>NAME                           READY   STATUS    RESTARTS   AGE
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>helloworld-v1-b6c45f55-bx2xk   2/2     Running   0          50s
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>sleep-9454cc476-p2zxr          2/2     Running   0          15s
+</span></code></pre></div>
+5. Connect to helloworld app from sleep app and see the connectivity is using envoy proxy</p>
+<p><div class="language-sh highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-n<span class="w"> </span>sample<span class="w"> </span>-c<span class="w"> </span>sleep<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="s2">&quot;</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pod<span class="w"> </span>-n<span class="w"> </span>sample<span class="w"> </span>-l<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="nv">app</span><span class="o">=</span>sleep<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span>--<span class="w"> </span>curl<span class="w"> </span>-v<span class="w"> </span>helloworld.sample:5000/hello
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>* processing: helloworld.sample:5000/hello
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>                                 Dload  Upload   Total   Spent    Left  Speed
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 172.20.26.38:5000...
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>* Connected to helloworld.sample (172.20.26.38) port 5000
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>&gt; GET /hello HTTP/1.1
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>&gt; Host: helloworld.sample:5000
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>&gt; User-Agent: curl/8.2.0
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>&gt; Accept: */*
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>&gt;
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>&lt; HTTP/1.1 200 OK
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>&lt; server: envoy
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a>&lt; date: Fri, 21 Jul 2023 18:56:09 GMT
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a>&lt; content-type: text/html; charset=utf-8
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a>&lt; content-length: 58
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>&lt; x-envoy-upstream-service-time: 142
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a>&lt;
+</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a>{ [58 bytes data]
+</span><span id="__span-17-19"><a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a>100    58  100    58  Hello version: v1, instance: helloworld-v1-b6c45f55-h592c
+</span><span id="__span-17-20"><a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a>  0     0    392      0 --:--:-- --:--:-- --:--:--   394
+</span><span id="__span-17-21"><a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a>* Connection #0 to host helloworld.sample left intact
+</span></code></pre></div></p>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
 <p>To teardown and remove the resources created in this example:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="w"> </span>module.eks_blueprints_addons
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>terraform<span class="w"> </span>destroy
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </span></code></pre></div>
-<p>Enter <code>yes</code> at each command prompt to destroy</p>
 <!-- END INCLUDE -->
 
 
