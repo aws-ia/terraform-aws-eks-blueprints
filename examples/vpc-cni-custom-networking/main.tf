@@ -127,7 +127,6 @@ resource "kubectl_manifest" "eni_config" {
     }
     spec = {
       securityGroups = [
-        module.eks.cluster_primary_security_group_id,
         module.eks.node_security_group_id,
       ]
       subnet = each.value
