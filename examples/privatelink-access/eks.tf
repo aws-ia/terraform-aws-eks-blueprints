@@ -1,51 +1,42 @@
-provider "aws" {
-  region = local.region
-}
-
-data "aws_availability_zones" "available" {}
-
-locals {
-  name   = basename(path.cwd)
-  region = "us-west-2"
-
-  vpc_cidr = "10.0.0.0/16"
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
-
-  tags = {
-    Blueprint  = local.name
-    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
-  }
-}
-
 ################################################################################
-# Cluster
+# EKS Cluster
 ################################################################################
 
-#tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.13"
+  version = "~> 19.15"
 
   cluster_name    = local.name
   cluster_version = "1.27"
 
-  # EKS Addons
   cluster_addons = {
     coredns    = {}
     kube-proxy = {}
     vpc-cni    = {}
   }
 
+  cluster_security_group_additional_rules = {
+    # Allow tcp/443 from the NLB IP addresses
+    for ip_addr in data.dns_a_record_set.nlb.addrs : "nlb_ingress_${replace(ip_addr, ".", "")}" => {
+      description = "Allow ingress from NLB"
+      type        = "ingress"
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      cidr_blocks = ["${ip_addr}/32"]
+    }
+  }
+
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_groups = {
-    initial = {
-      instance_types = ["m5.large"]
+    default = {
+      instance_types = ["c5.large"]
 
       min_size     = 1
-      max_size     = 5
-      desired_size = 3
+      max_size     = 3
+      desired_size = 1
     }
   }
 
@@ -53,14 +44,12 @@ module "eks" {
 }
 
 ################################################################################
-# Supporting Resources
+# VPC
 ################################################################################
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
-
-  manage_default_vpc = true
 
   name = local.name
   cidr = local.vpc_cidr
@@ -68,6 +57,7 @@ module "vpc" {
   azs             = local.azs
   private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
 
+  # Disable NAT gateway for fully private networking
   enable_nat_gateway = false
 
   private_subnet_tags = {
@@ -76,6 +66,19 @@ module "vpc" {
 
   tags = local.tags
 }
+
+# Explicitly create a Internet Gateway here in the Private EKS VPC as without an
+# internet gateway, a NLB cannot be created. Config option of create_igw = true
+# (default) did not work during the VPC creation as it requires public subnets
+# and the related routes that connect them to IGW
+resource "aws_internet_gateway" "igw" {
+  vpc_id = module.vpc.vpc_id
+  tags   = local.tags
+}
+
+################################################################################
+# VPC Endpoints
+################################################################################
 
 module "vpc_endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
@@ -115,44 +118,4 @@ module "vpc_endpoints" {
   })
 
   tags = local.tags
-}
-
-resource "aws_vpc_peering_connection" "this" {
-  peer_vpc_id = module.vpc.vpc_id
-  vpc_id      = module.vpc.default_vpc_id
-  auto_accept = true
-
-  accepter {
-    allow_remote_vpc_dns_resolution = true
-  }
-
-  requester {
-    allow_remote_vpc_dns_resolution = true
-  }
-}
-
-resource "aws_route" "default_to_eks" {
-  route_table_id            = module.vpc.default_vpc_default_route_table_id
-  destination_cidr_block    = module.vpc.vpc_cidr_block
-  vpc_peering_connection_id = aws_vpc_peering_connection.this.id
-  depends_on                = [module.vpc]
-}
-
-resource "aws_route" "eks_to_default" {
-  for_each = { for rt in module.vpc.private_route_table_ids : rt => rt }
-
-  route_table_id            = each.value
-  destination_cidr_block    = module.vpc.default_vpc_cidr_block
-  vpc_peering_connection_id = aws_vpc_peering_connection.this.id
-  depends_on                = [module.vpc]
-}
-
-resource "aws_vpc_security_group_ingress_rule" "this" {
-  for_each          = { for sg in concat([module.eks.cluster_security_group_id, module.eks.cluster_primary_security_group_id]) : sg => sg }
-  security_group_id = each.value
-
-  cidr_ipv4   = module.vpc.default_vpc_cidr_block
-  from_port   = 443
-  to_port     = 443
-  ip_protocol = "tcp"
 }
