@@ -49,7 +49,7 @@ COMMAND="curl -ks https://9A85B21811733524E3ABCDFEA8714642.gr7.us-west-2.eks.ama
 
 COMMAND_ID=$(aws ssm send-command --region us-west-2 \
 --document-name "AWS-RunShellScript" \
---parameters "commands=[$CURL_COMMAND]" \
+--parameters "commands=[$COMMAND]" \
 --targets "Key=instanceids,Values=i-0a45eff73ba408575" \
 --query 'Command.CommandId' \
 --output text)

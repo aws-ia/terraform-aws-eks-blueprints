@@ -10,7 +10,7 @@ output "ssm_test" {
 
     COMMAND_ID=$(aws ssm send-command --region ${local.region} \
     --document-name "AWS-RunShellScript" \
-    --parameters "commands=[$CURL_COMMAND]" \
+    --parameters "commands=[$COMMAND]" \
     --targets "Key=instanceids,Values=${module.client_ec2_instance.id}" \
     --query 'Command.CommandId' \
     --output text)
