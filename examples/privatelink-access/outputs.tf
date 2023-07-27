@@ -4,12 +4,21 @@ output "ssm_start_session" {
 }
 
 output "ssm_test" {
-  description = "SSM start session command to connect to remote host created"
+  description = "SSM commands to test connectivity from client EC2 instance to the private EKS cluster"
   value       = <<-EOT
-    COMMAND_ID=$(aws ssm send-command --region ${local.region} --document-name "AWS-RunShellScript" \
-    --parameters 'commands=["curl -ks ${module.eks.cluster_endpoint}/readyz"]' \
-    --targets "Key=instanceids,Values=${module.client_ec2_instance.id}" --query 'Command.CommandId' --output text)
+    COMMAND="curl -ks ${module.eks.cluster_endpoint}/readyz"
 
-    aws ssm get-command-invocation --region ${local.region} --command-id $COMMAND_ID --instance-id ${module.client_ec2_instance.id} --query 'StandardOutputContent' --output text
+    COMMAND_ID=$(aws ssm send-command --region ${local.region} \
+    --document-name "AWS-RunShellScript" \
+    --parameters "commands=[$COMMAND]" \
+    --targets "Key=instanceids,Values=${module.client_ec2_instance.id}" \
+    --query 'Command.CommandId' \
+    --output text)
+
+    aws ssm get-command-invocation --region ${local.region} \
+    --command-id $COMMAND_ID \
+    --instance-id ${module.client_ec2_instance.id} \
+    --query 'StandardOutputContent' \
+    --output text
   EOT
 }
