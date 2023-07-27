@@ -19,7 +19,7 @@
         <link rel="next" href="../stateful/">
       
       <link rel="icon" href="../../images/colored-logo.png">
-      <meta name="generator" content="mkdocs-1.5.0, mkdocs-material-9.1.19">
+      <meta name="generator" content="mkdocs-1.5.1, mkdocs-material-9.1.19">
     
     
       
@@ -904,7 +904,8 @@
 <!-- BEGIN INCLUDE ../../examples/privatelink-access/README.md -->
 <h1 id="private-eks-cluster-access-via-aws-privatelink">Private EKS cluster access via AWS PrivateLink<a class="headerlink" href="#private-eks-cluster-access-via-aws-privatelink" title="Permanent link">&para;</a></h1>
 <p>This example demonstrates how to access a private EKS cluster using AWS PrivateLink.</p>
-<p>Refer to the <a href="https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html">documentation</a> for further details on  <code>AWS PrivateLink</code>.</p>
+<p>Refer to the <a href="https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html">documentation</a>
+for further details on  <code>AWS PrivateLink</code>.</p>
 <h2 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <p>Ensure that you have the following tools installed locally:</p>
 <ol>
@@ -913,7 +914,9 @@
 <li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
 </ol>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<p>To provision this example, first deploy the Lambda function that responds to <code>CreateNetworkInterface</code> API calls. This needs to exist before the cluster is created so that it can respond to the ENIs created by the EKS control plane:</p>
+<p>To provision this example, first deploy the Lambda function that responds to
+<code>CreateNetworkInterface</code> API calls. This needs to exist before the cluster is
+created so that it can respond to the ENIs created by the EKS control plane:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span>module.create_eni_lambda<span class="w"> </span>-target<span class="o">=</span>module.nlb
 </span></code></pre></div>
@@ -924,53 +927,89 @@
 <p>Enter <code>yes</code> at command prompt to apply</p>
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
 <h3 id="network-connectivity">Network Connectivity<a class="headerlink" href="#network-connectivity" title="Permanent link">&para;</a></h3>
-<ol>
-<li>An output <code>ssm_test</code> has been provided to aid in quickly testing the connectivity from the client EC2 instance to the private EKS cluster via AWS Privatelink. Copy the output value and paste it into your terminal to execute and check the connectivity. If configured correctly, the value returned should be <code>ok</code>.</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">COMMAND_ID</span><span class="o">=</span><span class="k">$(</span>aws<span class="w"> </span>ssm<span class="w"> </span>send-command<span class="w"> </span>--region<span class="w"> </span>us-west-2<span class="w"> </span>--document-name<span class="w"> </span><span class="s2">&quot;AWS-RunShellScript&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>--parameters<span class="w"> </span><span class="s1">&#39;commands=[&quot;curl -ks https://0218D48323E3E7D404D98659F1D097DD.gr7.us-west-2.eks.amazonaws.com/readyz&quot;]&#39;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>--targets<span class="w"> </span><span class="s2">&quot;Key=instanceids,Values=i-0280cf604085f4a44&quot;</span><span class="w"> </span>--query<span class="w"> </span><span class="s1">&#39;Command.CommandId&#39;</span><span class="w"> </span>--output<span class="w"> </span>text<span class="k">)</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>aws<span class="w"> </span>ssm<span class="w"> </span>get-command-invocation<span class="w"> </span>--region<span class="w"> </span>us-west-2<span class="w"> </span>--command-id<span class="w"> </span><span class="nv">$COMMAND_ID</span><span class="w"> </span>--instance-id<span class="w"> </span>i-0280cf604085f4a44<span class="w"> </span>--query<span class="w"> </span><span class="s1">&#39;StandardOutputContent&#39;</span><span class="w"> </span>--output<span class="w"> </span>text
+<p>An output <code>ssm_test</code> has been provided to aid in quickly testing the
+connectivity from the client EC2 instance to the private EKS cluster via AWS
+PrivateLink. Copy the output value and paste it into your terminal to execute
+and check the connectivity. If configured correctly, the value returned should
+be <code>ok</code>.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">COMMAND</span><span class="o">=</span><span class="s2">&quot;curl -ks https://9A85B21811733524E3ABCDFEA8714642.gr7.us-west-2.eks.amazonaws.com/readyz&quot;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nv">COMMAND_ID</span><span class="o">=</span><span class="k">$(</span>aws<span class="w"> </span>ssm<span class="w"> </span>send-command<span class="w"> </span>--region<span class="w"> </span>us-west-2<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>--document-name<span class="w"> </span><span class="s2">&quot;AWS-RunShellScript&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>--parameters<span class="w"> </span><span class="s2">&quot;commands=[</span><span class="nv">$COMMAND</span><span class="s2">]&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>--targets<span class="w"> </span><span class="s2">&quot;Key=instanceids,Values=i-0a45eff73ba408575&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>--query<span class="w"> </span><span class="s1">&#39;Command.CommandId&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>--output<span class="w"> </span>text<span class="k">)</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>aws<span class="w"> </span>ssm<span class="w"> </span>get-command-invocation<span class="w"> </span>--region<span class="w"> </span>us-west-2<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>--command-id<span class="w"> </span><span class="nv">$COMMAND_ID</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>--instance-id<span class="w"> </span>i-0a45eff73ba408575<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>--query<span class="w"> </span><span class="s1">&#39;StandardOutputContent&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>--output<span class="w"> </span>text
 </span></code></pre></div>
 <h3 id="cluster-access">Cluster Access<a class="headerlink" href="#cluster-access" title="Permanent link">&para;</a></h3>
-<p>To test access to the cluster, you will need to execute Kubernetes API calls from within the private network to access the cluster. An EC2 instance has been deployed to simulate this scenario, where the EC2 is deployed into a "client" VPC. However, since the EKS cluster was created with your local IAM identity, the <code>aws-auth</code> ConfigMap will only have your local identity that is permitted to access the cluster. Since cluster's API endpoint is private, we cannot use Terraform to reach it to additional entries to the ConfigMap; we can only access the cluster from within the private network of the cluster's VPC or from the client VPC using AWS PrivateLink access.</p>
-<p>:warning: The "client" EC2 instance provided and copying of AWS credentials to that instance are merely for demonstration purposes only. Please consider alternate methods of network access such as AWS Client VPN to provide more secure access.</p>
-<p>Perform the following steps to access the cluster with <code>kubectl</code> from the provided "client" EC2 instance.</p>
+<p>To test access to the cluster, you will need to execute Kubernetes API calls
+from within the private network to access the cluster. An EC2 instance has been
+deployed into a "client" VPC to simulate this scenario. However, since the EKS
+cluster was created with your local IAM identity, the <code>aws-auth</code> ConfigMap will
+only have your local identity that is permitted to access the cluster. Since
+cluster's API endpoint is private, we cannot use Terraform to reach it to
+add additional entries to the ConfigMap; we can only access the cluster from
+within the private network of the cluster's VPC or from the client VPC using AWS
+PrivateLink access.</p>
+<blockquote>
+<p>:warning: The "client" EC2 instance provided and copying of AWS credentials to
+ that instance are merely for demonstration purposes only. Please consider
+ alternate methods of network access such as AWS Client VPN to provide more
+ secure access.</p>
+</blockquote>
+<p>Perform the following steps to access the cluster with <code>kubectl</code> from the
+provided "client" EC2 instance.</p>
 <ol>
-<li>Execute the command below on your local machine to get temporary credentials that will be used on the "client" EC2 instance:</li>
+<li>Execute the command below on your local machine to get temporary credentials
+that will be used on the "client" EC2 instance:</li>
 </ol>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>aws<span class="w"> </span>sts<span class="w"> </span>get-session-token<span class="w"> </span>--duration-seconds<span class="w"> </span><span class="m">3600</span><span class="w"> </span>--output<span class="w"> </span>yaml
 </span></code></pre></div>
 <ol>
-<li>Start a new SSM session on the "client" EC2 instance using the provided <code>ssm_start_session</code> output value. Your terminal will now be connected to the "client" EC2 instance.</li>
+<li>Start a new SSM session on the "client" EC2 instance using the provided
+<code>ssm_start_session</code> output value. Copy the output value and paste it into your
+terminal to execute. Your terminal will now be connected to the "client" EC2
+instance.</li>
 </ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">ssm_start_session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws ssm start-session --region us-west-2 --target i-0280cf604085f4a44&quot;</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>aws<span class="w"> </span>ssm<span class="w"> </span>start-session<span class="w"> </span>--region<span class="w"> </span>us-west-2<span class="w"> </span>--target<span class="w"> </span>i-0280cf604085f4a44
 </span></code></pre></div>
 <ol>
-<li>Once logged in, export the following environment variables from the output of step 1. Note - the session credentials are only valid for 1 hour; you can adjust the session duration in the command provided in step 1:</li>
+<li>Once logged in, export the following environment variables from the output
+of step #1:</li>
 </ol>
+<blockquote>
+<p>:exclamation: The session credentials are only valid for 1 hour; you can
+   adjust the session duration in the command provided in step #1</p>
+</blockquote>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_ACCESS_KEY_ID</span><span class="o">=</span>XXXX
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_SECRET_ACCESS_KEY</span><span class="o">=</span>YYYY
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_SESSION_TOKEN</span><span class="o">=</span>ZZZZ
 </span></code></pre></div>
 <ol>
-<li>Update the local <code>~/.kube/config</code> file to enable access to the cluster:</li>
+<li>Run the following command to update the local <code>~/.kube/config</code> file to enable
+access to the cluster:</li>
 </ol>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>update-kubeconfig<span class="w"> </span>--region<span class="w"> </span>us-west-2<span class="w"> </span>--name<span class="w"> </span>privatelink-access
 </span></code></pre></div>
 <ol>
-<li>Test access by listing the pods running on the clsuter:</li>
+<li>Test access by listing the pods running on the cluster:</li>
 </ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>sh-4.2$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># Output</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>NAMESPACE<span class="w">     </span>NAME<span class="w">                       </span>READY<span class="w">   </span>STATUS<span class="w">    </span>RESTARTS<span class="w">   </span>AGE
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>kube-system<span class="w">   </span>aws-node-4f8g8<span class="w">             </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>1m
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>kube-system<span class="w">   </span>coredns-6ff9c46cd8-59sqp<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>1m
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>kube-system<span class="w">   </span>coredns-6ff9c46cd8-svnpb<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>2m
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>kube-system<span class="w">   </span>kube-proxy-mm2zc<span class="w">           </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>1m
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A
 </span></code></pre></div>
+<p>The test succeeded if you see an output like the one shown below:</p>
+<div class="codehilite"><pre><span></span><code>   NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
+   kube-system   aws-node-4f8g8             1/1     Running   0          1m
+   kube-system   coredns-6ff9c46cd8-59sqp   1/1     Running   0          1m
+   kube-system   coredns-6ff9c46cd8-svnpb   1/1     Running   0          2m
+   kube-system   kube-proxy-mm2zc           1/1     Running   0          1m
+</code></pre></div>
+
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
 <p>Run the following command to destroy all the resources created by Terraform:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>--auto-approve
