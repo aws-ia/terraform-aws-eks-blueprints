@@ -1,7 +1,5 @@
 # You can generate an Okta API token in the Okta Developer Console. Follow these instructions: https://bit.ly/get-okta-api-token
 
-
-
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
@@ -53,17 +51,19 @@ resource "okta_group_memberships" "developers" {
 }
 
 resource "okta_app_oauth" "eks" {
-  label          = "eks"
-  type           = "native"
-  grant_types    = ["authorization_code"]
-  redirect_uris  = ["http://localhost:8000"]
-  response_types = ["code"]
+  label                      = "eks"
+  type                       = "native"
+  grant_types                = ["authorization_code"]
+  redirect_uris              = ["http://localhost:8000"]
+  post_logout_redirect_uris  = ["http://localhost:8000"]
+  response_types             = ["code"]
+  issuer_mode                = "DYNAMIC"
   token_endpoint_auth_method = "none"
-  pkce_required = true
+  pkce_required              = true
 }
 
 resource "okta_app_group_assignments" "eks" {
-  app_id   = okta_app_oauth.eks.id
+  app_id = okta_app_oauth.eks.id
   group {
     id = okta_group.operators.id
   }
@@ -96,7 +96,7 @@ resource "okta_auth_server_policy" "eks" {
   name             = "eks"
   description      = "EKS"
   priority         = 1
-  client_whitelist = [ okta_app_oauth.eks.id ] 
+  client_whitelist = [okta_app_oauth.eks.id]
 }
 
 resource "okta_auth_server_policy_rule" "auth_code" {
@@ -107,7 +107,7 @@ resource "okta_auth_server_policy_rule" "auth_code" {
   priority             = 1
   group_whitelist      = [okta_group.operators.id, okta_group.developers.id]
   grant_type_whitelist = ["authorization_code"]
-  scope_whitelist      = [ "*" ]
+  scope_whitelist      = ["*"]
 }
 
 resource "kubernetes_cluster_role_binding_v1" "cluster_admin" {
@@ -116,8 +116,8 @@ resource "kubernetes_cluster_role_binding_v1" "cluster_admin" {
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
-    kind = "ClusterRole"
-    name = "cluster-admin"
+    kind      = "ClusterRole"
+    name      = "cluster-admin"
   }
   subject {
     kind = "Group"
@@ -131,8 +131,8 @@ resource "kubernetes_cluster_role_binding_v1" "cluster_viewer" {
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
-    kind = "ClusterRole"
-    name = "view"
+    kind      = "ClusterRole"
+    name      = "view"
   }
   subject {
     kind = "Group"

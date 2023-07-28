@@ -7,15 +7,8 @@ terraform {
       version = ">= 4.47"
     }
     okta = {
-      source = "okta/okta"
+      source  = "okta/okta"
       version = "~> 4.1.0"
     }
   }
-
-  # ##  Used for end-to-end testing on project; update to suit your needs
-  # backend "s3" {
-  #   bucket = "terraform-ssp-github-actions-state"
-  #   region = "us-west-2"
-  #   key    = "e2e/fully-private-cluster/terraform.tfstate"
-  # }
 }
