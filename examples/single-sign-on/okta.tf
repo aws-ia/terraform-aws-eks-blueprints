@@ -4,6 +4,7 @@ provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
 
+
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
@@ -56,10 +57,16 @@ resource "okta_app_oauth" "eks" {
   grant_types                = ["authorization_code"]
   redirect_uris              = ["http://localhost:8000"]
   post_logout_redirect_uris  = ["http://localhost:8000"]
+  token_endpoint_auth_method = "none"
   response_types             = ["code"]
   issuer_mode                = "DYNAMIC"
-  token_endpoint_auth_method = "none"
   pkce_required              = true
+  groups_claim {
+    name        = "groups"
+    type        = "FILTER"
+    filter_type = "STARTS_WITH"
+    value       = "eks-"
+  }
 }
 
 resource "okta_app_group_assignments" "eks" {
@@ -73,40 +80,40 @@ resource "okta_app_group_assignments" "eks" {
 }
 
 resource "okta_auth_server" "eks" {
+  name        = "EKS"
   audiences   = ["http://localhost:8000"]
   description = "EKS Auth Server"
-  name        = "EKS"
   issuer_mode = "ORG_URL"
   status      = "ACTIVE"
 }
 
 resource "okta_auth_server_claim" "eks-groups" {
+  name                    = "groups"
   auth_server_id          = okta_auth_server.eks.id
-  name                    = "eks-groups"
-  value                   = "eks-"
   always_include_in_token = true
-  group_filter_type       = "STARTS_WITH"
-  value_type              = "GROUPS"
   claim_type              = "IDENTITY"
+  value_type              = "GROUPS"
+  group_filter_type       = "STARTS_WITH"
+  value                   = "eks-"
 }
 
 resource "okta_auth_server_policy" "eks" {
-  auth_server_id   = okta_auth_server.eks.id
-  status           = "ACTIVE"
   name             = "eks"
+  auth_server_id   = okta_auth_server.eks.id
   description      = "EKS"
+  status           = "ACTIVE"
   priority         = 1
   client_whitelist = [okta_app_oauth.eks.id]
 }
 
 resource "okta_auth_server_policy_rule" "auth_code" {
+  name                 = "EKS AuthCode + PKCE"
   auth_server_id       = okta_auth_server.eks.id
   policy_id            = okta_auth_server_policy.eks.id
   status               = "ACTIVE"
-  name                 = "EKS AuthCode PKCE"
   priority             = 1
-  group_whitelist      = [okta_group.operators.id, okta_group.developers.id]
   grant_type_whitelist = ["authorization_code"]
+  group_whitelist      = [okta_group.operators.id, okta_group.developers.id]
   scope_whitelist      = ["*"]
 }
 
@@ -120,8 +127,9 @@ resource "kubernetes_cluster_role_binding_v1" "cluster_admin" {
     name      = "cluster-admin"
   }
   subject {
-    kind = "Group"
-    name = "eks-operators"
+    kind      = "Group"
+    name      = "eks-operators"
+    api_group = "rbac.authorization.k8s.io"
   }
 }
 
@@ -135,7 +143,8 @@ resource "kubernetes_cluster_role_binding_v1" "cluster_viewer" {
     name      = "view"
   }
   subject {
-    kind = "Group"
-    name = "eks-developers"
+    kind      = "Group"
+    name      = "eks-developers"
+    api_group = "rbac.authorization.k8s.io"
   }
 }

@@ -17,11 +17,8 @@ output "configure_kubeconfig" {
       --exec-arg=oidc-login \
       --exec-arg=get-token \
       --exec-arg=--oidc-issuer-url=${okta_auth_server.eks.issuer} \
-      --exec-arg=--oidc-client-id=${okta_app_oauth.eks.id}
-      --exec-arg=--oidc-extra-scope=email \
-      --exec-arg=--oidc-extra-scope=offline_access \
-      --exec-arg=--oidc-extra-scope=profile \
-      --exec-arg=--oidc-extra-scope=openid
+      --exec-arg=--oidc-client-id=${okta_app_oauth.eks.id} \
+      --exec-arg=--oidc-extra-scope="email offline_access profile openid"
   EOT
 }
 
