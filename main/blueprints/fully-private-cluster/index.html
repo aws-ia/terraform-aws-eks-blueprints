@@ -887,12 +887,10 @@
 </ol>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
 <p>Since this is a Fully Private Amazon EKS Cluster, make sure that you'll have access to the Amazon VPC where the cluster will be deployed, otherwise you won't be able to access it.</p>
-<p>For this example, we'll be using an Amazon Cloud9 environment to run Terraform and manage the Amazon EKS Cluster. The Cloud9 environment is already running in the Default VPC, we'll setup a VPC peering between the Default and the Cluster VPC in order to have access to the Kubernetes API and manage our EKS Cluster.</p>
+<p>See the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/privatelink-access"><code>privatelink-access</code></a> pattern for using AWS PrivateLink to access the private cluster from another VPC.</p>
 <p>To provision this example:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="w"> </span>module.vpc<span class="w"> </span>-target<span class="w"> </span>module.vpc_endpoints<span class="w"> </span>-target<span class="w"> </span>module.vpc_endpoints_sg
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="w"> </span>module.eks
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>terraform<span class="w"> </span>apply
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply
 </span></code></pre></div>
 <p>Enter <code>yes</code> at command prompt to apply</p>
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
