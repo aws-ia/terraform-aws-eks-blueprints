@@ -29,12 +29,15 @@ Ensure that you have the following tools installed locally:
 
 Since this is a Fully Private Amazon EKS Cluster, make sure that you'll have access to the Amazon VPC where the cluster will be deployed, otherwise you won't be able to access it.
 
-See the [`privatelink-access`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/privatelink-access) pattern for using AWS PrivateLink to access the private cluster from another VPC.
+For this example, we'll be using an Amazon Cloud9 environment to run Terraform and manage the Amazon EKS Cluster. The Cloud9 environment is already running in the Default VPC, we'll setup a VPC peering between the Default and the Cluster VPC in order to have access to the Kubernetes API and manage our EKS Cluster.
+
 
 To provision this example:
 
 ```sh
 terraform init
+terraform apply -target module.vpc -target module.vpc_endpoints -target module.vpc_endpoints_sg
+terraform apply -target module.eks
 terraform apply
 ```
 
