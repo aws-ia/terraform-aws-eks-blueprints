@@ -115,11 +115,10 @@ module "eks_blueprints_addons" {
   tags = local.tags
 
   eks_addons = {
-    coredns    = {}
+    coredns =    {}
     vpc-cni    = {}
     kube-proxy = {}
   }
-
 }
 
 ################################################################################
