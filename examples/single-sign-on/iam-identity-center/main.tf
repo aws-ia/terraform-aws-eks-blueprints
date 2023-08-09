@@ -26,8 +26,9 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 19.13"
 
-  cluster_name    = local.name
-  cluster_version = "1.27"
+  cluster_name                   = local.name
+  cluster_version                = "1.27"
+  cluster_endpoint_public_access = true
 
   # EKS Addons
   cluster_addons = {
@@ -67,52 +68,17 @@ module "vpc" {
 
   azs             = local.azs
   private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
 
-  enable_nat_gateway = false
+  enable_nat_gateway = true
+  single_nat_gateway = true
 
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
   }
-
-  tags = local.tags
-}
-
-module "vpc_endpoints" {
-  source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "~> 5.1"
-
-  vpc_id = module.vpc.vpc_id
-
-  # Security group
-  create_security_group      = true
-  security_group_name_prefix = "${local.name}-vpc-endpoints-"
-  security_group_description = "VPC endpoint security group"
-  security_group_rules = {
-    ingress_https = {
-      description = "HTTPS from VPC"
-      cidr_blocks = [module.vpc.vpc_cidr_block]
-    }
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" = 1
   }
-
-  endpoints = merge({
-    s3 = {
-      service         = "s3"
-      service_type    = "Gateway"
-      route_table_ids = module.vpc.private_route_table_ids
-      tags = {
-        Name = "${local.name}-s3"
-      }
-    }
-    },
-    { for service in toset(["autoscaling", "ecr.api", "ecr.dkr", "ec2", "ec2messages", "elasticloadbalancing", "sts", "kms", "logs", "ssm", "ssmmessages"]) :
-      replace(service, ".", "_") =>
-      {
-        service             = service
-        subnet_ids          = module.vpc.private_subnets
-        private_dns_enabled = true
-        tags                = { Name = "${local.name}-${service}" }
-      }
-  })
 
   tags = local.tags
 }

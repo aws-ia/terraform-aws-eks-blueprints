@@ -1,9 +1,14 @@
 # You can generate an Okta API token in the Okta Developer Console. Follow these instructions: https://bit.ly/get-okta-api-token
 
+provider "okta" {
+  org_name  = "dev-<ORG_ID>"
+  base_url  = "okta.com"
+  api_token = "<OKTA_APU_TOKEN>"
+}
+
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-
 
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
@@ -87,7 +92,7 @@ resource "okta_auth_server" "eks" {
   status      = "ACTIVE"
 }
 
-resource "okta_auth_server_claim" "eks-groups" {
+resource "okta_auth_server_claim" "eks_groups" {
   name                    = "groups"
   auth_server_id          = okta_auth_server.eks.id
   always_include_in_token = true

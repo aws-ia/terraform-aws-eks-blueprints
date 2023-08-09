@@ -21,4 +21,3 @@ output "configure_kubeconfig" {
       --exec-arg=--oidc-extra-scope="email offline_access profile openid"
   EOT
 }
-
