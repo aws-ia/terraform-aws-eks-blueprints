@@ -19,7 +19,7 @@
         <link rel="next" href="../appmesh-mtls/">
       
       <link rel="icon" href="../../images/colored-logo.png">
-      <meta name="generator" content="mkdocs-1.5.1, mkdocs-material-9.1.19">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.19">
     
     
       
@@ -850,7 +850,7 @@ This following command used to update the <code>kubeconfig</code> in your local 
 
 <p>Output looks like below</p>
 <div class="codehilite"><pre><span></span><code><span class="nx">NAME</span><span class="w">                       </span><span class="nx">STATE</span><span class="w">   </span><span class="nx">ADDRESS</span><span class="w">         </span><span class="nx">PORT</span><span class="w">   </span><span class="nx">NODE</span><span class="w">                                        </span><span class="nx">AGE</span>
-<span class="nx">simple</span><span class="o">-</span><span class="nx">game</span><span class="o">-</span><span class="nx">server</span><span class="o">-</span><span class="mi">7</span><span class="nx">r6jr</span><span class="w">   </span><span class="nx">Ready</span><span class="w">   </span><span class="m m-Double">34.243.345.2</span><span class="mi">2</span><span class="w">   </span><span class="mi">7902</span><span class="w">   </span><span class="nx">ip</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">23</span><span class="o">-</span><span class="mi">233</span><span class="p">.</span><span class="nx">eu</span><span class="o">-</span><span class="nx">west</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="nx">compute</span><span class="p">.</span><span class="nx">internal</span><span class="w">   </span><span class="mi">11</span><span class="nx">h</span>
+<span class="nx">simple</span><span class="o">-</span><span class="nx">game</span><span class="o">-</span><span class="nx">server</span><span class="o">-</span><span class="mi">7</span><span class="nx">r6jr</span><span class="w">   </span><span class="nx">Ready</span><span class="w">   </span><span class="m m-Double">34.243.345.22</span><span class="w">   </span><span class="mi">7902</span><span class="w">   </span><span class="nx">ip</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">23</span><span class="o">-</span><span class="mi">233</span><span class="p">.</span><span class="nx">eu</span><span class="o">-</span><span class="nx">west</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="nx">compute</span><span class="p">.</span><span class="nx">internal</span><span class="w">   </span><span class="mi">11</span><span class="nx">h</span>
 </code></pre></div>
 
 <h4 id="step-10-testing-the-sample-game-server">Step 10: Testing the Sample Game Server<a class="headerlink" href="#step-10-testing-the-sample-game-server" title="Permanent link">&para;</a></h4>
@@ -873,7 +873,7 @@ e.g.,  nc -u 34.243.345.22 7902
 <p>Amazon GameLift FleetIQ optimizes the use of low-cost Spot Instances for cloud-based game hosting with Amazon EC2. With GameLift FleetIQ, you can work directly with your hosting resources in Amazon EC2 and Auto Scaling while taking advantage of GameLift optimizations to deliver inexpensive, resilient game hosting for your players and makes the use of low-cost Spot Instances viable for game hosting</p>
 <p>This <a href="https://aws.amazon.com/blogs/gametech/introducing-the-gamelift-fleetiq-adapter-for-agones/">blog</a> will go through the details of deploying EKS Cluster using eksctl and deploy Agones with GameLift FleetIQ</p>
 <p>Download the sh and execute</p>
-<div class="codehilite"><pre><span></span><code><span class="nv">curl</span><span class="w"> </span><span class="o">-</span><span class="nv">O</span><span class="w"> </span><span class="nv">https</span>:<span class="o">//</span><span class="nv">raw</span>.<span class="nv">githubusercontent</span>.<span class="nv">com</span><span class="o">/</span><span class="nv">awslabs</span><span class="o">/</span><span class="nv">fleetiq</span><span class="o">-</span><span class="nv">adapter</span><span class="o">-</span><span class="k">for</span><span class="o">-</span><span class="nv">agones</span><span class="o">/</span><span class="nv">master</span><span class="o">/</span><span class="nv">Agones_EKS_FleetIQ_Integration_Package</span><span class="o">%</span><span class="mi">5</span><span class="nv">BBETA</span><span class="o">%</span><span class="mi">5</span><span class="nv">D</span><span class="o">/</span><span class="nv">quick_install</span><span class="o">/</span><span class="nv">fleet_eks_agones_quickinstall</span>.<span class="nv">sh</span>
+<div class="codehilite"><pre><span></span><code>curl -O https://raw.githubusercontent.com/awslabs/fleetiq-adapter-for-agones/master/Agones_EKS_FleetIQ_Integration_Package%5BBETA%5D/quick_install/fleet_eks_agones_quickinstall.sh
 </code></pre></div>
 
 <h2 id="cleanup">Cleanup<a class="headerlink" href="#cleanup" title="Permanent link">&para;</a></h2>
