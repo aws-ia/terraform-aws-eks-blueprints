@@ -113,37 +113,37 @@ locals {
 
         apps = {
           ecsdemoNodejs = {
-          
+
             helm = {
-                replicaCount = "9"
-                nodeSelector = {
-                  "karpenter.sh/provisioner-name" = "default"
+              replicaCount = "9"
+              nodeSelector = {
+                "karpenter.sh/provisioner-name" = "default"
+              }
+              tolerations = [
+                {
+                  key      = "karpenter"
+                  operator = "Exists"
+                  effect   = "NoSchedule"
                 }
-                tolerations = [
-                  {
-                    key      = "karpenter"
-                    operator = "Exists"
-                    effect   = "NoSchedule"
-                  }
-                ]
-                topologyAwareHints = "true"
-                topologySpreadConstraints = [
-                  {
-                    maxSkew           = 1
-                    topologyKey       = "topology.kubernetes.io/zone"
-                    whenUnsatisfiable = "DoNotSchedule"
-                    labelSelector = {
-                      matchLabels = {
-                        "app.kubernetes.io/name" = "ecsdemo-nodejs"
-                      }
+              ]
+              topologyAwareHints = "true"
+              topologySpreadConstraints = [
+                {
+                  maxSkew           = 1
+                  topologyKey       = "topology.kubernetes.io/zone"
+                  whenUnsatisfiable = "DoNotSchedule"
+                  labelSelector = {
+                    matchLabels = {
+                      "app.kubernetes.io/name" = "ecsdemo-nodejs"
                     }
                   }
-                ]
-              }
+                }
+              ]
+            }
           }
 
           ecsdemoCrystal = {
-          
+
             helm = {
               replicaCount = "9"
               nodeSelector = {
@@ -171,12 +171,12 @@ locals {
               ]
             }
           }
-          
+
 
           ecsdemoFrontend = {
             repoURL        = "https://github.com/allamand/ecsdemo-frontend"
             targetRevision = "main"
-            helm = {     
+            helm = {
               image = {
                 repository = "public.ecr.aws/seb-demo/ecsdemo-frontend"
                 tag        = "latest"
