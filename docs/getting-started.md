@@ -12,7 +12,7 @@ First, ensure that you have installed the following tools locally.
 
 ## Examples
 
-Select an example from the [`examples/`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples) directory and follow the instructions in its respective README.md file. The deployment steps for examples generally follow the deploy, validate, and clean-up steps shown below.
+Select an example from the [`patterns/`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/patterns) directory and follow the instructions in its respective README.md file. The deployment steps for examples generally follow the deploy, validate, and clean-up steps shown below.
 
 ### Deploy
 

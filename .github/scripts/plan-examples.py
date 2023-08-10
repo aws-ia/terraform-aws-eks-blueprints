@@ -19,7 +19,7 @@ def get_examples():
 
     projects = {
         x.replace('/versions.tf', '')
-        for x in glob.glob('examples/**/versions.tf', recursive=True)
+        for x in glob.glob('patterns/**/versions.tf', recursive=True)
         if not re.match(r'^.+/_', x)
     }
 
