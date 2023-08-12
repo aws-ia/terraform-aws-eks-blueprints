@@ -17,11 +17,11 @@ terraform {
   }
 
   ##  Used for end-to-end testing on project; update to suit your needs
-  backend "s3" {
-    bucket = "terraform-state-duektsah"
-    region = "eu-west-1"
-    key    = "e2e/istio/terraform.tfstate"
-  }
+  # backend "s3" {
+  #   bucket = "terraform-state-duektsah"
+  #   region = "eu-west-1"
+  #   key    = "istio-multi-cluster/terraform.tfstate"
+  # }
 
   # ##  Used for end-to-end testing on project; update to suit your needs
   # backend "s3" {
