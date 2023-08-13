@@ -251,6 +251,8 @@ resource "kubernetes_secret" "cacerts" {
 ################################################################################
 
 resource "kubernetes_secret" "istio_reader" {
+  depends_on = [module.addons, helm_release.istiod]
+
   metadata {
     annotations = {
       "kubernetes.io/service-account.name" = "istio-reader-service-account"
