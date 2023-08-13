@@ -113,128 +113,137 @@ locals {
 
         apps = {
           ecsdemoNodejs = {
-            replicaCount = "9"
-            nodeSelector = {
-              "karpenter.sh/provisioner-name" = "default"
-            }
-            tolerations = [
-              {
-                key      = "karpenter"
-                operator = "Exists"
-                effect   = "NoSchedule"
+
+            helm = {
+              replicaCount = "9"
+              nodeSelector = {
+                "karpenter.sh/provisioner-name" = "default"
               }
-            ]
-            topologyAwareHints = "true"
-            topologySpreadConstraints = [
-              {
-                maxSkew           = 1
-                topologyKey       = "topology.kubernetes.io/zone"
-                whenUnsatisfiable = "DoNotSchedule"
-                labelSelector = {
-                  matchLabels = {
-                    "app.kubernetes.io/name" = "ecsdemo-nodejs"
+              tolerations = [
+                {
+                  key      = "karpenter"
+                  operator = "Exists"
+                  effect   = "NoSchedule"
+                }
+              ]
+              topologyAwareHints = "true"
+              topologySpreadConstraints = [
+                {
+                  maxSkew           = 1
+                  topologyKey       = "topology.kubernetes.io/zone"
+                  whenUnsatisfiable = "DoNotSchedule"
+                  labelSelector = {
+                    matchLabels = {
+                      "app.kubernetes.io/name" = "ecsdemo-nodejs"
+                    }
                   }
                 }
-              }
-            ]
+              ]
+            }
           }
 
           ecsdemoCrystal = {
-            replicaCount = "9"
-            nodeSelector = {
-              "karpenter.sh/provisioner-name" = "default"
-            }
-            tolerations = [
-              {
-                key      = "karpenter"
-                operator = "Exists"
-                effect   = "NoSchedule"
+
+            helm = {
+              replicaCount = "9"
+              nodeSelector = {
+                "karpenter.sh/provisioner-name" = "default"
               }
-            ]
-            topologyAwareHints = "true"
-            topologySpreadConstraints = [
-              {
-                maxSkew           = 1
-                topologyKey       = "topology.kubernetes.io/zone"
-                whenUnsatisfiable = "DoNotSchedule"
-                labelSelector = {
-                  matchLabels = {
-                    "app.kubernetes.io/name" = "ecsdemo-crystal"
+              tolerations = [
+                {
+                  key      = "karpenter"
+                  operator = "Exists"
+                  effect   = "NoSchedule"
+                }
+              ]
+              topologyAwareHints = "true"
+              topologySpreadConstraints = [
+                {
+                  maxSkew           = 1
+                  topologyKey       = "topology.kubernetes.io/zone"
+                  whenUnsatisfiable = "DoNotSchedule"
+                  labelSelector = {
+                    matchLabels = {
+                      "app.kubernetes.io/name" = "ecsdemo-crystal"
+                    }
                   }
                 }
-              }
-            ]
+              ]
+            }
           }
+
 
           ecsdemoFrontend = {
             repoURL        = "https://github.com/allamand/ecsdemo-frontend"
             targetRevision = "main"
-            image = {
-              repository = "public.ecr.aws/seb-demo/ecsdemo-frontend"
-              tag        = "latest"
-            }
-            ingress = {
-              enabled   = "true"
-              className = "alb"
-              annotations = {
-                "alb.ingress.kubernetes.io/scheme"                = "internet-facing"
-                "alb.ingress.kubernetes.io/group.name"            = "ecsdemo"
-                "alb.ingress.kubernetes.io/listen-ports"          = "[{\\\"HTTPS\\\": 443}]"
-                "alb.ingress.kubernetes.io/ssl-redirect"          = "443"
-                "alb.ingress.kubernetes.io/target-type"           = "ip"
-                "external-dns.alpha.kubernetes.io/set-identifier" = local.name
-                "external-dns.alpha.kubernetes.io/aws-weight"     = local.ecsfrontend_route53_weight
+            helm = {
+              image = {
+                repository = "public.ecr.aws/seb-demo/ecsdemo-frontend"
+                tag        = "latest"
               }
-              hosts = [
+              ingress = {
+                enabled   = "true"
+                className = "alb"
+                annotations = {
+                  "alb.ingress.kubernetes.io/scheme"                = "internet-facing"
+                  "alb.ingress.kubernetes.io/group.name"            = "ecsdemo"
+                  "alb.ingress.kubernetes.io/listen-ports"          = "[{\\\"HTTPS\\\": 443}]"
+                  "alb.ingress.kubernetes.io/ssl-redirect"          = "443"
+                  "alb.ingress.kubernetes.io/target-type"           = "ip"
+                  "external-dns.alpha.kubernetes.io/set-identifier" = local.name
+                  "external-dns.alpha.kubernetes.io/aws-weight"     = local.ecsfrontend_route53_weight
+                }
+                hosts = [
+                  {
+                    host = "frontend.${local.eks_cluster_domain}"
+                    paths = [
+                      {
+                        path     = "/"
+                        pathType = "Prefix"
+                      }
+                    ]
+                  }
+                ]
+              }
+              resources = {
+                requests = {
+                  cpu    = "1"
+                  memory = "256Mi"
+                }
+                limits = {
+                  cpu    = "1"
+                  memory = "512Mi"
+                }
+              }
+              autoscaling = {
+                enabled                        = "true"
+                minReplicas                    = "9"
+                maxReplicas                    = "100"
+                targetCPUUtilizationPercentage = "60"
+              }
+              nodeSelector = {
+                "karpenter.sh/provisioner-name" = "default"
+              }
+              tolerations = [
                 {
-                  host = "frontend.${local.eks_cluster_domain}"
-                  paths = [
-                    {
-                      path     = "/"
-                      pathType = "Prefix"
+                  key      = "karpenter"
+                  operator = "Exists"
+                  effect   = "NoSchedule"
+                }
+              ]
+              topologySpreadConstraints = [
+                {
+                  maxSkew           = 1
+                  topologyKey       = "topology.kubernetes.io/zone"
+                  whenUnsatisfiable = "DoNotSchedule"
+                  labelSelector = {
+                    matchLabels = {
+                      "app.kubernetes.io/name" = "ecsdemo-frontend"
                     }
-                  ]
+                  }
                 }
               ]
             }
-            resources = {
-              requests = {
-                cpu    = "1"
-                memory = "256Mi"
-              }
-              limits = {
-                cpu    = "1"
-                memory = "512Mi"
-              }
-            }
-            autoscaling = {
-              enabled                        = "true"
-              minReplicas                    = "9"
-              maxReplicas                    = "100"
-              targetCPUUtilizationPercentage = "60"
-            }
-            nodeSelector = {
-              "karpenter.sh/provisioner-name" = "default"
-            }
-            tolerations = [
-              {
-                key      = "karpenter"
-                operator = "Exists"
-                effect   = "NoSchedule"
-              }
-            ]
-            topologySpreadConstraints = [
-              {
-                maxSkew           = 1
-                topologyKey       = "topology.kubernetes.io/zone"
-                whenUnsatisfiable = "DoNotSchedule"
-                labelSelector = {
-                  matchLabels = {
-                    "app.kubernetes.io/name" = "ecsdemo-frontend"
-                  }
-                }
-              }
-            ]
           }
         }
       }
