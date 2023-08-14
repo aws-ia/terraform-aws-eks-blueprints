@@ -1,6 +1,6 @@
 # Single Sign-On for Amazon EKS Cluster
 
-These examples demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, integrated with an external Identity Provider (IdP) for Single Sign-On (SSO) authentication. The authorization configuration still being done using Kubernetes Role-based access control (RBAC). By the this time we have integration with the following IdPs.
+These examples demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, integrated with an external Identity Provider (IdP) for Single Sign-On (SSO) authentication. The authorization configuration still being done using Kubernetes Role-based access control (RBAC). At this time we have integration with the following IdPs.
 
 - [IAM Identity Center (successor to AWS Single Sign-On)](https://aws.amazon.com/iam/identity-center/)
 - [Okta](https://www.okta.com/)
@@ -19,11 +19,7 @@ To provision these examples, run the following commands:
 
 ```sh
 terraform init
-<<<<<<< HEAD
-terraform apply -target module.vpc
-=======
 terraform apply -target module.vpc 
->>>>>>> 411e9828 (Adding  example)
 terraform apply -target module.eks
 terraform apply
 ```

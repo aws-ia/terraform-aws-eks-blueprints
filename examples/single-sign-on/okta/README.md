@@ -1,6 +1,6 @@
 # Okta Single Sign-On for Amazon EKS Cluster
 
-These example demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, integrated with Okta as an the Identity Provider (IdP) for Single Sign-On (SSO) authentication. The authorization configuration layer still being done using Kubernetes Role-based access control (RBAC). By the this time we have integration with the following IdPs.
+This example demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, integrated with Okta as an the Identity Provider (IdP) for Single Sign-On (SSO) authentication. The configuration for authorization is done using Kubernetes Role-based access control (RBAC).
 
 ## Prerequisites:
 

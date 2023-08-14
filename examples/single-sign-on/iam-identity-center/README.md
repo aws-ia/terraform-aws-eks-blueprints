@@ -1,6 +1,6 @@
 # IAM Identity Center Single Sign-On for Amazon EKS Cluster
 
-These example demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, integrated with IAM Identity Center (former AWS SSO) as an the Identity Provider (IdP) for Single Sign-On (SSO) authentication. The authorization configuration layer still being done using Kubernetes Role-based access control (RBAC). By the this time we have integration with the following IdPs.
+This example demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, integrated with IAM Identity Center (former AWS SSO) as an the Identity Provider (IdP) for Single Sign-On (SSO) authentication. The configuration for authorization is done using Kubernetes Role-based access control (RBAC).
 
 ## Prerequisites:
 
@@ -32,7 +32,7 @@ Enter `yes` at command prompt to apply
 
 After the `terraform` commands are executed sucessfully, check if the newly created users are active.
 
-To do that use the link provided in the email invite if you added a valid email address for your users, or go to the [IAM Identity Center Console](https://console.aws.amazon.com/singlesignon/home/), in the *Users* dashboard on the left hand side menu, then select the user, and click on *Reset password* button on the upper right corner. Choose the option to *Generate a one-time password and share the password with the user*.
+To do that use the link provided in the email invite - *if you added a valid email address for your users either in your Terraform code or IAM Identity Center Console* - or go to the [IAM Identity Center Console](https://console.aws.amazon.com/singlesignon/home/), in the *Users* dashboard on the left hand side menu, then select the user, and click on *Reset password* button on the upper right corner. Choose the option to *Generate a one-time password and share the password with the user*.
 
 With the active users, use one of the `terraform output` examples to configure your AWS credentials for SSO, as shown in the examples below. After you choose the *SSO registration scopes*, your browser windows will appear and request to login using your IAM Identity Center username and password.
 
