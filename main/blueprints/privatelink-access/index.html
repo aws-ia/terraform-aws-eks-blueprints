@@ -918,7 +918,7 @@ for further details on  <code>AWS PrivateLink</code>.</p>
 <code>CreateNetworkInterface</code> API calls. This needs to exist before the cluster is
 created so that it can respond to the ENIs created by the EKS control plane:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span>module.create_eni_lambda<span class="w"> </span>-target<span class="o">=</span>module.nlb
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span>module.eventbridge<span class="w"> </span>-target<span class="o">=</span>module.nlb
 </span></code></pre></div>
 <p>Enter <code>yes</code> at command prompt to apply</p>
 <p>Next, deploy the remaining resources:</p>
