@@ -21,7 +21,7 @@ created so that it can respond to the ENIs created by the EKS control plane:
 
 ```sh
 terraform init
-terraform apply -target=module.create_eni_lambda -target=module.nlb
+terraform apply -target=module.eventbridge -target=module.nlb
 ```
 
 Enter `yes` at command prompt to apply
