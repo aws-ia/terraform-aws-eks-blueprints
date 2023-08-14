@@ -1,4 +1,4 @@
-# Amazon EKS Cluster w/ Istio
+# Multiple Amazon EKS Clusters - Multi-Primary Istio installation with 
 
 This example shows how to provision 2 Amazon EKS clusters with Istio setup on each of them.
 The Istio will be set-up to operate in a [Multi-Primary](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/) way where services are shared across clusters.
