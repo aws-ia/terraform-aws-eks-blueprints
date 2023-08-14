@@ -34,4 +34,3 @@ output "cluster_region" {
   description = "Cluster region"
   value       = local.region
 }
-

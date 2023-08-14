@@ -270,4 +270,3 @@ data "kubernetes_secret" "istio_reader_data" {
     namespace = "istio-system"
   }
 }
-
