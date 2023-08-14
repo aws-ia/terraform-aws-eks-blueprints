@@ -59,13 +59,6 @@ module "eks" {
   cluster_version                = "1.27"
   cluster_endpoint_public_access = true
 
-  # EKS Addons
-  cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
-  }
-
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
@@ -120,6 +113,13 @@ module "eks_blueprints_addons" {
   enable_aws_load_balancer_controller = true
 
   tags = local.tags
+
+  eks_addons = {
+    coredns =    {}
+    vpc-cni    = {}
+    kube-proxy = {}
+  }
+
 }
 
 ################################################################################
