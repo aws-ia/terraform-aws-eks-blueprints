@@ -218,7 +218,9 @@ module "delete_eni_lambda" {
 
   environment_variables = {
     TARGET_GROUP_ARN = module.nlb.target_group_arns[0]
-    EKS_CLUSTER_NAME = module.eks.cluster_name
+
+    # Passing local.name in lieu of module.eks.cluster_name to avoid dependency
+    EKS_CLUSTER_NAME = local.name
   }
 
   allowed_triggers = {
