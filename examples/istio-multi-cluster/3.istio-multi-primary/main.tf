@@ -1,25 +1,3 @@
-# provider "aws" {
-#   region = local.region
-# }
-
-data "aws_availability_zones" "available" {}
-
-# locals {
-#   cluster_name = format("%s-%s", basename(path.cwd), "shared")
-#   region       = "eu-west-1"
-
-#   vpc_cidr = "10.0.0.0/16"
-#   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
-
-#   istio_chart_url     = "https://istio-release.storage.googleapis.com/charts"
-#   istio_chart_version = "1.18.1"
-
-#   tags = {
-#     Blueprint  = local.cluster_name
-#     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
-#   }
-# }
-
 locals {
   cluster1_name = data.terraform_remote_state.cluster1.outputs.cluster_name
   cluster2_name = data.terraform_remote_state.cluster2.outputs.cluster_name
@@ -79,8 +57,6 @@ provider "kubernetes" {
   }
   alias = "cluster2"
 }
-
-# Istio secret
 
 ################################################################################
 # Istio remote secret for cluster 1 (istioctl x create-remote-secret)

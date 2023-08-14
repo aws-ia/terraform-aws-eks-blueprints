@@ -1,14 +1,52 @@
 # Amazon EKS Cluster w/ Istio
 
-This example shows how to provision an EKS cluster with Istio.
+This example shows how to provision 2 Amazon EKS clusters with Istio setup on each of them.
+The Istio will be set-up to operate in a [Multi-Primary](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/) way where services are shared across clusters.
 
-* Deploy EKS Cluster with one managed node group in an VPC
+* Deploy a VPC with additional security groups to allow cross-cluster communication and communication from nodes to the other cluster API Server endpoint
+* Deploy 2 EKS Cluster with one managed node group in an VPC
 * Add node_security_group rules for port access required for Istio communication
 * Install Istio using Helm resources in Terraform
 * Install Istio Ingress Gateway using Helm resources in Terraform
 * Deploy/Validate Istio communication using sample application
 
 Refer to the [documentation](https://istio.io/latest/docs/concepts/) for `Istio` concepts.
+
+## Notable configuration
+
+* This sample rely on reading data from Terraform Remote State in the different folders. In a production setup, Terraform Remote State is stored in a persistent backend such as Terraform Cloud or S3. For more information, please refer to the Terraform [Backends](https://developer.hashicorp.com/terraform/language/settings/backends/configuration) documentation 
+* The process for connecting clusters is seperated from the cluster creation as it requires all cluster to be created first, and excahnge configuration between one to the other
+
+## Folder structure
+### Folder [`0.certs-tool`](0.certs-tool/)
+
+This folder is the [Makefiles](https://github.com/istio/istio/tree/master/tools/certs) from the Istio projects to generate 1 root CA with 2 intermediate CAs for each cluster. Please refer to the ["Certificate Management"](https://istio.io/latest/docs/tasks/security/cert-management/) section in the Istio documentation. For production setup it's [highly recommended](https://istio.io/latest/docs/tasks/security/cert-management/plugin-ca-cert/#plug-in-certificates-and-key-into-the-cluster) by the Istio project to have a production-ready CA solution.
+
+> **_NOTE:_**  The [0.certs-tool/create-certs.sh](0.certs-tool/create-certs.sh) script needs to run before the cluster creation so the code will pick up the relevant certificates
+
+### Folder [`0.vpc`](0.vpc/)
+This folder creates the VPC for both clusters. The VPC creation is not part of the cluster provisionig and therefore lives in a seperate folder.
+To support the multi-cluster/Multi-Primary setup, this folder also creates additional security group to be used by each cluster worker nodes to allow cross-cluster communication (resources `cluster1_additional_sg` and `cluster2_additional_sg`). These security groups allow communication from one to the other and each will be added to the worker nodes of the relevant cluster
+  
+### Folder [`1.cluster1`](1.cluster1/)
+
+This folder creates an Amazon EKS Cluster, named by default `cluster-1` (see [`variables.tf`](1.cluster1/variables.tf)), with AWS Load Balancer Controller, and Istio installation.
+Configurations in this folder to be aware of:
+* The cluster is configured to use the security groups created in the `0.vpc` folder (`cluster1_additional_sg` in this case). 
+* Kubernetes Secret named `cacerts` is created with the certificates created by the [0.certs-tool/create-certs.sh](0.certs-tool/create-certs.sh) script
+* Kubernetes Secret named `cacerts` named `istio-reader-service-account-istio-remote-secret-token` of type `Service-Account` is being created. This is to replicate the [istioctl experimental create-remote-secret](https://istio.io/latest/docs/reference/commands/istioctl/#istioctl-experimental-create-remote-secret) command. This secret will be used in folder [`3.istio-multi-primary`](3.istio-multi-primary/) to apply kubeconfig secret with tokens from the other cluster to be abble to communicate to the other cluster API Server
+
+### Folder [`2.cluster2`](2.cluster2/)
+
+Same configuration as in `1.cluster1` except the name of the cluster which is `cluster-2`.
+
+### Folder [`3.istio-multi-primary`](3.istio-multi-primary/)
+
+This folder deploys a reader secret on each cluster. It replicates the [`istioctl experimental create-remote-secret`](https://istio.io/latest/docs/reference/commands/istioctl/#istioctl-experimental-create-remote-secret) by applying a kubeconfig secret prefixed `istio-remote-secret-` with the cluster name at the end.
+
+### Folder [`4.test-connectivity`](4.test-connectivity/)
+
+This folder test the installation connectivity. It follows the Istio guide [Verify the installation](https://istio.io/latest/docs/setup/install/multicluster/verify/) by deploying services on each cluster, and `curl`-ing from one to the other 
 
 ## Prerequisites:
 
@@ -20,248 +58,69 @@ Ensure that you have the following tools installed locally:
 
 ## Deploy
 
-To provision this example:
+### Prereq - Provision Certificates
 
-```sh
+```shell
+cd 0.certs-tool
+./create-certs.sh
+cd..
+```
+
+### Step 0 - Create the VPC
+
+```shell
+cd 0.certs-tool
+./create-certs.sh
+cd..
+```
+
+### Step 1 - Deploy cluster-1
+
+```shell
+cd 1.cluster1
 terraform init
-terraform apply
+terraform apply -auto-approve
+cd..
 ```
 
-Enter `yes` at command prompt to apply
+### Step 2 - Deploy cluster-2
 
-## Validate
-
-The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the deployment.
-
-1. Run `update-kubeconfig` command:
-
-```sh
-aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
+```shell
+cd 2.cluster2
+terraform init
+terraform apply -auto-approve
+cd..
 ```
 
-2. List the nodes running currently
+### Step 3 - Configure Istio Multi-Primary
 
-```sh
-kubectl get nodes
+```shell
+cd 3.istio-multi-primary
+terraform init
+terraform apply -auto-approve
+cd..
 ```
 
-```
-# Output should look like below
-NAME                          STATUS   ROLES    AGE   VERSION
-ip-10-0-22-173.ec2.internal   Ready    <none>   48m   v1.27.3-eks-a5565ad
-```
+### Step 4 - test installation and connectivity
 
-3. List out the pods running currently:
-
-```sh
-kubectl get pods,svc -n istio-system
+```shell
+cd 4.test-connectivity
+./test_connectivity.sh
+cd..
 ```
-
-```
-# Output should look like below
-NAME                                 READY   STATUS    RESTARTS   AGE
-pod/istio-ingress-6f7c5dffd8-chkww   1/1     Running   0          48m
-pod/istiod-ff577f8b8-t9ww2           1/1     Running   0          48m
-
-NAME                    TYPE           CLUSTER-IP      EXTERNAL-IP                                                                     PORT(S)                                      AGE
-service/istio-ingress   LoadBalancer   172.20.100.3    a59363808e78d46d59bf3378cafffcec-a12f9c78cb607b6b.elb.us-east-1.amazonaws.com   15021:32118/TCP,80:32740/TCP,443:30624/TCP   48m
-service/istiod          ClusterIP      172.20.249.63   <none>                                                                          15010/TCP,15012/TCP,443/TCP,15014/TCP        48m
-```
-
-4. Verify all the helm releases installed for Istio:
-
-```sh
-helm list -n istio-system
-```
-
-```
-# Output should look like below
-NAME         	NAMESPACE   	REVISION	UPDATED                             	STATUS  	CHART         	APP VERSION
-istio-base   	istio-system	1       	2023-07-19 11:05:41.599921 -0700 PDT	deployed	base-1.18.1   	1.18.1
-istio-ingress	istio-system	1       	2023-07-19 11:06:03.41609 -0700 PDT 	deployed	gateway-1.18.1	1.18.1
-istiod       	istio-system	1       	2023-07-19 11:05:48.087616 -0700 PDT	deployed	istiod-1.18.1 	1.18.1
-```
-
-## Test
-
-1. Create the sample namespace and enable the sidecar injection for this namespace
-
-```sh
-kubectl create namespace sample
-kubectl label namespace sample istio-injection=enabled
-```
-
-```
-namespace/sample created
-namespace/sample labeled
-```
-
-2. Deploy helloworld app
-
-```sh
-cat <<EOF > helloworld.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: helloworld
-  labels:
-    app: helloworld
-    service: helloworld
-spec:
-  ports:
-  - port: 5000
-    name: http
-  selector:
-    app: helloworld
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: helloworld-v1
-  labels:
-    app: helloworld
-    version: v1
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: helloworld
-      version: v1
-  template:
-    metadata:
-      labels:
-        app: helloworld
-        version: v1
-    spec:
-      containers:
-      - name: helloworld
-        image: docker.io/istio/examples-helloworld-v1
-        resources:
-          requests:
-            cpu: "100m"
-        imagePullPolicy: IfNotPresent #Always
-        ports:
-        - containerPort: 5000
-EOF
-
-kubectl apply -f helloworld.yaml -n sample
-```
-
-```
-service/helloworld created
-deployment.apps/helloworld-v1 created
-```
-
-3. Deploy sleep app that we will use to connect to helloworld app
-
-```sh
-cat <<EOF > sleep.yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: sleep
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: sleep
-  labels:
-    app: sleep
-    service: sleep
-spec:
-  ports:
-  - port: 80
-    name: http
-  selector:
-    app: sleep
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: sleep
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: sleepdocs/blueprints/argocd.md
-  template:
-    metadata:
-      labels:
-        app: sleep
-    spec:
-      terminationGracePeriodSeconds: 0
-      serviceAccountName: sleep
-      containers:
-      - name: sleep
-        image: curlimages/curl
-        command: ["/bin/sleep", "infinity"]
-        imagePullPolicy: IfNotPresent
-        volumeMounts:
-        - mountPath: /etc/sleep/tls
-          name: secret-volume
-      volumes:
-      - name: secret-volume
-        secret:
-          secretName: sleep-secret
-          optional: true
-EOF
-
-kubectl apply -f sleep.yaml -n sample
-```
-
-```
-serviceaccount/sleep created
-service/sleep created
-deployment.apps/sleep created
-```
-
-4. Check all the pods in the `sample` namespace
-
-```sh
-kubectl get pods -n sample
-```
-```
-NAME                           READY   STATUS    RESTARTS   AGE
-helloworld-v1-b6c45f55-bx2xk   2/2     Running   0          50s
-sleep-9454cc476-p2zxr          2/2     Running   0          15s
-```
-5. Connect to helloworld app from sleep app and see the connectivity is using envoy proxy
-
-```sh
-kubectl exec -n sample -c sleep \
-    "$(kubectl get pod -n sample -l \
-    app=sleep -o jsonpath='{.items[0].metadata.name}')" \
-    -- curl -v helloworld.sample:5000/hello
-```
-```
-* processing: helloworld.sample:5000/hello
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 172.20.26.38:5000...
-* Connected to helloworld.sample (172.20.26.38) port 5000
-> GET /hello HTTP/1.1
-> Host: helloworld.sample:5000
-> User-Agent: curl/8.2.0
-> Accept: */*
->
-< HTTP/1.1 200 OK
-< server: envoy
-< date: Fri, 21 Jul 2023 18:56:09 GMT
-< content-type: text/html; charset=utf-8
-< content-length: 58
-< x-envoy-upstream-service-time: 142
-<
-{ [58 bytes data]
-100    58  100    58  Hello version: v1, instance: helloworld-v1-b6c45f55-h592c
-  0     0    392      0 --:--:-- --:--:-- --:--:--   394
-* Connection #0 to host helloworld.sample left intact
-```
-
+This script deploy the sample application to both clusters and run curl from a pod in one cluster to a service that is deployed in both cluster. You should expect to see responses from both `V1` and `V2` of the sample application.
+The script run 4 `curl` command from cluster-1 to cluster-2 and vice versa
 ## Destroy
 
 To teardown and remove the resources created in this example:
 
-```sh
-terraform destroy -target="module.eks_blueprints_addons" -auto-approve
-terraform destroy -auto-approve
+```shell
+cd 3.istio-multi-primary
+terraform apply -destroy -autoapprove
+cd ../2.cluster2
+terraform apply -destroy -autoapprove
+cd ../1.cluster1
+terraform apply -destroy -autoapprove
+cd ../0.vpc
+terraform apply -destroy -autoapprove
 ```

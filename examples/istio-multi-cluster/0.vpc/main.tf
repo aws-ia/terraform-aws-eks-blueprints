@@ -21,7 +21,7 @@ locals {
 }
 
 ################################################################################
-# Supporting Resources
+# VPC 
 ################################################################################
 
 module "vpc" {
@@ -50,7 +50,9 @@ module "vpc" {
 }
 
 
+################################################################################
 # Cluster 1 additional security group for cross cluster communication
+################################################################################
 
 resource "aws_security_group" "cluster1_additional_sg" {
   name        = "cluster1_additional_sg"
@@ -75,7 +77,9 @@ resource "aws_vpc_security_group_egress_rule" "cluster1_additional_sg_allow_all_
   cidr_ipv6   = "::/0"
 }
 
+################################################################################
 # Cluster 2 additional security group for cross cluster communication
+################################################################################
 
 resource "aws_security_group" "cluster2_additional_sg" {
   name        = "cluster2_additional_sg"
@@ -99,7 +103,9 @@ resource "aws_vpc_security_group_egress_rule" "cluster2_additional_sg_allow_all_
   cidr_ipv6   = "::/0"
 }
 
+################################################################################
 # cross SG  ingress rules Cluster 2 allow to cluster 1
+################################################################################
 
 resource "aws_vpc_security_group_ingress_rule" "cluster2_to_cluster_1" {
   security_group_id = aws_security_group.cluster1_additional_sg.id
@@ -108,7 +114,9 @@ resource "aws_vpc_security_group_ingress_rule" "cluster2_to_cluster_1" {
   ip_protocol                  = "-1"
 }
 
+################################################################################
 # cross SG  ingress rules Cluster 1 allow to cluster 2
+################################################################################
 
 resource "aws_vpc_security_group_ingress_rule" "cluster1_to_cluster_2" {
   security_group_id = aws_security_group.cluster2_additional_sg.id
