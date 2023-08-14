@@ -1,20 +1,19 @@
-locals {
-  cluster1_name = data.terraform_remote_state.cluster1.outputs.cluster_name
-  cluster2_name = data.terraform_remote_state.cluster2.outputs.cluster_name
-
-}
+# locals {
+#   cluster1_name = data.terraform_remote_state.cluster1.outputs.cluster_name
+#   cluster2_name = data.terraform_remote_state.cluster2.outputs.cluster_name
+# }
 
 ################################################################################
 # Remote states and Kubernetes providers for VPCs and Clusters
 ################################################################################
 
-data "terraform_remote_state" "vpc" {
-  backend = "local"
+# data "terraform_remote_state" "vpc" {
+#   backend = "local"
 
-  config = {
-    path = "${path.module}/../0.vpc/terraform.tfstate"
-  }
-}
+#   config = {
+#     path = "${path.module}/../0.vpc/terraform.tfstate"
+#   }
+# }
 
 data "terraform_remote_state" "cluster1" {
   backend = "local"
