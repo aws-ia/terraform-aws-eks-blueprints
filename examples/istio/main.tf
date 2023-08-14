@@ -2,30 +2,29 @@ provider "aws" {
   region = local.region
 }
 
+provider "kubectl" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.this.token
+  load_config_file       = false
+}
+
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
-  }
+  token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
-    }
+    token                  = data.aws_eks_cluster_auth.this.token
   }
+}
+
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks.cluster_name
 }
 
 data "aws_availability_zones" "available" {}
@@ -39,6 +38,18 @@ locals {
 
   istio_chart_url     = "https://istio-release.storage.googleapis.com/charts"
   istio_chart_version = "1.18.1"
+
+  istio_addons_version = regex("\\d+.\\d+", local.istio_chart_version)
+  istio_addons         = ["kiali", "jaeger", "prometheus", "grafana"]
+
+  istio_addon_documents = distinct(flatten([
+    for addon in local.istio_addons : [
+      for document in data.kubectl_file_documents.istio_addon[addon].documents : {
+        addon    = addon
+        document = document
+      }
+    ]
+  ]))
 
   tags = {
     Blueprint  = local.name
@@ -58,6 +69,12 @@ module "eks" {
   cluster_name                   = local.name
   cluster_version                = "1.27"
   cluster_endpoint_public_access = true
+
+  cluster_addons = {
+    coredns    = {}
+    kube-proxy = {}
+    vpc-cni    = {}
+  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -113,13 +130,6 @@ module "eks_blueprints_addons" {
   enable_aws_load_balancer_controller = true
 
   tags = local.tags
-
-  eks_addons = {
-    coredns =    {}
-    vpc-cni    = {}
-    kube-proxy = {}
-  }
-
 }
 
 ################################################################################
@@ -185,6 +195,30 @@ resource "helm_release" "istio_ingress" {
       }
     )
   ]
+}
+
+################################################################################
+# Istio Observability
+################################################################################
+
+data "http" "istio_addon" {
+  for_each = toset(local.istio_addons)
+  url      = "https://raw.githubusercontent.com/istio/istio/release-${local.istio_addons_version}/samples/addons/${each.key}.yaml"
+
+  request_headers = {
+    Accept = "text/plain"
+  }
+}
+
+data "kubectl_file_documents" "istio_addon" {
+  for_each = data.http.istio_addon
+  content  = each.value.response_body
+}
+
+resource "kubectl_manifest" "istio_addon" {
+  count = length(local.istio_addon_documents)
+  yaml_body = local.istio_addon_documents[count.index].document
+  depends_on = [ kubernetes_namespace.istio_system ]
 }
 
 ################################################################################

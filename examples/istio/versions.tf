@@ -14,6 +14,14 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = ">= 2.20"
     }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.14.0"
+    }
+    http = {
+      source  = "hashicorp/http"
+      version = ">= 3.4.0"
+    }
   }
 
   # ##  Used for end-to-end testing on project; update to suit your needs
