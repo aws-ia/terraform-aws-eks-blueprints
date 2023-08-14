@@ -3,12 +3,12 @@ output "configure_kubectl" {
   value       = "aws eks --region ${local.region} update-kubeconfig --name ${module.eks.cluster_name}"
 }
 
-output "istio-reader-token" {
+output "istio_reader_token" {
   description = "Istio token for cross cluster auth"
   value       = data.kubernetes_secret.istio_reader_data.data["token"]
   sensitive   = true
 }
-output "istio-reader-cacert" {
+output "istio_reader_cacert" {
   description = "Istio token for cross cluster auth"
   value       = data.kubernetes_secret.istio_reader_data.data["ca.crt"]
   sensitive   = true

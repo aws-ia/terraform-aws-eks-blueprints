@@ -37,8 +37,6 @@ provider "helm" {
   }
 }
 
-data "aws_availability_zones" "available" {}
-
 locals {
   cluster_name = var.name
   region       = var.region
@@ -239,10 +237,10 @@ resource "kubernetes_secret" "cacerts" {
   }
 
   data = {
-    "ca-cert.pem"    = "${file("${path.module}/../certs-tool/certs/${local.cluster_name}/ca-cert.pem")}"
-    "ca-key.pem"     = "${file("${path.module}/../certs-tool/certs/${local.cluster_name}/ca-key.pem")}"
-    "root-cert.pem"  = "${file("${path.module}/../certs-tool/certs/${local.cluster_name}/root-cert.pem")}"
-    "cert-chain.pem" = "${file("${path.module}/../certs-tool/certs/${local.cluster_name}/cert-chain.pem")}"
+    "ca-cert.pem"    = file("${path.module}/../certs-tool/certs/${local.cluster_name}/ca-cert.pem")
+    "ca-key.pem"     = file("${path.module}/../certs-tool/certs/${local.cluster_name}/ca-key.pem")
+    "root-cert.pem"  = file("${path.module}/../certs-tool/certs/${local.cluster_name}/root-cert.pem")
+    "cert-chain.pem" = file("${path.module}/../certs-tool/certs/${local.cluster_name}/cert-chain.pem")
   }
 }
 
