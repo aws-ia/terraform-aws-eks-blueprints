@@ -188,8 +188,9 @@ resource "helm_release" "istio_ingress" {
         }
         service = {
           annotations = {
-            "service.beta.kubernetes.io/aws-load-balancer-type"   = "nlb"
-            "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internet-facing"
+            "service.beta.kubernetes.io/aws-load-balancer-type"       = "nlb"
+            "service.beta.kubernetes.io/aws-load-balancer-scheme"     = "internet-facing"
+            "service.beta.kubernetes.io/aws-load-balancer-attributes" = "load_balancing.cross_zone.enabled=true"
           }
         }
       }
@@ -216,9 +217,9 @@ data "kubectl_file_documents" "istio_addon" {
 }
 
 resource "kubectl_manifest" "istio_addon" {
-  count = length(local.istio_addon_documents)
-  yaml_body = local.istio_addon_documents[count.index].document
-  depends_on = [ kubernetes_namespace.istio_system ]
+  count      = length(local.istio_addon_documents)
+  yaml_body  = local.istio_addon_documents[count.index].document
+  depends_on = [kubernetes_namespace.istio_system]
 }
 
 ################################################################################
