@@ -1,0 +1,177 @@
+
+# Here why these local variables and datasources are needed: 
+# https://docs.aws.amazon.com/singlesignon/latest/userguide/referencingpermissionsets.html
+# https://repost.aws/knowledge-center/eks-configure-sso-user
+locals {
+  sso_role_prefix = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role"
+}
+
+data "aws_iam_roles" "admin" {
+  name_regex  = "AWSReservedSSO_EKSClusterAdmin_.*"
+  path_prefix = "/aws-reserved/sso.amazonaws.com/"
+
+  depends_on = [
+    aws_ssoadmin_account_assignment.operators,
+  ]
+}
+
+data "aws_iam_roles" "user" {
+  name_regex  = "AWSReservedSSO_EKSClusterUser_.*"
+  path_prefix = "/aws-reserved/sso.amazonaws.com/"
+
+  depends_on = [
+    aws_ssoadmin_account_assignment.developer
+  ]
+}
+
+module "operators_team" {
+  source = "aws-ia/eks-blueprints-teams/aws"
+
+  name = "eks-operators"
+
+  enable_admin = true
+  cluster_arn  = module.eks.cluster_arn
+
+  create_iam_role = false
+  iam_role_arn    = "${local.sso_role_prefix}/${tolist(data.aws_iam_roles.user.names)[0]}"
+
+  tags = {
+    Environment = "dev"
+  }
+
+  depends_on = [
+    data.aws_iam_roles.admin,
+    data.aws_iam_roles.user
+  ]
+
+}
+
+module "developers_team" {
+  source = "aws-ia/eks-blueprints-teams/aws"
+
+  name = "eks-developers"
+
+  cluster_arn       = module.eks.cluster_arn
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  create_iam_role = false
+  iam_role_arn    = "${local.sso_role_prefix}/${tolist(data.aws_iam_roles.user.names)[0]}"
+
+  labels = {
+    team = "development"
+  }
+
+  annotations = {
+    team = "development"
+  }
+
+  namespaces = {
+    default = {
+      # Provides access to the default Namespace
+      create = false
+    }
+
+    development = {
+      labels = {
+        projectName = "project-awesome",
+      }
+
+      resource_quota = {
+        hard = {
+          "requests.cpu"    = "1000m",
+          "requests.memory" = "4Gi",
+          "limits.cpu"      = "2000m",
+          "limits.memory"   = "8Gi",
+          "pods"            = "10",
+          "secrets"         = "10",
+          "services"        = "10"
+        }
+      }
+
+      limit_range = {
+        limit = [
+          {
+            type = "Pod"
+            max = {
+              cpu    = "200m"
+              memory = "1Gi"
+            }
+          },
+          {
+            type = "PersistentVolumeClaim"
+            min = {
+              storage = "24M"
+            }
+          },
+          {
+            type = "Container"
+            default = {
+              cpu    = "50m"
+              memory = "24Mi"
+            }
+          }
+        ]
+      }
+
+      network_policy = {
+        pod_selector = {
+          match_expressions = [{
+            key      = "name"
+            operator = "In"
+            values   = ["webfront", "api"]
+          }]
+        }
+
+        ingress = [{
+          ports = [
+            {
+              port     = "http"
+              protocol = "TCP"
+            },
+            {
+              port     = "53"
+              protocol = "TCP"
+            },
+            {
+              port     = "53"
+              protocol = "UDP"
+            }
+          ]
+
+          from = [
+            {
+              namespace_selector = {
+                match_labels = {
+                  name = "default"
+                }
+              }
+            },
+            {
+              ip_block = {
+                cidr = "10.0.0.0/8"
+                except = [
+                  "10.0.0.0/24",
+                  "10.0.1.0/24",
+                ]
+              }
+            }
+          ]
+        }]
+
+        egress = [] # single empty rule to allow all egress traffic
+
+        policy_types = ["Ingress", "Egress"]
+      }
+    }
+  }
+
+  tags = {
+    Environment = "dev"
+  }
+
+  depends_on = [
+    data.aws_iam_roles.admin,
+    data.aws_iam_roles.user
+  ]
+
+}

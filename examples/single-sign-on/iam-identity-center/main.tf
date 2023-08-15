@@ -50,6 +50,14 @@ module "eks" {
     }
   }
 
+  manage_aws_auth_configmap = true
+  aws_auth_roles = flatten(
+    [
+      module.operators_team.aws_auth_configmap_role,
+      module.developers_team.aws_auth_configmap_role,
+    ]
+  )
+
   tags = local.tags
 }
 

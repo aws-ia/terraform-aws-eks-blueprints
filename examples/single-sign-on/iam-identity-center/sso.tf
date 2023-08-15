@@ -103,24 +103,28 @@ resource "aws_ssoadmin_managed_policy_attachment" "user" {
 }
 
 resource "aws_identitystore_user" "admin" {
+  for_each = { for admin in var.admin_user_config : admin.email => admin }
+
   identity_store_id = tolist(data.aws_ssoadmin_instances.this.identity_store_ids)[0]
-  display_name      = "Platform Admin"
-  user_name         = "admin@example.com"
+  display_name      = "${each.value.given_name} ${each.value.family_name}"
+  user_name         = each.value.email
 
   name {
-    family_name = "Admin"
-    given_name  = "Platform"
+    family_name = each.value.family_name
+    given_name  = each.value.given_name
   }
 }
 
 resource "aws_identitystore_user" "user" {
+  for_each = { for user in var.user_config : user.email => user }
+
   identity_store_id = tolist(data.aws_ssoadmin_instances.this.identity_store_ids)[0]
-  display_name      = "Developer User"
-  user_name         = "user@example.com"
+  display_name      = "${each.value.given_name} ${each.value.family_name}"
+  user_name         = each.value.email
 
   name {
-    family_name = "User"
-    given_name  = "Developer"
+    family_name = each.value.family_name
+    given_name  = each.value.given_name
   }
 }
 
@@ -137,15 +141,19 @@ resource "aws_identitystore_group" "developers" {
 }
 
 resource "aws_identitystore_group_membership" "operators" {
+  for_each = { for admin in var.admin_user_config : admin.email => admin }
+
   identity_store_id = tolist(data.aws_ssoadmin_instances.this.identity_store_ids)[0]
   group_id          = aws_identitystore_group.operators.group_id
-  member_id         = aws_identitystore_user.admin.user_id
+  member_id         = aws_identitystore_user.admin[each.key].user_id
 }
 
 resource "aws_identitystore_group_membership" "developers" {
+  for_each = { for user in var.user_config : user.email => user }
+
   identity_store_id = tolist(data.aws_ssoadmin_instances.this.identity_store_ids)[0]
   group_id          = aws_identitystore_group.developers.group_id
-  member_id         = aws_identitystore_user.user.user_id
+  member_id         = aws_identitystore_user.user[each.key].user_id
 }
 
 resource "aws_ssoadmin_account_assignment" "operators" {
@@ -168,95 +176,4 @@ resource "aws_ssoadmin_account_assignment" "developer" {
 
   target_id   = data.aws_caller_identity.current.account_id
   target_type = "AWS_ACCOUNT"
-}
-
-resource "kubernetes_cluster_role_binding_v1" "cluster_admin" {
-  metadata {
-    name = "sso-cluster-admin"
-  }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "cluster-admin"
-  }
-  subject {
-    kind      = "Group"
-    name      = "eks-operators"
-    api_group = "rbac.authorization.k8s.io"
-  }
-}
-
-resource "kubernetes_cluster_role_binding_v1" "cluster_viewer" {
-  metadata {
-    name = "sso-cluster-viewer"
-  }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "view"
-  }
-  subject {
-    kind      = "Group"
-    name      = "eks-developers"
-    api_group = "rbac.authorization.k8s.io"
-  }
-}
-
-data "kubernetes_config_map_v1" "awsauth" {
-  metadata {
-    name      = "aws-auth"
-    namespace = "kube-system"
-  }
-}
-
-data "aws_iam_roles" "admin" {
-  name_regex  = "AWSReservedSSO_EKSClusterAdmin_.*"
-  path_prefix = "/aws-reserved/sso.amazonaws.com/"
-
-  depends_on = [
-    aws_ssoadmin_account_assignment.operators,
-    aws_ssoadmin_account_assignment.operators
-  ]
-}
-
-data "aws_iam_roles" "user" {
-  name_regex  = "AWSReservedSSO_EKSClusterUser_.*"
-  path_prefix = "/aws-reserved/sso.amazonaws.com/"
-
-  depends_on = [
-    aws_ssoadmin_account_assignment.operators,
-    aws_ssoadmin_account_assignment.developer
-  ]
-}
-
-locals {
-  sso_role_prefix = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role"
-}
-
-resource "kubernetes_config_map_v1_data" "example" {
-  metadata {
-    name      = "aws-auth"
-    namespace = "kube-system"
-  }
-
-  data = merge(data.kubernetes_config_map_v1.awsauth.data, {
-    "mapRoles" = yamlencode([{
-      rolearn  = "${local.sso_role_prefix}/${tolist(data.aws_iam_roles.admin.names)[0]}"
-      username = "admin"
-      groups   = ["eks-operators"]
-      },
-      {
-        rolearn  = "${local.sso_role_prefix}/${tolist(data.aws_iam_roles.user.names)[0]}"
-        username = "user"
-        groups   = ["eks-developers"]
-      }
-  ]) })
-
-  force = true
-
-  depends_on = [
-    data.kubernetes_config_map_v1.awsauth,
-    data.aws_iam_roles.admin,
-    data.aws_iam_roles.user
-  ]
 }

@@ -3,7 +3,7 @@ output "configure_kubectl" {
   value       = "aws eks --region ${local.region} update-kubeconfig --name ${module.eks.cluster_name}"
 }
 
-output "configure_sso_admin" {
+output "configure_sso_admins" {
   description = "Example configuration for SSO with provisioned Admin user."
   value       = <<EOT
   # aws configure sso
@@ -32,7 +32,7 @@ output "configure_sso_admin" {
 EOT
 }
 
-output "configure_sso_user" {
+output "configure_sso_users" {
   description = "Example configuration for SSO with provisioned read-only User."
   value       = <<EOT
   # aws configure sso
