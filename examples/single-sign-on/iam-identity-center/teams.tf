@@ -1,5 +1,5 @@
 
-# Here why these local variables and datasources are needed: 
+# Here why these local variables and datasources are needed:
 # https://docs.aws.amazon.com/singlesignon/latest/userguide/referencingpermissionsets.html
 # https://repost.aws/knowledge-center/eks-configure-sso-user
 locals {
