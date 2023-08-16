@@ -4,7 +4,7 @@ This example demonstrates how to provision an Amazon EKS cluster with two  ingre
 
 This solution:
 * Deploys Amazon EKS, with 1 Managed Node Group using the Bottlerocket Amazon EKS Optimized AMI spread accross 3 availability zones.
-* Installs the AWS Load Balancer controller for creating Network Load Balancers and Application Load Balancers. This is the recommended approach instead of the built-in AWS cloud provider load balancer controller.
+* Installs the AWS Load Balancer controller for creating Network Load Balancers and Application Load Balancers. This is the recommended approach instead of the in-tree AWS cloud provider load balancer controller.
 * Installs an nginx ingress controller for public traffic
 * Intstalls an nginx ingress controller for internal traffic
 
