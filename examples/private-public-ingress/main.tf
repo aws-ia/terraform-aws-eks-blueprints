@@ -108,16 +108,16 @@ module "eks_blueprints_kubernetes_addons_nginx_external" {
                 whenUnsatisfiable: ScheduleAnyway
                 labelSelector:
                   matchLabels:
-                    app.kubernetes.io/instance: nginx-ingress-external
+                    app.kubernetes.io/instance: ingress-nginx-external
               - maxSkew: 1
                 topologyKey: kubernetes.io/hostname
                 whenUnsatisfiable: ScheduleAnyway
                 labelSelector:
                   matchLabels:
-                    app.kubernetes.io/instance: nginx-ingress-external
+                    app.kubernetes.io/instance: ingress-nginx-external
             minAvailable: 2
             ingressClassResource:
-              name: nginx-ingress-external
+              name: ingress-nginx-external
               default: false
         EOT
     ]
