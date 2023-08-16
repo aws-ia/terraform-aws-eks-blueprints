@@ -1,6 +1,6 @@
 # Amazon EKS Private and Public Ingress example
 
-This example demonstrates how to provision an Amazon EKS cluster with two nginx ingress controllers; one to expose applications publicaly and the other to expose applications internally. It also assigns security groups to the Network Load Balancers used to expose the internal and external ingress controllers.
+This example demonstrates how to provision an Amazon EKS cluster with two  ingress-nginx controllers; one to expose applications publicly and the other to expose applications internally. It also assigns security groups to the Network Load Balancers used to expose the internal and external ingress controllers.
 
 This solutions:
 * Deploys Amazon EKS, with 1 Managed Node Group using the Bottlerocket Amazon EKS Optimized AMI spread accross 3 availability zones.
