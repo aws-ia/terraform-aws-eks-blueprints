@@ -33,7 +33,6 @@ data "aws_eks_cluster_auth" "this" {
   name = module.eks.cluster_name
 }
 
-data "aws_caller_identity" "current" {}
 data "aws_availability_zones" "available" {}
 
 locals {
@@ -49,7 +48,7 @@ locals {
   }
 }
 
-resource "aws_security_group" "nginx-ingress-external-sg" {
+resource "aws_security_group" "nginx_ingress_external_sg" {
   name        = "nginx-ingress-external-sg"
   description = "Allow public HTTP and HTTPS traffic"
   vpc_id      = module.vpc.vpc_id
@@ -100,7 +99,7 @@ module "eks_blueprints_kubernetes_addons_nginx_external" {
               annotations:
                 service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
                 service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-                service.beta.kubernetes.io/aws-load-balancer-security-groups: ${aws_security_group.nginx-ingress-external-sg.id}
+                service.beta.kubernetes.io/aws-load-balancer-security-groups: ${aws_security_group.nginx_ingress_external_sg.id}
                 service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: true
               loadBalancerClass: service.k8s.aws/nlb
             topologySpreadConstraints:
@@ -125,7 +124,7 @@ module "eks_blueprints_kubernetes_addons_nginx_external" {
   }
 }
 
-resource "aws_security_group" "nginx-ingress-internal-sg" {
+resource "aws_security_group" "nginx_ingress_internal_sg" {
   name        = "nginx-ingress-internal-sg"
   description = "Allow local HTTP and HTTPS traffic"
   vpc_id      = module.vpc.vpc_id
@@ -176,7 +175,7 @@ module "eks_blueprints_kubernetes_addons_nginx_internal" {
               annotations:
                 service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
                 service.beta.kubernetes.io/aws-load-balancer-scheme: internal
-                service.beta.kubernetes.io/aws-load-balancer-security-groups: ${aws_security_group.nginx-ingress-internal-sg.id}
+                service.beta.kubernetes.io/aws-load-balancer-security-groups: ${aws_security_group.nginx_ingress_internal_sg.id}
                 service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: true
               loadBalancerClass: service.k8s.aws/nlb
             topologySpreadConstraints:
