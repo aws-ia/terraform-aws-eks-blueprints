@@ -51,7 +51,7 @@ resource "okta_group_memberships" "operators" {
 
   group_id = okta_group.operators.id
   users = [
-    okta_user.admin[each.value].id
+    okta_user.admin[each.key].id
   ]
 }
 
@@ -60,7 +60,7 @@ resource "okta_group_memberships" "developers" {
 
   group_id = okta_group.developers.id
   users = [
-    okta_user.user[each.value].id
+    okta_user.user[each.key].id
   ]
 }
 
