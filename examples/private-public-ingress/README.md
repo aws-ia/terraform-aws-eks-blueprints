@@ -2,7 +2,7 @@
 
 This example demonstrates how to provision an Amazon EKS cluster with two  ingress-nginx controllers; one to expose applications publicly and the other to expose applications internally. It also assigns security groups to the Network Load Balancers used to expose the internal and external ingress controllers.
 
-This solutions:
+This solution:
 * Deploys Amazon EKS, with 1 Managed Node Group using the Bottlerocket Amazon EKS Optimized AMI spread accross 3 availability zones.
 * Installs the AWS Load Balancer controller for creating Network Load Balancers and Application Load Balancers. This is the recommended approach instead of the built-in AWS cloud provider load balancer controller.
 * Installs an nginx ingress controller for public traffic
