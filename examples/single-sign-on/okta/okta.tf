@@ -19,17 +19,21 @@ provider "kubernetes" {
 }
 
 resource "okta_user" "admin" {
-  first_name = "Platform"
-  last_name  = "Admin"
-  login      = "admin@example.com"
-  email      = "admin@example.com"
+  for_each = { for admin in var.admin_user_config : admin.email => admin }
+
+  first_name = each.value.first_name
+  last_name  = each.value.last_name
+  login      = each.value.email
+  email      = each.value.email
 }
 
 resource "okta_user" "user" {
-  first_name = "Developer"
-  last_name  = "User"
-  login      = "user@example.com"
-  email      = "user@example.com"
+  for_each = { for user in var.user_config : user.email => user }
+
+  first_name = each.value.first_name
+  last_name  = each.value.last_name
+  login      = each.value.email
+  email      = each.value.email
 }
 
 resource "okta_group" "operators" {
@@ -43,16 +47,20 @@ resource "okta_group" "developers" {
 }
 
 resource "okta_group_memberships" "operators" {
+  for_each = { for admin in var.admin_user_config : admin.email => admin }
+
   group_id = okta_group.operators.id
   users = [
-    okta_user.admin.id
+    okta_user.admin[each.value].id
   ]
 }
 
 resource "okta_group_memberships" "developers" {
+  for_each = { for user in var.user_config : user.email => user }
+
   group_id = okta_group.developers.id
   users = [
-    okta_user.user.id
+    okta_user.user[each.value].id
   ]
 }
 
