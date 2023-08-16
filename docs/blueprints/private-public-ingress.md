@@ -1,5 +1,5 @@
 ---
-title: Private and Public Nginx Ingress
+title: Private and Public Ingress
 ---
 
 {%
