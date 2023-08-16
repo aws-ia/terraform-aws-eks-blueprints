@@ -33,7 +33,7 @@ module "operators_team" {
   cluster_arn  = module.eks.cluster_arn
 
   create_iam_role = false
-  iam_role_arn    = "${local.sso_role_prefix}/${tolist(data.aws_iam_roles.user.names)[0]}"
+  iam_role_arn    = "${local.sso_role_prefix}/${tolist(data.aws_iam_roles.admin.names)[0]}"
 
   tags = {
     Environment = "dev"
