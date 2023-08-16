@@ -152,7 +152,7 @@ resource "aws_security_group" "nginx_ingress_internal_sg" {
 }
 
 /*
-Deploy the nginx ingress controller, exposed by an internal Network Load Balancer
+Deploy the ingress-nginx controller, exposed by an internal Network Load Balancer
 */
 module "eks_blueprints_kubernetes_addons_nginx_internal" {
   source  = "aws-ia/eks-blueprints-addons/aws"
@@ -166,7 +166,7 @@ module "eks_blueprints_kubernetes_addons_nginx_internal" {
   enable_ingress_nginx = true
 
   ingress_nginx = {
-    name = "nginx-ingress-internal"
+    name = "ingress-nginx-internal"
     values = [
       <<-EOT
           controller:
