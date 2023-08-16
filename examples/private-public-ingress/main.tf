@@ -119,8 +119,8 @@ module "eks_blueprints_kubernetes_addons_nginx_external" {
   }
 }
 
-resource "aws_security_group" "nginx_ingress_internal_sg" {
-  name        = "nginx-ingress-internal-sg"
+resource "aws_security_group" "ingress_nginx_internal_sg" {
+  name        = "ingress-nginx-internal-sg"
   description = "Allow local HTTP and HTTPS traffic"
   vpc_id      = module.vpc.vpc_id
 
