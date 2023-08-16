@@ -1,20 +1,3 @@
-# locals {
-#   cluster1_name = data.terraform_remote_state.cluster1.outputs.cluster_name
-#   cluster2_name = data.terraform_remote_state.cluster2.outputs.cluster_name
-# }
-
-################################################################################
-# Remote states and Kubernetes providers for VPCs and Clusters
-################################################################################
-
-# data "terraform_remote_state" "vpc" {
-#   backend = "local"
-
-#   config = {
-#     path = "${path.module}/../0.vpc/terraform.tfstate"
-#   }
-# }
-
 data "terraform_remote_state" "cluster1" {
   backend = "local"
 
@@ -30,8 +13,7 @@ provider "kubernetes" {
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", data.terraform_remote_state.cluster1.outputs.cluster_name, "--region", data.terraform_remote_state.cluster1.outputs.cluster_region]
+    args        = ["eks", "get-token", "--cluster-name", data.terraform_remote_state.cluster1.outputs.cluster_name, "--region", data.terraform_remote_state.cluster1.outputs.cluster_region]
   }
   alias = "cluster1"
 }

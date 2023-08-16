@@ -11,8 +11,7 @@ locals {
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  # istio_chart_url     = "https://istio-release.storage.googleapis.com/charts"
-  # istio_chart_version = "1.18.1"
+
 
   tags = {
     Blueprint  = local.cluster_name
@@ -48,7 +47,6 @@ module "vpc" {
 
   tags = local.tags
 }
-
 
 ################################################################################
 # Cluster 1 additional security group for cross cluster communication

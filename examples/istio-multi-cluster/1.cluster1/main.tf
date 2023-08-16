@@ -230,6 +230,7 @@ resource "helm_release" "istio_ingress" {
 # https://istio.io/latest/docs/ops/deployment/deployment-models/#trust-within-a-mesh
 # https://istio.io/latest/docs/ops/diagnostic-tools/multicluster/#trust-configuration
 ################################################################################
+
 resource "kubernetes_secret" "cacerts" {
   metadata {
     name      = "cacerts"

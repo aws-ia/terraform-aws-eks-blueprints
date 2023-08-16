@@ -8,6 +8,7 @@ output "istio_reader_token" {
   value       = data.kubernetes_secret.istio_reader.data["token"]
   sensitive   = true
 }
+
 output "istio_reader_cacert" {
   description = "Istio token for cross cluster auth"
   value       = data.kubernetes_secret.istio_reader.data["ca.crt"]
@@ -28,7 +29,6 @@ output "cluster_name" {
   description = "Cluster name"
   value       = module.eks.cluster_name
 }
-
 
 output "cluster_region" {
   description = "Cluster region"

@@ -8,6 +8,7 @@ output "istio_reader_token" {
   value       = data.kubernetes_secret.istio_reader_data.data["token"]
   sensitive   = true
 }
+
 output "istio_reader_cacert" {
   description = "Istio token for cross cluster auth"
   value       = data.kubernetes_secret.istio_reader_data.data["ca.crt"]
