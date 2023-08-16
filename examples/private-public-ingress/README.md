@@ -6,9 +6,9 @@ This solution:
 * Deploys Amazon EKS, with 1 Managed Node Group using the Bottlerocket Amazon EKS Optimized AMI spread accross 3 availability zones.
 * Installs the AWS Load Balancer controller for creating Network Load Balancers and Application Load Balancers. This is the recommended approach instead of the in-tree AWS cloud provider load balancer controller.
 * Installs an ingress-nginx controller for public traffic
-* Intstalls an ingress-nginx controller for internal traffic
+* Installs an ingress-nginx controller for internal traffic
 
-To expose your application services via an `Ingress` resource with this solution you can set the respective `ingressClassName` as either `nginx-ingress-external` or `nginx-ingress-internal`.
+To expose your application services via an `Ingress` resource with this solution you can set the respective `ingressClassName` as either `ingress-nginx-external` or `ingress-nginx-internal`.
 
 Refer to the [documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller) for `AWS Load Balancer controller` configuration options.
 
