@@ -67,6 +67,7 @@ resource "kubernetes_secret" "istio_remote_secret_cluster2" {
     )
   }
 }
+
 ################################################################################
 # Istio remote secret for cluster 2 (istioctl x create-remote-secret)
 ################################################################################
