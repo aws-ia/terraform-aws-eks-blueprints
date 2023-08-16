@@ -184,16 +184,16 @@ module "eks_blueprints_kubernetes_addons_nginx_internal" {
                 whenUnsatisfiable: ScheduleAnyway
                 labelSelector:
                   matchLabels:
-                    app.kubernetes.io/instance: nginx-ingress-internal
+                    app.kubernetes.io/instance: ingress-nginx-internal
               - maxSkew: 1
                 topologyKey: kubernetes.io/hostname
                 whenUnsatisfiable: ScheduleAnyway
                 labelSelector:
                   matchLabels:
-                    app.kubernetes.io/instance: nginx-ingress-internal
+                    app.kubernetes.io/instance: ingress-nginx-internal
             minAvailable: 2
             ingressClassResource:
-              name: nginx-ingress-internal
+              name: ingress-nginx-internal
               default: false
         EOT
     ]
