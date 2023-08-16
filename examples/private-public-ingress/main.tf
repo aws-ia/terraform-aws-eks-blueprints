@@ -99,7 +99,7 @@ module "eks_blueprints_kubernetes_addons_nginx_external" {
               annotations:
                 service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
                 service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-                service.beta.kubernetes.io/aws-load-balancer-security-groups: ${aws_security_group.nginx_ingress_external_sg.id}
+                service.beta.kubernetes.io/aws-load-balancer-security-groups: ${aws_security_group.ingress_nginx_external_sg.id}
                 service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: true
               loadBalancerClass: service.k8s.aws/nlb
             topologySpreadConstraints:
