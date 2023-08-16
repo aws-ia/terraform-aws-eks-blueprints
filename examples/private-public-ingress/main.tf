@@ -43,8 +43,8 @@ locals {
   }
 }
 
-resource "aws_security_group" "nginx_ingress_external_sg" {
-  name        = "nginx-ingress-external-sg"
+resource "aws_security_group" "ingress_nginx_external_sg" {
+  name        = "ingress-nginx-external-sg"
   description = "Allow public HTTP and HTTPS traffic"
   vpc_id      = module.vpc.vpc_id
 
