@@ -1,3 +1,34 @@
+provider "aws" {
+  region = local.region
+}
+
+provider "kubernetes" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.this.token
+}
+
+provider "aws" {
+  region = "us-east-1"
+  alias  = "virginia"
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    token                  = data.aws_eks_cluster_auth.this.token
+  }
+}
+
+provider "kubectl" {
+  apply_retry_count      = 10
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  load_config_file       = false
+  token                  = data.aws_eks_cluster_auth.this.token
+}
+
 data "aws_eks_cluster_auth" "this" {
   name = module.eks.cluster_name
 }
@@ -6,7 +37,8 @@ data "aws_caller_identity" "current" {}
 data "aws_availability_zones" "available" {}
 
 locals {
-  name = "eks-private-public-ingress"
+  region = "eu-west-1"
+  name   = "eks-private-public-ingress"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
