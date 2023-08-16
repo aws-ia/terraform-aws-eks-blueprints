@@ -58,14 +58,14 @@ resource "aws_security_group" "nginx-ingress-external-sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] // modify to your requirements
+    cidr_blocks = ["0.0.0.0/0"] # modify to your requirements
   }
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] // modify to your requirements
+    cidr_blocks = ["0.0.0.0/0"] # modify to your requirements
   }
 
   egress {
@@ -134,14 +134,14 @@ resource "aws_security_group" "nginx-ingress-internal-sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = [local.vpc_cidr] // modify to your requirements
+    cidr_blocks = [local.vpc_cidr] # modify to your requirements
   }
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [local.vpc_cidr] // modify to your requirements
+    cidr_blocks = [local.vpc_cidr] # modify to your requirements
   }
 
   egress {
