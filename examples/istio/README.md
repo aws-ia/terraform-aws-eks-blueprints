@@ -98,7 +98,7 @@ deployment.
    ```
 
    Output should be similar to:
-   ``` 
+   ```
    NAME          	NAMESPACE   	REVISION	UPDATED                             	STATUS  	CHART         	APP VERSION
    istio-base   	istio-system	1       	2023-07-19 11:05:41.599921 -0700 PDT	deployed	base-1.18.1   	1.18.1
    istiod       	istio-system	1       	2023-07-19 11:05:48.087616 -0700 PDT	deployed	istiod-1.18.1 	1.18.1
