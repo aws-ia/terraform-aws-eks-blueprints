@@ -8,7 +8,8 @@ This example shows how to provision an EKS cluster with Istio.
 * Install Istio Ingress Gateway using Helm resources in Terraform
 * Deploy/Validate Istio communication using sample application
 
-Refer to the [documentation](https://istio.io/latest/docs/concepts/) for `Istio` concepts.
+Refer to the [documentation](https://istio.io/latest/docs/concepts/) on `Istio`
+concepts.
 
 ## Prerequisites:
 
@@ -24,6 +25,7 @@ To provision this example:
 
 ```sh
 terraform init
+terraform apply -target=module.vpc -target=module.eks
 terraform apply
 ```
 
@@ -31,237 +33,288 @@ Enter `yes` at command prompt to apply
 
 ## Validate
 
-The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the deployment.
+The following command will update the `kubeconfig` on your local machine and
+allow you to interact with your EKS Cluster using `kubectl` to validate the
+deployment.
 
 1. Run `update-kubeconfig` command:
 
+   ```sh
+   aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
+   ```
+
+2. List all the worker nodes
+
+   ```sh
+   kubectl get nodes
+   ```
+
+   Output should be similar to:
+    ```
+    NAME                                       STATUS   ROLES    AGE     VERSION
+    ip-10-0-2-141.us-west-2.compute.internal   Ready    <none>   9m36s   v1.27.3-eks-a5565ad
+    ip-10-0-30-86.us-west-2.compute.internal   Ready    <none>   9m37s   v1.27.3-eks-a5565ad
+    ip-10-0-47-71.us-west-2.compute.internal   Ready    <none>   9m21s   v1.27.3-eks-a5565ad
+    ```
+
+3. List out all pods and services in the `istio-system` namespace:
+
+   ```sh
+   kubectl get pods,svc -n istio-system
+   kubectl get pods,svc -n istio-ingress
+   ```
+
+   Output should be similar to:
+    ```
+    NAME                             READY   STATUS    RESTARTS   AGE
+    pod/grafana-7d4f5589fb-4xj9m     1/1     Running   0          4m14s
+    pod/istiod-ff577f8b8-c8ssk       1/1     Running   0          4m40s
+    pod/jaeger-58c79c85cd-n7bkx      1/1     Running   0          4m14s
+    pod/kiali-749d76d7bb-8kjg7       1/1     Running   0          4m14s
+    pod/prometheus-5d5d6d6fc-sptxl   2/2     Running   0          4m15s
+
+    NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                 AGE
+    service/grafana            ClusterIP   172.20.141.12    <none>        3000/TCP                                4m14s
+    service/istiod             ClusterIP   172.20.172.70    <none>        15010/TCP,15012/TCP,443/TCP,15014/TCP   4m40s
+    service/jaeger-collector   ClusterIP   172.20.223.28    <none>        14268/TCP,14250/TCP,9411/TCP            4m15s
+    service/kiali              ClusterIP   172.20.182.231   <none>        20001/TCP,9090/TCP                      4m15s
+    service/prometheus         ClusterIP   172.20.89.64     <none>        9090/TCP                                4m14s
+    service/tracing            ClusterIP   172.20.253.201   <none>        80/TCP,16685/TCP                        4m14s
+    service/zipkin             ClusterIP   172.20.221.157   <none>        9411/TCP                                4m15s
+
+    NAME                                 READY   STATUS    RESTARTS   AGE
+    pod/istio-ingress-6f7c5dffd8-glszr   1/1     Running   0          4m28s
+
+    NAME                    TYPE           CLUSTER-IP      EXTERNAL-IP                                                                     PORT(S)                                      AGE
+    service/istio-ingress   LoadBalancer   172.20.104.27   k8s-istioing-istioing-844c89b6c2-875b8c9a4b4e9365.elb.us-west-2.amazonaws.com   15021:32760/TCP,80:31496/TCP,443:32534/TCP   4m28s
+    ```
+
+4. Verify all the Helm releases installed in the `istio-system` and
+`istio-ingress` namespaces:
+
+   ```sh
+   helm list -n istio-system
+   helm list -n istio-ingress
+   ```
+
+   Output should be similar to:
+   ``` 
+   NAME          	NAMESPACE   	REVISION	UPDATED                             	STATUS  	CHART         	APP VERSION
+   istio-base   	istio-system	1       	2023-07-19 11:05:41.599921 -0700 PDT	deployed	base-1.18.1   	1.18.1
+   istiod       	istio-system	1       	2023-07-19 11:05:48.087616 -0700 PDT	deployed	istiod-1.18.1 	1.18.1
+
+   NAME          	NAMESPACE   	REVISION	UPDATED                             	STATUS  	CHART         	APP VERSION
+   istio-ingress	istio-ingress	1       	2023-07-19 11:06:03.41609 -0700 PDT 	deployed	gateway-1.18.1	1.18.1
+   ```
+
+### Observability Add-ons
+
+Validate the setup of the observability add-ons by running the following commands
+and accessing each of the service endpoints using this URL of the form
+[http://localhost:\<port>](http://localhost:<port>) where `<port>` is one of the
+port number for the corresponding service.
+
+
 ```sh
-aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
-```
+# Visualize Istio Mesh console using Kiali
+kubectl port-forward svc/kiali 20001:20001 -n istio-system
 
-2. List the nodes running currently
+# Get to the Prometheus UI
+kubectl port-forward svc/prometheus 9090:9090 -n istio-system
 
-```sh
-kubectl get nodes
-```
+# Visualize metrics in using Grafana
+kubectl port-forward svc/grafana 3000:3000 -n istio-system
 
-```
-# Output should look like below
-NAME                          STATUS   ROLES    AGE   VERSION
-ip-10-0-22-173.ec2.internal   Ready    <none>   48m   v1.27.3-eks-a5565ad
-```
-
-3. List out the pods running currently:
-
-```sh
-kubectl get pods,svc -n istio-system
-```
-
-```
-# Output should look like below
-NAME                                 READY   STATUS    RESTARTS   AGE
-pod/istio-ingress-6f7c5dffd8-chkww   1/1     Running   0          48m
-pod/istiod-ff577f8b8-t9ww2           1/1     Running   0          48m
-
-NAME                    TYPE           CLUSTER-IP      EXTERNAL-IP                                                                     PORT(S)                                      AGE
-service/istio-ingress   LoadBalancer   172.20.100.3    a59363808e78d46d59bf3378cafffcec-a12f9c78cb607b6b.elb.us-east-1.amazonaws.com   15021:32118/TCP,80:32740/TCP,443:30624/TCP   48m
-service/istiod          ClusterIP      172.20.249.63   <none>                                                                          15010/TCP,15012/TCP,443/TCP,15014/TCP        48m
-```
-
-4. Verify all the helm releases installed for Istio:
-
-```sh
-helm list -n istio-system
-```
-
-```
-# Output should look like below
-NAME         	NAMESPACE   	REVISION	UPDATED                             	STATUS  	CHART         	APP VERSION
-istio-base   	istio-system	1       	2023-07-19 11:05:41.599921 -0700 PDT	deployed	base-1.18.1   	1.18.1
-istio-ingress	istio-system	1       	2023-07-19 11:06:03.41609 -0700 PDT 	deployed	gateway-1.18.1	1.18.1
-istiod       	istio-system	1       	2023-07-19 11:05:48.087616 -0700 PDT	deployed	istiod-1.18.1 	1.18.1
+# Visualize application traces via Jaeger
+kubectl port-forward svc/jaeger 16686:16686 -n istio-system
 ```
 
 ## Test
 
-1. Create the sample namespace and enable the sidecar injection for this namespace
+1. Create the `sample` namespace and enable the sidecar injection on it
 
-```sh
-kubectl create namespace sample
-kubectl label namespace sample istio-injection=enabled
-```
+    ```sh
+    kubectl create namespace sample
+    kubectl label namespace sample istio-injection=enabled
+    ```
 
-```
-namespace/sample created
-namespace/sample labeled
-```
+    Output should be:
+    ```
+    namespace/sample created
+    namespace/sample labeled
+    ```
 
-2. Deploy helloworld app
+2. Deploy `helloworld` app
 
-```sh
-cat <<EOF > helloworld.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: helloworld
-  labels:
-    app: helloworld
-    service: helloworld
-spec:
-  ports:
-  - port: 5000
-    name: http
-  selector:
-    app: helloworld
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: helloworld-v1
-  labels:
-    app: helloworld
-    version: v1
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: helloworld
-      version: v1
-  template:
+    ```sh
+    cat <<EOF > helloworld.yaml
+    apiVersion: v1
+    kind: Service
     metadata:
-      labels:
+    name: helloworld
+    labels:
+        app: helloworld
+        service: helloworld
+    spec:
+    ports:
+    - port: 5000
+        name: http
+    selector:
+        app: helloworld
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+    name: helloworld-v1
+    labels:
         app: helloworld
         version: v1
     spec:
-      containers:
-      - name: helloworld
-        image: docker.io/istio/examples-helloworld-v1
-        resources:
-          requests:
-            cpu: "100m"
-        imagePullPolicy: IfNotPresent #Always
-        ports:
-        - containerPort: 5000
-EOF
+    replicas: 1
+    selector:
+        matchLabels:
+        app: helloworld
+        version: v1
+    template:
+        metadata:
+        labels:
+            app: helloworld
+            version: v1
+        spec:
+        containers:
+        - name: helloworld
+            image: docker.io/istio/examples-helloworld-v1
+            resources:
+            requests:
+                cpu: "100m"
+            imagePullPolicy: IfNotPresent #Always
+            ports:
+            - containerPort: 5000
+    EOF
 
-kubectl apply -f helloworld.yaml -n sample
-```
+    kubectl apply -f helloworld.yaml -n sample
+    ```
 
-```
-service/helloworld created
-deployment.apps/helloworld-v1 created
-```
+    Output should be:
+    ```
+    service/helloworld created
+    deployment.apps/helloworld-v1 created
+    ```
 
-3. Deploy sleep app that we will use to connect to helloworld app
+3. Deploy `sleep` app that we will use to connect to `helloworld` app
 
-```sh
-cat <<EOF > sleep.yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: sleep
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: sleep
-  labels:
-    app: sleep
-    service: sleep
-spec:
-  ports:
-  - port: 80
-    name: http
-  selector:
-    app: sleep
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: sleep
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: sleepdocs/blueprints/argocd.md
-  template:
+    ```sh
+    cat <<EOF > sleep.yaml
+    apiVersion: v1
+    kind: ServiceAccount
     metadata:
-      labels:
+    name: sleep
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+    name: sleep
+    labels:
         app: sleep
+        service: sleep
     spec:
-      terminationGracePeriodSeconds: 0
-      serviceAccountName: sleep
-      containers:
-      - name: sleep
-        image: curlimages/curl
-        command: ["/bin/sleep", "infinity"]
-        imagePullPolicy: IfNotPresent
-        volumeMounts:
-        - mountPath: /etc/sleep/tls
-          name: secret-volume
-      volumes:
-      - name: secret-volume
-        secret:
-          secretName: sleep-secret
-          optional: true
-EOF
+    ports:
+    - port: 80
+        name: http
+    selector:
+        app: sleep
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+    name: sleep
+    spec:
+    replicas: 1
+    selector:
+        matchLabels:
+        app: sleepdocs/blueprints/argocd.md
+    template:
+        metadata:
+        labels:
+            app: sleep
+        spec:
+        terminationGracePeriodSeconds: 0
+        serviceAccountName: sleep
+        containers:
+        - name: sleep
+            image: curlimages/curl
+            command: ["/bin/sleep", "infinity"]
+            imagePullPolicy: IfNotPresent
+            volumeMounts:
+            - mountPath: /etc/sleep/tls
+            name: secret-volume
+        volumes:
+        - name: secret-volume
+            secret:
+            secretName: sleep-secret
+            optional: true
+    EOF
 
-kubectl apply -f sleep.yaml -n sample
-```
+    kubectl apply -f sleep.yaml -n sample
+    ```
 
-```
-serviceaccount/sleep created
-service/sleep created
-deployment.apps/sleep created
-```
+    Output should be:
+    ```
+    serviceaccount/sleep created
+    service/sleep created
+    deployment.apps/sleep created
+    ```
 
 4. Check all the pods in the `sample` namespace
 
-```sh
-kubectl get pods -n sample
-```
-```
-NAME                           READY   STATUS    RESTARTS   AGE
-helloworld-v1-b6c45f55-bx2xk   2/2     Running   0          50s
-sleep-9454cc476-p2zxr          2/2     Running   0          15s
-```
-5. Connect to helloworld app from sleep app and see the connectivity is using envoy proxy
+    ```sh
+    kubectl get pods -n sample
+    ```
+    Output should be similar to:
+    ```
+    NAME                           READY   STATUS    RESTARTS   AGE
+    helloworld-v1-b6c45f55-bx2xk   2/2     Running   0          50s
+    sleep-9454cc476-p2zxr          2/2     Running   0          15s
+    ```
+5. Connect to `helloworld` app from `sleep` app and verify if the connection
+uses envoy proxy
 
-```sh
-kubectl exec -n sample -c sleep \
-    "$(kubectl get pod -n sample -l \
-    app=sleep -o jsonpath='{.items[0].metadata.name}')" \
-    -- curl -v helloworld.sample:5000/hello
-```
-```
-* processing: helloworld.sample:5000/hello
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 172.20.26.38:5000...
-* Connected to helloworld.sample (172.20.26.38) port 5000
-> GET /hello HTTP/1.1
-> Host: helloworld.sample:5000
-> User-Agent: curl/8.2.0
-> Accept: */*
->
-< HTTP/1.1 200 OK
-< server: envoy
-< date: Fri, 21 Jul 2023 18:56:09 GMT
-< content-type: text/html; charset=utf-8
-< content-length: 58
-< x-envoy-upstream-service-time: 142
-<
-{ [58 bytes data]
-100    58  100    58  Hello version: v1, instance: helloworld-v1-b6c45f55-h592c
-  0     0    392      0 --:--:-- --:--:-- --:--:--   394
-* Connection #0 to host helloworld.sample left intact
-```
+    ```sh
+    kubectl exec -n sample -c sleep \
+        "$(kubectl get pod -n sample -l \
+        app=sleep -o jsonpath='{.items[0].metadata.name}')" \
+        -- curl -v helloworld.sample:5000/hello
+    ```
+    Output should be similar to:
+    ```
+    * processing: helloworld.sample:5000/hello
+    % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                    Dload  Upload   Total   Spent    Left  Speed
+    0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 172.20.26.38:5000...
+    * Connected to helloworld.sample (172.20.26.38) port 5000
+    > GET /hello HTTP/1.1
+    > Host: helloworld.sample:5000
+    > User-Agent: curl/8.2.0
+    > Accept: */*
+    >
+    < HTTP/1.1 200 OK
+    < server: envoy
+    < date: Fri, 21 Jul 2023 18:56:09 GMT
+    < content-type: text/html; charset=utf-8
+    < content-length: 58
+    < x-envoy-upstream-service-time: 142
+    <
+    { [58 bytes data]
+    100    58  100    58  Hello version: v1, instance: helloworld-v1-b6c45f55-h592c
+    0     0    392      0 --:--:-- --:--:-- --:--:--   394
+    * Connection #0 to host helloworld.sample left intact
+    ```
 
 ## Destroy
 
 To teardown and remove the resources created in this example:
 
 ```sh
-terraform destroy -target="module.eks_blueprints_addons" -auto-approve
-terraform destroy -auto-approve
+terraform destroy -target="helm_release.istio_ingress" --auto-approve
+terraform destroy --auto-approve
 ```

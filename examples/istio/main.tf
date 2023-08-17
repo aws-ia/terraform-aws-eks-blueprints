@@ -2,30 +2,29 @@ provider "aws" {
   region = local.region
 }
 
+provider "kubectl" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.this.token
+  load_config_file       = false
+}
+
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
-  }
+  token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
-    }
+    token                  = data.aws_eks_cluster_auth.this.token
   }
+}
+
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks.cluster_name
 }
 
 data "aws_availability_zones" "available" {}
@@ -39,6 +38,18 @@ locals {
 
   istio_chart_url     = "https://istio-release.storage.googleapis.com/charts"
   istio_chart_version = "1.18.1"
+
+  istio_addons_version = regex("\\d+.\\d+", local.istio_chart_version)
+  istio_addons         = ["kiali", "jaeger", "prometheus", "grafana"]
+
+  istio_addon_documents = distinct(flatten([
+    for addon in local.istio_addons : [
+      for document in data.kubectl_file_documents.istio_addon[addon].documents : {
+        addon    = addon
+        document = document
+      }
+    ]
+  ]))
 
   tags = {
     Blueprint  = local.name
@@ -68,12 +79,14 @@ module "eks" {
 
       min_size     = 1
       max_size     = 5
-      desired_size = 2
+      desired_size = 3 # When < 3, coredns add-on is ending up in degraded state
     }
   }
 
-  #  EKS K8s API cluster needs to be able to talk with the EKS worker nodes with port 15017/TCP and 15012/TCP which is used by Istio
-  #  Istio in order to create sidecar needs to be able to communicate with webhook and for that network passage to EKS is needed.
+  #  EKS K8s API cluster needs to be able to talk with the EKS worker nodes with
+  #  port 15017/TCP and 15012/TCP which is used by Istio. In order to create
+  #  sidecar Istio needs to be able to communicate with webhook and for that
+  #  network passage to EKS is needed.
   node_security_group_additional_rules = {
     ingress_15017 = {
       description                   = "Cluster API - Istio Webhook namespace.sidecar-injector.istio.io"
@@ -115,33 +128,23 @@ module "eks_blueprints_addons" {
   tags = local.tags
 
   eks_addons = {
-    coredns =    {}
+    coredns    = {}
     vpc-cni    = {}
     kube-proxy = {}
   }
-
 }
 
 ################################################################################
 # Istio
 ################################################################################
 
-resource "kubernetes_namespace" "istio_system" {
-  metadata {
-    name = "istio-system"
-    labels = {
-      istio-injection = "enabled"
-    }
-  }
-}
-
 resource "helm_release" "istio_base" {
-  repository = local.istio_chart_url
-  chart      = "base"
-  name       = "istio-base"
-  namespace  = kubernetes_namespace.istio_system.metadata[0].name
-  version    = local.istio_chart_version
-  wait       = false
+  repository       = local.istio_chart_url
+  chart            = "base"
+  name             = "istio-base"
+  namespace        = "istio-system"
+  version          = local.istio_chart_version
+  create_namespace = true
 
   depends_on = [
     module.eks_blueprints_addons
@@ -154,8 +157,6 @@ resource "helm_release" "istiod" {
   name       = "istiod"
   namespace  = helm_release.istio_base.metadata[0].namespace
   version    = local.istio_chart_version
-  wait       = false
-
   set {
     name  = "meshConfig.accessLogFile"
     value = "/dev/stdout"
@@ -163,12 +164,12 @@ resource "helm_release" "istiod" {
 }
 
 resource "helm_release" "istio_ingress" {
-  repository = local.istio_chart_url
-  chart      = "gateway"
-  name       = "istio-ingress"
-  namespace  = helm_release.istiod.metadata[0].namespace
-  version    = local.istio_chart_version
-  wait       = false
+  repository       = local.istio_chart_url
+  chart            = "gateway"
+  name             = "istio-ingress"
+  namespace        = "istio-ingress" # per https://github.com/istio/istio/blob/master/manifests/charts/gateways/istio-ingress/values.yaml#L2
+  version          = local.istio_chart_version
+  create_namespace = true
 
   values = [
     yamlencode(
@@ -178,13 +179,39 @@ resource "helm_release" "istio_ingress" {
         }
         service = {
           annotations = {
-            "service.beta.kubernetes.io/aws-load-balancer-type"   = "nlb"
-            "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internet-facing"
+            "service.beta.kubernetes.io/aws-load-balancer-type"       = "nlb"
+            "service.beta.kubernetes.io/aws-load-balancer-scheme"     = "internet-facing"
+            "service.beta.kubernetes.io/aws-load-balancer-attributes" = "load_balancing.cross_zone.enabled=true"
           }
         }
       }
     )
   ]
+  depends_on = [helm_release.istiod, helm_release.istio_base]
+}
+
+################################################################################
+# Istio Observability
+################################################################################
+
+data "http" "istio_addon" {
+  for_each = toset(local.istio_addons)
+  url      = "https://raw.githubusercontent.com/istio/istio/release-${local.istio_addons_version}/samples/addons/${each.key}.yaml"
+
+  request_headers = {
+    Accept = "text/plain"
+  }
+}
+
+data "kubectl_file_documents" "istio_addon" {
+  for_each = data.http.istio_addon
+  content  = each.value.response_body
+}
+
+resource "kubectl_manifest" "istio_addon" {
+  count      = length(local.istio_addon_documents)
+  yaml_body  = local.istio_addon_documents[count.index].document
+  depends_on = [helm_release.istio_ingress]
 }
 
 ################################################################################
