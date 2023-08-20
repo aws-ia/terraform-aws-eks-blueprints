@@ -310,14 +310,9 @@ data "aws_secretsmanager_secret_version" "admin_password_version" {
   secret_id = data.aws_secretsmanager_secret.argocd.id
 }
 
-# data "aws_ecrpublic_authorization_token" "token" {
-#   provider = aws.virginia
-# }
-
-#tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.15.2"
+  version = "~> 19.16"
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version

@@ -5,34 +5,48 @@ provider "aws" {
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  token                  = data.aws_eks_cluster_auth.this.token
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
 }
 
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-    token                  = data.aws_eks_cluster_auth.this.token
+
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      # This requires the awscli to be installed locally where Terraform is executed
+      args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+    }
   }
 }
 
 provider "kubectl" {
-  apply_retry_count      = 10
+  apply_retry_count      = 5
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   load_config_file       = false
-  token                  = data.aws_eks_cluster_auth.this.token
-}
 
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
 }
 
 data "aws_availability_zones" "available" {}
 
 locals {
-  region = "eu-west-1"
-  name   = "eks-private-public-ingress"
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -43,8 +57,43 @@ locals {
   }
 }
 
-resource "aws_security_group" "ingress_nginx_external_sg" {
-  name        = "ingress-nginx-external-sg"
+################################################################################
+# Cluster
+################################################################################
+
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 19.16"
+
+  cluster_name                   = local.name
+  cluster_version                = "1.27"
+  cluster_endpoint_public_access = true
+
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
+
+  eks_managed_node_groups = {
+    core_node_group = {
+      instance_types = ["m5.large"]
+
+      ami_type = "BOTTLEROCKET_x86_64"
+      platform = "bottlerocket"
+
+      min_size     = 3
+      max_size     = 3
+      desired_size = 3
+    }
+  }
+
+  tags = local.tags
+}
+
+################################################################################
+# EKS Blueprints Addons
+################################################################################
+
+resource "aws_security_group" "ingress_nginx_external" {
+  name        = "ingress-nginx-external"
   description = "Allow public HTTP and HTTPS traffic"
   vpc_id      = module.vpc.vpc_id
 
@@ -68,12 +117,12 @@ resource "aws_security_group" "ingress_nginx_external_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = local.tags
 }
 
-/*
-Deploy the ingress-nginx controller, exposed by an internet facing Network Load Balancer
-*/
-module "eks_blueprints_kubernetes_addons_nginx_external" {
+# ingress-nginx controller, exposed by an internet facing Network Load Balancer
+module "ingres_nginx_external" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "~> 1.0"
 
@@ -83,7 +132,6 @@ module "eks_blueprints_kubernetes_addons_nginx_external" {
   oidc_provider_arn = module.eks.oidc_provider_arn
 
   enable_ingress_nginx = true
-
   ingress_nginx = {
     name = "ingress-nginx-external"
     values = [
@@ -94,7 +142,7 @@ module "eks_blueprints_kubernetes_addons_nginx_external" {
               annotations:
                 service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
                 service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-                service.beta.kubernetes.io/aws-load-balancer-security-groups: ${aws_security_group.ingress_nginx_external_sg.id}
+                service.beta.kubernetes.io/aws-load-balancer-security-groups: ${aws_security_group.ingress_nginx_external.id}
                 service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: true
               loadBalancerClass: service.k8s.aws/nlb
             topologySpreadConstraints:
@@ -119,8 +167,8 @@ module "eks_blueprints_kubernetes_addons_nginx_external" {
   }
 }
 
-resource "aws_security_group" "ingress_nginx_internal_sg" {
-  name        = "ingress-nginx-internal-sg"
+resource "aws_security_group" "ingress_nginx_internal" {
+  name        = "ingress-nginx-internal"
   description = "Allow local HTTP and HTTPS traffic"
   vpc_id      = module.vpc.vpc_id
 
@@ -144,12 +192,12 @@ resource "aws_security_group" "ingress_nginx_internal_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = local.tags
 }
 
-/*
-Deploy the ingress-nginx controller, exposed by an internal Network Load Balancer
-*/
-module "eks_blueprints_kubernetes_addons_nginx_internal" {
+# ingress-nginx controller, exposed by an internal Network Load Balancer
+module "ingres_nginx_internal" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "~> 1.6.0"
 
@@ -170,7 +218,7 @@ module "eks_blueprints_kubernetes_addons_nginx_internal" {
               annotations:
                 service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
                 service.beta.kubernetes.io/aws-load-balancer-scheme: internal
-                service.beta.kubernetes.io/aws-load-balancer-security-groups: ${aws_security_group.ingress_nginx_internal_sg.id}
+                service.beta.kubernetes.io/aws-load-balancer-security-groups: ${aws_security_group.ingress_nginx_internal.id}
                 service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: true
               loadBalancerClass: service.k8s.aws/nlb
             topologySpreadConstraints:
@@ -210,40 +258,15 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   tags = local.tags
-
-  depends_on = [module.eks]
 }
 
-module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.15.3"
-
-  cluster_name                   = local.name
-  cluster_version                = "1.27"
-  cluster_endpoint_public_access = true
-
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = slice(module.vpc.private_subnets, 0, 3)
-
-  eks_managed_node_groups = {
-    core_node_group = {
-      instance_types = ["m5.large"]
-
-      ami_type = "BOTTLEROCKET_x86_64"
-      platform = "bottlerocket"
-
-      min_size     = 3
-      max_size     = 3
-      desired_size = 3
-    }
-  }
-
-  tags = local.tags
-}
+################################################################################
+# Supporting Resources
+################################################################################
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "5.0.0"
+  version = "~> 5.0"
 
   name = local.name
   cidr = local.vpc_cidr

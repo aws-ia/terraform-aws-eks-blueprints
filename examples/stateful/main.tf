@@ -53,10 +53,9 @@ locals {
 # Cluster
 ################################################################################
 
-#tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.13"
+  version = "~> 19.16"
 
   cluster_name                   = local.name
   cluster_version                = "1.27"
@@ -122,12 +121,20 @@ module "eks" {
                 Name=attachment.device,Values=${local.second_volume_name} \
             --query Volumes[].Attachments[].State \
             --output text)
-
           sleep 5
         done
 
+        # Get the volume ID
+        VOLUME_ID=$(aws ec2 describe-volumes \
+          --region ${local.region} \
+          --filters \
+              Name=attachment.instance-id,Values=$${EC2_INSTANCE_ID} \
+              Name=attachment.device,Values=${local.second_volume_name} \
+          --query Volumes[].Attachments[].VolumeId \
+          --output text | sed 's/-//')
+
         # Mount the containerd directories to the 2nd volume
-        SECOND_VOL=$(lsblk -o NAME,TYPE -d | awk '/disk/ {print $1}' | sed -n '2 p')
+        SECOND_VOL=$(lsblk -o NAME,SERIAL -d |awk -v id="$${VOLUME_ID}" '$2 ~ id {print $1}')
         systemctl stop containerd
         mkfs -t ext4 /dev/$${SECOND_VOL}
         rm -rf /var/lib/containerd/*
@@ -161,26 +168,19 @@ module "eks" {
         }
       }
 
-      # The virtual device name (ephemeralN). Instance store volumes are numbered
-      # starting from 0. An instance type with 2 available instance store volumes
-      # can specify mappings for ephemeral0 and ephemeral1. The number of available
-      # instance store volumes depends on the instance type. After you connect to
-      # the instance, you must mount the volume - here, we are using user data to automatically
-      # mount the volume(s) during instance creation.
-      #
       # NVMe instance store volumes are automatically enumerated and assigned a device
-      # name. Including them in your block device mapping has no effect.
       pre_bootstrap_user_data = <<-EOT
-        IDX=1
-        DEVICES=$(lsblk -o NAME,TYPE -dsn | awk '/disk/ {print $1}')
-        for DEV in $DEVICES
-        do
-          mkfs.xfs /dev/$${DEV}
-          mkdir -p /local$${IDX}
-          echo /dev/$${DEV} /local$${IDX} xfs defaults,noatime 1 2 >> /etc/fstab
-          IDX=$(($${IDX} + 1))
-        done
-        mount -a
+        cat <<-EOF > /etc/profile.d/bootstrap.sh
+        #!/bin/sh
+
+        # Configure NVMe volumes in RAID0 configuration
+        # https://github.com/awslabs/amazon-eks-ami/blob/056e31f8c7477e893424abce468cb32bbcd1f079/files/bootstrap.sh#L35C121-L35C126
+        # Mount will be: /mnt/k8s-disks
+        export LOCAL_DISKS='raid0'
+        EOF
+
+        # Source extra environment variables in bootstrap script
+        sed -i '/^set -o errexit/a\\nsource /etc/profile.d/bootstrap.sh' /etc/eks/bootstrap.sh
       EOT
     }
   }
@@ -213,7 +213,7 @@ module "eks_blueprints_addons" {
   }
 
   enable_velero = true
-  # An S3 Bucket ARN is required. This can be declared with or without a Prefix.
+  # An S3 Bucket ARN is required. This can be declared with or without a prefix
   velero = {
     s3_backup_location = local.velero_s3_backup_location
   }
