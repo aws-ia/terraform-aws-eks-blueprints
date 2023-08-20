@@ -68,7 +68,7 @@ module "eks" {
 
       min_size     = 1
       max_size     = 5
-      desired_size = 2
+      desired_size = 3 # When < 3, the coredns add-on ends up in a degraded state
     }
   }
 
@@ -115,7 +115,7 @@ module "eks_blueprints_addons" {
   tags = local.tags
 
   eks_addons = {
-    coredns =    {}
+    coredns    = {}
     vpc-cni    = {}
     kube-proxy = {}
   }
@@ -126,22 +126,15 @@ module "eks_blueprints_addons" {
 # Istio
 ################################################################################
 
-resource "kubernetes_namespace" "istio_system" {
-  metadata {
-    name = "istio-system"
-    labels = {
-      istio-injection = "enabled"
-    }
-  }
-}
-
 resource "helm_release" "istio_base" {
   repository = local.istio_chart_url
   chart      = "base"
   name       = "istio-base"
-  namespace  = kubernetes_namespace.istio_system.metadata[0].name
+  namespace  = "istio-system"
   version    = local.istio_chart_version
   wait       = false
+
+  create_namespace = true
 
   depends_on = [
     module.eks_blueprints_addons
@@ -166,9 +159,11 @@ resource "helm_release" "istio_ingress" {
   repository = local.istio_chart_url
   chart      = "gateway"
   name       = "istio-ingress"
-  namespace  = helm_release.istiod.metadata[0].namespace
+  namespace  = "istio-ingress" # per https://github.com/istio/istio/blob/master/manifests/charts/gateways/istio-ingress/values.yaml#L2
   version    = local.istio_chart_version
   wait       = false
+
+  create_namespace = true
 
   values = [
     yamlencode(
@@ -178,13 +173,15 @@ resource "helm_release" "istio_ingress" {
         }
         service = {
           annotations = {
-            "service.beta.kubernetes.io/aws-load-balancer-type"   = "nlb"
-            "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internet-facing"
+            "service.beta.kubernetes.io/aws-load-balancer-type"       = "nlb"
+            "service.beta.kubernetes.io/aws-load-balancer-scheme"     = "internet-facing"
+            "service.beta.kubernetes.io/aws-load-balancer-attributes" = "load_balancing.cross_zone.enabled=true"
           }
         }
       }
     )
   ]
+  depends_on = [helm_release.istiod]
 }
 
 ################################################################################
