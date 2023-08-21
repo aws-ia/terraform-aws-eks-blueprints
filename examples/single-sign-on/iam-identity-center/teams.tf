@@ -25,7 +25,9 @@ data "aws_iam_roles" "user" {
 }
 
 module "operators_team" {
-  source = "aws-ia/eks-blueprints-teams/aws"
+  source  = "aws-ia/eks-blueprints-teams/aws"
+  version = "1.1.0"
+
 
   name = "eks-operators"
 
@@ -34,6 +36,7 @@ module "operators_team" {
 
   create_iam_role = false
   iam_role_arn    = "${local.sso_role_prefix}/${tolist(data.aws_iam_roles.admin.names)[0]}"
+  principal_arns  = data.aws_iam_roles.admin.arns
 
   tags = {
     Environment = "dev"
@@ -47,7 +50,8 @@ module "operators_team" {
 }
 
 module "developers_team" {
-  source = "aws-ia/eks-blueprints-teams/aws"
+  source  = "aws-ia/eks-blueprints-teams/aws"
+  version = "1.1.0"
 
   name = "eks-developers"
 
@@ -56,6 +60,7 @@ module "developers_team" {
 
   create_iam_role = false
   iam_role_arn    = "${local.sso_role_prefix}/${tolist(data.aws_iam_roles.user.names)[0]}"
+  principal_arns  = data.aws_iam_roles.user.arns
 
   labels = {
     team = "development"
