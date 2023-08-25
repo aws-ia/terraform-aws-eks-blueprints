@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Auth AWS
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v3.0.1
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
           aws-region: us-west-2
@@ -83,7 +83,7 @@ jobs:
         run: sed -i "s/# //g" ${{ matrix.example_path }}/versions.tf
 
       - name: Auth AWS
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v3.0.1
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
           aws-region: us-west-2
@@ -169,7 +169,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Configure AWS credentials from Test account
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v3.0.1
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
           aws-region: us-west-2
