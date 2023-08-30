@@ -10,7 +10,7 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/blueprints/istio-multi-primary/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/blueprints/istio-multi-cluster/">
       
       
         <link rel="prev" href="../ipv6-eks-cluster/">
@@ -23,7 +23,7 @@
     
     
       
-        <title>Istio - Amazon EKS Blueprints for Terraform</title>
+        <title>Istio - Multi-Cluster - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -112,7 +112,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#multiple-amazon-eks-clusters-multi-primary-istio-installation-with" class="md-skip">
+        <a href="#amazon-eks-multi-cluster-w-istio" class="md-skip">
           Skip to content
         </a>
       
@@ -150,7 +150,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Istio
+              Istio - Multi-Cluster
             
           </span>
         </div>
@@ -470,12 +470,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Istio
+          Istio - Multi-Cluster
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Istio
+        Istio - Multi-Cluster
       </a>
       
         
@@ -509,43 +509,43 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#folder-0certs-tool" class="md-nav__link">
-    Folder 0.certs-tool
+  <a href="#0certs-tool" class="md-nav__link">
+    0.certs-tool
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#folder-0vpc" class="md-nav__link">
-    Folder 0.vpc
+  <a href="#0vpc" class="md-nav__link">
+    0.vpc
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#folder-1cluster1" class="md-nav__link">
-    Folder 1.cluster1
+  <a href="#1cluster1" class="md-nav__link">
+    1.cluster1
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#folder-2cluster2" class="md-nav__link">
-    Folder 2.cluster2
+  <a href="#2cluster2" class="md-nav__link">
+    2.cluster2
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#folder-3istio-multi-primary" class="md-nav__link">
-    Folder 3.istio-multi-primary
+  <a href="#3istio-multi-primary" class="md-nav__link">
+    3.istio-multi-primary
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#folder-4test-connectivity" class="md-nav__link">
-    Folder 4.test-connectivity
+  <a href="#4test-connectivity" class="md-nav__link">
+    4.test-connectivity
   </a>
   
 </li>
@@ -557,7 +557,7 @@
       
         <li class="md-nav__item">
   <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
+    Prerequisites
   </a>
   
 </li>
@@ -962,43 +962,43 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#folder-0certs-tool" class="md-nav__link">
-    Folder 0.certs-tool
+  <a href="#0certs-tool" class="md-nav__link">
+    0.certs-tool
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#folder-0vpc" class="md-nav__link">
-    Folder 0.vpc
+  <a href="#0vpc" class="md-nav__link">
+    0.vpc
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#folder-1cluster1" class="md-nav__link">
-    Folder 1.cluster1
+  <a href="#1cluster1" class="md-nav__link">
+    1.cluster1
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#folder-2cluster2" class="md-nav__link">
-    Folder 2.cluster2
+  <a href="#2cluster2" class="md-nav__link">
+    2.cluster2
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#folder-3istio-multi-primary" class="md-nav__link">
-    Folder 3.istio-multi-primary
+  <a href="#3istio-multi-primary" class="md-nav__link">
+    3.istio-multi-primary
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#folder-4test-connectivity" class="md-nav__link">
-    Folder 4.test-connectivity
+  <a href="#4test-connectivity" class="md-nav__link">
+    4.test-connectivity
   </a>
   
 </li>
@@ -1010,7 +1010,7 @@
       
         <li class="md-nav__item">
   <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
+    Prerequisites
   </a>
   
 </li>
@@ -1096,7 +1096,7 @@
 
 
 <!-- BEGIN INCLUDE ../../examples/istio-multi-cluster/README.md -->
-<h1 id="multiple-amazon-eks-clusters-multi-primary-istio-installation-with">Multiple Amazon EKS Clusters - Multi-Primary Istio installation with<a class="headerlink" href="#multiple-amazon-eks-clusters-multi-primary-istio-installation-with" title="Permanent link">&para;</a></h1>
+<h1 id="amazon-eks-multi-cluster-w-istio">Amazon EKS Multi-Cluster w/ Istio<a class="headerlink" href="#amazon-eks-multi-cluster-w-istio" title="Permanent link">&para;</a></h1>
 <p>This example shows how to provision 2 Amazon EKS clusters with Istio setup on each of them.
 The Istio will be set-up to operate in a <a href="https://istio.io/latest/docs/setup/install/multicluster/multi-primary/">Multi-Primary</a> way where services are shared across clusters.</p>
 <ul>
@@ -1114,27 +1114,29 @@ The Istio will be set-up to operate in a <a href="https://istio.io/latest/docs/s
 <li>The process for connecting clusters is seperated from the cluster creation as it requires all cluster to be created first, and excahnge configuration between one to the other</li>
 </ul>
 <h2 id="folder-structure">Folder structure<a class="headerlink" href="#folder-structure" title="Permanent link">&para;</a></h2>
-<h3 id="folder-0certs-tool">Folder <a href="../../examples/istio-multi-cluster/0.certs-tool/"><code>0.certs-tool</code></a><a class="headerlink" href="#folder-0certs-tool" title="Permanent link">&para;</a></h3>
+<h3 id="0certs-tool"><a href="../../examples/istio-multi-cluster/0.certs-tool/"><code>0.certs-tool</code></a><a class="headerlink" href="#0certs-tool" title="Permanent link">&para;</a></h3>
 <p>This folder is the <a href="https://github.com/istio/istio/tree/master/tools/certs">Makefiles</a> from the Istio projects to generate 1 root CA with 2 intermediate CAs for each cluster. Please refer to the <a href="https://istio.io/latest/docs/tasks/security/cert-management/">"Certificate Management"</a> section in the Istio documentation. For production setup it's <a href="https://istio.io/latest/docs/tasks/security/cert-management/plugin-ca-cert/#plug-in-certificates-and-key-into-the-cluster">highly recommended</a> by the Istio project to have a production-ready CA solution.</p>
 <blockquote>
 <p><strong><em>NOTE:</em></strong>  The <a href="../../examples/istio-multi-cluster/0.certs-tool/create-certs.sh">0.certs-tool/create-certs.sh</a> script needs to run before the cluster creation so the code will pick up the relevant certificates</p>
 </blockquote>
-<h3 id="folder-0vpc">Folder <a href="../../examples/istio-multi-cluster/0.vpc/"><code>0.vpc</code></a><a class="headerlink" href="#folder-0vpc" title="Permanent link">&para;</a></h3>
+<h3 id="0vpc"><a href="../../examples/istio-multi-cluster/0.vpc/"><code>0.vpc</code></a><a class="headerlink" href="#0vpc" title="Permanent link">&para;</a></h3>
 <p>This folder creates the VPC for both clusters. The VPC creation is not part of the cluster provisionig and therefore lives in a seperate folder.
 To support the multi-cluster/Multi-Primary setup, this folder also creates additional security group to be used by each cluster worker nodes to allow cross-cluster communication (resources <code>cluster1_additional_sg</code> and <code>cluster2_additional_sg</code>). These security groups allow communication from one to the other and each will be added to the worker nodes of the relevant cluster</p>
-<h3 id="folder-1cluster1">Folder <a href="../../examples/istio-multi-cluster/1.cluster1/"><code>1.cluster1</code></a><a class="headerlink" href="#folder-1cluster1" title="Permanent link">&para;</a></h3>
+<h3 id="1cluster1"><a href="../../examples/istio-multi-cluster/1.cluster1/"><code>1.cluster1</code></a><a class="headerlink" href="#1cluster1" title="Permanent link">&para;</a></h3>
 <p>This folder creates an Amazon EKS Cluster, named by default <code>cluster-1</code> (see <a href="../../examples/istio-multi-cluster/1.cluster1/variables.tf"><code>variables.tf</code></a>), with AWS Load Balancer Controller, and Istio installation.
-Configurations in this folder to be aware of:
-* The cluster is configured to use the security groups created in the <code>0.vpc</code> folder (<code>cluster1_additional_sg</code> in this case).
-* Kubernetes Secret named <code>cacerts</code> is created with the certificates created by the <a href="../../examples/istio-multi-cluster/0.certs-tool/create-certs.sh">0.certs-tool/create-certs.sh</a> script
-* Kubernetes Secret named <code>cacerts</code> named <code>istio-reader-service-account-istio-remote-secret-token</code> of type <code>Service-Account</code> is being created. This is to replicate the <a href="https://istio.io/latest/docs/reference/commands/istioctl/#istioctl-experimental-create-remote-secret">istioctl experimental create-remote-secret</a> command. This secret will be used in folder <a href="../../examples/istio-multi-cluster/3.istio-multi-primary/"><code>3.istio-multi-primary</code></a> to apply kubeconfig secret with tokens from the other cluster to be abble to communicate to the other cluster API Server</p>
-<h3 id="folder-2cluster2">Folder <a href="../../examples/istio-multi-cluster/2.cluster2/"><code>2.cluster2</code></a><a class="headerlink" href="#folder-2cluster2" title="Permanent link">&para;</a></h3>
+Configurations in this folder to be aware of:</p>
+<ul>
+<li>The cluster is configured to use the security groups created in the <code>0.vpc</code> folder (<code>cluster1_additional_sg</code> in this case).</li>
+<li>Kubernetes Secret named <code>cacerts</code> is created with the certificates created by the <a href="../../examples/istio-multi-cluster/0.certs-tool/create-certs.sh">0.certs-tool/create-certs.sh</a> script</li>
+<li>Kubernetes Secret named <code>cacerts</code> named <code>istio-reader-service-account-istio-remote-secret-token</code> of type <code>Service-Account</code> is being created. This is to replicate the <a href="https://istio.io/latest/docs/reference/commands/istioctl/#istioctl-experimental-create-remote-secret">istioctl experimental create-remote-secret</a> command. This secret will be used in folder <a href="../../examples/istio-multi-cluster/3.istio-multi-primary/"><code>3.istio-multi-primary</code></a> to apply kubeconfig secret with tokens from the other cluster to be abble to communicate to the other cluster API Server</li>
+</ul>
+<h3 id="2cluster2"><a href="../../examples/istio-multi-cluster/2.cluster2/"><code>2.cluster2</code></a><a class="headerlink" href="#2cluster2" title="Permanent link">&para;</a></h3>
 <p>Same configuration as in <code>1.cluster1</code> except the name of the cluster which is <code>cluster-2</code>.</p>
-<h3 id="folder-3istio-multi-primary">Folder <a href="../../examples/istio-multi-cluster/3.istio-multi-primary/"><code>3.istio-multi-primary</code></a><a class="headerlink" href="#folder-3istio-multi-primary" title="Permanent link">&para;</a></h3>
+<h3 id="3istio-multi-primary"><a href="../../examples/istio-multi-cluster/3.istio-multi-primary/"><code>3.istio-multi-primary</code></a><a class="headerlink" href="#3istio-multi-primary" title="Permanent link">&para;</a></h3>
 <p>This folder deploys a reader secret on each cluster. It replicates the <a href="https://istio.io/latest/docs/reference/commands/istioctl/#istioctl-experimental-create-remote-secret"><code>istioctl experimental create-remote-secret</code></a> by applying a kubeconfig secret prefixed <code>istio-remote-secret-</code> with the cluster name at the end.</p>
-<h3 id="folder-4test-connectivity">Folder <a href="../../examples/istio-multi-cluster/4.test-connectivity/"><code>4.test-connectivity</code></a><a class="headerlink" href="#folder-4test-connectivity" title="Permanent link">&para;</a></h3>
+<h3 id="4test-connectivity"><a href="../../examples/istio-multi-cluster/4.test-connectivity/"><code>4.test-connectivity</code></a><a class="headerlink" href="#4test-connectivity" title="Permanent link">&para;</a></h3>
 <p>This folder test the installation connectivity. It follows the Istio guide <a href="https://istio.io/latest/docs/setup/install/multicluster/verify/">Verify the installation</a> by deploying services on each cluster, and <code>curl</code>-ing from one to the other</p>
-<h2 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <p>Ensure that you have the following tools installed locally:</p>
 <ol>
 <li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
@@ -1171,11 +1173,11 @@ Configurations in this folder to be aware of:
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>cd..
 </span></code></pre></div>
 <h3 id="step-4-test-installation-and-connectivity">Step 4 - test installation and connectivity<a class="headerlink" href="#step-4-test-installation-and-connectivity" title="Permanent link">&para;</a></h3>
-<p><div class="language-shell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">cd</span><span class="w"> </span><span class="m">4</span>.test-connectivity
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">cd</span><span class="w"> </span><span class="m">4</span>.test-connectivity
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>./test_connectivity.sh
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>cd..
 </span></code></pre></div>
-This script deploy the sample application to both clusters and run curl from a pod in one cluster to a service that is deployed in both cluster. You should expect to see responses from both <code>V1</code> and <code>V2</code> of the sample application.
+<p>This script deploy the sample application to both clusters and run curl from a pod in one cluster to a service that is deployed in both cluster. You should expect to see responses from both <code>V1</code> and <code>V2</code> of the sample application.
 The script run 4 <code>curl</code> command from cluster-1 to cluster-2 and vice versa</p>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
 <p>To teardown and remove the resources created in this example:</p>
