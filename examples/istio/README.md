@@ -5,7 +5,8 @@ This example shows how to provision an EKS cluster with Istio.
 * Deploy EKS Cluster with one managed node group in an VPC
 * Add node_security_group rules for port access required for Istio communication
 * Install Istio using Helm resources in Terraform
-* Install Istio Ingress Gateway using Helm resources in Terraform
+* Install Istio Ingress Gateway using Helm resources in Terraform 
+  *  This step deploys a Service of type `LoadBalancer` that creates an AWS Network Load Balancer.
 * Deploy/Validate Istio communication using sample application
 
 Refer to the [documentation](https://istio.io/latest/docs/concepts/) on Istio
@@ -18,6 +19,7 @@ Ensure that you have the following tools installed locally:
 1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
 3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+4. [helm](https://helm.sh/docs/intro/install/)
 
 ## Deploy
 
