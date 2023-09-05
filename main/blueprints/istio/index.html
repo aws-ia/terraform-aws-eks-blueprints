@@ -976,7 +976,8 @@
 <li>Deploy EKS Cluster with one managed node group in an VPC</li>
 <li>Add node_security_group rules for port access required for Istio communication</li>
 <li>Install Istio using Helm resources in Terraform</li>
-<li>Install Istio Ingress Gateway using Helm resources in Terraform</li>
+<li>Install Istio Ingress Gateway using Helm resources in Terraform </li>
+<li>This step deploys a Service of type <code>LoadBalancer</code> that creates an AWS Network Load Balancer.</li>
 <li>Deploy/Validate Istio communication using sample application</li>
 </ul>
 <p>Refer to the <a href="https://istio.io/latest/docs/concepts/">documentation</a> on Istio
@@ -987,6 +988,7 @@ concepts.</p>
 <li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
 <li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
 <li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
+<li><a href="https://helm.sh/docs/intro/install/">helm</a></li>
 </ol>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
 <p>To provision this example:</p>
