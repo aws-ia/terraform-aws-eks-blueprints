@@ -19,7 +19,7 @@ To provision these examples, run the following commands:
 
 ```sh
 terraform init
-terraform apply -target module.vpc 
+terraform apply -target module.vpc
 terraform apply -target module.eks
 terraform apply
 ```
