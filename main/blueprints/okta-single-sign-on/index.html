@@ -10,20 +10,20 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/blueprints/ipv4-prefix-delegation/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/blueprints/okta-single-sign-on/">
       
       
-        <link rel="prev" href="../iam-identity-center-single-sign-on/">
+        <link rel="prev" href="../multi-tenancy-with-teams/">
       
       
-        <link rel="next" href="../ipv6-eks-cluster/">
+        <link rel="next" href="../private-public-ingress/">
       
       <link rel="icon" href="../../images/colored-logo.png">
       <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.19">
     
     
       
-        <title>IPv4 Prefix Delegation - Amazon EKS Blueprints for Terraform</title>
+        <title>Okta Single Sign-On - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -112,7 +112,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#amazon-eks-cluster-w-prefix-delegation" class="md-skip">
+        <a href="#okta-single-sign-on-for-amazon-eks-cluster" class="md-skip">
           Skip to content
         </a>
       
@@ -150,7 +150,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              IPv4 Prefix Delegation
+              Okta Single Sign-On
             
           </span>
         </div>
@@ -444,80 +444,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          IPv4 Prefix Delegation
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../ipv4-prefix-delegation/" class="md-nav__link">
         IPv4 Prefix Delegation
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#vpc-cni-configuration" class="md-nav__link">
-    VPC CNI Configuration
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validate" class="md-nav__link">
-    Validate
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    Destroy
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -597,11 +528,73 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../okta-single-sign-on/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Okta Single Sign-On
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Okta Single Sign-On
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    Validate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    Destroy
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -879,13 +872,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#vpc-cni-configuration" class="md-nav__link">
-    VPC CNI Configuration
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#prerequisites" class="md-nav__link">
     Prerequisites:
   </a>
@@ -931,91 +917,73 @@
   
 
 
-<!-- BEGIN INCLUDE ../../examples/ipv4-prefix-delegation/README.md -->
-<h1 id="amazon-eks-cluster-w-prefix-delegation">Amazon EKS Cluster w/ Prefix Delegation<a class="headerlink" href="#amazon-eks-cluster-w-prefix-delegation" title="Permanent link">&para;</a></h1>
-<p>This example shows how to provision an EKS cluster with prefix delegation enabled for increasing the number of available IP addresses for the EC2 nodes utilized.</p>
-<ul>
-<li><a href="https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html">Documentation</a></li>
-<li><a href="https://aws.amazon.com/blogs/containers/amazon-vpc-cni-increases-pods-per-node-limits/">Blog post</a></li>
-</ul>
-<h2 id="vpc-cni-configuration">VPC CNI Configuration<a class="headerlink" href="#vpc-cni-configuration" title="Permanent link">&para;</a></h2>
-<p>In this example, the <code>vpc-cni</code> addon is configured using <code>before_compute = true</code>. This is done to ensure the <code>vpc-cni</code> is created and updated <em>before</em> any EC2 instances are created so that the desired settings have applied before they will be referenced. With this configuration, you will now see that nodes created will have <code>--max-pods 110</code> configured do to the use of prefix delegation being enabled on the <code>vpc-cni</code>.</p>
-<p>If you find that your nodes are not being created with the correct number of max pods (i.e. - for <code>m5.large</code>, if you are seeing a max pods of 29 instead of 110), most likely the <code>vpc-cni</code> was not configured <em>before</em> the EC2 instances.</p>
+<!-- BEGIN INCLUDE ../../examples/single-sign-on/okta/README.md -->
+<h1 id="okta-single-sign-on-for-amazon-eks-cluster">Okta Single Sign-On for Amazon EKS Cluster<a class="headerlink" href="#okta-single-sign-on-for-amazon-eks-cluster" title="Permanent link">&para;</a></h1>
+<p>This example demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, integrated with Okta as an the Identity Provider (IdP) for Single Sign-On (SSO) authentication. The configuration for authorization is done using Kubernetes Role-based access control (RBAC).</p>
 <h2 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <p>Ensure that you have the following tools installed locally:</p>
 <ol>
 <li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
 <li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
 <li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
+<li><a href="https://github.com/int128/kubelogin">kubelogin</a></li>
+</ol>
+<p>Also make sure you have enabled the following Okta resource:</p>
+<ol>
+<li><a href="https://okta.com/../../examples/single-sign-on/okta">Okta Account</a>.</li>
+<li><a href="https://developer.okta.com/docs/concepts/okta-organizations/">Okta Organization</a></li>
+<li><a href="https://developer.okta.com/docs/guides/create-an-api-token/main/">Okta API Token</a></li>
 </ol>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<p>To provision this example:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply
+<p>To provision this example, populate the Okta provider credentials, in the <code>okta.tf</code> file.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>provider &quot;okta&quot; {
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  org_name  = &quot;dev-&lt;ORG_ID&gt;
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  base_url  = &quot;okta.com&quot;
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  api_token = &quot;&lt;OKTA_APU_TOKEN&gt;&quot;
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>}
+</span></code></pre></div>
+<p>Then run the following commands:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>terraform<span class="w"> </span>init
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="w"> </span>module.vpc
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="w"> </span>module.eks
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>terraform<span class="w"> </span>apply
 </span></code></pre></div>
 <p>Enter <code>yes</code> at command prompt to apply</p>
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
-<p>The following command will update the <code>kubeconfig</code> on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code> to validate the deployment.</p>
-<ol>
-<li>Run <code>update-kubeconfig</code> command:</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;REGION&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER_NAME&gt;
+<p>After the <code>terraform</code> commands are executed sucessfully, check if the newly created users are active.</p>
+<p>To do that use the link provided in the email invite if you added a valid email address for your users, or go to the <a href="https://dev-ORGID-admin.okta.com/admin/users/">Okta Admin Dashboard</a>, select the user, and click on <em>Set Password and Activate</em> button.</p>
+<p>With the active users, use the <code>terraform output</code> example to setup your <code>kubeconfig</code> profile to authenticate through Okta.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>configure_kubeconfig = &lt;&lt;EOT
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    kubectl config set-credentials oidc \
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>      --exec-api-version=client.authentication.k8s.io/v1beta1 \
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>      --exec-command=kubectl \
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>      --exec-arg=oidc-login \
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>      --exec-arg=get-token \
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>      --exec-arg=--oidc-issuer-url=https://dev-ORGID.okta.com/oauth2/1234567890abcdefghij \
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>      --exec-arg=--oidc-client-id=1234567890abcdefghij
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>      --exec-arg=--oidc-extra-scope=&quot;email offline_access profile openid&quot;
 </span></code></pre></div>
-<ol>
-<li>List the nodes running currently</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># Output should look like below</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>NAME<span class="w">                                        </span>STATUS<span class="w">                        </span>ROLES<span class="w">    </span>AGE<span class="w">     </span>VERSION
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>ip-10-0-30-125.us-west-2.compute.internal<span class="w">   </span>Ready<span class="w">                         </span>&lt;none&gt;<span class="w">   </span>2m19s<span class="w">   </span>v1.22.9-eks-810597c
+<p>With the <code>kubeconfig</code> configured, you'll be able to run <code>kubectl</code> commands in your Amazon EKS Cluster using the <code>--user</code> cli option to impersonate the Okta authenticated user. When <code>kubectl</code> command is issued with the <code>--user</code> option for the first time, your browser window will open and require you to authenticate.</p>
+<p>The read-only user has a <code>cluster-viewer</code> Kubernetes role bound to it's group, whereas the admin user, has the <code>admin</code> Kubernetes role bound to it's group.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl get pods -A  
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>NAMESPACE          NAME                        READY   STATUS    RESTARTS   AGE
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>amazon-guardduty   aws-guardduty-agent-bl2v2   1/1     Running   0          3h54m
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>amazon-guardduty   aws-guardduty-agent-sqvcx   1/1     Running   0          3h54m
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>amazon-guardduty   aws-guardduty-agent-w8gfc   1/1     Running   0          3h54m
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>kube-system        aws-node-m9hmd              1/1     Running   0          3h53m
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>kube-system        aws-node-w42b8              1/1     Running   0          3h53m
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>kube-system        aws-node-wm6rm              1/1     Running   0          3h53m
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>kube-system        coredns-6ff9c46cd8-94jlr    1/1     Running   0          3h59m
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>kube-system        coredns-6ff9c46cd8-nwmrb    1/1     Running   0          3h59m
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>kube-system        kube-proxy-7fb86            1/1     Running   0          3h54m
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>kube-system        kube-proxy-p4f5g            1/1     Running   0          3h54m
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>kube-system        kube-proxy-qkfmc            1/1     Running   0          3h54m
 </span></code></pre></div>
-<ol>
-<li>Inspect the nodes settings and check for the max allocatable pods - should be 110 in this scenario with m5.xlarge:</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span>describe<span class="w"> </span>node
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># Output should look like below (truncated for brevity)</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>Capacity:
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span>attachable-volumes-aws-ebs:<span class="w">  </span><span class="m">25</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span>cpu:<span class="w">                         </span><span class="m">4</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span>ephemeral-storage:<span class="w">           </span>104845292Ki
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span>hugepages-1Gi:<span class="w">               </span><span class="m">0</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span>hugepages-2Mi:<span class="w">               </span><span class="m">0</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span>memory:<span class="w">                      </span>15919124Ki
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span>pods:<span class="w">                        </span><span class="m">110</span><span class="w"> </span><span class="c1"># &lt;- this should be 110 and not 58</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">  </span>Allocatable:
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">    </span>attachable-volumes-aws-ebs:<span class="w">  </span><span class="m">25</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">    </span>cpu:<span class="w">                         </span>3920m
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">    </span>ephemeral-storage:<span class="w">           </span><span class="m">95551679124</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">    </span>hugepages-1Gi:<span class="w">               </span><span class="m">0</span>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">    </span>hugepages-2Mi:<span class="w">               </span><span class="m">0</span>
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span>memory:<span class="w">                      </span>14902292Ki
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">    </span>pods:<span class="w">                        </span><span class="m">110</span><span class="w"> </span><span class="c1"># &lt;- this should be 110 and not 58</span>
+<p>You can also use the <code>configure_kubectl</code> output to assume the <em>Cluster creator</em> role with <code>cluster-admin</code> access.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>configure_kubectl = &quot;aws eks --region us-west-2 update-kubeconfig --name okta&quot;
 </span></code></pre></div>
-<ol>
-<li>List out the pods running currently:</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># Output should look like below</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>NAMESPACE<span class="w">     </span>NAME<span class="w">                       </span>READY<span class="w">   </span>STATUS<span class="w">        </span>RESTARTS<span class="w">   </span>AGE
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>kube-system<span class="w">   </span>aws-node-77rwz<span class="w">             </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">       </span><span class="m">0</span><span class="w">          </span>6m5s
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>kube-system<span class="w">   </span>coredns-657694c6f4-fdz4f<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">       </span><span class="m">0</span><span class="w">          </span>5m12s
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>kube-system<span class="w">   </span>coredns-657694c6f4-kvm92<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">       </span><span class="m">0</span><span class="w">          </span>5m12s
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>kube-system<span class="w">   </span>kube-proxy-plwlc<span class="w">           </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">       </span><span class="m">0</span><span class="w">          </span>6m5s
-</span></code></pre></div>
-<ol>
-<li>Inspect one of the <code>aws-node-*</code> (AWS VPC CNI) pods to ensure prefix delegation is enabled and warm prefix target is 1:</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>describe<span class="w"> </span>ds<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>aws-node<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>ENABLE_PREFIX_DELEGATION:<span class="w"> </span>-A<span class="w"> </span><span class="m">3</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># Output should look like below (truncated for brevity)</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span>ENABLE_PREFIX_DELEGATION:<span class="w">               </span><span class="nb">true</span><span class="w"> </span><span class="c1"># &lt;- this should be set to true</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span>VPC_ID:<span class="w">                                 </span>vpc-0399887df9d0add85
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span>WARM_ENI_TARGET:<span class="w">                        </span><span class="m">1</span><span class="w"> </span><span class="c1"># &lt;- this should be set to 1</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span>WARM_PREFIX_TARGET:<span class="w">                     </span><span class="m">1</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span>...
+<p>It's also possible to preconfigure your <code>kubeconfig</code> using the <code>okta_login</code> output. This will also require you to authenticate in a browser window.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>okta_login = &quot;kubectl oidc-login setup --oidc-issuer-url=https://dev-ORGID.okta.com/oauth2/1234567890abcdefghij--oidc-client-id=1234567890abcdefghij&quot;
 </span></code></pre></div>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
 <p>To teardown and remove the resources created in this example:</p>

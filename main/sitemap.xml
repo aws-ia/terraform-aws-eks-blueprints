@@ -56,6 +56,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/main/blueprints/iam-identity-center-single-sign-on/</loc>
+         <lastmod>2023-09-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/main/blueprints/ipv4-prefix-delegation/</loc>
          <lastmod>2023-09-05</lastmod>
          <changefreq>daily</changefreq>
@@ -82,6 +87,11 @@
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/main/blueprints/multi-tenancy-with-teams/</loc>
+         <lastmod>2023-09-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/main/blueprints/okta-single-sign-on/</loc>
          <lastmod>2023-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
