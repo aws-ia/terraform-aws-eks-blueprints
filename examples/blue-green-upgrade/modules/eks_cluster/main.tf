@@ -7,33 +7,27 @@ provider "aws" {
 locals {
   environment = var.environment_name
   service     = var.service_name
+  region      = var.aws_region
 
-  env  = local.environment
+  env  = local.service
   name = "${local.environment}-${local.service}"
 
-
   # Mapping
-  hosted_zone_name           = var.hosted_zone_name
-  addons_repo_url            = var.addons_repo_url
-  workload_repo_secret       = var.workload_repo_secret
-  cluster_version            = var.cluster_version
-  argocd_secret_manager_name = var.argocd_secret_manager_name_suffix
-  workload_repo_path         = var.workload_repo_path
-  workload_repo_url          = var.workload_repo_url
-  workload_repo_revision     = var.workload_repo_revision
-  eks_admin_role_name        = var.eks_admin_role_name
-  iam_platform_user          = var.iam_platform_user
+  hosted_zone_name                            = var.hosted_zone_name
+  ingress_type                                = var.ingress_type
+  aws_secret_manager_git_private_ssh_key_name = var.aws_secret_manager_git_private_ssh_key_name
+  cluster_version                             = var.cluster_version
+  argocd_secret_manager_name                  = var.argocd_secret_manager_name_suffix
+  eks_admin_role_name                         = var.eks_admin_role_name
 
-  metrics_server               = true
-  aws_load_balancer_controller = true
-  karpenter                    = true
-  aws_for_fluentbit            = true
-  cert_manager                 = true
-  cloudwatch_metrics           = true
-  external_dns                 = true
-  vpa                          = true
-  kubecost                     = true
-  argo_rollouts                = true
+  gitops_workloads_url      = "${var.gitops_workloads_org}/${var.gitops_workloads_repo}"
+  gitops_workloads_path     = var.gitops_workloads_path
+  gitops_workloads_revision = var.gitops_workloads_revision
+
+  gitops_addons_url      = "${var.gitops_addons_org}/${var.gitops_addons_repo}"
+  gitops_addons_basepath = var.gitops_addons_basepath
+  gitops_addons_path     = var.gitops_addons_path
+  gitops_addons_revision = var.gitops_addons_revision
 
   # Route 53 Ingress Weights
   argocd_route53_weight      = var.argocd_route53_weight
@@ -48,203 +42,100 @@ locals {
 
   node_group_name = "managed-ondemand"
 
-
   #---------------------------------------------------------------
   # ARGOCD ADD-ON APPLICATION
   #---------------------------------------------------------------
 
-  #At this time (with new v5 addon repository), the Addons need to be managed by Terrform and not ArgoCD
-  addons_application = {
-    path                = "chart"
-    repo_url            = local.addons_repo_url
-    ssh_key_secret_name = local.workload_repo_secret
-    add_on_application  = true
+  aws_addons = {
+    enable_cert_manager          = true
+    enable_aws_ebs_csi_resources = true # generate gp2 and gp3 storage classes for ebs-csi
+    #enable_aws_efs_csi_driver                    = true
+    #enable_aws_fsx_csi_driver                    = true
+    enable_aws_cloudwatch_metrics = true
+    #enable_aws_privateca_issuer                  = true
+    #enable_cluster_autoscaler                    = true
+    enable_external_dns                 = true
+    enable_external_secrets             = true
+    enable_aws_load_balancer_controller = true
+    #enable_fargate_fluentbit                     = true
+    enable_aws_for_fluentbit = true
+    #enable_aws_node_termination_handler          = true
+    enable_karpenter = true
+    #enable_velero                                = true
+    #enable_aws_gateway_api_controller            = true
+    #enable_aws_secrets_store_csi_driver_provider = true
   }
+  oss_addons = {
+    #enable_argo_rollouts                         = true
+    #enable_argo_workflows                        = true
+    #enable_cluster_proportional_autoscaler       = true
+    #enable_gatekeeper                            = true
+    #enable_gpu_operator                          = true
+    enable_ingress_nginx = true
+    enable_kyverno       = true
+    #enable_kube_prometheus_stack                 = true
+    enable_metrics_server = true
+    #enable_prometheus_adapter                    = true
+    #enable_secrets_store_csi_driver              = true
+    #enable_vpa                                   = true
+    #enable_foo                                   = true # you can add any addon here, make sure to update the gitops repo with the corresponding application set
+  }
+  addons = merge(local.aws_addons, local.oss_addons, { kubernetes_version = local.cluster_version })
 
-  #---------------------------------------------------------------
-  # ARGOCD WORKLOAD APPLICATION
-  #---------------------------------------------------------------
+  #----------------------------------------------------------------
+  # GitOps Bridge, define metadatas to pass from Terraform to ArgoCD
+  #----------------------------------------------------------------
 
-  workload_application = {
-    path                = local.workload_repo_path # <-- we could also to blue/green on the workload repo path like: envs/dev-blue / envs/dev-green
-    repo_url            = local.workload_repo_url
-    target_revision     = local.workload_repo_revision
-    ssh_key_secret_name = local.workload_repo_secret
-    add_on_application  = false
-    values = {
-      labels = {
-        env   = local.env
-        myapp = "myvalue"
-      }
-      spec = {
-        source = {
-          repoURL        = local.workload_repo_url
-          targetRevision = local.workload_repo_revision
-        }
-        blueprint                = "terraform"
-        clusterName              = local.name
-        karpenterInstanceProfile = module.karpenter.instance_profile_name
-        env                      = local.env
-        ingress = {
-          type                  = "alb"
-          host                  = local.eks_cluster_domain
-          route53_weight        = local.route53_weight # <-- You can control the weight of the route53 weighted records between clusters
-          argocd_route53_weight = local.argocd_route53_weight
-        }
-      }
+  addons_metadata = merge(
+    module.eks_blueprints_addons.gitops_metadata, # eks blueprints addons automatically expose metadatas
+    {
+      aws_cluster_name = module.eks.cluster_name
+      aws_region       = local.region
+      aws_account_id   = data.aws_caller_identity.current.account_id
+      aws_vpc_id       = data.aws_vpc.vpc.id
+      cluster_endpoint = module.eks.cluster_endpoint
+      env              = local.env
+    },
+    {
+      argocd_password                             = bcrypt(data.aws_secretsmanager_secret_version.admin_password_version.secret_string)
+      aws_secret_manager_git_private_ssh_key_name = local.aws_secret_manager_git_private_ssh_key_name
+
+      gitops_workloads_url      = local.gitops_workloads_url
+      gitops_workloads_path     = local.gitops_workloads_path
+      gitops_workloads_revision = local.gitops_workloads_revision
+
+      addons_repo_url      = local.gitops_addons_url
+      addons_repo_basepath = local.gitops_addons_basepath
+      addons_repo_path     = local.gitops_addons_path
+      addons_repo_revision = local.gitops_addons_revision
+    },
+    {
+      eks_cluster_domain         = local.eks_cluster_domain
+      external_dns_policy        = "sync"
+      ingress_type               = local.ingress_type
+      argocd_route53_weight      = local.argocd_route53_weight
+      route53_weight             = local.route53_weight
+      ecsfrontend_route53_weight = local.ecsfrontend_route53_weight
+      #target_group_arn = local.service == "blue" ? data.aws_lb_target_group.tg_blue.arn : data.aws_lb_target_group.tg_green.arn # <-- Add this line
+      #      external_lb_dns = data.aws_lb.alb.dns_name
     }
-  }
+  )
 
   #---------------------------------------------------------------
-  # ARGOCD ECSDEMO APPLICATION
+  # Manifests for bootstraping the cluster for addons & workloads
   #---------------------------------------------------------------
 
-  ecsdemo_application = {
-    path                = "multi-repo/argo-app-of-apps/dev"
-    repo_url            = local.workload_repo_url
-    target_revision     = local.workload_repo_revision
-    ssh_key_secret_name = local.workload_repo_secret
-    add_on_application  = false
-    values = {
-      spec = {
-        blueprint                = "terraform"
-        clusterName              = local.name
-        karpenterInstanceProfile = module.karpenter.instance_profile_name
-
-        apps = {
-          ecsdemoNodejs = {
-            replicaCount = "9"
-            nodeSelector = {
-              "karpenter.sh/provisioner-name" = "default"
-            }
-            tolerations = [
-              {
-                key      = "karpenter"
-                operator = "Exists"
-                effect   = "NoSchedule"
-              }
-            ]
-            topologyAwareHints = "true"
-            topologySpreadConstraints = [
-              {
-                maxSkew           = 1
-                topologyKey       = "topology.kubernetes.io/zone"
-                whenUnsatisfiable = "DoNotSchedule"
-                labelSelector = {
-                  matchLabels = {
-                    "app.kubernetes.io/name" = "ecsdemo-nodejs"
-                  }
-                }
-              }
-            ]
-          }
-
-          ecsdemoCrystal = {
-            replicaCount = "9"
-            nodeSelector = {
-              "karpenter.sh/provisioner-name" = "default"
-            }
-            tolerations = [
-              {
-                key      = "karpenter"
-                operator = "Exists"
-                effect   = "NoSchedule"
-              }
-            ]
-            topologyAwareHints = "true"
-            topologySpreadConstraints = [
-              {
-                maxSkew           = 1
-                topologyKey       = "topology.kubernetes.io/zone"
-                whenUnsatisfiable = "DoNotSchedule"
-                labelSelector = {
-                  matchLabels = {
-                    "app.kubernetes.io/name" = "ecsdemo-crystal"
-                  }
-                }
-              }
-            ]
-          }
-
-          ecsdemoFrontend = {
-            repoURL        = "https://github.com/allamand/ecsdemo-frontend"
-            targetRevision = "main"
-            image = {
-              repository = "public.ecr.aws/seb-demo/ecsdemo-frontend"
-              tag        = "latest"
-            }
-            ingress = {
-              enabled   = "true"
-              className = "alb"
-              annotations = {
-                "alb.ingress.kubernetes.io/scheme"                = "internet-facing"
-                "alb.ingress.kubernetes.io/group.name"            = "ecsdemo"
-                "alb.ingress.kubernetes.io/listen-ports"          = "[{\\\"HTTPS\\\": 443}]"
-                "alb.ingress.kubernetes.io/ssl-redirect"          = "443"
-                "alb.ingress.kubernetes.io/target-type"           = "ip"
-                "external-dns.alpha.kubernetes.io/set-identifier" = local.name
-                "external-dns.alpha.kubernetes.io/aws-weight"     = local.ecsfrontend_route53_weight
-              }
-              hosts = [
-                {
-                  host = "frontend.${local.eks_cluster_domain}"
-                  paths = [
-                    {
-                      path     = "/"
-                      pathType = "Prefix"
-                    }
-                  ]
-                }
-              ]
-            }
-            resources = {
-              requests = {
-                cpu    = "1"
-                memory = "256Mi"
-              }
-              limits = {
-                cpu    = "1"
-                memory = "512Mi"
-              }
-            }
-            autoscaling = {
-              enabled                        = "true"
-              minReplicas                    = "9"
-              maxReplicas                    = "100"
-              targetCPUUtilizationPercentage = "60"
-            }
-            nodeSelector = {
-              "karpenter.sh/provisioner-name" = "default"
-            }
-            tolerations = [
-              {
-                key      = "karpenter"
-                operator = "Exists"
-                effect   = "NoSchedule"
-              }
-            ]
-            topologySpreadConstraints = [
-              {
-                maxSkew           = 1
-                topologyKey       = "topology.kubernetes.io/zone"
-                whenUnsatisfiable = "DoNotSchedule"
-                labelSelector = {
-                  matchLabels = {
-                    "app.kubernetes.io/name" = "ecsdemo-frontend"
-                  }
-                }
-              }
-            ]
-          }
-        }
-      }
-    }
+  argocd_bootstrap_app_of_apps = {
+    addons    = file("${path.module}/../../bootstrap/addons.yaml")
+    workloads = file("${path.module}/../../bootstrap/workloads.yaml")
   }
+
 
   tags = {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
+
 }
 
 # Find the user currently in use by AWS
@@ -287,11 +178,14 @@ resource "aws_ec2_tag" "public_subnets" {
   value       = "shared"
 }
 
-# Create Sub HostedZone four our deployment
+# Get HostedZone four our deployment
 data "aws_route53_zone" "sub" {
   name = "${local.environment}.${local.hosted_zone_name}"
 }
 
+################################################################################
+# AWS Secret Manager for argocd password
+################################################################################
 
 data "aws_secretsmanager_secret" "argocd" {
   name = "${local.argocd_secret_manager_name}.${local.environment}"
@@ -301,10 +195,9 @@ data "aws_secretsmanager_secret_version" "admin_password_version" {
   secret_id = data.aws_secretsmanager_secret.argocd.id
 }
 
-# data "aws_ecrpublic_authorization_token" "token" {
-#   provider = aws.virginia
-# }
-
+################################################################################
+# EKS Cluster
+################################################################################
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
@@ -337,7 +230,7 @@ module "eks" {
     [
       module.eks_blueprints_platform_teams.aws_auth_configmap_role,
       {
-        rolearn  = module.karpenter.role_arn
+        rolearn  = module.eks_blueprints_addons.karpenter.node_iam_role_arn
         username = "system:node:{{EC2PrivateDNSName}}"
         groups = [
           "system:bootstrappers",
@@ -360,16 +253,14 @@ module "eks" {
   })
 }
 
-data "aws_iam_user" "platform_user" {
-  count     = local.iam_platform_user != "" ? 1 : 0
-  user_name = local.iam_platform_user
-}
-
 data "aws_iam_role" "eks_admin_role_name" {
   count = local.eks_admin_role_name != "" ? 1 : 0
   name  = local.eks_admin_role_name
 }
 
+################################################################################
+# EKS Blueprints Teams
+################################################################################
 module "eks_blueprints_platform_teams" {
   source  = "aws-ia/eks-blueprints-teams/aws"
   version = "~> 1.0"
@@ -382,7 +273,6 @@ module "eks_blueprints_platform_teams" {
   # Define who can impersonate the team-platform Role
   users = [
     data.aws_caller_identity.current.arn,
-    try(data.aws_iam_user.platform_user[0].arn, data.aws_caller_identity.current.arn),
     try(data.aws_iam_role.eks_admin_role_name[0].arn, data.aws_caller_identity.current.arn),
   ]
   cluster_arn       = module.eks.cluster_arn
@@ -434,6 +324,7 @@ module "eks_blueprints_platform_teams" {
           }
         ]
       }
+
     }
 
   }
@@ -615,109 +506,171 @@ module "eks_blueprints_ecsdemo_teams" {
   tags = local.tags
 }
 
-module "kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.32.1"
+################################################################################
+# GitOps Bridge: Private ssh keys for git
+################################################################################
+data "aws_secretsmanager_secret" "workload_repo_secret" {
+  name = local.aws_secret_manager_git_private_ssh_key_name
+}
 
-  eks_cluster_id     = module.eks.cluster_name
-  eks_cluster_domain = local.eks_cluster_domain
+data "aws_secretsmanager_secret_version" "workload_repo_secret" {
+  secret_id = data.aws_secretsmanager_secret.workload_repo_secret.id
+}
 
-  #---------------------------------------------------------------
-  # ARGO CD ADD-ON
-  #---------------------------------------------------------------
-
-  enable_argocd         = true
-  argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying Add-ons.
-
-  argocd_applications = {
-    addons    = local.addons_application
-    workloads = local.workload_application
-    ecsdemo   = local.ecsdemo_application
+resource "kubernetes_namespace" "argocd" {
+  depends_on = [module.eks_blueprints_addons]
+  metadata {
+    name = "argocd"
   }
+}
 
-  # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.
-  argocd_helm_config = {
-    set_sensitive = [
-      {
-        name  = "configs.secret.argocdServerAdminPassword"
-        value = bcrypt(data.aws_secretsmanager_secret_version.admin_password_version.secret_string)
-      }
-    ]
+resource "kubernetes_secret" "git_secrets" {
+
+  for_each = {
+    git-addons = {
+      type = "git"
+      url  = local.gitops_addons_url
+      # comment if you want to uses public repo wigh syntax "https://github.com/xxx" syntax, uncomment when using syntax "git@github.com:xxx"
+      sshPrivateKey = data.aws_secretsmanager_secret_version.workload_repo_secret.secret_string
+    }
+    git-workloads = {
+      type = "git"
+      url  = local.gitops_workloads_url
+      # comment if you want to uses public repo wigh syntax "https://github.com/xxx" syntax, uncomment when using syntax "git@github.com:xxx"
+      #sshPrivateKey = data.aws_secretsmanager_secret_version.workload_repo_secret.secret_string
+    }
+  }
+  metadata {
+    name      = each.key
+    namespace = kubernetes_namespace.argocd.metadata[0].name
+    labels = {
+      "argocd.argoproj.io/secret-type" = "repo-creds"
+    }
+  }
+  data = each.value
+}
+
+################################################################################
+# GitOps Bridge: Metadata
+################################################################################
+module "gitops_bridge_metadata" {
+  source = "github.com/gitops-bridge-dev/gitops-bridge-argocd-metadata-terraform?ref=v1.0.0"
+
+  cluster_name = module.eks.cluster_name
+  metadata     = local.addons_metadata
+  environment  = local.environment
+  addons       = local.addons
+}
+
+################################################################################
+# GitOps Bridge: Bootstrap
+################################################################################
+
+module "gitops_bridge_bootstrap" {
+  source = "github.com/gitops-bridge-dev/gitops-bridge-argocd-bootstrap-terraform?ref=v1.0.0"
+
+  argocd_cluster               = module.gitops_bridge_metadata.argocd
+  argocd_bootstrap_app_of_apps = local.argocd_bootstrap_app_of_apps
+  #argocd                       = { create_namespace = false }
+  argocd = {
+    create_namespace = false
     set = [
       {
         name  = "server.service.type"
         value = "LoadBalancer"
       }
     ]
+    set_sensitive = [
+      {
+        name  = "configs.secret.argocdServerAdminPassword"
+        value = bcrypt(data.aws_secretsmanager_secret_version.admin_password_version.secret_string)
+      }
+    ]
   }
-
-  #---------------------------------------------------------------
-  # EKS Managed AddOns
-  # https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/
-  #---------------------------------------------------------------
-
-  enable_amazon_eks_coredns = true
-  amazon_eks_coredns_config = {
-    most_recent        = true
-    kubernetes_version = local.cluster_version
-    resolve_conflicts  = "OVERWRITE"
-  }
-
-  enable_amazon_eks_aws_ebs_csi_driver = true
-  amazon_eks_aws_ebs_csi_driver_config = {
-    most_recent        = true
-    kubernetes_version = local.cluster_version
-    resolve_conflicts  = "OVERWRITE"
-  }
-
-  enable_amazon_eks_kube_proxy = true
-  amazon_eks_kube_proxy_config = {
-    most_recent        = true
-    kubernetes_version = local.cluster_version
-    resolve_conflicts  = "OVERWRITE"
-  }
-
-  enable_amazon_eks_vpc_cni = true
-  amazon_eks_vpc_cni_config = {
-    most_recent        = true
-    kubernetes_version = local.cluster_version
-    resolve_conflicts  = "OVERWRITE"
-  }
-
-  #---------------------------------------------------------------
-  # ADD-ONS - You can add additional addons here
-  # https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/
-  #---------------------------------------------------------------
-
-  enable_metrics_server               = local.metrics_server
-  enable_vpa                          = local.vpa
-  enable_aws_load_balancer_controller = local.aws_load_balancer_controller
-  aws_load_balancer_controller_helm_config = {
-    service_account = "aws-lb-sa"
-  }
-  enable_karpenter              = local.karpenter
-  enable_aws_for_fluentbit      = local.aws_for_fluentbit
-  enable_aws_cloudwatch_metrics = local.cloudwatch_metrics
-
-  #to view the result : terraform state show 'module.kubernetes_addons.module.external_dns[0].module.helm_addon.helm_release.addon[0]'
-  enable_external_dns = local.external_dns
-
-  external_dns_helm_config = {
-    txtOwnerId   = local.name
-    zoneIdFilter = data.aws_route53_zone.sub.zone_id # Note: this uses GitOpsBridge
-    policy       = "sync"
-    logLevel     = "debug"
-  }
-
-  enable_kubecost      = local.kubecost
-  enable_cert_manager  = local.cert_manager
-  enable_argo_rollouts = local.argo_rollouts
-
+  depends_on = [kubernetes_secret.git_secrets]
 }
+
+################################################################################
+# EKS Blueprints Addons
+################################################################################
+module "eks_blueprints_addons" {
+  source = "aws-ia/eks-blueprints-addons/aws"
+
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  # Using GitOps Bridge
+  create_kubernetes_resources = false
+
+  eks_addons = {
+
+    # Remove for workshop as ebs-csi is long to provision (15mn)
+    # aws-ebs-csi-driver = {
+    #   most_recent              = true
+    #   service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
+    # }
+    coredns = {
+      most_recent = true
+    }
+    vpc-cni = {
+      # Specify the VPC CNI addon should be deployed before compute to ensure
+      # the addon is configured before data plane compute resources are created
+      # See README for further details
+      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
+      before_compute           = true
+      #addon_version  = "v1.12.2-eksbuild.1"
+      most_recent = true # To ensure access to the latest settings provided
+      configuration_values = jsonencode({
+        env = {
+          # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
+          ENABLE_PREFIX_DELEGATION = "true"
+          WARM_PREFIX_TARGET       = "1"
+        }
+      })
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+  }
+
+  # EKS Blueprints Addons
+  enable_cert_manager = try(local.aws_addons.enable_cert_manager, false)
+  #enable_aws_ebs_csi_resources  = try(local.aws_addons.enable_aws_ebs_csi_resources, false)
+  enable_aws_efs_csi_driver           = try(local.aws_addons.enable_aws_efs_csi_driver, false)
+  enable_aws_fsx_csi_driver           = try(local.aws_addons.enable_aws_fsx_csi_driver, false)
+  enable_aws_cloudwatch_metrics       = try(local.aws_addons.enable_aws_cloudwatch_metrics, false)
+  enable_aws_privateca_issuer         = try(local.aws_addons.enable_aws_privateca_issuer, false)
+  enable_cluster_autoscaler           = try(local.aws_addons.enable_cluster_autoscaler, false)
+  enable_external_dns                 = try(local.aws_addons.enable_external_dns, false)
+  external_dns_route53_zone_arns      = [data.aws_route53_zone.sub.arn]
+  enable_external_secrets             = try(local.aws_addons.enable_external_secrets, false)
+  enable_aws_load_balancer_controller = try(local.aws_addons.enable_aws_load_balancer_controller, false)
+  aws_load_balancer_controller = {
+    service_account_name = "aws-lb-sa"
+  }
+
+  enable_fargate_fluentbit              = try(local.aws_addons.enable_fargate_fluentbit, false)
+  enable_aws_for_fluentbit              = try(local.aws_addons.enable_aws_for_fluentbit, false)
+  enable_aws_node_termination_handler   = try(local.aws_addons.enable_aws_node_termination_handler, false)
+  aws_node_termination_handler_asg_arns = [for asg in module.eks.self_managed_node_groups : asg.autoscaling_group_arn]
+  enable_karpenter                      = try(local.aws_addons.enable_karpenter, false)
+  enable_velero                         = try(local.aws_addons.enable_velero, false)
+  #velero = {
+  #  s3_backup_location = "${module.velero_backup_s3_bucket.s3_bucket_arn}/backups"
+  #}
+  enable_aws_gateway_api_controller = try(local.aws_addons.enable_aws_gateway_api_controller, false)
+  #enable_aws_secrets_store_csi_driver_provider = try(local.enable_aws_secrets_store_csi_driver_provider, false)
+
+  tags = local.tags
+}
+
 module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.20"
 
-  role_name_prefix = "${module.eks.cluster_name}-ebs-csi-driver-"
+  role_name_prefix = "${module.eks.cluster_name}-ebs-csi-"
 
   attach_ebs_csi_policy = true
 
@@ -746,21 +699,6 @@ module "vpc_cni_irsa" {
       namespace_service_accounts = ["kube-system:aws-node"]
     }
   }
-
-  tags = local.tags
-}
-################################################################################
-# Karpenter
-################################################################################
-
-# Creates Karpenter native node termination handler resources and IAM instance profile
-module "karpenter" {
-  source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "~> 19.15.2"
-
-  cluster_name           = module.eks.cluster_name
-  irsa_oidc_provider_arn = module.eks.oidc_provider_arn
-  create_irsa            = false # IRSA will be created by the kubernetes-addons module
 
   tags = local.tags
 }
