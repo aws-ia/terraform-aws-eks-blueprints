@@ -12,6 +12,8 @@ locals {
 
   argocd_secret_manager_name = var.argocd_secret_manager_name_suffix
 
+  hosted_zone_name = var.hosted_zone_name
+
   tags = {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
@@ -47,18 +49,18 @@ module "vpc" {
 
 # Retrieve existing root hosted zone
 data "aws_route53_zone" "root" {
-  name = var.hosted_zone_name
+  name = local.hosted_zone_name
 }
 
 # Create Sub HostedZone four our deployment
 resource "aws_route53_zone" "sub" {
-  name = "${local.name}.${var.hosted_zone_name}"
+  name = "${local.name}.${local.hosted_zone_name}"
 }
 
 # Validate records for the new HostedZone
 resource "aws_route53_record" "ns" {
   zone_id = data.aws_route53_zone.root.zone_id
-  name    = "${local.name}.${var.hosted_zone_name}"
+  name    = "${local.name}.${local.hosted_zone_name}"
   type    = "NS"
   ttl     = "30"
   records = aws_route53_zone.sub.name_servers
@@ -68,17 +70,17 @@ module "acm" {
   source  = "terraform-aws-modules/acm/aws"
   version = "~> 4.0"
 
-  domain_name = "${local.name}.${var.hosted_zone_name}"
+  domain_name = "${local.name}.${local.hosted_zone_name}"
   zone_id     = aws_route53_zone.sub.zone_id
 
   subject_alternative_names = [
-    "*.${local.name}.${var.hosted_zone_name}"
+    "*.${local.name}.${local.hosted_zone_name}"
   ]
 
   wait_for_validation = true
 
   tags = {
-    Name = "${local.name}.${var.hosted_zone_name}"
+    Name = "${local.name}.${local.hosted_zone_name}"
   }
 }
 
