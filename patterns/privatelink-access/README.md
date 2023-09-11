@@ -1,38 +1,13 @@
 # Private EKS cluster access via AWS PrivateLink
 
-This example demonstrates how to access a private EKS cluster using AWS PrivateLink.
+This pattern demonstrates how to access a private EKS cluster using AWS PrivateLink.
 
 Refer to the [documentation](https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html)
 for further details on  `AWS PrivateLink`.
 
-## Prerequisites:
-
-Ensure that you have the following tools installed locally:
-
-1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
-3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
-
 ## Deploy
 
-To provision this example, first deploy the Lambda function that responds to
-`CreateNetworkInterface` API calls. This needs to exist before the cluster is
-created so that it can respond to the ENIs created by the EKS control plane:
-
-```sh
-terraform init
-terraform apply -target=module.eventbridge -target=module.nlb
-```
-
-Enter `yes` at command prompt to apply
-
-Next, deploy the remaining resources:
-
-```sh
-terraform apply
-```
-
-Enter `yes` at command prompt to apply
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
 
 ## Validate
 
@@ -124,17 +99,14 @@ access to the cluster:
 
    The test succeeded if you see an output like the one shown below:
 
-       NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
-       kube-system   aws-node-4f8g8             1/1     Running   0          1m
-       kube-system   coredns-6ff9c46cd8-59sqp   1/1     Running   0          1m
-       kube-system   coredns-6ff9c46cd8-svnpb   1/1     Running   0          2m
-       kube-system   kube-proxy-mm2zc           1/1     Running   0          1m
-
+   ```text
+   NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
+   kube-system   aws-node-4f8g8             1/1     Running   0          1m
+   kube-system   coredns-6ff9c46cd8-59sqp   1/1     Running   0          1m
+   kube-system   coredns-6ff9c46cd8-svnpb   1/1     Running   0          2m
+   kube-system   kube-proxy-mm2zc           1/1     Running   0          1m
+   ```
 
 ## Destroy
 
-Run the following command to destroy all the resources created by Terraform:
-
-```sh
-terraform destroy --auto-approve
-```
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.
