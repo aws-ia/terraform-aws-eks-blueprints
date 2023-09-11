@@ -4,15 +4,3 @@ These examples demonstrates how to deploy an Amazon EKS cluster that is deployed
 
 - [IAM Identity Center (successor to AWS Single Sign-On)](https://aws.amazon.com/iam/identity-center/)
 - [Okta](https://www.okta.com/)
-
-## Deploy
-
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
-
-## Validate
-
-**Specific instructions for each SSO provider are available in the respective directories.**
-
-## Destroy
-
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.

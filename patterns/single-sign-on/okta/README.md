@@ -2,43 +2,9 @@
 
 This example demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, integrated with Okta as an the Identity Provider (IdP) for Single Sign-On (SSO) authentication. The configuration for authorization is done using Kubernetes Role-based access control (RBAC).
 
-## Prerequisites:
-
-Ensure that you have the following tools installed locally:
-
-1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
-3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
-4. [kubelogin](https://github.com/int128/kubelogin)
-
-Also make sure you have enabled the following Okta resource:
-
-1. [Okta Account](https://okta.com).
-2. [Okta Organization](https://developer.okta.com/docs/concepts/okta-organizations/)
-3. [Okta API Token](https://developer.okta.com/docs/guides/create-an-api-token/main/)
-
 ## Deploy
 
-To provision this example, populate the Okta provider credentials, in the `okta.tf` file.
-
-```
-provider "okta" {
-  org_name  = "dev-<ORG_ID>
-  base_url  = "okta.com"
-  api_token = "<OKTA_APU_TOKEN>"
-}
-```
-
-Then run the following commands:
-
-```sh
-terraform init
-terraform apply -target module.vpc
-terraform apply -target module.eks
-terraform apply
-```
-
-Enter `yes` at command prompt to apply
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
 
 ## Validate
 
@@ -65,7 +31,7 @@ With the `kubeconfig` configured, you'll be able to run `kubectl` commands in yo
 The read-only user has a `cluster-viewer` Kubernetes role bound to it's group, whereas the admin user, has the `admin` Kubernetes role bound to it's group.
 
 ```
-kubectl get pods -A  
+kubectl get pods -A
 NAMESPACE          NAME                        READY   STATUS    RESTARTS   AGE
 amazon-guardduty   aws-guardduty-agent-bl2v2   1/1     Running   0          3h54m
 amazon-guardduty   aws-guardduty-agent-sqvcx   1/1     Running   0          3h54m
@@ -94,8 +60,4 @@ okta_login = "kubectl oidc-login setup --oidc-issuer-url=https://dev-ORGID.okta.
 
 ## Destroy
 
-To teardown and remove the resources created in this example:
-
-```sh
-terraform destroy -auto-approve
-```
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.

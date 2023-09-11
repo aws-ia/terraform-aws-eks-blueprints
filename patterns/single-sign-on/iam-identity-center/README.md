@@ -2,31 +2,9 @@
 
 This example demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, integrated with IAM Identity Center (former AWS SSO) as an the Identity Provider (IdP) for Single Sign-On (SSO) authentication. The configuration for authorization is done using Kubernetes Role-based access control (RBAC).
 
-## Prerequisites:
-
-Ensure that you have the following tools installed locally:
-
-1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
-3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
-
-Also make sure you have enabled the following AWS resource:
-
-1. Enable [IAM Identity Center](https://console.aws.amazon.com/singlesignon/home/)
-    This will also create an AWS Organization in your account.
-
 ## Deploy
 
-To provision these examples, run the following commands:
-
-```sh
-terraform init
-terraform apply -target module.vpc
-terraform apply -target module.eks
-terraform apply
-```
-
-Enter `yes` at command prompt to apply
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
 
 ## Validate
 
@@ -99,7 +77,7 @@ EOT
 With the `kubeconfig` configured, you'll be able to run `kubectl` commands in your Amazon EKS Cluster with the impersonated user. The read-only user has a `cluster-viewer` Kubernetes role bound to it's group, whereas the admin user, has the `admin` Kubernetes role bound to it's group.
 
 ```
-kubectl get pods -A  
+kubectl get pods -A
 NAMESPACE          NAME                        READY   STATUS    RESTARTS   AGE
 amazon-guardduty   aws-guardduty-agent-bl2v2   1/1     Running   0          3h54m
 amazon-guardduty   aws-guardduty-agent-sqvcx   1/1     Running   0          3h54m
@@ -122,8 +100,4 @@ configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name iam-ide
 
 ## Destroy
 
-To teardown and remove the resources created in this example:
-
-```sh
-terraform destroy -auto-approve
-```
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.

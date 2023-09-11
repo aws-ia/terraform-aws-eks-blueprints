@@ -36,24 +36,9 @@ In addition, the following properties are configured on the nodegroup volumes:
 - EBS encryption using a customer managed key (CMK)
 - Configuring the volumes to use GP3 storage
 
-## Prerequisites:
-
-Ensure that you have the following tools installed locally:
-
-1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
-3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
-
 ## Deploy
 
-To provision this example:
-
-```sh
-terraform init
-terraform apply
-```
-
-Enter `yes` at command prompt to apply
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
 
 ## Validate
 
@@ -61,89 +46,79 @@ For validating `velero` see [here](https://github.com/aws-ia/terraform-aws-eks-b
 
 The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the deployment.
 
-1. Run `update-kubeconfig` command:
+1. List the storage classes to view that `efs`, `gp2`, and `gp3` classes are present and `gp3` is the default storage class
 
-```sh
-aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
-```
+    ```sh
+    kubectl get storageclasses
 
-2. List the storage classes to view that `efs`, `gp2`, and `gp3` classes are present and `gp3` is the default storage class
+    NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+    efs             efs.csi.aws.com         Delete          Immediate              true                   2m19s
+    gp2             kubernetes.io/aws-ebs   Delete          WaitForFirstConsumer   false                  15m
+    gp3 (default)   ebs.csi.aws.com         Delete          WaitForFirstConsumer   true                   2m19s
+    ```
 
-```sh
-kubectl get storageclasses
-NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
-efs             efs.csi.aws.com         Delete          Immediate              true                   2m19s
-gp2             kubernetes.io/aws-ebs   Delete          WaitForFirstConsumer   false                  15m
-gp3 (default)   ebs.csi.aws.com         Delete          WaitForFirstConsumer   true                   2m19s
-```
+2. From an instance launched with instance store(s), check that the instance store has been mounted correctly. To verify, first install the `nvme-cli` tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:
 
-3. From an instance launched with instance store(s), check that the instance store has been mounted correctly. To verify, first install the `nvme-cli` tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:
+    ```sh
+    # Install the nvme-cli tool
+    sudo yum install nvme-cli -y
 
-```sh
-# Install the nvme-cli tool
-sudo yum install nvme-cli -y
+    # Show NVMe volumes attached
+    sudo nvme list
 
-# Show NVMe volumes attached
-sudo nvme list
+    # Output should look like below - notice the model is `EC2 NVMe Instance Storage` for the instance store
+    Node             SN                   Model                                    Namespace Usage                      Format           FW Rev
+    ---------------- -------------------- ---------------------------------------- --------- -------------------------- ---------------- --------
+    /dev/nvme0n1     vol0546d3c3b0af0bf6d Amazon Elastic Block Store               1          25.77  GB /  25.77  GB    512   B +  0 B   1.0
+    /dev/nvme1n1     AWS24BBF51AF55097008 Amazon EC2 NVMe Instance Storage         1          75.00  GB /  75.00  GB    512   B +  0 B   0
 
-# Output should look like below - notice the model is `EC2 NVMe Instance Storage` for the instance store
-Node             SN                   Model                                    Namespace Usage                      Format           FW Rev
----------------- -------------------- ---------------------------------------- --------- -------------------------- ---------------- --------
-/dev/nvme0n1     vol0546d3c3b0af0bf6d Amazon Elastic Block Store               1          25.77  GB /  25.77  GB    512   B +  0 B   1.0
-/dev/nvme1n1     AWS24BBF51AF55097008 Amazon EC2 NVMe Instance Storage         1          75.00  GB /  75.00  GB    512   B +  0 B   0
+    # Show disks, their partitions and mounts
+    sudo lsblk
 
-# Show disks, their partitions and mounts
-sudo lsblk
+    # Output should look like below
+    NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+    nvme0n1       259:0    0   24G  0 disk
+    ├─nvme0n1p1   259:2    0   24G  0 part /
+    └─nvme0n1p128 259:3    0    1M  0 part
+    nvme1n1       259:1    0 69.9G  0 disk /local1 # <--- this is the instance store
+    ```
 
-# Output should look like below
-NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
-nvme0n1       259:0    0   24G  0 disk
-├─nvme0n1p1   259:2    0   24G  0 part /
-└─nvme0n1p128 259:3    0    1M  0 part
-nvme1n1       259:1    0 69.9G  0 disk /local1 # <--- this is the instance store
-```
+3. From an instance launched with multiple volume(s), check that the instance store has been mounted correctly. To verify, first install the `nvme-cli` tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:
 
-4. From an instance launched with multiple volume(s), check that the instance store has been mounted correctly. To verify, first install the `nvme-cli` tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:
+    ```sh
+    # Install the nvme-cli tool
+    sudo yum install nvme-cli -y
 
-```sh
-# Install the nvme-cli tool
-sudo yum install nvme-cli -y
+    # Show NVMe volumes attached
+    sudo nvme list
 
-# Show NVMe volumes attached
-sudo nvme list
+    # Output should look like below, where /dev/nvme0n1 is the root volume and /dev/nvme1n1 is the second, additional volume
+    Node             SN                   Model                                    Namespace Usage                      Format           FW Rev
+    ---------------- -------------------- ---------------------------------------- --------- -------------------------- ---------------- --------
+    /dev/nvme0n1     vol0cd37dab9e4a5c184 Amazon Elastic Block Store               1          68.72  GB /  68.72  GB    512   B +  0 B   1.0
+    /dev/nvme1n1     vol0ad3629c159ee869c Amazon Elastic Block Store               1          25.77  GB /  25.77  GB    512   B +  0 B   1.0
+    ```
 
-# Output should look like below, where /dev/nvme0n1 is the root volume and /dev/nvme1n1 is the second, additional volume
-Node             SN                   Model                                    Namespace Usage                      Format           FW Rev
----------------- -------------------- ---------------------------------------- --------- -------------------------- ---------------- --------
-/dev/nvme0n1     vol0cd37dab9e4a5c184 Amazon Elastic Block Store               1          68.72  GB /  68.72  GB    512   B +  0 B   1.0
-/dev/nvme1n1     vol0ad3629c159ee869c Amazon Elastic Block Store               1          25.77  GB /  25.77  GB    512   B +  0 B   1.0
-```
+4. From the same instance used in step 4, check that the containerd directories are using the second `/dev/nvme1n1` volume:
 
-5. From the same instance used in step 4, check that the containerd directories are using the second `/dev/nvme1n1` volume:
+    ```sh
+    df /var/lib/containerd/
 
-```sh
-df /var/lib/containerd/
+    # Output should look like below, which shows the directory on the
+    # /dev/nvme1n1 volume and NOT on /dev/nvme0n1 (root volume)
+    Filesystem     1K-blocks    Used Available Use% Mounted on
+    /dev/nvme1n1    24594768 2886716  20433380  13% /var/lib/containerd
+    ```
 
-# Output should look like below, which shows the directory on the /dev/nvme1n1 volume and NOT on /dev/nvme0n1 (root volume)
-Filesystem     1K-blocks    Used Available Use% Mounted on
-/dev/nvme1n1    24594768 2886716  20433380  13% /var/lib/containerd
-```
+    ```sh
+    df /run/containerd/
 
-```sh
-df /run/containerd/
-
-# Output should look like below, which shows the directory on the /dev/nvme1n1 volume and NOT on /dev/nvme0n1 (root volume)
-Filesystem     1K-blocks    Used Available Use% Mounted on
-/dev/nvme1n1    24594768 2886716  20433380  13% /run/containerd
-```
+    # Output should look like below, which shows the directory on the
+    # /dev/nvme1n1 volume and NOT on /dev/nvme0n1 (root volume)
+    Filesystem     1K-blocks    Used Available Use% Mounted on
+    /dev/nvme1n1    24594768 2886716  20433380  13% /run/containerd
+    ```
 
 ## Destroy
 
-To teardown and remove the resources created in this example:
-
-```bash
-terraform destroy -target module.eks_blueprints_addons
-terraform destroy
-```
-
-Enter `yes` at each command prompt to destroy
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.
