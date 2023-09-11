@@ -1,15 +1,13 @@
 # Multi-Tenancy w/ Teams
 
-This example demonstrates how to provision and configure a multi-tenancy Amazon EKS cluster with safeguards for resource consumption and namespace isolation.
+This pattern demonstrates how to provision and configure a multi-tenancy Amazon EKS cluster with safeguards for resource consumption and namespace isolation.
 
 This example solution provides:
 
-- Amazon EKS Cluster (control plane)
-- Amazon EKS managed nodegroup (data plane)
 - Two development teams - `team-red` and `team-blue` - isolated to their respective namespaces
 - An admin team with privileged access to the cluster (`team-admin`)
 
-## Prerequisites:
+## Prerequisites
 
 Ensure that you have the following tools installed locally:
 
@@ -19,29 +17,13 @@ Ensure that you have the following tools installed locally:
 
 ## Deploy
 
-To provision this example:
-
-```sh
-terraform init
-terraform apply
-```
-
-Enter `yes` at command prompt to apply
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
 
 ## Validate
 
-The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl`.
-
-1. Run `update-kubeconfig` command:
-
-```sh
-aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
-```
+!!! danger "TODO"
+    Add in validation steps
 
 ## Destroy
 
-To teardown and remove the resources created in this example:
-
-```sh
-terraform destroy -auto-approve
-```
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.
