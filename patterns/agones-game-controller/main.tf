@@ -123,7 +123,6 @@ module "eks" {
       type                          = "ingress"
       source_cluster_security_group = true
     }
-
   }
 
   tags = local.tags
