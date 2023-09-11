@@ -370,6 +370,7 @@ module "efs" {
   name           = local.name
 
   # Mount targets / security group
+  attach_policy = false
   mount_targets = {
     for k, v in zipmap(local.azs, module.vpc.private_subnets) : k => { subnet_id = v }
   }
