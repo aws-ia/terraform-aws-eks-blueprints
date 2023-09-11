@@ -104,13 +104,10 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
 ## Destroy
 
-To clean up your environment, destroy the Terraform modules and resources in reverse order.
-
 First, we need to ensure that the ArgoCD applications are properly cleaned up from the cluster, this can be achieved in multiple ways:
 
 - Disabling the `argocd_applications` configuration and running `terraform apply` again
 - Deleting the apps using `argocd` [cli](https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/#deletion-using-argocd)
 - Deleting the apps using `kubectl` following [ArgoCD guidance](https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/#deletion-using-kubectl)
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for details
-on cleaning up resources correctly.
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.
