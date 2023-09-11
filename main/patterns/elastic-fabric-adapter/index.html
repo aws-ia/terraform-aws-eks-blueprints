@@ -10,20 +10,20 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/v4-to-v5/teams/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/patterns/elastic-fabric-adapter/">
       
       
-        <link rel="prev" href="../addons/">
+        <link rel="prev" href="../blue-green-upgrade/">
       
       
-        <link rel="next" href="../../faq/">
+        <link rel="next" href="../external-secrets/">
       
       <link rel="icon" href="../../images/colored-logo.png">
       <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.19">
     
     
       
-        <title>Teams - Amazon EKS Blueprints for Terraform</title>
+        <title>Elastic Fabric Adapter - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -112,7 +112,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#migrate-to-eks-blueprints-teams-module" class="md-skip">
+        <a href="#eks-cluster-w-elastic-fabric-adapter" class="md-skip">
           Skip to content
         </a>
       
@@ -150,7 +150,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Teams
+              Elastic Fabric Adapter
             
           </span>
         </div>
@@ -289,14 +289,16 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
       
       
       
@@ -305,7 +307,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Patterns
@@ -318,7 +320,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/agones-game-controller/" class="md-nav__link">
+      <a href="../agones-game-controller/" class="md-nav__link">
         Agones Game Controller
       </a>
     </li>
@@ -332,7 +334,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/appmesh-mtls/" class="md-nav__link">
+      <a href="../appmesh-mtls/" class="md-nav__link">
         AWS AppMesh mTLS
       </a>
     </li>
@@ -346,7 +348,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/argocd/" class="md-nav__link">
+      <a href="../argocd/" class="md-nav__link">
         ArgoCD
       </a>
     </li>
@@ -360,7 +362,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/blue-green-upgrade/" class="md-nav__link">
+      <a href="../blue-green-upgrade/" class="md-nav__link">
         Blue/Green Upgrade
       </a>
     </li>
@@ -372,11 +374,73 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../patterns/elastic-fabric-adapter/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Elastic Fabric Adapter
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Elastic Fabric Adapter
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    Validate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    Destroy
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -388,7 +452,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/external-secrets/" class="md-nav__link">
+      <a href="../external-secrets/" class="md-nav__link">
         External Secrets
       </a>
     </li>
@@ -402,7 +466,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/fargate-serverless/" class="md-nav__link">
+      <a href="../fargate-serverless/" class="md-nav__link">
         Fargate Serverless
       </a>
     </li>
@@ -416,7 +480,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/fully-private-cluster/" class="md-nav__link">
+      <a href="../fully-private-cluster/" class="md-nav__link">
         Fully Private Cluster
       </a>
     </li>
@@ -430,7 +494,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/ipv6-eks-cluster/" class="md-nav__link">
+      <a href="../ipv6-eks-cluster/" class="md-nav__link">
         IPv6 Networking
       </a>
     </li>
@@ -444,7 +508,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/istio-multi-cluster/" class="md-nav__link">
+      <a href="../istio-multi-cluster/" class="md-nav__link">
         Istio - Multi-Cluster
       </a>
     </li>
@@ -458,7 +522,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/istio/" class="md-nav__link">
+      <a href="../istio/" class="md-nav__link">
         Istio
       </a>
     </li>
@@ -472,7 +536,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/karpenter/" class="md-nav__link">
+      <a href="../karpenter/" class="md-nav__link">
         Karpenter
       </a>
     </li>
@@ -486,7 +550,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/multi-tenancy-with-teams/" class="md-nav__link">
+      <a href="../multi-tenancy-with-teams/" class="md-nav__link">
         Multi-Tenancy w/ Teams
       </a>
     </li>
@@ -500,7 +564,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/private-public-ingress/" class="md-nav__link">
+      <a href="../private-public-ingress/" class="md-nav__link">
         Private and Public Ingress
       </a>
     </li>
@@ -514,7 +578,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/privatelink-access/" class="md-nav__link">
+      <a href="../privatelink-access/" class="md-nav__link">
         PrivateLink Access
       </a>
     </li>
@@ -528,7 +592,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/sso-iam-identity-center/" class="md-nav__link">
+      <a href="../sso-iam-identity-center/" class="md-nav__link">
         SSO - IAM Identity Center
       </a>
     </li>
@@ -542,7 +606,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/sso-okta/" class="md-nav__link">
+      <a href="../sso-okta/" class="md-nav__link">
         SSO - Okta
       </a>
     </li>
@@ -556,7 +620,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/stateful/" class="md-nav__link">
+      <a href="../stateful/" class="md-nav__link">
         Stateful
       </a>
     </li>
@@ -570,7 +634,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/tls-with-aws-pca-issuer/" class="md-nav__link">
+      <a href="../tls-with-aws-pca-issuer/" class="md-nav__link">
         TLS w/ AWS PCA Issuer
       </a>
     </li>
@@ -584,7 +648,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/wireguard-with-cilium/" class="md-nav__link">
+      <a href="../wireguard-with-cilium/" class="md-nav__link">
         Wireguard /w Cilium
       </a>
     </li>
@@ -667,16 +731,14 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
       
       
       
@@ -685,7 +747,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           v4 to v5 Migration
@@ -698,7 +760,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../motivation/" class="md-nav__link">
+      <a href="../../v4-to-v5/motivation/" class="md-nav__link">
         Motivation
       </a>
     </li>
@@ -712,7 +774,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cluster/" class="md-nav__link">
+      <a href="../../v4-to-v5/cluster/" class="md-nav__link">
         Cluster
       </a>
     </li>
@@ -726,7 +788,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../addons/" class="md-nav__link">
+      <a href="../../v4-to-v5/addons/" class="md-nav__link">
         Addons
       </a>
     </li>
@@ -738,141 +800,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Teams
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../v4-to-v5/teams/" class="md-nav__link">
         Teams
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#this-guide-is-under-active-development" class="md-nav__link">
-    ⚠️ This guide is under active development.
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#list-of-backwards-incompatible-changes" class="md-nav__link">
-    List of backwards incompatible changes
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#additional-changes" class="md-nav__link">
-    Additional changes
-  </a>
-  
-    <nav class="md-nav" aria-label="Additional changes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#added" class="md-nav__link">
-    Added
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#modified" class="md-nav__link">
-    Modified
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#removed" class="md-nav__link">
-    Removed
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#variable-and-output-changes" class="md-nav__link">
-    Variable and output changes
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#upgrade-migrations" class="md-nav__link">
-    Upgrade Migrations
-  </a>
-  
-    <nav class="md-nav" aria-label="Upgrade Migrations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#before-v4x-example" class="md-nav__link">
-    Before - v4.x Example
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#after-v5x-example" class="md-nav__link">
-    After - v5.x Example
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#diff-of-before-vs-after" class="md-nav__link">
-    Diff of Before vs After
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#state-move-commands" class="md-nav__link">
-    State Move Commands
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -926,98 +858,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#this-guide-is-under-active-development" class="md-nav__link">
-    ⚠️ This guide is under active development.
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites:
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#list-of-backwards-incompatible-changes" class="md-nav__link">
-    List of backwards incompatible changes
+  <a href="#deploy" class="md-nav__link">
+    Deploy
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#additional-changes" class="md-nav__link">
-    Additional changes
+  <a href="#validate" class="md-nav__link">
+    Validate
   </a>
-  
-    <nav class="md-nav" aria-label="Additional changes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#added" class="md-nav__link">
-    Added
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#modified" class="md-nav__link">
-    Modified
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#removed" class="md-nav__link">
-    Removed
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#variable-and-output-changes" class="md-nav__link">
-    Variable and output changes
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#upgrade-migrations" class="md-nav__link">
-    Upgrade Migrations
+  <a href="#destroy" class="md-nav__link">
+    Destroy
   </a>
-  
-    <nav class="md-nav" aria-label="Upgrade Migrations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#before-v4x-example" class="md-nav__link">
-    Before - v4.x Example
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#after-v5x-example" class="md-nav__link">
-    After - v5.x Example
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#diff-of-before-vs-after" class="md-nav__link">
-    Diff of Before vs After
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#state-move-commands" class="md-nav__link">
-    State Move Commands
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1039,76 +903,174 @@
   
 
 
-<h1 id="migrate-to-eks-blueprints-teams-module">Migrate to EKS Blueprints Teams Module<a class="headerlink" href="#migrate-to-eks-blueprints-teams-module" title="Permanent link">&para;</a></h1>
-<p>Please consult the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/v4-to-v5/example">docs/v4-to-v5/example</a> directory for reference configurations. If you find a bug, please open an issue with supporting configuration to reproduce.</p>
-<h4 id="this-guide-is-under-active-development">⚠️ This guide is under active development.<a class="headerlink" href="#this-guide-is-under-active-development" title="Permanent link">&para;</a></h4>
-<h2 id="list-of-backwards-incompatible-changes">List of backwards incompatible changes<a class="headerlink" href="#list-of-backwards-incompatible-changes" title="Permanent link">&para;</a></h2>
-<p>-</p>
-<h2 id="additional-changes">Additional changes<a class="headerlink" href="#additional-changes" title="Permanent link">&para;</a></h2>
-<h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
-<p>-</p>
-<h3 id="modified">Modified<a class="headerlink" href="#modified" title="Permanent link">&para;</a></h3>
-<p>-</p>
-<h3 id="removed">Removed<a class="headerlink" href="#removed" title="Permanent link">&para;</a></h3>
-<p>-</p>
-<h3 id="variable-and-output-changes">Variable and output changes<a class="headerlink" href="#variable-and-output-changes" title="Permanent link">&para;</a></h3>
+<!-- BEGIN INCLUDE ../../patterns/elastic-fabric-adapter/README.md -->
+<h1 id="eks-cluster-w-elastic-fabric-adapter">EKS Cluster w/ Elastic Fabric Adapter<a class="headerlink" href="#eks-cluster-w-elastic-fabric-adapter" title="Permanent link">&para;</a></h1>
+<p>This example shows how to provision an Amazon EKS Cluster with an EFA-enabled nodegroup.</p>
+<h2 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>Ensure that you have the following tools installed locally:</p>
 <ol>
-<li>
-<p>Removed variables:</p>
-<p>-</p>
-</li>
-<li>
-<p>Renamed variables:</p>
-<p>-</p>
-</li>
-<li>
-<p>Added variables:</p>
-<p>-</p>
-</li>
-<li>
-<p>Removed outputs:</p>
-<p>-</p>
-</li>
-<li>
-<p>Renamed outputs:</p>
-<p>-</p>
-</li>
-<li>
-<p>Added outputs:</p>
-<p>-</p>
-</li>
+<li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
+<li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
+<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
 </ol>
-<h2 id="upgrade-migrations">Upgrade Migrations<a class="headerlink" href="#upgrade-migrations" title="Permanent link">&para;</a></h2>
-<h3 id="before-v4x-example">Before - v4.x Example<a class="headerlink" href="#before-v4x-example" title="Permanent link">&para;</a></h3>
-<div class="language-hcl highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;eks_blueprints&quot;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1&quot;</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">  # TODO</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span>
+<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
+<p>To provision this example:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply
 </span></code></pre></div>
-<h3 id="after-v5x-example">After - v5.x Example<a class="headerlink" href="#after-v5x-example" title="Permanent link">&para;</a></h3>
-<div class="language-hcl highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;eks_blueprints_teams&quot;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="na">source</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws-ia/eks-blueprints-teams/aws&quot;</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;~&gt; 1.0&quot;</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">  # TODO</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">}</span>
+<p>Enter <code>yes</code> at command prompt to apply</p>
+<h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Run <code>update-kubeconfig</code> command, using the Terraform provided Output, replace with your <code>$AWS_REGION</code> and your <code>$CLUSTER_NAME</code> variables.</li>
+</ol>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;<span class="nv">$AWS_REGION</span>&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;<span class="nv">$CLUSTER_NAME</span>&gt;
 </span></code></pre></div>
-<h3 id="diff-of-before-vs-after">Diff of Before vs After<a class="headerlink" href="#diff-of-before-vs-after" title="Permanent link">&para;</a></h3>
-<div class="language-diff highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>module &quot;eks_blueprints_teams&quot; {
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="gd">-  source = &quot;github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1&quot;</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="gi">+  source  = &quot;aws-ia/eks-blueprints-teams/aws&quot;</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="gi">+  version = &quot;~&gt; 1.0&quot;</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w"> </span> # TODO
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>}
+<ol>
+<li>Test by listing Nodes in in the Cluster, you should see Fargate instances as your Cluster Nodes.</li>
+</ol>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>instance-type<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>node<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span>f:
 </span></code></pre></div>
-<h3 id="state-move-commands">State Move Commands<a class="headerlink" href="#state-move-commands" title="Permanent link">&para;</a></h3>
-<p>In conjunction with the changes above, users can elect to move their external capacity provider(s) under this module using the following move command. Command is shown using the values from the example shown above, please update to suit your configuration names:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>terraform<span class="w"> </span>state<span class="w"> </span>mv<span class="w"> </span><span class="s1">&#39;xxx&#39;</span><span class="w"> </span><span class="s1">&#39;yyy&#39;</span>
+<p>Your nodes and node types will be listed:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a># kubectl get nodes
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>NAME                           STATUS   ROLES    AGE    VERSION
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>ip-10-11-10-103.ec2.internal   Ready    &lt;none&gt;   4m1s   v1.25.7-eks-a59e1f0
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>ip-10-11-19-28.ec2.internal    Ready    &lt;none&gt;   11m    v1.25.7-eks-a59e1f0
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>ip-10-11-2-151.ec2.internal    Ready    &lt;none&gt;   11m    v1.25.7-eks-a59e1f0
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>ip-10-11-2-18.ec2.internal     Ready    &lt;none&gt;   5m1s   v1.25.7-eks-a59e1f0
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a># kubectl get nodes -o yaml | grep instance-type | grep node | grep -v f:
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>      node.kubernetes.io/instance-type: g5.8xlarge
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>      node.kubernetes.io/instance-type: m5.large
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>      node.kubernetes.io/instance-type: m5.large
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>      node.kubernetes.io/instance-type: g5.8xlarge
 </span></code></pre></div>
+<p>You should see two EFA-enabled (in this example <code>g5.8xlarge</code>) nodes in the list.
+This verifies that you are connected to your EKS cluster and it is configured with EFA nodes.</p>
+<ol>
+<li>Deploy Kubeflow MPI Operator</li>
+</ol>
+<p>Kubeflow MPI Operator is required for running MPIJobs on EKS. We will use an MPIJob to test EFA.
+To deploy the MPI operator execute the following:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://raw.githubusercontent.com/kubeflow/mpi-operator/v0.3.0/deploy/v2beta1/mpi-operator.yaml
+</span></code></pre></div>
+<p>Output:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>namespace/mpi-operator created
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>customresourcedefinition.apiextensions.k8s.io/mpijobs.kubeflow.org created
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>serviceaccount/mpi-operator created
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>clusterrole.rbac.authorization.k8s.io/kubeflow-mpijobs-admin created
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>clusterrole.rbac.authorization.k8s.io/kubeflow-mpijobs-edit created
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>clusterrole.rbac.authorization.k8s.io/kubeflow-mpijobs-view created
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>clusterrole.rbac.authorization.k8s.io/mpi-operator created
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>clusterrolebinding.rbac.authorization.k8s.io/mpi-operator created
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>deployment.apps/mpi-operator created
+</span></code></pre></div>
+<p>In addition to deploying the operator, please apply a patch to the mpi-operator clusterrole
+to allow the mpi-operator service account access to <code>leases</code> resources in the <code>coordination.k8s.io</code> apiGroup.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://raw.githubusercontent.com/aws-samples/aws-do-eks/main/Container-Root/eks/deployment/kubeflow/mpi-operator/clusterrole-mpi-operator.yaml
+</span></code></pre></div>
+<p>Output:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>clusterrole.rbac.authorization.k8s.io/mpi-operator configured
+</span></code></pre></div>
+<ol>
+<li>Test EFA</li>
+</ol>
+<p>We will run two tests. The first one will show the presence of EFA adapters on our EFA-enabled nodes. The second will test EFA performance.</p>
+<ol>
+<li>EFA Info Test</li>
+</ol>
+<p>To run the EFA info test, execute the following commands:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://raw.githubusercontent.com/aws-samples/aws-do-eks/main/Container-Root/eks/deployment/efa-device-plugin/test-efa.yaml
+</span></code></pre></div>
+<p>Output:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>mpijob.kubeflow.org/efa-info-test created
+</span></code></pre></div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods
+</span></code></pre></div>
+<p>Output:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>NAME                           READY   STATUS      RESTARTS   AGE
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>efa-info-test-launcher-hckkj   0/1     Completed   2          37s
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>efa-info-test-worker-0         1/1     Running     0          38s
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>efa-info-test-worker-1         1/1     Running     0          38s
+</span></code></pre></div>
+<p>Once the test launcher pod enters status <code>Running</code> or <code>Completed</code>, see the test logs using the command below:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>launcher<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="k">)</span>
+</span></code></pre></div>
+<p>Output:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>Warning: Permanently added &#39;efa-info-test-worker-1.efa-info-test-worker.default.svc,10.11.13.224&#39; (ECDSA) to the list of known hosts.
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>Warning: Permanently added &#39;efa-info-test-worker-0.efa-info-test-worker.default.svc,10.11.4.63&#39; (ECDSA) to the list of known hosts.
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>[1,1]&lt;stdout&gt;:provider: efa
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>[1,1]&lt;stdout&gt;:    fabric: efa
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>[1,1]&lt;stdout&gt;:    domain: rdmap197s0-rdm
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>[1,1]&lt;stdout&gt;:    version: 116.10
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>[1,1]&lt;stdout&gt;:    type: FI_EP_RDM
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>[1,1]&lt;stdout&gt;:    protocol: FI_PROTO_EFA
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>[1,0]&lt;stdout&gt;:provider: efa
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>[1,0]&lt;stdout&gt;:    fabric: efa
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>[1,0]&lt;stdout&gt;:    domain: rdmap197s0-rdm
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>[1,0]&lt;stdout&gt;:    version: 116.10
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>[1,0]&lt;stdout&gt;:    type: FI_EP_RDM
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>[1,0]&lt;stdout&gt;:    protocol: FI_PROTO_EFA
+</span></code></pre></div>
+<p>This result shows that two EFA adapters are available (one for each worker pod).</p>
+<p>Lastly, delete the test job:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>mpijob<span class="w"> </span>efa-info-test
+</span></code></pre></div>
+<p>Output:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>mpijob.kubeflow.org &quot;efa-info-test&quot; deleted
+</span></code></pre></div>
+<ol>
+<li>EFA NCCL Test</li>
+</ol>
+<p>To run the EFA NCCL test please execute the following kubectl command:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://raw.githubusercontent.com/aws-samples/aws-do-eks/main/Container-Root/eks/deployment/efa-device-plugin/test-nccl-efa.yaml
+</span></code></pre></div>
+<p>Output:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>mpijob.kubeflow.org/test-nccl-efa created
+</span></code></pre></div>
+<p>Then display the pods in the current namespace:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods
+</span></code></pre></div>
+<p>Output:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>NAME                           READY   STATUS    RESTARTS      AGE
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>test-nccl-efa-launcher-tx47t   1/1     Running   2 (31s ago)   33s
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>test-nccl-efa-worker-0         1/1     Running   0             33s
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>test-nccl-efa-worker-1         1/1     Running   0             33s
+</span></code></pre></div>
+<p>Once the launcher pod enters <code>Running</code> or <code>Completed</code> state, execute the following to see the test logs:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>launcher<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="k">)</span>
+</span></code></pre></div>
+<p>The following section from the beginning of the log, indicates that the test is being performed using EFA:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>[1,0]&lt;stdout&gt;:test-nccl-efa-worker-0:21:21 [0] NCCL INFO NET/OFI Selected Provider is efa (found 1 nics)
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>[1,0]&lt;stdout&gt;:test-nccl-efa-worker-0:21:21 [0] NCCL INFO Using network AWS Libfabric
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>[1,0]&lt;stdout&gt;:NCCL version 2.12.7+cuda11.4
+</span></code></pre></div>
+<p>Columns 8 and 12 in the output table show the in-place and out-of-place bus bandwidth calculated for the data size listed in column 1. In this case it is 3.13 and 3.12 GB/s respectively.
+Your actual results may be slightly different. The calculated average bus bandwidth is displayed at the bottom of the log when the test finishes after it reaches the max data size,
+specified in the mpijob manifest. In this result the average bus bandwidth is 1.15 GB/s.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>[1,0]&lt;stdout&gt;:#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>[1,0]&lt;stdout&gt;:#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>...
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>[1,0]&lt;stdout&gt;:      262144         65536     float     sum      -1    195.0    1.34    1.34      0    194.0    1.35    1.35      0
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>[1,0]&lt;stdout&gt;:      524288        131072     float     sum      -1    296.9    1.77    1.77      0    291.1    1.80    1.80      0
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>[1,0]&lt;stdout&gt;:     1048576        262144     float     sum      -1    583.4    1.80    1.80      0    579.6    1.81    1.81      0
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a>[1,0]&lt;stdout&gt;:     2097152        524288     float     sum      -1    983.3    2.13    2.13      0    973.9    2.15    2.15      0
+</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a>[1,0]&lt;stdout&gt;:     4194304       1048576     float     sum      -1   1745.4    2.40    2.40      0   1673.2    2.51    2.51      0
+</span><span id="__span-22-9"><a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a>...
+</span><span id="__span-22-10"><a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a>[1,0]&lt;stdout&gt;:# Avg bus bandwidth    : 1.15327
+</span></code></pre></div>
+<p>Finally, delete the test mpi job:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>mpijob<span class="w"> </span>test-nccl-efa
+</span></code></pre></div>
+<p>Output:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>mpijob.kubeflow.org &quot;test-nccl-efa&quot; deleted
+</span></code></pre></div>
+<h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
+<p>To teardown and remove the resources created in this example:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="w"> </span>module.eks_blueprints_addons<span class="w"> </span>-auto-approve
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="w"> </span>module.eks<span class="w"> </span>-auto-approve
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+</span></code></pre></div>
+<!-- END INCLUDE -->
 
 
 

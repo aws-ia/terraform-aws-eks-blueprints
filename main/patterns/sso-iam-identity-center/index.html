@@ -10,20 +10,20 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/v4-to-v5/teams/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/patterns/sso-iam-identity-center/">
       
       
-        <link rel="prev" href="../addons/">
+        <link rel="prev" href="../privatelink-access/">
       
       
-        <link rel="next" href="../../faq/">
+        <link rel="next" href="../sso-okta/">
       
       <link rel="icon" href="../../images/colored-logo.png">
       <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.19">
     
     
       
-        <title>Teams - Amazon EKS Blueprints for Terraform</title>
+        <title>SSO - IAM Identity Center - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -112,7 +112,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#migrate-to-eks-blueprints-teams-module" class="md-skip">
+        <a href="#iam-identity-center-single-sign-on-for-amazon-eks-cluster" class="md-skip">
           Skip to content
         </a>
       
@@ -150,7 +150,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Teams
+              SSO - IAM Identity Center
             
           </span>
         </div>
@@ -289,14 +289,16 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
       
       
       
@@ -305,7 +307,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Patterns
@@ -318,7 +320,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/agones-game-controller/" class="md-nav__link">
+      <a href="../agones-game-controller/" class="md-nav__link">
         Agones Game Controller
       </a>
     </li>
@@ -332,7 +334,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/appmesh-mtls/" class="md-nav__link">
+      <a href="../appmesh-mtls/" class="md-nav__link">
         AWS AppMesh mTLS
       </a>
     </li>
@@ -346,7 +348,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/argocd/" class="md-nav__link">
+      <a href="../argocd/" class="md-nav__link">
         ArgoCD
       </a>
     </li>
@@ -360,7 +362,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/blue-green-upgrade/" class="md-nav__link">
+      <a href="../blue-green-upgrade/" class="md-nav__link">
         Blue/Green Upgrade
       </a>
     </li>
@@ -374,7 +376,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/elastic-fabric-adapter/" class="md-nav__link">
+      <a href="../elastic-fabric-adapter/" class="md-nav__link">
         Elastic Fabric Adapter
       </a>
     </li>
@@ -388,7 +390,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/external-secrets/" class="md-nav__link">
+      <a href="../external-secrets/" class="md-nav__link">
         External Secrets
       </a>
     </li>
@@ -402,7 +404,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/fargate-serverless/" class="md-nav__link">
+      <a href="../fargate-serverless/" class="md-nav__link">
         Fargate Serverless
       </a>
     </li>
@@ -416,7 +418,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/fully-private-cluster/" class="md-nav__link">
+      <a href="../fully-private-cluster/" class="md-nav__link">
         Fully Private Cluster
       </a>
     </li>
@@ -430,7 +432,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/ipv6-eks-cluster/" class="md-nav__link">
+      <a href="../ipv6-eks-cluster/" class="md-nav__link">
         IPv6 Networking
       </a>
     </li>
@@ -444,7 +446,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/istio-multi-cluster/" class="md-nav__link">
+      <a href="../istio-multi-cluster/" class="md-nav__link">
         Istio - Multi-Cluster
       </a>
     </li>
@@ -458,7 +460,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/istio/" class="md-nav__link">
+      <a href="../istio/" class="md-nav__link">
         Istio
       </a>
     </li>
@@ -472,7 +474,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/karpenter/" class="md-nav__link">
+      <a href="../karpenter/" class="md-nav__link">
         Karpenter
       </a>
     </li>
@@ -486,7 +488,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/multi-tenancy-with-teams/" class="md-nav__link">
+      <a href="../multi-tenancy-with-teams/" class="md-nav__link">
         Multi-Tenancy w/ Teams
       </a>
     </li>
@@ -500,7 +502,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/private-public-ingress/" class="md-nav__link">
+      <a href="../private-public-ingress/" class="md-nav__link">
         Private and Public Ingress
       </a>
     </li>
@@ -514,7 +516,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/privatelink-access/" class="md-nav__link">
+      <a href="../privatelink-access/" class="md-nav__link">
         PrivateLink Access
       </a>
     </li>
@@ -526,11 +528,73 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../patterns/sso-iam-identity-center/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SSO - IAM Identity Center
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         SSO - IAM Identity Center
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    Validate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    Destroy
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -542,7 +606,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/sso-okta/" class="md-nav__link">
+      <a href="../sso-okta/" class="md-nav__link">
         SSO - Okta
       </a>
     </li>
@@ -556,7 +620,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/stateful/" class="md-nav__link">
+      <a href="../stateful/" class="md-nav__link">
         Stateful
       </a>
     </li>
@@ -570,7 +634,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/tls-with-aws-pca-issuer/" class="md-nav__link">
+      <a href="../tls-with-aws-pca-issuer/" class="md-nav__link">
         TLS w/ AWS PCA Issuer
       </a>
     </li>
@@ -584,7 +648,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/wireguard-with-cilium/" class="md-nav__link">
+      <a href="../wireguard-with-cilium/" class="md-nav__link">
         Wireguard /w Cilium
       </a>
     </li>
@@ -667,16 +731,14 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
       
       
       
@@ -685,7 +747,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           v4 to v5 Migration
@@ -698,7 +760,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../motivation/" class="md-nav__link">
+      <a href="../../v4-to-v5/motivation/" class="md-nav__link">
         Motivation
       </a>
     </li>
@@ -712,7 +774,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cluster/" class="md-nav__link">
+      <a href="../../v4-to-v5/cluster/" class="md-nav__link">
         Cluster
       </a>
     </li>
@@ -726,7 +788,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../addons/" class="md-nav__link">
+      <a href="../../v4-to-v5/addons/" class="md-nav__link">
         Addons
       </a>
     </li>
@@ -738,141 +800,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Teams
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../v4-to-v5/teams/" class="md-nav__link">
         Teams
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#this-guide-is-under-active-development" class="md-nav__link">
-    ⚠️ This guide is under active development.
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#list-of-backwards-incompatible-changes" class="md-nav__link">
-    List of backwards incompatible changes
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#additional-changes" class="md-nav__link">
-    Additional changes
-  </a>
-  
-    <nav class="md-nav" aria-label="Additional changes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#added" class="md-nav__link">
-    Added
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#modified" class="md-nav__link">
-    Modified
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#removed" class="md-nav__link">
-    Removed
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#variable-and-output-changes" class="md-nav__link">
-    Variable and output changes
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#upgrade-migrations" class="md-nav__link">
-    Upgrade Migrations
-  </a>
-  
-    <nav class="md-nav" aria-label="Upgrade Migrations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#before-v4x-example" class="md-nav__link">
-    Before - v4.x Example
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#after-v5x-example" class="md-nav__link">
-    After - v5.x Example
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#diff-of-before-vs-after" class="md-nav__link">
-    Diff of Before vs After
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#state-move-commands" class="md-nav__link">
-    State Move Commands
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -926,98 +858,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#this-guide-is-under-active-development" class="md-nav__link">
-    ⚠️ This guide is under active development.
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites:
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#list-of-backwards-incompatible-changes" class="md-nav__link">
-    List of backwards incompatible changes
+  <a href="#deploy" class="md-nav__link">
+    Deploy
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#additional-changes" class="md-nav__link">
-    Additional changes
+  <a href="#validate" class="md-nav__link">
+    Validate
   </a>
-  
-    <nav class="md-nav" aria-label="Additional changes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#added" class="md-nav__link">
-    Added
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#modified" class="md-nav__link">
-    Modified
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#removed" class="md-nav__link">
-    Removed
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#variable-and-output-changes" class="md-nav__link">
-    Variable and output changes
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#upgrade-migrations" class="md-nav__link">
-    Upgrade Migrations
+  <a href="#destroy" class="md-nav__link">
+    Destroy
   </a>
-  
-    <nav class="md-nav" aria-label="Upgrade Migrations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#before-v4x-example" class="md-nav__link">
-    Before - v4.x Example
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#after-v5x-example" class="md-nav__link">
-    After - v5.x Example
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#diff-of-before-vs-after" class="md-nav__link">
-    Diff of Before vs After
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#state-move-commands" class="md-nav__link">
-    State Move Commands
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1039,76 +903,112 @@
   
 
 
-<h1 id="migrate-to-eks-blueprints-teams-module">Migrate to EKS Blueprints Teams Module<a class="headerlink" href="#migrate-to-eks-blueprints-teams-module" title="Permanent link">&para;</a></h1>
-<p>Please consult the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/v4-to-v5/example">docs/v4-to-v5/example</a> directory for reference configurations. If you find a bug, please open an issue with supporting configuration to reproduce.</p>
-<h4 id="this-guide-is-under-active-development">⚠️ This guide is under active development.<a class="headerlink" href="#this-guide-is-under-active-development" title="Permanent link">&para;</a></h4>
-<h2 id="list-of-backwards-incompatible-changes">List of backwards incompatible changes<a class="headerlink" href="#list-of-backwards-incompatible-changes" title="Permanent link">&para;</a></h2>
-<p>-</p>
-<h2 id="additional-changes">Additional changes<a class="headerlink" href="#additional-changes" title="Permanent link">&para;</a></h2>
-<h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
-<p>-</p>
-<h3 id="modified">Modified<a class="headerlink" href="#modified" title="Permanent link">&para;</a></h3>
-<p>-</p>
-<h3 id="removed">Removed<a class="headerlink" href="#removed" title="Permanent link">&para;</a></h3>
-<p>-</p>
-<h3 id="variable-and-output-changes">Variable and output changes<a class="headerlink" href="#variable-and-output-changes" title="Permanent link">&para;</a></h3>
+<!-- BEGIN INCLUDE ../../patterns/single-sign-on/iam-identity-center/README.md -->
+<h1 id="iam-identity-center-single-sign-on-for-amazon-eks-cluster">IAM Identity Center Single Sign-On for Amazon EKS Cluster<a class="headerlink" href="#iam-identity-center-single-sign-on-for-amazon-eks-cluster" title="Permanent link">&para;</a></h1>
+<p>This example demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, integrated with IAM Identity Center (former AWS SSO) as an the Identity Provider (IdP) for Single Sign-On (SSO) authentication. The configuration for authorization is done using Kubernetes Role-based access control (RBAC).</p>
+<h2 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>Ensure that you have the following tools installed locally:</p>
 <ol>
-<li>
-<p>Removed variables:</p>
-<p>-</p>
-</li>
-<li>
-<p>Renamed variables:</p>
-<p>-</p>
-</li>
-<li>
-<p>Added variables:</p>
-<p>-</p>
-</li>
-<li>
-<p>Removed outputs:</p>
-<p>-</p>
-</li>
-<li>
-<p>Renamed outputs:</p>
-<p>-</p>
-</li>
-<li>
-<p>Added outputs:</p>
-<p>-</p>
-</li>
+<li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
+<li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
+<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
 </ol>
-<h2 id="upgrade-migrations">Upgrade Migrations<a class="headerlink" href="#upgrade-migrations" title="Permanent link">&para;</a></h2>
-<h3 id="before-v4x-example">Before - v4.x Example<a class="headerlink" href="#before-v4x-example" title="Permanent link">&para;</a></h3>
-<div class="language-hcl highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;eks_blueprints&quot;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1&quot;</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">  # TODO</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span>
+<p>Also make sure you have enabled the following AWS resource:</p>
+<ol>
+<li>Enable <a href="https://console.aws.amazon.com/singlesignon/home/">IAM Identity Center</a>
+    This will also create an AWS Organization in your account.</li>
+</ol>
+<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
+<p>To provision these examples, run the following commands:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="w"> </span>module.vpc
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="w"> </span>module.eks
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>terraform<span class="w"> </span>apply
 </span></code></pre></div>
-<h3 id="after-v5x-example">After - v5.x Example<a class="headerlink" href="#after-v5x-example" title="Permanent link">&para;</a></h3>
-<div class="language-hcl highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;eks_blueprints_teams&quot;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="na">source</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws-ia/eks-blueprints-teams/aws&quot;</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;~&gt; 1.0&quot;</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">  # TODO</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">}</span>
+<p>Enter <code>yes</code> at command prompt to apply</p>
+<h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
+<p>After the <code>terraform</code> commands are executed sucessfully, check if the newly created users are active.</p>
+<p>To do that use the link provided in the email invite - <em>if you added a valid email address for your users either in your Terraform code or IAM Identity Center Console</em> - or go to the <a href="https://console.aws.amazon.com/singlesignon/home/">IAM Identity Center Console</a>, in the <em>Users</em> dashboard on the left hand side menu, then select the user, and click on <em>Reset password</em> button on the upper right corner. Choose the option to <em>Generate a one-time password and share the password with the user</em>.</p>
+<p>With the active users, use one of the <code>terraform output</code> examples to configure your AWS credentials for SSO, as shown in the examples below. After you choose the <em>SSO registration scopes</em>, your browser windows will appear and request to login using your IAM Identity Center username and password.</p>
+<p><strong>Admin user example</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>configure_sso_admin = &lt;&lt;EOT
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  # aws configure sso
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  SSO session name (Recommended): &lt;SESSION_NAME&gt;
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  SSO start URL [None]: https://d-1234567890.awsapps.com/start
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>  SSO region [None]: us-west-2
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>  SSO registration scopes [sso:account:access]:
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>  Attempting to automatically open the SSO authorization page in your default browser.
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>  If the browser does not open or you wish to use a different device to authorize this request, open the following URL:
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>  https://device.sso.us-west-2.amazonaws.com/
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>  Then enter the code:
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>  The only AWS account available to you is: 123456789012
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>  Using the account ID 123456789012
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>  The only role available to you is: EKSClusterAdmin
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>  Using the role name EKSClusterAdmin
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>  CLI default client Region [us-west-2]: us-west-2
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>  CLI default output format [json]: json
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>  CLI profile name [EKSClusterAdmin-123456789012]:
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>  To use this profile, specify the profile name using --profile, as shown:
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterAdmin-123456789012
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>EOT
+</span></code></pre></div></p>
+<p><strong>Read-only user example</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>configure_sso_user = &lt;&lt;EOT
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  # aws configure sso
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  SSO session name (Recommended): &lt;SESSION_NAME&gt;
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  SSO start URL [None]: https://d-1234567890.awsapps.com/start
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  SSO region [None]: us-west-2
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>  SSO registration scopes [sso:account:access]:
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>  Attempting to automatically open the SSO authorization page in your default browser.
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>  If the browser does not open or you wish to use a different device to authorize this request, open the following URL:
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>  https://device.sso.us-west-2.amazonaws.com/
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>  Then enter the code:
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>  The only AWS account available to you is: 123456789012
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>  Using the account ID 123456789012
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>  The only role available to you is: EKSClusterUser
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>  Using the role name EKSClusterUser
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>  CLI default client Region [us-west-2]: us-west-2
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>  CLI default output format [json]: json
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>  CLI profile name [EKSClusterUser-123456789012]:
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>  To use this profile, specify the profile name using --profile, as shown:
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterUser-123456789012
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>EOT
+</span></code></pre></div></p>
+<p>With the <code>kubeconfig</code> configured, you'll be able to run <code>kubectl</code> commands in your Amazon EKS Cluster with the impersonated user. The read-only user has a <code>cluster-viewer</code> Kubernetes role bound to it's group, whereas the admin user, has the <code>admin</code> Kubernetes role bound to it's group.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl get pods -A  
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>NAMESPACE          NAME                        READY   STATUS    RESTARTS   AGE
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>amazon-guardduty   aws-guardduty-agent-bl2v2   1/1     Running   0          3h54m
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>amazon-guardduty   aws-guardduty-agent-sqvcx   1/1     Running   0          3h54m
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>amazon-guardduty   aws-guardduty-agent-w8gfc   1/1     Running   0          3h54m
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>kube-system        aws-node-m9hmd              1/1     Running   0          3h53m
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>kube-system        aws-node-w42b8              1/1     Running   0          3h53m
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>kube-system        aws-node-wm6rm              1/1     Running   0          3h53m
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>kube-system        coredns-6ff9c46cd8-94jlr    1/1     Running   0          3h59m
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>kube-system        coredns-6ff9c46cd8-nwmrb    1/1     Running   0          3h59m
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>kube-system        kube-proxy-7fb86            1/1     Running   0          3h54m
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>kube-system        kube-proxy-p4f5g            1/1     Running   0          3h54m
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>kube-system        kube-proxy-qkfmc            1/1     Running   0          3h54m
 </span></code></pre></div>
-<h3 id="diff-of-before-vs-after">Diff of Before vs After<a class="headerlink" href="#diff-of-before-vs-after" title="Permanent link">&para;</a></h3>
-<div class="language-diff highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>module &quot;eks_blueprints_teams&quot; {
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="gd">-  source = &quot;github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1&quot;</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="gi">+  source  = &quot;aws-ia/eks-blueprints-teams/aws&quot;</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="gi">+  version = &quot;~&gt; 1.0&quot;</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w"> </span> # TODO
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>}
+<p>You can also use the <code>configure_kubectl</code> output to assume the <em>Cluster creator</em> role with <code>cluster-admin</code> access.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>configure_kubectl = &quot;aws eks --region us-west-2 update-kubeconfig --name iam-identity-center&quot;
 </span></code></pre></div>
-<h3 id="state-move-commands">State Move Commands<a class="headerlink" href="#state-move-commands" title="Permanent link">&para;</a></h3>
-<p>In conjunction with the changes above, users can elect to move their external capacity provider(s) under this module using the following move command. Command is shown using the values from the example shown above, please update to suit your configuration names:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>terraform<span class="w"> </span>state<span class="w"> </span>mv<span class="w"> </span><span class="s1">&#39;xxx&#39;</span><span class="w"> </span><span class="s1">&#39;yyy&#39;</span>
+<h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
+<p>To teardown and remove the resources created in this example:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </span></code></pre></div>
+<!-- END INCLUDE -->
 
 
 
