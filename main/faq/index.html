@@ -1056,26 +1056,28 @@ Users of the <code>exec()</code> method should be aware that the <code>exec()</c
 Namespace one of those resources we've seen before, the main reason this happens is because orphaned resources created through CRDs of addons (such as ArgoCD, AWS LBC and more) are left behind after the addons are being deleted, this is case by case scenario.
 For example, with namespaces:</p>
 <ol>
-<li>Confirm the namespace is hanging in status <code>Terminating</code></li>
-</ol>
+<li>
+<p>Confirm the namespace is hanging in status <code>Terminating</code></p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>namespaces
 </span></code></pre></div>
-<ol>
-<li>Check for any orphaned resources in the namespace, make sure to replace <namespace_name> with your namespace:</li>
-</ol>
+</li>
+<li>
+<p>Check for any orphaned resources in the namespace, make sure to replace <namespace_name> with your namespace:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span>api-resources<span class="w"> </span>--verbs<span class="o">=</span>list<span class="w"> </span>--namespaced<span class="w"> </span>-o<span class="w"> </span>name<span class="w">   </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>kubectl<span class="w"> </span>get<span class="w">  </span><span class="se">\</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>--show-kind<span class="w"> </span>--ignore-not-found<span class="w"> </span>-n<span class="w"> </span>&lt;namespace_name&gt;
 </span></code></pre></div>
-<ol>
-<li>For any of the above output, patch the resource finalize:</li>
-</ol>
+</li>
+<li>
+<p>For any of the above output, patch the resource finalize:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>RESOURCE<span class="w"> </span>NAME<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;metadata&quot;:{&quot;finalizers&quot;:[]}}&#39;</span><span class="w"> </span>--type<span class="o">=</span>merge
 </span></code></pre></div>
-<ol>
-<li>Check the status of the namespace, if needed you may need to patch the namespace finalizers as-well</li>
-</ol>
+</li>
+<li>
+<p>Check the status of the namespace, if needed you may need to patch the namespace finalizers as-well</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>ns<span class="w"> </span>&lt;ns-name&gt;<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;spec&quot;:{&quot;finalizers&quot;:null}}&#39;</span>
 </span></code></pre></div>
+</li>
+</ol>
 
 
 

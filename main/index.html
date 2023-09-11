@@ -300,36 +300,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#core-concepts" class="md-nav__link">
-    Core Concepts
+  <a href="#consumption" class="md-nav__link">
+    Consumption
   </a>
   
-    <nav class="md-nav" aria-label="Core Concepts">
+    <nav class="md-nav" aria-label="Consumption">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#cluster" class="md-nav__link">
-    Cluster
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#add-on" class="md-nav__link">
-    Add-on
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#team" class="md-nav__link">
-    Team
+  <a href="#related-projects" class="md-nav__link">
+    Related Projects
   </a>
   
 </li>
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#terraform-caveats" class="md-nav__link">
+    Terraform Caveats
+  </a>
   
 </li>
       
@@ -895,36 +888,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#core-concepts" class="md-nav__link">
-    Core Concepts
+  <a href="#consumption" class="md-nav__link">
+    Consumption
   </a>
   
-    <nav class="md-nav" aria-label="Core Concepts">
+    <nav class="md-nav" aria-label="Consumption">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#cluster" class="md-nav__link">
-    Cluster
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#add-on" class="md-nav__link">
-    Add-on
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#team" class="md-nav__link">
-    Team
+  <a href="#related-projects" class="md-nav__link">
+    Related Projects
   </a>
   
 </li>
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#terraform-caveats" class="md-nav__link">
+    Terraform Caveats
+  </a>
   
 </li>
       
@@ -970,46 +956,126 @@
 <!-- BEGIN INCLUDE ../README.md -->
 <h1 id="amazon-eks-blueprints-for-terraform">Amazon EKS Blueprints for Terraform<a class="headerlink" href="#amazon-eks-blueprints-for-terraform" title="Permanent link">&para;</a></h1>
 <p>Welcome to Amazon EKS Blueprints for Terraform!</p>
-<p>This project contains a collection of Amazon EKS cluster patterns implemented in Terraform that demonstrate how fast and easy it is for customers to adopt <a href="https://aws.amazon.com/eks/">Amazon EKS</a>. The patterns can be used by AWS customers, partners, and internal AWS teams to configure and manage complete EKS clusters that are fully bootstrapped with the operational software that is needed to deploy and operate workloads.</p>
+<p>This project contains a collection of Amazon EKS cluster patterns implemented in Terraform that
+demonstrate how fast and easy it is for customers to adopt <a href="https://aws.amazon.com/eks/">Amazon EKS</a>.
+The patterns can be used by AWS customers, partners, and internal AWS teams to configure and manage
+complete EKS clusters that are fully bootstrapped with the operational software that is needed to
+deploy and operate workloads.</p>
 <h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>Kubernetes is a powerful and extensible container orchestration technology that allows you to deploy and manage containerized applications at scale. The extensible nature of Kubernetes also allows you to use a wide range of popular open-source tools, commonly referred to as add-ons, in Kubernetes clusters. With such a large number of tooling and design choices available however, building a tailored EKS cluster that meets your application’s specific needs can take a significant amount of time. It involves integrating a wide range of open-source tools and AWS services and requires deep expertise in AWS and Kubernetes.</p>
-<p>AWS customers have asked for examples that demonstrate how to integrate the landscape of Kubernetes tools and make it easy for them to provision complete, opinionated EKS clusters that meet specific application requirements. Customers can use EKS Blueprints to configure and deploy purpose built EKS clusters, and start onboarding workloads in days, rather than months.</p>
-<h2 id="core-concepts">Core Concepts<a class="headerlink" href="#core-concepts" title="Permanent link">&para;</a></h2>
-<p>This document provides a high level overview of the Core Concepts that are embedded in EKS Blueprints. For the purposes of this document, we will assume the reader is familiar with Git, Docker, Kubernetes and AWS.</p>
-<table>
-<thead>
-<tr>
-<th>Concept</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="..#cluster">Cluster</a></td>
-<td>An Amazon EKS Cluster and associated worker groups.</td>
-</tr>
-<tr>
-<td><a href="..#add-on">Add-on</a></td>
-<td>Operational software that provides key functionality to support your Kubernetes applications.</td>
-</tr>
-<tr>
-<td><a href="..#team">Team</a></td>
-<td>A logical grouping of IAM identities that have access to Kubernetes resources.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="cluster">Cluster<a class="headerlink" href="#cluster" title="Permanent link">&para;</a></h3>
-<p>A <code>cluster</code> is simply an EKS cluster. EKS Blueprints provides for customizing the compute options you leverage with your <code>clusters</code>. The framework currently supports <code>EC2</code>, <code>Fargate</code> and <code>BottleRocket</code> instances. It also supports managed and self-managed node groups.</p>
-<p>We rely on <a href="https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest"><code>terraform-aws-modules/eks/aws</code></a> to configure <code>clusters</code>. See our <a href="../getting-started.md">examples</a> to see how <code>terraform-aws-modules/eks/aws</code> is configured for EKS Blueprints.</p>
-<h3 id="add-on">Add-on<a class="headerlink" href="#add-on" title="Permanent link">&para;</a></h3>
-<p><code>Add-ons</code> allow you to configure the operational tools that you would like to deploy into your EKS cluster. When you configure <code>add-ons</code> for a <code>cluster</code>, the <code>add-ons</code> will be provisioned at deploy time by leveraging the Terraform Helm provider. Add-ons can deploy both Kubernetes specific resources and AWS resources needed to support add-on functionality.</p>
-<p>For example, the <code>metrics-server</code> add-on only deploys the Kubernetes manifests that are needed to run the Kubernetes Metrics Server. By contrast, the <code>aws-load-balancer-controller</code> add-on deploys both Kubernetes YAML, in addition to creating resources via AWS APIs that are needed to support the AWS Load Balancer Controller functionality.</p>
-<p>EKS Blueprints allows you to manage your add-ons directly via Terraform (by leveraging the Terraform Helm provider) or via GitOps with ArgoCD. See our <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints-addons/main/"><code>Add-ons</code></a> documentation page for detailed information.</p>
-<h3 id="team">Team<a class="headerlink" href="#team" title="Permanent link">&para;</a></h3>
-<p><code>Teams</code> allow you to configure the logical grouping of users that have access to your EKS clusters, in addition to the access permissions they are granted.</p>
-<p>See our <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints-teams"><code>Teams</code></a> documentation page for detailed information.</p>
+<p>Kubernetes is a powerful and extensible container orchestration technology that allows you to deploy
+and manage containerized applications at scale. The extensible nature of Kubernetes also allows you
+to use a wide range of popular open-source tools in Kubernetes clusters. However, With the wide array
+of tooling and design choices available, configuring an EKS cluster that meets your organization’s
+specific needs can take a significant amount of time. It involves integrating a wide range of
+open-source tools and AWS services as well as expertise in AWS and Kubernetes.</p>
+<p>AWS customers have asked for patterns that demonstrate how to integrate the landscape of Kubernetes
+tools and make it easy for them to provision complete, opinionated EKS clusters that meet specific
+application requirements. Customers can utilize EKS Blueprints to configure and deploy purpose built
+EKS clusters, and start onboarding workloads in days, rather than months.</p>
+<h2 id="consumption">Consumption<a class="headerlink" href="#consumption" title="Permanent link">&para;</a></h2>
+<p>EKS Blueprints for Terraform has been designed to be consumed in the following manners:</p>
+<ol>
+<li>Reference: Users can refer to the patterns and snippets provided to help guide them to their desired
+solution. Users will typically view how the pattern or snippet is configured to achieve the desired
+end result and then replicate that in their environment.</li>
+<li>Copy &amp; Paste: Users can copy and paste the patterns and snippets into their own environment, using
+EKS Blueprints as the starting point for their implementation. Users can then adapt the initial pattern
+to customize it to their specific needs.</li>
+</ol>
+<p>EKS Blueprints for Terraform are not intended to be consumed as-is directly from this project. In
+"Terraform speak" - the patterns and snippets provided in this repository are not designed to be consumed
+as a Terraform module. Therefore, the patterns provided only contain <code>variables</code> when certain information
+is required to deploy the pattern (i.e. - a Route53 hosted zone ID, or ACM certificate ARN) and generally
+use local variables. If you wish to deploy the patterns into a different region or with other changes, it
+is recommended that you make those modifications locally before applying the pattern. EKS Blueprints for
+Terraform will not expose variables and outputs in the same manner that Terraform modules follow in
+order to avoid confusion around the consumption model.</p>
+<p>However, we do have a number of Terraform modules that were created to support
+EKS Blueprints in addition to the community hosted modules. Please see the respective projects for more
+details on the modules constructed to support EKS Blueprints for Terraform; those projects are listed
+<a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/#related-projects">below</a>.</p>
+<ul>
+<li><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints-addon"><code>terraform-aws-eks-blueprint-addon</code></a> -
+(Note the singular form) Terraform module which can provision an addon using the Terraform
+<code>helm_release</code> resource in addition to an IAM role for service account (IRSA).</li>
+<li><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints-addons"><code>terraform-aws-eks-blueprint-addons</code></a> -
+(Note the plural form) Terraform module which can provision multiple addons; both EKS addons
+using the <code>aws_eks_addon</code> resource as well as Helm chart based addons using the
+<a href="https://github.com/aws-ia/terraform-aws-eks-blueprints-addon"><code>terraform-aws-eks-blueprint-addon</code></a> module.</li>
+<li><a href="https://github.com/aws-ia/terraform-aws-eks-blueprints-teams"><code>terraform-aws-eks-blueprints-teams</code></a> -
+Terraform module that creates Kubernetes multi-tenancy resources and configurations, allowing both
+administrators and application developers to access only the resources which they are responsible for.</li>
+</ul>
+<h3 id="related-projects">Related Projects<a class="headerlink" href="#related-projects" title="Permanent link">&para;</a></h3>
+<p>In addition to the supporting EKS Blueprints Terraform modules listed above, there are a number of
+related projects that users should be aware of:</p>
+<ol>
+<li>
+<p>GitOps</p>
+<ul>
+<li><a href="https://github.com/aws-ia/terraform-aws-eks-ack-addons"><code>terraform-aws-eks-ack-addons</code></a> -
+  Terraform module to deploy ACK controllers onto EKS clusters</li>
+<li><a href="https://github.com/awslabs/crossplane-on-eks"><code>crossplane-on-eks</code></a> - Crossplane Blueprints
+is an open source repo to bootstrap Amazon EKS clusters and provision AWS resources using a
+library of Crossplane Compositions (XRs) with Composite Resource Definitions (XRDs).</li>
+</ul>
+</li>
+<li>
+<p>Data on EKS</p>
+<ul>
+<li><a href="https://github.com/awslabs/data-on-eks"><code>data-on-eks</code></a> - A collection of blueprints intended
+for data workloads on Amazon EKS.</li>
+<li><a href="https://github.com/aws-ia/terraform-aws-eks-data-addons"><code>terraform-aws-eks-data-addons</code></a> -
+Terraform module to deploy multiple addons that are specific to data workloads on EKS clusters.</li>
+</ul>
+</li>
+<li>
+<p>Observability Accelerator</p>
+<ul>
+<li><a href="https://github.com/aws-observability/terraform-aws-observability-accelerator"><code>terraform-aws-observability-accelerator</code></a> -
+A set of opinionated modules to help you set up observability for your AWS environments with
+AWS-managed observability services such as Amazon Managed Service for Prometheus, Amazon
+Managed Grafana, AWS Distro for OpenTelemetry (ADOT) and Amazon CloudWatch</li>
+</ul>
+</li>
+</ol>
+<h2 id="terraform-caveats">Terraform Caveats<a class="headerlink" href="#terraform-caveats" title="Permanent link">&para;</a></h2>
+<p>EKS Blueprints for Terraform does not intend to teach users the recommended practices for Terraform
+nor does it offer guidance on how users should structure their Terraform projects. The patterns
+provided are intended to show users how they can achieve a defined architecture or configuration
+in a way that they can quickly and easily get up and running to start interacting with that pattern.
+Therefore, there are a few caveats users should be aware of when using EKS Blueprints for Terraform:</p>
+<ol>
+<li>
+<p>We recognize that most users will already have an existing VPC in a separate Terraform workspace.
+However, the patterns provided come complete with a VPC to ensure a stable, deployable example that
+has been tested and validated.</p>
+</li>
+<li>
+<p>Hashicorp <a href="https://github.com/hashicorp/terraform/issues/27785#issuecomment-780017326">does not recommend providing computed values in provider blocks</a>
+, which means that the cluster configuration should be defined in a workspace separate from the resources
+deployed onto the cluster (i.e. - addons). However, to simplify the pattern experience, we have defined
+everything in one workspace and provided instructions to provision the patterns using a targeted
+apply approach. Users are encouraged to investigate a Terraform project structure that suites their needs;
+EKS Blueprints for Terraform does not have an opinion in this matter and will defer to Hashicorp's guidance.</p>
+</li>
+<li>
+<p>Patterns are not intended to be consumed in-place in the same manner that one would consume a module.
+Therefore, we do not provide variables and outputs to expose various levels of configuration for the examples.
+Users can modify the pattern locally after cloning to suite their requirements.</p>
+</li>
+<li>
+<p>Please see the <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/faq/#provider-authentication">FAQ section</a>
+on authenticating Kubernetes based providers (<code>kubernetes</code>, <code>helm</code>, <code>kubectl</code>) to Amazon EKS clusters
+regarding the use of static tokens versus dynamic tokens using the <code>awscli</code>.</p>
+</li>
+</ol>
 <h2 id="support-feedback">Support &amp; Feedback<a class="headerlink" href="#support-feedback" title="Permanent link">&para;</a></h2>
-<p>EKS Blueprints for Terraform is maintained by AWS Solution Architects. It is not part of an AWS service and support is provided best-effort by the EKS Blueprints community. To post feedback, submit feature ideas, or report bugs, please use the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/issues">Issues section</a> of this GitHub repo. If you are interested in contributing to EKS Blueprints, see the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/CONTRIBUTING.md">Contribution guide</a>.</p>
+<p>EKS Blueprints for Terraform is maintained by AWS Solution Architects. It is not part of an AWS
+service and support is provided as a best-effort by the EKS Blueprints community. To provide feedback,
+please use the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/issues">issues templates</a>
+provided. If you are interested in contributing to EKS Blueprints, see the
+<a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/CONTRIBUTING.md">Contribution guide</a>.</p>
 <h2 id="security">Security<a class="headerlink" href="#security" title="Permanent link">&para;</a></h2>
 <p>See <a href="../CONTRIBUTING.md#security-issue-notifications">CONTRIBUTING</a> for more information.</p>
 <h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">&para;</a></h2>
