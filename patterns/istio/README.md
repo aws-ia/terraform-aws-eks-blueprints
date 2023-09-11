@@ -168,41 +168,41 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
     apiVersion: v1
     kind: Service
     metadata:
-    name: helloworld
-    labels:
+      name: helloworld
+      labels:
         app: helloworld
         service: helloworld
     spec:
-    ports:
-    - port: 5000
+      ports:
+      - port: 5000
         name: http
-    selector:
+      selector:
         app: helloworld
     ---
     apiVersion: apps/v1
     kind: Deployment
     metadata:
-    name: helloworld-v1
-    labels:
+      name: helloworld-v1
+      labels:
         app: helloworld
         version: v1
     spec:
-    replicas: 1
-    selector:
+      replicas: 1
+      selector:
         matchLabels:
-        app: helloworld
-        version: v1
-    template:
+          app: helloworld
+          version: v1
+      template:
         metadata:
-        labels:
+          labels:
             app: helloworld
             version: v1
         spec:
-        containers:
-        - name: helloworld
+          containers:
+          - name: helloworld
             image: docker.io/istio/examples-helloworld-v1
             resources:
-            requests:
+              requests:
                 cpu: "100m"
             imagePullPolicy: IfNotPresent #Always
             ports:
@@ -225,51 +225,51 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
     apiVersion: v1
     kind: ServiceAccount
     metadata:
-    name: sleep
+      name: sleep
     ---
     apiVersion: v1
     kind: Service
     metadata:
-    name: sleep
-    labels:
+      name: sleep
+      labels:
         app: sleep
         service: sleep
     spec:
-    ports:
-    - port: 80
+      ports:
+      - port: 80
         name: http
-    selector:
+      selector:
         app: sleep
     ---
     apiVersion: apps/v1
     kind: Deployment
     metadata:
-    name: sleep
+      name: sleep
     spec:
-    replicas: 1
-    selector:
+      replicas: 1
+      selector:
         matchLabels:
-        app: sleepdocs/blueprints/argocd.md
-    template:
+          app: sleep
+      template:
         metadata:
-        labels:
+          labels:
             app: sleep
         spec:
-        terminationGracePeriodSeconds: 0
-        serviceAccountName: sleep
-        containers:
-        - name: sleep
+          terminationGracePeriodSeconds: 0
+          serviceAccountName: sleep
+          containers:
+          - name: sleep
             image: curlimages/curl
             command: ["/bin/sleep", "infinity"]
             imagePullPolicy: IfNotPresent
             volumeMounts:
             - mountPath: /etc/sleep/tls
-            name: secret-volume
-        volumes:
-        - name: secret-volume
+              name: secret-volume
+          volumes:
+          - name: secret-volume
             secret:
-            secretName: sleep-secret
-            optional: true
+              secretName: sleep-secret
+              optional: true
     EOF
 
     kubectl apply -f sleep.yaml -n sample
