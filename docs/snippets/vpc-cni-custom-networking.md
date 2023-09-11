@@ -7,7 +7,7 @@ Custom networking addresses the IP exhaustion issue by assigning the node and Po
 Since the primary ENI is not used by custom networking, the maximum number of Pods you can run on a node is lower. The host network Pods continue to use IP address assigned to the primary ENI. Additionally, the primary ENI is used to handle source network translation and route Pods traffic outside the node.
 
 - [Documentation](https://docs.aws.amazon.com/eks/latest/userguide/cni-custom-network.html)
-- [Best Practices Guide](https://aws.github.io/aws-eks-best-practices/reliability/docs/networkmanagement/#cni-custom-networking)
+- [Best Practices Guide](https://aws.github.io/aws-eks-best-practices/networking/custom-networking/)
 
 ## VPC CNI Configuration
 
