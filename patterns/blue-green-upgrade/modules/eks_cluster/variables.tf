@@ -3,60 +3,23 @@ variable "aws_region" {
   type        = string
   default     = "us-west-2"
 }
+
 variable "environment_name" {
   description = "The name of Environment Infrastructure stack, feel free to rename it. Used for cluster and VPC names."
   type        = string
   default     = "eks-blueprint"
 }
 
-variable "service_name" {
-  description = "The name of the Suffix for the stack name"
+variable "ingress_type" {
   type        = string
-  default     = "blue"
-}
-
-variable "cluster_version" {
-  description = "The Version of Kubernetes to deploy"
-  type        = string
-  default     = "1.25"
-}
-
-variable "gitops_addons_org" {
-  type        = string
-  description = "Git repository org/user contains for addons"
-  default     = "https://github.com/gitops-bridge-dev"
-}
-variable "gitops_addons_repo" {
-  type        = string
-  description = "Git repository contains for addons"
-  default     = "gitops-bridge-argocd-control-plane-template"
-}
-variable "gitops_addons_basepath" {
-  type        = string
-  description = "Git repository base path for addons"
-  default     = ""
-}
-variable "gitops_addons_path" {
-  type        = string
-  description = "Git repository path for addons"
-  default     = "bootstrap/control-plane/addons"
-}
-variable "gitops_addons_revision" {
-  type        = string
-  description = "Git repository revision/branch/ref for addons"
-  default     = "HEAD"
+  description = "Type of ingress to uses (alb | nginx | ...). this parameter will be sent to arocd via gitops bridge"
+  default     = "alb"
 }
 
 variable "hosted_zone_name" {
   type        = string
   description = "Route53 domain for the cluster."
   default     = ""
-}
-
-variable "ingress_type" {
-  type        = string
-  description = "Type of ingress to uses (alb | nginx | ...). this parameter will be sent to arocd via gitops bridge"
-  default     = "alb"
 }
 
 variable "eks_admin_role_name" {
@@ -71,10 +34,42 @@ variable "aws_secret_manager_git_private_ssh_key_name" {
   default     = "github-blueprint-ssh-key"
 }
 
+variable "argocd_secret_manager_name_suffix" {
+  type        = string
+  description = "Name of secret manager secret for ArgoCD Admin UI Password"
+  default     = "argocd-admin-secret"
+}
+
+variable "gitops_addons_org" {
+  type        = string
+  description = "Git repository org/user contains for addons"
+  default     = "git@github.com:aws-samples"
+}
+variable "gitops_addons_repo" {
+  type        = string
+  description = "Git repository contains for addons"
+  default     = "eks-blueprints-add-ons"
+}
+variable "gitops_addons_basepath" {
+  type        = string
+  description = "Git repository base path for addons"
+  default     = "argocd/"
+}
+variable "gitops_addons_path" {
+  type        = string
+  description = "Git repository path for addons"
+  default     = "argocd/bootstrap/control-plane/addons"
+}
+variable "gitops_addons_revision" {
+  type        = string
+  description = "Git repository revision/branch/ref for addons"
+  default     = "HEAD"
+}
+
 variable "gitops_workloads_org" {
   type        = string
   description = "Git repository org/user contains for workloads"
-  default     = "https://github.com/aws-samples"
+  default     = "git@github.com:aws-samples"
 }
 
 variable "gitops_workloads_repo" {
@@ -95,26 +90,32 @@ variable "gitops_workloads_revision" {
   default     = "main"
 }
 
-variable "argocd_secret_manager_name_suffix" {
+variable "service_name" {
+  description = "The name of the Suffix for the stack name"
   type        = string
-  description = "Name of secret manager secret for ArgoCD Admin UI Password"
-  default     = "argocd-admin-secret"
+  default     = "blue"
+}
+
+variable "cluster_version" {
+  description = "The Version of Kubernetes to deploy"
+  type        = string
+  default     = "1.25"
 }
 
 variable "argocd_route53_weight" {
   description = "The Route53 weighted records weight for argocd application"
   type        = string
-  default     = "0"
+  default     = "100"
 }
 
 variable "ecsfrontend_route53_weight" {
   description = "The Route53 weighted records weight for ecsdeo-frontend application"
   type        = string
-  default     = "0"
+  default     = "100"
 }
 
 variable "route53_weight" {
   description = "The Route53 weighted records weight for others application"
   type        = string
-  default     = "0"
+  default     = "100"
 }

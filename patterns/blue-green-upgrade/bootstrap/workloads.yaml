@@ -1,4 +1,3 @@
----
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
@@ -25,7 +24,7 @@ spec:
                 - path: '{{.metadata.annotations.gitops_workloads_path}}/*'
   template:
     metadata:
-      name: 'bootstrap-workload-{{.name}}'
+      name: 'bootstrap-workloads-{{.name}}'
     spec:
       project: default
       sources:
@@ -34,7 +33,7 @@ spec:
           ref: values
           path: '{{.metadata.annotations.gitops_workloads_path}}'
           helm:
-            releaseName: 'bootstrap-workload-{{.name}}'
+            releaseName: 'bootstrap-workloads-{{.name}}'
             ignoreMissingValueFiles: true
             values: |
               "account": "{{.metadata.annotations.aws_account_id}}"

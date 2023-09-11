@@ -1,21 +1,118 @@
 #!/bin/bash
-set -e
+#set -e
+#set -x
 
-# First tear down Applications
-kubectl delete provisioners.karpenter.sh --all # this is ok if no addons are deployed on Karpenter.
-kubectl delete application bootstrap-workloads -n argocd || (echo "error deleting bootstrap-workloads application" && exit -1)
-kubectl delete application -l argocd.argoproj.io/application-set-name=eks-blueprints-workloads -n argocd || (echo "error deleting workloads application"; exit -1)
+#export ARGOCD_PWD=$(aws secretsmanager get-secret-value --secret-id argocd-admin-secret.eks-blueprint --query SecretString --output text --region eu-west-3)
+#export ARGOCD_OPTS="--port-forward --port-forward-namespace argocd --grpc-web"
+#argocd login --port-forward --username admin --password $ARGOCD_PWD --insecure
 
-#kubectl delete application ecsdemo -n argocd || (echo "error deleting ecsdemo application" && exit -1)
 
-#namespace geordie was stuck
-#kubectl get applications  -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | xargs -I {} kubectl patch application {}  --type=json -p='[{"op": "remove", "path": "/metadata/finalizers"}]'
+function delete_argocd_appset_except_pattern() {
+  # List all your app to destroy
+  # Get the list of ArgoCD applications and store them in an array
+  #applicationsets=($(kubectl get applicationset -A -o json | jq -r '.items[] | .metadata.namespace + "/" + .metadata.name'))
+  applicationsets=($(kubectl get applicationset -A -o json | jq -r '.items[] | .metadata.name'))
 
-for x in $(kubectl get namespaces -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}') ; do
-  echo $x
-  kubectl get -n $x ingress  -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | xargs -I {} kubectl patch -n $x ingress {}  --type=json -p='[{"op": "remove", "path": "/metadata/finalizers"}]'
+  # Iterate over the applications and delete them
+  for app in "${applicationsets[@]}"; do
+    if [[ ! "$app" =~ $1 ]]; then
+      echo "Deleting applicationset: $app"
+      kubectl delete ApplicationSet -n argocd $app --cascade=orphan
+    else
+        echo "Skipping deletion of applicationset: $app (contain '$1')"
+    fi
+  done
+
+  #Wait for everything to delete
+  continue_process=true
+  while $continue_process; do
+    # Get the list of ArgoCD applications and store them in an array
+    applicationsets=($(kubectl get applicationset -A -o json | jq -r '.items[] | .metadata.name'))
+
+    still_have_application=false
+    # Iterate over the applications and delete them
+    for app in "${applicationsets[@]}"; do
+      if [[ ! "$app" =~ $1 ]]; then
+        echo "applicationset $app still exists"
+        still_have_application=true
+      fi
+    done
+    sleep 5
+    continue_process=$still_have_application
+  done
+  echo "No more applicationsets except $1"
+}
+
+function delete_argocd_app_except_pattern() {
+  # List all your app to destroy
+  # Get the list of ArgoCD applications and store them in an array
+  #applications=($(argocd app list -o name))
+  applications=($(kubectl get application -A -o json | jq -r '.items[] | .metadata.name'))
+
+  # Iterate over the applications and delete them
+  for app in "${applications[@]}"; do
+    if [[ ! "$app" =~ $1 ]]; then
+      echo "Deleting application: $app"
+      kubectl -n argocd patch app $app  -p '{"metadata": {"finalizers": ["resources-finalizer.argocd.argoproj.io"]}}' --type merge
+      kubectl -n argocd delete app $app
+    else
+      echo "Skipping deletion of application: $app (contain '$1')"
+    fi
+  done
+
+  # Wait for everything to delete
+  continue_process=true
+  while $continue_process; do
+    # Get the list of ArgoCD applications and store them in an array
+    #applications=($(argocd app list -o name))
+    applications=($(kubectl get application -A -o json | jq -r '.items[] | .metadata.name'))
+
+    still_have_application=false
+    # Iterate over the applications and delete them
+    for app in "${applications[@]}"; do
+      if [[ ! "$app" =~ $1 ]]; then
+        echo "application $app still exists"
+        still_have_application=true
+      fi
+    done
+    sleep 5
+    continue_process=$still_have_application
+  done
+  echo "No more applications except $1"
+}
+
+function wait_for_deletion() {
+  # Loop until all Ingress resources are deleted
+  while true; do
+  # Get the list of Ingress resources in the specified namespace
+  ingress_list=$(kubectl get ingress -A -o json)
+
+  # Check if there are no Ingress resources left
+  if [[ "$(echo "$ingress_list" | jq -r '.items | length')" -eq 0 ]]; then
+    echo "All Ingress resources have been deleted."
+    break
+  fi
+  echo "waiting for deletion"
+  # Wait for a while before checking again (adjust the sleep duration as needed)
+  sleep 5
 done
+}
 
-#Error from server (InternalError): Internal error occurred: failed calling webhook "vingress.elbv2.k8s.aws": failed to call webhook: Post "https://aws-load-balancer-webhook-service.kube-system.svc:443/validate-networking-v1-ingress?timeout=10s": no endpoints available for service "aws-load-balancer-webhook-service"
+echo "#1. First, we deactivate application sets"
+delete_argocd_appset_except_pattern "^nomatch"
+
+echo "#2. No we delete all app except addons"
+delete_argocd_app_except_pattern "^.*addon-|^.*argo-cd|^bootstrap-addons|^team-platform"
+
+echo "#3. Wait for objects to be deleted"
+wait_for_deletion
+
+
+echo "#4. Then we delete all addons except LBC and external-dns"
+delete_argocd_app_except_pattern "^.*load-balancer|^.*external-dns|^.*argo-cd|^bootstrap-addons"
+
+#delete_argocd_app_except_pattern "^.*load-balancer"
 
 echo "Tear Down Applications OK"
+
+set +x
