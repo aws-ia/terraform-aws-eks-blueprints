@@ -51,7 +51,7 @@ and makes the use of low-cost Spot Instances viable for game hosting
 This [blog](https://aws.amazon.com/blogs/gametech/introducing-the-gamelift-fleetiq-adapter-for-agones/) walks
 through the details of deploying EKS Cluster using eksctl and deploy Agones with GameLift FleetIQ.
 
-## Cleanup
+## Destroy
 
 To clean up your environment, destroy the Terraform modules and resources in reverse order:
 
