@@ -22,11 +22,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
     ```sh
     kubectl create -f https://raw.githubusercontent.com/googleforgames/agones/release-1.32.0/examples/simple-game-server/gameserver.yaml
     kubectl get gs
-    ```
 
-    The output should look similar to below
-
-    ```sh
     NAME                       STATE   ADDRESS         PORT   NODE                                        AGE
     simple-game-server-7r6jr   Ready   34.243.345.22   7902   ip-10-1-23-233.eu-west-1.compute.internal   11h
     ```

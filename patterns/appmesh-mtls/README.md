@@ -68,7 +68,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
     tls.key:  1675 bytes
     ```
 
-### Example AppMesh mTLS
+### Example
 
 The full documentation for this example can be found [here](https://docs.aws.amazon.com/app-mesh/latest/userguide/getting-started-kubernetes.html#configure-app-mesh).
 
