@@ -12,6 +12,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
     ```sh
     kubectl get nodes
+
     NAME                                                STATUS   ROLES    AGE   VERSION
     fargate-ip-10-0-17-17.us-west-2.compute.internal    Ready    <none>   25m   v1.26.3-eks-f4dc2c0
     fargate-ip-10-0-20-244.us-west-2.compute.internal   Ready    <none>   71s   v1.26.3-eks-f4dc2c0
@@ -26,6 +27,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
     ```sh
     kubectl get pods -A
+
     NAMESPACE       NAME                                            READY   STATUS    RESTARTS   AGE
     app-2048        app-2048-65bd744dfb-7g9rx                       1/1     Running   0          2m34s
     app-2048        app-2048-65bd744dfb-nxcbm                       1/1     Running   0          2m34s
