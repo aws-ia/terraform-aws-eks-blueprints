@@ -5,26 +5,9 @@ These examples demonstrates how to deploy an Amazon EKS cluster that is deployed
 - [IAM Identity Center (successor to AWS Single Sign-On)](https://aws.amazon.com/iam/identity-center/)
 - [Okta](https://www.okta.com/)
 
-## Prerequisites
-
-Ensure that you have the following tools installed locally:
-
-1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
-3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
-
 ## Deploy
 
-To provision these examples, run the following commands:
-
-```sh
-terraform init
-terraform apply -target module.vpc
-terraform apply -target module.eks
-terraform apply
-```
-
-Enter `yes` at command prompt to apply
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
 
 ## Validate
 
@@ -32,8 +15,4 @@ Enter `yes` at command prompt to apply
 
 ## Destroy
 
-To teardown and remove the resources created in these examples:
-
-```sh
-terraform destroy -auto-approve
-```
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.
