@@ -26,15 +26,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - example_path: examples/agones-game-controller
-          - example_path: examples/fargate-serverless
-          - example_path: examples/argocd
-          - example_path: examples/ipv4-prefix-delegation
-          - example_path: examples/ipv6-eks-cluster
-          - example_path: examples/karpenter
-          - example_path: examples/multi-tenancy-with-teams
-          - example_path: examples/stateful
-          - example_path: examples/vpc-cni-custom-networking
+          - example_path: patterns/agones-game-controller
+          - example_path: patterns/fargate-serverless
+          - example_path: patterns/argocd
+          - example_path: patterns/ipv6-eks-cluster
+          - example_path: patterns/karpenter
+          - example_path: patterns/multi-tenancy-with-teams
+          - example_path: patterns/stateful
 
     steps:
       - name: Harden Runner
