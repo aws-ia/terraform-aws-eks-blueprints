@@ -7,7 +7,7 @@ This pattern demonstrates Cilium configured in CNI chaining mode with VPC CNI an
 
 ## Deploy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
 

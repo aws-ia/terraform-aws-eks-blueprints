@@ -32,25 +32,25 @@ The AWS resources created by the script are detailed bellow:
     - ecsdemo-nodejs
     - ecsdemo-crystal
   - Kubernetes addon deployed with Terraform
-    - [ArgoCD](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/add-ons/argocd/)
+    - ArgoCD
       - to deploy additional addons
       - to deploy our demo workloads
       - configured to be exposed through a service loadbalancer (for testing)
-  - [EKS Managed Add-ons](https://aws-ia.github.io/terraform-aws-eks-blueprints/add-ons/managed-add-ons/)
+  - EKS Managed Add-ons
     - CoreDNS
     - Kube Proxy
     - VPC CNI
     - EBS CSI Driver
   - Kubernetes addon deployed half with terraform and half with dedicated [ArgoCD addon repo](https://github.com/aws-samples/eks-blueprints-add-ons)
-    - [Metrics server](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/add-ons/metrics-server/)
-    - [Vertical Pod Autoscaler](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/add-ons/vpa/)
-    - [Aws Load Balancer Controller](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/add-ons/aws-load-balancer-controller/)
-    - [Karpenter](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/add-ons/karpenter/)
-    - [External DNS](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/add-ons/external-dns/)
+    - Metrics server
+    - Vertical Pod Autoscaler
+    - Aws Load Balancer Controller
+    - Karpenter
+    - External DNS
       - configured to target the environment infrastructure Hosted Zone
-    - [AWS for FluentBit](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/add-ons/aws-for-fluent-bit/) to centralized logs in Amazon CloudWatch
-    - [AWS CloudWatch Metrics](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/add-ons/aws-cloudwatch-metrics/) to enable [Container Insight](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html)
-    - [Kubecost](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/add-ons/kubecost/)
+    - AWS for FluentBit
+    - AWS CloudWatch Metrics
+    - Kubecost
   - Kubernetes workloads (defined in a dedicated github repository repository)
     - team-burnham
       - burnham-ingress configured with weighted target groups
