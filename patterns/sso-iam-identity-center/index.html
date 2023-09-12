@@ -1095,7 +1095,7 @@
 <h1 id="iam-identity-center-single-sign-on-for-amazon-eks-cluster">IAM Identity Center Single Sign-On for Amazon EKS Cluster<a class="headerlink" href="#iam-identity-center-single-sign-on-for-amazon-eks-cluster" title="Permanent link">&para;</a></h1>
 <p>This example demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, integrated with IAM Identity Center (former AWS SSO) as an the Identity Provider (IdP) for Single Sign-On (SSO) authentication. The configuration for authorization is done using Kubernetes Role-based access control (RBAC).</p>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
 <p>After the <code>terraform</code> commands are executed sucessfully, check if the newly created users are active.</p>
 <p>To do that use the link provided in the email invite - <em>if you added a valid email address for your users either in your Terraform code or IAM Identity Center Console</em> - or go to the <a href="https://console.aws.amazon.com/singlesignon/home/">IAM Identity Center Console</a>, in the <em>Users</em> dashboard on the left hand side menu, then select the user, and click on <em>Reset password</em> button on the upper right corner. Choose the option to <em>Generate a one-time password and share the password with the user</em>.</p>
@@ -1180,7 +1180,7 @@
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </span></code></pre></div>
-<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
 <!-- END INCLUDE -->
 
 <!-- END INCLUDE -->
