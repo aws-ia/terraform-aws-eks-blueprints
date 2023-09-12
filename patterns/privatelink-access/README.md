@@ -7,7 +7,7 @@ for further details on  `AWS PrivateLink`.
 
 ## Deploy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
 
@@ -23,17 +23,17 @@ be `ok`.
 COMMAND="curl -ks https://9A85B21811733524E3ABCDFEA8714642.gr7.us-west-2.eks.amazonaws.com/readyz"
 
 COMMAND_ID=$(aws ssm send-command --region us-west-2 \
---document-name "AWS-RunShellScript" \
---parameters "commands=[$COMMAND]" \
---targets "Key=instanceids,Values=i-0a45eff73ba408575" \
---query 'Command.CommandId' \
---output text)
+   --document-name "AWS-RunShellScript" \
+   --parameters "commands=[$COMMAND]" \
+   --targets "Key=instanceids,Values=i-0a45eff73ba408575" \
+   --query 'Command.CommandId' \
+   --output text)
 
 aws ssm get-command-invocation --region us-west-2 \
---command-id $COMMAND_ID \
---instance-id i-0a45eff73ba408575 \
---query 'StandardOutputContent' \
---output text
+   --command-id $COMMAND_ID \
+   --instance-id i-0a45eff73ba408575 \
+   --query 'StandardOutputContent' \
+   --output text
 ```
 
 ### Cluster Access
@@ -48,10 +48,11 @@ add additional entries to the ConfigMap; we can only access the cluster from
 within the private network of the cluster's VPC or from the client VPC using AWS
 PrivateLink access.
 
-> :warning: The "client" EC2 instance provided and copying of AWS credentials to
- that instance are merely for demonstration purposes only. Please consider
- alternate methods of network access such as AWS Client VPN to provide more
- secure access.
+!!! info
+      The "client" EC2 instance provided and copying of AWS credentials to
+      that instance are merely for demonstration purposes only. Please consider
+      alternate methods of network access such as AWS Client VPN to provide more
+      secure access.
 
 Perform the following steps to access the cluster with `kubectl` from the
 provided "client" EC2 instance.
@@ -75,8 +76,9 @@ instance.
 3. Once logged in, export the following environment variables from the output
 of step #1:
 
-   > :exclamation: The session credentials are only valid for 1 hour; you can
-   adjust the session duration in the command provided in step #1
+    !!! warning
+        The session credentials are only valid for 1 hour; you can
+        adjust the session duration in the command provided in step #1
 
    ```sh
    export AWS_ACCESS_KEY_ID=XXXX
@@ -97,8 +99,6 @@ access to the cluster:
    kubectl get pods -A
    ```
 
-   The test succeeded if you see an output like the one shown below:
-
    ```text
    NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
    kube-system   aws-node-4f8g8             1/1     Running   0          1m
@@ -109,4 +109,6 @@ access to the cluster:
 
 ## Destroy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.
+{%
+   include-markdown "../../docs/_partials/destroy.md"
+%}

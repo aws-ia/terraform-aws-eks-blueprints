@@ -21,7 +21,7 @@ through the details of deploying EKS Cluster using eksctl and deploy Agones with
 
 ## Deploy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
 
@@ -30,7 +30,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
     ```sh
     kubectl create -f https://raw.githubusercontent.com/googleforgames/agones/release-1.32.0/examples/simple-game-server/gameserver.yaml
     kubectl get gs
+    ```
 
+    ```text
     NAME                       STATE   ADDRESS         PORT   NODE                                        AGE
     simple-game-server-7r6jr   Ready   34.243.345.22   7902   ip-10-1-23-233.eu-west-1.compute.internal   11h
     ```
@@ -39,6 +41,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
     ```sh
     echo -n "UDP test - Hello EKS Blueprints!" | nc -u 34.243.345.22 7902
+    ```
+
+    ```text
     Hello EKS Blueprints!
     ACK: Hello EKS Blueprints!
     EXIT
@@ -47,10 +52,12 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
 ## Destroy
 
-First, delete the resources created by the sample game server:
+Delete the resources created by the sample game server first:
 
 ```sh
 kubectl -n default delete gs --all || true
 ```
 
-Finally, see [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.
+{%
+   include-markdown "../../docs/_partials/destroy.md"
+%}

@@ -7,7 +7,7 @@ This pattern demonstrates Cilium configured in CNI chaining mode with VPC CNI an
 
 ## Deploy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
 
@@ -15,8 +15,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
     ```sh
     kubectl get ds -n kube-system
+    ```
 
-    # Output should look something similar
+    ```text
     NAME         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
     aws-node     2         2         2       2            2           <none>                   156m
     cilium       2         2         2       2            2           kubernetes.io/os=linux   152m
@@ -33,8 +34,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
     ```sh
     cilium status | grep Encryption
+    ```
 
-    # Output should look something similar
+    ```text
     Encryption:              Wireguard   [cilium_wg0 (Pubkey: b2krgbHgaCsVWALMnFLiS/RekhhcE36PXEjQ7T8+mW0=, Port: 51871, Peers: 1)]
     ```
 
@@ -49,9 +51,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
     ```sh
     tcpdump -A -c 40 -i cilium_wg0 | grep "Welcome to nginx!"
+    ```
 
-    # Output should look similar below
-
+    ```text
     <title>Welcome to nginx!</title>
     <h1>Welcome to nginx!</h1>
     ...
@@ -63,4 +65,6 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
 ## Destroy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.
+{%
+   include-markdown "../../docs/_partials/destroy.md"
+%}

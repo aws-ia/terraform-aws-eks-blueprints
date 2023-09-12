@@ -14,7 +14,7 @@ concepts.
 
 ## Deploy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ### Observability Add-ons
 
@@ -37,8 +37,6 @@ done
     kubectl get pods,svc -n istio-system
     kubectl get pods,svc -n istio-ingress
     ```
-
-    Output:
 
     ```text
     NAME                             READY   STATUS    RESTARTS   AGE
@@ -68,16 +66,19 @@ done
 
     ```sh
     helm list -n istio-system
-    helm list -n istio-ingress
     ```
-
-    Output:
 
     ```text
     NAME           NAMESPACE    REVISION UPDATED                              STATUS   CHART          APP VERSION
     istio-base    istio-system 1        2023-07-19 11:05:41.599921 -0700 PDT deployed base-1.18.1    1.18.1
     istiod        istio-system 1        2023-07-19 11:05:48.087616 -0700 PDT deployed istiod-1.18.1  1.18.1
+    ```
 
+    ```sh
+    helm list -n istio-ingress
+    ```
+
+    ```text
     NAME           NAMESPACE    REVISION UPDATED                              STATUS   CHART          APP VERSION
     istio-ingress istio-ingress 1        2023-07-19 11:06:03.41609 -0700 PDT  deployed gateway-1.18.1 1.18.1
     ```
@@ -111,8 +112,6 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
     kubectl create namespace sample
     kubectl label namespace sample istio-injection=enabled
     ```
-
-    Output:
 
     ```text
     namespace/sample created
@@ -169,8 +168,6 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
 
     kubectl apply -f helloworld.yaml -n sample
     ```
-
-    Output:
 
     ```text
     service/helloworld created
@@ -234,8 +231,6 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
     kubectl apply -f sleep.yaml -n sample
     ```
 
-    Output:
-
     ```text
     serviceaccount/sleep created
     service/sleep created
@@ -247,8 +242,6 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
     ```sh
     kubectl get pods -n sample
     ```
-
-    Output:
 
     ```text
     NAME                           READY   STATUS    RESTARTS   AGE
@@ -264,8 +257,6 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
         app=sleep -o jsonpath='{.items[0].metadata.name}')" \
         -- curl -v helloworld.sample:5000/hello
     ```
-
-    Output:
 
     ```text
     * processing: helloworld.sample:5000/hello
@@ -293,4 +284,6 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
 
 ## Destroy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.
+{%
+   include-markdown "../../docs/_partials/destroy.md"
+%}

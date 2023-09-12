@@ -38,7 +38,7 @@ In addition, the following properties are configured on the nodegroup volumes:
 
 ## Deploy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
 
@@ -50,7 +50,9 @@ The following command will update the `kubeconfig` on your local machine and all
 
     ```sh
     kubectl get storageclasses
+    ```
 
+    ```text
     NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
     efs             efs.csi.aws.com         Delete          Immediate              true                   2m19s
     gp2             kubernetes.io/aws-ebs   Delete          WaitForFirstConsumer   false                  15m
@@ -65,8 +67,10 @@ The following command will update the `kubeconfig` on your local machine and all
 
     # Show NVMe volumes attached
     sudo nvme list
+    ```
 
-    # Output should look like below - notice the model is `EC2 NVMe Instance Storage` for the instance store
+    ```text
+    # Notice the model is `EC2 NVMe Instance Storage` for the instance store
     Node             SN                   Model                                    Namespace Usage                      Format           FW Rev
     ---------------- -------------------- ---------------------------------------- --------- -------------------------- ---------------- --------
     /dev/nvme0n1     vol0546d3c3b0af0bf6d Amazon Elastic Block Store               1          25.77  GB /  25.77  GB    512   B +  0 B   1.0
@@ -91,8 +95,10 @@ The following command will update the `kubeconfig` on your local machine and all
 
     # Show NVMe volumes attached
     sudo nvme list
+    ```
 
-    # Output should look like below, where /dev/nvme0n1 is the root volume and /dev/nvme1n1 is the second, additional volume
+    ```text
+    # /dev/nvme0n1 is the root volume and /dev/nvme1n1 is the second, additional volume
     Node             SN                   Model                                    Namespace Usage                      Format           FW Rev
     ---------------- -------------------- ---------------------------------------- --------- -------------------------- ---------------- --------
     /dev/nvme0n1     vol0cd37dab9e4a5c184 Amazon Elastic Block Store               1          68.72  GB /  68.72  GB    512   B +  0 B   1.0
@@ -103,7 +109,9 @@ The following command will update the `kubeconfig` on your local machine and all
 
     ```sh
     df /var/lib/containerd/
+    ```
 
+    ```text
     # Output should look like below, which shows the directory on the
     # /dev/nvme1n1 volume and NOT on /dev/nvme0n1 (root volume)
     Filesystem     1K-blocks    Used Available Use% Mounted on
@@ -112,7 +120,9 @@ The following command will update the `kubeconfig` on your local machine and all
 
     ```sh
     df /run/containerd/
+    ```
 
+    ```text
     # Output should look like below, which shows the directory on the
     # /dev/nvme1n1 volume and NOT on /dev/nvme0n1 (root volume)
     Filesystem     1K-blocks    Used Available Use% Mounted on
@@ -121,4 +131,6 @@ The following command will update the `kubeconfig` on your local machine and all
 
 ## Destroy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.
+{%
+   include-markdown "../../docs/_partials/destroy.md"
+%}

@@ -24,7 +24,7 @@ If you are using an existing VPC then you may need to ensure these endpoints are
 
 ## Deploy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
 
@@ -32,7 +32,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
     ```sh
     kubectl get nodes
+    ```
 
+    ```text
     NAME                                        STATUS   ROLES    AGE     VERSION
     ip-10-0-19-90.us-west-2.compute.internal    Ready    <none>   8m34s   v1.26.2-eks-a59e1f0
     ip-10-0-44-110.us-west-2.compute.internal   Ready    <none>   8m36s   v1.26.2-eks-a59e1f0
@@ -43,7 +45,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
     ```sh
     kubectl get pods -A
+    ```
 
+    ```text
     NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
     kube-system   aws-node-jvn9x             1/1     Running   0          7m42s
     kube-system   aws-node-mnjlf             1/1     Running   0          7m45s
@@ -57,4 +61,6 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
 ## Destroy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.
+{%
+   include-markdown "../../docs/_partials/destroy.md"
+%}

@@ -4,7 +4,7 @@ This pattern demonstrates an EKS cluster that utilizes IPv6 networking.
 
 ## Deploy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
 
@@ -12,7 +12,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
     ```sh
     kubectl get pods -A -o wide
+    ```
 
+    ```text
     # Output should look like below
     NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE     IP                                       NODE                                        NOMINATED NODE   READINESS GATES
     kube-system   aws-node-bhd2s             1/1     Running   0          3m5s    2600:1f13:6c4:a703:ecf8:3ac1:76b0:9303   ip-10-0-10-183.us-west-2.compute.internal   <none>           <none>
@@ -27,7 +29,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
     ```sh
     kubectl nodes -A -o wide
+    ```
 
+    ```text
     # Output should look like below
     NAME                                        STATUS   ROLES    AGE     VERSION               INTERNAL-IP                              EXTERNAL-IP   OS-IMAGE         KERNEL-VERSION                 CONTAINER-RUNTIME
     ip-10-0-10-183.us-west-2.compute.internal   Ready    <none>   4m57s   v1.24.7-eks-fb459a0   2600:1f13:6c4:a703:ecf8:3ac1:76b0:9303   <none>        Amazon Linux 2   5.4.226-129.415.amzn2.x86_64   containerd://1.6.6
@@ -36,4 +40,6 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
 ## Destroy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.
+{%
+   include-markdown "../../docs/_partials/destroy.md"
+%}

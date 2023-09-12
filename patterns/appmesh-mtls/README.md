@@ -4,7 +4,7 @@ This pattern demonstrates how to deploy and configure AppMesh mTLS on an Amazon 
 
 ## Deploy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
 
@@ -12,7 +12,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
     ```sh
     kubectl get pods -A
+    ```
 
+    ```text
     NAMESPACE          NAME                                       READY   STATUS    RESTARTS   AGE
     appmesh-system     appmesh-controller-7c98b87bdc-q6226        1/1     Running   0          4h44m
     cert-manager       cert-manager-87f5555f-tcxj7                1/1     Running   0          4h43m
@@ -31,22 +33,31 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
     ```sh
     kubectl get awspcaclusterissuers.awspca.cert-manager.io
+    ```
+
+    ```text
     NAME           AGE
     appmesh-mtls   4h42m
     ```
 
-3. List & describe the example certificate:
+3. List the example certificates; the example certificate should be shown:
 
     ```sh
     kubectl get certificate
+    ```
 
+    ```text
     NAME      READY   SECRET                  AGE
     example   True    example-clusterissuer   4h12m
     ```
 
+4. Describe the example certificate:
+
     ```sh
     kubectl describe secret example-clusterissuer
+    ```
 
+    ```text
     Name:         example-clusterissuer
     Namespace:    default
     Labels:       controller.cert-manager.io/fao=true
@@ -76,7 +87,9 @@ The full documentation for this example can be found [here](https://docs.aws.ama
 
     ```sh
     kubectl label namespaces default appmesh.k8s.aws/sidecarInjectorWebhook=enabled
+    ```
 
+    ```text
     namespace/default labeled
     ```
 
@@ -226,6 +239,9 @@ The full documentation for this example can be found [here](https://docs.aws.ama
 
     ```sh
     kubectl get pods
+    ```
+
+    ```text
     NAME                                   READY   STATUS    RESTARTS   AGE
     appmesh-example-app-6946cdbdf6-gnxww   2/2     Running   0          54s
     appmesh-example-app-6946cdbdf6-nx9tg   2/2     Running   0          54s
@@ -233,10 +249,13 @@ The full documentation for this example can be found [here](https://docs.aws.ama
 
 ## Destroy
 
-First, delete the example resources created via `kubectl`:
+Delete the example resources created first:
 
 ```sh
-kubectl delete all --all # delete all example resources created in the default namespace
+# delete all example resources created in the default namespace
+kubectl delete all --all
 ```
 
-Finally, see [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.
+{%
+   include-markdown "../../docs/_partials/destroy.md"
+%}

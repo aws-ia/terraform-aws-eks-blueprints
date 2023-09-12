@@ -1,6 +1,6 @@
 # Amazon EKS Cluster w/ ArgoCD
 
-This example shows how to provision an EKS cluster that uses ArgoCD for application deployments.
+This pattern demonstrates an EKS cluster that uses ArgoCD for application deployments.
 
 - [Documentation](https://argo-cd.readthedocs.io/en/stable/)
 - [EKS Blueprints Add-ons Repo](https://github.com/aws-samples/eks-blueprints-add-ons)
@@ -8,7 +8,7 @@ This example shows how to provision an EKS cluster that uses ArgoCD for applicat
 
 ## Deploy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
 
@@ -16,7 +16,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
 
     ```sh
     kubectl get pods -A
+    ```
 
+    ```text
     NAMESPACE        NAME                                                        READY   STATUS    RESTARTS          AGE
     argo-rollouts    argo-rollouts-5d47ccb8d4-854s6                              1/1     Running   0                 23h
     argo-rollouts    argo-rollouts-5d47ccb8d4-srjk9                              1/1     Running   0                 23h
@@ -110,4 +112,6 @@ First, we need to ensure that the ArgoCD applications are properly cleaned up fr
 - Deleting the apps using `argocd` [cli](https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/#deletion-using-argocd)
 - Deleting the apps using `kubectl` following [ArgoCD guidance](https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/#deletion-using-kubectl)
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.
+{%
+   include-markdown "../../docs/_partials/destroy.md"
+%}
