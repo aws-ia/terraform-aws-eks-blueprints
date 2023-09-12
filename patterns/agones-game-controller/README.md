@@ -11,6 +11,14 @@ Built on AWS global computing infrastructure, GameLift helps deliver high-perfor
 low-cost game servers while dynamically scaling your resource usage to meet worldwide player demand. See below
 for more information on how GameLift FleetIQ can be integrated with Agones deployed on Amazon EKS.
 
+Amazon GameLift FleetIQ optimizes the use of low-cost Spot Instances for cloud-based game hosting with Amazon EC2.
+With GameLift FleetIQ, you can work directly with your hosting resources in Amazon EC2 and Auto Scaling while
+taking advantage of GameLift optimizations to deliver inexpensive, resilient game hosting for your players
+and makes the use of low-cost Spot Instances viable for game hosting
+
+This [blog](https://aws.amazon.com/blogs/gametech/introducing-the-gamelift-fleetiq-adapter-for-agones/) walks
+through the details of deploying EKS Cluster using eksctl and deploy Agones with GameLift FleetIQ.
+
 ## Deploy
 
 See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites required to deploy this pattern and steps to deploy.
@@ -37,27 +45,12 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-st
     ACK: EXIT
     ```
 
-### Additional
-
-Amazon GameLift FleetIQ optimizes the use of low-cost Spot Instances for cloud-based game hosting with Amazon EC2.
-With GameLift FleetIQ, you can work directly with your hosting resources in Amazon EC2 and Auto Scaling while
-taking advantage of GameLift optimizations to deliver inexpensive, resilient game hosting for your players
-and makes the use of low-cost Spot Instances viable for game hosting
-
-This [blog](https://aws.amazon.com/blogs/gametech/introducing-the-gamelift-fleetiq-adapter-for-agones/) walks
-through the details of deploying EKS Cluster using eksctl and deploy Agones with GameLift FleetIQ.
-
 ## Destroy
 
-To clean up your environment, destroy the Terraform modules and resources in reverse order:
+First, delete the resources created by the sample game server:
 
 ```sh
 kubectl -n default delete gs --all || true
-terraform destroy -target="helm_release.agones" -auto-approve
-terraform destroy -target="module.eks_blueprints_addons" -auto-approve
-terraform destroy -target="module.eks" -auto-approve
-terraform destroy -auto-approve
 ```
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for more details
-on cleaning up resources correctly.
+Finally, see [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.

@@ -233,15 +233,10 @@ The full documentation for this example can be found [here](https://docs.aws.ama
 
 ## Destroy
 
-To clean up your environment, destroy the Terraform modules and resources in reverse order:
+First, delete the example resources created via `kubectl`:
 
 ```sh
 kubectl delete all --all # delete all example resources created in the default namespace
-terraform destroy -target="module.appmesh_addon" -auto-approve
-terraform destroy -target="module.eks_blueprints_addons" -auto-approve
-terraform destroy -target="module.eks" -auto-approve
-terraform destroy -auto-approve
 ```
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for more details
-on cleaning up resources correctly.
+Finally, see [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy) for steps to clean up the resources created.
