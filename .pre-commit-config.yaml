@@ -29,7 +29,6 @@ repos:
           - '--args=--only=terraform_naming_convention'
           - '--args=--only=terraform_required_version'
           - '--args=--only=terraform_required_providers'
-          - '--args=--only=terraform_standard_module_structure'
           - '--args=--only=terraform_workspace_remote'
       - id: terraform_validate
         exclude: (docs|modules)
