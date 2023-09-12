@@ -45,7 +45,7 @@ order to avoid confusion around the consumption model.
 However, we do have a number of Terraform modules that were created to support
 EKS Blueprints in addition to the community hosted modules. Please see the respective projects for more
 details on the modules constructed to support EKS Blueprints for Terraform; those projects are listed
-[below](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/#related-projects).
+[below](https://aws-ia.github.io/terraform-aws-eks-blueprints/#related-projects).
 
 - [`terraform-aws-eks-blueprint-addon`](https://github.com/aws-ia/terraform-aws-eks-blueprints-addon) -
 (Note the singular form) Terraform module which can provision an addon using the Terraform
@@ -108,7 +108,7 @@ EKS Blueprints for Terraform does not have an opinion in this matter and will de
 Therefore, we do not provide variables and outputs to expose various levels of configuration for the examples.
 Users can modify the pattern locally after cloning to suite their requirements.
 
-4. Please see the [FAQ section](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/faq/#provider-authentication)
+4. Please see the [FAQ section](https://aws-ia.github.io/terraform-aws-eks-blueprints/faq/#provider-authentication)
 on authenticating Kubernetes based providers (`kubernetes`, `helm`, `kubectl`) to Amazon EKS clusters
 regarding the use of static tokens versus dynamic tokens using the `awscli`.
 

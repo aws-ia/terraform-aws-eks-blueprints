@@ -4,7 +4,7 @@ This example demonstrates how to deploy an Amazon EKS cluster that is deployed o
 
 ## Deploy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
 

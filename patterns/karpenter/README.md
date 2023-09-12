@@ -4,7 +4,7 @@ This pattern demonstrates how to provision Karpenter on a serverless cluster (se
 
 ## Deploy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
 

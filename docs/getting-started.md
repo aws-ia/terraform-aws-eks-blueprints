@@ -12,7 +12,7 @@ Ensure that you have installed the following tools locally:
 
 ## Deploy
 
-1. For consuming EKS Blueprints, please see the [Consumption](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/#consumption) section. For exploring and trying out the patterns provided, please
+1. For consuming EKS Blueprints, please see the [Consumption](https://aws-ia.github.io/terraform-aws-eks-blueprints/#consumption) section. For exploring and trying out the patterns provided, please
 clone the project locally to quickly get up and running with a pattern. After cloning the project locally, `cd` into the pattern
 directory of your choice.
 
@@ -28,7 +28,7 @@ directory of your choice.
     For patterns that deviate from this general flow, see the pattern's respective `REAMDE.md` for more details.
 
     !!! info "Terraform targetted apply"
-        Please see the [Terraform Caveats](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/#terraform-caveats) section for details on the use of targeted Terraform apply's
+        Please see the [Terraform Caveats](https://aws-ia.github.io/terraform-aws-eks-blueprints/#terraform-caveats) section for details on the use of targeted Terraform apply's
 
 3. Once all of the resources have successfully been provisioned, the following command can be used to update the `kubeconfig`
 on your local machine and allow you to interact with your EKS Cluster using `kubectl`.
