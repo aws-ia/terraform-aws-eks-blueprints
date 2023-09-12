@@ -10,28 +10,28 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/v4-to-v5/addons/">
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../cluster/">
       
       
-        <link rel="next" href="../patterns/agones-game-controller/">
+        <link rel="next" href="../teams/">
       
       
-      <link rel="icon" href="../images/colored-logo.png">
+      <link rel="icon" href="../../images/colored-logo.png">
       <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.3.1">
     
     
       
-        <title>Getting Started - Amazon EKS Blueprints for Terraform</title>
+        <title>Addons - Amazon EKS Blueprints for Terraform</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.046329b4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.046329b4.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.85d0ee34.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.85d0ee34.min.css">
       
       
   
@@ -91,7 +91,7 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -116,7 +116,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#getting-started" class="md-skip">
+        <a href="#migrate-to-eks-blueprints-addons-module" class="md-skip">
           Skip to content
         </a>
       
@@ -136,9 +136,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+    <a href="../.." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
       
-  <img src="../images/white-logo.png" alt="logo">
+  <img src="../../images/white-logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -155,7 +155,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Getting Started
+              Addons
             
           </span>
         </div>
@@ -241,9 +241,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+    <a href="../.." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
       
-  <img src="../images/white-logo.png" alt="logo">
+  <img src="../../images/white-logo.png" alt="logo">
 
     </a>
     Amazon EKS Blueprints for Terraform
@@ -269,7 +269,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -286,29 +286,9 @@
       
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Getting Started
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -317,47 +297,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    Destroy
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -402,7 +341,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/agones-game-controller/" class="md-nav__link">
+      <a href="../../patterns/agones-game-controller/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -422,7 +361,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/appmesh-mtls/" class="md-nav__link">
+      <a href="../../patterns/appmesh-mtls/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -442,7 +381,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/argocd/" class="md-nav__link">
+      <a href="../../patterns/argocd/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -462,7 +401,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/blue-green-upgrade/" class="md-nav__link">
+      <a href="../../patterns/blue-green-upgrade/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -482,7 +421,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/elastic-fabric-adapter/" class="md-nav__link">
+      <a href="../../patterns/elastic-fabric-adapter/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -502,7 +441,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/external-secrets/" class="md-nav__link">
+      <a href="../../patterns/external-secrets/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -522,7 +461,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/fargate-serverless/" class="md-nav__link">
+      <a href="../../patterns/fargate-serverless/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -542,7 +481,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/fully-private-cluster/" class="md-nav__link">
+      <a href="../../patterns/fully-private-cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -562,7 +501,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/ipv6-eks-cluster/" class="md-nav__link">
+      <a href="../../patterns/ipv6-eks-cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -582,7 +521,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/istio-multi-cluster/" class="md-nav__link">
+      <a href="../../patterns/istio-multi-cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -602,7 +541,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/istio/" class="md-nav__link">
+      <a href="../../patterns/istio/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -622,7 +561,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/karpenter/" class="md-nav__link">
+      <a href="../../patterns/karpenter/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -642,7 +581,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/multi-tenancy-with-teams/" class="md-nav__link">
+      <a href="../../patterns/multi-tenancy-with-teams/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -662,7 +601,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/private-public-ingress/" class="md-nav__link">
+      <a href="../../patterns/private-public-ingress/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -682,7 +621,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/privatelink-access/" class="md-nav__link">
+      <a href="../../patterns/privatelink-access/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -702,7 +641,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/sso-iam-identity-center/" class="md-nav__link">
+      <a href="../../patterns/sso-iam-identity-center/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -722,7 +661,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/sso-okta/" class="md-nav__link">
+      <a href="../../patterns/sso-okta/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -742,7 +681,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/stateful/" class="md-nav__link">
+      <a href="../../patterns/stateful/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -762,7 +701,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/tls-with-aws-pca-issuer/" class="md-nav__link">
+      <a href="../../patterns/tls-with-aws-pca-issuer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -782,7 +721,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/wireguard-with-cilium/" class="md-nav__link">
+      <a href="../../patterns/wireguard-with-cilium/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -843,7 +782,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../snippets/ipv4-prefix-delegation/" class="md-nav__link">
+      <a href="../../snippets/ipv4-prefix-delegation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -863,7 +802,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../snippets/vpc-cni-custom-networking/" class="md-nav__link">
+      <a href="../../snippets/vpc-cni-custom-networking/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -888,17 +827,19 @@
       
   
   
+    
+  
   
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
@@ -911,7 +852,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             v4 to v5 Migration
@@ -924,7 +865,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../v4-to-v5/motivation/" class="md-nav__link">
+      <a href="../motivation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -944,7 +885,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../v4-to-v5/cluster/" class="md-nav__link">
+      <a href="../cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -962,9 +903,29 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../v4-to-v5/addons/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Addons
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -973,6 +934,122 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#this-guide-is-under-active-development" class="md-nav__link">
+    ⚠️ This guide is under active development.
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#list-of-backwards-incompatible-changes" class="md-nav__link">
+    List of backwards incompatible changes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-changes" class="md-nav__link">
+    Additional changes
+  </a>
+  
+    <nav class="md-nav" aria-label="Additional changes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added" class="md-nav__link">
+    Added
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modified" class="md-nav__link">
+    Modified
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed" class="md-nav__link">
+    Removed
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variable-and-output-changes" class="md-nav__link">
+    Variable and output changes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upgrade-migrations" class="md-nav__link">
+    Upgrade Migrations
+  </a>
+  
+    <nav class="md-nav" aria-label="Upgrade Migrations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#before-v4x-example" class="md-nav__link">
+    Before - v4.x Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#after-v5x-example" class="md-nav__link">
+    After - v5.x Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diff-of-before-vs-after" class="md-nav__link">
+    Diff of Before vs After
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-move-commands" class="md-nav__link">
+    State Move Commands
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -984,7 +1061,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../v4-to-v5/teams/" class="md-nav__link">
+      <a href="../teams/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1011,7 +1088,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../faq/" class="md-nav__link">
+      <a href="../../faq/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1051,23 +1128,98 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites
+  <a href="#this-guide-is-under-active-development" class="md-nav__link">
+    ⚠️ This guide is under active development.
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
+  <a href="#list-of-backwards-incompatible-changes" class="md-nav__link">
+    List of backwards incompatible changes
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    Destroy
+  <a href="#additional-changes" class="md-nav__link">
+    Additional changes
   </a>
+  
+    <nav class="md-nav" aria-label="Additional changes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added" class="md-nav__link">
+    Added
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modified" class="md-nav__link">
+    Modified
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed" class="md-nav__link">
+    Removed
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variable-and-output-changes" class="md-nav__link">
+    Variable and output changes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upgrade-migrations" class="md-nav__link">
+    Upgrade Migrations
+  </a>
+  
+    <nav class="md-nav" aria-label="Upgrade Migrations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#before-v4x-example" class="md-nav__link">
+    Before - v4.x Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#after-v5x-example" class="md-nav__link">
+    After - v5.x Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diff-of-before-vs-after" class="md-nav__link">
+    Diff of Before vs After
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-move-commands" class="md-nav__link">
+    State Move Commands
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1089,74 +1241,86 @@
   
 
 
-<h1 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h1>
-<p>This getting started guide will help you deploy your first pattern using EKS Blueprints.</p>
-<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<p>Ensure that you have installed the following tools locally:</p>
-<ul>
-<li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">awscli</a></li>
-<li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
-<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
-</ul>
-<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
+<h1 id="migrate-to-eks-blueprints-addons-module">Migrate to EKS Blueprints Addons Module<a class="headerlink" href="#migrate-to-eks-blueprints-addons-module" title="Permanent link">&para;</a></h1>
+<p>Please consult the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/v4-to-v5/example">docs/v4-to-v5/example</a> directory for reference configurations. If you find a bug, please open an issue with supporting configuration to reproduce.</p>
+<h4 id="this-guide-is-under-active-development">⚠️ This guide is under active development.<a class="headerlink" href="#this-guide-is-under-active-development" title="Permanent link">&para;</a></h4>
+<h2 id="list-of-backwards-incompatible-changes">List of backwards incompatible changes<a class="headerlink" href="#list-of-backwards-incompatible-changes" title="Permanent link">&para;</a></h2>
+<p>-</p>
+<h2 id="additional-changes">Additional changes<a class="headerlink" href="#additional-changes" title="Permanent link">&para;</a></h2>
+<h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
+<p>-</p>
+<h3 id="modified">Modified<a class="headerlink" href="#modified" title="Permanent link">&para;</a></h3>
+<p>-</p>
+<h3 id="removed">Removed<a class="headerlink" href="#removed" title="Permanent link">&para;</a></h3>
+<p>-</p>
+<h3 id="variable-and-output-changes">Variable and output changes<a class="headerlink" href="#variable-and-output-changes" title="Permanent link">&para;</a></h3>
 <ol>
 <li>
-<p>For consuming EKS Blueprints, please see the <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/#consumption">Consumption</a> section. For exploring and trying out the patterns provided, please
-clone the project locally to quickly get up and running with a pattern. After cloning the project locally, <code>cd</code> into the pattern
-directory of your choice.</p>
+<p>Removed variables:</p>
+<p>-</p>
 </li>
 <li>
-<p>To provision the pattern, the typical steps of execution are as follows:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.vpc&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-auto-approve
-</span></code></pre></div>
-<p>For patterns that deviate from this general flow, see the pattern's respective <code>REAMDE.md</code> for more details.</p>
-<div class="admonition info">
-<p class="admonition-title">Terraform targetted apply</p>
-<p>Please see the <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/#terraform-caveats">Terraform Caveats</a> section for details on the use of targeted Terraform apply's</p>
-</div>
+<p>Renamed variables:</p>
+<p>-</p>
 </li>
 <li>
-<p>Once all of the resources have successfully been provisioned, the following command can be used to update the <code>kubeconfig</code>
-on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code>.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;REGION&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER_NAME&gt;
-</span></code></pre></div>
-<div class="admonition info">
-<p class="admonition-title">Pattern Terraform outputs</p>
-<p>Most examples will output the <code>aws eks update-kubeconfig ...</code> command as part of the Terraform apply output to simplify this process for users</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Private clusters</p>
-<p>Clusters that do not enable the clusters public endpoint will require users to access the cluster from within the VPC.
-For these patterns, a sample EC2 or other means are provided to demonstrate how to access those clusters privately</p>
-</div>
-<p>and without exposing the public endpoint. Please see the respective pattern's <code>README.md</code> for more details.</p>
+<p>Added variables:</p>
+<p>-</p>
 </li>
 <li>
-<p>Once you have updated your <code>kubeconfig</code>, you can verify that you are able to interact with your cluster by running the following command:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
-</span></code></pre></div>
-<p>This should return a list of the node(s) running in the cluster created. If any errors are encountered, please re-trace the steps above
-and consult the pattern's <code>README.md</code> for more details on any additional/specific steps that may be required.</p>
+<p>Removed outputs:</p>
+<p>-</p>
+</li>
+<li>
+<p>Renamed outputs:</p>
+<p>-</p>
+</li>
+<li>
+<p>Added outputs:</p>
+<p>-</p>
 </li>
 </ol>
-<h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
-<p>To teardown and remove the resources created in the pattern, the typical steps of execution are as follows:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+<h2 id="upgrade-migrations">Upgrade Migrations<a class="headerlink" href="#upgrade-migrations" title="Permanent link">&para;</a></h2>
+<h3 id="before-v4x-example">Before - v4.x Example<a class="headerlink" href="#before-v4x-example" title="Permanent link">&para;</a></h3>
+<div class="language-hcl highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;eks_blueprints_addons&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.32.1&quot;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="na">eks_cluster_id</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">module.eks.cluster_name</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="na">eks_cluster_endpoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.eks.cluster_endpoint</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="na">eks_oidc_provider</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">module.eks.oidc_provider</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="na">eks_cluster_version</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">module.eks.cluster_version</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1">  # TODO</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">}</span>
 </span></code></pre></div>
-<div class="admonition danger">
-<p class="admonition-title">Resources created outside of Terraform</p>
-<p>Depending on the pattern, some resources may have been created that Terraform is not aware of that will cause issues
-when attempting to clean up the pattern. For example, Karpenter is responsible for creating additional EC2 instances
-to satisfy the pod scheduling requirements. These instances will not be cleaned up by Terraform and will need to be
-de-provisioned <em>BEFORE</em> attempting to <code>terraform destroy</code>. This is why it is important that the addons, or any resources
-provisioned onto the cluster are cleaned up first. Please see the respective pattern's <code>README.md</code> for more
-details.</p>
-</div>
+<h3 id="after-v5x-example">After - v5.x Example<a class="headerlink" href="#after-v5x-example" title="Permanent link">&para;</a></h3>
+<div class="language-hcl highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;eks_blueprints_addons&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="na">source</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws-ia/eks-blueprints-addons/aws&quot;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;~&gt; 1.0&quot;</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="na">cluster_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.eks.cluster_name</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="na">cluster_endpoint</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">module.eks.cluster_endpoint</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="na">cluster_version</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.eks.cluster_version</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="na">oidc_provider_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.eks.oidc_provider_arn</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1">  # TODO</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="diff-of-before-vs-after">Diff of Before vs After<a class="headerlink" href="#diff-of-before-vs-after" title="Permanent link">&para;</a></h3>
+<div class="language-diff highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>module &quot;eks_blueprints_addons&quot; {
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="gd">-  source = &quot;github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.32.1&quot;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="gi">+  source  = &quot;aws-ia/eks-blueprints-addons/aws&quot;</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="gi">+  version = &quot;~&gt; 1.0&quot;</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w"> </span> # TODO
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>}
+</span></code></pre></div>
+<h3 id="state-move-commands">State Move Commands<a class="headerlink" href="#state-move-commands" title="Permanent link">&para;</a></h3>
+<p>In conjunction with the changes above, users can elect to move their external capacity provider(s) under this module using the following move command. Command is shown using the values from the example shown above, please update to suit your configuration names:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>terraform<span class="w"> </span>state<span class="w"> </span>mv<span class="w"> </span><span class="s1">&#39;xxx&#39;</span><span class="w"> </span><span class="s1">&#39;yyy&#39;</span>
+</span></code></pre></div>
 
 
 
@@ -1198,10 +1362,10 @@ details.</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs.sticky"], "search": "../assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs.sticky"], "search": "../../assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.dff1b7c8.min.js"></script>
+      <script src="../../assets/javascripts/bundle.dff1b7c8.min.js"></script>
       
     
   </body>

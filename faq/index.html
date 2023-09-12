@@ -10,13 +10,11 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/faq/">
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../v4-to-v5/teams/">
       
-      
-        <link rel="next" href="../patterns/agones-game-controller/">
       
       
       <link rel="icon" href="../images/colored-logo.png">
@@ -24,7 +22,7 @@
     
     
       
-        <title>Getting Started - Amazon EKS Blueprints for Terraform</title>
+        <title>FAQ - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -116,7 +114,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#getting-started" class="md-skip">
+        <a href="#frequently-asked-questions" class="md-skip">
           Skip to content
         </a>
       
@@ -155,7 +153,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Getting Started
+              FAQ
             
           </span>
         </div>
@@ -286,29 +284,9 @@
       
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Getting Started
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -317,47 +295,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    Destroy
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1009,9 +946,29 @@
       
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../faq/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    FAQ
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1020,6 +977,74 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#timeouts-on-destroy" class="md-nav__link">
+    Timeouts on destroy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#leaked-cloudwatch-logs-group" class="md-nav__link">
+    Leaked CloudWatch Logs Group
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provider-authentication" class="md-nav__link">
+    Provider Authentication
+  </a>
+  
+    <nav class="md-nav" aria-label="Provider Authentication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#static-token-example" class="md-nav__link">
+    Static Token Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exec-example" class="md-nav__link">
+    exec() Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unable-to-destroy-namespace-created-by-terraform" class="md-nav__link">
+    Unable to destroy namespace created by Terraform
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1051,22 +1076,49 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites
+  <a href="#timeouts-on-destroy" class="md-nav__link">
+    Timeouts on destroy
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
+  <a href="#leaked-cloudwatch-logs-group" class="md-nav__link">
+    Leaked CloudWatch Logs Group
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    Destroy
+  <a href="#provider-authentication" class="md-nav__link">
+    Provider Authentication
+  </a>
+  
+    <nav class="md-nav" aria-label="Provider Authentication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#static-token-example" class="md-nav__link">
+    Static Token Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exec-example" class="md-nav__link">
+    exec() Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unable-to-destroy-namespace-created-by-terraform" class="md-nav__link">
+    Unable to destroy namespace created by Terraform
   </a>
   
 </li>
@@ -1089,74 +1141,145 @@
   
 
 
-<h1 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h1>
-<p>This getting started guide will help you deploy your first pattern using EKS Blueprints.</p>
-<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<p>Ensure that you have installed the following tools locally:</p>
+<h1 id="frequently-asked-questions">Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permanent link">&para;</a></h1>
+<h2 id="timeouts-on-destroy">Timeouts on destroy<a class="headerlink" href="#timeouts-on-destroy" title="Permanent link">&para;</a></h2>
+<p>Customers who are deleting their environments using <code>terraform destroy</code> may see timeout errors when VPCs are being deleted. This is due to a known issue in the <a href="https://github.com/aws/amazon-vpc-cni-k8s/issues/1223#issue-704536542">vpc-cni</a></p>
+<p>Customers may face a situation where ENIs that were attached to EKS managed nodes (same may apply to self-managed nodes) are not being deleted by the VPC CNI as expected which leads to IaC tool failures, such as:</p>
 <ul>
-<li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">awscli</a></li>
-<li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
-<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
+<li>ENIs are left on subnets</li>
+<li>EKS managed security group which is attached to the ENI can’t be deleted by EKS</li>
 </ul>
-<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
+<p>The current recommendation is to execute cleanup in the following order:</p>
+<ol>
+<li>delete all pods that have been created in the cluster.</li>
+<li>add delay/ wait</li>
+<li>delete VPC CNI</li>
+<li>delete nodes</li>
+<li>delete cluster</li>
+</ol>
+<h2 id="leaked-cloudwatch-logs-group">Leaked CloudWatch Logs Group<a class="headerlink" href="#leaked-cloudwatch-logs-group" title="Permanent link">&para;</a></h2>
+<p>Sometimes, customers may see the CloudWatch Log Group for EKS cluster being created is left behind after their blueprint has been destroyed using <code>terraform destroy</code>. This happens because even after terraform deletes the CW log group, there’s still logs being processed behind the scene by AWS EKS and service continues to write logs after recreating the log group using the EKS service IAM role which users don't have control over. This results in a terraform failure when the same blueprint is being recreated due to the existing log group left behind.</p>
+<p>There are two options here:</p>
 <ol>
 <li>
-<p>For consuming EKS Blueprints, please see the <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/#consumption">Consumption</a> section. For exploring and trying out the patterns provided, please
-clone the project locally to quickly get up and running with a pattern. After cloning the project locally, <code>cd</code> into the pattern
-directory of your choice.</p>
+<p>During cluster creation set <code>var.create_cloudwatch_log_group</code> to <code>false</code>. This will tell the EKS module to not create the log group, but instead let the EKS service create the log group. This means that upon cluster deletion the log group will be left behind but there will not be Terraform failures if you re-create the same cluster as Terraform does not manage the log group creation/deletion anymore.</p>
 </li>
 <li>
-<p>To provision the pattern, the typical steps of execution are as follows:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.vpc&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-auto-approve
-</span></code></pre></div>
-<p>For patterns that deviate from this general flow, see the pattern's respective <code>REAMDE.md</code> for more details.</p>
-<div class="admonition info">
-<p class="admonition-title">Terraform targetted apply</p>
-<p>Please see the <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/#terraform-caveats">Terraform Caveats</a> section for details on the use of targeted Terraform apply's</p>
-</div>
-</li>
-<li>
-<p>Once all of the resources have successfully been provisioned, the following command can be used to update the <code>kubeconfig</code>
-on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code>.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;REGION&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER_NAME&gt;
-</span></code></pre></div>
-<div class="admonition info">
-<p class="admonition-title">Pattern Terraform outputs</p>
-<p>Most examples will output the <code>aws eks update-kubeconfig ...</code> command as part of the Terraform apply output to simplify this process for users</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Private clusters</p>
-<p>Clusters that do not enable the clusters public endpoint will require users to access the cluster from within the VPC.
-For these patterns, a sample EC2 or other means are provided to demonstrate how to access those clusters privately</p>
-</div>
-<p>and without exposing the public endpoint. Please see the respective pattern's <code>README.md</code> for more details.</p>
-</li>
-<li>
-<p>Once you have updated your <code>kubeconfig</code>, you can verify that you are able to interact with your cluster by running the following command:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
-</span></code></pre></div>
-<p>This should return a list of the node(s) running in the cluster created. If any errors are encountered, please re-trace the steps above
-and consult the pattern's <code>README.md</code> for more details on any additional/specific steps that may be required.</p>
+<p>During cluster creation set <code>var.create_cloudwatch_log_group</code> to <code>true</code>. This will tell the EKS module to create the log group via Terraform. The EKS service will detect the log group and will start forwarding the logs for the log types <a href="https://github.com/terraform-aws-modules/terraform-aws-eks/blob/6d7245621f97bb8e38642a9e40ddce3a32ff9efb/variables.tf#L35">enabled</a>. Upon deletion terraform will delete the log group but depending upon any un-forwarded logs, the EKS service may recreate log group using the service role. This will result in terraform errors if the same blueprint is recreated. To proceed, manually delete the log group using the console or cli rerun the <code>terraform destroy</code>.</p>
 </li>
 </ol>
-<h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
-<p>To teardown and remove the resources created in the pattern, the typical steps of execution are as follows:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+<h2 id="provider-authentication">Provider Authentication<a class="headerlink" href="#provider-authentication" title="Permanent link">&para;</a></h2>
+<p>The chain of events when provisioning an example is typically in the stages of VPC -&gt; EKS cluster -&gt; addons and manifests. Per Terraform's recommendation, it is not recommended to pass an unknown value into provider configurations. However, for the sake of simplicity and ease of use, Blueprints does specify the AWS provider along with the Kubernetes, Helm, and Kubectl providers in order to show the full configuration required for provisioning example. Note - this is the configuration <em>required</em> to provision the example, not necessarily the shape of how the configuration should be structured; users are encouraged to split up EKS cluster creation from addon and manifest provisioning to align with Terraform's recommendations.</p>
+<p>With that said, the examples here are combining the providers and users can sometimes encounter various issues with the provider authentication methods. There are primarily two methods for authenticating the Kubernetes, Helm, and Kubectl providers to the EKS cluster created:</p>
+<ol>
+<li>Using a static token which has a lifetime of 15 minutes per the EKS service documentation.</li>
+<li>Using the <code>exec()</code> method which will fetch a token at the time of Terraform invocation.</li>
+</ol>
+<p>The Kubernetes and Helm providers <a href="https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs#exec-plugins">recommend the <code>exec()</code> method</a>, however this has the caveat that it requires the awscli to be installed on the machine running Terraform <em>AND</em> of at least a minimum version to support the API spec used by the provider (i.e. - <code>"client.authentication.k8s.io/v1alpha1"</code>, <code>"client.authentication.k8s.io/v1beta1"</code>, etc.). Selecting the appropriate provider authentication method is left up to users, and the examples used in this project will default to using the static token method for ease of use.</p>
+<p>Users of the static token method should be aware that if they receive a <code>401 Unauthorized</code> message, they might have a token that has expired and will need to run <code>terraform refresh</code> to get a new token.
+Users of the <code>exec()</code> method should be aware that the <code>exec()</code> method is reliant on the awscli and the associated authentication API version; the awscli version may need to be updated to support a later API version required by the Kubernetes version in use.</p>
+<p>The following examples demonstrate either method that users can utilize - please refer to the associated provider's documentation for further details on configuration.</p>
+<h3 id="static-token-example">Static Token Example<a class="headerlink" href="#static-token-example" title="Permanent link">&para;</a></h3>
+<div class="language-hcl highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">&quot;kubernetes&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="na">host</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.eks.cluster_endpoint</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="na">cluster_ca_certificate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">base64decode</span><span class="p">(</span><span class="nv">module.eks.cluster_certificate_authority_data</span><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="na">token</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_eks_cluster_auth.this.token</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">}</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">&quot;helm&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="nb">kubernetes</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="na">host</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.eks.cluster_endpoint</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="na">cluster_ca_certificate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">base64decode</span><span class="p">(</span><span class="nv">module.eks.cluster_certificate_authority_data</span><span class="p">)</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="na">token</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_eks_cluster_auth.this.token</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="p">}</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">&quot;kubectl&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">  </span><span class="na">apply_retry_count</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="m">10</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">  </span><span class="na">host</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.eks.cluster_endpoint</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">  </span><span class="na">cluster_ca_certificate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">base64decode</span><span class="p">(</span><span class="nv">module.eks.cluster_certificate_authority_data</span><span class="p">)</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">  </span><span class="na">load_config_file</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">  </span><span class="na">token</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_eks_cluster_auth.this.token</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">}</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="kr">data</span><span class="w"> </span><span class="nc">&quot;aws_eks_cluster_auth&quot;</span><span class="w"> </span><span class="nv">&quot;this&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">  </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.eks.cluster_name</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="p">}</span>
 </span></code></pre></div>
-<div class="admonition danger">
-<p class="admonition-title">Resources created outside of Terraform</p>
-<p>Depending on the pattern, some resources may have been created that Terraform is not aware of that will cause issues
-when attempting to clean up the pattern. For example, Karpenter is responsible for creating additional EC2 instances
-to satisfy the pod scheduling requirements. These instances will not be cleaned up by Terraform and will need to be
-de-provisioned <em>BEFORE</em> attempting to <code>terraform destroy</code>. This is why it is important that the addons, or any resources
-provisioned onto the cluster are cleaned up first. Please see the respective pattern's <code>README.md</code> for more
-details.</p>
-</div>
+<h3 id="exec-example"><code>exec()</code> Example<a class="headerlink" href="#exec-example" title="Permanent link">&para;</a></h3>
+<p>Usage of exec plugin for AWS credentials</p>
+<p>Links to References related to this issue</p>
+<ul>
+<li>https://github.com/hashicorp/terraform/issues/29182</li>
+<li>https://github.com/aws/aws-cli/pull/6476</li>
+</ul>
+<div class="language-hcl highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">&quot;kubernetes&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="na">host</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.eks.cluster_endpoint</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="na">cluster_ca_certificate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">base64decode</span><span class="p">(</span><span class="nv">module.eks.cluster_certificate_authority_data</span><span class="p">)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nb">exec</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="na">api_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;client.authentication.k8s.io/v1beta1&quot;</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="na">command</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws&quot;</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1">    # This requires the awscli to be installed locally where Terraform is executed</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="na">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;eks&quot;, &quot;get-token&quot;, &quot;--cluster-name&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">module.eks.cluster_name</span><span class="p">]</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="p">}</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">&quot;helm&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="nb">kubernetes</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="na">host</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.eks.cluster_endpoint</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="na">cluster_ca_certificate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">base64decode</span><span class="p">(</span><span class="nv">module.eks.cluster_certificate_authority_data</span><span class="p">)</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="nb">exec</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">      </span><span class="na">api_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;client.authentication.k8s.io/v1beta1&quot;</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">      </span><span class="na">command</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws&quot;</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="c1">      # This requires the awscli to be installed locally where Terraform is executed</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">      </span><span class="na">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;eks&quot;, &quot;get-token&quot;, &quot;--cluster-name&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">module.eks.cluster_name</span><span class="p">]</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="p">}</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">&quot;kubectl&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">  </span><span class="na">apply_retry_count</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">  </span><span class="na">host</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.eks.cluster_endpoint</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">  </span><span class="na">cluster_ca_certificate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">base64decode</span><span class="p">(</span><span class="nv">module.eks.cluster_certificate_authority_data</span><span class="p">)</span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">  </span><span class="na">load_config_file</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">  </span><span class="nb">exec</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">    </span><span class="na">api_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;client.authentication.k8s.io/v1beta1&quot;</span>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w">    </span><span class="na">command</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws&quot;</span>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="c1">    # This requires the awscli to be installed locally where Terraform is executed</span>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">    </span><span class="na">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;eks&quot;, &quot;get-token&quot;, &quot;--cluster-name&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">module.eks.cluster_name</span><span class="p">]</span>
+</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="p">}</span>
+</span></code></pre></div>
+<h2 id="unable-to-destroy-namespace-created-by-terraform">Unable to destroy namespace created by Terraform<a class="headerlink" href="#unable-to-destroy-namespace-created-by-terraform" title="Permanent link">&para;</a></h2>
+<p>In some cases, when you try to run terraform destroy on kubernetes resources created by Terraform such as namespace, you may end up seeing failures such as timeout and context deadline exceeded failures.
+Namespace one of those resources we've seen before, the main reason this happens is because orphaned resources created through CRDs of addons (such as ArgoCD, AWS LBC and more) are left behind after the addons are being deleted, this is case by case scenario.
+For example, with namespaces:</p>
+<ol>
+<li>
+<p>Confirm the namespace is hanging in status <code>Terminating</code></p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>namespaces
+</span></code></pre></div>
+</li>
+<li>
+<p>Check for any orphaned resources in the namespace, make sure to replace <namespace_name> with your namespace:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span>api-resources<span class="w"> </span>--verbs<span class="o">=</span>list<span class="w"> </span>--namespaced<span class="w"> </span>-o<span class="w"> </span>name<span class="w">   </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>kubectl<span class="w"> </span>get<span class="w">  </span><span class="se">\</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>--show-kind<span class="w"> </span>--ignore-not-found<span class="w"> </span>-n<span class="w"> </span>&lt;namespace_name&gt;
+</span></code></pre></div>
+</li>
+<li>
+<p>For any of the above output, patch the resource finalize:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>RESOURCE<span class="w"> </span>NAME<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;metadata&quot;:{&quot;finalizers&quot;:[]}}&#39;</span><span class="w"> </span>--type<span class="o">=</span>merge
+</span></code></pre></div>
+</li>
+<li>
+<p>Check the status of the namespace, if needed you may need to patch the namespace finalizers as-well</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>ns<span class="w"> </span>&lt;ns-name&gt;<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;spec&quot;:{&quot;finalizers&quot;:null}}&#39;</span>
+</span></code></pre></div>
+</li>
+</ol>
 
 
 

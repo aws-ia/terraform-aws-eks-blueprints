@@ -10,28 +10,28 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/snippets/ipv4-prefix-delegation/">
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../../patterns/wireguard-with-cilium/">
       
       
-        <link rel="next" href="../patterns/agones-game-controller/">
+        <link rel="next" href="../vpc-cni-custom-networking/">
       
       
-      <link rel="icon" href="../images/colored-logo.png">
+      <link rel="icon" href="../../images/colored-logo.png">
       <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.3.1">
     
     
       
-        <title>Getting Started - Amazon EKS Blueprints for Terraform</title>
+        <title>IPv4 Prefix Delegation - Amazon EKS Blueprints for Terraform</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.046329b4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.046329b4.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.85d0ee34.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.85d0ee34.min.css">
       
       
   
@@ -91,7 +91,7 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -116,7 +116,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#getting-started" class="md-skip">
+        <a href="#vpc-cni-configuration" class="md-skip">
           Skip to content
         </a>
       
@@ -136,9 +136,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+    <a href="../.." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
       
-  <img src="../images/white-logo.png" alt="logo">
+  <img src="../../images/white-logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -155,7 +155,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Getting Started
+              IPv4 Prefix Delegation
             
           </span>
         </div>
@@ -241,9 +241,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+    <a href="../.." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
       
-  <img src="../images/white-logo.png" alt="logo">
+  <img src="../../images/white-logo.png" alt="logo">
 
     </a>
     Amazon EKS Blueprints for Terraform
@@ -269,7 +269,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -286,29 +286,9 @@
       
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Getting Started
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -317,47 +297,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    Destroy
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -402,7 +341,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/agones-game-controller/" class="md-nav__link">
+      <a href="../../patterns/agones-game-controller/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -422,7 +361,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/appmesh-mtls/" class="md-nav__link">
+      <a href="../../patterns/appmesh-mtls/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -442,7 +381,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/argocd/" class="md-nav__link">
+      <a href="../../patterns/argocd/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -462,7 +401,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/blue-green-upgrade/" class="md-nav__link">
+      <a href="../../patterns/blue-green-upgrade/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -482,7 +421,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/elastic-fabric-adapter/" class="md-nav__link">
+      <a href="../../patterns/elastic-fabric-adapter/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -502,7 +441,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/external-secrets/" class="md-nav__link">
+      <a href="../../patterns/external-secrets/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -522,7 +461,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/fargate-serverless/" class="md-nav__link">
+      <a href="../../patterns/fargate-serverless/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -542,7 +481,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/fully-private-cluster/" class="md-nav__link">
+      <a href="../../patterns/fully-private-cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -562,7 +501,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/ipv6-eks-cluster/" class="md-nav__link">
+      <a href="../../patterns/ipv6-eks-cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -582,7 +521,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/istio-multi-cluster/" class="md-nav__link">
+      <a href="../../patterns/istio-multi-cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -602,7 +541,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/istio/" class="md-nav__link">
+      <a href="../../patterns/istio/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -622,7 +561,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/karpenter/" class="md-nav__link">
+      <a href="../../patterns/karpenter/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -642,7 +581,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/multi-tenancy-with-teams/" class="md-nav__link">
+      <a href="../../patterns/multi-tenancy-with-teams/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -662,7 +601,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/private-public-ingress/" class="md-nav__link">
+      <a href="../../patterns/private-public-ingress/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -682,7 +621,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/privatelink-access/" class="md-nav__link">
+      <a href="../../patterns/privatelink-access/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -702,7 +641,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/sso-iam-identity-center/" class="md-nav__link">
+      <a href="../../patterns/sso-iam-identity-center/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -722,7 +661,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/sso-okta/" class="md-nav__link">
+      <a href="../../patterns/sso-okta/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -742,7 +681,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/stateful/" class="md-nav__link">
+      <a href="../../patterns/stateful/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -762,7 +701,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/tls-with-aws-pca-issuer/" class="md-nav__link">
+      <a href="../../patterns/tls-with-aws-pca-issuer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -782,7 +721,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/wireguard-with-cilium/" class="md-nav__link">
+      <a href="../../patterns/wireguard-with-cilium/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -807,17 +746,19 @@
       
   
   
+    
+  
   
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
@@ -830,7 +771,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Snippets
@@ -841,9 +782,27 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../snippets/ipv4-prefix-delegation/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    IPv4 Prefix Delegation
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -852,6 +811,31 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#vpc-cni-configuration" class="md-nav__link">
+    VPC CNI Configuration
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -863,7 +847,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../snippets/vpc-cni-custom-networking/" class="md-nav__link">
+      <a href="../vpc-cni-custom-networking/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -924,7 +908,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../v4-to-v5/motivation/" class="md-nav__link">
+      <a href="../../v4-to-v5/motivation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -944,7 +928,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../v4-to-v5/cluster/" class="md-nav__link">
+      <a href="../../v4-to-v5/cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -964,7 +948,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../v4-to-v5/addons/" class="md-nav__link">
+      <a href="../../v4-to-v5/addons/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -984,7 +968,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../v4-to-v5/teams/" class="md-nav__link">
+      <a href="../../v4-to-v5/teams/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1011,7 +995,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../faq/" class="md-nav__link">
+      <a href="../../faq/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1041,8 +1025,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1051,22 +1033,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    Destroy
+  <a href="#vpc-cni-configuration" class="md-nav__link">
+    VPC CNI Configuration
   </a>
   
 </li>
@@ -1089,74 +1057,47 @@
   
 
 
-<h1 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h1>
-<p>This getting started guide will help you deploy your first pattern using EKS Blueprints.</p>
-<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<p>Ensure that you have installed the following tools locally:</p>
+  <h1>IPv4 Prefix Delegation</h1>
+
+<p>The configuration snippet below shows how to enable prefix delegation to increase the number of available IP addresses on the provisioned EC2 nodes.</p>
 <ul>
-<li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">awscli</a></li>
-<li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
-<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
+<li><a href="https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html">Documentation</a></li>
+<li><a href="https://aws.amazon.com/blogs/containers/amazon-vpc-cni-increases-pods-per-node-limits/">Blog post</a></li>
 </ul>
-<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<ol>
-<li>
-<p>For consuming EKS Blueprints, please see the <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/#consumption">Consumption</a> section. For exploring and trying out the patterns provided, please
-clone the project locally to quickly get up and running with a pattern. After cloning the project locally, <code>cd</code> into the pattern
-directory of your choice.</p>
-</li>
-<li>
-<p>To provision the pattern, the typical steps of execution are as follows:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.vpc&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-auto-approve
+<h2 id="vpc-cni-configuration">VPC CNI Configuration<a class="headerlink" href="#vpc-cni-configuration" title="Permanent link">&para;</a></h2>
+<p>In this example, the <code>vpc-cni</code> addon is configured using <code>before_compute = true</code>. This is done to ensure the <code>vpc-cni</code> is created and updated <em>before</em> any EC2 instances are created so that the desired settings have applied before they will be referenced. With this configuration, you will now see that nodes created will have <code>--max-pods 110</code> configured do to the use of prefix delegation being enabled on the <code>vpc-cni</code>.</p>
+<p>If you find that your nodes are not being created with the correct number of max pods (i.e. - for <code>m5.large</code>, if you are seeing a max pods of 29 instead of 110), most likely the <code>vpc-cni</code> was not configured <em>before</em> the EC2 instances.</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="err">module</span><span class="w"> </span><span class="s2">&quot;eks&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="err">source</span><span class="w">  </span><span class="err">=</span><span class="w"> </span><span class="s2">&quot;terraform-aws-modules/eks/aws&quot;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="err">Tru</span><span class="kc">n</span><span class="err">ca</span><span class="kc">te</span><span class="err">d</span><span class="w"> </span><span class="kc">f</span><span class="err">or</span><span class="w"> </span><span class="err">brevi</span><span class="kc">t</span><span class="err">y</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="err">...</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="err">clus</span><span class="kc">ter</span><span class="err">_addo</span><span class="kc">ns</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="err">vpc</span><span class="mi">-</span><span class="err">c</span><span class="kc">n</span><span class="err">i</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">      </span><span class="err">be</span><span class="kc">f</span><span class="err">ore_compu</span><span class="kc">te</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="kc">true</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">      </span><span class="err">mos</span><span class="kc">t</span><span class="err">_rece</span><span class="kc">nt</span><span class="w">    </span><span class="err">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="err">To</span><span class="w"> </span><span class="err">e</span><span class="kc">nsure</span><span class="w"> </span><span class="err">access</span><span class="w"> </span><span class="kc">t</span><span class="err">o</span><span class="w"> </span><span class="kc">t</span><span class="err">he</span><span class="w"> </span><span class="err">la</span><span class="kc">test</span><span class="w"> </span><span class="err">se</span><span class="kc">tt</span><span class="err">i</span><span class="kc">n</span><span class="err">gs</span><span class="w"> </span><span class="err">provided</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">      </span><span class="err">co</span><span class="kc">nf</span><span class="err">igura</span><span class="kc">t</span><span class="err">io</span><span class="kc">n</span><span class="err">_values</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">jso</span><span class="kc">nen</span><span class="err">code(</span><span class="p">{</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">        </span><span class="err">e</span><span class="kc">n</span><span class="err">v</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">          </span><span class="err">ENABLE_PREFIX_DELEGATION</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">&quot;true&quot;</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">          </span><span class="err">WARM_PREFIX_TARGET</span><span class="w">       </span><span class="err">=</span><span class="w"> </span><span class="s2">&quot;1&quot;</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">      </span><span class="p">}</span><span class="err">)</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">  </span><span class="err">...</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">}</span>
 </span></code></pre></div>
-<p>For patterns that deviate from this general flow, see the pattern's respective <code>REAMDE.md</code> for more details.</p>
-<div class="admonition info">
-<p class="admonition-title">Terraform targetted apply</p>
-<p>Please see the <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/#terraform-caveats">Terraform Caveats</a> section for details on the use of targeted Terraform apply's</p>
-</div>
-</li>
-<li>
-<p>Once all of the resources have successfully been provisioned, the following command can be used to update the <code>kubeconfig</code>
-on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code>.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;REGION&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER_NAME&gt;
+<p>When enabled, inspect one of the <code>aws-node-*</code> (AWS VPC CNI) pods to ensure prefix delegation is enabled and warm prefix target is 1:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl<span class="w"> </span>describe<span class="w"> </span>ds<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>aws-node<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>ENABLE_PREFIX_DELEGATION:<span class="w"> </span>-A<span class="w"> </span><span class="m">3</span>
 </span></code></pre></div>
-<div class="admonition info">
-<p class="admonition-title">Pattern Terraform outputs</p>
-<p>Most examples will output the <code>aws eks update-kubeconfig ...</code> command as part of the Terraform apply output to simplify this process for users</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Private clusters</p>
-<p>Clusters that do not enable the clusters public endpoint will require users to access the cluster from within the VPC.
-For these patterns, a sample EC2 or other means are provided to demonstrate how to access those clusters privately</p>
-</div>
-<p>and without exposing the public endpoint. Please see the respective pattern's <code>README.md</code> for more details.</p>
-</li>
-<li>
-<p>Once you have updated your <code>kubeconfig</code>, you can verify that you are able to interact with your cluster by running the following command:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
+<p>Output should look similar to below (truncated for brevity):</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="w">    </span><span class="nt">ENABLE_PREFIX_DELEGATION</span><span class="p">:</span><span class="w">               </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># &lt;- this should be set to true</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">WARM_ENI_TARGET</span><span class="p">:</span><span class="w">                        </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">WARM_PREFIX_TARGET</span><span class="p">:</span><span class="w">                     </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># &lt;- this should be set to 1</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
 </span></code></pre></div>
-<p>This should return a list of the node(s) running in the cluster created. If any errors are encountered, please re-trace the steps above
-and consult the pattern's <code>README.md</code> for more details on any additional/specific steps that may be required.</p>
-</li>
-</ol>
-<h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
-<p>To teardown and remove the resources created in the pattern, the typical steps of execution are as follows:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
-</span></code></pre></div>
-<div class="admonition danger">
-<p class="admonition-title">Resources created outside of Terraform</p>
-<p>Depending on the pattern, some resources may have been created that Terraform is not aware of that will cause issues
-when attempting to clean up the pattern. For example, Karpenter is responsible for creating additional EC2 instances
-to satisfy the pod scheduling requirements. These instances will not be cleaned up by Terraform and will need to be
-de-provisioned <em>BEFORE</em> attempting to <code>terraform destroy</code>. This is why it is important that the addons, or any resources
-provisioned onto the cluster are cleaned up first. Please see the respective pattern's <code>README.md</code> for more
-details.</p>
-</div>
 
 
 
@@ -1198,10 +1139,10 @@ details.</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs.sticky"], "search": "../assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs.sticky"], "search": "../../assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.dff1b7c8.min.js"></script>
+      <script src="../../assets/javascripts/bundle.dff1b7c8.min.js"></script>
       
     
   </body>

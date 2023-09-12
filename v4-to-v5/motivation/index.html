@@ -10,13 +10,13 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/internal/ci/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/v4-to-v5/motivation/">
       
       
-        <link rel="prev" href="../../_partials/destroy/">
+        <link rel="prev" href="../../snippets/vpc-cni-custom-networking/">
       
       
-        <link rel="next" href="../../patterns/agones-game-controller/">
+        <link rel="next" href="../cluster/">
       
       
       <link rel="icon" href="../../images/colored-logo.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>E2E tests - Amazon EKS Blueprints for Terraform</title>
+        <title>Motivation - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -116,7 +116,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#e2e-tests" class="md-skip">
+        <a href="#direction-for-v5-of-terraform-eks-blueprints" class="md-skip">
           Skip to content
         </a>
       
@@ -155,7 +155,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              E2E tests
+              Motivation
             
           </span>
         </div>
@@ -827,17 +827,19 @@
       
   
   
+    
+  
   
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
@@ -850,7 +852,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             v4 to v5 Migration
@@ -861,9 +863,29 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../v4-to-v5/motivation/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Motivation
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -872,6 +894,94 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-has-worked" class="md-nav__link">
+    What Has Worked
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-has-not" class="md-nav__link">
+    What Has Not
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-changing" class="md-nav__link">
+    What Is Changing
+  </a>
+  
+    <nav class="md-nav" aria-label="What Is Changing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#notable-changes" class="md-nav__link">
+    Notable Changes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resulting-project-structure" class="md-nav__link">
+    Resulting Project Structure
+  </a>
+  
+    <nav class="md-nav" aria-label="Resulting Project Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#v4x-structure" class="md-nav__link">
+    v4.x Structure
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#v5x-structure" class="md-nav__link">
+    v5.x Structure
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-can-users-expect" class="md-nav__link">
+    What Can Users Expect
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -883,7 +993,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../v4-to-v5/cluster/" class="md-nav__link">
+      <a href="../cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -903,7 +1013,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../v4-to-v5/addons/" class="md-nav__link">
+      <a href="../addons/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -923,7 +1033,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../v4-to-v5/teams/" class="md-nav__link">
+      <a href="../teams/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -990,8 +1100,69 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#setup" class="md-nav__link">
-    Setup
+  <a href="#what-has-worked" class="md-nav__link">
+    What Has Worked
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-has-not" class="md-nav__link">
+    What Has Not
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-changing" class="md-nav__link">
+    What Is Changing
+  </a>
+  
+    <nav class="md-nav" aria-label="What Is Changing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#notable-changes" class="md-nav__link">
+    Notable Changes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resulting-project-structure" class="md-nav__link">
+    Resulting Project Structure
+  </a>
+  
+    <nav class="md-nav" aria-label="Resulting Project Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#v4x-structure" class="md-nav__link">
+    v4.x Structure
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#v5x-structure" class="md-nav__link">
+    v5.x Structure
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-can-users-expect" class="md-nav__link">
+    What Can Users Expect
   </a>
   
 </li>
@@ -1014,68 +1185,104 @@
   
 
 
-<h1 id="e2e-tests">E2E tests<a class="headerlink" href="#e2e-tests" title="Permanent link">&para;</a></h1>
-<p>We use GitHub Actions to run an end-to-end tests to verify all PRs. The GitHub Actions used are a combination of <code>aws-actions/configure-aws-credentials</code> and <code>hashicorp/setup-terraform@v1</code>.</p>
-<h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
+<h1 id="direction-for-v5-of-terraform-eks-blueprints">Direction for v5 of Terraform EKS Blueprints<a class="headerlink" href="#direction-for-v5-of-terraform-eks-blueprints" title="Permanent link">&para;</a></h1>
+<h2 id="what-has-worked">What Has Worked<a class="headerlink" href="#what-has-worked" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>EKS Blueprints was started to <a href="https://aws.amazon.com/blogs/containers/bootstrapping-clusters-with-eks-blueprints/">make it easier for customers to adopt Amazon Elastic Kubernetes Service (EKS)</a> in a shorter period of time. The project has been quite successful in this regard - hearing from customers stating that EKS Blueprints has helped them get from zero to one or more clusters running with applications in less than 1-2 weeks.</p>
+</li>
+<li>
+<p>EKS Blueprints has also been successful in providing working examples to users that demonstrate common architectural patterns and workload solutions. Some popular examples include:</p>
+</li>
+<li>Spark on EKS</li>
+<li>Karpenter on EKS Fargate</li>
+<li>Transparent encryption with Wireguard and Cilium</li>
+<li>Fully serverless cluster with EKS Fargate</li>
+</ul>
+<h2 id="what-has-not">What Has Not<a class="headerlink" href="#what-has-not" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>Scaling and managing addons that are created through EKS Blueprints. With almost <a href="https://landscape.cncf.io/">1,200 projects on the CNCF roadmap</a>, the number of various ways and methods that a project allows for deploying onto a cluster (i.e. - Datadog offers 5 different Helm charts for its service, Prometheus hosts over 30 Helm charts for its services), as well as the number of different tools used to provision addons (i.e. - Terraform, ArgoCD, FluxCD, etc.), supporting both the number of addons and their different forms has been extremely challenging for the team. In addition to managing just the sheer number of addons, supporting the different configurations that users wish to have exposed in conjunction with testing and validating those various configurations is only compounded by the number of addons and their methods of creation.</p>
+</li>
+<li>
+<p>Managing resources provisioned on the cluster using Terraform. Terraform is a fantastic tool for provisioning infrastructure and it is the tool of choice for many customers when it comes to creating resources in AWS. However, there are a number of downsides with Terraform when it comes to provisioning resources on a Kubernetes cluster. These include:</p>
+</li>
+<li>
+<p>Ordering of dependencies when relationships live outside of Terraform's HCL syntax. Terraform wants to evaluate the current state of what it controls and be able to plan a series of actions to align the current state with the desired state <em>in one action</em>. It does this once for each <code>terraform plan</code> or <code>terraform apply</code>, and if any issues are encountered, it simply fails and halts execution. When Terraform cannot infer the ordering of dependencies across resources (i.e. - through passing outputs of parent resources to arguments of child resources using the Terraform <code>&lt;resource&gt;.&lt;name&gt;.&lt;attribute&gt;</code> syntax), it will view this as no relationship between the resources and attempt to execute their provisioning in parallel and asynchronously. Any resources that are left waiting for a dependency will eventually timeout and fail, causing Terraform itself to timeout and fail the apply. This is where the reconciliation loop of a Kubernetes controller or operator on the cluster is better suited - continuously trying to reconcile the state over and over again as dependencies are eventually resolved. (To be clear - the issue of dependency ordering still exists, but the controller/operator will keep retrying and on each retry, some resources will succeed which will move the execution along with each cycle until everything is fully deployed. Terraform could do this if it kept re-trying, but it does not do this today)</p>
+</li>
+<li>
+<p>Publicly exposing access to the EKS endpoints in order to provision resources defined outside of the VPC onto the cluster. When using Terraform, the resource provisioning operation is a "push" model where Terraform will send requests to the EKS API Server to create resources. Coupled with the fact that the Terraform operation typically resides outside of the VPC where the cluster is running, this results in users enabling public access to the EKS endpoints to provision resources. However, the more widely accepted approach by the Kubernetes community has been the adoption of GitOps which uses a "pull" based model, where an operator or controller running on the cluster will pull the resource definitions from a Git repository and reconcile state from within the cluster itself. This approach is more secure as it does not require public access to the EKS endpoints and instead relies on the cluster's internal network to communicate with the EKS API Server.</p>
+</li>
+<li>
+<p>The nesting of multiple sub-modules in conjunction with the necessity to even require a module to be able to support an addon. When we compare and contrast the Terraform approach to addons versus the GitOps approach, the Terraform approach has a glaring disadvantage - the need to create a module that wraps the addon's Helm chart in order to provision the addon via Terraform. As opposed to the GitOps approach, where users simply consume the charts from where they are stored as needed. This creates a bottleneck on the team to review, test, and validate each new addon as well as the overhead then added for maintaining and updating those addons going forward. This also opens up more areas where breaking changes are encountered which is compounded by the fact that Terraform addons are grouped under an "umbrella" module which obfuscates versioning.</p>
+</li>
+<li>
+<p>Being able to support a combination of various tools, modules, frameworks, etc., to meet the needs of customers. The <a href="https://github.com/terraform-aws-modules/terraform-aws-eks"><code>terraform-aws-eks</code></a> was created long before EKS Blueprints, and many customers had already adopted this module for creating their clusters. In addition, Amazon has since adopted the <a href="https://github.com/weaveworks/eksctl"><code>eksctl</code></a> as the official CLI for Amazon EKS. When EKS Blueprints was first announced, many customers raised questions asking if they needed to abandon their current clusters created through those other tools in order to adopt EKS Blueprints. The answer is no - users can and should be able to use their existing clusters while EKS Blueprints can help augment that process through its supporting modules (addons, teams, etc.). This left the team with the question - why create a Terraform module for creating an EKS cluster when the <a href="https://github.com/terraform-aws-modules/terraform-aws-eks"><code>terraform-aws-eks</code></a> already exists and the EKS Blueprints implementation already uses that module for creating the control plane and security groups?</p>
+</li>
+</ul>
+<h2 id="what-is-changing">What Is Changing<a class="headerlink" href="#what-is-changing" title="Permanent link">&para;</a></h2>
+<p>The direction for EKS Blueprints in v5 will shift from providing an all-encompassing, monolithic "framework" and instead focus more on how users can organize a set of modular components to create the desired solution on Amazon EKS. This will allow customers to use the components of their choosing in a way that is more familiar to them and their organization instead of having to adopt and conform to a framework.</p>
+<p>With this shift in direction, the cluster definition will be removed from the project and instead examples will reference the <a href="https://github.com/terraform-aws-modules/terraform-aws-eks"><code>terraform-aws-eks</code></a> module for cluster creation. The remaining modules will be moved out to their own respective repositories as standalone projects. This leaves the EKS Blueprint project as the canonical place where users can receive guidance on how to configure their clusters to meet a desired architecture, how best to setup their clusters following well-architected practices, as well as references on the various ways that different workloads can be deployed on Amazon EKS.</p>
+<h3 id="notable-changes">Notable Changes<a class="headerlink" href="#notable-changes" title="Permanent link">&para;</a></h3>
 <ol>
-<li>Use the following CloudFormation template to setup a new IAM role.</li>
+<li>EKS Blueprints will remove its Amazon EKS cluster Terraform module components (control plane, EKS managed node group, self-managed node group, and Fargate profile modules) from the project. In its place, users are encouraged to utilize the <a href="https://github.com/terraform-aws-modules/terraform-aws-eks"><code>terraform-aws-eks</code></a> module which meets or exceeds nearly all of the functionality of the EKS Blueprints v4.x cluster module. This includes the Terraform code contained at the root of the project as well as the <code>aws-eks-fargate-profiles</code>, <code>aws-eks-managed-node-groups</code>, <code>aws-eks-self-managed-node-groups</code>, and <code>launch-templates</code> modules which will all be removed from the project.</li>
+<li>The <code>aws-kms</code> module will be removed entirely. This was consumed in the root project module for cluster secret encryption. In its place, users can utilize the KMS key creation functionality of the <a href="https://github.com/terraform-aws-modules/terraform-aws-eks"><code>terraform-aws-eks</code></a> module or the <a href="https://github.com/terraform-aws-modules/terraform-aws-kms"><code>terraform-aws-kms</code></a> module if they wish to control the key separately from the cluster itself.</li>
+<li>The <code>emr-on-eks</code> module will be removed entirely; its replacement can be found in the new external module <a href="https://github.com/terraform-aws-modules/terraform-aws-emr/tree/master/modules/serverless"><code>terraform-aws-emr</code></a>.</li>
+<li>The <code>irsa</code> and <code>helm-addon</code> modules will be removed entirely; we have released a new external module <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints-addon"><code>terraform-aws-eks-blueprints-addon</code></a> that is available on the Terraform registry that replicates/replaces the functionality of these two modules. This will now allow users, as well as partners, to create their own addons that are not natively supported by EKS Blueprints more easily and following the same process as EKS Blueprints.</li>
+<li>The <code>aws-eks-teams</code> module will be removed entirely; its replacement will be the new external module <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints-teams"><code>terraform-aws-eks-blueprints-teams</code></a> that incorporates the changes customers have been asking for in https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/842</li>
+<li>The integration between Terraform and ArgoCD has been removed in the initial release of v5. The team is currently investigating better patterns and solutions in conjunction with the ArgoCD and FluxCD teams that will provide a better, more integrated experience when using a GitOps based approach for cluster management. This will be released in a future version of EKS Blueprints v5 and is tracked <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints-addons/issues/114">here</a></li>
 </ol>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">Parameters</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">GitHubOrg</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">RepositoryName</span><span class="p">:</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nt">OIDCProviderArn</span><span class="p">:</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Arn for the GitHub OIDC Provider.</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="nt">Default</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="nt">Conditions</span><span class="p">:</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">  </span><span class="nt">CreateOIDCProvider</span><span class="p">:</span><span class="w"> </span><span class="kt">!Equals</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OIDCProviderArn</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="nt">Resources</span><span class="p">:</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">  </span><span class="nt">Role</span><span class="p">:</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AWS::IAM::Role</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">    </span><span class="nt">Properties</span><span class="p">:</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">      </span><span class="nt">AssumeRolePolicyDocument</span><span class="p">:</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">        </span><span class="nt">Statement</span><span class="p">:</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Effect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Allow</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">            </span><span class="nt">Action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sts:AssumeRoleWithWebIdentity</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">            </span><span class="nt">Principal</span><span class="p">:</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">              </span><span class="nt">Federated</span><span class="p">:</span><span class="w"> </span><span class="kt">!If</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CreateOIDCProvider</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GithubOidc</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OIDCProviderArn</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">            </span><span class="nt">Condition</span><span class="p">:</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w">              </span><span class="nt">StringLike</span><span class="p">:</span>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w">                </span><span class="nt">token.actions.githubusercontent.com:sub</span><span class="p">:</span><span class="w"> </span><span class="kt">!Sub</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">repo:${GitHubOrg}/${RepositoryName}:*</span>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="w">  </span><span class="nt">GithubOidc</span><span class="p">:</span>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AWS::IAM::OIDCProvider</span>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="w">    </span><span class="nt">Condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CreateOIDCProvider</span>
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="w">    </span><span class="nt">Properties</span><span class="p">:</span>
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="w">      </span><span class="nt">Url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://token.actions.githubusercontent.com</span>
-</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="w">      </span><span class="nt">ClientIdList</span><span class="p">:</span>
-</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sts.amazonaws.com</span>
-</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="w">      </span><span class="nt">ThumbprintList</span><span class="p">:</span>
-</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">a031c46782e6e6c662c2c87c76da9aa62ccabd8e</span>
-</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>
-</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="nt">Outputs</span><span class="p">:</span>
-</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="w">  </span><span class="nt">Role</span><span class="p">:</span>
-</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="w">    </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="kt">!GetAtt</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Role.Arn</span>
+<h3 id="resulting-project-structure">Resulting Project Structure<a class="headerlink" href="#resulting-project-structure" title="Permanent link">&para;</a></h3>
+<p>Previously under the v4.x structure, the EKS Blueprint project was comprised of various repositories across multiple AWS organizations that looked roughly like the following:</p>
+<h4 id="v4x-structure">v4.x Structure<a class="headerlink" href="#v4x-structure" title="Permanent link">&para;</a></h4>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>├──<span class="w"> </span>aws-ia/
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="p">|</span><span class="w">   </span>├──<span class="w"> </span>terraform-aws-eks-ack-addons/
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">|</span><span class="w">   </span>└──<span class="w"> </span>terraform-aws-eks-blueprints/
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">|</span><span class="w">       </span>├──<span class="w"> </span>aws-auth-configmap.tf
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">|</span><span class="w">       </span>├──<span class="w"> </span>data.tf
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">|</span><span class="w">       </span>├──<span class="w"> </span>eks-worker.tf
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">|</span><span class="w">       </span>├──<span class="w"> </span>locals.tf
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">|</span><span class="w">       </span>├──<span class="w"> </span>main.tf
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">|</span><span class="w">       </span>├──<span class="w"> </span>outputs.tf
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">|</span><span class="w">       </span>├──<span class="w"> </span>variables.tf
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">|</span><span class="w">       </span>├──<span class="w"> </span>versions.tf
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="p">|</span><span class="w">       </span>├──<span class="w"> </span>examples/
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="p">|</span><span class="w">       </span>└──<span class="w"> </span>modules
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">|</span><span class="w">           </span>├──<span class="w"> </span>aws-eks-fargate-profiles/
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="p">|</span><span class="w">           </span>├──<span class="w"> </span>aws-eks-managed-node-groups/
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="p">|</span><span class="w">           </span>├──<span class="w"> </span>aws-eks-self-managed-node-groups/
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="p">|</span><span class="w">           </span>├──<span class="w"> </span>aws-eks-teams/
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="p">|</span><span class="w">           </span>├──<span class="w"> </span>aws-kms/
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="p">|</span><span class="w">           </span>├──<span class="w"> </span>emr-on-eks/
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="p">|</span><span class="w">           </span>├──<span class="w"> </span>irsa/
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">|</span><span class="w">           </span>├──<span class="w"> </span>kubernetes-addons/
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="p">|</span><span class="w">           </span>└──<span class="w"> </span>launch-templates/
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>├──<span class="w"> </span>awslabs/
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="p">|</span><span class="w">   </span>├──<span class="w"> </span>crossplane-on-eks/
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="p">|</span><span class="w">   </span>└──<span class="w"> </span>data-on-eks/
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>└──<span class="w"> </span>aws-samples/
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">    </span>├──<span class="w"> </span>eks-blueprints-add-ons/<span class="w">   </span><span class="c1"># Previously shared with the CDK based EKS Blueprints project</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">    </span>└──<span class="w"> </span>eks-blueprints-workloads/<span class="w"> </span><span class="c1"># Previously shared with the CDK based EKS Blueprints project</span>
 </span></code></pre></div>
+<p>Under th new v5.x structure, the Terraform based EKS Blueprints project will be comprised of the following repositories:</p>
+<h4 id="v5x-structure">v5.x Structure<a class="headerlink" href="#v5x-structure" title="Permanent link">&para;</a></h4>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>├──<span class="w"> </span>aws-ia/
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p">|</span><span class="w">   </span>├──<span class="w"> </span>terraform-aws-eks-ack-addons/
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">|</span><span class="w">   </span>├──<span class="w"> </span>terraform-aws-eks-blueprints/<span class="w">       </span><span class="c1"># Will contain only example/blueprint implementations; no modules</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">|</span><span class="w">   </span>├──<span class="w"> </span>terraform-aws-eks-blueprints-addon<span class="w">  </span><span class="c1"># Module for creating Terraform based addon (IRSA + Helm chart)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">|</span><span class="w">   </span>├──<span class="w"> </span>terraform-aws-eks-blueprints-addons<span class="w"> </span><span class="c1"># Will contain a select set of addons supported by the EKS Blueprints</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">|</span><span class="w">   </span>└──<span class="w"> </span>terraform-aws-eks-blueprints-teams<span class="w">  </span><span class="c1"># Was previously `aws-eks-teams/` EKS Blueprint sub-module; updated based on customer feedback</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>└──<span class="w"> </span>awslabs/
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span>├──<span class="w"> </span>crossplane-on-eks/
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span>└──<span class="w"> </span>data-on-eks/<span class="w">        </span><span class="c1"># Data related patterns that used to be located in `terraform-aws-eks-blueprints/` are now located here</span>
+</span></code></pre></div>
+<h2 id="what-can-users-expect">What Can Users Expect<a class="headerlink" href="#what-can-users-expect" title="Permanent link">&para;</a></h2>
+<p>With these changes, the team intends to provide a better experience for users of the Terraform EKS Blueprints project as well as new and improved reference architectures. Following the v5 changes, the team intends to:</p>
 <ol>
-<li>
-<p>Add a permissible IAM Policy to the above create role. For our purpose <code>AdministratorAccess</code> works the best.</p>
-</li>
-<li>
-<p>Setup a GitHub repo secret called <code>ROLE_TO_ASSUME</code> and set it to ARN of the role created in 1.</p>
-</li>
-<li>
-<p>We use an S3 backend for the e2e tests. This allows us to recover from any failures during the <code>apply</code> stage. If you are setting up your own CI pipeline change the s3 bucket name in backend configuration of the example.</p>
-</li>
+<li>Improved quality of the examples provided - more information on the intent of the example, why it might be useful for users, what scenarios is the pattern applicable, etc. Where applicable, architectural diagrams and supporting material will be provided to highlight the intent of the example and how its constructed.</li>
+<li>A more clear distinction between a blueprint and a usage reference. For example - the Karpenter on EKS Fargate blueprint should demonstrate all of the various aspects that users should be aware of and consider in order to take full advantage of this pattern (recommended practices, observability, logging, monitoring, security, day 2 operations, etc.); this is what makes it a blueprint. In contrast, a usage reference would be an example that shows how users can pass configuration values to the Karpenter provisioner. This example is less focused on the holistic architecture and more focused on how one might configure Karpenter using the implementation. The EKS Blueprints repository will focus mostly on holistic architecture and patterns, and any usage references should be saved for the repository that contains that implementation definition (i.e. - the <code>terraform-aws-eks-blueprints-addons</code> repository where the addon implementation is defined).</li>
+<li>Faster, and more responsive feedback. The first part of this is going to be improved documentation on how to contribute which should help clarify whether a contribution is worthy and willing to be accepted by the team before any effort is spent by the contributor. However, the goal of v5 is to focus more on the value added benefits that EKS Blueprints was created to provide as opposed to simply mass producing Helm chart wrappers (addons) and trying to keep up with that operationally intensive process.</li>
+<li>Lastly, more examples and blueprints that demonstrate various architectures and workloads that run on top of Amazon EKS as well as integrations into other AWS services.</li>
 </ol>
 
 
