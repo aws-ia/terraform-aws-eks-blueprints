@@ -3,5 +3,5 @@ title: SSO - Okta
 ---
 
 {%
-   include-markdown "../../patterns/single-sign-on/okta/README.md"
+   include-markdown "../../patterns/sso-okta/README.md"
 %}

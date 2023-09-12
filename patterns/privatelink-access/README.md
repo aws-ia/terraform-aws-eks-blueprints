@@ -1,38 +1,13 @@
 # Private EKS cluster access via AWS PrivateLink
 
-This example demonstrates how to access a private EKS cluster using AWS PrivateLink.
+This pattern demonstrates how to access a private EKS cluster using AWS PrivateLink.
 
 Refer to the [documentation](https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html)
 for further details on  `AWS PrivateLink`.
 
-## Prerequisites:
-
-Ensure that you have the following tools installed locally:
-
-1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
-3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
-
 ## Deploy
 
-To provision this example, first deploy the Lambda function that responds to
-`CreateNetworkInterface` API calls. This needs to exist before the cluster is
-created so that it can respond to the ENIs created by the EKS control plane:
-
-```sh
-terraform init
-terraform apply -target=module.eventbridge -target=module.nlb
-```
-
-Enter `yes` at command prompt to apply
-
-Next, deploy the remaining resources:
-
-```sh
-terraform apply
-```
-
-Enter `yes` at command prompt to apply
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
 
@@ -48,17 +23,17 @@ be `ok`.
 COMMAND="curl -ks https://9A85B21811733524E3ABCDFEA8714642.gr7.us-west-2.eks.amazonaws.com/readyz"
 
 COMMAND_ID=$(aws ssm send-command --region us-west-2 \
---document-name "AWS-RunShellScript" \
---parameters "commands=[$COMMAND]" \
---targets "Key=instanceids,Values=i-0a45eff73ba408575" \
---query 'Command.CommandId' \
---output text)
+   --document-name "AWS-RunShellScript" \
+   --parameters "commands=[$COMMAND]" \
+   --targets "Key=instanceids,Values=i-0a45eff73ba408575" \
+   --query 'Command.CommandId' \
+   --output text)
 
 aws ssm get-command-invocation --region us-west-2 \
---command-id $COMMAND_ID \
---instance-id i-0a45eff73ba408575 \
---query 'StandardOutputContent' \
---output text
+   --command-id $COMMAND_ID \
+   --instance-id i-0a45eff73ba408575 \
+   --query 'StandardOutputContent' \
+   --output text
 ```
 
 ### Cluster Access
@@ -73,10 +48,11 @@ add additional entries to the ConfigMap; we can only access the cluster from
 within the private network of the cluster's VPC or from the client VPC using AWS
 PrivateLink access.
 
-> :warning: The "client" EC2 instance provided and copying of AWS credentials to
- that instance are merely for demonstration purposes only. Please consider
- alternate methods of network access such as AWS Client VPN to provide more
- secure access.
+!!! info
+      The "client" EC2 instance provided and copying of AWS credentials to
+      that instance are merely for demonstration purposes only. Please consider
+      alternate methods of network access such as AWS Client VPN to provide more
+      secure access.
 
 Perform the following steps to access the cluster with `kubectl` from the
 provided "client" EC2 instance.
@@ -100,8 +76,9 @@ instance.
 3. Once logged in, export the following environment variables from the output
 of step #1:
 
-   > :exclamation: The session credentials are only valid for 1 hour; you can
-   adjust the session duration in the command provided in step #1
+    !!! warning
+        The session credentials are only valid for 1 hour; you can
+        adjust the session duration in the command provided in step #1
 
    ```sh
    export AWS_ACCESS_KEY_ID=XXXX
@@ -122,19 +99,16 @@ access to the cluster:
    kubectl get pods -A
    ```
 
-   The test succeeded if you see an output like the one shown below:
-
-       NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
-       kube-system   aws-node-4f8g8             1/1     Running   0          1m
-       kube-system   coredns-6ff9c46cd8-59sqp   1/1     Running   0          1m
-       kube-system   coredns-6ff9c46cd8-svnpb   1/1     Running   0          2m
-       kube-system   kube-proxy-mm2zc           1/1     Running   0          1m
-
+   ```text
+   NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
+   kube-system   aws-node-4f8g8             1/1     Running   0          1m
+   kube-system   coredns-6ff9c46cd8-59sqp   1/1     Running   0          1m
+   kube-system   coredns-6ff9c46cd8-svnpb   1/1     Running   0          2m
+   kube-system   kube-proxy-mm2zc           1/1     Running   0          1m
+   ```
 
 ## Destroy
 
-Run the following command to destroy all the resources created by Terraform:
-
-```sh
-terraform destroy --auto-approve
-```
+{%
+   include-markdown "../../docs/_partials/destroy.md"
+%}

@@ -6,42 +6,17 @@ This example shows how to provision an EKS cluster with Istio.
 * Add node_security_group rules for port access required for Istio communication
 * Install Istio using Helm resources in Terraform
 * Install Istio Ingress Gateway using Helm resources in Terraform
-  *  This step deploys a Service of type `LoadBalancer` that creates an AWS Network Load Balancer.
+  * This step deploys a Service of type `LoadBalancer` that creates an AWS Network Load Balancer.
 * Deploy/Validate Istio communication using sample application
 
 Refer to the [documentation](https://istio.io/latest/docs/concepts/) on Istio
 concepts.
 
-## Prerequisites:
-
-Ensure that you have the following tools installed locally:
-
-1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
-3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
-4. [helm](https://helm.sh/docs/intro/install/)
-
 ## Deploy
 
-To provision this example:
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
-```sh
-terraform init
-terraform apply -target=module.vpc -target=module.eks
-terraform apply
-```
-
-Enter `yes` at command prompt to apply
-
-### Update local kubeconfig
-
-Run the following command to update your local `kubeconfig` with latest cluster:
-
-```sh
-aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
-```
-
-### Istio Observability Add-ons
+### Observability Add-ons
 
 Use the following code snippet to add the Istio Observability Add-ons on the EKS
 cluster with deployed Istio.
@@ -56,33 +31,14 @@ done
 
 ## Validate
 
-The following command will update the `kubeconfig` on your local machine and
-allow you to interact with your EKS Cluster using `kubectl` to validate the
-deployment.
+1. List out all pods and services in the `istio-system` namespace:
 
-1. List all the worker nodes
-
-   ```sh
-   kubectl get nodes
-   ```
-
-   Output should be similar to:
-    ```
-    NAME                                       STATUS   ROLES    AGE     VERSION
-    ip-10-0-2-141.us-west-2.compute.internal   Ready    <none>   9m36s   v1.27.3-eks-a5565ad
-    ip-10-0-30-86.us-west-2.compute.internal   Ready    <none>   9m37s   v1.27.3-eks-a5565ad
-    ip-10-0-47-71.us-west-2.compute.internal   Ready    <none>   9m21s   v1.27.3-eks-a5565ad
+    ```sh
+    kubectl get pods,svc -n istio-system
+    kubectl get pods,svc -n istio-ingress
     ```
 
-2. List out all pods and services in the `istio-system` namespace:
-
-   ```sh
-   kubectl get pods,svc -n istio-system
-   kubectl get pods,svc -n istio-ingress
-   ```
-
-   Output should be similar to:
-    ```
+    ```text
     NAME                             READY   STATUS    RESTARTS   AGE
     pod/grafana-7d4f5589fb-4xj9m     1/1     Running   0          4m14s
     pod/istiod-ff577f8b8-c8ssk       1/1     Running   0          4m40s
@@ -106,23 +62,26 @@ deployment.
     service/istio-ingress   LoadBalancer   172.20.104.27   k8s-istioing-istioing-844c89b6c2-875b8c9a4b4e9365.elb.us-west-2.amazonaws.com   15021:32760/TCP,80:31496/TCP,443:32534/TCP   4m28s
     ```
 
-3. Verify all the Helm releases installed in the `istio-system` and
-`istio-ingress` namespaces:
+2. Verify all the Helm releases installed in the `istio-system` and `istio-ingress` namespaces:
 
-   ```sh
-   helm list -n istio-system
-   helm list -n istio-ingress
-   ```
+    ```sh
+    helm list -n istio-system
+    ```
 
-   Output should be similar to:
-   ```
-   NAME          	NAMESPACE   	REVISION	UPDATED                             	STATUS  	CHART         	APP VERSION
-   istio-base   	istio-system	1       	2023-07-19 11:05:41.599921 -0700 PDT	deployed	base-1.18.1   	1.18.1
-   istiod       	istio-system	1       	2023-07-19 11:05:48.087616 -0700 PDT	deployed	istiod-1.18.1 	1.18.1
+    ```text
+    NAME           NAMESPACE    REVISION UPDATED                              STATUS   CHART          APP VERSION
+    istio-base    istio-system 1        2023-07-19 11:05:41.599921 -0700 PDT deployed base-1.18.1    1.18.1
+    istiod        istio-system 1        2023-07-19 11:05:48.087616 -0700 PDT deployed istiod-1.18.1  1.18.1
+    ```
 
-   NAME          	NAMESPACE   	REVISION	UPDATED                             	STATUS  	CHART         	APP VERSION
-   istio-ingress	istio-ingress	1       	2023-07-19 11:06:03.41609 -0700 PDT 	deployed	gateway-1.18.1	1.18.1
-   ```
+    ```sh
+    helm list -n istio-ingress
+    ```
+
+    ```text
+    NAME           NAMESPACE    REVISION UPDATED                              STATUS   CHART          APP VERSION
+    istio-ingress istio-ingress 1        2023-07-19 11:06:03.41609 -0700 PDT  deployed gateway-1.18.1 1.18.1
+    ```
 
 ### Observability Add-ons
 
@@ -130,7 +89,6 @@ Validate the setup of the observability add-ons by running the following command
 and accessing each of the service endpoints using this URL of the form
 [http://localhost:\<port>](http://localhost:<port>) where `<port>` is one of the
 port number for the corresponding service.
-
 
 ```sh
 # Visualize Istio Mesh console using Kiali
@@ -146,7 +104,7 @@ kubectl port-forward svc/grafana 3000:3000 -n istio-system
 kubectl port-forward svc/jaeger 16686:16686 -n istio-system
 ```
 
-## Test
+### Example
 
 1. Create the `sample` namespace and enable the sidecar injection on it
 
@@ -155,8 +113,7 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
     kubectl label namespace sample istio-injection=enabled
     ```
 
-    Output should be:
-    ```
+    ```text
     namespace/sample created
     namespace/sample labeled
     ```
@@ -212,8 +169,7 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
     kubectl apply -f helloworld.yaml -n sample
     ```
 
-    Output should be:
-    ```
+    ```text
     service/helloworld created
     deployment.apps/helloworld-v1 created
     ```
@@ -275,8 +231,7 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
     kubectl apply -f sleep.yaml -n sample
     ```
 
-    Output should be:
-    ```
+    ```text
     serviceaccount/sleep created
     service/sleep created
     deployment.apps/sleep created
@@ -287,14 +242,14 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
     ```sh
     kubectl get pods -n sample
     ```
-    Output should be similar to:
-    ```
+
+    ```text
     NAME                           READY   STATUS    RESTARTS   AGE
     helloworld-v1-b6c45f55-bx2xk   2/2     Running   0          50s
     sleep-9454cc476-p2zxr          2/2     Running   0          15s
     ```
-5. Connect to `helloworld` app from `sleep` app and verify if the connection
-uses envoy proxy
+
+5. Connect to `helloworld` app from `sleep` app and verify if the connection uses envoy proxy
 
     ```sh
     kubectl exec -n sample -c sleep \
@@ -302,8 +257,8 @@ uses envoy proxy
         app=sleep -o jsonpath='{.items[0].metadata.name}')" \
         -- curl -v helloworld.sample:5000/hello
     ```
-    Output should be similar to:
-    ```
+
+    ```text
     * processing: helloworld.sample:5000/hello
     % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                     Dload  Upload   Total   Spent    Left  Speed
@@ -329,9 +284,6 @@ uses envoy proxy
 
 ## Destroy
 
-To teardown and remove the resources created in this example:
-
-```sh
-terraform destroy -target="helm_release.istio_ingress" --auto-approve
-terraform destroy --auto-approve
-```
+{%
+   include-markdown "../../docs/_partials/destroy.md"
+%}

@@ -1,58 +1,24 @@
 # Amazon EKS Cluster w/ ArgoCD
 
-This example shows how to provision an EKS cluster with:
+This pattern demonstrates an EKS cluster that uses ArgoCD for application deployments.
 
-- ArgoCD
-  - Workloads and addons deployed by ArgoCD
-
-To better understand how ArgoCD works with EKS Blueprints, read the EKS Blueprints ArgoCD [Documentation](https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/add-ons/argocd/)
-
-## Reference Documentation
-
-- [Documentation](https://aws-ia.github.io/terraform-aws-eks-blueprints/latest/add-ons/argocd/)
+- [Documentation](https://argo-cd.readthedocs.io/en/stable/)
 - [EKS Blueprints Add-ons Repo](https://github.com/aws-samples/eks-blueprints-add-ons)
 - [EKS Blueprints Workloads Repo](https://github.com/aws-samples/eks-blueprints-workloads)
 
-## Prerequisites
-
-Ensure that you have the following tools installed locally:
-
-1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
-3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
-
-### Minimum IAM Policy
-
-> **Note**: The policy resource is set as `*` to allow all resources, this is not a recommended practice.
-
-You can find the policy [here](min-iam-policy.json)
-
 ## Deploy
 
-To provision this example:
-
-```sh
-terraform init
-terraform apply
-```
-
-Enter `yes` at command prompt to apply
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
 
-The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the deployment.
-
-1. Run `update-kubeconfig` command:
-
-    ```sh
-    aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME> --alias <CLUSTER_NAME>
-    ```
-
-2. List out the pods running currently:
+1. List out the pods running currently:
 
     ```sh
     kubectl get pods -A
+    ```
 
+    ```text
     NAMESPACE        NAME                                                        READY   STATUS    RESTARTS          AGE
     argo-rollouts    argo-rollouts-5d47ccb8d4-854s6                              1/1     Running   0                 23h
     argo-rollouts    argo-rollouts-5d47ccb8d4-srjk9                              1/1     Running   0                 23h
@@ -118,7 +84,7 @@ The following command will update the `kubeconfig` on your local machine and all
     team-riker       guestbook-ui-c86c478bd-zg2z4                                1/1     Running   0                 25m
     ```
 
-3. You can access the ArgoCD UI by running the following command:
+2. Access the ArgoCD UI by running the following command:
 
     ```sh
     kubectl port-forward svc/argo-cd-argocd-server 8080:443 -n argocd
@@ -140,17 +106,12 @@ The following command will update the `kubeconfig` on your local machine and all
 
 ## Destroy
 
-To teardown and remove the resources created in this example:
-
 First, we need to ensure that the ArgoCD applications are properly cleaned up from the cluster, this can be achieved in multiple ways:
 
-1) Disabling the `argocd_applications` configuration and running `terraform apply` again
-2) Deleting the apps using `argocd` [cli](https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/#deletion-using-argocd)
-3) Deleting the apps using `kubectl` following [ArgoCD guidance](https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/#deletion-using-kubectl)
+- Disabling the `argocd_applications` configuration and running `terraform apply` again
+- Deleting the apps using `argocd` [cli](https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/#deletion-using-argocd)
+- Deleting the apps using `kubectl` following [ArgoCD guidance](https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/#deletion-using-kubectl)
 
-Then you can start delete the terraform resources:
-```sh
-terraform destroy -target=module.eks_blueprints_kubernetes_addons -auto-approve
-terraform destroy -target=module.eks -auto-approve
-terraform destroy -auto-approve
-````
+{%
+   include-markdown "../../docs/_partials/destroy.md"
+%}

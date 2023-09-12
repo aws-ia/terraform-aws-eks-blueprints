@@ -71,6 +71,7 @@ module "eks" {
       max_size       = 5
       desired_size   = 2
     }
+
     agones_system = {
       instance_types = ["m5.large"]
       labels = {
@@ -87,6 +88,7 @@ module "eks" {
       max_size     = 1
       desired_size = 1
     }
+
     agones_metrics = {
       instance_types = ["m5.large"]
       labels = {
@@ -123,7 +125,6 @@ module "eks" {
       type                          = "ingress"
       source_cluster_security_group = true
     }
-
   }
 
   tags = local.tags
@@ -135,7 +136,7 @@ module "eks" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.0"
+  version = "~> 1.7"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -153,32 +154,25 @@ module "eks_blueprints_addons" {
   enable_metrics_server     = true
   enable_cluster_autoscaler = true
 
+  helm_releases = {
+    agones = {
+      description      = "A Helm chart for Agones game server"
+      namespace        = "agones-system"
+      create_namespace = true
+      chart            = "agones"
+      chart_version    = "1.32.0"
+      repository       = "https://agones.dev/chart/stable"
+      values = [
+        templatefile("${path.module}/helm_values/agones-values.yaml", {
+          expose_udp         = true
+          gameserver_minport = local.gameserver_minport
+          gameserver_maxport = local.gameserver_maxport
+        })
+      ]
+    }
+  }
+
   tags = local.tags
-}
-
-################################################################################
-# Agones Helm Chart
-################################################################################
-
-# NOTE: Agones requires a Node group in Public Subnets and enable Public IP
-resource "helm_release" "agones" {
-  name             = "agones"
-  chart            = "agones"
-  version          = "1.32.0"
-  repository       = "https://agones.dev/chart/stable"
-  description      = "Agones helm chart"
-  namespace        = "agones-system"
-  create_namespace = true
-
-  values = [templatefile("${path.module}/helm_values/agones-values.yaml", {
-    expose_udp         = true
-    gameserver_minport = local.gameserver_minport
-    gameserver_maxport = local.gameserver_maxport
-  })]
-
-  depends_on = [
-    module.eks_blueprints_addons
-  ]
 }
 
 ################################################################################

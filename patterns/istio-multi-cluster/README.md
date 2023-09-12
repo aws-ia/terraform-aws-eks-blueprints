@@ -1,14 +1,7 @@
 # Amazon EKS Multi-Cluster w/ Istio
 
-This example shows how to provision 2 Amazon EKS clusters with Istio setup on each of them.
-The Istio will be set-up to operate in a [Multi-Primary](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/) way where services are shared across clusters.
-
-* Deploy a VPC with additional security groups to allow cross-cluster communication and communication from nodes to the other cluster API Server endpoint
-* Deploy 2 EKS Cluster with one managed node group in an VPC
-* Add node_security_group rules for port access required for Istio communication
-* Install Istio using Helm resources in Terraform
-* Install Istio Ingress Gateway using Helm resources in Terraform
-* Deploy/Validate Istio communication using sample application
+This pattern demonstrates 2 Amazon EKS clusters configured with Istio.
+Istio will be set-up to operate in a [Multi-Primary](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/) configuration, where services are shared across clusters.
 
 Refer to the [documentation](https://istio.io/latest/docs/concepts/) for `Istio` concepts.
 
