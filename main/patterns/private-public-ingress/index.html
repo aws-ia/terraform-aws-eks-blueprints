@@ -536,15 +536,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
+  <a href="#deploy" class="md-nav__link">
+    Deploy
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
+  <a href="#validate" class="md-nav__link">
+    Validate
   </a>
   
 </li>
@@ -851,15 +851,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
+  <a href="#deploy" class="md-nav__link">
+    Deploy
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
+  <a href="#validate" class="md-nav__link">
+    Validate
   </a>
   
 </li>
@@ -892,30 +892,29 @@
 <!-- BEGIN INCLUDE ../../patterns/private-public-ingress/README.md -->
 <h1 id="amazon-eks-private-and-public-ingress-example">Amazon EKS Private and Public Ingress example<a class="headerlink" href="#amazon-eks-private-and-public-ingress-example" title="Permanent link">&para;</a></h1>
 <p>This example demonstrates how to provision an Amazon EKS cluster with two  ingress-nginx controllers; one to expose applications publicly and the other to expose applications internally. It also assigns security groups to the Network Load Balancers used to expose the internal and external ingress controllers.</p>
-<p>This solution:
-* Deploys Amazon EKS, with 1 Managed Node Group using the Bottlerocket Amazon EKS Optimized AMI spread accross 3 availability zones.
-* Installs the AWS Load Balancer controller for creating Network Load Balancers and Application Load Balancers. This is the recommended approach instead of the in-tree AWS cloud provider load balancer controller.
-* Installs an ingress-nginx controller for public traffic
-* Installs an ingress-nginx controller for internal traffic</p>
+<p>This solution:</p>
+<ul>
+<li>Installs an ingress-nginx controller for public traffic</li>
+<li>Installs an ingress-nginx controller for internal traffic</li>
+</ul>
 <p>To expose your application services via an <code>Ingress</code> resource with this solution you can set the respective <code>ingressClassName</code> as either <code>ingress-nginx-external</code> or <code>ingress-nginx-internal</code>.</p>
 <p>Refer to the <a href="https://kubernetes-sigs.github.io/aws-load-balancer-controller">documentation</a> for <code>AWS Load Balancer controller</code> configuration options.</p>
-<h2 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<p>Ensure that you have the following tools installed locally:</p>
-<ol>
-<li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
-<li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
-<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
-</ol>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<p>To provision this example:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply
-</span></code></pre></div>
-<p>Enter <code>yes</code> at command prompt to apply</p>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
+<h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
+<div class="admonition danger">
+<p class="admonition-title">TODO</p>
+<p>Add in validation steps</p>
+</div>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
-<p>To teardown and remove the resources created in this example:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+<!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </span></code></pre></div>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
+<!-- END INCLUDE -->
+
 <!-- END INCLUDE -->
 
 

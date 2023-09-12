@@ -620,20 +620,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#reference-documentation" class="md-nav__link">
-    Reference Documentation:
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#deploy" class="md-nav__link">
     Deploy
   </a>
@@ -865,20 +851,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#reference-documentation" class="md-nav__link">
-    Reference Documentation:
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#deploy" class="md-nav__link">
     Deploy
   </a>
@@ -919,91 +891,66 @@
 
 <!-- BEGIN INCLUDE ../../patterns/wireguard-with-cilium/README.md -->
 <h1 id="transparent-encryption-with-cilium-and-wireguard">Transparent Encryption with Cilium and Wireguard<a class="headerlink" href="#transparent-encryption-with-cilium-and-wireguard" title="Permanent link">&para;</a></h1>
-<p>This example shows how to provision an EKS cluster with:
-- Managed node group based on Bottlerocket AMI
-- Cilium configured in CNI chaining mode with VPC CNI and with Wireguard transparent encryption enabled</p>
-<h2 id="reference-documentation">Reference Documentation:<a class="headerlink" href="#reference-documentation" title="Permanent link">&para;</a></h2>
+<p>This pattern demonstrates Cilium configured in CNI chaining mode with VPC CNI and with Wireguard transparent encryption enabled on an Amazon EKS cluster.</p>
 <ul>
 <li><a href="https://docs.cilium.io/en/v1.12/gettingstarted/cni-chaining-aws-cni/">Cilium CNI Chaining Documentation</a></li>
 <li><a href="https://docs.cilium.io/en/v1.12/gettingstarted/encryption-wireguard/">Cilium Wireguard Encryption Documentation</a></li>
 </ul>
-<h2 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<p>Ensure that you have the following tools installed locally:</p>
-<ol>
-<li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
-<li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
-<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
-</ol>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<p>To provision this example with a sample app for testing:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply
-</span></code></pre></div>
-<p>To provision this example without sample app for testing:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>terraform<span class="w"> </span>init
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-var<span class="w"> </span><span class="nv">enable_example</span><span class="o">=</span><span class="nb">false</span>
-</span></code></pre></div>
-<p>Enter <code>yes</code> at command prompt to apply</p>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
-<p>The following command will update the <code>kubeconfig</code> on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code> to validate the deployment.</p>
 <ol>
-<li>Run <code>update-kubeconfig</code> command:</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;REGION&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER_NAME&gt;
+<li>
+<p>List the daemonsets</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>ds<span class="w"> </span>-n<span class="w"> </span>kube-system
 </span></code></pre></div>
-<ol>
-<li>List the daemonsets</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>ds<span class="w"> </span>-n<span class="w"> </span>kube-system
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># Output should look something similar</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>NAME<span class="w">         </span>DESIRED<span class="w">   </span>CURRENT<span class="w">   </span>READY<span class="w">   </span>UP-TO-DATE<span class="w">   </span>AVAILABLE<span class="w">   </span>NODE<span class="w"> </span>SELECTOR<span class="w">            </span>AGE
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>aws-node<span class="w">     </span><span class="m">2</span><span class="w">         </span><span class="m">2</span><span class="w">         </span><span class="m">2</span><span class="w">       </span><span class="m">2</span><span class="w">            </span><span class="m">2</span><span class="w">           </span>&lt;none&gt;<span class="w">                   </span>156m
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>cilium<span class="w">       </span><span class="m">2</span><span class="w">         </span><span class="m">2</span><span class="w">         </span><span class="m">2</span><span class="w">       </span><span class="m">2</span><span class="w">            </span><span class="m">2</span><span class="w">           </span>kubernetes.io/os<span class="o">=</span>linux<span class="w">   </span>152m
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>kube-proxy<span class="w">   </span><span class="m">2</span><span class="w">         </span><span class="m">2</span><span class="w">         </span><span class="m">2</span><span class="w">       </span><span class="m">2</span><span class="w">            </span><span class="m">2</span><span class="w">           </span>&lt;none&gt;<span class="w">                   </span>156m
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>NAME         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>aws-node     2         2         2       2            2           &lt;none&gt;                   156m
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>cilium       2         2         2       2            2           kubernetes.io/os=linux   152m
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>kube-proxy   2         2         2       2            2           &lt;none&gt;                   156m
 </span></code></pre></div>
-<ol>
-<li>Open a shell inside the cilium container</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-ti<span class="w"> </span>ds/cilium<span class="w"> </span>--<span class="w"> </span>bash
+</li>
+<li>
+<p>Open a shell inside the cilium container</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-ti<span class="w"> </span>ds/cilium<span class="w"> </span>--<span class="w"> </span>bash
 </span></code></pre></div>
-<ol>
-<li>Verify Encryption is enabled</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cilium<span class="w"> </span>status<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Encryption
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># Output should look something similar</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>Encryption:<span class="w">              </span>Wireguard<span class="w">   </span><span class="o">[</span>cilium_wg0<span class="w"> </span><span class="o">(</span>Pubkey:<span class="w"> </span>b2krgbHgaCsVWALMnFLiS/RekhhcE36PXEjQ7T8+mW0<span class="o">=</span>,<span class="w"> </span>Port:<span class="w"> </span><span class="m">51871</span>,<span class="w"> </span>Peers:<span class="w"> </span><span class="m">1</span><span class="o">)]</span>
+</li>
+<li>
+<p>Verify Encryption is enabled</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cilium<span class="w"> </span>status<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Encryption
 </span></code></pre></div>
-<ol>
-<li>Install tcpdump</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>apt-get<span class="w"> </span>update
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>tcpdump
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Encryption:              Wireguard   [cilium_wg0 (Pubkey: b2krgbHgaCsVWALMnFLiS/RekhhcE36PXEjQ7T8+mW0=, Port: 51871, Peers: 1)]
 </span></code></pre></div>
-<ol>
-<li>Start a packet capture on <code>cilium_wg0</code> and verify you see payload in clear text, it means the traffic is encrypted with wireguard</li>
-</ol>
-<p><div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>tcpdump<span class="w"> </span>-A<span class="w"> </span>-c<span class="w"> </span><span class="m">40</span><span class="w"> </span>-i<span class="w"> </span>cilium_wg0<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;Welcome to nginx!&quot;</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># Output should look similar below</span>
+</li>
+<li>
+<p>Install <a href="https://www.tcpdump.org/"><code>tcpdump</code></a></p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>apt-get<span class="w"> </span>update
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>tcpdump
+</span></code></pre></div>
+</li>
+<li>
+<p>Start a packet capture on <code>cilium_wg0</code> and verify you see payload in clear text, it means the traffic is encrypted with wireguard</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>tcpdump<span class="w"> </span>-A<span class="w"> </span>-c<span class="w"> </span><span class="m">40</span><span class="w"> </span>-i<span class="w"> </span>cilium_wg0<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;Welcome to nginx!&quot;</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>&lt;title&gt;Welcome to nginx!&lt;/title&gt;
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>...
 </span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>&lt;title&gt;Welcome<span class="w"> </span>to<span class="w"> </span>nginx!&lt;/title&gt;
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>&lt;h1&gt;Welcome<span class="w"> </span>to<span class="w"> </span>nginx!&lt;/h1&gt;
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>...
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
-</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="m">40</span><span class="w"> </span>packets<span class="w"> </span>captured
-</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="m">40</span><span class="w"> </span>packets<span class="w"> </span>received<span class="w"> </span>by<span class="w"> </span>filter
-</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="m">0</span><span class="w"> </span>packets<span class="w"> </span>dropped<span class="w"> </span>by<span class="w"> </span>kernel
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>40 packets captured
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>40 packets received by filter
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>0 packets dropped by kernel
 </span></code></pre></div>
-7. Exit the container shell</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">exit</span>
-</span></code></pre></div>
+</li>
+</ol>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
-<p>To teardown and remove the resources created in this example:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span>module.eks<span class="w"> </span>-auto-approve
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+<!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </span></code></pre></div>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
+<!-- END INCLUDE -->
+
 <!-- END INCLUDE -->
 
 

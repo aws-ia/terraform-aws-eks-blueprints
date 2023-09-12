@@ -16,6 +16,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/main/_partials/destroy/</loc>
+         <lastmod>2023-09-12</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/main/internal/ci/</loc>
          <lastmod>2023-09-12</lastmod>
          <changefreq>daily</changefreq>

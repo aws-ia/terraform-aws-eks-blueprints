@@ -522,13 +522,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#deploy" class="md-nav__link">
     Deploy
   </a>
@@ -858,13 +851,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#deploy" class="md-nav__link">
     Deploy
   </a>
@@ -905,38 +891,28 @@
 
 <!-- BEGIN INCLUDE ../../patterns/multi-tenancy-with-teams/README.md -->
 <h1 id="multi-tenancy-w-teams">Multi-Tenancy w/ Teams<a class="headerlink" href="#multi-tenancy-w-teams" title="Permanent link">&para;</a></h1>
-<p>This example demonstrates how to provision and configure a multi-tenancy Amazon EKS cluster with safeguards for resource consumption and namespace isolation.</p>
+<p>This pattern demonstrates how to provision and configure a multi-tenancy Amazon EKS cluster with safeguards for resource consumption and namespace isolation.</p>
 <p>This example solution provides:</p>
 <ul>
-<li>Amazon EKS Cluster (control plane)</li>
-<li>Amazon EKS managed nodegroup (data plane)</li>
 <li>Two development teams - <code>team-red</code> and <code>team-blue</code> - isolated to their respective namespaces</li>
 <li>An admin team with privileged access to the cluster (<code>team-admin</code>)</li>
 </ul>
-<h2 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<p>Ensure that you have the following tools installed locally:</p>
-<ol>
-<li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
-<li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
-<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
-</ol>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<p>To provision this example:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply
-</span></code></pre></div>
-<p>Enter <code>yes</code> at command prompt to apply</p>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
-<p>The following command will update the <code>kubeconfig</code> on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code>.</p>
-<ol>
-<li>Run <code>update-kubeconfig</code> command:</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;REGION&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER_NAME&gt;
-</span></code></pre></div>
+<div class="admonition danger">
+<p class="admonition-title">TODO</p>
+<p>Add in validation steps</p>
+</div>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
-<p>To teardown and remove the resources created in this example:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+<!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </span></code></pre></div>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
+<!-- END INCLUDE -->
+
 <!-- END INCLUDE -->
 
 

@@ -633,13 +633,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#deploy" class="md-nav__link">
     Deploy
   </a>
@@ -940,13 +933,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#deploy" class="md-nav__link">
     Deploy
   </a>
@@ -1016,97 +1002,89 @@
 <li>EBS encryption using a customer managed key (CMK)</li>
 <li>Configuring the volumes to use GP3 storage</li>
 </ul>
-<h2 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<p>Ensure that you have the following tools installed locally:</p>
-<ol>
-<li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
-<li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
-<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
-</ol>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<p>To provision this example:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply
-</span></code></pre></div>
-<p>Enter <code>yes</code> at command prompt to apply</p>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
 <p>For validating <code>velero</code> see <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/velero#validate">here</a></p>
 <p>The following command will update the <code>kubeconfig</code> on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code> to validate the deployment.</p>
 <ol>
-<li>Run <code>update-kubeconfig</code> command:</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;REGION&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER_NAME&gt;
+<li>
+<p>List the storage classes to view that <code>efs</code>, <code>gp2</code>, and <code>gp3</code> classes are present and <code>gp3</code> is the default storage class</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>storageclasses
 </span></code></pre></div>
-<ol>
-<li>List the storage classes to view that <code>efs</code>, <code>gp2</code>, and <code>gp3</code> classes are present and <code>gp3</code> is the default storage class</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>storageclasses
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>NAME<span class="w">            </span>PROVISIONER<span class="w">             </span>RECLAIMPOLICY<span class="w">   </span>VOLUMEBINDINGMODE<span class="w">      </span>ALLOWVOLUMEEXPANSION<span class="w">   </span>AGE
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>efs<span class="w">             </span>efs.csi.aws.com<span class="w">         </span>Delete<span class="w">          </span>Immediate<span class="w">              </span><span class="nb">true</span><span class="w">                   </span>2m19s
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>gp2<span class="w">             </span>kubernetes.io/aws-ebs<span class="w">   </span>Delete<span class="w">          </span>WaitForFirstConsumer<span class="w">   </span><span class="nb">false</span><span class="w">                  </span>15m
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>gp3<span class="w"> </span><span class="o">(</span>default<span class="o">)</span><span class="w">   </span>ebs.csi.aws.com<span class="w">         </span>Delete<span class="w">          </span>WaitForFirstConsumer<span class="w">   </span><span class="nb">true</span><span class="w">                   </span>2m19s
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>efs             efs.csi.aws.com         Delete          Immediate              true                   2m19s
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>gp2             kubernetes.io/aws-ebs   Delete          WaitForFirstConsumer   false                  15m
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>gp3 (default)   ebs.csi.aws.com         Delete          WaitForFirstConsumer   true                   2m19s
 </span></code></pre></div>
-<ol>
-<li>From an instance launched with instance store(s), check that the instance store has been mounted correctly. To verify, first install the <code>nvme-cli</code> tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Install the nvme-cli tool</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>nvme-cli<span class="w"> </span>-y
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Show NVMe volumes attached</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>sudo<span class="w"> </span>nvme<span class="w"> </span>list
+</li>
+<li>
+<p>From an instance launched with instance store(s), check that the instance store has been mounted correctly. To verify, first install the <code>nvme-cli</code> tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Install the nvme-cli tool</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>nvme-cli<span class="w"> </span>-y
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Show NVMe volumes attached</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>sudo<span class="w"> </span>nvme<span class="w"> </span>list
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a># Notice the model is `EC2 NVMe Instance Storage` for the instance store
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Node             SN                   Model                                    Namespace Usage                      Format           FW Rev
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>---------------- -------------------- ---------------------------------------- --------- -------------------------- ---------------- --------
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>/dev/nvme0n1     vol0546d3c3b0af0bf6d Amazon Elastic Block Store               1          25.77  GB /  25.77  GB    512   B +  0 B   1.0
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>/dev/nvme1n1     AWS24BBF51AF55097008 Amazon EC2 NVMe Instance Storage         1          75.00  GB /  75.00  GB    512   B +  0 B   0
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># Output should look like below - notice the model is `EC2 NVMe Instance Storage` for the instance store</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>Node<span class="w">             </span>SN<span class="w">                   </span>Model<span class="w">                                    </span>Namespace<span class="w"> </span>Usage<span class="w">                      </span>Format<span class="w">           </span>FW<span class="w"> </span>Rev
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>----------------<span class="w"> </span>--------------------<span class="w"> </span>----------------------------------------<span class="w"> </span>---------<span class="w"> </span>--------------------------<span class="w"> </span>----------------<span class="w"> </span>--------
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>/dev/nvme0n1<span class="w">     </span>vol0546d3c3b0af0bf6d<span class="w"> </span>Amazon<span class="w"> </span>Elastic<span class="w"> </span>Block<span class="w"> </span>Store<span class="w">               </span><span class="m">1</span><span class="w">          </span><span class="m">25</span>.77<span class="w">  </span>GB<span class="w"> </span>/<span class="w">  </span><span class="m">25</span>.77<span class="w">  </span>GB<span class="w">    </span><span class="m">512</span><span class="w">   </span>B<span class="w"> </span>+<span class="w">  </span><span class="m">0</span><span class="w"> </span>B<span class="w">   </span><span class="m">1</span>.0
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>/dev/nvme1n1<span class="w">     </span>AWS24BBF51AF55097008<span class="w"> </span>Amazon<span class="w"> </span>EC2<span class="w"> </span>NVMe<span class="w"> </span>Instance<span class="w"> </span>Storage<span class="w">         </span><span class="m">1</span><span class="w">          </span><span class="m">75</span>.00<span class="w">  </span>GB<span class="w"> </span>/<span class="w">  </span><span class="m">75</span>.00<span class="w">  </span>GB<span class="w">    </span><span class="m">512</span><span class="w">   </span>B<span class="w"> </span>+<span class="w">  </span><span class="m">0</span><span class="w"> </span>B<span class="w">   </span><span class="m">0</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="c1"># Show disks, their partitions and mounts</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>sudo<span class="w"> </span>lsblk
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="c1"># Output should look like below</span>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>NAME<span class="w">          </span>MAJ:MIN<span class="w"> </span>RM<span class="w">  </span>SIZE<span class="w"> </span>RO<span class="w"> </span>TYPE<span class="w"> </span>MOUNTPOINT
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>nvme0n1<span class="w">       </span><span class="m">259</span>:0<span class="w">    </span><span class="m">0</span><span class="w">   </span>24G<span class="w">  </span><span class="m">0</span><span class="w"> </span>disk
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>├─nvme0n1p1<span class="w">   </span><span class="m">259</span>:2<span class="w">    </span><span class="m">0</span><span class="w">   </span>24G<span class="w">  </span><span class="m">0</span><span class="w"> </span>part<span class="w"> </span>/
-</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>└─nvme0n1p128<span class="w"> </span><span class="m">259</span>:3<span class="w">    </span><span class="m">0</span><span class="w">    </span>1M<span class="w">  </span><span class="m">0</span><span class="w"> </span>part
-</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>nvme1n1<span class="w">       </span><span class="m">259</span>:1<span class="w">    </span><span class="m">0</span><span class="w"> </span><span class="m">69</span>.9G<span class="w">  </span><span class="m">0</span><span class="w"> </span>disk<span class="w"> </span>/local1<span class="w"> </span><span class="c1"># &lt;--- this is the instance store</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a># Show disks, their partitions and mounts
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>sudo lsblk
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a># Output should look like below
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>nvme0n1       259:0    0   24G  0 disk
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>├─nvme0n1p1   259:2    0   24G  0 part /
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>└─nvme0n1p128 259:3    0    1M  0 part
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>nvme1n1       259:1    0 69.9G  0 disk /local1 # &lt;--- this is the instance store
 </span></code></pre></div>
-<ol>
-<li>From an instance launched with multiple volume(s), check that the instance store has been mounted correctly. To verify, first install the <code>nvme-cli</code> tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:</li>
-</ol>
+</li>
+<li>
+<p>From an instance launched with multiple volume(s), check that the instance store has been mounted correctly. To verify, first install the <code>nvme-cli</code> tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Install the nvme-cli tool</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>nvme-cli<span class="w"> </span>-y
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Show NVMe volumes attached</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>sudo<span class="w"> </span>nvme<span class="w"> </span>list
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Output should look like below, where /dev/nvme0n1 is the root volume and /dev/nvme1n1 is the second, additional volume</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>Node<span class="w">             </span>SN<span class="w">                   </span>Model<span class="w">                                    </span>Namespace<span class="w"> </span>Usage<span class="w">                      </span>Format<span class="w">           </span>FW<span class="w"> </span>Rev
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>----------------<span class="w"> </span>--------------------<span class="w"> </span>----------------------------------------<span class="w"> </span>---------<span class="w"> </span>--------------------------<span class="w"> </span>----------------<span class="w"> </span>--------
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>/dev/nvme0n1<span class="w">     </span>vol0cd37dab9e4a5c184<span class="w"> </span>Amazon<span class="w"> </span>Elastic<span class="w"> </span>Block<span class="w"> </span>Store<span class="w">               </span><span class="m">1</span><span class="w">          </span><span class="m">68</span>.72<span class="w">  </span>GB<span class="w"> </span>/<span class="w">  </span><span class="m">68</span>.72<span class="w">  </span>GB<span class="w">    </span><span class="m">512</span><span class="w">   </span>B<span class="w"> </span>+<span class="w">  </span><span class="m">0</span><span class="w"> </span>B<span class="w">   </span><span class="m">1</span>.0
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>/dev/nvme1n1<span class="w">     </span>vol0ad3629c159ee869c<span class="w"> </span>Amazon<span class="w"> </span>Elastic<span class="w"> </span>Block<span class="w"> </span>Store<span class="w">               </span><span class="m">1</span><span class="w">          </span><span class="m">25</span>.77<span class="w">  </span>GB<span class="w"> </span>/<span class="w">  </span><span class="m">25</span>.77<span class="w">  </span>GB<span class="w">    </span><span class="m">512</span><span class="w">   </span>B<span class="w"> </span>+<span class="w">  </span><span class="m">0</span><span class="w"> </span>B<span class="w">   </span><span class="m">1</span>.0
 </span></code></pre></div>
-<ol>
-<li>From the same instance used in step 4, check that the containerd directories are using the second <code>/dev/nvme1n1</code> volume:</li>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a># /dev/nvme0n1 is the root volume and /dev/nvme1n1 is the second, additional volume
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>Node             SN                   Model                                    Namespace Usage                      Format           FW Rev
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>---------------- -------------------- ---------------------------------------- --------- -------------------------- ---------------- --------
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>/dev/nvme0n1     vol0cd37dab9e4a5c184 Amazon Elastic Block Store               1          68.72  GB /  68.72  GB    512   B +  0 B   1.0
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>/dev/nvme1n1     vol0ad3629c159ee869c Amazon Elastic Block Store               1          25.77  GB /  25.77  GB    512   B +  0 B   1.0
+</span></code></pre></div>
+</li>
+<li>
+<p>From the same instance used in step 4, check that the containerd directories are using the second <code>/dev/nvme1n1</code> volume:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>df<span class="w"> </span>/var/lib/containerd/
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a># Output should look like below, which shows the directory on the
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a># /dev/nvme1n1 volume and NOT on /dev/nvme0n1 (root volume)
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>Filesystem     1K-blocks    Used Available Use% Mounted on
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>/dev/nvme1n1    24594768 2886716  20433380  13% /var/lib/containerd
+</span></code></pre></div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>df<span class="w"> </span>/run/containerd/
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a># Output should look like below, which shows the directory on the
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a># /dev/nvme1n1 volume and NOT on /dev/nvme0n1 (root volume)
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>Filesystem     1K-blocks    Used Available Use% Mounted on
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>/dev/nvme1n1    24594768 2886716  20433380  13% /run/containerd
+</span></code></pre></div>
+</li>
 </ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>df<span class="w"> </span>/var/lib/containerd/
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># Output should look like below, which shows the directory on the /dev/nvme1n1 volume and NOT on /dev/nvme0n1 (root volume)</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>Filesystem<span class="w">     </span>1K-blocks<span class="w">    </span>Used<span class="w"> </span>Available<span class="w"> </span>Use%<span class="w"> </span>Mounted<span class="w"> </span>on
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>/dev/nvme1n1<span class="w">    </span><span class="m">24594768</span><span class="w"> </span><span class="m">2886716</span><span class="w">  </span><span class="m">20433380</span><span class="w">  </span><span class="m">13</span>%<span class="w"> </span>/var/lib/containerd
-</span></code></pre></div>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>df<span class="w"> </span>/run/containerd/
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1"># Output should look like below, which shows the directory on the /dev/nvme1n1 volume and NOT on /dev/nvme0n1 (root volume)</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>Filesystem<span class="w">     </span>1K-blocks<span class="w">    </span>Used<span class="w"> </span>Available<span class="w"> </span>Use%<span class="w"> </span>Mounted<span class="w"> </span>on
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>/dev/nvme1n1<span class="w">    </span><span class="m">24594768</span><span class="w"> </span><span class="m">2886716</span><span class="w">  </span><span class="m">20433380</span><span class="w">  </span><span class="m">13</span>%<span class="w"> </span>/run/containerd
-</span></code></pre></div>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
-<p>To teardown and remove the resources created in this example:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="w"> </span>module.eks_blueprints_addons
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>terraform<span class="w"> </span>destroy
+<!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </span></code></pre></div>
-<p>Enter <code>yes</code> at each command prompt to destroy</p>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
+<!-- END INCLUDE -->
+
 <!-- END INCLUDE -->
 
 

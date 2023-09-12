@@ -1111,16 +1111,8 @@
 
 <!-- BEGIN INCLUDE ../../patterns/istio-multi-cluster/README.md -->
 <h1 id="amazon-eks-multi-cluster-w-istio">Amazon EKS Multi-Cluster w/ Istio<a class="headerlink" href="#amazon-eks-multi-cluster-w-istio" title="Permanent link">&para;</a></h1>
-<p>This example shows how to provision 2 Amazon EKS clusters with Istio setup on each of them.
-The Istio will be set-up to operate in a <a href="https://istio.io/latest/docs/setup/install/multicluster/multi-primary/">Multi-Primary</a> way where services are shared across clusters.</p>
-<ul>
-<li>Deploy a VPC with additional security groups to allow cross-cluster communication and communication from nodes to the other cluster API Server endpoint</li>
-<li>Deploy 2 EKS Cluster with one managed node group in an VPC</li>
-<li>Add node_security_group rules for port access required for Istio communication</li>
-<li>Install Istio using Helm resources in Terraform</li>
-<li>Install Istio Ingress Gateway using Helm resources in Terraform</li>
-<li>Deploy/Validate Istio communication using sample application</li>
-</ul>
+<p>This pattern demonstrates 2 Amazon EKS clusters configured with Istio.
+Istio will be set-up to operate in a <a href="https://istio.io/latest/docs/setup/install/multicluster/multi-primary/">Multi-Primary</a> configuration, where services are shared across clusters.</p>
 <p>Refer to the <a href="https://istio.io/latest/docs/concepts/">documentation</a> for <code>Istio</code> concepts.</p>
 <h2 id="notable-configuration">Notable configuration<a class="headerlink" href="#notable-configuration" title="Permanent link">&para;</a></h2>
 <ul>

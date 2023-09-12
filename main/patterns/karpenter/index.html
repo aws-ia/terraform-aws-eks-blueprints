@@ -508,15 +508,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
+  <a href="#deploy" class="md-nav__link">
+    Deploy
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
+  <a href="#validate" class="md-nav__link">
+    Validate
   </a>
   
 </li>
@@ -851,15 +851,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
+  <a href="#deploy" class="md-nav__link">
+    Deploy
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
+  <a href="#validate" class="md-nav__link">
+    Validate
   </a>
   
 </li>
@@ -891,37 +891,26 @@
 
 <!-- BEGIN INCLUDE ../../patterns/karpenter/README.md -->
 <h1 id="karpenter">Karpenter<a class="headerlink" href="#karpenter" title="Permanent link">&para;</a></h1>
-<p>This example demonstrates how to provision a Karpenter on a serverless cluster (serverless data plane) using Fargate Profiles.</p>
-<p>This example solution provides:</p>
-<ul>
-<li>Amazon EKS Cluster (control plane)</li>
-<li>Amazon EKS Fargate Profiles for the <code>kube-system</code> namespace which is used by the <code>coredns</code>, <code>vpc-cni</code>, and <code>kube-proxy</code> addons, as well as profile that will match on the <code>karpenter</code> namespace which will be used by Karpenter.</li>
-<li>Amazon EKS managed addons <code>coredns</code>, <code>vpc-cni</code> and <code>kube-proxy</code>
-    <code>coredns</code> has been patched to run on Fargate, and <code>vpc-cni</code> has been configured to use prefix delegation to better support the max pods setting of 110 on the Karpenter provisioner</li>
-<li>A sample deployment is provided to demonstrates scaling a deployment to view how Karpenter responds to provision, and de-provision, resources on-demand</li>
-</ul>
-<h2 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<p>Ensure that you have the following tools installed locally:</p>
-<ol>
-<li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
-<li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
-<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
-</ol>
+<p>This pattern demonstrates how to provision Karpenter on a serverless cluster (serverless data plane) using Fargate Profiles.</p>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<p>To provision this example:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="w"> </span>module.vpc
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="w"> </span>module.eks
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>terraform<span class="w"> </span>apply
-</span></code></pre></div>
-<p>Enter <code>yes</code> at command prompt to apply</p>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
+<h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
+<div class="admonition danger">
+<p class="admonition-title">TODO</p>
+<p>Add in validation steps</p>
+</div>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
-<p>To teardown and remove the resources created in this example:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>deployment<span class="w"> </span>inflate
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+<p>Scale down the deployment to de-provision Karpenter created resources first:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>deployment<span class="w"> </span>inflate
 </span></code></pre></div>
+<!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+</span></code></pre></div>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
+<!-- END INCLUDE -->
+
 <!-- END INCLUDE -->
 
 

@@ -452,13 +452,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#deploy" class="md-nav__link">
     Deploy
   </a>
@@ -858,13 +851,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites:
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#deploy" class="md-nav__link">
     Deploy
   </a>
@@ -905,79 +891,65 @@
 
 <!-- BEGIN INCLUDE ../../patterns/fully-private-cluster/README.md -->
 <h1 id="fully-private-amazon-eks-cluster">Fully Private Amazon EKS Cluster<a class="headerlink" href="#fully-private-amazon-eks-cluster" title="Permanent link">&para;</a></h1>
-<p>This examples demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, but doesn't have outbound internet access. For that your cluster must pull images from a container registry that's in your VPC, and also must have endpoint private access enabled. This is required for nodes to register with the cluster endpoint.</p>
+<p>This pattern demonstrates an Amazon EKS cluster that does not have internet access.
+The private cluster must pull images from a container registry that is within in your VPC,
+and also must have endpoint private access enabled. This is required for nodes
+to register with the cluster endpoint.</p>
 <p>Please see this <a href="https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html">document</a> for more details on configuring fully private EKS Clusters.</p>
-<p>For fully Private EKS clusters requires the following VPC endpoints to be created to communicate with AWS services. This example solution will provide these endpoints if you choose to create VPC. If you are using an existing VPC then you may need to ensure these endpoints are created.</p>
-<div class="codehilite"><pre><span></span><code><span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">aps</span><span class="o">-</span><span class="n">workspaces</span><span class="w">            </span><span class="o">-</span><span class="w"> </span><span class="n">For</span><span class="w"> </span><span class="n">AWS</span><span class="w"> </span><span class="n">Managed</span><span class="w"> </span><span class="n">Prometheus</span><span class="w"> </span><span class="n">Workspace</span>
-<span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">ssm</span><span class="w">                       </span><span class="o">-</span><span class="w"> </span><span class="n">Secrets</span><span class="w"> </span><span class="n">Management</span>
+<p>For fully Private EKS clusters requires the following VPC endpoints to be created to communicate with AWS services.
+This example solution will provide these endpoints if you choose to create VPC.
+If you are using an existing VPC then you may need to ensure these endpoints are created.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">aps</span><span class="o">-</span><span class="n">workspaces</span><span class="w">       </span><span class="o">-</span><span class="w"> </span><span class="n">If</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">AWS</span><span class="w"> </span><span class="n">Managed</span><span class="w"> </span><span class="n">Prometheus</span><span class="w"> </span><span class="n">Workspace</span>
+<span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">ssm</span><span class="w">                  </span><span class="o">-</span><span class="w"> </span><span class="n">Secrets</span><span class="w"> </span><span class="n">Management</span>
 <span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">ec2</span>
 <span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">ecr</span><span class="o">.</span><span class="n">api</span>
 <span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">ecr</span><span class="o">.</span><span class="n">dkr</span>
-<span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">logs</span><span class="w">                       </span><span class="err">–</span><span class="w"> </span><span class="n">For</span><span class="w"> </span><span class="n">CloudWatch</span><span class="w"> </span><span class="n">Logs</span>
-<span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">sts</span><span class="w">                        </span><span class="err">–</span><span class="w"> </span><span class="n">If</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">AWS</span><span class="w"> </span><span class="n">Fargate</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">IAM</span><span class="w"> </span><span class="n">roles</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">service</span><span class="w"> </span><span class="n">accounts</span>
-<span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">elasticloadbalancing</span><span class="w">       </span><span class="err">–</span><span class="w"> </span><span class="n">If</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">Application</span><span class="w"> </span><span class="n">Load</span><span class="w"> </span><span class="n">Balancers</span>
-<span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">autoscaling</span><span class="w">                </span><span class="err">–</span><span class="w"> </span><span class="n">If</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">Cluster</span><span class="w"> </span><span class="n">Autoscaler</span>
-<span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">s3</span><span class="w">                         </span><span class="err">–</span><span class="w"> </span><span class="n">Creates</span><span class="w"> </span><span class="n">S3</span><span class="w"> </span><span class="n">gateway</span>
+<span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">logs</span><span class="w">                 </span><span class="err">–</span><span class="w"> </span><span class="n">For</span><span class="w"> </span><span class="n">CloudWatch</span><span class="w"> </span><span class="n">Logs</span>
+<span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">sts</span><span class="w">                  </span><span class="err">–</span><span class="w"> </span><span class="n">If</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">AWS</span><span class="w"> </span><span class="n">Fargate</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">IAM</span><span class="w"> </span><span class="n">roles</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">service</span><span class="w"> </span><span class="n">accounts</span>
+<span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">elasticloadbalancing</span><span class="w"> </span><span class="err">–</span><span class="w"> </span><span class="n">If</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">Application</span><span class="w"> </span><span class="n">Load</span><span class="w"> </span><span class="n">Balancers</span>
+<span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">autoscaling</span><span class="w">          </span><span class="err">–</span><span class="w"> </span><span class="n">If</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">Cluster</span><span class="w"> </span><span class="n">Autoscaler</span>
+<span class="n">com</span><span class="o">.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">s3</span>
 </code></pre></div>
 
-<h2 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<p>Ensure that you have the following tools installed locally:</p>
-<ol>
-<li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">aws cli</a></li>
-<li><a href="https://Kubernetes.io/docs/tasks/tools/">kubectl</a></li>
-<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">terraform</a></li>
-</ol>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<p>Since this is a Fully Private Amazon EKS Cluster, make sure that you'll have access to the Amazon VPC where the cluster will be deployed, otherwise you won't be able to access it.</p>
-<p>See the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/patterns/privatelink-access"><code>privatelink-access</code></a> pattern for using AWS PrivateLink to access the private cluster from another VPC.</p>
-<p>To provision this example:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply
-</span></code></pre></div>
-<p>Enter <code>yes</code> at command prompt to apply</p>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
-<p>The following command will update the <code>kubeconfig</code> on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code> to validate the CoreDNS deployment for Fargate.</p>
 <ol>
-<li>Check the Terraform provided Output, to update your <code>kubeconfig</code></li>
-</ol>
-<div class="language-hcl highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="err">Apply</span><span class="w"> </span><span class="err">complete</span><span class="p">!</span><span class="w"> </span><span class="err">Resources</span><span class="p">:</span><span class="w"> </span><span class="m">63</span><span class="w"> </span><span class="err">added</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="err">changed</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="err">destroyed</span><span class="p">.</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="err">Outputs</span><span class="p">:</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="na">configure_kubectl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws eks --region us-west-2 update-kubeconfig --name fully-private-cluster&quot;</span>
+<li>
+<p>Test by listing Nodes in in the cluster:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
 </span></code></pre></div>
-<ol>
-<li>Run <code>update-kubeconfig</code> command, using the Terraform provided Output, replace with your <code>$AWS_REGION</code> and your <code>$CLUSTER_NAME</code> variables.</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;<span class="nv">$AWS_REGION</span>&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;<span class="nv">$CLUSTER_NAME</span>&gt;
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>NAME                                        STATUS   ROLES    AGE     VERSION
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>ip-10-0-19-90.us-west-2.compute.internal    Ready    &lt;none&gt;   8m34s   v1.26.2-eks-a59e1f0
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>ip-10-0-44-110.us-west-2.compute.internal   Ready    &lt;none&gt;   8m36s   v1.26.2-eks-a59e1f0
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>ip-10-0-9-147.us-west-2.compute.internal    Ready    &lt;none&gt;   8m35s   v1.26.2-eks-a59e1f0
 </span></code></pre></div>
-<ol>
-<li>Test by listing Nodes in in the Cluster.</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>NAME<span class="w">                                        </span>STATUS<span class="w">   </span>ROLES<span class="w">    </span>AGE<span class="w">     </span>VERSION
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>ip-10-0-19-90.us-west-2.compute.internal<span class="w">    </span>Ready<span class="w">    </span>&lt;none&gt;<span class="w">   </span>8m34s<span class="w">   </span>v1.26.2-eks-a59e1f0
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>ip-10-0-44-110.us-west-2.compute.internal<span class="w">   </span>Ready<span class="w">    </span>&lt;none&gt;<span class="w">   </span>8m36s<span class="w">   </span>v1.26.2-eks-a59e1f0
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>ip-10-0-9-147.us-west-2.compute.internal<span class="w">    </span>Ready<span class="w">    </span>&lt;none&gt;<span class="w">   </span>8m35s<span class="w">   </span>v1.26.2-eks-a59e1f0
+</li>
+<li>
+<p>Test by listing all the Pods running currently. All the Pods should reach a status of <code>Running</code> after approximately 60 seconds:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A
 </span></code></pre></div>
-<ol>
-<li>Test by listing all the Pods running currently. All the Pods should reach a status of <code>Running</code> after approximately 60 seconds:</li>
-</ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>NAMESPACE<span class="w">     </span>NAME<span class="w">                       </span>READY<span class="w">   </span>STATUS<span class="w">    </span>RESTARTS<span class="w">   </span>AGE
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>kube-system<span class="w">   </span>aws-node-jvn9x<span class="w">             </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>7m42s
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>kube-system<span class="w">   </span>aws-node-mnjlf<span class="w">             </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>7m45s
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>kube-system<span class="w">   </span>aws-node-q458h<span class="w">             </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>7m49s
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>kube-system<span class="w">   </span>coredns-6c45d94f67-495rr<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>14m
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>kube-system<span class="w">   </span>coredns-6c45d94f67-5c8tc<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>14m
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>kube-system<span class="w">   </span>kube-proxy-47wfh<span class="w">           </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>8m32s
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>kube-system<span class="w">   </span>kube-proxy-f6chz<span class="w">           </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>8m30s
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>kube-system<span class="w">   </span>kube-proxy-xcfkc<span class="w">           </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>8m31s
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>kube-system   aws-node-jvn9x             1/1     Running   0          7m42s
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>kube-system   aws-node-mnjlf             1/1     Running   0          7m45s
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>kube-system   aws-node-q458h             1/1     Running   0          7m49s
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>kube-system   coredns-6c45d94f67-495rr   1/1     Running   0          14m
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>kube-system   coredns-6c45d94f67-5c8tc   1/1     Running   0          14m
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>kube-system   kube-proxy-47wfh           1/1     Running   0          8m32s
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>kube-system   kube-proxy-f6chz           1/1     Running   0          8m30s
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>kube-system   kube-proxy-xcfkc           1/1     Running   0          8m31s
 </span></code></pre></div>
+</li>
+</ol>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
-<p>To teardown and remove the resources created in this example:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+<!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </span></code></pre></div>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
+<!-- END INCLUDE -->
+
 <!-- END INCLUDE -->
 
 

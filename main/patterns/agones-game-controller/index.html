@@ -329,9 +329,54 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Agones Game Controller
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Agones Game Controller
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    Validate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    Destroy
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -799,6 +844,35 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    Validate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    Destroy
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -817,118 +891,56 @@
 
 <!-- BEGIN INCLUDE ../../patterns/agones-game-controller/README.md -->
 <h1 id="amazon-eks-deployment-with-agones-gaming-kubernetes-controller">Amazon EKS Deployment with Agones Gaming Kubernetes Controller<a class="headerlink" href="#amazon-eks-deployment-with-agones-gaming-kubernetes-controller" title="Permanent link">&para;</a></h1>
-<p>This example shows how to deploy and run Gaming applications on Amazon EKS with Agones Kubernetes Controller</p>
-<ul>
-<li>Deploy Private VPC, Subnets and all the required VPC endpoints</li>
-<li>Deploy EKS Cluster with one managed node group in an VPC</li>
-<li>Deploy Agones Kubernetes Controller using Helm Providers</li>
-<li>Deploy a simple gaming server and test the application</li>
-</ul>
-<h1 id="what-is-agones">What is Agones<a class="headerlink" href="#what-is-agones" title="Permanent link">&para;</a></h1>
-<p>Agones is an Open source Kubernetes Controller with custom resource definitions and is used to create, run, manage and scale dedicated game server processes within Kubernetes clusters using standard Kubernetes tooling and APIs.
+<p>This pattern shows how to deploy and run gaming applications on Amazon EKS using the Agones Kubernetes Controller</p>
+<p>Agones is an open source Kubernetes controller that provisions and manages dedicated game server
+processes within Kubernetes clusters using standard Kubernetes tooling and APIs.
 This model also allows any matchmaker to interact directly with Agones via the Kubernetes API to provision a dedicated game server</p>
-<h1 id="what-is-gamelift">What is GameLift<a class="headerlink" href="#what-is-gamelift" title="Permanent link">&para;</a></h1>
 <p>Amazon GameLift enables developers to deploy, operate, and scale dedicated, low-cost servers in the cloud for session-based, multiplayer games.
-Built on AWS global computing infrastructure, GameLift helps deliver high-performance, high-reliability, low-cost game servers while dynamically scaling your resource usage to meet worldwide player demand.</p>
-<h2 id="how-to-deploy">How to Deploy<a class="headerlink" href="#how-to-deploy" title="Permanent link">&para;</a></h2>
-<h3 id="prerequisites">Prerequisites:<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
-<p>Ensure that you have installed the following tools in your Mac or Windows Laptop before start working with this module and run Terraform Plan and Apply</p>
+Built on AWS global computing infrastructure, GameLift helps deliver high-performance, high-reliability,
+low-cost game servers while dynamically scaling your resource usage to meet worldwide player demand. See below
+for more information on how GameLift FleetIQ can be integrated with Agones deployed on Amazon EKS.</p>
+<p>Amazon GameLift FleetIQ optimizes the use of low-cost Spot Instances for cloud-based game hosting with Amazon EC2.
+With GameLift FleetIQ, you can work directly with your hosting resources in Amazon EC2 and Auto Scaling while
+taking advantage of GameLift optimizations to deliver inexpensive, resilient game hosting for your players
+and makes the use of low-cost Spot Instances viable for game hosting</p>
+<p>This <a href="https://aws.amazon.com/blogs/gametech/introducing-the-gamelift-fleetiq-adapter-for-agones/">blog</a> walks
+through the details of deploying EKS Cluster using eksctl and deploy Agones with GameLift FleetIQ.</p>
+<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
+<h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
 <ol>
-<li><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">AWS CLI</a></li>
-<li><a href="https://Kubernetes.io/docs/tasks/tools/">Kubectl</a></li>
-<li><a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">Terraform</a></li>
+<li>
+<p>Deploy the sample game server</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>https://raw.githubusercontent.com/googleforgames/agones/release-1.32.0/examples/simple-game-server/gameserver.yaml
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>gs
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>NAME                       STATE   ADDRESS         PORT   NODE                                        AGE
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>simple-game-server-7r6jr   Ready   34.243.345.22   7902   ip-10-1-23-233.eu-west-1.compute.internal   11h
+</span></code></pre></div>
+</li>
+<li>
+<p>Test the sample game server using <a href="https://netcat.sourceforge.net/"><code>netcat</code></a></p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">echo</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;UDP test - Hello EKS Blueprints!&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>nc<span class="w"> </span>-u<span class="w"> </span><span class="m">34</span>.243.345.22<span class="w"> </span><span class="m">7902</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Hello EKS Blueprints!
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>ACK: Hello EKS Blueprints!
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>EXIT
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>ACK: EXIT
+</span></code></pre></div>
+</li>
 </ol>
-<h3 id="deployment-steps">Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permanent link">&para;</a></h3>
-<h4 id="step-1-clone-the-repo-using-the-command-below">Step 1: Clone the repo using the command below<a class="headerlink" href="#step-1-clone-the-repo-using-the-command-below" title="Permanent link">&para;</a></h4>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/aws-ia/terraform-aws-eks-blueprints.git
+<h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
+<p>Delete the resources created by the sample game server first:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>default<span class="w"> </span>delete<span class="w"> </span>gs<span class="w"> </span>--all<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
 </span></code></pre></div>
-<h4 id="step-2-run-terraform-init">Step 2: Run Terraform INIT<a class="headerlink" href="#step-2-run-terraform-init" title="Permanent link">&para;</a></h4>
-<p>Initialize a working directory with configuration files</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span><span class="w"> </span>patterns/game-tech/agones-game-controller
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>terraform<span class="w"> </span>init
+<!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </span></code></pre></div>
-<h4 id="step-3-run-terraform-plan">Step 3: Run Terraform PLAN<a class="headerlink" href="#step-3-run-terraform-plan" title="Permanent link">&para;</a></h4>
-<p>Verify the resources created by this execution</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_REGION</span><span class="o">=</span>&lt;ENTER<span class="w"> </span>YOUR<span class="w"> </span>REGION&gt;<span class="w">   </span><span class="c1"># Select your own region</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>terraform<span class="w"> </span>plan
-</span></code></pre></div>
-<h4 id="step-4-finally-terraform-apply">Step 4: Finally, Terraform APPLY<a class="headerlink" href="#step-4-finally-terraform-apply" title="Permanent link">&para;</a></h4>
-<p><strong>Deploy the pattern</strong></p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>terraform<span class="w"> </span>apply
-</span></code></pre></div>
-<p>Enter <code>yes</code> to apply.</p>
-<h4 id="configure-kubectl-and-test-cluster">Configure <code>kubectl</code> and test cluster<a class="headerlink" href="#configure-kubectl-and-test-cluster" title="Permanent link">&para;</a></h4>
-<p>EKS Cluster details can be extracted from terraform output or from AWS Console to get the name of cluster.
-This following command used to update the <code>kubeconfig</code> in your local machine where you run kubectl commands to interact with your EKS Cluster.</p>
-<h4 id="step-5-run-update-kubeconfig-command">Step 5: Run <code>update-kubeconfig</code> command<a class="headerlink" href="#step-5-run-update-kubeconfig-command" title="Permanent link">&para;</a></h4>
-<p><code>~/.kube/config</code> file gets updated with cluster details and certificate from the below command</p>
-<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;enter-your-region&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;cluster-name&gt;
-</code></pre></div>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/main/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
+<!-- END INCLUDE -->
 
-<h4 id="step-6-list-all-the-worker-nodes-by-running-the-command-below">Step 6: List all the worker nodes by running the command below<a class="headerlink" href="#step-6-list-all-the-worker-nodes-by-running-the-command-below" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
-</code></pre></div>
-
-<h4 id="step-7-list-all-the-pods-running-in-agones-system-namespace">Step 7: List all the pods running in <code>agones-system</code> namespace<a class="headerlink" href="#step-7-list-all-the-pods-running-in-agones-system-namespace" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>agones-system
-</code></pre></div>
-
-<h4 id="step-8-install-k9s-optional">Step 8: Install K9s (OPTIONAL)<a class="headerlink" href="#step-8-install-k9s-optional" title="Permanent link">&para;</a></h4>
-<p>This step is to install K9s client tool to interact with EKS Cluster</p>
-<div class="codehilite"><pre><span></span><code> curl -sS https://webinstall.dev/k9s | bash
-</code></pre></div>
-
-<p>Just type k9s after the installation and then you will see the output like this</p>
-<div class="codehilite"><pre><span></span><code>     k9s
-</code></pre></div>
-
-<p><img alt="Alt Text" src="https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/9c6f8ea3e710f7b0137be07835653a2bf4f9fdfe/images/k9s-agones-cluster.png" title="K9s" /></p>
-<h4 id="step-9-deploying-the-sample-game-server">Step 9: Deploying the Sample game server<a class="headerlink" href="#step-9-deploying-the-sample-game-server" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><code><span class="nx">kubectl</span><span class="w"> </span><span class="nx">create</span><span class="w"> </span><span class="o">-</span><span class="nx">f</span><span class="w"> </span><span class="nx">https</span><span class="p">:</span><span class="c1">//raw.githubusercontent.com/googleforgames/agones/release-1.32.0/examples/simple-game-server/gameserver.yaml</span>
-
-
-<span class="nx">kubectl</span><span class="w"> </span><span class="nx">get</span><span class="w"> </span><span class="nx">gs</span>
-</code></pre></div>
-
-<p>Output looks like below</p>
-<div class="codehilite"><pre><span></span><code><span class="nx">NAME</span><span class="w">                       </span><span class="nx">STATE</span><span class="w">   </span><span class="nx">ADDRESS</span><span class="w">         </span><span class="nx">PORT</span><span class="w">   </span><span class="nx">NODE</span><span class="w">                                        </span><span class="nx">AGE</span>
-<span class="nx">simple</span><span class="o">-</span><span class="nx">game</span><span class="o">-</span><span class="nx">server</span><span class="o">-</span><span class="mi">7</span><span class="nx">r6jr</span><span class="w">   </span><span class="nx">Ready</span><span class="w">   </span><span class="m m-Double">34.243.345.22</span><span class="w">   </span><span class="mi">7902</span><span class="w">   </span><span class="nx">ip</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">23</span><span class="o">-</span><span class="mi">233</span><span class="p">.</span><span class="nx">eu</span><span class="o">-</span><span class="nx">west</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="nx">compute</span><span class="p">.</span><span class="nx">internal</span><span class="w">   </span><span class="mi">11</span><span class="nx">h</span>
-</code></pre></div>
-
-<h4 id="step-10-testing-the-sample-game-server">Step 10: Testing the Sample Game Server<a class="headerlink" href="#step-10-testing-the-sample-game-server" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><code>sudo yum install netcat
-
-nc -u &lt;ADDRESS&gt; &lt;PORT&gt;
-
-e.g.,  nc -u 34.243.345.22 7902
-</code></pre></div>
-
-<p>Output looks like below</p>
-<div class="codehilite"><pre><span></span><code><span class="nv">TeamRole</span>:<span class="o">~/</span><span class="nv">environment</span><span class="o">/</span><span class="nv">eks</span><span class="o">-</span><span class="nv">blueprints</span><span class="w"> </span><span class="ss">(</span><span class="nv">main</span><span class="ss">)</span><span class="w"> </span>$<span class="w"> </span><span class="nv">echo</span><span class="w"> </span><span class="o">-</span><span class="nv">n</span><span class="w"> </span><span class="s2">&quot;UDP test - Hello Workshop&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nv">nc</span><span class="w"> </span><span class="o">-</span><span class="nv">u</span><span class="w"> </span><span class="mi">34</span>.<span class="mi">243</span>.<span class="mi">345</span>.<span class="mi">22</span><span class="w"> </span><span class="mi">7902</span>
-<span class="nv">Hello</span><span class="w"> </span><span class="nv">Workshop</span>
-<span class="nv">ACK</span>:<span class="w"> </span><span class="nv">Hello</span><span class="w"> </span><span class="nv">Workshop</span>
-<span class="k">EXIT</span>
-<span class="nv">ACK</span>:<span class="w"> </span><span class="k">EXIT</span>
-</code></pre></div>
-
-<h1 id="deploy-gamelift-fleetiq">Deploy GameLift FleetIQ<a class="headerlink" href="#deploy-gamelift-fleetiq" title="Permanent link">&para;</a></h1>
-<p>Amazon GameLift FleetIQ optimizes the use of low-cost Spot Instances for cloud-based game hosting with Amazon EC2. With GameLift FleetIQ, you can work directly with your hosting resources in Amazon EC2 and Auto Scaling while taking advantage of GameLift optimizations to deliver inexpensive, resilient game hosting for your players and makes the use of low-cost Spot Instances viable for game hosting</p>
-<p>This <a href="https://aws.amazon.com/blogs/gametech/introducing-the-gamelift-fleetiq-adapter-for-agones/">blog</a> will go through the details of deploying EKS Cluster using eksctl and deploy Agones with GameLift FleetIQ</p>
-<p>Download the sh and execute</p>
-<div class="codehilite"><pre><span></span><code>curl -O https://raw.githubusercontent.com/awslabs/fleetiq-adapter-for-agones/master/Agones_EKS_FleetIQ_Integration_Package%5BBETA%5D/quick_install/fleet_eks_agones_quickinstall.sh
-</code></pre></div>
-
-<h2 id="cleanup">Cleanup<a class="headerlink" href="#cleanup" title="Permanent link">&para;</a></h2>
-<p>To clean up your environment, destroy the Terraform modules in reverse order.</p>
-<p>Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;helm_release.agones&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.vpc&quot;</span><span class="w"> </span>-auto-approve
-</span></code></pre></div>
-<p>Finally, destroy any additional resources that are not in the above modules</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
-</span></code></pre></div>
 <!-- END INCLUDE -->
 
 
