@@ -16,6 +16,12 @@ concepts.
 
 See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
+Once the resources have been provisioned, you will need to replace the `istio-ingress` pods due to a [`istiod` dependency issue](https://github.com/istio/istio/issues/35789). Use the following command to perform a rolling restart of the `istio-ingress` pods:
+
+```sh
+kubectl rollout restart deployment istio-ingress -n istio-ingress
+```
+
 ### Observability Add-ons
 
 Use the following code snippet to add the Istio Observability Add-ons on the EKS
