@@ -58,12 +58,20 @@ module "eks" {
   cluster_version                = "1.27"
   cluster_endpoint_public_access = true
 
+  cluster_addons = {
+    coredns    = {}
+    kube-proxy = {}
+    vpc-cni = {
+      preserve = true
+    }
+  }
+
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_groups = {
     initial = {
-      instance_types = ["m5.large"]
+      instance_types = ["m5.xlarge"]
 
       min_size     = 1
       max_size     = 5
@@ -99,6 +107,12 @@ module "eks" {
 # EKS Blueprints Addons
 ################################################################################
 
+resource "kubernetes_namespace_v1" "istio_system" {
+  metadata {
+    name = "istio-system"
+  }
+}
+
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "~> 1.0"
@@ -108,32 +122,24 @@ module "eks_blueprints_addons" {
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
 
-  eks_addons = {
-    coredns    = {}
-    vpc-cni    = {}
-    kube-proxy = {}
-  }
-
   # This is required to expose Istio Ingress Gateway
   enable_aws_load_balancer_controller = true
 
   helm_releases = {
     istio-base = {
-      chart            = "base"
-      version          = local.istio_chart_version
-      repository       = local.istio_chart_url
-      name             = "istio-base"
-      namespace        = "istio-system"
-      create_namespace = true
+      chart      = "base"
+      version    = local.istio_chart_version
+      repository = local.istio_chart_url
+      name       = "istio-base"
+      namespace  = kubernetes_namespace_v1.istio_system.metadata[0].name
     }
 
     istiod = {
-      chart            = "istiod"
-      version          = local.istio_chart_version
-      repository       = local.istio_chart_url
-      name             = "istiod"
-      namespace        = "istio-system"
-      create_namespace = false
+      chart      = "istiod"
+      version    = local.istio_chart_version
+      repository = local.istio_chart_url
+      name       = "istiod"
+      namespace  = kubernetes_namespace_v1.istio_system.metadata[0].name
 
       set = [
         {
