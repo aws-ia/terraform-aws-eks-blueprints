@@ -19,8 +19,6 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 1. List all the Pods in the cluster; you should see `aws-for-fluentbit-` Pods running on `kube-system` Namespace. All the Pods should reach a status of `Running` after approximately 60 seconds:
 
-terraform output configure_kubectl | jq -r | bash
-
 ```bash
 $ kubectl get pods -A
 ```
