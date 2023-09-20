@@ -40,13 +40,19 @@ In addition, the following properties are configured on the nodegroup volumes:
 
 See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
-## Validate
+## Validate Storage
 
-For validating `velero` see [here](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/velero#validate)
+For validating `velero` see [here](https://github.com/awshans/terraform-aws-eks-blueprints/tree/main/patterns/stateful/README.md#Validate-Velero-Install)
 
-The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the deployment.
+The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the Velero deployment.
 
-1. List the storage classes to view that `efs`, `gp2`, and `gp3` classes are present and `gp3` is the default storage class
+1. Run `update-kubeconfig` command:
+
+    ```bash
+    aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
+    ```
+
+2. List the storage classes to view that `efs`, `gp2`, and `gp3` classes are present and `gp3` is the default storage class
 
     ```sh
     kubectl get storageclasses
@@ -59,7 +65,7 @@ The following command will update the `kubeconfig` on your local machine and all
     gp3 (default)   ebs.csi.aws.com         Delete          WaitForFirstConsumer   true                   2m19s
     ```
 
-2. From an instance launched with instance store(s), check that the instance store has been mounted correctly. To verify, first install the `nvme-cli` tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:
+3. From an instance launched with instance store(s), check that the instance store has been mounted correctly. To verify, first install the `nvme-cli` tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:
 
     ```sh
     # Install the nvme-cli tool
@@ -87,7 +93,7 @@ The following command will update the `kubeconfig` on your local machine and all
     nvme1n1       259:1    0 69.9G  0 disk /local1 # <--- this is the instance store
     ```
 
-3. From an instance launched with multiple volume(s), check that the instance store has been mounted correctly. To verify, first install the `nvme-cli` tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:
+4. From an instance launched with multiple volume(s), check that the instance store has been mounted correctly. To verify, first install the `nvme-cli` tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:
 
     ```sh
     # Install the nvme-cli tool
@@ -105,7 +111,7 @@ The following command will update the `kubeconfig` on your local machine and all
     /dev/nvme1n1     vol0ad3629c159ee869c Amazon Elastic Block Store               1          25.77  GB /  25.77  GB    512   B +  0 B   1.0
     ```
 
-4. From the same instance used in step 4, check that the containerd directories are using the second `/dev/nvme1n1` volume:
+5. From the same instance used in step 4, check that the containerd directories are using the second `/dev/nvme1n1` volume:
 
     ```sh
     df /var/lib/containerd/
@@ -127,6 +133,45 @@ The following command will update the `kubeconfig` on your local machine and all
     # /dev/nvme1n1 volume and NOT on /dev/nvme0n1 (root volume)
     Filesystem     1K-blocks    Used Available Use% Mounted on
     /dev/nvme1n1    24594768 2886716  20433380  13% /run/containerd
+    ```
+
+## Validate Velero Install
+
+The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the Velero deployment.
+
+1. Run `update-kubeconfig` command:
+
+    ```bash
+    aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
+    ```
+
+2. Test by listing velero resources provisioned:
+
+    ```bash
+    kubectl get all -n velero
+
+    # Output should look similar to below
+    NAME                         READY   STATUS    RESTARTS   AGE
+    pod/velero-b4d8fd5c7-5smp6   1/1     Running   0          112s
+
+    NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+    service/velero   ClusterIP   172.20.217.203   <none>        8085/TCP   114s
+
+    NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+    deployment.apps/velero   1/1     1            1           114s
+
+    NAME                               DESIRED   CURRENT   READY   AGE
+    replicaset.apps/velero-b4d8fd5c7   1         1         1       114s
+    ```
+
+3. Get backup location using velero [CLI](https://velero.io/docs/v1.8/basic-install/#install-the-cli)
+
+    ```bash
+    velero backup-location get
+
+    # Output should look similar to below
+    NAME      PROVIDER   BUCKET/PREFIX             PHASE       LAST VALIDATED                  ACCESS MODE   DEFAULT
+    default   aws        velero-ssqwm44hvofzb32d   Available   2022-05-22 10:53:26 -0400 EDT   ReadWrite     true
     ```
 
 ## Destroy
