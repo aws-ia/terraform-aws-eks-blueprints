@@ -5,6 +5,12 @@ This pattern demonstrates an Amazon EKS Cluster deployment using AWS for FluentB
 - [Container Insights on Amazon EKS and Kubernetes](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-EKS-quickstart.html#Container-Insights-setup-EKS-quickstart-FluentBit)
 - [Use_Kubelet feature](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-use-kubelet.html)
 
+## Areas of Interest
+
+Here is the configuration block under the `eks_blueprints_addons` module that customizes the AWS for FluentBit addon in order to enable ContainerInsights and Kubelet monitoring feature.
+
+https://github.com/rodrigobersa/terraform-aws-eks-blueprints/blob/97ea696788fcace8d5fa0ee91927efd4b8a549df/patterns/fluentbit-containerinsights/main.tf#L99-L125
+
 ## Deploy
 
 See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
