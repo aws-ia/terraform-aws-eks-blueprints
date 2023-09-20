@@ -335,5 +335,5 @@ $ kubectl -n kube-system logs -l app.kubernetes.io/name=aws-for-fluent-bit
 ## Destroy
 
 {%
-   include-markdown "../docs/_partials/destroy.md"
+   include-markdown "../../docs/_partials/destroy.md"
 %}
