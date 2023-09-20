@@ -42,7 +42,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 ## Validate Storage
 
-For validating `velero` see [here](https://github.com/awshans/terraform-aws-eks-blueprints/tree/main/patterns/stateful/README.md#Validate-Velero-Install)
+For validating `velero` see [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/tree/main/patterns/stateful/README.md#Validate-Velero-Install)
 
 The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the Velero deployment.
 
