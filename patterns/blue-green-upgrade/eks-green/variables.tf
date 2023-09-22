@@ -5,7 +5,7 @@ variable "aws_region" {
 }
 
 variable "environment_name" {
-  description = "The name of Environment Infrastructure stack name, feel free to rename it. Used for cluster and VPC names."
+  description = "The name of Environment Infrastructure stack, feel free to rename it. Used for cluster and VPC names."
   type        = string
   default     = "eks-blueprint"
 }
@@ -43,22 +43,22 @@ variable "argocd_secret_manager_name_suffix" {
 variable "gitops_addons_org" {
   type        = string
   description = "Git repository org/user contains for addons"
-  default     = "https://github.com/gitops-bridge-dev"
+  default     = "git@github.com:aws-samples"
 }
 variable "gitops_addons_repo" {
   type        = string
   description = "Git repository contains for addons"
-  default     = "gitops-bridge-argocd-control-plane-template"
+  default     = "eks-blueprints-add-ons"
 }
 variable "gitops_addons_basepath" {
   type        = string
   description = "Git repository base path for addons"
-  default     = ""
+  default     = "argocd/"
 }
 variable "gitops_addons_path" {
   type        = string
   description = "Git repository path for addons"
-  default     = "bootstrap/control-plane/addons"
+  default     = "argocd/bootstrap/control-plane/addons"
 }
 variable "gitops_addons_revision" {
   type        = string
@@ -69,7 +69,7 @@ variable "gitops_addons_revision" {
 variable "gitops_workloads_org" {
   type        = string
   description = "Git repository org/user contains for workloads"
-  default     = "https://github.com/aws-samples"
+  default     = "git@github.com:aws-samples"
 }
 
 variable "gitops_workloads_repo" {

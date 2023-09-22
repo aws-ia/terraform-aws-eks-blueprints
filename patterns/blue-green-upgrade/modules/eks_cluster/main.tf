@@ -87,13 +87,13 @@ locals {
   #----------------------------------------------------------------
 
   addons_metadata = merge(
-    module.eks_blueprints_addons.gitops_metadata, # eks blueprints addons automatically expose metadatas
+    try(module.eks_blueprints_addons.gitops_metadata, {}), # eks blueprints addons automatically expose metadatas
     {
       aws_cluster_name = module.eks.cluster_name
       aws_region       = local.region
       aws_account_id   = data.aws_caller_identity.current.account_id
       aws_vpc_id       = data.aws_vpc.vpc.id
-      cluster_endpoint = module.eks.cluster_endpoint
+      cluster_endpoint = try(module.eks.cluster_endpoint, {})
       env              = local.env
     },
     {
@@ -125,7 +125,7 @@ locals {
   # Manifests for bootstraping the cluster for addons & workloads
   #---------------------------------------------------------------
 
-  argocd_bootstrap_app_of_apps = {
+  argocd_apps = {
     addons    = file("${path.module}/../../bootstrap/addons.yaml")
     workloads = file("${path.module}/../../bootstrap/workloads.yaml")
   }
@@ -282,6 +282,7 @@ module "eks_blueprints_platform_teams" {
     "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
     "appName"                                 = "platform-team-app",
     "projectName"                             = "project-platform",
+    #"pod-security.kubernetes.io/enforce"      = "restricted",    
   }
 
   annotations = {
@@ -342,6 +343,7 @@ module "eks_blueprints_dev_teams" {
         "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
         "appName"                                 = "burnham-team-app",
         "projectName"                             = "project-burnham",
+        #"pod-security.kubernetes.io/enforce"      = "restricted",        
       }
     }
     riker = {
@@ -537,7 +539,7 @@ resource "kubernetes_secret" "git_secrets" {
       type = "git"
       url  = local.gitops_workloads_url
       # comment if you want to uses public repo wigh syntax "https://github.com/xxx" syntax, uncomment when using syntax "git@github.com:xxx"
-      #sshPrivateKey = data.aws_secretsmanager_secret_version.workload_repo_secret.secret_string
+      sshPrivateKey = data.aws_secretsmanager_secret_version.workload_repo_secret.secret_string
     }
   }
   metadata {
@@ -551,28 +553,20 @@ resource "kubernetes_secret" "git_secrets" {
 }
 
 ################################################################################
-# GitOps Bridge: Metadata
-################################################################################
-module "gitops_bridge_metadata" {
-  source = "github.com/gitops-bridge-dev/gitops-bridge-argocd-metadata-terraform?ref=v1.0.0"
-
-  cluster_name = module.eks.cluster_name
-  metadata     = local.addons_metadata
-  environment  = local.environment
-  addons       = local.addons
-}
-
-################################################################################
 # GitOps Bridge: Bootstrap
 ################################################################################
-
 module "gitops_bridge_bootstrap" {
-  source = "github.com/gitops-bridge-dev/gitops-bridge-argocd-bootstrap-terraform?ref=v1.0.0"
+  source = "github.com/gitops-bridge-dev/gitops-bridge-argocd-bootstrap-terraform?ref=v2.0.0"
 
-  argocd_cluster               = module.gitops_bridge_metadata.argocd
-  argocd_bootstrap_app_of_apps = local.argocd_bootstrap_app_of_apps
-  #argocd                       = { create_namespace = false }
-  argocd = {
+  cluster = {
+    cluster_name = module.eks.cluster_name
+    environment  = local.environment
+    metadata     = local.addons_metadata
+    addons       = local.addons
+  }
+  apps = local.argocd_apps
+
+    argocd = {
     create_namespace = false
     set = [
       {
@@ -587,6 +581,7 @@ module "gitops_bridge_bootstrap" {
       }
     ]
   }
+
   depends_on = [kubernetes_secret.git_secrets]
 }
 
