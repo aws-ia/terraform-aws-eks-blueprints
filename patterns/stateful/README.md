@@ -42,8 +42,6 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 ## Validate
 
-For validating `velero` see [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/tree/main/patterns/stateful/README.md#Validate-Velero-Install)
-
 The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the Velero deployment.
 
 1. Run `update-kubeconfig` command:
@@ -135,17 +133,7 @@ The following command will update the `kubeconfig` on your local machine and all
     /dev/nvme1n1    24594768 2886716  20433380  13% /run/containerd
     ```
 
-## Validate Velero Install
-
-The following command will update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl` to validate the Velero deployment.
-
-1. Run `update-kubeconfig` command:
-
-    ```bash
-    aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
-    ```
-
-2. Test by listing velero resources provisioned:
+6. Test by listing velero resources provisioned:
 
     ```bash
     kubectl get all -n velero
@@ -164,7 +152,7 @@ The following command will update the `kubeconfig` on your local machine and all
     replicaset.apps/velero-b4d8fd5c7   1         1         1       114s
     ```
 
-3. Get backup location using velero [CLI](https://velero.io/docs/v1.8/basic-install/#install-the-cli)
+7. Get backup location using velero [CLI](https://velero.io/docs/v1.8/basic-install/#install-the-cli)
 
     ```bash
     velero backup-location get
