@@ -282,7 +282,7 @@ module "eks_blueprints_platform_teams" {
     "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
     "appName"                                 = "platform-team-app",
     "projectName"                             = "project-platform",
-    #"pod-security.kubernetes.io/enforce"      = "restricted",    
+    #"pod-security.kubernetes.io/enforce"      = "restricted",
   }
 
   annotations = {
@@ -343,7 +343,7 @@ module "eks_blueprints_dev_teams" {
         "elbv2.k8s.aws/pod-readiness-gate-inject" = "enabled",
         "appName"                                 = "burnham-team-app",
         "projectName"                             = "project-burnham",
-        #"pod-security.kubernetes.io/enforce"      = "restricted",        
+        #"pod-security.kubernetes.io/enforce"      = "restricted",
       }
     }
     riker = {
@@ -566,7 +566,7 @@ module "gitops_bridge_bootstrap" {
   }
   apps = local.argocd_apps
 
-    argocd = {
+  argocd = {
     create_namespace = false
     set = [
       {

@@ -84,7 +84,7 @@ terraform init
 
 **2.** Create your SSH Key in Secret Manager
 
-Once the secret created you should be able to retrieve it using: 
+Once the secret created you should be able to retrieve it using:
 
 ```bash
 aws secretsmanager get-secret-value \
