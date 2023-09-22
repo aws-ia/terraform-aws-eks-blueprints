@@ -8,7 +8,7 @@ We are leveraging [the existing EKS Blueprints Workloads GitHub repository sampl
 
 ## Table of content
 
-- [Blue/Green or Canary Amazon EKS clusters migration for stateless ArgoCD workloads](#bluegreen-or-canary-amazon-eks-clusters-migration-for-stateless-argocd-workloads)
+- [Blue/Green Migration](#bluegreen-migration)
   - [Table of content](#table-of-content)
   - [Project structure](#project-structure)
   - [Prerequisites](#prerequisites)
@@ -25,8 +25,6 @@ We are leveraging [the existing EKS Blueprints Workloads GitHub repository sampl
   - [Delete the Stack](#delete-the-stack)
     - [Delete the EKS Cluster(s)](#delete-the-eks-clusters)
       - [TL;DR](#tldr)
-      - [Manual](#manual)
-    - [Delete the environment stack](#delete-the-environment-stack)
   - [Troubleshoot](#troubleshoot)
     - [External DNS Ownership](#external-dns-ownership)
     - [Check Route 53 Record status](#check-route-53-record-status)
@@ -53,7 +51,11 @@ In the GitOps workload repository, we have configured our applications deploymen
 
 We have configured ExternalDNS add-ons in our two clusters to share the same Route53 Hosted Zone. The workloads in both clusters also share the same Route 53 DNS records, we rely on AWS Route53 weighted records to allow us to configure canary workload migration between our two EKS clusters.
 
-Here we use the same GitOps workload configuration repository and adapt parameters with the `values.yaml`. We could also use different ArgoCD repository for each cluster, or use a new directory if we want to validate or test new deployment manifests with maybe additional features, configurations or to use with different Kubernetes add-ons (like changing ingress controller).
+We are leveraging the [gitops-bridge-argocd-bootstrap](https://github.com/gitops-bridge-dev/gitops-bridge-argocd-bootstrap-terraform) terraform module that allow us to dynamically provide metadatas from Terraform to ArgoCD deployed in the cluster. For doing this, the module will extract all metadatas from the [terraform-aws-eks-blueprints-addons](https://github.com/aws-ia/terraform-aws-eks-blueprints-addons) module, configured to create all resources except installing the addon's Helm chart. The addon Installation will be delegate to ArgoCD Itself using the [eks-blueprints-add-ons](https://github.com/aws-samples/eks-blueprints-add-ons/tree/main/argocd/bootstrap/control-plane/addons) git repository containing ArgoCD ApplicaitonSets for each supported Addons.
+
+The gitops-bridge will create a secret in the EKS cluster containing all metadatas that will be dynamically used by ArgoCD ApplicationSets at deployment time, so that we can adapt their configuration to our EKS cluster context.
+
+<img src="static/gitops-bridge.excalidraw.png" width=100%>
 
 Our objective here is to show you how Application teams and Platform teams can configure their infrastructure and workloads so that application teams are able to deploy autonomously their workloads to the EKS clusters thanks to ArgoCD, and platform team can keep the control of migrating production workloads from one cluster to another without having to synchronized operations with applications teams, or asking them to build a complicated CD pipeline.
 
@@ -82,12 +84,13 @@ git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
 cd patterns/blue-green-upgrade/
 ```
 
-2. Copy the `terraform.tfvars.example` to `terraform.tfvars` on each `environment`, `eks-blue` and `eks-green` folders, and change region, hosted_zone_name, eks_admin_role_name according to your needs.
+2. Copy the `terraform.tfvars.example` to `terraform.tfvars` and symlink it on each `environment`, `eks-blue` and `eks-green` folders, and change region, hosted_zone_name, eks_admin_role_name according to your needs.
 
 ```shell
-cp terraform.tfvars.example environment/terraform.tfvars
-cp terraform.tfvars.example eks-blue/terraform.tfvars
-cp terraform.tfvars.example eks-green/terraform.tfvars
+cp terraform.tfvars.example terraform.tfvars
+ln -s ../terraform.tfvars environment/terraform.tfvars
+ln -s ../terraform.tfvars eks-blue/terraform.tfvars
+ln -s ../terraform.tfvars eks-blue/terraform.tfvars
 ```
 
 - You will need to provide the `hosted_zone_name` for example `my-example.com`. Terraform will create a new hosted zone for the project with name: `${environment}.${hosted_zone_name}` so in our example `eks-blueprint.my-example.com`.
@@ -208,19 +211,19 @@ eks-blueprint-blue
 
 We have configured both our clusters to configure the same [Amazon Route 53](https://aws.amazon.com/fr/route53/) Hosted Zones. This is done by having the same configuration of [ExternalDNS](https://github.com/kubernetes-sigs/external-dns) add-on in `main.tf`:
 
-This is the Terraform configuration to configure the ExternalDNS Add-on which is deployed by the Blueprint using ArgoCD.
+This is the Terraform configuration to configure the ExternalDNS Add-on which is deployed by the Blueprint using ArgoCD. we specify the Route53 zone that external-dns needs to monitor.
 
 ```
   enable_external_dns = true
+  external_dns_route53_zone_arns      = [data.aws_route53_zone.sub.arn]
+```
 
-  external_dns_helm_config = {
-    txtOwnerId         = local.name
-    zoneIdFilter       = data.aws_route53_zone.sub.zone_id
-    policy             = "sync"
-    awszoneType        = "public"
-    zonesCacheDuration = "1h"
-    logLevel           = "debug"
-  }
+we also configure the addons_metadata to provide more configurations to external-dns:
+
+```
+addons_metadata = merge(
+  ...
+  external_dns_policy        = "sync"
 ```
 
 - We use ExternalDNS in `sync` mode so that the controller can create but also remove DNS records accordingly to service or ingress objects creation.
@@ -348,52 +351,6 @@ Why doing this? When we remove an ingress object, we want the associated Kuberne
 ```bash
 ../tear-down.sh
 ```
-
-#### Manual
-
-1. If also deployed, delete your Karpenter provisioners
-
-this is safe to delete if no addons are deployed on Karpenter, which is the case here.
-If not we should separate the team-platform deployments which installed Karpenter provisioners in a separate ArgoCD Application to avoid any conflicts.
-
-```bash
-kubectl delete provisioners.karpenter.sh --all
-```
-
-2. Delete Workloads App of App
-
-```bash
-kubectl delete application workloads -n argocd
-```
-
-3. If also deployed, delete ecsdemo App of App
-
-```bash
-kubectl delete application ecsdemo -n argocd
-```
-
-Once every workload applications as been freed on AWS side, (this can take some times), we can then destroy our add-ons and terraform resources
-
-> Note: it can take time to deregister all load balancers, verify that you don't have any more AWS resources created by EKS prior to start destroying EKS with terraform.
-
-4. Destroy terraform resources
-
-```bash
-terraform apply -destroy -target="module.eks_cluster.module.kubernetes_addons" -auto-approve
-terraform apply -destroy -target="module.eks_cluster.module.eks" -auto-approve
-terraform apply -destroy -auto-approve
-```
-
-### Delete the environment stack
-
-If you have finish playing with this solution, and once you have destroyed the 2 EKS clusters, you can now delete the environment stack.
-
-```bash
-cd environment
-terraform apply -destroy -auto-approve
-```
-
-This will destroy the Route53 hosted zone, the Certificate manager certificate, the VPC with all it's associated resources.
 
 ## Troubleshoot
 
