@@ -5,9 +5,15 @@ variable "aws_region" {
 }
 
 variable "environment_name" {
-  description = "The name of Environment Infrastructure stack name, feel free to rename it. Used for cluster and VPC names."
+  description = "The name of Environment Infrastructure stack, feel free to rename it. Used for cluster and VPC names."
   type        = string
   default     = "eks-blueprint"
+}
+
+variable "ingress_type" {
+  type        = string
+  description = "Type of ingress to uses (alb | nginx | ...). this parameter will be sent to arocd via gitops bridge"
+  default     = "alb"
 }
 
 variable "hosted_zone_name" {
@@ -22,44 +28,64 @@ variable "eks_admin_role_name" {
   default     = ""
 }
 
-variable "workload_repo_url" {
-  type        = string
-  description = "Git repo URL for the ArgoCD workload deployment"
-  default     = "https://github.com/aws-samples/eks-blueprints-workloads.git"
-}
-
-variable "workload_repo_secret" {
+variable "aws_secret_manager_git_private_ssh_key_name" {
   type        = string
   description = "Secret Manager secret name for hosting Github SSH-Key to Access private repository"
   default     = "github-blueprint-ssh-key"
-}
-
-variable "workload_repo_revision" {
-  type        = string
-  description = "Git repo revision in workload_repo_url for the ArgoCD workload deployment"
-  default     = "main"
-}
-
-variable "workload_repo_path" {
-  type        = string
-  description = "Git repo path in workload_repo_url for the ArgoCD workload deployment"
-  default     = "envs/dev"
-}
-
-variable "addons_repo_url" {
-  type        = string
-  description = "Git repo URL for the ArgoCD addons deployment"
-  default     = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
-}
-
-variable "iam_platform_user" {
-  type        = string
-  description = "IAM user used as platform-user"
-  default     = ""
 }
 
 variable "argocd_secret_manager_name_suffix" {
   type        = string
   description = "Name of secret manager secret for ArgoCD Admin UI Password"
   default     = "argocd-admin-secret"
+}
+
+variable "gitops_addons_org" {
+  type        = string
+  description = "Git repository org/user contains for addons"
+  default     = "git@github.com:aws-samples"
+}
+variable "gitops_addons_repo" {
+  type        = string
+  description = "Git repository contains for addons"
+  default     = "eks-blueprints-add-ons"
+}
+variable "gitops_addons_basepath" {
+  type        = string
+  description = "Git repository base path for addons"
+  default     = "argocd/"
+}
+variable "gitops_addons_path" {
+  type        = string
+  description = "Git repository path for addons"
+  default     = "argocd/bootstrap/control-plane/addons"
+}
+variable "gitops_addons_revision" {
+  type        = string
+  description = "Git repository revision/branch/ref for addons"
+  default     = "HEAD"
+}
+
+variable "gitops_workloads_org" {
+  type        = string
+  description = "Git repository org/user contains for workloads"
+  default     = "git@github.com:aws-samples"
+}
+
+variable "gitops_workloads_repo" {
+  type        = string
+  description = "Git repository contains for workloads"
+  default     = "eks-blueprints-workloads"
+}
+
+variable "gitops_workloads_path" {
+  type        = string
+  description = "Git repo path in workload_repo_url for the ArgoCD workload deployment"
+  default     = "envs/dev"
+}
+
+variable "gitops_workloads_revision" {
+  type        = string
+  description = "Git repo revision in workload_repo_url for the ArgoCD workload deployment"
+  default     = "main"
 }
