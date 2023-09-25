@@ -90,7 +90,7 @@ cd patterns/blue-green-upgrade/
 cp terraform.tfvars.example terraform.tfvars
 ln -s ../terraform.tfvars environment/terraform.tfvars
 ln -s ../terraform.tfvars eks-blue/terraform.tfvars
-ln -s ../terraform.tfvars eks-blue/terraform.tfvars
+ln -s ../terraform.tfvars eks-green/terraform.tfvars
 ```
 
 - You will need to provide the `hosted_zone_name` for example `my-example.com`. Terraform will create a new hosted zone for the project with name: `${environment}.${hosted_zone_name}` so in our example `eks-blueprint.my-example.com`.
