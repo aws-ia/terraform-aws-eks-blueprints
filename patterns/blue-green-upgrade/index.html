@@ -1504,7 +1504,7 @@ In the GitOps workload repository, we have configured our applications deploymen
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cp<span class="w"> </span>terraform.tfvars.example<span class="w"> </span>terraform.tfvars
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>ln<span class="w"> </span>-s<span class="w"> </span>../terraform.tfvars<span class="w"> </span>environment/terraform.tfvars
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>ln<span class="w"> </span>-s<span class="w"> </span>../terraform.tfvars<span class="w"> </span>eks-blue/terraform.tfvars
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>ln<span class="w"> </span>-s<span class="w"> </span>../terraform.tfvars<span class="w"> </span>eks-blue/terraform.tfvars
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>ln<span class="w"> </span>-s<span class="w"> </span>../terraform.tfvars<span class="w"> </span>eks-green/terraform.tfvars
 </span></code></pre></div>
 <ul>
 <li>You will need to provide the <code>hosted_zone_name</code> for example <code>my-example.com</code>. Terraform will create a new hosted zone for the project with name: <code>${environment}.${hosted_zone_name}</code> so in our example <code>eks-blueprint.my-example.com</code>.</li>
