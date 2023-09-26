@@ -207,6 +207,10 @@ module "eks_blueprints" {
   vpc_id             = data.aws_vpc.vpc.id
   private_subnet_ids = data.aws_subnets.private.ids
 
+  # Karpenter use the cluster primary security group so these are not utilized
+  create_cluster_security_group = false
+  create_node_security_group    = false
+
   # EKS CONTROL PLANE VARIABLES
   cluster_version = local.cluster_version
 

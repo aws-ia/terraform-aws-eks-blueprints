@@ -38,3 +38,5 @@ terraform.rc
 
 # TFSec files
 .tfsec
+*.envrc
+*kube-config.yaml
