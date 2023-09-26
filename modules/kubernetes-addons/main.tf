@@ -362,6 +362,24 @@ module "kube_state_metrics" {
   addon_context     = local.addon_context
 }
 
+module "ondat" {
+  source = "./ondat"
+
+  count = var.enable_ondat ? 1 : 0
+
+  helm_config       = var.ondat_helm_config
+  manage_via_gitops = var.argocd_manage_add_ons
+  addon_context     = local.addon_context
+  irsa_policies     = var.ondat_irsa_policies
+  create_cluster    = var.ondat_create_cluster
+  etcd_endpoints    = var.ondat_etcd_endpoints
+  etcd_ca           = var.ondat_etcd_ca
+  etcd_cert         = var.ondat_etcd_cert
+  etcd_key          = var.ondat_etcd_key
+  admin_username    = var.ondat_admin_username
+  admin_password    = var.ondat_admin_password
+}
+
 module "kube_prometheus_stack" {
   count             = var.enable_kube_prometheus_stack ? 1 : 0
   source            = "./kube-prometheus-stack"
