@@ -15,7 +15,8 @@ locals {
   ecsfrontend_route53_weight = var.ecsfrontend_route53_weight
 
   tag_val_vpc            = var.vpc_tag_value == "" ? var.core_stack_name : var.vpc_tag_value
-  tag_val_private_subnet = var.vpc_tag_value == "" ? "${var.core_stack_name}-private-" : var.vpc_tag_value
+  tag_val_private_subnet = "${local.core_stack_name}-private-"
+  tag_val_public_subnet = "${local.core_stack_name}-public-"
 
   node_group_name            = "managed-ondemand"
   argocd_secret_manager_name = var.argocd_secret_manager_name_suffix
@@ -158,6 +159,27 @@ locals {
     }
   }
 
+  cluster_proportional_autoscaler_repository_cn = "048912060910.dkr.ecr.cn-northwest-1.amazonaws.com.cn/gcr/google_containers/cluster-proportional-autoscaler-amd64"
+  cluster_proportional_autoscaler_tag_cn = "1.8.0"
+  cluster_proportional_autoscaler_repository = "registry.k8s.io/cpa/cluster-proportional-autoscaler"
+  cluster_proportional_autoscaler_tag = "v1.8.9"
+
+  aws_cloudwatch_metrics_repository_cn = "048912060910.dkr.ecr.cn-northwest-1.amazonaws.com.cn/dockerhub/amazon/cloudwatch-agent"
+  aws_cloudwatch_metrics_tag_cn = "1.247349.0b251399-amd64"
+  aws_cloudwatch_metrics_repository = "amazon/cloudwatch-agent"  
+  aws_cloudwatch_metrics_tag = "1.247350.0b251780"
+  
+  external_dns_registry_cn = "048912060910.dkr.ecr.cn-northwest-1.amazonaws.com.cn/gcr/google_containers"
+  external_dns_tag_cn = "0.7.5"
+  external_dns_registry = "docker.io"  
+  external_dns_tag = "0.13.6-debian-11-r11"
+  
+  argocd_repository_cn = "048912060910.dkr.ecr.cn-northwest-1.amazonaws.com.cn/quay/argoproj/argocd"
+  argocd_tag_cn = "1.8.0"
+  argocd_repository = "quay.io/argoproj/argocd"  
+  argocd_tag = "v2.8.2"
+ 
+
   tags = {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
@@ -182,6 +204,29 @@ data "aws_subnets" "private" {
     name   = "tag:${var.vpc_tag_key}"
     values = ["${local.tag_val_private_subnet}*"]
   }
+}
+
+#Add Tags for the new cluster in the VPC Subnets
+resource "aws_ec2_tag" "private_subnets" {
+  for_each    = toset(data.aws_subnets.private.ids)
+  resource_id = each.value
+  key         = "kubernetes.io/cluster/${local.core_stack_name}-${local.suffix_stack_name}"
+  value       = "shared"
+}
+
+data "aws_subnets" "public" {
+  filter {
+    name   = "tag:Name"
+    values = ["${local.tag_val_public_subnet}*"]
+  }
+}
+
+#Add Tags for the new cluster in the VPC Subnets
+resource "aws_ec2_tag" "public_subnets" {
+  for_each    = toset(data.aws_subnets.public.ids)
+  resource_id = each.value
+  key         = "kubernetes.io/cluster/${local.core_stack_name}-${local.suffix_stack_name}"
+  value       = "shared"
 }
 
 # Create Sub HostedZone four our deployment
@@ -217,7 +262,7 @@ module "eks_blueprints" {
   # List of map_roles
   map_roles = [
     {
-      rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_admin_role_name}" # The ARN of the IAM role
+      rolearn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_admin_role_name}" # The ARN of the IAM role
       username = "ops-role"                                                                                    # The user name within Kubernetes to map to the IAM role
       groups   = ["system:masters"]                                                                            # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
     }
@@ -237,8 +282,7 @@ module "eks_blueprints" {
     admin = {
       users = [
         data.aws_caller_identity.current.arn,
-        "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${var.iam_platform_user}",
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_admin_role_name}"
+        "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${var.eks_admin_role_name}"
       ]
     }
   }
@@ -361,7 +405,12 @@ module "eks_blueprints" {
     }
   }
 
-  tags = local.tags
+  tags = merge(local.tags, {
+    # NOTE - if creating multiple security groups with this module, only tag the
+    # security group that Karpenter should utilize with the following tag
+    # (i.e. - at most, only one security group should have this tag in your account)
+    "karpenter.sh/discovery" = local.name
+  })
 }
 
 #certificate_arn = aws_acm_certificate_validation.example.certificate_arn
@@ -377,12 +426,12 @@ module "kubernetes_addons" {
   #---------------------------------------------------------------
 
   enable_argocd         = true
-  argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying Add-ons.
+  #argocd_manage_add_ons = true # Indicates that ArgoCD is responsible for managing/deploying Add-ons.
 
   argocd_applications = {
-    addons    = local.addon_application
+    //addons    = local.addon_application
     workloads = local.workload_application
-    ecsdemo   = local.ecsdemo_application
+    //ecsdemo   = local.ecsdemo_application
   }
 
   # This example shows how to set default ArgoCD Admin Password using SecretsManager with Helm Chart set_sensitive values.
@@ -393,10 +442,14 @@ module "kubernetes_addons" {
         value = bcrypt(data.aws_secretsmanager_secret_version.admin_password_version.secret_string)
       }
     ]
-    set = [
+    set = [# https://github.com/argoproj/argo-helm/blob/main/charts/argo-cd/values.yaml
       {
-        name  = "server.service.type"
-        value = "LoadBalancer"
+        name  = "global.image.repository"
+        value = data.aws_partition.current == "aws-cn" ? local.argocd_repository_cn : local.argocd_repository
+      },
+      {
+        name  = "global.image.tag"
+        value = data.aws_partition.current == "aws-cn" ? local.argocd_tag_cn : local.argocd_tag
       }
     ]
   }
@@ -407,6 +460,19 @@ module "kubernetes_addons" {
   #---------------------------------------------------------------
 
   enable_amazon_eks_coredns = true
+  enable_coredns_cluster_proportional_autoscaler = true
+  coredns_cluster_proportional_autoscaler_helm_config = { # https://github.com/kubernetes-sigs/cluster-proportional-autoscaler/blob/master/charts/cluster-proportional-autoscaler/values.yaml
+    set = [
+      {
+        name  = "image.repository"
+        value = data.aws_partition.current == "aws-cn" ? local.cluster_proportional_autoscaler_repository_cn : local.cluster_proportional_autoscaler_repository
+      },
+      {
+        name  = "image.tag"
+        value = data.aws_partition.current == "aws-cn" ? local.cluster_proportional_autoscaler_tag_cn : local.cluster_proportional_autoscaler_tag
+      }
+    ]
+  }
   amazon_eks_coredns_config = {
     most_recent        = true
     kubernetes_version = local.cluster_version
@@ -440,7 +506,40 @@ module "kubernetes_addons" {
   #---------------------------------------------------------------
 
   enable_metrics_server               = true
-  enable_vpa                          = true
+  metrics_server_helm_config = {
+    set = [
+      {
+        name  = "image.repository"
+        value = "public.ecr.aws/eks-distro/kubernetes-sigs/metrics-server"
+      },
+      {
+        name  = "image.tag"
+        value = "v0.6.4-eks-1-28-latest"
+      }
+    ]
+  }
+
+  enable_vpa                          = false
+  vpa_helm_config = {
+    set = [
+      {
+        name  = "recommender.image.repository"
+        value = "048912060910.dkr.ecr.cn-northwest-1.amazonaws.com.cn/gcr/google_containers/autoscaling/vpa-recommender"
+      },
+      {
+        name  = "recommender.image.tag"
+        value = "0.7.0"
+      },
+      {
+        name  = "updater.image.repository"
+        value = "048912060910.dkr.ecr.cn-northwest-1.amazonaws.com.cn/gcr/google_containers/autoscaling/vpa-updater"
+      },
+      {
+        name  = "updater.image.tag"
+        value = "0.7.0"
+      }
+    ]
+  }
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller_helm_config = {
     service_account = "aws-lb-sa"
@@ -448,17 +547,42 @@ module "kubernetes_addons" {
   enable_karpenter              = true
   enable_aws_for_fluentbit      = true
   enable_aws_cloudwatch_metrics = true
+  aws_cloudwatch_metrics_helm_config = {
+    set = [    
+      {
+        name  = "image.repository"
+        value = data.aws_partition.current == "aws-cn" ? local.aws_cloudwatch_metrics_repository_cn : local.aws_cloudwatch_metrics_repository
+        
+      },
+      {
+        name  = "image.tag"
+        value = data.aws_partition.current == "aws-cn" ? local.aws_cloudwatch_metrics_tag_cn : local.aws_cloudwatch_metrics_tag
+      },
+    ]
+  }
 
   #to view the result : terraform state show 'module.kubernetes_addons.module.external_dns[0].module.helm_addon.helm_release.addon[0]'
   enable_external_dns = true
 
-  external_dns_helm_config = {
+  external_dns_helm_config = {#https://github.com/bitnami/charts/blob/main/bitnami/external-dns/values.yaml
+    set = [
+      {
+        name  = "global.imageRegistry"
+        value = data.aws_partition.current == "aws-cn" ? local.external_dns_registry_cn : local.external_dns_registry
+      },
+      {
+        name  = "image.tag"
+        value = data.aws_partition.current == "aws-cn" ? local.external_dns_tag_cn : local.external_dns_tag
+      },
+    ]
     txtOwnerId   = local.name
     zoneIdFilter = data.aws_route53_zone.sub.zone_id # Note: this uses GitOpsBridge
     policy       = "sync"
     logLevel     = "debug"
   }
 
-  enable_kubecost = true
+
+
+  enable_kubecost = false
 
 }

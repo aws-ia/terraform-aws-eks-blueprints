@@ -6,8 +6,8 @@ kubectl delete application workloads -n argocd || (echo "error deleting workload
 kubectl delete application ecsdemo -n argocd || (echo "error deleting ecsdemo application" && exit -1)
 
 # Then Tear down the cluster
-terraform apply -destroy -target="module.kubernetes_addons" -auto-approve || (echo "error deleting module.kubernetes_addons" && exit -1)
-terraform apply -destroy -target="module.eks_blueprints" -auto-approve || (echo "error deleting eks-blueprint" && exit -1)
-terraform apply -destroy -auto-approve || (echo "error deleting terraform" && exit -1)
+terraform destroy -target="module.eks_cluster.module.kubernetes_addons" -auto-approve || (echo "error deleting module.kubernetes_addons" && exit -1)
+terraform destroy -target="module.eks_cluster.module.eks_blueprints" -auto-approve || (echo "error deleting eks-blueprint" && exit -1)
+terraform destroy -auto-approve || (echo "error deleting terraform" && exit -1)
 
 echo "Tear Down OK"
