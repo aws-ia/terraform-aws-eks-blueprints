@@ -76,7 +76,7 @@ module "aws_eks" {
   cluster_encryption_config        = var.enable_cluster_encryption ? local.cluster_encryption_config : []
   cluster_identity_providers       = var.cluster_identity_providers
 
-  cluster_iam_role_dns_suffix = data.aws_partition.current == "aws-cn" ? "amazonaws.com": ""
+  cluster_iam_role_dns_suffix = data.aws_partition.current.partition  == "aws-cn" ? "amazonaws.com": null
 
   tags = var.tags
 }
