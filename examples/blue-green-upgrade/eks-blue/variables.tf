@@ -76,3 +76,10 @@ variable "vpc_tag_value" {
   type        = string
   default     = ""
 }
+
+variable "ecr_registry_preffix" {
+  description = "Preffix uses for docker images in ECR registry"
+  type        = string
+  default     = ""
+}
+

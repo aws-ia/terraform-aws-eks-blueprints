@@ -100,3 +100,9 @@ variable "route53_weight" {
   type        = string
   default     = "0"
 }
+
+variable "ecr_registry_preffix" {
+  description = "Preffix uses for docker images in ECR registry"
+  type        = string
+  default     = ""
+}

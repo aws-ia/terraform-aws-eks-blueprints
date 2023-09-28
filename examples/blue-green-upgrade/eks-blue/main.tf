@@ -53,4 +53,6 @@ module "eks_cluster" {
   vpc_tag_key                       = var.vpc_tag_key
   vpc_tag_value                     = var.vpc_tag_value
 
+  ecr_registry_preffix              = var.ecr_registry_preffix
+
 }

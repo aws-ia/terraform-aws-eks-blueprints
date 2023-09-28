@@ -165,7 +165,7 @@ locals {
   # You can provide a coma separated list of images to copy like this one to DTH : registry.k8s.io/cpa/cluster-proportional-autoscaler:v1.8.9,docker.io/amazon/cloudwatch-agent:1.247350.0b251780,docker.io/bitnami/external-dns:0.13.6-debian-11-r11,quay.io/argoproj/argocd:v2.8.2,registry.k8s.io/metrics-server/metrics-server:v0.6.4,registry.k8s.io/autoscaling/vpa-admission-controller:0.14.0 ,registry.k8s.io/autoscaling/vpa-recommender:0.14.0,registry.k8s.io/autoscaling/vpa-updater:0.14.0,registry.k8s.io/metrics-server/metrics-server:v0.6.4
   # Then you need to update blueprint-addons to allow pulling from local ECR
   # we are using our ECR registry as a prefix for images
-  ecr_registry_preffix = data.aws_partition.current.partition == "aws-cn" ? "376520866342.dkr.ecr.cn-north-1.amazonaws.com.cn/" : ""
+  ecr_registry_preffix = data.aws_partition.current.partition == "aws-cn" ? var.ecr_registry_preffix : ""
 
   cluster_proportional_autoscaler_repository = "registry.k8s.io/cpa/cluster-proportional-autoscaler"
   aws_cloudwatch_metrics_repository = "amazon/cloudwatch-agent"  
