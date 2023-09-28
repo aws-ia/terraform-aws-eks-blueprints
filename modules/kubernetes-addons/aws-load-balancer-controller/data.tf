@@ -160,6 +160,7 @@ data "aws_iam_policy_document" "aws_lb" {
     sid    = "AllowGetCertificates"
     effect = "Allow"
     resources = [
+      "*",
       "arn:${data.aws_partition.current.partition}:acm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*",
       "arn:${data.aws_partition.current.partition}:acm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:certificate/*"
     ]

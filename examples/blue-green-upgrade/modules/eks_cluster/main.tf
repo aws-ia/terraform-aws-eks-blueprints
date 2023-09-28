@@ -54,7 +54,8 @@ locals {
         }
         blueprint                = "terraform"
         clusterName              = local.name
-        karpenterInstanceProfile = "${local.name}-${local.node_group_name}"
+        karpenterInstanceProfile  = "${local.name}-${local.node_group_name}"
+        ecr_registry_preffix      = local.ecr_registry_preffix 
         env                      = local.env
         ingress = {
           type                  = "alb"
@@ -159,26 +160,26 @@ locals {
     }
   }
 
-  cluster_proportional_autoscaler_repository_cn = "048912060910.dkr.ecr.cn-northwest-1.amazonaws.com.cn/gcr/google_containers/cluster-proportional-autoscaler-amd64"
-  cluster_proportional_autoscaler_tag_cn = "1.8.0"
-  cluster_proportional_autoscaler_repository = "registry.k8s.io/cpa/cluster-proportional-autoscaler"
-  cluster_proportional_autoscaler_tag = "v1.8.9"
+  # Most of Public Kubernetes Registries are not Opened in China
+  # We recommend to copy images you need into private China ECR using Data Transfer Hub (DTH) : https://aws.amazon.com/fr/solutions/implementations/data-transfer-hub/
+  # You can provide a coma separated list of images to copy like this one to DTH : registry.k8s.io/cpa/cluster-proportional-autoscaler:v1.8.9,docker.io/amazon/cloudwatch-agent:1.247350.0b251780,docker.io/bitnami/external-dns:0.13.6-debian-11-r11,quay.io/argoproj/argocd:v2.8.2,registry.k8s.io/metrics-server/metrics-server:v0.6.4,registry.k8s.io/autoscaling/vpa-admission-controller:0.14.0 ,registry.k8s.io/autoscaling/vpa-recommender:0.14.0,registry.k8s.io/autoscaling/vpa-updater:0.14.0,registry.k8s.io/metrics-server/metrics-server:v0.6.4
+  # Then you need to update blueprint-addons to allow pulling from local ECR
+  # we are using our ECR registry as a prefix for images
+  ecr_registry_preffix = data.aws_partition.current.partition == "aws-cn" ? "376520866342.dkr.ecr.cn-north-1.amazonaws.com.cn/" : ""
 
-  aws_cloudwatch_metrics_repository_cn = "048912060910.dkr.ecr.cn-northwest-1.amazonaws.com.cn/dockerhub/amazon/cloudwatch-agent"
-  aws_cloudwatch_metrics_tag_cn = "1.247349.0b251399-amd64"
+  cluster_proportional_autoscaler_repository = "registry.k8s.io/cpa/cluster-proportional-autoscaler"
   aws_cloudwatch_metrics_repository = "amazon/cloudwatch-agent"  
-  aws_cloudwatch_metrics_tag = "1.247350.0b251780"
-  
-  external_dns_registry_cn = "048912060910.dkr.ecr.cn-northwest-1.amazonaws.com.cn/gcr/google_containers"
-  external_dns_tag_cn = "0.7.5"
-  external_dns_registry = "docker.io"  
-  external_dns_tag = "0.13.6-debian-11-r11"
-  
-  argocd_repository_cn = "048912060910.dkr.ecr.cn-northwest-1.amazonaws.com.cn/quay/argoproj/argocd"
-  argocd_tag_cn = "1.8.0"
+  external_dns_registry = "docker.io"  # External-dns helm chart allow to specify registry instead of repository
   argocd_repository = "quay.io/argoproj/argocd"  
-  argocd_tag = "v2.8.2"
- 
+  metric_server_repository = "registry.k8s.io/metrics-server/metrics-server"  
+  vpa_recommender_repository = "registry.k8s.io/autoscaling/vpa-recommender"  
+  vpa_updater_repository = "registry.k8s.io/autoscaling/vpa-updater"  
+  vpa_admission_repository = "registry.k8s.io/autoscaling/vpa-admission-controller"  
+  tigeraOperator_registry = "quay.io"
+  calicoctl_repository = "docker.io/calico/ctl"
+  keda_repository = "ghcr.io/kedacore/keda"
+  keda_metricsApiServer_repository = "ghcr.io/kedacore/keda-metrics-apiserver"
+  keda_webhooks_repository = "ghcr.io/kedacore/keda-admission-webhooks"
 
   tags = {
     Blueprint  = local.name
@@ -445,11 +446,7 @@ module "kubernetes_addons" {
     set = [# https://github.com/argoproj/argo-helm/blob/main/charts/argo-cd/values.yaml
       {
         name  = "global.image.repository"
-        value = data.aws_partition.current == "aws-cn" ? local.argocd_repository_cn : local.argocd_repository
-      },
-      {
-        name  = "global.image.tag"
-        value = data.aws_partition.current == "aws-cn" ? local.argocd_tag_cn : local.argocd_tag
+        value = "${local.ecr_registry_preffix}${local.argocd_repository}"
       }
     ]
   }
@@ -465,11 +462,7 @@ module "kubernetes_addons" {
     set = [
       {
         name  = "image.repository"
-        value = data.aws_partition.current == "aws-cn" ? local.cluster_proportional_autoscaler_repository_cn : local.cluster_proportional_autoscaler_repository
-      },
-      {
-        name  = "image.tag"
-        value = data.aws_partition.current == "aws-cn" ? local.cluster_proportional_autoscaler_tag_cn : local.cluster_proportional_autoscaler_tag
+        value = "${local.ecr_registry_preffix}${local.cluster_proportional_autoscaler_repository}"
       }
     ]
   }
@@ -510,11 +503,7 @@ module "kubernetes_addons" {
     set = [
       {
         name  = "image.repository"
-        value = "public.ecr.aws/eks-distro/kubernetes-sigs/metrics-server"
-      },
-      {
-        name  = "image.tag"
-        value = "v0.6.4-eks-1-28-latest"
+        value = "${local.ecr_registry_preffix}${local.metric_server_repository}"
       }
     ]
   }
@@ -524,20 +513,16 @@ module "kubernetes_addons" {
     set = [
       {
         name  = "recommender.image.repository"
-        value = "048912060910.dkr.ecr.cn-northwest-1.amazonaws.com.cn/gcr/google_containers/autoscaling/vpa-recommender"
-      },
-      {
-        name  = "recommender.image.tag"
-        value = "0.7.0"
+        value = "${local.ecr_registry_preffix}${local.vpa_recommender_repository}"
       },
       {
         name  = "updater.image.repository"
-        value = "048912060910.dkr.ecr.cn-northwest-1.amazonaws.com.cn/gcr/google_containers/autoscaling/vpa-updater"
+        value = "${local.ecr_registry_preffix}${local.vpa_recommender_repository}"
       },
       {
-        name  = "updater.image.tag"
-        value = "0.7.0"
-      }
+        name  = "recommender.image.repository"
+        value = "${local.ecr_registry_preffix}${local.vpa_recommender_repository}"
+      },            
     ]
   }
   enable_aws_load_balancer_controller = true
@@ -551,13 +536,9 @@ module "kubernetes_addons" {
     set = [    
       {
         name  = "image.repository"
-        value = data.aws_partition.current == "aws-cn" ? local.aws_cloudwatch_metrics_repository_cn : local.aws_cloudwatch_metrics_repository
+        value = "${local.ecr_registry_preffix}${local.aws_cloudwatch_metrics_repository}"
         
-      },
-      {
-        name  = "image.tag"
-        value = data.aws_partition.current == "aws-cn" ? local.aws_cloudwatch_metrics_tag_cn : local.aws_cloudwatch_metrics_tag
-      },
+      }
     ]
   }
 
@@ -568,12 +549,8 @@ module "kubernetes_addons" {
     set = [
       {
         name  = "global.imageRegistry"
-        value = data.aws_partition.current == "aws-cn" ? local.external_dns_registry_cn : local.external_dns_registry
-      },
-      {
-        name  = "image.tag"
-        value = data.aws_partition.current == "aws-cn" ? local.external_dns_tag_cn : local.external_dns_tag
-      },
+        value = "${local.ecr_registry_preffix}${local.external_dns_registry}"
+      }
     ]
     txtOwnerId   = local.name
     zoneIdFilter = data.aws_route53_zone.sub.zone_id # Note: this uses GitOpsBridge
@@ -581,8 +558,36 @@ module "kubernetes_addons" {
     logLevel     = "debug"
   }
 
-
-
+  enable_keda                           = false
+  keda_helm_config = {
+    set = [
+      {
+        name  = "image.keda.repository"
+        value = "${local.ecr_registry_preffix}${local.keda_repository}"
+      },
+      {
+        name  = "image.metricsApiServer.repository"
+        value = "${local.ecr_registry_preffix}${local.keda_metricsApiServer_repository}"
+      },
+      {
+        name  = "image.webhooks.repository"
+        value = "${local.ecr_registry_preffix}${local.keda_webhooks_repository}"
+      }      
+    ]
+  }
+  enable_calico                         = false
+  calico_helm_config = {
+    set = [
+      {
+        name  = "tigeraOperator.registry"
+        value = "${local.ecr_registry_preffix}${local.tigeraOperator_registry}"
+      },
+            {
+        name  = "calicoctl.image"
+        value = "${local.ecr_registry_preffix}${local.calicoctl_repository}"
+      }
+    ]
+  }
   enable_kubecost = false
 
 }

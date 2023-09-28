@@ -59,7 +59,7 @@ data "aws_iam_policy_document" "kms" {
 
     principals {
       type        = "Service"
-      identifiers = [data.aws_partition.current == "aws-cn" ? "logs.${var.addon_context.aws_region_name}.amazonaws.com.cn" : "logs.amazonaws.com"]
+      identifiers = [data.aws_partition.current.partition == "aws-cn" ? "logs.${var.addon_context.aws_region_name}.amazonaws.com.cn" : "logs.amazonaws.com"]
     }
   }
 }
