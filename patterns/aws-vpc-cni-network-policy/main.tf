@@ -28,6 +28,20 @@ provider "helm" {
   }
 }
 
+provider "kubectl" {
+  apply_retry_count      = 5
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  load_config_file       = false
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
+}
+
 data "aws_availability_zones" "available" {}
 
 locals {
@@ -124,13 +138,37 @@ module "vpc" {
 # Demo application
 ################################################################################
 
+resource "kubectl_manifest" "management_ui_namespace" {
+  yaml_body  = <<YAML
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: management-ui 
+  labels:
+    role: management-ui
+YAML
+  depends_on = [module.eks]
+}
+
+resource "kubectl_manifest" "client_namespace" {
+  yaml_body  = <<YAML
+apiVersion: v1
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: client
+  labels:
+    role: client
+YAML
+  depends_on = [module.eks]
+}
+
 resource "helm_release" "management_ui" {
   name             = "management-ui"
   chart            = "./demo-application/charts/management-ui"
   namespace        = "management-ui"
-  create_namespace = true
 
-  depends_on = [module.eks]
+  depends_on = [module.eks, kubectl_manifest.management_ui_namespace]
 }
 
 resource "helm_release" "backend" {
@@ -143,7 +181,7 @@ resource "helm_release" "backend" {
 }
 
 resource "helm_release" "frontend" {
-  name             = "backend"
+  name             = "frontend"
   chart            = "./demo-application/charts/frontend"
   namespace        = "stars"
   create_namespace = true
@@ -155,15 +193,15 @@ resource "helm_release" "client" {
   name             = "backend"
   chart            = "./demo-application/charts/client"
   namespace        = "client"
-  create_namespace = true
 
-  depends_on = [module.eks]
+  depends_on = [kubectl_manifest.management_ui_namespace]
 }
 
 ################################################################################
 # Restrict access using K8S Network Policies
 ################################################################################
 
+# Block all ingress and egress traffic within the stars ns
 resource "kubectl_manifest" "default_deny_stars" {
   yaml_body  = <<YAML
 kind: NetworkPolicy
