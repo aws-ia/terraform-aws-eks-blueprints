@@ -1,0 +1,5 @@
+apiVersion: v2
+name: client
+description: A Helm chart to deploy the client
+type: application
+version: 1.0.0

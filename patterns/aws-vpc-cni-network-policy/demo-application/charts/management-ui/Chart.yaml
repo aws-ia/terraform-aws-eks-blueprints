@@ -1,0 +1,5 @@
+apiVersion: v2
+name: management-ui
+description: A Helm chart to deploy the management-ui
+type: application
+version: 1.0.0
