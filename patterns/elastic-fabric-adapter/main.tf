@@ -28,25 +28,13 @@ provider "helm" {
   }
 }
 
-provider "kubectl" {
-  apply_retry_count      = 5
-  host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  load_config_file       = false
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
-  }
-}
-
 data "aws_availability_zones" "available" {}
 
 locals {
   name   = basename(path.cwd)
   region = "us-west-2"
+
+  cluster_version = "1.27"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -66,7 +54,7 @@ module "eks" {
   version = "~> 19.16"
 
   cluster_name                   = local.name
-  cluster_version                = "1.27"
+  cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
 
   cluster_addons = {
@@ -98,6 +86,13 @@ module "eks" {
     }
   }
 
+  eks_managed_node_group_defaults = {
+    iam_role_additional_policies = {
+      # Not required, but used in the example to access the nodes to inspect drivers and devices
+      AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+    }
+  }
+
   eks_managed_node_groups = {
     # For running services that do not require GPUs
     default = {
@@ -113,7 +108,7 @@ module "eks" {
       instance_types = ["g5.8xlarge"]
 
       min_size     = 1
-      max_size     = 3
+      max_size     = 1
       desired_size = 1
 
       subnet_ids = slice(module.vpc.private_subnets, 0, 1)
@@ -133,14 +128,26 @@ module "eks" {
       }
 
       pre_bootstrap_user_data = <<-EOT
-        # Install EFA
-        curl -O https://efa-installer.amazonaws.com/aws-efa-installer-latest.tar.gz
-        tar -xf aws-efa-installer-latest.tar.gz && cd aws-efa-installer
-        ./efa_installer.sh -y --minimal
-        fi_info -p efa -t FI_EP_RDM
+        EFA_BIN='/opt/amazon/efa/bin/'
 
-        # Disable ptrace
-        sysctl -w kernel.yama.ptrace_scope=0
+        # EFA driver is installed by default on EKS GPU AMI starting on EKS 1.28
+        if [ ! -s "$EFA_BIN" ]; then
+
+          # Install EFA
+          # Note: It is recommended to install the EFA driver on a custom AMI and
+          # not rely on dynamic installation during instance provisioning in user data
+          curl -O https://efa-installer.amazonaws.com/aws-efa-installer-latest.tar.gz
+          tar -xf aws-efa-installer-latest.tar.gz && cd aws-efa-installer
+          ./efa_installer.sh -y --minimal
+          cd .. && rm -rf aws-efa-installer*
+
+          # Not required - just displays info on the EFA interfaces
+          $EFA_BIN/fi_info -p efa
+
+          # Disable ptrace
+          sysctl -w kernel.yama.ptrace_scope=0
+
+        fi
       EOT
 
       taints = {
@@ -211,8 +218,20 @@ module "eks_blueprints_addons" {
       repository       = "https://nvidia.github.io/gpu-operator"
       values = [
         <<-EOT
+          dcgmExporter:
+            enabled: false
+          driver:
+            enabled: false
+          toolkit:
+            version: v1.13.5-centos7
           operator:
             defaultRuntime: containerd
+          validator:
+            driver:
+              env:
+                # https://github.com/NVIDIA/gpu-operator/issues/569
+                - name: DISABLE_DEV_CHAR_SYMLINK_CREATION
+                  value: "true"
         EOT
       ]
     }
@@ -225,14 +244,96 @@ module "eks_blueprints_addons" {
 # Amazon Elastic Fabric Adapter (EFA)
 ################################################################################
 
-data "http" "efa_device_plugin_yaml" {
-  url = "https://raw.githubusercontent.com/aws-samples/aws-efa-eks/main/manifest/efa-k8s-device-plugin.yml"
-}
+resource "kubernetes_daemonset" "aws_efa_k8s_device_plugin" {
+  metadata {
+    name      = "aws-efa-k8s-device-plugin-daemonset"
+    namespace = "kube-system"
+  }
 
-resource "kubectl_manifest" "efa_device_plugin" {
-  yaml_body = <<-YAML
-    ${data.http.efa_device_plugin_yaml.response_body}
-  YAML
+  spec {
+    selector {
+      match_labels = {
+        name = "aws-efa-k8s-device-plugin"
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          name = "aws-efa-k8s-device-plugin"
+        }
+      }
+
+      spec {
+        volume {
+          name = "device-plugin"
+
+          host_path {
+            path = "/var/lib/kubelet/device-plugins"
+          }
+        }
+
+        container {
+          name  = "aws-efa-k8s-device-plugin"
+          image = "602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/aws-efa-k8s-device-plugin:v0.3.3"
+
+          volume_mount {
+            name       = "device-plugin"
+            mount_path = "/var/lib/kubelet/device-plugins"
+          }
+
+          image_pull_policy = "Always"
+
+          security_context {
+            capabilities {
+              drop = ["ALL"]
+            }
+          }
+        }
+
+        host_network = true
+
+        affinity {
+          node_affinity {
+            required_during_scheduling_ignored_during_execution {
+              node_selector_term {
+                match_expressions {
+                  key      = "beta.kubernetes.io/instance-type"
+                  operator = "In"
+                  values   = ["c5n.18xlarge", "c5n.9xlarge", "c5n.metal", "c6a.48xlarge", "c6a.metal", "c6gn.16xlarge", "c6i.32xlarge", "c6i.metal", "c6id.32xlarge", "c6id.metal", "c6in.32xlarge", "c6in.metal", "c7g.16xlarge", "c7g.metal", "c7gd.16xlarge", "c7gn.16xlarge", "c7i.48xlarge", "dl1.24xlarge", "g4dn.12xlarge", "g4dn.16xlarge", "g4dn.8xlarge", "g4dn.metal", "g5.12xlarge", "g5.16xlarge", "g5.24xlarge", "g5.48xlarge", "g5.8xlarge", "hpc7g.16xlarge", "hpc7g.4xlarge", "hpc7g.8xlarge", "i3en.12xlarge", "i3en.24xlarge", "i3en.metal", "i4g.16xlarge", "i4i.32xlarge", "i4i.metal", "im4gn.16xlarge", "inf1.24xlarge", "m5dn.24xlarge", "m5dn.metal", "m5n.24xlarge", "m5n.metal", "m5zn.12xlarge", "m5zn.metal", "m6a.48xlarge", "m6a.metal", "m6i.32xlarge", "m6i.metal", "m6id.32xlarge", "m6id.metal", "m6idn.32xlarge", "m6idn.metal", "m6in.32xlarge", "m6in.metal", "m7a.48xlarge", "m7a.metal-48xl", "m7g.16xlarge", "m7g.metal", "m7gd.16xlarge", "m7i.48xlarge", "p3dn.24xlarge", "p4d.24xlarge", "p5.48xlarge", "r5dn.24xlarge", "r5dn.metal", "r5n.24xlarge", "r5n.metal", "r6a.48xlarge", "r6a.metal", "r6i.32xlarge", "r6i.metal", "r6id.32xlarge", "r6id.metal", "r6idn.32xlarge", "r6idn.metal", "r6in.32xlarge", "r6in.metal", "r7a.48xlarge", "r7g.16xlarge", "r7g.metal", "r7gd.16xlarge", "r7iz.32xlarge", "trn1.32xlarge", "trn1n.32xlarge", "vt1.24xlarge", "x2idn.32xlarge", "x2idn.metal", "x2iedn.32xlarge", "x2iedn.metal", "x2iezn.12xlarge", "x2iezn.metal"]
+                }
+              }
+
+              node_selector_term {
+                match_expressions {
+                  key      = "node.kubernetes.io/instance-type"
+                  operator = "In"
+                  values   = ["c5n.18xlarge", "c5n.9xlarge", "c5n.metal", "c6a.48xlarge", "c6a.metal", "c6gn.16xlarge", "c6i.32xlarge", "c6i.metal", "c6id.32xlarge", "c6id.metal", "c6in.32xlarge", "c6in.metal", "c7g.16xlarge", "c7g.metal", "c7gd.16xlarge", "c7gn.16xlarge", "c7i.48xlarge", "dl1.24xlarge", "g4dn.12xlarge", "g4dn.16xlarge", "g4dn.8xlarge", "g4dn.metal", "g5.12xlarge", "g5.16xlarge", "g5.24xlarge", "g5.48xlarge", "g5.8xlarge", "hpc7g.16xlarge", "hpc7g.4xlarge", "hpc7g.8xlarge", "i3en.12xlarge", "i3en.24xlarge", "i3en.metal", "i4g.16xlarge", "i4i.32xlarge", "i4i.metal", "im4gn.16xlarge", "inf1.24xlarge", "m5dn.24xlarge", "m5dn.metal", "m5n.24xlarge", "m5n.metal", "m5zn.12xlarge", "m5zn.metal", "m6a.48xlarge", "m6a.metal", "m6i.32xlarge", "m6i.metal", "m6id.32xlarge", "m6id.metal", "m6idn.32xlarge", "m6idn.metal", "m6in.32xlarge", "m6in.metal", "m7a.48xlarge", "m7a.metal-48xl", "m7g.16xlarge", "m7g.metal", "m7gd.16xlarge", "m7i.48xlarge", "p3dn.24xlarge", "p4d.24xlarge", "p5.48xlarge", "r5dn.24xlarge", "r5dn.metal", "r5n.24xlarge", "r5n.metal", "r6a.48xlarge", "r6a.metal", "r6i.32xlarge", "r6i.metal", "r6id.32xlarge", "r6id.metal", "r6idn.32xlarge", "r6idn.metal", "r6in.32xlarge", "r6in.metal", "r7a.48xlarge", "r7g.16xlarge", "r7g.metal", "r7gd.16xlarge", "r7iz.32xlarge", "trn1.32xlarge", "trn1n.32xlarge", "vt1.24xlarge", "x2idn.32xlarge", "x2idn.metal", "x2iedn.32xlarge", "x2iedn.metal", "x2iezn.12xlarge", "x2iezn.metal"]
+                }
+              }
+            }
+          }
+        }
+
+        toleration {
+          key      = "CriticalAddonsOnly"
+          operator = "Exists"
+        }
+
+        toleration {
+          key      = "aws.amazon.com/efa"
+          operator = "Exists"
+          effect   = "NoSchedule"
+        }
+
+        priority_class_name = "system-node-critical"
+      }
+    }
+
+    strategy {
+      type = "RollingUpdate"
+    }
+  }
 }
 
 ################################################################################
