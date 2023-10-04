@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: bootstrap-addons
+  namespace: argocd
+spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+  generators:
+    - clusters:
+        selector:
+          matchExpressions:
+            - key: akuity.io/argo-cd-cluster-name
+              operator: NotIn
+              values: [in-cluster]
+  template:
+    metadata:
+      name: 'bootstrap-addons'
+    spec:
+      project: default
+      source:
+        repoURL: '{{metadata.annotations.addons_repo_url}}'
+        path: '{{metadata.annotations.addons_repo_path}}'
+        targetRevision: '{{metadata.annotations.addons_repo_revision}}'
+        directory:
+          recurse: true
+          exclude: exclude/*
+      destination:
+        namespace: 'argocd'
+        name: '{{name}}'
+      syncPolicy:
+        automated: {}
