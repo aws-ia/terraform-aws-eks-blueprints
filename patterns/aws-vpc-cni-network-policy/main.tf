@@ -68,26 +68,6 @@ module "eks" {
   cluster_name                   = local.name
   cluster_version                = "1.27" # Must be 1.25 or higher
   cluster_endpoint_public_access = true
-  cluster_ip_family              = "ipv4" # Must be ipv4 or ipv6
-
-  # EKS Addons
-  cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni = {
-      preserve    = true
-      most_recent = true
-
-      timeouts = {
-        create = "25m"
-        delete = "10m"
-      }
-
-      configuration_values = jsonencode({
-        enableNetworkPolicy : "true",
-      })
-    }
-  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -135,73 +115,55 @@ module "vpc" {
 }
 
 ################################################################################
-# Demo application
+# EKS Addons (demo application)
 ################################################################################
 
-resource "kubectl_manifest" "management_ui_namespace" {
-  yaml_body  = <<YAML
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: management-ui 
-  labels:
-    role: management-ui
-YAML
-  depends_on = [module.eks]
-}
+module "addons" {
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "~> 1.0"
 
-resource "kubectl_manifest" "client_namespace" {
-  yaml_body  = <<YAML
-apiVersion: v1
-kind: Namespace
-apiVersion: v1
-metadata:
-  name: client
-  labels:
-    role: client
-YAML
-  depends_on = [module.eks]
-}
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider_arn = module.eks.oidc_provider_arn
 
-resource "helm_release" "management_ui" {
-  name             = "management-ui"
-  chart            = "./demo-application/charts/management-ui"
-  namespace        = "management-ui"
+  # EKS Addons
+  eks_addons = {
+    coredns    = {}
+    kube-proxy = {}
+    vpc-cni = {
+      preserve    = true
+      most_recent = true # Must be 1.14.0 or higher
 
-  depends_on = [module.eks, kubectl_manifest.management_ui_namespace]
-}
+      timeouts = {
+        create = "25m"
+        delete = "10m"
+      }
 
-resource "helm_release" "backend" {
-  name             = "backend"
-  chart            = "./demo-application/charts/backend"
-  namespace        = "stars"
-  create_namespace = true
+      # Must enable network policy support
+      configuration_values = jsonencode({
+        enableNetworkPolicy : "true",
+      })
+    }
+  }
 
-  depends_on = [module.eks]
-}
+  # Deploy demo-application
+  helm_releases = {
+    demo-application = {
+      description = "A Helm chart to deploy the network policy demo application"
+      namespace   = "default"
+      chart       = "./charts/demo-application"
+    }
+  }
 
-resource "helm_release" "frontend" {
-  name             = "frontend"
-  chart            = "./demo-application/charts/frontend"
-  namespace        = "stars"
-  create_namespace = true
-
-  depends_on = [module.eks]
-}
-
-resource "helm_release" "client" {
-  name             = "backend"
-  chart            = "./demo-application/charts/client"
-  namespace        = "client"
-
-  depends_on = [kubectl_manifest.management_ui_namespace]
+  tags = local.tags
 }
 
 ################################################################################
-# Restrict access using K8S Network Policies
+# Restrict traffic flow using Network Policies
 ################################################################################
 
-# Block all ingress and egress traffic within the stars ns
+# Block all ingress and egress traffic within the stars namespace
 resource "kubectl_manifest" "default_deny_stars" {
   yaml_body  = <<YAML
 kind: NetworkPolicy
@@ -213,10 +175,10 @@ spec:
   podSelector:
     matchLabels: {}
 YAML
-  depends_on = [helm_release.management_ui, helm_release.frontend, helm_release.backend, helm_release.client]
+  depends_on = [module.addons]
 }
 
-# Block all ingress and egress traffic within the client ns
+# Block all ingress and egress traffic within the client namespace
 resource "kubectl_manifest" "default_deny_client" {
   yaml_body  = <<YAML
 kind: NetworkPolicy
@@ -228,10 +190,10 @@ spec:
   podSelector:
     matchLabels: {}
 YAML
-  depends_on = [helm_release.management_ui, helm_release.frontend, helm_release.backend, helm_release.client]
+  depends_on = [module.addons]
 }
 
-# Allow the management-ui to access the star application
+# Allow the management-ui to access the star application pods
 resource "kubectl_manifest" "allow_traffic_from_management_ui_to_application_components" {
   yaml_body  = <<YAML
 kind: NetworkPolicy
@@ -248,10 +210,10 @@ spec:
             matchLabels:
               role: management-ui 
 YAML
-  depends_on = [helm_release.management_ui, helm_release.frontend, helm_release.backend, helm_release.client]
+  depends_on = [module.addons]
 }
 
-# Allow the management-ui to access the client application
+# Allow the management-ui to access the client application pods
 resource "kubectl_manifest" "allow_traffic_from_management_ui_to_client" {
   yaml_body  = <<YAML
 kind: NetworkPolicy
@@ -268,10 +230,10 @@ spec:
             matchLabels:
               role: management-ui 
 YAML
-  depends_on = [helm_release.management_ui, helm_release.frontend, helm_release.backend, helm_release.client]
+  depends_on = [module.addons]
 }
 
-# Allow the frontend to access the backend
+# Allow the frontend pod to access the backend pod within the stars namespace
 resource "kubectl_manifest" "allow_traffic_from_frontend_to_backend" {
   yaml_body  = <<YAML
 kind: NetworkPolicy
@@ -293,10 +255,10 @@ spec:
           port: 6379
 
 YAML
-  depends_on = [helm_release.management_ui, helm_release.frontend, helm_release.backend, helm_release.client]
+  depends_on = [module.addons]
 }
 
-# Allow the client to access the frontend
+# Allow the client pod to access the frontend pod within the stars namespace
 resource "kubectl_manifest" "allow_traffic_from_client_to_frontend" {
   yaml_body  = <<YAML
 kind: NetworkPolicy
@@ -317,5 +279,5 @@ spec:
         - protocol: TCP
           port: 80
 YAML
-  depends_on = [helm_release.management_ui, helm_release.frontend, helm_release.backend, helm_release.client]
+  depends_on = [module.addons]
 }

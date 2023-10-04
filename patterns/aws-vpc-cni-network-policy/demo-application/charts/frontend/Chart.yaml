@@ -1,5 +1,0 @@
-apiVersion: v2
-name: frontend
-description: A Helm chart to deploy the frontend
-type: application
-version: 1.0.0
