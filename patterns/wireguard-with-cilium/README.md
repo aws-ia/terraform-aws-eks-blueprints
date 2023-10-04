@@ -5,12 +5,11 @@ This pattern demonstrates Cilium configured in CNI chaining mode with the VPC CN
 - [Cilium CNI Chaining Documentation](https://docs.cilium.io/en/stable/installation/cni-chaining-aws-cni/)
 - [Cilium Wireguard Encryption Documentation](https://docs.cilium.io/en/stable/security/network/encryption-wireguard/)
 
-## Areas of Interest
+## Focal Points
 
 - `eks.tf` contains the cluster configuration and the deployment of Cilium.
-    - There are no specific requirements from an EKS perspective, other than the Linux Kernel version used by the OS must be 5.10+.
-        On Amazon EKS, this is available starting with EKS 1.24, or users can utilize the Bottlerocket OS for EKS < 1.23
-- `sample.tf` provides a sample application used to demonstrate the encrypted connectivity. This is optional and not required for the pattern.
+    - There are no specific requirements from an EKS perspective, other than the Linux Kernel version used by the OS must be 5.10+
+- `example.yaml` provides a sample application used to demonstrate the encrypted connectivity. This is optional and not required for the pattern.
 
 ## Deploy
 
@@ -18,7 +17,19 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 ## Validate
 
-1. Get the Cilium status from one of the Cilium pods.
+1. Deploy the example pods:
+
+    ```sh
+    kubectl apply -f example.yaml
+    ```
+
+    ```text
+    pod/server created
+    service/server created
+    pod/client created
+    ```
+
+2. Get the Cilium status from one of the Cilium pods.
 
     Under the `Encryption` field, it should state `Wireguard` with a PubKey.
     `NodeEncryption: Disabled` is expected since `NodeEncryption` was not enabled
@@ -31,42 +42,42 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     ```text
     Defaulted container "cilium-agent" out of: cilium-agent, config (init), mount-cgroup (init), apply-sysctl-overwrites (init), mount-bpf-fs (init), clean-cilium-state (init), install-cni-binaries (init)
     KVStore:                 Ok   Disabled
-    Kubernetes:              Ok   1.27+ (v1.27.4-eks-2d98532) [linux/amd64]
+    Kubernetes:              Ok   1.28+ (v1.28.1-eks-43840fb) [linux/amd64]
     Kubernetes APIs:         ["EndpointSliceOrEndpoint", "cilium/v2::CiliumClusterwideNetworkPolicy", "cilium/v2::CiliumEndpoint", "cilium/v2::CiliumNetworkPolicy", "cilium/v2::CiliumNode", "cilium/v2alpha1::CiliumCIDRGroup", "core/v1::Namespace", "core/v1::Pods", "core/v1::Service", "networking.k8s.io/v1::NetworkPolicy"]
-    KubeProxyReplacement:    False   [eth0 10.0.45.128 (Direct Routing), eth1 10.0.40.206]
+    KubeProxyReplacement:    False   [eth0 10.0.21.109 (Direct Routing), eth1 10.0.27.0]
     Host firewall:           Disabled
     CNI Chaining:            aws-cni
-    Cilium:                  Ok   1.14.1 (v1.14.1-c191ef6f)
+    Cilium:                  Ok   1.14.2 (v1.14.2-a6748946)
     NodeMonitor:             Listening for events on 2 CPUs with 64x4096 of shared memory
-    Cilium health daemon:    Ok
-    IPAM:                    IPv4: 1/254 allocated from 10.0.1.0/24,
+    Cilium health daemon:    Ok  
+    IPAM:                    IPv4: 1/254 allocated from 10.0.0.0/24,
     IPv4 BIG TCP:            Disabled
     IPv6 BIG TCP:            Disabled
     BandwidthManager:        Disabled
     Host Routing:            Legacy
     Masquerading:            Disabled
-    Controller Status:       20/20 healthy
+    Controller Status:       24/24 healthy
     Proxy Status:            No managed proxy redirect
     Global Identity Range:   min 256, max 65535
-    Hubble:                  Ok          Current/Max Flows: 4095/4095 (100.00%), Flows/s: 1.58   Metrics: Disabled
-    Encryption:              Wireguard   [NodeEncryption: Disabled, cilium_wg0 (Pubkey: Es25c2idJtRzE0/FKAOvKPJ7ybRmZ23KrufK3HOuZTY=, Port: 51871, Peers: 1)]
+    Hubble:                  Ok          Current/Max Flows: 410/4095 (10.01%), Flows/s: 1.59   Metrics: Disabled
+    Encryption:              Wireguard   [NodeEncryption: Disabled, cilium_wg0 (Pubkey: /yuqsZyG91AzVIkZ3AIq8qjQ0gGKQd6GWcRYh4LYpko=, Port: 51871, Peers: 1)]
     Cluster health:                      Probe disabled
     ```
 
-2. Open a shell inside the cilium container
+3. Open a shell inside the cilium container
 
     ```sh
     kubectl -n kube-system exec -ti ds/cilium -- bash
     ```
 
-3. Install [`tcpdump`](https://www.tcpdump.org/)
+4. Install [`tcpdump`](https://www.tcpdump.org/)
 
     ```sh
     apt-get update
     apt-get install -y tcpdump
     ```
 
-4. Start a packet capture on `cilium_wg0` and verify you see payload in clear text, it means the traffic is encrypted with wireguard
+5. Start a packet capture on `cilium_wg0` and verify you see payload in clear text, it means the traffic is encrypted with wireguard
 
     ```sh
     tcpdump -A -c 40 -i cilium_wg0 | grep "Welcome to nginx!"
@@ -82,7 +93,10 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     0 packets dropped by kernel
     ```
 
-5. Deploy the Cilium connectivity resources to check and evaluate connectivity:
+    !!! info "Exit"
+        Exit the container shell by typing `exit` before continuing to next step
+
+6. Deploy the Cilium connectivity resources to check and evaluate connectivity:
 
     ```sh
     kubectl create ns cilium-test
@@ -113,10 +127,10 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     ciliumnetworkpolicy.cilium.io/pod-to-external-fqdn-allow-google-cnp created
     ```
 
-6. View the logs of any of the connectivity tests to view the results:
+7. View the logs of any of the connectivity tests to view the results:
 
     ```sh
-    kubectl logs echo-a-6575c98b7d-xknsv -n cilium-test
+    kubectl logs <cilium test pod> -n cilium-test
     ```
 
     ```text

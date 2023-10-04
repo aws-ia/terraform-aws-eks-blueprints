@@ -7,7 +7,7 @@ module "eks" {
   version = "~> 19.16"
 
   cluster_name                   = local.name
-  cluster_version                = "1.27"
+  cluster_version                = "1.28"
   cluster_endpoint_public_access = true
 
   # EKS Addons
@@ -23,16 +23,12 @@ module "eks" {
   eks_managed_node_groups = {
     initial = {
       instance_types = ["m5.large"]
-      # Cilium Wireguard requires Linux Kernel 5.10 or above.
-      # For EKS 1.24 and above, the AMI the Kernel version is 5.10
-      # For EKS 1.23 and below, you need to use Bottlerocket OS. For example:
-      #    ami_type = "BOTTLEROCKET_x86_64"
-      #    platform = "bottlerocket"
-      min_size     = 1
-      max_size     = 3
-      desired_size = 2
+      min_size       = 1
+      max_size       = 3
+      desired_size   = 2
     }
   }
+
   # Extend node-to-node security group rules
   node_security_group_additional_rules = {
     # Cilium Wireguard Port https://github.com/cilium/cilium/blob/main/Documentation/security/network/encryption-wireguard.rst
