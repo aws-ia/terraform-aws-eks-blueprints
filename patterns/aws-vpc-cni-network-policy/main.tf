@@ -28,20 +28,6 @@ provider "helm" {
   }
 }
 
-provider "kubectl" {
-  apply_retry_count      = 5
-  host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  load_config_file       = false
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
-  }
-}
-
 data "aws_availability_zones" "available" {}
 
 locals {
@@ -164,120 +150,140 @@ module "addons" {
 ################################################################################
 
 # Block all ingress and egress traffic within the stars namespace
-resource "kubectl_manifest" "default_deny_stars" {
-  yaml_body  = <<YAML
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: default-deny
-  namespace: stars
-spec:
-  podSelector:
-    matchLabels: {}
-YAML
+resource "kubernetes_network_policy_v1" "default_deny_stars" {
+  metadata {
+    name      = "default-deny"
+    namespace = "stars"
+  }
+  spec {
+    policy_types = ["Ingress"]
+    pod_selector {
+      match_labels = {}
+    }
+  }
   depends_on = [module.addons]
 }
 
 # Block all ingress and egress traffic within the client namespace
-resource "kubectl_manifest" "default_deny_client" {
-  yaml_body  = <<YAML
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: default-deny
-  namespace: client
-spec:
-  podSelector:
-    matchLabels: {}
-YAML
+resource "kubernetes_network_policy_v1" "default_deny_client" {
+  metadata {
+    name      = "default-deny"
+    namespace = "client"
+  }
+  spec {
+    policy_types = ["Ingress"]
+    pod_selector {
+      match_labels = {}
+    }
+  }
   depends_on = [module.addons]
 }
 
 # Allow the management-ui to access the star application pods
-resource "kubectl_manifest" "allow_traffic_from_management_ui_to_application_components" {
-  yaml_body  = <<YAML
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  namespace: stars
-  name: allow-ui 
-spec:
-  podSelector:
-    matchLabels: {}
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              role: management-ui 
-YAML
+resource "kubernetes_network_policy_v1" "allow_ui_to_stars" {
+  metadata {
+    name      = "allow-ui"
+    namespace = "stars"
+  }
+  spec {
+    policy_types = ["Ingress"]
+    pod_selector {
+      match_labels = {}
+    }
+    ingress {
+      from {
+        namespace_selector {
+          match_labels = {
+            role = "management-ui"
+          }
+        }
+      }
+    }
+  }
   depends_on = [module.addons]
 }
 
 # Allow the management-ui to access the client application pods
-resource "kubectl_manifest" "allow_traffic_from_management_ui_to_client" {
-  yaml_body  = <<YAML
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  namespace: client 
-  name: allow-ui 
-spec:
-  podSelector:
-    matchLabels: {}
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              role: management-ui 
-YAML
+resource "kubernetes_network_policy_v1" "allow_ui_to_client" {
+  metadata {
+    name      = "allow-ui"
+    namespace = "client"
+  }
+  spec {
+    policy_types = ["Ingress"]
+    pod_selector {
+      match_labels = {}
+    }
+    ingress {
+      from {
+        namespace_selector {
+          match_labels = {
+            role = "management-ui"
+          }
+        }
+      }
+    }
+  }
   depends_on = [module.addons]
 }
 
 # Allow the frontend pod to access the backend pod within the stars namespace
-resource "kubectl_manifest" "allow_traffic_from_frontend_to_backend" {
-  yaml_body  = <<YAML
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  namespace: stars
-  name: backend-policy
-spec:
-  podSelector:
-    matchLabels:
-      role: backend
-  ingress:
-    - from:
-        - podSelector:
-            matchLabels:
-              role: frontend
-      ports:
-        - protocol: TCP
-          port: 6379
-
-YAML
+resource "kubernetes_network_policy_v1" "allow_frontend_to_backend" {
+  metadata {
+    name      = "backend-policy"
+    namespace = "stars"
+  }
+  spec {
+    policy_types = ["Ingress"]
+    pod_selector {
+      match_labels = {
+        role = "backend"
+      }
+    }
+    ingress {
+      from {
+        pod_selector {
+          match_labels = {
+            role = "frontend"
+          }
+        }
+      }
+      ports {
+        protocol = "TCP"
+        port     = "6379"
+      }
+    }
+  }
   depends_on = [module.addons]
 }
 
 # Allow the client pod to access the frontend pod within the stars namespace
-resource "kubectl_manifest" "allow_traffic_from_client_to_frontend" {
-  yaml_body  = <<YAML
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  namespace: stars
-  name: frontend-policy
-spec:
-  podSelector:
-    matchLabels:
-      role: frontend 
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              role: client
-      ports:
-        - protocol: TCP
-          port: 80
-YAML
+resource "kubernetes_network_policy_v1" "allow_client_to_backend" {
+  metadata {
+    name      = "frontend-policy"
+    namespace = "stars"
+  }
+
+  spec {
+    policy_types = ["Ingress"]
+    pod_selector {
+      match_labels = {
+        role = "frontend"
+      }
+    }
+    ingress {
+      from {
+        namespace_selector {
+          match_labels = {
+            role = "client"
+          }
+        }
+      }
+      ports {
+        protocol = "TCP"
+        port     = "80"
+      }
+    }
+  }
   depends_on = [module.addons]
 }
