@@ -109,7 +109,7 @@ additionalFilters: |
 cloudWatchLogs:
   enabled: true
   match: "kube.app.*"
-  region: ${region}
+  region: ${aws_region}
   logGroupName: "/aws/eks/fluentbit-cloudwatch/logs"
   logGroupTemplate: /aws/containerinsights/application/$kubernetes['namespace_name']
   logStreamPrefix: "fluentbit-"
@@ -118,7 +118,7 @@ additionalOutputs: |
   [OUTPUT]
       Name                cloudwatch_logs
       match               host.*
-      region              ${region}
+      region              ${aws_region}
       log_group_name      /aws/containerinsight/host
       auto_create_group   true
       log_stream_template $hostname
@@ -127,7 +127,7 @@ additionalOutputs: |
   [OUTPUT]
       Name                cloudwatch_logs
       match               dataplane.*
-      region              ${region}
+      region              ${aws_region}
       log_group_name      /aws/containerinsights/dataplane
       auto_create_group   true
       log_stream_template $hostname
