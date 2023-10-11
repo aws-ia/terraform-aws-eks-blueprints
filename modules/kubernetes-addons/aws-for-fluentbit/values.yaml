@@ -2,7 +2,134 @@ serviceAccount:
   create: false
   name: ${service_account}
 
+input:
+  enabled: true
+  tag: "kube.app.*"
+  path: "/var/log/containers/*.log"
+  db: "/var/log/flb_kube.db"
+  parser: docker
+  dockerMode: "On"
+  memBufLimit: 5MB
+  skipLongLines: "On"
+  refreshInterval: 10
+  extraInputs: >
+    exclude_path   /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
+additionalInputs: |
+  [INPUT]
+      Name              tail
+      tag               host.messages
+      path              /var/log/messages
+      db                /var/log/flb_messages.db
+      parser            syslog
+      Mem_Buf_Limit     5MB
+      Skip_Long_Lines   On
+      Refresh_Interval  10
+      Read_from_Head    true
+  [INPUT]
+      Name                tail
+      Tag                 host.dmesg
+      Path                /var/log/dmesg
+      Key                 message
+      DB                  /var/log/flb_dmesg.db
+      Mem_Buf_Limit       5MB
+      Skip_Long_Lines     On
+      Refresh_Interval    10
+      Read_from_Head      true
+  [INPUT]
+      Name                tail
+      Tag                 host.secure
+      Path                /var/log/secure
+      Parser              syslog
+      DB                  /var/log/flb_secure.db
+      Mem_Buf_Limit       5MB
+      Skip_Long_Lines     On
+      Refresh_Interval    10
+      Read_from_Head      true
+  [INPUT]
+      Name                systemd
+      Tag                 dataplane.systemd.*
+      Systemd_Filter      _SYSTEMD_UNIT=containerd.service
+      Systemd_Filter      _SYSTEMD_UNIT=kubelet.service
+      DB                  /var/log/systemd.db
+      Path                /var/log/journal
+      Read_From_Tail      true
+
+  [INPUT]
+      Name                tail
+      Tag                 dataplane.tail.*
+      Path                /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
+      parser              docker
+      DB                  /var/log/flb_dataplane_tail.db
+      Mem_Buf_Limit       50MB
+      Skip_Long_Lines     On
+      Refresh_Interval    10
+      Rotate_Wait         30
+      #storage.type        filesystem
+      Read_from_Head      true
+filter:
+  enabled: true
+  match: "kube.app.*"
+  kubeURL: "https://kubernetes.default.svc.cluster.local:443"
+  mergeLog: "On"
+  mergeLogKey: "data"
+  keepLog: "On"
+  k8sLoggingParser: "On"
+  k8sLoggingExclude: "Off"
+  bufferSize: "32k"
+  extraFilters: |
+    Kube_Tag_Prefix     kube.app.var.log.containers.
+additionalFilters: |
+    [FILTER]
+        Name                  aws
+        Match                 host.*
+        imds_version          v2
+        az                    true
+        ec2_instance_id       true
+        ec2_instance_type     true
+        private_ip            true
+        hostname              true
+    
+    [FILTER]
+        Name                  modify
+        Match                 dataplane.systemd.*
+        Rename                _HOSTNAME                   hostname
+        Rename                _SYSTEMD_UNIT               systemd_unit
+        Rename                MESSAGE                     message
+        Remove_regex          ^((?!hostname|systemd_unit|message).)*$
+
+    [FILTER]
+        Name                  aws
+        Match                 dataplane.*
+        imds_version          v2
+        az                    true
+        ec2_instance_id       true
+        ec2_instance_type     true
+        private_ip            true
+        hostname              true
 cloudWatchLogs:
   enabled: true
-  region: ${aws_region}
-  logGroupName: ${log_group_name}
+  match: "kube.app.*"
+  region: ${region}
+  logGroupName: "/aws/eks/fluentbit-cloudwatch/logs"
+  logGroupTemplate: /aws/containerinsights/application/$kubernetes['namespace_name']
+  logStreamPrefix: "fluentbit-"
+  logStreamTemplate: $kubernetes['pod_name'].$kubernetes['container_name']
+additionalOutputs: |
+  [OUTPUT]
+      Name                cloudwatch_logs
+      match               host.*
+      region              ${region}
+      log_group_name      /aws/containerinsight/host
+      auto_create_group   true
+      log_stream_template $hostname
+      log_stream_prefix   eks
+      extra_user_agent    container-insights
+  [OUTPUT]
+      Name                cloudwatch_logs
+      match               dataplane.*
+      region              ${region}
+      log_group_name      /aws/containerinsights/dataplane
+      auto_create_group   true
+      log_stream_template $hostname
+      log_stream_prefix   eks
+      extra_user_agent    container-insights
