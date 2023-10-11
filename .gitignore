@@ -43,3 +43,6 @@ terraform.rc
 # local env
 *.envrc
 *kube-config.yaml
+
+# Generated files
+builds

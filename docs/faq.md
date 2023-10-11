@@ -132,25 +132,25 @@ For example, with namespaces:
 
 1. Confirm the namespace is hanging in status `Terminating`
 
-```sh
-kubectl get namespaces
-```
+    ```sh
+    kubectl get namespaces
+    ```
 
 2. Check for any orphaned resources in the namespace, make sure to replace <namespace_name> with your namespace:
 
-```sh
-kubectl api-resources --verbs=list --namespaced -o name   | xargs -n 1 kubectl get  \
---show-kind --ignore-not-found -n <namespace_name>
-```
+    ```sh
+    kubectl api-resources --verbs=list --namespaced -o name   | xargs -n 1 kubectl get  \
+    --show-kind --ignore-not-found -n <namespace_name>
+    ```
 
 3. For any of the above output, patch the resource finalize:
 
-```sh
-kubectl patch RESOURCE NAME -p '{"metadata":{"finalizers":[]}}' --type=merge
-```
+    ```sh
+    kubectl patch RESOURCE NAME -p '{"metadata":{"finalizers":[]}}' --type=merge
+    ```
 
 4. Check the status of the namespace, if needed you may need to patch the namespace finalizers as-well
 
-```sh
-kubectl patch ns <ns-name> -p '{"spec":{"finalizers":null}}'
-```
+    ```sh
+    kubectl patch ns <ns-name> -p '{"spec":{"finalizers":null}}'
+    ```

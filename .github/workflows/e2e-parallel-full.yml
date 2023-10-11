@@ -32,10 +32,10 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
 
       - name: Auth AWS
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4.0.1
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
           aws-region: us-west-2
@@ -60,15 +60,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - example_path: examples/agones-game-controller
-          - example_path: examples/fargate-serverless
-          - example_path: examples/argocd
-          - example_path: examples/ipv4-prefix-delegation
-          - example_path: examples/ipv6-eks-cluster
-          - example_path: examples/karpenter
-          - example_path: examples/multi-tenancy-with-teams
-          - example_path: examples/stateful
-          - example_path: examples/vpc-cni-custom-networking
+          - example_path: patterns/agones-game-controller
+          - example_path: patterns/fargate-serverless
+          - example_path: patterns/argocd
+          - example_path: patterns/ipv6-eks-cluster
+          - example_path: patterns/karpenter
+          - example_path: patterns/multi-tenancy-with-teams
+          - example_path: patterns/stateful
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@v2
@@ -76,14 +74,14 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
 
       - name: Setup backend
         # Un-comment remote backend for use in workflow
         run: sed -i "s/# //g" ${{ matrix.example_path }}/versions.tf
 
       - name: Auth AWS
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4.0.1
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
           aws-region: us-west-2
@@ -166,10 +164,10 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
 
       - name: Configure AWS credentials from Test account
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4.0.1
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
           aws-region: us-west-2

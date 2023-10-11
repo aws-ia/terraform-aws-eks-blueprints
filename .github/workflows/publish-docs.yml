@@ -3,14 +3,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'docs/**'
-      - mkdocs.yml
-      - README.md
-      - '.github/workflows/publish-docs.yml'
-  release:
-    types:
-      - published
 
 env:
   PYTHON_VERSION: 3.x
@@ -22,6 +14,8 @@ jobs:
   build:
     name: Deploy docs
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@v2
@@ -29,7 +23,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout main
-        uses: actions/checkout@v3
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
         with:
           fetch-depth: 0
 
@@ -41,23 +35,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install mike==1.1.2 \
-            mkdocs-material==9.1.4 \
-            mkdocs-include-markdown-plugin==4.0.4 \
-            mkdocs-awesome-pages-plugin==2.9.1
+          python -m pip install mkdocs-material==9.3.1 \
+            mkdocs-include-markdown-plugin==6.0.1 \
+            mkdocs-awesome-pages-plugin==2.9.2
 
       - name: git config
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
-      - name: mike deploy main
-        if: contains(github.ref, 'refs/heads/main')
-        run: |
-          mike deploy --push main
-
-      - name: mike deploy new version
-        if: contains(github.ref, 'refs/tags/v') && !github.event.release.prerelease
-        run: |
-          VERSION=${GITHUB_REF/refs\/tags\//}
-          mike deploy --rebase --push --update-aliases "${VERSION}" latest
+      - run: mkdocs gh-deploy --force
