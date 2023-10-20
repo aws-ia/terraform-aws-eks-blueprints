@@ -23,10 +23,10 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_base"></a> [base](#module\_base) | ../helm-addon | n/a |
-| <a name="module_cni"></a> [cni](#module\_cni) | ../helm-addon | n/a |
-| <a name="module_gateway"></a> [gateway](#module\_gateway) | ../helm-addon | n/a |
-| <a name="module_istiod"></a> [istiod](#module\_istiod) | ../helm-addon | n/a |
+| <a name="module_base"></a> [base](#module\_base) | github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon | v4 |
+| <a name="module_cni"></a> [cni](#module\_cni) | github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon | v4 |
+| <a name="module_gateway"></a> [gateway](#module\_gateway) | github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon | v4 |
+| <a name="module_istiod"></a> [istiod](#module\_istiod) | github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon | v4 |
 
 ## Resources
 
@@ -40,10 +40,10 @@ No resources.
 | <a name="input_base_helm_config"></a> [base\_helm\_config](#input\_base\_helm\_config) | Istio `base` Helm Chart Configuration | `any` | `{}` | no |
 | <a name="input_cni_helm_config"></a> [cni\_helm\_config](#input\_cni\_helm\_config) | Istio `cni` Helm Chart Configuration | `any` | `{}` | no |
 | <a name="input_distribution"></a> [distribution](#input\_distribution) | Istio distribution | `string` | `"TID"` | no |
-| <a name="input_distribution_version"></a> [distribution\_version](#input\_distribution\_version) | Istio version | `string` | `""` | no |
+| <a name="input_distribution_version"></a> [distribution\_version](#input\_distribution\_version) | Tetrate Istio Distro | `string` | `""` | no |
 | <a name="input_gateway_helm_config"></a> [gateway\_helm\_config](#input\_gateway\_helm\_config) | Istio `gateway` Helm Chart Configuration | `any` | `{}` | no |
 | <a name="input_install_base"></a> [install\_base](#input\_install\_base) | Install Istio `base` Helm Chart | `bool` | `true` | no |
-| <a name="input_install_cni"></a> [install\_cni](#input\_install\_cni) | Install Istio `cni` Helm Chart | `bool` | `true` | no |
+| <a name="input_install_cni"></a> [install\_cni](#input\_install\_cni) | Install Istio `cni` Helm Chart | `bool` | `false` | no |
 | <a name="input_install_gateway"></a> [install\_gateway](#input\_install\_gateway) | Install Istio `gateway` Helm Chart | `bool` | `true` | no |
 | <a name="input_install_istiod"></a> [install\_istiod](#input\_install\_istiod) | Install Istio `istiod` Helm Chart | `bool` | `true` | no |
 | <a name="input_istiod_helm_config"></a> [istiod\_helm\_config](#input\_istiod\_helm\_config) | Istio `istiod` Helm Chart Configuration | `any` | `{}` | no |

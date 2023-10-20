@@ -1,3 +1,5 @@
+# Copyright (c) Tetrate, Inc 2022 All Rights Reserved.
+
 variable "distribution" {
   description = "Istio distribution"
   type        = string
@@ -5,7 +7,7 @@ variable "distribution" {
 }
 
 variable "distribution_version" {
-  description = "Istio version"
+  description = "Tetrate Istio Distro"
   type        = string
   default     = ""
 }
@@ -19,7 +21,7 @@ variable "install_base" {
 variable "install_cni" {
   description = "Install Istio `cni` Helm Chart"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "install_istiod" {

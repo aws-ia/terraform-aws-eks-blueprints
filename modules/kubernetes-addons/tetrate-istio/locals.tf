@@ -1,5 +1,7 @@
+# Copyright (c) Tetrate, Inc 2022 All Rights Reserved.
+
 locals {
-  default_version = coalesce(var.distribution_version, "1.12.2")
+  default_version = coalesce(var.distribution_version, "1.18.2")
 
   default_helm_config = {
     name             = "undefined"
@@ -7,6 +9,7 @@ locals {
     repository       = "https://istio-release.storage.googleapis.com/charts"
     version          = local.default_version
     namespace        = "istio-system"
+    timeout          = "1200"
     create_namespace = true
     description      = "Istio service mesh"
   }
